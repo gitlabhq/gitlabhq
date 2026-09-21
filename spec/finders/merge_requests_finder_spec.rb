@@ -416,11 +416,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
         let(:params) { { reviewer_id: user2.id, label_name: label.title } }
 
-        it 'returns the same merge requests with and without the CTE fence', :aggregate_failures do
-          expect(described_class.new(user, params).execute).to contain_exactly(merge_request2)
-
-          stub_feature_flags(use_cte_for_label_filter: false)
-
+        it 'returns only the merge requests matching the label and reviewer' do
           expect(described_class.new(user, params).execute).to contain_exactly(merge_request2)
         end
 

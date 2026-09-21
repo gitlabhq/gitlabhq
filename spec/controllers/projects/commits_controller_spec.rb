@@ -420,6 +420,43 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
           expect(assigns(:gitaly_unavailable)).to be true
         end
       end
+
+      context 'when gitaly fails before the ref is resolved, on an atom request' do
+        before do
+          # Gitlab::Git::Commit.find only rescues Gitlab::Git::CommandError (and CommandTimedOut,
+          # a subclass of it) internally, returning nil. ResourceExhaustedError is not a
+          # CommandError subclass, so it genuinely propagates out of ref extraction unswallowed,
+          # before assign_ref_vars ever assigns @ref.
+          allow(Gitlab::Git::Commit).to receive(:find)
+            .and_raise(Gitlab::Git::ResourceExhaustedError, 'Gitaly resource exhausted')
+        end
+
+        it 'returns 503 instead of a 500 caused by building a URL with a nil ref' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master', format: :atom }
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(assigns(:ref)).to be_nil
+          expect(response.body).to include(project_url(project))
+          expect(response.body).not_to include(project_commits_url(project, 'master'))
+        end
+      end
+
+      context 'when gitaly fails after the ref is resolved, on an atom request' do
+        before do
+          allow_next_instance_of(Repository) do |repository|
+            allow(repository).to receive(:commits)
+              .and_raise(Gitlab::Git::CommandError, 'Gitaly unavailable')
+          end
+        end
+
+        it 'returns 503 and links to the ref-scoped commits URL' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master', format: :atom }
+
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+          expect(assigns(:ref)).to eq('master')
+          expect(response.body).to include(project_commits_url(project, 'master'))
+        end
+      end
     end
 
     describe "GET /commits/:id/signatures" do

@@ -71162,6 +71162,7 @@ Import source.
 | <a id="importsourceuserstatus-pending_reassignment"></a>`PENDING_REASSIGNMENT` | An import source user mapping that is pending reassignment. |
 | <a id="importsourceuserstatus-reassignment_in_progress"></a>`REASSIGNMENT_IN_PROGRESS` | An import source user mapping that is reassignment in progress. |
 | <a id="importsourceuserstatus-rejected"></a>`REJECTED` | An import source user mapping that is rejected. |
+| <a id="importsourceuserstatus-revoked"></a>`REVOKED` | An import source user mapping that is revoked. |
 
 ### `IntegrationType`
 

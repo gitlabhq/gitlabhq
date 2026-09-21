@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe 'Projects > Settings > Repository settings', feature_category: :source_code_management do
   include Features::MirroringHelpers
 
-  let(:project) { create(:project_empty_repo) }
+  let_it_be_with_reload(:project) { create(:project_empty_repo) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 
   before do
-    project.add_role(user, role)
+    project.add_role(user, role) # rubocop:disable RSpec/BeforeAllRoleAssignment -- role differs per context
     sign_in(user)
   end
 
@@ -332,7 +332,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
     end
 
     context 'with Vue mirror table enabled', :js do
-      let(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       context 'with an enabled remote mirror' do
         let!(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }

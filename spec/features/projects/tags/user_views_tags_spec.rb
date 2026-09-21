@@ -70,13 +70,16 @@ RSpec.describe 'User views tags', :feature, feature_category: :source_code_manag
     end
 
     context 'when project public' do
-      let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+      let_it_be(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 
       context 'when user signed in' do
-        let(:user) { create(:user) }
+        let_it_be(:user) { create(:user) }
+
+        before_all do
+          project.add_developer(user)
+        end
 
         before do
-          project.add_developer(user)
           sign_in(user)
           visit project_tags_path(project)
         end
@@ -101,13 +104,16 @@ RSpec.describe 'User views tags', :feature, feature_category: :source_code_manag
     end
 
     context 'when project is not public' do
-      let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
       context 'when user signed in' do
-        let(:user) { create(:user) }
+        let_it_be(:user) { create(:user) }
+
+        before_all do
+          project.add_developer(user)
+        end
 
         before do
-          project.add_developer(user)
           sign_in(user)
         end
 

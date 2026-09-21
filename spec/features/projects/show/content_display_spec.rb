@@ -75,7 +75,7 @@ RSpec.describe 'Projects > Show > Content display', feature_category: :groups_an
   end
 
   describe 'Deletion failure message' do
-    let(:project) { create(:project, :empty_repo, pending_delete: true) }
+    let_it_be_with_reload(:project) { create(:project, :empty_repo, pending_delete: true) }
 
     before do
       sign_in(project.first_owner)
@@ -94,13 +94,17 @@ RSpec.describe 'Projects > Show > Content display', feature_category: :groups_an
   end
 
   describe 'RSS' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, :public) }
+
     let(:path) { project_path(project) }
 
     context 'when signed in' do
-      before do
+      before_all do
         project.add_developer(user)
+      end
+
+      before do
         sign_in(user)
         visit path
       end

@@ -97,7 +97,8 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
 
         expect(result[:isError]).to be true
 
-        expected_text = "Tool execution failed: Tool 'manage_pipeline' not found."
+        expected_text = "Tool execution failed: manage_pipeline is not available on this GitLab " \
+          "instance due to a server configuration problem."
         expect(result[:content].first[:text]).to eq(expected_text)
       end
     end

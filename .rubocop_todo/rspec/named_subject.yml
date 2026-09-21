@@ -647,7 +647,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/projects/import_service_spec.rb'
     - 'ee/spec/services/projects/setup_ci_cd_spec.rb'
     - 'ee/spec/services/projects/transfer_service_spec.rb'
-    - 'ee/spec/services/projects/update_mirror_service_spec.rb'
     - 'ee/spec/services/protected_environments/create_service_spec.rb'
     - 'ee/spec/services/protected_environments/destroy_service_spec.rb'
     - 'ee/spec/services/protected_environments/environment_dropdown_service_spec.rb'

@@ -127,7 +127,7 @@ module API
       def resource_scope_attrs(current_user, resources, base_attrs)
         resources.map do |resource|
           boundary = ::Authz::Boundary.for(resource)
-          not_found! unless boundary.member?(current_user)
+          not_found! unless Ability.allowed?(current_user, :read_boundary, resource)
 
           base_attrs.merge(namespace: boundary.namespace)
         end

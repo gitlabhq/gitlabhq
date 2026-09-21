@@ -246,7 +246,8 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text])
-          .to eq("Tool execution failed: Tool 'test_aggregated_tool' not found.")
+          .to eq("Tool execution failed: test_aggregated_tool is not available on this GitLab " \
+            "instance due to a server configuration problem.")
       end
     end
 

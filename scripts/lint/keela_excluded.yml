@@ -89,6 +89,7 @@ methods:
     - deactivated_by_failures?: Will be used in follow-up MRs of the scheduled flow triggers stack (gitlab-org/gitlab#594180)
   ee/app/models/ai/flow_trigger.rb:
     - autonomous_only?: Will be used in follow-up MRs of the scheduled flow triggers stack (gitlab-org/gitlab#594180)
+    - self.applicable_to_project: Will be used by the firing-path issue in the group inheritance epic (gitlab-org/gitlab#627518)
   ee/app/models/artifact_registry/namespace_mapping.rb:
     - expire_registry_cache: Called from the activate, disable, and enable mutations landing in stacked follow-up MRs
   ee/app/models/cd/application_flow_definition.rb:

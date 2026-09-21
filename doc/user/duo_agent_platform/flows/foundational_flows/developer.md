@@ -102,7 +102,7 @@ To create a merge request from an issue:
    - Assign the Duo Developer service account to the issue:
      1. In the right sidebar, in the **Assignees** section, select **Edit**.
      1. Type `duo developer` and select it from the search results.
-   - Below the issue header, select **Implement work item**.
+   - Below the issue header, select **Implement**.
 1. To monitor progress, in the left sidebar, select **AI** > **Sessions**.
 1. When the session completes, review the merge request from the link in
    the **Activity** section of the issue.

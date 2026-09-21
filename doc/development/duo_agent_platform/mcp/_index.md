@@ -167,17 +167,19 @@ A caller provides either:
 - The ID group - `project_id` (numeric ID or full path such as `gitlab-org/gitlab`) plus
   the resource's internal ID (`merge_request_iid`, `work_item_iid`, `commit_sha`, and so on).
 
-Always pass the full path, never a URL-encoded one. This holds for every MCP tool, whether it is
-backed by GraphQL, by a REST route, or by an aggregator. Nothing in the MCP layer percent-decodes an
-argument: GraphQL-backed and custom tools resolve `project_id` through `ResourceFinder`, and
-REST-backed tools go straight into Grape routing arguments without a URL being built. Both end up
-in `Gitlab::ResourceLookup`. `lookup_project` treats a value as a path only when it contains a
-literal `/`, while `lookup_group` hands anything non-numeric straight to `find_by_full_path`. Either
-way `gitlab-org%2Fgitlab` resolves to `nil` and the caller gets a not-found error.
+Both the plain full path (`gitlab-org/gitlab`) and the URL-encoded form (`gitlab-org%2Fgitlab`)
+work as a project or group argument for any tool that resolves it through `ResourceFinder` or
+`ApiTool`. The MCP boundary percent-decodes the value before it reaches lookup logic: in
+`ResourceFinder#find_project!` and `#find_group!` for GraphQL-backed and custom tools, and in
+`ApiTool#execute` for REST-backed tools, mirroring the decoding Rack applies to a path segment in
+a REST request. A tool that passes a path straight to GraphQL (for example `search_labels` or
+`list_vulnerabilities`) skips both decode sites and takes the plain form only.
 
-The GitLab REST API documents the URL-encoded form because a real HTTP request has its path segment
-decoded before Grape sees it. An MCP argument is not a path segment, so that decoding never happens.
-Do not carry the REST wording into a tool's `input_schema`.
+Use the plain full path in examples and in a tool's own `input_schema` description. The decode
+exists only so that Grape-derived descriptions copied from REST routes, which advertise the
+URL-encoded form, don't become wrong. `Gitlab::ResourceLookup`, which the REST API also uses,
+doesn't decode: its callers already receive a decoded value, and decoding there would let the
+REST API accept a double-encoded path.
 
 Keep the project identifier and the internal ID as separate parameters.
 Do not fold them into a

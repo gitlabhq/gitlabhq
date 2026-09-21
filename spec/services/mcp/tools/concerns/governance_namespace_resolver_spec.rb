@@ -33,6 +33,12 @@ RSpec.describe Mcp::Tools::Concerns::GovernanceNamespaceResolver, feature_catego
         expect(tool_class.new.resolve_governance_containers(arguments.with_indifferent_access)).to eq([project])
       end
 
+      it 'resolves a URL-encoded full path' do
+        arguments = { project_id: ERB::Util.url_encode(project.full_path) }
+
+        expect(tool_class.new.resolve_governance_containers(arguments.with_indifferent_access)).to eq([project])
+      end
+
       it 'resolves a Global ID' do
         arguments = { project_id: "gid://gitlab/Project/#{project.id}" }
 

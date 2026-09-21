@@ -78,6 +78,8 @@ module Mcp
             value = value.presence&.to_s
             next unless value
 
+            # Same Rack-less boundary as ApiTool#execute: a URL-encoded path is still encoded here.
+            value = UrlParser.unescape_and_scrub_uri(value)
             global_id = ::GlobalID.parse(value)
             # A plain numeric id or full path carries no type to disagree with.
             next value unless global_id

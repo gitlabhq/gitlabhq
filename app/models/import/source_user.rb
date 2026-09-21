@@ -23,7 +23,7 @@ module Import
 
     validates :namespace_id, :import_type, :source_hostname, :source_user_identifier, :status, presence: true
     validates :source_user_identifier, uniqueness: { scope: [:namespace_id, :source_hostname, :import_type] }
-    validates :placeholder_user_id, presence: true, unless: :completed?
+    validates :placeholder_user_id, presence: true, unless: -> { completed? || revoked? }
     validates :reassignment_token, absence: true, unless: :awaiting_approval?
     validates :reassignment_token, length: { is: 32 }, if: :awaiting_approval?
     validates :reassign_to_user_id, presence: true, if: -> {
@@ -47,7 +47,7 @@ module Import
     scope :for_placeholder_user, ->(user) { where(placeholder_user: user) }
     scope :by_statuses, ->(statuses) { where(status: statuses) }
     scope :awaiting_reassignment, -> { where(status: [0, 1, 2, 3, 4]) }
-    scope :reassigned, -> { where(status: [5, 6]) }
+    scope :reassigned, -> { where(status: [5, 6, 7]) }
 
     STATUSES = {
       pending_reassignment: 0,
@@ -56,7 +56,8 @@ module Import
       rejected: 3,
       failed: 4,
       completed: 5,
-      keep_as_placeholder: 6
+      keep_as_placeholder: 6,
+      revoked: 7
     }.freeze
 
     ACCEPTED_STATUSES = %i[reassignment_in_progress completed failed].freeze
@@ -129,6 +130,10 @@ module Import
 
       event :retry_reassignment do
         transition failed: :reassignment_in_progress
+      end
+
+      event :revoke do
+        transition completed: :revoked
       end
     end
 

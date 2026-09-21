@@ -277,8 +277,8 @@ msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d decision captured"
-msgid_plural "%d decisions captured"
+msgid "%d decision"
+msgid_plural "%d decisions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2319,6 +2319,9 @@ msgstr ""
 msgid "A group represents your organization in GitLab. Groups allow you to manage users and collaborate across multiple projects."
 msgstr ""
 
+msgid "A group trigger must belong to an inheritance consumer of the same group"
+msgstr ""
+
 msgid "A job artifact is an archive of files and directories saved by a job when it finishes."
 msgstr ""
 
@@ -3082,6 +3085,9 @@ msgstr ""
 msgid "AICatalog|In the AI Catalog, show only agents and flows that belong to projects in this group hierarchy or foundational agents and flows. Agents and flows from outside this group hierarchy are hidden and cannot be turned on or used."
 msgstr ""
 
+msgid "AICatalog|Inheritance is only supported for a top-level group"
+msgstr ""
+
 msgid "AICatalog|Input cannot exceed %{value} characters."
 msgstr ""
 
@@ -3688,7 +3694,13 @@ msgstr ""
 msgid "AICatalog|can't be made restricted because this item is enabled outside the top-level group hierarchy"
 msgstr ""
 
+msgid "AICatalog|cannot be changed"
+msgstr ""
+
 msgid "AICatalog|cannot be enabled because your top-level group settings block enabling items outside of its hierarchy"
+msgstr ""
+
+msgid "AICatalog|cannot be inherited because it is private"
 msgstr ""
 
 msgid "AICatalog|flow"
@@ -11252,6 +11264,12 @@ msgid "AnalyticsDashboards|GitLab Analytics"
 msgstr ""
 
 msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most"
+msgstr ""
+
+msgid "AnalyticsDashboards|Load more groups"
+msgstr ""
+
+msgid "AnalyticsDashboards|Load more projects in %{name}"
 msgstr ""
 
 msgid "AnalyticsDashboards|More actions for %{name}"
@@ -31236,9 +31254,6 @@ msgid "DuoAgentPlatform|Image registry"
 msgstr ""
 
 msgid "DuoAgentPlatform|Implement"
-msgstr ""
-
-msgid "DuoAgentPlatform|Implement work item"
 msgstr ""
 
 msgid "DuoAgentPlatform|Implement work item with GitLab Duo"
@@ -93142,6 +93157,9 @@ msgstr ""
 msgid "WorkItemDecisionLog|Select who made this decision"
 msgstr ""
 
+msgid "WorkItemDecisionLog|Show archived (%{count})"
+msgstr ""
+
 msgid "WorkItemDecisionLog|Show context"
 msgstr ""
 
@@ -93317,6 +93335,12 @@ msgid "WorkItems|The readiness_score_feedback field requires the workplan_score 
 msgstr ""
 
 msgid "WorkItems|Your preferences"
+msgstr ""
+
+msgid "WorkItem|\"%{status_name}\" is already in the \"%{category}\" category. A status keeps its category in every lifecycle that uses it. To use a different category, create a status with a different name."
+msgstr ""
+
+msgid "WorkItem|\"%{status_name}\" is already in the \"%{category}\" category. A status that is in use cannot move between open and closed states. To use a different category, create a status with a different name."
 msgstr ""
 
 msgid "WorkItem|%d disabled type"

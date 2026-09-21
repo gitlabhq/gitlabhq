@@ -196,6 +196,7 @@ The following API resources are available outside of project and group contexts 
 | [Import repository from Bitbucket Server](import.md#import-repository-from-bitbucket-server) | `/import/bitbucket_server` |
 | [Instance clusters](instance_clusters.md)                                                    | `/admin/clusters` |
 | [Instance-level CI/CD variables](instance_level_ci_variables.md)                             | `/admin/ci/variables` |
+| [Instance SSH certificates](instance_ssh_certificates.md)                                     | `/admin/ssh_certificates` |
 | [Issues Statistics](issues_statistics.md)                                                    | `/issues_statistics` (also available for groups and projects) |
 | [Issues](issues.md)                                                                          | `/issues` (also available for groups and projects) |
 | [Jobs](jobs.md)                                                                              | `/job` |

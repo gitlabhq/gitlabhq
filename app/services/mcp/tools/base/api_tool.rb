@@ -78,6 +78,7 @@ module Mcp
 
         def execute(request: nil, params: nil)
           args = params[:arguments]&.slice(*settings[:params]) || {}
+          decode_namespace_arguments!(args)
           request.env[Grape::Env::GRAPE_ROUTING_ARGS].merge!(args)
           request.env[Rack::REQUEST_METHOD] = route.request_method
 
@@ -111,6 +112,16 @@ module Mcp
         end
 
         private
+
+        # Rack percent-decodes path segments before Grape sees them; this in-process call
+        # skips Rack, so the URL-encoded path the route docs advertise is decoded here.
+        # A '%' is data in any other argument.
+        def decode_namespace_arguments!(args)
+          namespace_arguments.each_value do |name|
+            value = args[name]
+            args[name] = Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) if value.is_a?(String)
+          end
+        end
 
         def route_boundary_type
           authorization = route.app.route_setting(:authorization)

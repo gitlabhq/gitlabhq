@@ -49,10 +49,6 @@ module Authz
         access.to_s.tr('_', ' ')
       end
 
-      def visible_to?(_user)
-        true
-      end
-
       attr_reader :boundary
     end
 
@@ -76,14 +72,6 @@ module Authz
       def namespace
         boundary
       end
-
-      def member?(user)
-        boundary.member?(user)
-      end
-
-      def visible_to?(user)
-        ::Gitlab::VisibilityLevel.levels_for_user(user).include?(boundary.visibility_level)
-      end
     end
 
     class ProjectBoundary < Base
@@ -106,14 +94,6 @@ module Authz
       def namespace
         boundary.project_namespace
       end
-
-      def member?(user)
-        boundary.member?(user)
-      end
-
-      def visible_to?(user)
-        ::Gitlab::VisibilityLevel.levels_for_user(user).include?(boundary.visibility_level)
-      end
     end
 
     class PersonalProjectsBoundary < Base
@@ -124,10 +104,6 @@ module Authz
       def namespace
         boundary.namespace
       end
-
-      def member?(user)
-        namespace.member?(user)
-      end
     end
 
     class NilBoundary < Base
@@ -137,10 +113,6 @@ module Authz
 
       def namespace
         nil
-      end
-
-      def member?(_)
-        true
       end
 
       def path

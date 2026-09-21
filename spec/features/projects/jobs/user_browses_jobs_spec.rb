@@ -10,13 +10,15 @@ end
 
 RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
   describe 'Jobs', :js do
-    let(:project) { create(:project, :repository) }
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user) }
 
-    before do
+    before_all do
       project.add_maintainer(user)
       project.enable_ci
+    end
 
+    before do
       sign_in(user)
     end
 

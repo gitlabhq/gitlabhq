@@ -80,6 +80,13 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       it { is_expected.to validate_absence_of(:reassign_to_user_id) }
     end
 
+    context 'when revoked' do
+      subject { build(:import_source_user, :revoked) }
+
+      it { is_expected.not_to validate_presence_of(:placeholder_user_id) }
+      it { is_expected.not_to validate_absence_of(:reassign_to_user_id) }
+    end
+
     context 'for validate_source_hostname' do
       let(:namespace) { create(:namespace) }
       let(:placeholder_user) { create(:import_source_user, namespace: namespace).placeholder_user }
@@ -215,13 +222,15 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
 
     describe '.reassigned' do
-      it 'only returns source users with status completed' do
+      it 'returns source users with a reassigned status' do
         namespace = create(:namespace)
         completed_assignment_user = create(:import_source_user, :completed, namespace: namespace)
         placeholder_user = create(:import_source_user, :keep_as_placeholder, namespace: namespace)
+        revoked_user = create(:import_source_user, :revoked, namespace: namespace)
+        create(:import_source_user, :pending_reassignment, namespace: namespace)
 
-        expect(described_class.for_namespace(namespace.id).to_a)
-          .to match_array([completed_assignment_user, placeholder_user])
+        expect(described_class.for_namespace(namespace.id).reassigned)
+          .to match_array([completed_assignment_user, placeholder_user, revoked_user])
       end
     end
   end
@@ -287,6 +296,22 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         expect { source_user.retry_reassignment }.to change {
           source_user.reassignment_error
         }.from('Previous error').to(nil)
+      end
+    end
+
+    context 'when revoking a reassignment' do
+      subject(:source_user) { create(:import_source_user, :completed) }
+
+      it 'transitions from completed to revoked' do
+        expect { source_user.revoke }.to change {
+          source_user.revoked?
+        }.from(false).to(true)
+      end
+
+      it 'does not transition from other statuses' do
+        source_user = create(:import_source_user, :reassignment_in_progress)
+
+        expect(source_user.revoke).to be(false)
       end
     end
 

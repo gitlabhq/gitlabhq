@@ -8,6 +8,13 @@ module Mcp
         include Mcp::Tools::Concerns::Versionable
         extend Gitlab::Utils::Override
 
+        class ToolNotConfiguredError < StandardError
+          def initialize(tool_name)
+            super("#{tool_name} is not available on this GitLab instance due to a " \
+              "server configuration problem.")
+          end
+        end
+
         def self.tool_name
           raise NoMethodError, "#{self.class.name}#tool_name should be implemented in a subclass"
         end
@@ -33,7 +40,7 @@ module Mcp
           params[:arguments] = transform_arguments(arguments)
           tool = select_tool(arguments)
 
-          raise Mcp::Tools::Manager::ToolNotFoundError, self.class.tool_name unless tool
+          raise ToolNotConfiguredError, self.class.tool_name unless tool
 
           tool.execute(request:, params:)
         end

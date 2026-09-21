@@ -90,7 +90,7 @@ module Mutations
 
             group_scopes + project_scopes
           when ::Authz::GranularScope::Access::PERSONAL_PROJECTS
-            base_attrs.merge(namespace: boundary!(current_user).namespace)
+            base_attrs.merge(namespace: ::Authz::Boundary.for(current_user).namespace)
           else
             # namespace_id is nil for all_memberships, user, and instance access
             base_attrs
@@ -113,11 +113,9 @@ module Mutations
         end
 
         def boundary!(resource)
-          ::Authz::Boundary.for(resource).tap do |boundary|
-            next if boundary.member?(current_user)
+          raise_resource_not_available_error! unless Ability.allowed?(current_user, :read_boundary, resource)
 
-            raise_resource_not_available_error!
-          end
+          ::Authz::Boundary.for(resource)
         end
 
         def validate_sudo_not_escalated!(sudo, calling_token)

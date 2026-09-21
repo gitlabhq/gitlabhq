@@ -1,17 +1,30 @@
 <script>
 import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce, xor } from 'lodash-es';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
 import getScopeNamespaceQuery from '../graphql/get_scope_namespace.query.graphql';
+import {
+  SCOPE_PICKER_ITEM_TYPE_GROUP,
+  SCOPE_PICKER_ITEM_TYPE_PROJECT,
+  SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+} from './constants';
 import ScopePickerItem from './scope_picker_item.vue';
+
+// The rows are typed in the picker's own terms, so a namespace's typename maps onto one.
+const ITEM_TYPE_BY_TYPENAME = {
+  [TYPENAME_GROUP]: SCOPE_PICKER_ITEM_TYPE_GROUP,
+  [TYPENAME_PROJECT]: SCOPE_PICKER_ITEM_TYPE_PROJECT,
+};
 
 // Keeps a placeholder row's value from colliding with a real namespace path.
 const EMPTY_ITEM_SUFFIX = '::empty';
+const LOAD_MORE_ITEM_SUFFIX = '::load-more';
 
 export default {
   name: 'AnalyticsDashboardScopePicker',
@@ -32,12 +45,15 @@ export default {
   data() {
     return {
       topLevelGroups: [],
+      topLevelGroupsPageInfo: null,
+      isLoadingTopLevelGroups: false,
       // The pick is held as the namespace itself, not its path. A path would have to be resolved
       // against the loaded namespaces on every read, and a second search replaces the results the
       // pick may have come from, so by then there would be nothing left to resolve it to.
       selectedNamespace: null,
       expandedPaths: [],
       // Each expanded group's projects, flattened across the subgroups below it, keyed by path.
+      // Alongside them, the group's loading state and the cursor the next page starts from.
       subgroupProjects: {},
       searchTerm: '',
       initialScope: null,
@@ -45,14 +61,6 @@ export default {
     };
   },
   apollo: {
-    topLevelGroups: {
-      query: getTopLevelGroupsQuery,
-      update: ({ groups }) => groups?.nodes ?? [],
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
     searchResults: {
       query: searchNamespacesGlobalQuery,
       variables() {
@@ -90,8 +98,8 @@ export default {
     },
   },
   computed: {
-    isLoading() {
-      return this.$apollo.queries.topLevelGroups.loading;
+    isLoadingFirstPage() {
+      return this.isLoadingTopLevelGroups && !this.topLevelGroups.length;
     },
     hasSearch() {
       return this.searchTerm.trim().length > 0;
@@ -138,16 +146,29 @@ export default {
     // counts are direct-only, so this is as close as the API gets to "has content" without an
     // unbatched per-row query. See the No projects row below.
     groupItems() {
-      return this.topLevelGroups.flatMap((group) => [
+      const items = this.topLevelGroups.flatMap((group) => [
         {
           ...this.asItem(this.asNamespace(group)),
           expandable: group.projectsCount > 0 || group.descendantGroupsCount > 0,
         },
-        ...this.subgroupItems(group.fullPath),
+        ...this.subgroupItems(group),
       ]);
+
+      if (this.topLevelGroupsPageInfo?.hasNextPage) {
+        items.push(this.asLoadMoreItem({ isLoading: this.isLoadingTopLevelGroups }));
+      }
+
+      return items;
     },
+    // Rows locked by a selected ancestor render checked, so the options behind them have to agree.
+    // The pick itself may be on none of them -- not paged in yet, or filtered out by a search --
+    // and it still has to count, or the listbox greys the toggle as if nothing were selected.
     selectedPaths() {
-      return this.items.filter(({ selected }) => selected).map(({ value }) => value);
+      const visible = this.items.filter(({ selected }) => selected).map(({ value }) => value);
+
+      return this.selectedPath && !visible.includes(this.selectedPath)
+        ? [this.selectedPath, ...visible]
+        : visible;
     },
   },
   watch: {
@@ -166,6 +187,8 @@ export default {
     // Vue re-binds everything in `methods`, and that drops lodash's `cancel`, so the debounced
     // handler has to be built per instance, so cancelling it cancels only this one's.
     this.onSearch = debounce(this.setSearchTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+    this.loadTopLevelGroups();
   },
   methods: {
     asNamespace({ id, name, fullName, fullPath, __typename }) {
@@ -176,15 +199,19 @@ export default {
       const isLockedByAncestor =
         Boolean(this.selectedPath) && fullPath.startsWith(`${this.selectedPath}/`);
 
+      const { isLoading, projects } = this.subgroupProjects[fullPath] ?? {};
+
       return {
         value: fullPath,
         text: name,
-        namespaceType: type,
+        itemType: ITEM_TYPE_BY_TYPENAME[type],
         selected: this.selectedPath === fullPath || isLockedByAncestor,
         indeterminate: this.hasSelectedDescendant(fullPath),
         disabled: isLockedByAncestor,
         expanded: this.isExpanded(fullPath),
-        expanding: this.isExpanded(fullPath) && Boolean(this.subgroupProjects[fullPath]?.isLoading),
+        // Only the first page leaves the row with nothing to show, so later pages report on the
+        // Load more button they were asked for from instead.
+        expanding: this.isExpanded(fullPath) && Boolean(isLoading) && !projects,
       };
     },
     asResultItem(namespace) {
@@ -193,11 +220,29 @@ export default {
         parentName: namespace.namespace?.name ?? null,
       };
     },
+    // A row of its own at the end of the list it extends, rather than a single footer control,
+    // because every expanded group carries one of its own.
+    asLoadMoreItem({ fullPath = null, name = null, isLoading }) {
+      return {
+        value: `${fullPath ?? ''}${LOAD_MORE_ITEM_SUFFIX}`,
+        // Names the list it extends, every one of these rows otherwise reading alike. Not escaped
+        // by sprintf: Vue escapes the interpolation, so escaping here as well would render a group
+        // called "Sales & Marketing" as `Sales &amp; Marketing`.
+        text: name
+          ? sprintf(s__('AnalyticsDashboards|Load more projects in %{name}'), { name }, false)
+          : s__('AnalyticsDashboards|Load more groups'),
+        itemType: SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+        // The row only carries the button, so there is nothing about it to select.
+        disabled: true,
+        nested: Boolean(fullPath),
+        loading: Boolean(isLoading),
+      };
+    },
     // The rows an expanded group reveals. Nothing until its fetch lands.
-    subgroupItems(fullPath) {
+    subgroupItems({ fullPath, name }) {
       if (!this.isExpanded(fullPath)) return [];
 
-      const { projects } = this.subgroupProjects[fullPath] ?? {};
+      const { projects, pageInfo, isLoading } = this.subgroupProjects[fullPath] ?? {};
       if (!projects) return [];
 
       // A group can look expandable on its direct counts and still hold nothing -- its projects
@@ -216,11 +261,17 @@ export default {
 
       // Projects arrive pre-flattened, so they render at one level whatever their real depth.
       // Naming the parent only helps for projects below the subgroup that was expanded.
-      return projects.map((project) => ({
+      const items = projects.map((project) => ({
         ...this.asItem(this.asNamespace(project)),
         nested: true,
         parentName: project.namespace?.fullPath === fullPath ? null : project.namespace?.name,
       }));
+
+      if (pageInfo?.hasNextPage) {
+        items.push(this.asLoadMoreItem({ fullPath, name, isLoading }));
+      }
+
+      return items;
     },
     isExpanded(fullPath) {
       return this.expandedPaths.includes(fullPath);
@@ -242,33 +293,81 @@ export default {
 
       await this.loadSubgroupProjects(fullPath);
     },
-    async loadSubgroupProjects(fullPath) {
-      this.subgroupProjects = {
-        ...this.subgroupProjects,
-        [fullPath]: { isLoading: true, projects: null },
-      };
+    setSubgroupProjects(fullPath, entry) {
+      this.subgroupProjects = { ...this.subgroupProjects, [fullPath]: entry };
+    },
+    async loadSubgroupProjects(fullPath, after = null) {
+      const loaded = this.subgroupProjects[fullPath] ?? {};
+
+      this.setSubgroupProjects(fullPath, {
+        projects: null,
+        pageInfo: null,
+        ...loaded,
+        isLoading: true,
+      });
 
       try {
         const { data } = await this.$apollo.query({
           query: getSubgroupProjectsQuery,
-          variables: { fullPath },
+          variables: { fullPath, after },
         });
 
-        this.subgroupProjects = {
-          ...this.subgroupProjects,
-          // A subgroup can go missing between the parent query and this one, which comes back
-          // as a successful null rather than an error.
-          [fullPath]: { isLoading: false, projects: data.group?.projects?.nodes ?? [] },
-        };
+        // A subgroup can go missing between the parent query and this one, which comes back
+        // as a successful null rather than an error.
+        const { nodes, pageInfo } = data.group?.projects ?? {};
+
+        this.setSubgroupProjects(fullPath, {
+          isLoading: false,
+          projects: [...(loaded.projects ?? []), ...(nodes ?? [])],
+          pageInfo: pageInfo ?? null,
+        });
       } catch (error) {
-        // Collapse and forget the row, so expanding it again retries the fetch.
-        const { [fullPath]: failed, ...rest } = this.subgroupProjects;
-        this.subgroupProjects = rest;
-        this.expandedPaths = this.expandedPaths.filter((path) => path !== fullPath);
+        if (loaded.projects) {
+          // The pages already listed still stand, so keep them and let the button retry.
+          this.setSubgroupProjects(fullPath, { ...loaded, isLoading: false });
+        } else {
+          // Collapse and forget the row, so expanding it again retries the fetch.
+          const { [fullPath]: failed, ...rest } = this.subgroupProjects;
+          this.subgroupProjects = rest;
+          this.expandedPaths = this.expandedPaths.filter((path) => path !== fullPath);
+        }
 
         this.$emit('error', error);
         captureException(error);
       }
+    },
+    async loadTopLevelGroups(after = null) {
+      this.isLoadingTopLevelGroups = true;
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: getTopLevelGroupsQuery,
+          variables: { after },
+        });
+
+        const { nodes, pageInfo } = data.groups ?? {};
+
+        this.topLevelGroups = [...this.topLevelGroups, ...(nodes ?? [])];
+        this.topLevelGroupsPageInfo = pageInfo ?? null;
+      } catch (error) {
+        // The pages already listed still stand, so keep them and let the button retry.
+        this.$emit('error', error);
+        captureException(error);
+      } finally {
+        this.isLoadingTopLevelGroups = false;
+      }
+    },
+    // The row's value is the only thing that says which list it extends, so read the group back
+    // out of it. Empty for the row that extends the top-level list.
+    onLoadMore(value) {
+      const fullPath = value.slice(0, -LOAD_MORE_ITEM_SUFFIX.length);
+
+      if (fullPath) {
+        this.loadSubgroupProjects(fullPath, this.subgroupProjects[fullPath]?.pageInfo?.endCursor);
+        return;
+      }
+
+      this.loadTopLevelGroups(this.topLevelGroupsPageInfo?.endCursor);
     },
     onSelect(paths) {
       // The listbox reports the whole selection, but only one item can change per click and the
@@ -307,7 +406,7 @@ export default {
     :selected="selectedPaths"
     :toggle-text="toggleText"
     :header-text="s__('AnalyticsDashboards|Scope')"
-    :loading="isLoading"
+    :loading="isLoadingFirstPage"
     searchable
     :searching="isSearching"
     :search-placeholder="s__('AnalyticsDashboards|Search groups and projects')"
@@ -326,7 +425,12 @@ export default {
         {{ item.text }}
       </span>
 
-      <scope-picker-item v-else v-bind="item" @toggle-expanded="toggleExpanded(item.value)" />
+      <scope-picker-item
+        v-else
+        v-bind="item"
+        @toggle-expanded="toggleExpanded(item.value)"
+        @load-more="onLoadMore(item.value)"
+      />
     </template>
 
     <template #footer>

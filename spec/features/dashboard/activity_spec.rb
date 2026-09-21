@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard > Activity', :js, feature_category: :user_profile do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+
   let(:current_organization) { user.organization }
   let(:page_path) { activity_dashboard_path }
 
@@ -49,7 +50,7 @@ RSpec.describe 'Dashboard > Activity', :js, feature_category: :user_profile do
   end
 
   context 'event filters' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     let(:merge_request) do
       create(:merge_request, author: user, source_project: project, target_project: project)
@@ -99,9 +100,11 @@ RSpec.describe 'Dashboard > Activity', :js, feature_category: :user_profile do
       create(:event, :created, project: project, target: issue, author: user)
     end
 
-    before do
+    before_all do
       project.add_maintainer(user)
+    end
 
+    before do
       visit activity_dashboard_path
       wait_for_requests
     end

@@ -25,6 +25,7 @@ project:
   - read_approval_rule
   - read_avatar
   - read_badge
+  - read_boundary
   - read_branch
   - read_cargo_package
   - read_code
@@ -134,6 +135,7 @@ group:
   - download_pypi_package
   - read_avatar
   - read_badge
+  - read_boundary
   - read_composer_package
   - read_descendant_group
   - read_epic_award_emoji

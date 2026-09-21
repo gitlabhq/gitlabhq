@@ -136,7 +136,8 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
 
         expect(result[:isError]).to be true
 
-        expected_text = "Tool execution failed: Tool 'search' not found."
+        expected_text = "Tool execution failed: search is not available on this GitLab instance " \
+          "due to a server configuration problem."
         expect(result[:content].first[:text]).to eq(expected_text)
       end
     end

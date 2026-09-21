@@ -4707,4 +4707,94 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       guest_permissions
     end
   end
+
+  describe 'read_boundary' do
+    let_it_be(:external_user) { create(:user, :external) }
+
+    context 'with a private project' do
+      let(:project) { private_project }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_member }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'organization owner' do
+        let(:current_user) { organization_owner }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      %w[guest planner reporter developer maintainer owner].each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { expect_allowed(:read_boundary) }
+        end
+      end
+
+      context 'admin' do
+        let(:current_user) { admin }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed(:read_boundary) }
+        end
+
+        context 'when admin mode is disabled' do
+          it { expect_disallowed(:read_boundary) }
+        end
+      end
+    end
+
+    context 'with an internal project' do
+      let(:project) { internal_project }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_member }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
+
+        it { expect_disallowed(:read_boundary) }
+      end
+    end
+
+    context 'with a public project' do
+      let(:project) { public_project }
+
+      context 'when no user' do
+        let(:current_user) { anonymous }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'non-member' do
+        let(:current_user) { non_member }
+
+        it { expect_allowed(:read_boundary) }
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
+
+        it { expect_allowed(:read_boundary) }
+      end
+    end
+  end
 end

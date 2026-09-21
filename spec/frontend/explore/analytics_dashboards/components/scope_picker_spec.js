@@ -8,6 +8,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import * as sentryBrowserWrapper from '~/sentry/sentry_browser_wrapper';
+import {
+  SCOPE_PICKER_ITEM_TYPE_GROUP,
+  SCOPE_PICKER_ITEM_TYPE_PROJECT,
+  SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+} from '~/explore/analytics_dashboards/components/constants';
 import ScopePicker from '~/explore/analytics_dashboards/components/scope_picker.vue';
 import ScopePickerItem from '~/explore/analytics_dashboards/components/scope_picker_item.vue';
 import getSubgroupProjectsQuery from '~/explore/analytics_dashboards/graphql/get_subgroup_projects.query.graphql';
@@ -137,6 +142,26 @@ describe('ScopePicker', () => {
     },
   ];
 
+  const mockUmbrellaCorp = mockTopLevelGroup({
+    id: 22,
+    name: 'Umbrella Corp',
+    path: 'umbrella-corp',
+  });
+
+  const mockExtraCapsuleProject = {
+    __typename: TYPENAME_PROJECT,
+    id: 'gid://gitlab/Project/32',
+    name: 'Dragon Radar',
+    fullName: 'Capsule Corp / Dragon Radar',
+    fullPath: 'capsule-corp/dragon-radar',
+    namespace: {
+      __typename: TYPENAME_GROUP,
+      id: mockCapsuleCorp.id,
+      name: mockCapsuleCorp.name,
+      fullPath: mockCapsuleCorp.fullPath,
+    },
+  };
+
   // Deep enough that no amount of browsing reaches it, which is the point of search.
   const mockDeepSubgroup = {
     __typename: TYPENAME_GROUP,
@@ -200,21 +225,38 @@ describe('ScopePicker', () => {
       },
     });
 
-  const respondWithTopLevelGroups = (groups = mockTopLevelGroups) =>
-    jest.fn().mockResolvedValue({
-      data: { groups: { __typename: 'GroupConnection', nodes: groups } },
-    });
+  // A page names the cursor the next one starts from, so naming one is what says there is more.
+  const pageInfo = (endCursor) => ({
+    __typename: 'PageInfo',
+    hasNextPage: Boolean(endCursor),
+    endCursor: endCursor ?? null,
+  });
 
-  const respondWithSubgroupProjects = (projects = mockSubgroupProjects) =>
-    jest.fn().mockResolvedValue({
-      data: {
-        group: {
-          __typename: TYPENAME_GROUP,
-          id: mockFrontend.id,
-          projects: { __typename: 'ProjectConnection', nodes: projects },
+  const topLevelGroupsPage = (groups = mockTopLevelGroups, endCursor = null) => ({
+    data: {
+      groups: { __typename: 'GroupConnection', nodes: groups, pageInfo: pageInfo(endCursor) },
+    },
+  });
+
+  const subgroupProjectsPage = (projects = mockSubgroupProjects, endCursor = null) => ({
+    data: {
+      group: {
+        __typename: TYPENAME_GROUP,
+        id: mockFrontend.id,
+        projects: {
+          __typename: 'ProjectConnection',
+          nodes: projects,
+          pageInfo: pageInfo(endCursor),
         },
       },
-    });
+    },
+  });
+
+  const respondWithTopLevelGroups = (groups, endCursor) =>
+    jest.fn().mockResolvedValue(topLevelGroupsPage(groups, endCursor));
+
+  const respondWithSubgroupProjects = (projects, endCursor) =>
+    jest.fn().mockResolvedValue(subgroupProjectsPage(projects, endCursor));
 
   const asNamespace = ({ id, name, fullName, fullPath, __typename }) => ({
     id,
@@ -274,6 +316,15 @@ describe('ScopePicker', () => {
   const findEmptyItem = () => wrapper.findByTestId('scope-picker-empty-item');
   const findItemFor = ({ fullPath }) =>
     findItems().wrappers.find((item) => item.props('value') === fullPath);
+  const findItemTexts = () => findItems().wrappers.map((item) => item.props('text'));
+  const findItemValues = () => findItems().wrappers.map((item) => item.props('value'));
+  const findLoadMoreItems = () =>
+    findItems().wrappers.filter(
+      (item) => item.props('itemType') === SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+    );
+  // The list's own row sits at the end of everything; a group's sits at the end of its projects.
+  const findListLoadMore = () => findLoadMoreItems().find((item) => !item.props('nested'));
+  const findGroupLoadMore = () => findLoadMoreItems().find((item) => item.props('nested'));
 
   // Mirrors what the listbox emits on click: the whole selection, with the clicked item toggled.
   const toggleSelected = ({ fullPath }) => {
@@ -339,6 +390,7 @@ describe('ScopePicker', () => {
         it('asks for every project beneath it, however deep', () => {
           expect(subgroupRequestHandler).toHaveBeenCalledWith({
             fullPath: mockCapsuleCorp.fullPath,
+            after: null,
           });
         });
 
@@ -382,6 +434,16 @@ describe('ScopePicker', () => {
 
             expect(findItemFor(mockCapsuleProjects[0]).props('disabled')).toBe(true);
             expect(findItemFor(mockCapsuleProjects[0]).props('selected')).toBe(true);
+          });
+
+          // Their rows render checked, so the options behind them have to be selected as well.
+          it('counts the locked projects as selected, alongside the group itself', async () => {
+            await toggleSelected(mockCapsuleCorp);
+
+            expect(findListbox().props('selected')).toEqual([
+              mockCapsuleCorp.fullPath,
+              ...mockCapsuleProjects.map(({ fullPath }) => fullPath),
+            ]);
           });
 
           it('leaves the group indeterminate when one of its projects is selected', async () => {
@@ -451,6 +513,214 @@ describe('ScopePicker', () => {
         expect(findOptions().find(({ placeholder }) => placeholder)).toMatchObject({
           disabled: true,
         });
+      });
+    });
+
+    describe('when more top-level groups are available', () => {
+      const endCursor = 'groups-page-1';
+
+      const respondWithTwoGroupPages = () =>
+        jest
+          .fn()
+          .mockResolvedValueOnce(topLevelGroupsPage(mockTopLevelGroups, endCursor))
+          .mockResolvedValueOnce(topLevelGroupsPage([mockUmbrellaCorp]));
+
+      beforeEach(async () => {
+        createWrapper({ topLevelGroupsHandler: respondWithTwoGroupPages() });
+        await waitForPromises();
+      });
+
+      it('ends the list with a Load more row', () => {
+        expect(findItemTexts()).toEqual([mockCapsuleCorp.name, mockAcme.name, 'Load more groups']);
+        expect(findListLoadMore().props('nested')).toBe(false);
+      });
+
+      it('leaves the row unselectable, it carrying only the button', () => {
+        expect(findOptions().at(-1)).toMatchObject({ disabled: true });
+      });
+
+      it('gives the row a value of its own', () => {
+        const values = findOptions().map(({ value }) => value);
+
+        expect(new Set(values).size).toBe(values.length);
+      });
+
+      describe('when it is clicked', () => {
+        beforeEach(() => findListLoadMore().vm.$emit('load-more'));
+
+        it('asks for the next page from where the last one ended', () => {
+          expect(topLevelGroupsRequestHandler).toHaveBeenLastCalledWith({ after: endCursor });
+        });
+
+        it('sets the loading state on the button, not the listbox', () => {
+          expect(findListLoadMore().props('loading')).toBe(true);
+          expect(findListbox().props('loading')).toBe(false);
+        });
+
+        describe('once the page arrives', () => {
+          beforeEach(() => waitForPromises());
+
+          it('appends it to the groups already listed', () => {
+            expect(findItemValues()).toEqual([
+              ...mockTopLevelGroups.map(({ fullPath }) => fullPath),
+              mockUmbrellaCorp.fullPath,
+            ]);
+          });
+
+          it('drops the row, the last page having arrived', () => {
+            expect(findLoadMoreItems()).toHaveLength(0);
+          });
+        });
+      });
+
+      describe('when the next page fails', () => {
+        const error = new Error('oh no');
+
+        beforeEach(async () => {
+          createWrapper({
+            topLevelGroupsHandler: jest
+              .fn()
+              .mockResolvedValueOnce(topLevelGroupsPage(mockTopLevelGroups, endCursor))
+              .mockRejectedValueOnce(error),
+          });
+          await waitForPromises();
+          findListLoadMore().vm.$emit('load-more');
+          await waitForPromises();
+        });
+
+        it('emits error', () => {
+          expect(wrapper.emitted('error')).toEqual([[error]]);
+        });
+
+        it('logs the error to sentry', () => {
+          expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+        });
+
+        it('keeps the groups already listed, and the row, so it can be asked for again', () => {
+          expect(findItemTexts()).toEqual([
+            mockCapsuleCorp.name,
+            mockAcme.name,
+            'Load more groups',
+          ]);
+          expect(findListLoadMore().props('loading')).toBe(false);
+        });
+      });
+    });
+
+    describe('when an expanded group has more projects available', () => {
+      const endCursor = 'projects-page-1';
+
+      const respondWithTwoProjectPages = () =>
+        jest
+          .fn()
+          .mockResolvedValueOnce(subgroupProjectsPage(mockCapsuleProjects, endCursor))
+          .mockResolvedValueOnce(subgroupProjectsPage([mockExtraCapsuleProject]));
+
+      const projectNames = mockCapsuleProjects.map(({ name }) => name);
+
+      beforeEach(async () => {
+        createWrapper({ subgroupHandler: respondWithTwoProjectPages() });
+        await waitForPromises();
+        await toggleExpanded(mockCapsuleCorp);
+        await waitForPromises();
+      });
+
+      it("ends the group's projects with a Load more row, indented alongside them", () => {
+        expect(findItemTexts()).toEqual([
+          mockCapsuleCorp.name,
+          ...projectNames,
+          `Load more projects in ${mockCapsuleCorp.name}`,
+          mockAcme.name,
+        ]);
+        expect(findGroupLoadMore().props('nested')).toBe(true);
+      });
+
+      describe('when it is clicked', () => {
+        beforeEach(() => findGroupLoadMore().vm.$emit('load-more'));
+
+        it("asks for the next page of that group's projects", () => {
+          expect(subgroupRequestHandler).toHaveBeenLastCalledWith({
+            fullPath: mockCapsuleCorp.fullPath,
+            after: endCursor,
+          });
+        });
+
+        it('sets the loading state for the button, not the group', () => {
+          expect(findGroupLoadMore().props('loading')).toBe(true);
+          expect(findItemFor(mockCapsuleCorp).props('expanding')).toBe(false);
+        });
+
+        describe('once the page arrives', () => {
+          beforeEach(() => waitForPromises());
+
+          it('appends it beneath the projects already revealed', () => {
+            expect(findItemValues()).toEqual([
+              mockCapsuleCorp.fullPath,
+              ...mockCapsuleProjects.map(({ fullPath }) => fullPath),
+              mockExtraCapsuleProject.fullPath,
+              mockAcme.fullPath,
+            ]);
+          });
+
+          it('drops the row, the last page having arrived', () => {
+            expect(findLoadMoreItems()).toHaveLength(0);
+          });
+        });
+      });
+
+      describe('when the next page fails', () => {
+        const error = new Error('oh no');
+
+        beforeEach(async () => {
+          createWrapper({
+            subgroupHandler: jest
+              .fn()
+              .mockResolvedValueOnce(subgroupProjectsPage(mockCapsuleProjects, endCursor))
+              .mockRejectedValueOnce(error),
+          });
+          await waitForPromises();
+          await toggleExpanded(mockCapsuleCorp);
+          await waitForPromises();
+          findGroupLoadMore().vm.$emit('load-more');
+          await waitForPromises();
+        });
+
+        it('emits error', () => {
+          expect(wrapper.emitted('error')).toEqual([[error]]);
+        });
+
+        it('keeps the projects already revealed, and the row, so it can be asked for again', () => {
+          expect(findItemTexts()).toEqual([
+            mockCapsuleCorp.name,
+            ...projectNames,
+            `Load more projects in ${mockCapsuleCorp.name}`,
+            mockAcme.name,
+          ]);
+          expect(findGroupLoadMore().props('loading')).toBe(false);
+        });
+      });
+    });
+
+    describe("when the first page of a group's projects fails", () => {
+      const error = new Error('oh no');
+
+      beforeEach(async () => {
+        createWrapper({ subgroupHandler: jest.fn().mockRejectedValue(error) });
+        await waitForPromises();
+        await toggleExpanded(mockCapsuleCorp);
+        await waitForPromises();
+      });
+
+      it('emits error', () => {
+        expect(wrapper.emitted('error')).toEqual([[error]]);
+      });
+
+      it('collapses the group, so expanding it again retries', async () => {
+        expect(findItemFor(mockCapsuleCorp).props('expanded')).toBe(false);
+
+        await toggleExpanded(mockCapsuleCorp);
+
+        expect(subgroupRequestHandler).toHaveBeenCalledTimes(2);
       });
     });
 
@@ -539,8 +809,8 @@ describe('ScopePicker', () => {
       });
 
       it('distinguishes a group from a project by icon rather than by heading', () => {
-        expect(findItemFor(mockDeepSubgroup).props('namespaceType')).toBe(TYPENAME_GROUP);
-        expect(findItemFor(mockDeepProject).props('namespaceType')).toBe(TYPENAME_PROJECT);
+        expect(findItemFor(mockDeepSubgroup).props('itemType')).toBe(SCOPE_PICKER_ITEM_TYPE_GROUP);
+        expect(findItemFor(mockDeepProject).props('itemType')).toBe(SCOPE_PICKER_ITEM_TYPE_PROJECT);
       });
 
       it('offers no chevrons, results being flat however deep they sit', () => {
@@ -605,6 +875,11 @@ describe('ScopePicker', () => {
 
       it('emits no change, nothing about the selection having been touched', () => {
         expect(wrapper.emitted('change')).toEqual([[asNamespace(mockDeepProject)]]);
+      });
+
+      // Otherwise the listbox takes the toggle for an empty picker and greys the name it shows.
+      it('holds the selection, none of the rows on screen carrying it', () => {
+        expect(findListbox().props('selected')).toEqual([mockDeepProject.fullPath]);
       });
 
       it('still names it once the search is cleared and browsing resumes', async () => {
@@ -762,10 +1037,9 @@ describe('ScopePicker', () => {
         expect(wrapper.emitted('change')).toEqual([[asNamespace(mockScopeProject)]]);
       });
 
-      // The pick is held as the namespace itself, so it survives not being on screen. Only the
-      // ticked-row state is limited to what the listbox is currently showing.
-      it('ticks no row, the project being outside what browsing lists', () => {
-        expect(findListbox().props('selected')).toEqual([]);
+      it('allows a non-loaded item to be selected by default', () => {
+        expect(findListbox().props('selected')).toEqual([mockScopeProject.fullPath]);
+        expect(findItemValues()).not.toContain(mockScopeProject.fullPath);
       });
     });
 

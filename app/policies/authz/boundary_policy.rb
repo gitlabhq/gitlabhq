@@ -13,18 +13,6 @@ module Authz
       token.is_a?(::PersonalAccessToken) && token.granular?
     end
 
-    condition(:member) do
-      next true if token.user.can_read_all_resources?
-
-      boundary.member?(token.user)
-    end
-
-    condition(:visible, score: 0) do
-      boundary.visible_to?(token.user)
-    end
-
-    rule { member | visible }.enable :read_boundary
-
     ::Authz::PermissionGroups::Assignable.all_permissions.each do |permission|
       desc "Token permission that enables #{permission} for boundary"
       condition(permission) do

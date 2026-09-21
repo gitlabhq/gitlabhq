@@ -63,6 +63,10 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       it 'finds by full path' do
         expect(service.test_find_project(public_project.full_path)).to eq(public_project)
       end
+
+      it 'finds by URL-encoded full path' do
+        expect(service.test_find_project(ERB::Util.url_encode(public_project.full_path))).to eq(public_project)
+      end
     end
 
     context 'when project does not exist' do
@@ -174,6 +178,14 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
       it 'finds by numeric ID' do
         expect(service.test_find_group(public_group.id.to_s)).to eq(public_group)
+      end
+
+      it 'finds by integer ID without attempting to decode it' do
+        expect(service.test_find_group(public_group.id)).to eq(public_group)
+      end
+
+      it 'finds by URL-encoded full path' do
+        expect(service.test_find_group(ERB::Util.url_encode(public_group.full_path))).to eq(public_group)
       end
     end
 

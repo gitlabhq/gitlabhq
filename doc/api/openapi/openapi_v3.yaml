@@ -821,12 +821,15 @@ tags:
   description: |-
     Use this API to retrieve information about [SSH keys](https://docs.gitlab.com/user/ssh/), manage a
     user's SSH and [GPG keys](https://docs.gitlab.com/user/project/repository/signed_commits/gpg/),
-    and manage [SSH certificates for top-level groups](https://docs.gitlab.com/user/group/ssh_certificates/).
+    and manage SSH certificates for [top-level groups](https://docs.gitlab.com/user/group/ssh_certificates/)
+    and [the instance](https://docs.gitlab.com/api/instance_ssh_certificates/).
 
     Queries about deploy key fingerprints also retrieve information about the projects using that key.
     If you use a SHA256 fingerprint in an API call, URL-encode the fingerprint.
 
     Managing group SSH certificates requires the Owner role for a top-level group.
+
+    Managing instance SSH certificates requires administrator access.
   x-displayName: Keys
   externalDocs:
     url: https://docs.gitlab.com/api/user_keys/

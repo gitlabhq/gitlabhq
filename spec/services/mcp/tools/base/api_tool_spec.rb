@@ -23,6 +23,7 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
 
   before do
     allow(app).to receive(:route_setting).with(:mcp).and_return(mcp_settings)
+    allow(app).to receive(:route_setting).with(:authorization).and_return(nil)
   end
 
   subject(:api_tool) { described_class.new(name: 'test_tool', route: route) }
@@ -257,6 +258,22 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
             "result" => "success"
           }
         })
+      end
+    end
+
+    context 'when the namespace argument is URL-encoded' do
+      let(:mcp_settings) { { params: [:id, :search], tool_name: 'test_tool' } }
+      let(:params) { { arguments: { id: 'gitlab-org%2Fgitlab', search: '100%25 match' } } }
+
+      before do
+        allow(app).to receive(:route_setting).with(:authorization).and_return({ boundary_type: :project })
+        allow(app).to receive(:call).with(request_env).and_return([200, {}, ['{"result": "success"}']])
+      end
+
+      it 'decodes only the project argument before routing', :aggregate_failures do
+        api_tool.execute(request: request, params: params)
+
+        expect(request_env['grape.routing_args']).to include(id: 'gitlab-org/gitlab', search: '100%25 match')
       end
     end
 

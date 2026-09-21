@@ -137,7 +137,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
     end
 
     context 'when there are successful deployments' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       let!(:deployment) do
         create(:deployment, :success, environment: environment, sha: project.commit.id)
@@ -325,7 +325,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
     end
 
     context 'when there is a failed deployment' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       let!(:deployment) do
         create(:deployment, :failed, environment: environment, sha: project.commit.id)

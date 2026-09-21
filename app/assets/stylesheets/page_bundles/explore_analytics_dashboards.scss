@@ -1,0 +1,35 @@
+@import 'mixins_and_variables_and_functions';
+
+// Below md the filters stack vertically and would cover most of a small
+// viewport when stuck, so the bar only sticks once it lays out as a row.
+@include media-breakpoint-up(md) {
+  .explore-analytics-dashboard {
+    // GlDashboardLayout renders the wrapper around the filters slot, so match
+    // it through our own class on the slotted filters. Remove once the wrapper
+    // offers a hook: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3660
+    // stylelint-disable-next-line gitlab/no-has -- scoped to this dashboard's filters wrapper
+    :has(> .explore-dashboard-filters) {
+      position: sticky;
+      top: $calc-application-header-height;
+      z-index: 1;
+      background-color: var(--gl-background-color-default);
+    }
+
+    // Chart tooltips are GlPopovers (z-index 1060) rendered inside the panels.
+    // Isolating the grid traps them in its own stacking context, so the bar's
+    // z-index: 1 paints over them without having to outrank modals (1050).
+    .grid-stack {
+      isolation: isolate;
+    }
+  }
+
+  // Keyboard focus jumps and anchor scrolls align the target with the
+  // viewport edge, which the opaque stuck bar now covers. 7rem clears the
+  // bar's tallest md+ layout: a view-tabs row plus the filter controls row.
+  // Guard on the dashboard class so routes that load this bundle without a
+  // sticky bar (the dashboards list) keep the default scroll alignment.
+  // stylelint-disable-next-line gitlab/no-has -- only applies while the sticky dashboard layout is rendered
+  :root:has(.explore-analytics-dashboard) {
+    scroll-padding-top: calc($calc-application-header-height + 7rem);
+  }
+}

@@ -69,7 +69,7 @@ module Mcp
           params[:arguments] = transformed_args.except(:operation)
           tool = select_tool(transformed_args)
 
-          raise Mcp::Tools::Manager::ToolNotFoundError, self.class.tool_name unless tool
+          raise Base::AggregatedService::ToolNotConfiguredError, self.class.tool_name unless tool
 
           execute_tool_with_enhanced_response(tool, transformed_args[:operation])
         end

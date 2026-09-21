@@ -16,6 +16,7 @@ RSpec.describe GitlabSchema.types['ImportSourceUserStatus'], feature_category: :
           PENDING_REASSIGNMENT
           REASSIGNMENT_IN_PROGRESS
           REJECTED
+          REVOKED
         ]
       )
     end

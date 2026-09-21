@@ -5,15 +5,17 @@ require 'spec_helper'
 RSpec.describe 'User browses a job', :js, feature_category: :continuous_integration do
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
-  before do
+  before_all do
     project.add_maintainer(user)
     project.enable_ci
+  end
 
+  before do
     sign_in(user)
   end
 

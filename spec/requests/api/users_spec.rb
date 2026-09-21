@@ -5872,8 +5872,46 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           end
         end
 
-        context 'when the user is not a member of the given group' do
-          let_it_be(:other_group) { create(:group) }
+        # Membership is not what grants access: a user can act on public and internal
+        # resources without being a member, so they must be able to scope a token to
+        # them rather than fall back to the broader all_memberships access.
+        context 'when the project is public and the user is not a member' do
+          let_it_be(:public_project) { create(:project, :public) }
+
+          let(:granular_scopes) do
+            [{ access: access, permissions: ['read_job'], project_ids: [public_project.id] }]
+          end
+
+          it 'creates a token scoped to the project' do
+            post api(path, user), params: granular_params
+
+            expect(response).to have_gitlab_http_status(:created)
+
+            created_token = user.personal_access_tokens.find(json_response['id'])
+            expect(created_token.granular_scopes.map(&:namespace_id))
+              .to contain_exactly(public_project.project_namespace.id)
+          end
+        end
+
+        context 'when the group is internal and the user is not a member' do
+          let_it_be(:internal_group) { create(:group, :internal) }
+
+          let(:granular_scopes) do
+            [{ access: access, permissions: ['read_job'], group_ids: [internal_group.id] }]
+          end
+
+          it 'creates a token scoped to the group' do
+            post api(path, user), params: granular_params
+
+            expect(response).to have_gitlab_http_status(:created)
+
+            created_token = user.personal_access_tokens.find(json_response['id'])
+            expect(created_token.granular_scopes.map(&:namespace_id)).to contain_exactly(internal_group.id)
+          end
+        end
+
+        context 'when the user cannot read the given group' do
+          let_it_be(:other_group) { create(:group, :private) }
 
           let(:granular_scopes) do
             [{ access: access, permissions: ['read_job'], group_ids: [other_group.id] }]
@@ -5886,8 +5924,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           end
         end
 
-        context 'when the user is a member of one given group but not another' do
-          let_it_be(:other_group) { create(:group) }
+        context 'when the user is a member of one given group but cannot read another' do
+          let_it_be(:other_group) { create(:group, :private) }
 
           let(:granular_scopes) do
             [{ access: access, permissions: ['read_job'], group_ids: [group.id, other_group.id] }]
@@ -6333,8 +6371,8 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           )
         end
 
-        context 'when the impersonated user is not a member of the given group' do
-          let_it_be(:other_group) { create(:group) }
+        context 'when the impersonated user cannot read the given group' do
+          let_it_be(:other_group) { create(:group, :private) }
 
           let(:granular_scopes) do
             [{ access: access, permissions: ['read_job'], group_ids: [other_group.id] }]

@@ -125,8 +125,14 @@ module Mcp
           ::ExtractsRef::RefExtractor.ref_type(Rack::Utils.parse_nested_query(query)['ref_type'])
         end
 
-        def unescape_and_scrub_uri(uri)
+        # Module-level so non-includers (ResourceFinder, ApiTool) can call it without
+        # entering the Concern ancestry, which would skip ClassMethods on re-include.
+        def self.unescape_and_scrub_uri(uri)
           Addressable::URI.unescape(uri).scrub.delete("\0")
+        end
+
+        def unescape_and_scrub_uri(uri)
+          UrlParser.unescape_and_scrub_uri(uri)
         end
 
         def extract_path_from_url(url)

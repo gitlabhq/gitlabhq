@@ -47,6 +47,7 @@ project:
   - read_audit_event
   - read_avatar
   - read_badge
+  - read_boundary
   - read_branch
   - read_branch_rule
   - read_build
@@ -179,6 +180,7 @@ group:
   - read_audit_event
   - read_billable_member
   - read_billing
+  - read_boundary
   - read_cluster
   - read_cluster_agent
   - read_compliance_adherence_report

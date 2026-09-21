@@ -428,7 +428,9 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_categ
         result = service.execute(request: request, params: params)
 
         expect(result[:isError]).to be true
-        expect(result[:content].first[:text]).to eq("Tool execution failed: Tool 'save_merge_request' not found.")
+        expect(result[:content].first[:text])
+          .to eq("Tool execution failed: save_merge_request is not available on this GitLab " \
+            "instance due to a server configuration problem.")
       end
     end
   end

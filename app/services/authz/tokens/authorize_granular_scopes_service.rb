@@ -86,8 +86,22 @@ module Authz
         boundary_evaluations.values.any? { |eval| eval[:missing].empty? }
       end
 
+      # The boundary access_denied_error would name. Only meaningful once
+      # authorization has failed, when every boundary has missing permissions.
+      def denied_boundary
+        boundary, = boundary_evaluations.find { |_, eval| eval[:missing].any? }
+        boundary
+      end
+      strong_memoize_attr :denied_boundary
+
+      # Asked of the user, not the token: may the caller be told this boundary
+      # exists? Checked only for the boundary we are about to describe, so the
+      # cost does not grow with the number of boundaries an endpoint declares.
       def hidden_boundary
-        boundaries_by_priority.find { |boundary| !token.can?(:read_boundary, boundary) }
+        resource = denied_boundary.boundary
+        return false unless resource.is_a?(::Project) || resource.is_a?(::Group)
+
+        !Ability.allowed?(token.user, :read_boundary, resource)
       end
 
       def resource_unresolved?
@@ -125,15 +139,15 @@ module Authz
       end
 
       def access_denied_error
-        boundary, eval = boundary_evaluations.find { |_, e| e[:missing].any? }
-        perms = eval[:missing].map do |permission|
+        boundary = denied_boundary
+        perms = boundary_evaluations[boundary][:missing].map do |permission|
           assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
           "#{assignable.resource_name}: #{assignable.action.titleize}"
         end.uniq.sort.join(', ')
         ::ServiceResponse.error(
           message: "Access denied: This operation requires a fine-grained #{token_type} " \
             "with the following #{boundary.type_label} permissions: [#{perms}].",
-          payload: { denied_permissions: eval[:missing] }
+          payload: { denied_permissions: boundary_evaluations[boundary][:missing] }
         )
       end
 

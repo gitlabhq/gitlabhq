@@ -205798,6 +205798,12 @@
               "description": "An import source user mapping that is keep as placeholder.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "REVOKED",
+              "description": "An import source user mapping that is revoked.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

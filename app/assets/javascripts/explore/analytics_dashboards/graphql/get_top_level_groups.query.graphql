@@ -2,12 +2,8 @@
 
 # The scope picker's starting point. `allAvailable: false` limits this to groups the user
 # belongs to.
-#
-# Every connection the picker opens is capped at 20, browse and search alike, since a dropdown
-# cannot usefully show more. `Load more` is tracked in
-# https://gitlab.com/gitlab-org/gitlab/-/work_items/627465.
-query getAnalyticsDashboardTopLevelGroups {
-  groups(topLevelOnly: true, allAvailable: false, sort: "name_asc", first: 20) {
+query getAnalyticsDashboardTopLevelGroups($after: String) {
+  groups(topLevelOnly: true, allAvailable: false, sort: "name_asc", first: 20, after: $after) {
     nodes {
       id
       name
@@ -15,6 +11,10 @@ query getAnalyticsDashboardTopLevelGroups {
       fullPath
       projectsCount
       descendantGroupsCount
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }

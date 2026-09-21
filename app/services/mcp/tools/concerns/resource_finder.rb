@@ -21,17 +21,21 @@ module Mcp
         def find_project(project_id)
           raise ArgumentError, "project_id must be a string" unless project_id.is_a?(String)
 
-          lookup_project(project_id)
+          lookup_project(decode_identifier(project_id))
         end
 
         def find_group!(group_id, ability: :read_group)
-          group = lookup_group(group_id)
+          group = lookup_group(decode_identifier(group_id))
 
           unless group && Ability.allowed?(current_user, ability, group)
             raise StandardError, "Group '#{group_id}' not found or inaccessible"
           end
 
           group
+        end
+
+        def decode_identifier(value)
+          value.is_a?(String) ? Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) : value
         end
 
         def find_parent_by_id_or_path!(parent_type, identifier)

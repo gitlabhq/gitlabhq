@@ -161,7 +161,9 @@ db:check-migrations:
     - .use-pg17  # Should match the db same version used by GDK
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
-    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+    # The clone-gitlab-repo artifact has no job token in .git/config, and the private
+    # security mirror rejects anonymous fetches, so fetch through the token URL.
+    - git fetch "$CI_REPOSITORY_URL" "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" --depth 20
     - scripts/validate_migration_timestamps
     - scripts/validate_migration_schema
 
@@ -176,7 +178,7 @@ db:post_deployment_migrations_validator:
     - .db-job-base
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
-    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+    - git fetch "$CI_REPOSITORY_URL" "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" --depth 20
     - scripts/post_deployment_migrations_validator
   allow_failure: true
 
@@ -252,6 +254,6 @@ db:invalidate-old-pipeline-results:
       optional: true
   script:
     - |
-      git fetch origin $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+      git fetch "$CI_REPOSITORY_URL" "+$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:refs/remotes/origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
       export MOST_RECENT_COMMIT_TIMESTAMP="$(git log origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME --pretty=format:"%at" | head -n 1)"
       bundle exec ruby scripts/database/mark_pipeline_comments.rb $CI_MERGE_REQUEST_IID $MOST_RECENT_COMMIT_TIMESTAMP

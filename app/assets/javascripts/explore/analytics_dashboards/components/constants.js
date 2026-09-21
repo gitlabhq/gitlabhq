@@ -139,3 +139,13 @@ export const END_DATE_QUERY_NAME = 'end_date';
 export const PROJECT_FILTER_QUERY_NAME = 'projects';
 export const GROUP_FILTER_QUERY_NAME = 'groups';
 export const SCOPE_FILTER_QUERY_NAME = 'scope';
+
+export const SCOPE_PICKER_ITEM_TYPE_GROUP = 'group';
+export const SCOPE_PICKER_ITEM_TYPE_PROJECT = 'project';
+export const SCOPE_PICKER_ITEM_TYPE_LOAD_MORE = 'load-more';
+
+export const SCOPE_PICKER_ITEM_TYPES = [
+  SCOPE_PICKER_ITEM_TYPE_GROUP,
+  SCOPE_PICKER_ITEM_TYPE_PROJECT,
+  SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+];

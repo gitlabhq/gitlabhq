@@ -24,7 +24,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:subgroup_guest, freeze: false) { create(:user, guest_of: subgroup) }
   let_it_be(:subgroup_maintainer, freeze: false) { create(:user, maintainer_of: subgroup) }
 
-  let_it_be(:organization_owner, freeze: false) { create(:organization_user, :owner, organization: organization).user }
+  let_it_be_with_reload(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
 
   let(:public_anonymous_permissions) do
     %i[

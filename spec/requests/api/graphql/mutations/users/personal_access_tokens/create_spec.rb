@@ -151,8 +151,8 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
     end
   end
 
-  context 'when granular scopes include groups or projects the user is not a member of' do
-    let(:other_group) { create(:group) }
+  context 'when granular scopes include groups or projects the user cannot read' do
+    let(:other_group) { create(:group, :private) }
     let(:granular_scope_input) do
       [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
          'resource_ids' => [other_group.to_global_id.to_s] }]
@@ -165,6 +165,20 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
         "The resource that you are attempting to access does not exist " \
           "or you don't have permission to perform this action"
       )
+    end
+  end
+
+  context 'when granular scopes include a public group the user is not a member of' do
+    let(:public_group) { create(:group, :public) }
+    let(:granular_scope_input) do
+      [{ 'access' => 'SELECTED_MEMBERSHIPS', 'permissions' => ['read_job'],
+         'resource_ids' => [public_group.to_global_id.to_s] }]
+    end
+
+    it 'creates the token, because the user can read the boundary' do
+      expect { mutation_request }.to change { current_user.personal_access_tokens.count }.by(1)
+
+      expect_graphql_errors_to_be_empty
     end
   end
 

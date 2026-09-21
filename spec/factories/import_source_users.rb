@@ -46,6 +46,12 @@ FactoryBot.define do
       status { 6 }
     end
 
+    trait :revoked do
+      with_reassign_to_user
+      status { 7 }
+      placeholder_user { nil }
+    end
+
     trait :failed do
       with_reassign_to_user
       status { 4 }

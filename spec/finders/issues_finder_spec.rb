@@ -43,23 +43,13 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
 
     let(:params) { { assignee_id: assignee.id, label_name: label.title } }
 
-    it 'matches the same-titled label in every project, with and without the CTE fence', :aggregate_failures do
-      expect(described_class.new(assignee, params).execute)
-        .to contain_exactly(matching_issue, other_project_issue, excluded_issue)
-
-      stub_feature_flags(use_cte_for_label_filter: false)
-
+    it 'matches the same-titled label in every project' do
       expect(described_class.new(assignee, params).execute)
         .to contain_exactly(matching_issue, other_project_issue, excluded_issue)
     end
 
-    it 'still applies negated label filtering, with and without the CTE fence', :aggregate_failures do
+    it 'still applies negated label filtering' do
       negated = params.merge(not: { label_name: excluded_label.title })
-
-      expect(described_class.new(assignee, negated).execute)
-        .to contain_exactly(matching_issue, other_project_issue)
-
-      stub_feature_flags(use_cte_for_label_filter: false)
 
       expect(described_class.new(assignee, negated).execute)
         .to contain_exactly(matching_issue, other_project_issue)

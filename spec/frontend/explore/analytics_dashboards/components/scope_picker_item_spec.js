@@ -1,7 +1,11 @@
 import { GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
-import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import {
+  SCOPE_PICKER_ITEM_TYPE_GROUP,
+  SCOPE_PICKER_ITEM_TYPE_PROJECT,
+  SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+} from '~/explore/analytics_dashboards/components/constants';
 import ScopePickerItem from '~/explore/analytics_dashboards/components/scope_picker_item.vue';
 
 describe('ScopePickerItem', () => {
@@ -10,7 +14,7 @@ describe('ScopePickerItem', () => {
   const defaultProps = {
     value: 'gitlab-org',
     text: 'GitLab.org',
-    namespaceType: TYPENAME_GROUP,
+    itemType: SCOPE_PICKER_ITEM_TYPE_GROUP,
   };
 
   const createWrapper = (props = {}) => {
@@ -27,6 +31,7 @@ describe('ScopePickerItem', () => {
   const findExpandButton = () => wrapper.findComponent(GlButton);
   const findParentName = () => wrapper.findByTestId('scope-picker-item-parent');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findLoadMoreButton = () => wrapper.findComponentByTestId('scope-picker-load-more-button');
 
   describe('default', () => {
     beforeEach(() => createWrapper());
@@ -63,11 +68,11 @@ describe('ScopePickerItem', () => {
   });
 
   describe.each`
-    namespaceType       | icon
-    ${TYPENAME_GROUP}   | ${'folder-o'}
-    ${TYPENAME_PROJECT} | ${'doc-text'}
-  `('when the namespace is a $namespaceType', ({ namespaceType, icon }) => {
-    beforeEach(() => createWrapper({ namespaceType }));
+    itemType                          | icon
+    ${SCOPE_PICKER_ITEM_TYPE_GROUP}   | ${'folder-o'}
+    ${SCOPE_PICKER_ITEM_TYPE_PROJECT} | ${'doc-text'}
+  `('when itemType=$itemType', ({ itemType, icon }) => {
+    beforeEach(() => createWrapper({ itemType }));
 
     it(`renders the ${icon} icon`, () => {
       expect(findIcon().props('name')).toBe(icon);
@@ -166,20 +171,68 @@ describe('ScopePickerItem', () => {
   });
 
   describe('when the namespace sits below the group it is listed under', () => {
-    beforeEach(() => createWrapper({ namespaceType: TYPENAME_PROJECT, parentName: 'Tools' }));
+    beforeEach(() =>
+      createWrapper({ itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT, parentName: 'Tools' }),
+    );
 
     it('names the group it belongs to', () => {
       expect(findParentName().text()).toBe('in Tools');
     });
 
     it('leaves the name unescaped, Vue escaping the interpolation itself', () => {
-      createWrapper({ namespaceType: TYPENAME_PROJECT, parentName: 'Sales & Marketing' });
+      createWrapper({ itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT, parentName: 'Sales & Marketing' });
 
       expect(findParentName().text()).toBe('in Sales & Marketing');
     });
 
     it('gives the full path in a tooltip, so the hierarchy is exact', () => {
       expect(findParentName().attributes('title')).toBe(defaultProps.value);
+    });
+  });
+
+  describe('when rendering a Load More button', () => {
+    const loadMoreProps = { itemType: SCOPE_PICKER_ITEM_TYPE_LOAD_MORE, text: 'Load more' };
+
+    beforeEach(() => createWrapper(loadMoreProps));
+
+    it('renders a button in place of a namespace', () => {
+      expect(findLoadMoreButton().text()).toBe(loadMoreProps.text);
+      expect(findCheckbox().exists()).toBe(false);
+      expect(findIcon().exists()).toBe(false);
+    });
+
+    it('emits load-more when clicked, without selecting the row', () => {
+      const event = { stopPropagation: jest.fn() };
+
+      findLoadMoreButton().vm.$emit('click', event);
+
+      expect(wrapper.emitted('load-more')).toHaveLength(1);
+      expect(event.stopPropagation).toHaveBeenCalled();
+    });
+
+    // The listbox option the row sits in is disabled, which would otherwise swallow the click.
+    it('keeps the button clickable', () => {
+      expect(findLoadMoreButton().classes()).toContain('gl-pointer-events-auto');
+    });
+
+    it('renders an idle button until a page is asked for', () => {
+      expect(findLoadMoreButton().props('loading')).toBe(false);
+    });
+
+    describe('while its page is in flight', () => {
+      beforeEach(() => createWrapper({ ...loadMoreProps, loading: true }));
+
+      it('sets the button to loading', () => {
+        expect(findLoadMoreButton().props('loading')).toBe(true);
+      });
+    });
+
+    describe('when it extends a group', () => {
+      beforeEach(() => createWrapper({ ...loadMoreProps, nested: true }));
+
+      it('indents to line up with the rows it extends', () => {
+        expect(findItem().classes()).toContain('gl-pl-5');
+      });
     });
   });
 

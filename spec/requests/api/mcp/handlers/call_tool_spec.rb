@@ -211,6 +211,23 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(json_response['result']['structuredContent']['title']).to eq(merge_request.title)
         expect(json_response['result']['isError']).to be_falsey
       end
+
+      context 'with a URL-encoded project path' do
+        let(:tool_params) do
+          {
+            name: 'get_merge_request',
+            arguments: { project_id: CGI.escape(project.full_path), merge_request_iid: merge_request.iid }
+          }
+        end
+
+        it 'resolves the project as if the path were plain', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['title']).to eq(merge_request.title)
+        end
+      end
     end
 
     describe '#get_repository_file' do
@@ -245,6 +262,21 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(json_response['result']['content'].first['text']).to include(first_diff.to_json)
         expect(json_response['result']['structuredContent']['items']).to include(first_diff.stringify_keys)
         expect(json_response['result']['isError']).to be_falsey
+      end
+
+      context 'with a URL-encoded project path' do
+        let(:tool_params) do
+          { name: 'get_merge_request_diffs',
+            arguments: { id: CGI.escape(project.full_path), merge_request_iid: merge_request.iid } }
+        end
+
+        it 'resolves the project as if the path were plain', :aggregate_failures do
+          post api('/mcp', user, oauth_access_token: access_token), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_falsey
+          expect(json_response['result']['structuredContent']['items']).to be_present
+        end
       end
     end
 

@@ -143,6 +143,28 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   describe('dashboard filters', () => {
     beforeEach(() => createWithFilters());
 
+    it('scopes the sticky filter bar page styles to the dashboard layout', () => {
+      expect(findDashboardLayout().classes()).toContain('explore-analytics-dashboard');
+    });
+
+    // The page styles stick the wrapper `:has()` this class, so it must stay on the bar.
+    it('marks the filter bar with the class the sticky styles target', () => {
+      expect(findDashboardFilters().classes()).toContain('explore-dashboard-filters');
+    });
+
+    // A remount would reset the scroll position, defeating the sticky filter bar.
+    it('keeps the layout and filter bar mounted when filters change', async () => {
+      const layoutBefore = findDashboardLayout().element;
+      const filterBarBefore = findDashboardFilters().element;
+
+      await selectScope(mockGroup);
+      findDashboardFilters().vm.$emit('set-date-range', { dateRangeOption: '7d' });
+      await waitForPromises();
+
+      expect(findDashboardLayout().element).toBe(layoutBefore);
+      expect(findDashboardFilters().element).toBe(filterBarBefore);
+    });
+
     // The picker renders its default without emitting it, so the page seeds the filters
     // to match. A panel would otherwise resolve a window the picker does not name.
     it('seeds the dashboard layout filters with the default date range', () => {
