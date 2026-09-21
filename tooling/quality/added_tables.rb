@@ -3,9 +3,9 @@
 require 'open3'
 
 module Quality
-  # Database dictionary entries added since `base_ref`. Callers decide which of those paths name a
-  # real table - `db/docs/` also holds views, deleted tables and background migrations - so this
-  # only answers "what was added", which is the part that needs git.
+  # Database dictionary entries added since `base_ref`, from the dictionary roots only. Callers
+  # decide which of those names is a table, so this only answers "what was added", which is the
+  # part that needs git.
   class AddedTables
     UnreadableBaseRef = Class.new(StandardError)
 
@@ -21,8 +21,8 @@ module Quality
       # than returning nothing, which would look identical to "this diff adds no entries".
       raise UnreadableBaseRef, "base ref '#{base_ref}' is not readable (shallow clone?)" unless base_ref_readable?
 
-      # `db/docs/` has sub-directories, so one table can be named by two added files. Reporting it
-      # twice would also make the caller's count disagree with the findings it prints.
+      # One entry can be added to both dictionary roots, and reporting it twice would make the
+      # caller's count disagree with the findings it prints.
       added_files.filter_map { |path| File.basename(path, '.yml') if path.end_with?('.yml') }.uniq
     end
 
@@ -49,7 +49,12 @@ module Quality
     end
 
     def diff_arguments
-      %W[diff --diff-filter=A --name-only #{base_ref}...HEAD --] + DICTIONARY_DIRS
+      # `:(glob)` stops `*` crossing a `/`, so subdirectories such as `db/docs/data_retention/`
+      # are excluded. A file there is named after the table it describes, so without this the
+      # dictionary resolves it as a real table entry and the caller reads it as newly added.
+      pathspecs = DICTIONARY_DIRS.map { |dir| ":(glob)#{dir}/*.yml" }
+
+      %W[diff --diff-filter=A --name-only #{base_ref}...HEAD --] + pathspecs
     end
   end
 end

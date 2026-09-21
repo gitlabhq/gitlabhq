@@ -50,11 +50,10 @@ prepare-as-if-foss-env:
       scripts/setup/decide-test-balancing.rb
   script:
     - install_gitlab_gem
-    # Compute the parent's test balancing decision here (deterministic per
-    # pipeline via CI_PIPELINE_ID) and export it, so generate-as-if-foss-env.rb
-    # forwards it to the child, which honors it instead of re-rolling. Kept off a
-    # needs: on retrieve-tests-metadata so a metadata failure can't block the
-    # child pipeline.
+    # Compute the parent's test balancing decision here and export it, so
+    # generate-as-if-foss-env.rb forwards it to the child, which honors it. Kept
+    # off a needs: on retrieve-tests-metadata so a metadata failure can't block
+    # the child pipeline.
     - export GLCI_USE_TEST_BALANCING="$(ruby scripts/setup/decide-test-balancing.rb | cut -d= -f2)"
     - ruby scripts/setup/generate-as-if-foss-env.rb | tee "${BUILD_ENV}"
   artifacts:

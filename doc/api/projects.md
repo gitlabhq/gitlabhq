@@ -2535,7 +2535,8 @@ Prerequisites:
 To turn off Service Desk for a project, set the `service_desk_enabled` attribute to `false`:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --data "service_desk_enabled=false" \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>"
 ```
@@ -3250,8 +3251,10 @@ To remove a project avatar, use a blank value for the `avatar` attribute.
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "avatar=" "https://gitlab.example.com/api/v4/projects/5"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "avatar=" \
+  --url "https://gitlab.example.com/api/v4/projects/5"
 ```
 
 ## Share projects
@@ -3346,13 +3349,14 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
- --header "Content-Type: application/json" \
- --data '{
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
   "file_path":"src/main.c",
   "content":"#include<string.h>\nint main(int argc, char **argv) {\n  char buff[128];\n  strcpy(buff, argv[1]);\n  return 0;\n}\n"
  }' \
- --url "https://gitlab.example.com/api/v4/projects/:id/security_scans/sast/scan"
+  --url "https://gitlab.example.com/api/v4/projects/:id/security_scans/sast/scan"
 ```
 
 Example response:

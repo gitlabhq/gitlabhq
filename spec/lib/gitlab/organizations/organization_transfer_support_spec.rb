@@ -180,7 +180,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
     # Otherwise no transfer example runs and every 'supported' table is reported as not updated.
     def bypass_example_filters(groups)
       groups.flat_map(&:descendants).each do |group|
-        RSpec.world.filtered_examples[group] = group.examples
+        RSpec.world.filtered_examples[group] = RSpec::Core::FilterManager.new.prune(group.examples)
       end
     end
 

@@ -254,6 +254,22 @@ call these commands. The option accepts the same value: the name of the
 current leader node. Until removal, `--master` keeps its behavior and
 prints a deprecation warning.
 
+### `kpt`-based `agentk` is deprecated
+
+- Announced in GitLab 17.9
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656).
+
+We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
+The `kpt` package is broken and outdated. It has been unmaintained since 2022, lacks features added to the Helm chart since then, and has no known users.
+Instead, you should install the agent with one of the supported installation methods:
+
+- Helm (recommended)
+- GitLab CLI
+- Flux
+
+To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
+
 ## GitLab 19.5
 
 ### Bitbucket Cloud issue and wiki import
@@ -5342,23 +5358,6 @@ Support for using `bin_path` and `use_bundled_binaries` configuration options in
 removed in GitLab 19.0.
 
 The Git binaries provided by Gitaly will be the only supported way to execute Git.
-
-### `kpt`-based `agentk` is deprecated
-
-- Announced in GitLab 17.9
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656).
-
-> [!note]
-> This change has been removed from its original milestone and is being reassessed.
-
-We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
-Instead, you should install the agent with one of the supported installation methods:
-
-- Helm (recommended)
-- GitLab CLI
-- Flux
-
-To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
 
 ### `mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated
 

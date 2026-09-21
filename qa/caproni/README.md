@@ -7,7 +7,7 @@ This deploys a CNG build of the GitLab commit under test onto a job-local
 This adds three non-blocking jobs to the existing `test-on-cng` child pipeline, each with
 `allow_failure: true`, all running whenever the orchestrator-deployed jobs run:
 
-- `cng-instance-caproni` runs `Test::Instance::Smoke`
+- `cng-instance-caproni` runs `Test::Instance::All` over 10 parallel shards
 - `cng-registry-caproni` runs `Test::Integration::Registry`
 - `cng-oauth-caproni` runs `Test::Integration::OAuth` (see [GitHub OAuth](#github-oauth-opt-in) for why it executes nothing yet)
 
@@ -70,8 +70,12 @@ TCPRoute gitlab-gitlab-shell -> parentRef gitlab-gw, sectionName gitlab-ssh, por
 ```
 
 Two reasons for Gateway API. It has been the chart default since GitLab 19.0, with
-Ingress deprecated for removal in 20.0. And SSH needs no edge-specific configuration:
-the chart emits both the TCP listener and the `TCPRoute` itself.
+Ingress deprecated for removal in 20.0. SSH needs two values, not edge config:
+`global.shell.tcp.proxyProtocol` and `gitlab-shell.config.proxyProtocol`, both `true`,
+so Envoy's PROXY v2 header carries the real client IP to gitlab-shell. SSH IP
+restrictions need that rather than Envoy's pod address. The chart still emits the
+listener, `TCPRoute` and `BackendTrafficPolicy` itself; `proxyPolicy` stays `"use"` so
+headerless connections still work.
 
 This is not adopted for speed, and it is not faster: the deploy cost here is image
 pulls, not the edge.

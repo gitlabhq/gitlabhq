@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tmpdir'
+require 'fileutils'
 
 require_relative '../../../tooling/quality/added_tables'
 
@@ -26,16 +28,8 @@ RSpec.describe Quality::AddedTables, feature_category: :tooling do
       expect(added_tables.entry_names).to eq(%w[widgets premium_widgets])
     end
 
-    # Which of these names is a table is the dictionary's business, not git's, so entries from
-    # other scopes are returned here and filtered by the caller.
-    it 'returns names from other dictionary scopes too' do
-      stub_git("db/docs/widgets.yml\ndb/docs/batched_background_migrations/BackfillWidgets.yml\n")
-
-      expect(added_tables.entry_names).to eq(%w[widgets BackfillWidgets])
-    end
-
-    it 'returns a name once when two added files share a basename' do
-      stub_git("db/docs/widgets.yml\ndb/docs/data_retention/widgets.yml\n")
+    it 'returns a name once when the same entry is added to both dictionary roots' do
+      stub_git("db/docs/widgets.yml\nee/db/docs/widgets.yml\n")
 
       expect(added_tables.entry_names).to eq(%w[widgets])
     end
@@ -58,14 +52,14 @@ RSpec.describe Quality::AddedTables, feature_category: :tooling do
       expect(added_tables.entry_names).to be_empty
     end
 
-    it 'asks git only for dictionary directories' do
+    it 'asks git only for the dictionary roots' do
       stub_git('')
 
       added_tables.entry_names
 
       expect(Open3).to have_received(:capture2)
-        .with('git', 'diff', '--diff-filter=A', '--name-only', 'abc123...HEAD', '--', 'db/docs', 'ee/db/docs',
-          chdir: '/tmp')
+        .with('git', 'diff', '--diff-filter=A', '--name-only', 'abc123...HEAD', '--',
+          ':(glob)db/docs/*.yml', ':(glob)ee/db/docs/*.yml', chdir: '/tmp')
     end
 
     # A shallow CI clone may not contain the base ref. Returning an empty list there would be
@@ -74,6 +68,64 @@ RSpec.describe Quality::AddedTables, feature_category: :tooling do
       stub_git('', base_ref_readable: false)
 
       expect { added_tables.entry_names }.to raise_error(described_class::UnreadableBaseRef, /not readable/)
+    end
+  end
+
+  # The stubs above assert the arguments; only a real repository proves what git does with them.
+  describe '#entry_names against a real repository' do
+    let(:repository_path) { Dir.mktmpdir }
+    let(:base_ref) { git('rev-parse', 'HEAD').strip }
+
+    before do
+      git('init', '--quiet', '--initial-branch', 'main', '.')
+      git('config', 'user.email', 'spec@example.com')
+      git('config', 'user.name', 'Spec')
+      write('db/docs/existing_table.yml')
+      commit('base')
+    end
+
+    after do
+      FileUtils.remove_entry(repository_path)
+    end
+
+    def git(*arguments)
+      Open3.capture2('git', *arguments, chdir: repository_path).first
+    end
+
+    def write(relative_path)
+      absolute = File.join(repository_path, relative_path)
+      FileUtils.mkdir_p(File.dirname(absolute))
+      File.write(absolute, "---\n")
+    end
+
+    def commit(message)
+      git('add', '--all')
+      git('commit', '--quiet', '--no-gpg-sign', '--message', message)
+    end
+
+    def entry_names
+      described_class.new(base_ref, repository_path: repository_path).entry_names
+    end
+
+    it 'names an entry added to a dictionary root' do
+      base_ref
+      write('db/docs/new_table.yml')
+      write('ee/db/docs/new_premium_table.yml')
+      commit('add entries')
+
+      expect(entry_names).to contain_exactly('new_table', 'new_premium_table')
+    end
+
+    # The regression: these files are named after the table they describe, so a name escaping
+    # from here resolves to that real table and the caller reports it as newly added.
+    it 'names nothing for a file added under a dictionary sub-directory' do
+      base_ref
+      write('db/docs/data_retention/existing_table.yml')
+      write('db/docs/views/some_view.yml')
+      write('ee/db/docs/data_retention/existing_table.yml')
+      commit('add a retention policy')
+
+      expect(entry_names).to be_empty
     end
   end
 end

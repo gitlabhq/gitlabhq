@@ -95,11 +95,11 @@ export default {
           @update-variables="$emit('update-variables')"
         />
 
-        <job-sidebar-details-container class="gl-border-b gl-border-subtle gl-py-4" />
+        <job-sidebar-details-container />
 
         <artifacts-block
           v-if="hasArtifact"
-          class="gl-border-b gl-border-subtle gl-py-4"
+          class="build-sidebar-item"
           :artifact="artifact"
           :reports="reports"
           :help-url="artifactHelpUrl"
@@ -107,25 +107,21 @@ export default {
 
         <external-links-block
           v-if="hasExternalLinks"
-          class="gl-border-b gl-border-subtle gl-py-4"
+          class="build-sidebar-item"
           :external-links="externalLinks"
         />
 
-        <trigger-block
-          v-if="hasTriggers"
-          class="gl-border-b gl-border-subtle gl-py-4"
-          :trigger="job.trigger"
-        />
+        <trigger-block v-if="hasTriggers" class="build-sidebar-item" :trigger="job.trigger" />
 
         <commit-block
-          class="gl-border-b gl-border-subtle gl-py-4"
+          class="build-sidebar-item"
           :commit="commit"
           :merge-request="job.merge_request"
         />
 
         <stages-dropdown
           v-if="job.pipeline"
-          class="gl-border-b gl-border-subtle gl-py-4"
+          class="build-sidebar-item"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"
           :stages="stages"

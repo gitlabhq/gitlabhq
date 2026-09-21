@@ -8387,6 +8387,7 @@ export const mockCreateWorkItemDraftData = {
             id: 'gid://gitlab/WorkItem/618',
             iid: '1',
             title: 'Sample Epic',
+            titleHtml: 'Sample Epic',
             confidential: false,
             namespace: {
               __typename: 'Namespace',
@@ -8510,8 +8511,19 @@ export const mockNewWorkItemCache = {
       type: 'START_AND_DUE_DATE',
     },
     {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
+      __typename: 'WorkItemWidgetDefinitionStatus',
       type: 'STATUS',
+      allowedStatuses: [],
+      defaultOpenStatus: {
+        id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+        category: 'to_do',
+        name: 'To do',
+        description: null,
+        iconName: 'status-waiting',
+        color: '#737278',
+        position: 0,
+        __typename: 'WorkItemStatus',
+      },
     },
     {
       __typename: 'WorkItemWidgetDefinitionGeneric',
@@ -8530,197 +8542,6 @@ export const mockNewWorkItemCache = {
   workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
   workItemTypeIconName: 'work-item-epic',
 };
-
-export const restoredDraftDataWidgets = [
-  {
-    type: 'DESCRIPTION',
-    description: 'Some **description**',
-    descriptionHtml: '',
-    lastEditedAt: null,
-    lastEditedBy: null,
-    taskCompletionStatus: null,
-    __typename: 'WorkItemWidgetDescription',
-  },
-  { type: 'STATUS', __typename: 'WorkItemWidgetStatus' },
-  {
-    type: 'LABELS',
-    allowsScopedLabels: true,
-    labels: {
-      nodes: [
-        {
-          __typename: 'Label',
-          id: 'gid://gitlab/GroupLabel/12',
-          title: 'Brische',
-          description: null,
-          color: '#472821',
-          textColor: '#FFFFFF',
-        },
-      ],
-      __typename: 'LabelConnection',
-    },
-    __typename: 'WorkItemWidgetLabels',
-  },
-  {
-    type: 'WEIGHT',
-    weight: 5,
-    rolledUpWeight: null,
-    rolledUpCompletedWeight: null,
-    __typename: 'WorkItemWidgetWeight',
-  },
-  {
-    type: 'START_AND_DUE_DATE',
-    dueDate: '2026-12-01',
-    startDate: '2025-01-01',
-    isFixed: false,
-    rollUp: false,
-    __typename: 'WorkItemWidgetStartAndDueDate',
-  },
-  {
-    type: 'HEALTH_STATUS',
-    healthStatus: 'on_track',
-    rolledUpHealthStatus: [],
-    __typename: 'WorkItemWidgetHealthStatus',
-  },
-  {
-    type: 'LINKED_ITEMS',
-    blockingCount: 0,
-    blockedByCount: 0,
-    linkedItems: { nodes: [] },
-    __typename: 'WorkItemWidgetLinkedItems',
-  },
-  { type: 'COLOR', color: '#1068bf', textColor: '#FFFFFF', __typename: 'WorkItemWidgetColor' },
-  { type: 'CUSTOM_FIELDS', customFieldValues: [], __typename: 'WorkItemWidgetCustomFields' },
-  {
-    type: 'HIERARCHY',
-    hasChildren: false,
-    hasParent: false,
-    parent: {
-      __typename: 'WorkItem',
-      id: 'gid://gitlab/WorkItem/618',
-      iid: '1',
-      title: 'Sample Epic',
-      confidential: false,
-      namespace: {
-        __typename: 'Namespace',
-        id: 'gid://gitlab/Group/104',
-        fullPath: 'work-items-beta',
-      },
-      webUrl: null,
-      workItemType: {
-        __typename: 'WorkItemType',
-        id: 'gid://gitlab/WorkItems::Type/8',
-        name: 'Epic',
-        iconName: 'work-item-epic',
-      },
-    },
-    depthLimitReachedByType: [],
-    rolledUpCountsByType: [],
-    children: { nodes: [], __typename: 'WorkItemConnection' },
-    __typename: 'WorkItemWidgetHierarchy',
-  },
-  {
-    type: 'TIME_TRACKING',
-    timeEstimate: 0,
-    humanReadableAttributes: {
-      timeEstimate: '',
-    },
-    timelogs: { nodes: [], __typename: 'WorkItemTimelogConnection' },
-    totalTimeSpent: 0,
-    __typename: 'WorkItemWidgetTimeTracking',
-  },
-];
-
-export const restoredDraftDataWidgetsEmpty = [
-  {
-    type: 'DESCRIPTION',
-    description: null,
-    descriptionHtml: '',
-    lastEditedAt: null,
-    lastEditedBy: null,
-    taskCompletionStatus: null,
-    __typename: 'WorkItemWidgetDescription',
-  },
-  {
-    type: 'STATUS',
-    __typename: 'WorkItemWidgetStatus',
-  },
-  {
-    type: 'LABELS',
-    allowsScopedLabels: true,
-    labels: {
-      nodes: [],
-      __typename: 'LabelConnection',
-    },
-    __typename: 'WorkItemWidgetLabels',
-  },
-  {
-    type: 'WEIGHT',
-    weight: null,
-    rolledUpWeight: null,
-    rolledUpCompletedWeight: null,
-    __typename: 'WorkItemWidgetWeight',
-  },
-  {
-    type: 'START_AND_DUE_DATE',
-    dueDate: null,
-    startDate: null,
-    isFixed: false,
-    rollUp: false,
-    __typename: 'WorkItemWidgetStartAndDueDate',
-  },
-  {
-    type: 'HEALTH_STATUS',
-    healthStatus: null,
-    rolledUpHealthStatus: [],
-    __typename: 'WorkItemWidgetHealthStatus',
-  },
-  {
-    type: 'LINKED_ITEMS',
-    blockingCount: 0,
-    blockedByCount: 0,
-    linkedItems: {
-      nodes: [],
-    },
-    __typename: 'WorkItemWidgetLinkedItems',
-  },
-  {
-    type: 'COLOR',
-    color: '#1068bf',
-    textColor: '#FFFFFF',
-    __typename: 'WorkItemWidgetColor',
-  },
-  {
-    type: 'CUSTOM_FIELDS',
-    customFieldValues: [],
-    __typename: 'WorkItemWidgetCustomFields',
-  },
-  {
-    type: 'HIERARCHY',
-    hasChildren: false,
-    hasParent: false,
-    parent: null,
-    depthLimitReachedByType: [],
-    rolledUpCountsByType: [],
-    children: {
-      nodes: [],
-      __typename: 'WorkItemConnection',
-    },
-    __typename: 'WorkItemWidgetHierarchy',
-  },
-  {
-    type: 'TIME_TRACKING',
-    timeEstimate: 0,
-    humanReadableAttributes: {
-      timeEstimate: '',
-    },
-    timelogs: {
-      nodes: [],
-      __typename: 'WorkItemTimelogConnection',
-    },
-    totalTimeSpent: 0,
-    __typename: 'WorkItemWidgetTimeTracking',
-  },
-];
 
 export const getAllStatusesQueryResponse = [
   {

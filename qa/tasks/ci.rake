@@ -87,9 +87,11 @@ namespace :ci do
     next if run_all_tests
 
     # Log selective execution decision variables
+    tier_2_pipeline = mr_labels.include?("pipeline::tier-2")
     selective_enabled = QA::Runtime::Env.selective_execution_improved_enabled?
     targeting_stable = QA::Runtime::Env.mr_targeting_stable_branch?
     frontend_selective_enabled = QA::Runtime::Env.frontend_selective_execution_enabled?
+    run_selective = tier_2_pipeline && (selective_enabled || frontend_selective_enabled) && !targeting_stable
     logger.info("=== Selective Execution Decision Point ===")
     logger.info("SELECTIVE_EXECUTION_IMPROVED: #{ENV['SELECTIVE_EXECUTION_IMPROVED'].inspect}")
     logger.info("Selective execution improved enabled: #{selective_enabled}")
@@ -97,13 +99,14 @@ namespace :ci do
     logger.info("Frontend selective execution enabled: #{frontend_selective_enabled}")
     logger.info("CI_MERGE_REQUEST_TARGET_BRANCH_NAME: #{ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'].inspect}")
     logger.info("MR targeting stable branch: #{targeting_stable}")
-    logger.info("Will run improved selective execution: #{selective_enabled && !targeting_stable}")
     logger.info("MR labels: #{mr_labels.inspect}")
+    logger.info("Tier-2 pipeline: #{tier_2_pipeline}")
+    logger.info("Will run improved selective execution: #{run_selective}")
     logger.info("==========================================")
 
-    next unless selective_enabled && !targeting_stable
+    next unless run_selective
 
-    pipelines_for_selective_improved = [:test_on_gdk]
+    pipelines_for_selective_improved = [:test_on_cng]
     logger.warn("*** Recreating #{pipelines_for_selective_improved} using spec list based on coverage mappings ***")
     tests_from_mapping = changes.qa_tests(from_code_path_mapping: true)
 

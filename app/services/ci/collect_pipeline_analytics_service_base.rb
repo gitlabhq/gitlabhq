@@ -39,10 +39,19 @@ module Ci
         return ServiceResponse.error(message: 'ClickHouse database is not configured')
       end
 
-      fetch_response
+      ::Gitlab::ApplicationContext.with_context(namespace: attribution_namespace) do
+        fetch_response
+      end
     end
 
     private
+
+    # A Project is not a Namespace, so passing it to with_context would be
+    # silently dropped by the context's type check. project_namespace is a
+    # namespace record that is always present and adds no extra query.
+    def attribution_namespace
+      container.is_a?(::Project) ? container.project_namespace : container
+    end
 
     def allowed?
       Ability.allowed?(current_user, :read_ci_cd_analytics, container)

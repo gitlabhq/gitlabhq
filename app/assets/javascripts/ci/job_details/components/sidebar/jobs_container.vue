@@ -1,9 +1,11 @@
 <script>
+import DetailRow from './sidebar_detail_row.vue';
 import JobContainerItem from './job_container_item.vue';
 
 export default {
   name: 'JobsContainer',
   components: {
+    DetailRow,
     JobContainerItem,
   },
 
@@ -25,15 +27,12 @@ export default {
 };
 </script>
 <template>
-  <div class="builds-container">
-    <h2 class="gl-m-0 gl-mb-2 gl-text-base gl-leading-reset">
-      {{ __('Related jobs') }}
-    </h2>
+  <detail-row :title="__('Related jobs')" heading-tag="h2" class="builds-container">
     <job-container-item
       v-for="job in jobs"
       :key="job.id"
       :job="job"
       :is-active="isJobActive(job.id)"
     />
-  </div>
+  </detail-row>
 </template>

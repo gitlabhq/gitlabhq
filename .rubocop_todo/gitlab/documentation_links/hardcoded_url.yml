@@ -52,6 +52,7 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'lib/feature.rb'
     - 'lib/gitlab/audit/auditor.rb'
     - 'lib/gitlab/ci/config/entry/processable.rb'
+    - 'lib/gitlab/ci/config/entry/retry.rb'
     - 'lib/gitlab/ci/oidc_burned_path_error.rb'
     - 'lib/gitlab/config_checker/external_database_checker.rb'
     - 'lib/gitlab/database/collation_checker.rb'

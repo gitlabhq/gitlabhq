@@ -49,13 +49,8 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
     end
 
     context "when authenticated as user" do
-      let_it_be(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
-      let_it_be(:group2) { create(:group, :private) }
-
-      before_all do
-        group1.add_owner(user1)
-        group2.add_owner(user2)
-      end
+      let_it_be(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path), owners: user1) }
+      let_it_be(:group2) { create(:group, :private, owners: user2) }
 
       it "returns one of user1's groups" do
         project = create(:project, namespace: group2, path: 'Foo')
@@ -169,7 +164,7 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
       end
 
       context 'when user has reporter role' do
-        before do
+        before_all do
           group.add_reporter(user2)
         end
 
@@ -194,13 +189,8 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
       end
 
       context 'for N+1 queries' do
-        let!(:group1) { create(:group) }
-        let!(:group2) { create(:group) }
-
-        before do
-          group1.add_reporter(user2)
-          group2.add_reporter(user2)
-        end
+        let_it_be(:group1) { create(:group, reporters: user2) }
+        let_it_be(:group2) { create(:group, reporters: user2) }
 
         it 'avoids N+1 database queries' do
           pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/369396')

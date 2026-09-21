@@ -211,4 +211,45 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning do
       expect(synthetic_note.events).to match_array(events)
     end
   end
+
+  describe '#work_item_synthetic_system_note' do
+    context 'with a group level work item' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
+      let_it_be(:label) { create(:group_label, group: group) }
+      let_it_be(:event, freeze: false) do
+        create(:resource_label_event, issue: work_item, label: label, namespace: group)
+      end
+
+      it 'renders the label reference against the group' do
+        note = event.work_item_synthetic_system_note
+
+        expect(note.resource_parent).to eq(group)
+        expect(note.note_html).to include(label.title)
+      end
+
+      it 'renders the label reference against the group when events are batched' do
+        note = event.work_item_synthetic_system_note(events: [event])
+
+        expect(note.resource_parent).to eq(group)
+        expect(note.note_html).to include(label.title)
+      end
+    end
+
+    context 'with a project level work item' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:work_item) { create(:work_item, project: project) }
+      let_it_be(:label) { create(:label, project: project) }
+      let_it_be(:event, freeze: false) do
+        create(:resource_label_event, issue: work_item, label: label)
+      end
+
+      it 'renders the label reference against the project' do
+        note = event.work_item_synthetic_system_note
+
+        expect(note.resource_parent).to eq(project)
+        expect(note.note_html).to include(label.title)
+      end
+    end
+  end
 end

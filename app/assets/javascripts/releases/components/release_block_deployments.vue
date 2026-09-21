@@ -112,8 +112,8 @@ export default {
       <gl-badge variant="neutral" class="gl-inline-block">{{ deployments.length }}</gl-badge>
     </gl-button>
     <gl-collapse v-model="isDeploymentsExpanded">
-      <div class="gl-pl-6 gl-pt-3">
-        <gl-table-lite :items="deployments" :fields="$options.tableFields" stacked="lg">
+      <div class="gl-overflow-x-auto gl-pl-6 gl-pt-3">
+        <gl-table-lite :items="deployments" :fields="$options.tableFields" stacked="md">
           <template #cell(environment)="{ item }">
             <gl-link
               :href="item.environment.url"

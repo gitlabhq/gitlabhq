@@ -189,7 +189,7 @@ module QA
         #
         # @return [Hash]
         def code_paths_map
-          @code_paths_map ||= QA::Tools::Ci::CodePathsMapping.new.import("master", "e2e-test-on-gdk")
+          @code_paths_map ||= QA::Tools::Ci::CodePathsMapping.new.import("master", "e2e-test-on-cng")
         end
 
         # Get the frontend mapping hash from GCP storage
@@ -197,7 +197,7 @@ module QA
         # @return [Hash]
         def frontend_code_paths_map
           @frontend_code_paths_map ||= QA::Tools::Ci::CodePathsMapping
-                                         .new.import("master", "e2e-test-on-gdk",
+                                         .new.import("master", "e2e-test-on-cng",
                                            file_name: "js-coverage-by-example-merged-pipeline")
         end
       end

@@ -189,7 +189,7 @@ export default {
         :tag-name="release.tagName"
         :tag-path="release.tagPath"
       />
-      <div class="gl-flex gl-grow gl-flex-col gl-gap-5">
+      <div class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-gap-5">
         <div v-if="release.descriptionHtml" ref="gfm-content" :class="$options.commonCssClasses">
           <h3 class="gl-heading-3 !gl-mb-2 gl-mt-0">{{ __('Release notes') }}</h3>
           <div

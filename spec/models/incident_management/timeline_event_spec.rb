@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::TimelineEvent do
+RSpec.describe IncidentManagement::TimelineEvent, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:timeline_event) { create(:incident_management_timeline_event, project: project, incident: incident) }

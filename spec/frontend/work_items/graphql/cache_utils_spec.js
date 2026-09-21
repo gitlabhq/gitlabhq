@@ -1,16 +1,16 @@
 import { cloneDeep } from 'lodash-es';
 import {
   WIDGET_TYPE_CRM_CONTACTS,
-  WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_STATUS,
   WIDGET_TYPE_WEIGHT,
-  STATE_CLOSED,
 } from '~/work_items/constants';
 import {
   addHierarchyChild,
   removeHierarchyChild,
   addHierarchyChildren,
+  updateParent,
+  updateWorkItemCurrentTodosWidget,
   setNewWorkItemCache,
   getNewWorkItemSharedCache,
   legacyGetNewWorkItemSharedCache,
@@ -19,15 +19,22 @@ import {
 } from '~/work_items/graphql/cache_utils';
 import {
   findHierarchyWidget,
+  findCurrentUserTodosWidget,
+  findDescriptionWidget,
   findNotesWidget,
   getWorkItemWidgets,
   getNewWorkItemWidgetsAutoSaveKey,
 } from '~/work_items/utils';
+import { createIssuableCache, expectCacheHit } from 'helpers/apollo_cache_helper';
+import { setCurrentUser } from 'helpers/current_user_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemCrmContactsQuery from '~/work_items/graphql/work_item_crm_contacts.query.graphql';
+import workItemCurrentUserTodosQuery from '~/work_items/graphql/work_item_current_user_todos.query.graphql';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
 import workItemLinkedItemsSlimQuery from '~/work_items/graphql/work_items_linked_items_slim.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { apolloProvider } from '~/graphql_shared/issuable_client';
 import {
   linkedItems,
   currentAssignees,
@@ -36,13 +43,19 @@ import {
 
 import {
   workItemResponseFactory,
+  workItemByIidResponseFactory,
+  mockRolledUpCountsByType,
+  workItemCurrentUserTodosResponseFactory,
+  workItemHierarchyTreeResponse,
+  buildFeaturesTreeResponse,
+  confidentialWorkItemTask,
+  closedWorkItemTask,
+  workItemTask,
   childrenWorkItems,
   createWorkItemNoteResponse,
   mockWorkItemNotesByIidResponse,
   mockCreateWorkItemDraftData,
   mockNewWorkItemCache,
-  restoredDraftDataWidgets,
-  restoredDraftDataWidgetsEmpty,
   mockAssignees,
   mockLabels,
   mockWorkItemFeaturesData,
@@ -50,45 +63,56 @@ import {
 
 describe('work items graphql cache utils', () => {
   const originalFeatures = window.gon.features;
-  const id = 'gid://gitlab/WorkItem/10';
-  const existingChild = { id: 'gid://gitlab/WorkItem/20', title: 'Child' };
+  const id = 'gid://gitlab/WorkItem/2';
+  const existingChildId = 'gid://gitlab/WorkItem/31';
 
-  const widgetsCacheData = {
-    workItem: {
-      id: 'gid://gitlab/WorkItem/10',
-      title: 'Work item',
-      widgets: [
-        {
-          type: WIDGET_TYPE_HIERARCHY,
-          hasChildren: true,
-          count: 1,
-          children: { nodes: [existingChild] },
-        },
-      ],
-    },
+  let cache;
+
+  const treeVariables = (useWorkItemFeatures) => ({ id, useWorkItemFeatures });
+
+  // The fixtures are shaped for the widgets path; on the features path each child carries
+  // `features` instead, the same reshaping `buildFeaturesTreeResponse` applies to the tree.
+  const asFeaturesChild = ({ widgets, ...child }) => ({
+    ...child,
+    features: mockWorkItemFeaturesData(),
+  });
+
+  const childFor = (useWorkItemFeatures, child) =>
+    useWorkItemFeatures ? asFeaturesChild(child) : child;
+
+  const seedTree = (useWorkItemFeatures) => {
+    const response = useWorkItemFeatures
+      ? buildFeaturesTreeResponse(workItemHierarchyTreeResponse)
+      : workItemHierarchyTreeResponse;
+
+    cache.writeQuery({
+      query: getWorkItemTreeQuery,
+      variables: treeVariables(useWorkItemFeatures),
+      data: response.data,
+    });
   };
 
-  const featuresCacheData = {
-    workItem: {
-      id: 'gid://gitlab/WorkItem/10',
-      title: 'Work item',
-      features: {
-        hierarchy: {
-          hasChildren: true,
-          count: 1,
-          children: { nodes: [existingChild] },
-        },
-      },
-      widgets: [],
-    },
-  };
+  const readHierarchy = (useWorkItemFeatures) =>
+    findHierarchyWidget(
+      cache.readQuery({
+        query: getWorkItemTreeQuery,
+        variables: treeVariables(useWorkItemFeatures),
+      })?.workItem,
+    );
 
-  const readHierarchy = (data) =>
-    data.workItem.features?.hierarchy ??
-    data.workItem.widgets.find((w) => w.type === WIDGET_TYPE_HIERARCHY);
+  const readChildIds = (useWorkItemFeatures) =>
+    readHierarchy(useWorkItemFeatures).children.nodes.map((child) => child.id);
 
   beforeEach(() => {
     window.gon.features = {};
+    // The new-work-item seed builds an author from the current user.
+    setCurrentUser();
+    cache = createIssuableCache();
+
+    // Merge policies write these module-level vars, and nothing resets them between tests.
+    linkedItems({});
+    currentAssignees({});
+    appliedLabels([]);
   });
 
   afterAll(() => {
@@ -96,196 +120,193 @@ describe('work items graphql cache utils', () => {
   });
 
   describe.each`
-    state         | flagEnabled | cacheData
-    ${'disabled'} | ${false}    | ${widgetsCacheData}
-    ${'enabled'}  | ${true}     | ${featuresCacheData}
-  `('addHierarchyChild when workItemFeaturesField is $state', ({ flagEnabled, cacheData }) => {
+    path          | useWorkItemFeatures
+    ${'widgets'}  | ${false}
+    ${'features'} | ${true}
+  `('addHierarchyChild on the $path path', ({ useWorkItemFeatures }) => {
+    let newChild;
+
     beforeEach(() => {
-      window.gon.features = { workItemFeaturesField: flagEnabled };
+      window.gon.features = { workItemFeaturesField: useWorkItemFeatures };
+      newChild = childFor(useWorkItemFeatures, workItemTask);
     });
 
-    it('reads and writes the tree query with the correct variables', () => {
-      const mockCache = {
-        readQuery: jest.fn(() => cacheData),
-        writeQuery: jest.fn(),
-      };
-      const child = { id: 'gid://gitlab/WorkItem/30', title: 'New child' };
-      const expectedVariables = { id, useWorkItemFeatures: flagEnabled };
-
-      addHierarchyChild({ cache: mockCache, id, workItem: child });
-
-      expect(mockCache.readQuery).toHaveBeenCalledWith({
-        query: getWorkItemTreeQuery,
-        variables: expectedVariables,
-      });
-      const writeCall = mockCache.writeQuery.mock.calls[0][0];
-      expect(writeCall.variables).toEqual(expectedVariables);
-      const hierarchy = readHierarchy(writeCall.data);
-      expect(hierarchy.hasChildren).toBe(true);
-      expect(hierarchy.count).toBe(2);
-      expect(hierarchy.children.nodes).toEqual([child, existingChild]);
-    });
-
-    it('does not update the work item when there is no cache data', () => {
-      const mockCache = {
-        readQuery: () => {},
-        writeQuery: jest.fn(),
-      };
-
-      addHierarchyChild({
-        cache: mockCache,
-        id,
-        workItem: { id: 'gid://gitlab/WorkItem/30', title: 'New child' },
+    describe('when the work item is in the cache', () => {
+      beforeEach(() => {
+        seedTree(useWorkItemFeatures);
+        addHierarchyChild({ cache, id, workItem: newChild });
       });
 
-      expect(mockCache.writeQuery).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('addHierarchyChildren', () => {
-    const existingHierarchy = {
-      __typename: 'WorkItemWidgetHierarchy',
-      type: 'HIERARCHY',
-      children: {
-        nodes: [{ __typename: 'WorkItem', id: 'gid://gitlab/WorkItem/99', state: 'OPEN' }],
-      },
-      count: 1,
-      hasChildren: true,
-    };
-
-    const callModify = () => {
-      const mockCache = {
-        identify: jest.fn().mockReturnValue(`WorkItem:${id}`),
-        modify: jest.fn(),
-      };
-      addHierarchyChildren({
-        cache: mockCache,
-        id,
-        newChildren: [childrenWorkItems[1], childrenWorkItems[0]],
-      });
-      return mockCache.modify.mock.calls[0][0].fields;
-    };
-
-    const expectMergedChildren = (hierarchy) => {
-      expect(hierarchy).toEqual(
-        expect.objectContaining({
-          __typename: 'WorkItemWidgetHierarchy',
-          children: expect.objectContaining({
-            nodes: expect.arrayContaining([
-              expect.objectContaining({ id: childrenWorkItems[0].id }),
-              expect.objectContaining({ id: 'gid://gitlab/WorkItem/99' }),
-              expect.objectContaining({ id: childrenWorkItems[1].id }),
-            ]),
-          }),
-          hasChildren: true,
-          count: 3,
-        }),
-      );
-
-      // open children come before closed ones
-      const openIndex = hierarchy.children.nodes.findIndex((n) => n.state !== STATE_CLOSED);
-      const closedIndex = hierarchy.children.nodes.findIndex((n) => n.state === STATE_CLOSED);
-      if (closedIndex !== -1) expect(openIndex).toBeLessThan(closedIndex);
-    };
-
-    it('merges new children into the hierarchy widget on the widgets[] path', () => {
-      const fields = callModify();
-      const result = fields.widgets([existingHierarchy]);
-
-      expectMergedChildren(result.find((w) => w.type === 'HIERARCHY'));
-    });
-
-    it('merges new children into the hierarchy on the features path', () => {
-      const fields = callModify();
-      const result = fields.features({
-        __typename: 'WorkItemFeatures',
-        hierarchy: existingHierarchy,
+      it('prepends the child to the tree', () => {
+        expect(readChildIds(useWorkItemFeatures)).toEqual([newChild.id, existingChildId]);
       });
 
-      expectMergedChildren(result.hierarchy);
+      it('marks the work item as having children', () => {
+        expect(readHierarchy(useWorkItemFeatures).hasChildren).toBe(true);
+      });
+
+      it('leaves the tree query fully readable from the cache', () => {
+        expectCacheHit(cache, {
+          query: getWorkItemTreeQuery,
+          variables: treeVariables(useWorkItemFeatures),
+        });
+      });
+
+      // `children.count` is the only count the tree query selects, and addHierarchyChild
+      // never writes it (it sets `widget.count`, which the document does not select).
+      // See https://gitlab.com/gitlab-org/gitlab/-/work_items/629889
+      it.todo('updates children.count to match the number of children');
     });
 
-    it('passes features through unchanged when features.hierarchy is absent', () => {
-      const fields = callModify();
-      const existingFeatures = { __typename: 'WorkItemFeatures' };
+    describe('when the work item is not in the cache', () => {
+      it('leaves the cache untouched', () => {
+        const before = cache.extract();
 
-      expect(fields.features(existingFeatures)).toBe(existingFeatures);
+        addHierarchyChild({ cache, id, workItem: newChild });
+
+        expect(cache.extract()).toEqual(before);
+      });
     });
 
-    it('does not update the work item when there is no cache data', () => {
-      const mockCache = {
-        identify: jest.fn().mockReturnValue(undefined), // simulate missing cache entity
-        modify: jest.fn(),
-      };
+    describe('when the child is added at an index', () => {
+      beforeEach(() => {
+        seedTree(useWorkItemFeatures);
+        addHierarchyChild({ cache, id, workItem: newChild, atIndex: 1 });
+      });
 
-      // Should not throw
-      expect(() =>
-        addHierarchyChildren({
-          cache: mockCache,
-          id,
-          newChildren: [childrenWorkItems[1], childrenWorkItems[0]],
-        }),
-      ).not.toThrow();
-
-      // Should not modify cache at all
-      expect(mockCache.modify).not.toHaveBeenCalled();
+      it('inserts the child at that index', () => {
+        expect(readChildIds(useWorkItemFeatures)).toEqual([existingChildId, newChild.id]);
+      });
     });
   });
 
   describe.each`
-    state         | flagEnabled | cacheData
-    ${'disabled'} | ${false}    | ${widgetsCacheData}
-    ${'enabled'}  | ${true}     | ${featuresCacheData}
-  `('removeHierarchyChild when workItemFeaturesField is $state', ({ flagEnabled, cacheData }) => {
+    path          | useWorkItemFeatures
+    ${'widgets'}  | ${false}
+    ${'features'} | ${true}
+  `('addHierarchyChildren on the $path path', ({ useWorkItemFeatures }) => {
+    let openChild;
+    let closedChild;
+
     beforeEach(() => {
-      window.gon.features = { workItemFeaturesField: flagEnabled };
+      window.gon.features = { workItemFeaturesField: useWorkItemFeatures };
+      openChild = childFor(useWorkItemFeatures, confidentialWorkItemTask);
+      closedChild = childFor(useWorkItemFeatures, closedWorkItemTask);
     });
 
-    it('reads and writes the tree query with the correct variables', () => {
-      const mockCache = {
-        readQuery: jest.fn(() => cacheData),
-        writeQuery: jest.fn(),
-      };
-      const expectedVariables = { id, useWorkItemFeatures: flagEnabled };
-
-      removeHierarchyChild({ cache: mockCache, id, workItem: existingChild });
-
-      expect(mockCache.readQuery).toHaveBeenCalledWith({
-        query: getWorkItemTreeQuery,
-        variables: expectedVariables,
+    describe('when the work item is in the cache', () => {
+      beforeEach(() => {
+        seedTree(useWorkItemFeatures);
+        addHierarchyChildren({ cache, id, newChildren: [closedChild, openChild] });
       });
-      const writeCall = mockCache.writeQuery.mock.calls[0][0];
-      expect(writeCall.variables).toEqual(expectedVariables);
-      const hierarchy = readHierarchy(writeCall.data);
-      expect(hierarchy.hasChildren).toBe(false);
-      expect(hierarchy.count).toBe(0);
-      expect(hierarchy.children.nodes).toEqual([]);
+
+      it('puts open children before the existing ones and closed children after', () => {
+        expect(readChildIds(useWorkItemFeatures)).toEqual([
+          openChild.id,
+          existingChildId,
+          closedChild.id,
+        ]);
+      });
+
+      it('leaves the tree query fully readable from the cache', () => {
+        expectCacheHit(cache, {
+          query: getWorkItemTreeQuery,
+          variables: treeVariables(useWorkItemFeatures),
+        });
+      });
+
+      // The merged nodes are normalized references, so the dedupe filter at
+      // cache_utils.js reads `undefined` for every existing id and lets duplicates through.
+      // Fixing this is a prerequisite of
+      // https://gitlab.com/gitlab-org/gitlab/-/work_items/629621
+      it.todo('does not add a child that is already in the tree');
     });
 
-    it('does not update the work item when there is no cache data', () => {
-      const mockCache = {
-        readQuery: () => {},
-        writeQuery: jest.fn(),
-      };
+    describe('when the work item has no cache id', () => {
+      it('leaves the cache untouched', () => {
+        seedTree(useWorkItemFeatures);
+        const before = cache.extract();
 
-      removeHierarchyChild({ cache: mockCache, id, workItem: existingChild });
+        addHierarchyChildren({ cache, id: undefined, newChildren: [openChild] });
 
-      expect(mockCache.writeQuery).not.toHaveBeenCalled();
+        expect(cache.extract()).toEqual(before);
+      });
+    });
+
+    describe('when the work item is not in the cache', () => {
+      it('leaves the cache untouched', () => {
+        const before = cache.extract();
+
+        addHierarchyChildren({ cache, id, newChildren: [openChild] });
+
+        expect(cache.extract()).toEqual(before);
+      });
     });
   });
 
-  describe('setNewWorkItemCache', () => {
-    let originalWindowLocation;
-    let mockWriteQuery;
+  describe.each`
+    path          | useWorkItemFeatures
+    ${'widgets'}  | ${false}
+    ${'features'} | ${true}
+  `('removeHierarchyChild on the $path path', ({ useWorkItemFeatures }) => {
+    beforeEach(() => {
+      window.gon.features = { workItemFeaturesField: useWorkItemFeatures };
+    });
+
+    describe('when the work item is in the cache', () => {
+      beforeEach(() => {
+        seedTree(useWorkItemFeatures);
+        removeHierarchyChild({ cache, id, workItem: { id: existingChildId } });
+      });
+
+      it('removes the child from the tree', () => {
+        expect(readChildIds(useWorkItemFeatures)).toEqual([]);
+      });
+
+      it('marks the work item as having no children', () => {
+        expect(readHierarchy(useWorkItemFeatures).hasChildren).toBe(false);
+      });
+
+      it('leaves the tree query fully readable from the cache', () => {
+        expectCacheHit(cache, {
+          query: getWorkItemTreeQuery,
+          variables: treeVariables(useWorkItemFeatures),
+        });
+      });
+    });
+
+    describe('when the work item is not in the cache', () => {
+      it('leaves the cache untouched', () => {
+        const before = cache.extract();
+
+        removeHierarchyChild({ cache, id, workItem: { id: existingChildId } });
+
+        expect(cache.extract()).toEqual(before);
+      });
+    });
+  });
+
+  describe.each`
+    path          | useWorkItemFeatures
+    ${'widgets'}  | ${false}
+    ${'features'} | ${true}
+  `('setNewWorkItemCache on the $path path', ({ useWorkItemFeatures }) => {
+    // `newWorkItemFullPath('gitlab-org', 'Epic')`, the path the draft is seeded under.
+    const newWorkItemVariables = {
+      fullPath: 'gitlab-org-epic-id',
+      iid: 'new-work-item-iid',
+      useWorkItemFeatures,
+    };
+
+    const seedCache = () =>
+      setNewWorkItemCache({ ...mockNewWorkItemCache, useWorkItemFeatures, cache });
+
+    const readWorkItem = () =>
+      cache.readQuery({ query: workItemByIidQuery, variables: newWorkItemVariables })?.namespace
+        ?.workItem;
 
     beforeEach(() => {
-      originalWindowLocation = window.location;
-      delete window.location;
-      window.location = new URL('https://gitlab.example.com');
-      window.gon.current_user_id = 1;
-
-      mockWriteQuery = jest.fn();
-      apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
+      setWindowLocation('https://gitlab.example.com');
 
       localStorage.setItem(
         `autosave/new-gitlab-org-list-route-epic-draft`,
@@ -298,53 +319,63 @@ describe('work items graphql cache utils', () => {
       );
     });
 
-    afterEach(() => {
-      window.location = originalWindowLocation;
-    });
-
-    it('updates cache from localstorage to save cache data', async () => {
-      window.location.search = '';
-      await setNewWorkItemCache(mockNewWorkItemCache);
-      await waitForPromises();
-
-      expect(mockWriteQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            namespace: expect.objectContaining({
-              workItem: expect.objectContaining({
-                title: mockCreateWorkItemDraftData.namespace.workItem.title,
-                widgets: expect.arrayContaining(restoredDraftDataWidgets),
-              }),
-            }),
-          }),
-        }),
-      );
-    });
-
-    it.each`
-      description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
-      ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
-      ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
-      ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.namespace.workItem.title} | ${restoredDraftDataWidgets}
-    `(
-      '$description when URL params include $locationSearchString',
-      async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
-        window.location.search = locationSearchString;
-        await setNewWorkItemCache(mockNewWorkItemCache);
+    describe('when the form is opened without URL params', () => {
+      beforeEach(async () => {
+        await seedCache();
         await waitForPromises();
+      });
 
-        expect(mockWriteQuery).toHaveBeenCalledWith(
-          expect.objectContaining({
-            data: expect.objectContaining({
-              namespace: expect.objectContaining({
-                workItem: expect.objectContaining({
-                  title: expectedTitle,
-                  widgets: expect.arrayContaining(expectedWidgets),
-                }),
-              }),
-            }),
-          }),
+      it('restores the drafted title', () => {
+        expect(readWorkItem().title).toBe(mockCreateWorkItemDraftData.namespace.workItem.title);
+      });
+
+      it('restores the drafted description', () => {
+        // `findDescriptionWidget` only reads the widgets path, so pick the feature directly.
+        const workItem = readWorkItem();
+        const description = workItem.features?.description ?? findDescriptionWidget(workItem);
+
+        expect(description.description).toBe(
+          findDescriptionWidget(mockCreateWorkItemDraftData.namespace.workItem).description,
         );
+      });
+
+      // The create form reads the draft back through these two documents. A cache read is
+      // all-or-nothing, so a seed that misses one field sends the form to the network for
+      // an IID that does not exist yet.
+      it('seeds a work item the detail query can read in full', () => {
+        expectCacheHit(cache, { query: workItemByIidQuery, variables: newWorkItemVariables });
+      });
+
+      it('seeds a work item the CRM contacts query can read in full', () => {
+        expectCacheHit(cache, {
+          query: workItemCrmContactsQuery,
+          variables: newWorkItemVariables,
+        });
+      });
+    });
+
+    describe.each`
+      locationSearchString          | expectedTitle
+      ${'?vulnerability_id=1'}      | ${''}
+      ${'?discussion_to_resolve=1'} | ${''}
+      ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.namespace.workItem.title}
+    `(
+      'when the URL params include $locationSearchString',
+      ({ locationSearchString, expectedTitle }) => {
+        beforeEach(async () => {
+          setWindowLocation(`https://gitlab.example.com/${locationSearchString}`);
+
+          await seedCache();
+          await waitForPromises();
+        });
+
+        it('restores the title the params call for', () => {
+          expect(readWorkItem().title).toBe(expectedTitle);
+        });
+
+        it('seeds a work item the detail query can read in full', () => {
+          expectCacheHit(cache, { query: workItemByIidQuery, variables: newWorkItemVariables });
+        });
       },
     );
   });
@@ -429,60 +460,6 @@ describe('work items graphql cache utils', () => {
 
       expect(features.status.status).toEqual(allowedStatus1);
     });
-
-    // Regression guard for https://gitlab.com/gitlab-org/gitlab/-/work_items/598491:
-    // every field the `WorkItemFeatures` fragment selects must be seeded here, otherwise Apollo
-    // throws "Missing field 'X' while writing result" when the create form loads with the
-    // `work_item_features_field` flag on. Keep this list in sync with the fragment.
-    it('seeds every feature key required by the WorkItemFeatures fragment', () => {
-      const { features } = callGetNewWorkItemSharedCache(buildWidgetDefinitions());
-
-      expect(Object.keys(features).sort()).toEqual(
-        [
-          'agentPlan',
-          'assignees',
-          'awardEmoji',
-          'color',
-          'crmContacts',
-          'currentUserTodos',
-          'customFields',
-          'decisionLog',
-          'description',
-          'development',
-          'errorTracking',
-          'healthStatus',
-          'hierarchy',
-          'iteration',
-          'labels',
-          'linkedItems',
-          'linkedResources',
-          'milestone',
-          'notes',
-          'notifications',
-          'participants',
-          'progress',
-          'startAndDueDate',
-          'status',
-          'timeTracking',
-          'weight',
-        ].sort(),
-      );
-    });
-
-    // These fragment-required fields are not sourced from the widget definition and were the
-    // repeated cause of the "Missing field" errors, so assert they are always present.
-    it('seeds fragment fields that are not derived from the widget definition', () => {
-      const { features } = callGetNewWorkItemSharedCache(buildWidgetDefinitions());
-
-      expect(features.hierarchy.type).toBe(WIDGET_TYPE_HIERARCHY);
-      expect(features.labels.allowsScopedLabels).toBeDefined();
-      expect(features.assignees.allowsMultipleAssignees).toBeDefined();
-      expect(features.assignees.canInviteMembers).toBeDefined();
-      expect(features.weight.rolledUpWeight).toBeNull();
-      expect(features.weight.rolledUpCompletedWeight).toBeNull();
-      expect(features.healthStatus.rolledUpHealthStatus).toBeNull();
-      expect(features.customFields.customFieldValues).toBeDefined();
-    });
   });
 
   // Regression guard for https://gitlab.com/gitlab-org/gitlab/-/work_items/608244
@@ -527,11 +504,35 @@ describe('work items graphql cache utils', () => {
       });
     });
 
-    // Nulled rather than removed, or Apollo throws "Missing field 'X' while writing result".
-    it('keeps every feature key present so the WorkItemFeatures selection set stays satisfied', () => {
-      const { features } = callForSupportedWidgetTypes([WIDGET_TYPE_WEIGHT]);
+    // Unsupported attributes are nulled rather than removed. Dropping the key instead would
+    // leave a hole in the selection set, and a partial cache read is a cache miss.
+    describe('when a type that supports neither status nor iteration is seeded', () => {
+      const variables = {
+        fullPath: 'gitlab-org-epic-id',
+        iid: 'new-work-item-iid',
+        useWorkItemFeatures: true,
+      };
 
-      expect(Object.keys(features)).toEqual(expect.arrayContaining(['status', 'iteration']));
+      beforeEach(async () => {
+        await setNewWorkItemCache({
+          ...mockNewWorkItemCache,
+          widgetDefinitions: mockNewWorkItemCache.widgetDefinitions.filter(
+            ({ type }) => ![WIDGET_TYPE_STATUS, WIDGET_TYPE_ITERATION].includes(type),
+          ),
+          useWorkItemFeatures: true,
+          cache,
+        });
+        await waitForPromises();
+      });
+
+      it('leaves the work item query fully readable', () => {
+        expectCacheHit(cache, { query: workItemByIidQuery, variables });
+      });
+
+      // Most features take `type` only from the widget definition spread, so a type whose
+      // definitions omit one of them seeds an object without it and the read misses.
+      // See https://gitlab.com/gitlab-org/gitlab/-/work_items/629890
+      it.todo('seeds a widget type for features the work item type does not define');
     });
   });
 
@@ -720,71 +721,207 @@ describe('work items graphql cache utils', () => {
     });
   });
 
-  describe('updateCountsForParent', () => {
-    const mockWorkItemData = workItemResponseFactory();
-    const mockCache = {
-      readQuery: () => mockWorkItemData.data,
-      writeQuery: jest.fn(),
-    };
+  describe.each`
+    path          | useWorkItemFeatures
+    ${'widgets'}  | ${false}
+    ${'features'} | ${true}
+  `('updateCountsForParent on the $path path', ({ useWorkItemFeatures }) => {
     const workItemType = 'Task';
+    // The features fixture ships an empty `rolledUpCountsByType`, so seed the same counts
+    // the widgets side of the factory already carries.
+    const parentData = workItemResponseFactory(
+      useWorkItemFeatures
+        ? {
+            features: {
+              hierarchy: {
+                ...mockWorkItemFeaturesData().hierarchy,
+                rolledUpCountsByType: mockRolledUpCountsByType,
+              },
+            },
+          }
+        : {},
+    );
+    const parentId = parentData.data.workItem.id;
+    const variables = { id: parentId, useWorkItemFeatures };
 
-    const getCounts = (data) =>
-      findHierarchyWidget(data.workItem).rolledUpCountsByType.find(
-        (i) => i.workItemType.name === workItemType,
-      );
+    const countsFor = (workItem) =>
+      findHierarchyWidget(workItem).rolledUpCountsByType.find(
+        (counts) => counts.workItemType.name === workItemType,
+      ).countsByState;
 
-    it('updates the cache with new parent data', () => {
-      const updatedParent = updateCountsForParent({
-        cache: mockCache,
-        parentId: mockWorkItemData.data.workItem.id,
-        workItemType,
-        isClosing: true,
-      });
+    const readCounts = () =>
+      countsFor(cache.readQuery({ query: workItemByIdQuery, variables }).workItem);
 
-      expect(mockCache.writeQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: updatedParent,
-        }),
-      );
+    beforeEach(() => {
+      window.gon.features = { workItemFeaturesField: useWorkItemFeatures };
     });
 
-    it('increases closed count and decreases opened count when closing', () => {
-      const updatedParent = updateCountsForParent({
-        cache: mockCache,
-        parentId: mockWorkItemData.data.workItem.id,
-        workItemType,
-        isClosing: true,
+    describe('when the parent is in the cache', () => {
+      let before;
+
+      beforeEach(() => {
+        cache.writeQuery({ query: workItemByIdQuery, variables, data: parentData.data });
+        before = readCounts();
       });
 
-      const oldCounts = getCounts(mockWorkItemData.data);
-      const newCounts = getCounts(updatedParent);
+      describe('when a child is closing', () => {
+        beforeEach(() => {
+          updateCountsForParent({ cache, parentId, workItemType, isClosing: true });
+        });
 
-      expect(newCounts.countsByState.opened).toBeLessThan(oldCounts.countsByState.opened);
-      expect(newCounts.countsByState.closed).toBeGreaterThan(oldCounts.countsByState.closed);
+        it('moves one child from opened to closed', () => {
+          expect(readCounts().opened).toBe(before.opened - 1);
+          expect(readCounts().closed).toBe(before.closed + 1);
+        });
+
+        it('leaves the parent query fully readable from the cache', () => {
+          expectCacheHit(cache, { query: workItemByIdQuery, variables });
+        });
+      });
+
+      describe('when a child is reopening', () => {
+        beforeEach(() => {
+          updateCountsForParent({ cache, parentId, workItemType, isClosing: false });
+        });
+
+        it('moves one child from closed to opened', () => {
+          expect(readCounts().opened).toBe(before.opened + 1);
+          expect(readCounts().closed).toBe(before.closed - 1);
+        });
+      });
     });
 
-    it('decreases closed count and increases opened count when reopening', () => {
-      const updatedParent = updateCountsForParent({
-        cache: mockCache,
-        parentId: mockWorkItemData.data.workItem.id,
-        workItemType,
-        isClosing: false,
+    describe('when the parent is not in the cache', () => {
+      it('leaves the cache untouched', () => {
+        const before = cache.extract();
+
+        updateCountsForParent({ cache, parentId, workItemType, isClosing: true });
+
+        expect(cache.extract()).toEqual(before);
       });
 
-      const oldCounts = getCounts(mockWorkItemData.data);
-      const newCounts = getCounts(updatedParent);
+      it('returns null', () => {
+        expect(
+          updateCountsForParent({ cache, parentId, workItemType, isClosing: true }),
+        ).toBeNull();
+      });
+    });
+  });
 
-      expect(newCounts.countsByState.opened).toBeGreaterThan(oldCounts.countsByState.opened);
-      expect(newCounts.countsByState.closed).toBeLessThan(oldCounts.countsByState.closed);
+  describe.each`
+    path          | useWorkItemFeatures
+    ${'widgets'}  | ${false}
+    ${'features'} | ${true}
+  `('updateParent on the $path path', ({ useWorkItemFeatures }) => {
+    const fullPath = 'gitlab-org';
+    const iid = '1';
+    const variables = { fullPath, iid, useWorkItemFeatures };
+
+    let removedChild;
+
+    beforeEach(() => {
+      window.gon.features = { workItemFeaturesField: useWorkItemFeatures };
+    });
+
+    describe('when the parent is in the cache', () => {
+      let before;
+
+      beforeEach(() => {
+        const parent = workItemByIidResponseFactory({
+          hierarchyWidgetPresent: true,
+          ...(useWorkItemFeatures ? { features: {} } : {}),
+        });
+        cache.writeQuery({ query: workItemByIidQuery, variables, data: parent.data });
+        before = cache.extract();
+
+        [removedChild] = childrenWorkItems;
+        updateParent({ cache, fullPath, iid, workItem: removedChild });
+      });
+
+      // `work_item_by_iid` selects no `hierarchy.children` on either path, so there is
+      // nothing for updateParent to splice and the read-modify-write round-trips unchanged.
+      // Converting or deleting this helper is
+      // https://gitlab.com/gitlab-org/gitlab/-/work_items/629621
+      it('leaves the cached parent unchanged', () => {
+        expect(cache.extract()).toEqual(before);
+      });
+
+      it('leaves the parent query fully readable from the cache', () => {
+        expectCacheHit(cache, { query: workItemByIidQuery, variables });
+      });
+
+      it.todo('removes the child from the parent hierarchy');
+    });
+
+    describe('when the parent is not in the cache', () => {
+      it('leaves the cache untouched', () => {
+        const before = cache.extract();
+
+        updateParent({ cache, fullPath, iid, workItem: { id: 'gid://gitlab/WorkItem/999' } });
+
+        expect(cache.extract()).toEqual(before);
+      });
+    });
+  });
+
+  describe.each`
+    path          | useWorkItemFeatures
+    ${'widgets'}  | ${false}
+    ${'features'} | ${true}
+  `('updateWorkItemCurrentTodosWidget on the $path path', ({ useWorkItemFeatures }) => {
+    const fullPath = 'gitlab-org';
+    const iid = '1';
+    const variables = { fullPath, iid, useWorkItemFeatures };
+    const newTodos = [
+      { id: 'gid://gitlab/Todo/2', state: 'done', __typename: 'Todo' },
+      { id: 'gid://gitlab/Todo/3', state: 'pending', __typename: 'Todo' },
+    ];
+
+    const readTodoIds = () =>
+      findCurrentUserTodosWidget(
+        cache.readQuery({ query: workItemCurrentUserTodosQuery, variables })?.namespace?.workItem,
+      ).currentUserTodos.nodes.map((todo) => todo.id);
+
+    beforeEach(() => {
+      window.gon.features = { workItemFeaturesField: useWorkItemFeatures };
+    });
+
+    describe('when the work item is in the cache', () => {
+      beforeEach(() => {
+        cache.writeQuery({
+          query: workItemCurrentUserTodosQuery,
+          variables,
+          data: workItemCurrentUserTodosResponseFactory({ useWorkItemFeatures }).data,
+        });
+
+        updateWorkItemCurrentTodosWidget({ cache, fullPath, iid, todos: newTodos });
+      });
+
+      // `currentUserTodos` has no field policy, so the nodes are replaced wholesale rather
+      // than merged with what was already cached.
+      it('replaces the cached todos', () => {
+        expect(readTodoIds()).toEqual(newTodos.map((todo) => todo.id));
+      });
+
+      it('leaves the todos query fully readable from the cache', () => {
+        expectCacheHit(cache, { query: workItemCurrentUserTodosQuery, variables });
+      });
+    });
+
+    describe('when the work item is not in the cache', () => {
+      it('leaves the cache untouched', () => {
+        const before = cache.extract();
+
+        updateWorkItemCurrentTodosWidget({ cache, fullPath, iid, todos: newTodos });
+
+        expect(cache.extract()).toEqual(before);
+      });
     });
   });
 
   describe('linkedItems reactive variable in widgets merge', () => {
     const fullPath = 'gitlab-org';
     const iid = '1';
-    const { cache } = apolloProvider.clients.defaultClient;
-    const originalWriteQuery = cache.writeQuery.bind(cache);
-    const originalExtract = cache.extract.bind(cache);
     const key = `${fullPath}:${iid}`;
 
     const mockLinkedItem = (itemId) => ({
@@ -840,14 +977,6 @@ describe('work items graphql cache utils', () => {
       });
     };
 
-    // `setNewWorkItemCache` tests replace cache.writeQuery with a mock,
-    // so we restore the original to ensure write() works correctly.
-    beforeEach(() => {
-      cache.writeQuery = originalWriteQuery;
-      cache.restore({});
-      linkedItems({});
-    });
-
     it.each`
       description                                                                   | writeNodes                                        | evictKey                               | expectedItems
       ${'populates linkedItems with resolvable items when some are not yet cached'} | ${() => [mockLinkedItem(10), mockLinkedItem(99)]} | ${'WorkItem:gid://gitlab/WorkItem/99'} | ${[{ iid: '10', title: 'Item 10' }]}
@@ -855,6 +984,7 @@ describe('work items graphql cache utils', () => {
     `('$description', ({ writeNodes, evictKey, expectedItems }) => {
       write([mockLinkedItem(10)]);
 
+      const originalExtract = cache.extract.bind(cache);
       const spy = jest.spyOn(cache, 'extract');
       spy.mockImplementation(() => {
         const data = originalExtract();
@@ -876,8 +1006,6 @@ describe('work items graphql cache utils', () => {
     const fullPath = 'gitlab-org';
     const iid = '1';
     const workItemId = 'gid://gitlab/WorkItem/1';
-    const { cache } = apolloProvider.clients.defaultClient;
-    const originalWriteQuery = cache.writeQuery.bind(cache);
 
     // On the widgets path the factory already provides mockAssignees/mockLabels; on the
     // features path we overlay the same nodes so both paths assert an identical result.
@@ -966,15 +1094,6 @@ describe('work items graphql cache utils', () => {
       });
     };
 
-    // Restore the real writeQuery, which `setNewWorkItemCache` tests replace with a mock.
-    beforeEach(() => {
-      cache.writeQuery = originalWriteQuery;
-      cache.restore({});
-      currentAssignees({});
-      appliedLabels({});
-      linkedItems({});
-    });
-
     describe.each`
       path          | useWorkItemFeatures
       ${'widgets'}  | ${false}
@@ -1008,13 +1127,13 @@ describe('work items graphql cache utils', () => {
     });
 
     describe('when an assignee ref is not yet resolvable in the cache', () => {
-      const originalExtract = cache.extract.bind(cache);
       const [missingAssignee, resolvableAssignee] = mockAssignees;
 
       beforeEach(() => {
         // Populate the cache, then evict one assignee so it is missing during extraction.
         writeWorkItem(true);
 
+        const originalExtract = cache.extract.bind(cache);
         jest.spyOn(cache, 'extract').mockImplementation(() => {
           const data = originalExtract();
           delete data[`UserCore:${missingAssignee.id}`];

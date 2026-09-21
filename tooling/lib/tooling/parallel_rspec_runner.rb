@@ -148,13 +148,11 @@ module Tooling
       Knapsack::Config::Env.ci_node_total.to_i > 1
     end
 
-    # Opt-in gate for the test balancing rollout. GLCI_USE_TEST_BALANCING is
-    # decided once per pipeline by scripts/setup/decide-test-balancing.rb in
-    # retrieve-tests-metadata (the `pipeline:skip-test-balancing` MR label opts
-    # out, the `pipeline:use-test-balancing` label forces it on, otherwise a
-    # deterministic 30% sample on CI_PIPELINE_ID) and published as a dotenv, so it
-    # is frozen and consistent across all rspec jobs. The as-if-foss child inherits
-    # the parent's decision via the trigger job and honors it instead of re-rolling.
+    # Gate for test balancing. GLCI_USE_TEST_BALANCING is decided once per pipeline
+    # by scripts/setup/decide-test-balancing.rb in retrieve-tests-metadata (enabled
+    # by default; the `pipeline:skip-test-balancing` MR label opts out) and published
+    # as a dotenv, so it is frozen and consistent across all rspec jobs. The
+    # as-if-foss child inherits the parent's decision via the trigger job.
     def test_balancing_enabled?
       ENV['GLCI_USE_TEST_BALANCING'] == 'true'
     end

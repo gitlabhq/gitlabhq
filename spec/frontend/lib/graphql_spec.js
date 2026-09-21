@@ -1,6 +1,10 @@
-import { ApolloLink, HttpLink } from '@apollo/client/core';
+import { ApolloLink, HttpLink, InMemoryCache } from '@apollo/client/core';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import createDefaultClient, { stripWhitespaceFromQuery, typePolicies } from '~/lib/graphql';
+import createDefaultClient, {
+  createCache,
+  stripWhitespaceFromQuery,
+  typePolicies,
+} from '~/lib/graphql';
 import { getSuppressNetworkErrorsDuringNavigationLink } from '~/lib/apollo/suppress_network_errors_during_navigation_link';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
@@ -94,6 +98,45 @@ describe('typePolicies', () => {
     });
 
     expect(cacheKey).toBe(false);
+  });
+});
+
+describe('createCache', () => {
+  // The cache is constructed from this config, so assert the config it is handed.
+  const cacheConfigFor = (...args) => {
+    InMemoryCache.mockClear();
+    createCache(...args);
+    return InMemoryCache.mock.calls[0][0];
+  };
+
+  it('applies the global type policies when called with no config', () => {
+    expect(cacheConfigFor().typePolicies.Blob).toEqual(
+      expect.objectContaining({ keyFields: ['webPath'] }),
+    );
+  });
+
+  it('keeps the global type policies when the caller adds its own', () => {
+    const merged = cacheConfigFor({ typePolicies: { Widget: { merge: true } } }).typePolicies;
+
+    expect(merged.Blob).toEqual(expect.objectContaining({ keyFields: ['webPath'] }));
+    expect(merged.Widget).toEqual({ merge: true });
+  });
+
+  it('lets the caller win on a key collision', () => {
+    const merged = cacheConfigFor({ typePolicies: { Blob: { keyFields: ['id'] } } }).typePolicies;
+
+    expect(merged.Blob).toEqual({ keyFields: ['id'] });
+  });
+
+  it('merges possibleTypes the same way', () => {
+    const merged = cacheConfigFor({ possibleTypes: { Foo: ['Bar'] } }).possibleTypes;
+
+    expect(merged.Foo).toEqual(['Bar']);
+    expect(merged.WorkItemWidget).toEqual(expect.arrayContaining(['WorkItemWidgetHierarchy']));
+  });
+
+  it('passes any other cache option through', () => {
+    expect(cacheConfigFor({ addTypename: false }).addTypename).toBe(false);
   });
 });
 

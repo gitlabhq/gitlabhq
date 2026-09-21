@@ -202,6 +202,17 @@ RSpec.shared_examples 'a note for work item resource event' do
     expect(event.work_item_synthetic_system_note.class.name).to eq(event.synthetic_note_class.name)
   end
 
+  context 'with a group level work item' do
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group_work_item, freeze: false) { create(:work_item, :group_level, namespace: group, author: user) }
+
+    it 'builds the synthetic note against the group' do
+      event = build(resource_event, issue: group_work_item)
+
+      expect(event.work_item_synthetic_system_note.resource_parent).to eq(group)
+    end
+  end
+
   context 'on callbacks' do
     it 'triggers note created subscription' do
       event = build(resource_event, issue: work_item)

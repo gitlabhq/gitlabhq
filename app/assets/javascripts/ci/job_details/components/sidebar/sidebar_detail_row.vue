@@ -14,9 +14,16 @@ export default {
       required: false,
       default: '',
     },
+    headingTag: {
+      type: String,
+      required: false,
+      default: 'span',
+      validator: (value) => value === null || ['span', 'h2', 'h3', 'h4', 'h5'].includes(value),
+    },
     value: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     helpUrl: {
       type: String,
@@ -40,13 +47,20 @@ export default {
 };
 </script>
 <template>
-  <p class="build-sidebar-item gl-mb-3 gl-flex gl-leading-normal">
-    <span v-if="hasTitle" class="gl-mr-3 gl-font-bold">{{ title }}:</span>
+  <p class="build-sidebar-item gl-flex gl-flex-col gl-gap-3 gl-leading-normal">
+    <component
+      :is="headingTag"
+      v-if="hasTitle"
+      class="gl-my-0 gl-mr-3 gl-text-md gl-font-bold"
+      data-testid="job-sidebar-value-title"
+      >{{ title }}</component
+    >
     <gl-link v-if="path" :href="path" class="!gl-text-link" data-testid="job-sidebar-value-link">
       {{ value }}
     </gl-link>
-    <span v-else class="gl-text-subtle"
+    <span v-else class="gl-text-subtle" data-testid="job-sidebar-value-span"
       >{{ value }}
+      <slot></slot>
       <gl-link
         v-if="hasHelpURL"
         :aria-label="s__('Job|Job help')"

@@ -4,6 +4,10 @@ global:
   shell:
     # Fixed at 22 by the chart's gitlab-ssh listener
     port: 22
+    tcp:
+      # Gates the chart's Envoy BackendTrafficPolicy, which is what makes Envoy
+      # send PROXY v2 to gitlab-shell. Without it Shell logs the Envoy pod IP.
+      proxyProtocol: true
 
   hosts:
     # domain comes from caproni.yaml's dynamic_overrides
@@ -117,8 +121,9 @@ gitlab:
   gitlab-shell:
     sshDaemon: gitlab-sshd
     config:
-      # The Gateway sends no PROXY header, unlike nginx-ingress
-      proxyProtocol: false
+      # Parses the PROXY v2 header from Envoy so IP restrictions see the real
+      # client. proxyPolicy defaults to "use", so headerless conns still work.
+      proxyProtocol: true
     minReplicas: 2
     # No limits: with limits set, git operations start failing in e2e tests.
     # https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3699

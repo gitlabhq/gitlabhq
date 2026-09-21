@@ -996,6 +996,7 @@ export const setNewWorkItemCache = ({
   workItemDescription = '',
   confidential = false,
   useWorkItemFeatures = false,
+  cache = apolloProvider.clients.defaultClient.cache,
 }) => {
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_STATUS,
@@ -1035,7 +1036,7 @@ export const setNewWorkItemCache = ({
   let features = {};
 
   if (useWorkItemFeatures) {
-    const cache = getNewWorkItemSharedCache({
+    const sharedCache = getNewWorkItemSharedCache({
       workItemAttributesWrapperOrder,
       widgetDefinitions,
       fullPath,
@@ -1045,10 +1046,10 @@ export const setNewWorkItemCache = ({
       workItemDescription,
       relatedItemId,
     });
-    draftTitle = cache.draftTitle;
-    features = { __typename: 'WorkItemFeatures', ...cache.features };
+    draftTitle = sharedCache.draftTitle;
+    features = { __typename: 'WorkItemFeatures', ...sharedCache.features };
   } else {
-    const cache = legacyGetNewWorkItemSharedCache({
+    const sharedCache = legacyGetNewWorkItemSharedCache({
       workItemAttributesWrapperOrder,
       widgetDefinitions,
       fullPath,
@@ -1058,9 +1059,9 @@ export const setNewWorkItemCache = ({
       workItemDescription,
       relatedItemId,
     });
-    draftTitle = cache.draftTitle;
+    draftTitle = sharedCache.draftTitle;
     features = {};
-    widgets.push(...cache.widgets);
+    widgets.push(...sharedCache.widgets);
   }
 
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
@@ -1087,7 +1088,7 @@ export const setNewWorkItemCache = ({
     clearDraft(autosaveKey);
   }
 
-  apolloProvider.clients.defaultClient.cache.writeQuery({
+  cache.writeQuery({
     query: workItemByIidQuery,
     variables: {
       fullPath: newWorkItemPath,
@@ -1158,7 +1159,7 @@ export const setNewWorkItemCache = ({
 
   // CRM contacts live in their own query, so the draft has to be seeded there too. Without
   // this the widget would fire a request for an IID that doesn't exist yet.
-  apolloProvider.clients.defaultClient.cache.writeQuery({
+  cache.writeQuery({
     query: workItemCrmContactsQuery,
     variables: {
       fullPath: newWorkItemPath,

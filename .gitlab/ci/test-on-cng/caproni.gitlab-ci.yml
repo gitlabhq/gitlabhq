@@ -116,10 +116,11 @@
       - qa/tmp/cluster-logs/*.envoy.log
   allow_failure: true
 
+# No QA_SCENARIO: run_e2e_specs defaults to Test::Instance::All
 cng-instance-caproni:
   extends: .caproni-test
+  parallel: 10
   variables:
-    QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
 

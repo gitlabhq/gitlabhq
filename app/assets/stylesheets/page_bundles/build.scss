@@ -98,16 +98,12 @@
 }
 
 .build-sidebar-item {
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-}
+  @apply gl-pt-4;
+  @apply gl-mb-4;
 
-.build-detail-row {
-  margin-bottom: 5px;
-
-  &:last-of-type {
-    margin-bottom: 0;
+  &:not(:first-child) {
+    @apply gl-border-t;
+    @apply gl-border-subtle;
   }
 }
 

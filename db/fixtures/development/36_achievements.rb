@@ -15,7 +15,9 @@ class Gitlab::Seeder::Achievements
     achievement_ids = seed_achievements if achievement_ids.empty?
 
     user_ids.reverse.each_with_index do |user_id, user_index|
-      (user_index + 1).times do |achievement_index|
+      # Earlier seeds may already have created achievements, leaving fewer than one per user, and
+      # indexing past the end of the list awards a nil achievement.
+      [user_index + 1, achievement_ids.size].min.times do |achievement_index|
         ::Achievements::UserAchievement.create!(
           user_id: user_id,
           achievement_id: achievement_ids[achievement_index],

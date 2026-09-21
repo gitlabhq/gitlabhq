@@ -130,6 +130,18 @@ export const typePolicies = {
   },
 };
 
+/**
+ * Builds an InMemoryCache from a per-client `cacheConfig`, merging it over the global
+ * type policies and possibleTypes. Callers get the globals plus their own, and win on a
+ * key collision.
+ */
+export const createCache = (cacheConfig = { typePolicies: {}, possibleTypes: {} }) =>
+  new InMemoryCache({
+    ...cacheConfig,
+    typePolicies: { ...typePolicies, ...cacheConfig.typePolicies },
+    possibleTypes: { ...possibleTypes, ...cacheConfig.possibleTypes },
+  });
+
 export const stripWhitespaceFromQuery = (url, path) => {
   const [, params] = url.split(path);
 
@@ -311,17 +323,7 @@ function createApolloClient(resolvers = {}, config = {}) {
     ),
   );
 
-  const newCache = new InMemoryCache({
-    ...cacheConfig,
-    typePolicies: {
-      ...typePolicies,
-      ...cacheConfig.typePolicies,
-    },
-    possibleTypes: {
-      ...possibleTypes,
-      ...cacheConfig.possibleTypes,
-    },
-  });
+  const newCache = createCache(cacheConfig);
 
   ac = new ApolloClient({
     typeDefs,
