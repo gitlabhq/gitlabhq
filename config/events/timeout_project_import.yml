@@ -11,6 +11,8 @@ additional_properties:
     description: import_type of the source (e.g., github, bitbucket, gitlab_migration, offline_transfer)
   property:
     description: hashed identifier of the source host and path, used to detect repeated imports of the same source
+  source_hosting:
+    description: "'cloud' or 'self_hosted' for GitHub and Gitea imports; nil for other import types"
 product_group: import
 product_categories:
 - importers

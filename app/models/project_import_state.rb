@@ -209,7 +209,11 @@ class ProjectImportState < ApplicationRecord
         project: project,
         user: project.creator,
         namespace: project.namespace,
-        additional_properties: { label: project.import_type, property: hashed_import_source }.compact
+        additional_properties: {
+          label: project.import_type,
+          property: hashed_import_source,
+          source_hosting: project.source_hosting
+        }.compact
       )
     end
   end

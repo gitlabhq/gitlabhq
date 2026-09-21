@@ -28,7 +28,7 @@ GitLab monitors its own internal service metrics, and makes them available at th
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, to access
 the metrics, the client IP address must be [explicitly allowed](../ip_allowlist.md).
 
-These metrics are enabled and collected for [Linux package](https://docs.gitlab.com/omnibus/)
+These metrics are enabled and collected for Linux package
 and Helm chart installations. For self-compiled installations, these metrics must be enabled
 manually and collected by a Prometheus server.
 
@@ -1041,7 +1041,7 @@ Some basic Ruby runtime metrics are available:
 
 These client metrics are meant to complement Redis server metrics.
 These metrics are broken down per
-[Redis instance](https://docs.gitlab.com/omnibus/settings/redis/#running-with-multiple-redis-instances).
+[Redis instance](../../redis/replication_and_failover.md#running-multiple-redis-clusters).
 These metrics all have a `storage` label which indicates the Redis
 instance. For example, `cache` or `shared_state`.
 
@@ -1109,5 +1109,5 @@ metrics can't function correctly.
 This directory's location is configured using environment variable `prometheus_multiproc_dir`.
 For best performance, create this directory in `tmpfs`.
 
-If GitLab is installed using the [Linux package](https://docs.gitlab.com/omnibus/)
+If GitLab is installed using the Linux package
 and `tmpfs` is available, then GitLab configures the metrics directory for you.

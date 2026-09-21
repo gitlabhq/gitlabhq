@@ -18,7 +18,10 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
   end
 
   describe 'validations' do
-    subject(:consent) { build(:oauth_consent) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:application) { create(:oauth_application) }
+
+    subject(:consent) { build(:oauth_consent, user: user, application: application) }
 
     it { is_expected.to validate_presence_of(:client_id) }
     it { is_expected.to validate_presence_of(:consent_challenge) }
@@ -26,12 +29,12 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     it { is_expected.to validate_presence_of(:requested_scopes) }
 
     it 'validates uniqueness of consent_challenge' do
-      create(:oauth_consent, consent_challenge: consent.consent_challenge)
+      create(:oauth_consent, user: user, application: application, consent_challenge: consent.consent_challenge)
       is_expected.to validate_uniqueness_of(:consent_challenge)
     end
 
     context 'when consent is revoked' do
-      subject(:consent) { create(:oauth_consent, :revoked) }
+      subject(:consent) { create(:oauth_consent, :revoked, user: user, application: application) }
 
       it 'prevents any status change', :aggregate_failures do
         consent.status = 'authorized'
@@ -42,7 +45,7 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     end
 
     context 'when consent is rejected' do
-      subject(:consent) { create(:oauth_consent, :rejected) }
+      subject(:consent) { create(:oauth_consent, :rejected, user: user, application: application) }
 
       it 'prevents any status change', :aggregate_failures do
         consent.status = 'authorized'
@@ -53,7 +56,7 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     end
 
     context 'when consent is authorized' do
-      subject(:consent) { create(:oauth_consent) }
+      let_it_be_with_reload(:consent) { create(:oauth_consent, user: user, application: application) }
 
       it 'allows scope updates' do
         consent.granted_scopes = %w[openid]
@@ -71,8 +74,8 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
 
   describe '.latest_per_application' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:app_a) { create(:oauth_application) }
-    let_it_be(:app_b) { create(:oauth_application) }
+    let_it_be(:app_a) { create(:oauth_application, owner: user) }
+    let_it_be(:app_b) { create(:oauth_application, owner: user) }
     let_it_be(:older_a) { create(:oauth_consent, user: user, application: app_a, created_at: 2.days.ago) }
     let_it_be(:newer_a) { create(:oauth_consent, user: user, application: app_a, created_at: 1.day.ago) }
     let_it_be(:only_b) { create(:oauth_consent, user: user, application: app_b) }
@@ -88,9 +91,9 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
     let_it_be(:user) { create(:user) }
 
     before_all do
-      create(:oauth_consent, user: user)
-      create(:oauth_consent, user: user)
-      create(:oauth_consent, user: user)
+      application = create(:oauth_application, owner: user)
+
+      create_list(:oauth_consent, 3, user: user, application: application)
     end
 
     it 'eager-loads the application owner to avoid N+1 queries' do
@@ -104,7 +107,7 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
   describe '.revoke_authorized_for' do
     let_it_be(:user) { create(:user) }
     let_it_be(:other_user) { create(:user) }
-    let_it_be(:app) { create(:oauth_application) }
+    let_it_be(:app) { create(:oauth_application, owner: user) }
 
     let_it_be_with_reload(:authorized) { create(:oauth_consent, user: user, application: app) }
     let_it_be_with_reload(:other_user_authorized) { create(:oauth_consent, user: other_user, application: app) }

@@ -22,21 +22,16 @@ RSpec.describe Clusters::KubernetesNamespaceFinder do
   end
 
   describe '#execute' do
-    let(:production) { create(:environment, project: project, name: 'production') }
-    let(:staging) { create(:environment, project: project, name: 'staging') }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:production) { create(:environment, project: project, name: 'production') }
+    let_it_be(:staging) { create(:environment, project: project, name: 'staging') }
 
-    let(:cluster) { create(:cluster, :group, :provided_by_user) }
-    let(:project) { create(:project) }
     let(:allow_blank_token) { false }
 
     subject { finder.execute }
 
-    before do
-      allow(cluster).to receive(:namespace_per_environment?).and_return(namespace_per_environment)
-    end
-
     context 'cluster supports separate namespaces per environment' do
-      let(:namespace_per_environment) { true }
+      let_it_be(:cluster) { create(:cluster, :group, :provided_by_user) }
 
       context 'no persisted namespace is present' do
         it { is_expected.to be_nil }
@@ -55,7 +50,7 @@ RSpec.describe Clusters::KubernetesNamespaceFinder do
           end
 
           context 'service account token is blank' do
-            let!(:namespace_with_environment) { create_namespace(production, with_token: false) }
+            let_it_be(:namespace_with_environment) { create_namespace(production, with_token: false) }
 
             it { is_expected.to be_nil }
 
@@ -68,7 +63,7 @@ RSpec.describe Clusters::KubernetesNamespaceFinder do
         end
 
         context 'environment does not match' do
-          let!(:namespace_with_environment) { create_namespace(staging) }
+          let_it_be(:namespace_with_environment) { create_namespace(staging) }
 
           it { is_expected.to be_nil }
         end
@@ -76,7 +71,7 @@ RSpec.describe Clusters::KubernetesNamespaceFinder do
     end
 
     context 'cluster does not support separate namespaces per environment' do
-      let(:namespace_per_environment) { false }
+      let_it_be(:cluster) { create(:cluster, :group, :provided_by_user, :namespace_per_environment_disabled) }
 
       context 'no persisted namespace is present' do
         it { is_expected.to be_nil }
@@ -88,13 +83,15 @@ RSpec.describe Clusters::KubernetesNamespaceFinder do
         it { is_expected.to eq legacy_namespace }
 
         context 'project cluster' do
-          let(:cluster) { create(:cluster, :project, :provided_by_user, projects: [project]) }
+          let(:cluster) do
+            create(:cluster, :project, :provided_by_user, :namespace_per_environment_disabled, projects: [project])
+          end
 
           it { is_expected.to eq legacy_namespace }
         end
 
         context 'service account token is blank' do
-          let!(:legacy_namespace) { create_namespace(nil, with_token: false) }
+          let_it_be(:legacy_namespace) { create_namespace(nil, with_token: false) }
 
           it { is_expected.to be_nil }
 

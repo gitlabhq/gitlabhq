@@ -323,6 +323,43 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
+    context 'when a tool declares no annotations' do
+      let(:manager) do
+        ::Mcp::Tools::Manager.new.tap do |m|
+          allow(m.list_tools['get_mcp_server_version']).to receive(:annotations).and_return(nil)
+        end
+      end
+
+      before do
+        handler = ::API::Mcp::Handlers::ListTools.new(manager)
+        allow(::API::Mcp::Handlers::ListTools).to receive(:new).and_return(handler)
+      end
+
+      def unannotated_tool
+        json_response['result']['tools'].find { |tool| tool['name'] == 'get_mcp_server_version' }
+      end
+
+      it 'annotates it with the toolset alone', :aggregate_failures do
+        post_list_tools
+
+        expect(unannotated_tool).to be_present
+        expect(unannotated_tool['annotations']).to eq({ 'toolset' => 'meta' })
+      end
+
+      context 'when the mcp_toolsets feature flag is disabled' do
+        before do
+          stub_feature_flags(mcp_toolsets: false)
+        end
+
+        it 'omits the annotations key rather than returning an empty object', :aggregate_failures do
+          post_list_tools
+
+          expect(unannotated_tool).to be_present
+          expect(unannotated_tool).not_to have_key('annotations')
+        end
+      end
+    end
+
     context 'when x-gitlab-enabled-mcp-server-tools header is present' do
       # The filter only needs some advertised tools, not specific ones. Deriving
       # the fixtures from the live catalog keeps tool retirements from churning

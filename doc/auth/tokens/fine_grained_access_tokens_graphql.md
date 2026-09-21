@@ -973,6 +973,8 @@ Grants the ability to update knowledge graph settings.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Update | Group | Mutation | `OrbitUpdate` |
+| Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceCreate` |
+| Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceDestroy` |
 
 ### Groups resources
 

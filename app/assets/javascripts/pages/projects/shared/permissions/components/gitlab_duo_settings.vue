@@ -399,8 +399,8 @@ export default {
     duoAgentPlatformDisabledTooltip: s__(
       'DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on.',
     ),
-    otherSettingsHeading: s__('DuoAgentPlatform|Other Duo settings'),
-    otherSettingsSubtitle: s__('DuoAgentPlatform|Project-wide behavior, unrelated to readiness.'),
+    otherSettingsHeading: s__('DuoAgentPlatform|Other GitLab Duo settings'),
+    otherSettingsSubtitle: s__('DuoAgentPlatform|Additional options for your project.'),
     saveChanges: __('Save changes'),
     saveChangesAriaLabel: __('Save changes for GitLab Duo'),
     governanceTitle: s__('AiPowered|Governance'),

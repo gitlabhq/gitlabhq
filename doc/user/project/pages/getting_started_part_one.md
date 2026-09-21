@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages default domain names and URLs
+description: Default domain names and URL structure for GitLab Pages sites.
 ---
 
 {{< details >}}
@@ -17,12 +18,11 @@ These domains:
 
 - Generate predictable URLs for project sites, user sites, and group sites.
 - Support hierarchical paths that reflect your GitLab organizational structure.
-- Create unique domain names with automatic redirects when enabled.
+- Create unique domain names with automatic redirects when turned on.
 - Work seamlessly with custom domain names and SSL/TLS certificates.
 - Scale across user, group, and subgroup projects.
 
-This guide explains how GitLab Pages assigns domain names and URLs to your websites, and how to
-configure your static site generator accordingly.
+Use these URLs to configure your static site generator.
 
 ## GitLab Pages default domain names
 
@@ -54,7 +54,7 @@ Pages domains are `*.gitlab.io`.
 | Project pages owned by a group | `acmecorp/webshop` | `http(s)://acmecorp.example.io/webshop`|
 | Project pages owned by a subgroup | `acmecorp/documentation/product-manual` | `http(s)://acmecorp.example.io/documentation/product-manual`|
 
-When the **Use unique domain** setting is enabled, Pages builds a unique domain name from
+When the **Use unique domain** setting is turned on, Pages builds the domain name from
 the flattened project name and a six-character unique ID. Users receive a `308 Permanent Redirect` status
 redirecting the browser to these unique domain URLs. Browsers might cache this redirect:
 
@@ -77,23 +77,23 @@ For example, if the unique ID is `f85695`, the last example is
 The following examples show how Pages domains work.
 
 > [!note]
-> The following examples imply you disabled the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` with `gitlab.io`.
+> The following examples imply you turned off the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` with `gitlab.io`.
 
 ### Project website examples
 
 - You created a project called `blog` under your username `john`,
   therefore your project URL is `https://gitlab.com/john/blog/`.
-  After you enabled GitLab Pages for this project, and build your site,
+  After you turn on GitLab Pages for this project and build your site,
   you can access it at `https://john.gitlab.io/blog/`.
 - You created a group for all your websites called `websites`,
   and a project in this group is called `blog`. Your project
-  URL is `https://gitlab.com/websites/blog/`. After you enabled
+  URL is `https://gitlab.com/websites/blog/`. After you turn on
   GitLab Pages for this project, the site is available at
   `https://websites.gitlab.io/blog/`.
 - You created a group for your engineering department called `engineering`,
   a subgroup for all your documentation websites called `docs`,
   and a project in this subgroup is called `workflows`. Your project
-  URL is `https://gitlab.com/engineering/docs/workflows/`. After you enabled
+  URL is `https://gitlab.com/engineering/docs/workflows/`. After you turn on
   GitLab Pages for this project, the site is available at
   `https://engineering.gitlab.io/docs/workflows`.
 
@@ -101,11 +101,11 @@ The following examples show how Pages domains work.
 
 - Under your username, `john`, you created a project called
   `john.gitlab.io`. Your project URL is `https://gitlab.com/john/john.gitlab.io`.
-  After you enabled GitLab Pages for your project, your website
+  After you turn on GitLab Pages for your project, your website
   is published under `https://john.gitlab.io`.
 - Under your group `websites`, you created a project called
   `websites.gitlab.io`. Your project's URL is `https://gitlab.com/websites/websites.gitlab.io`.
-  After you enabled GitLab Pages for your project,
+  After you turn on GitLab Pages for your project,
   your website is published under `https://websites.gitlab.io`.
 
 **General example**:

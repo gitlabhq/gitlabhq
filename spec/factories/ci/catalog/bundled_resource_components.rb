@@ -5,5 +5,9 @@ FactoryBot.define do
     version factory: :ci_catalog_bundled_resource_version
     bundled_resource { version.bundled_resource }
     sequence(:name) { |n| "component-#{n}" }
+
+    trait :remote_store do
+      file_store { ::ObjectStorage::Store::REMOTE }
+    end
   end
 end

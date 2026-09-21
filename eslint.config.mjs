@@ -560,7 +560,7 @@ export default [
       'local-rules/vue-require-valid-help-page-link-component': 'error',
       'local-rules/vue-require-vue-constructor-name': 'error',
       'local-rules/no-orphaned-feature-flag-references': 'error',
-      'local-rules/gl-toast-mixin': 'error',
+      'local-rules/no-root-toast': 'error',
       'local-rules/no-web-url': 'error',
       'local-rules/vue-no-web-url': 'error',
     },
@@ -641,8 +641,83 @@ export default [
 
       // Vue 3 components slots mixin
       'local-rules/vue3-gl-slots': 'error',
-      'local-rules/vue3-gl-slots-mixin-pairing': 'error',
-      'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
+
+      // A mixin registration and a usage of what it supplies must appear in
+      // the same file, both ways. Mixins are identified by import, so local
+      // aliases (glFeatureFlagMixin, TimeagoMixin) resolve to the same entry.
+      // `reportUnused: false` marks entries whose existing unused
+      // registrations are still being removed; the missing half stays on.
+      'local-rules/vue-mixin-pairing': [
+        'error',
+        {
+          mixins: [
+            { source: '@gitlab/ui', imported: 'GlToastMixin', members: ['$toast'] },
+            {
+              source: '~/lib/utils/vue3compat/gl_slots_mixin',
+              imported: 'glSlotsMixin',
+              members: ['glSlots'],
+            },
+            {
+              source: '~/lib/utils/vue3compat/gl_listeners_mixin',
+              imported: 'glListenersMixin',
+              members: ['glListeners', 'glListener'],
+            },
+            {
+              source: '~/vue_shared/mixins/gl_feature_flags_mixin',
+              imported: 'default',
+              localName: 'glFeatureFlagsMixin',
+              factory: true,
+              members: ['glFeatures'],
+              reportUnused: false,
+            },
+            {
+              source: '~/vue_shared/mixins/gl_abilities_mixin',
+              imported: 'default',
+              localName: 'glAbilitiesMixin',
+              factory: true,
+              members: ['glAbilities'],
+              reportUnused: false,
+            },
+            {
+              source: '~/vue_shared/mixins/gl_licensed_features_mixin',
+              imported: 'default',
+              localName: 'glLicensedFeaturesMixin',
+              factory: true,
+              members: ['glLicensedFeatures'],
+            },
+            {
+              source: '~/vue_shared/mixins/timeago',
+              imported: 'default',
+              localName: 'timeagoMixin',
+              members: ['timeFormatted', 'tooltipTitle'],
+              reportUnused: false,
+            },
+            {
+              source: '~/tracking',
+              imported: 'InternalEvents',
+              factory: 'mixin',
+              members: ['trackEvent'],
+              reportUnused: false,
+            },
+            {
+              source: '~/tracking/internal_events',
+              imported: 'default',
+              localName: 'InternalEvents',
+              factory: 'mixin',
+              members: ['trackEvent'],
+              reportUnused: false,
+            },
+            {
+              source: '~/tracking',
+              imported: 'default',
+              localName: 'Tracking',
+              factory: 'mixin',
+              members: ['track', 'trackingCategory', 'trackingOptions'],
+              reportUnused: false,
+            },
+          ],
+        },
+      ],
     },
   },
   // App code only: the deliberate slot-forwarding fixtures in

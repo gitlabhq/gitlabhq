@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Internal::Pages, feature_category: :pages do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be_with_reload(:namespace_settings) { create(:namespace_settings) }
-  let_it_be_with_reload(:group) { create(:group, namespace_settings: namespace_settings) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
 
   let(:auth_header) do
@@ -300,8 +299,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
           end
 
           describe 'access_control' do
-            let(:project_setting) { create(:project_setting, pages_unique_domain_enabled: false) }
-
             where(:access_control_is_enabled, :access_control_is_forced, :group_enforcement, :project_setting, :result) do
               false | false | false | ProjectFeature::PUBLIC   | false
               false | false | false | ProjectFeature::ENABLED  | false
@@ -363,9 +360,23 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
               end
 
               with_them do
-                let(:group0) { create(:group, namespace_settings: create(:namespace_settings, force_pages_access_control: level0)) }
-                let(:group1) { create(:group, parent: group0, namespace_settings: create(:namespace_settings, force_pages_access_control: level1)) }
-                let(:group2) { create(:group, parent: group1, namespace_settings: create(:namespace_settings, force_pages_access_control: level2)) }
+                let(:group0) do
+                  create(:group).tap do |g|
+                    g.namespace_settings.update!(force_pages_access_control: level0)
+                  end
+                end
+
+                let(:group1) do
+                  create(:group, parent: group0).tap do |g|
+                    g.namespace_settings.update!(force_pages_access_control: level1)
+                  end
+                end
+
+                let(:group2) do
+                  create(:group, parent: group1).tap do |g|
+                    g.namespace_settings.update!(force_pages_access_control: level2)
+                  end
+                end
 
                 before do
                   stub_pages_setting(host: 'example.com', access_control: true)
@@ -389,8 +400,11 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
           describe 'access control performance' do
             let(:subgroup) { create(:group, parent: group) }
-            let(:subgroup_with_access_control) { create(:group, parent: group, namespace_settings: create(:namespace_settings, force_pages_access_control: true)) }
-            let(:project_setting) { create(:project_setting, pages_unique_domain_enabled: false) }
+            let(:subgroup_with_access_control) do
+              create(:group, parent: group).tap do |g|
+                g.namespace_settings.update!(force_pages_access_control: true)
+              end
+            end
 
             before do
               stub_pages_setting(host: 'example.com', access_control: true)
@@ -404,15 +418,15 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                 get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.example.com" }
               end
 
-              project1 = create(:project, group: subgroup, project_setting: project_setting, pages_access_level: ProjectFeature::PUBLIC)
+              project1 = create(:project, group: subgroup, pages_access_level: ProjectFeature::PUBLIC)
               project1.project_setting.update!(pages_unique_domain_enabled: false)
               create(:pages_deployment, project: project1)
 
-              project2 = create(:project, group: subgroup_with_access_control, project_setting: project_setting, pages_access_level: ProjectFeature::PUBLIC)
+              project2 = create(:project, group: subgroup_with_access_control, pages_access_level: ProjectFeature::PUBLIC)
               project2.project_setting.update!(pages_unique_domain_enabled: false)
               create(:pages_deployment, project: project2)
 
-              project3 = create(:project, group: subgroup, project_setting: project_setting, pages_access_level: ProjectFeature::PRIVATE)
+              project3 = create(:project, group: subgroup, pages_access_level: ProjectFeature::PRIVATE)
               project3.project_setting.update!(pages_unique_domain_enabled: false)
               create(:pages_deployment, project: project3)
 

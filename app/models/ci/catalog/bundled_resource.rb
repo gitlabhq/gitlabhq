@@ -21,6 +21,27 @@ module Ci
 
       scope :ordered_by_id, -> { order(id: :asc) }
 
+      scope :by_natural_key, ->(server_fqdn, full_path) {
+        where(server_fqdn: server_fqdn, full_path: full_path)
+      }
+
+      def self.find_bundled_version(server_fqdn:, full_path:, semver:)
+        parsed = ::Packages::SemVer.parse(semver.to_s, prefixed: semver.to_s.start_with?('v'))
+        return unless parsed
+
+        by_natural_key(server_fqdn, full_path).first&.versions&.find_by(
+          semver_major: parsed.major,
+          semver_minor: parsed.minor,
+          semver_patch: parsed.patch,
+          semver_prerelease: parsed.prerelease.presence
+        )
+      end
+
+      def self.find_bundled_component(server_fqdn:, full_path:, semver:, name:)
+        find_bundled_version(server_fqdn: server_fqdn, full_path: full_path, semver: semver)
+          &.components&.find_by(name: name)
+      end
+
       def latest_version
         versions.order_by_semantic_version_desc.first
       end

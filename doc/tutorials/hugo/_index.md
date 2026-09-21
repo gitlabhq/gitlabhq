@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Build, test, and deploy your Hugo site with GitLab'
+description: Build, test, and deploy a Hugo static site to GitLab Pages with a CI/CD pipeline.
 ---
 
 <!-- vale gitlab_base.FutureTense = NO -->
@@ -52,8 +53,8 @@ To create a blank project, in GitLab:
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
-   - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
-   - In the **Project slug** field, enter the path to your project. The GitLab instance uses the slug as the URL path to the project. To change the slug, first enter the project name, then change the slug.
+   - In the **Project name** text box, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
+   - In the **Project slug** text box, enter the path to your project. The GitLab instance uses the slug as the URL path to the project. To change the slug, first enter the project name, then change the slug.
    - The **Visibility Level** can be either Private or Public. If you choose Private, your website is still publicly available, but your code remains private.
    - Because you're pushing an existing repository, clear the box to **Initialize repository with a README**.
 1. When you're ready, select **Create project**.
@@ -151,11 +152,11 @@ You've just triggered a pipeline to build your Hugo site!
 
 If you're quick, you can see GitLab build and deploy your site.
 
-From the left-hand navigation, select **Build** > **Pipelines**.
+In the left sidebar, select **Build** > **Pipelines**.
 
 You see that GitLab has run your `test` and `create-pages` jobs.
 
-To view your site, when the pipeline is finished, on the left-hand navigation, select **Deploy** > **Pages** to find the link to your Pages website.
+To view your site, when the pipeline is finished, in the left sidebar, select **Deploy** > **Pages** to find the link to your Pages website.
 
 ### Add your Hugo configuration options
 

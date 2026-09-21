@@ -298,17 +298,13 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
   end
 
   describe "POST create" do
+    let_it_be(:project) { create(:project) }
+
     let(:bitbucket_username) { user.username }
-
-    let(:bitbucket_user) do
-      double(username: bitbucket_username)
-    end
-
+    let(:bitbucket_user) { double(username: bitbucket_username) }
     let(:bitbucket_repo) do
       double(slug: "vim", owner: bitbucket_username, name: 'vim')
     end
-
-    let(:project) { create(:project) }
 
     before do
       allow_any_instance_of(Bitbucket::Client).to receive(:repo).and_return(bitbucket_repo)

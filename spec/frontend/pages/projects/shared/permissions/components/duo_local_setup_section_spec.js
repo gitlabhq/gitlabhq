@@ -25,10 +25,10 @@ describe('DuoLocalSetupSection', () => {
   });
 
   it.each`
-    index | icon           | title                  | description                                                                               | linkText                    | href
-    ${0}  | ${'monitor'}   | ${'IDE extensions'}    | ${'VS Code · JetBrains · Visual Studio'}                                                  | ${'Get the extension'}      | ${'/help/editor_extensions/_index.md'}
-    ${1}  | ${'terminal'}  | ${'GitLab CLI (glab)'} | ${'Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal.'} | ${'Install glab'}           | ${'/help/editor_extensions/gitlab_cli/_index.md'}
-    ${2}  | ${'tanuki-ai'} | ${'GitLab Duo CLI'}    | ${'Run flows and agentic chat from the terminal.'}                                        | ${'Install GitLab Duo CLI'} | ${'/help/user/gitlab_duo_cli/set_up.md'}
+    index | icon           | title                  | description                                                                                      | linkText                    | href
+    ${0}  | ${'monitor'}   | ${'IDE extensions'}    | ${'VS Code · JetBrains · Visual Studio'}                                                         | ${'Get the extension'}      | ${'/help/editor_extensions/_index.md'}
+    ${1}  | ${'terminal'}  | ${'GitLab CLI (glab)'} | ${'Manage merge requests, issues, and pipelines, and run GitLab Orbit Local from the terminal.'} | ${'Install glab'}           | ${'/help/editor_extensions/gitlab_cli/_index.md'}
+    ${2}  | ${'tanuki-ai'} | ${'GitLab Duo CLI'}    | ${'Run flows and agentic chat from the terminal.'}                                               | ${'Install GitLab Duo CLI'} | ${'/help/user/gitlab_duo_cli/set_up.md'}
   `('renders the $title card', ({ index, icon, title, description, linkText, href }) => {
     const card = findCards().at(index);
     const button = card.findComponent(GlButton);

@@ -376,9 +376,6 @@ Retrieves the [pipeline variables](../ci/variables/_index.md#use-pipeline-variab
 GET /projects/:id/pipelines/:pipeline_id/variables
 ```
 
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
-control the pagination of results.
-
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
 | `id`          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |

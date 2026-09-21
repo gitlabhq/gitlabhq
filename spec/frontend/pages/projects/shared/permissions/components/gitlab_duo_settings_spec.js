@@ -130,7 +130,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     it('does not group the remaining settings under a heading', () => {
-      expect(wrapper.text()).not.toContain('Other Duo settings');
+      expect(wrapper.text()).not.toContain('Other GitLab Duo settings');
     });
 
     it('hides the local setup section', () => {
@@ -195,7 +195,7 @@ describe('GitlabDuoSettings', () => {
   describe('when the readiness card is on', () => {
     it('groups the remaining settings under a heading', () => {
       expect(findReadinessBlock().exists()).toBe(true);
-      expect(wrapper.text()).toContain('Other Duo settings');
+      expect(wrapper.text()).toContain('Other GitLab Duo settings');
     });
   });
 

@@ -368,11 +368,11 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL', feature_category: :
   end
 
   describe 'Authorizations on active record relations' do
-    let!(:visible_project) { create(:project, :private) }
-    let!(:other_project) { create(:project, :private) }
-    let!(:visible_issues) { create_list(:issue, 2, project: visible_project) }
-    let!(:other_issues) { create_list(:issue, 2, project: other_project) }
-    let!(:user) { visible_project.first_owner }
+    let_it_be(:visible_project) { create(:project, :private) }
+    let_it_be(:other_project) { create(:project, :private) }
+    let_it_be(:visible_issues) { create_list(:issue, 2, project: visible_project) }
+    let_it_be(:other_issues) { create_list(:issue, 2, project: other_project) }
+    let_it_be(:user) { visible_project.first_owner }
 
     let(:issue_type) do
       type_factory do |type|

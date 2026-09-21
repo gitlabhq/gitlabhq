@@ -2945,27 +2945,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#any_project_with_pages_deployed?' do
-    it 'returns true if any project nested under the group has pages deployed' do
-      parent_1 = create(:group) # Three projects, one with pages
-      child_1_1 = create(:group, parent: parent_1) # Two projects, one with pages
-      child_1_2 = create(:group, parent: parent_1) # One project, no pages
-      parent_2 = create(:group) # No projects
-
-      create(:project, group: child_1_1).tap do |project|
-        create(:pages_deployment, project: project)
-      end
-
-      create(:project, group: child_1_1)
-      create(:project, group: child_1_2)
-
-      expect(parent_1.any_project_with_pages_deployed?).to be(true)
-      expect(child_1_1.any_project_with_pages_deployed?).to be(true)
-      expect(child_1_2.any_project_with_pages_deployed?).to be(false)
-      expect(parent_2.any_project_with_pages_deployed?).to be(false)
-    end
-  end
-
   describe '#has_parent?' do
     it 'returns true when the group has a parent' do
       group = create(:group, :nested)

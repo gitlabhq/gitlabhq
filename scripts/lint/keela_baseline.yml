@@ -428,7 +428,6 @@ methods:
   app/models/merge_request_diff.rb:
   - self.find_by_diff_refs
   app/models/namespace.rb:
-  - any_project_with_pages_deployed?
   - saved_change_to_parent?
   - saved_change_to_path_or_parent?
   app/models/namespace_setting.rb:
@@ -788,7 +787,6 @@ scopes:
   - by_primary_identifiers
   - eager_load_vulnerability_flags
   ee/app/models/vulnerabilities/identifier.rb:
-  - with_fingerprint
   - with_external_type
   ee/app/models/vulnerabilities/read.rb:
   - with_findings_scanner_identifiers_and_notes

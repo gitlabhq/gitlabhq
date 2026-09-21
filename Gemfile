@@ -676,7 +676,7 @@ gem 'ssh_data', '~> 2.0', feature_category: :shared # rubocop:todo Gemfile/Missi
 gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 19.2', feature_category: :gitaly
+gem 'gitaly', '~> 19.4.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'gitlab-kas-grpc', '~> 19.4.0-rc1', feature_category: :deployment_management

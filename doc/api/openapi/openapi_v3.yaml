@@ -82311,6 +82311,10 @@ components:
               for tools execution.
             mcp_orbit: Grants access to the Orbit Knowledge Graph MCP server for graph
               queries and schema retrieval.
+    apiKey:
+      type: apiKey
+      name: PRIVATE-TOKEN
+      in: header
   schemas:
     APIEntitiesGitlabSubscription:
       type: object
@@ -125208,3 +125212,4 @@ components:
 security:
 - http: []
 - oauth2: []
+- apiKey: []

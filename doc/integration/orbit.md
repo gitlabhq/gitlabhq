@@ -47,6 +47,19 @@ Personal namespaces are not enrolled.
 When you clear **Index root namespaces automatically**, existing non-excluded enrollments remain.
 The background job does not enroll new top-level groups until you select the setting again.
 
+### Exclude top-level groups from automatic indexing
+
+Administrators can manage exclusions regardless of whether automatic indexing is enabled:
+
+1. In the left sidebar, at the bottom, select **Admin**.
+1. Select **Orbit**.
+1. In **Excluded groups**, select **Exclude group**.
+1. Select a top-level group, then select **Exclude**.
+
+Excluded groups are not automatically enrolled. If an excluded group is already indexed, GitLab
+removes its enrollment and index within a few minutes. To allow automatic enrollment again, select
+**Remove** next to the group.
+
 > [!note]
 > This setting has no effect on GitLab.com.
 

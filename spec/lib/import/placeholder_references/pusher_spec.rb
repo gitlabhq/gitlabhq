@@ -13,29 +13,28 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
 
   let(:project) { group_project }
 
-  let(:reassign_user) { create(:user) }
-  let(:record) { create(:note, project: project) }
+  let_it_be(:reassign_user) { create(:user) }
   let(:attribute) { :author_id }
   let(:user_mapping_enabled) { true }
   let(:cached_references) { placeholder_user_references('github', import_state.id) }
 
-  let!(:import_state) { create(:import_state, project: project) }
+  let_it_be(:import_state) { create(:import_state, project: group_project) }
 
-  let!(:import_source_user) do
+  let_it_be(:import_source_user) do
     create(:import_source_user, :awaiting_approval,
-      namespace: project.namespace,
+      namespace: group_project.namespace,
       placeholder_user: create(:user, :import_user))
   end
 
-  let!(:placeholder_source_user) do
+  let_it_be(:placeholder_source_user) do
     create(:import_source_user, :awaiting_approval,
-      namespace: project.namespace,
+      namespace: group_project.namespace,
       placeholder_user: create(:user, :placeholder))
   end
 
-  let!(:mapped_source_user) do
+  let_it_be(:mapped_source_user) do
     create(:import_source_user, :completed,
-      namespace: project.namespace,
+      namespace: group_project.namespace,
       reassign_to_user: reassign_user)
   end
 
@@ -67,6 +66,8 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   end
 
   describe '#push_reference' do
+    let_it_be(:record) { create(:note, project: group_project) }
+
     it 'creates a placeholder reference in the store' do
       expect { pusher.push_reference(project, record, attribute, import_source_user_identifier) }
         .to change { store.count }.by(1)
@@ -141,9 +142,9 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   end
 
   describe '#push_references_by_ids' do
-    let(:note1) { create(:note, project: project) }
-    let(:note2) { create(:note, project: project) }
-    let(:note3) { create(:note, project: project) }
+    let_it_be(:note1) { create(:note, project: group_project) }
+    let_it_be(:note2) { create(:note, project: group_project) }
+    let_it_be(:note3) { create(:note, project: group_project) }
     let(:ids) { [note1.id, note2.id, note3.id] }
     let(:model) { Note }
 
@@ -203,8 +204,8 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   end
 
   describe '#push_reference_with_composite_key' do
-    let(:issue) { create(:issue, project: project) }
-    let(:issue_assignee) { create(:issue_assignee, issue: issue) }
+    let_it_be(:issue) { create(:issue, project: group_project) }
+    let_it_be(:issue_assignee) { create(:issue_assignee, issue: issue) }
     let(:composite_key) { { 'user_id' => issue_assignee.user_id, 'issue_id' => issue_assignee.issue_id } }
 
     it 'creates a placeholder reference with composite key' do

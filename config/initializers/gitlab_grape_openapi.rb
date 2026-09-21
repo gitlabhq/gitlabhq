@@ -52,6 +52,11 @@ Gitlab::GrapeOpenapi.configure do |config|
           }
         }
       }
+    ),
+    Gitlab::GrapeOpenapi::Models::SecurityScheme.new(
+      name: "PRIVATE-TOKEN",
+      type: "apiKey",
+      in: "header"
     )
   ]
 

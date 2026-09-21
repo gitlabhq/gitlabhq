@@ -1,9 +1,17 @@
 ---
 name: update_knowledge_graph_setting
-description: Grants the ability to manage Knowledge Graph settings for a group.
+description: Grants the ability to manage Knowledge Graph settings.
 boundaries:
   - group
+  - instance
 available_for:
   - granular_access_token
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
+  - condition: self_managed
+    boundaries:
+      - instance
 permissions:
   - update_knowledge_graph_setting

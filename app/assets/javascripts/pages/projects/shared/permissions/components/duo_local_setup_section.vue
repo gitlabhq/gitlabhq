@@ -18,7 +18,7 @@ export default {
       icon: 'terminal',
       title: s__('DuoAgentPlatform|GitLab CLI (glab)'),
       description: s__(
-        'DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal.',
+        'DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run GitLab Orbit Local from the terminal.',
       ),
       linkText: s__('DuoAgentPlatform|Install glab'),
       href: helpPagePath('editor_extensions/gitlab_cli/_index.md'),

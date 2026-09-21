@@ -60,7 +60,7 @@ By default, Gitaly is run on the same server as Gitaly clients and is
 configured as described previously. Single-server installations are best served by
 this default configuration used by:
 
-- [Linux package installations](https://docs.gitlab.com/omnibus/).
+- [Linux package installations](../../install/package/_index.md).
 - [Self-compiled installations](../../install/self_compiled/_index.md).
 
 However, Gitaly can be deployed to its own server, which can benefit GitLab installations that span

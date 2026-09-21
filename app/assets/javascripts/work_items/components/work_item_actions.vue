@@ -7,7 +7,6 @@ import {
   GlIcon,
   GlLoadingIcon,
   GlModal,
-  GlModalDirective,
   GlTooltipDirective,
   GlToggle,
   GlToastMixin,
@@ -77,7 +76,6 @@ export default {
     MoveWorkItemModal,
   },
   directives: {
-    GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' }), GlToastMixin],

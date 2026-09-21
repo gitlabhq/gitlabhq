@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Create a GitLab Pages website from a CI/CD template
+description: Create a GitLab Pages website with a CI/CD template for a static site generator.
 ---
 
 {{< details >}}
@@ -26,7 +27,7 @@ these steps, you might have to do additional configuration for the Pages site to
 1. In the **Filename** text box, enter `.gitlab-ci.yml`. A dropdown list appears to the right of the text box.
 1. From the **Apply a template** dropdown list, in the **Pages** section, select the name of your SSG.
    For plain HTML, select **HTML**.
-1. In the **Commit message** box, type the commit message.
+1. In the **Commit message** text box, type the commit message.
 1. Select **Commit changes**.
 
 If everything is configured correctly, the site can take approximately 30 minutes to deploy.

@@ -13032,6 +13032,7 @@ CREATE TABLE ai_compliance_anthropic_integrations (
     anthropic_organization_uuid text,
     list_cursor text,
     last_error text,
+    last_successful_sync_at timestamp with time zone,
     CONSTRAINT check_2e187077af CHECK ((char_length(last_error) <= 1024)),
     CONSTRAINT check_666622dd6b CHECK ((char_length(list_cursor) <= 2048)),
     CONSTRAINT check_d965b76f22 CHECK ((char_length(anthropic_organization_uuid) <= 255))

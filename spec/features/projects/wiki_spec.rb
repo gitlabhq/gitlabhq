@@ -28,6 +28,5 @@ RSpec.describe 'Project wikis', feature_category: :wiki do
   describe 'Server-rendered flows' do
     it_behaves_like 'User views wiki pages'
     it_behaves_like 'User views wiki templates'
-    it_behaves_like 'User views a wiki page non-Vue surfaces'
   end
 end

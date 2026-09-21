@@ -253,7 +253,7 @@ RSpec.describe ProjectImportState, feature_category: :importers do
             project: project,
             user: project.creator,
             namespace: project.namespace,
-            additional_properties: { label: 'github', property: expected_source }
+            additional_properties: { label: 'github', property: expected_source, source_hosting: 'cloud' }
           )
       end
 
@@ -290,6 +290,86 @@ RSpec.describe ProjectImportState, feature_category: :importers do
             user: project.creator,
             namespace: project.namespace,
             additional_properties: { label: 'github' }
+          )
+      end
+
+      it 'includes source_hosting when the project has a resolvable github source' do
+        project = create(
+          :project, :import_scheduled, import_type: 'github', import_url: 'https://api.github.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github', property: expected_source, source_hosting: 'cloud' }
+          )
+      end
+
+      it 'labels enterprise github as self_hosted' do
+        project = create(
+          :project, :import_scheduled, import_type: 'github', import_url: 'https://ghe.example.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github', property: expected_source, source_hosting: 'self_hosted' }
+          )
+      end
+
+      it 'labels gitea.com as cloud' do
+        project = create(
+          :project, :import_scheduled, import_type: 'gitea', import_url: 'https://gitea.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'gitea', property: expected_source, source_hosting: 'cloud' }
+          )
+      end
+
+      it 'labels self-hosted gitea as self_hosted' do
+        project = create(
+          :project, :import_scheduled, import_type: 'gitea', import_url: 'https://gitea.example.com/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'gitea', property: expected_source, source_hosting: 'self_hosted' }
+          )
+      end
+
+      it 'omits source_hosting for non-github/gitea importers' do
+        project = create(
+          :project, :import_scheduled, import_type: 'bitbucket', import_url: 'https://bitbucket.org/foo/bar.git'
+        )
+        expected_source = Gitlab::Import::SourceIdentifier.hash(project.safe_import_url(masked: false))
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'bitbucket', property: expected_source }
           )
       end
 

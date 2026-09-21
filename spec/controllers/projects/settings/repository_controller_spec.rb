@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Settings::RepositoryController, feature_category: :source_code_management do
-  let(:project) { create(:project_empty_repo, :public) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project_empty_repo, :public, maintainers: user) }
   let(:base_params) { { namespace_id: project.namespace, project_id: project } }
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -21,7 +20,7 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
     end
 
     context 'with remote mirrors pagination' do
-      let!(:remote_mirrors) { create_list(:remote_mirror, 3, project: project) }
+      let_it_be(:remote_mirrors) { create_list(:remote_mirror, 3, project: project) }
 
       before do
         allow(Kaminari.config).to receive(:default_per_page).and_return(2)
@@ -43,7 +42,7 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
     end
 
     context 'with protected branches' do
-      let_it_be(:project, freeze: false) { create(:project, :repository) }
+      let_it_be(:project, freeze: false) { create(:project, :small_repo, maintainers: user) }
 
       let_it_be(:branch_a) { create(:protected_branch, project: project, name: 'alpha') }
       let_it_be(:branch_z) { create(:protected_branch, project: project, name: 'zeta') }
@@ -173,7 +172,7 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
   end
 
   describe 'PUT update' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, maintainers: user) }
 
     context 'when updating default branch' do
       let!(:previous_default_branch) { project.default_branch }
@@ -215,6 +214,7 @@ RSpec.describe Projects::Settings::RepositoryController, feature_category: :sour
     end
 
     context 'when updating branch names template from issues' do
+      let_it_be_with_reload(:project) { create(:project, :small_repo, maintainers: user) }
       let(:branch_name_template) { 'feat/GL-%{id}-%{title}' }
 
       let(:request_params) { base_params.merge({ project: project_params_attributes }) }

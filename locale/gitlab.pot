@@ -31039,7 +31039,16 @@ msgstr ""
 msgid "DuoAgentPlatform|Activity deleted after 30 days of inactivity. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "DuoAgentPlatform|Add a config file to customize how flows run in CI/CD."
+msgstr ""
+
+msgid "DuoAgentPlatform|Add a config file to customize how flows run in CI/CD. File not found."
+msgstr ""
+
 msgid "DuoAgentPlatform|Add a session URL to commits authored by GitLab Duo Agent Platform, so reviewers can trace AI-assisted changes back to the originating session."
+msgstr ""
+
+msgid "DuoAgentPlatform|Additional options for your project."
 msgstr ""
 
 msgid "DuoAgentPlatform|Admin settings"
@@ -31066,7 +31075,7 @@ msgstr ""
 msgid "DuoAgentPlatform|Agents get repo-wide context."
 msgstr ""
 
-msgid "DuoAgentPlatform|Agents run without it, but in a generic container that may not have your project tooling."
+msgid "DuoAgentPlatform|All %{count} are required for full agent and flow support."
 msgstr ""
 
 msgid "DuoAgentPlatform|All steps complete"
@@ -31085,6 +31094,9 @@ msgid "DuoAgentPlatform|Allow foundational flows"
 msgstr ""
 
 msgid "DuoAgentPlatform|Awaiting your input"
+msgstr ""
+
+msgid "DuoAgentPlatform|Blocked: the Agent Platform is off, so nothing below can be set up yet."
 msgstr ""
 
 msgid "DuoAgentPlatform|CI job"
@@ -31119,6 +31131,9 @@ msgid "DuoAgentPlatform|Commit authored in a GitLab Duo Agent session"
 msgstr ""
 
 msgid "DuoAgentPlatform|Completed"
+msgstr ""
+
+msgid "DuoAgentPlatform|Connect a runner to run CI/CD flows."
 msgstr ""
 
 msgid "DuoAgentPlatform|Could not check for a runner. Try again."
@@ -31244,19 +31259,13 @@ msgstr ""
 msgid "DuoAgentPlatform|MCP servers"
 msgstr ""
 
-msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal."
+msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run GitLab Orbit Local from the terminal."
 msgstr ""
 
 msgid "DuoAgentPlatform|Model"
 msgstr ""
 
-msgid "DuoAgentPlatform|Needed once flow execution is on."
-msgstr ""
-
 msgid "DuoAgentPlatform|No GitLab Credits remain for this billing period. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "DuoAgentPlatform|No runner this project can use, so flows would never start."
 msgstr ""
 
 msgid "DuoAgentPlatform|Not set up yet. To get started, turn on GitLab Duo."
@@ -31268,25 +31277,22 @@ msgstr ""
 msgid "DuoAgentPlatform|Off for this instance. Only an administrator can turn it on."
 msgstr ""
 
-msgid "DuoAgentPlatform|On for this group. Group Owners control it."
+msgid "DuoAgentPlatform|On for this group by default. Group Owners control availability."
 msgstr ""
 
-msgid "DuoAgentPlatform|On for this instance. Administrators control it."
+msgid "DuoAgentPlatform|On for this instance by default. Administrators control availability."
 msgstr ""
 
 msgid "DuoAgentPlatform|Optional"
 msgstr ""
 
-msgid "DuoAgentPlatform|Other Duo settings"
+msgid "DuoAgentPlatform|Other GitLab Duo settings"
 msgstr ""
 
 msgid "DuoAgentPlatform|Paused"
 msgstr ""
 
 msgid "DuoAgentPlatform|Production-ready flows built and maintained by GitLab."
-msgstr ""
-
-msgid "DuoAgentPlatform|Project-wide behavior, unrelated to readiness."
 msgstr ""
 
 msgid "DuoAgentPlatform|Query graph"
@@ -31302,9 +31308,6 @@ msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
 msgstr ""
 
 msgid "DuoAgentPlatform|Required"
-msgstr ""
-
-msgid "DuoAgentPlatform|Required for full agent and flow support."
 msgstr ""
 
 msgid "DuoAgentPlatform|Resolve with GitLab Duo"
@@ -31346,9 +31349,6 @@ msgstr ""
 msgid "DuoAgentPlatform|Showing most recent %{count}"
 msgstr ""
 
-msgid "DuoAgentPlatform|Something blocks agent execution. Check the rows below."
-msgstr ""
-
 msgid "DuoAgentPlatform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
@@ -31370,7 +31370,7 @@ msgstr ""
 msgid "DuoAgentPlatform|Takes a few seconds..."
 msgstr ""
 
-msgid "DuoAgentPlatform|The repository is empty. Push a first commit, then generate the file."
+msgid "DuoAgentPlatform|The repository is empty. Push a first commit, then return here to generate a config file."
 msgstr ""
 
 msgid "DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on."
@@ -31392,6 +31392,9 @@ msgid "DuoAgentPlatform|Turn on AI-native features for this project."
 msgstr ""
 
 msgid "DuoAgentPlatform|Turn on flows so agents can review merge requests, fix pipelines, and more."
+msgstr ""
+
+msgid "DuoAgentPlatform|Unable to find a runner configured for flows, so flows can't run."
 msgstr ""
 
 msgid "DuoAgentPlatform|Usage billing is not available for this account. To continue using GitLab Duo Agent Platform, contact your administrator."
@@ -57547,6 +57550,21 @@ msgstr ""
 msgid "Orbit|Entities"
 msgstr ""
 
+msgid "Orbit|Exclude"
+msgstr ""
+
+msgid "Orbit|Exclude group"
+msgstr ""
+
+msgid "Orbit|Exclude group from automatic indexing"
+msgstr ""
+
+msgid "Orbit|Excluded groups"
+msgstr ""
+
+msgid "Orbit|Excluded groups are not automatically indexed. If the group is already indexed, GitLab removes its enrollment and index within a few minutes."
+msgstr ""
+
 msgid "Orbit|Execute query"
 msgstr ""
 
@@ -57565,6 +57583,9 @@ msgstr ""
 msgid "Orbit|Failed to enable Orbit. Please try again."
 msgstr ""
 
+msgid "Orbit|Failed to exclude the group. Please try again."
+msgstr ""
+
 msgid "Orbit|Failed to execute query. Please try again."
 msgstr ""
 
@@ -57572,6 +57593,9 @@ msgid "Orbit|Failed to expand node neighbors."
 msgstr ""
 
 msgid "Orbit|Failed to load code navigation data."
+msgstr ""
+
+msgid "Orbit|Failed to load excluded groups. Please try again."
 msgstr ""
 
 msgid "Orbit|Failed to load group. Please try again."
@@ -57590,6 +57614,9 @@ msgid "Orbit|Failed to load query templates."
 msgstr ""
 
 msgid "Orbit|Failed to load references."
+msgstr ""
+
+msgid "Orbit|Failed to remove the group exclusion. Please try again."
 msgstr ""
 
 msgid "Orbit|Failed to update group setting. Please try again."
@@ -57694,6 +57721,9 @@ msgstr ""
 msgid "Orbit|List pipelines that failed in the last week"
 msgstr ""
 
+msgid "Orbit|Load more"
+msgstr ""
+
 msgid "Orbit|MCP"
 msgstr ""
 
@@ -57727,6 +57757,9 @@ msgstr ""
 msgid "Orbit|No eligible groups are available for Orbit."
 msgstr ""
 
+msgid "Orbit|No groups are excluded. Excluded top-level groups are skipped by automatic indexing."
+msgstr ""
+
 msgid "Orbit|No groups match your search."
 msgstr ""
 
@@ -57749,6 +57782,9 @@ msgid "Orbit|No results yet"
 msgstr ""
 
 msgid "Orbit|No tools available."
+msgstr ""
+
+msgid "Orbit|No top-level groups found"
 msgstr ""
 
 msgid "Orbit|Note"
@@ -57844,6 +57880,9 @@ msgstr ""
 msgid "Orbit|Relationships"
 msgstr ""
 
+msgid "Orbit|Remove"
+msgstr ""
+
 msgid "Orbit|Reset zoom"
 msgstr ""
 
@@ -57880,7 +57919,13 @@ msgstr ""
 msgid "Orbit|SecurityScan"
 msgstr ""
 
+msgid "Orbit|Select a top-level group"
+msgstr ""
+
 msgid "Orbit|Select entity"
+msgstr ""
+
+msgid "Orbit|Select group"
 msgstr ""
 
 msgid "Orbit|Select scope"

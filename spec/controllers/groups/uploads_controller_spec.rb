@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Groups::UploadsController, feature_category: :portfolio_management do
   include WorkhorseHelpers
 
-  let(:model) { create(:group, :public) }
+  let_it_be_with_reload(:model) { create(:group, :public) }
+  let_it_be(:user) { create(:user) }
+
   let(:params) do
     { group_id: model }
   end
@@ -16,7 +18,6 @@ RSpec.describe Groups::UploadsController, feature_category: :portfolio_managemen
   end
 
   let(:legacy_version) { UploadsActions::ID_BASED_UPLOAD_PATH_VERSION - 1 }
-  let(:user) { create(:user) }
 
   it_behaves_like 'handle uploads' do
     let(:uploader_class) { NamespaceFileUploader }

@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages settings
+description: Configuration options for GitLab Pages, including custom error pages, redirects, and unique domains.
 ---
 
 {{< details >}}
@@ -31,15 +32,15 @@ In brief, this is what you need to upload your website in GitLab Pages:
 1. Domain of the instance: domain name that is used for GitLab Pages
    (ask your administrator).
 1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/_index.md#pages) in the root directory of your repository.
-1. GitLab Runner enabled for the project.
+1. GitLab Runner turned on for the project.
 
 ## GitLab Pages on GitLab.com
 
 If you are using [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom) to host your website, then:
 
 - The domain name for GitLab Pages on GitLab.com is `gitlab.io`.
-- Custom domains and TLS support are enabled.
-- Instance runners are enabled by default, provided for free, and can be used to
+- Custom domains and TLS support are turned on.
+- Instance runners are turned on by default, provided for free, and can be used to
   build your website. If you want, you can still bring your own runner.
 
 ## Example projects
@@ -338,7 +339,7 @@ If anyone tries to access the old URL, they receive a `404` error.
 Prerequisites
 
 - You must have the Maintainer or Owner role for the project.
-- The **Use unique domain** setting [must be enabled](_index.md#unique-domains) in your project's Pages settings.
+- The **Use unique domain** setting [must be turned on](_index.md#unique-domains) in your project's Pages settings.
 
 To regenerate a unique domain for your GitLab Pages site:
 
@@ -362,7 +363,7 @@ The contents of the public directory can be confirmed by [browsing the artifacts
 
 Files listed under the public directory can be accessed through the Pages URL for the project.
 
-A 404 can also be related to incorrect permissions. If [Pages Access Control](pages_access_control.md) is enabled, and a user
+A 404 can also be related to incorrect permissions. If [Pages Access Control](pages_access_control.md) is turned on, and a user
 goes to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
 To fix this, verify that the user is a member of the project.
 
@@ -394,7 +395,7 @@ create-pages:
   environment: production
 ```
 
-The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
+The `FF_USE_FASTZIP` variable turns on the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
 
 The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 

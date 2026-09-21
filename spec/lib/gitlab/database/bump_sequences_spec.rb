@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::BumpSequences, feature_category: :cell, query_a
   let!(:main_user_sequence_name) { 'users_id_seq' }
   let!(:ci_sequence_name) { 'ci_build_needs_id_seq' }
 
-  let!(:main_sequence_name) do
+  let_it_be(:main_sequence_name) do
     # we cannot fix a specific sequence here as we are in the process of migrating tables to
     # gitlab_main_org schema.
 

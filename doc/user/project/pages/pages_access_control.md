@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages access control
+description: Restrict access to a GitLab Pages site to authenticated project members.
 ---
 
 {{< details >}}
@@ -20,9 +21,9 @@ title: GitLab Pages access control
 
 {{< /history >}}
 
-You can enable Pages access control on your project
-if your administrator has [enabled the access control feature](../../../administration/pages/_index.md#access-control)
-on your GitLab instance. When enabled, only authenticated
+You can turn on Pages access control for your project
+if your administrator has [turned on the access control feature](../../../administration/pages/_index.md#access-control)
+on your GitLab instance. When turned on, only authenticated
 [members of your project](../../permissions.md#project-permissions)
 (at least Guest) can access your website, by default:
 
@@ -32,10 +33,10 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
-1. To enable the access control, toggle **Pages**. If you don't see the toggle button,
-   that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/_index.md#access-control).
+1. To turn on access control, turn on the **Pages** toggle. If you don't see the toggle,
+   that means it isn't turned on. Ask your administrator to [turn it on](../../../administration/pages/_index.md#access-control).
 
-1. The Pages access control dropdown list allows you to set who can view pages hosted
+1. Use the Pages access control dropdown list to set who can view pages hosted
    with GitLab Pages, depending on your project's visibility:
 
    - If your project is private:
@@ -54,13 +55,13 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
    invalidated, which usually takes less than a minute.
 
 The next time someone tries to access your website and the access control is
-enabled, they're presented with a page to sign in to GitLab and verify they
+turned on, they're presented with a page to sign in to GitLab and verify they
 can access the website.
 
 When [SAML SSO](../../group/saml_sso/_index.md) is configured for the associated group
-and the access control is enabled, users must authenticate using SSO before accessing the website.
+and access control is turned on, users must authenticate using SSO before accessing the website.
 
-When public access is disabled at the [instance](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites)
+When public access is turned off at the [instance](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites)
 or [group](#remove-public-access-for-group-pages) level, projects lose the **Everyone**
 visibility level option and are restricted to project members or everyone with access,
 depending on the project's visibility setting.
@@ -74,12 +75,12 @@ depending on the project's visibility setting.
 {{< /history >}}
 
 Configure a setting for the group to remove the public visibility option for Pages.
-When enabled, all projects in the group and its subgroups lose the option to use the "Everyone" visibility
+When turned on, all projects in the group and its subgroups lose the option to use the "Everyone" visibility
 level and are restricted to project members or everyone with access, depending on the project's visibility setting.
 
 Prerequisites
 
-- Public access to Pages must not be [disabled for the instance](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites).
+- Public access to Pages must not be [turned off for the instance](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites).
 - You must have the Owner role for the group.
 
 To do this:

@@ -3,6 +3,7 @@ stage: Plan
 group: Planner Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages SSL/TLS certificates
+description: HTTPS and SSL/TLS certificate concepts for custom domains on GitLab Pages.
 ---
 
 {{< details >}}
@@ -34,7 +35,7 @@ with financial transactions.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-Now we have a different picture. [According to Josh Aas](https://letsencrypt.org/2015/10/29/phishing-and-malware.html), Executive Director at [Internet Security Research Group (ISRG)](https://en.wikipedia.org/wiki/Internet_Security_Research_Group):
+The picture is different now. [According to Josh Aas](https://letsencrypt.org/2015/10/29/phishing-and-malware.html), Executive Director at [Internet Security Research Group (ISRG)](https://en.wikipedia.org/wiki/Internet_Security_Research_Group):
 
 <!-- vale gitlab_base.rulename = YES -->
 
@@ -72,7 +73,7 @@ for instance.
 Some certificate authorities offer free certificates, aiming to make the internet more secure
 to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
 which issues certificates trusted by most browsers, is open
-source, and free to use. See [GitLab Pages integration with Let's Encrypt](lets_encrypt_integration.md) to enable HTTPS on your custom domain.
+source, and free to use. See [GitLab Pages integration with Let's Encrypt](lets_encrypt_integration.md) to turn on HTTPS for your custom domain.
 
 Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/products/ssl/),
 which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).

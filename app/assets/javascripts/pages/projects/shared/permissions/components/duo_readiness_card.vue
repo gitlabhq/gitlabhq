@@ -180,6 +180,9 @@ export default {
         total: REQUIRED_STEP_COUNT,
       });
     },
+    requiredSubtitle() {
+      return sprintf(this.$options.i18n.requiredSubtitle, { count: REQUIRED_STEP_COUNT });
+    },
     stateLine() {
       if (!this.platformEnabled) return this.$options.i18n.stateBlocked;
       if (this.allStepsComplete) return this.$options.i18n.stateReady;
@@ -204,7 +207,9 @@ export default {
   i18n: {
     readinessHeading: s__('DuoAgentPlatform|Run GitLab Duo agents and flows in this project'),
     requiredHeading: s__('DuoAgentPlatform|Required'),
-    requiredSubtitle: s__('DuoAgentPlatform|Required for full agent and flow support.'),
+    requiredSubtitle: s__(
+      'DuoAgentPlatform|All %{count} are required for full agent and flow support.',
+    ),
     optionalHeading: s__('DuoAgentPlatform|Optional'),
     optionalSubtitle: s__(
       'DuoAgentPlatform|Features that give your agent more context to work with.',
@@ -220,7 +225,9 @@ export default {
     ),
     stateNotSetUp: s__('DuoAgentPlatform|Not set up yet. To get started, turn on GitLab Duo.'),
     stateReady: s__('DuoAgentPlatform|Ready. Flows can run in this project.'),
-    stateBlocked: s__('DuoAgentPlatform|Something blocks agent execution. Check the rows below.'),
+    stateBlocked: s__(
+      'DuoAgentPlatform|Blocked: the Agent Platform is off, so nothing below can be set up yet.',
+    ),
   },
 };
 </script>
@@ -253,7 +260,7 @@ export default {
 
     <div class="gl-mb-3 gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
       <span class="gl-font-bold">{{ $options.i18n.requiredHeading }}</span>
-      <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.requiredSubtitle }}</span>
+      <span class="gl-text-sm gl-text-subtle">{{ requiredSubtitle }}</span>
     </div>
 
     <div class="gl-border gl-overflow-hidden gl-rounded-lg">

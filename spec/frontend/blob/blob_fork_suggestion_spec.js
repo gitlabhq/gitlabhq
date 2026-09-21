@@ -9,6 +9,18 @@ describe('BlobForkSuggestion', () => {
   const suggestionSection = document.createElement('div');
   const actionTextPiece = document.createElement('div');
 
+  const getSuggestionsNodeList = () => {
+    const container = document.createElement('div');
+    container.innerHTML = `
+    <div class="suggestion-section"></div>
+    <div class="suggestion-section"></div>
+  `;
+
+    return container.querySelectorAll('.suggestion-section');
+  };
+
+  const getSuggestionsArray = () => [document.createElement('div'), document.createElement('div')];
+
   beforeEach(() => {
     blobForkSuggestion = new BlobForkSuggestion({
       openButtons: openButton,
@@ -37,34 +49,23 @@ describe('BlobForkSuggestion', () => {
     expect(suggestionSection.classList.contains('hidden')).toEqual(true);
   });
 
-  it('accepts a NodeList of inputs and updates every entry', () => {
-    const container = document.createElement('div');
-    container.innerHTML = `
-      <div class="suggestion-section"></div>
-      <div class="suggestion-section"></div>
-    `;
-    const suggestionSections = container.querySelectorAll('.suggestion-section');
+  describe.each([
+    ['NodeList', getSuggestionsNodeList],
+    ['Array', getSuggestionsArray],
+  ])('with multiple elements (%s)', (_, buildSections) => {
+    let suggestionSections;
 
-    const subject = new BlobForkSuggestion({ suggestionSections }).init();
-    subject.hideSuggestionSection();
-
-    suggestionSections.forEach((el) => {
-      expect(el.classList.contains('hidden')).toBe(true);
+    beforeEach(() => {
+      suggestionSections = buildSections();
+      blobForkSuggestion = new BlobForkSuggestion({ suggestionSections }).init();
     });
 
-    subject.destroy();
-  });
+    it('hides all sections', () => {
+      blobForkSuggestion.hideSuggestionSection();
 
-  it('accepts an Array of inputs and updates every entry', () => {
-    const suggestionSections = [document.createElement('div'), document.createElement('div')];
-
-    const subject = new BlobForkSuggestion({ suggestionSections }).init();
-    subject.hideSuggestionSection();
-
-    suggestionSections.forEach((el) => {
-      expect(el.classList.contains('hidden')).toBe(true);
+      suggestionSections.forEach((el) => {
+        expect(el.classList.contains('hidden')).toBe(true);
+      });
     });
-
-    subject.destroy();
   });
 });

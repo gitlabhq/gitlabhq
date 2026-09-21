@@ -12,6 +12,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
   let_it_be(:public_project) { create(:project, :public) }
 
   let_it_be(:user) { create(:user, guest_of: [project, group]) }
+  let_it_be(:non_member) { create(:user) }
 
   describe "POST /projects/:id/uploads/authorize" do
     include WorkhorseHelpers
@@ -30,7 +31,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     context 'with unauthorized user' do
       it "returns 404" do
-        post api(path, create(:user)), headers: headers
+        post api(path, non_member), headers: headers
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -140,7 +141,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
   describe "GET /projects/:id/uploads" do
     let_it_be(:uploads) { create_list(:upload, 3, :issuable_upload, model: project) }
-    let_it_be(:other_upload) { create(:upload, :issuable_upload, model: create(:project)) }
+    let_it_be(:other_upload) { create(:upload, :issuable_upload, model: public_project) }
 
     let(:path) { "/projects/#{project.id}/uploads" }
 
@@ -235,7 +236,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     context 'with a user that does not have access to the project' do
       it 'returns 404' do
-        get api(path, create(:user))
+        get api(path, non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -332,7 +333,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     context 'with unauthorized user' do
       it "returns 404" do
-        post api(path, create(:user)), headers: headers
+        post api(path, non_member), headers: headers
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -375,7 +376,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     context 'with unauthorized user' do
       it "returns 404" do
-        post api(path, create(:user)), params: { file: file }
+        post api(path, non_member), params: { file: file }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -484,7 +485,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
     context 'with a user that does not have access to the group' do
       it 'returns 404' do
-        get api(path, create(:user))
+        get api(path, non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

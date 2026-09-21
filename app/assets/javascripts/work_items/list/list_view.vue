@@ -7,7 +7,6 @@ import {
   GlIcon,
   GlTooltipDirective,
   GlSkeletonLoader,
-  GlModalDirective,
   GlAlert,
   GlToastMixin,
 } from '@gitlab/ui';
@@ -84,7 +83,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin(), GlToastMixin],
   inject: ['isGroup', 'workItemType'],

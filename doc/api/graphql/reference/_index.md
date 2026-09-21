@@ -1879,6 +1879,23 @@ Arguments:
 | <a id="query-jobs-runnertypes"></a>`runnerTypes` {{< icon name="warning-solid" >}} | [`[CiRunnerType!]`](#cirunnertype) | Introduced in GitLab 16.4. Status: Experiment. Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
 | <a id="query-jobs-statuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 
+### `Query.knowledgeGraphExcludedNamespaces`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Top-level groups excluded from automatic Knowledge Graph indexing.
+
+Returns [`GroupConnection!`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.ldapAdminRoleLinks`
 
 {{< details >}}
@@ -12836,6 +12853,58 @@ Fields:
 | <a id="mutation-jobunschedule-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-jobunschedule-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-jobunschedule-job"></a>`job` | [`CiJob`](#cijob) | Job after the mutation. |
+
+### `Mutation.knowledgeGraphExcludedNamespaceCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `KnowledgeGraphExcludedNamespaceCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-knowledgegraphexcludednamespacecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-knowledgegraphexcludednamespacecreate-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the top-level group to exclude. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-knowledgegraphexcludednamespacecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-knowledgegraphexcludednamespacecreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-knowledgegraphexcludednamespacecreate-group"></a>`group` | [`Group`](#group) | Excluded group. |
+
+### `Mutation.knowledgeGraphExcludedNamespaceDestroy`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `KnowledgeGraphExcludedNamespaceDestroyInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-knowledgegraphexcludednamespacedestroy-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-knowledgegraphexcludednamespacedestroy-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the top-level group to remove from exclusions. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-knowledgegraphexcludednamespacedestroy-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-knowledgegraphexcludednamespacedestroy-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-knowledgegraphexcludednamespacedestroy-group"></a>`group` | [`Group`](#group) | Group removed from exclusions. |
 
 ### `Mutation.labelCreate`
 

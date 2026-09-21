@@ -8,9 +8,9 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   describe '#avatar_icon_for' do
-    let!(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
-    let(:email) { 'foo@example.com' }
-    let!(:another_user) { create(:user, :public_email, avatar: File.open(uploaded_image_temp_path), email: email) }
+    let_it_be(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
+    let_it_be(:email) { 'foo@example.com' }
+    let_it_be(:another_user) { create(:user, :public_email, avatar: File.open(uploaded_image_temp_path), email: email) }
 
     it 'prefers the user to retrieve the avatar_url' do
       expect(helper.avatar_icon_for(user, email).to_s)
@@ -24,7 +24,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   end
 
   describe '#avatar_icon_for_email', :clean_gitlab_redis_cache do
-    let(:user) { create(:user, :public_email, :commit_email, avatar: File.open(uploaded_image_temp_path)) }
+    let_it_be(:user) { create(:user, :public_email, :commit_email, avatar: File.open(uploaded_image_temp_path)) }
 
     subject { helper.avatar_icon_for_email(user.email).to_s }
 
@@ -95,7 +95,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
 
     shared_examples 'blocked or unconfirmed user with avatar' do
       context 'when the viewer is not an admin' do
-        let!(:viewing_user) { create(:user) }
+        let_it_be(:viewing_user) { create(:user) }
 
         it 'returns the default avatar' do
           expect(helper.avatar_icon_for_user(user, current_user: viewing_user).to_s)
@@ -104,7 +104,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       end
 
       context 'when the viewer is an admin', :enable_admin_mode do
-        let!(:viewing_user) { create(:user, :admin) }
+        let_it_be(:viewing_user) { create(:user, :admin) }
 
         it 'returns the default avatar when the user is not passed' do
           expect(helper.avatar_icon_for_user(user).to_s)
@@ -361,7 +361,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     end
 
     context 'with only_path parameter set to false' do
-      let(:user_with_avatar) { create(:user, :with_avatar, username: 'foobar') }
+      let_it_be(:user_with_avatar) { create(:user, :with_avatar, username: 'foobar') }
 
       context 'with user parameter' do
         let(:options) { { user: user_with_avatar, only_path: false } }

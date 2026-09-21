@@ -5,6 +5,7 @@ require 'carrierwave/orm/activerecord'
 class Project < ApplicationRecord
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
+  include Import::SourceHosting
   include AccessRequestable
   include Authz::HasRoles
   include Avatarable

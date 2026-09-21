@@ -1697,18 +1697,33 @@ Read it to discover which variants exist for which queries.
 
 #### Test unlicensed feature states
 
-The frontend has no notion of a license and it renders on what the payload contains.
-A license-gated feature is typically gated by conditional rendering, either as an EE injection
-or a explicit if statement based on the data coming from the API.
+The frontend has no notion of a license.
+It renders based on what the payload contains.
 
-"Missing feature because this user does not hold the right permissions or license" is exactly what a fixture variant models can give us.
+A license-gated feature is normally hidden by conditional rendering, either an EE component
+injection or an explicit conditional on data coming from the API.
+
+So a response where a part is missing because the namespace is not licensed for it is just another
+response shape.
+A fixture variant is what lets you produce that shape in a test.
+
+The examples in this section use the work item status widget.
+A work item page renders sidebar sections, such as assignees, labels, and status, and each section
+is called a widget.
+A widget renders when the GraphQL payload for the work item includes its data.
+The status widget is only an example.
+The same steps apply to any license-gated feature, with your own query and element substituted in.
 
 To test a feature's unlicensed state in a frontend integration test, follow these steps:
 
 1. **Record the unlicensed payload.**
 
-   The fixture generator `ee/spec/frontend/fixtures/work_items_integration.rb` stubs the whole licensed feature set in a global `before` block, with `stub_licensed_features(licensed_features)`.
-   To record one feature as unlicensed, call `stub_licensed_features` again inside the individual `it` block, merging the feature off onto that set.
+   A feature's Rails fixture generator stubs the whole licensed feature set once, in a global
+   `before` block, with `stub_licensed_features(licensed_features)`.
+   For example, `ee/spec/frontend/fixtures/work_items_integration.rb` does this for work item
+   fixtures.
+   To record one feature as unlicensed, call `stub_licensed_features` again inside the individual
+   `it` block, merging that one feature off onto the same set.
 
    ```ruby
    it "#{base_output_path}namespace_work_item_status_unlicensed.query.graphql.json" do
@@ -1726,7 +1741,8 @@ To test a feature's unlicensed state in a frontend integration test, follow thes
    ```
 
    Merge onto `licensed_features` rather than passing the single feature on its own.
-   A bare hash turns every other licensed feature off too, and strips unrelated widgets from the payload.
+   A bare hash turns every other licensed feature off too, and strips unrelated data from the
+   payload.
 
 1. **Regenerate the fixtures.**
 
@@ -1748,11 +1764,14 @@ To test a feature's unlicensed state in a frontend integration test, follow thes
    });
    ```
 
-   Prefer a recorded fixture over deleting the widget from `BASE` with a transform helper.
-   The recording keeps proving what Rails actually returns for an unlicensed namespace, instead of a hand-made shape.
-   When `BASE` itself carries no such widget, `BASE` already doubles as the "no widget" case, and no new fixture is needed.
+   Record a fixture for every license state, rather than mutating or stripping down the base
+   fixture with a transform helper.
+   A recording keeps proving what Rails actually returns for an unlicensed namespace, instead of a
+   hand-made shape.
+   If `BASE` itself does not carry the feature's data, `BASE` already doubles as the "feature
+   absent" case, and no new fixture is needed.
 
-1. **Activate the variant in the spec, and assert the widget is absent.**
+1. **Activate the variant in the spec, and assert the feature is absent.**
 
    ```javascript
    import { setQueryVariant } from 'ee_jest/integration/helpers/setup_utils';
@@ -1770,17 +1789,27 @@ To test a feature's unlicensed state in a frontend integration test, follow thes
    });
    ```
 
-   When doing negative assertions, make sure to also pair it with a postive assert and make sure
-   that the state did reach what you expect to not get false positives.
+   Pair a negative assertion with a positive one that confirms the state you expect was actually
+   reached.
+   Otherwise a false positive can pass.
+   In the example, waiting on a sibling element proves the sidebar rendered at all, so an empty
+   drawer alone cannot satisfy the negative assertion.
 
 **One variant is active per operation.**
-The registry keys variants by GraphQL operation name, and holds a single active variant for each.
+The registry keys variants by GraphQL operation name, and holds a single active variant per
+operation.
 Two unlicensed variants of the same query cannot be active at the same time.
-When a scenario needs several features unlicensed at once, record that combination as one fixture, and register it as a single variant. If they use different network queries, then you can use several variants at once.
+When a scenario needs several features unlicensed at once, record that combination as one
+fixture, and register it as a single variant.
+Queries that are separate operations can each have their own active variant.
 
 **A handler that branches on a request variable can bypass your variant.**
-For example, in `ee/spec/frontend/integration/work_items/handlers.js` the `namespaceWorkItem` handler branches on `variables.useWorkItemFeatures`, and on that branch serves variants registered under the separate `namespaceWorkItemFeatures` operation key.
-Confirm which branch your query takes, and register the variant under the operation key that branch reads.
+For example, in `ee/spec/frontend/integration/work_items/handlers.js` the `namespaceWorkItem`
+handler branches on `variables.useWorkItemFeatures`.
+On that branch, it serves variants registered under the separate `namespaceWorkItemFeatures`
+operation key.
+Confirm which branch your query takes, and register the variant under the operation key that
+branch reads.
 A spec that runs under both states of the flag activates both variants:
 
 ```javascript
@@ -1788,10 +1817,12 @@ setQueryVariant(namespaceWorkItemVariants).statusUnlicensed();
 setQueryVariant(namespaceWorkItemFeaturesVariants).statusUnlicensed();
 ```
 
-**Another response can put the widget back.**
-Responses that write onto the same cached entity can reintroduce the widget you expect to be missing.
-For example, the work item list and the detail query merge their widgets onto the same cached work item.
-The REST list payload therefore has to follow the detail variant, and the `work_items` handler does that for you.
+**Another response can put the data back.**
+Responses that write onto the same cached entity can reintroduce data you expect to be missing.
+For example, the work item list rows and the work item detail query merge their widgets onto the
+same cached work item.
+The REST list payload therefore has to follow the detail variant, and the `work_items` handler
+does that for you.
 Check that every response feeding the component under test carries the unlicensed shape.
 
 ### Assert Apollo cache integrity

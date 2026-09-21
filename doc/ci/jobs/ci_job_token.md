@@ -319,6 +319,9 @@ To allow cross-project push requests:
 1. Select **Save Changes**.
 1. [Add the source project or its group to the allowlist](#add-a-group-or-project-to-the-job-token-allowlist)
    with the `ADMIN_REPOSITORIES` fine-grained permission, or leave default permissions enabled.
+   In the allowlist entry, `ADMIN_REPOSITORIES` is the **Read and write** option for **Repositories**.
+   It does not appear in the [fine-grained permissions](fine_grained_permissions.md) endpoint tables,
+   because it grants Git push access rather than access to a REST API endpoint.
 
 ## Fine-grained permissions for job tokens
 

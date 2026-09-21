@@ -820,8 +820,7 @@ To automatically accept achievements for all users:
 When attaching a file to a comment or reply in GitLab, the [max attachment size](#max-attachment-size)
 is probably larger than the web server's allowed value.
 
-To increase the max attachment size to 200 MB in a
-[Linux package](https://docs.gitlab.com/omnibus/) install:
+To increase the max attachment size to 200 MB in a Linux package install:
 
 1. Add this line to `/etc/gitlab/gitlab.rb`:
 

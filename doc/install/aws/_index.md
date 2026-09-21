@@ -1210,7 +1210,7 @@ to request additional material:
   Assess your expected workload and adjust the configuration.
 - [Geo replication](../../administration/geo/_index.md):
   Geo is the solution for widely distributed development teams.
-- [Linux package](https://docs.gitlab.com/omnibus/) - Everything you must know
+- [Linux package](../package/_index.md) - Everything you must know
   about administering your GitLab instance.
 - [Add a license](../../administration/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
