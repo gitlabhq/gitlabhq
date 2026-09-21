@@ -15,9 +15,9 @@ module Gitlab
     KEEP_ALIVE_TIMEOUT = 30
 
     # Net::HTTP's current default, set explicitly because the reconnect
-    # behavior documented in #fetch_chunk_response depends on it. Not
-    # raised: Net::HTTP retries read timeouts, so each extra retry adds another
-    # read timeout to the worst case for a single chunk.
+    # behavior documented in #chunk_attempt depends on it. Not raised:
+    # Net::HTTP retries read timeouts, so each extra retry adds another read
+    # timeout to the worst case for a single chunk.
     MAX_RETRIES = 1
 
     # Shared by every chunk an instance fetches, rather than allowed per chunk:
@@ -66,7 +66,6 @@ module Gitlab
       @size = size
       @tell = 0
       @retries_used = 0
-      @retry_transient_errors = Feature.enabled?(:http_io_retry_transient_errors, Feature.current_request)
     end
 
     def close
@@ -229,23 +228,6 @@ module Gitlab
       @chunk[chunk_offset..BUFFER_SIZE]
     end
 
-    def fetch_chunk_response
-      return fetch_chunk_response_with_retries if @retry_transient_errors
-
-      fetch_chunk_response_once
-    end
-
-    # Net::HTTP transparently reconnects and retries the (idempotent) GET once
-    # if the server dropped the keep-alive connection between chunks. It also
-    # closes the socket before re-raising a transport error, and reconnects on
-    # finding a closed socket, so the memoized session self-heals rather than
-    # staying wedged after a failed read.
-    def fetch_chunk_response_once
-      http_session.request(request)
-    rescue EOFError => e
-      raise_chunk_error(e)
-    end
-
     # Net::HTTP's own retry happens inside #transport_request, after the TLS
     # handshake in Net::HTTP.start, and never treats a response status as an
     # error - this loop covers both gaps. Repeating a range request is safe:
@@ -255,7 +237,7 @@ module Gitlab
     # Returns the first response not worth another attempt, including a
     # failure response once the retry budget is spent (the caller decides what
     # an unusable response means). Errors are raised from the loop itself.
-    def fetch_chunk_response_with_retries
+    def fetch_chunk_response
       loop do
         outcome = chunk_attempt
         reason = retry_reason(outcome)
@@ -277,6 +259,12 @@ module Gitlab
     # Returns the response, or the error the request failed with when that
     # error is worth another attempt. Carrying the failure as a value lets
     # response codes and transport errors reach the same decision.
+    #
+    # Net::HTTP transparently reconnects and retries the (idempotent) GET once
+    # if the server dropped the keep-alive connection between chunks. It also
+    # closes the socket before re-raising a transport error, and reconnects on
+    # finding a closed socket, so the memoized session self-heals rather than
+    # staying wedged after a failed read.
     def chunk_attempt
       http_session.request(request)
     rescue *RETRIABLE_ERRORS => error
