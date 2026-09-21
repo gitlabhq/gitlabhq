@@ -43,6 +43,29 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
 
       it { is_expected.to contain_exactly(matching_name) }
     end
+
+    describe '.ready_for_destruction' do
+      let_it_be(:not_deleted) { create(:terraform_state) }
+
+      let_it_be(:within_grace_period) do
+        create(:terraform_state, deleted_at: (described_class::GRACE_PERIOD - 1.minute).ago)
+      end
+
+      let(:exactly_at_grace_boundary) do
+        create(:terraform_state, deleted_at: described_class::GRACE_PERIOD.ago)
+      end
+
+      let_it_be(:past_grace_period) do
+        create(:terraform_state, deleted_at: (described_class::GRACE_PERIOD + 1.minute).ago)
+      end
+
+      subject { described_class.ready_for_destruction }
+
+      it { is_expected.not_to include(not_deleted) }
+      it { is_expected.not_to include(within_grace_period) }
+      it('state deleted exactly at the boundary', :freeze_time) { is_expected.to include(exactly_at_grace_boundary) }
+      it { is_expected.to include(past_grace_period) }
+    end
   end
 
   describe '#latest_file' do
@@ -142,6 +165,28 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
         )
 
         subject
+      end
+    end
+  end
+
+  describe '#permanent_deletion_at' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when deleted_at is nil' do
+      let_it_be(:state) { create(:terraform_state, project: project, deleted_at: nil) }
+
+      it 'returns nil' do
+        expect(state.permanent_deletion_at).to be_nil
+      end
+    end
+
+    context 'when deleted_at is set' do
+      let_it_be(:deleted_at) { 2.days.ago }
+      let_it_be(:state) { create(:terraform_state, project: project, deleted_at: deleted_at) }
+
+      it 'returns deleted_at plus GRACE_PERIOD' do
+        expect(state.permanent_deletion_at)
+          .to be_within(1.second).of(deleted_at + described_class::GRACE_PERIOD)
       end
     end
   end

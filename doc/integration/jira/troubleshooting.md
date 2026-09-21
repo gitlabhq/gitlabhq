@@ -284,10 +284,6 @@ These errors occur when the authentication for the Jira issues integration is no
 To resolve this issue, [configure the Jira issues integration](configure.md#configure-the-integration) again.
 Ensure the authentication details are correct, enter your API token or password again, and save your changes.
 
-The Jira issue list does not load if the project key contains a reserved JQL word.
-For more information, see [issue 426176](https://gitlab.com/gitlab-org/gitlab/-/issues/426176).
-Your Jira project key must not have [restricted words and characters](https://confluence.atlassian.com/jirasoftwareserver/advanced-searching-939938733.html#Advancedsearching-restrictionsRestrictedwordsandcharacters).
-
 ### Errors with Jira credentials
 
 When you try to view the Jira issue list in GitLab, you might see one of the following errors.

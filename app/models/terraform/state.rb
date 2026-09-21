@@ -8,6 +8,7 @@ module Terraform
 
     HEX_REGEXP = %r{\A\h+\z}
     UUID_LENGTH = 32
+    GRACE_PERIOD = 7.days
 
     self.locking_column = :activerecord_lock_version
 
@@ -26,6 +27,9 @@ module Terraform
 
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, ->(name) { where(name: name) }
+    scope :ready_for_destruction, -> {
+      where(deleted_at: ..GRACE_PERIOD.ago)
+    }
 
     validates :project_id, :name, presence: true
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },
@@ -40,6 +44,10 @@ module Terraform
 
     def locked?
       self.lock_xid.present?
+    end
+
+    def permanent_deletion_at
+      deleted_at + GRACE_PERIOD if deleted_at
     end
 
     def update_file!(data, version:, build:)

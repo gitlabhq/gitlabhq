@@ -45,6 +45,11 @@ module Types
         null: true,
         description: 'Timestamp the Terraform state was deleted.'
 
+      field :permanent_deletion_at, Types::TimeType,
+        null: true,
+        experiment: { milestone: '19.5' },
+        description: 'Timestamp of when the state will be permanently deleted, if it is scheduled for deletion.'
+
       field :protection_rule_exists, GraphQL::Types::Boolean,
         null: false,
         experiment: { milestone: '19.0' },

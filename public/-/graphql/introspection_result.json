@@ -402582,6 +402582,18 @@
               "deprecationReason": null
             },
             {
+              "name": "permanentDeletionAt",
+              "description": "Timestamp of when the state will be permanently deleted, if it is scheduled for deletion. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "protectionRuleExists",
               "description": "Whether a protection rule exists for the Terraform state. Introduced in GitLab 19.0: Status: Experiment.",
               "args": [],

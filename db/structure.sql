@@ -51572,6 +51572,8 @@ CREATE INDEX index_terraform_state_versions_on_verification_state ON terraform_s
 
 CREATE INDEX index_terraform_state_versions_pending_verification ON terraform_state_versions USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_terraform_states_on_deleted_at ON terraform_states USING btree (deleted_at) WHERE (deleted_at IS NOT NULL);
+
 CREATE INDEX index_terraform_states_on_file_store ON terraform_states USING btree (file_store);
 
 CREATE INDEX index_terraform_states_on_locked_by_user_id ON terraform_states USING btree (locked_by_user_id);

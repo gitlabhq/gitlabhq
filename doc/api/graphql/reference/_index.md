@@ -63567,6 +63567,7 @@ Fields:
 | <a id="terraformstate-lockedat"></a>`lockedAt` | [`Time`](#time) | Timestamp the Terraform state was locked. |
 | <a id="terraformstate-lockedbyuser"></a>`lockedByUser` | [`UserCore`](#usercore) | User currently holding a lock on the Terraform state. |
 | <a id="terraformstate-name"></a>`name` | [`String!`](#string) | Name of the Terraform state. |
+| <a id="terraformstate-permanentdeletionat"></a>`permanentDeletionAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.5. Status: Experiment. Timestamp of when the state will be permanently deleted, if it is scheduled for deletion. |
 | <a id="terraformstate-protectionruleexists"></a>`protectionRuleExists` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Whether a protection rule exists for the Terraform state. |
 | <a id="terraformstate-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the Terraform state was updated. |
 

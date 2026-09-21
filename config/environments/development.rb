@@ -27,7 +27,7 @@ Rails.application.configure do
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
-  # Configure static asset server for e2e:test-on-gdk
+  # Allow serving precompiled assets in CI/E2E environments
   config.assets.compile = !Gitlab::Utils.to_boolean(ENV['GITLAB_DEVELOPMENT_USE_PRECOMPILED_ASSETS'], default: false)
   # There is no need to check if assets are precompiled locally
   # To debug AssetNotPrecompiled errors locally, set CHECK_PRECOMPILED_ASSETS to true
