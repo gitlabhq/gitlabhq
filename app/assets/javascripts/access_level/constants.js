@@ -24,17 +24,13 @@ export const ACCESS_LEVEL_MAINTAINER_STRING = 'MAINTAINER';
 export const ACCESS_LEVEL_OWNER_STRING = 'OWNER';
 export const ACCESS_LEVEL_ADMIN_STRING = 'ADMIN';
 
-const isSecurityManagerEnabled = () => window.gon?.features?.securityManagerRoleEnabled;
-
 export const ACCESS_LEVELS_INTEGER_TO_STRING = {
   [ACCESS_LEVEL_NO_ACCESS_INTEGER]: ACCESS_LEVEL_NO_ACCESS_STRING,
   [ACCESS_LEVEL_MINIMAL_ACCESS_INTEGER]: ACCESS_LEVEL_MINIMAL_ACCESS_STRING,
   [ACCESS_LEVEL_GUEST_INTEGER]: ACCESS_LEVEL_GUEST_STRING,
   [ACCESS_LEVEL_PLANNER_INTEGER]: ACCESS_LEVEL_PLANNER_STRING,
   [ACCESS_LEVEL_REPORTER_INTEGER]: ACCESS_LEVEL_REPORTER_STRING,
-  ...(isSecurityManagerEnabled()
-    ? { [ACCESS_LEVEL_SECURITY_MANAGER_INTEGER]: ACCESS_LEVEL_SECURITY_MANAGER_STRING }
-    : {}),
+  [ACCESS_LEVEL_SECURITY_MANAGER_INTEGER]: ACCESS_LEVEL_SECURITY_MANAGER_STRING,
   [ACCESS_LEVEL_DEVELOPER_INTEGER]: ACCESS_LEVEL_DEVELOPER_STRING,
   [ACCESS_LEVEL_MAINTAINER_INTEGER]: ACCESS_LEVEL_MAINTAINER_STRING,
   [ACCESS_LEVEL_OWNER_INTEGER]: ACCESS_LEVEL_OWNER_STRING,
@@ -46,9 +42,7 @@ export const ACCESS_LEVELS_STRING_TO_INTEGER = {
   [ACCESS_LEVEL_GUEST_STRING]: ACCESS_LEVEL_GUEST_INTEGER,
   [ACCESS_LEVEL_PLANNER_STRING]: ACCESS_LEVEL_PLANNER_INTEGER,
   [ACCESS_LEVEL_REPORTER_STRING]: ACCESS_LEVEL_REPORTER_INTEGER,
-  ...(isSecurityManagerEnabled()
-    ? { [ACCESS_LEVEL_SECURITY_MANAGER_STRING]: ACCESS_LEVEL_SECURITY_MANAGER_INTEGER }
-    : {}),
+  [ACCESS_LEVEL_SECURITY_MANAGER_STRING]: ACCESS_LEVEL_SECURITY_MANAGER_INTEGER,
   [ACCESS_LEVEL_DEVELOPER_STRING]: ACCESS_LEVEL_DEVELOPER_INTEGER,
   [ACCESS_LEVEL_MAINTAINER_STRING]: ACCESS_LEVEL_MAINTAINER_INTEGER,
   [ACCESS_LEVEL_OWNER_STRING]: ACCESS_LEVEL_OWNER_INTEGER,
@@ -64,19 +58,6 @@ const ACCESS_LEVEL_DEVELOPER = __('Developer');
 const ACCESS_LEVEL_MAINTAINER = __('Maintainer');
 const ACCESS_LEVEL_OWNER = __('Owner');
 export const ACCESS_LEVEL_ADMIN = __('Admin');
-
-const SECURITY_MANAGER_ROLE = {
-  value: 'SECURITY_MANAGER',
-  text: ACCESS_LEVEL_SECURITY_MANAGER,
-  accessLevel: ACCESS_LEVEL_SECURITY_MANAGER_INTEGER,
-  occupiesSeat: true,
-  description: s__(
-    'MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project.',
-  ),
-  dropdownDescription: s__(
-    'MemberRole|View and manage security features for the group or project.',
-  ),
-};
 
 export const BASE_ROLES = [
   {
@@ -122,7 +103,18 @@ export const BASE_ROLES = [
     ),
     dropdownDescription: s__('MemberRole|View code only. Create issues and generate reports.'),
   },
-  ...(isSecurityManagerEnabled() ? [SECURITY_MANAGER_ROLE] : []),
+  {
+    value: 'SECURITY_MANAGER',
+    text: ACCESS_LEVEL_SECURITY_MANAGER,
+    accessLevel: ACCESS_LEVEL_SECURITY_MANAGER_INTEGER,
+    occupiesSeat: true,
+    description: s__(
+      'MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project.',
+    ),
+    dropdownDescription: s__(
+      'MemberRole|View and manage security features for the group or project.',
+    ),
+  },
   {
     value: 'DEVELOPER',
     text: ACCESS_LEVEL_DEVELOPER,
@@ -173,9 +165,7 @@ export const ACCESS_LEVEL_LABELS = {
   [ACCESS_LEVEL_GUEST_INTEGER]: ACCESS_LEVEL_GUEST,
   [ACCESS_LEVEL_PLANNER_INTEGER]: ACCESS_LEVEL_PLANNER,
   [ACCESS_LEVEL_REPORTER_INTEGER]: ACCESS_LEVEL_REPORTER,
-  ...(isSecurityManagerEnabled()
-    ? { [ACCESS_LEVEL_SECURITY_MANAGER_INTEGER]: ACCESS_LEVEL_SECURITY_MANAGER }
-    : {}),
+  [ACCESS_LEVEL_SECURITY_MANAGER_INTEGER]: ACCESS_LEVEL_SECURITY_MANAGER,
   [ACCESS_LEVEL_DEVELOPER_INTEGER]: ACCESS_LEVEL_DEVELOPER,
   [ACCESS_LEVEL_MAINTAINER_INTEGER]: ACCESS_LEVEL_MAINTAINER,
   [ACCESS_LEVEL_OWNER_INTEGER]: ACCESS_LEVEL_OWNER,

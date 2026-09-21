@@ -57,7 +57,7 @@ Sidekiq memory limits are controlled using [environment variables](https://docs.
 
 GitLab emits log events if workers are restarted due to high memory usage.
 
-The following is an example of one of these log events in `/var/log/gitlab/gitlab-rails/sidekiq_client.log`:
+The following is an example of one of these log events in `/var/log/gitlab/sidekiq/current`:
 
 ```json
 {

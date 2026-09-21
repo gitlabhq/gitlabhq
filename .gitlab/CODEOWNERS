@@ -2104,7 +2104,7 @@ ee/lib/gitlab/llm/embeddings/
 
 ^[Advanced Search Migration optional] @gitlab-org/search-team/maintainers/advanced-migrations
 /ee/spec/elastic/migrate/
-/ee/spec/lib/search/elastic
+/ee/spec/lib/search/elastic/
 
 ^[Workspaces Backend] @gitlab-org/maintainers/workspaces/backend
 /ee/app/models/remote_development/
