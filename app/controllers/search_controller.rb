@@ -86,6 +86,7 @@ class SearchController < ApplicationController
     @search_type = search_type
 
     count = 0
+    @search_attempted = true
     @global_search_duration_s = Benchmark.realtime do
       count = if @search_type == 'basic'
                 ApplicationRecord.with_fast_read_statement_timeout do
@@ -145,6 +146,7 @@ class SearchController < ApplicationController
     expires_in 1.minute
 
     results = nil
+    @search_attempted = true
     @global_search_duration_s = Benchmark.realtime do
       results = search_autocomplete_opts(term, filter: @filter, scope: autocomplete_scope)
     end
@@ -174,6 +176,8 @@ class SearchController < ApplicationController
   end
 
   def record_search_error
+    return unless @search_attempted
+
     # If we raise an error somewhere in the @global_search_duration_s benchmark block, we will end up here
     # with a 200 status code, but an empty @global_search_duration_s.
     Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
@@ -202,6 +206,7 @@ class SearchController < ApplicationController
   end
 
   def haml_search_results
+    @search_attempted = true
     @global_search_duration_s = Benchmark.realtime do
       @search_results = @search_service_presenter.search_results
       @search_objects = @search_service_presenter.search_objects

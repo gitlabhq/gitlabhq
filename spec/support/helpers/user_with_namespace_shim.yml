@@ -27,6 +27,7 @@
 - ee/spec/features/groups/member_roles_spec.rb
 - ee/spec/features/groups/members/list_members_spec.rb
 - ee/spec/features/groups/usage_quotas/code_suggestions_usage_tab_spec.rb
+- ee/spec/features/groups/wiki/user_views_asciidoc_page_with_includes_spec.rb
 - ee/spec/features/groups/wiki_spec.rb
 - ee/spec/features/incidents/incident_details_spec.rb
 - ee/spec/features/merge_request/code_owner_approvals_reset_after_merging_to_source_branch_spec.rb
@@ -515,6 +516,7 @@
 - spec/features/projects/user_creates_project_spec.rb
 - spec/features/projects/user_sees_sidebar_spec.rb
 - spec/features/projects/user_uses_shortcuts_spec.rb
+- spec/features/projects/wiki/user_views_asciidoc_page_with_includes_spec.rb
 - spec/features/projects/wiki/user_views_a_wiki_page_non_vue_surfaces_spec.rb
 - spec/features/projects/wiki/user_views_wiki_empty_spec.rb
 - spec/features/projects/wiki_spec.rb

@@ -133,7 +133,7 @@ RSpec.describe MergeRequests::MergeabilityCheckBatchWorker, feature_category: :c
     end
 
     it_behaves_like 'an idempotent worker' do
-      let(:merge_request) { create(:merge_request) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request) }
       let(:job_args) { [[merge_request.id], user.id] }
 
       it 'is mergeable' do

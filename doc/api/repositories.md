@@ -945,29 +945,26 @@ Changelogs support the following attributes:
 
 | Attribute              | Type     | Required | Description |
 |------------------------|----------|----------|-------------|
-| `version` <sup>1</sup> | string   | Yes      | Version to generate the changelog for. Format must follow [semantic versioning](https://semver.org/). |
+| `version`[^version-attribute-include] | string   | Yes      | Version to generate the changelog for. Format must follow [semantic versioning](https://semver.org/). |
 | `branch`               | string   | No       | Branch to commit the changelog changes to. Defaults to the project's default branch. |
 | `config_file`          | string   | No       | Path to the changelog configuration file in the project's Git repository. Defaults to `.gitlab/changelog_config.yml`. |
 | `config_file_ref`      | string   | No       | Git reference (for example, branch) where the changelog configuration file is defined. Defaults to the default repository branch. |
 | `date`                 | datetime | No       | Date and time of the release. Defaults to the current time. |
 | `file`                 | string   | No       | File to commit the changes to. Defaults to `CHANGELOG.md`. |
-| `from` <sup>2</sup>    | string   | No       | SHA of the commit that marks the beginning of the range of commits to include in the changelog. This commit isn't included in the changelog. |
+| `from`[^unspecified-automatically-finds]    | string   | No       | SHA of the commit that marks the beginning of the range of commits to include in the changelog. This commit isn't included in the changelog. |
 | `message`              | string   | No       | Commit message to use when committing the changes. Defaults to `Add changelog for version X`, where `X` is the value of the `version` argument. |
 | `to`                   | string   | No       | SHA of the commit that marks the end of the range of commits to include in the changelog. This commit is included in the changelog. Defaults to the branch specified in the `branch` attribute. Limited to 15000 commits. |
 | `trailer`              | string   | No       | Git trailer to use for including commits. Defaults to `Changelog`. Case-sensitive: `Example` does not match `example` or `eXaMpLE`. |
 
-**Footnotes**:
+[^version-attribute-include]: The `version` attribute can include or omit the `v` prefix. Both `1.0.0` and `v1.0.0` produce identical results.
+    [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437616) in GitLab 17.0.
+[^unspecified-automatically-finds]: When `from` is unspecified, GitLab automatically finds the last stable version tag that precedes
+    your specified version. GitLab recognizes tags in `X.Y.Z` or `vX.Y.Z` format, following semantic versioning.
 
-1. The `version` attribute can include or omit the `v` prefix. Both `1.0.0` and `v1.0.0` produce identical results.
-   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437616) in GitLab 17.0.
+    For example, if `version` is `2.1.0`, GitLab uses tag `v2.0.0`. When `version` is `1.1.1` or `1.2.0`,
+    GitLab uses tag `v1.1.0`. Pre-release tags like `v1.0.0-pre1` are ignored.
 
-1. When `from` is unspecified, GitLab automatically finds the last stable version tag that precedes
-   your specified version. GitLab recognizes tags in `X.Y.Z` or `vX.Y.Z` format, following semantic versioning.
-
-   For example, if `version` is `2.1.0`, GitLab uses tag `v2.0.0`. When `version` is `1.1.1` or `1.2.0`,
-   GitLab uses tag `v1.1.0`. Pre-release tags like `v1.0.0-pre1` are ignored.
-
-   If no suitable tag is found, the API returns an error and you must explicitly specify the `from` attribute.
+    If no suitable tag is found, the API returns an error and you must explicitly specify the `from` attribute.
 
 ### Examples
 

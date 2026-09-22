@@ -49,3 +49,6 @@ Gitlab/Rails/AttrEncrypted:
     - 'ee/app/models/system_access/group_microsoft_graph_access_token.rb'
     - 'ee/app/models/system_access/microsoft_application.rb'
     - 'ee/app/models/system_access/microsoft_graph_access_token.rb'
+    - 'ee/lib/ee/gitlab/background_migration/create_missing_external_links_for_vulnerabilities.rb'
+    - 'ee/lib/ee/gitlab/background_migration/fix_incomplete_group_external_audit_destinations_v2.rb'
+    - 'ee/lib/ee/gitlab/background_migration/fix_incomplete_instance_external_audit_destinations_v2.rb'

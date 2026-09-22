@@ -6,8 +6,8 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
   include Ci::PartitioningHelpers
 
   let_it_be(:project) { create(:project) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, partition_id: partition_id) }
-  let(:partition_id) { ci_testing_partition_id }
+  let_it_be(:partition_id) { ci_testing_partition_id }
+  let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, partition_id: partition_id) }
   let(:definitions) { [] }
   let(:service) { described_class.new(pipeline, definitions: definitions) }
 
@@ -101,10 +101,10 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
     end
 
     context 'when some records already exist' do
-      let(:existing_config) { { options: { script: ['echo existing'] } } }
+      let_it_be(:existing_config) { { options: { script: ['echo existing'] } } }
       let(:new_config) { { options: { script: ['echo new'] } } }
 
-      let(:existing_job_def) do
+      let_it_be(:existing_job_def) do
         ::Ci::JobDefinition.fabricate(config: existing_config, project_id: project.id, partition_id: partition_id)
       end
 
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         ::Ci::JobDefinition.fabricate(config: new_config, project_id: project.id, partition_id: partition_id)
       end
 
-      let!(:existing_definition) do
+      let_it_be_with_reload(:existing_definition) do
         create(:ci_job_definition,
           project: project,
           partition_id: partition_id,
@@ -139,18 +139,18 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
     end
 
     context 'when all records already exist' do
-      let(:config1) { { options: { script: ['echo test1'] } } }
-      let(:config2) { { options: { script: ['echo test2'] } } }
+      let_it_be(:config1) { { options: { script: ['echo test1'] } } }
+      let_it_be(:config2) { { options: { script: ['echo test2'] } } }
 
-      let(:job_def1) do
+      let_it_be(:job_def1) do
         ::Ci::JobDefinition.fabricate(config: config1, project_id: project.id, partition_id: partition_id)
       end
 
-      let(:job_def2) do
+      let_it_be(:job_def2) do
         ::Ci::JobDefinition.fabricate(config: config2, project_id: project.id, partition_id: partition_id)
       end
 
-      let!(:existing_definition1) do
+      let_it_be(:existing_definition1) do
         create(:ci_job_definition,
           project: project,
           partition_id: partition_id,
@@ -158,7 +158,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           config: config1)
       end
 
-      let!(:existing_definition2) do
+      let_it_be(:existing_definition2) do
         create(:ci_job_definition,
           project: project,
           partition_id: partition_id,

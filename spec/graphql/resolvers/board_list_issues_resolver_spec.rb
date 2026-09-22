@@ -6,21 +6,16 @@ RSpec.describe Resolvers::BoardListIssuesResolver, feature_category: :planning_v
   include GraphqlHelpers
 
   let_it_be(:user)          { create(:user) }
-  let_it_be(:unauth_user)   { create(:user) }
-  let_it_be(:user_project)  { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let_it_be(:group)         { create(:group, :private) }
+  let_it_be(:user_project)  { create(:project, creator_id: user.id, namespace: user.namespace, developers: user) }
+  let_it_be(:group)         { create(:group, :private, developers: user) }
 
   shared_examples_for 'group and project board list issues resolver' do
-    before do
-      board_parent.add_developer(user)
-    end
-
     # auth is handled by the parent object
     context 'when authorized' do
-      let!(:issue1) { create(:issue, project: project, labels: [label], relative_position: 10, milestone: started_milestone) }
-      let!(:issue2) { create(:issue, project: project, labels: [label, label2], relative_position: 12, milestone: started_milestone) }
-      let!(:issue3) { create(:issue, project: project, labels: [label, label3], relative_position: 10, milestone: future_milestone) }
-      let!(:issue4) { create(:issue, project: project, labels: [label], relative_position: nil) }
+      let_it_be(:issue1) { create(:issue, project: project, labels: [label], relative_position: 10, milestone: started_milestone) }
+      let_it_be(:issue2) { create(:issue, project: project, labels: [label, label2], relative_position: 12, milestone: started_milestone) }
+      let_it_be(:issue3) { create(:issue, project: project, labels: [label, label3], relative_position: 10, milestone: future_milestone) }
+      let_it_be(:issue4) { create(:issue, project: project, labels: [label], relative_position: nil) }
 
       let(:wildcard_started) { 'STARTED' }
       let(:filters) { { milestone_title: ["started"], milestone_wildcard_id: wildcard_started } }
@@ -109,8 +104,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver, feature_category: :planning_v
       let_it_be(:board) { create(:board, resource_parent: user_project) }
       let_it_be(:list) { create(:list, board: board, label: label) }
 
-      let(:board_parent) { user_project }
-      let(:project) { user_project }
+      let_it_be(:project) { user_project }
 
       let_it_be(:started_milestone) { create(:milestone, project: user_project, title: 'started milestone', start_date: 1.day.ago, due_date: 1.day.from_now) }
       let_it_be(:future_milestone) { create(:milestone, project: user_project, title: 'future milestone', start_date: 1.day.from_now) }
@@ -125,8 +119,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver, feature_category: :planning_v
       let_it_be(:board) { create(:board, resource_parent: group) }
       let_it_be(:list) { create(:list, board: board, label: label) }
 
-      let(:board_parent) { group }
-      let!(:project) { create(:project, :private, group: group) }
+      let_it_be(:project) { create(:project, :private, group: group) }
 
       let_it_be(:started_milestone) { create(:milestone, group: group, title: 'started milestone', start_date: 1.day.ago, due_date: 1.day.from_now) }
       let_it_be(:future_milestone) { create(:milestone, group: group, title: 'future milestone', start_date: 1.day.from_now) }

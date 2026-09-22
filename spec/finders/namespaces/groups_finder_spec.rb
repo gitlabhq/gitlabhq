@@ -147,5 +147,23 @@ RSpec.describe Namespaces::GroupsFinder, feature_category: :groups_and_projects 
         end
       end
     end
+
+    # lib/api/groups.rb expresses "top-level only" as `parent: [nil]`. That is a scope for
+    # GroupsFinder, not a group to resolve, so it must pass straight through rather than
+    # being treated as a parent lookup.
+    context 'with the REST top-level convention' do
+      it 'returns top-level groups rather than nothing' do
+        result = described_class.new(user, parent: [nil]).execute
+
+        expect(result).to include(public_group)
+        expect(result).not_to include(subgroup)
+      end
+
+      it 'matches GroupsFinder' do
+        expected = GroupsFinder.new(user, parent: [nil]).execute
+
+        expect(described_class.new(user, parent: [nil]).execute).to match_array(expected)
+      end
+    end
   end
 end

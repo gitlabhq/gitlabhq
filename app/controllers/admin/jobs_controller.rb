@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Admin::JobsController < Admin::ApplicationController
-  BUILDS_PER_PAGE = 30
-
   feature_category :continuous_integration
   urgency :low
 

@@ -5,16 +5,17 @@ require 'spec_helper'
 RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
+  let_it_be_with_reload(:project) do
+    create(:project, :repository, creator: user, maintainers: user, developers: user2)
+  end
+
   let_it_be_with_reload(:project2) { create(:project, :repository) }
   let_it_be(:trigger_token) { 'secure_token' }
   let_it_be(:trigger_token_2) { 'secure_token_2' }
-  let_it_be(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
-  let_it_be(:developer) { create(:project_member, :developer, user: user2, project: project) }
   let_it_be(:trigger) { create(:ci_trigger, project: project, token: trigger_token, owner: user) }
   let_it_be(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2, owner: user2) }
 
-  before do
+  before_all do
     project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
   end
 
@@ -161,18 +162,18 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
       end
 
       context 'when triggered from another running job' do
-        let!(:trigger) {}
+        let(:trigger) {}
 
         context 'when other job is triggered by a user' do
-          let(:trigger_token) { create(:ci_build, :running, project: project, user: user).token }
+          let_it_be(:trigger_token) { create(:ci_build, :running, project: project, user: user).token }
 
           it_behaves_like 'storing arguments in the application context for the API'
           it_behaves_like 'not executing any extra queries for the application context'
         end
 
         context 'when other job is triggered by a runner' do
-          let(:trigger_token) { create(:ci_build, :running, project: project, runner: runner).token }
-          let(:runner) { create(:ci_runner) }
+          let_it_be(:runner) { create(:ci_runner) }
+          let_it_be(:trigger_token) { create(:ci_build, :running, project: project, runner: runner).token }
           let(:expected_params) { { client_id: "runner/#{runner.id}", project: project.full_path } }
 
           it_behaves_like 'storing arguments in the application context for the API'
@@ -263,13 +264,13 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
       end
 
       context 'when triggering a pipeline from a trigger token' do
-        let!(:token) { trigger_token }
+        let(:token) { trigger_token }
 
         it_behaves_like 'sending request using inputs'
       end
 
       context 'when triggered from another running job' do
-        let!(:token) { create(:ci_build, :running, project: project, user: user).token }
+        let_it_be(:token) { create(:ci_build, :running, project: project, user: user).token }
 
         it_behaves_like 'sending request using inputs'
       end

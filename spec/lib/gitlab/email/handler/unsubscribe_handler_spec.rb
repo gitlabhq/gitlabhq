@@ -11,8 +11,8 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
   end
 
   let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX}") }
-  let(:user) { create(:user) }
   let(:noteable) { create(:issue, project: project) }
 
   let!(:sent_notification) { SentNotification.record(noteable, user.id, { reply_key: mail_key }) }

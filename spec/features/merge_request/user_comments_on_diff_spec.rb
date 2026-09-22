@@ -8,7 +8,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   include RapidDiffsDiscussionHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
@@ -16,7 +16,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   let(:user) { create(:user) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let, so before_all cannot access it
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))
@@ -81,7 +81,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
           # Check the same comments in the side-by-side view.
           select_parallel_view
-          wait_for_requests
 
           second_file = diff_file(sample_compare.changes[1][:file_path])
           expect(second_file).to have_content('Line is wrong')

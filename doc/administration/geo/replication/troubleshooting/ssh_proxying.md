@@ -49,6 +49,7 @@ For technical details, see [Geo proxied Git fetch error: fatal: the remote end h
 When you push large repositories through SSH on a Geo secondary site, you may encounter a timeout.
 This is because Rails proxies the push to the primary and has a 60 second default timeout,
 [as described in this Geo issue](https://gitlab.com/gitlab-org/gitlab/-/issues/7405).
+This problem only occurs when the `geo_proxy_push_ssh_to_primary` feature flag is disabled.
 
 Current workarounds are:
 

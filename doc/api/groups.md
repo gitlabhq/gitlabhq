@@ -570,7 +570,7 @@ Parameters:
 | `active`                      | boolean        | no       | Limit by project status. When `true`, returns active projects. When `false`, returns projects that are archived or marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218053) in GitLab 18.8. |
 | `archived`                    | boolean        | no       | Limit by archived status. |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private`. |
-| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, `star_count` or `last_activity_at` fields. Default is `created_at`. |
+| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity`[^orders-results-similarity], `star_count` or `last_activity_at` fields. Default is `created_at`. |
 | `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `search`                      | string         | no       | Return list of authorized projects matching the search criteria. |
 | `simple`                      | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
@@ -585,11 +585,9 @@ Parameters:
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_security_reports`       | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
-**Footnotes**:
-
-1. Orders the results by a similarity score calculated from the `search` URL parameter.
-   When you use `order_by=similarity`, the `sort` parameter is ignored.
-   When the `search` parameter is not provided, the API returns the projects ordered by `name`.
+[^orders-results-similarity]: Orders the results by a similarity score calculated from the `search` URL parameter.
+    When you use `order_by=similarity`, the `sort` parameter is ignored.
+    When the `search` parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 

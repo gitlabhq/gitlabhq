@@ -17,9 +17,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   it { expect(model.singleton_class.ancestors).to include(described_class::WraparoundVacuumHelpers) }
 
   describe 'overridden dynamic model helpers' do
-    let(:test_table) { :_test_batching_table }
+    let_it_be(:test_table) { :_test_batching_table }
+    let_it_be_with_reload(:model) { ActiveRecord::Migration.new.extend(described_class) }
 
-    before do
+    before_all do
       model.connection.execute(<<~SQL)
         CREATE TABLE #{test_table} (
           id integer NOT NULL PRIMARY KEY,
@@ -136,10 +137,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
   describe '#update_column_in_batches' do
     context 'when running outside of a transaction' do
+      let_it_be(:projects_for_column_batches) { create_list(:project, 5) }
+
       before do
         expect(model).to receive(:transaction_open?).and_return(false)
-
-        create_list(:project, 5)
       end
 
       it 'updates all the rows in a table' do

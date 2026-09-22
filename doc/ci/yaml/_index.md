@@ -5023,9 +5023,22 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
   - The runner failed to pull the Docker image. For `docker`, `docker+machine`, `kubernetes` [executors](https://docs.gitlab.com/runner/executors/).
   - Introduced in GitLab 19.1, some failures are changed from `script_failure` to the more accurate `runner_configuration_error`.
 - `api_failure`: Retry on API failure.
-- `stuck_or_timeout_failure`: Retry when the job got stuck or timed out. Deprecated in GitLab 19.1.
+- `stuck_or_timeout_failure`: Retry when the job gets stuck or times out. Deprecated in GitLab 19.1.
   Retries on any of `stuck_pending_with_matching_runners`, `stuck_pending_no_matching_runners`,
   `no_updates_running`, or `no_updates_canceling`. Use those values instead.
+  In GitLab 19.0 and later, this reason is preserved for historical data only.
+  New jobs use one of the more specific reasons listed below instead. To retry
+  jobs in these cases, also configure the new reasons.
+- `stuck_pending_with_matching_runners`: Retry when the job remains in the
+  pending state for an extended period, even though matching runners are available.
+- `stuck_pending_no_matching_runners`: Retry when the job remains in the
+  pending state because no runners match the job's requirements
+  (for example, tags or protected status).
+- `no_updates_running`: Retry when the job is in the running state but shows
+  no activity for an extended period, for example because the job script hangs
+  or the runner loses connectivity.
+- `no_updates_canceling`: Retry when the job is in the canceling state but
+  shows no activity for an extended period.
 - `runner_system_failure`: Retry if there is a runner system failure (for example, job setup failed).
   - Introduced in GitLab 19.1, some failures are changed from `runner_system_failure` to the more accurate `runner_external_dependency_failure` or `runner_interrupted`.
 - `runner_configuration_error`: Retry if the job failed because of a CI/CD or runner configuration error, for example an invalid image or tag, an incompatible pull policy, or a misconfigured runner.
@@ -5036,6 +5049,10 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 - `job_execution_timeout`: Retry if the script exceeded the maximum execution time set for the job.
   Deprecated in GitLab 19.1. Retries on either `server_timeout_running` or `server_timeout_canceling`.
   Use those values instead.
+- `server_timeout_running`: Retry when a running job exceeds its maximum
+  execution time and server-side timeout enforcement drops the job.
+- `server_timeout_canceling`: Retry when a canceling job exceeds its maximum
+  execution time and server-side timeout enforcement drops the job during cancellation.
 - `archived_failure`: Retry if the job is archived and can't be run.
 - `unmet_prerequisites`: Retry if the job failed to complete prerequisite tasks.
 - `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
@@ -5062,7 +5079,9 @@ test:
     max: 2
     when:
       - runner_system_failure
-      - stuck_or_timeout_failure
+      - stuck_pending_with_matching_runners
+      - stuck_pending_no_matching_runners
+      - no_updates_running
 ```
 
 ---

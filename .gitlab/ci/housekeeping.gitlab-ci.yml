@@ -1,0 +1,61 @@
+# Scheduled gitlab-housekeeper keeps.
+#
+# Each keep runs from its own pipeline schedule on the default branch. Create one
+# schedule per keep with:
+#   SCHEDULE_TYPE=housekeeping
+#   HOUSEKEEPING_KEEP=<keep name>   (see the per-job `rules` below)
+# and the cron of your choice (for example weekly for the RuboCop keeps and
+# monthly for squash-migrations).
+#
+# Required CI/CD variables:
+#   HOUSEKEEPER_GITLAB_API_TOKEN  API token (gitlab-bot) used to open MRs. The
+#                                 gitlab-housekeeper CLI fails the job when it
+#                                 is missing.
+#
+# The jobs reuse the standard Rails + DB CI setup (.rails-job-base runs
+# scripts/prepare_build.sh; .use-pg17 provides the postgres and redis services),
+# so no GDK image is required. The gitlab-housekeeper CLI loads every keep in
+# keeps/, some of which boot the full Rails application, so a database is always
+# required even for the RuboCop keeps.
+
+.housekeeping-keep:
+  extends:
+    - .rails-job-base
+    - .use-pg17
+  stage: prepare
+  needs: []
+  variables:
+    GIT_USER_NAME: "GitLab Housekeeping Bot"
+    GIT_USER_EMAIL: "gitlab-housekeeping-bot@gitlab.com"
+    HOUSEKEEPER_TARGET_PROJECT_ID: "278964"
+  script:
+    - scripts/run-gitlab-housekeeper.sh
+
+housekeeper:generate-rubocop-todos:
+  extends: .housekeeping-keep
+  tags:
+    - $GITLAB_LARGE_RUNNER_OPTIONAL
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "generate_rubocop_todos"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::GenerateRubocopTodos"
+
+housekeeper:rubocop-fixer:
+  extends: .housekeeping-keep
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "rubocop_fixer"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::RubocopFixer"
+
+housekeeper:squash-migrations:
+  extends: .housekeeping-keep
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "squash_migrations"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::SquashMigrations"

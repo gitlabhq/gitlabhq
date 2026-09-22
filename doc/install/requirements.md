@@ -169,10 +169,10 @@ The supported versions of Redis or Valkey are:
 
 | Datastore | Recommended version | Minimum version |
 | --------- | ------------------- | --------------- |
-| Redis     | 7.2                 | 7.0<sup>1</sup> |
+| Redis     | 7.2                 | 7.0[^reached-end-life] |
 | Valkey    | 7.2                 | 7.2             |
 
-<sup>1</sup> Redis 7.0 has reached end-of-life (EOL) upstream, but in some cases is actively
+[^reached-end-life]: Redis 7.0 has reached end-of-life (EOL) upstream, but in some cases is actively
 maintained by vendors. For example, Amazon ElastiCache for Redis 7.1 uses its own version number
 but is built on Redis 7.0.
 

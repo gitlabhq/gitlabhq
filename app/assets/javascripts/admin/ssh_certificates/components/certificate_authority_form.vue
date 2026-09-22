@@ -12,8 +12,16 @@ const TITLE_MAX_LENGTH = 255;
 const KEY_MAX_LENGTH = 5000;
 
 export default {
-  name: 'AddCertificateAuthorityForm',
+  name: 'CertificateAuthorityForm',
   components: { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput, GlFormTextarea },
+  props: {
+    // When set, the form shows this certificate authority read-only.
+    certificate: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   emits: ['added', 'cancel'],
   data() {
     return {
@@ -26,6 +34,21 @@ export default {
     };
   },
   computed: {
+    isReadonly() {
+      return this.certificate !== null;
+    },
+    fingerprint() {
+      return this.certificate?.fingerprint || s__('SshCertificates|Not available');
+    },
+    keyDescription() {
+      return this.isReadonly
+        ? s__(
+            "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide. Certificate authorities (CAs) can't be edited. To change this key, delete it and add a certificate authority.",
+          )
+        : s__(
+            "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide.",
+          );
+    },
     titleError() {
       return this.title.trim() ? '' : this.$options.i18n.titleRequired;
     },
@@ -40,12 +63,28 @@ export default {
     key() {
       this.serverKeyError = '';
     },
+    certificate: {
+      immediate: true,
+      handler(certificate) {
+        this.title = certificate?.title ?? '';
+        this.key = certificate?.key ?? '';
+        this.submitted = false;
+        this.serverKeyError = '';
+        this.hasUnexpectedError = false;
+      },
+    },
   },
   methods: {
     fieldState(error) {
       return this.submitted && error ? false : null;
     },
+    // eslint-disable-next-line vue/no-unused-properties
+    hasUnsavedChanges() {
+      return !this.isReadonly && Boolean(this.title.trim() || this.key.trim());
+    },
     async onSubmit() {
+      if (this.isReadonly) return;
+
       this.submitted = true;
       this.serverKeyError = '';
       this.hasUnexpectedError = false;
@@ -76,12 +115,8 @@ export default {
     titleDescription: s__('SshCertificates|Key titles are publicly visible.'),
     titleRequired: s__('SshCertificates|Title is required.'),
     keyLabel: s__('SshCertificates|Public key'),
-    keyDescription: s__(
-      "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide.",
-    ),
     keyRequired: s__('SshCertificates|Public key is required.'),
     submit: s__('SshCertificates|Add certificate authority'),
-    cancel: __('Cancel'),
     unexpectedError: s__(
       'SshCertificates|An error occurred while adding the SSH certificate authority. Please try again.',
     ),
@@ -92,7 +127,7 @@ export default {
 </script>
 
 <template>
-  <gl-form data-testid="add-certificate-authority-form" @submit.prevent="onSubmit">
+  <gl-form data-testid="certificate-authority-form" @submit.prevent="onSubmit">
     <gl-alert
       v-if="hasUnexpectedError"
       variant="danger"
@@ -116,13 +151,31 @@ export default {
         :maxlength="$options.TITLE_MAX_LENGTH"
         :state="fieldState(titleError)"
         :disabled="isSaving"
+        :readonly="isReadonly"
         data-testid="certificate-authority-title-input"
       />
     </gl-form-group>
 
     <gl-form-group
+      v-if="isReadonly"
+      :label="__('Fingerprint (SHA256)')"
+      :description="
+        s__('SshCertificates|This matches what appears in your server logs and audit events.')
+      "
+      label-for="certificate-authority-fingerprint"
+    >
+      <gl-form-input
+        id="certificate-authority-fingerprint"
+        :value="fingerprint"
+        readonly
+        class="gl-font-monospace"
+        data-testid="certificate-authority-fingerprint-input"
+      />
+    </gl-form-group>
+
+    <gl-form-group
       :label="$options.i18n.keyLabel"
-      :description="$options.i18n.keyDescription"
+      :description="keyDescription"
       :state="fieldState(keyError)"
       :invalid-feedback="keyError"
       label-for="certificate-authority-key"
@@ -134,12 +187,14 @@ export default {
         :maxlength="$options.KEY_MAX_LENGTH"
         :state="fieldState(keyError)"
         :disabled="isSaving"
+        :readonly="isReadonly"
         data-testid="certificate-authority-key-input"
       />
     </gl-form-group>
 
     <div class="gl-flex gl-gap-3">
       <gl-button
+        v-if="!isReadonly"
         type="submit"
         variant="confirm"
         :loading="isSaving"
@@ -153,7 +208,7 @@ export default {
         data-testid="cancel-certificate-authority-button"
         @click="$emit('cancel')"
       >
-        {{ $options.i18n.cancel }}
+        {{ isReadonly ? __('Close') : __('Cancel') }}
       </gl-button>
     </div>
   </gl-form>

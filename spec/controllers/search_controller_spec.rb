@@ -848,6 +848,15 @@ RSpec.describe SearchController, feature_category: :global_search do
             get :count, params: { search: 'hello', scope: 'projects', filter: 'search' }
           end
         end
+
+        context 'when the request short-circuits before the search is attempted' do
+          it 'does not record the error rate when a required param is missing' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).not_to receive(:record_error_rate)
+
+            expect { get :count, params: { scope: 'projects' } }
+              .to raise_error(ActionController::ParameterMissing)
+          end
+        end
       end
     end
 
@@ -991,6 +1000,16 @@ RSpec.describe SearchController, feature_category: :global_search do
             )
 
             get :autocomplete, params: { term: 'setting', scope: 'projects', filter: 'search' }
+          end
+        end
+
+        context 'when the request short-circuits before the search is attempted' do
+          it 'does not record the error rate for a blank term' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).not_to receive(:record_error_rate)
+
+            get :autocomplete, params: { term: '', scope: 'projects' }
+
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end

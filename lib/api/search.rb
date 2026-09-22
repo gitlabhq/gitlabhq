@@ -102,6 +102,7 @@ module API
           bad_request!("Scope '#{params[:scope]}' is not available for this search")
         end
 
+        @search_attempted = true
         @search_duration_s = Benchmark.realtime do
           @results = search_service.search_objects(preload_method)
         end
@@ -124,17 +125,20 @@ module API
 
         paginate(@results)
       ensure
+        # Skip requests that never attempted a search -- they are not search errors.
+        #
         # If we raise an error somewhere in the @search_duration_s benchmark block, we will end up here
         # with a 200 status code, but an empty @search_duration_s.
         # Errors record the user requested scope, otherwise the scope executed is recorded
-
-        search_service = search_service(additional_params)
-        Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
-          error: @search_duration_s.nil? || status >= 500,
-          search_type: search_type(additional_params),
-          search_level: search_service.level,
-          search_scope: @search_duration_s.nil? ? user_requested_search_scope : search_service.scope
-        )
+        if @search_attempted
+          search_service = search_service(additional_params)
+          Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
+            error: @search_duration_s.nil? || status >= 500,
+            search_type: search_type(additional_params),
+            search_level: search_service.level,
+            search_scope: @search_duration_s.nil? ? user_requested_search_scope : search_service.scope
+          )
+        end
       end
 
       def project_scope_allowed?

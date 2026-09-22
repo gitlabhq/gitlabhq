@@ -3,21 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe API::AwardEmoji, feature_category: :shared do
-  let_it_be_with_reload(:project) { create(:project, :private) }
   let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :private, maintainers: user) }
   let_it_be(:issue, freeze: false) { create(:issue, project: project) }
   let_it_be(:snippet, freeze: false) { create(:project_snippet, :public, project: project) }
   let_it_be(:award_emoji) { create(:award_emoji, awardable: issue, user: user) }
   let_it_be(:note, freeze: false) { create(:note, project: project, noteable: issue) }
-  let_it_be(:snippet_note, freeze: false) { create(:note, project: project, noteable: snippet) }
-
-  let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  let(:mr_note) { create(:note, project: project, noteable: merge_request) }
-  let!(:downvote) { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
-
-  before do
-    project.add_maintainer(user)
-  end
+  let_it_be_with_reload(:snippet_note) { create(:note, project: project, noteable: snippet) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be_with_reload(:mr_note) { create(:note, project: project, noteable: merge_request) }
+  let_it_be(:downvote) { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
 
   shared_examples 'request with insufficient permissions' do |request_method|
     let(:request_params) { {} }
@@ -114,6 +109,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
       context 'with custom emoji' do
         let_it_be_with_reload(:project) { create(:project, :public, namespace: create(:group)) }
         let_it_be(:custom_emoji) { create_list(:custom_emoji, 4, namespace: project.namespace) }
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
         it 'prevents n+1 queries', :use_sql_query_cache do
           custom_emoji[0...2].each do |emoji|
@@ -163,7 +159,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
 
   describe 'GET /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji' do
     context 'on issue notes' do
-      let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
+      let_it_be(:rocket) { create(:award_emoji, awardable: note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji" }
 
       it 'returns an array of award emoji' do
@@ -259,7 +255,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     end
 
     context 'on a snippet' do
-      let!(:snippet_award) { create(:award_emoji, awardable: snippet) }
+      let_it_be(:snippet_award) { create(:award_emoji, awardable: snippet, user: user) }
       let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{snippet_award.id}" }
 
       it 'returns the awarded emoji' do
@@ -282,7 +278,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
 
   describe 'GET /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji/:award_id' do
     context 'on issue notes' do
-      let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
+      let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}" }
 
       it 'returns an award emoji' do
@@ -297,7 +293,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
         subject(:perform_request) { get api(request_path, current_user) }
 
         let_it_be(:group) { create(:group) }
-        let_it_be(:project, freeze: false) { create(:project, :public, namespace: group) }
+        let_it_be(:project, freeze: false) { create(:project, :public, namespace: group, maintainers: user) }
         let_it_be(:issue) { create(:issue, project: project) }
         let_it_be(:note, freeze: false) { create(:note, :confidential, project: project, noteable: issue, author: user) }
 
@@ -335,7 +331,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     end
 
     context 'on merge request notes' do
-      let!(:rocket) { create(:award_emoji, awardable: mr_note, name: 'rocket') }
+      let_it_be(:rocket) { create(:award_emoji, awardable: mr_note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji/#{rocket.id}" }
 
       it_behaves_like 'authorizing granular token permissions', :read_merge_request_note_award_emoji do
@@ -347,7 +343,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     end
 
     context 'on snippet notes' do
-      let!(:rocket) { create(:award_emoji, awardable: snippet_note, name: 'rocket') }
+      let_it_be(:rocket) { create(:award_emoji, awardable: snippet_note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}/award_emoji/#{rocket.id}" }
 
       it_behaves_like 'authorizing granular token permissions', :read_snippet_note_award_emoji do
@@ -573,7 +569,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     end
 
     context 'when the awardable is a Snippet' do
-      let!(:snippet_award) { create(:award_emoji, awardable: snippet, user: user) }
+      let_it_be(:snippet_award) { create(:award_emoji, awardable: snippet, user: user) }
       let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{snippet_award.id}" }
 
       it 'deletes the award' do
@@ -599,7 +595,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
 
   describe 'DELETE /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji/:award_id' do
     context 'on issue notes' do
-      let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket', user: user) }
+      let_it_be(:rocket) { create(:award_emoji, awardable: note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}" }
 
       it 'deletes the award' do
@@ -625,7 +621,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     end
 
     context 'on merge request notes' do
-      let!(:rocket) { create(:award_emoji, awardable: mr_note, name: 'rocket', user: user) }
+      let_it_be(:rocket) { create(:award_emoji, awardable: mr_note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji/#{rocket.id}" }
 
       it_behaves_like 'authorizing granular token permissions', :delete_merge_request_note_award_emoji do
@@ -637,7 +633,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     end
 
     context 'on snippet notes' do
-      let!(:rocket) { create(:award_emoji, awardable: snippet_note, name: 'rocket', user: user) }
+      let_it_be(:rocket) { create(:award_emoji, awardable: snippet_note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}/award_emoji/#{rocket.id}" }
 
       it_behaves_like 'authorizing granular token permissions', :delete_snippet_note_award_emoji do
@@ -668,7 +664,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     context 'on a note' do
       it_behaves_like 'read-only award emoji access for the ai_workflows scope' do
         let(:awardable) { mr_note }
-        let!(:award_emoji) { create(:award_emoji, awardable: mr_note, name: 'rocket', user: user) }
+        let_it_be(:award_emoji) { create(:award_emoji, awardable: mr_note, name: 'rocket', user: user) }
         let(:request_path) do
           "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji"
         end
@@ -676,8 +672,8 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
     end
 
     context 'on a snippet' do
-      let!(:snippet_award) { create(:award_emoji, awardable: snippet, user: user) }
-      let!(:snippet_note_award) { create(:award_emoji, awardable: snippet_note, user: user) }
+      let_it_be(:snippet_award) { create(:award_emoji, awardable: snippet, user: user) }
+      let_it_be(:snippet_note_award) { create(:award_emoji, awardable: snippet_note, user: user) }
       let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 
       it 'does not allow reading the award emoji' do

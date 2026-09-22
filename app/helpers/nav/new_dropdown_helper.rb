@@ -25,13 +25,14 @@ module Nav
 
     def group_menu_section(group)
       menu_items = []
+      path_options = organization_path_options(group.organization)
 
       if can?(current_user, :create_projects, group)
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'new_project',
             title: _('New project/repository'),
-            href: new_project_path(namespace_id: group.id)
+            href: new_project_path(namespace_id: group.id, **path_options)
           )
         )
       end
@@ -41,7 +42,7 @@ module Nav
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'new_subgroup',
             title: _('New subgroup'),
-            href: new_group_path(parent_id: group.id, anchor: 'create-group-pane')
+            href: new_group_path(parent_id: group.id, anchor: 'create-group-pane', **path_options)
           )
         )
       end
@@ -124,13 +125,17 @@ module Nav
 
     def general_menu_section
       menu_items = []
+      organization = ::Current.organization_resolver&.from_params
+      path_options = organization_path_options(organization)
+      organization_scoped = path_options[:organization_path].present?
+      section_title = organization_scoped ? _('In this organization') : _('In GitLab')
 
       if current_user.can_create_project?
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_project',
             title: _('New project/repository'),
-            href: new_project_path(organization_path: nil)
+            href: new_project_path(**path_options)
           )
         )
       end
@@ -140,12 +145,12 @@ module Nav
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_group',
             title: _('New group'),
-            href: new_group_path(organization_path: nil)
+            href: new_group_path(**path_options)
           )
         )
       end
 
-      if ::Organizations::Release.enabled?(:org_creation, current_user) &&
+      if !organization_scoped && ::Organizations::Release.enabled?(:org_creation, current_user) &&
           current_user.can?(:create_organization)
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
@@ -156,20 +161,33 @@ module Nav
         )
       end
 
-      if current_user.can?(:create_snippet)
+      if !organization_scoped && current_user.can?(:create_snippet)
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_snippet',
             title: _('New snippet'),
-            href: new_snippet_path(organization_path: nil)
+            href: new_snippet_path(**path_options)
           )
         )
       end
 
       {
-        title: _('In GitLab'),
+        title: section_title,
         menu_items: menu_items
       }
+    end
+
+    def organization_scoped_new_dropdown?
+      return false unless Feature.enabled?(:organization_scoped_new_dropdown, current_user)
+
+      ::Organizations::Release.enrolled?(current_user)
+    end
+
+    def organization_path_options(organization)
+      return { organization_path: nil } unless organization_scoped_new_dropdown?
+      return { organization_path: nil } unless organization&.scoped_paths?
+
+      { organization_path: organization.path }
     end
 
     def invite_members_menu_item(partial:)

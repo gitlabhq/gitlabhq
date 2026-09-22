@@ -1730,7 +1730,17 @@ Gitlab/Rails/AttrEncrypted:
   Include:
   - '{,ee/,jh/}app/models/**/*.rb'
   - 'db/migrate/*.rb'
-  - '{,ee/,jh/}/lib/(ee/)?gitlab/background_migration/*.rb'
+  - lib/gitlab/background_migration/**/*.rb
+  - ee/lib/ee/gitlab/background_migration/**/*.rb
+  - ee/lib/gitlab/background_migration/**/*.rb
+
+Gitlab/Rails/EncryptsDeterministic:
+  Enabled: true
+  Include:
+  - '{,ee/,jh/}app/models/**/*.rb'
+  - lib/gitlab/background_migration/**/*.rb
+  - ee/lib/ee/gitlab/background_migration/**/*.rb
+  - ee/lib/gitlab/background_migration/**/*.rb
 
 Migration/PreventAddingAttrEncryptedColumns:
   Enabled: true

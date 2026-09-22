@@ -165,19 +165,17 @@ POST /projects/:id/repository/commits
 | `allow_empty`    | boolean           | No       | When `true`, creates an empty commit. Default is `false`. |
 | `author_email`   | string            | No       | Specify the commit author's email address. |
 | `author_name`    | string            | No       | Specify the commit author's name. |
-| `force`          | boolean           | No       | If `true`, overwrites `branch` with a new commit based on `start_branch` or `start_sha`, replacing the branch's existing commit history. Default is `false`. <sup>1</sup> |
-| `start_branch`   | string            | No       | Name of the branch to use as the parent for the new commit. If not provided and `start_sha` is also not provided, defaults to the value of `branch`. Mutually exclusive with `start_sha`. <sup>1</sup> |
+| `force`          | boolean           | No       | If `true`, overwrites `branch` with a new commit based on `start_branch` or `start_sha`, replacing the branch's existing commit history. Default is `false`.[^force-true-provide] |
+| `start_branch`   | string            | No       | Name of the branch to use as the parent for the new commit. If not provided and `start_sha` is also not provided, defaults to the value of `branch`. Mutually exclusive with `start_sha`.[^force-true-provide] |
 | `start_project`  | integer or string | No       | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to use as the source for `start_branch` or `start_sha`. Defaults to the value of `id`. |
-| `start_sha`      | string            | No       | SHA of the commit to use as the parent for the new commit. Must be a full 40-character SHA. Mutually exclusive with `start_branch`. <sup>1</sup> |
+| `start_sha`      | string            | No       | SHA of the commit to use as the parent for the new commit. Must be a full 40-character SHA. Mutually exclusive with `start_branch`.[^force-true-provide] |
 | `stats`          | boolean           | No       | Include commit stats. Default is `true`. |
 
-**Footnotes**:
-
-1. When `force` is `true`, provide `start_branch` or `start_sha` to specify a
-   different parent commit.
-   If neither is provided, `start_branch` defaults to the value of `branch`, and the new
-   commit is based on the current branch tip.
-   In that case, `force` has no effect because the result is the same as a regular commit.
+[^force-true-provide]: When `force` is `true`, provide `start_branch` or `start_sha` to specify a
+    different parent commit.
+    If neither is provided, `start_branch` defaults to the value of `branch`, and the new
+    commit is based on the current branch tip.
+    In that case, `force` has no effect because the result is the same as a regular commit.
 
 > [!note]
 > Large requests with many actions may be subject to size limits. For more information, see [commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).

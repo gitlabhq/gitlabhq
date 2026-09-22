@@ -88,8 +88,6 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
   context 'when user switches view styles' do
     before do
       select_parallel_view
-
-      wait_for_requests
     end
 
     it 'has the correct discussions applied to files across batched pages' do

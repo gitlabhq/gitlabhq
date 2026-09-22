@@ -197,6 +197,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry, feature_category: :pipeline_com
           script_failure
           api_failure
           stuck_or_timeout_failure
+          stuck_pending_with_matching_runners
+          stuck_pending_no_matching_runners
+          no_updates_running
+          no_updates_canceling
+          server_timeout_running
+          server_timeout_canceling
           runner_system_failure
           runner_configuration_error
           runner_external_dependency_failure

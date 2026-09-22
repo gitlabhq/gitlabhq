@@ -20,7 +20,7 @@
 .if-force-ci: &if-force-ci
   if: '$FORCE_GITLAB_CI'
 
-# weekly, ai-principles-* and whats-new pipelines are opt-in and should not automatically run every job
+# weekly, ai-principles-*, whats-new and housekeeping pipelines are opt-in and should not automatically run every job
 .if-default-refs: &if-default-refs
   if: '
       (
@@ -29,6 +29,7 @@
         && $SCHEDULE_TYPE != "ai-principles-distillation"
         && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"
         && $SCHEDULE_TYPE != "whats-new"
+        && $SCHEDULE_TYPE != "housekeeping"
         && $TRIGGERED_BY_AI_GATEWAY_PROJECT != "true"
         &&
         (
@@ -49,9 +50,9 @@
       || $FORCE_GITLAB_CI
       '
 
-# weekly, ai-principles-* and whats-new pipelines are opt-in and should not automatically run every job
+# weekly, ai-principles-*, whats-new and housekeeping pipelines are opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new"'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
 
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
@@ -250,6 +251,9 @@
 .if-default-branch-schedule-whats-new: &if-default-branch-schedule-whats-new
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "whats-new"'
 
+.if-default-branch-schedule-housekeeping: &if-default-branch-schedule-housekeeping
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "housekeeping"'
+
 .if-ruby-branch-schedule: &if-ruby-branch-schedule
   if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
@@ -272,7 +276,7 @@
   if: '($CI_SERVER_HOST != "gitlab.com" || $CI_PROJECT_NAMESPACE != "gitlab-org") && ($CI_SERVER_HOST != "jihulab.com" || $CI_PROJECT_NAMESPACE != "gitlab-cn")'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new"'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
 
 .if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
@@ -1277,6 +1281,8 @@
     - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
       when: never
     - <<: *if-default-branch-schedule-whats-new
+      when: never
+    - <<: *if-default-branch-schedule-housekeeping
       when: never
 
 .rails:rules:run-search-tests:
@@ -4044,6 +4050,15 @@
     - if: '$PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE == null'
       when: never
     - <<: *if-default-branch-schedule-whats-new
+
+####################
+# Housekeeping rules #
+####################
+.housekeeping:rules:scheduled:
+  rules:
+    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
+      when: never
+    - <<: *if-default-branch-schedule-housekeeping
 
 ###################
 # Benchmark rules #

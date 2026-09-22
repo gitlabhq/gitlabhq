@@ -5,11 +5,8 @@ require 'spec_helper'
 RSpec.describe Admin::JobsController, feature_category: :continuous_integration do
   describe 'GET #index' do
     context 'with an authenticated admin user' do
-      it 'paginates builds without a total count', :aggregate_failures do
-        stub_const("Admin::JobsController::BUILDS_PER_PAGE", 1)
-
+      it 'renders the index for an admin' do
         sign_in(create(:admin))
-        create_list(:ci_build, 2)
 
         get :index
 

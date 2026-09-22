@@ -32,9 +32,9 @@ RSpec.describe Mutations::Ci::Runner::Delete, feature_category: :runner_core do
       end
 
       context 'with more than one associated project' do
-        let!(:project) { create(:project, creator_id: user.id) }
-        let!(:project2) { create(:project, creator_id: user.id) }
-        let!(:two_projects_runner) do
+        let_it_be(:project) { create(:project, creator_id: user.id) }
+        let_it_be(:project2) { create(:project, creator_id: user.id) }
+        let_it_be(:two_projects_runner) do
           create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2])
         end
 
@@ -60,9 +60,9 @@ RSpec.describe Mutations::Ci::Runner::Delete, feature_category: :runner_core do
       let_it_be(:user) { create(:user) }
       let_it_be(:project) { create(:project, creator_id: user.id, maintainers: [user]) }
 
-      let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
-
       context 'with one associated project' do
+        let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
+
         let(:mutation_params) do
           { id: project_runner.to_global_id }
         end

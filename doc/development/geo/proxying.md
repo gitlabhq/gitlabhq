@@ -172,9 +172,11 @@ Wsec-->>C: Return piped messages from Git
 
 ### Git pull over SSH
 
-As SSH operations go through GitLab Shell instead of Workhorse, they are not proxied through the mechanism used for
-Workhorse requests. With SSH operations, they are proxied as Git HTTP requests to the primary site by the secondary
-Rails internal API.
+SSH operations go through GitLab Shell instead of Workhorse, so they are not proxied through the mechanism
+used for Workhorse requests. GitLab Shell asks the secondary Rails internal API whether to serve the request
+locally or forward it to the primary. When the request must be forwarded, Rails responds with a custom
+action that carries the primary repository URL and the Geo authorization headers GitLab Shell needs to
+contact the primary directly.
 
 #### Accelerated repositories
 
@@ -188,73 +190,78 @@ participant S as GitLab Shell (secondary)
 participant I as Internal API (secondary Rails)
 participant G as Gitaly (secondary)
 C->>S: git pull
-S->>I: SSH key validation (api/v4/internal/authorized_keys?key=..)
+S->>I: POST /api/v4/internal/allowed
 I-->>S: HTTP/1.1 200 OK
-S->>G: InfoRefs:UploadPack RPC
-G-->>S: stream Git response back
-S-->>C: stream Git response back
-C-->>S: stream Git data to push
-S->>G: UploadPack RPC
+S->>G: SSHUploadPack RPC
 G-->>S: stream Git response back
 S-->>C: stream Git response back
 ```
 
 #### Proxied repositories
 
-If a requested repository isn't synced, or we detect it is not up to date, the request will be proxied to the primary, in
-order to get the latest version of the changes.
+If a requested repository isn't synced, or we detect it is not up to date, GitLab Shell forwards the request
+to the primary. It streams the SSH session to the primary as a single HTTP request to the
+`ssh-upload-pack` endpoint, using the Geo authorization headers returned by the secondary Rails internal API.
+Workhorse on the primary authenticates the request with Rails and then connects to Gitaly.
 
 ```mermaid
 sequenceDiagram
 participant C as Git client
 participant S as GitLab Shell (secondary)
 participant I as Internal API (secondary Rails)
-participant P as Primary API
+participant W as Workhorse (primary)
+participant R as Rails (primary)
+participant G as Gitaly (primary)
 C->>S: git pull
-S->>I: SSH key validation (api/v4/internal/authorized_keys?key=..)
-I-->>S: HTTP/1.1 300 (custom action status) with {endpoint, msg, primary_repo}
-S->>I: POST /api/v4/geo/proxy_git_ssh/info_refs_upload_pack
-I->>P: POST $PRIMARY/foo/bar.git/info/refs/?service=git-upload-pack
-P-->>I: HTTP/1.1 200 OK
-I-->>S: <response>
-S-->>C: return Git response from primary
-C-->>S: stream Git data to push
-S->>I: POST /api/v4/geo/proxy_git_ssh/upload_pack
-I->>P: POST $PRIMARY/foo/bar.git/git-upload-pack
-P-->>I: HTTP/1.1 200 OK
-I-->>S: <response>
-S-->>C: return Git response from primary
+S->>I: POST /api/v4/internal/allowed
+I-->>S: HTTP/1.1 300 (custom action) with {primary_repo, request_headers}
+S->>W: POST $PRIMARY/foo/bar.git/ssh-upload-pack
+W->>R: GitHttpController:ssh_upload_pack
+R-->>W: Render Workhorse OK
+W->>G: SSHUploadPack RPC
+C-->>S: stream Git data
+S-->>W: stream Git data as request body
+G-->>W: stream Git response back
+W-->>S: stream Git response back
+S-->>C: stream Git response back
 ```
+
+The `geo_proxy_fetch_ssh_to_primary` feature flag controls this behavior. When the flag is disabled,
+GitLab Shell instead sends the request to the `/api/v4/geo/proxy_git_ssh/*` endpoints on the secondary,
+and the secondary Rails application forwards it to the primary as Git over HTTP.
 
 ## Git push
 
 ### Git push over SSH
 
-As SSH operations go through GitLab Shell instead of Workhorse, they are not proxied through the mechanism used for
-Workhorse requests. With SSH operations, they are proxied as Git HTTP requests to the primary site by the secondary
-Rails internal API.
+Pushes over SSH always go to the primary. GitLab Shell forwards the request the same way as a proxied pull,
+but to the `ssh-receive-pack` endpoint.
 
 ```mermaid
 sequenceDiagram
 participant C as Git client
 participant S as GitLab Shell (secondary)
 participant I as Internal API (secondary Rails)
-participant P as Primary API
+participant W as Workhorse (primary)
+participant R as Rails (primary)
+participant G as Gitaly (primary)
 C->>S: git push
-S->>I: SSH key validation (api/v4/internal/authorized_keys?key=..)
-I-->>S: HTTP/1.1 300 (custom action status) with {endpoint, msg, primary_repo}
-S->>I: POST /api/v4/geo/proxy_git_ssh/info_refs_receive_pack
-I->>P: POST $PRIMARY/foo/bar.git/info/refs/?service=git-receive-pack
-P-->>I: HTTP/1.1 200 OK
-I-->>S: <response>
-S-->>C: return Git response from primary
+S->>I: POST /api/v4/internal/allowed
+I-->>S: HTTP/1.1 300 (custom action) with {primary_repo, request_headers}
+S->>W: POST $PRIMARY/foo/bar.git/ssh-receive-pack
+W->>R: GitHttpController:ssh_receive_pack
+R-->>W: Render Workhorse OK
+W->>G: SSHReceivePack RPC
 C-->>S: stream Git data to push
-S->>I: POST /api/v4/geo/proxy_git_ssh/receive_pack
-I->>P: POST $PRIMARY/foo/bar.git/git-receive-pack
-P-->>I: HTTP/1.1 200 OK
-I-->>S: <response>
-S-->>C: return Git response from primary
+S-->>W: stream Git data as request body
+G-->>W: stream Git response back
+W-->>S: stream Git response back
+S-->>C: stream Git response back
 ```
+
+The `geo_proxy_push_ssh_to_primary` feature flag controls this behavior. When the flag is disabled,
+GitLab Shell instead sends the request to the `/api/v4/geo/proxy_git_ssh/*` endpoints on the secondary,
+and the secondary Rails application forwards it to the primary as Git over HTTP.
 
 ### Git push over HTTP(S)
 

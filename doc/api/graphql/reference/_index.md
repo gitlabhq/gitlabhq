@@ -1380,6 +1380,7 @@ Arguments:
 | <a id="query-duoworkflowworkflows-environment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, for example, IDE or web. |
 | <a id="query-duoworkflowworkflows-excludetypes"></a>`excludeTypes` | [`[String!]`](#string) | Types of flows to exclude (for example, ["software_development", "chat"]). |
 | <a id="query-duoworkflowworkflows-ids"></a>`ids` | [`[AiDuoWorkflowsWorkflowID!]`](#aiduoworkflowsworkflowid) | Filter flows by a list of IDs. |
+| <a id="query-duoworkflowworkflows-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project that contains the flows. |
 | <a id="query-duoworkflowworkflows-projectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project that contains the flows. |
 | <a id="query-duoworkflowworkflows-search"></a>`search` | [`String`](#string) | Flow title or goal to search for. |
 | <a id="query-duoworkflowworkflows-sort"></a>`sort` | [`DuoWorkflowsWorkflowSort`](#duoworkflowsworkflowsort) | Sort flows by the criteria. |
@@ -36993,6 +36994,7 @@ Fields:
 | <a id="artifactregistryrepository-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Human-readable description of the repository. Null when unset. |
 | <a id="artifactregistryrepository-downloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Number of artifact downloads from the repository. Buffered, so it can lag. |
 | <a id="artifactregistryrepository-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Package format the repository holds. |
+| <a id="artifactregistryrepository-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.5. Status: Experiment. ID of the repository in Artifact Registry. |
 | <a id="artifactregistryrepository-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind!`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. How the repository sources its artifacts. |
 | <a id="artifactregistryrepository-lastupdatedat"></a>`lastUpdatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Time the repository content last changed. Null when the content never changed. |
 | <a id="artifactregistryrepository-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the repository, unique within its namespace. |
@@ -37016,6 +37018,7 @@ Fields:
 | <a id="artifactregistryrepositorydetails-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Human-readable description of the repository. Null when unset. |
 | <a id="artifactregistryrepositorydetails-downloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Number of artifact downloads from the repository. Buffered, so it can lag. |
 | <a id="artifactregistryrepositorydetails-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Package format the repository holds. |
+| <a id="artifactregistryrepositorydetails-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.5. Status: Experiment. ID of the repository in Artifact Registry. |
 | <a id="artifactregistryrepositorydetails-images"></a>`images` {{< icon name="warning-solid" >}} | [`ArtifactRegistryImageConnection`](#artifactregistryimageconnection) | Introduced in GitLab 19.4. Status: Experiment. Images the repository holds. Can be selected once per operation, so one operation reads images for one repository. Returns `null` for a virtual repository, for a repository holding packages, and for a repository that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. |
 | <a id="artifactregistryrepositorydetails-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind!`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. How the repository sources its artifacts. |
 | <a id="artifactregistryrepositorydetails-lastupdatedat"></a>`lastUpdatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Time the repository content last changed. Null when the content never changed. |
@@ -58863,6 +58866,7 @@ Arguments:
 | <a id="project-duoworkflowworkflows-environment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, for example, IDE or web. |
 | <a id="project-duoworkflowworkflows-excludetypes"></a>`excludeTypes` | [`[String!]`](#string) | Types of flows to exclude (for example, ["software_development", "chat"]). |
 | <a id="project-duoworkflowworkflows-ids"></a>`ids` | [`[AiDuoWorkflowsWorkflowID!]`](#aiduoworkflowsworkflowid) | Filter flows by a list of IDs. |
+| <a id="project-duoworkflowworkflows-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project that contains the flows. |
 | <a id="project-duoworkflowworkflows-projectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project that contains the flows. |
 | <a id="project-duoworkflowworkflows-search"></a>`search` | [`String`](#string) | Flow title or goal to search for. |
 | <a id="project-duoworkflowworkflows-sort"></a>`sort` | [`DuoWorkflowsWorkflowSort`](#duoworkflowsworkflowsort) | Sort flows by the criteria. |

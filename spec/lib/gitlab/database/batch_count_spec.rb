@@ -457,9 +457,9 @@ RSpec.describe Gitlab::Database::BatchCount, feature_category: :database do
   end
 
   describe '#batch_sum' do
-    let(:column) { :weight }
+    let_it_be(:column) { :weight }
 
-    before do
+    before_all do
       Issue.first.update_attribute(column, 3)
       Issue.last.update_attribute(column, 4)
     end

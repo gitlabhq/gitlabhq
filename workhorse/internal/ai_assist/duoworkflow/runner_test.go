@@ -74,7 +74,10 @@ func (m *mockWebSocketConn) WriteMessage(_ int, data []byte) error {
 	if m.writeError != nil {
 		return m.writeError
 	}
-	m.writeMessages = append(m.writeMessages, data)
+	// Copy rather than alias: gorilla writes the caller's slice out
+	// synchronously and never retains it, and WriteAction returns its buffer
+	// to a shared pool once the write completes.
+	m.writeMessages = append(m.writeMessages, append([]byte(nil), data...))
 	return nil
 }
 

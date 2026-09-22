@@ -813,8 +813,78 @@ Prerequisites:
 
 To run Zoekt on a different server than GitLab:
 
-1. [Change the Gitaly listening interface](../../administration/gitaly/configure_gitaly.md#change-the-gitaly-listening-interface).
+1. [Configure Gitaly to listen on TCP](#configure-gitaly-for-an-external-zoekt-server).
 1. [Install Zoekt](#install-zoekt).
+
+### Configure Gitaly for an external Zoekt server
+
+Zoekt indexes repositories by connecting to Gitaly, so Gitaly must listen on a
+TCP address the Zoekt server can reach. By default, Gitaly listens on a Unix
+socket, which is available only to processes on the same server.
+
+The [general instructions](../../administration/gitaly/configure_gitaly.md#change-the-gitaly-listening-interface)
+cover a multi-server installation. When Gitaly runs on the same server as GitLab
+and only Zoekt connects from outside, you need fewer settings.
+
+> [!warning]
+> `gitaly['configuration']` replaces the entire Gitaly configuration hash
+> instead of merging into it. If you already set custom Gitaly options, such as
+> additional storages or TLS, merge this snippet into your existing
+> configuration rather than pasting it as it is, and make sure `name` and `path`
+> match your storage. For the same reason, keep the `storage` array even when
+> you do not change the storage paths. Without it, Gitaly has no configured
+> storage and repository access fails.
+
+The configuration below also changes how Gitaly is reachable on the network.
+
+> [!warning]
+> `listen_addr: '0.0.0.0:8075'` makes Gitaly listen on all interfaces. Restrict
+> access to port `8075` to the Zoekt server.
+
+To configure Gitaly for an external Zoekt server:
+
+1. Generate a token:
+
+   ```shell
+   openssl rand -base64 24
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following, replacing
+   `<your_secure_token>` with the generated token and `<ip_address>` with the
+   address the Zoekt server uses to reach Gitaly:
+
+   ```ruby
+   # Shared token for Gitaly authentication
+   gitlab_rails['gitaly_token'] = '<your_secure_token>'
+
+   # Gitaly configuration
+   gitaly['configuration'] = {
+     listen_addr: '0.0.0.0:8075',
+     auth: {
+       token: '<your_secure_token>',
+     },
+     storage: [
+       {
+         name: 'default',
+         path: '/var/opt/gitlab/git-data/repositories',
+       },
+     ]
+   }
+
+   # Tell Rails where to find Gitaly
+   gitlab_rails['repositories_storages'] = {
+     'default' => { 'gitaly_address' => 'tcp://<ip_address>:8075' },
+   }
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+After the reconfigure, Gitaly accepts TCP connections on port `8075` and the
+Zoekt server can reach it at the address you configured.
 
 ## Sizing recommendations
 

@@ -1,0 +1,4 @@
+---
+Gitlab/Rails/EncryptsDeterministic:
+  Exclude:
+    - 'app/models/notifications/mobile_device_push_subscription.rb'

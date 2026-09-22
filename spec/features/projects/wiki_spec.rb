@@ -20,7 +20,6 @@ RSpec.describe 'Project wikis', feature_category: :wiki do
     it_behaves_like 'User previews wiki changes'
     it_behaves_like 'User updates wiki page'
     it_behaves_like 'User uses wiki shortcuts'
-    it_behaves_like 'User views AsciiDoc page with includes'
     it_behaves_like 'User views a wiki page'
     it_behaves_like 'User views wiki sidebar'
   end

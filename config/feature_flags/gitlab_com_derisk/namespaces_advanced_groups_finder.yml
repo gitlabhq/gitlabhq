@@ -1,0 +1,10 @@
+---
+name: namespaces_advanced_groups_finder
+description: Route GraphQL and REST group listings through Namespaces::GroupsFinder
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254567
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630133
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333635
+milestone: '19.5'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false

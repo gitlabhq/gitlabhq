@@ -11,8 +11,8 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
   end
 
   describe '#resolve' do
-    let_it_be(:project) { create(:project) }
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project, developers: current_user) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:author1) { create(:user) }
     let_it_be(:author2) { create(:user) }
@@ -20,12 +20,8 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
     let_it_be(:issue_todo_done) { create(:todo, user: current_user, state: :done, action: Todo::ASSIGNED, author: author2, target: issue) }
     let_it_be(:issue_todo_pending) { create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue) }
 
-    let(:merge_request) { create(:merge_request, source_project: project) }
-    let!(:merge_request_todo_pending) { create(:todo, user: current_user, target: merge_request, state: :pending, action: Todo::MENTIONED, author: author1) }
-
-    before_all do
-      project.add_developer(current_user)
-    end
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request_todo_pending) { create(:todo, user: current_user, target: merge_request, state: :pending, action: Todo::MENTIONED, author: author1) }
 
     it 'calls TodosFinder' do
       expect_next_instance_of(TodosFinder) do |finder|
@@ -65,15 +61,12 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
       end
 
       it 'returns the todos for multiple groups' do
-        group1 = create(:group)
-        group2 = create(:group)
-        group3 = create(:group)
+        group1 = create(:group, developers: current_user)
+        group2 = create(:group, developers: current_user)
+        group3 = create(:group, developers: current_user)
 
-        group1.add_developer(current_user)
         issue1 = create(:issue, project: create(:project, group: group1))
-        group2.add_developer(current_user)
         issue2 = create(:issue, project: create(:project, group: group2))
-        group3.add_developer(current_user)
         issue3 = create(:issue, project: create(:project, group: group3))
 
         todo4 = create(:todo, group: group1, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue1)
@@ -104,13 +97,9 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
       end
 
       it 'returns the todos for multiple projects' do
-        project1 = create(:project)
-        project2 = create(:project)
-        project3 = create(:project)
-
-        project1.add_developer(current_user)
-        project2.add_developer(current_user)
-        project3.add_developer(current_user)
+        project1 = create(:project, developers: current_user)
+        project2 = create(:project, developers: current_user)
+        project3 = create(:project, developers: current_user)
 
         todo4 = create(:todo, project: project1, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: create(:issue, project: project1))
         todo5 = create(:todo, project: project2, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: create(:issue, project: project2))
@@ -139,9 +128,9 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
     context 'when sort is provided' do
       let_it_be(:new_user) { create(:user) }
 
-      let!(:todo1) { create(:todo, user: new_user, project: project, created_at: 5.hours.ago) }
-      let!(:todo2) { create(:todo, user: new_user, project: project, created_at: 4.hours.ago) }
-      let!(:todo3) { create(:todo, user: new_user, project: project, created_at: 3.hours.ago) }
+      let_it_be(:todo1) { create(:todo, user: new_user, project: project, created_at: 5.hours.ago) }
+      let_it_be(:todo2) { create(:todo, user: new_user, project: project, created_at: 4.hours.ago) }
+      let_it_be(:todo3) { create(:todo, user: new_user, project: project, created_at: 3.hours.ago) }
 
       it 'sorts in ascendent order' do
         todos = resolve_todos(args: { sort: 'CREATED_ASC' }, context: { current_user: new_user })

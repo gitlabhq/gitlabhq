@@ -9,10 +9,10 @@ RSpec.describe Import::AfterExportStrategies::BaseAfterExportStrategy, feature_c
     end
   end
 
-  let!(:service) { described_class.new }
-  let!(:project) { create(:project, :with_export, creator: user) }
+  let(:service) { described_class.new }
+  let(:project) { create(:project, :with_export, creator: user) }
   let(:shared) { project.import_export_shared }
-  let!(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   describe '#execute' do
     before do

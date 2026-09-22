@@ -9,14 +9,14 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) do
     create(
-      :project, :repository, :with_import_url, :import_user_mapping_enabled,
+      :project, :small_repo, :with_import_url, :import_user_mapping_enabled,
       import_type: ::Import::SOURCE_GITHUB,
       group: group
     )
   end
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
-  let(:github_user_id) { rand(1000) }
+  let_it_be(:github_user_id) { rand(1000) }
   let(:collaborator) do
     Gitlab::GithubImport::Representation::Collaborator.from_json_hash(
       'id' => github_user_id,
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     )
   end
 
-  let!(:source_user) do
+  let_it_be_with_reload(:source_user) do
     create(
       :import_source_user, :awaiting_approval,
       namespace: project.root_ancestor,
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     end
 
     context 'when user has lower role in a project group' do
-      before do
+      before_all do
         create(:group_member, group: group, user: user, access_level: Gitlab::Access::DEVELOPER)
       end
 
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     context 'when user has higher role in a project group' do
       let(:github_role_name) { 'write' }
 
-      before do
+      before_all do
         create(:group_member, group: group, user: user, access_level: Gitlab::Access::MAINTAINER)
       end
 
@@ -182,6 +182,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
 
     context 'when source_user is mapped to a project bot' do
       let(:github_role_name) { 'write' }
+      let(:github_user_id) { rand(1000..1999) }
 
       let!(:source_user) do
         create(
@@ -201,6 +202,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
 
     context 'when source_user is mapped to a service account' do
       let(:github_role_name) { 'write' }
+      let(:github_user_id) { rand(1000..1999) }
 
       let!(:source_user) do
         create(

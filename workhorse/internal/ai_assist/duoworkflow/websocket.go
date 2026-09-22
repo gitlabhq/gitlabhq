@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"slices"
+	"sync"
 	"sync/atomic"
 	"time"
 	"unicode/utf8"
@@ -36,11 +37,53 @@ const wsPingInterval = 20 * time.Second
 // broken.
 const wsPongTimeout = wsPingInterval + 10*time.Second
 
-// Start small and let MarshalAppend grow the buffer to the connection's actual
-// working set. Reserving the 4MB message ceiling up front costs that much live
-// heap per connection; shrinking it back after each write costs a full
-// reallocation per action, and gprd actions are routinely 1-2MB.
+// Start small and let MarshalAppend grow the buffer to the action's actual
+// size. Reserving the 4MB message ceiling up front costs that much live heap
+// per buffer.
 const initialMarshalBufSize = 4 << 10
+
+// maxPooledMarshalBufSize bounds a single pool entry, and so bounds pool
+// residue to roughly this much per runtime P. Dropping a buffer costs a full
+// regrow on the next write, so this sits well above the largest JSON a legal
+// action can produce: capping near the message size would thrash on exactly
+// the biggest actions. MaxMessageSize bounds the proto we receive, and
+// protojson output runs larger than the proto it came from, so it is not a
+// usable ceiling on its own.
+const maxPooledMarshalBufSize = 2 * MaxMessageSize
+
+// marshalBufPool shares marshaling buffers across all connections. One buffer
+// per connection pinned ~1.4MB for its whole multi-hour life and neared the
+// container memory limit at ~950 concurrent connections. Pooling scales
+// retention with concurrent writes instead of open connections, which matters
+// because connections are idle nearly all the time. It keeps the grown
+// capacity, unlike shrinking after each write, and the GC drains it under
+// pressure.
+var marshalBufPool = sync.Pool{
+	New: func() any {
+		b := make([]byte, 0, initialMarshalBufSize)
+		return &b
+	},
+}
+
+// shouldPoolMarshalBuf reports whether a buffer with capacity c is worth
+// keeping. It is a plain predicate so the policy can be tested directly:
+// sync.Pool guarantees nothing about what Get returns, so asserting on pool
+// round-trips is flaky.
+func shouldPoolMarshalBuf(c int) bool {
+	return c <= maxPooledMarshalBufSize
+}
+
+// releaseMarshalBuf returns a buffer to marshalBufPool, dropping it if it grew
+// past maxPooledMarshalBufSize. It clears the length first so a pooled buffer
+// never keeps the last action's payload alive in a package-global.
+func releaseMarshalBuf(bufp *[]byte) {
+	if !shouldPoolMarshalBuf(cap(*bufp)) {
+		return
+	}
+
+	*bufp = (*bufp)[:0]
+	marshalBufPool.Put(bufp)
+}
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
@@ -157,14 +200,10 @@ type wsManager struct {
 	// closed records that a close frame was sent or the connection is known dead, so
 	// no further frames should be written. Close still releases the transport.
 	closed atomic.Bool
-	buf    []byte
 }
 
 func newWsManager(conn websocketConn) *wsManager {
-	return &wsManager{
-		conn: conn,
-		buf:  make([]byte, 0, initialMarshalBufSize),
-	}
+	return &wsManager{conn: conn}
 }
 
 // Start registers the pong callback and arms the initial read deadline. The
@@ -223,18 +262,25 @@ func (w *wsManager) WriteAction(ctx context.Context, action *pb.Action) error {
 		return nil
 	}
 
-	var err error
-	w.buf, err = marshaler.MarshalAppend(w.buf[:0], action)
+	// The buffer returns to the shared pool when this function returns, so
+	// nothing may hold it afterwards. WriteMessage writes the bytes out
+	// synchronously and keeps no reference.
+	bufp := marshalBufPool.Get().(*[]byte)
+	defer releaseMarshalBuf(bufp)
+
+	buf, err := marshaler.MarshalAppend((*bufp)[:0], action)
 	if err != nil {
 		return fmt.Errorf("WriteAction: failed to marshal action: %v", err)
 	}
+	// Hand the grown capacity back to the pool, not just the original slice.
+	*bufp = buf
 
 	deadline := time.Now().Add(wsWriteDeadline)
 	if deadlineErr := w.conn.SetWriteDeadline(deadline); deadlineErr != nil {
 		return fmt.Errorf("WriteAction: failed to set write deadline: %v", deadlineErr)
 	}
 
-	if err = w.conn.WriteMessage(websocket.BinaryMessage, w.buf); err != nil {
+	if err = w.conn.WriteMessage(websocket.BinaryMessage, buf); err != nil {
 		if err == websocket.ErrCloseSent {
 			log.WithContextFields(ctx, log.Fields{}).Info("WriteAction: websocket already closed, skipping write")
 			return nil

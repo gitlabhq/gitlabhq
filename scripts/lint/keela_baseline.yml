@@ -17,8 +17,6 @@ attributes:
   ee/app/services/epics/transfer_service.rb:
   - epic_created_events
 constants:
-  app/controllers/admin/jobs_controller.rb:
-  - BUILDS_PER_PAGE
   app/controllers/graphql_controller.rb:
   - CACHED_INTROSPECTION_QUERY_STRING
   app/controllers/omniauth_callbacks_controller.rb:

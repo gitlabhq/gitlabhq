@@ -273,13 +273,23 @@ module Ci
 
       ResultFactory.invalid
     rescue StandardError => ex
+      # We call #reset because the state machine may have the wrong `from`
+      # state, see https://gitlab.com/gitlab-org/gitlab/-/work_items/590004
+      build.reset
+
+      failure_reason = known_exception_failure_reason(ex)
+      if failure_reason
+        drop_build!(build, failure_reason)
+        return
+      end
+
+      # Counted here, not above: a known exception isn't a conflict, and
+      # counting it as one would understate genuine conflicts.
       @metrics.increment_queue_operation(:build_conflict_exception)
 
       # If an error (e.g. GRPC::DeadlineExceeded) occurred constructing the
-      # result, consider this as a failure to be retried. We call #reset because
-      # the state machine may have the wrong `from` state, see
-      # https://gitlab.com/gitlab-org/gitlab/-/work_items/590004
-      scheduler_failure!(build.reset)
+      # result, consider this as a failure to be retried.
+      drop_build!(build)
       track_exception_for_build(ex, build)
 
       # skip, and move to next one
@@ -468,17 +478,26 @@ module Ci
         .try_obtain
     end
 
-    def scheduler_failure!(build)
+    def drop_build!(build, failure_reason = :scheduler_failure)
       Gitlab::OptimisticLocking.retry_lock(build, 3,
         name: 'register_job_scheduler_failure') do |subject|
-        subject.drop!(:scheduler_failure)
+        subject.drop!(failure_reason)
       end
     rescue StandardError => ex
       build.doom!
 
       # This requires extra exception, otherwise we would loose information
-      # why we cannot perform `scheduler_failure`
+      # why we cannot perform `drop_build!`
       track_exception_for_build(ex, build)
+    end
+
+    # Hook for EE: map an exception raised while assigning or presenting a
+    # build to a specific failure_reason, when it represents an expected,
+    # already-logged denial rather than a bug. `nil` means unknown, so the
+    # generic scheduler_failure handling above (which also reports to
+    # Sentry) applies. See EE::Ci::RegisterJobService.
+    def known_exception_failure_reason(_exception)
+      nil
     end
 
     def track_success(result, depth)

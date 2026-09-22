@@ -53,12 +53,14 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
       end
 
       context 'when more than one action has been matched' do
+        before_all do
+          create(:ci_build, :manual, pipeline: pipeline,
+            name: 'first',
+            environment: 'production')
+        end
+
         context 'when there is no specific actions with a environment name' do
           before do
-            create(:ci_build, :manual, pipeline: pipeline,
-              name: 'first',
-              environment: 'production')
-
             create(:ci_build, :manual, pipeline: pipeline,
               name: 'second',
               environment: 'production')
@@ -73,10 +75,6 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
         context 'when one of the actions is environement specific action' do
           before do
             create(:ci_build, :manual, pipeline: pipeline,
-              name: 'first',
-              environment: 'production')
-
-            create(:ci_build, :manual, pipeline: pipeline,
               name: 'production',
               environment: 'production')
           end
@@ -90,10 +88,6 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
 
         context 'when one of the actions is a teardown action' do
           before do
-            create(:ci_build, :manual, pipeline: pipeline,
-              name: 'first',
-              environment: 'production')
-
             create(:ci_build, :manual, :teardown_environment,
               pipeline: pipeline, name: 'teardown', environment: 'production')
           end

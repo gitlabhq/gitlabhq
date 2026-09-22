@@ -41293,6 +41293,22 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "id",
+              "description": "ID of the repository in Artifact Registry. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "kind",
               "description": "How the repository sources its artifacts. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
@@ -41923,6 +41939,22 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "id",
+              "description": "ID of the repository in Artifact Registry. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "image",
@@ -328717,6 +328749,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "projectId",
+                  "description": "Global ID of the project that contains the flows.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ProjectID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "type",
                   "description": "Type of flow to filter by (for example, software_development or foundational_chat_agents).",
                   "type": {
@@ -363171,6 +363215,18 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectId",
+                  "description": "Global ID of the project that contains the flows.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "ProjectID",
                     "ofType": null
                   },
                   "defaultValue": null,

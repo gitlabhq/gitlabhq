@@ -1,6 +1,6 @@
 ---
-source_checksum: 9b214d413ac3476e
-distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
+source_checksum: 6d094e82d43b84c6
+distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -26,6 +26,7 @@ distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 - Use a `save_` tool's `action` parameter to fold non-field-mutation lifecycle actions (e.g., `retry`, `cancel`) on the same resource when they don't warrant a dedicated tool; route on the presence of the resource's own ID rather than the parent identifier, and document this as an intentional exception.
 - Keep `project_id` and the resource's internal ID (e.g., `merge_request_iid`, `work_item_iid`, `commit_sha`) as separate parameters; DO NOT fold them into a single `id`.
 - Accept either `url` (a full GitLab URL) or the ID group (`project_id` plus the resource's internal ID) as input; include `Mcp::Tools::Concerns::UrlParser` and `Mcp::Tools::Concerns::ResourceFinder` to resolve them. When both are supplied, cross-validate and raise an error on mismatch.
+- Use plain project and group full paths in examples and `input_schema` descriptions. Accept encoded paths only through boundary decoding in `ResourceFinder` or `ApiTool`; tools passing paths directly to GraphQL require plain paths. DO NOT decode paths in `Gitlab::ResourceLookup`, which would allow double-encoded REST paths.
 - Merge scoped search variants into the unified `search` tool with a `scope` parameter instead of adding per-resource search tools.
 - Document intentional exceptions (one-off action verbs, a second write tool on one resource) in the tool proposal so they are not mistaken for oversights.
 
@@ -82,6 +83,11 @@ distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 - Override `unlisted?` (or set `unlisted: true` in the route setting for API tools) to hide a tool from `tools/list` and the AI Catalog picker while keeping it callable via `tools/call`; use this to stage a tool before it is ready to be advertised.
 - Keep `unlisted?` static; DO NOT drive it from a per-user or credential-dependent check because the AI Catalog picker cannot evaluate one.
 
+### Declaring a Toolset
+
+- Declare exactly one toolset from `Mcp::Tools::Toolsets::ALL` on every tool; add `toolset: :symbol` to the `register_version` metadata for custom, GraphQL, and aggregated tools, or to `route_setting :mcp` for API tools (enforced in CI by `spec/services/mcp/tools/toolset_coverage_spec.rb` — a missing or invalid declaration fails CI).
+- Return HTTP 400 for unknown toolset names in `X-Gitlab-Enabled-Mcp-Server-Toolsets`; warn and ignore unknown tool names in `X-Gitlab-Enabled-Mcp-Server-Tools` to support clients across GitLab editions and versions.
+
 ### Splitting Actions Out of Aggregated Tools
 
 - When splitting a collection-reading action out of an aggregated tool into a dedicated `list_` tool, document the change with a `[Removed]` entry in the old tool's history block in [MCP server tools](https://docs.gitlab.com/user/model_context_protocol/mcp_server_tools/) noting which action moved and to which tool, alongside the `[Introduced]` entry for the new tool.
@@ -104,4 +110,3 @@ For the full picture, see:
 
 - doc/development/duo_agent_platform/mcp/_index.md
 - doc/development/duo_agent_platform/mcp/graphql_integration.md
-

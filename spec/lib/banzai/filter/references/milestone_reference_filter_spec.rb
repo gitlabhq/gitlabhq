@@ -81,8 +81,8 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   shared_examples 'String-based single-word references' do
     let(:reference) { "#{Milestone.reference_prefix}#{milestone.name}" }
 
-    before do
-      milestone.update!(name: 'gfm')
+    before_all do
+      milestone.reload.update!(name: 'gfm')
     end
 
     it 'links to a valid reference' do
@@ -112,8 +112,8 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   shared_examples 'String-based multi-word references in quotes' do
     let(:reference) { milestone.to_reference(format: :name) }
 
-    before do
-      milestone.update!(name: 'gfm references')
+    before_all do
+      milestone.reload.update!(name: 'gfm references')
     end
 
     it 'links to a valid reference' do
@@ -139,8 +139,8 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
     let(:unquoted_reference) { "#{Milestone.reference_prefix}#{milestone.name}" }
     let(:link_reference) { %(<a href="#{unquoted_reference}">Milestone</a>) }
 
-    before do
-      milestone.update!(name: 'gfm')
+    before_all do
+      milestone.reload.update!(name: 'gfm')
     end
 
     it 'links to a valid reference' do
@@ -207,7 +207,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   shared_examples 'cross-project / cross-namespace complete reference' do
     let_it_be(:milestone) { create(:milestone, project: another_project) }
     let(:reference) { "#{another_project.full_path}%#{milestone.iid}" }
-    let!(:result) { reference_filter("See #{reference}") }
+    let(:result) { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
@@ -241,10 +241,8 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   end
 
   shared_examples 'cross-project / same-namespace complete reference' do
-    let_it_be(:project) { create(:project, :public, namespace: namespace) }
-    let_it_be(:milestone) { create(:milestone, project: another_project) }
     let(:reference) { "#{another_project.full_path}%#{milestone.iid}" }
-    let!(:result) { reference_filter("See #{reference}") }
+    let(:result) { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
@@ -278,10 +276,8 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   end
 
   shared_examples 'cross project shorthand reference' do
-    let_it_be(:project) { create(:project, :public, namespace: namespace) }
-    let_it_be(:milestone) { create(:milestone, project: another_project) }
     let(:reference) { "#{another_project.path}%#{milestone.iid}" }
-    let!(:result) { reference_filter("See #{reference}") }
+    let(:result) { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
@@ -315,8 +311,8 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   end
 
   shared_examples 'references with HTML entities' do
-    before do
-      milestone.update!(title: '<html>')
+    before_all do
+      milestone.reload.update!(title: '<html>')
     end
 
     it 'links to a valid reference' do
@@ -356,8 +352,14 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
     it_behaves_like 'referencing a milestone in a link href'
     it_behaves_like 'linking to a milestone as the entire link'
     it_behaves_like 'cross-project / cross-namespace complete reference'
-    it_behaves_like 'cross-project / same-namespace complete reference'
-    it_behaves_like 'cross project shorthand reference'
+    context 'with a project and milestone sharing another_project namespace' do
+      let_it_be(:project) { create(:project, :public, namespace: namespace) }
+      let_it_be(:milestone) { create(:milestone, project: another_project) }
+
+      it_behaves_like 'cross-project / same-namespace complete reference'
+      it_behaves_like 'cross project shorthand reference'
+    end
+
     it_behaves_like 'references with HTML entities'
     it_behaves_like 'HTML text with references' do
       let(:resource) { milestone }
@@ -422,11 +424,11 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
   end
 
   context 'group context' do
-    let(:group) { create(:group) }
+    let_it_be(:group) { create(:group) }
     let(:context) { { project: nil, group: group } }
 
     context 'when project milestone' do
-      let(:milestone) { create(:milestone, project: project) }
+      let_it_be(:milestone) { create(:milestone, project: project) }
 
       it 'links to a valid reference' do
         reference = "#{project.full_path}%#{milestone.iid}"
@@ -448,11 +450,11 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
     end
 
     context 'when group milestone' do
-      let(:group_milestone) { create(:milestone, title: 'group_milestone', group: group) }
+      let_it_be(:group_milestone) { create(:milestone, title: 'group_milestone', group: group) }
 
       context 'for subgroups' do
-        let(:sub_group) { create(:group, parent: group) }
-        let(:sub_group_milestone) { create(:milestone, title: 'sub_group_milestone', group: sub_group) }
+        let_it_be(:sub_group) { create(:group, parent: group) }
+        let_it_be(:sub_group_milestone) { create(:milestone, title: 'sub_group_milestone', group: sub_group) }
 
         it 'links to valid references of subgroup and group milestones' do
           [group_milestone, sub_group_milestone].each do |milestone|

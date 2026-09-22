@@ -14,7 +14,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
   end
 
   describe 'query' do
-    let(:project) do
+    let_it_be_with_reload(:project) do
       create(
         :project,
         ci_outbound_job_token_scope_enabled: true,
@@ -87,18 +87,18 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
     end
 
     context 'with access to scope' do
-      before do
+      before_all do
         project.add_member(current_user, :maintainer)
       end
 
       context 'when multiple projects in the allow lists' do
         include Ci::JobTokenScopeHelpers
-        let!(:outbound_allowlist_project) { create_project_in_allowlist(project, direction: :outbound) }
-        let!(:inbound_allowlist_project) { create_project_in_allowlist(project, direction: :inbound) }
-        let!(:both_allowlists_project) { create_project_in_both_allowlists(project) }
+        let_it_be(:outbound_allowlist_project) { create_project_in_allowlist(project, direction: :outbound) }
+        let_it_be(:inbound_allowlist_project) { create_project_in_allowlist(project, direction: :inbound) }
+        let_it_be(:both_allowlists_project) { create_project_in_both_allowlists(project) }
 
         context 'when linked projects are readable' do
-          before do
+          before_all do
             outbound_allowlist_project.add_member(current_user, :developer)
             inbound_allowlist_project.add_member(current_user, :developer)
             both_allowlists_project.add_member(current_user, :developer)
@@ -153,7 +153,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
         end
 
         context 'when job token scope is disabled' do
-          before do
+          before_all do
             project.ci_cd_settings.update!(job_token_scope_enabled: false)
           end
 

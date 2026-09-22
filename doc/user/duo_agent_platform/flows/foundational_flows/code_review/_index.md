@@ -41,7 +41,7 @@ title: Code Review Flow
 > This page describes the agentic version.
 >
 > For more information about how the two features compare and how to turn on Code Review Flow for GitLab Duo Enterprise seats,
-> see [use GitLab Duo to review your code.](../../../../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
+> see [use GitLab Duo to review your code](../../../../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
 
 The Code Review Flow helps you streamline code reviews with agentic AI.
 
@@ -203,11 +203,15 @@ To configure custom instructions, see [customize review instructions for GitLab 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) automatic reviews for groups in GitLab 18.4 as a [beta](../../../../../policy/development_stages_support.md#beta) [with a feature flag](../../../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
 - Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
 - Automatic reviews for groups and applications [turned on by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/592822) for new GitLab Duo trials on GitLab.com in GitLab 19.1.
-- Automatic reviews for groups [turned on by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255855) when a top-level group acquires its first GitLab Duo add-on on GitLab.com in GitLab 19.5 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `auto_enable_duo_code_review_on_duo_add_on_purchase`. Disabled by default.
+- Automatic reviews [turned on by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255855) when groups add their first GitLab Duo add-on on GitLab.com in GitLab 19.5 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `auto_enable_duo_code_review_on_duo_add_on_purchase`. Disabled by default.
 
 {{< /history >}}
 
-Automatic reviews from GitLab Duo ensure that all merge requests in your project or group,
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Automatic reviews from GitLab Duo ensure that all merge requests in your project or group
 receive an initial review.
 
 When a user creates a merge request, GitLab Duo automatically reviews it unless:
@@ -217,16 +221,11 @@ When a user creates a merge request, GitLab Duo automatically reviews it unless:
 - It matches one or more exclusion rules you set. For GitLab Duo to review the merge request,
   manually request a review.
 
-For new GitLab Duo trials on GitLab.com in GitLab 19.1 and later, automatic reviews for
-groups are turned on by default. This also happens in GitLab 19.5 and later, when a
-top-level group acquires its first GitLab Duo add-on on GitLab.com.
-[GitLab Duo Core](../../../../../subscriptions/subscription-add-ons.md#gitlab-duo-core) is
-included with Premium and Ultimate, so new Premium and Ultimate subscriptions are covered
-too. This change does not affect a group that already turned automatic reviews on or off.
+Automatic reviews are turned on by default for groups:
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
+- With new GitLab Duo trials on GitLab.com in GitLab 19.1 and later.
+- That add their first [GitLab Duo add-on](../../../../../subscriptions/subscription-add-ons.md),
+  including those with new Premium and Ultimate subscriptions, on GitLab.com in GitLab 19.5 and later.
 
 {{< tabs >}}
 

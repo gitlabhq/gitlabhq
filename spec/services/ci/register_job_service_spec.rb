@@ -1044,6 +1044,48 @@ module Ci
           end
         end
 
+        context 'when a build-processing exception is a known, already-handled denial' do
+          let!(:pending_job) do
+            create(:ci_build, :pending, :queued, pipeline: pipeline)
+          end
+
+          subject { build_on(project_runner) }
+
+          before do
+            allow(Ci::Build).to receive(:preload).with(job_runtime_environment: :runtime_environment).and_wrap_original do |method, *args|
+              relation = method.call(*args)
+              allow(relation).to receive(:find_by!).and_return(pending_job)
+              relation
+            end
+            allow(pending_job).to receive(:run!).and_raise(RuntimeError, 'denied elsewhere')
+
+            allow_next_instance_of(described_class) do |service|
+              allow(service).to receive(:known_exception_failure_reason)
+                .with(an_instance_of(RuntimeError))
+                .and_return(:api_failure)
+            end
+          end
+
+          it 'drops the build without the generic conflict-exception handling or Sentry report' do
+            expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+
+            expect(subject).to be_nil
+
+            pending_job.reload
+            expect(pending_job).to be_failed
+            expect(pending_job.failure_reason).to eq('api_failure')
+          end
+
+          it 'does not count the known exception as a conflict' do
+            counter = Gitlab::Ci::Queue::Metrics.queue_operations_total
+            allow(counter).to receive(:increment)
+
+            expect(counter).not_to receive(:increment).with(operation: :build_conflict_exception)
+
+            subject
+          end
+        end
+
         context 'with a request timeout for job assignment phases' do
           let!(:pending_job) do
             create(:ci_build, :pending, :queued, pipeline: pipeline)

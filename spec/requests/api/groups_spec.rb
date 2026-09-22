@@ -115,6 +115,47 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "GET /groups" do
+    describe 'finder selection' do
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(namespaces_advanced_groups_finder: false)
+        end
+
+        it 'uses GroupsFinder' do
+          expect(GroupsFinder).to receive(:new).and_call_original
+          expect(Namespaces::GroupsFinder).not_to receive(:new)
+
+          get api("/groups", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          stub_feature_flags(namespaces_advanced_groups_finder: true)
+        end
+
+        it 'uses Namespaces::GroupsFinder' do
+          expect(Namespaces::GroupsFinder).to receive(:new).and_call_original
+
+          get api("/groups", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        # lib/api/groups.rb sends `parent: [nil]` for this, which Namespaces::GroupsFinder
+        # must pass through rather than treat as an unreadable parent.
+        it 'still honours top_level_only' do
+          get api("/groups", user1), params: { top_level_only: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.map { |g| g['parent_id'] }).to all(be_nil)
+          expect(json_response).not_to be_empty
+        end
+      end
+    end
+
     shared_examples 'groups list N+1' do
       it 'avoids N+1 queries', :use_sql_query_cache do
         # warm-up

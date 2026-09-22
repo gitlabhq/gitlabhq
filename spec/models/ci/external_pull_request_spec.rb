@@ -94,7 +94,7 @@ RSpec.describe Ci::ExternalPullRequest, feature_category: :continuous_integratio
     end
 
     context 'when pull request exists' do
-      let!(:pull_request) do
+      let_it_be_with_reload(:pull_request) do
         create(:external_pull_request,
           project: project,
           source_sha: '97de212e80737a608d939f648d959671fb0a0142')
@@ -146,13 +146,13 @@ RSpec.describe Ci::ExternalPullRequest, feature_category: :continuous_integratio
 
   describe '#open?' do
     it 'returns true if status is open' do
-      pull_request = create(:external_pull_request, status: :open)
+      pull_request = create(:external_pull_request, project: project, status: :open)
 
       expect(pull_request).to be_open
     end
 
     it 'returns false if status is not open' do
-      pull_request = create(:external_pull_request, status: :closed)
+      pull_request = create(:external_pull_request, project: project, status: :closed)
 
       expect(pull_request).not_to be_open
     end
@@ -173,7 +173,6 @@ RSpec.describe Ci::ExternalPullRequest, feature_category: :continuous_integratio
   end
 
   describe '#actual_branch_head?' do
-    let(:project) { create(:project, :repository) }
     let(:branch) { project.repository.branches.first }
     let(:source_branch) { branch.name }
 

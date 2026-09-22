@@ -142,6 +142,109 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
           end
         end
       end
+
+      context 'when within an organization context' do
+        let(:organization) { build_stubbed(:organization) }
+
+        before do
+          stub_feature_flags(organization_scoped_new_dropdown: true)
+          allow(::Organizations::Release).to receive(:enrolled?).with(user).and_return(true)
+          Current.organization_resolver =
+            instance_double(Gitlab::Current::Organization, from_params: organization)
+        end
+
+        context 'when can create project' do
+          let(:with_can_create_project) { true }
+
+          it 'scopes the project menu item to the organization' do
+            expect(view_model[:menu_sections]).to eq(
+              expected_menu_section(
+                title: _('In this organization'),
+                menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                  id: 'general_new_project',
+                  title: 'New project/repository',
+                  href: "/o/#{organization.path}/projects/new"
+                )
+              )
+            )
+          end
+        end
+
+        context 'when can create group' do
+          let(:with_can_create_group) { true }
+
+          it 'scopes the group menu item to the organization' do
+            expect(view_model[:menu_sections]).to eq(
+              expected_menu_section(
+                title: _('In this organization'),
+                menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                  id: 'general_new_group',
+                  title: 'New group',
+                  href: "/o/#{organization.path}/groups/new"
+                )
+              )
+            )
+          end
+        end
+
+        context 'when can create snippet' do
+          let(:with_can_create_snippet) { true }
+
+          it 'does not show the snippet menu item' do
+            expect(view_model[:menu_sections]).to be_empty
+          end
+        end
+
+        context 'when can create organization' do
+          let(:with_can_create_organization) { true }
+
+          it 'does not show the new organization menu item' do
+            expect(view_model[:menu_sections]).to be_empty
+          end
+        end
+
+        context 'when the organization is unscoped (e.g. the default organization)' do
+          let(:with_can_create_project) { true }
+
+          before do
+            allow(organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          it 'keeps the menu global and titled In GitLab' do
+            expect(view_model[:menu_sections]).to eq(
+              expected_menu_section(
+                title: _('In GitLab'),
+                menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                  id: 'general_new_project',
+                  title: 'New project/repository',
+                  href: '/projects/new'
+                )
+              )
+            )
+          end
+        end
+
+        context 'when the organization_scoped_new_dropdown feature flag is disabled' do
+          let(:with_can_create_project) { true }
+
+          before do
+            stub_feature_flags(organization_scoped_new_dropdown: false)
+          end
+
+          it 'keeps the menu global and titled In GitLab' do
+            expect(view_model[:menu_sections]).to eq(
+              expected_menu_section(
+                title: _('In GitLab'),
+                menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                  id: 'general_new_project',
+                  title: 'New project/repository',
+                  href: '/projects/new'
+                )
+              )
+            )
+          end
+        end
+      end
     end
 
     context 'with persisted group' do
@@ -229,6 +332,68 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         let(:expected_href) { "/groups/#{group.full_path}/-/group_members" }
 
         it_behaves_like 'invite member item', 'groups/invite_members_top_nav_link'
+      end
+
+      context 'when enrolled in a scoped organization' do
+        let(:organization) { build_stubbed(:organization) }
+        let(:with_can_create_projects_in_group) { true }
+        let(:with_can_create_subgroup_in_group) { true }
+
+        before do
+          stub_feature_flags(organization_scoped_new_dropdown: true)
+          allow(::Organizations::Release).to receive(:enrolled?).with(user).and_return(true)
+          allow(group).to receive(:organization).and_return(organization)
+        end
+
+        it 'scopes the group links to the group organization' do
+          expect(view_model[:menu_sections]).to eq(
+            [
+              {
+                title: 'In this group',
+                menu_items: [
+                  ::Gitlab::Nav::TopNavMenuItem.build(
+                    id: 'new_project',
+                    title: 'New project/repository',
+                    href: "/o/#{organization.path}/projects/new?namespace_id=#{group.id}"
+                  ),
+                  ::Gitlab::Nav::TopNavMenuItem.build(
+                    id: 'new_subgroup',
+                    title: 'New subgroup',
+                    href: "/o/#{organization.path}/groups/new?parent_id=#{group.id}#create-group-pane"
+                  )
+                ]
+              }
+            ]
+          )
+        end
+
+        context 'when the organization is unscoped (e.g. the default organization)' do
+          before do
+            allow(organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          it 'keeps the group links global' do
+            expect(view_model[:menu_sections]).to eq(
+              [
+                {
+                  title: 'In this group',
+                  menu_items: [
+                    ::Gitlab::Nav::TopNavMenuItem.build(
+                      id: 'new_project',
+                      title: 'New project/repository',
+                      href: "/projects/new?namespace_id=#{group.id}"
+                    ),
+                    ::Gitlab::Nav::TopNavMenuItem.build(
+                      id: 'new_subgroup',
+                      title: 'New subgroup',
+                      href: "/groups/new?parent_id=#{group.id}#create-group-pane"
+                    )
+                  ]
+                }
+              ]
+            )
+          end
+        end
       end
     end
 

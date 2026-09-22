@@ -7,7 +7,6 @@ RSpec.describe MergeWorker, feature_category: :code_review_workflow do
   describe "remove source branch" do
     let!(:merge_request) { create(:merge_request, source_branch: "markdown") }
     let!(:source_project) { merge_request.source_project }
-    let!(:project) { merge_request.project }
     let!(:author) { merge_request.author }
 
     before do

@@ -52,10 +52,20 @@ module API
         find_params[:all_available] =
           find_params.fetch(:all_available, current_user&.can_read_all_resources?)
 
-        groups = GroupsFinder.new(current_user, find_params).execute
+        groups = groups_finder(find_params).execute
         groups = groups.id_not_in(params[:skip_groups]) if params[:skip_groups].present?
 
         order_groups(groups).with_api_scopes
+      end
+
+      # Ordering stays in order_groups, which reorders whichever relation comes back, so
+      # the two finders are interchangeable here.
+      def groups_finder(find_params)
+        if Feature.enabled?(:namespaces_advanced_groups_finder, current_user)
+          ::Namespaces::GroupsFinder.new(current_user, find_params)
+        else
+          GroupsFinder.new(current_user, find_params)
+        end
       end
 
       def allowable_find_params

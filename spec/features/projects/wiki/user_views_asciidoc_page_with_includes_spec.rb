@@ -1,9 +1,18 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'User views AsciiDoc page with includes' do
+require 'spec_helper'
+
+RSpec.describe 'Project wiki > User views AsciiDoc page with includes', :js, feature_category: :wiki do
+  let_it_be(:user) { create(:user) }
+
+  let(:wiki) { create(:project_wiki, user: user, project: project) }
+  let(:project) { create(:project, namespace: user.namespace, creator: user) }
+
   let_it_be(:wiki_content_selector) { '[data-testid=wiki-page-content]' }
   let!(:included_wiki_page) { create_wiki_page('included_page', content: 'Content from the included page') }
-  let!(:wiki_page) { create_wiki_page('home', content: "Content from the main page.\ninclude::included_page.asciidoc[]") }
+  let!(:wiki_page) do
+    create_wiki_page('home', content: "Content from the main page.\ninclude::included_page.asciidoc[]")
+  end
 
   def create_wiki_page(title, content:)
     attrs = {
@@ -19,7 +28,7 @@ RSpec.shared_examples 'User views AsciiDoc page with includes' do
     sign_in(user)
   end
 
-  context 'when the file being included exists', :js do
+  context 'when the file being included exists' do
     it 'includes the file contents' do
       visit(wiki_page_path(wiki, wiki_page))
 
@@ -30,16 +39,19 @@ RSpec.shared_examples 'User views AsciiDoc page with includes' do
 
     context 'when there are multiple versions of the wiki pages' do
       before do
-        # rubocop:disable Rails/SaveBang
+        # rubocop:disable Rails/SaveBang -- update failures would surface as content mismatches below
         included_wiki_page.update(message: 'updated included file', content: 'Updated content from the included page')
-        wiki_page.update(message: 'updated wiki page', content: "Updated content from the main page.\ninclude::included_page.asciidoc[]")
+        wiki_page.update(
+          message: 'updated wiki page',
+          content: "Updated content from the main page.\ninclude::included_page.asciidoc[]"
+        )
         # rubocop:enable Rails/SaveBang
       end
 
       let(:latest_version_id) { wiki_page.versions.first.id }
       let(:oldest_version_id) { wiki_page.versions.last.id }
 
-      context 'viewing the latest version' do
+      context 'when viewing the latest version' do
         it 'includes the latest content' do
           visit(wiki_page_path(wiki, wiki_page, version_id: latest_version_id))
 
@@ -49,7 +61,7 @@ RSpec.shared_examples 'User views AsciiDoc page with includes' do
         end
       end
 
-      context 'viewing the original version' do
+      context 'when viewing the original version' do
         it 'includes the content from the original version' do
           visit(wiki_page_path(wiki, wiki_page, version_id: oldest_version_id))
 
@@ -61,7 +73,7 @@ RSpec.shared_examples 'User views AsciiDoc page with includes' do
     end
   end
 
-  context 'when the file being included does not exist', :js do
+  context 'when the file being included does not exist' do
     before do
       included_wiki_page.delete
     end
@@ -70,7 +82,9 @@ RSpec.shared_examples 'User views AsciiDoc page with includes' do
       visit(wiki_page_path(wiki, wiki_page))
 
       page.within(:css, wiki_content_selector) do
-        expect(page).to have_content('Content from the main page. [ERROR: include::included_page.asciidoc[] - unresolved directive]')
+        expect(page).to have_content(
+          'Content from the main page. [ERROR: include::included_page.asciidoc[] - unresolved directive]'
+        )
       end
     end
   end

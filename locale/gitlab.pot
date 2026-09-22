@@ -44149,6 +44149,9 @@ msgstr ""
 msgid "In this group"
 msgstr ""
 
+msgid "In this organization"
+msgstr ""
+
 msgid "In this page you will find information about the settings that are used in your current instance."
 msgstr ""
 
@@ -50528,9 +50531,6 @@ msgstr ""
 msgid "MemberRole|Secrets management"
 msgstr ""
 
-msgid "MemberRole|Security Manager role now available"
-msgstr ""
-
 msgid "MemberRole|Security asset inventories"
 msgstr ""
 
@@ -50604,9 +50604,6 @@ msgid "MemberRole|The Reporter role is suitable for team members who need to sta
 msgstr ""
 
 msgid "MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project."
-msgstr ""
-
-msgid "MemberRole|The Security Manager role provides comprehensive access to security features, including vulnerability management, security dashboards, policy configuration, and compliance tools. Designed for users who manage security and compliance across your organization. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
@@ -80431,7 +80428,13 @@ msgstr ""
 msgid "SshCertificates|An error occurred while adding the SSH certificate authority. Please try again."
 msgstr ""
 
+msgid "SshCertificates|An error occurred while deleting the SSH certificate authority. Please try again."
+msgstr ""
+
 msgid "SshCertificates|An error occurred while fetching the SSH certificate authorities. Please try again."
+msgstr ""
+
+msgid "SshCertificates|Are you sure you want to delete %{title}? Trust in this certificate authority is revoked immediately, and any certificates it signed stop working at once. This action cannot be undone."
 msgstr ""
 
 msgid "SshCertificates|Certificate authorities"
@@ -80440,10 +80443,31 @@ msgstr ""
 msgid "SshCertificates|Certificate authority added."
 msgstr ""
 
+msgid "SshCertificates|Certificate authority deleted."
+msgstr ""
+
 msgid "SshCertificates|Copy fingerprint"
 msgstr ""
 
+msgid "SshCertificates|Delete certificate authority"
+msgstr ""
+
+msgid "SshCertificates|Delete certificate authority?"
+msgstr ""
+
+msgid "SshCertificates|Discard changes"
+msgstr ""
+
+msgid "SshCertificates|Discard unsaved changes?"
+msgstr ""
+
 msgid "SshCertificates|Key titles are publicly visible."
+msgstr ""
+
+msgid "SshCertificates|More actions"
+msgstr ""
+
+msgid "SshCertificates|Not available"
 msgstr ""
 
 msgid "SshCertificates|Public key"
@@ -80458,10 +80482,22 @@ msgstr ""
 msgid "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide."
 msgstr ""
 
+msgid "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide. Certificate authorities (CAs) can't be edited. To change this key, delete it and add a certificate authority."
+msgstr ""
+
+msgid "SshCertificates|This matches what appears in your server logs and audit events."
+msgstr ""
+
 msgid "SshCertificates|Title is required."
 msgstr ""
 
 msgid "SshCertificates|Trusted certificate authorities that allow anyone with a signed certificate to authenticate over SSH. Short-lived certificates are recommended."
+msgstr ""
+
+msgid "SshCertificates|View details"
+msgstr ""
+
+msgid "SshCertificates|Viewing this certificate authority discards the title and public key you entered."
 msgstr ""
 
 msgid "SshCertificates|What are SSH certificates?"
