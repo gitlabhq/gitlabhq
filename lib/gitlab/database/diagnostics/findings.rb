@@ -7,7 +7,8 @@ module Gitlab
         ERROR = 'error'
         WARNING = 'warning'
 
-        # Severity strings are mirrored by SEVERITY_VARIANTS in db_information_card.vue.
+        # Severity strings are mirrored by SEVERITY_VARIANTS in
+        # app/assets/javascripts/admin/database_diagnostics/utils.js.
         SEVERITY_ORDER = { ERROR => 0, WARNING => 1 }.freeze
 
         # Unknown severities last. sort_by is unstable, hence the index tiebreaker.

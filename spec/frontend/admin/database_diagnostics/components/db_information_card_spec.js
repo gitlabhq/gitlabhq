@@ -1,8 +1,10 @@
 import { nextTick } from 'vue';
 import { GlAlert } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DbInformationCard from '~/admin/database_diagnostics/components/db_information_card.vue';
 import DbSchemasSection from '~/admin/database_diagnostics/components/db_schemas_section.vue';
+import DbTimeoutsSection from '~/admin/database_diagnostics/components/db_timeouts_section.vue';
+import DiagnosticsSection from '~/admin/database_diagnostics/components/diagnostics_section.vue';
 import {
   databaseInformationResults,
   databaseInformationWithDatabaseError,
@@ -15,15 +17,17 @@ describe('DbInformationCard component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAllAlerts = () => wrapper.findAllComponents(GlAlert);
   const findSchemasSection = () => wrapper.findComponent(DbSchemasSection);
-  const findStatusIcon = () => wrapper.findComponentByTestId('status-icon');
+  const findTimeoutsSection = () => wrapper.findComponent(DbTimeoutsSection);
+  const findSearchPathSection = () => wrapper.findComponent(DiagnosticsSection);
+  const findStatusIcon = () => wrapper.findComponentByTestId('search-path-status-icon');
   const findToggle = () => wrapper.findComponentByTestId('search-path-toggle');
-  const findDetails = () => wrapper.findByTestId('search-path-details');
-  const findCountBadge = () => wrapper.findByTestId('findings-count');
+  const findDetails = () => wrapper.findComponentByTestId('search-path-details');
+  const findCountBadge = () => wrapper.findByTestId('search-path-count');
   const findCurrentUser = () => wrapper.findByTestId('current-user');
   const findSearchPath = () => wrapper.findByTestId('search-path');
 
   const createComponent = ({ props = {} } = {}) => {
-    wrapper = shallowMountExtended(DbInformationCard, {
+    wrapper = mountExtended(DbInformationCard, {
       propsData: {
         dbName: 'main',
         payload: databaseInformationResults.databases.main,
@@ -58,36 +62,41 @@ describe('DbInformationCard component', () => {
       );
     });
 
+    it('renders the timeouts section with the payload timeouts', () => {
+      expect(findTimeoutsSection().props('timeouts')).toEqual(
+        databaseInformationResults.databases.main.timeouts,
+      );
+    });
+
     it('always offers a Details toggle but keeps the search path info collapsed by default', () => {
       expect(findToggle().exists()).toBe(true);
-      expect(findDetails().exists()).toBe(false);
+      expect(findDetails().props('visible')).toBe(false);
     });
 
     it('exposes the expanded state to assistive technology via aria attributes', async () => {
       expect(findToggle().attributes('aria-expanded')).toBe('false');
-      expect(findToggle().attributes('aria-controls')).toBe('search-path-details-main');
+      expect(findToggle().attributes('aria-controls')).toBe(findDetails().attributes('id'));
 
       await expand();
 
       expect(findToggle().attributes('aria-expanded')).toBe('true');
-      expect(findDetails().attributes('id')).toBe('search-path-details-main');
     });
 
     it('reveals the current user and search path once expanded', async () => {
       await expand();
 
       const payload = databaseInformationResults.databases.main;
-      expect(findDetails().exists()).toBe(true);
+      expect(findDetails().props('visible')).toBe(true);
       expect(findCurrentUser().text()).toContain(payload.current_user);
       expect(findSearchPath().text()).toContain(payload.search_path);
     });
 
     it('collapses the search path info again when toggled a second time', async () => {
       await expand();
-      expect(findDetails().exists()).toBe(true);
+      expect(findDetails().props('visible')).toBe(true);
 
       await expand();
-      expect(findDetails().exists()).toBe(false);
+      expect(findDetails().props('visible')).toBe(false);
     });
   });
 
@@ -103,16 +112,7 @@ describe('DbInformationCard component', () => {
       expect(findCountBadge().text()).toBe('2');
     });
 
-    it('keeps finding alerts hidden until expanded', async () => {
-      expect(findAllAlerts()).toHaveLength(0);
-
-      await expand();
-
-      expect(findAllAlerts()).toHaveLength(2);
-    });
-
-    it('renders one alert per finding with the mapped variant and message once expanded', async () => {
-      await expand();
+    it('renders one alert per finding with the mapped variant and message', () => {
       const alerts = findAllAlerts().wrappers;
 
       expect(alerts[0].props('variant')).toBe('danger');
@@ -123,28 +123,27 @@ describe('DbInformationCard component', () => {
       );
     });
 
-    it('renders findings in the order supplied, without reordering them', async () => {
+    it('passes the findings through in the order supplied, without reordering them', () => {
       // Ordering belongs to Gitlab::Database::Diagnostics::Checks::SchemaResolution.
+      const findings = [
+        { severity: 'warning', code: 'a_warning', message: 'a warning' },
+        { severity: 'error', code: 'an_error', message: 'an error' },
+      ];
+
       createComponent({
         props: {
           payload: {
             current_user: 'gitlab',
             search_path: 'public',
             schemas: [{ name: 'public', current: true, owner: 'postgres', has_tables: true }],
-            findings: [
-              { severity: 'warning', code: 'a_warning', message: 'a warning' },
-              { severity: 'error', code: 'an_error', message: 'an error' },
-            ],
+            findings,
             severity: 'error',
             counts: { error: 1, warning: 1 },
           },
         },
       });
-      await expand();
-      const alerts = findAllAlerts().wrappers;
 
-      expect(alerts[0].text()).toBe('a warning');
-      expect(alerts[1].text()).toBe('an error');
+      expect(findSearchPathSection().props('findings')).toEqual(findings);
     });
   });
 
@@ -175,11 +174,12 @@ describe('DbInformationCard component', () => {
       createComponent({ props: { payload: databaseInformationWithDatabaseError.databases.main } });
     });
 
-    it('renders a warning alert with the error message and no search path row or schemas', () => {
+    it('renders a warning alert with the error message and no check sections', () => {
       expect(findAlert().props('variant')).toBe('warning');
       expect(findAlert().text()).toBe('connection refused');
-      expect(findToggle().exists()).toBe(false);
+      expect(findSearchPathSection().exists()).toBe(false);
       expect(findSchemasSection().exists()).toBe(false);
+      expect(findTimeoutsSection().exists()).toBe(false);
     });
   });
 });

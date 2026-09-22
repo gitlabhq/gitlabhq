@@ -19,19 +19,15 @@ class UserProjectAccessChangedService
 
     bulk_args = @user_ids.map { |id| [id] }
 
-    result =
-      case priority
-      when HIGH_PRIORITY
-        AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
-      when MEDIUM_PRIORITY
-        AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
-      when LOW_PRIORITY
-        execute_low_priority_refresh
-      end
-
-    ::User.sticking.bulk_stick(:user, @user_ids)
-
-    result
+    case priority
+    when HIGH_PRIORITY
+      AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
+      ::User.sticking.bulk_stick(:user, @user_ids)
+    when MEDIUM_PRIORITY
+      AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
+    when LOW_PRIORITY
+      execute_low_priority_refresh
+    end
   end
 
   private

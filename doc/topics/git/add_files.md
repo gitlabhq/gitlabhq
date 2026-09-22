@@ -28,8 +28,17 @@ To add a new file from the command line:
    ```
 
 1. Choose a Git branch to work in.
-   - To create a branch: `git checkout -b <branchname>`
-   - To switch to an existing branch: `git checkout <branchname>`
+   - To create a branch:
+
+     ```shell
+     git checkout -b <branchname>
+     ```
+
+   - To switch to an existing branch:
+
+     ```shell
+     git checkout <branchname>
+     ```
 
 1. Copy the file you want to add into the directory where you want to add it.
 1. Confirm that your file is in the directory:

@@ -9,6 +9,8 @@ module Gitlab
             EXCEPTION_HINT = 'The underlying exception was sent to the exception tracker; ' \
               'see the GitLab application logs for the cause.'
 
+            SETTINGS_SUBHEADING = 'Effective settings'
+
             def self.title
               raise Gitlab::AbstractMethodError
             end

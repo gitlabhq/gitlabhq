@@ -24,9 +24,18 @@ commit, stage them with `git add`.
 
 To stage and commit your changes:
 
-1. From your repository, for each file or directory you want to add, run `git add <file name or path>`.
+1. From your repository, for each file or directory you want to add, run:
 
-   To stage all files in the current working directory, run `git add .`.
+   ```shell
+   git add <file name or path>
+   ```
+
+   To stage all files in the current working directory, run:
+
+   ```shell
+   git add .
+   ```
+
 1. Confirm that the files have been added to staging:
 
    ```shell

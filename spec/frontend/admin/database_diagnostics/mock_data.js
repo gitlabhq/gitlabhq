@@ -265,11 +265,58 @@ export const autovacuumConfig = {
   ],
 };
 
+export const timeoutsSettings = {
+  statement_timeout: {
+    value: 120000,
+    default_value: 0,
+    unit: 'ms',
+    source: 'session',
+    source_location: null,
+  },
+  lock_timeout: {
+    value: 0,
+    default_value: 0,
+    unit: 'ms',
+    source: 'default',
+    source_location: null,
+  },
+  idle_in_transaction_session_timeout: {
+    value: 0,
+    default_value: 0,
+    unit: 'ms',
+    source: 'default',
+    source_location: null,
+  },
+};
+
+export const timeouts = {
+  settings: timeoutsSettings,
+  overrides: [],
+  findings: [
+    {
+      severity: 'warning',
+      code: 'statement_timeout_unlimited_by_default',
+      message: 'The cluster default for statement_timeout is 0.',
+    },
+  ],
+  severity: 'warning',
+  counts: { warning: 1 },
+};
+
+export const timeoutsWithoutFindings = {
+  settings: timeoutsSettings,
+  overrides: [],
+  findings: [],
+  severity: null,
+  counts: {},
+};
+
 export const databaseInformationResults = {
   databases: {
     main: {
       current_user: 'gitlab',
       search_path: '"$user", public',
+      timeouts: timeoutsWithoutFindings,
       schemas: [
         { name: 'public', current: true, owner: 'postgres' },
         { name: 'gitlab_partitions_dynamic', current: false, owner: 'postgres' },

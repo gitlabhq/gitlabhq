@@ -11414,10 +11414,16 @@ msgstr ""
 msgid "Analytics|Failed to load dashboard"
 msgstr ""
 
+msgid "Analytics|Go to Explore"
+msgstr ""
+
 msgid "Analytics|Invalid dashboard configuration"
 msgstr ""
 
 msgid "Analytics|Invalid visualization configuration"
+msgstr ""
+
+msgid "Analytics|Learn more"
 msgstr ""
 
 msgid "Analytics|Learn more about %{docsLinkStart}Duo and SDLC trends%{docsLinkEnd} and %{subscriptionLinkStart}Duo seats%{subscriptionLinkEnd}."
@@ -11448,6 +11454,12 @@ msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count
 msgstr ""
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
+msgstr ""
+
+msgid "Analytics|The analytics dashboards page is being rebuilt and moved to the %{boldStart}Explore%{boldEnd} page to give you visibility across your entire organization."
+msgstr ""
+
+msgid "Analytics|Try analytics dashboards in Explore"
 msgstr ""
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
@@ -12583,6 +12595,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact registry settings"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact type"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact type: %{artifactType}"
 msgstr ""
 
@@ -13049,6 +13064,9 @@ msgid "ArtifactRegistry|No repositories match your filters."
 msgstr ""
 
 msgid "ArtifactRegistry|No versions found for %{name}."
+msgstr ""
+
+msgid "ArtifactRegistry|Nothing refers to this manifest."
 msgstr ""
 
 msgid "ArtifactRegistry|OCI"
@@ -27992,10 +28010,16 @@ msgstr ""
 msgid "DatabaseDiagnostics|%{milliseconds} ms"
 msgstr ""
 
+msgid "DatabaseDiagnostics|%{source} (%{location})"
+msgstr ""
+
 msgid "DatabaseDiagnostics|%{value} (effective: %{effective})"
 msgstr ""
 
 msgid "DatabaseDiagnostics|A cost delay of zero disables throttling, so autovacuum runs at full speed and can cause write storms and replication lag."
+msgstr ""
+
+msgid "DatabaseDiagnostics|All"
 msgstr ""
 
 msgid "DatabaseDiagnostics|An error occurred while starting diagnostics"
@@ -28024,6 +28048,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Autovacuum is disabled. Dead tuples will not be reclaimed automatically, risking bloat and eventually transaction ID wraparound."
 msgstr ""
 
+msgid "DatabaseDiagnostics|Cluster default"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Collation health check"
 msgstr ""
 
@@ -28040,6 +28067,9 @@ msgid "DatabaseDiagnostics|Current Owner"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Current user:"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Database"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Database information"
@@ -28120,6 +28150,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Learn more about PostgreSQL autovacuum and transaction ID wraparound."
 msgstr ""
 
+msgid "DatabaseDiagnostics|Learn more about recommended PostgreSQL timeout settings."
+msgstr ""
+
 msgid "DatabaseDiagnostics|Long-running"
 msgstr ""
 
@@ -28157,6 +28190,9 @@ msgid "DatabaseDiagnostics|No pending cleanup backlog detected."
 msgstr ""
 
 msgid "DatabaseDiagnostics|No schema issues detected."
+msgstr ""
+
+msgid "DatabaseDiagnostics|No timeout settings could be read."
 msgstr ""
 
 msgid "DatabaseDiagnostics|No vacuum operations are currently running."
@@ -28198,6 +28234,12 @@ msgstr ""
 msgid "DatabaseDiagnostics|PostgreSQL configuration and metadata for each database connection."
 msgstr ""
 
+msgid "DatabaseDiagnostics|Role"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Role and database defaults"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Run backlog check"
 msgstr ""
 
@@ -28237,10 +28279,19 @@ msgstr ""
 msgid "DatabaseDiagnostics|Sequences"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Session"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Session is the value on the connection GitLab uses. Cluster default is the value every other session gets."
+msgstr ""
+
 msgid "DatabaseDiagnostics|Setting"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Size"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Source"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Status"
@@ -28255,6 +28306,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|The autovacuum_work_mem setting is unset and inherits maintenance_work_mem. Consider setting it explicitly to bound per-worker memory."
 msgstr ""
 
+msgid "DatabaseDiagnostics|The cluster default for statement_timeout is 0. GitLab sets its own value for each of its sessions, but any other session, for example psql, a backup or an external tool, can run a query with no limit. Set statement_timeout in postgresql.conf, or with ALTER DATABASE or ALTER ROLE."
+msgstr ""
+
 msgid "DatabaseDiagnostics|The cost limit is at or near the conservative default, which is likely too low to keep up on modern storage."
 msgstr ""
 
@@ -28265,6 +28319,12 @@ msgid "DatabaseDiagnostics|The database role cannot read the activity of other b
 msgstr ""
 
 msgid "DatabaseDiagnostics|The search path contains a GitLab partition schema. Partition schemas are expected to be referenced fully qualified, not via the search path."
+msgstr ""
+
+msgid "DatabaseDiagnostics|The statement_timeout value is %{value} ms on the connection GitLab uses, more than the recommended maximum of %{maximum} ms. A higher value lets a slow query hold its connection for longer."
+msgstr ""
+
+msgid "DatabaseDiagnostics|The statement_timeout value is 0 on the connection GitLab uses, so a query can run with no limit. A query that does not end keeps its connection, which can use up the connection pool and stop GitLab. Set statement_timeout to %{maximum} ms or less."
 msgstr ""
 
 msgid "DatabaseDiagnostics|The vacuum scale factor in effect is high for %{count} large table, which delays autovacuum until a large amount of dead tuples has accumulated."
@@ -28284,6 +28344,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Throttling disabled"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Timeouts"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Type"
 msgstr ""
 
@@ -28297,6 +28360,9 @@ msgid "DatabaseDiagnostics|Value"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Warning"
+msgstr ""
+
+msgid "DatabaseDiagnostics|unlimited"
 msgstr ""
 
 msgid "DatabaseDiagnostics|~%{count} row"
@@ -72327,10 +72393,10 @@ msgstr ""
 msgid "SecretsManagerTrial|On-demand billing is disabled"
 msgstr ""
 
-msgid "SecretsManagerTrial|On-demand billing is enabled, and you are incurring charges for continued usage. %{linkStart}How is secrets manager billed?%{linkEnd}"
+msgid "SecretsManagerTrial|On-demand billing is enabled, and you are incurring charges for continued usage. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
 msgstr ""
 
-msgid "SecretsManagerTrial|On-demand billing is enabled, and you will incur charges after the trial period ends. %{linkStart}How is secrets manager billed?%{linkEnd}"
+msgid "SecretsManagerTrial|On-demand billing is enabled, and you will incur charges after the trial period ends. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManagerTrial|On-demand billing is enabled. When all trial credits are consumed, GitLab credits will be used. Disable secrets manager to stop credit consumption."
@@ -72499,12 +72565,6 @@ msgid "SecretsManager|GitLab Secrets Manager will not use GitLab Credits when di
 msgstr ""
 
 msgid "SecretsManager|How does GitLab Secrets Manager use GitLab Credits?"
-msgstr ""
-
-msgid "SecretsManager|How is GitLab Secrets Manager billed?"
-msgstr ""
-
-msgid "SecretsManager|How is Secrets Manager billed?"
 msgstr ""
 
 msgid "SecretsManager|If you have started a free 30-day trial, you can re-enable GitLab Secrets Manager at any time before the end of your trial period."

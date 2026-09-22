@@ -263,6 +263,24 @@ For example:
 | `include_service_accounts` | boolean | Conditional | If `true`, returns service account users. Required if `include_saml_users` is `false`. |
 | `a_related_setting`        | boolean | Conditional | If `true`, does something else. Required if `include_saml_users` is `true`. |
 
+Some attributes depend on a set of other attributes rather than on a single attribute's value.
+Use this pattern when the API requires at least one attribute from a group, but does not require any particular one.
+
+Use this format:
+
+  ```markdown
+  Required if none of `attribute1`, `attribute2`, or `attribute3` are provided.
+  ```
+
+For example:
+
+| Attribute     | Type   | Required    | Description |
+| ------------- | ------ | ----------- | ----------- |
+| `target_id`   | string | Conditional | ID of the target. Required if none of `target_name`, `target_path`, or `target_url` are provided. |
+| `target_name` | string | Conditional | Name of the target. Required if none of `target_id`, `target_path`, or `target_url` are provided. |
+| `target_path` | string | Conditional | Path of the target. Required if none of `target_id`, `target_name`, or `target_url` are provided. |
+| `target_url`  | string | Conditional | URL of the target. Required if none of `target_id`, `target_name`, or `target_path` are provided. |
+
 ## Response attributes
 
 You might sometimes need to document the response attributes in an operation. This is not usually required.

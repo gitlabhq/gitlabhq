@@ -81,12 +81,14 @@ The following features are available with the Registration Features Program:
 - [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group)
 - [Users and permissions report](../admin_area.md#user-permission-export)
 - [Advanced search](../../user/search/advanced_search.md)
-- [DevOps Adoption](../../user/group/devops_adoption/_index.md)
+- [DevOps adoption by group](../../user/group/devops_adoption/_index.md)
+- [DevOps adoption by instance](../analytics/devops_adoption.md)
 - [Cross-project pipelines with artifacts dependencies](../../ci/yaml/_index.md#needsproject)
 - [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues)
 - [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md)
 - [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/_index.md)
 - [CI/CD for GitHub](../../ci/ci_cd_for_external_repos/github_integration.md)
+- [Repository mirroring](../../user/project/repository/mirror/_index.md)
 
 ### Enable registration features
 

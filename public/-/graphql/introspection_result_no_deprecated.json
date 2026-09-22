@@ -220292,6 +220292,12 @@
               "description": "Callout feature name for work_item_decision_log_popover.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "EXPLORE_ANALYTICS_DASHBOARDS_PROMO",
+              "description": "Callout feature name for explore_analytics_dashboards_promo.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

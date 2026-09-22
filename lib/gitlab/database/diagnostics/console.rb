@@ -10,6 +10,7 @@ module Gitlab
 
         VIEWS = {
           'search_path' => Views::SchemaResolution,
+          'timeouts' => Views::Timeouts,
           'autovacuum_settings' => Views::AutovacuumSettings
         }.freeze
 

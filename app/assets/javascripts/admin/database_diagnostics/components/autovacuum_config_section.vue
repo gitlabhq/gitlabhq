@@ -1,23 +1,10 @@
 <script>
-import {
-  GlAlert,
-  GlBadge,
-  GlButton,
-  GlCollapse,
-  GlIcon,
-  GlLink,
-  GlTableLite,
-  GlTooltipDirective,
-} from '@gitlab/ui';
-import { uniqueId } from 'lodash-es';
+import { GlAlert, GlBadge, GlLink, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__, n__, sprintf, formatNumber } from '~/locale';
 import { bytes } from '~/lib/utils/unit_format';
 import { helpPagePath } from '~/helpers/help_page_helper';
-
-const SEVERITY_VARIANTS = {
-  error: 'danger',
-  warning: 'warning',
-};
+import { severityVariant } from '../utils';
+import DiagnosticsSection from './diagnostics_section.vue';
 
 const WRAPAROUND_DOCS_URL = helpPagePath('administration/troubleshooting/postgresql', {
   anchor: 'database-is-not-accepting-commands-to-avoid-wraparound-data-loss',
@@ -25,21 +12,13 @@ const WRAPAROUND_DOCS_URL = helpPagePath('administration/troubleshooting/postgre
 
 export default {
   name: 'AutovacuumConfigSection',
-  components: { GlAlert, GlBadge, GlButton, GlCollapse, GlIcon, GlLink, GlTableLite },
+  components: { GlAlert, GlBadge, GlLink, GlTableLite, DiagnosticsSection },
   directives: { GlTooltip: GlTooltipDirective },
   props: {
     config: {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      settingsExpanded: false,
-      overridesExpanded: false,
-      settingsDetailsId: uniqueId('autovacuum-settings-details-'),
-      overridesDetailsId: uniqueId('autovacuum-overrides-details-'),
-    };
   },
   computed: {
     settings() {
@@ -81,26 +60,10 @@ export default {
       if (this.settingsFindings.length) return 'warning';
       return null;
     },
-    statusIcon() {
-      if (this.settingsSeverity === 'error') return { name: 'error', variant: 'danger' };
-      if (this.settingsSeverity === 'warning') return { name: 'warning', variant: 'warning' };
-      return { name: 'check-circle-filled', variant: 'success' };
-    },
-    badgeVariant() {
-      return this.settingsSeverity === 'error' ? 'danger' : 'warning';
-    },
     // The only adverse signal among overrides is a table with autovacuum
     // disabled; everything else is informational tuning.
-    disabledOverrides() {
-      return this.tableOverrides.filter((table) => table.autovacuum_disabled);
-    },
-    overridesStatusIcon() {
-      return this.disabledOverrides.length
-        ? { name: 'error', variant: 'danger' }
-        : { name: 'check-circle-filled', variant: 'success' };
-    },
-    overridesBadgeVariant() {
-      return this.disabledOverrides.length ? 'danger' : 'neutral';
+    overridesSeverity() {
+      return this.tableOverrides.some((table) => table.autovacuum_disabled) ? 'error' : null;
     },
     scaleFactorRisks() {
       return this.config.scale_factor_risks || [];
@@ -125,9 +88,6 @@ export default {
         this.$options.severityLabels.warning
       );
     },
-    findingVariant(finding) {
-      return SEVERITY_VARIANTS[finding.severity] || 'warning';
-    },
     overrideEntries(table) {
       return Object.entries(table.overrides || {}).map(([key, value]) => `${key}=${value}`);
     },
@@ -140,12 +100,7 @@ export default {
         { count: formatNumber(count) },
       );
     },
-    toggleSettings() {
-      this.settingsExpanded = !this.settingsExpanded;
-    },
-    toggleOverrides() {
-      this.overridesExpanded = !this.overridesExpanded;
-    },
+    severityVariant,
   },
   settingFields: [
     { key: 'setting', label: s__('DatabaseDiagnostics|Setting') },
@@ -178,7 +133,6 @@ export default {
   i18n: {
     settingsTitle: s__('DatabaseDiagnostics|Effective settings'),
     effectiveValue: s__('DatabaseDiagnostics|%{value} (effective: %{effective})'),
-    details: s__('DatabaseDiagnostics|Details'),
     settingsEmpty: s__('DatabaseDiagnostics|No autovacuum settings could be read.'),
     overridesTitle: s__('DatabaseDiagnostics|Per-table overrides'),
     scaleFactorTitle: s__('DatabaseDiagnostics|Scale factor risk'),
@@ -196,44 +150,14 @@ export default {
 
 <template>
   <section>
-    <!-- Foldable "Effective settings" row: status icon summarises health while collapsed. -->
-    <div class="gl-flex gl-items-center gl-justify-between gl-rounded-base gl-bg-subtle gl-p-3">
-      <div class="gl-flex gl-items-center gl-gap-2">
-        <gl-icon v-if="hasSettings" v-bind="statusIcon" data-testid="settings-status-icon" />
-        <h4 class="gl-heading-5 !gl-mb-0">{{ $options.i18n.settingsTitle }}</h4>
-        <gl-badge
-          v-if="settingsFindings.length"
-          :variant="badgeVariant"
-          data-testid="settings-flagged-count"
-        >
-          {{ settingsFindings.length }}
-        </gl-badge>
-      </div>
-
-      <gl-button
-        v-if="hasSettings"
-        category="tertiary"
-        size="small"
-        data-testid="settings-toggle"
-        :icon="settingsExpanded ? 'chevron-up' : 'chevron-down'"
-        :aria-expanded="settingsExpanded.toString()"
-        :aria-controls="settingsDetailsId"
-        @click="toggleSettings"
-      >
-        {{ $options.i18n.details }}
-      </gl-button>
-    </div>
-
-    <p v-if="!hasSettings" class="gl-mt-3 gl-text-sm gl-text-subtle" data-testid="settings-empty">
-      {{ $options.i18n.settingsEmpty }}
-    </p>
-
-    <gl-collapse
-      v-else
-      :id="settingsDetailsId"
-      :visible="settingsExpanded"
-      class="gl-mt-3"
-      data-testid="settings-details"
+    <!-- Findings are shown per setting in the table, not as alerts. -->
+    <diagnostics-section
+      :title="$options.i18n.settingsTitle"
+      :severity="settingsSeverity"
+      :findings="settingsFindings"
+      :foldable="hasSettings"
+      :show-finding-alerts="false"
+      testid-prefix="settings"
     >
       <gl-table-lite :items="settingRows" :fields="$options.settingFields" stacked="md">
         <template #cell(setting)="{ item }">
@@ -246,7 +170,7 @@ export default {
           <gl-badge
             v-if="item.finding"
             v-gl-tooltip
-            :variant="findingVariant(item.finding)"
+            :variant="severityVariant(item.finding.severity)"
             icon="warning"
             :title="item.finding.message"
             :data-testid="`status-${item.name}`"
@@ -264,12 +188,16 @@ export default {
           $options.i18n.learnMore
         }}</gl-link>
       </p>
-    </gl-collapse>
+    </diagnostics-section>
+
+    <p v-if="!hasSettings" class="gl-mt-3 gl-text-sm gl-text-subtle" data-testid="settings-empty">
+      {{ $options.i18n.settingsEmpty }}
+    </p>
 
     <gl-alert
       v-for="finding in tableFindings"
       :key="finding.code"
-      :variant="findingVariant(finding)"
+      :variant="severityVariant(finding.severity)"
       :dismissible="false"
       class="gl-mt-5"
       :data-testid="`table-finding-${finding.code}`"
@@ -277,73 +205,49 @@ export default {
       {{ finding.message }}
     </gl-alert>
 
-    <!-- Foldable "Per-table overrides" block: omitted entirely when there are none. -->
-    <template v-if="tableOverrides.length">
-      <div
-        class="gl-mt-5 gl-flex gl-items-center gl-justify-between gl-rounded-base gl-bg-subtle gl-p-3"
+    <!-- Omitted entirely when no table overrides autovacuum. -->
+    <diagnostics-section
+      v-if="tableOverrides.length"
+      :title="$options.i18n.overridesTitle"
+      :severity="overridesSeverity"
+      :count="tableOverrides.length"
+      class="gl-mt-5"
+      testid-prefix="overrides"
+    >
+      <gl-table-lite
+        :items="tableOverrides"
+        :fields="$options.overrideFields"
+        stacked="md"
+        data-testid="overrides-table"
       >
-        <div class="gl-flex gl-items-center gl-gap-2">
-          <gl-icon v-bind="overridesStatusIcon" data-testid="overrides-status-icon" />
-          <h4 class="gl-heading-5 !gl-mb-0">{{ $options.i18n.overridesTitle }}</h4>
-          <gl-badge :variant="overridesBadgeVariant" data-testid="overrides-count">
-            {{ tableOverrides.length }}
-          </gl-badge>
-        </div>
+        <template #cell(table)="{ item }">
+          <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
+            <code>{{ item.schema_name }}.{{ item.table_name }}</code>
+            <gl-badge
+              v-if="item.autovacuum_disabled"
+              v-gl-tooltip
+              variant="danger"
+              icon="warning"
+              :title="$options.i18n.tableDisabledHint"
+              data-testid="table-disabled-badge"
+            >
+              {{ $options.i18n.tableDisabled }}
+            </gl-badge>
+          </div>
+        </template>
 
-        <gl-button
-          category="tertiary"
-          size="small"
-          data-testid="overrides-toggle"
-          :icon="overridesExpanded ? 'chevron-up' : 'chevron-down'"
-          :aria-expanded="overridesExpanded.toString()"
-          :aria-controls="overridesDetailsId"
-          @click="toggleOverrides"
-        >
-          {{ $options.i18n.details }}
-        </gl-button>
-      </div>
+        <template #cell(size)="{ item }">
+          {{ formatBytes(item.total_bytes) }}
+          <span class="gl-text-subtle">({{ rowCount(item.estimated_rows) }})</span>
+        </template>
 
-      <gl-collapse
-        :id="overridesDetailsId"
-        :visible="overridesExpanded"
-        class="gl-mt-3"
-        data-testid="overrides-details"
-      >
-        <gl-table-lite
-          :items="tableOverrides"
-          :fields="$options.overrideFields"
-          stacked="md"
-          data-testid="overrides-table"
-        >
-          <template #cell(table)="{ item }">
-            <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
-              <code>{{ item.schema_name }}.{{ item.table_name }}</code>
-              <gl-badge
-                v-if="item.autovacuum_disabled"
-                v-gl-tooltip
-                variant="danger"
-                icon="warning"
-                :title="$options.i18n.tableDisabledHint"
-                data-testid="table-disabled-badge"
-              >
-                {{ $options.i18n.tableDisabled }}
-              </gl-badge>
-            </div>
-          </template>
-
-          <template #cell(size)="{ item }">
-            {{ formatBytes(item.total_bytes) }}
-            <span class="gl-text-subtle">({{ rowCount(item.estimated_rows) }})</span>
-          </template>
-
-          <template #cell(overrides)="{ item }">
-            <code v-for="entry in overrideEntries(item)" :key="entry" class="gl-mr-2">{{
-              entry
-            }}</code>
-          </template>
-        </gl-table-lite>
-      </gl-collapse>
-    </template>
+        <template #cell(overrides)="{ item }">
+          <code v-for="entry in overrideEntries(item)" :key="entry" class="gl-mr-2">{{
+            entry
+          }}</code>
+        </template>
+      </gl-table-lite>
+    </diagnostics-section>
 
     <template v-if="scaleFactorRisks.length">
       <h4 class="gl-heading-5 gl-mt-5">{{ $options.i18n.scaleFactorTitle }}</h4>

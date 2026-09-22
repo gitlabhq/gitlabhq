@@ -38785,7 +38785,7 @@
             },
             {
               "name": "subjectDigest",
-              "description": "Digest of the subject manifest a referrer refers to. Null for a manifest that is not a referrer, and null on the manifests list on its default, which excludes referrers unless the caller sets includeReferrers. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Digest of the subject manifest a referrer refers to. Null for a manifest that is not a referrer. Populated on the referrers connection, where every row is a referrer of the manifest it hangs off. On the manifests connection it is null unless the caller passes includeReferrers, which the default omits. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -39237,6 +39237,67 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "referrers",
+              "description": "Manifests in the image that name this manifest as their subject, ordered by digest ascending. Reads at most 20 rows per page and can be selected once per operation, counting every selection of the field. Empty on a remote repository. Returns `null` for a manifest that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryManifestConnection",
                 "ofType": null
               },
               "isDeprecated": true,
@@ -425060,6 +425121,12 @@
             {
               "name": "WORK_ITEM_DECISION_LOG_POPOVER",
               "description": "Callout feature name for work_item_decision_log_popover.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLORE_ANALYTICS_DASHBOARDS_PROMO",
+              "description": "Callout feature name for explore_analytics_dashboards_promo.",
               "isDeprecated": false,
               "deprecationReason": null
             }

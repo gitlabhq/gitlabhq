@@ -30,7 +30,7 @@ module Gitlab
             def print_settings(settings)
               return printer.detail(EMPTY) if settings.empty?
 
-              printer.subheading('Effective settings')
+              printer.subheading(SETTINGS_SUBHEADING)
               printer.table(SETTING_HEADERS, settings.map { |name, entry| [name, display_value(entry)] })
             end
 

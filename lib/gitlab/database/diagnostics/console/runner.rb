@@ -49,8 +49,9 @@ module Gitlab
             @interactive
           end
 
-          # DatabaseInformation forces the primary only for its vacuum query, so the
-          # report could otherwise describe a replica. The admin page does not do this.
+          # DatabaseInformation forces the primary only for its vacuum and timeout
+          # queries, so the report could otherwise describe a replica. The admin
+          # page does not do this.
           def with_primary_reads(&block)
             ::Gitlab::Database::LoadBalancing::SessionMap
               .with_sessions(::Gitlab::Database::LoadBalancing.base_models)
