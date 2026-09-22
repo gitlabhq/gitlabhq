@@ -335,7 +335,11 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
 
   context 'when user mapping is disabled' do
     before_all do
-      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+      project.build_or_assign_import_data(data: {}).save!
+    end
+
+    before do
+      allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
     end
 
     context 'when the review author can be mapped to a gitlab user' do

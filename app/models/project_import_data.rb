@@ -45,7 +45,26 @@ class ProjectImportData < ApplicationRecord
     self.credentials = credentials.to_h.merge(hash) unless hash.empty?
   end
 
+  # User contribution mapping is the safe default: contributions point at
+  # placeholder users rather than resolving to arbitrary target users. Only
+  # Bitbucket Server can opt out via feature flag while it remains in beta.
+  #
+  # The accessor deliberately does not read the stored `data` blob because
+  # ProjectImportState deletes it on cancel/fail; an attacker who cancels
+  # their own import mid-flight could otherwise downgrade running workers to
+  # the legacy user-resolution path and spoof author IDs on imported records.
+  # See gitlab-org/gitlab#628379.
   def user_mapping_enabled?
-    self.data&.dig('user_contribution_mapping_enabled') || false
+    return false if bitbucket_server_user_mapping_disabled?
+
+    true
+  end
+
+  private
+
+  def bitbucket_server_user_mapping_disabled?
+    return false unless project&.import_type == 'bitbucket_server'
+
+    Feature.disabled?(:bitbucket_server_user_mapping, project.creator)
   end
 end

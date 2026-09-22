@@ -132,24 +132,8 @@ RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
   end
 
   describe '#importer_user_mapping_enabled?' do
-    subject { described_class.new(tracker, extra: :data).importer_user_mapping_enabled? }
-
-    before do
-      allow_next_instance_of(Import::BulkImports::EphemeralData, bulk_import.id) do |ephemeral_data|
-        allow(ephemeral_data).to receive(:importer_user_mapping_enabled?).and_return(status)
-      end
-    end
-
-    context 'when importer user mapping is disabled' do
-      let(:status) { false }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when importer user mapping is enabled' do
-      let(:status) { true }
-
-      it { is_expected.to eq(true) }
+    it 'returns true' do
+      expect(described_class.new(tracker, extra: :data).importer_user_mapping_enabled?).to be(true)
     end
   end
 

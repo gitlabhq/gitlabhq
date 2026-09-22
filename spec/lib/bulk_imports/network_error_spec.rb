@@ -105,6 +105,20 @@ RSpec.describe BulkImports::NetworkError, :clean_gitlab_redis_shared_state, feat
 
         expect(exception.retry_delay).to eq(described_class::DEFAULT_RETRY_DELAY_SECONDS.seconds)
       end
+
+      it 'caps the "Retry-After" at MAX_RETRY_AFTER_SECONDS' do
+        exception = described_class.new(response: double(code: 429, headers: { 'Retry-After' => 100_000 }))
+
+        expect(exception.retry_delay).to eq(described_class::MAX_RETRY_AFTER_SECONDS.seconds)
+      end
+
+      it 'falls back to the default when "Retry-After" is not a positive integer' do
+        %w[not-a-number 0 -5].each do |value|
+          exception = described_class.new(response: double(code: 429, headers: { 'Retry-After' => value }))
+
+          expect(exception.retry_delay).to eq(described_class::DEFAULT_RETRY_DELAY_SECONDS.seconds)
+        end
+      end
     end
   end
 end
