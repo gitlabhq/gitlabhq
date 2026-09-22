@@ -2,42 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BulkImports::EphemeralData, :clean_gitlab_redis_shared_state, feature_category: :importers do
+RSpec.describe Import::BulkImports::EphemeralData, feature_category: :importers do
   let(:ephemeral_data) { described_class.new(123) }
 
   describe '#enable_importer_user_mapping' do
-    it 'enables importer_user_mapping' do
-      ephemeral_data.enable_importer_user_mapping
+    it 'is a no-op and does not touch Redis' do
+      expect(Gitlab::Cache::Import::Caching).not_to receive(:hash_add)
 
-      expect(ephemeral_data.importer_user_mapping_enabled?).to be(true)
+      ephemeral_data.enable_importer_user_mapping
     end
   end
 
   describe '#importer_user_mapping_enabled?' do
-    context 'when importer_user_mapping is enabled' do
-      before do
-        ephemeral_data.enable_importer_user_mapping
-      end
-
-      it 'returns true' do
-        expect(ephemeral_data.importer_user_mapping_enabled?).to be(true)
-      end
+    it 'always returns true' do
+      expect(ephemeral_data.importer_user_mapping_enabled?).to be(true)
     end
 
-    context 'when importer_user_mapping is not enabled' do
-      it 'returns false' do
-        expect(ephemeral_data.importer_user_mapping_enabled?).to be(false)
-      end
-    end
+    it 'does not read from Redis' do
+      expect(Gitlab::Cache::Import::Caching).not_to receive(:value_from_hash)
 
-    context 'when importer_user_mapping is enabled for a different bulk_import_id' do
-      before do
-        ephemeral_data.enable_importer_user_mapping
-      end
-
-      it 'returns false' do
-        expect(described_class.new(456).importer_user_mapping_enabled?).to be(false)
-      end
+      ephemeral_data.importer_user_mapping_enabled?
     end
   end
 end

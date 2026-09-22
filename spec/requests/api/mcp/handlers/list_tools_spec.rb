@@ -177,6 +177,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         request_double = instance_double(ActionDispatch::Request)
         method_to_access.each_value { |m| allow(request_double).to receive(m).and_return(false) }
         allow(request_double).to receive(method_to_access[http_method]).and_return(true)
+        allow(request_double).to receive(:env).and_return(Grape::Env::API_ENDPOINT => route.app)
 
         matched = mcp_scopes.any? { |scope| scope.sufficient?([:mcp], request_double) }
 

@@ -65,10 +65,10 @@ export function prepareRawDiffFile({ file, allFiles, meta = false, index = -1 })
     },
   };
 
-  // It's possible, but not confirmed, that `blob.id` isn't available sometimes
-  // See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49506#note_464692057
-  // We don't want duplicate IDs if that's the case, so we just don't assign an ID
-  if (!meta && file.blob?.id && file.load_collapsed_diff_url) {
+  // `blob.id` is absent whenever the blob can't be resolved, so it can't be
+  // required here: an unkeyed item makes RecycleScroller throw and blank the
+  // whole list. `file_identifier_hash` alone already keeps the id unique.
+  if (!meta && file.load_collapsed_diff_url) {
     additionalProperties.id = identifier(file);
   }
 
