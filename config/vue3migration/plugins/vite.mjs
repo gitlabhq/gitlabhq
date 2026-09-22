@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
-import contextAliasesShared from './context_aliases_shared.js';
-import vue3InfectionShared from './vue3_infection_shared.js';
+import contextAliasesShared from '../aliases.js';
+import vue3InfectionShared from '../infection.js';
 
 const { CONTEXT_ALIASES } = contextAliasesShared;
 const {

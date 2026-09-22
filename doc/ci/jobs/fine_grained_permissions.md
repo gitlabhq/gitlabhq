@@ -291,7 +291,9 @@ CI/CD job tokens can access the following REST API endpoints:
 
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
+| Get a work item in a project. | `GET /projects/:id/-/work_items/:work_item_iid` | `READ_WORK_ITEMS` | Read |
 | List all project issues | `GET /projects/:id/issues` | `READ_WORK_ITEMS` | Read |
+| List work items in a project. | `GET /projects/:id/-/work_items` | `READ_WORK_ITEMS` | Read |
 | Retrieve a project issue | `GET /projects/:id/issues/:issue_iid` | `READ_WORK_ITEMS` | Read |
 
 ## Endpoints without fine-grained permissions

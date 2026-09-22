@@ -23,7 +23,7 @@ RSpec.describe "User Feed", feature_category: :devops_reports do
     end
 
     context 'feed content' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
       let(:issue) do
         create(
           :issue,
@@ -69,7 +69,7 @@ RSpec.describe "User Feed", feature_category: :devops_reports do
       let(:feed) { Nokogiri::XML(body).tap(&:remove_namespaces!) }
 
       before do
-        project.add_maintainer(user)
+        project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let, not available in before_all
         issue_event(issue, user)
         issue_event(work_item, user)
         note_event(note, user)

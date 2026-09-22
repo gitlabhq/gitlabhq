@@ -15,6 +15,7 @@ title: Code suggestions
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
+- `daily`, `weekly`, and fixed-day `granularity` values for `timestamp` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/528) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -96,7 +97,7 @@ The following dimensions are supported:
 |-----------|------------------|------------------------------------------------------|
 | IDE name  | `ideName`        | Group by IDE used (for example, VSCode, JetBrains).  |
 | Language  | `language`       | Group by programming language.                       |
-| Timestamp | `timestamp`      | Group by date. Accepts only the `monthly` [`granularity` parameter](../_index.md#field-parameters) (default: `monthly`). |
+| Timestamp | `timestamp`      | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `timestamp(weekly)` or `timestamp(granularity=30d, origin=2026-07-16)`. |
 | User      | `user`           | Group by user (displays avatar, name, and username). |
 
 ## Metrics

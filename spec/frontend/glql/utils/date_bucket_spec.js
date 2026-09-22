@@ -1,4 +1,23 @@
-import { bucketDateOf, formatBucketDate } from '~/glql/utils/date_bucket';
+import { bucketDateOf, bucketSpanDays, formatBucketDate } from '~/glql/utils/date_bucket';
+
+describe('bucketSpanDays', () => {
+  it.each`
+    granularity  | expected
+    ${'weekly'}  | ${7}
+    ${'1d'}      | ${1}
+    ${'30d'}     | ${30}
+    ${'399d'}    | ${399}
+    ${'daily'}   | ${null}
+    ${'monthly'} | ${null}
+    ${'yearly'}  | ${null}
+    ${'30'}      | ${null}
+    ${'d'}       | ${null}
+    ${'-30d'}    | ${null}
+    ${undefined} | ${null}
+  `('returns $expected for $granularity', ({ granularity, expected }) => {
+    expect(bucketSpanDays(granularity)).toBe(expected);
+  });
+});
 
 describe('bucketDateOf', () => {
   // Daily bucket starts arrive as ISO datetimes (ClickHouse's
@@ -48,6 +67,11 @@ describe('formatBucketDate', () => {
     ${'weekly'}  | ${'2026-12-28'} | ${true}     | ${'Dec 28, 2026 – Jan 3, 2027'}
     ${'monthly'} | ${'2026-06-01'} | ${false}    | ${'Jun 2026'}
     ${'yearly'}  | ${'2026-01-01'} | ${true}     | ${'2026'}
+    ${'1d'}      | ${'2026-06-01'} | ${false}    | ${'Jun 1'}
+    ${'30d'}     | ${'2026-06-01'} | ${false}    | ${'Jun 1 – 30'}
+    ${'30d'}     | ${'2026-06-15'} | ${false}    | ${'Jun 15 – Jul 14'}
+    ${'30d'}     | ${'2026-06-01'} | ${true}     | ${'Jun 1 – 30, 2026'}
+    ${'90d'}     | ${'2026-12-01'} | ${true}     | ${'Dec 1, 2026 – Feb 28, 2027'}
   `(
     'formats $value as $expected for $granularity with includeYear=$includeYear',
     ({ granularity, value, includeYear, expected }) => {

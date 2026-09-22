@@ -629,12 +629,12 @@ test-linters:
   script:
     - yarn vitest:eslint
 
-test-infection-scanner:
+test-vue3migration-tooling:
   extends:
     - .frontend-test-base
-    - .frontend:rules:test-infection-scanner
+    - .frontend:rules:test-vue3migration-tooling
   script:
-    - yarn vitest:infection-scanner
+    - yarn vitest:vue3migration
 
 coverage-frontend:
   extends:

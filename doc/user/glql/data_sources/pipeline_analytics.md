@@ -109,11 +109,11 @@ Use these fields in the `query` parameter to filter your results.
 
 | Dimension   | Name       | Description                              |
 | ----------- | ---------- | ---------------------------------------- |
-| Finished at | `finished` | Group by finish date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `finished(daily)`. |
+| Finished at | `finished` | Group by finish date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `finished(daily)` or `finished(granularity=30d, origin=2026-07-16)`. |
 | Project     | `project`  | Group by project.                        |
 | Ref         | `ref`      | Group by Git ref (branch or tag).        |
 | Source      | `source`   | Group by what triggered the pipeline.    |
-| Started at  | `started`  | Group by start date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `started(daily)`. |
+| Started at  | `started`  | Group by start date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `started(daily)` or `started(granularity=30d, origin=2026-07-16)`. |
 | Status      | `status`   | Group by pipeline status.                |
 
 ## Metrics

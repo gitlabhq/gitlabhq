@@ -357,12 +357,23 @@ Incremented each time a gRPC `ExecuteWorkflow` stream is successfully opened to 
 
 ### `gitlab_workhorse_duo_workflow_session_errors_total`
 
-Incremented for every non-EOF error received on the `ExecuteWorkflow` stream, labelled by the gRPC status code string (e.g. `"Internal"`, `"Unavailable"`, `"ResourceExhausted"`). `io.EOF` is the normal end-of-stream signal and does not increment this counter.
+Incremented for every non-EOF error received on the `ExecuteWorkflow` stream, labelled by `grpc_code` and `teardown_reason`. `grpc_code` is the gRPC status code string (e.g. `"Internal"`, `"Unavailable"`, `"ResourceExhausted"`). `io.EOF` is the normal end-of-stream signal and does not increment this counter.
 
-Example query:
+`teardown_reason` records what ended the stream, because a single gRPC code covers causes that are not equally a failure: an `Unavailable` arrives both when DWS closes the stream to acknowledge a stop workhorse asked for, and when the connection to DWS fails outright. Possible values:
+
+| `teardown_reason`         | Trigger                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `unsolicited`             | Nothing on the workhorse side asked for this teardown: DWS closed the stream on its own, or the transport failed |
+| `client_normal_close`     | Client closed the WebSocket with a normal code (1000 or 1001): the user closed the browser tab or IDE panel, or stopped the flow |
+| `client_pong_timeout`     | Client stopped answering pings                                                                                  |
+| `client_keepalive_failed` | Writing a keepalive to the client failed, so its connection was already gone                                     |
+| `client_read_failed`      | Reading from the client failed unexpectedly: an abnormal WebSocket closure, a connection reset, or an unparsable message |
+| `workhorse_shutdown`      | This workhorse instance is draining                                                                             |
+
+Every reason except `unsolicited` means workhorse initiated the teardown, so the gRPC error is the expected end of the stream rather than a failure. Filter on `teardown_reason="unsolicited"` to alert only on unexpected terminations:
 
 ```promql
-sum(rate(gitlab_workhorse_duo_workflow_session_errors_total[5m])) by (grpc_code)
+sum(rate(gitlab_workhorse_duo_workflow_session_errors_total[5m])) by (grpc_code, teardown_reason)
 ```
 
 ### `gitlab_workhorse_duo_workflow_http_actions_total`

@@ -3859,6 +3859,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-aicatalogitemconsumercreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aicatalogitemconsumercreate-consumerkind"></a>`consumerKind` | [`AiCatalogItemConsumerKind`](#aicatalogitemconsumerkind) | Type of item configuration. `INHERITANCE` is only valid for a top-level group target. |
 | <a id="mutation-aicatalogitemconsumercreate-itemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Item to configure. |
 | <a id="mutation-aicatalogitemconsumercreate-parentitemconsumerid"></a>`parentItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | Parent item consumer belonging to the top-level group. |
 | <a id="mutation-aicatalogitemconsumercreate-pinnedversion"></a>`pinnedVersion` | [`AiCatalogPinnedVersion`](#aicatalogpinnedversion) | Version to pin the item to, in the format `n.n.n`. Must be a released version. Defaults to the latest released version. Ignored when enabling within the item's managing project, which always tracks the latest released version. |
@@ -5332,6 +5333,35 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mutation-artifactregistryrolerevoke-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-artifactregistryrolerevoke-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.artifactRegistryUpstreamRepositoryDissociate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Removes an upstream repository association from a virtual repository in Artifact Registry. The upstream repository and its artifacts remain unchanged, and Artifact Registry compacts the remaining upstream positions. Succeeds even when the association is already gone, or the repository is missing, inaccessible, not virtual, or not of the given format.
+
+Input type: `ArtifactRegistryUpstreamRepositoryDissociateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryupstreamrepositorydissociate-associationid"></a>`associationId` | [`ID!`](#id) | ID of the upstream repository association to remove, as returned by the `id` field on an upstream repository association. Not a GitLab global ID. |
+| <a id="mutation-artifactregistryupstreamrepositorydissociate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryupstreamrepositorydissociate-format"></a>`format` | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Package format of the virtual repository. |
+| <a id="mutation-artifactregistryupstreamrepositorydissociate-name"></a>`name` | [`String!`](#string) | Name of the virtual repository holding the upstream repository, unique within the organization. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryupstreamrepositorydissociate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryupstreamrepositorydissociate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.artifactRegistryUpstreamTestConnection`
 
@@ -35139,6 +35169,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aicatalogitemconsumer-consumerkind"></a>`consumerKind` | [`AiCatalogItemConsumerKind!`](#aicatalogitemconsumerkind) | Type of configured catalog item. |
 | <a id="aicatalogitemconsumer-enabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates if the configuration item is enabled. |
 | <a id="aicatalogitemconsumer-flowtrigger"></a>`flowTrigger` {{< icon name="warning-solid" >}} | [`AiFlowTriggerType`](#aiflowtriggertype) | Deprecated in GitLab 19.4. Use `flowTriggers`. |
 | <a id="aicatalogitemconsumer-flowtriggers"></a>`flowTriggers` {{< icon name="warning-solid" >}} | [`[AiFlowTriggerType!]`](#aiflowtriggertype) | Introduced in GitLab 19.4. Status: Experiment. Triggers associated with the configured catalog item. |
@@ -68295,6 +68326,15 @@ Possible flow configuration types for AI Catalog agents.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aicatalogflowconfigtype-chat"></a>`CHAT` | Chat flow configuration. |
+
+### `AiCatalogItemConsumerKind`
+
+The type of configured AI catalog item.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogitemconsumerkind-direct"></a>`DIRECT` | Direct enablement. |
+| <a id="aicatalogitemconsumerkind-inheritance"></a>`INHERITANCE` | Inheritance enablement. |
 
 ### `AiCatalogItemReportReason`
 

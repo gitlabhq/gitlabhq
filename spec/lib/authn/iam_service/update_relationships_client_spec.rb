@@ -39,6 +39,52 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
 
       client.grant_roles(assignments, organization_uuid: organization_uuid, token: user_token)
     end
+
+    it 'names no ancestor when no parent is given' do
+      expect(client).to receive(:write_relationships) do |inputs, **_kwargs|
+        expect(inputs.map { |i| i.object.ancestors.to_a }).to all(be_empty)
+
+        write_response
+      end
+
+      client.grant_roles(assignments, organization_uuid: organization_uuid, token: user_token)
+    end
+
+    context 'when a parent is given' do
+      let(:parent_id) { Gitlab::Utils.uuid_v7 }
+      let(:assignments) do
+        [
+          { assignee_id: 2, resource_id: resource_id, role_id: role_id, parent_id: parent_id },
+          { assignee_id: 3, resource_id: other_resource_id, role_id: role_id }
+        ]
+      end
+
+      # IAM reads only the first ancestor, so the list holds exactly one.
+      it 'names it as the sole ancestor, per assignment', :aggregate_failures do
+        expect(client).to receive(:write_relationships) do |inputs, **_kwargs|
+          with_parent = inputs.find { |i| i.object.id == resource_id }
+          without = inputs.find { |i| i.object.id == other_resource_id }
+
+          expect(with_parent.object.ancestors.map(&:id)).to eq([parent_id])
+          expect(without.object.ancestors.to_a).to be_empty
+
+          write_response
+        end
+
+        client.grant_roles(assignments, organization_uuid: organization_uuid, token: user_token)
+      end
+    end
+
+    context 'when a required key is missing' do
+      let(:assignments) { [{ assignee_id: 2, resource_id: resource_id }] }
+
+      it 'raises rather than sending a request IAM would reject', :aggregate_failures do
+        expect(client).not_to receive(:write_relationships)
+
+        expect { client.grant_roles(assignments, organization_uuid: organization_uuid, token: user_token) }
+          .to raise_error(KeyError)
+      end
+    end
   end
 
   describe '#revoke_roles' do
@@ -63,6 +109,51 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
       end
 
       client.revoke_roles(keys, organization_uuid: organization_uuid, token: user_token)
+    end
+
+    it 'names no ancestor when no parent is given' do
+      expect(client).to receive(:delete_relationships) do |inputs, **_kwargs|
+        expect(inputs.map { |i| i.object.ancestors.to_a }).to all(be_empty)
+
+        delete_response
+      end
+
+      client.revoke_roles(keys, organization_uuid: organization_uuid, token: user_token)
+    end
+
+    context 'when a parent is given' do
+      let(:parent_id) { Gitlab::Utils.uuid_v7 }
+      let(:keys) do
+        [
+          { assignee_id: 2, resource_id: resource_id, parent_id: parent_id },
+          { assignee_id: 3, resource_id: other_resource_id }
+        ]
+      end
+
+      it 'names it as the sole ancestor, per key', :aggregate_failures do
+        expect(client).to receive(:delete_relationships) do |inputs, **_kwargs|
+          with_parent = inputs.find { |i| i.object.id == resource_id }
+          without = inputs.find { |i| i.object.id == other_resource_id }
+
+          expect(with_parent.object.ancestors.map(&:id)).to eq([parent_id])
+          expect(without.object.ancestors.to_a).to be_empty
+
+          delete_response
+        end
+
+        client.revoke_roles(keys, organization_uuid: organization_uuid, token: user_token)
+      end
+    end
+
+    context 'when a required key is missing' do
+      let(:keys) { [{ resource_id: resource_id }] }
+
+      it 'raises rather than sending a request IAM would reject', :aggregate_failures do
+        expect(client).not_to receive(:delete_relationships)
+
+        expect { client.revoke_roles(keys, organization_uuid: organization_uuid, token: user_token) }
+          .to raise_error(KeyError)
+      end
     end
   end
 

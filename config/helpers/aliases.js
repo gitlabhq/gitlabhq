@@ -1,8 +1,8 @@
 const path = require('path');
 
 const { IS_EE, IS_JH, ROOT_PATH } = require('../webpack.constants');
-const { CONTEXT_ALIASES } = require('./context_aliases_shared');
-const { USE_VUE3 } = require('./vue_version');
+const { CONTEXT_ALIASES } = require('../vue3migration/aliases');
+const { USE_VUE3 } = require('../vue3migration/version');
 
 const aliases = {
   // Map Apollo client to apollo/client/core to prevent react related imports from being loaded

@@ -1,7 +1,7 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
-const { CONTEXT_ALIASES } = require('./config/helpers/context_aliases_shared');
+const { CONTEXT_ALIASES } = require('./config/vue3migration/aliases');
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
 const { VUE_COMPILER_VERSION } = process.env;
@@ -69,7 +69,7 @@ module.exports = (path, options = {}) => {
       Object.assign(globals, {
         'vue-jest': {
           experimentalCSSCompile: false,
-          compiler: require.resolve('./config/vue3migration/vue3_template_compiler'),
+          compiler: require.resolve('./config/vue3migration/compilers/vue3_template'),
           compilerOptions: {
             whitespace: 'preserve',
             compatConfig: {
@@ -83,7 +83,7 @@ module.exports = (path, options = {}) => {
       Object.assign(globals, {
         'vue-jest': {
           experimentalCSSCompile: false,
-          compiler: require.resolve('./config/vue3migration/vue2_compiler'),
+          compiler: require.resolve('./config/vue3migration/compilers/vue2_template'),
         },
       });
     }

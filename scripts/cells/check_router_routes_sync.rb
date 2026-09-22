@@ -39,8 +39,9 @@ require "tmpdir"
 require_relative "../../gems/gitlab-cells-http_router/lib/gitlab/cells/http_router"
 
 module CheckRouterRoutesSync
+  RouterSnapshot = Gitlab::Cells::HttpRouter::RouterSnapshot
+
   LOCAL_SNAPSHOT = "config/routing/gitlab_routes.json"
-  ROUTER_SNAPSHOT = "test/routes/gitlab_routes.json"
   DOCS_URL = "https://docs.gitlab.com/development/cells/http_router/#check-the-http-router-is-in-sync"
   ROUTER_DOCS_URL = "https://gitlab.com/gitlab-org/cells/http-router/-/blob/main/docs/adding-gitlab-routes.md"
   SKIP_LABEL = "pipeline:skip-router-sync"
@@ -107,15 +108,7 @@ module CheckRouterRoutesSync
     end
 
     def snapshot_url
-      @snapshot_url ||= ENV["CELLS_ROUTER_SNAPSHOT_URL"] || begin
-        api_url = ENV["CI_API_V4_URL"] || "https://gitlab.com/api/v4"
-        project = ENV["CELLS_ROUTER_PROJECT"] || "gitlab-org/cells/http-router"
-        ref = ENV["CELLS_ROUTER_REF"] || "main"
-
-        file = CGI.escape(ROUTER_SNAPSHOT)
-
-        "#{api_url}/projects/#{CGI.escape(project)}/repository/files/#{file}/raw?ref=#{CGI.escape(ref)}"
-      end
+      @snapshot_url ||= RouterSnapshot.url_from_env
     end
 
     def download
@@ -152,7 +145,8 @@ module CheckRouterRoutesSync
 
     def build_request(uri)
       request = Net::HTTP::Get.new(uri)
-      request["JOB-TOKEN"] = ENV["CI_JOB_TOKEN"] if ENV["CI_JOB_TOKEN"].to_s != ""
+      token = RouterSnapshot.job_token
+      request["JOB-TOKEN"] = token if token
       request
     end
 

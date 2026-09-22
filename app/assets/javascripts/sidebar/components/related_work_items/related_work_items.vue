@@ -321,7 +321,7 @@ export default {
       </div>
       <gl-collapse :visible="!showCollapsedState || !isCollapsed" class="hide-collapsed">
         <div v-for="section in relationSections" :key="section.key" class="gl-mt-3 first:gl-mt-2">
-          <span class="gl-text-sm gl-font-bold gl-text-subtle">{{ section.title }}</span>
+          <span class="gl-text-sm gl-font-semibold gl-text-subtle">{{ section.title }}</span>
           <ul class="gl-m-0 gl-list-none gl-p-0">
             <li
               v-for="relation in section.relations"

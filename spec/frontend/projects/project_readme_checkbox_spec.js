@@ -1,9 +1,11 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import eventHub from '~/projects/new/event_hub';
-import initReadmeCheckboxToggle, {
-  DISABLED_MESSAGE,
-  DEFAULT_HELP_TEXT,
-} from '~/projects/project_readme_checkbox';
+import initReadmeCheckboxToggle from '~/projects/project_readme_checkbox';
+
+const DISABLED_MESSAGE =
+  'You cannot push the initial commit because the default branch is protected. Contact an Owner or administrator for help.';
+const DEFAULT_HELP_TEXT =
+  'Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.';
 
 describe('initReadmeCheckboxToggle', () => {
   const CHECKBOX_SELECTOR = '[data-testid="initialize-with-readme-checkbox"]';

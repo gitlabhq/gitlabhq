@@ -47,6 +47,8 @@ module Projects
         case relation
         when Projects::ImportExport::RelationExport::UPLOADS_RELATION
           Gitlab::ImportExport::UploadsSaver.new(project: project, shared: shared)
+        when Projects::ImportExport::RelationExport::AVATAR_RELATION
+          Gitlab::ImportExport::AvatarSaver.new(project: project, shared: shared)
         when Projects::ImportExport::RelationExport::REPOSITORY_RELATION
           Gitlab::ImportExport::RepoSaver.new(exportable: project, shared: shared)
         when Projects::ImportExport::RelationExport::WIKI_REPOSITORY_RELATION

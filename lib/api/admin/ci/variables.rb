@@ -22,7 +22,8 @@ module API
               params do
                 use :pagination
               end
-              route_setting :authorization, permissions: :read_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :read_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               get '/' do
                 variables = ::Ci::InstanceVariable.all
 
@@ -38,7 +39,8 @@ module API
               params do
                 requires :key, type: String, desc: 'The key of a variable'
               end
-              route_setting :authorization, permissions: :read_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :read_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               get ':key' do
                 key = params[:key]
                 variable = ::Ci::InstanceVariable.find_by_key(key)
@@ -87,7 +89,8 @@ module API
                   default: 'env_var',
                   desc: 'The type of a variable.'
               end
-              route_setting :authorization, permissions: :create_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :create_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               post '/' do
                 variable_params = declared_params(include_missing: false)
 
@@ -137,7 +140,8 @@ module API
                   values: ::Ci::InstanceVariable.variable_types.keys,
                   desc: 'The type of a variable. Available types are: env_var (default) and file'
               end
-              route_setting :authorization, permissions: :update_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :update_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               put ':key' do
                 variable = ::Ci::InstanceVariable.find_by_key(params[:key])
 
@@ -161,7 +165,8 @@ module API
               params do
                 requires :key, type: String, desc: 'The key of a variable'
               end
-              route_setting :authorization, permissions: :delete_variable, boundary_type: :instance
+              route_setting :authorization, permissions: :delete_variable, boundary_type: :instance,
+                assignable_when: [:admin]
               delete ':key' do
                 variable = ::Ci::InstanceVariable.find_by_key(params[:key])
                 not_found!('InstanceVariable') unless variable

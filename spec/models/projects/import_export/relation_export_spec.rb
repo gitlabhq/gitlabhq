@@ -38,7 +38,8 @@ RSpec.describe Projects::ImportExport::RelationExport, feature_category: :import
   describe '.relation_names_list' do
     it 'includes extra relations list' do
       expect(described_class.relation_names_list).to include(
-        'design_repository', 'lfs_objects', 'repository', 'snippets_repository', 'uploads', 'wiki_repository'
+        'avatar', 'design_repository', 'lfs_objects', 'repository', 'snippets_repository', 'uploads',
+        'wiki_repository'
       )
     end
 

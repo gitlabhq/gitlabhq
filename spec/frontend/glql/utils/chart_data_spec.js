@@ -138,6 +138,28 @@ describe('labelWithParameter', () => {
     expect(labelWithParameter(field)).toBe('Language');
   });
 
+  it('lists the items of a list-valued parameter separated by commas', () => {
+    const field = {
+      key: 'userTier',
+      field: 'userTier',
+      label: 'User tier',
+      type: 'dimension',
+      parameters: { thresholds: ['4', '25', '100'] },
+    };
+    expect(labelWithParameter(field)).toBe('User tier (4, 25, 100)');
+  });
+
+  it('flattens a list-valued parameter next to scalar ones', () => {
+    const field = {
+      key: 'totalCount',
+      field: 'totalCount',
+      label: 'Total count',
+      type: 'metric',
+      parameters: { status: ['paused', 'input_required'], granularity: 'weekly' },
+    };
+    expect(labelWithParameter(field)).toBe('Total count (paused, input_required, weekly)');
+  });
+
   it('returns the alias label as-is for an aliased time dimension field', () => {
     const field = {
       key: 'foo',
@@ -237,6 +259,22 @@ describe('dimensionValue', () => {
     );
   });
 
+  it('formats Group values via fullName, falling back to fullPath', () => {
+    const group = {
+      __typename: 'Group',
+      fullPath: 'gitlab-org/quality',
+      fullName: 'GitLab.org / Quality',
+    };
+    expect(dimensionValue({ language: group }, LANGUAGE)).toBe('GitLab.org / Quality');
+
+    expect(
+      dimensionValue(
+        { language: { __typename: 'Group', fullPath: 'gitlab-org/quality' } },
+        LANGUAGE,
+      ),
+    ).toBe('gitlab-org/quality');
+  });
+
   it('returns an empty label for object shapes without a registered formatter', () => {
     const value = { __typename: 'SomeUnregisteredType', title: 'whatever' };
     expect(dimensionValue({ language: value }, LANGUAGE)).toBe('');
@@ -328,6 +366,27 @@ describe('multi-year time dimensions', () => {
 
     expect(format('2026-12-14')).toBe('Dec 14 – 20, 2026');
     expect(format('2026-12-28')).toBe('Dec 28, 2026 – Jan 3, 2027');
+  });
+
+  it('includes years when a fixed-day bucket straddles the year boundary', () => {
+    const nodes = [{ created: '2026-11-15' }, { created: '2026-12-15' }];
+    const format = dimensionLabelFormatter(nodes, {
+      ...CREATED,
+      parameters: { granularity: '30d' },
+    });
+
+    expect(format('2026-11-15')).toBe('Nov 15 – Dec 14, 2026');
+    expect(format('2026-12-15')).toBe('Dec 15, 2026 – Jan 13, 2027');
+  });
+
+  it('keeps fixed-day labels compact when the buckets stay in one year', () => {
+    const nodes = [{ created: '2026-10-03' }, { created: '2026-11-02' }];
+    const format = dimensionLabelFormatter(nodes, {
+      ...CREATED,
+      parameters: { granularity: '30d' },
+    });
+
+    expect(format('2026-10-03')).toBe('Oct 3 – Nov 1');
   });
 
   it('labels stay compact when all buckets share one year', () => {

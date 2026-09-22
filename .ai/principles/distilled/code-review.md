@@ -1,6 +1,6 @@
 ---
-source_checksum: 89f2341efcf303e1
-distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
+source_checksum: ef3f438b25e4f42f
+distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -51,7 +51,7 @@ distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
 - Resolve or justify warnings and errors from Danger bot, code quality, and other reports before merging; post a comment if merging with any failed job.
 - DO NOT merge when the default branch is broken, except for specific approved cases.
 - DO NOT skip a new pipeline if the latest one was created before approval and the MR has backend changes.
-- DO NOT start a new pipeline if the latest merged results pipeline was created less than 16 hours ago (72 hours for stable branches).
+- Allow reuse of the latest merged results pipeline when it is less than 16 hours old (72 hours for stable branches), except when backend changes require a post-approval pipeline.
 - Use Squash and merge only if the author has already set this option or the commit history is clearly messy; otherwise respect the author's setting.
 - Push feedback-based changes as isolated commits rather than squashing them, so reviewers can quickly identify changes since their last review.
 - Confirm all required approvers have approved before merging.
@@ -138,4 +138,3 @@ For the full picture, see:
 
 - doc/development/code_review.md
 - doc/development/code_comments.md
-

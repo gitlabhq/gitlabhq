@@ -69,7 +69,20 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
       newWorkspacePath,
       organizationId,
       fullName,
+      customCodeDropdownClients,
     } = headerEl.dataset;
+
+    let parsedCustomCodeDropdownClients = [];
+    try {
+      const parsed = JSON.parse(customCodeDropdownClients || '[]');
+      if (Array.isArray(parsed)) {
+        parsedCustomCodeDropdownClients = parsed.map((client) =>
+          convertObjectPropsToCamelCase(client),
+        );
+      }
+    } catch (_e) {
+      parsedCustomCodeDropdownClients = [];
+    }
 
     const {
       isFork,
@@ -138,6 +151,7 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
         isBinary: parseBoolean(isBinary),
         rootRef,
         organizationId,
+        customCodeDropdownClients: parsedCustomCodeDropdownClients,
       },
       apolloProvider,
       router: router || createRouter(projectPath, escapedRef, fullName),

@@ -9,7 +9,7 @@ RSpec.describe Gitlab::QueryLogs, feature_category: :database do
 
       expect(keys).to start_with(
         :application, :correlation_id, :jid, :endpoint_id, :db_config_database, :db_config_name,
-        :console_hostname, :console_username
+        :console_hostname, :console_username, :feature_category
       )
     end
 

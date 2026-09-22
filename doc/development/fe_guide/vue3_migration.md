@@ -119,7 +119,7 @@ If Vite fails to start:
 
 The changes below are the ones this migration hits most often, not the whole surface. An app can
 break on anything it imports, so treat this list as a starting point rather than a checklist. The
-libraries aliased in `config/helpers/context_aliases_shared.js`, such as `vuex`, `vue-router`,
+libraries aliased in `config/vue3migration/aliases.js`, such as `vuex`, `vue-router`,
 `vue-apollo`, `portal-vue`, `vuedraggable`, and the virtual scrollers, run through a Vue 3 shim and
 are the most sensitive to a migration.
 
@@ -367,7 +367,7 @@ The fields are:
 1. Usual fix: Move the state into its own module that is not exposed to Vue. It imports nothing, or only modules that are not exposed to Vue themselves.
    The bundler never duplicates such a module, so every lane shares one copy.
    `app/assets/javascripts/lib/graphql_pending_requests.js` and `app/assets/javascripts/graphql_shared/issuable_client_state.js` are existing examples.
-1. Alternative: When the state module must keep its imports, add it to `INFECTION_BLOCKLIST` in `config/helpers/context_aliases_shared.js`.
+1. Alternative: When the state module must keep its imports, add it to `INFECTION_BLOCKLIST` in `config/vue3migration/aliases.js`.
    Every lane then shares one copy, but the subtree below the module runs Vue 2 inside a Vue 3 page.
    `app/assets/javascripts/lib/utils/breadcrumbs_state.js` is an existing example.
 1. For flat reactive state, use `observable()` from `~/lib/utils/observable`.
@@ -425,7 +425,7 @@ When the file exists, it must declare a `status` field with one of two values:
   it with no lookup at all. Use this after the feature flag has been fully rolled out and removed.
 
 Optional fields `group` and `migration_issue` are accepted for documentation. The schema is
-defined in `config/helpers/vue3_migration_file_validation.js`.
+defined in `config/vue3migration/migration_schema.js`.
 
 #### How the metadata reaches production
 
@@ -433,7 +433,7 @@ Rails does not read the `vue3_migration.yml` files at runtime in production: pac
 (for example, Omnibus) strip `app/assets` from the Rails application, so the files do not exist
 there. Instead, the webpack build compiles the `rollout` entries into a single
 `public/assets/webpack/vue3_migration.json` manifest
-(see `config/plugins/vue3_migration_manifest_plugin.js`), which ships with the compiled assets in
+(see `config/vue3migration/plugins/manifest.js`), which ships with the compiled assets in
 every distribution.
 
 To verify which apps run under Vue 3 on any environment, query the DOM marker set by the Vue 3
@@ -591,7 +591,7 @@ twice, once per runtime. This is fine for stateless code, but a module-level sin
 event hub, a cache, or a mutable flag, becomes two singletons, and the two halves stop seeing each
 other. If the code you are migrating shares state across that boundary, route it through
 [`~/lib/utils/observable`](#vueobservable), which mirrors writes across both runtimes.
-`config/helpers/context_aliases_shared.js` lists the modules that must stay shared.
+`config/vue3migration/aliases.js` lists the modules that must stay shared.
 
 ### Record the verification as a video
 
@@ -745,7 +745,7 @@ Constraints:
    <https://docs.gitlab.com/development/fe_guide/vue3_migration/#compatibility-changes>, and check
    the app against each one. That list is a starting point, not the whole surface: look for
    anything else the app depends on. Pay attention to the libraries aliased in
-   `config/helpers/context_aliases_shared.js`, because they run through a Vue 3 shim, and give the
+   `config/vue3migration/aliases.js`, because they run through a Vue 3 shim, and give the
    ones this app imports their own checklist entries.
 
 1. Build an explicit checklist of interactions from that reading, and share it with me before you

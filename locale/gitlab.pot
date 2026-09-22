@@ -12830,6 +12830,9 @@ msgstr ""
 msgid "ArtifactRegistry|Failed to connect. Check the URL and credentials."
 msgstr ""
 
+msgid "ArtifactRegistry|Failed to load upstream repositories."
+msgstr ""
+
 msgid "ArtifactRegistry|File"
 msgstr ""
 
@@ -13157,10 +13160,7 @@ msgstr ""
 msgid "ArtifactRegistry|Pull by digest"
 msgstr ""
 
-msgid "ArtifactRegistry|Pull by digest:"
-msgstr ""
-
-msgid "ArtifactRegistry|Pull by tag:"
+msgid "ArtifactRegistry|Pull by tag"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull command"
@@ -13170,6 +13170,9 @@ msgid "ArtifactRegistry|Pull command for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull command for %{version}"
+msgstr ""
+
+msgid "ArtifactRegistry|Pull commands are unavailable for this manifest."
 msgstr ""
 
 msgid "ArtifactRegistry|Push an image:"
@@ -31812,6 +31815,9 @@ msgid "DuoAgenticChat|Responses may be inaccurate. Verify before use."
 msgstr ""
 
 msgid "DuoAgenticChat|Retry"
+msgstr ""
+
+msgid "DuoAgenticChat|Scroll to bottom"
 msgstr ""
 
 msgid "DuoAgenticChat|Search groups"
@@ -85798,7 +85804,7 @@ msgstr ""
 msgid "Total number of events."
 msgstr ""
 
-msgid "Total number of flows."
+msgid "Total number of flows, optionally filtered by status."
 msgstr ""
 
 msgid "Total number of merge requests."

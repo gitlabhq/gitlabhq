@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const path = require('path');
-const { CONTEXT_ALIASES } = require('../helpers/context_aliases_shared');
+const { CONTEXT_ALIASES } = require('../aliases');
 const {
   stripQuery,
   hasVue3Query,
@@ -10,7 +10,7 @@ const {
   runInfectionScanner,
   createIsInfectable,
   logInfectionStats,
-} = require('../helpers/vue3_infection_shared');
+} = require('../infection');
 
 // Packages injected by loaders (not statically imported) that the scanner cannot discover.
 const SCANNER_BYPASS_PACKAGES = ['core-js', 'webpack', 'css-loader', 'vue-hot-reload-api'];

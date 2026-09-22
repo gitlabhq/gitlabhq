@@ -82,7 +82,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [Convert to GitLab CI/CD Flow](flows/foundational_flows/convert_to_gitlab_ci.md) <br /> Convert legacy CI/CD pipelines to the GitLab CI/CD format. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Fix CI/CD Pipeline Flow](flows/foundational_flows/fix_pipeline.md) <br /> Diagnose and automatically fix failing CI/CD pipelines. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Software Development Flow](flows/foundational_flows/software_development.md) <br /> Create a full, multi-step plan before executing it. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
-| [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension. <sup>1</sup> | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension.[^mcp-clients-consume] | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Interactions in merge requests](../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo) <br /> Ask questions and discuss feedback in merge request comment threads. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Resolve merge conflicts](../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo) <br /> Autonomously analyze merge conflicts, edit conflicting files, and push a resolution commit. | {{< no >}} | {{< yes >}} | {{< yes >}} |
@@ -94,9 +94,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [Permissions Assistant](agents/foundational_agents/permissions_assistant.md) <br /> Select the right permissions when creating a fine-grained personal access token. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 | [Security Analyst Agent](agents/foundational_agents/security_analyst_agent.md) <br /> Automate repetitive security tasks: Triage issues, analyze vulnerabilities, and generate fixes. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 
-**Footnotes**:
-
-1. MCP clients do not consume credits directly. However, any Agent Platform usage, such as model requests made through an MCP client, might consume credits.
+[^mcp-clients-consume]: MCP clients do not consume credits directly. However, any Agent Platform usage, such as model requests made through an MCP client, might consume credits.
 
 ## Beta features that consume credits
 

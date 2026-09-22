@@ -82,7 +82,18 @@ const initCodeDropdown = () => {
     projectId,
     projectPath,
     organizationId,
+    customCodeDropdownClients,
   } = codeDropdownEl.dataset;
+
+  let parsedCustomClients = [];
+  try {
+    const parsed = JSON.parse(customCodeDropdownClients || '[]');
+    if (Array.isArray(parsed)) {
+      parsedCustomClients = parsed.map((client) => convertObjectPropsToCamelCase(client));
+    }
+  } catch (_e) {
+    parsedCustomClients = [];
+  }
 
   const { gitpodEnabled, showWebIdeButton, showGitpodButton, webIdeUrl, gitpodUrl } =
     convertObjectPropsToCamelCase(ideData ? JSON.parse(ideData) : {});
@@ -108,6 +119,7 @@ const initCodeDropdown = () => {
       userSettingsSshKeysPath,
       projectId,
       projectPath,
+      customClients: parsedCustomClients,
     },
   });
 };

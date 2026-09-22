@@ -25,11 +25,16 @@ var (
 
 	// sessionErrorsTotal counts gRPC ExecuteWorkflow streams that ended with a
 	// non-EOF error (i.e. unexpected failures, not normal workflow completion),
-	// broken down by gRPC status code.
+	// broken down by gRPC status code and by what ended the stream.
+	//
+	// A single gRPC code covers causes that are not equally a failure: an
+	// Unavailable arrives both when DWS tears the stream down to acknowledge a
+	// stop workhorse asked for, and when the connection to DWS fails outright.
+	// teardown_reason separates them; see teardownReason for its values.
 	sessionErrorsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "gitlab_workhorse_duo_workflow_session_errors_total",
-		Help: "Total number of Duo Workflow gRPC sessions that ended with a non-EOF error, by gRPC status code.",
-	}, []string{"grpc_code"})
+		Help: "Total number of Duo Workflow gRPC sessions that ended with a non-EOF error, by gRPC status code and what ended the stream.",
+	}, []string{"grpc_code", "teardown_reason"})
 
 	// httpActionsTotal counts HTTP actions executed on behalf of the Duo
 	// Workflow Service, labeled by HTTP method and response status code.

@@ -46,7 +46,7 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
   # The crash aborts the component update, so no further rows are ever committed.
   #
   # The real fix injects keys on same-tag v-if/v-else branches for the
-  # `?vue3`-infected build (config/webpack.config.js wiring vue2_compiler.js). This
+  # `?vue3`-infected build (config/webpack.config.js wiring config/vue3migration/compilers/vue2_template.js). This
   # only reproduces with the real webpack-compiled Vue 3 compat build in a browser;
   # jsdom/jest uses @vue/compiler-dom and does not exercise this codepath, so the
   # regression must be guarded here, at the feature level.

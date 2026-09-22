@@ -8,7 +8,7 @@
  */
 
 import * as defaultCompiler from '@vue/compiler-sfc';
-import vue3TemplateCompiler from './vue3_template_compiler.js';
+import vue3TemplateCompiler from './vue3_template.js';
 
 export * from '@vue/compiler-sfc';
 

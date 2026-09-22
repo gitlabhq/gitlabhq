@@ -1,13 +1,9 @@
 const path = require('path');
 const { readdirSync, readFileSync } = require('fs');
-const { CONTEXT_ALIASES } = require('../helpers/context_aliases_shared');
-const {
-  stripQuery,
-  hasSpecialQuery,
-  appendVue3Query,
-} = require('../helpers/vue3_infection_shared');
+const { CONTEXT_ALIASES } = require('../aliases');
+const { stripQuery, hasSpecialQuery, appendVue3Query } = require('../infection');
 
-const ROOT_PATH = path.resolve(__dirname, '..', '..');
+const ROOT_PATH = path.resolve(__dirname, '..', '..', '..');
 const VUE3COMPAT_DIR = path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat');
 
 const contextAliasKeys = Object.keys(CONTEXT_ALIASES);

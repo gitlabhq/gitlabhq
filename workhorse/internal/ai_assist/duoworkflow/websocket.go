@@ -256,12 +256,12 @@ func (w *wsManager) WriteAction(ctx context.Context, action *pb.Action) error {
 // be propagated directly.
 func (w *wsManager) ReadError(err error) (reason string, ok bool) {
 	if e, ok := err.(*websocket.CloseError); ok && slices.Contains(normalClosureErrCodes, e.Code) {
-		return fmt.Sprintf("WORKHORSE_WEBSOCKET_CLOSE_%d", e.Code), true
+		return fmt.Sprintf("%s%d", reasonClosePrefix, e.Code), true
 	}
 
 	var netErr net.Error
 	if errors.As(err, &netErr) && netErr.Timeout() {
-		return "WORKHORSE_WEBSOCKET_PONG_TIMEOUT", true
+		return reasonPongTimeout, true
 	}
 
 	return "", false

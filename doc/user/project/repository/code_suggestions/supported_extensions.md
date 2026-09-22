@@ -44,26 +44,24 @@ Code Suggestions also works with other languages, but you must [manually add sup
 | HTML                                | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
 | Java                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | JavaScript                          | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Kotlin                              | {{< no >}}  | {{< yes >}} <sup>1</sup> | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Kotlin                              | {{< no >}}  | {{< yes >}}[^code-requires-third] | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | Markdown                            | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
 | PHP                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | Python                              | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | Ruby                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | Rust                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Scala                               | {{< no >}}  | {{< yes >}} <sup>2</sup> | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Scala                               | {{< no >}}  | {{< yes >}}[^supported-languages-code-requires-third] | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | Shell scripts (`bash` only)         | {{< yes >}} | {{< no >}}               | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | Svelte                              | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | Swift                               | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 | TypeScript (`.ts` and `.tsx` files) | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Terraform                           | {{< no >}}  | {{< yes >}} <sup>3</sup> | {{< yes >}}    | {{< no >}}                     | {{< yes >}} <sup>4</sup> | {{< yes >}} |
+| Terraform                           | {{< no >}}  | {{< yes >}}[^supported-languages-code-requires-third-2] | {{< yes >}}    | {{< no >}}                     | {{< yes >}}[^requires-third-party] | {{< yes >}} |
 | Vue                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 
-**Footnotes**:
-
-1. VS Code requires a third-party extension that provides Kotlin support.
-1. VS Code requires a third-party extension that provides Scala support.
-1. VS Code requires a third-party extension that provides Terraform support.
-1. Neovim requires a third-party extension that provides the `terraform` file type.
+[^code-requires-third]: VS Code requires a third-party extension that provides Kotlin support.
+[^supported-languages-code-requires-third]: VS Code requires a third-party extension that provides Scala support.
+[^supported-languages-code-requires-third-2]: VS Code requires a third-party extension that provides Terraform support.
+[^requires-third-party]: Neovim requires a third-party extension that provides the `terraform` file type.
 
 > [!note]
 > Some languages are not supported in all JetBrains IDEs, or might require additional

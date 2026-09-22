@@ -6,7 +6,7 @@ import { ApolloMutation } from '@vue/apollo-components';
 export { ApolloMutation };
 
 // This module is what `import VueApollo from 'vue-apollo'` resolves to on the
-// Vue 3 lanes (see config/helpers/context_aliases_shared.js and
+// Vue 3 lanes (see config/vue3migration/aliases.js and
 // jest.config.base.js). It adapts @vue/apollo-option v4 — where the provider
 // itself is the app plugin (`app.use(apolloProvider)`) — to the vue-apollo v3
 // call sites used across the repo:

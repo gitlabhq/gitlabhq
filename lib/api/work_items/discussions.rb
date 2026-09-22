@@ -105,8 +105,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
-            boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
-            job_token_policies: :read_work_items
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/discussions' do
             render_discussions_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
@@ -128,8 +127,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
-            boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
-            job_token_policies: :read_work_items
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
 
           get ':work_item_iid/discussions/:discussion_id' do
             render_discussion_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
@@ -159,8 +157,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
-            boundary_type: :project,
-            job_token_policies: :read_work_items
+            boundary_type: :project
 
           get ':work_item_iid/discussions' do
             render_discussions_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
@@ -181,8 +178,7 @@ module API
           route_setting :lifecycle, :experiment
           route_setting :authorization,
             permissions: :read_work_item,
-            boundary_type: :project,
-            job_token_policies: :read_work_items
+            boundary_type: :project
 
           get ':work_item_iid/discussions/:discussion_id' do
             render_discussion_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))

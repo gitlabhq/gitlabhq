@@ -57,6 +57,7 @@ export default {
     'ee/app/assets/javascripts/ai/components/content_container.vue',
     'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_agentic_chat_view.vue',
     'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_chat_header.vue',
+    'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_chat_scroll_region.vue',
     'ee/app/assets/javascripts/ai/duo_agentic_chat/plugins/start_flow/components/message_tool_start_flow.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/show/components/agent_flow_details.vue',
     'ee/app/assets/javascripts/ai/tanuki_bot/components/duo_chat_view.vue',

@@ -1,7 +1,7 @@
 import {
   VUE3_MIGRATION_FLAG_PREFIX,
   validateVue3MigrationFile,
-} from '../../../config/helpers/vue3_migration_file_validation';
+} from '../../../../config/vue3migration/migration_schema';
 
 describe('validateVue3MigrationFile', () => {
   const rollout = (featureFlag) => ({ status: 'rollout', feature_flag: featureFlag });

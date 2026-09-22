@@ -1,5 +1,5 @@
 const { baseEntryPoints } = require('../helpers/entry_points');
-const { loadVue3Migrations } = require('../helpers/vue3_migration_loader');
+const { loadVue3Migrations } = require('../vue3migration/migration');
 const { generateEntries, applyVue3Migrations } = require('../webpack.helpers');
 
 const migrations = loadVue3Migrations();

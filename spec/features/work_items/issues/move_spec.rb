@@ -6,7 +6,7 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
   include ListboxHelpers
 
   let(:user) { create(:user) }
-  let(:old_project) { create(:project, :repository) }
+  let_it_be(:old_project) { create(:project, :repository) }
   let(:text) { 'Some issue description' }
 
   let(:issue) do
@@ -19,7 +19,7 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
 
   context 'user does not have permission to move issue' do
     before do
-      old_project.add_guest(user)
+      old_project.add_guest(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let, not available in before_all
 
       visit issue_path(issue)
     end
@@ -39,7 +39,7 @@ RSpec.describe 'issue move to another project', :js, feature_category: :team_pla
     let(:cross_reference) { old_project.to_reference_base(new_project) }
 
     before do
-      old_project.add_reporter(user)
+      old_project.add_reporter(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let, not available in before_all
       new_project.add_reporter(user)
 
       visit issue_path(issue)

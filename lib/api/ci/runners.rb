@@ -499,7 +499,8 @@ module API
           failure [[403, 'Forbidden']]
           tags %w[runners groups]
         end
-        route_setting :authorization, permissions: :reset_runner_registration_token, boundary_type: :instance
+        route_setting :authorization, permissions: :reset_runner_registration_token, boundary_type: :instance,
+          assignable_when: [:admin]
         post 'reset_registration_token' do
           authorize! :update_runners_registration_token, ApplicationSetting.current
 

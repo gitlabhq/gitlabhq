@@ -19,7 +19,7 @@ index 105914a..2e49d0f 100644
      sourceRoot,
      needMap: loaderContext.sourceMap
 diff --git a/node_modules/vue-loader/lib/index.js b/node_modules/vue-loader/lib/index.js
-index a65a73a..2f5f1c3 100644
+index a65a73a..9a2af60 100644
 --- a/node_modules/vue-loader/lib/index.js
 +++ b/node_modules/vue-loader/lib/index.js
 @@ -66,9 +66,15 @@ module.exports = function (source) {
@@ -39,6 +39,24 @@ index a65a73a..2f5f1c3 100644
      filename,
      sourceRoot,
      needMap: sourceMap
+@@ -208,7 +214,16 @@ var component = normalizer(
+   }
+ 
+   if (needsHotReload) {
+-    code += `\n` + genHotReloadCode(id, hasFunctional, templateRequest)
++    // GitLab: the ?vue3 (@vue/compat) copy of a component must not share a
++    // vue-hot-reload-api record with the plain Vue 2 copy, otherwise the second
++    // copy to load calls api.reload() on the first one's options and mixes realms.
++    // Remove this together with the Vue 3 infection mechanism
++    // (config/rspack/vue3_infection_loader.js, config/helpers/vue3_infection_shared.js):
++    // once every page runs on a single Vue version there is no `?vue3` query and
++    // no second copy of a component to collide with. See
++    // https://gitlab.com/gitlab-org/gitlab/-/work_items/629099 for the bug this fixes.
++    const hotReloadId = /(^|&)vue3(&|$)/.test(rawQuery) ? `${id}-vue3` : id
++    code += `\n` + genHotReloadCode(hotReloadId, hasFunctional, templateRequest)
+   }
+ 
+   // Expose filename. This is used by the devtools and Vue runtime warnings.
 diff --git a/node_modules/vue-loader/lib/loaders/templateLoader.js b/node_modules/vue-loader/lib/loaders/templateLoader.js
 index b66c842..3d96494 100644
 --- a/node_modules/vue-loader/lib/loaders/templateLoader.js

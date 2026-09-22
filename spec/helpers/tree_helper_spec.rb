@@ -339,9 +339,88 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       expected_keys = [
         :ssh_url, :http_url, :xcode_url,
         :ide_data, :directory_download_links,
-        :show_no_ssh_key_message, :user_settings_ssh_keys_path
+        :show_no_ssh_key_message, :user_settings_ssh_keys_path,
+        :custom_code_dropdown_clients
       ]
       expect(subject.keys).to match_array(expected_keys)
+    end
+
+    describe ':custom_code_dropdown_clients' do
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(custom_code_dropdown_clients: false)
+        end
+
+        it 'is an empty JSON array' do
+          expect(subject[:custom_code_dropdown_clients]).to eq('[]')
+        end
+      end
+
+      context 'when the feature flag is enabled' do
+        let(:vscodium_entry) do
+          {
+            'name' => 'VSCodium',
+            'ssh_url_template' => 'vscodium://vscode.git/clone?url={url}',
+            'http_url_template' => 'vscodium://vscode.git/clone?url={url}'
+          }
+        end
+
+        before do
+          stub_feature_flags(custom_code_dropdown_clients: true)
+          stub_application_setting(code_dropdown_custom_clients: [vscodium_entry])
+        end
+
+        it 'serializes admin entries with substituted URLs' do
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+          expect(parsed.first['name']).to eq('VSCodium')
+          expect(parsed.first['ssh_url']).to include('vscodium://vscode.git/clone?url=')
+          expect(parsed.first['http_url']).to include('vscodium://vscode.git/clone?url=')
+        end
+
+        it 'percent-encodes the clone URL into the placeholder' do
+          allow(helper).to receive(:http_clone_url_to_repo).and_return('https://example.com/foo bar?x=1')
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+          expect(parsed.first['http_url']).to include('foo%20bar')
+          expect(parsed.first['http_url']).to include('%3F')
+        end
+
+        # #security -- a stored value can skip model validation (for example a direct database
+        # write), and these links render unsanitized, so the helper must drop unsafe URLs itself.
+        it 'drops URLs whose scheme would be refused on save, keeping the safe one' do
+          [
+            'javascript:alert(1)//{url}',
+            'JaVaScRiPt:alert(1)//{url}',
+            'data:text/html,<script>alert(1)</script>?{url}',
+            ' javascript:alert(1)//{url}',
+            'no-scheme/{url}'
+          ].each do |template|
+            stub_application_setting(code_dropdown_custom_clients: [
+              vscodium_entry.merge('http_url_template' => template)
+            ])
+
+            data = helper.compact_code_dropdown_data(project, ref, 'heads')
+            parsed = Gitlab::Json.parse(data[:custom_code_dropdown_clients]).first
+
+            expect(parsed['http_url']).to be_nil, "expected #{template.inspect} to be dropped"
+            expect(parsed['ssh_url']).to start_with('vscodium://')
+          end
+        end
+
+        it 'skips stored entries that are not objects' do
+          stub_application_setting(code_dropdown_custom_clients: ['junk', vscodium_entry])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients])
+          expect(parsed.pluck('name')).to eq(['VSCodium'])
+        end
+
+        it 'leaves the URL nil when the entry has no template for it' do
+          stub_application_setting(code_dropdown_custom_clients: [vscodium_entry.except('http_url_template')])
+
+          parsed = Gitlab::Json.parse(subject[:custom_code_dropdown_clients]).first
+          expect(parsed['http_url']).to be_nil
+          expect(parsed['ssh_url']).to start_with('vscodium://')
+        end
+      end
     end
 
     it 'includes SSH URL when SSH is enabled' do

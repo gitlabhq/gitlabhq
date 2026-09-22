@@ -1,7 +1,7 @@
 const path = require('path');
 const { readFileSync, existsSync } = require('fs');
 const { spawnSync } = require('child_process');
-const { INFECTABLE_RE, INFECTION_BLOCKLIST } = require('./context_aliases_shared');
+const { INFECTABLE_RE, INFECTION_BLOCKLIST } = require('./aliases');
 
 const ROOT_PATH = path.resolve(__dirname, '..', '..');
 const SCANNER_JSON_PATH = path.join(ROOT_PATH, 'tmp', 'infection_scanner.json');

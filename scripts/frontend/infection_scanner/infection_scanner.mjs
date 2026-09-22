@@ -17,9 +17,7 @@ const OUTPUT_PATH = path.join(ROOT_PATH, 'tmp', 'infection_scanner.json');
 
 function buildAliasMap() {
   const webpackConfig = cjsRequire(path.join(ROOT_PATH, 'config/webpack.config.js'));
-  const { CONTEXT_ALIASES } = cjsRequire(
-    path.join(ROOT_PATH, 'config/helpers/context_aliases_shared'),
-  );
+  const { CONTEXT_ALIASES } = cjsRequire(path.join(ROOT_PATH, 'config/vue3migration/aliases'));
   // The plain map has no CONTEXT_ALIASES overrides -- it's what an un-infected
   // importer actually resolves against in the real build. Kept alongside the
   // merged map so the resolver can compute both resolutions for specifiers that
@@ -75,9 +73,7 @@ function discoverEntries() {
 // --- Infection specifiers (loaded from context aliases) ---
 
 const INFECTION_SPECIFIERS = (() => {
-  const { CONTEXT_ALIASES } = cjsRequire(
-    path.join(ROOT_PATH, 'config/helpers/context_aliases_shared'),
-  );
+  const { CONTEXT_ALIASES } = cjsRequire(path.join(ROOT_PATH, 'config/vue3migration/aliases'));
   return Object.keys(CONTEXT_ALIASES);
 })();
 
@@ -131,9 +127,7 @@ const stripQuery = (id) => (id.includes('?') ? id.slice(0, id.indexOf('?')) : id
 
 function discoverVue3PageSeeds() {
   const { generateEntries } = cjsRequire(path.join(ROOT_PATH, 'config/webpack.helpers'));
-  const { loadVue3Migrations } = cjsRequire(
-    path.join(ROOT_PATH, 'config/helpers/vue3_migration_loader'),
-  );
+  const { loadVue3Migrations } = cjsRequire(path.join(ROOT_PATH, 'config/vue3migration/migration'));
   const { baseEntryPoints, ALWAYS_LOADED_ENTRY_POINTS } = cjsRequire(
     path.join(ROOT_PATH, 'config/helpers/entry_points'),
   );
@@ -180,9 +174,7 @@ function discoverVue3PageSeeds() {
 }
 
 function checkDuplicatedModules(result) {
-  const { createIsInfectable } = cjsRequire(
-    path.join(ROOT_PATH, 'config/helpers/vue3_infection_shared'),
-  );
+  const { createIsInfectable } = cjsRequire(path.join(ROOT_PATH, 'config/vue3migration/infection'));
 
   const graphMap = new Map(Object.entries(result.graph));
   // `createIsInfectable` throws for a path that is not in the graph.

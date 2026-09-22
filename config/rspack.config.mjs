@@ -13,12 +13,12 @@ import gqlTag from 'graphql-tag';
 import { buildOutput } from './helpers/output.js';
 import { aliases } from './helpers/aliases.js';
 import { supportedBrowsersHash } from './helpers/supported_browsers.js';
-import { VUE_VERSION, VUE_COMPILER_VERSION, logVueVersion } from './helpers/vue_version.js';
+import { VUE_VERSION, VUE_COMPILER_VERSION, logVueVersion } from './vue3migration/version.js';
 import { cacheGroups } from './rspack/cache_groups.js';
 import { define } from './rspack/define.js';
 import { entries } from './rspack/entries.js';
 import GraphqlKnownOperationsPlugin from './plugins/graphql_known_operations_plugin.js';
-import Vue3MigrationManifestPlugin from './plugins/vue3_migration_manifest_plugin.js';
+import Vue3MigrationManifestPlugin from './vue3migration/plugins/manifest.js';
 import { buildLoaderRules } from './rspack/loader_rules.js';
 import { slimManifest } from './rspack/manifest_plugin.js';
 import {
@@ -33,7 +33,7 @@ import vue from './rspack/vue.js';
 import {
   vue3InfectionResolveRegExp,
   createVue3InfectionResolver,
-} from './rspack/vue3_infection_resolve_plugin.js';
+} from './vue3migration/plugins/rspack_resolve.js';
 import {
   IS_EE,
   IS_JH,

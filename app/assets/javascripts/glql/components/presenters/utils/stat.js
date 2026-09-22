@@ -134,7 +134,9 @@ const METRIC_PRESENTATION = {
     returningUsersCount: {
       description: __('Number of unique users who also ran a flow in the previous period.'),
     },
-    totalCount: { description: __('Total number of flows.') },
+    totalCount: {
+      description: __('Total number of flows, optionally filtered by status.'),
+    },
     usersCount: { description: __('Number of unique users.') },
   },
 };

@@ -8,11 +8,23 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 )
 
-// reasonKeepaliveFailed is the StopWorkflowRequest reason reported to Duo
-// Workflow Service when the keepalive to the client fails. The value keeps the
-// historical WebSocket wording so DWS-side telemetry matching on it keeps
+// StopWorkflowRequest reasons reported to Duo Workflow Service. The values keep
+// the historical WebSocket wording so DWS-side telemetry matching on them keeps
 // working.
-const reasonKeepaliveFailed = "WORKHORSE_WEBSOCKET_PING_FAILED"
+const (
+	// reasonKeepaliveFailed is reported when the keepalive to the client fails.
+	reasonKeepaliveFailed = "WORKHORSE_WEBSOCKET_PING_FAILED"
+
+	// reasonPongTimeout is reported when the client stops answering pings.
+	reasonPongTimeout = "WORKHORSE_WEBSOCKET_PONG_TIMEOUT"
+
+	// reasonClosePrefix prefixes the reason reported when the client closes the
+	// WebSocket with a normal code, e.g. WORKHORSE_WEBSOCKET_CLOSE_1000.
+	reasonClosePrefix = "WORKHORSE_WEBSOCKET_CLOSE_"
+
+	// reasonServerShutdown is reported when this workhorse instance is draining.
+	reasonServerShutdown = "WORKHORSE_SERVER_SHUTDOWN"
+)
 
 // errActionUnsupported is returned by WriteAction when the client on the other
 // end cannot execute the action. Duo Workflow Service blocks until every action

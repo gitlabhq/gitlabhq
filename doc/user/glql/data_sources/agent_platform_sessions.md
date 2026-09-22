@@ -15,6 +15,7 @@ title: Agent platform sessions
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592423) in GitLab 19.4.
+- `daily` and fixed-day `granularity` values for `created` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/528) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -86,7 +87,7 @@ Use range operators to define a time window.
 
 | Dimension | Name       | Description |
 |-----------|------------|-------------|
-| Created   | `created`  | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `weekly` or `monthly` (default: `weekly`). For example, `created(monthly)`. |
+| Created   | `created`  | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `created(monthly)` or `created(granularity=30d, origin=2026-07-16)`. |
 | Flow type | `flowType` | Group by session flow type. |
 | Project   | `project`  | Group by project. Sessions that are not scoped to a project are grouped into a single row with no project. |
 | User      | `user`     | Group by user (displays avatar, name, and username). |

@@ -48,6 +48,28 @@ Gitlab::Cells::HttpRouter::RoutesSnapshot.example_for('/api/:version/groups/:id/
 # => "/api/v4/groups/foo/access_requests"
 ```
 
+## RouterSnapshot
+
+Builds the URL of the snapshot copy that the HTTP Router has committed. Shared so that the CI gate
+and the Danger warning can never end up comparing against different files.
+
+```ruby
+Gitlab::Cells::HttpRouter::RouterSnapshot.url
+# => "https://gitlab.com/api/v4/projects/gitlab-org%2Fcells%2Fhttp-router/repository/files/test%2Froutes%2Fgitlab_routes.json/raw?ref=main"
+
+Gitlab::Cells::HttpRouter::RouterSnapshot.url(ref: 'my-branch')
+
+# Resolves CELLS_ROUTER_SNAPSHOT_URL, CELLS_ROUTER_PROJECT, CELLS_ROUTER_REF and CI_API_V4_URL.
+Gitlab::Cells::HttpRouter::RouterSnapshot.url_from_env
+```
+
+Every caller has to go through `url_from_env`. A pipeline variable that repoints one caller
+otherwise leaves the others comparing against a different file.
+
+The snapshot is read through the Repository Files API rather than `/-/raw`, whose unauthenticated
+rate limit is low enough to fail the job under load. In CI the request carries `CI_JOB_TOKEN`
+through `RouterSnapshot.job_token` so it counts as authenticated.
+
 ## SnapshotComparison
 
 Compares the snapshot committed in GitLab with the copy the HTTP Router mirrors. The verdict is

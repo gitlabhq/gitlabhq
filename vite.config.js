@@ -26,9 +26,9 @@ import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
 import { CrossOriginWorkerPlugin } from './config/helpers/vite_plugin_cross_origin_worker';
 import { PrebuildDuoNext } from './config/helpers/vite_plugin_prebuild_duo_next';
-import { Vue3InfectionPlugin } from './config/helpers/vite_plugin_vue3_infection.mjs';
-import * as vue3SfcCompiler from './config/vue3migration/vue3_sfc_compiler.mjs';
-import vue2Compiler from './config/vue3migration/vue2_compiler';
+import { Vue3InfectionPlugin } from './config/vue3migration/plugins/vite.mjs';
+import * as vue3SfcCompiler from './config/vue3migration/compilers/vue3_sfc.mjs';
+import vue2Compiler from './config/vue3migration/compilers/vue2_template';
 
 const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
 

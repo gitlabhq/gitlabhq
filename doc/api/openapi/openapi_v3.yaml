@@ -30521,6 +30521,75 @@ paths:
           type: boolean
           nullable: true
         in: query
+      - name: source_branch
+        required: false
+        description: Filter merge requests by source branch. Available with advanced
+          search and the merge_requests scope.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: target_branch
+        required: false
+        description: Filter merge requests by target branch. Available with advanced
+          search and the merge_requests scope.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: author_username
+        required: false
+        description: Filter by author username. A username that matches no user is
+          ignored. Available with advanced search and the issues, merge_requests and
+          work_items scopes.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: label_name
+        required: false
+        description: Filter by label name. A result must carry every name that resolves
+          to an existing label; names that match no label are ignored. Maximum 30
+          names. Available with advanced search and the issues, merge_requests and
+          work_items scopes.
+        schema:
+          type: array
+          items:
+            type: string
+          nullable: true
+        in: query
+        style: form
+        explode: false
+      - name: not
+        required: false
+        description: Filter out results matching the parameters supplied. Supplying
+          a filter together with its negation matches either condition, which widens
+          the result set.
+        schema:
+          type: object
+          nullable: true
+        in: query
+      - name: not[source_branch]
+        required: false
+        description: Exclude merge requests with this source branch
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: not[target_branch]
+        required: false
+        description: Exclude merge requests with this target branch
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: not[author_username]
+        required: false
+        description: Exclude results authored by this username
+        schema:
+          type: string
+          nullable: true
+        in: query
       - name: page
         required: false
         description: Current page number
@@ -30665,6 +30734,75 @@ paths:
           type: boolean
           nullable: true
         in: query
+      - name: source_branch
+        required: false
+        description: Filter merge requests by source branch. Available with advanced
+          search and the merge_requests scope.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: target_branch
+        required: false
+        description: Filter merge requests by target branch. Available with advanced
+          search and the merge_requests scope.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: author_username
+        required: false
+        description: Filter by author username. A username that matches no user is
+          ignored. Available with advanced search and the issues, merge_requests and
+          work_items scopes.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: label_name
+        required: false
+        description: Filter by label name. A result must carry every name that resolves
+          to an existing label; names that match no label are ignored. Maximum 30
+          names. Available with advanced search and the issues, merge_requests and
+          work_items scopes.
+        schema:
+          type: array
+          items:
+            type: string
+          nullable: true
+        in: query
+        style: form
+        explode: false
+      - name: not
+        required: false
+        description: Filter out results matching the parameters supplied. Supplying
+          a filter together with its negation matches either condition, which widens
+          the result set.
+        schema:
+          type: object
+          nullable: true
+        in: query
+      - name: not[source_branch]
+        required: false
+        description: Exclude merge requests with this source branch
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: not[target_branch]
+        required: false
+        description: Exclude merge requests with this target branch
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: not[author_username]
+        required: false
+        description: Exclude results authored by this username
+        schema:
+          type: string
+          nullable: true
+        in: query
       - name: page
         required: false
         description: Current page number
@@ -30798,6 +30936,75 @@ paths:
           Introduced in GitLab 18.9
         schema:
           type: boolean
+          nullable: true
+        in: query
+      - name: source_branch
+        required: false
+        description: Filter merge requests by source branch. Available with advanced
+          search and the merge_requests scope.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: target_branch
+        required: false
+        description: Filter merge requests by target branch. Available with advanced
+          search and the merge_requests scope.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: author_username
+        required: false
+        description: Filter by author username. A username that matches no user is
+          ignored. Available with advanced search and the issues, merge_requests and
+          work_items scopes.
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: label_name
+        required: false
+        description: Filter by label name. A result must carry every name that resolves
+          to an existing label; names that match no label are ignored. Maximum 30
+          names. Available with advanced search and the issues, merge_requests and
+          work_items scopes.
+        schema:
+          type: array
+          items:
+            type: string
+          nullable: true
+        in: query
+        style: form
+        explode: false
+      - name: not
+        required: false
+        description: Filter out results matching the parameters supplied. Supplying
+          a filter together with its negation matches either condition, which widens
+          the result set.
+        schema:
+          type: object
+          nullable: true
+        in: query
+      - name: not[source_branch]
+        required: false
+        description: Exclude merge requests with this source branch
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: not[target_branch]
+        required: false
+        description: Exclude merge requests with this target branch
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: not[author_username]
+        required: false
+        description: Exclude results authored by this username
+        schema:
+          type: string
           nullable: true
         in: query
       - name: page
@@ -82293,9 +82500,9 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://gitlab.com/api/oauth/authorize
-          tokenUrl: https://gitlab.com/api/oauth/token
-          refreshUrl: https://gitlab.com/api/oauth/refresh
+          authorizationUrl: https://gitlab.com/oauth/authorize
+          tokenUrl: https://gitlab.com/oauth/token
+          refreshUrl: https://gitlab.com/oauth/token
           scopes:
             api: Grants complete read/write access to the API, including all groups
               and projects, the container registry, the dependency proxy, and the

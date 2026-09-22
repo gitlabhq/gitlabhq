@@ -20,17 +20,17 @@ module Gitlab
   # production they are not available (packaged builds such as Omnibus
   # strip `app/assets` from the Rails app), so the webpack build compiles
   # them into `vue3_migration.json` next to its `manifest.json`
-  # (see `config/plugins/vue3_migration_manifest_plugin.js`), which every
+  # (see `config/vue3migration/plugins/manifest.js`), which every
   # distribution ships. A missing manifest raises `ManifestLoadError`
   # rather than silently serving Vue 2.
   #
   # The schema for the YAML files is documented in
-  # `config/helpers/vue3_migration_file_validation.js` and enforced by
+  # `config/vue3migration/migration_schema.js` and enforced by
   # `spec/lib/gitlab/vue3_migration_files_spec.rb`.
   module Vue3Migration
     # Canonical constants for the Vue 3 migration metadata format.
     # Keep them in sync with the JS equivalents in
-    # `config/helpers/vue3_migration_file_validation.js`.
+    # `config/vue3migration/migration_schema.js`.
     VUE3_MIGRATION_FILENAME = 'vue3_migration.yml'
 
     # Compiled runtime manifest emitted by the webpack build. Keep in sync
@@ -113,7 +113,7 @@ module Gitlab
 
       # The bundler entry name a migration file describes, looked up in
       # `entry_modules`. Mirrors `entryNameFromFile` in
-      # `config/helpers/vue3_migration_loader.js`.
+      # `config/vue3migration/migration.js`.
       def entry_name_for(file)
         module_file = relative_to_root(entry_file_for(file))
 

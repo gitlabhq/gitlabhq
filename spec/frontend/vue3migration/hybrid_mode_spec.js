@@ -566,7 +566,7 @@ describe('Vue.js 3 + Vue.js 2 compiler edge cases', () => {
    * tried to access `oldBindings[i].value` without checking if `oldBindings[i]`
    * exists, causing "Cannot read properties of undefined (reading 'value')".
    *
-   * Fix (vue2_compiler.js - addVIfKeysModule): The custom Vue 2 compiler module
+   * Fix (config/vue3migration/compilers/vue2_template.js - addVIfKeysModule): The custom Vue 2 compiler module
    * injects numeric keys (key:0, key:1, etc.) into v-if/v-else/v-else-if branches
    * that don't have user-defined keys, matching Vue 3 compiler behavior. This
    * prevents Vue from reusing elements across branches with different directives.

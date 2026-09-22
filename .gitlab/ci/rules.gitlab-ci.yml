@@ -516,6 +516,7 @@
   - "{package.json,yarn.lock}"
   - "config/webpack.config.js"
   - "config/helpers/*.js"
+  - "config/vue3migration/**/*"
   # FE island changes
   - "ee/frontend_islands/{apps,packages}/**/package.json"
 
@@ -2173,12 +2174,16 @@
     - <<: *if-default-refs
       changes: ["tooling/eslint-config/**/*", "spec/tooling/frontend/eslint-config/**/*"]
 
-.frontend:rules:test-infection-scanner:
+.frontend:rules:test-vue3migration-tooling:
   rules:
     - !reference ['.ai-principles-schedule:rules:skip', rules]
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-not-foss
-      changes: ["scripts/frontend/infection_scanner/**/*", "spec/frontend/scripts/infection_scanner/**/*"]
+      changes:
+        - "config/vue3migration/**/*"
+        - "scripts/frontend/infection_scanner/**/*"
+        - "spec/frontend/config/vue3migration/**/*"
+        - "spec/frontend/scripts/infection_scanner/**/*"
 
 .frontend:rules:fixtures-packages-cleanup:
   rules:

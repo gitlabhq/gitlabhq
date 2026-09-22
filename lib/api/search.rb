@@ -72,9 +72,17 @@ module API
         params_hash = keys.filter_map do |key|
           [key, params[key]] if params.key?(key)
         end.to_h
+        params_hash[:not] = negated_search_params if params[:not].respond_to?(:key?)
         params_hash[:snippets] = snippets?
         params_hash[:source] = 'api'
         params_hash
+      end
+
+      # Copying the hash whole would apply filters nothing here declares.
+      def negated_search_params
+        Helpers::SearchHelpers.search_negated_param_keys.filter_map do |key|
+          [key, params[:not][key]] if params[:not].key?(key)
+        end.to_h
       end
 
       def search(additional_params = {})
@@ -160,6 +168,8 @@ module API
 
       def verify_ee_param_fields!(_); end
 
+      def verify_ee_param_mr_filters!(_); end
+
       def search_type(additional_params = {})
         @search_type ||= search_service(additional_params).search_type
       end
@@ -218,6 +228,10 @@ module API
       params :ee_param_regex do
         # Overridden in EE
       end
+
+      params :ee_param_mr_filters do
+        # Overridden in EE
+      end
     end
 
     # rubocop: disable Cop/InjectEnterpriseEditionModule -- params helper needs to be included before the endpoints
@@ -241,6 +255,7 @@ module API
         use :ee_param_exclude_forks
         use :ee_param_num_context_lines
         use :ee_param_regex
+        use :ee_param_mr_filters
         use :pagination
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :user
@@ -250,6 +265,7 @@ module API
         verify_search_scope_for_ee!(search_type)
         verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
+        verify_ee_param_mr_filters!(search_type)
 
         set_headers('Content-Transfer-Encoding' => 'binary')
 
@@ -275,6 +291,7 @@ module API
         use :ee_param_exclude_forks
         use :ee_param_num_context_lines
         use :ee_param_regex
+        use :ee_param_mr_filters
         use :pagination
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :group
@@ -287,6 +304,7 @@ module API
         verify_search_scope_for_ee!(search_type)
         verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
+        verify_ee_param_mr_filters!(search_type)
 
         set_headers
 
@@ -313,6 +331,7 @@ module API
         use :ee_param_fields
         use :ee_param_num_context_lines
         use :ee_param_regex
+        use :ee_param_mr_filters
         use :pagination
       end
       route_setting :authorization, permissions: :use_global_search, boundary_type: :project
@@ -324,6 +343,7 @@ module API
         search_type = search_type(additional_params)
         verify_ee_blob_search_params!(search_type)
         verify_ee_param_fields!(search_type)
+        verify_ee_param_mr_filters!(search_type)
 
         set_headers
 

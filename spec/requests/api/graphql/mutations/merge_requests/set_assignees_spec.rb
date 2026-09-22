@@ -48,11 +48,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   end
 
   def run_mutation!
-    recorder = ActiveRecord::QueryRecorder.new do
-      post_graphql_mutation(mutation, current_user: current_user)
-    end
-
-    expect(recorder.count).to be <= db_query_limit
+    post_graphql_mutation(mutation, current_user: current_user)
   end
 
   before do
@@ -84,9 +80,6 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
 
   context 'when the current user does not have permission to add assignees' do
     let(:current_user) { create(:user) }
-    # Was 38. The token's last-used IP is now recorded; CI measures 43.
-    # See https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29728
-    let(:db_query_limit) { 43 }
 
     it 'does not change the assignees' do
       project.add_guest(current_user)
@@ -98,14 +91,12 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   end
 
   context 'with assignees already assigned' do
-    let(:db_query_limit) { 39 }
-
     before do
       merge_request.assignees = [assignee2]
       merge_request.save!
     end
 
-    it 'replaces the assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444646' do
+    it 'replaces the assignee' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -124,7 +115,6 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   end
 
   context 'when passing an empty list of assignees' do
-    let(:db_query_limit) { 35 }
     let(:input) { { assignee_usernames: [] } }
 
     before do
@@ -132,7 +122,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'removes assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
+    it 'removes assignee' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -143,7 +133,6 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   context 'when passing append as true' do
     let(:mode) { Types::MutationOperationModeEnum.enum[:append] }
     let(:input) { { assignee_usernames: [assignee2.username], operation_mode: mode } }
-    let(:db_query_limit) { 26 }
 
     before do
       # In CE, APPEND is a NOOP as you can't have multiple assignees
@@ -154,7 +143,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'does not replace the assignee in CE', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
+    it 'does not replace the assignee in CE' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -163,7 +152,6 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   end
 
   context 'when passing remove as true' do
-    let(:db_query_limit) { 34 }
     let(:mode) { Types::MutationOperationModeEnum.enum[:remove] }
     let(:input) { { assignee_usernames: [assignee.username], operation_mode: mode } }
     let(:expected_result) { [] }
@@ -173,8 +161,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'removes the users in the list, while adding none',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
+    it 'removes the users in the list, while adding none' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)

@@ -84,7 +84,7 @@ namespace :gitlab do
 
         # `Gitlab::Vue3Migration` reads this manifest at runtime in production,
         # where the source `vue3_migration.yml` files are stripped by packaging
-        # (see `config/plugins/vue3_migration_manifest_plugin.js`). Failing the
+        # (see `config/vue3migration/plugins/manifest.js`). Failing the
         # asset build here also fails Omnibus/CNG package builds, so a package
         # can never ship without it.
         vue3_migration_manifest = File.join(AssetsSha::PUBLIC_ASSETS_DIR, 'webpack', 'vue3_migration.json')

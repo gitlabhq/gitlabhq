@@ -344,9 +344,9 @@ Check the status of Duo session 42
 {{< /history >}}
 
 Answers a GitLab Duo Agent Platform session that is waiting for input: approves or rejects a
-pending plan or tool call, or replies to a question the agent asked. Only sessions with status
-`input_required` whose last CI job has finished accept input. Sessions with status
-`plan_approval_required` or `tool_call_approval_required` cannot be answered over MCP yet.
+pending plan or tool call, or replies to a question the agent asked. A session accepts input once
+its last CI job has finished, whether it is waiting with status `input_required`,
+`plan_approval_required`, or `tool_call_approval_required`.
 
 The session continues in a CI job. The response includes a suggested polling delay; use
 `get_duo_session` with the same `workflow_id` to follow progress.
@@ -354,13 +354,17 @@ The session continues in a CI job. The response includes a suggested polling del
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
 | `workflow_id`    | integer | Yes      | ID of the Duo session, as returned by `list_duo_sessions` or `get_duo_session`. |
-| `human_approval` | boolean | Yes      | `true` approves the pending plan or tool call, `false` rejects it. When the session asked a question, pass `true` with `human_message`. |
-| `human_message`  | string  | No       | Your reply or instructions for the agent, up to 2000 characters. Required when the session asked a question. |
+| `human_approval` | boolean | Yes      | `true` approves the pending plan or tool call. Do not include `human_message` with `true`, or the tool rejects the call instead of resuming the session. `false` rejects it: include `human_message` so the agent continues with your feedback. Without one, the agent is told not to proceed and the session continues. |
+| `human_message`  | string  | No       | Your feedback for the agent, or your answer when the session asked a question, up to 2000 characters. Provide it with `human_approval=false`. With `human_approval=true`, the tool rejects the call instead of resuming the session. |
 
-Example:
+Examples:
 
 ```plaintext
-Approve the plan for Duo session 42 and tell it to also add tests
+Approve the plan for Duo session 42
+```
+
+```plaintext
+Reject the plan for Duo session 42 and ask it to also add tests
 ```
 
 ## `list_merge_requests`

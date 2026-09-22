@@ -1,8 +1,8 @@
-import Vue3MigrationManifestPlugin from '../../../../config/plugins/vue3_migration_manifest_plugin';
-import { loadVue3Migrations } from '../../../../config/helpers/vue3_migration_loader';
+import Vue3MigrationManifestPlugin from '../../../../../config/vue3migration/plugins/manifest';
+import { loadVue3Migrations } from '../../../../../config/vue3migration/migration';
 
-jest.mock('../../../../config/helpers/vue3_migration_loader', () => ({
-  ...jest.requireActual('../../../../config/helpers/vue3_migration_loader'),
+jest.mock('../../../../../config/vue3migration/migration', () => ({
+  ...jest.requireActual('../../../../../config/vue3migration/migration'),
   loadVue3Migrations: jest.fn(),
 }));
 

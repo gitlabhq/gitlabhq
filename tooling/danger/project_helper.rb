@@ -5,6 +5,7 @@ module Tooling
     module ProjectHelper
       CI_ONLY_RULES = %w[
         ce_ee_vue_templates
+        cells_routes
         data_deletion
         master_pipeline_status
         roulette

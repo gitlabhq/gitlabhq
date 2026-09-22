@@ -16,6 +16,7 @@ title: AI usage events
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21216) in GitLab 19.3.
 - Selecting `returningUsersCount` or `previousPeriodUsersCount` without the `timestamp` dimension [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/485) to return an error in GitLab 19.5.
+- `group` dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/530) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -103,11 +104,12 @@ Use range operators to define a time window.
 
 ## Dimensions
 
-| Dimension | Name        | Description                                          |
-| --------- | ----------- | ---------------------------------------------------- |
-| Event     | `event`     | Group by event identifier.                           |
-| Feature   | `feature`   | Group by GitLab Duo feature.                         |
-| Timestamp | `timestamp` | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `timestamp(daily)`. |
+| Dimension | Name        | Description |
+| --------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Event     | `event`     | Group by event identifier. |
+| Feature   | `feature`   | Group by GitLab Duo feature. |
+| Group     | `group`     | Group by group. Accepts a `depth` parameter counted from the top-level group, from `1` to `99` (default: `1`), so `group` returns top-level groups and `group(depth=2)` their subgroups. Events above that depth, or in a project at that depth rather than in a subgroup (for example, a project directly under the top-level group when `depth=2`), have no group, and the result can contain more than one row with no group. |
+| Timestamp | `timestamp` | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `timestamp(daily)` or `timestamp(granularity=30d, origin=2026-07-16)`. |
 | User      | `user`      | Group by user (displays avatar, name, and username). |
 
 ## Metrics

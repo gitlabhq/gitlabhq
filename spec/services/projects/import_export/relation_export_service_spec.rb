@@ -60,6 +60,7 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
     describe 'relation name and saver class' do
       where(:relation_name, :saver) do
         Projects::ImportExport::RelationExport::UPLOADS_RELATION | Gitlab::ImportExport::UploadsSaver
+        Projects::ImportExport::RelationExport::AVATAR_RELATION | Gitlab::ImportExport::AvatarSaver
         Projects::ImportExport::RelationExport::REPOSITORY_RELATION | Gitlab::ImportExport::RepoSaver
         Projects::ImportExport::RelationExport::WIKI_REPOSITORY_RELATION | Gitlab::ImportExport::WikiRepoSaver
         Projects::ImportExport::RelationExport::LFS_OBJECTS_RELATION | Gitlab::ImportExport::LfsSaver

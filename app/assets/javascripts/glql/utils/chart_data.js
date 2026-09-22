@@ -1,7 +1,7 @@
 import { newDate, nDaysAfter } from '~/lib/utils/datetime/date_calculation_utility';
 import { __ } from '~/locale';
 import { FIELD_TYPES, DISPLAY_TYPES } from '../constants';
-import { bucketDateOf, formatBucketDate } from './date_bucket';
+import { bucketDateOf, bucketSpanDays, formatBucketDate } from './date_bucket';
 
 export const dimensionsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.DIMENSION);
 export const metricsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.METRIC);
@@ -18,8 +18,9 @@ const parameterValuesOf = (field) =>
 /**
  * Returns a human-readable label for the given field.
  * Appends the field's parameter values to the label, e.g. `created(weekly)`
- * renders as "Created (weekly)" and `durationQuantile(0.5)` as
- * "Duration quantile (0.5)". An explicit alias takes precedence: aliased
+ * renders as "Created (weekly)", `durationQuantile(0.5)` as
+ * "Duration quantile (0.5)" and `userTier(thresholds=[4, 25, 100])` as
+ * "User tier (4, 25, 100)". An explicit alias takes precedence: aliased
  * fields render their alias label as-is.
  *
  * Doubles as the series identity for parameterised metrics: series names and
@@ -29,7 +30,7 @@ export const labelWithParameter = (field) => {
   if (!field) return undefined;
   if (!field.label || isAliased(field)) return field.label;
 
-  const suffix = parameterValuesOf(field).map(String).join(', ');
+  const suffix = parameterValuesOf(field).flat().map(String).join(', ');
 
   // The label match is defensive: aliased fields return early above, but an
   // unaliased field's backend-supplied label could match its parameter value,
@@ -49,6 +50,7 @@ export const labelWithParameter = (field) => {
 const labelByObjectType = {
   UserCore: (value) => value.name ?? value.username,
   Project: (value) => value.nameWithNamespace ?? value.fullPath ?? value.name,
+  Group: (value) => value.fullName ?? value.fullPath,
 };
 
 export const dimensionValue = (node, dimension) => {
@@ -66,18 +68,19 @@ export const dimensionValue = (node, dimension) => {
 };
 
 // Year-less labels are ambiguous when a series crosses a calendar year, so
-// once buckets span two years (weekly: range ends included), all labels
-// carry the year. Cosmetic only - bucket identity is the raw value.
+// once buckets span two years (weekly and fixed-day: range ends included),
+// all labels carry the year. Cosmetic only - bucket identity is the raw value.
 const spansMultipleYears = (nodes, dimension) => {
   const granularity = dimension?.parameters?.granularity;
   if (!granularity) return false;
+  const spanDays = bucketSpanDays(granularity);
   const years = new Set();
   for (const node of nodes ?? []) {
     const bucketDate = bucketDateOf(node[dimension.key]);
     if (bucketDate) {
       years.add(bucketDate.slice(0, 4));
-      if (granularity === 'weekly') {
-        years.add(String(nDaysAfter(newDate(bucketDate), 6).getFullYear()));
+      if (spanDays > 1) {
+        years.add(String(nDaysAfter(newDate(bucketDate), spanDays - 1).getFullYear()));
       }
     }
     if (years.size > 1) return true;

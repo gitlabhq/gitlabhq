@@ -10,3 +10,7 @@ available_for:
 permissions:
   - read_webhook
   - read_webhook_event
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

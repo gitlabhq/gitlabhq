@@ -843,8 +843,6 @@ These commands work only when using GitLab Duo Chat in supported IDEs:
 | /explain  | [Explain code](#explain-selected-code)            |
 | /refactor | [Refactor the code](#refactor-code-in-the-ide)    |
 | /fix      | [Fix the code](#fix-code-in-the-ide)              |
-| /include  | [Include file context](#ask-about-specific-files-in-the-ide) <sup>1</sup> |
+| /include  | [Include file context](#ask-about-specific-files-in-the-ide)[^not-in-ide-chat] |
 
-**Footnotes**:
-
-1. Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.
+[^not-in-ide-chat]: Not available when using GitLab Duo Non-Agentic Chat in the Web IDE.

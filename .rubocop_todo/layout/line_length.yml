@@ -1186,7 +1186,6 @@ Layout/LineLength:
     - 'ee/spec/models/requirements_management/test_report_spec.rb'
     - 'ee/spec/models/saml_provider_spec.rb'
     - 'ee/spec/models/sca/license_compliance_spec.rb'
-    - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_rule_schedule_spec.rb'
     - 'ee/spec/models/security/scan_spec.rb'
     - 'ee/spec/models/software_license_policy_spec.rb'

@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_releases
+description: Enables Vue 3 in compatibility mode for the releases pages.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629009
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255436
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629009
+milestone: '19.5'
+group: group::environments
+type: beta
+default_enabled: false

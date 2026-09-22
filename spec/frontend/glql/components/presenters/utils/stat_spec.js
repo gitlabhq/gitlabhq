@@ -48,7 +48,7 @@ describe('statPresentationFor', () => {
       ${'Pipelines'}       | ${'Total number of pipelines, including in-progress ones.'}
       ${'MergeRequests'}   | ${'Total number of merge requests.'}
       ${'Contributions'}   | ${'Total number of contributions.'}
-      ${'DuoWorkflows'}    | ${'Total number of flows.'}
+      ${'DuoWorkflows'}    | ${'Total number of flows, optionally filtered by status.'}
     `('describes totalCount as $expected in $source', ({ source, expected }) => {
       expect(statPresentationFor(source, metric('totalCount')).description).toBe(expected);
     });

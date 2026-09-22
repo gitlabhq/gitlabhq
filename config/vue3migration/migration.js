@@ -2,13 +2,13 @@ const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
 const yaml = require('js-yaml');
+const { baseEntryPoints, pageEntryName } = require('../helpers/entry_points');
 const {
   VUE3_MIGRATION_FILENAME,
   VUE3_MIGRATION_STATUS_ROLLOUT,
   VUE3_MIGRATION_STATUS_MIGRATED,
   validateVue3MigrationFile,
-} = require('./vue3_migration_file_validation');
-const { baseEntryPoints, pageEntryName } = require('./entry_points');
+} = require('./migration_schema');
 
 const ROOT_PATH = path.resolve(__dirname, '..', '..');
 const JS_ROOTS = [

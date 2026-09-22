@@ -97,7 +97,7 @@ const require = createRequire(import.meta.url);
 const glob = require('glob');
 const yaml = require('js-yaml');
 const { generateEntries } = require('../../config/webpack.helpers');
-const { loadVue3Migrations } = require('../../config/helpers/vue3_migration_loader');
+const { loadVue3Migrations } = require('../../config/vue3migration/migration');
 const IS_EE = require('../../config/helpers/is_ee_env');
 
 const ROOT_PATH = path.resolve(import.meta.dirname, '../..');

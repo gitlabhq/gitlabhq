@@ -330,7 +330,8 @@ module BlobHelper
       web_ide_button_options: web_ide_button_data({ blob: blob }).merge(fork_modal_options(project, blob)).to_json,
       web_ide_button_default_branch: project.default_branch_or_main,
       show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
-      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : ''
+      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : '',
+      custom_code_dropdown_clients: custom_code_dropdown_clients_for(project).to_json
     }
   end
 

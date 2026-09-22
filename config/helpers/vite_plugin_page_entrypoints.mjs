@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import { generateEntries, applyVue3Migrations } from '../webpack.helpers';
 
 const require = createRequire(import.meta.url);
-const { appendVue3Query, loadVue3Migrations } = require('./vue3_migration_loader');
+const { appendVue3Query, loadVue3Migrations } = require('../vue3migration/migration');
 const { baseEntryPoints } = require('./entry_points');
 
 const entrypointsDir = '/javascripts/entrypoints/';

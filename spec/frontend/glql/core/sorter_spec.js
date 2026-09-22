@@ -180,6 +180,7 @@ describe('sorterFor', () => {
     ${'Epic'}                 | ${'epic'}     | ${'title'}
     ${'Label'}                | ${'label'}    | ${'title'}
     ${'Project'}              | ${'project'}  | ${'nameWithNamespace'}
+    ${'Group'}                | ${'group'}    | ${'fullName'}
     ${'UserCore'}             | ${'author'}   | ${'username'}
     ${'MergeRequestAuthor'}   | ${'author'}   | ${'username'}
     ${'MergeRequestReviewer'} | ${'reviewer'} | ${'username'}

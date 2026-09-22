@@ -110,9 +110,9 @@ Use these fields in the `query` parameter to filter your results.
 
 | Dimension     | Name           | Description                              |
 | ------------- | -------------- | ---------------------------------------- |
-| Created at    | `created`      | Group by creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `created(monthly)`. |
+| Created at    | `created`      | Group by creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `created(monthly)` or `created(granularity=30d, origin=2026-07-16)`. |
 | Created by Duo | `createdByDuo` | Group by whether a GitLab Duo Agent Platform session created the merge request. |
-| Merged at     | `merged`       | Group by merge date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `weekly`). For example, `merged(monthly)`. |
+| Merged at     | `merged`       | Group by merge date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `weekly`), and an optional `origin`. For example, `merged(monthly)` or `merged(granularity=30d, origin=2026-07-16)`. |
 | State         | `state`        | Group by merge request state.            |
 | Target branch | `targetBranch` | Group by target branch.                  |
 

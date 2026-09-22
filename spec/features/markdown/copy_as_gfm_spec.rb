@@ -673,7 +673,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
   end
 
   describe 'Copying code' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     before do
       sign_in(project.first_owner)

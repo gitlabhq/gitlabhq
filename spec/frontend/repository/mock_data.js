@@ -286,6 +286,7 @@ export const headerAppInjected = {
   rootRef: 'main',
   showNoSshKeyMessage: false,
   userSettingsSshKeysPath: null,
+  customCodeDropdownClients: [],
 };
 
 export const FILE_SIZE_3MB = 3000000;

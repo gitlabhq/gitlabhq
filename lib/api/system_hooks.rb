@@ -55,7 +55,7 @@ module API
       params do
         use :pagination
       end
-      route_setting :authorization, permissions: :read_webhook, boundary_type: :instance
+      route_setting :authorization, permissions: :read_webhook, boundary_type: :instance, assignable_when: [:admin]
       get do
         present paginate(SystemHook.all), with: Entities::Hook
       end
@@ -71,7 +71,7 @@ module API
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'
       end
-      route_setting :authorization, permissions: :read_webhook, boundary_type: :instance
+      route_setting :authorization, permissions: :read_webhook, boundary_type: :instance, assignable_when: [:admin]
       get ":hook_id" do
         present find_hook, with: Entities::Hook
       end
@@ -90,7 +90,7 @@ module API
         use :requires_url
         use :hook_parameters
       end
-      route_setting :authorization, permissions: :create_webhook, boundary_type: :instance
+      route_setting :authorization, permissions: :create_webhook, boundary_type: :instance, assignable_when: [:admin]
       post do
         hook_params = create_hook_params
 
@@ -113,7 +113,7 @@ module API
         ]
         tags system_hooks_tags
       end
-      route_setting :authorization, permissions: :update_webhook, boundary_type: :instance
+      route_setting :authorization, permissions: :update_webhook, boundary_type: :instance, assignable_when: [:admin]
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'
         use :optional_url
@@ -146,7 +146,7 @@ module API
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'
       end
-      route_setting :authorization, permissions: :delete_webhook, boundary_type: :instance
+      route_setting :authorization, permissions: :delete_webhook, boundary_type: :instance, assignable_when: [:admin]
       delete ":hook_id" do
         hook = find_hook
 

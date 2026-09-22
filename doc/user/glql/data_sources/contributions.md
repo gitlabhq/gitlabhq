@@ -76,7 +76,7 @@ Use these fields in the `query` parameter to filter your results.
 
 | Dimension  | Name      | Description                                          |
 | ---------- | --------- | ----------------------------------------------------- |
-| Created at | `created` | Group by contribution creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `monthly`). For example, `created(weekly)`. |
+| Created at | `created` | Group by contribution creation date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `created(weekly)` or `created(granularity=30d, origin=2026-07-16)`. |
 
 ## Metrics
 

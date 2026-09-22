@@ -2,7 +2,7 @@
 const crypto = require('./helpers/patched_crypto');
 
 // eslint-disable-next-line import/order
-const vueVersion = require('./helpers/vue_version');
+const vueVersion = require('./vue3migration/version');
 
 const { VUE_VERSION, USE_VUE3, USE_VUE3_COMPILER, VUE_LOADER_MODULE, logVueVersion } = vueVersion;
 
@@ -27,7 +27,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-const { isCustomElement } = require('./vue3migration/vue3_template_compiler');
+const { isCustomElement } = require('./vue3migration/compilers/vue3_template');
 
 const {
   IS_EE,
@@ -47,14 +47,14 @@ const {
 } = require('./webpack.constants');
 const { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } = require('./pdfjs.constants');
 const { generateEntries, applyVue3Migrations } = require('./webpack.helpers');
-const { loadVue3Migrations } = require('./helpers/vue3_migration_loader');
+const { loadVue3Migrations } = require('./vue3migration/migration');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
-const Vue3MigrationManifestPlugin = require('./plugins/vue3_migration_manifest_plugin');
-const WebpackVue3InfectionPlugin = require('./plugins/webpack_vue3_infection_plugin');
+const Vue3MigrationManifestPlugin = require('./vue3migration/plugins/manifest');
+const WebpackVue3InfectionPlugin = require('./vue3migration/plugins/webpack');
 const { supportedBrowsersHash } = require('./helpers/supported_browsers');
 const { aliases } = require('./helpers/aliases');
 const { baseEntryPoints } = require('./helpers/entry_points');
@@ -202,20 +202,20 @@ const shouldExcludeFromCompiling = (modulePath) => {
   );
 };
 
-// vue2_compiler.js wraps vue-template-compiler and injects distinct keys on same-tag
+// vue2_template.js wraps vue-template-compiler and injects distinct keys on same-tag
 // v-if/v-else branches (mirroring the Vue 3 compiler). It's the default for the Vue 2
 // build *and* for the `?vue3`-infected islands compiled here that run on @vue/compat:
 // without those keys the branches are patched in place, and @vue/compat crashes in
 // invokeDirectiveHook ("Cannot read properties of undefined (reading 'value')") when
 // they differ in directives (e.g. v-gl-tooltip on one branch only). The injected keys
 // are a no-op for the Vue 2 runtime. Only the full Vue 3 compiler build overrides it.
-vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
+vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/compilers/vue2_template.js');
 
 if (USE_VUE3) {
   if (USE_VUE3_COMPILER) {
     vueLoaderOptions.compiler = path.join(
       ROOT_PATH,
-      'config/vue3migration/vue3_template_compiler.js',
+      'config/vue3migration/compilers/vue3_template.js',
     );
     vueLoaderOptions.compilerOptions.compatConfig = {
       MODE: 2,

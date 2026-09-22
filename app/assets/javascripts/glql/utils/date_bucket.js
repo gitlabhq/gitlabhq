@@ -25,14 +25,24 @@ export const bucketDateOf = (value) => {
   return datePart;
 };
 
+// Days a bucket covers when it is labelled as a range: 7 for weekly, N for a
+// fixed-day `Nd` granularity. Null for the calendar buckets labelled by a
+// single day, month or year.
+export const bucketSpanDays = (granularity) => {
+  if (granularity === 'weekly') return 7;
+  const match = /^(\d+)d$/.exec(granularity ?? '');
+  return match ? Number(match[1]) : null;
+};
+
 // newDate parses "YYYY-MM-DD" as a local date, keeping the label on the
-// bucket's own day in every viewer timezone. Daily and weekly labels drop
+// bucket's own day in every viewer timezone. Daily and range labels drop
 // the year unless `includeYear` is set - chart axes carry the year context.
 const formatDateLabel = (value, granularity, includeYear) => {
   const date = newDate(value);
   const dayFormat = includeYear ? localeDateFormat.asDate : localeDateFormat.asDateWithoutYear;
-  if (granularity === 'weekly') {
-    return dayFormat.formatRange(date, nDaysAfter(date, 6));
+  const spanDays = bucketSpanDays(granularity);
+  if (spanDays > 1) {
+    return dayFormat.formatRange(date, nDaysAfter(date, spanDays - 1));
   }
   if (granularity === 'monthly') return localeDateFormat.asMonthYear.format(date);
   if (granularity === 'yearly') return String(date.getFullYear());

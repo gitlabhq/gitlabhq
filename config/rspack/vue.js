@@ -5,8 +5,8 @@ const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/c
 
 const EXACT_VUE_VERSION = require('vue/package.json').version;
 
-const { isCustomElement } = require('../vue3migration/vue3_template_compiler');
-const { INFECTION_LOADER_PATH } = require('./vue3_infection_loader');
+const { isCustomElement } = require('../vue3migration/compilers/vue3_template');
+const { INFECTION_LOADER_PATH } = require('../vue3migration/plugins/rspack_loader');
 
 const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
 
@@ -47,12 +47,15 @@ function buildVueLoaderOptions() {
     },
   };
 
-  vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
+  vueLoaderOptions.compiler = path.join(
+    ROOT_PATH,
+    'config/vue3migration/compilers/vue2_template.js',
+  );
 
   if (USE_VUE3_COMPILER) {
     vueLoaderOptions.compiler = path.join(
       ROOT_PATH,
-      'config/vue3migration/vue3_template_compiler.js',
+      'config/vue3migration/compilers/vue3_template.js',
     );
     vueLoaderOptions.compilerOptions.compatConfig = {
       MODE: 2,

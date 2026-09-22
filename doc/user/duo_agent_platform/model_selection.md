@@ -34,14 +34,12 @@ This table lists the default model for each feature in the Agent Platform.
 | Feature | Model |
 |-------|--------------|
 | GitLab Duo Agentic Chat | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
-| Code Review Flow <sup>1</sup> | Claude Sonnet 5 Gemini Enterprise Agent Platform |
+| Code Review Flow[^earlier-code-review] | Claude Sonnet 5 Gemini Enterprise Agent Platform |
 | Security Review Flow | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 | All other agents | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 
-**Footnotes**:
-
-1. For GitLab 19.0 or earlier, Code Review Flow uses the [default LLM](../gitlab_duo/model_selection.md#default-models)
-   set for GitLab Duo Code Review, the non-agentic version.
+[^earlier-code-review]: For GitLab 19.0 or earlier, Code Review Flow uses the [default LLM](../gitlab_duo/model_selection.md#default-models)
+    set for GitLab Duo Code Review, the non-agentic version.
 
 ## Supported models
 
@@ -57,10 +55,10 @@ This table lists the default model for each feature in the Agent Platform.
 This table lists the models you can select for features
 in the Agent Platform.
 
-| Model                       | GitLab Duo<br> Agentic Chat | Code Review Flow <sup>1</sup> | Security Review Flow | All other agents |
+| Model                       | GitLab Duo<br> Agentic Chat | Code Review Flow[^supported-models-earlier-code-review] | Security Review Flow | All other agents |
 |-----------------------------|-------------------------|------------------|----------------------|------------------|
-| Claude Fable 5 <sup>2</sup> | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Fable 5.1 <sup>2</sup> | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Fable 5[^model-subject-limited] | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Fable 5.1[^model-subject-limited] | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Claude Sonnet 4.5           | {{< yes >}}             | {{< no >}}      | {{< yes >}}          | {{< yes >}}      |
 | Claude Sonnet 4.6           | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
 | Claude Sonnet 5             | {{< yes >}}             | {{< yes >}}      | {{< no >}}           | {{< yes >}}      |
@@ -84,19 +82,17 @@ in the Agent Platform.
 | GPT-5 Mini                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.4 Mini                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-5.4 Nano                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.5 <sup>2</sup>        | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Sol <sup>2</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Terra <sup>2</sup>  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Luna <sup>2</sup>   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-6 Astra <sup>2</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.5[^model-subject-limited]        | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Sol[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Terra[^model-subject-limited]  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Luna[^model-subject-limited]   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-6 Astra[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Kimi K3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | MiniMax M3                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 
-**Footnotes**:
-
-1. For GitLab 19.0 or earlier, Code Review Flow can only use the [models available](../gitlab_duo/model_selection.md#gitlab-duo-for-merge-requests)
-   for GitLab Duo Code Review, the non-agentic version.
-1. This model is subject to [limited vendor-side data retention](../gitlab_duo/data_usage.md#data-retention).
+[^supported-models-earlier-code-review]: For GitLab 19.0 or earlier, Code Review Flow can only use the [models available](../gitlab_duo/model_selection.md#gitlab-duo-for-merge-requests)
+    for GitLab Duo Code Review, the non-agentic version.
+[^model-subject-limited]: This model is subject to [limited vendor-side data retention](../gitlab_duo/data_usage.md#data-retention).
 
 ## Select a model for a feature
 

@@ -2,9 +2,9 @@
 description: Tracks when a user views an epic on the roadmap.
 internal_events: true
 action: view_epic_on_roadmap
-product_group: portfolio_planning
+product_group: planning_views
 product_categories:
-- portfolio_management
+- planning_views
 milestone: '17.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163428
 tiers:

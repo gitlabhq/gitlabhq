@@ -18,6 +18,9 @@ title: Duo workflows
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606576) in GitLab 19.5 as an [experiment](../../../policy/development_stages_support.md#experiment).
 - `model` dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/511) in GitLab 19.5.
 - `status` filter and dimension, and the `flowTypesCount`, `returningUsersCount`, `joinedUsersCount`, `churnedUsersCount`, `previousPeriodUsersCount`, `createdMrCount`, `mergedMrCount`, and `closedMrCount` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/514) in GitLab 19.5.
+- `userTier` dimension and `flowTypesUsed` and `activeDays` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/516) in GitLab 19.5.
+- `status` parameter on `totalCount` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/527) in GitLab 19.5.
+- `group` dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/530) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -48,12 +51,27 @@ For more information, see [multiple groups and projects](_index.md#multiple-grou
 
 Use these fields in the `query` parameter to filter your results.
 
-| Field                   | Name (and alias)                              | Operators                 |
-| ----------------------- | --------------------------------------------- | ------------------------- |
-| [Created](#created)     | `created` (`opened`, `openedAt`, `createdAt`) | `=`, `>`, `<`, `>=`, `<=` |
-| [Flow type](#flow-type) | `flowType`                                    | `=`, `in`                 |
-| [Status](#status)       | `status`                                      | `=`, `in`                 |
-| [User](#user)           | `user`                                        | `=`, `in`                 |
+| Field                               | Name (and alias)                              | Operators                 |
+| ----------------------------------- | --------------------------------------------- | ------------------------- |
+| [Active days](#active-days)         | `activeDays`                                  | `=`, `>`, `<`, `>=`, `<=` |
+| [Created](#created)                 | `created` (`opened`, `openedAt`, `createdAt`) | `=`, `>`, `<`, `>=`, `<=` |
+| [Flow type](#flow-type)             | `flowType`                                    | `=`, `in`                 |
+| [Flow types used](#flow-types-used) | `flowTypesUsed`                               | `=`, `>`, `<`, `>=`, `<=` |
+| [Status](#status)                   | `status`                                      | `=`, `in`                 |
+| [User](#user)                       | `user`                                        | `=`, `in`                 |
+
+### Active days
+
+**Description**: Filter flows by how many distinct days their user created flows in the
+selected period. `activeDays = 1` matches users who were active on exactly one day.
+
+**Allowed value types**: `Number`
+
+**Notes**:
+
+- The count covers the whole selected period, per user.
+- You can combine two range operators for a window, for example
+  `activeDays >= 2 and activeDays <= 5`, but not `=` with another comparison on the same field.
 
 ### Created
 
@@ -79,6 +97,19 @@ For example, `software_development` or `code_review/v1`.
 
 - `String`
 - `List` (use `in` operator for multiple values)
+
+### Flow types used
+
+**Description**: Filter flows by how many distinct flow types their user ran in the
+selected period. `flowTypesUsed >= 2` matches users who used two or more flow types.
+
+**Allowed value types**: `Number`
+
+**Notes**:
+
+- The count covers the whole selected period, per user.
+- The same combination rule applies: use two range operators for a window, but not `=` with
+  another comparison on the same field.
 
 ### Status
 
@@ -110,13 +141,15 @@ For example, `software_development` or `code_review/v1`.
 ## Dimensions
 
 | Dimension | Name       | Description |
-|-----------|------------|-------------|
-| Created   | `created`  | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, or `monthly` (default: `monthly`). For example, `created(weekly)`. |
+| --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Created   | `created`  | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `created(weekly)` or `created(granularity=30d, origin=2026-07-16)`. |
 | Flow type | `flowType` | Group by flow type. |
+| Group     | `group`    | Group by group. Accepts a `depth` parameter counted from the top-level group, from `1` to `99` (default: `1`), so `group` returns top-level groups and `group(depth=2)` their subgroups. Flows above that depth, or in a project at that depth rather than in a subgroup (for example, a project directly under the top-level group when `depth=2`), have no group, and the result can contain more than one row with no group. |
 | Model     | `model`    | Group by the model the flow used. |
 | Project   | `project`  | Group by project. Flows that are not scoped to a project are grouped into a single row with no project. |
 | Status    | `status`   | Group by flow status. Rows are sorted in lifecycle order, not alphabetically. |
 | User      | `user`     | Group by user (displays avatar, name, and username). |
+| User tier | `userTier` | Group users by how many flows they ran in the whole selected period, even when another dimension such as `created(weekly)` is also selected. Requires a `thresholds` parameter: a list of one to nine strictly ascending integers of at least `1`, with no default. For example, `userTier(thresholds=[4, 25, 100])` returns `tier_0` (fewer than 4 flows), `tier_1` (4 to 24), `tier_2` (25 to 99), and `tier_3` (100 or more). A single threshold can be written without brackets: `userTier(8)`. |
 
 ## Metrics
 
@@ -148,7 +181,7 @@ For example, `software_development` or `code_review/v1`.
 | Previous period users count | `previousPeriodUsersCount` | Number of unique users in the previous period. |
 | Projects count              | `projectsCount`            | Number of unique projects. Flows that are not scoped to a project are not counted, so the row for those flows shows `0`. |
 | Returning users count       | `returningUsersCount`      | Number of unique users who also ran a flow in the previous period. |
-| Total count                 | `totalCount`               | Total number of flows. |
+| Total count                 | `totalCount`               | Total number of flows. Accepts an optional `status` parameter with one or more flow statuses (the same values as the `status` filter), for example `totalCount(status="finished")` or `totalCount(status=["paused", "input_required"])`. Without the parameter, or with `status=[]`, all flows are counted. |
 | Users count                 | `usersCount`               | Number of unique users. |
 
 > [!note]
@@ -239,6 +272,46 @@ information, see [analytics mode sorting](../_index.md#sorting).
   dimensions: created(weekly) as "Week"
   metrics: usersCount as "Users", returningUsersCount as "Returning", joinedUsersCount as "Joined", churnedUsersCount as "Churned"
   sort: created desc
+  ```
+  ````
+
+- Users by activity tier and flow type for the last 30 days:
+
+  ````yaml
+  ```glql
+  title: "Duo workflow users by activity tier (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = DuoWorkflow and group = "gitlab-org" and created > -30d
+  dimensions: userTier(thresholds=[4, 25, 100]) as "Tier", flowType as "Flow"
+  metrics: totalCount as "Flows", usersCount as "Users"
+  sort: userTier asc
+  ```
+  ````
+
+- Flow counts by status side by side, for the last 30 days:
+
+  ````yaml
+  ```glql
+  title: "Duo workflows by outcome (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = DuoWorkflow and group = "gitlab-org" and created > -30d
+  metrics: totalCount as "All", totalCount(status="finished") as "Completed", totalCount(status=["paused", "input_required"]) as "Waiting", totalCount(status="failed") as "Failed"
+  ```
+  ````
+
+- Group comparison for the last 30 days:
+
+  ````yaml
+  ```glql
+  title: "Duo workflow usage by subgroup (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = DuoWorkflow and group = "gitlab-org" and created > -30d
+  dimensions: group(depth=2) as "Group"
+  metrics: usersCount as "Users", creditsUsedSum as "Credits"
+  sort: usersCount desc
   ```
   ````
 

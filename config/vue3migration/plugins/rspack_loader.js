@@ -1,6 +1,6 @@
 const path = require('path');
 const { parse } = require('@babel/parser');
-const { CONTEXT_ALIASES } = require('../helpers/context_aliases_shared');
+const { CONTEXT_ALIASES } = require('../aliases');
 const {
   stripQuery,
   getQuery,
@@ -10,7 +10,7 @@ const {
   loadScannerData,
   runInfectionScanner,
   createIsInfectable,
-} = require('../helpers/vue3_infection_shared');
+} = require('../infection');
 
 const SCANNER_BYPASS_PACKAGES = ['core-js', 'webpack', 'css-loader', 'vue-hot-reload-api'];
 

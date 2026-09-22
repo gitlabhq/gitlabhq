@@ -103,6 +103,7 @@ export default {
     'rootRef',
     'showNoSshKeyMessage',
     'userSettingsSshKeysPath',
+    'customCodeDropdownClients',
   ],
   provide() {
     return {
@@ -416,6 +417,7 @@ export default {
               :show-web-ide-button="showWebIdeButton"
               :is-gitpod-enabled-for-instance="isGitpodEnabledForInstance"
               :is-gitpod-enabled-for-user="isGitpodEnabledForUser"
+              :custom-clients="customCodeDropdownClients"
             />
             <repository-overflow-menu
               :full-path="projectPath"

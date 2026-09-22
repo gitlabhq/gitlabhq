@@ -151,7 +151,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/lib/search/zoekt/multi_match_spec.rb'
     - 'ee/spec/models/ci/build_spec.rb'
     - 'ee/spec/models/ee/user_detail_spec.rb'
-    - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'
     - 'ee/spec/models/users/arkose_sessions_spec.rb'
     - 'ee/spec/presenters/audit_event_presenter_spec.rb'
     - 'ee/spec/presenters/ee/projects/security/configuration_presenter_spec.rb'

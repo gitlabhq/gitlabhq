@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import vue3InfectionShared from '../../../../config/helpers/vue3_infection_shared';
+import vue3InfectionShared from '../../../../config/vue3migration/infection';
 
 // The module under test is CommonJS; rely on Node's CJS-default-import interop.
 const {
@@ -12,7 +12,7 @@ const {
   applyAliasList,
 } = vue3InfectionShared;
 
-describe('config/helpers/vue3_infection_shared', () => {
+describe('config/vue3migration/infection', () => {
   describe('stripQuery', () => {
     it.each([
       ['returns an empty string for an empty input', '', ''],

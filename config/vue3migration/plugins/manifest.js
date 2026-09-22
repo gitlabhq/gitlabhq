@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-const { loadVue3Migrations, rolloutEntries } = require('../helpers/vue3_migration_loader');
-const { VUE3_MIGRATION_FILENAME } = require('../helpers/vue3_migration_file_validation');
+const { loadVue3Migrations, rolloutEntries } = require('../migration');
+const { VUE3_MIGRATION_FILENAME } = require('../migration_schema');
 
 const PLUGIN_NAME = 'Vue3MigrationManifestPlugin';
 

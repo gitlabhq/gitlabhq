@@ -69,10 +69,20 @@ RSpec.describe API::Helpers::SearchHelpers, feature_category: :global_search do
     it 'for EE returns the expected param keys', if: Gitlab.ee? do
       expect(described_class.search_param_keys).to match_array(
         %i[
-          confidential exclude_forks fields include_archived num_context_lines order_by page per_page regex scope search
-          search_type sort state type
+          author_username confidential exclude_forks fields include_archived label_name num_context_lines order_by
+          page per_page regex scope search search_type sort source_branch state target_branch type
         ]
       )
+    end
+  end
+
+  describe '.search_negated_param_keys' do
+    it 'for CE is empty', unless: Gitlab.ee? do
+      expect(described_class.search_negated_param_keys).to be_empty
+    end
+
+    it 'for EE returns only the negatable merge request filters', if: Gitlab.ee? do
+      expect(described_class.search_negated_param_keys).to match_array(%i[author_username source_branch target_branch])
     end
   end
 
@@ -88,8 +98,8 @@ RSpec.describe API::Helpers::SearchHelpers, feature_category: :global_search do
     it 'returns search_param_keys with id', if: Gitlab.ee? do
       expect(described_class.gitlab_search_mcp_params).to match_array(
         %i[
-          confidential exclude_forks fields id include_archived num_context_lines order_by page per_page regex scope
-          search search_type sort state type
+          author_username confidential exclude_forks fields id include_archived label_name num_context_lines order_by
+          page per_page regex scope search search_type sort source_branch state target_branch type
         ]
       )
     end

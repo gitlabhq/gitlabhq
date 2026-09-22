@@ -27,6 +27,7 @@ const sortFieldsByType = {
   MergeRequestReviewer: 'username',
   MergeRequestAssignee: 'username',
   Project: 'nameWithNamespace',
+  Group: 'fullName',
   Pipeline: 'name',
   CiJob: 'name',
   CiStage: 'name',
