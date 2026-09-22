@@ -186,6 +186,16 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Changes, feature_category
         end
       end
 
+      context 'when regexp exceeds the maximum length and is also invalid' do
+        let(:config) { { regexp: '(' * 256 } }
+
+        it 'reports only the length error, so the pattern never reaches the compiler', :aggregate_failures do
+          is_expected.not_to be_valid
+          expect(entry.errors).to include(/regexp is too long/)
+          expect(entry.errors).not_to include(/regexp is invalid/)
+        end
+      end
+
       context 'when regexp is not a string' do
         let(:config) { { regexp: 123 } }
 
