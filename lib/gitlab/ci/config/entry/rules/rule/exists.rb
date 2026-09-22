@@ -57,6 +57,8 @@ module Gitlab
 
                   def regexp_is_valid
                     return unless regexp.is_a?(String)
+                    # The length validator runs independently and does not stop this one.
+                    return if regexp.length > REGEXP_MAX_LENGTH
 
                     ::Gitlab::Ci::Build::Rules::Rule::Clause.compile_regexp(regexp)
                   rescue RegexpError => e
