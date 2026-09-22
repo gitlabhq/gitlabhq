@@ -342,6 +342,55 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
       end
     end
 
+    context 'when cleaner_class is allowed but not loadable' do
+      let(:loose_foreign_keys_yaml) do
+        {
+          'projects' => [
+            {
+              'table' => 'namespaces',
+              'column' => 'namespace_id',
+              'on_delete' => 'async_delete',
+              'cleaner_class' => 'Ee::Only::Cleaner'
+            }
+          ]
+        }
+      end
+
+      subject { described_class.definitions }
+
+      before do
+        stub_const("#{described_class}::ALLOWED_CLEANER_CLASSES", ['Ee::Only::Cleaner'])
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, loose_foreign_keys_yaml)
+      end
+
+      after do
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, nil)
+      end
+
+      # EE-only cleaners are absent on FOSS, where `ee/` is removed.
+      context 'on FOSS' do
+        before do
+          allow(Gitlab).to receive(:ee?).and_return(false)
+        end
+
+        it 'leaves the cleaner_class unset so the generic cleaner is used' do
+          expect(subject.first.options[:cleaner_class]).to be_nil
+        end
+      end
+
+      context 'on EE' do
+        before do
+          allow(Gitlab).to receive(:ee?).and_return(true)
+        end
+
+        it 'raises, so a genuine load failure is not mistaken for missing EE code' do
+          expect { subject }.to raise_error(NameError)
+        end
+      end
+    end
+
     context 'when cleaner_class is in the allowed list' do
       let(:loose_foreign_keys_yaml) do
         {

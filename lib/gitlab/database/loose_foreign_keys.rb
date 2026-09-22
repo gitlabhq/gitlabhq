@@ -13,7 +13,9 @@ module Gitlab
       # the generic bulk `DELETE` because that would orphan the underlying files.
       # They opt into a dedicated cleaner via the `cleaner_class` config key.
       ALLOWED_CLEANER_CLASSES = [
-        'Ci::JobArtifacts::LooseForeignKeyCleanerService'
+        'Ci::JobArtifacts::LooseForeignKeyCleanerService',
+        'Vulnerabilities::Exports::LooseForeignKeyCleanerService',
+        'Vulnerabilities::Exports::PartsLooseForeignKeyCleanerService'
       ].freeze
 
       def self.definitions_by_table
@@ -53,9 +55,18 @@ module Gitlab
             delete_limit: config['delete_limit'],
             conditions: conditions,
             worker_class: worker_class_name.constantize,
-            cleaner_class: cleaner_class_name&.constantize
+            cleaner_class: resolve_cleaner_class(cleaner_class_name)
           }
         )
+      end
+
+      # FOSS pipelines remove `ee/`, so an EE-only cleaner cannot resolve there and the
+      # generic cleaner takes over. On EE an unresolvable name is a real error.
+      def self.resolve_cleaner_class(cleaner_class_name)
+        return unless cleaner_class_name
+        return cleaner_class_name.safe_constantize unless Gitlab.ee?
+
+        cleaner_class_name.constantize
       end
 
       def self.loose_foreign_keys_yaml
@@ -67,6 +78,7 @@ module Gitlab
       end
 
       private_class_method :build_definition
+      private_class_method :resolve_cleaner_class
       private_class_method :loose_foreign_keys_yaml
     end
   end

@@ -85,6 +85,7 @@ import {
   CREATION_CONTEXT_NEW_ROUTE,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
+import createWorkItemFeatures from '../graphql/create_work_item_features.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemTypesConfigurationQuery from '../graphql/work_item_types_configuration.query.graphql';
@@ -158,9 +159,6 @@ export default {
     },
     projectNamespaceFullPath: {
       default: '',
-    },
-    hasEpicsFeature: {
-      default: false,
     },
     getWorkItemTypeConfiguration: {
       default: () => {},
@@ -298,6 +296,7 @@ export default {
   ],
   data() {
     return {
+      availableFeatures: {},
       isTitleValid: true,
       isConfidential:
         this.confidential ||
@@ -418,6 +417,17 @@ export default {
       },
       update(data) {
         return data?.namespace?.workItem ?? {};
+      },
+    },
+    availableFeatures: {
+      query: createWorkItemFeatures,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data?.namespace?.availableFeatures ?? {};
       },
     },
   },
@@ -750,13 +760,19 @@ export default {
       // When the form asks for a project (Issues/Tasks/Incidents on a group page),
       // keep creation project-scoped even if group Epic support would otherwise
       // show the Group/project namespace selector.
-      return (
-        this.allowAnyNamespace ||
-        (this.isGroup && this.hasEpicsFeature && !this.showProjectSelector)
-      );
+      return this.allowAnyNamespace || (this.isGroup && !this.showProjectSelector);
     },
     namespaceSelectorLabel() {
-      return this.allowProjectsOnly ? __('Project') : __('Group/project');
+      return this.projectsOnly ? __('Project') : __('Group/project');
+    },
+    projectsOnly() {
+      // Epics are the only group-level work items right now. If the user cannot create epics,
+      // then do not show groups since the user will not be able to create epics.
+      if (!this.availableFeatures?.hasEpicsFeature) {
+        return true;
+      }
+
+      return this.allowProjectsOnly;
     },
     workItemWidgetsAutoSaveKey() {
       return getNewWorkItemWidgetsAutoSaveKey({
@@ -1300,7 +1316,7 @@ export default {
                 :full-path="fullPath"
                 :is-group="isGroup"
                 :limit-to-current-namespace="!allowAnyNamespace"
-                :projects-only="allowProjectsOnly"
+                :projects-only="projectsOnly"
                 toggle-id="create-work-item-namespace"
                 @select-namespace="handleNamespaceSelect"
               />
@@ -1348,7 +1364,7 @@ export default {
             />
           </gl-form-group>
         </div>
-        <div data-testid="work-item-overview" class="work-item-overview gl-mb-3">
+        <div data-testid="work-item-overview" class="work-item-overview gl-mb-3 gl-min-h-30">
           <template v-if="selectedWorkItemTypeId">
             <work-item-title
               ref="title"

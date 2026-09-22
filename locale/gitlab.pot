@@ -8395,6 +8395,14 @@ msgstr ""
 msgid "AiGovernance|%{change} this week"
 msgstr ""
 
+msgid "AiGovernance|%{count} %{verdict}"
+msgstr ""
+
+msgid "AiGovernance|%{count} flagged skill"
+msgid_plural "AiGovernance|%{count} flagged skills"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "AiGovernance|AI Governance"
 msgstr ""
 
@@ -8476,6 +8484,9 @@ msgstr ""
 msgid "AiGovernance|Failed to load MCP servers."
 msgstr ""
 
+msgid "AiGovernance|Failed to load SkillGuard results."
+msgstr ""
+
 msgid "AiGovernance|Failed to load agent inventory."
 msgstr ""
 
@@ -8521,6 +8532,9 @@ msgstr ""
 msgid "AiGovernance|MCP servers"
 msgstr ""
 
+msgid "AiGovernance|Most risky skills"
+msgstr ""
+
 msgid "AiGovernance|No MCP servers found."
 msgstr ""
 
@@ -8534,6 +8548,9 @@ msgid "AiGovernance|No recent developer activity."
 msgstr ""
 
 msgid "AiGovernance|No recent project exposure."
+msgstr ""
+
+msgid "AiGovernance|No skills have been flagged by SkillGuard."
 msgstr ""
 
 msgid "AiGovernance|No tool rules found."
@@ -8572,6 +8589,9 @@ msgstr ""
 msgid "AiGovernance|Shows the most recent sessions, not filtered by date range."
 msgstr ""
 
+msgid "AiGovernance|SkillGuard"
+msgstr ""
+
 msgid "AiGovernance|Source"
 msgstr ""
 
@@ -8608,6 +8628,9 @@ msgstr ""
 msgid "AiGovernance|View all projects"
 msgstr ""
 
+msgid "AiGovernance|View all skills"
+msgstr ""
+
 msgid "AiGovernance|View all users"
 msgstr ""
 
@@ -8615,6 +8638,12 @@ msgid "AiGovernance|Web access"
 msgstr ""
 
 msgid "AiGovernance|Write"
+msgstr ""
+
+msgid "AiGovernance|malicious"
+msgstr ""
+
+msgid "AiGovernance|suspicious"
 msgstr ""
 
 msgid "AiImpactAnalytics|%{duoCount}/%{allCount} pipelines"
@@ -39362,6 +39391,9 @@ msgstr ""
 msgid "GitLab Observability Backend requests"
 msgstr ""
 
+msgid "GitLab Orbit"
+msgstr ""
+
 msgid "GitLab Pages"
 msgstr ""
 
@@ -57355,9 +57387,6 @@ msgstr ""
 msgid "Options are not supported when creating a resolved decision"
 msgstr ""
 
-msgid "Orbit"
-msgstr ""
-
 msgid "Orbit|%{boldStart}The initial scan can take some time depending on the amount of content.%{boldEnd} After that, updated content is automatically re-indexed. You can turn off GitLab Orbit at any time."
 msgstr ""
 
@@ -57502,10 +57531,10 @@ msgstr ""
 msgid "Orbit|Connect"
 msgstr ""
 
-msgid "Orbit|Connect Orbit to your tools"
+msgid "Orbit|Connect GitLab Orbit to your tools"
 msgstr ""
 
-msgid "Orbit|Connect to Orbit"
+msgid "Orbit|Connect to GitLab Orbit"
 msgstr ""
 
 msgid "Orbit|Connect your AI assistant to Orbit via MCP. Choose your host application, then use the CLI command or manual configuration to finish setup."
@@ -57589,10 +57618,10 @@ msgstr ""
 msgid "Orbit|Explore data"
 msgstr ""
 
-msgid "Orbit|Failed to enable GitLab Orbit. Please try again."
+msgid "Orbit|Failed to enable GitLab Orbit in GitLab Duo. Please try again."
 msgstr ""
 
-msgid "Orbit|Failed to enable Orbit in GitLab Duo. Please try again."
+msgid "Orbit|Failed to enable GitLab Orbit. Please try again."
 msgstr ""
 
 msgid "Orbit|Failed to enable Orbit. Please try again."
@@ -57655,13 +57684,25 @@ msgstr ""
 msgid "Orbit|GitLab Duo"
 msgstr ""
 
-msgid "Orbit|GitLab Duo will use Orbit to provide enhanced intelligence."
+msgid "Orbit|GitLab Duo will use GitLab Orbit to provide enhanced intelligence."
+msgstr ""
+
+msgid "Orbit|GitLab Orbit"
+msgstr ""
+
+msgid "Orbit|GitLab Orbit gives your AI tools structured access to everything in GitLab, with intelligent relationships that help agents understand your codebase."
+msgstr ""
+
+msgid "Orbit|GitLab Orbit is GitLab's knowledge graph, giving agents structured understanding of your projects and how everything relates. Turn on GitLab Orbit to use in GitLab Duo or connect via MCP."
 msgstr ""
 
 msgid "Orbit|GitLab Orbit is in beta."
 msgstr ""
 
 msgid "Orbit|GitLab Orbit is not yet available for this namespace. Please try again later."
+msgstr ""
+
+msgid "Orbit|GitLab Orbit is turned off in GitLab Duo."
 msgstr ""
 
 msgid "Orbit|GitLab status"
@@ -57769,7 +57810,7 @@ msgstr ""
 msgid "Orbit|Navigate to"
 msgstr ""
 
-msgid "Orbit|No eligible groups are available for Orbit."
+msgid "Orbit|No eligible groups are available for GitLab Orbit."
 msgstr ""
 
 msgid "Orbit|No groups are excluded. Excluded top-level groups are skipped by automatic indexing."
@@ -57805,7 +57846,7 @@ msgstr ""
 msgid "Orbit|Note"
 msgstr ""
 
-msgid "Orbit|Once indexed, team members can use Orbit data through GitLab Duo Agent Platform or via MCP and CLI connections."
+msgid "Orbit|Once indexed, team members can use GitLab Orbit data through GitLab Duo Agent Platform or via MCP and CLI connections."
 msgstr ""
 
 msgid "Orbit|Only owners of this top-level group can change Orbit indexing."
@@ -57829,16 +57870,7 @@ msgstr ""
 msgid "Orbit|Orbit configuration"
 msgstr ""
 
-msgid "Orbit|Orbit gives your AI tools structured access to everything in GitLab, with intelligent relationships that help agents understand your codebase."
-msgstr ""
-
-msgid "Orbit|Orbit is GitLab's knowledge graph, giving agents structured understanding of your projects and how everything relates. Turn on Orbit to use in GitLab Duo or connect via MCP."
-msgstr ""
-
 msgid "Orbit|Orbit is available"
-msgstr ""
-
-msgid "Orbit|Orbit is turned off in GitLab Duo."
 msgstr ""
 
 msgid "Orbit|Orbit is unavailable"
@@ -57946,13 +57978,13 @@ msgstr ""
 msgid "Orbit|Select scope"
 msgstr ""
 
-msgid "Orbit|Setting up Orbit requires an Owner role in a group with at least a Premium license."
+msgid "Orbit|Setting up GitLab Orbit requires an Owner role in a group with at least a Premium license."
 msgstr ""
 
-msgid "Orbit|Settings, then Orbit"
+msgid "Orbit|Settings, then GitLab Orbit"
 msgstr ""
 
-msgid "Orbit|Setup Orbit"
+msgid "Orbit|Setup GitLab Orbit"
 msgstr ""
 
 msgid "Orbit|Setup guide"
@@ -58030,10 +58062,7 @@ msgstr ""
 msgid "Orbit|Turn on GitLab Orbit for %{groupName}"
 msgstr ""
 
-msgid "Orbit|Turn on Orbit for %{groupName}"
-msgstr ""
-
-msgid "Orbit|Turn on Orbit for %{groupName} to supercharge agents with deep contextual intelligence — they understand how code, pipelines, work items, and merge requests connect across GitLab. This means better recommendations, less manual context-gathering, and agents that get smarter as your graph grows."
+msgid "Orbit|Turn on GitLab Orbit for %{groupName} to supercharge agents with deep contextual intelligence — they understand how code, pipelines, work items, and merge requests connect across GitLab. This means better recommendations, less manual context-gathering, and agents that get smarter as your graph grows."
 msgstr ""
 
 msgid "Orbit|Turn on Orbit indexing for %{groupName}"
@@ -58057,13 +58086,13 @@ msgstr ""
 msgid "Orbit|Understand unfamiliar code without leaving the file you are reading. See what calls a symbol before you change it, and what that symbol calls. Open a file on the default branch, then select Code navigation %{icon} in the upper-right corner."
 msgstr ""
 
-msgid "Orbit|Use Orbit in GitLab Duo"
+msgid "Orbit|Use GitLab Orbit in GitLab Duo"
+msgstr ""
+
+msgid "Orbit|Use GitLab Orbit with GitLab Duo"
 msgstr ""
 
 msgid "Orbit|Use Orbit in your repositories"
-msgstr ""
-
-msgid "Orbit|Use Orbit with GitLab Duo"
 msgstr ""
 
 msgid "Orbit|Use Orbit."
@@ -58141,7 +58170,7 @@ msgstr ""
 msgid "Orbit|You don't have permission to update Orbit for this namespace."
 msgstr ""
 
-msgid "Orbit|You must have the Owner role in a top-level group to turn on Orbit. Ask an owner to turn on Orbit."
+msgid "Orbit|You must have the Owner role in a top-level group to turn on GitLab Orbit. Ask an owner to turn on GitLab Orbit."
 msgstr ""
 
 msgid "Orbit|Zoom"

@@ -1084,7 +1084,11 @@ module Types
     end
 
     def container_repositories_count
-      project.container_repositories.size
+      BatchLoader::GraphQL.for(project.id).batch(default_value: 0) do |project_ids, loader|
+        ::ContainerRepository.for_project_id(project_ids).counts_by_project_id.each do |project_id, count|
+          loader.call(project_id, count)
+        end
+      end
     end
 
     def ci_pipeline_creation_inputs(ref:, fail_on_cache_miss: false)

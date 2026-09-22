@@ -1865,6 +1865,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         expect(build.coverage).to eq(98.29)
       end
     end
+
+    context 'when coverage_regex is blank' do
+      before do
+        build.coverage_regex = nil
+        build.trace.set('Coverage 1033 / 1051 LOC (98.29%) covered')
+      end
+
+      it 'does not read the trace' do
+        expect(build).not_to receive(:trace)
+
+        expect(build.update_coverage).to be_nil
+        expect(build.coverage).to be_nil
+      end
+    end
   end
 
   describe '#trace' do

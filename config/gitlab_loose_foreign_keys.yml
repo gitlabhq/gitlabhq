@@ -1121,19 +1121,24 @@ vulnerability_export_parts:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+    cleaner_class: Vulnerabilities::Exports::PartsLooseForeignKeyCleanerService
 vulnerability_exports:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+    cleaner_class: Vulnerabilities::Exports::LooseForeignKeyCleanerService
   - table: namespaces
     column: group_id
     on_delete: async_delete
+    cleaner_class: Vulnerabilities::Exports::LooseForeignKeyCleanerService
   - table: projects
     column: project_id
     on_delete: async_delete
+    cleaner_class: Vulnerabilities::Exports::LooseForeignKeyCleanerService
   - table: users
     column: author_id
     on_delete: async_delete
+    cleaner_class: Vulnerabilities::Exports::LooseForeignKeyCleanerService
 vulnerability_external_issue_links:
   - table: projects
     column: project_id

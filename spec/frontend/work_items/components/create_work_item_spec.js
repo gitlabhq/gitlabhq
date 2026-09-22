@@ -43,12 +43,14 @@ import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { updateDraftWorkItemType } from '~/work_items/utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
+import createWorkItemFeaturesQuery from '~/work_items/graphql/create_work_item_features.query.graphql';
 import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import {
+  createWorkItemFeaturesQueryResponse,
   createWorkItemMutationResponse,
   createWorkItemMutationErrorResponse,
   createWorkItemQueryResponse,
@@ -101,6 +103,7 @@ describe('Create work item component', () => {
 
   let namespaceWorkItemTypesHandler;
   let workItemTypesConfigurationHandler;
+  let createWorkItemFeaturesHandler;
 
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -135,6 +138,7 @@ describe('Create work item component', () => {
     preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     isGroupWorkItem = false,
     fullPath = 'full-path',
+    hasEpicsFeature = false,
   } = {}) => {
     const namespaceResponseCopy = cloneDeep(namespaceQueryResponse);
     namespaceResponseCopy.data.namespace.id = 'gid://gitlab/Group/33';
@@ -144,6 +148,9 @@ describe('Create work item component', () => {
     workItemTypesConfigurationHandler = jest
       .fn()
       .mockResolvedValue(mockWorkItemTypesConfigurationResponse);
+    createWorkItemFeaturesHandler = jest
+      .fn()
+      .mockResolvedValue(createWorkItemFeaturesQueryResponse({ hasEpicsFeature }));
 
     const mockResult = createControlledMockApollo(
       [
@@ -151,6 +158,7 @@ describe('Create work item component', () => {
         [createWorkItemMutation, mutationHandler],
         [namespaceWorkItemTypesQuery, namespaceWorkItemTypesHandler],
         [workItemTypesConfigurationQuery, workItemTypesConfigurationHandler],
+        [createWorkItemFeaturesQuery, createWorkItemFeaturesHandler],
       ],
       resolvers,
     );
@@ -411,7 +419,7 @@ describe('Create work item component', () => {
     it('renders with the current namespace selected by default', async () => {
       createComponent({
         props: { isGroup: true },
-        provide: { hasEpicsFeature: true },
+        hasEpicsFeature: true,
       });
       await resolveAll();
 
@@ -424,7 +432,7 @@ describe('Create work item component', () => {
       ${'group list page'}           | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
       ${'any namespace allowed'}     | ${false} | ${true}           | ${false}        | ${false}            | ${true}
       ${'EE with epics'}             | ${true}  | ${false}          | ${true}         | ${false}            | ${true}
-      ${'CE group no epics'}         | ${true}  | ${false}          | ${false}        | ${false}            | ${false}
+      ${'CE group no epics'}         | ${true}  | ${false}          | ${false}        | ${false}            | ${true}
       ${'CE project, no epics'}      | ${false} | ${false}          | ${false}        | ${false}            | ${false}
       ${'group issue needs project'} | ${true}  | ${false}          | ${true}         | ${true}             | ${false}
     `(
@@ -432,7 +440,7 @@ describe('Create work item component', () => {
       async ({ isGroup, allowAnyNamespace, hasEpicsFeature, showProjectSelector, expected }) => {
         createComponent({
           props: { isGroup, allowAnyNamespace, showProjectSelector },
-          provide: { hasEpicsFeature },
+          hasEpicsFeature,
         });
 
         await resolveAll();
@@ -441,13 +449,13 @@ describe('Create work item component', () => {
     );
 
     it.each`
-      scenario                   | props                          | provide                      | limitToCurrentNamespace
-      ${'any namespace allowed'} | ${{ allowAnyNamespace: true }} | ${{}}                        | ${false}
-      ${'on a group list page'}  | ${{ isGroup: true }}           | ${{ hasEpicsFeature: true }} | ${true}
+      scenario                   | props                          | hasEpicsFeature | limitToCurrentNamespace
+      ${'any namespace allowed'} | ${{ allowAnyNamespace: true }} | ${false}        | ${false}
+      ${'on a group list page'}  | ${{ isGroup: true }}           | ${true}         | ${true}
     `(
       '$scenario passes limitToCurrentNamespace: $limitToCurrentNamespace',
-      async ({ props, provide, limitToCurrentNamespace }) => {
-        createComponent({ props, provide });
+      async ({ props, hasEpicsFeature, limitToCurrentNamespace }) => {
+        createComponent({ props, hasEpicsFeature });
         await resolveAll();
 
         expect(findGroupProjectSelector().props('limitToCurrentNamespace')).toBe(
@@ -460,7 +468,10 @@ describe('Create work item component', () => {
       const findSelectorFormGroup = () => wrapper.findByTestId('work-item-namespace-form-group');
 
       it('restricts the selector to projects and labels it Project', async () => {
-        createComponent({ props: { allowAnyNamespace: true, allowProjectsOnly: true } });
+        createComponent({
+          props: { allowAnyNamespace: true, allowProjectsOnly: true },
+          hasEpicsFeature: true,
+        });
         await resolveAll();
 
         expect(findGroupProjectSelector().props('projectsOnly')).toBe(true);
@@ -468,18 +479,58 @@ describe('Create work item component', () => {
       });
 
       it('offers groups and projects under the Group/project label by default', async () => {
-        createComponent({ props: { allowAnyNamespace: true } });
+        createComponent({
+          props: { allowAnyNamespace: true },
+          hasEpicsFeature: true,
+        });
         await resolveAll();
 
         expect(findGroupProjectSelector().props('projectsOnly')).toBe(false);
         expect(findSelectorFormGroup().attributes('label')).toBe('Group/project');
       });
+
+      it('restricts the selector to projects on a group page without epics support, even when not explicitly requested', async () => {
+        createComponent({
+          props: { isGroup: true, allowProjectsOnly: false },
+          hasEpicsFeature: false,
+        });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('projectsOnly')).toBe(true);
+      });
+
+      it('does not restrict the selector to projects on a group page with epics support', async () => {
+        createComponent({
+          props: { isGroup: true, allowProjectsOnly: false },
+          hasEpicsFeature: true,
+        });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('projectsOnly')).toBe(false);
+      });
+
+      it('restricts the selector to projects when any namespace is allowed but epics are not supported', async () => {
+        createComponent({
+          props: { allowAnyNamespace: true, allowProjectsOnly: false },
+          hasEpicsFeature: false,
+        });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('projectsOnly')).toBe(true);
+      });
+    });
+
+    it('queries the epics feature availability for the current namespace', async () => {
+      createComponent({ props: { isGroup: true }, hasEpicsFeature: true });
+      await resolveAll();
+
+      expect(createWorkItemFeaturesHandler).toHaveBeenCalledWith({ fullPath: 'full-path' });
     });
 
     it('updates available work item types when new namespace is selected', async () => {
       createComponent({
         props: { isGroup: true },
-        provide: { hasEpicsFeature: true },
+        hasEpicsFeature: true,
       });
       await resolveAll();
 
@@ -496,7 +547,7 @@ describe('Create work item component', () => {
       const setupGroupForm = async () => {
         createComponent({
           props: { isGroup: true },
-          provide: { hasEpicsFeature: true },
+          hasEpicsFeature: true,
         });
         await resolveAll();
       };
@@ -550,7 +601,7 @@ describe('Create work item component', () => {
         async ({ namespaceObject, expectedIsGroup }) => {
           createComponent({
             props: { isGroup: true },
-            provide: { hasEpicsFeature: true },
+            hasEpicsFeature: true,
           });
           await resolveAll();
 
@@ -569,7 +620,7 @@ describe('Create work item component', () => {
       it('falls back to isGroup prop when no namespace object is emitted', async () => {
         createComponent({
           props: { isGroup: true },
-          provide: { hasEpicsFeature: true },
+          hasEpicsFeature: true,
         });
         await resolveAll();
 
@@ -1630,7 +1681,7 @@ describe('Create work item component', () => {
       beforeEach(async () => {
         createComponent({
           props: { isGroup: true },
-          provide: { hasEpicsFeature: true },
+          hasEpicsFeature: true,
         });
         await resolveAll();
       });

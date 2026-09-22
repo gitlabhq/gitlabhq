@@ -334,47 +334,6 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
         member.save!
       end
 
-      it 'recalculates authorizations when the group has a project' do
-        create(:project, group: group)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
-
-        member.save!
-      end
-
-      it 'recalculates authorizations when a subgroup has a project' do
-        subgroup = create(:group, parent: group)
-        create(:project, group: subgroup)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
-
-        member.save!
-      end
-
-      it 'recalculates authorizations when the group has an inbound group share' do
-        create(:group_group_link, shared_with_group: group)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
-
-        member.save!
-      end
-
-      it 'recalculates authorizations when the group has an inbound project share' do
-        create(:project_group_link, group: group)
-
-        expect_next_instance_of(AuthorizedProjectsWorker) do |worker|
-          expect(worker).to receive(:perform).with(user.id)
-        end
-
-        member.save!
-      end
-
       it 'recalculates authorizations on a subsequent update of the same member object' do
         member.save!
 

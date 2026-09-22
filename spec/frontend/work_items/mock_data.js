@@ -7768,6 +7768,19 @@ export const createWorkItemQueryResponseWithFeatures = (widgets = []) => {
   return base;
 };
 
+export const createWorkItemFeaturesQueryResponse = ({ hasEpicsFeature = false } = {}) => ({
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/33',
+      availableFeatures: {
+        hasEpicsFeature,
+        __typename: 'NamespaceAvailableFeatures',
+      },
+      __typename: 'Group',
+    },
+  },
+});
+
 export const mockToggleResolveDiscussionResponse = {
   data: {
     discussionToggleResolve: {

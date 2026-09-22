@@ -94,23 +94,6 @@ For user contributions to be mapped, each user must complete the following befor
    username in the Bitbucket account settings.
 1. Connect your Bitbucket account in [GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 
-### Generate a Bitbucket Cloud app password (removed)
-
-<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
-
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961) in GitLab 18.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/588961) in GitLab 19.0.
-Use [Bitbucket Cloud API token](#generate-a-bitbucket-cloud-api-token) instead.
-
-<!--- end_remove -->
-
 ### Generate a Bitbucket Cloud API token
 
 To use the import API to import a Bitbucket Cloud repository, you must create a Bitbucket Cloud API token.

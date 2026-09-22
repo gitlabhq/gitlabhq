@@ -343,6 +343,19 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when created with skip_authorized_projects_refresh set' do
+      it 'leaves the refresh to the caller' do
+        other_user = create(:user)
+
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).not_to receive(:new)
+        expect(UserProjectAccessChangedService).not_to receive(:new)
+
+        create(:project_member, source: project, user: other_user, skip_authorized_projects_refresh: true)
+
+        expect(other_user.authorized_projects).not_to include(project)
+      end
+    end
+
     context 'when importing' do
       it 'does not refresh' do
         # this is inline with the overridden behaviour in stubbed_member.rb

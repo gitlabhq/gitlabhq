@@ -829,6 +829,8 @@ module Ci
     end
 
     def update_coverage
+      return unless coverage_regex.present?
+
       coverage = trace.extract_coverage(coverage_regex)
       update(coverage: coverage) if coverage.present?
     end

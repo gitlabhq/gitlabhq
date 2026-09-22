@@ -345,7 +345,6 @@
     "chokidar": "^3.5.3",
     "nwsapi": "2.2.2",
     "@inquirer/confirm": "5.1.21",
-    "tough-cookie": "4.1.3",
     "rollup": "^4.60.0"
   },
   "engines": {

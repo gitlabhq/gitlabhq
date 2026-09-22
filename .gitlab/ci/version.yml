@@ -12,7 +12,7 @@ variables:
   KIND_NODE_IMAGE: kindest/node:v1.34.0
   KUBECTL_VERSION: "1.33"
   LFS_VERSION: "2.9"
-  NODE_VERSION: "22.12"
+  NODE_VERSION: "22.23"
   PYTHON_VERSION: "3.12"
   POETRY_VERSION: "2.2"
   OS_VERSION: "trixie"

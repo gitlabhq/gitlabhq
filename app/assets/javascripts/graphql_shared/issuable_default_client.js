@@ -198,6 +198,9 @@ export const config = {
       NamespacePermissions: {
         merge: true,
       },
+      NamespaceAvailableFeatures: {
+        merge: true,
+      },
       ProjectPermissions: {
         merge: true,
       },

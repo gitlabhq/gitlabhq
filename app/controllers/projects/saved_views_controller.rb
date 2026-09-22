@@ -22,5 +22,3 @@ module Projects
     end
   end
 end
-
-Projects::SavedViewsController.prepend_mod

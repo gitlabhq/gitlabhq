@@ -1653,6 +1653,39 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'skip_authorized_projects_refresh' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    let(:member) { create(:group_member, group: group, user: user) }
+
+    it 'skips the refresh for the update it is set for' do
+      member.skip_authorized_projects_refresh = true
+
+      expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+      member.update!(access_level: Gitlab::Access::MAINTAINER)
+    end
+
+    it 'is cleared once the save it was set for is committed' do
+      member.skip_authorized_projects_refresh = true
+
+      member.update!(access_level: Gitlab::Access::MAINTAINER)
+
+      expect(member.skip_authorized_projects_refresh).to be(false)
+    end
+
+    context 'when importing' do
+      let(:member) { build(:group_member, group: group, user: user, importing: true) }
+
+      it 'does not refresh' do
+        expect(AuthorizedProjectsWorker).not_to receive(:new)
+
+        member.save!
+      end
+    end
+  end
+
   describe '#refresh_member_authorized_projects' do
     let_it_be(:member) { create(:group_member) }
 

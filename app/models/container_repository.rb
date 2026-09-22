@@ -43,6 +43,7 @@ class ContainerRepository < ApplicationRecord
     joins("INNER JOIN (#{project_scope.to_sql}) projects on projects.id=container_repositories.project_id")
   end
   scope :for_project_id, ->(project_id) { where(project_id: project_id) }
+  scope :counts_by_project_id, -> { reorder(nil).group(:project_id).count }
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :waiting_for_cleanup, -> { where(expiration_policy_cleanup_status: WAITING_CLEANUP_STATUSES) }
   scope :expiration_policy_started_at_nil_or_before, ->(timestamp) { where('expiration_policy_started_at < ? OR expiration_policy_started_at IS NULL', timestamp) }

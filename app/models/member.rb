@@ -27,16 +27,11 @@ class Member < ApplicationRecord
 
   attr_accessor :raw_invite_token
 
-  # Transient flag set by callers that already handle the refresh
-  # themselves, so the refresh callback can skip its own.
-  # On create: set by Groups::CreateService for a new group's owner and
-  # read only by GroupMember#refresh_member_authorized_projects, which
-  # still checks that the group grants no project access.
-  # On destroy: set by Members::DestroyService when its caller passes
-  # skip_authorized_projects_refresh: true and refreshes once afterwards;
-  # read by the destroy callback below.
+  # Transient flag: do not run the authorized projects refresh for the save this
+  # was set for. Set by Members::DestroyService, which refreshes once per batch,
+  # and by Groups::CreateService, where the new group has nothing to authorize.
+  # Consumed by the after_commit below, so it never carries into a later save.
   attr_accessor :skip_authorized_projects_refresh
-  alias_method :skip_authorized_projects_refresh?, :skip_authorized_projects_refresh
 
   # Transient UserProjectAccessChangedService priority, set by callers
   # that destroy a member as part of destroying its user. Currently only
@@ -395,12 +390,9 @@ class Member < ApplicationRecord
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
   after_commit :log_previous_state_on_update, unless: :importing?, on: [:update]
-  after_commit on: [:create, :update], unless: :importing? do
-    refresh_member_authorized_projects
-  end
-  # Members::DestroyService sets the flag when its caller refreshes once afterwards
-  after_commit on: [:destroy], unless: [:importing?, :skip_authorized_projects_refresh?] do
-    refresh_member_authorized_projects
+  after_commit on: [:create, :update, :destroy] do
+    refresh_member_authorized_projects if authorized_projects_refresh_required?
+    self.skip_authorized_projects_refresh = false
   end
 
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
@@ -809,6 +801,12 @@ class Member < ApplicationRecord
     @authorized_projects_refresh_priority || UserProjectAccessChangedService::HIGH_PRIORITY
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  # Imports suppress member side effects like the other importing? guards above,
+  # and callers can opt out of a single save via the flag.
+  def authorized_projects_refresh_required?
+    !importing? && !skip_authorized_projects_refresh
+  end
 
   def after_accept_invite
     run_after_commit_or_now { Members::InviteAcceptedMailer.with(member: self).email.deliver_later }

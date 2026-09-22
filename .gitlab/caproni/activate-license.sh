@@ -37,6 +37,11 @@ info()  { echo "[INFO] $*"; }
 warn()  { echo "[WARN] $*" >&2; }
 err()   { echo "[ERROR] $*" >&2; }
 
+print_unlicensed_hint() {
+  err "To start unlicensed instead, set CAPRONI_ACTIVATE_LICENSE=0, or activate manually at:"
+  err "  http://gitlab.caproni.test/admin/subscription"
+}
+
 # ------------------------------------------------------------------
 # 0. Opt-in check — skip unless CAPRONI_ACTIVATE_LICENSE=1
 # ------------------------------------------------------------------
@@ -58,15 +63,21 @@ if ! command -v op &>/dev/null; then
 fi
 
 if ! op whoami --account "${ONEPASSWORD_ACCOUNT}" </dev/null &>/dev/null; then
+  if ! op account list 2>/dev/null | grep -q "${ONEPASSWORD_ACCOUNT}"; then
+    err "1Password account '${ONEPASSWORD_ACCOUNT}' is not configured for the op CLI."
+    err "Sign in once with: 'op signin --account ${ONEPASSWORD_ACCOUNT}'"
+    print_unlicensed_hint
+    exit 1
+  fi
+
   info "Signing in to 1Password (${ONEPASSWORD_ACCOUNT})..."
   session=""
   # Without 1Password app integration, signin prints an OP_SESSION_* export
   # to stdout that later `op` calls need; with it enabled, eval is a no-op.
-  if ! session=$(op signin --account "${ONEPASSWORD_ACCOUNT}"); then
+  if ! session=$(op signin --account "${ONEPASSWORD_ACCOUNT}" </dev/null); then
     err "1Password sign-in failed — cannot fetch the license activation code."
     err "Run 'op signin --account ${ONEPASSWORD_ACCOUNT}' to see why, then re-run 'caproni run'."
-    err "To start unlicensed instead, set CAPRONI_ACTIVATE_LICENSE=0, or activate manually at:"
-    err "  http://gitlab.caproni.test/admin/subscription"
+    print_unlicensed_hint
     exit 1
   fi
   eval "${session}"

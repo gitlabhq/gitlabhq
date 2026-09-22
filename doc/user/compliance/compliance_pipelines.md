@@ -3,10 +3,10 @@ stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Compliance pipelines (deprecated)
-description: Compliance pipelines (deprecated in 17.3, planned to be removed in 19.0) enables centralized CI/CD control for labeled projects. Replaced by pipeline execution policies.
+description: Compliance pipelines (deprecated in 17.3, planned to be removed in 20.0) enables centralized CI/CD control for labeled projects. Replaced by pipeline execution policies.
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2027-05-25' -->
 
 {{< details >}}
 

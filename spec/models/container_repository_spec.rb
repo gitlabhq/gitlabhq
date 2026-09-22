@@ -1131,6 +1131,28 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     it { is_expected.to contain_exactly(repository) }
   end
 
+  describe '.counts_by_project_id' do
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:other_repositories) { create_list(:container_repository, 2, project: other_project) }
+    let_it_be(:project_without_repositories) { create(:project) }
+
+    subject { described_class.for_project_id([project.id, other_project.id]).counts_by_project_id }
+
+    before do
+      repository
+    end
+
+    it { is_expected.to eq(project.id => 1, other_project.id => 2) }
+
+    it 'omits projects without container repositories' do
+      expect(described_class.for_project_id(project_without_repositories.id).counts_by_project_id).to be_empty
+    end
+
+    it 'ignores any ordering already applied to the relation' do
+      expect(described_class.ordered.for_project_id(project.id).counts_by_project_id).to eq(project.id => 1)
+    end
+  end
+
   describe '.expiration_policy_started_at_nil_or_before' do
     let_it_be(:repository1) { create(:container_repository, expiration_policy_started_at: nil) }
     let_it_be(:repository2) { create(:container_repository, expiration_policy_started_at: 1.day.ago) }

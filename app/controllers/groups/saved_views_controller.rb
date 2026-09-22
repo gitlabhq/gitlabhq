@@ -22,5 +22,3 @@ module Groups
     end
   end
 end
-
-Groups::SavedViewsController.prepend_mod

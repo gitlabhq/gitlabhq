@@ -21,7 +21,7 @@ class PlanLimits < ApplicationRecord
 
   before_validation :set_plan_name_uid
 
-  validates :plan_name_uid, presence: true
+  validates :plan_name_uid, inclusion: { in: ::GitlabSubscriptions::SystemDefined::Plan.all.map(&:id) }
   validates :notification_limit, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :enforcement_limit, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :web_hook_calls, numericality: { only_integer: true, greater_than_or_equal_to: 0 },
@@ -85,10 +85,17 @@ class PlanLimits < ApplicationRecord
     limits_history
   end
 
-  def set_plan_name_uid
-    return if plan_name_uid.present? && !plan_id_changed?
+  private
 
-    self.plan_name_uid = plan&.plan_name_uid_before_type_cast
+  def set_plan_name_uid
+    if plan_name_uid_changed? && plan_name_uid.present?
+      # plan_name_uid is the authoritative write input; plan stays in sync only for
+      # fk_rails_69f8b6184f until plan_id is dropped (https://gitlab.com/gitlab-org/gitlab/-/work_items/600314).
+      plan_for_uid = Plan.find_by(plan_name_uid: plan_name_uid)
+      self.plan = plan_for_uid if plan_for_uid && plan_for_uid.id != plan_id
+    elsif plan_name_uid.blank? || plan_id_changed?
+      self.plan_name_uid = plan&.plan_name_uid_before_type_cast
+    end
   end
 end
 

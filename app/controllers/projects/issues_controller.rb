@@ -75,7 +75,7 @@ class Projects::IssuesController < Projects::ApplicationController
     :destroy, :move, :reorder, :designs, :toggle_subscription,
     :discussions, :bulk_update, :realtime_changes,
     :toggle_award_emoji, :mark_as_spam, :related_branches,
-    :can_create_branch, :create_merge_request
+    :can_create_branch, :create_merge_request, :export_csv
   ]
   urgency :low, [
     :index, :calendar, :show, :new, :update, :move, :reorder, :designs, :toggle_subscription,
@@ -86,7 +86,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   feature_category :service_desk, [:service_desk]
   urgency :low, [:service_desk]
-  feature_category :importers, [:import_csv, :export_csv]
+  feature_category :importers, [:import_csv]
   urgency :low, [:import_csv, :export_csv]
 
   def index

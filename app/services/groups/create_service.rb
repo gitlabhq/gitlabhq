@@ -71,9 +71,8 @@ module Groups
       ) do
         Group.transaction do
           if @group.save
-            # A brand-new group has no projects, so recalculating the owner's
-            # authorized projects here is a no-op. Skip the high-urgency refresh
-            # to keep it off the AuthorizedProjectsWorker 10s-target path.
+            # The group was saved in this transaction, so it has no projects and no
+            # inbound group or project share: the owner's authorizations cannot change.
             @group.add_owner(current_user, skip_authorized_projects_refresh: true)
             Integration.create_from_default_integrations(@group, :group_id)
           end
