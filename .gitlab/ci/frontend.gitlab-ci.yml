@@ -25,6 +25,7 @@ include:
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
+    GIT_DEPTH: "1"
   stage: prepare
   needs:
     - cache:assets-hash
@@ -177,6 +178,7 @@ compile-fe-islands:
   stage: prepare
   variables:
     USE_BUNDLE_INSTALL: "false"
+    GIT_DEPTH: "1"
   script:
     - scripts/build_frontend_islands
   artifacts:

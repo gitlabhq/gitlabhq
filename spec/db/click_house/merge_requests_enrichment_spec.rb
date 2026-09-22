@@ -8,6 +8,7 @@ RSpec.describe 'merge_requests enrichment', :click_house, feature_category: :dat
   let(:mr_id) { 1001 }
   let(:path) { '1/1/' }
   let(:base_version) { '2026-09-01 10:00:00.000000' }
+  let(:boolean_type) { ActiveModel::Type::Boolean.new }
 
   # Trigger the scheduled view automatically
   def enrich!
@@ -44,6 +45,7 @@ RSpec.describe 'merge_requests enrichment', :click_house, feature_category: :dat
         metric_commits_count
       FROM merge_requests FINAL
       WHERE id = #{id}
+      SETTINGS output_format_json_quote_64bit_integers = 0
     SQL
   end
 
@@ -58,7 +60,7 @@ RSpec.describe 'merge_requests enrichment', :click_house, feature_category: :dat
         WHERE id = #{mr_id} AND _siphon_replicated_at = '#{base_version}'
       SQL
 
-      expect(row['_siphon_enriched']).to be(false)
+      expect(boolean_type.cast(row['_siphon_enriched'])).to be(false)
       expect(row['reviewers']).to eq(0)
       expect(row['labels']).to eq(0)
       expect(row['metric_diff_size']).to be_nil
@@ -125,7 +127,7 @@ RSpec.describe 'merge_requests enrichment', :click_house, feature_category: :dat
       enrich!
       row = enriched_row
 
-      expect(row['_siphon_enriched']).to be(true)
+      expect(boolean_type.cast(row['_siphon_enriched'])).to be(true)
       expect(row['reviewer_ids']).to eq([11, 13])   # 12 was deleted
       expect(row['reviewer_states']).to eq([1, 9])  # 13 took its later state
       expect(row['assignee_ids']).to eq([21])
@@ -238,7 +240,7 @@ RSpec.describe 'merge_requests enrichment', :click_house, feature_category: :dat
 
       [2001, 2002].each do |id|
         row = enriched_row(id: id)
-        expect(row['_siphon_enriched']).to be(true)
+        expect(boolean_type.cast(row['_siphon_enriched'])).to be(true)
         expect(row['reviewer_ids']).to eq([])
         expect(row['labels']).to eq([])
         expect(row['metric_diff_size']).to be_nil

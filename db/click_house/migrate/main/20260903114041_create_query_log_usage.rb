@@ -32,7 +32,7 @@ class CreateQueryLogUsage < ClickHouse::Migration
       ENGINE = MergeTree
       PARTITION BY toYYYYMM(event_time)
       ORDER BY (event_time, query_id)
-      TTL event_time + INTERVAL 3 MONTH
+      TTL toDateTime(event_time) + INTERVAL 3 MONTH
     SQL
   end
 

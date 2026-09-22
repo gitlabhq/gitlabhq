@@ -785,7 +785,7 @@ CREATE TABLE merge_requests_base
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (traversal_path, id)
 ORDER BY (traversal_path, id)
-TTL seen + toIntervalHour(1)
+TTL toDateTime(seen) + toIntervalHour(1)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE namespace_organizations
@@ -860,7 +860,7 @@ CREATE TABLE query_log_usage
 ENGINE = MergeTree
 PARTITION BY toYYYYMM(event_time)
 ORDER BY (event_time, query_id)
-TTL event_time + toIntervalMonth(3)
+TTL toDateTime(event_time) + toIntervalMonth(3)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE schema_migrations
@@ -1471,7 +1471,7 @@ ENGINE = ReplacingMergeTree(version, deleted)
 PARTITION BY toYYYYMM(timestamp)
 PRIMARY KEY (postgresql_schema, postgresql_table, timestamp, uuid)
 ORDER BY (postgresql_schema, postgresql_table, timestamp, uuid)
-TTL timestamp + toIntervalMonth(12)
+TTL toDateTime(timestamp) + toIntervalMonth(12)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE siphon_issue_assignees
@@ -1589,7 +1589,7 @@ CREATE TABLE siphon_issues
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
     `_siphon_deleted` Bool DEFAULT false
 )
-ENGINE = `Null`;
+ENGINE = Null;
 
 CREATE TABLE siphon_knowledge_graph_enabled_namespaces
 (
@@ -1937,7 +1937,7 @@ CREATE TABLE siphon_merge_requests
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC'),
     `_siphon_deleted` Bool DEFAULT false
 )
-ENGINE = `Null`;
+ENGINE = Null;
 
 CREATE TABLE siphon_merge_requests_closing_issues
 (

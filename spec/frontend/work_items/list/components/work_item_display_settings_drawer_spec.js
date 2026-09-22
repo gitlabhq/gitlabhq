@@ -313,7 +313,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
     it('renders whichever page the page prop changes to, since the parent owns it', async () => {
       createComponent({ props: { open: true, viewMode: VIEW_MODE_BOARD } });
 
-      expect(findTitle().text()).toBe('Display');
+      expect(findTitle().text()).toBe('Display options');
 
       await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_GROUP_BY });
 
@@ -322,7 +322,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
 
       await wrapper.setProps({ page: DISPLAY_SETTINGS_PAGE_ROOT });
 
-      expect(findTitle().text()).toBe('Display');
+      expect(findTitle().text()).toBe('Display options');
       expect(findGroupBy().exists()).toBe(false);
     });
   });

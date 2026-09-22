@@ -3,8 +3,8 @@ name: siphon_internal_events
 engine: ReplacingMergeTree
 engine_full: ReplacingMergeTree(version, deleted) PARTITION BY toYYYYMM(timestamp)
   PRIMARY KEY (postgresql_schema, postgresql_table, timestamp, uuid) ORDER BY (postgresql_schema,
-  postgresql_table, timestamp, uuid) TTL timestamp + toIntervalMonth(12) SETTINGS
-  index_granularity = 8192
+  postgresql_table, timestamp, uuid) TTL toDateTime(timestamp) + toIntervalMonth(12)
+  SETTINGS index_granularity = 8192
 partition_key: toYYYYMM(timestamp)
 primary_key: postgresql_schema, postgresql_table, timestamp, uuid
 sorting_key: postgresql_schema, postgresql_table, timestamp, uuid

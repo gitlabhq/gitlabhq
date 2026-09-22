@@ -139,22 +139,20 @@ GitLab evaluates the following rules in order and assigns the first type that ma
 | Rule                                                                                         | Assigned report type |
 |----------------------------------------------------------------------------------------------|----------------------|
 | Any identifier is a CVE.                                                                     | Dependency scanning  |
-| Any identifier is a secret-related CWE. <sup>1</sup>                                         | Secret detection     |
+| Any identifier is a secret-related CWE.[^following-cwes-secret]                                         | Secret detection     |
 | Default (none of the rules matched)                                                          | SAST                 |
 
-**Footnotes:**
+[^following-cwes-secret]: The following CWEs are secret-related:
 
-1. The following CWEs are secret-related:
-
-   - [CWE-798 (Hard-coded credentials)](https://cwe.mitre.org/data/definitions/798.html).
-   - [CWE-259 (Hard-coded password)](https://cwe.mitre.org/data/definitions/259.html).
-   - [CWE-321 (Hard-coded cryptographic key)](https://cwe.mitre.org/data/definitions/321.html).
-   - [CWE-522 (Insufficiently protected credentials)](https://cwe.mitre.org/data/definitions/522.html).
-   - [CWE-312 (Cleartext storage of sensitive information)](https://cwe.mitre.org/data/definitions/312.html).
-   - [CWE-319 (Cleartext transmission of sensitive information)](https://cwe.mitre.org/data/definitions/319.html).
-   - [CWE-256 (Plaintext storage of a password)](https://cwe.mitre.org/data/definitions/256.html).
-   - [CWE-257 (Storing passwords in a recoverable format)](https://cwe.mitre.org/data/definitions/257.html).
-   - [CWE-540 (Inclusion of sensitive information in source code)](https://cwe.mitre.org/data/definitions/540.html).
+    - [CWE-798 (Hard-coded credentials)](https://cwe.mitre.org/data/definitions/798.html).
+    - [CWE-259 (Hard-coded password)](https://cwe.mitre.org/data/definitions/259.html).
+    - [CWE-321 (Hard-coded cryptographic key)](https://cwe.mitre.org/data/definitions/321.html).
+    - [CWE-522 (Insufficiently protected credentials)](https://cwe.mitre.org/data/definitions/522.html).
+    - [CWE-312 (Cleartext storage of sensitive information)](https://cwe.mitre.org/data/definitions/312.html).
+    - [CWE-319 (Cleartext transmission of sensitive information)](https://cwe.mitre.org/data/definitions/319.html).
+    - [CWE-256 (Plaintext storage of a password)](https://cwe.mitre.org/data/definitions/256.html).
+    - [CWE-257 (Storing passwords in a recoverable format)](https://cwe.mitre.org/data/definitions/257.html).
+    - [CWE-540 (Inclusion of sensitive information in source code)](https://cwe.mitre.org/data/definitions/540.html).
 
 GitLab reads identifiers from three sources in a result and its rule, in this order:
 

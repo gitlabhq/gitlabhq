@@ -1053,6 +1053,8 @@ For example, use footnotes when you must:
 
 In the table cell, write a footnote reference as `[^label]`.
 Add the reference at the end of the sentence, with no space before it.
+If a cell or sentence needs more than one footnote reference, separate them with a comma and a space.
+For example, `[^registration-shell], [^default-shell]`.
 Write the matching definition as `[^label]: Footnote text.`
 
 For example:

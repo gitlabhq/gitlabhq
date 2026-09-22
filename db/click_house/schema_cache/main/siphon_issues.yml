@@ -1,7 +1,7 @@
 ---
 name: siphon_issues
 engine: 'Null'
-engine_full: "`Null`"
+engine_full: 'Null'
 columns:
 - name: id
   type: Int64

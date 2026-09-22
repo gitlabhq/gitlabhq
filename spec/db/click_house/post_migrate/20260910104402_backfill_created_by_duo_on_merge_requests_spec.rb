@@ -7,11 +7,12 @@ require Rails.root.join 'db/click_house/post_migrate/main/20260910104402_backfil
 RSpec.describe BackfillCreatedByDuoOnMergeRequests, :click_house, feature_category: :value_stream_management do
   let(:connection) { ::ClickHouse::Connection.new(:main) }
   let(:migration) { described_class.new(connection) }
+  let(:boolean_type) { ActiveModel::Type::Boolean.new }
 
   def created_by_duo_by_id
     connection
       .select('SELECT id, created_by_duo FROM merge_requests ORDER BY id')
-      .to_h { |row| [row['id'], row['created_by_duo']] }
+      .to_h { |row| [row['id'], boolean_type.cast(row['created_by_duo'])] }
   end
 
   context 'when there is data' do

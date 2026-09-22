@@ -93381,7 +93381,7 @@ msgstr ""
 msgid "WorkItems|Blocked/Blocking"
 msgstr ""
 
-msgid "WorkItems|Display"
+msgid "WorkItems|Display options"
 msgstr ""
 
 msgid "WorkItems|Fields"

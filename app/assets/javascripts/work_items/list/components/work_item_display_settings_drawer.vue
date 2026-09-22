@@ -41,7 +41,7 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   i18n: {
-    title: s__('WorkItems|Display'),
+    title: s__('WorkItems|Display options'),
     groupBy: s__('WorkItems|Group by'),
     goBack: __('Go back'),
   },

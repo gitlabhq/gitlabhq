@@ -7,6 +7,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
   subject(:execute) { service.execute }
 
   let(:service) { described_class.new }
+  let(:boolean_type) { ActiveModel::Type::Boolean.new }
 
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project1) { create(:project, group: group) }
@@ -429,6 +430,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService, '#ex
     ClickHouse::Client
       .select('SELECT *, date FROM ci_finished_pipelines', :main)
       .map(&:symbolize_keys)
+      .map { |row| row.merge(is_default_branch: boolean_type.cast(row[:is_default_branch])) }
   end
 
   def expected_pipeline_attributes(pipeline)

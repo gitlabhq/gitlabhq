@@ -2,7 +2,7 @@
 name: query_log_usage
 engine: MergeTree
 engine_full: MergeTree PARTITION BY toYYYYMM(event_time) ORDER BY (event_time, query_id)
-  TTL event_time + toIntervalMonth(3) SETTINGS index_granularity = 8192
+  TTL toDateTime(event_time) + toIntervalMonth(3) SETTINGS index_granularity = 8192
 partition_key: toYYYYMM(event_time)
 primary_key: event_time, query_id
 sorting_key: event_time, query_id

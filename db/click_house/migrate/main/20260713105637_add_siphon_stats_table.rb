@@ -23,7 +23,7 @@ class AddSiphonStatsTable < ClickHouse::Migration
       ENGINE = ReplacingMergeTree(version, deleted)
       PRIMARY KEY (postgresql_schema, postgresql_table, timestamp, uuid)
       PARTITION BY toYYYYMM(timestamp)
-      TTL timestamp + INTERVAL 12 MONTH;
+      TTL toDateTime(timestamp) + INTERVAL 12 MONTH;
     SQL
   end
 

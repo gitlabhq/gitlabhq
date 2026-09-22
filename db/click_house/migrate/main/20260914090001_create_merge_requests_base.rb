@@ -59,7 +59,7 @@ class CreateMergeRequestsBase < ClickHouse::Migration
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
       PRIMARY KEY (traversal_path, id)
-      TTL seen + INTERVAL 1 HOUR
+      TTL toDateTime(seen) + INTERVAL 1 HOUR
     SQL
   end
 

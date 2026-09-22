@@ -78,12 +78,10 @@ For details, see [issue 444926](https://gitlab.com/gitlab-org/gitlab/-/issues/44
 | [NodeJsScan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                        | JavaScript (Node.js only)                                                              | [17.0](../../../update/deprecations.md#sast-analyzer-coverage-changing-in-gitlab-170)         |
 | [phpcs-security-audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit)     | PHP                                                                                    | [17.0](../../../update/deprecations.md#sast-analyzer-coverage-changing-in-gitlab-170)         |
 | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)         | .NET (including C#, Visual Basic)                                                      | [16.0](../../../update/deprecations.md#sast-analyzer-coverage-changing-in-gitlab-160)         |
-| [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                             | Java only<sup>1</sup>                                                                  | [15.4](../../../update/deprecations.md#sast-analyzer-consolidation-and-cicd-template-changes) |
-| [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                             | Kotlin and Scala only<sup>1</sup>                                                      | [17.0](../../../update/deprecations.md#sast-analyzer-coverage-changing-in-gitlab-170)         |
+| [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                             | Java only[^remains-supported-analyzer]                                                                  | [15.4](../../../update/deprecations.md#sast-analyzer-consolidation-and-cicd-template-changes) |
+| [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                             | Kotlin and Scala only[^remains-supported-analyzer]                                                      | [17.0](../../../update/deprecations.md#sast-analyzer-coverage-changing-in-gitlab-170)         |
 
-Footnotes:
-
-1. SpotBugs remains a [supported analyzer](_index.md#supported-languages-and-frameworks) for Groovy. It only activates when Groovy code is detected.
+[^remains-supported-analyzer]: SpotBugs remains a [supported analyzer](_index.md#supported-languages-and-frameworks) for Groovy. It only activates when Groovy code is detected.
 
 ## SAST analyzer features
 
