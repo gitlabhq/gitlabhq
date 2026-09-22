@@ -21,10 +21,27 @@ module RapidDiffs
     end
 
     def file_link
+      return if @diff_file.path_traversal?
+
       helpers.project_blob_path(
         @diff_file.repository.project,
         helpers.tree_join(@diff_file.content_sha, @diff_file.new_path)
       )
+    end
+
+    # Title markup for the file heading. Built here so the template can render it
+    # inside the "open file" link, or on its own when file_link is dropped for a
+    # traversal path.
+    def file_title
+      chunks = file_title_chunks
+      # allow paths to wrap around '/' symbols for better visuals
+      segments = chunks[:path_parts].flat_map { |part| [part, '/', tag.wbr] }
+      safe_join(segments + [chunks[:filename]])
+    end
+
+    def renamed_file_title
+      old_path, new_path = helpers.mark_inline_diffs(@diff_file.old_path, @diff_file.new_path)
+      safe_join([old_path, tag.span('→', class: 'rd-diff-file-moved'), new_path])
     end
 
     def copy_path_button
@@ -102,6 +119,8 @@ module RapidDiffs
     end
 
     def view_file_menu_item
+      return if @diff_file.path_traversal?
+
       project = @diff_file.repository.project
       file_path = @diff_file.new_path || @diff_file.old_path
       commit_sha = @diff_file.content_sha

@@ -27,5 +27,23 @@ RSpec.describe Types::Ci::JobInterfaceBaseField, feature_category: :continuous_i
         is_expected.not_to be_authorized(object, nil, ctx)
       end
     end
+
+    context 'for the trace field' do
+      subject(:field) do
+        described_class.new(name: :trace, type: GraphQL::Types::String, null: true)
+      end
+
+      it 'authorizes with :read_build_trace rather than :read_build' do
+        expect(Ability).to receive(:allowed?).with(current_user, :read_build_trace, object).and_return(true)
+
+        is_expected.to be_authorized(object, nil, ctx)
+      end
+
+      it 'is not authorized when :read_build_trace is denied' do
+        expect(Ability).to receive(:allowed?).with(current_user, :read_build_trace, object).and_return(false)
+
+        is_expected.not_to be_authorized(object, nil, ctx)
+      end
+    end
   end
 end

@@ -22,6 +22,11 @@ module BulkImports
 
     DEFAULT_RETRY_DELAY_SECONDS = 30
 
+    # Upper bound on the Retry-After header from the source instance. Without
+    # this bound an attacker-controlled source can stall a pipeline for hours
+    # or days on a single 429 response. See gitlab-org/gitlab#628379.
+    MAX_RETRY_AFTER_SECONDS = 5.minutes.to_i
+
     MAX_RETRIABLE_COUNT = 10
 
     attr_reader :response
@@ -44,13 +49,21 @@ module BulkImports
 
     def retry_delay
       if response&.code == 429
-        response.headers.fetch('Retry-After', DEFAULT_RETRY_DELAY_SECONDS).to_i
+        capped_retry_after
       else
         EXCEPTIONS_RETRY_DELAY[cause&.class] || DEFAULT_RETRY_DELAY_SECONDS
       end.seconds
     end
 
     private
+
+    def capped_retry_after
+      value = response.headers.fetch('Retry-After', DEFAULT_RETRY_DELAY_SECONDS).to_i
+
+      return DEFAULT_RETRY_DELAY_SECONDS if value <= 0
+
+      [value, MAX_RETRY_AFTER_SECONDS].min
+    end
 
     def retriable_exception?
       RETRIABLE_EXCEPTIONS.include?(cause&.class)

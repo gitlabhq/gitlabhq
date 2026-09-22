@@ -52,6 +52,22 @@ RSpec.describe DiffFileEntity, feature_category: :code_review_workflow do
       expect(subject).to include(:load_collapsed_diff_url)
     end
 
+    context 'when the file path contains traversal segments' do
+      before do
+        allow(diff_file).to receive(:path_traversal?).and_return(true)
+      end
+
+      it 'drops every URL built from the file path' do
+        response = subject
+
+        # The browser normalizes the `..` away and lands on an unrelated route
+        # whose response is rendered into the diff page, so these must be blank.
+        %i[view_path replaced_view_path context_lines_path edit_path ide_edit_path].each do |attribute|
+          expect(response[attribute]).to be_nil
+        end
+      end
+    end
+
     context 'when diff_view is unknown' do
       let(:options) { { diff_view: :unknown } }
 

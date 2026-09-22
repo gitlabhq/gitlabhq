@@ -280,37 +280,10 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       allow(subject).to receive(:context).and_return(context)
     end
 
-    it 'calls relation factory' do
+    it 'calls relation factory with SourceUsersMapper and rewrites mentions' do
       relation_object = double
 
       expect(Gitlab::ImportExport::Group::RelationFactory)
-        .to receive(:create)
-        .with(
-          relation_index: 1,
-          relation_sym: :test,
-          relation_hash: hash,
-          importable: group,
-          members_mapper: instance_of(BulkImports::UsersMapper),
-          object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
-          user: user,
-          excluded_keys: nil,
-          import_source: Import::SOURCE_DIRECT_TRANSFER,
-          original_users_map: {},
-          rewrite_mentions: false
-        )
-        .and_return(relation_object)
-      expect(relation_object).to receive(:assign_attributes).with(group: group)
-
-      subject.transform(context, data)
-    end
-
-    context 'when importer_user_mapping is enabled' do
-      before do
-        allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
-      end
-
-      it 'calls relation factory with SourceUsersMapper' do
-        expect(Gitlab::ImportExport::Group::RelationFactory)
         .to receive(:create)
         .with(
           relation_index: 1,
@@ -324,6 +297,36 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           import_source: Import::SOURCE_DIRECT_TRANSFER,
           original_users_map: {},
           rewrite_mentions: true
+        )
+        .and_return(relation_object)
+      expect(relation_object).to receive(:assign_attributes).with(group: group)
+
+      subject.transform(context, data)
+    end
+
+    # See gitlab-org/gitlab#628379: the legacy user-resolution mapper is only
+    # reachable when an import is explicitly in legacy mode; no production
+    # caller creates imports in that state.
+    context 'when the import is in legacy mode' do
+      before do
+        allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
+      end
+
+      it 'calls relation factory with the legacy UsersMapper' do
+        expect(Gitlab::ImportExport::Group::RelationFactory)
+        .to receive(:create)
+        .with(
+          relation_index: 1,
+          relation_sym: :test,
+          relation_hash: hash,
+          importable: group,
+          members_mapper: instance_of(BulkImports::UsersMapper),
+          object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
+          user: user,
+          excluded_keys: nil,
+          import_source: Import::SOURCE_DIRECT_TRANSFER,
+          original_users_map: {},
+          rewrite_mentions: false
         ).and_return(double(assign_attributes: nil))
 
         subject.transform(context, data)
