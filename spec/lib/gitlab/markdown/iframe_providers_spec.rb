@@ -30,11 +30,48 @@ RSpec.describe Gitlab::Markdown::IframeProviders, feature_category: :markdown do
       expect(described_class.known_providers).to be(providers)
     end
 
-    it 'raises when the config is not a mapping' do
-      allow(described_class).to receive(:load_config!).and_return([])
+    context 'when the config is broken' do
+      before do
+        allow(described_class).to receive(:load_config!).and_return([])
+      end
 
-      expect { described_class.known_providers }
-        .to raise_error(described_class::ConfigError, /expected a mapping of provider IDs/)
+      it 'returns no providers' do
+        expect(described_class.known_providers).to eq([])
+      end
+
+      it 'logs the error' do
+        expect(Gitlab::AppLogger).to receive(:error)
+          .with(message: 'Ignoring iframe provider configuration',
+            Labkit::Fields::ERROR_MESSAGE => /expected a mapping of provider IDs/)
+
+        described_class.known_providers
+      end
+
+      it 'loads the config only once' do
+        expect(described_class).to receive(:load_config!).once
+
+        described_class.known_providers
+        described_class.known_providers
+      end
+    end
+
+    context 'when the config is not valid YAML' do
+      before do
+        allow(YAML).to receive(:safe_load_file).with(described_class::PROVIDERS_PATH)
+          .and_raise(Psych::SyntaxError.new('file', 1, 2, 3, 'bad syntax', nil))
+      end
+
+      it 'returns no providers' do
+        expect(described_class.known_providers).to eq([])
+      end
+
+      it 'logs the error' do
+        expect(Gitlab::AppLogger).to receive(:error)
+          .with(message: 'Ignoring iframe provider configuration',
+            Labkit::Fields::ERROR_MESSAGE => /iframe_providers\.yml: .*bad syntax/)
+
+        described_class.known_providers
+      end
     end
   end
 

@@ -1130,8 +1130,8 @@ Watch the following video walkthrough of this feature:
 </figure>
 
 > [!note]
-> Administrators can enable rendering of iframes in Markdown and configure the allowed iframe `src`
-> hosts for an instance.
+> Administrators can enable rendering of iframes in Markdown and configure which embed providers
+> are allowed for an instance.
 > You can manage these settings with the [application settings API](../api/settings.md#available-settings) using:
 >
 > - `iframe_rendering_enabled`

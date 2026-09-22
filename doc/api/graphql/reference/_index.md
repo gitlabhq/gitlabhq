@@ -1343,6 +1343,19 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="query-duoworkflowevents-workflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Array of request IDs to fetch. |
 
+### `Query.duoWorkflowRecentSessionProjects`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Projects the current user has Duo Agent Platform sessions in, ordered by most recent session activity. Not a complete list: limited to the 50 most recent projects.
+
+Returns [`[Project!]`](#project).
+
 ### `Query.duoWorkflowWorkflows`
 
 {{< details >}}
@@ -32312,6 +32325,29 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="terraformstateprotectionruleedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="terraformstateprotectionruleedge-node"></a>`node` | [`TerraformStateProtectionRule`](#terraformstateprotectionrule) | The item at the end of the edge. |
+
+#### `TerraformStateVersionConnection`
+
+The connection type for [`TerraformStateVersion`](#terraformstateversion).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformstateversionconnection-edges"></a>`edges` | [`[TerraformStateVersionEdge]`](#terraformstateversionedge) | A list of edges. |
+| <a id="terraformstateversionconnection-nodes"></a>`nodes` | [`[TerraformStateVersion]`](#terraformstateversion) | A list of nodes. |
+| <a id="terraformstateversionconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `TerraformStateVersionEdge`
+
+The edge type for [`TerraformStateVersion`](#terraformstateversion).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformstateversionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="terraformstateversionedge-node"></a>`node` | [`TerraformStateVersion`](#terraformstateversion) | The item at the end of the edge. |
 
 #### `TerraformStateVersionRegistryConnection`
 
@@ -63721,6 +63757,7 @@ Fields:
 | <a id="terraformstate-permanentdeletionat"></a>`permanentDeletionAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.5. Status: Experiment. Timestamp of when the state will be permanently deleted, if it is scheduled for deletion. |
 | <a id="terraformstate-protectionruleexists"></a>`protectionRuleExists` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. Whether a protection rule exists for the Terraform state. |
 | <a id="terraformstate-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the Terraform state was updated. |
+| <a id="terraformstate-versions"></a>`versions` | [`TerraformStateVersionConnection`](#terraformstateversionconnection) | Versions of the Terraform state, most recent first. (see [Connections](#connections)) |
 
 ### `TerraformStateProtectionRule`
 

@@ -33,6 +33,10 @@ module Types
         null: true,
         description: 'Latest version of the Terraform state.'
 
+      field :versions, Types::Terraform::StateVersionType.connection_type,
+        null: true,
+        description: 'Versions of the Terraform state, most recent first.'
+
       field :created_at, Types::TimeType,
         null: false,
         description: 'Timestamp the Terraform state was created.'
@@ -65,6 +69,10 @@ module Types
               .each { |row| loader.call([row['project_id'], row['state_name']], row['protected']) }
           end
         end
+      end
+
+      def versions
+        Gitlab::Graphql::Loaders::Terraform::StateVersionsLoader.new(context, object)
       end
 
       def locked_by_user

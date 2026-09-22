@@ -17,14 +17,9 @@ PAGES_DIR = Pathname.new(ARGV.fetch(0, 'public-pages'))
 abort "ERROR: pages directory '#{PAGES_DIR}' does not exist" unless PAGES_DIR.directory?
 
 DESCRIPTIONS = {
-  'coverage-frontend' => 'Frontend (Jest) test coverage',
-  'coverage-ruby' => 'Ruby test coverage',
   'crystalball' => 'Test to source mapping',
   'knapsack' => 'Knapsack RSpec timing report',
-  'rspec' => 'Flaky RSpec tests',
-  'rubocop-docs' => 'RuboCop documentation site',
-  'storybook' => 'Frontend component Storybook',
-  'application.css' => 'Compiled production CSS'
+  'rspec' => 'Flaky RSpec tests'
 }.freeze
 
 TEMPLATE = <<~ERB

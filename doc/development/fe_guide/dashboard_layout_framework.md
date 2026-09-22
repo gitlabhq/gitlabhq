@@ -37,7 +37,8 @@ with our design patterns, it's strongly recommended that you use one of the
 following components:
 
 - [GlDashboardPanel](https://design.gitlab.com/storybook/?path=/docs/dashboards-dashboards-panel--docs): The official Pajamas dashboard panel
-- [`extended_dashboard_panel.vue`](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-customizable-dashboard-extended-dashboard-panel--docs): Extends `GlDashboardPanel` with easy alert styling and i18n strings
+- `extended_dashboard_panel.vue`: Extends `GlDashboardPanel` with easy alert styling and i18n strings.
+  [Build Storybook locally](storybook.md) to view its `Vue/Shared/CustomizableDashboard/ExtendedDashboardPanel` docs.
 
 ## Migration guide
 

@@ -106,6 +106,75 @@ RSpec.describe 'query terraform states', feature_category: :infrastructure_as_co
     it { expect(data).to be_nil }
   end
 
+  describe 'versions' do
+    # StateVersion touches its state on create, which a frozen let_it_be record rejects.
+    let_it_be(:older_version) do
+      create(:terraform_state_version,
+        terraform_state: Terraform::State.find(terraform_state.id), version: latest_version.version - 1)
+    end
+
+    let_it_be(:other_state_version) do
+      create(:terraform_state_version, terraform_state: create(:terraform_state, project: project))
+    end
+
+    let(:fields) do
+      %(
+        terraformStates {
+          nodes {
+            name
+            versions#{versions_args} {
+              nodes {
+                id
+                serial
+              }
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:versions_args) { '' }
+    let(:query) { graphql_query_for(:project, { fullPath: project.full_path }, fields) }
+    let(:state_data) { data['nodes'].find { |node| node['name'] == terraform_state.name } }
+
+    it 'returns every version of the state, most recent first' do
+      expect(state_data['versions']['nodes']).to match([
+        a_graphql_entity_for(latest_version, 'serial' => latest_version.version),
+        a_graphql_entity_for(older_version, 'serial' => older_version.version)
+      ])
+      expect(state_data['versions']['pageInfo']['hasNextPage']).to be(false)
+    end
+
+    it 'does not leak versions of other states' do
+      version_ids = data['nodes'].flat_map { |node| node['versions']['nodes'].pluck('id') }
+
+      expect(version_ids).to include(other_state_version.to_global_id.to_s)
+      expect(state_data['versions']['nodes'].pluck('id')).not_to include(other_state_version.to_global_id.to_s)
+    end
+
+    it 'loads the versions of every state without a query per state' do
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+
+      create_list(:terraform_state_version, 2, terraform_state: create(:terraform_state, project: project))
+      create(:terraform_state_version, terraform_state: create(:terraform_state, project: project))
+
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+    end
+
+    context 'when paginating' do
+      let(:versions_args) { '(first: 1)' }
+
+      it 'returns a page with a cursor to the next one' do
+        expect(state_data['versions']['nodes']).to match([a_graphql_entity_for(latest_version)])
+        expect(state_data['versions']['pageInfo']['hasNextPage']).to be(true)
+      end
+    end
+  end
+
   describe 'protectionRuleExists' do
     let_it_be(:terraform_state_protection_rule) do
       create(:terraform_state_protection_rule, project: project, state_name: terraform_state.name)

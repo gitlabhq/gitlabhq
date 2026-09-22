@@ -35,6 +35,7 @@ class Project < ApplicationRecord
   include FeatureGate
   include OptionallySearch
   include FromUnion
+  include IdInOrdered
   include ::Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper

@@ -40,7 +40,7 @@ module Gitlab
         end
 
         def known_providers
-          @known_providers ||= load_providers!
+          @known_providers ||= load_providers
         end
 
         def enabled_providers
@@ -56,6 +56,19 @@ module Gitlab
 
         def load_config!
           YAML.safe_load_file(PROVIDERS_PATH)
+        rescue Psych::Exception => e
+          raise ConfigError, "#{PROVIDERS_PATH.basename}: #{e.message}"
+        end
+
+        def load_providers
+          load_providers!
+        rescue ConfigError => e
+          Gitlab::AppLogger.error(
+            message: 'Ignoring iframe provider configuration',
+            Labkit::Fields::ERROR_MESSAGE => e.message
+          )
+
+          [].freeze
         end
 
         def load_providers!

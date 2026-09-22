@@ -13,24 +13,14 @@ upload-pages:
   environment: pages
   resource_group: pages
   needs:
-    - "rspec:coverage"
-    - "coverage-frontend"
-    - "compile-production-assets"
-    - "compile-storybook"
     - "update-tests-metadata"
     - "generate-frontend-fixtures-mapping"
-    - "rubocop:docs-site"
   variables:
     PAGES_DIR: "public-pages"
   before_script:
     - apt-get update && apt-get -y install brotli gzip
   script:
     - mkdir "$PAGES_DIR"
-    - cp public/assets/application-*.css $PAGES_DIR/application.css || true
-    - mv coverage/ $PAGES_DIR/coverage-ruby/ || true
-    - mv coverage-frontend/ $PAGES_DIR/coverage-frontend/ || true
-    - mv rubocop/docs-hugo/public/ $PAGES_DIR/rubocop-docs/ || true
-    - mv storybook/public $PAGES_DIR/storybook || true
     - |
       (cd "$PAGES_DIR" && mkdir -p \
         $(dirname "$KNAPSACK_RSPEC_SUITE_REPORT_PATH") \

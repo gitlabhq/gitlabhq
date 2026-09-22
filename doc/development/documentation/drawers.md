@@ -7,8 +7,8 @@ title: Create content for drawers
 
 In the GitLab UI, you can display help content in
 [a drawer component](https://design.gitlab.com/components/drawer/).
-The component for Markdown is
-[in the storybook](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/story/vue-shared-markdown-drawer--default).
+The component for Markdown is the `Vue/Shared/Markdown/Drawer` story.
+[Build Storybook locally](../fe_guide/storybook.md) to view it.
 
 The component points to a Markdown file. Any time you update the Markdown
 file, the contents of the drawer are updated.

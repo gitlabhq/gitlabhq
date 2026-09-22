@@ -1738,7 +1738,7 @@ msgstr ""
 msgid "%{years} years until tags are automatically removed"
 msgstr ""
 
-msgid "'%{entry}' is not a valid domain name"
+msgid "'%{entry}' is not a known embed provider"
 msgstr ""
 
 msgid "'%{group_name}' has been scheduled for deletion and will be deleted on %{date}."
@@ -70875,6 +70875,9 @@ msgstr ""
 msgid "ScanProfiles|A scan is automatically run when changes are merged or pushed to the default branch. All vulnerabilities found are reported, providing a complete picture of your default branch's security posture."
 msgstr ""
 
+msgid "ScanProfiles|Advanced configuration"
+msgstr ""
+
 msgid "ScanProfiles|All"
 msgstr ""
 
@@ -70911,6 +70914,9 @@ msgstr ""
 msgid "ScanProfiles|Deleted “%{profileName}”"
 msgstr ""
 
+msgid "ScanProfiles|Differs by trigger"
+msgstr ""
+
 msgid "ScanProfiles|Full repository"
 msgstr ""
 
@@ -70938,6 +70944,9 @@ msgstr ""
 msgid "ScanProfiles|New vulnerabilities only"
 msgstr ""
 
+msgid "ScanProfiles|None of this profile's triggers use analyzer settings, so there is nothing to configure."
+msgstr ""
+
 msgid "ScanProfiles|Results:"
 msgstr ""
 
@@ -70962,7 +70971,22 @@ msgstr ""
 msgid "ScanProfiles|Secret push protection"
 msgstr ""
 
+msgid "ScanProfiles|Settings passed to the analyzer that override its default behavior."
+msgstr ""
+
+msgid "ScanProfiles|Settings that apply across this profile"
+msgstr ""
+
+msgid "ScanProfiles|Show %{variable} for each trigger"
+msgstr ""
+
 msgid "ScanProfiles|Target branch:"
+msgstr ""
+
+msgid "ScanProfiles|Value"
+msgstr ""
+
+msgid "ScanProfiles|Variable"
 msgstr ""
 
 msgid "ScanProfiles|View documentation"

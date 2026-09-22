@@ -25,7 +25,9 @@ Before you write tests, your [GitLab Development Kit (GDK)](https://gitlab.com/g
 
 ## Determine if end-to-end tests are needed
 
-Check the code coverage of a specific feature before writing end-to-end tests for the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) project. Does sufficient test coverage exist at the unit, feature, or integration levels? If you answered _yes_, then you _don't_ need an end-to-end test.
+Check the code coverage of a specific feature before writing end-to-end tests.
+Run `bundle exec rspec` for the relevant spec files, then open `coverage/index.html` to view the report.
+Does sufficient test coverage exist at the unit, feature, or integration levels? If you answered _yes_, then you _don't_ need an end-to-end test.
 
 For information about the distribution of tests per level in GitLab, see [Testing Levels](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md).
 
@@ -34,7 +36,9 @@ For information about the distribution of tests per level in GitLab, see [Testin
 - Finally, discuss the proposed test with the developers involved in implementing the feature and the lower-level tests.
 
 > [!warning]
-> Check the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage project for previously written tests for this feature. To analyze code coverage, you must understand which application files implement specific features.
+> Check the Ruby coverage report for previously written tests for this feature.
+> Run `bundle exec rspec` for the relevant spec files, then open `coverage/index.html`.
+> To analyze code coverage, you must understand which application files implement specific features.
 
 In this tutorial we're writing a login end-to-end test, even though it has been sufficiently covered by lower-level testing, because it's the first step for most end-to-end flows, and is easiest to understand.
 

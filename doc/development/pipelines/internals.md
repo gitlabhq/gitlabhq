@@ -151,7 +151,7 @@ The current stages are:
 - `post-qa`: This stage includes jobs that build reports or gather data from
   the `qa` stage's jobs (for example, Review App performance report).
 - `pages`: This stage includes a job that deploys the various reports as
-  GitLab Pages (for example, [`coverage-ruby`](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/),
+  GitLab Pages (for example, the [Knapsack RSpec timing report](https://gitlab-org.gitlab.io/gitlab/knapsack/report-master.json)),
   and `webpack-report` (found at `https://gitlab-org.gitlab.io/gitlab/webpack-report/`, but there is
   [an issue with the deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/233458)).
 - `notify`: This stage includes jobs that notify various failures to Slack.

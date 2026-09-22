@@ -96,8 +96,8 @@ module API
       optional :outbound_local_requests_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'List of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled.'
       optional :email_otp_enabled, type: Boolean, desc: 'Enable Email-based one-time passwords (OTP) as a multi-factor authentication method.'
       optional :iframe_rendering_enabled, type: Boolean, desc: 'Allow rendering of iframes in Markdown.'
-      optional :iframe_rendering_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Allowed iframe src host[:port] entries. Enter multiple entries separated by commas or on separate lines.'
-      optional :iframe_rendering_allowlist_raw, type: String, desc: 'Raw newline- or comma-separated list of allowed iframe src host[:port] entries.'
+      optional :iframe_rendering_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'IDs of embed providers users can embed content from. Enter multiple entries separated by commas or on separate lines.'
+      optional :iframe_rendering_allowlist_raw, type: String, desc: 'Raw newline- or comma-separated list of IDs of embed providers users can embed content from.'
       optional :eks_integration_enabled, type: Boolean, desc: 'Enable integration with Amazon EKS'
       given eks_integration_enabled: ->(val) { val } do
         requires :eks_account_id, type: String, desc: 'Amazon account ID for EKS integration'

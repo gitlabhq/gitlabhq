@@ -19869,7 +19869,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c47606fab71c"
+              "$ref": "#/components/schemas/RequestBody_9ea558c599b9"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -106620,7 +106620,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_c47606fab71c:
+    RequestBody_9ea558c599b9:
       type: object
       properties:
         admin_mode:
@@ -106872,13 +106872,13 @@ components:
           type: array
           items:
             type: string
-          description: Allowed iframe src host[:port] entries. Enter multiple entries
-            separated by commas or on separate lines.
+          description: IDs of embed providers users can embed content from. Enter
+            multiple entries separated by commas or on separate lines.
           nullable: true
         iframe_rendering_allowlist_raw:
           type: string
-          description: Raw newline- or comma-separated list of allowed iframe src
-            host[:port] entries.
+          description: Raw newline- or comma-separated list of IDs of embed providers
+            users can embed content from.
           nullable: true
         eks_integration_enabled:
           type: boolean

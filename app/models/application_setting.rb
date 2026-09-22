@@ -1254,14 +1254,10 @@ class ApplicationSetting < ApplicationRecord
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates_each :iframe_rendering_allowlist, on: :update do |record, attr, value|
-    # Leading "http://" or "https://" and trailing "/" are removed in
-    # ApplicationSettingImplementation#coerce_iframe_rendering_allowlist.
-    # Normalising the values in here is crucial, since we rely on it to
-    # correctly (securely) check iframe src attributes and construct our frame-src CSP.
-    value.each do |entry|
-      unless %r{\A[a-zA-Z0-9.-]+(?::\d+)?\z}.match?(entry)
-        record.errors.add(attr, format(_("'%{entry}' is not a valid domain name"), entry:))
-      end
+    known_ids = Gitlab::Markdown::IframeProviders.known_providers.map(&:id)
+
+    (value - known_ids).each do |entry|
+      record.errors.add(attr, format(_("'%{entry}' is not a known embed provider"), entry:))
     end
   end
 
@@ -1311,7 +1307,6 @@ class ApplicationSetting < ApplicationRecord
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name
-  before_validation :coerce_iframe_rendering_allowlist, if: :iframe_rendering_allowlist_changed?
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token

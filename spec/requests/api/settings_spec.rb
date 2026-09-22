@@ -227,39 +227,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         put api('/application/settings', admin),
           params: {
             iframe_rendering_enabled: true,
-            iframe_rendering_allowlist: ['example.com', 'videos.example.com:443', 'https://example.net/']
+            iframe_rendering_allowlist: %w[youtube figma]
           }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['iframe_rendering_enabled']).to be(true)
-        expect(json_response['iframe_rendering_allowlist']).to match_array(['example.com', 'videos.example.com:443', 'example.net'])
+        expect(json_response['iframe_rendering_allowlist']).to match_array(%w[youtube figma])
         expect(ApplicationSetting.current.iframe_rendering_enabled?).to be(true)
-        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(['example.com', 'videos.example.com:443', 'example.net'])
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(%w[youtube figma])
       end
 
-      it 'denies bad allowlist entries' do
+      it 'denies unknown provider IDs' do
         put api('/application/settings', admin),
           params: {
             iframe_rendering_enabled: true,
-            iframe_rendering_allowlist: ['gopher://gopherz.tv']
+            iframe_rendering_allowlist: %w[youtube www.youtube.com]
           }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['iframe_rendering_allowlist']).to include("'gopher://gopherz.tv' is not a valid domain name")
-        expect(ApplicationSetting.current.iframe_rendering_allowlist.join(',')).not_to include('gopherz')
+        expect(json_response['message']['iframe_rendering_allowlist'])
+          .to include("'www.youtube.com' is not a known embed provider")
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to eq([])
       end
 
       it 'allows a raw string for iframe_rendering_allowlist_raw' do
-        raw = "example.com\nvideos.example.com:443"
+        raw = "youtube\nfigma"
         put api('/application/settings', admin),
           params: {
             iframe_rendering_allowlist_raw: raw
           }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['iframe_rendering_allowlist']).to match_array(['example.com', 'videos.example.com:443'])
+        expect(json_response['iframe_rendering_allowlist']).to match_array(%w[youtube figma])
         expect(json_response['iframe_rendering_allowlist_raw']).to eq(raw)
-        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(['example.com', 'videos.example.com:443'])
+        expect(ApplicationSetting.current.iframe_rendering_allowlist).to match_array(%w[youtube figma])
       end
     end
 

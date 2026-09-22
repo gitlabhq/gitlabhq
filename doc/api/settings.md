@@ -941,8 +941,8 @@ to configure other related settings. These requirements are in the `Required` co
 | `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
 | `enforce_pipl_compliance` | boolean | no | Sets whether pipl compliance is enforced for the saas application or not |
 | `iframe_rendering_enabled`               | boolean          | no                                   | Allow rendering of iframes in Markdown. Disabled by default. |
-| `iframe_rendering_allowlist`             | array of strings | no                                   | List of allowed iframe `src` host[:port] entries used for Content Security Policy and sanitization. |
-| `iframe_rendering_allowlist_raw`         | string           | no                                   | Raw newline- or comma-separated list of allowed iframe `src` host[:port] entries. |
+| `iframe_rendering_allowlist`             | array of strings | no                                   | IDs of the embed providers users can embed content from. |
+| `iframe_rendering_allowlist_raw`         | string           | no                                   | Raw newline- or comma-separated list of IDs of the embed providers users can embed content from. |
 | `usage_billing`                          | object           | no                                   | Usage Billing Settings. Check `ee/app/validators/json_schemas/usage_billing_settings.json` for schema definition |
 
 ### Dormant project settings

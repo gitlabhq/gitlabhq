@@ -36,10 +36,7 @@ class ApplicationController < BaseActionController
     next if p.directives.blank?
     next unless Gitlab::CurrentSettings.try(:iframe_rendering_enabled?)
 
-    add_frame_srcs = Gitlab::CurrentSettings.iframe_rendering_allowlist.map { |domain| "https://#{domain}" }
-
-    append_to_content_security_policy(p, 'frame-src', add_frame_srcs)
-    append_to_content_security_policy(p, 'child-src', add_frame_srcs)
+    append_to_content_security_policy(p, 'frame-src', Gitlab::Markdown::IframeProviders.enabled_providers.map(&:src_origin))
   end
 
   around_action :set_current_ip_address

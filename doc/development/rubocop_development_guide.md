@@ -223,6 +223,7 @@ Permanent, project-wide `Include`s and `Exclude`s belong in the tracked configur
 
 When creating internal RuboCop rules, these should include RDoc style docs.
 
-These docs are used to generate a static site using Hugo, and are published to <https://gitlab-org.gitlab.io/gitlab/rubocop-docs/>.
+These docs generate a static site using Hugo, built by the `rubocop:docs-site` CI job.
+Download the site from that job's artifacts to browse it locally.
 
 The site includes all the internal cops from the `gitlab` and `gitlab-styles` projects, along with "good" and "bad" examples.
