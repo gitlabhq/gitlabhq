@@ -143,6 +143,20 @@
       "minimum": 1,
       "description": "Authenticated Git HTTP rate limit period in seconds"
     },
+    "throttle_authenticated_dependency_proxy_enabled": {
+      "type": "boolean",
+      "description": "Enable authenticated dependency proxy request rate limit"
+    },
+    "throttle_authenticated_dependency_proxy_requests_per_period": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Authenticated dependency proxy request rate limit"
+    },
+    "throttle_authenticated_dependency_proxy_period_in_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Authenticated dependency proxy rate limit period in seconds"
+    },
     "user_contributed_projects_api_limit": {
       "type": "integer",
       "minimum": 0,

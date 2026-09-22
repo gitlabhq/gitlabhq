@@ -32,6 +32,7 @@ module Gitlab
 
     ThrottleDefinition = Struct.new(:options, :request_identifier)
 
+    # rubocop:disable Metrics/AbcSize -- A data table: one entry per throttle, no logic
     def self.throttle_definitions
       {
         'throttle_unauthenticated_web' => ThrottleDefinition.new(
@@ -77,8 +78,22 @@ module Gitlab
           Gitlab::Throttle.throttle_authenticated_git_lfs_options,
           ->(req) { req.throttled_identifer([:api]) if req.throttle_authenticated_git_lfs? }
         ),
+        **throttle_definitions_authenticated_dependency_proxy,
         **throttle_definitions_unauthenticated_git_http,
         **throttle_definitions_authenticated_git_http
+      }
+    end
+    # rubocop:enable Metrics/AbcSize
+
+    def self.throttle_definitions_authenticated_dependency_proxy
+      {
+        'throttle_authenticated_dependency_proxy' => ThrottleDefinition.new(
+          Gitlab::Throttle.throttle_authenticated_dependency_proxy_options,
+          # Same format list as the web throttle it excludes: a narrower list can
+          # resolve to no identifier, which would make the excluded request go
+          # uncounted rather than counted here.
+          ->(req) { req.throttled_identifer([:api, :rss, :ics]) if req.throttle_authenticated_dependency_proxy? }
+        )
       }
     end
 

@@ -6572,6 +6572,9 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
+msgid "AdminSettings|Block JWT generation in reclaimed project paths"
+msgstr ""
+
 msgid "AdminSettings|Built-in project templates"
 msgstr ""
 
@@ -6741,6 +6744,9 @@ msgid "AdminSettings|For more information, see %{link_start}the documentation%{l
 msgstr ""
 
 msgid "AdminSettings|Git abuse rate limit"
+msgstr ""
+
+msgid "AdminSettings|GitLab prevents namespace reclamation authentication bypass attacks by blocking JWT generation in projects that were moved or renamed to a previously existing project path. Only allow JWT generation for reclaimed project paths if you understand and accept the insider-threat risk. The restriction is enabled by default and should remain enabled on most instances."
 msgstr ""
 
 msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab."
@@ -13076,6 +13082,12 @@ msgid "Authenticated Git LFS request rate limit"
 msgstr ""
 
 msgid "Authenticated Git LFS requests"
+msgstr ""
+
+msgid "Authenticated dependency proxy rate limit period in seconds"
+msgstr ""
+
+msgid "Authenticated dependency proxy request rate limit"
 msgstr ""
 
 msgid "Authenticated web rate limit period in seconds"
@@ -22269,6 +22281,9 @@ msgstr ""
 msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
 msgstr ""
 
+msgid "Configure specific limits for authenticated dependency proxy requests."
+msgstr ""
+
 msgid "Configure specific limits for deprecated API requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -27524,6 +27539,9 @@ msgstr ""
 msgid "Dependency list"
 msgstr ""
 
+msgid "Dependency proxy rate limits"
+msgstr ""
+
 msgid "Dependency scanning"
 msgstr ""
 
@@ -32400,6 +32418,9 @@ msgid "Enable authenticated Git HTTP request rate limit"
 msgstr ""
 
 msgid "Enable authenticated Git LFS request rate limit"
+msgstr ""
+
+msgid "Enable authenticated dependency proxy request rate limit"
 msgstr ""
 
 msgid "Enable authenticated web request rate limit"
@@ -47389,6 +47410,9 @@ msgid "Max Value"
 msgstr ""
 
 msgid "Max authenticated Git LFS requests per period per user"
+msgstr ""
+
+msgid "Max authenticated dependency proxy requests per period per user"
 msgstr ""
 
 msgid "Max role"

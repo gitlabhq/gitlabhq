@@ -247,6 +247,7 @@ these parameters:
 - `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a feature flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
 - `git_authenticated_http_limit` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/543768) in GitLab 18.3.
 - `git_authenticated_http_limit` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/561577) in GitLab 18.4.
+- `throttle_authenticated_dependency_proxy_enabled`, `throttle_authenticated_dependency_proxy_period_in_seconds`, and `throttle_authenticated_dependency_proxy_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/627044) in GitLab 19.3.3.
 
 {{< /history >}}
 
@@ -469,6 +470,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed.
 - `require_sha_for_merge` and `lock_require_sha_for_merge` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2.
 - `sidekiq_timezone_override` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244922) in GitLab 19.2.
+- `block_jwt_for_reclaimed_paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623356) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -574,6 +576,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `disable_admin_oauth_scopes`             | boolean          | no                                   | Stops administrators from connecting their GitLab accounts to non-trusted OAuth 2.0 applications that have the `api`, `read_api`, `read_repository`, `write_repository`, `read_registry`, `write_registry`, or `sudo` scopes. |
 | `disable_feed_token`                     | boolean          | no                                   | Disable display of RSS/Atom and calendar feed tokens. |
 | `disable_personal_access_tokens`         | boolean          | no                                   | Disable personal access tokens. GitLab Self-Managed, Premium and Ultimate only. There is no method available to enable a personal access token that's been disabled through the API. This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/399233). For more information about available workarounds, see [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/399233#workaround).     |
+| `block_jwt_for_reclaimed_paths`          | boolean          | no                                   | Block CI/CD JWT and OIDC token generation for projects that have reclaimed a previously used namespace path. Default is `true` (restriction active). Disable only if you understand and accept the namespace-reclamation authentication bypass risk. GitLab Self-Managed, GitLab Dedicated only. |
 | `disabled_oauth_sign_in_sources`         | array of strings | no                                   | Disabled OAuth sign-in sources. |
 | `disable_password_authentication_for_users_with_sso_identities` | boolean | no                     | Disable password authentication in the web interface for users with an SSO identity. This does not affect Git operations over HTTP(S). Default is `false`. |
 | `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS-rebinding attack protection. |
@@ -840,6 +843,9 @@ to configure other related settings. These requirements are in the `Required` co
 | `throttle_authenticated_api_enabled`                      | boolean | no                                                              | (**If enabled, requires**: `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
 | `throttle_authenticated_api_period_in_seconds`            | integer | required by:<br>`throttle_authenticated_api_enabled`            | Rate limit period (in seconds). |
 | `throttle_authenticated_api_requests_per_period`          | integer | required by:<br>`throttle_authenticated_api_enabled`            | Maximum requests per period per user. |
+| `throttle_authenticated_dependency_proxy_enabled`             | boolean | conditionally | If `true`, enforces the authenticated dependency proxy request rate limit. Default value: `false`. |
+| `throttle_authenticated_dependency_proxy_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_authenticated_dependency_proxy_enabled` must be `true`. Default value: `15`. |
+| `throttle_authenticated_dependency_proxy_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_authenticated_dependency_proxy_enabled` must be `true`. Default value: `1000`. |
 | `throttle_authenticated_git_http_enabled`             | boolean | conditionally | If `true`, enforces the authenticated Git HTTP request rate limit. Default value: `false`. |
 | `throttle_authenticated_git_http_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |
 | `throttle_authenticated_git_http_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |

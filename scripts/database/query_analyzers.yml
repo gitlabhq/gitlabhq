@@ -8,6 +8,8 @@ MultiplePartitionScanDetector:
     # - fingerprint: d3e4f5a6b7c8d9e0
     #   issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/XXXX"
   allowed:
+    - fingerprint: d01e15eb99a73822
+      reason: 'Orphan artifact cleanup resolves object storage keys, which carry no partition_id, so the lookup cannot prune'
     # Queries that legitimately scan all partitions and cannot prune.
     # - fingerprint: c2cfe803a497101b
     #   reason: "Runner heartbeat scans all partitions by design"

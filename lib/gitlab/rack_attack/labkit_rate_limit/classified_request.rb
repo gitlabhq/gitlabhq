@@ -145,6 +145,9 @@ module Gitlab
         #   - deprecated: a path match plus the with_projects param default;
         #   - runner_jobs: a path match plus the auth method (runner or job token),
         #     which no path matcher or presence fact can see (see #runner_jobs?);
+        #   - dependency_proxy: a path match plus, on EE, the virtual-registry
+        #     exclusion (see EE's #dependency_proxy_path? override), which a static
+        #     path matcher cannot see;
         #   - bypass: the safelist header, matched by the bypass rule.
         def classification_facts
           settings = ::Gitlab::Throttle.settings
@@ -155,6 +158,7 @@ module Gitlab
             protected_path: protected_path?,
             deprecated: deprecated_api_request?, # TODO use path matchers for deprecated API requests: https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/work_items/71
             runner_jobs: runner_jobs?,
+            dependency_proxy: dependency_proxy_path?,
             bypass: labkit_bypassed?,
 
             # per-throttle enable settings each rule matches on (option 2: matched
@@ -173,6 +177,7 @@ module Gitlab
             setting_unauthenticated_git_http: settings.throttle_unauthenticated_git_http_enabled,
             setting_authenticated_git_http: settings.throttle_authenticated_git_http_enabled,
             setting_authenticated_git_lfs: settings.throttle_authenticated_git_lfs_enabled,
+            setting_authenticated_dependency_proxy: settings.throttle_authenticated_dependency_proxy_enabled,
             setting_protected_paths: ::Gitlab::Throttle.protected_paths_enabled?
           }
         end

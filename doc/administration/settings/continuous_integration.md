@@ -425,6 +425,40 @@ To enforce job token allowlists:
 1. Under **Authorized groups and projects**, select the **Enable and enforce job token allowlist for all projects** checkbox.
 1. Select **Save changes**.
 
+## JWT restriction for reclaimed project paths
+
+{{< history >}}
+
+- Restriction [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/600358) in GitLab 19.1.
+- `block_jwt_for_reclaimed_paths` application setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623356) in GitLab 19.4.
+
+{{< /history >}}
+
+GitLab blocks JWT and OIDC token generation in CI/CD pipelines for projects that are
+renamed or moved to a previously used namespace path. This restriction prevents namespace-reclamation
+authentication bypass attacks.
+
+Administrators can disable this restriction if CI/CD pipelines are blocked in moved
+or renamed projects, but this is a security risk.
+
+> [!warning]
+> Disabling this restriction removes a security control that prevents namespace-reclamation
+> authentication bypass attacks. Only disable this setting if you understand and accept the
+> insider-threat risk. The restriction is enabled by default and should remain enabled on
+> most instances.
+
+To disable the reclaimed-path JWT restriction:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Clear the **Block JWT generation in reclaimed project paths** checkbox.
+1. Select **Save changes**.
+
+When enabled, tokens fail to generate in CI/CD jobs with this error:
+
+- `ID token issuance is disabled in CI because this project's path was previously used by a different project.`
+
 ## Access job log settings
 
 Control how CI/CD job logs are stored and processed.

@@ -46,6 +46,9 @@ class ApplicationSetting < ApplicationRecord
   DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
   DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD = 3600
 
+  DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT = 1000
+  DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD = 15
+
   DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT = 800
 
   SEARCH_SCOPE_SYSTEM_DEFAULT = 'system default'
@@ -574,7 +577,8 @@ class ApplicationSetting < ApplicationRecord
       ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }],
-      ci_max_caches_per_job: [:integer, { default: 4 }]
+      ci_max_caches_per_job: [:integer, { default: 4 }],
+      block_jwt_for_reclaimed_paths: [:boolean, { default: true }]
     }
   end
 
@@ -680,6 +684,8 @@ class ApplicationSetting < ApplicationRecord
       :snippet_size_limit,
       :throttle_authenticated_api_period_in_seconds,
       :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_dependency_proxy_period_in_seconds,
+      :throttle_authenticated_dependency_proxy_requests_per_period,
       :throttle_authenticated_deprecated_api_period_in_seconds,
       :throttle_authenticated_deprecated_api_requests_per_period,
       :throttle_authenticated_files_api_period_in_seconds,
@@ -1409,6 +1415,11 @@ class ApplicationSetting < ApplicationRecord
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],
       throttle_authenticated_git_http_period_in_seconds:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD }],
+      throttle_authenticated_dependency_proxy_enabled: [:boolean, { default: false }],
+      throttle_authenticated_dependency_proxy_requests_per_period:
+        [:integer, { default: DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT }],
+      throttle_authenticated_dependency_proxy_period_in_seconds:
+        [:integer, { default: DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD }],
       user_contributed_projects_api_limit: [:integer, { default: 100 }],
       user_projects_api_limit: [:integer, { default: 300 }],
       user_starred_projects_api_limit: [:integer, { default: 100 }],
