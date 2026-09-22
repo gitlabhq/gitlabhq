@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.0.9 (2026-09-22)
+
+### Security (6 changes)
+
+- [Prevent scheduled PEP test runs from bypassing policy scope](https://gitlab.com/gitlab-org/gitlab/-/commit/dcec73356be94d1c0f2824c46416464e26899e33) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255663))
+- [Anchor and escape EnvironmentMatcher wildcard regex](https://gitlab.com/gitlab-org/gitlab/-/commit/b522871ca648a53fd035afa08b3e070924d9bfdc) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255939))
+- [Sanitise items in JSONTable before passing to BTable](https://gitlab.com/gitlab-org/gitlab/-/commit/86a68d69bdcd29238fb30aadb3f0884cf9477fea) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255488))
+- [Upgrade graphql gem and backport GlobalID serialization fixes](https://gitlab.com/gitlab-org/gitlab/-/commit/5c217f7ef9bef7a627a1f4e938ff8ddcc2422456) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255118))
+- [Fix unauthenticated arbitrary local file read in commits API](https://gitlab.com/gitlab-org/gitlab/-/commit/b35cff0e412dc5d377c0da3ee2069944a9039c7f)
+- [Fix iid bypass for complexity multiplier](https://gitlab.com/gitlab-org/gitlab/-/commit/a30cdd3be85a8f6b9177073fdd874298231342aa) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255810))
+
 ## 19.0.8 (2026-08-14)
 
 No changes.
