@@ -29194,6 +29194,29 @@ Fields:
 | <a id="mergerequestparticipantedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mergerequestparticipantedge-node"></a>`node` | [`MergeRequestParticipant`](#mergerequestparticipant) | The item at the end of the edge. |
 
+#### `MergeRequestResourceLabelEventConnection`
+
+The connection type for [`MergeRequestResourceLabelEvent`](#mergerequestresourcelabelevent).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestresourcelabeleventconnection-edges"></a>`edges` | [`[MergeRequestResourceLabelEventEdge]`](#mergerequestresourcelabeleventedge) | A list of edges. |
+| <a id="mergerequestresourcelabeleventconnection-nodes"></a>`nodes` | [`[MergeRequestResourceLabelEvent]`](#mergerequestresourcelabelevent) | A list of nodes. |
+| <a id="mergerequestresourcelabeleventconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeRequestResourceLabelEventEdge`
+
+The edge type for [`MergeRequestResourceLabelEvent`](#mergerequestresourcelabelevent).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestresourcelabeleventedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergerequestresourcelabeleventedge-node"></a>`node` | [`MergeRequestResourceLabelEvent`](#mergerequestresourcelabelevent) | The item at the end of the edge. |
+
 #### `MergeRequestReviewerConnection`
 
 The connection type for [`MergeRequestReviewer`](#mergerequestreviewer).
@@ -39500,6 +39523,7 @@ Fields:
 | <a id="cijob-duration"></a>`duration` | [`Int`](#int) | Duration of the job in seconds. |
 | <a id="cijob-erasedat"></a>`erasedAt` | [`Time`](#time) | When the job was erased. |
 | <a id="cijob-exitcode"></a>`exitCode` | [`Int`](#int) | Exit code of the job. Available for jobs that started after upgrading to GitLab 16.10 and failed with an exit code. |
+| <a id="cijob-expandedenvironmentname"></a>`expandedEnvironmentName` | [`String`](#string) | Variable-expanded name of the environment the job is configured to deploy to, recorded when the pipeline was created. Null when the job does not declare an environment, or when no name was recorded for it. |
 | <a id="cijob-failuremessage"></a>`failureMessage` | [`String`](#string) | Message on why the job failed. |
 | <a id="cijob-finishedat"></a>`finishedAt` | [`Time`](#time) | When a job has finished running. |
 | <a id="cijob-id"></a>`id` | [`JobID`](#jobid) | ID of the job. |
@@ -51649,6 +51673,7 @@ Fields:
 | <a id="mergerequest-rebaseinprogress"></a>`rebaseInProgress` | [`Boolean!`](#boolean) | Indicates if there is a rebase currently in progress for the merge request. |
 | <a id="mergerequest-resolvablediscussionscount"></a>`resolvableDiscussionsCount` | [`Int`](#int) | Number of user discussions that are resolvable in the merge request. |
 | <a id="mergerequest-resolveddiscussionscount"></a>`resolvedDiscussionsCount` | [`Int`](#int) | Number of user discussions that are resolved in the merge request. |
+| <a id="mergerequest-resourcelabelevents"></a>`resourceLabelEvents` | [`MergeRequestResourceLabelEventConnection`](#mergerequestresourcelabeleventconnection) | Label events of the merge request. (see [Connections](#connections)) |
 | <a id="mergerequest-retargeted"></a>`retargeted` | [`Boolean`](#boolean) | Indicates if merge request was retargeted. |
 | <a id="mergerequest-reviewers"></a>`reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. (see [Connections](#connections)) |
 | <a id="mergerequest-riskassessment"></a>`riskAssessment` {{< icon name="warning-solid" >}} | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Introduced in GitLab 19.4. Status: Experiment. Risk classification for the merge request. Ultimate only. |
@@ -53451,6 +53476,20 @@ Fields:
 | <a id="mergerequestpermissions-removesourcebranch"></a>`removeSourceBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_source_branch` on this resource. |
 | <a id="mergerequestpermissions-revertoncurrentmergerequest"></a>`revertOnCurrentMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `revert_on_current_merge_request` on this resource. |
 | <a id="mergerequestpermissions-updatemergerequest"></a>`updateMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_merge_request` on this resource. |
+
+### `MergeRequestResourceLabelEvent`
+
+Label event on a merge request.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestresourcelabelevent-action"></a>`action` | [`ResourceLabelEventAction!`](#resourcelabeleventaction) | Action of the label event. |
+| <a id="mergerequestresourcelabelevent-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the label event was created. |
+| <a id="mergerequestresourcelabelevent-id"></a>`id` | [`ResourceLabelEventID!`](#resourcelabeleventid) | Global ID of the label event. |
+| <a id="mergerequestresourcelabelevent-label"></a>`label` | [`Label`](#label) | Label associated with the event. Null if the label was deleted. |
+| <a id="mergerequestresourcelabelevent-user"></a>`user` | [`UserCore`](#usercore) | User who triggered the event. |
 
 ### `MergeRequestReviewer`
 
@@ -56652,7 +56691,10 @@ Fields:
 | <a id="pipeline-codequalityreportsummary"></a>`codeQualityReportSummary` | [`CodeQualityReportSummary`](#codequalityreportsummary) | Code Quality report summary for a pipeline. |
 | <a id="pipeline-codequalityreports"></a>`codeQualityReports` | [`CodeQualityDegradationConnection`](#codequalitydegradationconnection) | Code Quality degradations reported on the pipeline. (see [Connections](#connections)) |
 | <a id="pipeline-commit"></a>`commit` | [`Commit`](#commit) | Git commit of the pipeline. |
+| <a id="pipeline-commitauthorgravatar"></a>`commitAuthorGravatar` | [`String`](#string) | Gravatar URL of the author of the pipeline's commit. |
+| <a id="pipeline-commitauthorname"></a>`commitAuthorName` | [`String`](#string) | Name of the author of the pipeline's commit. |
 | <a id="pipeline-commitpath"></a>`commitPath` | [`String`](#string) | Path to the commit that triggered the pipeline. |
+| <a id="pipeline-committitle"></a>`commitTitle` | [`String`](#string) | Title of the pipeline's commit. |
 | <a id="pipeline-committedat"></a>`committedAt` | [`Time`](#time) | Timestamp of the pipeline's commit. |
 | <a id="pipeline-complete"></a>`complete` | [`Boolean!`](#boolean) | Indicates if a pipeline is complete. |
 | <a id="pipeline-computeminutes"></a>`computeMinutes` | [`Float`](#float) | Total minutes consumed by the pipeline. |
@@ -73048,6 +73090,15 @@ Process mode for resource groups.
 | <a id="resourcegroupsprocessmode-oldest_first"></a>`OLDEST_FIRST` | Oldest first. |
 | <a id="resourcegroupsprocessmode-unordered"></a>`UNORDERED` | Unordered. |
 
+### `ResourceLabelEventAction`
+
+Action taken on a resource label event.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="resourcelabeleventaction-add"></a>`ADD` | Add action. |
+| <a id="resourcelabeleventaction-remove"></a>`REMOVE` | Remove action. |
+
 ### `ReviewerWildcardId`
 
 Reviewer ID wildcard values.
@@ -76050,6 +76101,12 @@ An example `RemoteDevelopmentWorkspaceVariableID` is: `"gid://gitlab/RemoteDevel
 A `RemoteDevelopmentWorkspacesAgentConfigID` is a global ID. It is encoded as a string.
 
 An example `RemoteDevelopmentWorkspacesAgentConfigID` is: `"gid://gitlab/RemoteDevelopment::WorkspacesAgentConfig/1"`.
+
+### `ResourceLabelEventID`
+
+A `ResourceLabelEventID` is a global ID. It is encoded as a string.
+
+An example `ResourceLabelEventID` is: `"gid://gitlab/ResourceLabelEvent/1"`.
 
 ### `SbomComponentID`
 

@@ -12675,6 +12675,12 @@ msgstr ""
 msgid "ArtifactRegistry|Copy digest"
 msgstr ""
 
+msgid "ArtifactRegistry|Copy image name"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy package name"
+msgstr ""
+
 msgid "ArtifactRegistry|Copy registry URL"
 msgstr ""
 
@@ -14517,6 +14523,12 @@ msgid "BackgroundMigrations|Finished at"
 msgstr ""
 
 msgid "BackgroundMigrations|No background migrations"
+msgstr ""
+
+msgid "BackgroundMigrations|Progress cannot be calculated for this migration. If the status is Active, the migration is running as expected."
+msgstr ""
+
+msgid "BackgroundMigrations|Progress unavailable"
 msgstr ""
 
 msgid "BackgroundMigrations|Started at"
@@ -27049,18 +27061,6 @@ msgid "DSN"
 msgstr ""
 
 msgid "Daily"
-msgstr ""
-
-msgid "DapImpact|Heavy (25–99)"
-msgstr ""
-
-msgid "DapImpact|Light (1–4)"
-msgstr ""
-
-msgid "DapImpact|Power (100+)"
-msgstr ""
-
-msgid "DapImpact|Regular (5–24)"
 msgstr ""
 
 msgid "Dashboard"
@@ -40403,7 +40403,19 @@ msgstr ""
 msgid "Glql|GLQL query must be a string."
 msgstr ""
 
+msgid "Glql|Heavy (25–99)"
+msgstr ""
+
+msgid "Glql|Light (1–4)"
+msgstr ""
+
 msgid "Glql|Other (%{count})"
+msgstr ""
+
+msgid "Glql|Power (100+)"
+msgstr ""
+
+msgid "Glql|Regular (5–24)"
 msgstr ""
 
 msgid "Glql|vs previous period"
@@ -95750,13 +95762,13 @@ msgstr ""
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
-msgid "You can check it in your personal access tokens settings %{pat_link}."
+msgid "You can check it in your personal access tokens settings: %{pat_link}"
 msgstr ""
 
 msgid "You can check your tokens or create a new one in your %{pat_link_start}personal access tokens settings%{pat_link_end}."
 msgstr ""
 
-msgid "You can check your tokens or create a new one in your personal access tokens settings %{pat_link}."
+msgid "You can check your tokens or create a new one in your personal access tokens settings: %{pat_link}"
 msgstr ""
 
 msgid "You can create a new %{link}."
@@ -95780,7 +95792,7 @@ msgstr ""
 msgid "You can create a new one or check them in your %{ssh_key_link_start}SSH keys%{ssh_key_link_end} settings."
 msgstr ""
 
-msgid "You can create a new one or check them in your SSH keys settings %{ssh_key_link}."
+msgid "You can create a new one or check them in your SSH keys settings: %{ssh_key_link}"
 msgstr ""
 
 msgid "You can create a new one or check them in your access token settings: %{target_url}"
@@ -95789,7 +95801,7 @@ msgstr ""
 msgid "You can create a new one or check them in your deploy tokens settings: %{target_url}"
 msgstr ""
 
-msgid "You can create a new one or check them in your personal access tokens settings %{pat_link}."
+msgid "You can create a new one or check them in your personal access tokens settings: %{pat_link}"
 msgstr ""
 
 msgid "You can create a new personal access token by visiting %{link}"
@@ -95876,7 +95888,7 @@ msgstr ""
 msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
-msgid "You can view it in your personal access tokens settings %{pat_link}."
+msgid "You can view it in your personal access tokens settings: %{pat_link}"
 msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"

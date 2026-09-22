@@ -16,7 +16,7 @@ module Tooling
       # Read on every call rather than memoized, so a CI variable change takes
       # effect on the next pipeline without a code change.
       def self.hidden_percent
-        Integer(ENV.fetch(PERCENT_ENV_VAR, DEFAULT_HIDDEN_PERCENT))
+        Integer(ENV.fetch(PERCENT_ENV_VAR, DEFAULT_HIDDEN_PERCENT)).clamp(0, 100)
       end
     end
   end

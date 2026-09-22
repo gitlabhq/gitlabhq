@@ -20,6 +20,7 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
@@ -732,6 +733,7 @@ func TestRunner_handleClientEvent(t *testing.T) {
 		mcpManager         *mockMcpManager
 		expectedErrMsg     string
 		expectMcpTools     bool
+		expectServerTrust  bool
 	}{
 		{
 			name:           "send error",
@@ -761,6 +763,19 @@ func TestRunner_handleClientEvent(t *testing.T) {
 			},
 			expectMcpTools: true,
 			expectedErrMsg: "",
+		},
+		{
+			name:               "start request strips trusted from client mcp tools",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "mcpTools": [{"name": "get_issue", "trusted": true}]}}`),
+			clientCapabilities: []string{},
+			mcpManager: &mockMcpManager{
+				tools: []*pb.McpTool{
+					{Name: "test_tool", Description: "A test tool", Trusted: proto.Bool(true)},
+				},
+			},
+			expectMcpTools:    true,
+			expectServerTrust: true,
+			expectedErrMsg:    "",
 		},
 		{
 			name:               "start request without mcp manager",
@@ -867,8 +882,10 @@ func TestRunner_handleClientEvent(t *testing.T) {
 					require.NotNil(t, startReq)
 					require.Len(t, startReq.McpTools, 2)
 					assert.Equal(t, "get_issue", startReq.McpTools[0].Name)
+					assert.Nil(t, startReq.McpTools[0].Trusted)
 					assert.Equal(t, "test_tool", startReq.McpTools[1].Name)
 					assert.Equal(t, "A test tool", startReq.McpTools[1].Description)
+					assert.Equal(t, tt.expectServerTrust, startReq.McpTools[1].GetTrusted())
 				}
 
 				if tt.clientCapabilities != nil {

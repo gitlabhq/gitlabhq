@@ -17,6 +17,16 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
+  shared_examples 'a plain-text email with an unpunctuated settings URL' do |settings_url_helper|
+    it 'includes the settings URL without trailing punctuation' do
+      settings_url = public_send(settings_url_helper)
+      body = subject.text_part.body.decoded
+
+      expect(body).to include(settings_url)
+      expect(body).not_to match(/#{Regexp.escape(settings_url)}[.,;:!?]/)
+    end
+  end
+
   describe 'for new users, the email' do
     let(:example_site_path) { root_path }
     let_it_be(:new_user_address) { 'newguy@example.com' }
@@ -170,6 +180,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
+
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
       end
@@ -185,6 +197,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     it { is_expected.to have_subject(/^Your personal access tokens will expire in 7 days or less$/i) }
     it { is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/) }
     it { is_expected.to have_body_text(/example token/) }
+
+    it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
 
     context 'when passed days_to_expire parameter' do
       subject { Notify.access_token_about_to_expire_email(user, ['example token'], days_to_expire: 42) }
@@ -350,6 +364,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
+
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
       end
@@ -400,6 +416,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it 'wont include the revocation reason' do
         is_expected.not_to have_body_text %r{We found your token in a public project and have automatically revoked it to protect your account.$}
       end
+
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
 
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
@@ -462,6 +480,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         is_expected.to have_body_text(/#{user_settings_personal_access_tokens_path}/)
       end
 
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_personal_access_tokens_url
+
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
       end
@@ -517,6 +537,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it_behaves_like 'is sent to the user'
       it_behaves_like 'includes a link to ssh key page'
       it_behaves_like 'includes the email reason'
+      it_behaves_like 'a plain-text email with an unpunctuated settings URL', :user_settings_ssh_keys_url
     end
 
     shared_examples 'does not send email' do

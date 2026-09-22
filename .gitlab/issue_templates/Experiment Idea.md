@@ -1,3 +1,28 @@
+<!-- 
+This template is for Growth experiments run through the Experimenator; Growth triages these ideas and runs the ones we take on. Ideas from any team are welcome.
+-->
+
+<!--
+Before filling this in, check your idea fits.
+
+IN SCOPE
+- An A/B test on a GitLab.com product surface.
+- Randomizable per user or per namespace, behind a GLEX experiment feature flag.
+
+NOT IN SCOPE HERE
+- Marketing-site tests on about.gitlab.com. These go to the Digital Experience Optimization
+  program in Optimizely:
+  https://handbook.gitlab.com/handbook/marketing/digital-experience/optimizely/
+- Prompt or output quality evaluations, spikes, proposals and design docs. These are worth
+  doing, they just are not A/B tests and the Experimenator cannot run them.
+- Experiments your own group intends to build and run itself. See the Experiment Guide:
+  https://docs.gitlab.com/development/experiment_guide/
+- A change you are already confident in. Ship it rather than testing it.
+
+Name the metric you expect to move, and say whether the event that measures it fires today.
+"Not sure" is a useful answer; it tells us whether instrumentation work comes first.
+-->
+
 ## Experiment summary
 
 We believe that... {describe your hypothesis in one sentence}
@@ -23,7 +48,7 @@ And we’ll measure the impact on... {metrics}
 
 ## ICE score
 
-<!-- See https://about.gitlab.com/handbook/product/growth/#growth-ideation-and-prioritization -->
+<!-- See https://handbook.gitlab.com/handbook/product/groups/growth/#growth-ideation-and-prioritization -->
 
 | Impact | Confidence | Ease | Score |
 | ------ | ------ | ------ | ------ |
@@ -45,4 +70,4 @@ And we’ll measure the impact on... {metrics}
 * [ ] Replace the ~"ICE Score Needed" with an ICE low/medium/high score label once all values in the ICE table have been added.
 * [ ] Mention the [at]gitlab-core-team team and ask for their feedback.
 
-/label ~"workflow::validation backlog" ~"experiment idea" ~"epic-status-update"
+/label ~"workflow::validation backlog" ~"experiment idea" ~"epic-status-update" ~"section::growth"

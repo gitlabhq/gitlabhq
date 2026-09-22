@@ -103,10 +103,12 @@ categories.delete(:database)
 # Skip specialty reviews for stable branch MRs since they have already been merged to the default branch
 categories.subtract([:ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
 
-if changes.any? || roulette.required_approvals.any?
+required_approvals = roulette.required_approvals
+
+if changes.any? || required_approvals.any?
   random_roulette_spins = roulette.spin(nil, categories)
-  spins = random_roulette_spins + roulette.required_approvals.map(&:spin)
-  spin_categories = random_roulette_spins.map(&:category) + roulette.required_approvals.map(&:category)
+  spins = random_roulette_spins + required_approvals.map(&:spin)
+  spin_categories = random_roulette_spins.map(&:category) + required_approvals.map(&:category)
 
   # Deterministic per MR so the table doesn't flicker on re-runs; disabled locally
   # so `danger dry_run` always shows the full table.

@@ -97,6 +97,153 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     end
   end
 
+  describe 'commit summary fields' do
+    let_it_be(:private_project) { create(:project, :repository, :private, public_builds: true) }
+    let_it_be(:guest) { create(:user, guest_of: private_project) }
+    let_it_be(:reporter) { create(:user, reporter_of: private_project) }
+    let_it_be(:commit, freeze: false) { private_project.commit }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: private_project, sha: commit.id) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{private_project.full_path}") {
+            pipelines {
+              nodes {
+                iid
+                commitTitle
+                commitAuthorName
+                commitAuthorGravatar
+                commit {
+                  title
+                  authorName
+                  authorGravatar
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    def node_for(pipeline)
+      graphql_data_at(:project, :pipelines, :nodes).find { |node| node['iid'] == pipeline.iid.to_s }
+    end
+
+    context 'when the user is a guest without permission to read code' do
+      it 'returns the summary fields but not the commit' do
+        post_graphql(query, current_user: guest)
+
+        expect(graphql_errors).to be_nil
+        expect(node_for(pipeline)).to eq(
+          'iid' => pipeline.iid.to_s,
+          'commitTitle' => commit.title,
+          'commitAuthorName' => commit.author_name,
+          'commitAuthorGravatar' => GravatarService.new.execute(commit.author_email, 40),
+          'commit' => nil
+        )
+      end
+    end
+
+    context 'when the user is a reporter with permission to read code' do
+      it 'returns the same values as the commit field' do
+        post_graphql(query, current_user: reporter)
+
+        expect(graphql_errors).to be_nil
+        expect(node_for(pipeline)).to eq(
+          'iid' => pipeline.iid.to_s,
+          'commitTitle' => commit.title,
+          'commitAuthorName' => commit.author_name,
+          'commitAuthorGravatar' => GravatarService.new.execute(commit.author_email, 40),
+          'commit' => {
+            'title' => commit.title,
+            'authorName' => commit.author_name,
+            'authorGravatar' => GravatarService.new.execute(commit.author_email, 40)
+          }
+        )
+      end
+    end
+
+    context 'when the user is anonymous' do
+      it 'does not expose the private project' do
+        post_graphql(query)
+
+        expect(graphql_data_at(:project)).to be_nil
+      end
+    end
+
+    context 'when the pipeline SHA is not in the repository' do
+      let_it_be(:orphan_pipeline) do
+        create(:ci_pipeline, project: private_project, sha: '0000000000000000000000000000000000000001')
+      end
+
+      it 'returns nil for the summary fields without an error' do
+        post_graphql(query, current_user: guest)
+
+        expect(graphql_errors).to be_nil
+        expect(node_for(orphan_pipeline)).to include(
+          'commitTitle' => nil,
+          'commitAuthorName' => nil,
+          'commitAuthorGravatar' => nil
+        )
+      end
+    end
+
+    describe 'Gitaly calls' do
+      let(:summary_only_query) do
+        %(
+          query {
+            project(fullPath: "#{private_project.full_path}") {
+              pipelines {
+                nodes {
+                  commitTitle
+                  commitAuthorName
+                  commitAuthorGravatar
+                }
+              }
+            }
+          }
+        )
+      end
+
+      # The request store is cleared when each request ends, so count real client calls instead.
+      def gitaly_calls_for(graphql_query)
+        calls = 0
+        allow(Gitlab::GitalyClient).to receive(:call).and_wrap_original do |original, *args, **kwargs, &block|
+          calls += 1
+          original.call(*args, **kwargs, &block)
+        end
+
+        post_graphql(graphql_query, current_user: reporter)
+        calls
+      end
+
+      before do
+        post_graphql(summary_only_query, current_user: reporter)
+      end
+
+      def create_pipelines_for_other_commits
+        private_project.repository.commits('master', limit: 3).drop(1).each do |other_commit|
+          create(:ci_pipeline, project: private_project, sha: other_commit.id)
+        end
+      end
+
+      it 'does not issue an additional Gitaly call per pipeline' do
+        single_pipeline_calls = gitaly_calls_for(summary_only_query)
+
+        create_pipelines_for_other_commits
+
+        expect(gitaly_calls_for(summary_only_query)).to eq(single_pipeline_calls)
+      end
+
+      it 'shares the batched commit lookup with the commit field' do
+        create_pipelines_for_other_commits
+
+        expect(gitaly_calls_for(query)).to eq(gitaly_calls_for(summary_only_query))
+      end
+    end
+  end
+
   describe 'duration fields' do
     let_it_be_with_reload(:pipeline) do
       create(:ci_pipeline, project: project)

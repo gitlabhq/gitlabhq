@@ -83,6 +83,11 @@ module Types
         description: 'Detailed status of the job.'
       field :downstream_pipeline, Types::Ci::PipelineType, null: true,
         description: 'Downstream pipeline for a bridge.'
+      field :expanded_environment_name, GraphQL::Types::String, null: true,
+        authorize: :read_environment,
+        description: 'Variable-expanded name of the environment the job is configured to deploy to, ' \
+          'recorded when the pipeline was created. Null when the job does not declare an environment, ' \
+          'or when no name was recorded for it.'
       field :manual_job, GraphQL::Types::Boolean, null: true,
         description: 'Whether the job has a manual action.'
       field :manual_variables, ManualVariableType.connection_type, null: true,
@@ -178,8 +183,18 @@ module Types
         object.tag_list if object.is_a?(::Ci::Build)
       end
 
+      # Batched by hand: the jobs collection mixes in bridges and generic statuses
+      # without a job_artifacts association, so a resolver preload cannot work.
+      # Preloading keeps inverse_of for downloadPath; to_a avoids a keyset requery.
+      # unpresented returns the model behind the presenter GraphQL hands us.
       def artifacts
-        object.job_artifacts if object.is_a?(::Ci::Build)
+        return unless object.is_a?(::Ci::Build)
+
+        BatchLoader::GraphQL.for(unpresented).batch(default_value: [], key: :job_artifacts) do |builds, loader|
+          ActiveRecord::Associations::Preloader.new(records: builds, associations: :job_artifacts).call
+
+          builds.each { |build| loader.call(build, build.job_artifacts.to_a) }
+        end
       end
 
       def source
@@ -218,6 +233,19 @@ module Types
 
       def stage
         ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Stage, object.stage_id).find
+      end
+
+      # Read only what was recorded at pipeline creation. Expanding the name at
+      # query time instead would use current variable values, which can resolve
+      # to a name the job never ran against.
+      def expanded_environment_name
+        return unless object.try(:has_environment_keyword?)
+
+        BatchLoader::GraphQL.for(unpresented).batch(key: :job_environments) do |jobs, loader|
+          ActiveRecord::Associations::Preloader.new(records: jobs, associations: :job_environment).call
+
+          jobs.each { |job| loader.call(job, job.job_environment&.expanded_environment_name) }
+        end
       end
 
       def runner

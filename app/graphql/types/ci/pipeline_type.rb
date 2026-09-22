@@ -159,6 +159,15 @@ module Types
       field :commit_path, GraphQL::Types::String, null: true,
         description: 'Path to the commit that triggered the pipeline.'
 
+      field :commit_title, GraphQL::Types::String, null: true, calls_gitaly: true,
+        description: "Title of the pipeline's commit."
+
+      field :commit_author_name, GraphQL::Types::String, null: true, calls_gitaly: true,
+        description: "Name of the author of the pipeline's commit."
+
+      field :commit_author_gravatar, GraphQL::Types::String, null: true, calls_gitaly: true,
+        description: "Gravatar URL of the author of the pipeline's commit."
+
       field :project, Types::ProjectType, null: true,
         description: 'Project the pipeline belongs to.'
 
@@ -271,6 +280,18 @@ module Types
         ::Gitlab::Routing.url_helpers.project_commit_path(object.project, object.sha)
       end
 
+      def commit_title
+        with_commit(&:title)
+      end
+
+      def commit_author_name
+        with_commit(&:author_name)
+      end
+
+      def commit_author_gravatar
+        with_commit { |commit| GravatarService.new.execute(commit.author_email, 40) }
+      end
+
       def warning_messages
         BatchLoader::GraphQL.for(object).batch do |pipelines, loader|
           # rubocop: disable CodeReuse/ActiveRecord -- context specific
@@ -348,6 +369,14 @@ module Types
       alias_method :pipeline, :object
 
       private
+
+      # Rides the batched Commit.lazy lookup shared with `commit`; calling object.git_commit_title
+      # directly would force the batch on the first row and degrade to one Gitaly call per pipeline.
+      def with_commit
+        Gitlab::Graphql::Lazy.with_value(BatchLoader::GraphQL.wrap(object.commit)) do |commit|
+          yield commit if commit
+        end
+      end
 
       # rubocop: disable CodeReuse/ActiveRecord -- batch loading across multiple pipelines for performance
       def pending_builds_grouped_by_pipeline(items)

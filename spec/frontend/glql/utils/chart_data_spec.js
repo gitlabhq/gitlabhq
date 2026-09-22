@@ -23,6 +23,13 @@ const CREATED = {
   type: 'dimension',
   parameters: { granularity: 'daily' },
 };
+const USER_TIER = {
+  key: 'userTier',
+  label: 'User tier',
+  name: 'userTier',
+  type: 'dimension',
+  parameters: { thresholds: ['5', '25', '100'] },
+};
 const TOTAL_COUNT = { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' };
 const ACCEPTANCE_RATE = {
   key: 'acceptanceRate',
@@ -319,6 +326,11 @@ describe('dimensionLabelFormatter', () => {
   it('labels an empty dimension value as Unknown', () => {
     expect(dimensionLabelFormatter([], LANGUAGE)('')).toBe('Unknown');
     expect(dimensionLabelFormatter([], LANGUAGE)(null)).toBe('Unknown');
+  });
+
+  // Formatting itself is covered in utils/tier_band_spec.js; this checks the delegation.
+  it('formats tier values through tierBandFormatter', () => {
+    expect(dimensionLabelFormatter([], USER_TIER)('tier_3')).toBe('Power (100+)');
   });
 });
 

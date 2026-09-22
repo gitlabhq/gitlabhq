@@ -272,6 +272,43 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
         )
       end
 
+      context 'with an expired artifact' do
+        let_it_be(:expired_pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:expired_artifact_job) { create(:ci_build, :success, pipeline: expired_pipeline) }
+        let_it_be(:expired_artifact) { create(:ci_job_artifact, :archive, :expired, job: expired_artifact_job) }
+
+        let(:params) { { id: project.full_path, pipeline_id: expired_pipeline.id, include: ['artifacts'] } }
+
+        it 'reports expired: true with the iso8601 timestamp', :aggregate_failures do
+          result = tool.execute
+
+          artifact = result[:structuredContent][:artifacts].find { |a| a[:id] == expired_artifact.id }
+          expect(artifact[:expired]).to be(true)
+          expect(artifact[:expire_at]).to eq(expired_artifact.expire_at.iso8601)
+        end
+      end
+
+      it 'tolerates bridges and generic statuses in the pipeline', :aggregate_failures do
+        create(:ci_bridge, pipeline: pipeline)
+        create(:generic_commit_status, pipeline: pipeline)
+
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent][:artifacts].pluck(:job_id).uniq).to contain_exactly(
+          job_with_artifacts.id, other_job_with_artifacts.id
+        )
+      end
+
+      it 'does not run one artifact query per job' do
+        baseline = ActiveRecord::QueryRecorder.new { described_class.new(current_user: user, params: params).execute }
+
+        create_list(:ci_build, 3, :success, :artifacts, pipeline: pipeline)
+
+        expect { described_class.new(current_user: user, params: params).execute }
+          .not_to exceed_query_limit(baseline)
+      end
+
       context 'with pagination' do
         # A dedicated pipeline where every job has artifacts, so the assertion does not
         # depend on which job the first page happens to return.

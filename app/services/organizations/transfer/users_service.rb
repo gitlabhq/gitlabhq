@@ -148,6 +148,7 @@ module Organizations
           update_clusters(user_ids)
           update_oauth_applications(user_ids)
           update_abuse_reports(user_ids)
+          transfer_ee_associations(user_ids)
           fire_upload_triggers(user_ids)
         end
       end
@@ -381,6 +382,8 @@ module Organizations
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord
+
+      def transfer_ee_associations(user_ids); end
 
       def fire_upload_triggers(user_ids); end
 

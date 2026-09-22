@@ -299,6 +299,48 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis, feature_category: :global_sear
         )
       end
     end
+
+    context 'when the endpoint is autocomplete' do
+      before do
+        allow(::Gitlab::ApplicationContext).to receive(:current_context_attribute)
+          .with(:caller_id).and_return('SearchController#autocomplete')
+      end
+
+      # Discriminating on purpose: AUTOCOMPLETE_TARGET_S and DEFAULT_TARGET_S are
+      # both 5, so a nil-dimension example would pass even without the branch.
+      # These dimensions would resolve to ADVANCED_CODE_TARGET_S (15.52).
+      it 'scores against the autocomplete target and not the search_type branches' do
+        allow(Gitlab::Metrics::Sli::Apdex[:global_search]).to receive(:increment)
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(target_s: 5))
+
+        described_class.record_apdex(
+          elapsed: 4.9,
+          search_type: 'advanced',
+          search_level: 'global',
+          search_scope: 'blobs'
+        )
+      end
+    end
+  end
+
+  describe '#derived_duration_target' do
+    # A scope or search type added later that derives no target fails here, rather
+    # than being silently scored against the un-derived DEFAULT_TARGET_S. Nil is
+    # the signal, not the value: the fallthrough and two chosen targets are all 5.
+    it 'derives a target for every registered label combination' do
+      labels = described_class.send(:possible_labels)
+      expect(labels).not_to be_empty # or the select below passes vacuously
+
+      fallthrough = labels.select do |label|
+        described_class.send(:derived_duration_target, label[:search_type], label[:search_scope]).nil?
+      end
+
+      expect(fallthrough).to be_empty
+    end
+
+    it 'derives nothing for a combination no branch claims' do
+      expect(described_class.send(:derived_duration_target, 'no-such-type', 'blobs')).to be_nil
+    end
   end
 
   describe '#record_error_rate' do

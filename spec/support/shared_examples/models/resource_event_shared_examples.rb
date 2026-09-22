@@ -187,6 +187,22 @@ RSpec.shared_examples 'a resource event for merge requests' do
       event.save!
     end
   end
+
+  describe '#merge_request_project' do
+    context 'when the event belongs to a merge request' do
+      let_it_be(:event, freeze: false) { create(resource_event, merge_request: merge_request1) }
+
+      it 'returns the merge request project' do
+        expect(event.merge_request_project).to eq(merge_request1.project)
+      end
+    end
+
+    context 'when the event does not belong to a merge request' do
+      it 'returns nil' do
+        expect(subject.merge_request_project).to be_nil
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'a note for work item resource event' do

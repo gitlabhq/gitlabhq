@@ -51,6 +51,32 @@ RSpec.describe Tooling::Danger::RouletteExperiment, feature_category: :tooling d
 
         expect { described_class.hide_reviewer_column?(1) }.to raise_error(ArgumentError)
       end
+
+      it 'clamps a value above 100 down to 100' do
+        stub_env('ROULETTE_HIDE_REVIEWER_COLUMN_PERCENT', '150')
+
+        expect((1..500).map { |iid| described_class.hide_reviewer_column?(iid) }).to all(be true)
+      end
+
+      it 'clamps a negative value up to 0' do
+        stub_env('ROULETTE_HIDE_REVIEWER_COLUMN_PERCENT', '-10')
+
+        expect((1..500).map { |iid| described_class.hide_reviewer_column?(iid) }).to all(be false)
+      end
+    end
+  end
+
+  describe '.hidden_percent' do
+    it 'clamps values above 100 to 100' do
+      stub_env('ROULETTE_HIDE_REVIEWER_COLUMN_PERCENT', '150')
+
+      expect(described_class.hidden_percent).to eq(100)
+    end
+
+    it 'clamps negative values to 0' do
+      stub_env('ROULETTE_HIDE_REVIEWER_COLUMN_PERCENT', '-10')
+
+      expect(described_class.hidden_percent).to eq(0)
     end
   end
 end

@@ -259,6 +259,19 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
         )
       end
 
+      context 'when an artifact has expired' do
+        let_it_be(:expired_artifact_job) { create(:ci_build, :success, pipeline: pipeline) }
+        let_it_be(:expired_artifact) { create(:ci_job_artifact, :archive, :expired, job: expired_artifact_job) }
+
+        it 'reports expired: true with the expiry timestamp', :aggregate_failures do
+          result = execute({ id: project.full_path, job_id: expired_artifact_job.id, include: %w[artifacts] })
+
+          artifact = result[:structuredContent][:artifacts].find { |a| a[:id] == expired_artifact.id }
+          expect(artifact[:expired]).to be(true)
+          expect(artifact[:expire_at]).to eq(expired_artifact.reload.expire_at)
+        end
+      end
+
       context 'when the job has no artifacts' do
         it 'returns an empty list' do
           result = execute({ id: project.full_path, job_id: job.id, include: %w[artifacts] })

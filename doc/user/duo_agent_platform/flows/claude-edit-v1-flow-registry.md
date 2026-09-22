@@ -1,6 +1,6 @@
 ---
-stage: AI-powered features
-group: Workflow Catalog
+stage: Agent Foundations
+group: AI Catalog
 title: Flow Registry Framework v1
 ignore_in_report: true
 ---

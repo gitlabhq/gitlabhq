@@ -2,6 +2,7 @@ import { newDate, nDaysAfter } from '~/lib/utils/datetime/date_calculation_utili
 import { __ } from '~/locale';
 import { FIELD_TYPES, DISPLAY_TYPES } from '../constants';
 import { bucketDateOf, bucketSpanDays, formatBucketDate } from './date_bucket';
+import { tierBandFormatter } from './tier_band';
 
 export const dimensionsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.DIMENSION);
 export const metricsOf = (fields) => fields.filter((f) => f.type === FIELD_TYPES.METRIC);
@@ -91,7 +92,8 @@ const spansMultipleYears = (nodes, dimension) => {
 // Maps raw category values to display labels (axis formatters, tooltip
 // titles, sizing). A factory: the year decision needs the whole series.
 export const dimensionLabelFormatter = (nodes, dimension) => {
-  const granularity = dimension?.parameters?.granularity;
+  const { granularity, thresholds } = dimension?.parameters ?? {};
+  if (thresholds?.length) return tierBandFormatter(thresholds);
   // An empty dimension value still labels its row, so absent attribution stays visible.
   if (!granularity)
     return (value) => (value == null || value === '' ? __('Unknown') : String(value));

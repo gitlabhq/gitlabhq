@@ -20,7 +20,10 @@ module Namespaces
 
       override :provisioning_params
       def provisioning_params
-        { provisioned_by_project_id: resource.id }
+        {
+          group_id: resource.group&.id,
+          provisioned_by_project_id: resource.id
+        }
       end
     end
   end

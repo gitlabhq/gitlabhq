@@ -300,6 +300,10 @@ To check the status of batched background migrations:
 1. Select **Queued** or **Finalizing** to see incomplete migrations,
    and **Failed** for failed migrations.
 
+If a migration shows **Progress unavailable**, GitLab could not estimate the table size
+when the migration was queued, so it cannot calculate a percentage. If the status is
+**Active**, the migration is running as expected.
+
 #### From the database
 
 Prerequisites:

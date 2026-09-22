@@ -249,4 +249,24 @@ RSpec.describe Namespaces::ServiceAccounts::BaseUpdateService, feature_category:
       end
     end
   end
+
+  describe '#root_namespace' do
+    context 'when the resource is a subgroup' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+
+      let(:params) { super().merge(resource_id: subgroup.id) }
+
+      it 'returns the root ancestor of the resource' do
+        expect(service.send(:root_namespace)).to eq(group)
+      end
+    end
+
+    context 'when the resource is not found' do
+      let(:params) { super().merge(resource_id: non_existing_record_id) }
+
+      it 'returns nil' do
+        expect(service.send(:root_namespace)).to be_nil
+      end
+    end
+  end
 end

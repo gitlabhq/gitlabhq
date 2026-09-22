@@ -1839,6 +1839,7 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Read | Project | Type | `AiSuggestedReviewer` |
 | Read | Project | Type | `MergeRequest` |
 | Read | Project | Type | `MergeRequestApprovalState` |
+| Read | Project | Type | `MergeRequestResourceLabelEvent` |
 | Read | Project | Type | `MergeRequestWorkItemRelation` |
 | Read | Project | Type | `UserMergeRequestInteraction` |
 | Subscribe | Project | Mutation | `MergeRequestSetSubscription` |

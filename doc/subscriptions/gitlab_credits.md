@@ -283,6 +283,7 @@ For premium models with optimized integration:
 | Model | Calls with one credit |
 |-------|------------------------|
 | `gpt-5.6-luna` | 8.0 |
+| `gpt-6-luna` | 8.0 |
 | `minimax-m3` | 8.0 |
 | `claude-4.5-haiku` | 6.7 |
 | `gemini-3.6-flash` <sup>1</sup> | 6.7 |
@@ -294,6 +295,7 @@ For premium models with optimized integration:
 | `gpt-5` | 3.3 |
 | `gpt-5-codex` | 3.3 |
 | `claude-sonnet-5` | 3.2 |
+| `gpt-6-sol` <sup>3</sup> | 2.86 |
 | `gpt-5.2` | 2.5 |
 | `gpt-5.2-codex` | 2.5 |
 | `gpt-5.3-codex` | 2.5 |
@@ -304,6 +306,7 @@ For premium models with optimized integration:
 | `claude-sonnet-4.6` | 2.0 |
 | `gpt-5.4` <sup>3</sup> | 2.0 |
 | `kimi-k3` | 1.82 |
+| `gpt-6-sol` <sup>4</sup> | 1.54 |
 | `gpt-5.6-terra` <sup>4</sup> | 1.43 |
 | `claude-opus-5.5` | 1.35 |
 | `gpt-5.6-sol` <sup>2</sup> <sup>3</sup> | 1.33 |

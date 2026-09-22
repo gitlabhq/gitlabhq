@@ -399,6 +399,23 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         expect(job_data['artifacts']).to be_nil
       end
     end
+
+    context 'with builds and a bridge in the same pipeline', :request_store, :use_sql_query_cache do
+      it 'batches artifacts and their download paths without an N+1' do
+        create(:ci_build, :artifacts, pipeline: pipeline)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          post_graphql(query, current_user: user)
+        end
+
+        create(:ci_build, :artifacts, pipeline: pipeline)
+        create(:ci_bridge, pipeline: pipeline)
+
+        expect do
+          post_graphql(query, current_user: user)
+        end.not_to exceed_all_query_limit(control)
+      end
+    end
   end
 
   describe '.jobs.runnerManager' do
