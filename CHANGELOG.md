@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.4.1 (2026-09-22)
+
+### Fixed (1 change)
+
+- [Resume mid-delta on the package metadata label path](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8e3207d7d7bcc78c8dcce3429a00ebf46ed31574) **GitLab Enterprise Edition**
+
+### Security (11 changes)
+
+- [Bound compiled size of CI rules regexp patterns](https://gitlab.com/gitlab-org/security/gitlab/-/commit/360a5f4c0430ea2961dcdad511069007079db602) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6830))
+- [Fix authorization bypass in MemberRole.dependentSecurityPolicies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5de5231473be3f6b6045fa62e52d17dc07583230) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6823))
+- [Hide private child items in Epic API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f6e93099d96e22e4dde27b014cdc890269a6eb50) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6798))
+- [Authorize GraphQL CiJob.trace with read_build_trace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2427e771fa368cc6282463fe56e32ce993d4143e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6649))
+- [Restrict mcp scope auth to routes with an mcp route setting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a2778a745af51e672afff4cb68e6ae9480bf18c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6809))
+- [Fix thread-safety race in MCP aggregated tool instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5b6320b50e1ac2b640b163728f904a6e0ad60e2d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6799))
+- [Resolve Duo Workflow tool governance from the executed workflow and bind the token to it (#605431)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/78b2af34720f7f7c8f88ae6494d6121c70e6018f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6788))
+- [Prevent user resolution downgrade in bulk and third-party importers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c21119eee4620be5efd65e65c0c6f0e918667e18) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6797))
+- [Enforce read_build_trace on Duo job trace paths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e6cf275403335954237125e2e0c017f1fffe336a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6720))
+- [Reject traversal segments in diff file URLs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1113420f4e2343543ac491e11474a087c53b561) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6793))
+- [Guard regexp compilation in CI rules clauses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/291ad637d2c333035ee03e1f6ad6223f20870d5a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6804))
+
 ## 19.4.0 (2026-09-16)
 
 ### Added (300 changes)
