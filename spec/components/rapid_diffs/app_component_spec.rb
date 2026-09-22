@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::AppComponent, feature_category: :code_review_workflow do
   let_it_be(:diffs_slice, freeze: false) { Array.new(2, build(:diff_file)) }
   let(:diffs_stream_url) { '/stream' }
   let(:reload_stream_url) { '/reload_stream' }

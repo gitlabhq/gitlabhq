@@ -175,14 +175,23 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def cancel
-    ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: @current_user).execute
+    result = ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: @current_user).execute
+    rate_limited = result.error? && result.reason == :rate_limited
 
     respond_to do |format|
       format.html do
-        redirect_back_or_default default: project_pipelines_path(project)
+        flash[:alert] = result.message if rate_limited
+        redirect_back_or_default(default: project_pipelines_path(project))
       end
 
-      format.json { head :no_content }
+      format.json do
+        if rate_limited
+          response.set_header('Retry-After', ::Gitlab::ApplicationRateLimiter.period_for(:pipeline_cancel).to_s)
+          render json: { message: result.message }, status: :too_many_requests
+        else
+          head :no_content
+        end
+      end
     end
   end
 

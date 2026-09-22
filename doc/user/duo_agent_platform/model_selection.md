@@ -68,6 +68,7 @@ in the Agent Platform.
 | Claude Opus 4.7             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Claude Opus 4.8             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Claude Opus 5               | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Opus 5.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Gemini 3.5 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Gemini 3.7 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |

@@ -55,7 +55,8 @@ module API
                 "Valid values: #{::Terraform::StateProtectionRule.minimum_access_level_for_writes.keys.join(', ')}."
             optional :allowed_from, type: String,
               values: ::Terraform::StateProtectionRule.allowed_froms.keys,
-              desc: 'Source restriction for write requests. Default: anywhere. ' \
+              default: 'anywhere',
+              desc: 'Source restriction for write requests. ' \
                 "Valid values: #{::Terraform::StateProtectionRule.allowed_froms.keys.join(', ')}."
           end
           route_setting :authorization, permissions: :create_terraform_state_protection_rule, boundary_type: :project

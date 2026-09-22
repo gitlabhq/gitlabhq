@@ -31,7 +31,7 @@ module GitlabSubscriptions
         end
 
         def uids_for_names(names)
-          where(name: names).map(&:id)
+          where(name: Array.wrap(names).map(&:to_s)).map(&:id)
         end
       end
     end

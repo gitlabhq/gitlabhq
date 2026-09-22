@@ -128,6 +128,15 @@ RSpec.describe Gitlab::FilterEvaluator, feature_category: :duo_agent_platform do
       end
     end
 
+    context 'when the data is a hash-like delegator' do
+      let(:data) { SimpleDelegator.new(super()) }
+      let(:filter) do
+        { 'rules' => [{ 'field' => 'object_attributes.status', 'operator' => 'in', 'value' => ['failed'] }] }
+      end
+
+      it { is_expected.to be(true) }
+    end
+
     context 'with match any' do
       let(:filter) do
         {

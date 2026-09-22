@@ -658,8 +658,6 @@ scopes:
   - exclude_experiments_for_models
   app/models/ml/model_version.rb:
   - order_by_model_id_id_desc
-  app/models/packages/build_info.rb:
-  - pluck_pipeline_ids
   app/models/packages/composer/metadatum.rb:
   - locked_for_update
   app/models/packages/dependency_link.rb:

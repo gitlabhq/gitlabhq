@@ -26,7 +26,7 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
       it 'renders the organization admin dashboard content' do
         request
 
-        expect(response.body).to include(_('Organization Administration'))
+        expect(response.body).to include(_('Organization overview'))
       end
     end
 
@@ -38,7 +38,47 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
       it 'renders the organization admin dashboard content' do
         request
 
-        expect(response.body).to include(_('Organization Administration'))
+        expect(response.body).to include(_('Organization overview'))
+      end
+
+      context 'with records scoped to the organization' do
+        let_it_be(:project) { create(:project, organization: organization) }
+        let_it_be(:group) { create(:group, organization: organization) }
+        let_it_be(:member) { create(:user, :with_namespace, organization: organization) }
+
+        let_it_be(:other_project) { create(:project, organization: other_organization) }
+        let_it_be(:other_group) { create(:group, organization: other_organization) }
+        let_it_be(:other_member) { create(:user, :with_namespace, organization: other_organization) }
+
+        it 'shows records belonging to the organization' do
+          request
+
+          expect(response.body).to include(project.full_name)
+          expect(response.body).to include(group.full_name)
+          expect(response.body).to include(member.name)
+        end
+
+        it 'does not show records belonging to another organization' do
+          request
+
+          expect(response.body).not_to include(other_project.full_name)
+          expect(response.body).not_to include(other_group.full_name)
+          expect(response.body).not_to include(other_member.name)
+        end
+
+        context 'when a count is unavailable' do
+          before do
+            allow(Gitlab::Database::Count).to receive(:approximate_counts_for_organization)
+              .and_return({ User => 1, Group => 1 })
+          end
+
+          it 'still renders the page with a fallback for the missing count' do
+            get organization_admin_root_path(organization)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.body).to include(_('This count is currently unavailable.'))
+          end
+        end
       end
 
       context 'when X-GitLab-Organization-ID header is provided' do

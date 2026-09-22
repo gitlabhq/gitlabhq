@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::CheckboxTagComponent, :aggregate_failures, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::CheckboxTagComponent, :aggregate_failures, feature_category: :design_system do
   let_it_be(:name) { :view_diffs_file_by_file }
   let_it_be(:label) { "Show one file at a time on merge request's Changes tab" }
   let_it_be(:help_text) { 'Instead of all the files changed, show only one file at a time.' }

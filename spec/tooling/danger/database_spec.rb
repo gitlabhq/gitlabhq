@@ -215,6 +215,44 @@ RSpec.describe Tooling::Danger::Database, feature_category: :tooling do
     end
   end
 
+  describe '#check_deleted_migrations' do
+    subject(:check_deleted_migrations) { database.check_deleted_migrations(file_names) }
+
+    context 'when no migrations are deleted' do
+      let(:file_names) { ['app/models/user.rb', 'db/structure.sql', 'spec/migrations/foo_spec.rb'] }
+
+      it 'does not warn' do
+        expect(database).not_to receive(:warn)
+        check_deleted_migrations
+      end
+    end
+
+    context 'when migrations are deleted' do
+      let(:file_names) do
+        [
+          'db/migrate/20250128120000_add_column_to_users.rb',
+          'db/post_migrate/20250128120001_remove_column_from_users.rb',
+          'ee/db/geo/migrate/20250128120002_add_geo_table.rb',
+          'app/models/user.rb'
+        ]
+      end
+
+      it 'warns listing only the deleted migrations' do
+        expected = format(
+          described_class::DELETED_MIGRATION_WARNING_MESSAGE,
+          migrations: [
+            '* `db/migrate/20250128120000_add_column_to_users.rb`',
+            '* `db/post_migrate/20250128120001_remove_column_from_users.rb`',
+            '* `ee/db/geo/migrate/20250128120002_add_geo_table.rb`'
+          ].join("\n")
+        )
+
+        expect(database).to receive(:warn).with(expected)
+        check_deleted_migrations
+      end
+    end
+  end
+
   describe '#check_prevent_index_creation_disabled' do
     let(:fake_project_helper) { instance_double(Tooling::Danger::ProjectHelper, file_lines: []) }
     let(:file_names) { [] }

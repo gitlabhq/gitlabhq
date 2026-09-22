@@ -129,7 +129,6 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'spec/policies/namespaces/user_namespace_policy_spec.rb'
     - 'spec/policies/note_policy_spec.rb'
     - 'spec/policies/organizations/organization_policy_spec.rb'
-    - 'spec/policies/organizations/organization_user_policy_spec.rb'
     - 'spec/policies/packages/package_policy_spec.rb'
     - 'spec/policies/packages/policies/dependency_proxy/group_policy_spec.rb'
     - 'spec/policies/packages/policies/project_policy_spec.rb'

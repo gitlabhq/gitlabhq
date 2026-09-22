@@ -87,4 +87,23 @@ RSpec.describe 'PipelineCancel', feature_category: :pipeline_composition do
       end
     end
   end
+
+  context 'when the pipeline cancel rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+    before do
+      stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+    end
+
+    it 'surfaces the throttle in the mutation errors', :aggregate_failures do
+      post_graphql_mutation(mutation, current_user: user)
+      expect(graphql_mutation_response(:pipeline_cancel)['errors']).to be_empty
+
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(graphql_mutation_response(:pipeline_cancel)['errors'])
+        .to contain_exactly(_('This endpoint has been requested too many times. Try again later.'))
+    end
+  end
 end

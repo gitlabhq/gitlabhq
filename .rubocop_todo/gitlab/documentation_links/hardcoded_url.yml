@@ -31,7 +31,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
     - 'ee/app/mailers/emails/user_cap.rb'
     - 'ee/app/models/ai/catalog/foundational_flow/code_review/definition.rb'
-    - 'ee/app/models/ai/catalog/foundational_flow/definitions/code_review.rb'
     - 'ee/app/models/ai/catalog/goal_templates/developer/init_execution_env.rb'
     - 'ee/app/models/geo/errors/error_type.rb'
     - 'ee/app/services/ai/amazon_q/amazon_q_trigger_service.rb'

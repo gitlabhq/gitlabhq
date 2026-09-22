@@ -52,7 +52,18 @@ Example response:
     "merge_requests_events": true,
     "repository_update_events": true,
     "enable_ssl_verification":true,
+    "organization_id": 1,
+    "alert_status": "executable",
+    "disabled_until": null,
     "url_variables": [],
+    "push_events_branch_filter": "",
+    "branch_filter_strategy": "wildcard",
+    "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+    "custom_headers": [
+      {
+        "key": "X-Custom-Header"
+      }
+    ],
     "token_present": false,
     "signing_token_present": false
   }
@@ -100,7 +111,18 @@ Example response:
   "merge_requests_events": true,
   "repository_update_events": true,
   "enable_ssl_verification": true,
+  "organization_id": 1,
+  "alert_status": "executable",
+  "disabled_until": null,
   "url_variables": [],
+  "push_events_branch_filter": "",
+  "branch_filter_strategy": "wildcard",
+  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+  "custom_headers": [
+    {
+      "key": "X-Custom-Header"
+    }
+  ],
   "token_present": false,
   "signing_token_present": false
 }
@@ -126,6 +148,7 @@ POST /hooks
 |-----------------------------|---------|----------|-------------|
 | `url`                       | string  | Yes      | The hook URL. |
 | `branch_filter_strategy`    | string  | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `custom_webhook_template`   | string  | No       | Custom template for the request payload. |
 | `description`               | string  | No       | Description of the hook. |
 | `enable_ssl_verification`   | boolean | No       | Do SSL verification when triggering the hook. |
 | `merge_requests_events`     | boolean | No       | Trigger hook on merge request events. |
@@ -160,7 +183,18 @@ Example response:
     "merge_requests_events": true,
     "repository_update_events": true,
     "enable_ssl_verification":true,
+    "organization_id": 1,
+    "alert_status": "executable",
+    "disabled_until": null,
     "url_variables": [],
+    "push_events_branch_filter": "",
+    "branch_filter_strategy": "wildcard",
+    "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+    "custom_headers": [
+      {
+        "key": "X-Custom-Header"
+      }
+    ],
     "token_present": false,
     "signing_token_present": false
   }
@@ -187,6 +221,7 @@ PUT /hooks/:hook_id
 |-----------------------------|---------|----------|-------------|
 | `hook_id`                   | integer | Yes      | The ID of the system hook. |
 | `branch_filter_strategy`    | string  | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `custom_webhook_template`   | string  | No       | Custom template for the request payload. |
 | `description`               | string  | No       | Description of the hook. |
 | `enable_ssl_verification`   | boolean | No       | Do SSL verification when triggering the hook. |
 | `merge_requests_events`     | boolean | No       | Trigger hook on merge request events. |

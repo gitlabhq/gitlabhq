@@ -223,7 +223,7 @@ If your SSH key pair is not in the default directory, configure your SSH client 
 
    ```shell
    eval $(ssh-agent -s)
-   ssh-add <directory to private SSH key>
+   ssh-add <path to private SSH key file>
    ```
 
 1. Save these settings in the `~/.ssh/config` file. For example:

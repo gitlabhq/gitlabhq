@@ -1,6 +1,5 @@
 <script>
 import { isEmpty, clamp, throttle } from 'lodash-es';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
@@ -47,9 +46,6 @@ import MergeChecks from './components/merge_checks.vue';
 
 export default {
   name: 'MRWidgetRoot',
-  directives: {
-    SafeHtml,
-  },
   components: {
     Loading,
     WidgetContainer,

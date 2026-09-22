@@ -81,7 +81,6 @@ describe('WorkItemTree', () => {
     workItemHierarchyTreeHandler = workItemHierarchyTreeResponseHandler,
     shouldWaitForPromise = true,
     closedChildrenCount = 0,
-    useCachedRolledUpWeights = false,
     workItemFeaturesField = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
@@ -110,7 +109,7 @@ describe('WorkItemTree', () => {
       provide: {
         hasSubepicsFeature,
         closedChildrenCount,
-        glFeatures: { useCachedRolledUpWeights, workItemFeaturesField },
+        glFeatures: { workItemFeaturesField },
       },
       stubs: { CrudComponent },
     });

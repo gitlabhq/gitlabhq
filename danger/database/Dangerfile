@@ -81,6 +81,7 @@ end
 
 database.check_prevent_index_creation_disabled(helper.all_changed_files)
 database.check_prevent_column_addition_disabled(helper.all_changed_files)
+database.check_deleted_migrations(git.deleted_files)
 
 if non_geo_migration_created && !non_geo_db_schema_updated
   warn format(format_str, migrations: 'migrations', schema: helper.html_link("db/structure.sql"))

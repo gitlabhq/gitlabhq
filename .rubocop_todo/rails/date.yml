@@ -59,7 +59,6 @@ Rails/Date:
     - 'ee/spec/models/burndown_spec.rb'
     - 'ee/spec/models/ci/minutes/namespace_monthly_usage_spec.rb'
     - 'ee/spec/models/dora/performance_score_spec.rb'
-    - 'ee/spec/models/ee/group_spec.rb'
     - 'ee/spec/models/epic_spec.rb'
     - 'ee/spec/models/iteration_spec.rb'
     - 'ee/spec/requests/api/group_milestones_spec.rb'

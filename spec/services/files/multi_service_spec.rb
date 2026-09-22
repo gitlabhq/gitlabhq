@@ -181,6 +181,20 @@ RSpec.describe Files::MultiService, feature_category: :source_code_management do
           end
         end
       end
+
+      context 'when the destination path is an existing directory' do
+        # 'files/ruby' is a directory in the test repository.
+        let(:original_file_path) { 'README.md' }
+        let(:new_file_path) { 'files/ruby' }
+
+        it 'rejects the commit and leaves the directory untouched' do
+          pending 'UserCommitFiles replaces the directory instead of reporting a collision: ' \
+            'https://gitlab.com/gitlab-org/gitaly/-/merge_requests/9267'
+
+          expect(result[:status]).to eq(:error)
+          expect(repository.commit(branch_name).tree_entry(new_file_path)[:type]).to eq(:tree)
+        end
+      end
     end
 
     context 'when creating a file matching an LFS filter' do

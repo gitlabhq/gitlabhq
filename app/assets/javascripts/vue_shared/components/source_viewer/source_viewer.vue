@@ -2,7 +2,6 @@
 import { defineAsyncComponent } from 'vue';
 import { debounce } from 'lodash-es';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -29,9 +28,6 @@ export default {
     CodeownersValidation: defineAsyncComponent(
       () => import('ee_component/blob/components/codeowners_validation.vue'),
     ),
-  },
-  directives: {
-    SafeHtml,
   },
   mixins: [Tracking.mixin()],
   i18n: {

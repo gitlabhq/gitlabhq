@@ -479,6 +479,22 @@ module Gitlab
               period: 1.day,
               action: :limit
             ),
+            pipeline_cancel: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_cancels_by_user_pipeline',
+              characteristics: %i[user ci_pipeline],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
+            pipeline_cancel_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_cancels_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.pipeline_cancel_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
             pipelines_create: ::Labkit::RateLimit::Rule.new(
               name: 'limit_pipelines_by_project_user_sha',
               characteristics: %i[project user sha],

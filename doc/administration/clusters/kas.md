@@ -35,8 +35,20 @@ As a GitLab administrator, you can control the GitLab Relay (KAS) installation:
 
 ### For Linux package installations
 
+{{< history >}}
+
+- Native gRPC routing to KAS on the GitLab host [added](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8857) in GitLab 18.7.
+- Default agent address [changed](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9761) from `ws://gitlab.example.com/-/kubernetes-agent/` or `wss://gitlab.example.com/-/kubernetes-agent/` to `grpcs://gitlab.example.com` in GitLab 19.5.
+
+{{< /history >}}
+
 GitLab Relay (KAS) for Linux package installations can be enabled on a single node, or on multiple nodes at once.
-By default, GitLab Relay (KAS) is enabled and available at `ws://gitlab.example.com/-/kubernetes-agent/`.
+By default, GitLab Relay (KAS) is enabled. Agents connect to it at `grpcs://gitlab.example.com` when
+`external_url` uses HTTPS without a relative URL root and the bundled NGINX terminates TLS with HTTP/2.
+Otherwise, for example when
+[TLS is terminated at a load balancer](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination),
+agents connect over WebSocket at `wss://gitlab.example.com/-/kubernetes-agent/` or
+`ws://gitlab.example.com/-/kubernetes-agent/`. WebSocket stays available in both cases.
 
 #### Disable on a single node
 
@@ -72,7 +84,7 @@ To turn on KAS on multiple nodes:
 For each KAS node, edit the file at `/etc/gitlab/gitlab.rb` and add the following configuration:
 
 ```ruby
-gitlab_kas_external_url 'wss://kas.gitlab.example.com/'
+gitlab_kas_external_url 'grpcs://kas.gitlab.example.com/'
 
 gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
 gitlab_kas['private_api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
@@ -95,7 +107,7 @@ gitlab_kas['env'] = {
   'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
 }
 
-gitlab_rails['gitlab_kas_external_url'] = 'wss://gitlab.example.com/-/kubernetes-agent/'
+gitlab_rails['gitlab_kas_external_url'] = 'grpcs://gitlab.example.com'
 gitlab_rails['gitlab_kas_internal_url'] = 'grpc://kas.internal.gitlab.example.com'
 gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://gitlab.example.com/-/kubernetes-agent/k8s-proxy/'
 ```
@@ -287,8 +299,8 @@ Key configuration points:
 **Footnotes**:
 
 1. TLS for outbound connections is enabled when `OWN_PRIVATE_API_URL` or `OWN_PRIVATE_API_SCHEME` starts with `grpcs`.
-1. For example, `wss://kas.gitlab.example.com/`.
-1. For example, `wss://gitlab.example.com/-/kubernetes-agent/`.
+1. For example, `grpcs://kas.gitlab.example.com/`.
+1. For example, `grpcs://gitlab.example.com`.
 
 #### Configure a standalone KAS node
 
@@ -301,7 +313,7 @@ On each Rails node:
 gitlab_kas['enable'] = false
 
 gitlab_rails['gitlab_kas_enabled'] = true
-gitlab_rails['gitlab_kas_external_url'] = 'wss://kas.example.com/-/kubernetes-agent/'
+gitlab_rails['gitlab_kas_external_url'] = 'grpcs://kas.example.com/'
 gitlab_rails['gitlab_kas_internal_url'] = 'grpc://<KAS_NODE_IP_OR_DOMAIN>:8153' # If you want to configure multiple KAS nodes that are behind an internal LB, then use 'grpc://<LB_IP_OR_DOMAIN>:<port>'
 gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://kas.example.com/-/kubernetes-agent/k8s-proxy/'
 ```
@@ -339,7 +351,7 @@ gitlab_kas['redis_password'] = '<redis_password>'
 
 ### GitLab Relay (KAS) ###
 gitlab_kas['enable'] = true
-gitlab_kas_external_url 'wss://kas.example.com/-/kubernetes-agent/'
+gitlab_kas_external_url 'grpcs://kas.example.com/'
 gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
 gitlab_kas['private_api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
 gitlab_kas['private_api_listen_address'] = '<KAS_NODE_PRIVATE_IP>:8155'

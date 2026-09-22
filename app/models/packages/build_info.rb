@@ -8,7 +8,6 @@ class Packages::BuildInfo < ApplicationRecord
   belongs_to :project
   partitionable_belongs_to_loader :pipeline
 
-  scope :pluck_pipeline_ids, -> { pluck(:pipeline_id) }
   scope :without_empty_pipelines, -> { where.not(pipeline_id: nil) }
   scope :order_by_pipeline_id, ->(direction) { order(pipeline_id: direction) }
   scope :with_pipeline_id_less_than, ->(pipeline_id) { where("#{table_name}.pipeline_id < ?", pipeline_id) }

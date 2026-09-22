@@ -224,4 +224,30 @@ describe('HighlightMixin', () => {
       });
     });
   });
+
+  describe('when the blob has no name', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it.each([null, undefined])(
+      'skips the extension lookup and highlights with the blob language when name is %s',
+      (name) => {
+        expect(() => createComponent({ name })).not.toThrow();
+
+        expect(workerMock.postMessage.mock.calls).toHaveLength(2);
+
+        // first call instructs worker to highlight the first 70 lines
+        expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+          content: contentArray.slice(0, LINES_PER_CHUNK).join('\n'),
+          language: languageMock,
+        });
+
+        // second call instructs worker to highlight all of the lines
+        expect(workerMock.postMessage.mock.calls[1][0]).toMatchObject({
+          content: rawTextBlob,
+          language: languageMock,
+          fileType: TEXT_FILE_TYPE,
+        });
+      },
+    );
+  });
 });

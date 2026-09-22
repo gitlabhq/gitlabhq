@@ -27,7 +27,6 @@ Style/HashEachMethods:
     - 'ee/app/graphql/types/incident_management/oncall_rotation_length_unit_enum.rb'
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/db/fixtures/development/32_compliance_report_violations.rb'
-    - 'ee/lib/gitlab/code_owners/file.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate.rb'
     - 'ee/spec/controllers/ee/projects_controller_spec.rb'
     - 'ee/spec/helpers/ee/application_helper_spec.rb'

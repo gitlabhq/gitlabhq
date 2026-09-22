@@ -2546,9 +2546,10 @@ paths:
       operationId: postApiV4TokenExchange
       summary: Issue a short-lived JWT for a single modular-service audience
       description: Issues a short-lived RS256 JWT scoped to one modular-service audience
-        (such as the Artifact Registry). Claims include the requesting user id (sub),
-        organization id, and deployment realm (saas / self-managed). Presented to
-        the corresponding backend and verified against the instance JWKS.
+        (such as the Artifact Registry). Claims include the requesting user (sub)
+        and the organization it acts in. When called with a CI job token, the claims
+        also carry the job project id and commit SHA as build provenance. Presented
+        to the corresponding backend and verified against the instance JWKS.
       tags:
       - Token exchange
       responses:
@@ -5377,14 +5378,14 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesProtectedEnvironment"
+        '400':
+          description: Bad request
         '409':
           description: Conflict
         '404':
           description: Not found
         '422':
           description: Unprocessable entity
-        '400':
-          description: Bad Request
       parameters:
       - name: id
         required: true
@@ -5400,7 +5401,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_43af6c439096"
+              "$ref": "#/components/schemas/RequestBody_730d646234a1"
   "/api/v4/groups/{id}/protected_environments/{name}":
     get:
       operationId: getApiV4GroupsIdProtectedEnvironmentsName
@@ -5415,10 +5416,10 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesProtectedEnvironment"
+        '400':
+          description: Bad request
         '404':
           description: Not found
-        '400':
-          description: Bad Request
       parameters:
       - name: id
         required: true
@@ -5431,10 +5432,16 @@ paths:
         in: path
       - name: name
         required: true
-        description: The deployment tier of the protected environment. One of `production`,
-          `staging`, `testing`, `development`, or `other`
+        description: The deployment tier of the protected environment.
         schema:
           type: string
+          enum:
+          - production
+          - staging
+          - testing
+          - development
+          - other
+          minLength: 1
         in: path
     put:
       operationId: putApiV4GroupsIdProtectedEnvironmentsName
@@ -5449,12 +5456,12 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesProtectedEnvironment"
+        '400':
+          description: Bad request
         '404':
           description: Not found
         '422':
           description: Unprocessable entity
-        '400':
-          description: Bad Request
       parameters:
       - name: id
         required: true
@@ -5467,10 +5474,16 @@ paths:
         in: path
       - name: name
         required: true
-        description: The deployment tier of the protected environment. One of production,
-          staging, testing, development, or other
+        description: The deployment tier of the protected environment.
         schema:
           type: string
+          enum:
+          - production
+          - staging
+          - testing
+          - development
+          - other
+          minLength: 1
         in: path
       requestBody:
         required: false
@@ -12297,11 +12310,15 @@ paths:
         in: path
       - name: metric
         required: true
-        description: One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service`
-          or `change_failure_rate`
+        description: The DORA metric to fetch.
         schema:
           type: string
-          nullable: true
+          enum:
+          - deployment_frequency
+          - lead_time_for_changes
+          - time_to_restore_service
+          - change_failure_rate
+          minLength: 1
         in: query
       - name: start_date
         required: false
@@ -12323,20 +12340,30 @@ paths:
         in: query
       - name: interval
         required: false
-        description: The bucketing interval. One of `all`, `monthly` or `daily`. Default
-          is `daily`
+        description: The bucketing interval.
         schema:
           type: string
-          nullable: true
+          enum:
+          - all
+          - monthly
+          - daily
+          default: daily
         in: query
       - name: environment_tiers
         required: false
-        description: The tiers of the environments. Default is `production`
+        description: The tiers of the environments.
         schema:
           type: array
           items:
             type: string
-          nullable: true
+            enum:
+            - production
+            - staging
+            - testing
+            - development
+            - other
+          default:
+          - production
         in: query
   "/api/v4/groups/{id}/dora/metrics":
     get:
@@ -12363,11 +12390,15 @@ paths:
         in: path
       - name: metric
         required: true
-        description: One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service`
-          or `change_failure_rate`
+        description: The DORA metric to fetch.
         schema:
           type: string
-          nullable: true
+          enum:
+          - deployment_frequency
+          - lead_time_for_changes
+          - time_to_restore_service
+          - change_failure_rate
+          minLength: 1
         in: query
       - name: start_date
         required: false
@@ -12389,20 +12420,30 @@ paths:
         in: query
       - name: interval
         required: false
-        description: The bucketing interval. One of `all`, `monthly` or `daily`. Default
-          is `daily`
+        description: The bucketing interval.
         schema:
           type: string
-          nullable: true
+          enum:
+          - all
+          - monthly
+          - daily
+          default: daily
         in: query
       - name: environment_tiers
         required: false
-        description: The tiers of the environments. Default is `production`
+        description: The tiers of the environments.
         schema:
           type: array
           items:
             type: string
-          nullable: true
+            enum:
+            - production
+            - staging
+            - testing
+            - development
+            - other
+          default:
+          - production
         in: query
   "/api/v4/projects/{id}/approval_settings":
     get:
@@ -19869,7 +19910,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9ea558c599b9"
+              "$ref": "#/components/schemas/RequestBody_aff2e18e4b2e"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -28611,7 +28652,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1c287db32396"
+              "$ref": "#/components/schemas/RequestBody_cb605a1a7550"
   "/api/v4/projects/{id}/terraform/state_protection_rules/{terraform_state_protection_rule_id}":
     patch:
       operationId: patchApiV4ProjectsIdTerraformStateProtectionRulesTerraformStateProtectionRuleId
@@ -33634,7 +33675,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e90c1c6d2220"
+              "$ref": "#/components/schemas/RequestBody_f4b628cf1938"
   "/api/v4/projects/{id}/releases/{tag_name}":
     get:
       operationId: getApiV4ProjectsIdReleasesTagName
@@ -73643,6 +73684,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+        '429':
+          description: Too Many Requests
         '400':
           description: Bad Request
       parameters:
@@ -91695,6 +91738,8 @@ components:
           type: string
         downstream_pipeline_trigger_limit_per_project_user_sha:
           type: string
+        pipeline_cancel_limit_per_user_project:
+          type: string
         asciidoc_max_includes:
           type: string
         ai_action_api_rate_limit:
@@ -102608,14 +102653,19 @@ components:
                 description: The number of approvals required for this rule
                 default: 1
           nullable: true
-    RequestBody_43af6c439096:
+    RequestBody_730d646234a1:
       type: object
       properties:
         name:
           type: string
-          description: The deployment tier of the protected environment. One of `production`,
-            `staging`, `testing`, `development`, or `other`
-          nullable: true
+          enum:
+          - production
+          - staging
+          - testing
+          - development
+          - other
+          description: The deployment tier of the protected environment.
+          minLength: 1
         required_approval_count:
           type: integer
           description: "[DEPRECATED] The number of approvals required to deploy to
@@ -106827,7 +106877,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_9ea558c599b9:
+    RequestBody_aff2e18e4b2e:
       type: object
       properties:
         admin_mode:
@@ -107737,6 +107787,11 @@ components:
           type: integer
           description: Maximum number of downstream pipelines that can be triggered
             per minute (for a given project, user, and commit).
+          nullable: true
+        pipeline_cancel_limit_per_user_project:
+          type: integer
+          description: Maximum number of pipeline cancellations allowed per minute
+            for a given project.
           nullable: true
         ai_action_api_rate_limit:
           type: integer
@@ -111000,7 +111055,7 @@ components:
       required:
       - source_topic_id
       - target_topic_id
-    RequestBody_1c287db32396:
+    RequestBody_cb605a1a7550:
       type: object
       properties:
         state_name:
@@ -111025,9 +111080,9 @@ components:
           - anywhere
           - ci_only
           - ci_on_protected_branch_only
-          description: 'Source restriction for write requests. Default: anywhere.
-            Valid values: anywhere, ci_only, ci_on_protected_branch_only.'
-          nullable: true
+          description: 'Source restriction for write requests. Valid values: anywhere,
+            ci_only, ci_on_protected_branch_only.'
+          default: anywhere
       required:
       - state_name
       - minimum_access_level_for_write
@@ -111819,7 +111874,7 @@ components:
           description: 'The type of the link: `other`, `runbook`, `image`, or `package`.
             Defaults to `other`'
           default: other
-    RequestBody_e90c1c6d2220:
+    RequestBody_f4b628cf1938:
       type: object
       properties:
         tag_name:
@@ -111874,9 +111929,13 @@ components:
                     nullable: true
                   link_type:
                     type: string
-                    description: 'The type of the link: `other`, `runbook`, `image`,
-                      `package`. Defaults to `other`'
-                    nullable: true
+                    enum:
+                    - other
+                    - runbook
+                    - package
+                    - image
+                    description: The type of the link.
+                    default: other
                 required:
                 - name
                 - url

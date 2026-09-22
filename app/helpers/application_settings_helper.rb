@@ -688,6 +688,7 @@ module ApplicationSettingsHelper
       :security_txt_content,
       :allow_project_creation_for_guest_and_below,
       :downstream_pipeline_trigger_limit_per_project_user_sha,
+      :pipeline_cancel_limit_per_user_project,
       :asciidoc_max_includes,
       :ai_action_api_rate_limit,
       :code_suggestions_api_rate_limit,

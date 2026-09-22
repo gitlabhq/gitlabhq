@@ -149,7 +149,6 @@ Lint/UnusedMethodArgument:
     - 'config/initializers/00_active_record_disable_joins.rb'
     - 'config/initializers/active_record_table_definition.rb'
     - 'config/initializers/forbid_sidekiq_in_transactions.rb'
-    - 'config/object_store_settings.rb'
     - 'ee/app/controllers/ee/projects/protected_branches_controller.rb'
     - 'ee/app/controllers/groups/omniauth_callbacks_controller.rb'
     - 'ee/app/controllers/groups/roadmap_controller.rb'

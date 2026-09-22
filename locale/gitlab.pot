@@ -6878,6 +6878,9 @@ msgstr ""
 msgid "AdminSettings|Maximum parallel pipelines per merge train"
 msgstr ""
 
+msgid "AdminSettings|Maximum pipeline cancellations per project"
+msgstr ""
+
 msgid "AdminSettings|Maximum size of a CycloneDX artifact in MB"
 msgstr ""
 
@@ -7083,6 +7086,9 @@ msgid "AdminSettings|The maximum number of downstream pipelines that can be trig
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of pipeline cancellations allowed per minute for a given project. Set to 0 to disable this limit."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of tag or branch pipelines triggered by a single Git push. Setting the limit to 0 will remove the limit."
@@ -58269,9 +58275,6 @@ msgstr ""
 msgid "Organization Admin"
 msgstr ""
 
-msgid "Organization Administration"
-msgstr ""
-
 msgid "Organization ID cannot be nil"
 msgstr ""
 
@@ -58306,6 +58309,9 @@ msgid "Organization must be soft-deleted first"
 msgstr ""
 
 msgid "Organization not found"
+msgstr ""
+
+msgid "Organization overview"
 msgstr ""
 
 msgid "Organization parameter must be specified"
@@ -62614,7 +62620,7 @@ msgstr ""
 msgid "PolicyStore|You"
 msgstr ""
 
-msgid "PolicyStore|You do not have permission to view the policies of this organization."
+msgid "PolicyStore|You do not have permission to view the policies."
 msgstr ""
 
 msgid "PolicyStore|Your progress will be lost if you leave without saving."
@@ -83885,6 +83891,9 @@ msgid "This commit was signed with multiple signatures."
 msgstr ""
 
 msgid "This content could not be displayed because it is stored in LFS. You can %{linkStart}download it%{linkEnd} instead."
+msgstr ""
+
+msgid "This count is currently unavailable."
 msgstr ""
 
 msgid "This credential has expired"

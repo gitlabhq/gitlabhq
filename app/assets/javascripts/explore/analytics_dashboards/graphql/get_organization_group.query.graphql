@@ -1,0 +1,19 @@
+# @feature_category: custom_dashboards_foundation
+
+# This whole query is a temporary workaround: `frecentGroups`, the query it backs up, returns
+# groups from every organization the user has visited, not just this one. Merge request
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256194 adds a `scopeToOrganization`
+# argument that filters server-side; once that ships, delete this query.
+query getAnalyticsDashboardOrganizationGroup($ids: [ID!]) {
+  organization {
+    id
+    groups(ids: $ids, first: 1) {
+      nodes {
+        id
+        name
+        fullName
+        fullPath
+      }
+    }
+  }
+}

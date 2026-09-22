@@ -1249,6 +1249,8 @@
   - 1
 - - security_policies_skip_pipelines_audit
   - 1
+- - security_process_tracked_context_group_transfer_events
+  - 1
 - - security_process_tracked_context_project_transfer_events
   - 1
 - - security_project_tracked_contexts_create_or_update_default_tracked_context

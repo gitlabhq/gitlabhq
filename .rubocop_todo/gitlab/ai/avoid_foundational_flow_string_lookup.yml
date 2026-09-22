@@ -1,6 +1,5 @@
 ---
 Gitlab/Ai/AvoidFoundationalFlowStringLookup:
-  Details: grace period
   Exclude:
     - 'ee/app/models/ai/catalog/coding_environment.rb'
     - 'ee/app/models/ai/catalog/item.rb'

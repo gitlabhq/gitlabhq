@@ -5,6 +5,8 @@ import { s__, sprintf } from '~/locale';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
+import getFrecentGroupsQuery from '../graphql/get_frecent_groups.query.graphql';
+import getOrganizationGroupQuery from '../graphql/get_organization_group.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
@@ -58,6 +60,11 @@ export default {
       searchTerm: '',
       initialScope: null,
       searchResults: null,
+      frecentGroup: null,
+      validatedFrecentGroup: null,
+      // A default is only derived for a load that named no scope, and only until the user picks
+      // something: deriving it again would put a group back after they cleared it.
+      skipDefaultScope: Boolean(this.initialPath),
     };
   },
   apollo: {
@@ -76,6 +83,29 @@ export default {
       },
       error(error) {
         this.$emit('error', error);
+        captureException(error);
+      },
+    },
+    frecentGroup: {
+      query: getFrecentGroupsQuery,
+      update: ({ frecentGroups }) => frecentGroups?.[0] ?? null,
+      skip() {
+        return this.skipDefaultScope;
+      },
+      error(error) {
+        captureException(error);
+      },
+    },
+    validatedFrecentGroup: {
+      query: getOrganizationGroupQuery,
+      variables() {
+        return { ids: this.frecentGroup ? [this.frecentGroup.id] : [] };
+      },
+      update: ({ organization }) => organization?.groups?.nodes?.[0] ?? null,
+      skip() {
+        return !this.frecentGroup;
+      },
+      error(error) {
         captureException(error);
       },
     },
@@ -173,11 +203,10 @@ export default {
   },
   watch: {
     initialScope(namespace) {
-      // Ignore initialScope if another namespace was already selected.
-      if (!namespace || this.selectedNamespace) return;
-
-      this.selectedNamespace = this.asNamespace(namespace);
-      this.$emit('change', this.selectedNamespace);
+      this.selectResolvedNamespace(namespace);
+    },
+    validatedFrecentGroup(namespace) {
+      this.selectResolvedNamespace(namespace);
     },
   },
   beforeDestroy() {
@@ -191,6 +220,15 @@ export default {
     this.loadTopLevelGroups();
   },
   methods: {
+    // A namespace a query resolved rather than the user clicking it: the URL's path, or the
+    // derived default. Applied like a click, so the page treats it as an ordinary filter change.
+    // Anything the user picked meanwhile outranks it.
+    selectResolvedNamespace(namespace) {
+      if (!namespace || this.selectedNamespace) return;
+
+      this.selectedNamespace = this.asNamespace(namespace);
+      this.$emit('change', this.selectedNamespace);
+    },
     asNamespace({ id, name, fullName, fullPath, __typename }) {
       return { id, name, fullName, fullPath, type: __typename };
     },
@@ -370,6 +408,8 @@ export default {
       this.loadTopLevelGroups(this.topLevelGroupsPageInfo?.endCursor);
     },
     onSelect(paths) {
+      this.skipDefaultScope = true;
+
       // The listbox reports the whole selection, but only one item can change per click and the
       // picker is single-select, so apply that item's toggle rather than taking the list as given.
       const [fullPath] = xor(paths, this.selectedPaths);

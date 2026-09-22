@@ -17,7 +17,6 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import InstanceComponent from '~/vue_shared/components/deployment_instance.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -38,7 +37,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   props: {
     deployBoardData: {

@@ -50,6 +50,12 @@ RSpec.describe GitlabSubscriptions::SystemDefined::Plan, feature_category: :plan
       expect(described_class.uids_for_names(%w[free premium])).to match_array([2, 5])
     end
 
+    it 'accepts a single name and symbols' do
+      expect(described_class.uids_for_names('premium')).to match_array([5])
+      expect(described_class.uids_for_names(:premium)).to match_array([5])
+      expect(described_class.uids_for_names([:free, 'premium'])).to match_array([2, 5])
+    end
+
     it 'ignores unknown plan names' do
       expect(described_class.uids_for_names(%w[free unknown_plan])).to match_array([2])
     end

@@ -35,7 +35,7 @@ export default {
           to: this.rootRoute.path,
         },
       ];
-      if (this.isDetailsRoute) {
+      if (this.isDetailsRoute && this.detailsRouteName) {
         crumbs.push({
           text: this.detailsRouteName,
           to: { name: this.detailsRoute.name, params: this.$route.params },

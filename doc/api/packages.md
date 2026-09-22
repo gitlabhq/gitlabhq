@@ -192,6 +192,9 @@ By default, the `GET` request returns 20 results, because the API is [paginated]
 The `creator_id` field contains the ID of the user who created the package. This field is `null` when the
 package was created by a deploy token or job token.
 
+For a Conan package, the `name` field contains the recipe rather than the package name, and an extra
+`conan_package_name` field contains the package name. Packages of any other type do not have this field.
+
 The `_links` object contains the following properties:
 
 - `web_path`: The path which you can visit in GitLab and see the details of the package.
@@ -259,21 +262,20 @@ Example response:
       "id":2,
       "version":"2.0-SNAPSHOT",
       "created_at":"2020-04-28T04:42:11.573Z",
-      "pipelines": [
-        {
-          "id": 234,
-          "status": "pending",
-          "ref": "new-pipeline",
-          "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-          "web_url": "https://example.com/foo/bar/pipelines/58",
-          "created_at": "2016-08-11T11:28:34.085Z",
-          "updated_at": "2016-08-11T11:32:35.169Z",
-          "user": {
-            "name": "Administrator",
-            "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
-          }
+      "tags": [],
+      "pipeline": {
+        "id": 234,
+        "status": "pending",
+        "ref": "new-pipeline",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "web_url": "https://example.com/foo/bar/pipelines/58",
+        "created_at": "2016-08-11T11:28:34.085Z",
+        "updated_at": "2016-08-11T11:32:35.169Z",
+        "user": {
+          "name": "Administrator",
+          "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
         }
-      ]
+      }
     }
   ]
 }
@@ -281,6 +283,9 @@ Example response:
 
 The `creator_id` field contains the ID of the user who created the package. This field is `null` when the
 package was created by a deploy token or job token.
+
+For a Conan package, the `name` field contains the recipe rather than the package name, and an extra
+`conan_package_name` field contains the package name. Packages of any other type do not have this field.
 
 The `_links` object contains the following properties:
 

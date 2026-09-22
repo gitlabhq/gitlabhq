@@ -13,6 +13,25 @@ module Tooling
         and if it's supposed to be executed before or after an existing
         migration then it must be of the same type.
       MSG
+      DELETED_MIGRATION_WARNING_MESSAGE = <<~MSG
+        🗑 **Migration Deletion Detected**
+
+        This merge request deletes the following migration file(s):
+
+        %<migrations>s
+
+        Migrations that have already been merged to `master` may already have run on GitLab.com and on
+        self-managed instances. Deleting them causes schema inconsistency, and leaves rows in
+        `schema_migrations` that point at migrations which no longer exist.
+
+        Instead of deleting, turn the migration into a no-op: empty out `#up`/`#down` (or `#perform`), and
+        add a `# no-op` comment explaining why. This change requires approval from a Database Maintainer.
+        See [Delete existing migrations](https://docs.gitlab.com/development/database/deleting_migrations/)
+        for details.
+
+        If this migration was never merged to `master` (for example, it was added and then re-created with
+        a new timestamp within this same merge request), this warning can be ignored.
+      MSG
 
       def find_migration_files_before(file_names, cutoff)
         migrations = file_names.select { |f| f.match?(MIGRATION_MATCHER) }
@@ -47,6 +66,13 @@ module Tooling
         return if migrations.empty?
 
         warn MIGRATION_TYPE_WARNING_MESSAGE
+      end
+
+      def check_deleted_migrations(file_names)
+        migrations = file_names.select { |f| f.match?(MIGRATION_MATCHER) }
+        return if migrations.empty?
+
+        warn format(DELETED_MIGRATION_WARNING_MESSAGE, migrations: migrations.map { |m| "* `#{m}`" }.join("\n"))
       end
 
       def check_prevent_index_creation_disabled(file_names)

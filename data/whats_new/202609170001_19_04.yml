@@ -1,0 +1,134 @@
+- name: Organization security dashboards (Beta)
+  description: |
+    Security dashboards are now available at the organization level.
+
+    Users can see the following data across all top-level groups in an organization:
+
+    - Vulnerability severity panels
+    - Vulnerabilities over time
+    - Top 10 CWEs
+    - Risk score
+    - Vulnerabilities by age
+  stage: security_risk_management
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/security_dashboard/#organization-security-dashboard
+  published_at: 2026-09-17
+  release: "19.4"
+
+- name: Broader security scanning coverage
+  description: |
+    Dependency Scanning now detects malicious packages (Beta) in addition to known CVEs,
+    checking dependencies against GitLab malware advisories to flag typosquatting, compromised
+    maintainer accounts, and embedded malware. Findings show a red **Malware** badge at Critical
+    severity. You don't need any additional setup. You can also block malicious packages before
+    they merge, with the
+    [malware rule](https://docs.gitlab.com/user/application_security/policies/merge_request_approval_policies/#block-malicious-packages-with-the-malware-rule)
+    in merge request approval policies.
+
+    Advanced SAST now also scans Kotlin, Dart, and Scala, using the same taint analysis as the
+    other supported languages.
+
+    License data now carries SPDX license expressions, such as `MIT OR Apache-2.0`, so compound
+    licenses appear with their operator instead of as `unknown`, and license approval policies
+    can allow or deny them. Offline instances receive expressions after they download the v3
+    license data.
+  stage: application_security_testing
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/gitlab_advisory_database/
+  published_at: 2026-09-17
+  release: "19.4"
+
+- name: Aggregated scanner coverage in security inventory
+  description: |
+    You can now view scanner coverage for an entire group hierarchy from one page. In previous
+    versions of GitLab, the [Security Inventory](https://docs.gitlab.com/user/application_security/security_inventory/)
+    showed coverage per subgroup, but no total for the entire group. A coverage widget now aggregates
+    scanner coverage across every project in the group and its subgroups, and shows the
+    percentage and number of projects where each scanner is enabled, not enabled, failing, or
+    stale. To focus on one scanner, such as SAST or Dependency Scanning, use the scanner dropdown list.
+    Then select a status to filter the project list, and turn on scanners for the projects that aren't
+    covered.
+
+    The Security Inventory also now lets you control which columns are shown. To show or hide the
+    **Vulnerabilities**, **Tool coverage**, and **Security attributes** columns, select **Display**.
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/security_inventory/
+  published_at: 2026-09-17
+  release: "19.4"
+
+- name: New ways to start agent work
+  description: |
+    GitLab Duo CLI now includes a `/goal` slash command that delegates open-ended objectives to a
+    governed, goal-driven flow that runs locally. Describe a goal, for example
+    `/goal Fix the failing tests in spec/models/user_spec.rb`, and GitLab Duo handles implementation
+    and verification, using an independent judge to decide when you have achieved your goal. You can
+    pause, update the goal, or redirect the agent at any time. Requires GitLab 19.3 and later, and
+    GitLab Duo CLI 9.17.0 and later.
+
+    The **Merge request** trigger event type now supports a **Created** action, so a flow or external
+    agent can run the moment someone opens a merge request in draft or ready state. Use this for a
+    first-pass review, or to add context from related issues.
+  stage: ai_coding
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo_cli/use/#slash-commands
+  published_at: 2026-09-17
+  release: "19.4"
+
+- name: New model options in GitLab Duo Agent Platform
+  description: |
+    The GitLab Duo Agent Platform now supports three open-weight models: GLM 5.3, Kimi K3, and
+    MiniMax M3. You can select any of them for your own Agentic Chat conversations. Users with the
+    Owner role for a group and administrators can also set them as the default for Agentic Chat and
+    for other agents, flows, and features.
+
+    Administrators can now also select a model for the Developer Flow separately from other GitLab
+    Duo Agent Platform features, giving teams greater control over which model runs their work.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/model_selection
+  published_at: 2026-09-17
+  release: "19.4"
+
+- name: New tools in the GitLab MCP server
+  description: |
+    The GitLab MCP server adds new tools for two workflows.
+
+    **Merge requests**: agents can now open, update, and inspect merge requests in depth, including
+    diffs, conflicts, and approvals. Agents can list merge requests at group scope, leave batched
+    line-level review comments, and merge or approve a merge request once checks pass.
+
+    **CI/CD**: agents can now run, retry, or cancel a pipeline, and fetch a job's metadata together
+    with its trace, so an agent can read the log of a failed build and diagnose the problem on its
+    own. Previously, agents had no way to trigger or inspect pipelines through MCP.
+  stage: agent_foundations
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/model_context_protocol/mcp_server_tools
+  published_at: 2026-09-17
+  release: "19.4"
+
+- name: Rate limits on GitLab.com will align to your subscription
+  description: |
+    To keep GitLab.com fast for everyone on it, we're updating rate limits to align
+    with your subscription tier starting October 19, 2026. Free accounts and unauthenticated
+    requests will change first, followed by Premium and Ultimate in January 2027. Keep your
+    automation running on your plan's full allowance by authenticating its requests.
+  stage: none
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_com/rate_limits/
+  published_at: 2026-09-17
+  release: "19.4"

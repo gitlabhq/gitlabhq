@@ -57,6 +57,7 @@ export default {
       <signature-badge
         v-if="commit.signature"
         :signature="commit.signature"
+        data-testid="signature-badge-mobile"
         class="gl-my-2 !gl-ml-0 gl-h-6"
       />
       <agent-session-badge v-if="commit.hasAgentSession" />

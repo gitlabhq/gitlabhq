@@ -406,6 +406,33 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         expect(tools).to be_empty
       end
 
+      context 'when the header names a tool by one of its aliases' do
+        let(:mcp_logger) { instance_double(Gitlab::Mcp::Logger, warn: nil) }
+
+        before do
+          allow(Gitlab::Mcp::Logger).to receive(:build).and_return(mcp_logger)
+        end
+
+        it 'returns the tool under its canonical name' do
+          post_list_tools_with_allowed('list_all_merge_request_notes,get_work_item')
+
+          tool_names = json_response['result']['tools'].pluck('name')
+          expect(tool_names).to contain_exactly('get_merge_request_notes', 'get_work_item')
+        end
+
+        it 'does not log the alias as unknown' do
+          post_list_tools_with_allowed('list_all_merge_request_notes')
+
+          expect(mcp_logger).not_to have_received(:warn).with(hash_including(message: /Unknown MCP tool names/))
+        end
+
+        it 'still logs a name that is neither a tool nor an alias' do
+          post_list_tools_with_allowed('nonexistent_tool')
+
+          expect(mcp_logger).to have_received(:warn).with(hash_including(names: ['nonexistent_tool']))
+        end
+      end
+
       context 'when the header is blank' do
         it 'returns all available tools' do
           post_list_tools_with_allowed('')

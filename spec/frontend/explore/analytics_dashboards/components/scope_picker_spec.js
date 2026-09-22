@@ -19,6 +19,8 @@ import getSubgroupProjectsQuery from '~/explore/analytics_dashboards/graphql/get
 import getTopLevelGroupsQuery from '~/explore/analytics_dashboards/graphql/get_top_level_groups.query.graphql';
 import searchNamespacesGlobalQuery from '~/explore/analytics_dashboards/graphql/search_namespaces_global.query.graphql';
 import getScopeNamespaceQuery from '~/explore/analytics_dashboards/graphql/get_scope_namespace.query.graphql';
+import getFrecentGroupsQuery from '~/explore/analytics_dashboards/graphql/get_frecent_groups.query.graphql';
+import getOrganizationGroupQuery from '~/explore/analytics_dashboards/graphql/get_organization_group.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -30,6 +32,8 @@ describe('ScopePicker', () => {
   let topLevelGroupsRequestHandler;
   let globalSearchRequestHandler;
   let scopeNamespaceRequestHandler;
+  let frecentGroupsRequestHandler;
+  let organizationGroupRequestHandler;
 
   const groupFullPath = 'gitlab-org';
   const closeListbox = jest.fn();
@@ -238,6 +242,22 @@ describe('ScopePicker', () => {
     },
   });
 
+  // Ordered by frecency, so the first is the one a default is derived from.
+  const respondWithFrecentGroups = (frecentGroups = []) =>
+    jest.fn().mockResolvedValue({ data: { frecentGroups } });
+
+  // Empty nodes are how the connection reports a group the page's organization does not hold.
+  const respondWithOrganizationGroup = (groups = []) =>
+    jest.fn().mockResolvedValue({
+      data: {
+        organization: {
+          __typename: 'Organization',
+          id: 'gid://gitlab/Organizations::Organization/1',
+          groups: { __typename: 'GroupConnection', nodes: groups },
+        },
+      },
+    });
+
   const subgroupProjectsPage = (projects = mockSubgroupProjects, endCursor = null) => ({
     data: {
       group: {
@@ -289,12 +309,16 @@ describe('ScopePicker', () => {
     topLevelGroupsHandler = respondWithTopLevelGroups(),
     globalSearchHandler = respondWithGlobalSearch(),
     scopeNamespaceHandler = respondWithScopeNamespace(),
+    frecentGroupsHandler = respondWithFrecentGroups(),
+    organizationGroupHandler = respondWithOrganizationGroup(),
     props = {},
   } = {}) => {
     subgroupRequestHandler = subgroupHandler;
     topLevelGroupsRequestHandler = topLevelGroupsHandler;
     globalSearchRequestHandler = globalSearchHandler;
     scopeNamespaceRequestHandler = scopeNamespaceHandler;
+    frecentGroupsRequestHandler = frecentGroupsHandler;
+    organizationGroupRequestHandler = organizationGroupHandler;
 
     wrapper = shallowMountExtended(ScopePicker, {
       apolloProvider: createMockApollo([
@@ -302,6 +326,8 @@ describe('ScopePicker', () => {
         [getTopLevelGroupsQuery, topLevelGroupsRequestHandler],
         [searchNamespacesGlobalQuery, globalSearchRequestHandler],
         [getScopeNamespaceQuery, scopeNamespaceRequestHandler],
+        [getFrecentGroupsQuery, frecentGroupsRequestHandler],
+        [getOrganizationGroupQuery, organizationGroupRequestHandler],
       ]),
       propsData: { ...props },
       stubs: { GlCollapsibleListbox: listboxStub },
@@ -325,6 +351,12 @@ describe('ScopePicker', () => {
   // The list's own row sits at the end of everything; a group's sits at the end of its projects.
   const findListLoadMore = () => findLoadMoreItems().find((item) => !item.props('nested'));
   const findGroupLoadMore = () => findLoadMoreItems().find((item) => item.props('nested'));
+
+  // Naming nothing and ticking nothing is what the page turns into its empty state.
+  const expectEmptyState = () => {
+    expect(findListbox().props('selected')).toEqual([]);
+    expect(findListbox().props('toggleText')).toBe('Select a group or project');
+  };
 
   // Mirrors what the listbox emits on click: the whole selection, with the clicked item toggled.
   const toggleSelected = ({ fullPath }) => {
@@ -1054,8 +1086,7 @@ describe('ScopePicker', () => {
       });
 
       it('leaves the picker empty rather than naming something whose panels cannot load', () => {
-        expect(findListbox().props('toggleText')).toBe('Select a group or project');
-        expect(findListbox().props('selected')).toEqual([]);
+        expectEmptyState();
       });
 
       it('emits no change', () => {
@@ -1123,6 +1154,195 @@ describe('ScopePicker', () => {
       it('keeps what the user picked', () => {
         expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
         expect(findListbox().props('toggleText')).toBe(mockCapsuleCorp.name);
+      });
+    });
+  });
+
+  describe('a default derived from the most frecent group', () => {
+    const asFrecentGroup = ({ id, name, fullName, fullPath }) => ({
+      __typename: TYPENAME_GROUP,
+      id,
+      name,
+      fullName,
+      fullPath,
+    });
+
+    const mockFrecentGroups = [asFrecentGroup(mockAcme), asFrecentGroup(mockCapsuleCorp)];
+    const error = new Error('no such luck');
+    const rejecting = () => jest.fn().mockRejectedValue(error);
+
+    // Leaves the frecent lookup outstanding once the browse queries have settled, so a pick can
+    // be made while it is still in flight.
+    const deferFrecentGroups = () => {
+      let resolveLookup;
+      const handler = jest.fn(
+        () =>
+          new Promise((resolve) => {
+            resolveLookup = resolve;
+          }),
+      );
+
+      return { handler, resolve: (value) => resolveLookup(value) };
+    };
+
+    describe('when the load names no scope', () => {
+      beforeEach(async () => {
+        createWrapper({
+          frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
+          organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
+        });
+        await waitForPromises();
+      });
+
+      it('asks for the frecent groups', () => {
+        expect(frecentGroupsRequestHandler).toHaveBeenCalled();
+      });
+
+      it('validates that the most frecentGroup is in the organization', () => {
+        expect(organizationGroupRequestHandler).toHaveBeenCalledWith({ ids: [mockAcme.id] });
+      });
+
+      it('names the most frecent group on the toggle', () => {
+        expect(findListbox().props('toggleText')).toBe(mockAcme.name);
+      });
+
+      it('ticks its row alone, the rest of the list being no more than visited', () => {
+        expect(findListbox().props('selected')).toEqual([mockAcme.fullPath]);
+      });
+
+      it('emits it as a change', () => {
+        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockAcme)]]);
+      });
+    });
+
+    describe('when the `scope` URL param already names one', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPath: mockCapsuleCorp.fullPath },
+          scopeNamespaceHandler: respondWithScopeNamespace({ group: mockCapsuleCorp }),
+          frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
+        });
+        await waitForPromises();
+      });
+
+      it('does not send a request for the frecent group', () => {
+        expect(frecentGroupsRequestHandler).not.toHaveBeenCalled();
+        expect(organizationGroupRequestHandler).not.toHaveBeenCalled();
+      });
+
+      it('keeps what the param named', () => {
+        expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
+      });
+    });
+
+    describe('when the user has visited no groups', () => {
+      beforeEach(async () => {
+        createWrapper({ frecentGroupsHandler: respondWithFrecentGroups([]) });
+        await waitForPromises();
+      });
+
+      it('has nothing to check against the organization', () => {
+        expect(organizationGroupRequestHandler).not.toHaveBeenCalled();
+      });
+
+      it('leaves the picker empty, for the page to show its empty state', () => {
+        expectEmptyState();
+      });
+
+      it('emits no change', () => {
+        expect(wrapper.emitted('change')).toBeUndefined();
+      });
+    });
+
+    describe('when the page organization does not hold the most frecent group', () => {
+      beforeEach(async () => {
+        createWrapper({
+          frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
+          organizationGroupHandler: respondWithOrganizationGroup([]),
+        });
+        await waitForPromises();
+      });
+
+      it('leaves the picker empty rather than falling to the next frecent group', () => {
+        expectEmptyState();
+      });
+
+      it('emits no change', () => {
+        expect(wrapper.emitted('change')).toBeUndefined();
+      });
+    });
+
+    describe('when the user clears the derived default', () => {
+      beforeEach(async () => {
+        createWrapper({
+          frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
+          organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
+        });
+        await waitForPromises();
+
+        await toggleSelected(mockAcme);
+      });
+
+      it('stays empty rather than deriving the default again', () => {
+        expectEmptyState();
+        expect(frecentGroupsRequestHandler).toHaveBeenCalledTimes(1);
+        expect(organizationGroupRequestHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it('emits the cleared selection', () => {
+        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockAcme)], [null]]);
+      });
+    });
+
+    describe('when the user picks something before it lands', () => {
+      beforeEach(async () => {
+        const lookup = deferFrecentGroups();
+        createWrapper({ frecentGroupsHandler: lookup.handler });
+        await waitForPromises();
+
+        await toggleSelected(mockCapsuleCorp);
+
+        lookup.resolve({ data: { frecentGroups: mockFrecentGroups } });
+        await waitForPromises();
+      });
+
+      // The pick is the more recent intent, so a default arriving behind it must not stomp it.
+      it('keeps what the user picked', () => {
+        expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findListbox().props('toggleText')).toBe(mockCapsuleCorp.name);
+      });
+    });
+
+    describe('when the frecent groups query fails', () => {
+      beforeEach(async () => {
+        createWrapper({ frecentGroupsHandler: rejecting() });
+        await waitForPromises();
+      });
+
+      it('logs the error to sentry', () => {
+        expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+      });
+
+      it('leaves the picker empty', () => {
+        expectEmptyState();
+      });
+    });
+
+    describe('when the organization check fails', () => {
+      beforeEach(async () => {
+        createWrapper({
+          frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
+          organizationGroupHandler: rejecting(),
+        });
+        await waitForPromises();
+      });
+
+      it('logs the error to sentry', () => {
+        expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+      });
+
+      it('leaves the picker empty', () => {
+        expectEmptyState();
       });
     });
   });

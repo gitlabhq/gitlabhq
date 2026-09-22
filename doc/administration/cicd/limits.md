@@ -401,6 +401,43 @@ To configure this limit:
 1. Set a value for **Maximum downstream pipeline trigger rate**.
 1. Select **Save changes**.
 
+## Pipeline cancellation rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627270) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_pipeline_cancel`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Canceling a pipeline stops every cancelable job in its [pipeline hierarchy](../../ci/pipelines/downstream_pipelines.md),
+so the cost of canceling scales with the size of the pipeline. Repeated cancellations,
+whether on one large pipeline or spread across many pipelines in a project, can add up to excessive load on your instance.
+You can limit how often pipelines can be canceled to protect against this.
+
+This rate limit applies to pipeline cancellations made with the
+[cancel pipeline REST API](../../api/pipelines.md#cancel-all-jobs-for-a-pipeline), the
+[`pipelineCancel`](../../api/graphql/reference/_index.md#mutationpipelinecancel) GraphQL mutation, or the GitLab UI.
+The limit does not apply to automatic cancellations (for example, `auto_cancel_on_job_failure`).
+
+GitLab enforces the following limits:
+
+- Per user and pipeline: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `120` requests each minute.
+  Set the limit to `0` to disable this per-project limit. The per user and pipeline limit still applies.
+
+If either limit is exceeded, the cancellation request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum pipeline cancellations per project**.
+1. Select **Save changes**.
+
 ## Maximum artifacts size
 
 Set size limits for job artifacts to control storage use.

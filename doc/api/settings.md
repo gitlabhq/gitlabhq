@@ -409,6 +409,7 @@ Example response:
   "concurrent_relation_export_limit": 25,
   "relation_export_batch_size": 50,
   "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
+  "pipeline_cancel_limit_per_user_project": 120,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
@@ -486,6 +487,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248055) in GitLab 19.4.
 - `block_jwt_for_reclaimed_paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623356) in GitLab 19.4.
 - `project_audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253781) in GitLab 19.5.
+- `pipeline_cancel_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627270) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_pipeline_cancel`. Disabled by default.
 - `pg_ash_sampling_enabled` and `pg_ash_sample_interval_seconds` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250170) in GitLab 19.4.
 - `group_audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255336) in GitLab 19.5.
 
@@ -604,6 +606,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `domain_denylist`                        | array of strings | no                                   | Users with email addresses that match these domains cannot create new accounts. Wildcards allowed. Enter multiple entries on separate lines. For example: `domain.com`, `*.domain.com`. |
 | `domain_allowlist`                       | array of strings | no                                   | Force people to use only corporate emails when creating accounts. Default is `null`, meaning there is no restriction. |
 | `downstream_pipeline_trigger_limit_per_project_user_sha` | integer | no                            | [Maximum downstream pipeline trigger rate](../administration/cicd/limits.md#limit-downstream-pipeline-trigger-rate). Default: `0` (no restriction). |
+| `pipeline_cancel_limit_per_user_project` | integer          | no                                   | [Pipeline cancellation rate limits](../administration/cicd/limits.md#pipeline-cancellation-rate-limits). Default: `120`. |
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ecdsa_sk_key_restriction`               | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA_SK key. Default is `0` (no restriction). `-1` disables ECDSA_SK keys. |

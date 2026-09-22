@@ -19,6 +19,7 @@ module API
           tools_hash = manager.list_tools
           toolsets_enabled = ::Feature.enabled?(:mcp_toolsets, current_user)
 
+          allowed_tools = resolve_aliases(allowed_tools)
           warn_unknown_tools(allowed_tools, tools_hash)
           included = resolve_included(allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets)
 
@@ -34,6 +35,15 @@ module API
         end
 
         private
+
+        # The header may carry aliases: Ai::DuoWorkflows::McpConfigService sends every
+        # read-only tool's aliases on default chat requests, and a session built before a
+        # tool rename keeps sending the old name.
+        def resolve_aliases(allowed_tools)
+          return allowed_tools if allowed_tools.blank?
+
+          allowed_tools.map { |name| manager.resolve_alias(name) }
+        end
 
         def warn_unknown_tools(allowed_tools, tools_hash)
           return if allowed_tools.blank?

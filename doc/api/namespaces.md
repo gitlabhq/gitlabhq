@@ -142,7 +142,10 @@ Example response:
 ]
 ```
 
-Additional attributes might be returned for Group owners or on GitLab.com:
+The following additional attributes might be returned for Group owners or on GitLab.com.
+The four compute minute and purchased storage attributes (`shared_runners_minutes_limit`,
+`extra_shared_runners_minutes_limit`, `additional_purchased_storage_size`,
+`additional_purchased_storage_ends_on`) are returned only to administrators on GitLab.com:
 
 ```json
 [
@@ -155,6 +158,10 @@ Additional attributes might be returned for Group owners or on GitLab.com:
     "root_repository_size":0,
     "members_count_with_descendants":26,
     "plan": "free",
+    "shared_runners_minutes_limit": 133,
+    "extra_shared_runners_minutes_limit": 50,
+    "additional_purchased_storage_size": 1000,
+    "additional_purchased_storage_ends_on": "2022-06-18",
     ...
   }
 ]

@@ -41,6 +41,12 @@ Each list item points to a specific section that holds more information.
 Items marked with an installation method, like `(Geo)` or `(Linux package)`,
 apply only to that method. All other items apply to all installation methods.
 
+### Upgrade to 19.5
+
+Before upgrading to GitLab 19.5, review the following:
+
+- [19.5.0] - [Agent for Kubernetes address defaults to native gRPC](#agent-for-kubernetes-address-defaults-to-native-grpc) (Linux package, Helm chart)
+
 ### Upgrade to 19.4
 
 Before upgrading to GitLab 19.4, review the following:
@@ -83,6 +89,33 @@ Before upgrading to GitLab 19.0, review the following:
 ## Upgrade notes
 
 Specific upgrade notes for GitLab 19.
+
+### Agent for Kubernetes address defaults to native gRPC
+
+- Affects: Linux package, Helm chart
+- Affected versions: 19.5.0 and later
+
+In GitLab 19.5, the Linux package and the GitLab Helm chart advertise a native gRPC address
+to the agent for Kubernetes by default, instead of a WebSocket address. The address is shown
+in the agent installation instructions and stored in `gitlab_kas.external_url`.
+
+- Linux package: `grpcs://gitlab.example.com` instead of `wss://gitlab.example.com/-/kubernetes-agent/`,
+  when `external_url` uses HTTPS without a relative URL root and the bundled NGINX terminates TLS with HTTP/2.
+- Helm chart: `grpcs://kas.example.com` instead of `wss://kas.example.com`, with Gateway API or
+  with the NGINX Ingress provider.
+
+In other configurations, the WebSocket address is kept. Agents that are already connected over
+WebSocket are not affected, because GitLab Relay (KAS) serves both protocols on the same port.
+Agents installed after the upgrade connect over gRPC, which needs HTTP/2 end to end. If a proxy
+between your clusters and GitLab does not pass HTTP/2, new agents fail to connect and the error
+looks like a network problem. For example, a WAF or a TLS-inspecting proxy might connect to GitLab
+over HTTP/1.1. In that case, keep advertising WebSocket by setting the address explicitly:
+
+- Linux package: `gitlab_rails['gitlab_kas_external_url']` in `/etc/gitlab/gitlab.rb`.
+- Helm chart: `global.appConfig.gitlab_kas.externalUrl`.
+
+For more information, see [GitLab Relay (KAS)](../../administration/clusters/kas.md) and the
+[KAS chart documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#agent-connection-protocol).
 
 ### Geo SSH proxying enabled by default
 

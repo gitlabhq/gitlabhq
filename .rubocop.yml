@@ -1308,6 +1308,7 @@ Mcp/UseGraphqlQueryFile:
   Enabled: true
   Include:
     - 'app/services/mcp/tools/**/*'
+    - 'ee/app/services/mcp/tools/**/*'
     - 'ee/app/services/ee/mcp/tools/**/*'
 
 Migration/ComplexIndexesRequireName:

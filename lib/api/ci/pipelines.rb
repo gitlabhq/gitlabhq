@@ -431,7 +431,8 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['pipelines']
         end
@@ -445,7 +446,11 @@ module API
 
           # TODO: inconsistent behavior: when pipeline is not cancelable we should return an error
           # Set to be fixed on V5 to avoid breaking changes: https://gitlab.com/gitlab-org/gitlab/-/issues/519143
-          ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
+          response = ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
+
+          if response.error? && response.reason == :rate_limited
+            too_many_requests!(response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:pipeline_cancel))
+          end
 
           status 200
           present pipeline.reset, with: Entities::Ci::Pipeline

@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   end
 
   describe '#ipynb?' do
-    context 'is ipynb' do
+    context 'when it is ipynb' do
       let(:commit) { project.commit("532c837") }
 
       it 'is true' do
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       end
     end
 
-    context 'is not ipynb' do
+    context 'when it is not ipynb' do
       it 'is false' do
         expect(diff_file.ipynb?).to be_falsey
       end
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   end
 
   describe '#has_renderable?' do
-    context 'file is ipynb' do
+    context 'when file is ipynb' do
       let(:commit) { project.commit("532c837") }
 
       it 'has renderable viewer' do
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       end
     end
 
-    context 'file is not ipynb' do
+    context 'when file is not ipynb' do
       let(:commit) { project.commit("d59c60028b053793cecfb4022de34602e1a9218e") }
 
       it 'does not have renderable viewer' do
@@ -591,7 +591,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     end
   end
 
-  context 'diff file stats' do
+  context 'when diff file stats' do
     let(:diff_file) do
       described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository, stats: stats)
     end

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RapidDiffs::StreamingErrorComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::StreamingErrorComponent, feature_category: :code_review_workflow do
   it "renders component with message" do
     result = render_component('Foo')
     expect(result).to have_css('streaming-error[message="Foo"]')

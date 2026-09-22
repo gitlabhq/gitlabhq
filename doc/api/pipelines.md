@@ -653,6 +653,9 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 > This endpoint returns a success response `200` regardless of the pipeline's state.
 > For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
 
+If you exceed the [pipeline cancellation rate limits](../administration/cicd/limits.md#pipeline-cancellation-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code with a `Retry-After` header.
+
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
 | `id`          | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |

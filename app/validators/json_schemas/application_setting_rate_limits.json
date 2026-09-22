@@ -207,6 +207,11 @@
       "minimum": 0,
       "description": "Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
     },
+    "pipeline_cancel_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of pipeline cancellations allowed per minute for a given project. Set to 0 to disable the limit."
+    },
     "users_api_limit_followers": {
       "type": "integer",
       "minimum": 0,

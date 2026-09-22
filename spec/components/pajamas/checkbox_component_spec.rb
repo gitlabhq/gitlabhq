@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component do
+RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures do
   include FormBuilderHelpers
 
   let_it_be(:method) { :view_diffs_file_by_file }

@@ -4,7 +4,7 @@ require "spec_helper"
 
 require_relative './shared'
 
-RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::DiffFileComponent, feature_category: :code_review_workflow do
   include_context "with diff file component tests"
 
   describe 'header slot' do

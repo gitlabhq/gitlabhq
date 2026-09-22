@@ -260,10 +260,10 @@ A `custom` rule's Rego, and the `policy_rego` module all rules merge into, must 
 A `custom` rule that does not returns `400 Bad Request`. The error names the rule's position
 and includes the engine's message with a line and column in the Rego you sent in `value`,
 for example ``rules[0] is invalid: error: expecting `}` while parsing object (at line:column)``.
-An error in the merged module reads `policy_rego is invalid: <message> (at line:column)`,
-with the location in that module.
-If the Policy Engine itself fails, rather than your Rego, the request returns
-`500 Internal Server Error` and the policy is not stored.
+The `policy_rego` module is parsed too, after all rules merge into it. Since every rule
+already parsed on its own, a failure at this stage is treated as a fault in the
+Policy Engine: the request returns `500 Internal Server Error`,
+the policy is not stored, and the fault is reported to error tracking.
 
 A request replaces the whole array.
 You cannot add or remove a single entry.

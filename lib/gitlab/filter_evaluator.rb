@@ -51,7 +51,8 @@ module Gitlab
       path.split('.').reduce(hash) do |value, key|
         # A missing segment fails only this rule. Raising here failed the whole filter,
         # which also affects webhook and integration filters using this evaluator.
-        unless value.is_a?(Hash)
+        # Hook payloads can be SimpleDelegators around the hash, so duck-type rather than is_a?(Hash).
+        unless value.respond_to?(:key?)
           Gitlab::AppLogger.debug(
             class: name,
             message: 'Filter rule path segment not traversable, rule will not match',

@@ -16,14 +16,14 @@ const requestOrganizationPath = () => gon?.organization_path;
 
 // Strip `organizationPath` so js-routes does not turn it into a query parameter.
 const withoutOrganizationPathOption = (args) => {
-  const { organizationPath, ...routeOptions } = args.at(-1);
+  const { organizationPath, ...routeOptions } = args[args.length - 1];
 
   return [...args.slice(0, -1), routeOptions];
 };
 
 // Mirrors `Routing::OrganizationsHelper::MappedHelpers#scoped_path_for`.
 export const resolveOrganizationScope = (args) => {
-  const options = args.at(-1);
+  const options = args[args.length - 1];
   const hasOrganizationPathOption = isOptionsObject(options) && 'organizationPath' in options;
   const routeArgs = hasOrganizationPathOption ? withoutOrganizationPathOption(args) : args;
   const dataContextPath = dataContextOrganizationPath();
@@ -56,7 +56,7 @@ export const splitProjectFullPath = (projectFullPath) => {
 
   const splitProjectFullPath = projectFullPath.split("/");
   const namespacePath = splitProjectFullPath.slice(0, -1).join("/");
-  const projectPath = splitProjectFullPath.at(-1);
+  const projectPath = splitProjectFullPath[splitProjectFullPath.length - 1];
 
   return { namespacePath, projectPath };
 };

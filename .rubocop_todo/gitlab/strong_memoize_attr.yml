@@ -236,7 +236,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/models/concerns/insights_feature.rb'
     - 'ee/app/models/concerns/security/scan_execution_policy.rb'
     - 'ee/app/models/deployments/approval_summary.rb'
-    - 'ee/app/models/ee/audit_event.rb'
     - 'ee/app/models/ee/ci/bridge.rb'
     - 'ee/app/models/ee/ci/build.rb'
     - 'ee/app/models/ee/ci/build_dependencies.rb'

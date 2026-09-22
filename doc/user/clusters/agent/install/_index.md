@@ -27,7 +27,7 @@ Before you can install the agent in your cluster, you need:
 - Access to an agent server:
   - On GitLab.com, the agent server is available at `grpcs://kas.gitlab.com`. The WebSocket address `wss://kas.gitlab.com` is also available.
   - On GitLab Self-Managed, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
-    Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
+    Then it is available by default at `grpcs://gitlab.example.com`, or at `wss://gitlab.example.com/-/kubernetes-agent/` on instances without HTTPS or with a relative URL root.
   - On GitLab Dedicated, the agent server is available at `wss://kas.<instance-domain>`, for example `wss://kas.example.gitlab-dedicated.com`. If you use a [custom domain](../../../../administration/dedicated/configure_instance/network_security.md#custom-domains) for your GitLab Dedicated instance, you can also use a custom domain for the KAS service.
 
 ## Bootstrap the agent with Flux support (recommended)

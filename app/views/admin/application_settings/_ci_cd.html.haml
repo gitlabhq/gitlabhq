@@ -68,6 +68,11 @@
         .form-text.gl-text-subtle
           = s_('AdminSettings|The maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit).')
       .form-group
+        = f.label :pipeline_cancel_limit_per_user_project, s_('AdminSettings|Maximum pipeline cancellations per project'), class: 'label-bold'
+        = f.number_field :pipeline_cancel_limit_per_user_project, min: 0, class: 'form-control gl-form-input'
+        .form-text.gl-text-subtle
+          = s_('AdminSettings|The maximum number of pipeline cancellations allowed per minute for a given project. Set to 0 to disable this limit.')
+      .form-group
         = f.label :git_push_pipeline_limit, s_('AdminSettings|Pipeline limit per Git push'), class: 'label-bold'
         = f.number_field :git_push_pipeline_limit, min: 0, class: 'form-control gl-form-input'
         .form-text.gl-text-subtle

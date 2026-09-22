@@ -3654,7 +3654,6 @@ describe('planning-view', () => {
           provide: {
             glFeatures: {
               planningViewBoards: true,
-              workItemListDisplaySettingsDrawer: true,
             },
           },
           stubs: {
@@ -3712,7 +3711,7 @@ describe('planning-view', () => {
 
             await mountComponent({
               provide: {
-                glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+                glFeatures: { planningViewBoards: true },
               },
               stubs: {
                 WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
@@ -3830,7 +3829,6 @@ describe('planning-view', () => {
             provide: {
               glFeatures: {
                 planningViewBoards: true,
-                workItemListDisplaySettingsDrawer: true,
               },
             },
             savedViewHandler: jest
@@ -3888,7 +3886,7 @@ describe('planning-view', () => {
       const mountAllItemsBoard = async (options = {}) => {
         await mountComponent({
           provide: {
-            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+            glFeatures: { planningViewBoards: true },
           },
           stubs: {
             WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
@@ -3907,7 +3905,7 @@ describe('planning-view', () => {
         };
         await mountComponent({
           provide: {
-            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+            glFeatures: { planningViewBoards: true },
           },
           savedViewHandler: jest
             .fn()

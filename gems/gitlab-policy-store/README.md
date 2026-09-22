@@ -271,13 +271,16 @@ What is parsed:
   ``rules[0] is invalid: error: expecting `}` while parsing object (at line:column)``, and the
   location points into the rule's `value`.
 - **The merged module**, once. It is what `RuleProgramMerger` produces and what the API
-  returns as `policy_rego`. An error there is reported as `policy_rego`.
+  returns as `policy_rego`. It is validated under the field `policy_merged_program`
+  (`RegoValidator::MERGED_PROGRAM_FIELD`). Since every piece the caller wrote already
+  parsed on its own, a failure here raises `EngineError` instead of `ValidationError`.
 - **An authored `scope_rego`**, once.
 
 The engine is only called when a write supplies `rules` or a hand-written `scope_rego`.
 A rename, a `policy_scope` change, or an update to any other attribute never reaches it.
 
-When the engine itself fails, rather than the program, `RegoValidator` raises `EngineError`.
+When the engine itself fails, or the merged module does not parse, `RegoValidator` raises
+`EngineError`.
 
 ## Enforcement Modes
 

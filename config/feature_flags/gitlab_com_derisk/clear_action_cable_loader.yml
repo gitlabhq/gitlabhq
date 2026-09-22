@@ -1,0 +1,9 @@
+---
+name: clear_action_cable_loader
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606907
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254146
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628832
+milestone: '19.5'
+type: gitlab_com_derisk
+group: group::pipeline authoring
+default_enabled: false

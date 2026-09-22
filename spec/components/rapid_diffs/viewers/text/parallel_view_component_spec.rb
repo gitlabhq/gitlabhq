@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe RapidDiffs::Viewers::Text::ParallelViewComponent, type: :component, feature_category: :code_review_workflow do
+RSpec.describe RapidDiffs::Viewers::Text::ParallelViewComponent, feature_category: :code_review_workflow do
   let_it_be_with_reload(:diff_file) { build(:diff_file) }
 
   it "renders table wrapper" do

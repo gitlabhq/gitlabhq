@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category: :continuous_integration do
+RSpec.describe Ci::CancelPipelineService, :aggregate_failures, :clean_gitlab_redis_rate_limiting,
+  feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { project.owner }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
@@ -242,12 +243,186 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
         expect(response.reason).to eq(:insufficient_permissions)
       end
     end
+
+    context 'with rate limiting', :freeze_time do
+      let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+      it 'does not throttle the first cancel' do
+        expect(response.reason).not_to eq(:rate_limited)
+      end
+
+      it 'throttles the sixth cancel of the same pipeline in a minute' do
+        5.times { service.execute }
+
+        throttled = service.execute
+
+        expect(throttled).to be_error
+        expect(throttled.reason).to eq(:rate_limited)
+        expect(throttled.message).to eq(throttle_message)
+      end
+
+      context 'when the per-project limit is exceeded' do
+        let(:other_pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+        end
+
+        it 'throttles a cancel of a different pipeline in the same project' do
+          expect(service.execute.reason).not_to eq(:rate_limited)
+
+          throttled = described_class.new(pipeline: other_pipeline, current_user: current_user).execute
+
+          expect(throttled).to be_error
+          expect(throttled.reason).to eq(:rate_limited)
+        end
+      end
+
+      context 'when the per-project limit is disabled with 0' do
+        let(:other_pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 0)
+        end
+
+        it 'does not apply the per-project limit but still enforces the per-pipeline limit' do
+          10.times do
+            described_class.new(pipeline: create(:ci_pipeline, project: project), current_user: current_user).execute
+          end
+          expect(described_class.new(pipeline: other_pipeline, current_user: current_user).execute.reason)
+            .not_to eq(:rate_limited)
+
+          5.times { service.execute }
+          expect(service.execute.reason).to eq(:rate_limited)
+        end
+      end
+
+      context 'when the per-pipeline limit is hit repeatedly' do
+        let(:other_pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          # Small enough that blocked calls would exhaust it if they counted.
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 6)
+        end
+
+        it 'does not spend the per-project budget on already-blocked per-pipeline calls' do
+          10.times { service.execute }
+          expect(service.execute.reason).to eq(:rate_limited)
+
+          expect(described_class.new(pipeline: other_pipeline, current_user: current_user).execute.reason)
+            .not_to eq(:rate_limited)
+        end
+      end
+
+      context 'with a different user' do
+        let_it_be(:other_user) { create(:user, maintainer_of: project) }
+
+        before do
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+        end
+
+        it 'keeps separate buckets per user' do
+          expect(service.execute.reason).not_to eq(:rate_limited)
+          expect(service.execute.reason).to eq(:rate_limited)
+
+          expect(described_class.new(pipeline: pipeline, current_user: other_user).execute.reason)
+            .not_to eq(:rate_limited)
+        end
+      end
+
+      context 'when the pipeline has a running job' do
+        let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+        it 'throttles repeated cancels after the pipeline enters canceling' do
+          service.execute
+          pipeline.update!(status: 'canceling')
+
+          5.times { service.execute }
+
+          expect(service.execute.reason).to eq(:rate_limited)
+        end
+      end
+
+      it 'logs the throttled call' do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+        stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+
+        2.times { service.execute }
+
+        expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+          a_hash_including(
+            class: described_class.to_s,
+            message: 'Pipeline cancel rate limit exceeded',
+            project_id: project.id,
+            pipeline_id: pipeline.id,
+            Labkit::Fields::GL_USER_ID => current_user.id
+          )
+        ).once
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(rate_limit_pipeline_cancel: false)
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+        end
+
+        it 'does not throttle' do
+          2.times do
+            expect(described_class.new(pipeline: pipeline, current_user: current_user).execute.reason)
+              .not_to eq(:rate_limited)
+          end
+        end
+      end
+
+      context 'when the caller opts out with rate_limit: false' do
+        before do
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+        end
+
+        # Guards the Ci::UserCancelPipelineWorker exemption behind auto_cancel_on_job_failure.
+        it 'never throttles' do
+          2.times do
+            response = described_class.new(
+              pipeline: pipeline, current_user: current_user, rate_limit: false
+            ).execute
+
+            expect(response.reason).not_to eq(:rate_limited)
+          end
+        end
+      end
+
+      context 'when the user cannot cancel the pipeline' do
+        let(:current_user) { create(:user) }
+
+        before do
+          stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+        end
+
+        it 'counts the rejected call against the bucket' do
+          expect(service.execute.reason).to eq(:insufficient_permissions)
+
+          expect(service.execute.reason).to eq(:rate_limited)
+        end
+      end
+    end
   end
 
   describe '#force_execute' do
     subject(:response) { service.force_execute }
 
     it_behaves_like 'force_execute'
+
+    context 'with rate limiting configured', :freeze_time do
+      before do
+        stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
+      end
+
+      it 'never consults the rate limiter' do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+        3.times { service.force_execute }
+      end
+    end
 
     context 'when pipeline is not provided' do
       let(:pipeline) { nil }

@@ -217,7 +217,6 @@ Lint/UnusedBlockArgument:
     - 'spec/factories/resource_label_events.rb'
     - 'spec/factories/suggestions.rb'
     - 'spec/factories/users.rb'
-    - 'spec/features/merge_request/user_suggests_changes_on_diff_spec.rb'
     - 'spec/fixtures/lib/generators/gitlab/usage_metric_generator/sample_numbers_metric.rb'
     - 'spec/graphql/features/authorization_spec.rb'
     - 'spec/lib/api/helpers/pagination_strategies_spec.rb'

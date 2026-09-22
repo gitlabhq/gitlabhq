@@ -113,6 +113,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['failed_login_attempts_unlock_period_in_minutes']).to be_nil
       expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to eq(25)
       expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to eq(0)
+      expect(json_response['pipeline_cancel_limit_per_user_project']).to eq(120)
       expect(json_response['concurrent_github_import_jobs_limit']).to eq(1000)
       expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
       expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
@@ -415,6 +416,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             max_import_remote_file_size: 2,
             security_txt_content: nil,
             downstream_pipeline_trigger_limit_per_project_user_sha: 300,
+            pipeline_cancel_limit_per_user_project: 90,
             concurrent_github_import_jobs_limit: 2,
             concurrent_bitbucket_import_jobs_limit: 2,
             concurrent_bitbucket_server_import_jobs_limit: 2,
@@ -523,6 +525,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['security_txt_content']).to be_nil
         expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to be(2)
         expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to be(300)
+        expect(json_response['pipeline_cancel_limit_per_user_project']).to be(90)
         expect(json_response['concurrent_github_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to be(2)

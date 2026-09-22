@@ -29,7 +29,6 @@ Layout/ClassStructure:
     - 'app/models/analytics/cycle_analytics/value_stream.rb'
     - 'app/models/application_record.rb'
     - 'app/models/application_setting.rb'
-    - 'app/models/audit_event.rb'
     - 'app/models/award_emoji.rb'
     - 'app/models/batched_git_ref_updates/deletion.rb'
     - 'app/models/blob_viewer/base.rb'

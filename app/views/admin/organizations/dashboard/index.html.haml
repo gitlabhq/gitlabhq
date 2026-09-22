@@ -1,3 +1,20 @@
 - breadcrumb_title _("Dashboard")
+- page_title _("Dashboard")
 
-= render ::Layouts::PageHeadingComponent.new(_('Organization Administration'))
+%h1.gl-sr-only= page_title
+
+.gl-mt-3
+  %h2.gl-heading-2= _('Organization overview')
+  .gl-grid.gl-gap-5{ class: "@md/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-3" }
+    = render 'admin/organizations/dashboard/latest_records',
+      title: s_('AdminArea|Projects'),
+      count: @counts[Project],
+      records: @projects
+    = render 'admin/organizations/dashboard/latest_records',
+      title: s_('AdminArea|Total Users'),
+      count: @counts[User],
+      records: @users
+    = render 'admin/organizations/dashboard/latest_records',
+      title: s_('AdminArea|Groups'),
+      count: @counts[Group],
+      records: @groups

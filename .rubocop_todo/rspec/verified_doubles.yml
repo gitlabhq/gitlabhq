@@ -729,7 +729,6 @@ RSpec/VerifiedDoubles:
     - 'spec/services/merge_requests/build_service_spec.rb'
     - 'spec/services/merge_requests/close_service_spec.rb'
     - 'spec/services/merge_requests/merge_service_spec.rb'
-    - 'spec/services/merge_requests/post_merge_service_spec.rb'
     - 'spec/services/merge_requests/refresh_service_spec.rb'
     - 'spec/services/merge_requests/reopen_service_spec.rb'
     - 'spec/services/merge_requests/request_review_service_spec.rb'

@@ -738,7 +738,9 @@ route_setting :mcp, tool_name: :new_name,
    - Any hardcoded tool name references
 
 1. The `Mcp::Tools::Manager` automatically resolves aliases during `get_tool` calls, so clients
-   using the old name continue to work.
+   using the old name continue to work. `tools/list` also resolves aliases when it filters the
+   response against the `X-Gitlab-Enabled-Mcp-Server-Tools` header, so a header that names a tool
+   by an old name still returns that tool.
 
 **Important notes:**
 

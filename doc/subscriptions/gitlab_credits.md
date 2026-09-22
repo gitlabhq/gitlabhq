@@ -305,6 +305,7 @@ For premium models with optimized integration:
 | `gpt-5.4` <sup>3</sup> | 2.0 |
 | `kimi-k3` | 1.82 |
 | `gpt-5.6-terra` <sup>4</sup> | 1.43 |
+| `claude-opus-5.5` | 1.35 |
 | `gpt-5.6-sol` <sup>2</sup> <sup>3</sup> | 1.33 |
 | `claude-opus-4.5` | 1.2 |
 | `gpt-5.4` <sup>4</sup> | 1.11 |

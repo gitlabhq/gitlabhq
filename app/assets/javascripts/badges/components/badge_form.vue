@@ -4,7 +4,6 @@ import { formValidators } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isValidURL } from '~/lib/utils/url_utility';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { s__ } from '~/locale';
@@ -24,9 +23,6 @@ export default {
     GlSprintf,
     GlLoadingIcon,
     SupportedPlaceholders,
-  },
-  directives: {
-    SafeHtml,
   },
   props: {
     isEditing: {

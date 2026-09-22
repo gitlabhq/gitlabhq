@@ -612,8 +612,8 @@ RSpec.shared_examples 'a policy repository' do
         rules = [custom_rule, { 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }]
 
         expect(Gitlab::PolicyStore::RegoValidator).to receive(:validate!).with('rules[0]', custom_rule['value']).ordered
-        expect(Gitlab::PolicyStore::RegoValidator).to receive(:validate!).with(:policy_rego, /\Apackage governance\n/)
-          .ordered
+        expect(Gitlab::PolicyStore::RegoValidator).to receive(:validate!)
+          .with(Gitlab::PolicyStore::RegoValidator::MERGED_PROGRAM_FIELD, /\Apackage governance\n/).ordered
         expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with('rules[1]', anything)
         expect(Gitlab::PolicyStore::RegoValidator).not_to receive(:validate!).with(:scope_rego, anything)
 

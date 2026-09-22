@@ -220,6 +220,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         personal_access_token_prefix: 'glpat-',
         pg_ash_sample_interval_seconds: 1,
         pg_ash_sampling_enabled: false,
+        pipeline_cancel_limit_per_user_project: 120,
         plantuml_enabled: false,
         plantuml_diagram_proxy_enabled: false,
         project_api_limit: 400,
@@ -701,6 +702,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           pages_extra_deployments_default_expiry_seconds
           package_registry_cleanup_policies_worker_capacity
           packages_cleanup_package_file_worker_capacity
+          pipeline_cancel_limit_per_user_project
           pipeline_limit_per_project_user_sha
           create_organization_api_limit
           project_api_limit

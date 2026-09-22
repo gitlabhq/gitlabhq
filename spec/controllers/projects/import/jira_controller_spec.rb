@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Import::JiraController do
+RSpec.describe Projects::Import::JiraController, feature_category: :team_planning do
   include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }

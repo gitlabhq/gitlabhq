@@ -1,6 +1,6 @@
 ---
-source_checksum: a867f168ccc28721
-distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
+source_checksum: 26333eb645fd302e
+distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -42,6 +42,10 @@ distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ### Workhorse JWT Verification
 
 - DO NOT apply the `:verify_workhorse_jwt` tag to ordinary tests — a `before` hook in `spec/support/workhorse_jwt_injection.rb` auto-injects a valid JWT into every test request, so happy-path specs require no manual JWT setup. Use `:verify_workhorse_jwt` only when the test explicitly asserts the enforcement boundary (for example, a `403 Forbidden` response when the JWT header is absent); the tag opts out of both injection and detection.
+
+### Sign-In Race in Feature Specs
+
+- DO NOT call `sign_in` after a page has already been visited in a nested context of a `:js` feature spec — the helper injects the session via `Warden.on_next_request`, and a background request still in flight from the first visit can consume that injection, leaving the intended user not signed in. Instead, keep a single `sign_in` and a single `visit` in the outermost `before` block and override the relevant `let` in nested contexts to vary the signed-in user.
 
 ## Authoritative sources
 

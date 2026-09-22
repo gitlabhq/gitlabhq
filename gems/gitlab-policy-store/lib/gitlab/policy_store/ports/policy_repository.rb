@@ -404,7 +404,7 @@ module Gitlab
               "rules compile to #{merged_program.bytesize} bytes, over the maximum of #{MAX_COMPILED_RULES_BYTES} bytes"
           end
 
-          RegoValidator.validate!(:policy_rego, merged_program)
+          RegoValidator.validate!(RegoValidator::MERGED_PROGRAM_FIELD, merged_program)
         end
       end
     end

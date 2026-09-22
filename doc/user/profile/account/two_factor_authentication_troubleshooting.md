@@ -211,7 +211,7 @@ To regenerate recovery codes with SSH:
    - On macOS and Linux, run the following command:
 
      ```shell
-     ssh-add <directory to private SSH key>
+     ssh-add <path to private SSH key file>
      ```
 
    For more information, see [Use SSH keys in another directory](../../ssh_advanced.md#use-ssh-keys-in-another-directory).

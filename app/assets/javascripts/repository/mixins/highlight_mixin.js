@@ -50,9 +50,9 @@ export default {
       const { rawTextBlob, name, fileType, externalStorageUrl, rawPath, simpleViewer } = blob;
       let { language } = blob;
 
-      const fileExtensionOverride = Object.keys(FILE_EXTENSION_MAPPING_HLJS).find((extension) =>
-        name.endsWith(extension),
-      );
+      const fileExtensionOverride = name
+        ? Object.keys(FILE_EXTENSION_MAPPING_HLJS).find((extension) => name.endsWith(extension))
+        : undefined;
 
       if (fileExtensionOverride) {
         language = FILE_EXTENSION_MAPPING_HLJS[fileExtensionOverride];

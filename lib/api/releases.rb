@@ -260,7 +260,11 @@ module API
             requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique within the release'
             optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'
             optional :filepath, type: String, desc: 'Deprecated: optional path for a direct asset link'
-            optional :link_type, type: String, desc: 'The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`'
+            optional :link_type,
+              type: String,
+              values: ::Releases::Link.link_types.keys,
+              default: 'other',
+              desc: 'The type of the link.'
           end
         end
 

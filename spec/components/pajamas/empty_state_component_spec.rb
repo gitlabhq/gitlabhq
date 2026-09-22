@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::EmptyStateComponent, type: :component, feature_category: :design_system do
+RSpec.describe Pajamas::EmptyStateComponent, feature_category: :design_system do
   let(:title) { 'Empty state title' }
   let(:slot_title) { nil }
   let(:primary_button_link) { '#learn-more-primary' }
