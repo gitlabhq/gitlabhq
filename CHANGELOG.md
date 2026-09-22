@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.11.12 (2026-09-22)
+
+### Security (5 changes)
+
+- [Anchor and escape EnvironmentMatcher wildcard regex](https://gitlab.com/gitlab-org/gitlab/-/commit/5203f5bc9e4903ba4fc56b29c76cf78bfd23bf8b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255940))
+- [Sanitise items in JSONTable before passing to BTable](https://gitlab.com/gitlab-org/gitlab/-/commit/ca412b65e3368a45814bdf9e5b66340b6c553cd2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255487))
+- [Upgrade graphql gem and backport GlobalID serialization fixes](https://gitlab.com/gitlab-org/gitlab/-/commit/4dd4e82d5f94857e492ea41d423f35142ff7f11f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255102))
+- [Fix unauthenticated arbitrary local file read in commits API](https://gitlab.com/gitlab-org/gitlab/-/commit/fff017efb2c61e8f314c8ffcf0a82fe86a10ebd6)
+- [Fix iid bypass for complexity multiplier](https://gitlab.com/gitlab-org/gitlab/-/commit/c6549f86ede11174fab16bf7782fc4e8c137e077) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255811))
+
 ## 18.11.11 (2026-08-14)
 
 No changes.
