@@ -73,47 +73,33 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
           end
         end
 
-        it 'marks bulk import as finished' do
+        it 'logs and re-enqueues the worker' do
+          expect(BulkImportWorker).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
+          expect_next_instance_of(BulkImports::Logger) do |logger|
+            expect(logger).to receive(:info).with(
+              message: 'Placeholder references not finished loading to database',
+              bulk_import_id: bulk_import.id,
+              placeholder_reference_store_count: 1
+            )
+          end
+
           subject.execute
 
-          expect(bulk_import.reload.finished?).to be(true)
+          expect(bulk_import.reload.started?).to be(true)
         end
 
-        context 'when importer_user_mapping_enabled is enabled' do
+        context 'when the import is offline' do
           before do
-            allow_next_instance_of(Import::BulkImports::EphemeralData) do |ephemeral_data|
-              allow(ephemeral_data).to receive(:importer_user_mapping_enabled?).and_return(true)
-            end
+            bulk_import.update!(source_type: :offline_export)
           end
 
-          it 'logs and re-enqueues the worker' do
-            expect(BulkImportWorker).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
-            expect_next_instance_of(BulkImports::Logger) do |logger|
-              expect(logger).to receive(:info).with(
-                message: 'Placeholder references not finished loading to database',
-                bulk_import_id: bulk_import.id,
-                placeholder_reference_store_count: 1
-              )
-            end
+          it 'initializes store with offline transfer import source' do
+            expect(Import::PlaceholderReferences::Store).to receive(:new).with(
+              import_source: Import::SOURCE_OFFLINE_TRANSFER,
+              import_uid: bulk_import.id
+            ).and_call_original
 
             subject.execute
-
-            expect(bulk_import.reload.started?).to be(true)
-          end
-
-          context 'when the import is offline' do
-            before do
-              bulk_import.update!(source_type: :offline_export)
-            end
-
-            it 'initializes store with offline transfer import source' do
-              expect(Import::PlaceholderReferences::Store).to receive(:new).with(
-                import_source: Import::SOURCE_OFFLINE_TRANSFER,
-                import_uid: bulk_import.id
-              ).and_call_original
-
-              subject.execute
-            end
           end
         end
       end

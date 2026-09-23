@@ -1401,6 +1401,23 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:created)
       end
     end
+
+    context 'with an mcp-scoped personal access token' do
+      let(:mcp_token) { create(:personal_access_token, user: user, scopes: [:mcp]) }
+
+      it 'creates the issue, since this route is a registered mcp tool' do
+        post api("/projects/#{project.id}/issues", personal_access_token: mcp_token), params: { title: 'new issue' }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'is rejected on a sibling write route that is not a registered mcp tool' do
+        post api("/projects/#{project.id}/issues/#{issue.iid}/move", personal_access_token: mcp_token),
+          params: { to_project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid' do

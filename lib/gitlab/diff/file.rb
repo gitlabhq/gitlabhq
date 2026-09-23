@@ -238,6 +238,16 @@ module Gitlab
         [old_path, new_path].compact
       end
 
+      # A path imported from a crafted repository can contain traversal
+      # segments (for example `x/../../../../raw/main`). Such a path can never
+      # resolve to a real blob, but string-joined into a URL the browser
+      # normalizes the `..` away and lands on an unrelated route. Callers that
+      # build URLs from these paths must drop the URL when this is true.
+      def path_traversal?
+        paths.any? { |path| Gitlab::PathTraversal.path_traversal?(path) }
+      end
+      strong_memoize_attr :path_traversal?
+
       def file_path
         new_path.presence || old_path
       end

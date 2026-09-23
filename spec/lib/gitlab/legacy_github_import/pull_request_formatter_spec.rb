@@ -211,7 +211,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         let(:raw_data) { base_data.merge(assignee: octocat) }
 
         before do
-          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+          project.build_or_assign_import_data(data: {}).save!
+          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
         end
 
         it 'returns nil as assignee_id when is not a GitLab user' do
@@ -271,7 +272,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
         let(:raw_data) { base_data.merge(user: octocat) }
 
         before do
-          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+          project.build_or_assign_import_data(data: {}).save!
+          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
         end
 
         it 'returns project creator_id as author_id when is not a GitLab user' do
@@ -586,7 +588,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
 
     context 'when user contribution mapping is disabled' do
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       end
 
       it 'does not push any placeholder references' do

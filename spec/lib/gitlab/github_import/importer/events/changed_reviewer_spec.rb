@@ -182,7 +182,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, :clean_g
       end
 
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
         allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
           allow(finder).to receive(:find).with(github_review_requester['id'], github_review_requester['login'])
             .and_return(review_requester.id)

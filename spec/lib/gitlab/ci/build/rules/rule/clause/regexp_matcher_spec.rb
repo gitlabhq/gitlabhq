@@ -112,6 +112,61 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::RegexpMatcher, feature_ca
       end
     end
 
+    context 'when the pattern uses a subroutine call', :aggregate_failures do
+      let(:raw_pattern) { '(?:\\g<1>|Z)(x)\\g<1>' }
+
+      it 'rejects it before compiling #security', :aggregate_failures do
+        expect(Regexp).not_to receive(:new)
+        expect(Gitlab::AppJsonLogger).to receive(:warn).with(
+          hash_including(
+            message: 'rules:changes regexp rejected at compile time',
+            project_id: project_id,
+            extra: { regexp: raw_pattern }
+          )
+        )
+
+        expect { matcher.match?(['src/main.rb']) }.to raise_error(
+          Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
+          /rules:changes:regexp is invalid: uses a subroutine call/
+        )
+      end
+    end
+
+    context 'when the compiled program exceeds the size limit' do
+      # 21 Unicode property classes fit well inside REGEXP_MAX_LENGTH but compile to
+      # roughly 120KB of code ranges, so source length does not bound the program.
+      let(:raw_pattern) { '\\p{Assigned}' * 21 }
+
+      before do
+        stub_const(
+          'Gitlab::Ci::Build::Rules::Rule::Clause::REGEXP_MAX_COMPILED_BYTES', 1024
+        )
+      end
+
+      it 'rejects it before matching #security', :aggregate_failures do
+        expect(Gitlab::AppJsonLogger).to receive(:warn).with(
+          hash_including(
+            message: 'rules:changes regexp rejected at compile time',
+            project_id: project_id,
+            extra: { regexp: raw_pattern }
+          )
+        )
+
+        expect { matcher.match?(['src/main.rb']) }.to raise_error(
+          Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
+          /rules:changes:regexp is invalid: compiles to \d+ bytes, over the 1024 byte limit/
+        )
+      end
+    end
+
+    context 'when the pattern is an ordinary lookahead' do
+      let(:raw_pattern) { '\\A(?!docs/).*\\.rb\\z' }
+
+      it 'still compiles and matches' do
+        expect(matcher.match?(['src/main.rb'])).to be(true)
+      end
+    end
+
     context 'when the raw pattern contains control characters' do
       let(:raw_pattern) { "^src/\n.*" }
       let(:max_comparisons) { 0 }

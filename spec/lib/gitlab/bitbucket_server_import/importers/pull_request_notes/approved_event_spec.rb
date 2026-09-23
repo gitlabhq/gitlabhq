@@ -141,7 +141,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
       end
 
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        stub_feature_flags(bitbucket_server_user_mapping: false)
       end
 
       it 'finds the user based on email' do

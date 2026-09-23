@@ -35,6 +35,7 @@ class DiffFileBaseEntity < Grape::Entity
     merge_request = options[:merge_request]
 
     next unless has_edit_path?(merge_request)
+    next if diff_file.path_traversal?
 
     target_project, target_branch = edit_project_branch_options(merge_request)
 
@@ -47,6 +48,7 @@ class DiffFileBaseEntity < Grape::Entity
     merge_request = options[:merge_request]
 
     next unless has_edit_path?(merge_request)
+    next if diff_file.path_traversal?
 
     ide_merge_request_path(merge_request, diff_file.new_path)
   end

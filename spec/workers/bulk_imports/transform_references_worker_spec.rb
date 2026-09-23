@@ -67,22 +67,6 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
 
   subject(:perform) { described_class.new.perform([object.id], object.class.to_s, tracker.id) }
 
-  before do
-    allow(Gitlab::Cache::Import::Caching)
-      .to receive(:values_from_hash)
-      .and_return({
-        'old_username' => 'new_username',
-        'older_username' => 'newer_username',
-        'source_username' => 'destination_username',
-        'bob' => 'alice-gdk',
-        'alice' => 'bob-gdk',
-        'manuelgrabowski' => 'manuelgrabowski-admin',
-        'manuelgrabowski-admin' => 'manuelgrabowski',
-        'boaty-mc-boatface' => 'boatymcboatface',
-        'boatymcboatface' => 'boaty-mc-boatface'
-      })
-  end
-
   it_behaves_like 'an idempotent worker' do
     let(:job_args) { [[issue.id], 'Issue', tracker.id] }
   end
@@ -114,7 +98,9 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
 
     context 'when an error is raised' do
       before do
-        allow(BulkImports::UsersMapper).to receive(:new).and_raise(StandardError)
+        allow_next_found_instance_of(object.class) do |instance|
+          allow(instance).to receive(:refresh_markdown_cache!).and_raise(StandardError)
+        end
       end
 
       it 'tracks the error and creates an import failure' do
@@ -188,8 +174,10 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
   context 'for merge request description' do
     let(:object) { merge_request }
     let(:body) { object.reload.description }
+    # Usernames pass through unchanged since user contribution mapping is
+    # always enabled. See gitlab-org/gitlab#628379.
     let(:expected_body) do
-      "#{expected_url}/-/merge_requests/#{merge_request.iid} @destination_username? @alice-gdk, @bob-gdk!"
+      "#{expected_url}/-/merge_requests/#{merge_request.iid} @source_username? @bob, @alice!"
     end
 
     include_examples 'transforms and saves references'
@@ -198,7 +186,9 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
   context 'for issue notes' do
     let(:object) { issue_note }
     let(:body) { object.reload.note }
-    let(:expected_body) { "#{expected_url}/-/issues/#{issue.iid} @newer_username, not_a@username, and @new_username." }
+    let(:expected_body) do
+      "#{expected_url}/-/issues/#{issue.iid} @older_username, not_a@username, and @old_username."
+    end
 
     include_examples 'transforms and saves references'
   end
@@ -214,7 +204,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
   context 'for system notes' do
     let(:object) { system_note }
     let(:body) { object.reload.note }
-    let(:expected_body) { "mentioned in merge request !#{merge_request.iid} created by @new_username" }
+    let(:expected_body) { "mentioned in merge request !#{merge_request.iid} created by @old_username" }
 
     include_examples 'transforms and saves references'
 
@@ -230,7 +220,7 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
       end
 
       let(:body) { object.reload.note }
-      let(:expected_body) { 'mentioned in merge request created by @destination_username.' }
+      let(:expected_body) { 'mentioned in merge request created by @source_username.' }
 
       include_examples 'transforms and saves references'
     end
@@ -254,35 +244,9 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     end
 
     let(:body) { object.reload.note }
-    let(:expected_body) { '@manuelgrabowski, @boatymcboatface' }
+    let(:expected_body) { '@manuelgrabowski-admin, @boaty-mc-boatface' }
 
     include_examples 'transforms and saves references'
-  end
-
-  context 'when importer_user_mapping is enabled' do
-    let(:object) { merge_request }
-    let(:body) { object.reload.description }
-    let(:expected_body) do
-      "#{expected_url}/-/merge_requests/#{merge_request.iid} @source_username? @bob, @alice!"
-    end
-
-    it 'updates url references but does not map usernames in legacy manner' do
-      ephemeral_data_instance = instance_double(
-        Import::BulkImports::EphemeralData,
-        importer_user_mapping_enabled?: true
-      )
-      allow(Import::BulkImports::EphemeralData)
-        .to receive(:new).with(bulk_import.id)
-        .and_return(ephemeral_data_instance)
-
-      expect_any_instance_of(object.class) do |object|
-        expect(object).to receive(:save!)
-      end
-
-      expect { perform }.not_to change { object.updated_at }
-
-      expect(body).to eq(expected_body)
-    end
   end
 
   context 'when a non-URI string that URI.extract considers a URI is returned' do

@@ -178,12 +178,15 @@ module DiffHelper
   end
 
   def diff_file_blob_raw_url(diff_file, only_path: false)
+    return if diff_file.path_traversal?
+
     project_raw_url(@project, tree_join(diff_file.content_sha, diff_file.file_path), only_path: only_path)
   end
 
   def diff_file_old_blob_raw_url(diff_file, only_path: false)
     sha = diff_file.old_content_sha
     return unless sha
+    return if diff_file.path_traversal?
 
     project_raw_url(@project, tree_join(diff_file.old_content_sha, diff_file.old_path), only_path: only_path)
   end
@@ -197,8 +200,12 @@ module DiffHelper
   end
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)
+    blob_diff_path = unless Gitlab::PathTraversal.path_traversal?(diff_file_path)
+                       project_blob_diff_path(project, tree_join(diff_commit_id, diff_file_path))
+                     end
+
     {
-      blob_diff_path: project_blob_diff_path(project, tree_join(diff_commit_id, diff_file_path)),
+      blob_diff_path: blob_diff_path,
       view: diff_view
     }
   end

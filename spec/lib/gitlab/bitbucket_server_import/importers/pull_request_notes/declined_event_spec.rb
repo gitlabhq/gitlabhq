@@ -122,7 +122,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
       let_it_be(:decliner_author) { create(:user, username: 'decliner_author', email: 'decliner_author@example.org') }
 
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       end
 
       it 'finds the user based on email' do

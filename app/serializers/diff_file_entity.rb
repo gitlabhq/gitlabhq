@@ -33,6 +33,7 @@ class DiffFileEntity < DiffFileBaseEntity
 
     next unless project
     next unless diff_file.content_sha
+    next if diff_file.path_traversal?
 
     project_blob_path(project, tree_join(diff_file.content_sha, diff_file.new_path))
   end
@@ -45,12 +46,14 @@ class DiffFileEntity < DiffFileBaseEntity
     project = merge_request.target_project
 
     next unless project
+    next if diff_file.path_traversal?
 
     project_blob_path(project, tree_join(diff_file.old_content_sha, diff_file.old_path)) if image_diff && image_replaced
   end
 
   expose :context_lines_path, if: ->(diff_file, _) { diff_file.text? } do |diff_file|
     next unless diff_file.content_sha
+    next if diff_file.path_traversal?
 
     project_blob_diff_path(diff_file.repository.project, tree_join(diff_file.content_sha, diff_file.file_path))
   end
