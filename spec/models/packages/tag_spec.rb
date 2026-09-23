@@ -30,18 +30,20 @@ RSpec.describe Packages::Tag, feature_category: :package_registry do
   end
 
   describe 'validations' do
-    subject { create(:packages_tag) }
+    let_it_be_with_reload(:packages_tag) { create(:packages_tag) }
+
+    subject { packages_tag }
 
     it { is_expected.to validate_presence_of(:package) }
     it { is_expected.to validate_presence_of(:name) }
   end
 
   describe '.for_package_ids' do
-    let(:package2) { create(:npm_package, project: project, updated_at: 2.days.ago, package_files: []) }
-    let(:package3) { create(:npm_package, project: project, updated_at: 1.day.ago, package_files: []) }
-    let!(:tag1) { create(:packages_tag, package: package) }
-    let!(:tag2) { create(:packages_tag, package: package2) }
-    let!(:tag3) { create(:packages_tag, package: package3) }
+    let_it_be(:package2) { create(:npm_package, project: project, updated_at: 2.days.ago, package_files: []) }
+    let_it_be(:package3) { create(:npm_package, project: project, updated_at: 1.day.ago, package_files: []) }
+    let_it_be(:tag1) { create(:packages_tag, package: package) }
+    let_it_be(:tag2) { create(:packages_tag, package: package2) }
+    let_it_be(:tag3) { create(:packages_tag, package: package3) }
 
     subject { described_class.for_package_ids(::Packages::Npm::Package.for_projects(project)) }
 
@@ -63,7 +65,7 @@ RSpec.describe Packages::Tag, feature_category: :package_registry do
   end
 
   describe '.with_name' do
-    let_it_be(:package) { create(:npm_package, package_files: []) }
+    let_it_be(:package) { create(:npm_package, project: project, package_files: []) }
     let_it_be(:tag1) { create(:packages_tag, package: package, name: 'tag1') }
     let_it_be(:tag2) { create(:packages_tag, package: package, name: 'tag2') }
     let_it_be(:tag3) { create(:packages_tag, package: package, name: 'tag3') }

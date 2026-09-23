@@ -50,7 +50,7 @@ To fork an existing project in GitLab:
    - **All branches** (default).
    - **Only the default branch**. Uses the `--single-branch` and `--no-tags`
      [Git options](https://git-scm.com/docs/git-clone).
-1. Select the **Visibility level** for your fork. 
+1. Select the **Visibility level** for your fork.
    A fork's visibility must be at least as restrictive as the visibility of both
    the upstream project and the namespace your fork belongs to. Other visibility
    levels are not available for selection.

@@ -52,6 +52,38 @@ RSpec.describe Cells::Mailroom::Forwarder do
       expect(described_class::DEFAULT_SCHEME).to eq('https')
     end
 
+    it 'replaces the Topology Service port with the configured one' do
+      forwarder = described_class.new(mailbox_type: 'incoming_email', signing_key_path: '/x', port: 8181,
+        logger: logger)
+      allow(forwarder).to receive_messages(connection: connection, jwt_token: 'signed-jwt')
+
+      expect(connection).to receive(:post)
+        .with('https://cell-1.example.com:8181/api/v4/internal/mail_room/incoming_email', 'raw')
+        .and_return(response)
+
+      forwarder.forward('raw', 'cell-1.example.com:443')
+    end
+
+    it 'adds the configured port to an address that has none' do
+      forwarder = described_class.new(mailbox_type: 'incoming_email', signing_key_path: '/x', port: 8181,
+        logger: logger)
+      allow(forwarder).to receive_messages(connection: connection, jwt_token: 'signed-jwt')
+
+      expect(connection).to receive(:post)
+        .with('https://cell-1.example.com:8181/api/v4/internal/mail_room/incoming_email', 'raw')
+        .and_return(response)
+
+      forwarder.forward('raw', 'cell-1.example.com')
+    end
+
+    it 'leaves the address untouched when no port is configured' do
+      expect(connection).to receive(:post)
+        .with('https://cell-1.example.com:443/api/v4/internal/mail_room/incoming_email', 'raw')
+        .and_return(response)
+
+      forwarder.forward('raw', 'cell-1.example.com:443')
+    end
+
     it 'sets the content type and JWT auth headers' do
       headers = {}
       request = instance_double(Faraday::Request, headers: headers)

@@ -169,6 +169,7 @@ export const buildWorkItemNode = (id, overrides = {}) => ({
   webPath: `/group/project/-/issues/${id}`,
   webUrl: `http://gdk.test/group/project/-/issues/${id}`,
   confidential: false,
+  externalAuthor: null,
   hidden: false,
   userDiscussionsCount: 0,
   closedAt: null,

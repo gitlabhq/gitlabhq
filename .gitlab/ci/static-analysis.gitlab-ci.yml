@@ -196,7 +196,12 @@ rubocop:
         fi
         fail_on_warnings bundle exec rake rubocop:check:graceful
       else
-        select_existing_files < "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
+        # detect-tests is an optional dependency, so its list of changed files
+        # is missing whenever that job did not run. Leave the target files
+        # unwritten in that case, which the check below treats as nothing to do.
+        if [ -s "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" ]; then
+          select_existing_files < "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
+        fi
         # Skip running RuboCop if there's no target files
         if [ -s "${RUBOCOP_TARGET_FILES}" ]; then
           fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})

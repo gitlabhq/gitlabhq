@@ -580,21 +580,6 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         expect(result[6]).to have_checked_field('Show groups in global search results', with: 1)
       end
     end
-
-    context 'when the elasticsearch_group_search feature flag is disabled' do
-      before do
-        stub_feature_flags(elasticsearch_group_search: false)
-      end
-
-      it 'does not render the groups checkbox' do
-        helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
-          result = helper.global_search_settings_checkboxes(form)
-
-          expect(result.size).to eq(6)
-          expect(result.join).not_to include('Show groups in global search results')
-        end
-      end
-    end
   end
 
   describe '#restricted_level_checkboxes' do

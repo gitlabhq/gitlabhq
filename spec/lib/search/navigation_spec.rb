@@ -131,18 +131,6 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
           end
         end
       end
-
-      context 'when the elasticsearch_group_search feature flag is disabled' do
-        let(:project) { nil }
-
-        before do
-          stub_feature_flags(elasticsearch_group_search: false)
-        end
-
-        it 'hides the tab' do
-          expect(tabs[:groups][:condition]).to be(false)
-        end
-      end
     end
 
     context 'for code tab' do

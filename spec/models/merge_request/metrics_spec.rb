@@ -17,14 +17,16 @@ RSpec.describe MergeRequest::Metrics, feature_category: :code_review_workflow do
   end
 
   describe 'scopes' do
+    let_it_be(:namespace) { create(:namespace) }
+
     let_it_be(:metrics_1) do
-      create(:merge_request).metrics.tap do |m|
+      create(:merge_request, source_project: create(:project, :repository, namespace: namespace)).metrics.tap do |m|
         m.update!(merged_at: 10.days.ago, latest_closed_at: 10.days.ago)
       end
     end
 
     let_it_be(:metrics_2) do
-      create(:merge_request).metrics.tap do |m|
+      create(:merge_request, source_project: create(:project, :repository, namespace: namespace)).metrics.tap do |m|
         m.update!(merged_at: 5.days.ago, latest_closed_at: 5.days.ago)
       end
     end
@@ -95,7 +97,7 @@ RSpec.describe MergeRequest::Metrics, feature_category: :code_review_workflow do
   end
 
   describe 'update' do
-    let(:merge_request) { create(:merge_request) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request) }
     let(:metrics) { merge_request.metrics }
 
     before do

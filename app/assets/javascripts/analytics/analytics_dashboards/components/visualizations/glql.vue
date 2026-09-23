@@ -1,5 +1,6 @@
 <script>
 import { __, s__ } from '~/locale';
+import { EXECUTION_QUEUE_DASHBOARD } from '~/glql/constants';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import ViewSourceModal from '~/glql/components/common/view_source_modal.vue';
 import { copyQuerySource } from '~/glql/utils/common';
@@ -7,6 +8,7 @@ import { copyGLQLContents } from '~/glql/utils/copy_as_gfm';
 
 export default {
   name: 'GlqlVisualization',
+  EXECUTION_QUEUE_DASHBOARD,
   components: {
     GlqlResolver,
     ViewSourceModal,
@@ -131,6 +133,7 @@ export default {
       :glql-query="data"
       :comparison="comparison"
       :scope="scope"
+      :queue="$options.EXECUTION_QUEUE_DASHBOARD"
       tracking-event-name="render_analytics_dashboard_glql_panel"
       @change="handleResolverChange"
     />

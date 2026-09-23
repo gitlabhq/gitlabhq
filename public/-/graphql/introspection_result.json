@@ -33914,6 +33914,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "userIdNot",
+                  "description": "Exclude one or many user Global IDs. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "flowType",
                   "description": "Filter by one or many flow types",
                   "type": {
@@ -33934,8 +33954,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "flowTypeNot",
+                  "description": "Exclude one or many flow types. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "projectId",
                   "description": "Filter by one or many project Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectIdNot",
+                  "description": "Exclude one or many project Global IDs. Sessions not scoped to a project are returned, because they store `0` rather than NULL. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34023,6 +34083,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "authorIdNot",
+                  "description": "Exclude one or many author Global IDs. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "createdAtFrom",
                   "description": "Filter by contribution timestamp. Start of the range.",
                   "type": {
@@ -34092,8 +34172,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "statusNot",
+                  "description": "Exclude one or many deployment statuses. Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "environmentId",
                   "description": "Filter by one or many environment Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "environmentIdNot",
+                  "description": "Exclude one or many environment Global IDs. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34132,8 +34252,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "refNot",
+                  "description": "Exclude one or many deployment refs. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "userId",
                   "description": "Filter by one or many user Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "userIdNot",
+                  "description": "Exclude one or many user Global IDs. Deployments with no triggering user are excluded as well. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34245,6 +34405,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "userIdNot",
+                  "description": "Exclude one or many user Global IDs. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "language",
                   "description": "Filter by suggestion language",
                   "type": {
@@ -34265,8 +34445,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "languageNot",
+                  "description": "Exclude one or many suggestion languages. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "ideName",
                   "description": "Filter by IDE name",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "ideNameNot",
+                  "description": "Exclude one or many IDE names. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34354,6 +34574,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "userIdNot",
+                  "description": "Exclude one or many user Global IDs. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "groupId",
                   "description": "Filter by one or many group Global IDs, including events from their descendants",
                   "type": {
@@ -34394,6 +34634,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "eventNot",
+                  "description": "Exclude one or many events. Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "feature",
                   "description": "Filter by one or many features",
                   "type": {
@@ -34414,8 +34674,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "featureNot",
+                  "description": "Exclude one or many features. Events with no recognized feature are excluded as well. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "flowType",
                   "description": "Filter by one or many Duo Agent Platform flow types",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "flowTypeNot",
+                  "description": "Exclude one or many Duo Agent Platform flow types. Returns only Duo Agent Platform events, because events from elsewhere have no flow type. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34503,8 +34803,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "workflowDefinitionNot",
+                  "description": "Exclude one or many flow types. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "status",
                   "description": "Filter by one or many flow statuses (created, running, finished, failed, ...)",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "statusNot",
+                  "description": "Exclude one or many flow statuses (created, running, finished, failed, ...). Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34543,8 +34883,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "projectIdNot",
+                  "description": "Exclude one or many project Global IDs. Flows created at namespace level are excluded as well. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "userId",
                   "description": "Filter by one or many user Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "userIdNot",
+                  "description": "Exclude one or many user Global IDs. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34700,6 +35080,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "targetBranchNot",
+                  "description": "Exclude one or many target branches. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "stateId",
                   "description": "Filter by one or many states (opened, closed, merged, locked)",
                   "type": {
@@ -34720,8 +35120,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "stateIdNot",
+                  "description": "Exclude one or many states (opened, closed, merged, locked). Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "authorId",
                   "description": "Filter by one or many author Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "authorIdNot",
+                  "description": "Exclude one or many author Global IDs. Merge requests with no author are excluded as well. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34853,8 +35293,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "statusNot",
+                  "description": "Exclude one or many pipeline statuses. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "source",
                   "description": "Filter by one or many pipeline sources",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "sourceNot",
+                  "description": "Exclude one or many pipeline sources. Pipelines with no source are excluded as well. Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -34893,8 +35373,48 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "refNot",
+                  "description": "Exclude one or many pipeline refs. Pipelines with no ref are excluded as well. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "userId",
                   "description": "Filter by one or many user Global IDs",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "userIdNot",
+                  "description": "Exclude one or many user Global IDs. Pipelines with no triggering user are excluded as well. Maximum is 100.",
                   "type": {
                     "kind": "LIST",
                     "name": null,

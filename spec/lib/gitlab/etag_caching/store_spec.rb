@@ -44,6 +44,16 @@ RSpec.describe Gitlab::EtagCaching::Store, :clean_gitlab_redis_cache do
         is_expected.to eq(etag)
       end
     end
+
+    context 'with an organization-scoped RESTful key' do
+      let(:key) { '/o/my-org/my-group/my-project/builds/234.json' }
+
+      it 'returns the value stored under the unscoped key' do
+        etag = store.touch('/my-group/my-project/builds/234.json')
+
+        is_expected.to eq(etag)
+      end
+    end
   end
 
   describe '#touch' do
@@ -67,6 +77,16 @@ RSpec.describe Gitlab::EtagCaching::Store, :clean_gitlab_redis_cache do
 
         expect(etag).to be_present
         expect(store.get(key)).to eq(etag)
+      end
+    end
+
+    context 'with an organization-scoped RESTful key' do
+      let(:key) { '/o/my-org/my-group/my-project/-/issues/1/realtime_changes' }
+
+      it 'stores the value under the unscoped key' do
+        etag = subject
+
+        expect(store.get('/my-group/my-project/-/issues/1/realtime_changes')).to eq(etag)
       end
     end
 

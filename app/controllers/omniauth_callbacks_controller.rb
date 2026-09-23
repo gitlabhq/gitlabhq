@@ -68,7 +68,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user = User.find_by_login(username)
 
       user&.increment_failed_attempts!
-      log_failed_login(username, failed_strategy.name)
+      log_failed_login(user || username, failed_strategy.name)
     end
 
     super
@@ -143,7 +143,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement.counter
   end
 
-  def log_failed_login(user, provider)
+  def log_failed_login(user_or_login, provider)
     # overridden in EE
   end
 
@@ -390,7 +390,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def fail_login(user)
-    log_failed_login(user.username, oauth['provider'])
+    log_failed_login(user, oauth['provider'])
 
     return prompt_login_to_link_identity if existing_user_for_email_link
 

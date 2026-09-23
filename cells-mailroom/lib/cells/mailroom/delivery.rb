@@ -44,7 +44,8 @@ module Cells
           forwarder = Forwarder.new(
             mailbox_type: @options.mailbox_type,
             signing_key_path: config.signing_key_path(@options.mailbox_type),
-            scheme: config.cell_scheme,
+            scheme: config.cell_endpoint_scheme,
+            port: config.cell_endpoint_port,
             logger: @options.logger
           )
 

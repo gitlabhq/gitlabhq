@@ -151,7 +151,7 @@ decide which form to return using the same rules as
 
 1. The data context, if the current execution is in organization context. This always wins and
    can't be overridden by the caller or by the page's URL. It matters for a user whose home
-   organization is isolated. That user has no existence outside it, so they always stay 
+   organization is isolated. That user has no existence outside it, so they always stay
    in the nested paths. On the frontend, this reads `gon.data_context_organization_path`.
 1. The `organizationPath` option. Pass `organizationPath: null` to force the global unnested path.
 1. The current page's own URL, if it's already nested under `/o/:organization_path/`. On

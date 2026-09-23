@@ -9,7 +9,7 @@ categories: [ Health & Connectivity ]
 level: secondary
 ---
 
-If you use GitLab Self-Managed with self-hosted models, you can now use Amazon 
+If you use GitLab Self-Managed with self-hosted models, you can now use Amazon
 Bedrock Mantle as a supported provider. Mantle is an OpenAI-compatible
 inference engine for Amazon Bedrock, so you can use familiar OpenAI SDKs and
 integrations with Bedrock models. This feature is in beta.

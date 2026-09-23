@@ -186,18 +186,22 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
     end
   end
 
-  describe 'Remove page' do
+  describe 'Delete Pages' do
     context 'when pages are deployed' do
       before do
         create(:pages_deployment, project: project)
       end
 
-      it 'removes the pages', :sidekiq_inline do
+      it 'deletes the Pages deployments', :sidekiq_inline do
         visit_domains_tab(project)
 
-        expect(page).to have_link('Remove pages')
+        click_link s_('GitLabPages|Delete Pages')
 
-        accept_gl_confirm(button_text: 'Remove pages') { click_link 'Remove pages' }
+        within_modal do
+          expect(page).to have_selector('h2', text: s_('GitLabPages|Delete Pages'))
+        end
+
+        accept_gl_confirm(button_text: s_('GitLabPages|Delete Pages'))
 
         expect(page).to have_content('Pages were scheduled for removal')
         expect(project.reload.pages_deployed?).to be_falsey

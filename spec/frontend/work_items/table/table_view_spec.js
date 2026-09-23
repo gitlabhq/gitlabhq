@@ -17,7 +17,7 @@ import {
 } from '~/work_items/constants';
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 import WorkItemBulkEditSidebar from '~/work_items/list/components/work_item_bulk_edit_sidebar.vue';
 import TableView from '~/work_items/table/table_view.vue';
@@ -45,7 +45,6 @@ describe('TableView', () => {
   const workItems = [buildWorkItemNode(1), buildWorkItemNode(2)];
   const defaultQueryVariables = { fullPath: 'group', sort: CREATED_DESC, state: STATUS_OPEN };
 
-  const workItemsResponse = buildBoardWorkItemsResponse(workItems);
   let slimQueryHandler;
   let fullQueryHandler;
   let restQueryHandler;
@@ -72,15 +71,16 @@ describe('TableView', () => {
     glFeatures = {},
     slots = {},
     failQueries = false,
+    pageInfo = {},
   } = {}) => {
     const handler = (response) =>
       failQueries
         ? jest.fn().mockRejectedValue(new Error('oh no'))
         : jest.fn().mockResolvedValue(response);
 
-    slimQueryHandler = handler(workItemsResponse);
-    fullQueryHandler = handler(workItemsResponse);
-    restQueryHandler = handler(buildBoardRestWorkItemsResponse(workItems));
+    slimQueryHandler = handler(buildBoardWorkItemsResponse(workItems, pageInfo));
+    fullQueryHandler = handler(buildBoardWorkItemsResponse(workItems, pageInfo));
+    restQueryHandler = handler(buildBoardRestWorkItemsResponse(workItems, pageInfo));
 
     wrapper = shallowMountExtended(TableView, {
       apolloProvider: createMockApollo([
@@ -416,6 +416,191 @@ describe('TableView', () => {
         await waitForPromises();
 
         expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
+      });
+    });
+  });
+
+  describe('pagination', () => {
+    const nextPageWorkItems = [buildWorkItemNode(3), buildWorkItemNode(4)];
+    const firstPageInfo = { hasNextPage: true, endCursor: 'cursor-1' };
+
+    const findLoadMoreButton = () => wrapper.findComponentByTestId('load-more-button');
+    const findPageSummary = () => wrapper.findByTestId('page-summary');
+
+    const loadNextPage = async () => {
+      const nextPage = buildBoardWorkItemsResponse(nextPageWorkItems);
+      slimQueryHandler.mockResolvedValue(nextPage);
+      fullQueryHandler.mockResolvedValue(nextPage);
+      findLoadMoreButton().vm.$emit('click');
+      await waitForPromises();
+    };
+
+    describe('when more work items are available', () => {
+      beforeEach(async () => {
+        createComponent({ props: { workItemsCount: 4 }, pageInfo: firstPageInfo });
+        await waitForPromises();
+      });
+
+      it('offers to load more, and says how many work items are shown', () => {
+        expect(findLoadMoreButton().exists()).toBe(true);
+        expect(findPageSummary().text()).toBe('Showing 1-2 of 4');
+      });
+
+      it('appends the next page to the table', async () => {
+        await loadNextPage();
+
+        expect(slimQueryHandler).toHaveBeenLastCalledWith(
+          expect.objectContaining({ afterCursor: 'cursor-1', firstPageSize: DEFAULT_PAGE_SIZE }),
+        );
+        expect(findRows()).toHaveLength(4);
+        expect(findPageSummary().text()).toBe('Showing 1-4 of 4');
+      });
+
+      it('stops offering to load more once the last page is in', async () => {
+        await loadNextPage();
+
+        expect(findLoadMoreButton().exists()).toBe(false);
+      });
+
+      it('cannot load more until the full query has filled in the page on screen', async () => {
+        // Archiving the page before its full half lands would drop those fields for good.
+        fullQueryHandler.mockReturnValue(new Promise(() => {}));
+        refetchWith({ search: 'slow-detail' });
+        await waitForPromises();
+
+        expect(findLoadMoreButton().props('disabled')).toBe(true);
+
+        findLoadMoreButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(slimQueryHandler).not.toHaveBeenCalledWith(
+          expect.objectContaining({ afterCursor: 'cursor-1' }),
+        );
+      });
+
+      it('keeps the loaded rows on screen while the next page is fetched', async () => {
+        slimQueryHandler.mockReturnValue(new Promise(() => {}));
+        fullQueryHandler.mockReturnValue(new Promise(() => {}));
+        findLoadMoreButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findRows()).toHaveLength(workItems.length);
+        expect(findSkeletonRows()).toHaveLength(2);
+      });
+    });
+
+    describe('when every work item is loaded', () => {
+      beforeEach(async () => {
+        createComponent({ props: { workItemsCount: workItems.length } });
+        await waitForPromises();
+      });
+
+      it('says how many work items are shown, without offering to load more', () => {
+        expect(findLoadMoreButton().exists()).toBe(false);
+        expect(findPageSummary().text()).toBe('Showing 1-2 of 2');
+      });
+    });
+
+    describe('when the URL carries the list view page cursors', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: {
+            queryVariables: {
+              ...defaultQueryVariables,
+              afterCursor: 'page-3',
+              beforeCursor: 'page-1',
+              lastPageSize: DEFAULT_PAGE_SIZE,
+            },
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('fetches the first page instead', () => {
+        const [variables] = slimQueryHandler.mock.calls[0];
+
+        expect(variables).toMatchObject({ firstPageSize: DEFAULT_PAGE_SIZE });
+        expect(variables).not.toHaveProperty('afterCursor');
+        expect(variables).not.toHaveProperty('beforeCursor');
+        expect(variables).not.toHaveProperty('lastPageSize');
+      });
+    });
+
+    describe('when the REST API feature flag is enabled', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { workItemsCount: 4 },
+          glFeatures: { workItemRestApiFrontendUsers: true },
+          pageInfo: firstPageInfo,
+        });
+        await waitForPromises();
+        restQueryHandler.mockResolvedValue(buildBoardRestWorkItemsResponse(nextPageWorkItems));
+        findLoadMoreButton().vm.$emit('click');
+        await waitForPromises();
+      });
+
+      it('appends the next page from the REST API', () => {
+        expect(restQueryHandler).toHaveBeenLastCalledWith(
+          expect.objectContaining({ afterCursor: 'cursor-1' }),
+        );
+        expect(findRows()).toHaveLength(4);
+      });
+    });
+
+    describe('when fetching the next page fails', () => {
+      beforeEach(async () => {
+        createComponent({ props: { workItemsCount: 4 }, pageInfo: firstPageInfo });
+        await waitForPromises();
+        slimQueryHandler.mockRejectedValue(new Error('oh no'));
+        fullQueryHandler.mockRejectedValue(new Error('oh no'));
+        findLoadMoreButton().vm.$emit('click');
+        await waitForPromises();
+      });
+
+      it('raises the page error about the missing page, and keeps the loaded rows', () => {
+        // Both queries fail, and each reports it, so only the distinct messages matter here.
+        expect([...new Set(wrapper.emitted('set-error').flat())]).toEqual([
+          'An error occurred while fetching more work items.',
+        ]);
+        expect(findRows()).toHaveLength(workItems.length);
+      });
+
+      it('keeps the load more button, which doubles as the retry', () => {
+        expect(findLoadMoreButton().exists()).toBe(true);
+      });
+
+      it('fetches the page again when load more is clicked again', async () => {
+        await loadNextPage();
+
+        expect(findRows()).toHaveLength(4);
+        expect(wrapper.emitted('set-error').at(-1)).toEqual([undefined]);
+      });
+    });
+
+    describe('when only the full query of the next page fails', () => {
+      beforeEach(async () => {
+        createComponent({ props: { workItemsCount: 4 }, pageInfo: firstPageInfo });
+        await waitForPromises();
+        slimQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse(nextPageWorkItems));
+        fullQueryHandler.mockRejectedValue(new Error('oh no'));
+        findLoadMoreButton().vm.$emit('click');
+        await waitForPromises();
+      });
+
+      it('reports it, and retries the same page rather than skipping past it', async () => {
+        expect(wrapper.emitted('set-error').at(-1)).toEqual([
+          'An error occurred while fetching more work items.',
+        ]);
+        // The page the slim query did fetch reported nothing more to fetch, so the button is
+        // on screen only because the attempt failed and can be retried.
+        expect(findLoadMoreButton().exists()).toBe(true);
+
+        await loadNextPage();
+
+        expect(fullQueryHandler).toHaveBeenLastCalledWith(
+          expect.objectContaining({ afterCursor: 'cursor-1' }),
+        );
+        expect(findRows()).toHaveLength(4);
       });
     });
   });

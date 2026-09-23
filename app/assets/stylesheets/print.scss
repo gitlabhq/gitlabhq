@@ -71,8 +71,13 @@
     }
   }
 
+  // Panels
+  .panels-container {
+    overflow: visible !important;
+  }
+
   /* stylelint-disable gitlab/no-js-class */
-  header,
+  .super-topbar,
   nav,
   .super-sidebar,
   .super-sidebar-overlay,

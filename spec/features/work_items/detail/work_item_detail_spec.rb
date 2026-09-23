@@ -53,7 +53,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
       end
     end
 
-    it_behaves_like 'work items title'
+    # Title, confidentiality and notifications are covered by
+    # ee/spec/frontend/integration/work_items/drawer_shared_test_helpers.js
     it_behaves_like 'work items description'
     it_behaves_like 'work items award emoji'
 
@@ -133,15 +134,13 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
 
     it_behaves_like 'work items comments'
 
-    it_behaves_like 'work items toggle status button'
-
     it_behaves_like 'work items todos'
 
     it_behaves_like 'work items lock discussion', 'issue'
-    it_behaves_like 'work items confidentiality'
-    it_behaves_like 'work items notifications'
 
-    it_behaves_like 'work items assignees'
+    # Closing, reopening and assigning are covered by
+    # ee/spec/frontend/integration/work_items/drawer_shared_test_helpers.js
+    it_behaves_like 'work items assignees real-time'
     it_behaves_like 'work items labels', 'project'
 
     it_behaves_like 'work items milestone'

@@ -1,6 +1,6 @@
 ---
-source_checksum: a55ab49f83b290b9
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: 716050a148887026
+distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -15,7 +15,7 @@ Use this decision order. Stop at the first match.
 1. **Single Vue component in isolation?** → Unit/component test in
    `spec/frontend/` using Jest.
 2. **Full page or Vue app with GraphQL (multiple components working together)?**
-   → MSW integration test in `spec/frontend/msw_integration/`.
+   → frontend integration test in `ee/spec/frontend/integration/`.
 3. **HAML template with no frontend logic?** → Skip frontend tests entirely;
    rely on the existing Rails view spec.
 4. **Needs real DB, auth, session, or cross-page navigation?** → Capybara
@@ -25,19 +25,18 @@ Use this decision order. Stop at the first match.
 6. **None of the above?** → Default to a unit test.
 
 - DO NOT write a Capybara feature spec for a flow that is entirely
-  frontend-rendered (Vue + GraphQL). Use an MSW integration test instead.
-- DO NOT write a unit test for a multi-component interaction; use an MSW
+  frontend-rendered (Vue + GraphQL). Use a frontend integration test instead.
+- DO NOT write a unit test for a multi-component interaction; use a frontend
   integration test so the real component tree is exercised.
 
 ### How to Write Each Test Type
 
 See `.ai/principles/distilled/testing-jest.md` for the full how-to on all three
-layers: unit/component tests, MSW integration tests, and Capybara feature
+layers: unit/component tests, frontend integration tests, and Capybara feature
 tests.
 
-For MSW-specific additions not covered in `testing-jest.md` (run command, handler
-registration pattern, GraphQL request counting), see
-`.ai/principles/distilled/testing-msw.md`.
+For frontend integration setup, handlers, fixtures, and request counting, see
+[Frontend integration tests](https://docs.gitlab.com/development/testing_guide/frontend_testing/#frontend-integration-tests).
 
 ### Unit Tests
 
@@ -60,13 +59,13 @@ registration pattern, GraphQL request counting), see
 
 ### Feature Tests (Frontend)
 
-- Use an MSW integration test (`ee/spec/frontend/msw_integration/`, EE-only) when the test covers multi-component interaction on a single page, backend responses can be represented with fixtures, and you do not need to verify database state, authorization, server-side validations, real-time updates, or FOSS-versus-licensed behavior differences (MSW mocks licensing); use a Capybara feature test (`spec/features/`) only when the test requires a real backend, cross-page navigation, backend state not representable with fixtures, multiple Vue applications on the same page, or FOSS/EE behavioral differences — Capybara tests are significantly slower.
+- Use a frontend integration test (`ee/spec/frontend/integration/`, EE-only) when the test covers multi-component interaction on a single page and backend responses can be represented with fixtures, including recorded unlicensed payloads. Use a Capybara feature test (`spec/features/`) when the test requires database state, authorization, server-side validations, real-time updates, backend license enforcement, cross-page navigation, backend state not representable with fixtures, or multiple Vue applications on the same page.
 - Add `:js` metadata to RSpec feature specs that require JavaScript; DO NOT omit it when the test depends on JavaScript execution.
 - Before asserting on backend attributes in a Capybara spec, assert on a visible page element first to confirm the operation completed; DO NOT use `wait_for_requests` as a substitute (race conditions can occur).
 
 ### Test File Placement
 
-- Place Jest unit, component, and integration tests in `spec/frontend/`; place MSW integration tests in `ee/spec/frontend/msw_integration/` (EE-only — adding any file under `spec/frontend/msw_integration/` fails ESLint); place Capybara feature tests in `spec/features/`.
+- Place Jest unit, component, and integration tests in `spec/frontend/`; place frontend integration tests in `ee/spec/frontend/integration/` (EE-only — adding any file under `spec/frontend/integration/` fails ESLint); place Capybara feature tests in `spec/features/`.
 - Place EE-specific tests under the `ee/spec` folder following the same structure.
 
 ## Authoritative sources
@@ -75,4 +74,3 @@ For the full picture, see:
 
 - doc/development/testing_guide/frontend_testing.md
 - doc/development/testing_guide/testing_levels.md
-

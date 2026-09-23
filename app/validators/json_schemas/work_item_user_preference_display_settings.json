@@ -59,6 +59,10 @@
       "uniqueItems": true,
       "maxItems": 100
     },
+    "showEmptyGroups": {
+      "description": "Whether groups with no work items are shown. Defaults to true when absent",
+      "type": "boolean"
+    },
     "viewMode": {
       "description": "Which view mode (list, board or table) the saved view should open in",
       "type": "string",

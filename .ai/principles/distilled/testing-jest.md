@@ -1,6 +1,6 @@
 ---
-source_checksum: 861acd9c167c4e50
-distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
+source_checksum: 1856f98bf789aa7a
+distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -100,28 +100,31 @@ distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 - Treat snapshot files as code; review and understand their content.
 - Prefer explicit VTU assertions (`.exists()`, `.text()`, element counts) over snapshots for element visibility, text presence, and complex HTML.
 
-### MSW Integration Tests
+### Frontend Integration Tests
 
-- Default to MSW integration tests (`ee/spec/frontend/msw_integration/`, EE-only) over Capybara feature tests; use Capybara only when real backend state, navigation across server-rendered pages, server-side validations, multi-Vue-app behavior on the same page, or FOSS-versus-licensed behavior differences are required. DO NOT place MSW test files under `spec/frontend/msw_integration/` — ESLint enforces EE-only placement and fails CI on violations.
+- Default to frontend integration tests (`ee/spec/frontend/integration/`, EE-only) over Capybara feature tests, including for rendering recorded unlicensed payloads; use Capybara when real backend state, navigation across server-rendered pages, server-side validations, multi-Vue-app behavior on the same page, or backend license enforcement are required. DO NOT place integration test files under `spec/frontend/integration/` — ESLint enforces EE-only placement and fails CI on violations.
 - Use `fullMount` from `test_helpers.js` (wraps `mount` and attaches to `document.body`) to mount the root component with the real `apolloProvider`.
-- Use native DOM APIs for all interactions and assertions in MSW integration tests; DO NOT use VTU wrapper methods (`wrapper.find()`, `wrapper.trigger()`, `wrapper.text()`, etc.).
-- DO NOT mock child components in MSW integration tests.
+- Use native DOM APIs for all interactions and assertions in integration tests; DO NOT use VTU wrapper methods (`wrapper.find()`, `wrapper.trigger()`, `wrapper.text()`, etc.).
+- DO NOT mock child components in frontend integration tests.
 - Reset the Apollo cache in `beforeEach` to prevent state leakage between tests.
-- DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown in MSW test files; `test_setup.js` handles this globally.
-- DO NOT add `server.listen`, `server.resetHandlers`, or `server.close` in individual MSW test files; these are handled globally by `test_setup.js`.
-- Add a handler for every GraphQL operation that fires during an MSW test; unhandled operations return 400.
-- Place feature handler files in `handlers/` and register them in `handlers.js`.
+- DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown in integration test files; `test_setup.js` handles this globally.
+- DO NOT add `server.listen`, `server.resetHandlers`, or `server.close` in individual integration test files; these are handled globally by `test_setup.js`.
+- Add a handler for every GraphQL operation that fires during an integration test; unhandled operations return 400.
+- Place feature handler files in `<feature>/handlers.js` and register them in the top-level `handlers.js`.
 - Use `assignRouter` from `test_helpers.js` to create a router; DO NOT call router factory functions directly or push routes manually.
 - Use `loadFixturesMap` from `fixture_utils.js` to auto-load fixtures from a directory and map them to operation names by `camelCase` conversion.
 - Add EE-suffixed or otherwise mismatched operation names to `OPERATION_NAME_OVERRIDES` in the handler file.
-- Export new test helpers from `test_helpers.js` to make them available globally in all MSW integration tests (auto-imported via `Object.assign(global, testHelpers)` in `test_setup.js`).
+- Export new test helpers from `test_helpers.js` to make them available globally in all integration tests (auto-imported via `Object.assign(global, testHelpers)` in `test_setup.js`).
 - Name fixture files so that the `camelCase`-converted filename matches the GraphQL operation name (for example, `get_work_item_state_counts.query.graphql.json` maps to `getWorkItemStateCounts`).
-- Place MSW integration fixture generators in `ee/spec/frontend/fixtures/`; generate their JSON output to `tmp/tests/frontend/fixtures-ee/graphql/` by running the fixture spec (`bin/rspec ee/spec/frontend/fixtures/<file>.rb`).
+- Place integration fixture generators in `ee/spec/frontend/fixtures/`; generate their JSON output to `tmp/tests/frontend/fixtures-ee/graphql/` by running the fixture spec (`bundle exec rspec ee/spec/frontend/fixtures/<file>.rb`).
 - Use `snapshotRequests` and `expectGraphQLCalls` from `operation_helpers.js` to assert Apollo cache integrity and verify that mutations do not trigger unwanted network calls.
-- Run all MSW integration tests with `yarn jest:msw-integration`; in CI these run in the `jest-msw-integration` job.
-- Declare fixture variants using `defineFixtureVariants({ query, variants })` in a file at `ee/spec/frontend/msw_integration/<feature>/fixture_variants/<query>.js`; always include a `BASE` key. Build variants with `setFixtureData`, `setFixtureErrors`, or `setFixtureItemsCount` from `fixture_utils.js` — each helper deep-clones its input, so DO NOT clone or mutate the imported fixture directly.
-- Activate a fixture variant in a test with `setQueryVariant('operationName', 'VARIANT_KEY')` from `ee_jest/msw_integration/setup_utils`; the active variant resets to `BASE` automatically in `afterEach`.
-- Generate a manifest of registered queries and variant keys with `yarn msw:variants` (writes to `tmp/tests/frontend/msw_variants.manifest.json`); use it to discover which variants exist for which queries.
+- Run all frontend integration tests with `yarn jest:integration`; in CI these run in the `jest-integration` job.
+- Declare fixture variants using `defineFixtureVariants({ query, variants })` in a file at `ee/spec/frontend/integration/<feature>/fixture_variants/<query>.js`; always include a `BASE` key. Build variants with `setFixtureData`, `setFixtureErrors`, or `setFixtureItemsCount` from `fixture_utils.js` — each helper deep-clones its input, so DO NOT clone or mutate the imported fixture directly.
+- Activate a fixture variant in a test with `setQueryVariant(queryConstant).<variantKey>()` (for example, `.empty()` for `EMPTY`); the active variant resets to `BASE` automatically in `afterEach`.
+- Generate a manifest of registered queries and variant keys with `yarn integration:variants` (writes to `tmp/tests/frontend/integration_variants.manifest.json`); use it to discover which variants exist for which queries.
+- Import variant files as side-effect imports in the feature handler (not in the spec) so that `defineFixtureVariants` registers the query at module load time.
+- Use `getActiveVariant('operationName') ?? defaultFixture` in handlers so the handler's own default fixture is served when no variant is active.
+- To test a license-gated feature's unlicensed state, record a real fixture with the feature stubbed off (`stub_licensed_features(licensed_features.merge(feature: false))`), register it as a named variant, and activate it in the spec; pair the negative assertion with a positive one confirming the expected state was reached.
 
 ### Capybara Feature Tests
 
@@ -137,8 +140,9 @@ distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
 ### Test Fixtures
 
 - Import JSON/HTML fixtures using the `test_fixtures` alias.
-- Generate fixtures with `bin/rake frontend:fixtures` or `bin/rspec spec/frontend/fixtures/<file>.rb` (see MSW Integration Tests for MSW-specific fixture generation).
+- Generate fixtures with `bin/rake frontend:fixtures` or `bin/rspec spec/frontend/fixtures/<file>.rb` (see Frontend Integration Tests for integration-specific fixture generation).
 - Place CE fixture generators in `spec/frontend/fixtures/` and EE fixture generators in `ee/spec/frontend/fixtures/`.
+- For fixtures from an unmerged branch, run the manual `upload-frontend-fixtures-on-demand` job, then run `scripts/frontend/download_fixtures.sh --branch <fetched-ref>` or `scripts/frontend/download_fixtures.sh --pipeline <pipeline-id>`.
 
 ### Test Helpers
 
@@ -180,4 +184,3 @@ describe('when X', () => {
 For the full picture, see:
 
 - doc/development/testing_guide/frontend_testing.md
-

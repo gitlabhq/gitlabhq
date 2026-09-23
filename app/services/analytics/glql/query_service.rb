@@ -217,12 +217,15 @@ module Analytics
         end
       end
 
-      # Normalize GraphQL errors to use symbol keys consistently
+      # Normalize GraphQL errors to use symbol keys consistently. `extensions` carries
+      # machine-readable error codes the frontend maps to panel states, so it survives.
       def normalize_errors(errors)
         return unless errors
 
         errors.map do |error|
-          error.is_a?(Hash) && error.key?("message") ? { message: error["message"] } : error
+          next error unless error.is_a?(Hash) && error.key?("message")
+
+          { message: error["message"], extensions: error["extensions"] }.compact
         end
       end
     end

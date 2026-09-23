@@ -81,7 +81,7 @@ module Search
     end
 
     def show_groups_search_tab?
-      return false unless ::Search::ScopeHandlers::Groups.available?(user)
+      return false unless ::Search::ScopeHandlers::Groups.available?
 
       project.nil? && (group.present? || ::Gitlab::CurrentSettings.global_search_groups_enabled?)
     end

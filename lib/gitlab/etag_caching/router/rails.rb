@@ -116,12 +116,17 @@ module Gitlab
           ROUTES
         end
 
+        # Both ignore the /o/:organization_path prefix: a scoped and an unscoped
+        # request for the same resource must share one cache key, or a touch
+        # from one context never invalidates the etag polled from the other.
         def self.match(request)
-          all_routes.find { |route| route.match(request.path_info) }
+          path = ::Gitlab::Routing::OrganizationsHelper.unscoped_path(request.path_info)
+
+          all_routes.find { |route| route.match(path) }
         end
 
         def self.cache_key(request)
-          request.path
+          ::Gitlab::Routing::OrganizationsHelper.unscoped_path(request.path)
         end
       end
     end

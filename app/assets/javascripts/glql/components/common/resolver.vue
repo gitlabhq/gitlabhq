@@ -7,6 +7,7 @@ import {
   AGGREGATED_AUTO_PAGE_SIZE,
   DEFAULT_PAGE_SIZE,
   DEFAULT_DISPLAY_TYPE,
+  EXECUTION_QUEUE_DEFAULT,
   MAX_AUTO_PAGINATED_ROWS,
   MODE_ANALYTICS,
   PAGINATION_AUTO,
@@ -58,6 +59,15 @@ export default {
       required: false,
       type: Object,
       default: null,
+    },
+    /**
+     * Request queue the queries run on. Resolvers on a page that name the same queue share
+     * its concurrency limit, so dashboard panels use their own to load side by side.
+     */
+    queue: {
+      required: false,
+      type: String,
+      default: EXECUTION_QUEUE_DEFAULT,
     },
   },
   emits: ['change'],
@@ -184,7 +194,7 @@ export default {
           this.setVariable('limit', AGGREGATED_AUTO_PAGE_SIZE);
         }
 
-        const executionResult = await execute(query, variables);
+        const executionResult = await execute(query, variables, { queue: this.queue });
 
         this.data = await transform(executionResult, { fields, mode, source });
 
@@ -218,7 +228,7 @@ export default {
           this.comparison.query,
           this.scope,
         );
-        const executionResult = await execute(query, variables);
+        const executionResult = await execute(query, variables, { queue: this.queue });
         const result = await transform(executionResult, { fields, mode, source });
 
         return { ...result, metric: this.comparison.metric };
@@ -229,7 +239,7 @@ export default {
     },
 
     async fetchNextPage() {
-      const executionResult = await execute(this.query, this.variables);
+      const executionResult = await execute(this.query, this.variables, { queue: this.queue });
 
       const data = await transform(executionResult, {
         fields: this.fields,

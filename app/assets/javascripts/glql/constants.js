@@ -65,6 +65,11 @@ export const DATA_COPY_DISPLAY_TYPES = new Set([
 export const DEFAULT_DISPLAY_TYPE = DISPLAY_TYPES.LIST;
 export const MODE_STANDARD = 'standard';
 export const MODE_ANALYTICS = 'analytics';
+
+// Named request queues; the concurrency limit of each lives in core/executor.js.
+export const EXECUTION_QUEUE_DEFAULT = 'glql-queue-default';
+export const EXECUTION_QUEUE_DASHBOARD = 'glql-queue-dashboard';
+
 export const FIELD_TYPES = {
   ATTRIBUTE: 'attribute',
   DIMENSION: 'dimension',

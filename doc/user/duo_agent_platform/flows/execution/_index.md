@@ -362,7 +362,7 @@ You cannot use the sandbox with custom images that do not have SRT installed.
 
 ### Sandbox requirements without privileged mode
 
-Privileged mode is one way to meet the sandbox requirements, but it is not sufficient 
+Privileged mode is one way to meet the sandbox requirements, but it is not sufficient
 on its own and is not always necessary.
 
 The sandbox's requirement is that the job can create user and mount namespaces.

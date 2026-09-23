@@ -676,14 +676,83 @@ end
 
 In a request, use `{ identifier: :status_not, values: ['skipped'] }`. In GraphQL, the identifier becomes a list argument named in camelCase, for example `statusNot`.
 
+Positive and negative filters combine with `AND`, so `ref: ['main']` together with
+`status_not: ['success']` means "on `main` and not successful".
+
+> [!note]
+> In ClickHouse, `NULL NOT IN (...)` evaluates to NULL, and `WHERE` and `HAVING` treat NULL as false. Rows where the filtered column is NULL are excluded from the results.
+
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
 | `name` | Symbol | Yes | Column name to filter |
 | `type` | Symbol | Yes | Data type of filter values |
 | `expression` | Proc | No | Custom expression instead of column |
 | `merge_column` | Boolean | No | If `true`, applies filter using `HAVING` instead of `WHERE` |
+| `formatter` | Proc | No | Transforms values before they reach the query |
 | `max_size` | Integer | No | Maximum number of values allowed in filter |
 | `description` | String | No | Human-readable description |
+
+> [!warning]
+> A `formatter` that discards values it does not recognize, for example one using `filter_map` over
+> an enum, inverts the meaning of this filter. An empty `NOT IN` matches every row, so an
+> unrecognized exclusion value makes the filter a no-op that returns everything, whereas the same
+> value passed to `exact_match` returns nothing. Validate values before passing them.
+
+##### Pair every exact_match filter with an exclusion
+
+So that no value list ships without a way to exclude values, every `exact_match` filter should
+get an `exact_not_match` on the same column, declared explicitly on its own line:
+
+```ruby
+filters do
+  exact_match :status, :string, description: 'Filter by one or many statuses'
+  exact_not_match :status, :string, description: 'Exclude one or many statuses.'
+end
+```
+
+The spec `ee/spec/models/analytics/aggregation_engines/exclusion_filter_coverage_spec.rb` enforces
+the pairing and fails when a new `exact_match` filter ships without a counterpart. Columns that
+deliberately have no exclusion belong in that spec's `inclusion_only` list with a reason. A
+non-nullable boolean is one such case, because `createdByDuo: false` already expresses the
+exclusion.
+
+The guard covers `exact_match` only. `descendants` and `metric_exact_match` have no `NOT` form, so
+they are neither checked nor recordable in `inclusion_only`.
+
+The two declarations are independent, so each one carries its own description, `max_size`, and
+`experiment` option.
+
+##### Writing the exclusion description
+
+Because the exclusion filter accepts a list, write its description to read as a list exclusion, for
+example `Exclude one or many statuses.`, rather than as a restatement of the positive filter's
+description. Because deprecation markers are appended to the raw string, end every description
+with a period.
+
+Where the column is nullable, say so in the description, because API users cannot infer the NULL
+behavior from the argument name. Where an enum `formatter` discards unrecognized values, say that
+too, for the reason in the warning above.
+
+##### Capping exclusion list size
+
+Because an exclusion cannot use the sort key to skip granules, the whole scoped range is read
+however short the value list is. A cap therefore bounds the request and the set-membership work
+rather than the read, which is still worth having: set
+`max_size: Gitlab::Database::Aggregation::ClickHouse::Engine::MAX_EXCLUSION_VALUES` on every
+`exact_not_match`, and state the limit in the description. Do not cap the `exact_match` twin, which
+would newly reject queries that work today.
+
+> [!note]
+> A tighter `max_size` does not restore granule pruning, so do not reach for it as a performance
+> control. `NOT IN` reads the scoped range in full because the complement of a value set is not a
+> contiguous range; bound the query with a time range instead, where the sort key allows one.
+
+##### Do not mark generated arguments as experiment
+
+`Gitlab::Graphql::Deprecations` turns an `experiment:` marker into a `deprecation_reason`, and on
+these resolver-generated arguments that makes query execution recurse until the stack overflows.
+Every exclusion argument reproduced it; the positive filters, which carry no marker, are
+unaffected. See [issue 629296](https://gitlab.com/gitlab-org/gitlab/-/issues/629296).
 
 #### `range` filter
 

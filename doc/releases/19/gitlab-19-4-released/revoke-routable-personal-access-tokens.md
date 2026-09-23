@@ -9,7 +9,7 @@ categories: [ Secret Detection ]
 ---
 
 When secret detection finds a leaked GitLab personal access token in a public
-project, automatic response revokes it. In GitLab versions earlier than 
+project, automatic response revokes it. In GitLab versions earlier than
 19.4, revocation used only one detection rule and revoked only the legacy token format.
 Tokens created on GitLab 18.3 and later use the routable or versioned routable format.
 GitLab detected and reported these tokens without revoking them.

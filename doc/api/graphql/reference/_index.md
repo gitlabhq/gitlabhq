@@ -36282,8 +36282,11 @@ Arguments:
 | <a id="analytics-agentplatformsessions-createdeventatto"></a>`createdEventAtTo` | [`Time`](#time) | Filter by session creation timestamp. End of the range. |
 | <a id="analytics-agentplatformsessions-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-agentplatformsessions-flowtype"></a>`flowType` | [`[String!]`](#string) | Filter by one or many flow types. |
+| <a id="analytics-agentplatformsessions-flowtypenot"></a>`flowTypeNot` | [`[String!]`](#string) | Exclude one or many flow types. Maximum is 100. |
 | <a id="analytics-agentplatformsessions-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
+| <a id="analytics-agentplatformsessions-projectidnot"></a>`projectIdNot` | [`[String!]`](#string) | Exclude one or many project Global IDs. Sessions not scoped to a project are returned, because they store `0` rather than NULL. Maximum is 100. |
 | <a id="analytics-agentplatformsessions-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
+| <a id="analytics-agentplatformsessions-useridnot"></a>`userIdNot` | [`[String!]`](#string) | Exclude one or many user Global IDs. Maximum is 100. |
 
 ##### `Analytics.contributions`
 
@@ -36303,6 +36306,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="analytics-contributions-authorid"></a>`authorId` | [`[String!]`](#string) | Filter by one or many author Global IDs. |
+| <a id="analytics-contributions-authoridnot"></a>`authorIdNot` | [`[String!]`](#string) | Exclude one or many author Global IDs. Maximum is 100. |
 | <a id="analytics-contributions-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by contribution timestamp. Start of the range. |
 | <a id="analytics-contributions-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by contribution timestamp. End of the range. |
 | <a id="analytics-contributions-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
@@ -36328,11 +36332,15 @@ Arguments:
 | <a id="analytics-deployments-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by deployment creation timestamp. End of the range. |
 | <a id="analytics-deployments-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-deployments-environmentid"></a>`environmentId` | [`[String!]`](#string) | Filter by one or many environment Global IDs. |
+| <a id="analytics-deployments-environmentidnot"></a>`environmentIdNot` | [`[String!]`](#string) | Exclude one or many environment Global IDs. Maximum is 100. |
 | <a id="analytics-deployments-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by deployment finish timestamp. Start of the range. |
 | <a id="analytics-deployments-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by deployment finish timestamp. End of the range. |
 | <a id="analytics-deployments-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many deployment refs. |
+| <a id="analytics-deployments-refnot"></a>`refNot` | [`[String!]`](#string) | Exclude one or many deployment refs. Maximum is 100. |
 | <a id="analytics-deployments-status"></a>`status` | [`[String!]`](#string) | Filter by one or many deployment statuses. |
+| <a id="analytics-deployments-statusnot"></a>`statusNot` | [`[String!]`](#string) | Exclude one or many deployment statuses. Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100. |
 | <a id="analytics-deployments-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
+| <a id="analytics-deployments-useridnot"></a>`userIdNot` | [`[String!]`](#string) | Exclude one or many user Global IDs. Deployments with no triggering user are excluded as well. Maximum is 100. |
 
 ##### `Analytics.duoCodeSuggestions`
 
@@ -36346,10 +36354,13 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-duocodesuggestions-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-duocodesuggestions-idename"></a>`ideName` | [`[String!]`](#string) | Filter by IDE name. |
+| <a id="analytics-duocodesuggestions-idenamenot"></a>`ideNameNot` | [`[String!]`](#string) | Exclude one or many IDE names. Maximum is 100. |
 | <a id="analytics-duocodesuggestions-language"></a>`language` | [`[String!]`](#string) | Filter by suggestion language. |
+| <a id="analytics-duocodesuggestions-languagenot"></a>`languageNot` | [`[String!]`](#string) | Exclude one or many suggestion languages. Maximum is 100. |
 | <a id="analytics-duocodesuggestions-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by suggestion timestamp. Start of the range. |
 | <a id="analytics-duocodesuggestions-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by suggestion timestamp. End of the range. |
 | <a id="analytics-duocodesuggestions-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
+| <a id="analytics-duocodesuggestions-useridnot"></a>`userIdNot` | [`[String!]`](#string) | Exclude one or many user Global IDs. Maximum is 100. |
 
 ##### `Analytics.duoUsageEvents`
 
@@ -36363,12 +36374,16 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-duousageevents-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-duousageevents-event"></a>`event` | [`[String!]`](#string) | Filter by one or many events. |
+| <a id="analytics-duousageevents-eventnot"></a>`eventNot` | [`[String!]`](#string) | Exclude one or many events. Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100. |
 | <a id="analytics-duousageevents-feature"></a>`feature` | [`[String!]`](#string) | Filter by one or many features. |
+| <a id="analytics-duousageevents-featurenot"></a>`featureNot` | [`[String!]`](#string) | Exclude one or many features. Events with no recognized feature are excluded as well. Maximum is 100. |
 | <a id="analytics-duousageevents-flowtype"></a>`flowType` | [`[String!]`](#string) | Filter by one or many Duo Agent Platform flow types. |
+| <a id="analytics-duousageevents-flowtypenot"></a>`flowTypeNot` | [`[String!]`](#string) | Exclude one or many Duo Agent Platform flow types. Returns only Duo Agent Platform events, because events from elsewhere have no flow type. Maximum is 100. |
 | <a id="analytics-duousageevents-groupid"></a>`groupId` | [`[String!]`](#string) | Filter by one or many group Global IDs, including events from their descendants. |
 | <a id="analytics-duousageevents-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by event timestamp. Start of the range. |
 | <a id="analytics-duousageevents-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by event timestamp. End of the range. |
 | <a id="analytics-duousageevents-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
+| <a id="analytics-duousageevents-useridnot"></a>`userIdNot` | [`[String!]`](#string) | Exclude one or many user Global IDs. Maximum is 100. |
 
 ##### `Analytics.duoWorkflows`
 
@@ -36396,9 +36411,13 @@ Arguments:
 | <a id="analytics-duoworkflows-flowtypesusedto"></a>`flowTypesUsedTo` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. End of the range. |
 | <a id="analytics-duoworkflows-groupid"></a>`groupId` | [`[String!]`](#string) | Filter by one or many group Global IDs, including flows from their descendants. |
 | <a id="analytics-duoworkflows-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
+| <a id="analytics-duoworkflows-projectidnot"></a>`projectIdNot` | [`[String!]`](#string) | Exclude one or many project Global IDs. Flows created at namespace level are excluded as well. Maximum is 100. |
 | <a id="analytics-duoworkflows-status"></a>`status` | [`[String!]`](#string) | Filter by one or many flow statuses (created, running, finished, failed, ...). |
+| <a id="analytics-duoworkflows-statusnot"></a>`statusNot` | [`[String!]`](#string) | Exclude one or many flow statuses (created, running, finished, failed, ...). Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100. |
 | <a id="analytics-duoworkflows-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
+| <a id="analytics-duoworkflows-useridnot"></a>`userIdNot` | [`[String!]`](#string) | Exclude one or many user Global IDs. Maximum is 100. |
 | <a id="analytics-duoworkflows-workflowdefinition"></a>`workflowDefinition` | [`[String!]`](#string) | Filter by one or many flow types. |
+| <a id="analytics-duoworkflows-workflowdefinitionnot"></a>`workflowDefinitionNot` | [`[String!]`](#string) | Exclude one or many flow types. Maximum is 100. |
 
 ##### `Analytics.mergeRequests`
 
@@ -36418,6 +36437,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="analytics-mergerequests-authorid"></a>`authorId` | [`[String!]`](#string) | Filter by one or many author Global IDs. |
+| <a id="analytics-mergerequests-authoridnot"></a>`authorIdNot` | [`[String!]`](#string) | Exclude one or many author Global IDs. Merge requests with no author are excluded as well. Maximum is 100. |
 | <a id="analytics-mergerequests-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by merge request creation timestamp. Start of the range. |
 | <a id="analytics-mergerequests-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by merge request creation timestamp. End of the range. |
 | <a id="analytics-mergerequests-createdbyduo"></a>`createdByDuo` | [`[Boolean!]`](#boolean) | Filter by whether the merge request was created by a GitLab Duo Agent Platform session. |
@@ -36425,7 +36445,9 @@ Arguments:
 | <a id="analytics-mergerequests-metricmergedatfrom"></a>`metricMergedAtFrom` | [`Time`](#time) | Filter by merge timestamp. Start of the range. |
 | <a id="analytics-mergerequests-metricmergedatto"></a>`metricMergedAtTo` | [`Time`](#time) | Filter by merge timestamp. End of the range. |
 | <a id="analytics-mergerequests-stateid"></a>`stateId` | [`[String!]`](#string) | Filter by one or many states (opened, closed, merged, locked). |
+| <a id="analytics-mergerequests-stateidnot"></a>`stateIdNot` | [`[String!]`](#string) | Exclude one or many states (opened, closed, merged, locked). Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100. |
 | <a id="analytics-mergerequests-targetbranch"></a>`targetBranch` | [`[String!]`](#string) | Filter by one or many target branches. |
+| <a id="analytics-mergerequests-targetbranchnot"></a>`targetBranchNot` | [`[String!]`](#string) | Exclude one or many target branches. Maximum is 100. |
 
 ##### `Analytics.pipelines`
 
@@ -36448,11 +36470,15 @@ Arguments:
 | <a id="analytics-pipelines-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by pipeline finish timestamp. Start of the range. |
 | <a id="analytics-pipelines-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by pipeline finish timestamp. End of the range. |
 | <a id="analytics-pipelines-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many pipeline refs. |
+| <a id="analytics-pipelines-refnot"></a>`refNot` | [`[String!]`](#string) | Exclude one or many pipeline refs. Pipelines with no ref are excluded as well. Maximum is 100. |
 | <a id="analytics-pipelines-source"></a>`source` | [`[String!]`](#string) | Filter by one or many pipeline sources. |
+| <a id="analytics-pipelines-sourcenot"></a>`sourceNot` | [`[String!]`](#string) | Exclude one or many pipeline sources. Pipelines with no source are excluded as well. Unrecognized values are ignored, so a list with none recognized excludes nothing. Maximum is 100. |
 | <a id="analytics-pipelines-startedatfrom"></a>`startedAtFrom` | [`Time`](#time) | Filter by pipeline start timestamp. Start of the range. |
 | <a id="analytics-pipelines-startedatto"></a>`startedAtTo` | [`Time`](#time) | Filter by pipeline start timestamp. End of the range. |
 | <a id="analytics-pipelines-status"></a>`status` | [`[String!]`](#string) | Filter by one or many pipeline statuses. |
+| <a id="analytics-pipelines-statusnot"></a>`statusNot` | [`[String!]`](#string) | Exclude one or many pipeline statuses. Maximum is 100. |
 | <a id="analytics-pipelines-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
+| <a id="analytics-pipelines-useridnot"></a>`userIdNot` | [`[String!]`](#string) | Exclude one or many user Global IDs. Pipelines with no triggering user are excluded as well. Maximum is 100. |
 
 ### `AnalyzerGroupStatusType`
 

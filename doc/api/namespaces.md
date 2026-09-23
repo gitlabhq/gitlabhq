@@ -49,30 +49,30 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 
 | Attribute | Type | Description |
 | --------- | ---- | ----------- |
-| `id` | integer | ID of the namespace. | 
-| `name` | string | Name of the namespace. | 
-| `path` | string | Path segment of the namespace. | 
-| `kind` | string | Namespace type: `user` or `group`. | 
-| `full_path` | string | Full path of the namespace, including parent paths for subgroups. | 
-| `parent_id` | integer | ID of the parent namespace. `null` for top-level namespaces. | 
-| `avatar_url` | string | URL of the namespace avatar. `null` if not set. | 
-| `web_url` | string | URL of the namespace on GitLab. | 
-| `billable_members_count` | integer | Number of billable members in the namespace. | 
-| `plan` | string | Subscription plan of the namespace (for example, `free`, `ultimate`). | 
-| `end_date` | date | End date of the current subscription. `null` if not applicable. | 
-| `trial_ends_on` | date | Date the trial ends. `null` if not on a trial. | 
-| `trial` | boolean | Whether the namespace is on a trial plan. | 
-| `root_repository_size` | integer | Total size of all repositories in the namespace, in bytes. | 
-| `projects_count` | integer | Number of projects in the namespace. | 
-| `members_count_with_descendants` | integer | Total number of members including those in subgroups. Only returned for group namespaces. | 
-| `max_seats_used` | integer | Maximum number of seats used during the current subscription period. Only returned for Group owners or on GitLab.com. | 
-| `max_seats_used_changed_at` | datetime | Timestamp of when `max_seats_used` last changed. Only returned for Group owners or on GitLab.com. | 
-| `seats_in_use` | integer | Number of seats currently in use. Only returned for Group owners or on GitLab.com. | 
-| `ci_minutes_usage` | object | Compute minutes usage breakdown. On GitLab.com, reflects the [compute minutes quota system](../ci/pipelines/compute_minutes.md) applied to all namespaces. On GitLab Self-Managed and GitLab Dedicated, returned only when [compute quotas are configured on a namespace](../administration/cicd/compute_minutes.md#set-the-compute-quota-for-a-group). Only returned for top-level groups when the user has the Owner role or is an administrator. | 
-| `ci_minutes_usage.total_minutes_used` | integer | Total compute minutes used in the current billing period. | 
-| `ci_minutes_usage.monthly_minutes_used` | integer | Compute minutes used from the monthly quota. | 
-| `ci_minutes_usage.purchased_minutes_used` | integer | Compute minutes used from additional purchased allocations. | 
-| `shared_runners_minutes_limit` | integer | Monthly compute minutes quota allocated to the namespace. On GitLab.com only, for instance administrators. | 
+| `id` | integer | ID of the namespace. |
+| `name` | string | Name of the namespace. |
+| `path` | string | Path segment of the namespace. |
+| `kind` | string | Namespace type: `user` or `group`. |
+| `full_path` | string | Full path of the namespace, including parent paths for subgroups. |
+| `parent_id` | integer | ID of the parent namespace. `null` for top-level namespaces. |
+| `avatar_url` | string | URL of the namespace avatar. `null` if not set. |
+| `web_url` | string | URL of the namespace on GitLab. |
+| `billable_members_count` | integer | Number of billable members in the namespace. |
+| `plan` | string | Subscription plan of the namespace (for example, `free`, `ultimate`). |
+| `end_date` | date | End date of the current subscription. `null` if not applicable. |
+| `trial_ends_on` | date | Date the trial ends. `null` if not on a trial. |
+| `trial` | boolean | Whether the namespace is on a trial plan. |
+| `root_repository_size` | integer | Total size of all repositories in the namespace, in bytes. |
+| `projects_count` | integer | Number of projects in the namespace. |
+| `members_count_with_descendants` | integer | Total number of members including those in subgroups. Only returned for group namespaces. |
+| `max_seats_used` | integer | Maximum number of seats used during the current subscription period. Only returned for Group owners or on GitLab.com. |
+| `max_seats_used_changed_at` | datetime | Timestamp of when `max_seats_used` last changed. Only returned for Group owners or on GitLab.com. |
+| `seats_in_use` | integer | Number of seats currently in use. Only returned for Group owners or on GitLab.com. |
+| `ci_minutes_usage` | object | Compute minutes usage breakdown. On GitLab.com, reflects the [compute minutes quota system](../ci/pipelines/compute_minutes.md) applied to all namespaces. On GitLab Self-Managed and GitLab Dedicated, returned only when [compute quotas are configured on a namespace](../administration/cicd/compute_minutes.md#set-the-compute-quota-for-a-group). Only returned for top-level groups when the user has the Owner role or is an administrator. |
+| `ci_minutes_usage.total_minutes_used` | integer | Total compute minutes used in the current billing period. |
+| `ci_minutes_usage.monthly_minutes_used` | integer | Compute minutes used from the monthly quota. |
+| `ci_minutes_usage.purchased_minutes_used` | integer | Compute minutes used from additional purchased allocations. |
+| `shared_runners_minutes_limit` | integer | Monthly compute minutes quota allocated to the namespace. On GitLab.com only, for instance administrators. |
 | `extra_shared_runners_minutes_limit` | integer | Additional compute minutes added on top of the monthly quota. Reflects purchased minute packs. On GitLab.com only, for instance administrators. |
 
 Example request:
@@ -189,30 +189,30 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 
 | Attribute | Type | Description |
 | --------- | ---- | ----------- |
-| `id` | integer | ID of the namespace. | 
-| `name` | string | Name of the namespace. | 
-| `path` | string | Path segment of the namespace. | 
-| `kind` | string | Namespace type: `user` or `group`. | 
-| `full_path` | string | Full path of the namespace, including parent paths for subgroups. | 
-| `parent_id` | integer | ID of the parent namespace. `null` for top-level namespaces. | 
-| `avatar_url` | string | URL of the namespace avatar. `null` if not set. | 
-| `web_url` | string | URL of the namespace on GitLab. | 
-| `billable_members_count` | integer | Number of billable members in the namespace. | 
-| `plan` | string | Subscription plan of the namespace (for example, `free`, `ultimate`). | 
-| `end_date` | date | End date of the current subscription. `null` if not applicable. | 
-| `trial_ends_on` | date | Date the trial ends. `null` if not on a trial. | 
-| `trial` | boolean | Whether the namespace is on a trial plan. | 
-| `root_repository_size` | integer | Total size of all repositories in the namespace, in bytes. | 
-| `projects_count` | integer | Number of projects in the namespace. | 
-| `members_count_with_descendants` | integer | Total number of members including those in subgroups. Only returned for group namespaces. | 
-| `max_seats_used` | integer | Maximum number of seats used during the current subscription period. Only returned for Group owners or on GitLab.com. | 
-| `max_seats_used_changed_at` | datetime | Timestamp of when `max_seats_used` last changed. Only returned for Group owners or on GitLab.com. | 
-| `seats_in_use` | integer | Number of seats currently in use. Only returned for Group owners or on GitLab.com. | 
-| `ci_minutes_usage` | object | Compute minutes usage breakdown. On GitLab.com, reflects the [compute minutes quota system](../ci/pipelines/compute_minutes.md) applied to all namespaces. On GitLab Self-Managed and GitLab Dedicated, returned only when [compute quotas are configured on a namespace](../administration/cicd/compute_minutes.md#set-the-compute-quota-for-a-group). Only returned for top-level groups when the user has the Owner role or is an administrator. | 
-| `ci_minutes_usage.total_minutes_used` | integer | Total compute minutes used in the current billing period. | 
-| `ci_minutes_usage.monthly_minutes_used` | integer | Compute minutes used from the monthly quota. | 
-| `ci_minutes_usage.purchased_minutes_used` | integer | Compute minutes used from additional purchased allocations. | 
-| `shared_runners_minutes_limit` | integer | Monthly compute minutes quota allocated to the namespace. On GitLab.com only, for instance administrators. | 
+| `id` | integer | ID of the namespace. |
+| `name` | string | Name of the namespace. |
+| `path` | string | Path segment of the namespace. |
+| `kind` | string | Namespace type: `user` or `group`. |
+| `full_path` | string | Full path of the namespace, including parent paths for subgroups. |
+| `parent_id` | integer | ID of the parent namespace. `null` for top-level namespaces. |
+| `avatar_url` | string | URL of the namespace avatar. `null` if not set. |
+| `web_url` | string | URL of the namespace on GitLab. |
+| `billable_members_count` | integer | Number of billable members in the namespace. |
+| `plan` | string | Subscription plan of the namespace (for example, `free`, `ultimate`). |
+| `end_date` | date | End date of the current subscription. `null` if not applicable. |
+| `trial_ends_on` | date | Date the trial ends. `null` if not on a trial. |
+| `trial` | boolean | Whether the namespace is on a trial plan. |
+| `root_repository_size` | integer | Total size of all repositories in the namespace, in bytes. |
+| `projects_count` | integer | Number of projects in the namespace. |
+| `members_count_with_descendants` | integer | Total number of members including those in subgroups. Only returned for group namespaces. |
+| `max_seats_used` | integer | Maximum number of seats used during the current subscription period. Only returned for Group owners or on GitLab.com. |
+| `max_seats_used_changed_at` | datetime | Timestamp of when `max_seats_used` last changed. Only returned for Group owners or on GitLab.com. |
+| `seats_in_use` | integer | Number of seats currently in use. Only returned for Group owners or on GitLab.com. |
+| `ci_minutes_usage` | object | Compute minutes usage breakdown. On GitLab.com, reflects the [compute minutes quota system](../ci/pipelines/compute_minutes.md) applied to all namespaces. On GitLab Self-Managed and GitLab Dedicated, returned only when [compute quotas are configured on a namespace](../administration/cicd/compute_minutes.md#set-the-compute-quota-for-a-group). Only returned for top-level groups when the user has the Owner role or is an administrator. |
+| `ci_minutes_usage.total_minutes_used` | integer | Total compute minutes used in the current billing period. |
+| `ci_minutes_usage.monthly_minutes_used` | integer | Compute minutes used from the monthly quota. |
+| `ci_minutes_usage.purchased_minutes_used` | integer | Compute minutes used from additional purchased allocations. |
+| `shared_runners_minutes_limit` | integer | Monthly compute minutes quota allocated to the namespace. On GitLab.com only, for instance administrators. |
 | `extra_shared_runners_minutes_limit` | integer | Additional compute minutes added on top of the monthly quota. Reflects purchased minute packs. On GitLab.com only, for instance administrators. |
 
 Example request:

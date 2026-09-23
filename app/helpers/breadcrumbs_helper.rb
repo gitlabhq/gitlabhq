@@ -49,7 +49,7 @@ module BreadcrumbsHelper
   def breadcrumbs_as_json
     schema_breadcrumb_list.map do |breadcrumb|
       {
-        text: breadcrumb[:text],
+        text: breadcrumb[:text].to_s,
         href: breadcrumb[:href],
         avatarPath: breadcrumb[:avatar]
       }

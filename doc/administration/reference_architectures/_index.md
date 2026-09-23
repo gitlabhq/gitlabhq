@@ -161,7 +161,7 @@ If you still need HA for fewer users, you can achieve it with an adjusted [3K ar
 
 - For standard environments with HA.
 - In GitLab 18.9 and later, also for Cloud Native Hybrid environments.
- 
+
 Zero-downtime upgrades allow for an environment to stay up during an upgrade. However, this process is
 more complex as a result and has some limitations that detailed in the documentation.
 

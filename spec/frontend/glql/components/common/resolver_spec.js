@@ -113,6 +113,46 @@ describe('Resolver', () => {
     });
   });
 
+  describe('queue', () => {
+    beforeEach(() => {
+      mockUtils();
+    });
+
+    it('runs the query on the default queue', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(execute).toHaveBeenCalledWith('query {}', expect.anything(), {
+        queue: 'glql-queue-default',
+      });
+    });
+
+    it('runs the query on the given queue', async () => {
+      createWrapper({ queue: 'glql-queue-dashboard' });
+      await waitForPromises();
+
+      expect(execute).toHaveBeenCalledWith('query {}', expect.anything(), {
+        queue: 'glql-queue-dashboard',
+      });
+    });
+
+    it('runs the comparison query and further pages on the same queue', async () => {
+      mockUtils({ totalCount: MOCK_ISSUES.nodes.length + 1 });
+      createWrapper({ queue: 'glql-queue-dashboard', comparison: { query: 'assignee = "bar"' } });
+      await waitForPromises();
+
+      execute.mockResolvedValue({ count: MOCK_ISSUES.nodes.length + 1, ...MOCK_ISSUES_PAGE_2 });
+      findPagination().vm.$emit('load-more');
+      await waitForPromises();
+
+      expect(execute.mock.calls).toEqual([
+        ['query {}', expect.anything(), { queue: 'glql-queue-dashboard' }],
+        ['query {}', expect.anything(), { queue: 'glql-queue-dashboard' }],
+        ['query {}', expect.anything(), { queue: 'glql-queue-dashboard' }],
+      ]);
+    });
+  });
+
   describe('when no query is set', () => {
     beforeEach(() => {
       return createWrapper({ glqlQuery: '' });
@@ -540,6 +580,7 @@ describe('Resolver', () => {
           [
             'query {}',
             expect.objectContaining({ after: { value: 'current-cursor', type: 'String' } }),
+            expect.anything(),
           ],
         ]);
       });
@@ -588,6 +629,7 @@ describe('Resolver', () => {
         expect(execute).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({ limit: { value: null, type: 'Int' } }),
+          expect.anything(),
         );
       });
 
@@ -597,6 +639,7 @@ describe('Resolver', () => {
         expect(execute).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({ limit: { value: 5, type: 'Int' } }),
+          expect.anything(),
         );
       });
 
@@ -625,6 +668,7 @@ describe('Resolver', () => {
         expect(execute).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({ limit: { value: 20, type: 'Int' } }),
+          expect.anything(),
         );
       });
 
@@ -634,6 +678,7 @@ describe('Resolver', () => {
         expect(execute).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({ limit: { value: 5, type: 'Int' } }),
+          expect.anything(),
         );
       });
 
@@ -651,6 +696,7 @@ describe('Resolver', () => {
         expect(execute).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({ limit: { value: 5, type: 'Int' } }),
+          expect.anything(),
         );
       });
 
@@ -722,6 +768,7 @@ describe('Resolver', () => {
         expect(execute).toHaveBeenLastCalledWith(
           expect.anything(),
           expect.objectContaining({ limit: { value: CHART_PAGE_SIZE, type: 'Int' } }),
+          expect.anything(),
         );
       });
 

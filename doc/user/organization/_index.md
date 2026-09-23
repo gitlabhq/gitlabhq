@@ -87,7 +87,7 @@ After you confirm your organization structure:
 - Your groups, projects, and users are transferred into the
 organization asynchronously. You receive an email when the organization is ready. Larger groups might
 take longer to transfer.
-- Any users with the Owner role for top-level groups 
+- Any users with the Owner role for top-level groups
 assigned to the organization automatically become Organization Administrators. You can make changes to roles and permissions in **Organization settings**.
 
 When the organization is ready, you can:

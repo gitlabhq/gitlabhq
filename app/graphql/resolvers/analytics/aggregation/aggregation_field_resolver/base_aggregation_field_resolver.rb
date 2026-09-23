@@ -12,6 +12,9 @@ module Resolvers
             required: false,
             description: 'Sorting order list for the aggregated data.'
 
+          # Frontends key panel states off this code; renaming it breaks them.
+          NOT_AUTHORIZED_CODE = 'AGGREGATION_NOT_AUTHORIZED'
+
           def resolve_with_lookahead(**arguments)
             scope_context = object
             request = build_aggregation_request(scope_context, arguments)
@@ -19,12 +22,22 @@ module Resolvers
 
             response = scope_context[:engine].execute(request)
 
-            raise GraphQL::ExecutionError, response.errors.join(' ') unless response.success?
+            raise_execution_error!(response) unless response.success?
 
             response.payload[:data]
           end
 
           private
+
+          def raise_execution_error!(response)
+            message = response.errors.join(' ')
+
+            if response.payload[:errors].any? { |error| error.type == :unauthorized }
+              raise GraphQL::ExecutionError.new(message, extensions: { code: NOT_AUTHORIZED_CODE })
+            end
+
+            raise GraphQL::ExecutionError, message
+          end
 
           def build_aggregation_request(scope_context, arguments)
             outer_request = scope_context[:request]

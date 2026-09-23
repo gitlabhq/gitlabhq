@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Learn how to convert from deprecated `CI_JOB_JWT` variable to ID tokens
+description: Update your HashiCorp Vault configuration to use ID tokens instead of the deprecated CI_JOB_JWT variables.
 title: 'Tutorial: Update HashiCorp Vault configuration to use ID Tokens'
 ---
 
@@ -13,51 +13,49 @@ title: 'Tutorial: Update HashiCorp Vault configuration to use ID Tokens'
 
 {{< /details >}}
 
-> [!note]
-> Starting in Vault 1.17, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
-> when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
+This tutorial demonstrates how to convert your current CI/CD secrets configuration to use
+[ID tokens](id_token_authentication.md).
 
-This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](id_token_authentication.md).
+The `CI_JOB_JWT` variables are deprecated. To use ID tokens instead, you must update your Vault
+authentication method and role configuration.
 
-The `CI_JOB_JWT` variables are deprecated, but updating to ID tokens requires some
-important configuration changes to work with Vault. If you have more than a handful of jobs,
-converting everything at once is a daunting task.
+To convert to ID tokens:
 
-You can migrate to [ID tokens](id_token_authentication.md) by creating a new Vault authentication path,
-or by updating existing roles to accept both token types temporarily.
-Choose the method that is most appropriate for your use case:
-
-1. Update your Vault configuration:
-   - Method A: Migrate JWT roles to the new Vault auth method
+1. Update your Vault configuration. Choose one:
+   - [Migrate JWT roles to a new auth path](#migrate-jwt-roles-to-a-new-auth-path)
      1. [Create a second JWT authentication path in Vault](#create-a-second-jwt-authentication-path-in-vault)
      1. [Recreate roles to use the new authentication path](#recreate-roles-to-use-the-new-authentication-path)
-   - Method B: Move `iss` claim to roles for the migration window
+   - [Move the `iss` claim to role-level claims](#move-the-iss-claim-to-role-level-claims)
      1. [Add `bound_issuers` claim map to each role](#add-bound_issuers-claim-map-to-each-role)
      1. [Remove `bound_issuers` claim from auth method](#remove-bound_issuers-claim-from-auth-method)
-1. [Update your CI/CD Jobs](#update-your-cicd-jobs)
+1. [Update your CI/CD jobs](#update-your-cicd-jobs)
 
-## Prerequisites
+## Before you begin
 
 This tutorial assumes you are familiar with GitLab CI/CD and Vault.
 
 To follow along, you must have:
 
-- A Vault server that you are already using.
-- CI/CD jobs retrieving secrets from Vault with `CI_JOB_JWT`.
+- A Vault server you already use.
+- CI/CD jobs that retrieve secrets from Vault with `CI_JOB_JWT`.
 
-In the following examples, replace:
+> [!note]
+> In Vault 1.17 and later, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
+> when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
 
-- `vault.example.com` with the URL of your Vault server.
-- `gitlab.example.com` with the URL of your GitLab instance.
-- `jwt` or `jwt_v2` with your auth method names.
+## Migrate JWT roles to a new auth path
 
-## Method A: Migrate JWT roles to the new Vault auth method
-
-This method creates a second JWT auth method in parallel to the existing one in use. Afterwards all Vault roles used for the GitLab integration are recreated in this new auth method.
+This approach creates a second JWT auth method in parallel to your current one, then recreates
+your roles to use it.
+If you'd rather not duplicate your auth method, use
+[role-level claims](#move-the-iss-claim-to-role-level-claims) instead.
 
 ### Create a second JWT authentication path in Vault
 
-As part of the transition from `CI_JOB_JWT` to ID tokens, you must update the `bound_issuer` in Vault to include `https://`:
+In these examples, replace `gitlab.example.com` with the URL of your GitLab instance.
+
+As part of the transition from `CI_JOB_JWT` to ID tokens, you must update the `bound_issuer` in
+Vault to include `https://`:
 
 ```shell
 $ vault write auth/jwt/config \
@@ -67,7 +65,8 @@ $ vault write auth/jwt/config \
 
 After you make this change, jobs that use `CI_JOB_JWT` start to fail.
 
-To transition to ID Tokens on a per-project or per-job basis without disruption, create multiple authentication paths in Vault:
+To transition to ID tokens on a per-project or per-job basis without disruption, create multiple
+authentication paths in Vault:
 
 1. Configure a new authentication path with the name `jwt_v2`, run:
 
@@ -75,7 +74,8 @@ To transition to ID Tokens on a per-project or per-job basis without disruption,
    vault auth enable -path jwt_v2 jwt
    ```
 
-   You can choose a different name, but the rest of these examples assume you used `jwt_v2`, so update the examples as needed.
+   You can choose a different name, but the rest of these examples assume you used `jwt_v2`, so
+   update the examples as needed.
 
 1. Configure the new authentication path for your instance:
 
@@ -87,9 +87,11 @@ To transition to ID Tokens on a per-project or per-job basis without disruption,
 
 ### Recreate roles to use the new authentication path
 
-Roles are bound to a specific authentication path so you need to add new roles for each job.
-The `bound_audiences` parameter for the role is mandatory if the JWT contains an
-audience and must match at least one of the associated `aud` claims of the JWT.
+In these examples, replace `vault.example.com` with the URL of your Vault server.
+
+Roles are bound to a specific authentication path, so you need to add new roles for each job.
+The `bound_audiences` parameter for the role is mandatory if the JWT contains an audience, and
+must match at least one of the associated `aud` claims of the JWT.
 
 1. Recreate the role for staging named `myproject-staging`:
 
@@ -131,22 +133,33 @@ audience and must match at least one of the associated `aud` claims of the JWT.
    EOF
    ```
 
-You only need to update `jwt` to `jwt_v2` in the `vault` command, do not change the `role_type` inside the role.
+You only need to update `jwt` to `jwt_v2` in the `vault` command. Do not change the `role_type`
+inside the role.
 
-## Method B: Move `iss` claim to roles for migration window
+## Move the `iss` claim to role-level claims
 
-This method doesn't require Vault administrators to create a second JWT auth method and recreate all GitLab related roles.
+This approach doesn't require you to create a second JWT auth method or recreate any roles.
+Instead, you add the new `iss` claim value directly to your current roles.
+If you'd rather keep a single claim value per role, use a
+[new auth path](#migrate-jwt-roles-to-a-new-auth-path) instead.
 
 ### Add `bound_issuers` claim map to each role
 
-Vault doesn't allow multiple `iss` claims on the JWT auth method level, as the [`bound_issuer`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer)
-directive on this level only accepts a single value. However, multiple claims can be configured
-on the role level by using the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
+In these examples, replace `gitlab.example.com` with the URL of your GitLab instance,
+`vault.example.com` with the URL of your Vault server, and `jwt` with your current auth method
+name.
+
+Vault doesn't allow multiple `iss` claims on the JWT auth method level, as the
+[`bound_issuer`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) directive
+on this level only accepts a single value. However, you can configure multiple claims on the role
+level with the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
 map configuration directive.
 
-With this method you can provide Vault with multiple options for the `iss` claim validation. This supports the `https://` prefixed GitLab instance hostname claim that comes with the `id_tokens` and the old non-prefixed claim.
+With this approach, you give Vault multiple options for the `iss` claim validation: the `https://`
+prefixed GitLab instance hostname claim that comes with ID tokens, and the old non-prefixed claim.
 
-To add the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims) configuration to the required roles, run:
+To add the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
+configuration to the required roles, run:
 
 ```shell
 $ vault write auth/jwt/role/myproject-staging - <<EOF
@@ -169,17 +182,17 @@ $ vault write auth/jwt/role/myproject-staging - <<EOF
 EOF
 ```
 
-You do not need to alter any existing role configurations except for the `bound_claims` section.
-Make sure to add the `iss` configuration as shown previously, to ensure Vault accepts
-the prefixed and non-prefixed `iss` claim for this role.
+You do not need to alter any current role configurations except for the `bound_claims` section.
+Make sure to add the `iss` configuration as shown previously, to ensure Vault accepts the
+prefixed and non-prefixed `iss` claim for this role.
 
-You must apply this change to all JWT roles used for the GitLab integration before moving on to the next step.
-
-After all projects have migrated, you can revert the `iss` claim validation from the roles back to the auth method.
+You must apply this change to all JWT roles used for the GitLab integration before you continue to
+the next step.
 
 ### Remove `bound_issuers` claim from auth method
 
-After all roles have been updated with the `bound_claims.iss` claims, you can remove the auth method level configuration for this validation:
+After all roles have been updated with the `bound_claims.iss` claims, you can remove the auth
+method level configuration for this validation:
 
 ```shell
 $ vault write auth/jwt/config \
@@ -187,36 +200,45 @@ $ vault write auth/jwt/config \
     bound_issuer=""
 ```
 
-Setting the `bound_issuer` directive to an empty string removes the issuer validation on the auth method level.
-However, because this validation is now at the role level, the configuration is still secure.
+An empty `bound_issuer` value removes the issuer validation on the auth method level. However,
+because this validation is now at the role level, the configuration is still secure.
 
-## Update your CI/CD Jobs
+Once you've migrated every project to ID tokens and no longer need to support `CI_JOB_JWT` in
+parallel, you can revert this configuration: remove the `iss` claim from `bound_claims` in each
+role, and set `bound_issuer` back to a single value on the auth method.
 
-Vault has two different [KV Secrets Engines](https://developer.hashicorp.com/vault/docs/secrets/kv) and the version you are using impacts how you define secrets in CI/CD.
+## Update your CI/CD jobs
 
-Check the [Which Version is my Vault KV Mount?](https://support.hashicorp.com/hc/en-us/articles/4404288741139-Which-Version-is-my-Vault-KV-Mount) article on HashiCorp's support portal to check your Vault server.
+Vault has two different [KV Secrets Engines](https://developer.hashicorp.com/vault/docs/secrets/kv).
+The version you use impacts how you define secrets in CI/CD.
+
+Check the [Which Version is my Vault KV Mount?](https://support.hashicorp.com/hc/en-us/articles/4404288741139-Which-Version-is-my-Vault-KV-Mount)
+article on HashiCorp's support portal to check your Vault server.
 
 Also, if needed you can review the CI/CD documentation for:
 
 - [`secrets:`](../yaml/_index.md#secrets)
 - [`id_tokens:`](../yaml/_index.md#id_tokens)
 
-The following examples show how to obtain the staging database password. It's stored in the `password` field of `secret/myproject/staging/db`.
+These examples show how to obtain the staging database password. It's stored in the `password`
+field of `secret/myproject/staging/db`. In these examples, replace `vault.example.com` with the
+URL of your Vault server.
 
-The value for the `VAULT_AUTH_PATH` variable depends on the migration method you used:
+The value for the `VAULT_AUTH_PATH` variable depends on which approach you used to migrate:
 
-- Method A (Migrate JWT roles to the new Vault auth method): Use `jwt_v2`.
-- Method B (Move `iss` claim to roles for migration window): Use `jwt`.
+- New auth path: Use `jwt_v2`.
+- Role-level claims: Use `jwt`.
 
 ### KV Secrets Engine v1
 
-The [`secrets:vault`](../yaml/_index.md#secretsvault) keyword defaults to v2 of the KV Mount, so you need to explicitly configure the job to use the v1 engine:
+The [`secrets:vault`](../yaml/_index.md#secretsvault) keyword defaults to v2 of the KV Mount, so
+you need to explicitly configure the job to use the v1 engine:
 
 ```yaml
 job:
   variables:
     VAULT_SERVER_URL: https://vault.example.com
-    VAULT_AUTH_PATH: jwt_v2  # or "jwt" if you used method B
+    VAULT_AUTH_PATH: jwt_v2  # or "jwt" if you used the role-level claims approach
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
@@ -232,10 +254,13 @@ job:
       file: false
 ```
 
-Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-ui),
+Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be
+[defined as project or group CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-ui),
 if preferred.
 
-[`secrets:file`](../yaml/_index.md#secretsfile) is set to `false` because ID tokens place secrets in a file by default. The secret needs to work as a regular variable instead, to match the old behavior.
+[`secrets:file`](../yaml/_index.md#secretsfile) is set to `false` because ID tokens place secrets
+in a file by default. The secret needs to work as a regular variable instead, to match the old
+behavior.
 
 ### KV Secrets Engine v2
 
@@ -247,7 +272,7 @@ Long format:
 job:
   variables:
     VAULT_SERVER_URL: https://vault.example.com
-    VAULT_AUTH_PATH: jwt_v2  # or "jwt" if you used method B
+    VAULT_AUTH_PATH: jwt_v2  # or "jwt" if you used the role-level claims approach
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
@@ -263,7 +288,8 @@ job:
       file: false
 ```
 
-This long format is the same as the example for the v1 engine, but `secrets:vault:engine:name:` is set to `kv-v2` to match the engine.
+This long format is the same as the example for the v1 engine, but `secrets:vault:engine:name:` is
+set to `kv-v2` to match the engine.
 
 You can also use a short format:
 
@@ -271,7 +297,7 @@ You can also use a short format:
 job:
   variables:
     VAULT_SERVER_URL: https://vault.example.com
-    VAULT_AUTH_PATH: jwt_v2  # or "jwt" if you used method B
+    VAULT_AUTH_PATH: jwt_v2  # or "jwt" if you used the role-level claims approach
     VAULT_AUTH_ROLE: myproject-staging
   id_tokens:
     VAULT_ID_TOKEN:
@@ -282,6 +308,5 @@ job:
         file: false
 ```
 
-After you commit the updated CI/CD configuration, your jobs fetch secrets with ID Tokens, congratulations!
-
-After you migrate all projects to ID tokens using method B, you can move the `iss` claim validation back to the auth method configuration.
+After you commit the updated CI/CD configuration, your jobs fetch secrets with ID tokens.
+Congratulations!

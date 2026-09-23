@@ -35,11 +35,14 @@ module Cells
       # @param scheme [String] URL scheme used to reach cells ("https" in
       #   production, "http" for local environments). Cell addresses are bare
       #   hosts, so the scheme is chosen here rather than carried in the address.
+      # @param port [Integer, nil] internal API port. When given it replaces any
+      #   port in the address returned by the Topology Service.
       # @param logger [#info, #warn]
-      def initialize(mailbox_type:, signing_key_path:, scheme: DEFAULT_SCHEME, logger:)
+      def initialize(mailbox_type:, signing_key_path:, scheme: DEFAULT_SCHEME, port: nil, logger:)
         @mailbox_type = mailbox_type
         @signing_key_path = signing_key_path
         @scheme = scheme
+        @port = port
         @logger = logger
       end
 
@@ -79,10 +82,20 @@ module Cells
 
       private
 
-      attr_reader :mailbox_type, :signing_key_path, :scheme, :logger
+      attr_reader :mailbox_type, :signing_key_path, :scheme, :port, :logger
 
       def endpoint_url(cell_address)
-        "#{scheme}://#{cell_address}#{INTERNAL_API_PATH}/#{mailbox_type}"
+        "#{scheme}://#{authority(cell_address)}#{INTERNAL_API_PATH}/#{mailbox_type}"
+      end
+
+      # A configured port always wins over one registered in the Topology
+      # Service, so a deployment can pin the internal API port. CellRouter has
+      # already rejected anything that is not a host with an optional port, so
+      # splitting on the first colon is enough to drop that port.
+      def authority(cell_address)
+        return cell_address unless port
+
+        "#{cell_address.split(':').first}:#{port}"
       end
 
       def connection

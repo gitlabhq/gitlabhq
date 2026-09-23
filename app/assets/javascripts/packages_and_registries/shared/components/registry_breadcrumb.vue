@@ -25,7 +25,7 @@ export default {
       return this.$route.name === this.detailsRoute.name;
     },
     detailsRouteName() {
-      return this.detailsRoute.meta?.nameGenerator() || (this.$route.params?.id ?? '');
+      return this.detailsRoute.meta?.nameGenerator() || String(this.$route.params?.id ?? '');
     },
     allCrumbs() {
       const crumbs = [

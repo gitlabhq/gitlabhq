@@ -568,7 +568,8 @@ module API
       optional :sidekiq_job_limiter_limit_bytes,
         desc: "The threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job)."
       optional :sidekiq_job_limiter_mode,
-        desc: "`track` or `compress`. Sets the behavior for Sidekiq job size limits. Default: 'compress'."
+        values: ::ApplicationSetting.sidekiq_job_limiter_modes.keys,
+        desc: "Sets the behavior for Sidekiq job size limits. Default: 'compress'."
       optional :sidekiq_timezone_override,
         desc: 'IANA timezone identifier (for example, `America/Chicago`) applied to all Sidekiq cron jobs. When ' \
           'blank, no override is applied and cron jobs use the Rails application timezone.'

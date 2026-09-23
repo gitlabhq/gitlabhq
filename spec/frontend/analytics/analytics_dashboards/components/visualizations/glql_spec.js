@@ -37,6 +37,7 @@ describe('GlqlVisualization', () => {
       comparison: null,
       trackingEventName: 'render_analytics_dashboard_glql_panel',
       scope: null,
+      queue: 'glql-queue-dashboard',
     });
   });
 

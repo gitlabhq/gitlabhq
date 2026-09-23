@@ -309,7 +309,7 @@ For more information, see the [Microsoft Style Guide](https://learn.microsoft.co
 
 ## allowlist
 
-Do not use as a verb. Use only as a noun. 
+Do not use as a verb. Use only as a noun.
 
 Use:
 

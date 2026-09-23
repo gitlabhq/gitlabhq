@@ -75,7 +75,7 @@ mutation {
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16890) support for external service tokens in GitLab 18.7 [with a feature flag](../../../api/feature_flags.md) named `secret_detection_partner_token_verification`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/567736) in GitLab 18.8. 
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/567736) in GitLab 18.8.
 - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/612115) validity checks for external service tokens in GitLab 19.3.
 - Feature flag `secret_detection_partner_token_verification` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/619506) in GitLab 19.4.
 - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/624216) validity checks to more GitHub token types in GitLab 19.4.

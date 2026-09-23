@@ -4,20 +4,17 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_review_workflow do
   describe '#execute' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project, reviewers: [user]) }
-    let!(:existing_approval) { create(:approval, merge_request: merge_request) }
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be(:other_user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, developers: user) }
+    let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, reviewers: [user]) }
+    let!(:existing_approval) { create(:approval, merge_request: merge_request, user: other_user) }
 
     subject(:service) { described_class.new(project: project, current_user: user) }
 
     def execute!(skip_updating_state: false, skip_system_note: false, skip_notification: false)
       service.execute(merge_request, skip_updating_state: skip_updating_state, skip_system_note: skip_system_note,
         skip_notification: skip_notification)
-    end
-
-    before do
-      project.add_developer(user)
     end
 
     shared_examples 'no-op call' do
@@ -70,7 +67,7 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
       end
 
       context 'when the merge request is merged' do
-        let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+        let_it_be(:merge_request) { create(:merge_request, :merged, source_project: project) }
 
         it_behaves_like 'no-op call'
 
@@ -82,8 +79,8 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
       end
 
       context 'when the merge request is locked' do
-        let(:merge_request) { create(:merge_request, :locked, source_project: project, reviewers: [user]) }
-        let!(:approval) { create(:approval, user: user, merge_request: merge_request) }
+        let_it_be(:merge_request) { create(:merge_request, :locked, source_project: project, reviewers: [user]) }
+        let_it_be(:approval) { create(:approval, user: user, merge_request: merge_request) }
 
         it_behaves_like 'blocks approval removal for a locked merge request'
       end

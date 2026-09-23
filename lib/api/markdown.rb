@@ -13,7 +13,8 @@ module API
 
     params do
       requires :text, type: String, desc: "The Markdown text to render"
-      optional :gfm, type: Boolean, desc: "Render text using GitLab Flavored Markdown. Default is false"
+      optional :gfm, type: Boolean, default: false,
+        desc: "Render text using GitLab Flavored Markdown."
       optional :project, type: String, desc: "Use project as a context when creating references using GitLab Flavored Markdown"
     end
     resource :markdown do

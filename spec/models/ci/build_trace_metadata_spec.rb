@@ -9,6 +9,8 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
   it { is_expected.to validate_presence_of(:build) }
   it { is_expected.to validate_presence_of(:archival_attempts) }
 
+  it_behaves_like 'a CI model that detaches archived partitions'
+
   describe '#can_attempt_archival_now?' do
     let(:metadata) do
       build(:ci_build_trace_metadata,

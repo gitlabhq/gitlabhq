@@ -34,12 +34,13 @@ RSpec.describe Files::MultiService, feature_category: :source_code_management do
   end
 
   let(:actions) { [default_action] }
+  let(:start_branch) { branch_name }
 
   let(:commit_params) do
     {
       commit_message: commit_message,
       branch_name: branch_name,
-      start_branch: branch_name,
+      start_branch: start_branch,
       actions: actions
     }
   end
@@ -206,13 +207,23 @@ RSpec.describe Files::MultiService, feature_category: :source_code_management do
         allow(project).to receive(:lfs_enabled?).and_return(true)
       end
 
-      it 'creates an LFS pointer' do
-        subject.execute
+      shared_examples 'creates an LFS pointer' do
+        it 'creates an LFS pointer' do
+          subject.execute
 
-        blob = repository.blob_at('lfs', new_file_path)
+          blob = repository.blob_at(branch_name, new_file_path)
 
-        expect(blob.data).to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
+          expect(blob.data).to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
+        end
+
+        it 'links the LfsObject to the project' do
+          expect do
+            subject.execute
+          end.to change { project.lfs_objects.count }.by(1)
+        end
       end
+
+      it_behaves_like 'creates an LFS pointer'
 
       it "creates an LfsObject with the file's content" do
         subject.execute
@@ -225,13 +236,7 @@ RSpec.describe Files::MultiService, feature_category: :source_code_management do
         let(:file_content) { Base64.encode64(raw_file_content) }
         let(:actions) { [default_action.merge(encoding: 'base64')] }
 
-        it 'creates an LFS pointer' do
-          subject.execute
-
-          blob = repository.blob_at('lfs', new_file_path)
-
-          expect(blob.data).to start_with(Gitlab::Git::LfsPointerFile::VERSION_LINE)
-        end
+        it_behaves_like 'creates an LFS pointer'
 
         it "creates an LfsObject with the file's content" do
           subject.execute
@@ -240,10 +245,26 @@ RSpec.describe Files::MultiService, feature_category: :source_code_management do
         end
       end
 
-      it 'links the LfsObject to the project' do
-        expect do
-          subject.execute
-        end.to change { project.lfs_objects.count }.by(1)
+      context 'when creating a new branch in the same commit' do
+        let(:branch_name) { 'new-lfs-branch' }
+
+        let!(:original_commit_id) do
+          Gitlab::Git::Commit.last_for_path(project.repository, 'lfs', original_file_path).sha
+        end
+
+        context 'with start_branch' do
+          let(:start_branch) { 'lfs' }
+
+          it_behaves_like 'creates an LFS pointer'
+        end
+
+        context 'with start_sha' do
+          let(:start_branch) { nil }
+          let(:start_sha) { repository.commit('lfs').sha }
+          let(:commit_params) { super().merge(start_sha: start_sha) }
+
+          it_behaves_like 'creates an LFS pointer'
+        end
       end
     end
 

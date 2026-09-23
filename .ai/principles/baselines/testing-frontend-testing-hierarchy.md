@@ -37,6 +37,5 @@ See `.ai/principles/distilled/testing-jest.md` for the full how-to on all three
 layers: unit/component tests, frontend integration tests, and Capybara feature
 tests.
 
-For MSW-specific additions not covered in `testing-jest.md` (run command, handler
-registration pattern, GraphQL request counting), see
-`.ai/principles/distilled/testing-msw.md`.
+For frontend integration setup, handlers, fixtures, and request counting, see
+[Frontend integration tests](https://docs.gitlab.com/development/testing_guide/frontend_testing/#frontend-integration-tests).

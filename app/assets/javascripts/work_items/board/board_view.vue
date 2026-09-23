@@ -60,6 +60,7 @@ import {
 } from './constants';
 import { INHERITED_WIDGET_TYPES, resolveInheritedWidgetsDraft } from './filter_inheritance';
 import BoardColumn from './components/board_column.vue';
+import BoardColumnCount from './components/board_column_count.vue';
 
 export default {
   name: 'BoardView',
@@ -70,6 +71,7 @@ export default {
     GlEmptyState,
     GlLoadingIcon,
     BoardColumn,
+    BoardColumnCount,
     DraggableCompat,
     CreateWorkItemModal,
   },
@@ -166,6 +168,11 @@ export default {
       required: false,
       default: false,
     },
+    showEmptyGroups: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   emits: [
     'set-error',
@@ -180,6 +187,9 @@ export default {
     return {
       groupValues: [],
       gateData: null,
+      // Keyed by group value id. A missing entry means the count hasn't loaded
+      // yet; `null` means the count query failed (see BoardColumnCount).
+      groupCounts: {},
       renderedColumns: [],
       // The column value a new item targets; also gates the create modal's
       // mount so it re-reads the freshly-seeded draft each time it opens.
@@ -252,6 +262,20 @@ export default {
         values: this.groupValues,
       });
     },
+    // A failed count (see BoardColumnCount) still counts as arrived, so one
+    // bad request can't stall the board forever.
+    countsPending() {
+      if (this.showEmptyGroups || this.needsGroupSelection) {
+        return false;
+      }
+      return this.orderedGroupValues.some((value) => !(value.id in this.groupCounts));
+    },
+    displayedGroupValues() {
+      if (this.showEmptyGroups) {
+        return this.orderedGroupValues;
+      }
+      return this.orderedGroupValues.filter((value) => this.groupCounts[value.id] !== 0);
+    },
     canReorderColumns() {
       return this.canManageColumns && this.orderedGroupValues.length > 1;
     },
@@ -289,7 +313,7 @@ export default {
         this.applyRealtimeMatches(matches);
       }
     },
-    orderedGroupValues: {
+    displayedGroupValues: {
       immediate: true,
       handler(values) {
         this.renderedColumns = values;
@@ -348,6 +372,9 @@ export default {
   methods: {
     groupId(value) {
       return getGroupId({ groupBy: this.groupBy, value });
+    },
+    onGroupCount({ valueId, count }) {
+      this.groupCounts = { ...this.groupCounts, [valueId]: count };
     },
     // Fills in the new item's draft with the column's grouped attribute (e.g.
     // status) and the board's active filters (e.g. labels), then opens the
@@ -999,7 +1026,22 @@ export default {
     class="gl-flex gl-w-full gl-overflow-x-auto gl-py-5"
     style="height: calc(100dvh - 220px - 2rem)"
   >
-    <gl-loading-icon v-if="isLoading && groupValues.length === 0" size="lg" class="gl-m-auto" />
+    <template v-if="!needsGroupSelection">
+      <board-column-count
+        v-for="value in orderedGroupValues"
+        :key="`count-${value.id}`"
+        :value="value"
+        :strategy="strategy"
+        :root-page-full-path="rootPageFullPath"
+        :base-query-variables="queryVariables"
+        @change="onGroupCount"
+      />
+    </template>
+    <gl-loading-icon
+      v-if="(isLoading && groupValues.length === 0) || countsPending"
+      size="lg"
+      class="gl-m-auto"
+    />
     <gl-empty-state
       v-else-if="needsGroupSelection"
       class="gl-m-auto"
@@ -1032,6 +1074,7 @@ export default {
         :strategy="strategy"
         :root-page-full-path="rootPageFullPath"
         :base-query-variables="queryVariables"
+        :count="groupCounts[value.id] ?? 0"
         :drag-disabled="moveInProgress"
         :show-busy-indicator="showMoveInProgressIndicator"
         :drop-disabled="invalidValueIds.includes(value.id)"

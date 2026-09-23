@@ -1064,6 +1064,9 @@ export default {
     hiddenMetadataKeys() {
       return this.namespacePreferences.hiddenMetadataKeys ?? [];
     },
+    showEmptyGroups() {
+      return this.namespacePreferences.showEmptyGroups ?? true;
+    },
     savedViewId() {
       return convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id);
     },
@@ -2617,6 +2620,7 @@ export default {
       :visible-groups-loaded="preferencesLoaded"
       :can-manage-columns="isLoggedIn"
       :hidden-metadata-keys="hiddenMetadataKeys"
+      :show-empty-groups="showEmptyGroups"
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
       :updated-work-item="boardUpdatedItem"

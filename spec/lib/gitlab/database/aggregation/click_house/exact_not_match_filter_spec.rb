@@ -68,13 +68,13 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::ExactNotMatchFilter, :
     ])
   end
 
+  # session3 has no finished_event_at.
   it 'excludes rows where the column is NULL' do
     request = Gitlab::Database::Aggregation::Request.new(
       filters: [{ identifier: :finished_event_at_not, values: ['2025-03-01 00:10:00'] }],
       metrics: [{ identifier: :total_count }]
     )
 
-    # session3 has no finished_event_at: `NULL NOT IN (...)` is NULL, which HAVING treats as false.
     expect(engine).to execute_aggregation(request).and_return([
       { total_count: 1 }
     ])

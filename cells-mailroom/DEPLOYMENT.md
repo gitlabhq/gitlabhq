@@ -95,7 +95,11 @@ existing mailroom uses. Specifically it consumes:
   not read from these sections (see Secrets below).
 - `cell.topology_service_client` — Topology Service `address`, `tls`, `metadata`,
   and cert files (`ca_file`, `certificate_file`, `private_key_file`).
-- `cell.email_forwarding.scheme` — `https` in production.
+- `cell.email_forwarding.cell_endpoint` — `scheme` (`https` in production) and
+  optional `port` for the cell's internal API. A configured port replaces the
+  one returned by the Topology Service, as it does for GitLab Shell.
+- `cell.email_forwarding.health_check` — `port` (and optional `address`) for
+  mail_room's `/liveness` server. Unset means no server is started.
 - `cell.email_forwarding.route_unidentified_to_default_cell` — temporary
   fallback toggle (defaults `true`).
 

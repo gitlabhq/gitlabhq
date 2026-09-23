@@ -61,5 +61,57 @@ RSpec.describe Gitlab::Organizations::MaintenanceReadiness, feature_category: :o
         expect(readiness.blocking_reason).to eq('pending migrations')
       end
     end
+
+    context 'with CI jobs' do
+      let_it_be(:project) { create(:project, organization: organization) }
+
+      it 'reports a running CI job' do
+        create(:ci_build, :running, project: project)
+
+        expect(readiness.blocking_reason).to eq('active CI jobs')
+      end
+
+      it 'reports a CI job that is being cancelled' do
+        create(:ci_build, :canceling, project: project)
+
+        expect(readiness.blocking_reason).to eq('active CI jobs')
+      end
+
+      it 'ignores completed CI jobs' do
+        create(:ci_build, :success, project: project)
+
+        expect(readiness.blocking_reason).to be_nil
+      end
+
+      it 'ignores manual and scheduled CI jobs' do
+        create(:ci_build, :manual, project: project)
+        create(:ci_build, :scheduled, project: project)
+
+        expect(readiness.blocking_reason).to be_nil
+      end
+
+      it 'ignores active CI jobs in another organization' do
+        other_project = create(:project, organization: create(:organization))
+        create(:ci_build, :running, project: other_project)
+
+        expect(readiness.blocking_reason).to be_nil
+      end
+
+      it 'finds an active CI job in a later batch of projects' do
+        create(:project, organization: organization)
+        last_project = create(:project, organization: organization)
+        create(:ci_build, :running, project: last_project)
+
+        allow(Project).to receive(:in_organization).and_wrap_original do |method, *args|
+          method.call(*args).tap do |relation|
+            allow(relation).to receive(:each_batch).and_wrap_original do |each_batch, **kwargs, &block|
+              each_batch.call(**kwargs.merge(of: 1), &block)
+            end
+          end
+        end
+
+        expect(readiness.blocking_reason).to eq('active CI jobs')
+      end
+    end
   end
 end

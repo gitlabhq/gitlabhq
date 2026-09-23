@@ -1,10 +1,17 @@
 import { assign } from 'lodash-es';
 import { gql } from '@apollo/client/core';
 import createDefaultClient from '~/lib/graphql';
+import { EXECUTION_QUEUE_DASHBOARD, EXECUTION_QUEUE_DEFAULT } from '../constants';
 import TaskQueue from '../utils/task_queue';
 import { extractGroupOrProject } from '../utils/common';
 
-const CONCURRENCY_LIMIT = 1;
+// Embedded blocks run one at a time, a readiness commitment from the GLQL beta review
+// (https://gitlab.com/gitlab-org/gitlab/-/issues/517546): popular descriptions with many
+// blocks hit Postgres from every viewer. Dashboards have few viewers and bounded panels.
+const CONCURRENCY_LIMITS = {
+  [EXECUTION_QUEUE_DEFAULT]: 1,
+  [EXECUTION_QUEUE_DASHBOARD]: 4,
+};
 
 export const resolveToScalar = (obj) => {
   const key0 = Object.keys(obj).filter((key) => key !== '__typename')[0];
@@ -22,11 +29,20 @@ const isSubquery = (value) => typeof value === 'string' && value.startsWith('que
 
 export default class Executor {
   #client;
-  static taskQueue;
+  static taskQueues = {};
+
+  static taskQueue(name = EXECUTION_QUEUE_DEFAULT) {
+    // Unknown names share the default queue rather than silently getting a queue of their own.
+    const queue = Object.hasOwn(CONCURRENCY_LIMITS, name) ? name : EXECUTION_QUEUE_DEFAULT;
+
+    if (!Executor.taskQueues[queue]) {
+      Executor.taskQueues[queue] = new TaskQueue(CONCURRENCY_LIMITS[queue]);
+    }
+
+    return Executor.taskQueues[queue];
+  }
 
   init(client) {
-    Executor.taskQueue = Executor.taskQueue || new TaskQueue(CONCURRENCY_LIMIT);
-
     const searchParams = new URLSearchParams(extractGroupOrProject());
 
     this.#client = client || createDefaultClient({}, { path: `/api/glql?${searchParams}` });
@@ -34,7 +50,7 @@ export default class Executor {
     return this;
   }
 
-  async execute(query, variables = {}) {
+  async execute(query, variables = {}, { queue } = {}) {
     return this.#enqueue(
       query,
       assign(
@@ -44,6 +60,7 @@ export default class Executor {
           })),
         )),
       ),
+      queue,
     );
   }
 
@@ -62,11 +79,11 @@ export default class Executor {
     return data;
   }
 
-  async #enqueue(query, variables = {}) {
-    return Executor.taskQueue.enqueue(() => this.#execute(query, variables));
+  async #enqueue(query, variables, queue) {
+    return Executor.taskQueue(queue).enqueue(() => this.#execute(query, variables));
   }
 }
 
-export const execute = async (query, variables = {}) => {
-  return new Executor().init().execute(query, variables);
+export const execute = async (query, variables = {}, options = {}) => {
+  return new Executor().init().execute(query, variables, options);
 };

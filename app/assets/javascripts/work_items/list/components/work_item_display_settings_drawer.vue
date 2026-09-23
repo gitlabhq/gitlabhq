@@ -22,6 +22,7 @@ import WorkItemDisplaySettingsSort from './work_item_display_settings_sort.vue';
 import WorkItemDisplaySettingsMetadata from './work_item_display_settings_metadata.vue';
 import WorkItemDisplaySettingsUserPreferences from './work_item_display_settings_user_preferences.vue';
 import WorkItemDisplaySettingsGroupBy from './work_item_display_settings_group_by.vue';
+import WorkItemDisplaySettingsEmptyGroups from './work_item_display_settings_empty_groups.vue';
 
 export default {
   name: 'WorkItemDisplaySettingsDrawer',
@@ -35,6 +36,7 @@ export default {
     WorkItemDisplaySettingsMetadata,
     WorkItemDisplaySettingsUserPreferences,
     WorkItemDisplaySettingsGroupBy,
+    WorkItemDisplaySettingsEmptyGroups,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -143,7 +145,7 @@ export default {
     isGroupByPage() {
       return this.page === DISPLAY_SETTINGS_PAGE_GROUP_BY;
     },
-    showGroupByRow() {
+    isBoardMode() {
       return this.isPlanningViewBoardEnabled && this.viewMode === VIEW_MODE_BOARD;
     },
     groupByLabel() {
@@ -244,7 +246,7 @@ export default {
           @sort="onSort"
         />
         <button
-          v-if="showGroupByRow"
+          v-if="isBoardMode"
           type="button"
           data-testid="group-by-row"
           class="gl-flex gl-w-full gl-items-center gl-justify-between gl-border-none gl-bg-transparent gl-px-5 gl-py-4"
@@ -256,6 +258,16 @@ export default {
             <gl-icon name="chevron-right" />
           </span>
         </button>
+        <work-item-display-settings-empty-groups
+          v-if="isBoardMode"
+          class="gl-pb-3"
+          :full-path="fullPath"
+          :work-item-type-id="workItemTypeId"
+          :sort-key="sortKey"
+          :namespace-preferences="namespacePreferences"
+          :is-saved-view="isSavedView"
+          @update-settings="onSettingsUpdate"
+        />
         <div class="gl-border-t gl-p-2 gl-pt-5">
           <work-item-display-settings-metadata
             :namespace-preferences="namespacePreferences"

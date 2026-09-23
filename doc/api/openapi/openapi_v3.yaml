@@ -2566,7 +2566,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a85ec726f82e"
+              "$ref": "#/components/schemas/RequestBody_e4b2ec1a2c1e"
       x-gitlab-lifecycle: experiment
   "/api/v4/code_suggestions/completions":
     post:
@@ -19910,7 +19910,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_aff2e18e4b2e"
+              "$ref": "#/components/schemas/RequestBody_02f7c66b6a32"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -21898,7 +21898,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac6f9367f3de"
+              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
   "/api/v4/projects/{id}/issues/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdIssuesNoteableIdNotesNoteId
@@ -22127,7 +22127,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac6f9367f3de"
+              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
   "/api/v4/projects/{id}/merge_requests/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsNoteableIdNotesNoteId
@@ -22356,7 +22356,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac6f9367f3de"
+              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
   "/api/v4/projects/{id}/snippets/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdSnippetsNoteableIdNotesNoteId
@@ -22585,7 +22585,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac6f9367f3de"
+              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
   "/api/v4/projects/{id}/wiki_pages/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdWikiPagesNoteableIdNotesNoteId
@@ -22814,7 +22814,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac6f9367f3de"
+              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
   "/api/v4/groups/{id}/epics/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4GroupsIdEpicsNoteableIdNotesNoteId
@@ -23043,7 +23043,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac6f9367f3de"
+              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
   "/api/v4/projects/{id}/vulnerabilities/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdVulnerabilitiesNoteableIdNotesNoteId
@@ -23272,7 +23272,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac6f9367f3de"
+              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
   "/api/v4/groups/{id}/wiki_pages/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4GroupsIdWikiPagesNoteableIdNotesNoteId
@@ -38658,7 +38658,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ae072ba82cae"
+              "$ref": "#/components/schemas/RequestBody_49f7157f4078"
   "/api/v4/projects/{id}/relation-imports":
     get:
       operationId: getApiV4ProjectsIdRelationImports
@@ -48873,7 +48873,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1fe5c49bd5c3"
+              "$ref": "#/components/schemas/RequestBody_1387b5f6be72"
   "/api/v4/projects/{id}/ci/lint":
     get:
       operationId: getApiV4ProjectsIdCiLint
@@ -52279,7 +52279,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_09329db5e867"
+              "$ref": "#/components/schemas/RequestBody_4090e131595a"
   "/api/v4/projects/{id}/issues/{issue_iid}/links/{issue_link_id}":
     get:
       operationId: getApiV4ProjectsIdIssuesIssueIidLinksIssueLinkId
@@ -83824,8 +83824,14 @@ components:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
         type:
           type: string
-          description: One of ["ISSUE", "INCIDENT", "TEST_CASE", "REQUIREMENT", "TASK",
-            "TICKET"]
+          description: The type of the issue.
+          enum:
+          - ISSUE
+          - INCIDENT
+          - TEST_CASE
+          - REQUIREMENT
+          - TASK
+          - TICKET
           example: ISSUE
         assignee:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
@@ -84013,8 +84019,14 @@ components:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
         type:
           type: string
-          description: One of ["ISSUE", "INCIDENT", "TEST_CASE", "REQUIREMENT", "TASK",
-            "TICKET"]
+          description: The type of the issue.
+          enum:
+          - ISSUE
+          - INCIDENT
+          - TEST_CASE
+          - REQUIREMENT
+          - TASK
+          - TICKET
           example: ISSUE
         assignee:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
@@ -88520,8 +88532,14 @@ components:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
         type:
           type: string
-          description: One of ["ISSUE", "INCIDENT", "TEST_CASE", "REQUIREMENT", "TASK",
-            "TICKET"]
+          description: The type of the issue.
+          enum:
+          - ISSUE
+          - INCIDENT
+          - TEST_CASE
+          - REQUIREMENT
+          - TASK
+          - TICKET
           example: ISSUE
         assignee:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
@@ -88589,7 +88607,13 @@ components:
           "$ref": "#/components/schemas/APIEntitiesIssuableReferences"
         severity:
           type: string
-          description: One of ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
+          description: The severity of the issue.
+          enum:
+          - UNKNOWN
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
         subscribed:
           type: boolean
           example: false
@@ -90676,8 +90700,14 @@ components:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
         type:
           type: string
-          description: One of ["ISSUE", "INCIDENT", "TEST_CASE", "REQUIREMENT", "TASK",
-            "TICKET"]
+          description: The type of the issue.
+          enum:
+          - ISSUE
+          - INCIDENT
+          - TEST_CASE
+          - REQUIREMENT
+          - TASK
+          - TICKET
           example: ISSUE
         assignee:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
@@ -90745,7 +90775,13 @@ components:
           "$ref": "#/components/schemas/APIEntitiesIssuableReferences"
         severity:
           type: string
-          description: One of ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
+          description: The severity of the issue.
+          enum:
+          - UNKNOWN
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
         subscribed:
           type: boolean
           example: false
@@ -97455,8 +97491,14 @@ components:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
         type:
           type: string
-          description: One of ["ISSUE", "INCIDENT", "TEST_CASE", "REQUIREMENT", "TASK",
-            "TICKET"]
+          description: The type of the issue.
+          enum:
+          - ISSUE
+          - INCIDENT
+          - TEST_CASE
+          - REQUIREMENT
+          - TASK
+          - TICKET
           example: ISSUE
         assignee:
           "$ref": "#/components/schemas/APIEntitiesUserBasic"
@@ -97524,7 +97566,13 @@ components:
           "$ref": "#/components/schemas/APIEntitiesIssuableReferences"
         severity:
           type: string
-          description: One of ["UNKNOWN", "LOW", "MEDIUM", "HIGH", "CRITICAL"]
+          description: The severity of the issue.
+          enum:
+          - UNKNOWN
+          - LOW
+          - MEDIUM
+          - HIGH
+          - CRITICAL
         subscribed:
           type: boolean
           example: false
@@ -101348,7 +101396,7 @@ components:
           nullable: true
       required:
       - content
-    RequestBody_a85ec726f82e:
+    RequestBody_e4b2ec1a2c1e:
       type: object
       properties:
         audience:
@@ -101361,10 +101409,10 @@ components:
           type: integer
           minimum: 1
           maximum: 43200
-          description: Requested token lifetime in seconds, from 1 up to 43200. Defaults
-            to 300. The granted lifetime may be shorter than requested depending on
-            the authentication method used to call this endpoint.
-          nullable: true
+          description: Requested token lifetime in seconds. The granted lifetime may
+            be shorter than requested depending on the authentication method used
+            to call this endpoint.
+          default: 300
       required:
       - audience
     RequestBody_ec7cc2a99fc9:
@@ -106877,7 +106925,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_aff2e18e4b2e:
+    RequestBody_02f7c66b6a32:
       type: object
       properties:
         admin_mode:
@@ -108471,8 +108519,10 @@ components:
           nullable: true
         sidekiq_job_limiter_mode:
           type: string
-          description: "`track` or `compress`. Sets the behavior for Sidekiq job size
-            limits. Default: 'compress'."
+          enum:
+          - track
+          - compress
+          description: 'Sets the behavior for Sidekiq job size limits. Default: ''compress''.'
           nullable: true
         sidekiq_timezone_override:
           type: string
@@ -110320,7 +110370,7 @@ components:
           type: boolean
           description: Enable/disable this notification
           nullable: true
-    RequestBody_ac6f9367f3de:
+    RequestBody_bc09ed866646:
       type: object
       properties:
         body:
@@ -110333,8 +110383,8 @@ components:
           nullable: true
         internal:
           type: boolean
-          description: Internal note flag, default is false
-          nullable: true
+          description: Internal note flag.
+          default: false
         created_at:
           type: string
           description: The creation date of the note
@@ -115477,7 +115527,7 @@ components:
       required:
       - url
       - path
-    RequestBody_ae072ba82cae:
+    RequestBody_49f7157f4078:
       type: object
       properties:
         path:
@@ -115491,9 +115541,13 @@ components:
           nullable: true
         relation:
           type: string
-          description: The relation to import. Must be one of issues, merge_requests,
-            ci_pipelines, or milestones.
-          nullable: true
+          enum:
+          - issues
+          - merge_requests
+          - milestones
+          - ci_pipelines
+          description: The relation to import.
+          minLength: 1
         file.path:
           type: string
           description: Path to locally stored body (generated by Workhorse)
@@ -117811,7 +117865,7 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_1fe5c49bd5c3:
+    RequestBody_1387b5f6be72:
       type: object
       properties:
         text:
@@ -117820,8 +117874,8 @@ components:
           nullable: true
         gfm:
           type: boolean
-          description: Render text using GitLab Flavored Markdown. Default is false
-          nullable: true
+          description: Render text using GitLab Flavored Markdown.
+          default: false
         project:
           type: string
           description: Use project as a context when creating references using GitLab
@@ -118161,7 +118215,7 @@ components:
           type: string
           description: A description of the image or URL
           nullable: true
-    RequestBody_09329db5e867:
+    RequestBody_4090e131595a:
       type: object
       properties:
         target_project_id:
@@ -118184,9 +118238,8 @@ components:
           - relates_to
           - blocks
           - is_blocked_by
-          description: The type of the relation (“relates_to”, “blocks”, “is_blocked_by”),defaults
-            to “relates_to”)
-          nullable: true
+          description: The type of the relation.
+          default: relates_to
       required:
       - target_project_id
       - target_issue_iid

@@ -12,6 +12,7 @@ import WorkItemDisplaySettingsSort from '~/work_items/list/components/work_item_
 import WorkItemDisplaySettingsMetadata from '~/work_items/list/components/work_item_display_settings_metadata.vue';
 import WorkItemDisplaySettingsUserPreferences from '~/work_items/list/components/work_item_display_settings_user_preferences.vue';
 import WorkItemDisplaySettingsGroupBy from '~/work_items/list/components/work_item_display_settings_group_by.vue';
+import WorkItemDisplaySettingsEmptyGroups from '~/work_items/list/components/work_item_display_settings_empty_groups.vue';
 
 const SORT_OPTIONS = [
   {
@@ -42,6 +43,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
   const findGroupByRow = () => wrapper.findByTestId('group-by-row');
   const findGroupByBackButton = () => wrapper.findComponentByTestId('group-by-back-button');
   const findGroupBy = () => wrapper.findComponent(WorkItemDisplaySettingsGroupBy);
+  const findEmptyGroups = () => wrapper.findComponent(WorkItemDisplaySettingsEmptyGroups);
   const findTitle = () => wrapper.find('h2');
 
   const createComponent = ({ props = {}, provide = {} } = {}) => {
@@ -324,6 +326,52 @@ describe('WorkItemDisplaySettingsDrawer', () => {
 
       expect(findTitle().text()).toBe('Display options');
       expect(findGroupBy().exists()).toBe(false);
+    });
+  });
+
+  describe('empty groups section', () => {
+    it('does not render the row outside board view mode', () => {
+      createComponent({ props: { viewMode: VIEW_MODE_LIST } });
+
+      expect(findEmptyGroups().exists()).toBe(false);
+    });
+
+    it('does not render the row when planningViewBoards is disabled', () => {
+      createComponent({
+        props: { viewMode: VIEW_MODE_BOARD },
+        provide: { glFeatures: { planningViewBoards: false } },
+      });
+
+      expect(findEmptyGroups().exists()).toBe(false);
+    });
+
+    it('renders the row with respective props in board view mode', () => {
+      const namespacePreferences = { showEmptyGroups: false };
+      createComponent({
+        props: {
+          viewMode: VIEW_MODE_BOARD,
+          namespacePreferences,
+          isSavedView: true,
+          sortKey: 'CREATED_DESC',
+        },
+      });
+
+      expect(findEmptyGroups().props()).toMatchObject({
+        namespacePreferences,
+        fullPath: 'gitlab-org/gitlab',
+        isSavedView: true,
+        workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
+        sortKey: 'CREATED_DESC',
+      });
+    });
+
+    it('re-emits update-settings when the row emits updates', () => {
+      createComponent({ props: { viewMode: VIEW_MODE_BOARD } });
+
+      const payload = { showEmptyGroups: false };
+      findEmptyGroups().vm.$emit('update-settings', payload);
+
+      expect(wrapper.emitted('update-settings')).toEqual([[payload]]);
     });
   });
 });

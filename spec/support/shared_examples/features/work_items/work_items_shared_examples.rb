@@ -133,6 +133,26 @@ RSpec.shared_examples 'work items comments' do
   end
 end
 
+# Assigning and unassigning is covered by
+# ee/spec/frontend/integration/work_items/drawer_shared_test_helpers.js
+RSpec.shared_examples 'work items assignees real-time' do
+  it 'updates the assignee in real-time', :aggregate_failures do
+    using_session :other_session do
+      visit work_items_path
+
+      expect(page).not_to have_link(user.name)
+    end
+
+    click_button 'assign yourself'
+
+    expect(page).to have_link(user.name)
+    wait_for_requests
+    using_session :other_session do
+      expect(page).to have_link(user.name)
+    end
+  end
+end
+
 RSpec.shared_examples 'work items assignees' do
   it 'assigns and unassigns user', :aggregate_failures do
     within_testid 'work-item-assignees' do
@@ -149,21 +169,7 @@ RSpec.shared_examples 'work items assignees' do
     end
   end
 
-  it 'updates the assignee in real-time', :aggregate_failures do
-    using_session :other_session do
-      visit work_items_path
-
-      expect(page).not_to have_link(user.name)
-    end
-
-    click_button 'assign yourself'
-
-    expect(page).to have_link(user.name)
-    wait_for_requests
-    using_session :other_session do
-      expect(page).to have_link(user.name)
-    end
-  end
+  it_behaves_like 'work items assignees real-time'
 end
 
 RSpec.shared_examples 'work items labels' do |namespace_type|

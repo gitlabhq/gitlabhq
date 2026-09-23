@@ -104,12 +104,9 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/607018) in GitLab 19.5. Feature flag `elasticsearch_group_search` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this scope is controlled by a feature flag.
-> For more information, see the history.
 
 ```shell
 curl --request GET \
@@ -688,12 +685,9 @@ Example response:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249760) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `elasticsearch_group_search`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/607018) in GitLab 19.5. Feature flag `elasticsearch_group_search` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this scope is controlled by a feature flag.
-> For more information, see the history.
 
 This scope returns the subgroups of the specified group, not the group itself.
 

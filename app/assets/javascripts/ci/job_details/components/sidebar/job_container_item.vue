@@ -58,7 +58,7 @@ export default {
       v-gl-tooltip.left.viewport
       :href="job.status.details_path"
       :title="tooltipText"
-      class="gl-mb-1 gl-flex gl-items-center gl-py-2 gl-pl-7"
+      class="gl-mb-1 gl-flex gl-items-center gl-py-2 gl-pl-7 !gl-text-default"
       :data-testid="dataTestId"
     >
       <gl-icon

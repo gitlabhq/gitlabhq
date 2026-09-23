@@ -454,8 +454,9 @@ RSpec.describe Packages::Protection::Rule, feature_category: :package_registry d
   end
 
   describe '.for_action_exists?' do
-    let_it_be(:project_with_ppr) { create(:project) }
-    let_it_be(:project_without_ppr) { create(:project) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project_with_ppr) { create(:project, namespace: namespace) }
+    let_it_be(:project_without_ppr) { create(:project, namespace: namespace) }
 
     let_it_be(:ppr_for_developer) do
       create(:package_protection_rule,
@@ -525,7 +526,7 @@ RSpec.describe Packages::Protection::Rule, feature_category: :package_registry d
       )
     end
 
-    let_it_be(:project_with_pypi_ppr) { create(:project) }
+    let_it_be(:project_with_pypi_ppr) { create(:project, namespace: namespace) }
 
     let_it_be(:ppr_for_pypi) do
       create(:package_protection_rule,
@@ -643,7 +644,8 @@ RSpec.describe Packages::Protection::Rule, feature_category: :package_registry d
   end
 
   describe '.for_push_exists_for_projects_and_packages' do
-    let_it_be(:project1) { create(:project) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project1) { create(:project, namespace: namespace) }
     let_it_be(:project1_ppr) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-prod*',
@@ -653,10 +655,10 @@ RSpec.describe Packages::Protection::Rule, feature_category: :package_registry d
       )
     end
 
-    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2) { create(:project, namespace: namespace) }
     let_it_be(:project2_ppr) { create(:package_protection_rule, project: project2) }
 
-    let_it_be(:unprotected_project) { create(:project) }
+    let_it_be(:unprotected_project) { create(:project, namespace: namespace) }
 
     let(:package_type_npm) { Packages::Package.package_types[:npm] }
 
@@ -756,8 +758,8 @@ RSpec.describe Packages::Protection::Rule, feature_category: :package_registry d
       let(:pypi_type) { Packages::Package.package_types[:pypi] }
 
       it_behaves_like 'PEP 503 normalized matching' do
-        let!(:pep503_project) { create(:project) }
-        let!(:pep503_rule) do
+        let_it_be(:pep503_project) { create(:project, namespace: namespace) }
+        let_it_be(:pep503_rule) do
           create(:package_protection_rule,
             project: pep503_project,
             package_type: :pypi,

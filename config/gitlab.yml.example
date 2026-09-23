@@ -1528,10 +1528,20 @@ production: &base
     # database:
     #   skip_sequence_alteration: false
     # email_forwarding:
-    #   # URL scheme used to reach cells when forwarding incoming email. Cell
-    #   # addresses are bare hosts, so the scheme is set here. Use "http" for
-    #   # local environments and "https" in production.
-    #   scheme: https
+    #   # How the cells-mailroom service reaches a cell's internal API when
+    #   # forwarding incoming email.
+    #   cell_endpoint:
+    #     # Cell addresses are bare hosts, so the scheme is set here. Use "http"
+    #     # for local environments and "https" in production.
+    #     scheme: https
+    #     # Internal API port. When set it replaces the port in the address the
+    #     # Topology Service returns. When omitted that address is used as-is.
+    #     port: 8181
+    #   # Address and port for the cells-mailroom health check server, which
+    #   # serves /liveness. When no port is set, no server is started.
+    #   health_check:
+    #     address: 0.0.0.0
+    #     port: 8080
     #   # Whether incoming emails that cannot be identified are routed to the
     #   # default (first) cell instead of being dropped. Defaults to true.
     #   route_unidentified_to_default_cell: true

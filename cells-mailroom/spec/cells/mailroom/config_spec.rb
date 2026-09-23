@@ -25,13 +25,17 @@ RSpec.describe Cells::Mailroom::Config do
           ssl: true
           mailbox: "inbox"
           idle_timeout: 60
+          delete_after_delivery: true
+          expunge_deleted: false
           signing_key_file: "/etc/gitlab/incoming_email_signing_key.pem"
         service_desk_email:
           enabled: false
           address: "support+%{key}@example.com"
         cell:
           email_forwarding:
-            scheme: http
+            cell_endpoint:
+              scheme: http
+              port: 8181
           topology_service_client:
             address: "ts.example.com:443"
             metadata:
@@ -66,6 +70,8 @@ RSpec.describe Cells::Mailroom::Config do
             start_tls: nil,
             name: 'inbox',
             idle_timeout: 60,
+            delete_after_delivery: true,
+            expunge_deleted: false,
             delivery_options: {
               mailbox_type: 'incoming_email',
               wildcard_address: 'incoming+%{key}@example.com'
@@ -74,18 +80,75 @@ RSpec.describe Cells::Mailroom::Config do
         ]
       )
     end
+
+    it 'keeps delivered mail out of the mailbox the way the existing mailroom does' do
+      expect(config.mailboxes.first).to include(delete_after_delivery: true)
+    end
   end
 
-  describe '#cell_scheme' do
+  describe '#cell_endpoint_scheme' do
     it 'reads the configured scheme' do
-      expect(config.cell_scheme).to eq('http')
+      expect(config.cell_endpoint_scheme).to eq('http')
     end
 
     context 'when not configured' do
       let(:gitlab_yml) { "production:\n  cell: {}\n" }
 
       it 'defaults to https' do
-        expect(config.cell_scheme).to eq('https')
+        expect(config.cell_endpoint_scheme).to eq('https')
+      end
+    end
+  end
+
+  describe '#cell_endpoint_port' do
+    it 'reads the configured port' do
+      expect(config.cell_endpoint_port).to eq(8181)
+    end
+
+    context 'when not configured' do
+      let(:gitlab_yml) { "production:\n  cell: {}\n" }
+
+      it 'returns nil so the Topology Service address is used as-is' do
+        expect(config.cell_endpoint_port).to be_nil
+      end
+    end
+  end
+
+  describe '#health_check_attributes' do
+    it 'returns nil when no port is configured' do
+      expect(config.health_check_attributes).to be_nil
+    end
+
+    context 'when a port is configured' do
+      let(:gitlab_yml) do
+        <<~YAML
+          production:
+            cell:
+              email_forwarding:
+                health_check:
+                  port: 8080
+        YAML
+      end
+
+      it 'binds all interfaces by default so a container probe can reach it' do
+        expect(config.health_check_attributes).to eq(address: '0.0.0.0', port: 8080)
+      end
+    end
+
+    context 'when an address is also configured' do
+      let(:gitlab_yml) do
+        <<~YAML
+          production:
+            cell:
+              email_forwarding:
+                health_check:
+                  address: "127.0.0.1"
+                  port: 9090
+        YAML
+      end
+
+      it 'uses the configured address' do
+        expect(config.health_check_attributes).to eq(address: '127.0.0.1', port: 9090)
       end
     end
   end

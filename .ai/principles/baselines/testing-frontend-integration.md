@@ -1,7 +1,7 @@
 # Frontend Integration Tests — How to Write Them
 
 > **Prerequisite:** Read `.ai/principles/distilled/testing-jest.md` first — its
-> **MSW Integration Tests**, **Capybara Feature Tests**, and **Test Fixtures**
+> **Frontend Integration Tests**, **Capybara Feature Tests**, and **Test Fixtures**
 > sections are the primary reference and apply in full here.
 
 This baseline covers only the gaps and additions not already in `testing-jest.md`.
@@ -17,9 +17,10 @@ For the decision of *which* test type to write, see
 - Place all frontend integration specs and harness files under
   `ee/spec/frontend/integration/`. The CE path
   `spec/frontend/integration/` is intentionally empty and blocked by ESLint.
-- DO NOT add frontend integration tests for FOSS-versus-licensed behavior; MSW mocks
-  the network layer (including auth and licensing) and cannot assert those
-  differences. Use a Capybara feature spec instead.
+- DO NOT use frontend integration tests to verify backend license enforcement;
+  MSW intercepts the network requests. Use Capybara for enforcement tests.
+  Exception: use frontend integration tests to verify rendering of recorded
+  unlicensed payloads.
 
 ### Running Frontend Integration Tests
 

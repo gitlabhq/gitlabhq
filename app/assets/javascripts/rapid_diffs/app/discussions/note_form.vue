@@ -35,7 +35,7 @@ export default {
       default: '',
     },
     noteId: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: undefined,
     },

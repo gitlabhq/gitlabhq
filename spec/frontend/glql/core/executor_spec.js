@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client/core';
 import Executor, { resolveToScalar, transformGIDToString } from '~/glql/core/executor';
 import createDefaultClient from '~/lib/graphql';
+import waitForPromises from 'helpers/wait_for_promises';
 import { MOCK_ISSUES } from '../mock_data';
 
 jest.mock('~/lib/graphql', () => jest.fn());
@@ -79,6 +80,54 @@ describe('Executor', () => {
         },
       }),
     );
+  });
+
+  describe('task queues', () => {
+    it('keeps one queue per name, with dashboards on their own', () => {
+      expect(Executor.taskQueue()).toBe(Executor.taskQueue('glql-queue-default'));
+      expect(Executor.taskQueue('glql-queue-dashboard')).toBe(
+        Executor.taskQueue('glql-queue-dashboard'),
+      );
+      expect(Executor.taskQueue('glql-queue-dashboard')).not.toBe(Executor.taskQueue());
+    });
+
+    it('falls back to the default queue for an unknown name', () => {
+      expect(Executor.taskQueue('glql-queue-typo')).toBe(Executor.taskQueue());
+    });
+
+    it('runs one request at a time by default and four for dashboards', () => {
+      expect(Executor.taskQueue().concurrencyLimit).toBe(1);
+      expect(Executor.taskQueue('glql-queue-dashboard').concurrencyLimit).toBe(4);
+    });
+
+    it('does not hold a dashboard request behind the default queue', async () => {
+      const variablesFor = (name) => ({ name: { type: 'String', value: name } });
+      const sentRequests = () => queryFn.mock.calls.map(([{ variables }]) => variables.name);
+      let releaseFirst;
+
+      queryFn.mockReset();
+      queryFn.mockReturnValueOnce(
+        new Promise((resolve) => {
+          releaseFirst = resolve;
+        }),
+      );
+      queryFn.mockResolvedValue({ data: MOCK_QUERY_RESPONSE });
+
+      const query = 'query { issues { nodes { id } } }';
+      const requests = [
+        executor.execute(query, variablesFor('first')),
+        executor.execute(query, variablesFor('second')),
+        executor.execute(query, variablesFor('dashboard'), { queue: 'glql-queue-dashboard' }),
+      ];
+      await waitForPromises();
+
+      expect(sentRequests()).toEqual(['first', 'dashboard']);
+
+      releaseFirst({ data: MOCK_QUERY_RESPONSE });
+      await Promise.all(requests);
+
+      expect(sentRequests()).toEqual(['first', 'dashboard', 'second']);
+    });
   });
 });
 

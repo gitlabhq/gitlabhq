@@ -1,7 +1,7 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import { GlButton, GlLoadingIcon, GlSkeletonLoader, GlToastMixin } from '@gitlab/ui';
-import { isEmpty } from 'lodash-es';
+import { isEmpty, omit } from 'lodash-es';
 import { convertToSearchQuery } from 'ee_else_ce/work_items/list/utils';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 import { evictNamespaceWorkItems } from '~/work_items/list/graphql/cache_updates';
@@ -10,7 +10,7 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { STATUS_OPEN } from '~/issues/constants';
 import { CREATED_DESC } from '~/work_items/list/constants';
-import { s__ } from '~/locale';
+import { formatNumber, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { DEFAULT_PAGE_SIZE, DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -22,7 +22,7 @@ import {
   getSortedWorkItems,
   getWorkItemsConnection,
 } from '../utils';
-import { TABLE_COLUMNS } from './constants';
+import { CURSOR_VARIABLES, TABLE_COLUMNS } from './constants';
 import WorkItemTableRow from './components/work_item_table_row.vue';
 
 export default {
@@ -59,7 +59,9 @@ export default {
     },
     workItemsSlim() {
       const query = this.useRestApi ? getWorkItemsRestQuery : getWorkItemsSlimQuery;
-      return this.createWorkItemQuery(query);
+      // The full query is skipped in REST mode, so only the slim one is guaranteed to run —
+      // that's why it's the one tracking pagination state.
+      return this.createWorkItemQuery(query, { tracksPageInfo: true });
     },
   },
   props: {
@@ -149,16 +151,33 @@ export default {
       isInitialLoadComplete: false,
       bulkEditInProgress: false,
       namespaceId: null,
+      pageInfo: {},
+      afterCursor: null,
+      previousPagesSlim: [],
+      previousPagesFull: [],
+      pendingPageQueries: 0,
+      loadMoreError: false,
     };
   },
   computed: {
     useRestApi() {
       return Boolean(this.glFeatures.workItemRestApiFrontendUsers);
     },
+    firstPageVariables() {
+      return { ...omit(this.queryVariables, CURSOR_VARIABLES), firstPageSize: this.pageSize };
+    },
+    pageVariables() {
+      return this.afterCursor
+        ? { ...this.firstPageVariables, afterCursor: this.afterCursor }
+        : this.firstPageVariables;
+    },
+    // Earlier pages are kept in component state rather than the Apollo cache. The slim and full
+    // queries write the same cache entry with different fields, so merging there would let one
+    // query overwrite the other's data with gaps.
     workItems() {
       const combined = combineWorkItemLists(
-        this.workItemsSlim,
-        this.workItemsFull,
+        [...this.previousPagesSlim, ...this.workItemsSlim],
+        [...this.previousPagesFull, ...this.workItemsFull],
         !this.useRestApi && Boolean(this.glFeatures.workItemFeaturesField),
       );
       return getSortedWorkItems(combined, this.queryVariables.sort || CREATED_DESC);
@@ -177,8 +196,37 @@ export default {
     checkedIssuables() {
       return this.workItems.filter((workItem) => this.checkedIssuableIds.includes(workItem.id));
     },
+    // Stays true until both queries return, since a work item isn't complete until its slim
+    // and full halves are combined.
+    fetchNextPageInProgress() {
+      return this.pendingPageQueries > 0;
+    },
+    // Apollo's loading flag is also true while fetching an extra page with "Load more", but
+    // that shouldn't trigger the full-table skeleton, only an actual (re)load should.
     isLoading() {
-      return this.$apollo.queries.workItemsSlim.loading;
+      return this.$apollo.queries.workItemsSlim.loading && !this.fetchNextPageInProgress;
+    },
+    hasNextPage() {
+      return Boolean(this.pageInfo.hasNextPage && this.pageInfo.endCursor);
+    },
+    // The button doubles as the retry for a page that failed, so it stays put after a failure
+    // even when the page that did load reported nothing more to fetch.
+    showLoadMoreButton() {
+      return this.hasNextPage || this.loadMoreError || this.fetchNextPageInProgress;
+    },
+    // The full query fills in metadata for the page on screen, and archiving that page before it
+    // arrives would lose those fields for good, so the next page has to wait for it.
+    detailLoading() {
+      return !this.useRestApi && this.$apollo.queries.workItemsFull.loading;
+    },
+    showPaginationFooter() {
+      return !this.isLoading && this.workItems.length > 0;
+    },
+    paginationText() {
+      return sprintf(s__('WorkItem|Showing 1-%{loaded} of %{total}'), {
+        loaded: formatNumber(this.workItems.length),
+        total: formatNumber(this.workItemsCount),
+      });
     },
     shouldLoad() {
       return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
@@ -205,6 +253,18 @@ export default {
         ? Math.min(this.pageSize, this.workItemsCount)
         : DEFAULT_SKELETON_COUNT;
     },
+    // How many skeleton rows to show: a full page while (re)loading, or just the size of the
+    // next page while "Load more" is in flight.
+    pendingRowCount() {
+      if (this.isLoading) {
+        return this.skeletonRowCount;
+      }
+      if (!this.fetchNextPageInProgress) {
+        return 0;
+      }
+      const remaining = this.workItemsCount - this.workItems.length;
+      return remaining > 0 ? Math.min(this.pageSize, remaining) : this.pageSize;
+    },
     showListEmptyState() {
       return !this.isLoading && !this.error && this.workItems.length === 0;
     },
@@ -216,6 +276,14 @@ export default {
     },
   },
   watch: {
+    // New filters, sort or page size mean a different result set, so paging starts over.
+    firstPageVariables() {
+      this.afterCursor = null;
+      this.previousPagesSlim = [];
+      this.previousPagesFull = [];
+      this.pendingPageQueries = 0;
+      this.loadMoreError = false;
+    },
     workItems: {
       handler(value) {
         if (!this.shouldLoad && this.workItemsSlim.length > 0) {
@@ -237,14 +305,14 @@ export default {
     },
   },
   methods: {
-    createWorkItemQuery(query) {
+    createWorkItemQuery(query, { tracksPageInfo = false } = {}) {
       return {
         query,
         context: {
           featureCategory: 'portfolio_management',
         },
         variables() {
-          return this.queryVariables;
+          return this.pageVariables;
         },
         update(data) {
           return getWorkItemsConnection(data, this.useRestApi)?.nodes ?? [];
@@ -253,19 +321,41 @@ export default {
           return isEmpty(this.queryVariables) || this.skipQuery;
         },
         result({ data }) {
-          this.handleTableDataResults(data);
+          this.handleTableDataResults(data, tracksPageInfo);
         },
         error(error) {
+          Sentry.captureException(error);
+
+          // A failed "Load more" leaves already-loaded rows on screen, so this reports the
+          // specific failure instead of the generic error. `loadMoreError` stops the second
+          // query (slim or full) from overwriting that message when both fail for one page.
+          if (this.fetchNextPageInProgress || this.loadMoreError) {
+            this.pendingPageQueries = 0;
+            this.loadMoreError = true;
+            this.$emit(
+              'set-error',
+              s__('WorkItem|An error occurred while fetching more work items.'),
+            );
+            return;
+          }
           this.isInitialLoadComplete = true;
           this.$emit(
             'set-error',
             s__('WorkItem|Something went wrong when fetching work items. Please try again.'),
           );
-          Sentry.captureException(error);
         },
       };
     },
-    handleTableDataResults(data) {
+    handleTableDataResults(data, tracksPageInfo) {
+      const connection = getWorkItemsConnection(data, this.useRestApi);
+      // Don't overwrite pageInfo with an empty result on failure — keeping the last real cursor
+      // lets the failed page be retried instead of silently skipped.
+      if (tracksPageInfo && connection) {
+        this.pageInfo = connection.pageInfo ?? {};
+      }
+      if (this.pendingPageQueries > 0) {
+        this.pendingPageQueries -= 1;
+      }
       if (data?.namespace) {
         this.namespaceId = data.namespace.id;
         this.$emit('namespace-data-loaded', { namespaceName: data.namespace.name, data });
@@ -326,6 +416,45 @@ export default {
       evictNamespaceWorkItems(this.$apollo.provider.defaultClient.cache, this.namespaceId, {
         useRestApi: this.useRestApi,
       });
+    },
+    fetchNextPage() {
+      if (this.fetchNextPageInProgress || this.detailLoading) {
+        return;
+      }
+      if (!this.hasNextPage && !this.loadMoreError) {
+        return;
+      }
+
+      // A failed attempt can leave the page half fetched, with the slim query's rows in hand
+      // but not the full query's (or the other way round), so this click fetches the same page
+      // again rather than moving on and leaving a gap in the table.
+      const isRetry = this.loadMoreError;
+      if (isRetry) {
+        this.$emit('set-error', undefined);
+        this.loadMoreError = false;
+      }
+      this.pendingPageQueries = this.pageQueries().length;
+
+      if (isRetry) {
+        this.refetchPage();
+        return;
+      }
+
+      this.previousPagesSlim = [...this.previousPagesSlim, ...this.workItemsSlim];
+      this.previousPagesFull = [...this.previousPagesFull, ...this.workItemsFull];
+      this.workItemsSlim = [];
+      this.workItemsFull = [];
+      this.afterCursor = this.pageInfo.endCursor;
+    },
+    // The queries a page is fetched with: the REST query stands in for both GraphQL ones, so
+    // a page is one request in that mode and two in the other.
+    pageQueries() {
+      const { workItemsSlim, workItemsFull } = this.$apollo.queries;
+      return this.useRestApi ? [workItemsSlim] : [workItemsSlim, workItemsFull];
+    },
+    refetchPage() {
+      // Swallow the rejection here, the error() hook on each query already reports it.
+      this.pageQueries().forEach((query) => query.refetch().catch(() => {}));
     },
     isColumnLicensed(column) {
       return !column.licensedFeature || Boolean(this[column.licensedFeature]);
@@ -406,20 +535,8 @@ export default {
             </th>
           </tr>
         </thead>
-        <tbody :aria-busy="isLoading">
-          <template v-if="isLoading">
-            <tr v-for="row in skeletonRowCount" :key="`skeleton-${row}`" class="gl-border-b">
-              <td v-if="showBulkEditSidebar" class="gl-border-r gl-px-4 gl-py-3"></td>
-              <td
-                v-for="column in columns"
-                :key="column.key"
-                class="gl-border-r gl-px-4 gl-py-3 last:gl-border-r-0"
-              >
-                <gl-skeleton-loader :width="60" :lines="1" equal-width-lines />
-              </td>
-            </tr>
-          </template>
-          <template v-else>
+        <tbody :aria-busy="isLoading || fetchNextPageInProgress">
+          <template v-if="!isLoading">
             <work-item-table-row
               v-for="workItem in workItems"
               :key="workItem.id"
@@ -434,8 +551,34 @@ export default {
               @checked-input="updateCheckedIssuableIds(workItem, $event)"
             />
           </template>
+          <tr v-for="row in pendingRowCount" :key="`skeleton-${row}`" class="gl-border-b">
+            <td v-if="showBulkEditSidebar" class="gl-border-r gl-px-4 gl-py-3"></td>
+            <td
+              v-for="column in columns"
+              :key="column.key"
+              class="gl-border-r gl-px-4 gl-py-3 last:gl-border-r-0"
+            >
+              <gl-skeleton-loader :width="60" :lines="1" equal-width-lines />
+            </td>
+          </tr>
         </tbody>
       </table>
+    </div>
+
+    <div v-if="showPaginationFooter" class="gl-mt-4 gl-flex gl-items-center gl-gap-3">
+      <gl-button
+        v-if="showLoadMoreButton"
+        size="small"
+        :loading="fetchNextPageInProgress"
+        :disabled="detailLoading"
+        data-testid="load-more-button"
+        @click="fetchNextPage"
+      >
+        {{ s__('WorkItem|Load more') }}
+      </gl-button>
+      <span v-if="workItemsCount > 0" class="gl-text-sm gl-text-subtle" data-testid="page-summary">
+        {{ paginationText }}
+      </span>
     </div>
 
     <slot

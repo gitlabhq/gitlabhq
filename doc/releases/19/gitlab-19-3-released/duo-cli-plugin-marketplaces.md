@@ -16,7 +16,7 @@ slash commands, and Model Context Protocol (MCP) servers into a single directory
 available plugins, hosted in a Git repository or a local directory.
 
 GitLab Duo CLI automatically registers the official `gitlab-duo-plugins` marketplace the first
-time you use plugins. 
+time you use plugins.
 
 The marketplace includes three skills for common GitLab workflows:
 
@@ -24,7 +24,7 @@ The marketplace includes three skills for common GitLab workflows:
 - `stack-changes`: Splits a large local
   change into a stacked merge request chain.
 - `create-issue`: Drafts a GitLab issue from a
-  natural-language description. 
+  natural-language description.
 
 To install one of the skills, run `glab duo cli plugin install <plugin>@gitlab-duo-plugins` or `duo plugin install <plugin>@gitlab-duo-plugins`, based on your setup.
 

@@ -56,8 +56,8 @@ module API
           desc: 'The ID or URL-encoded path of a target project'
         requires :target_issue_iid, types: [String, Integer], desc: 'The internal ID of a target project’s issue'
         optional :link_type, type: String, values: IssueLink.available_link_types,
-          desc: 'The type of the relation (“relates_to”, “blocks”, “is_blocked_by”),'\
-           'defaults to “relates_to”)'
+          default: IssueLink::TYPE_RELATES_TO,
+          desc: 'The type of the relation.'
       end
       route_setting :authorization, permissions: :create_issue_link, boundary_type: :project
       post ':id/issues/:issue_iid/links' do

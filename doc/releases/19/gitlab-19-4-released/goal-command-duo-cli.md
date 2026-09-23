@@ -19,7 +19,7 @@ stay in control the whole time: pause, update the goal, or redirect the agent at
 
 The `/goal` slash command requires GitLab 19.3 and later, and GitLab Duo CLI 9.17.0 and later.
 
-To get started, run `/goal <task>`. 
+To get started, run `/goal <task>`.
 
 For example:
 

@@ -7,8 +7,8 @@ module Search
         'groups'
       end
 
-      def self.available?(user)
-        ::Feature.enabled?(:elasticsearch_group_search, user)
+      def self.available?
+        true
       end
 
       private

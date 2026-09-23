@@ -13,6 +13,12 @@ module Gitlab
           DEDUP_QUERY_NAME = 'ch_aggregation_dedup_query'
           COLUMN_PREFIX = 'aeq_'
 
+          # Cap for `exact_not_match` value lists, tighter than the framework-wide
+          # `Types::BaseArgument::MAX_ARRAY_SIZE`. An exclusion cannot use the sort key to skip
+          # granules, so the whole scoped range is read however short the list is; the cap bounds
+          # the request and the set-membership work, not the read.
+          MAX_EXCLUSION_VALUES = 100
+
           class << self
             def dimensions_mapping
               {

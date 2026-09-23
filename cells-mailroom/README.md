@@ -64,11 +64,24 @@ admin certificate is required. This service reuses the same Topology Service
 metadata the GitLab application uses (`cell.topology_service_client` in
 `config/gitlab.yml`).
 
-### Forwarding scheme
+### Cell endpoint
 
 Cell addresses returned by the Topology Service are bare hosts, so the request
 scheme is chosen by this service: `https` by default, `http` for local
-environments. Set it via `cell.email_forwarding.scheme` in `config/gitlab.yml`.
+environments. A port can also be set, and when it is it replaces any port the
+Topology Service returned, which lets a deployment pin the internal API port.
+Both are set under `cell.email_forwarding.cell_endpoint` in `config/gitlab.yml`:
+
+```yaml
+cell:
+  email_forwarding:
+    cell_endpoint:
+      scheme: https
+      port: 8181
+```
+
+This mirrors GitLab Shell, whose Topology Service client takes the same
+`cell_endpoint` scheme and port.
 
 ### Running multiple instances (arbitration)
 

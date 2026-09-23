@@ -58,6 +58,27 @@ describe('locale', () => {
 
       expect(getPreferredLocales()).toEqual(['en-US', 'en']);
     });
+
+    it('strips POSIX locale modifiers (e.g. "en-US@posix") from navigator.languages', () => {
+      jest.spyOn(window.navigator, 'languages', 'get').mockReset().mockReturnValue(['en-US@posix']);
+
+      expect(getPreferredLocales()).toEqual(['en-US', 'en']);
+    });
+
+    it('salvages raw POSIX locales (e.g. "en_US.UTF-8") from navigator.languages entries', () => {
+      jest
+        .spyOn(window.navigator, 'languages', 'get')
+        .mockReset()
+        .mockReturnValue(['en_US.UTF-8', 'en_GB']);
+
+      expect(getPreferredLocales()).toEqual(['en-US', 'en-GB', 'en']);
+    });
+
+    it('drops navigator.languages entries that are not valid BCP 47 tags', () => {
+      jest.spyOn(window.navigator, 'languages', 'get').mockReset().mockReturnValue(['C', 'en-US']);
+
+      expect(getPreferredLocales()).toEqual(['en-US', 'en']);
+    });
   });
 
   describe('createDateTimeFormat', () => {
