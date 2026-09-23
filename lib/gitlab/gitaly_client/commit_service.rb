@@ -125,7 +125,8 @@ module Gitlab
           pagination_params: pagination_params,
           with_last_commit: with_last_commit
         )
-        request.sort = Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST if pagination_params
+
+        request.sort = tree_entries_sort_by if pagination_params
 
         response = gitaly_client_call(@repository.storage, :commit_service, :get_tree_entries, request, timeout: GitalyClient.medium_timeout)
 
@@ -659,6 +660,14 @@ module Gitlab
       def parse_global_options!(options)
         literal_pathspec = options.delete(:literal_pathspec)
         Gitaly::GlobalOptions.new(literal_pathspecs: literal_pathspec)
+      end
+
+      def tree_entries_sort_by
+        if Feature.enabled?(:tree_entries_filesystem_sort, @repository.container)
+          Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST_FILESYSTEM
+        else
+          Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST
+        end
       end
 
       def call_commit_diff(request_params, options = {})

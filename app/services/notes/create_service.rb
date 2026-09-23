@@ -183,7 +183,19 @@ module Notes
         "Reviewers #{note.noteable.class.max_number_of_assignees_or_reviewers_message}"
       elsif invalid_assignees?(update_params)
         "Assignees #{note.noteable.class.max_number_of_assignees_or_reviewers_message}"
+      elsif invalid_labels?(note.noteable, update_params)
+        format(_("Cannot add more than %{limit} labels to a work item."), limit: note.noteable.max_number_of_labels)
       end
+    end
+
+    def invalid_labels?(noteable, update_params)
+      return false unless update_params.key?(:add_label_ids) || update_params.key?(:label_ids)
+
+      new_label_ids = update_params[:label_ids] || noteable.label_ids
+      new_label_ids |= update_params[:add_label_ids] if update_params[:add_label_ids]
+      new_label_ids -= update_params[:remove_label_ids] if update_params[:remove_label_ids]
+
+      noteable.labels_limit_exceeded?(new_label_ids.uniq)
     end
 
     def invalid_reviewers?(update_params)

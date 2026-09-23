@@ -618,6 +618,22 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           expect(note.quick_actions_status.error_messages).to be_empty
         end
 
+        context 'when a label command exceeds the work item labels limit' do
+          before do
+            stub_const('Issue::MAX_NUMBER_OF_LABELS', 1)
+          end
+
+          it 'adds the limit message to note errors instead of raising' do
+            create(:label, project: project, title: 'one')
+            create(:label, project: project, title: 'two')
+
+            note = described_class.new(project, user, opts.merge(note: '/label ~one ~two')).execute
+
+            expect(note.errors[:validation]).to include(a_string_matching(/Cannot add more than 1 labels/))
+            expect(issue.reload.labels).to be_empty
+          end
+        end
+
         it 'generates success and failed error messages' do
           note_text = %(/close\n/reopen)
           service = double(:service)

@@ -27,40 +27,35 @@ For a full list of reference architectures, see
 - **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 - **Unsure which Reference Architecture to use**? [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with)
 
-| Service                                   | Nodes | Configuration           | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
+| Service                                   | Nodes | Configuration           | GCP example[^machine-types] | AWS example[^machine-types] | Azure example[^machine-types] |
 |-------------------------------------------|-------|-------------------------|-----------------|--------------|----------|
-| External load balancer<sup>4</sup>        | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
-| Consul<sup>2</sup>                        | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL<sup>2</sup>                    | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| PgBouncer<sup>2</sup>                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Internal load balancer<sup>4</sup>        | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
-| Redis/Sentinel<sup>3</sup>                | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Gitaly<sup>6</sup><sup>7</sup>            | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge` | `D8s v3` |
-| Praefect<sup>6</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Praefect PostgreSQL<sup>2</sup>           | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Sidekiq<sup>8</sup>                       | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D2s v3` |
-| GitLab Rails<sup>8</sup>                  | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` | `F16s v2`|
+| External load balancer[^external-load-balancer]        | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
+| Consul[^external-database]                        | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| PostgreSQL[^external-database]                    | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| PgBouncer[^external-database]                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Internal load balancer[^external-load-balancer]        | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
+| Redis/Sentinel[^external-cache]                | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
+| Gitaly[^storage-cluster], [^storage-specs]            | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge` | `D8s v3` |
+| Praefect[^storage-cluster]                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Praefect PostgreSQL[^external-database]           | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Sidekiq[^auto-scaling-groups]                       | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D2s v3` |
+| GitLab Rails[^auto-scaling-groups]                  | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` | `F16s v2`|
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage<sup>5</sup>                | -     | -                       | -               | -            | -        |
+| Object storage[^external-object-storage]                | -     | -                       | -               | -            | -        |
 
-**Footnotes**:
-
-<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
-<!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
-4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
-   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
-5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
-7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
-8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](../../install/sizing.md#autoscaling).
-   However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
-   such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
-<!-- markdownlint-enable MD029 -->
+[^machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
+[^external-database]: Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
+[^external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
+[^external-load-balancer]: Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
+    Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
+[^external-object-storage]: Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
+[^storage-cluster]: Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
+[^storage-specs]: Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+    However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
+[^auto-scaling-groups]: Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](../../install/sizing.md#autoscaling).
+    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
+    such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 
 > [!note]
 > For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
@@ -267,17 +262,17 @@ The basic ports to be used are shown in the table below.
 
 | LB Port | Backend Port | Protocol                 |
 | ------- | ------------ | ------------------------ |
-| 80      | 80           | HTTP (*1*)               |
-| 443     | 443          | TCP or HTTPS (*1*) (*2*) |
+| 80      | 80           | HTTP[^web-terminal-support]               |
+| 443     | 443          | TCP or HTTPS[^web-terminal-support], [^add-ssl-certificate] |
 | 22      | 22           | TCP                      |
 
-- (*1*): [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires
+[^web-terminal-support]: [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires
   your load balancer to correctly handle WebSocket connections. When using
   HTTP or HTTPS proxying, this means your load balancer must be configured
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
   [web terminal](../integration/terminal.md) integration guide for
   more details.
-- (*2*): When using HTTPS protocol for port 443, you must add an SSL
+[^add-ssl-certificate]: When using HTTPS protocol for port 443, you must add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.
 
@@ -289,13 +284,13 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 
 | LB Port | Backend Port  | Protocol  |
 | ------- | ------------- | --------- |
-| 80      | Varies (*1*)  | HTTP      |
-| 443     | Varies (*1*)  | TCP (*2*) |
+| 80      | Varies[^backend-port]  | HTTP      |
+| 443     | Varies[^backend-port]  | TCP[^tcp-protocol] |
 
-- (*1*): The backend port for GitLab Pages depends on the
+[^backend-port]: The backend port for GitLab Pages depends on the
   `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
   setting. See [GitLab Pages documentation](../pages/_index.md) for more details.
-- (*2*): Port 443 for GitLab Pages should always use the TCP protocol. Users can
+[^tcp-protocol]: Port 443 for GitLab Pages should always use the TCP protocol. Users can
   configure custom domains with custom SSL, which would not be possible
   if SSL was terminated at the load balancer.
 
@@ -2200,33 +2195,28 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
 
-| Service                                   | Nodes | Configuration         | GCP example<sup>1</sup> | AWS example<sup>1</sup> |
+| Service                                   | Nodes | Configuration         | GCP example[^cluster-topology-machine-types] | AWS example[^cluster-topology-machine-types] |
 |-------------------------------------------|-------|-----------------------|-----------------|--------------|
-| Consul<sup>2</sup>                        | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| PostgreSQL<sup>2</sup>                    | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
-| PgBouncer<sup>3</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Internal load balancer<sup>4</sup>        | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5n.xlarge` |
-| Redis/Sentinel<sup>3</sup>                | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
-| Gitaly<sup>6</sup><sup>7</sup>            | 3     | 8 vCPU, 30 GB memory  | `n1-standard-8` | `m5.2xlarge` |
-| Praefect<sup>6</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Praefect PostgreSQL<sup>2</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Object storage<sup>5</sup>                | -     | -                     | -               | -            |
+| Consul[^cluster-topology-external-database]                        | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
+| PostgreSQL[^cluster-topology-external-database]                    | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
+| PgBouncer[^cluster-topology-external-database]                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
+| Internal load balancer[^cluster-topology-external-load-balancer]        | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5n.xlarge` |
+| Redis/Sentinel[^cluster-topology-external-cache]                | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
+| Gitaly[^cluster-topology-storage-cluster], [^cluster-topology-storage-specs]            | 3     | 8 vCPU, 30 GB memory  | `n1-standard-8` | `m5.2xlarge` |
+| Praefect[^cluster-topology-storage-cluster]                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
+| Praefect PostgreSQL[^cluster-topology-external-database]           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
+| Object storage[^cluster-topology-external-object-storage]                | -     | -                     | -               | -            |
 
-**Footnotes**:
-
-<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
-<!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
-4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
-   Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
-5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
-7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
-<!-- markdownlint-enable MD029 -->
+[^cluster-topology-machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
+[^cluster-topology-external-database]: Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
+[^cluster-topology-external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
+[^cluster-topology-external-load-balancer]: Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
+    Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
+[^cluster-topology-external-object-storage]: Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
+[^cluster-topology-storage-cluster]: Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
+[^cluster-topology-storage-specs]: Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+    However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 
 > [!note]
 > For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.

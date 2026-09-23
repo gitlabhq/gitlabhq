@@ -151,13 +151,13 @@ module Projects
       def can_read_attributes?
         return false unless root_group
 
-        can?(current_user, :read_security_attribute, root_group)
+        can?(current_user, :read_security_attribute, project)
       end
 
       def can_manage_attributes?
         return false unless root_group
 
-        can?(current_user, :admin_security_attributes, root_group)
+        can?(current_user, :admin_security_attributes, project)
       end
 
       def root_group

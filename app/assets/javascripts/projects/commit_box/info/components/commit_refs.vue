@@ -26,11 +26,10 @@ export default {
       variables() {
         return this.queryVariables;
       },
-      update({
-        project: {
-          commitReferences: { tippingTags, tippingBranches, containingBranches, containingTags },
-        },
-      }) {
+      update({ project }) {
+        if (!project?.commitReferences) return;
+        const { tippingTags, tippingBranches, containingBranches, containingTags } =
+          project.commitReferences;
         this.tippingTags = tippingTags.names;
         this.tippingBranches = tippingBranches.names;
         this.hasContainingBranches = Boolean(containingBranches.names.length);

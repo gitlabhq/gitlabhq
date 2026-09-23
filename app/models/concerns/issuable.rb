@@ -214,6 +214,18 @@ module Issuable
       false
     end
 
+    def max_number_of_labels
+      nil
+    end
+
+    # Only additions past the limit are rejected, so existing over-limit items stay editable.
+    def labels_limit_exceeded?(new_label_ids)
+      limit = max_number_of_labels
+      return false unless limit && new_label_ids.size > limit
+
+      new_label_ids.size > label_ids.size
+    end
+
     def supports_confidentiality?
       false
     end

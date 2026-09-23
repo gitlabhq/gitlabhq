@@ -9,6 +9,13 @@ class Projects::IssuesController < Projects::ApplicationController
   include RecordUserLastActivity
   include IssueBuildParameters
 
+  rescue_from ::Issuable::Callbacks::Base::Error do |e|
+    respond_to do |format|
+      format.html { redirect_back_or_default(default: project_issues_path(project), options: { alert: e.message }) }
+      format.json { render json: { errors: [e.message] }, status: :unprocessable_entity }
+    end
+  end
+
   ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk
     can_create_branch].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze

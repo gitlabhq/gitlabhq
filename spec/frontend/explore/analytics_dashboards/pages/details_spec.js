@@ -54,7 +54,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const findViewTabs = () => wrapper.findAllComponents(GlTab);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findResetButton = () => wrapper.findComponentByTestId('dashboard-filters-reset');
-  const findScopePath = () => findDashboardFilters().props('scopePath');
+  const findScopePaths = () => findDashboardFilters().props('scopePaths');
   const currentScopeParam = () => new URLSearchParams(window.location.search).get('scope');
 
   const mockGroup = { id: 1, name: 'GitLab.org', fullPath: 'gitlab-org', type: 'Group' };
@@ -64,12 +64,14 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     fullPath: 'gitlab-org/gitlab',
     type: 'Project',
   };
+  const mockOtherGroup = { id: 3, name: 'GitLab.com', fullPath: 'gitlab-com', type: 'Group' };
 
-  const selectScope = async (namespace = mockGroup) => {
-    findDashboardFilters().vm.$emit('set-scope', namespace);
+  const selectScope = async (...namespaces) => {
+    findDashboardFilters().vm.$emit('set-scope', namespaces);
     await waitForPromises();
   };
-  const selectGroup = selectScope;
+  const selectGroup = () => selectScope(mockGroup);
+  const clearScope = () => selectScope();
 
   // Emits `loaded` the way the real loader does, so the page seeds its filters from the
   // dashboard's own filter config.
@@ -186,7 +188,6 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     describe('when dashboard-filters emits set-scope with a project', () => {
       beforeEach(() => selectScope(mockProject));
 
-      // The picker is single-select, so a project replaces a group rather than nesting under it.
       it('passes the project as the scope, and no group', () => {
         expect(findDashboardLayout().props('filters')).toMatchObject({
           groups: [],
@@ -195,10 +196,22 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       });
     });
 
-    describe('when dashboard-filters emits set-scope with null', () => {
+    describe('when dashboard-filters emits set-scope with groups and projects together', () => {
+      beforeEach(() => selectScope(mockGroup, mockProject, mockOtherGroup));
+
+      // Panels read the two separately, so each pick lands in the list its type names.
+      it('splits them into the two lists, keeping the order they were picked in', () => {
+        expect(findDashboardLayout().props('filters')).toMatchObject({
+          groups: [mockGroup.fullPath, mockOtherGroup.fullPath],
+          projects: [mockProject.fullPath],
+        });
+      });
+    });
+
+    describe('when dashboard-filters emits set-scope with nothing selected', () => {
       beforeEach(async () => {
         await selectScope(mockProject);
-        await selectScope(null);
+        await clearScope();
       });
 
       it('clears both on the dashboard layout filters', () => {
@@ -256,7 +269,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
     it('clears the namespace when the scope is cleared', async () => {
       await selectScope(mockGroup);
-      await selectScope(null);
+      await clearScope();
 
       expect(findSlotProbe().text()).toBe('||30d|0|false|true');
     });
@@ -350,8 +363,8 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     });
 
     it.each([
-      ['set-scope', mockGroup],
-      ['set-scope', mockProject],
+      ['set-scope', [mockGroup]],
+      ['set-scope', [mockGroup, mockProject]],
       ['set-date-range', { dateRangeOption: '7d' }],
     ])('enables the reset button after dashboard-filters emits %s', async (event, payload) => {
       await createWithFilters();
@@ -375,7 +388,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       await createWithFilters();
 
       await selectScope(mockGroup);
-      await selectScope(null);
+      await clearScope();
 
       expect(findResetButton().props('disabled')).toBe(true);
     });
@@ -418,7 +431,15 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     it('starts the picker with no selection when the param is absent', async () => {
       await createWithFilters();
 
-      expect(findScopePath()).toBe('');
+      expect(findScopePaths()).toEqual([]);
+    });
+
+    it('starts the picker with no selection when the param is empty', async () => {
+      setWindowLocation('?scope=');
+
+      await createWithFilters();
+
+      expect(findScopePaths()).toEqual([]);
     });
 
     it('hands the param to the picker on load, so a shared URL opens already scoped', async () => {
@@ -426,7 +447,15 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
       await createWithFilters();
 
-      expect(findScopePath()).toBe('gitlab-org/gitlab');
+      expect(findScopePaths()).toEqual(['gitlab-org/gitlab']);
+    });
+
+    it('splits a list of paths, keeping the order the URL gave them', async () => {
+      setWindowLocation('?scope=gitlab-org/gitlab,gitlab-com,gitlab-org');
+
+      await createWithFilters();
+
+      expect(findScopePaths()).toEqual(['gitlab-org/gitlab', 'gitlab-com', 'gitlab-org']);
     });
 
     it('writes the selected path to the param', async () => {
@@ -437,11 +466,19 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(currentScopeParam()).toBe(mockProject.fullPath);
     });
 
+    it('writes every selected path to the param, in the order they were picked', async () => {
+      await createWithFilters();
+
+      await selectScope(mockProject, mockGroup);
+
+      expect(currentScopeParam()).toBe(`${mockProject.fullPath},${mockGroup.fullPath}`);
+    });
+
     it('drops the param when the scope is cleared', async () => {
       setWindowLocation('?scope=gitlab-org/gitlab');
       await createWithFilters();
 
-      await selectScope(null);
+      await clearScope();
 
       expect(currentScopeParam()).toBeNull();
     });
@@ -461,9 +498,9 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       setWindowLocation('?scope=gitlab-org');
       await createWithFilters();
 
-      await selectScope(mockProject);
+      await selectScope(mockProject, mockGroup);
 
-      expect(findScopePath()).toBe(mockProject.fullPath);
+      expect(findScopePaths()).toEqual([mockProject.fullPath, mockGroup.fullPath]);
     });
 
     describe('when the filters are reset', () => {
@@ -482,7 +519,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       });
 
       it('starts the remounted picker with no selection', () => {
-        expect(findScopePath()).toBe('');
+        expect(findScopePaths()).toEqual([]);
       });
     });
   });
@@ -920,10 +957,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     });
 
     describe('once a project is selected', () => {
-      beforeEach(async () => {
-        findDashboardFilters().vm.$emit('set-scope', mockProject);
-        await waitForPromises();
-      });
+      beforeEach(() => selectScope(mockProject));
 
       it('hides the empty state', () => {
         expect(findEmptyState().exists()).toBe(false);
@@ -937,8 +971,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     describe('when the selected group is cleared', () => {
       beforeEach(async () => {
         await selectGroup();
-        findDashboardFilters().vm.$emit('set-scope', null);
-        await waitForPromises();
+        await clearScope();
       });
 
       it('returns to the empty state', () => {
@@ -1121,8 +1154,8 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     });
   });
 
-  // Panels read the namespace from injection rather than props, so the scope picker's single
-  // emission has to end up here intact or they query nothing and spin.
+  // Panels read the namespace from injection rather than props, so what the picker emits has to
+  // end up here intact or they query nothing and spin.
   describe('what a panel is given for the selected scope', () => {
     const probe = {
       inject: ['namespaceFullPath', 'namespaceName', 'namespaceId', 'isProject'],
@@ -1184,6 +1217,21 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(injected()).toMatchObject({
         namespaceFullPath: mockGroup.fullPath,
         isProject: false,
+      });
+    });
+
+    // These values take a single namespace, so a multi-pick selection is narrowed to one of
+    // them -- which one is not a promise. Panels that cover the whole scope read the path lists
+    // off `filters` instead.
+    describe('when several namespaces are selected', () => {
+      beforeEach(() => selectScope(mockGroup, mockProject));
+
+      it('narrows them to one namespace rather than none', () => {
+        const { namespaceFullPath, namespaceName, namespaceId } = injected();
+
+        expect([mockGroup.fullPath, mockProject.fullPath]).toContain(namespaceFullPath);
+        expect([mockGroup.name, mockProject.name]).toContain(namespaceName);
+        expect([mockGroup.id, mockProject.id]).toContain(namespaceId);
       });
     });
   });

@@ -96,6 +96,27 @@ RSpec.describe 'Create an issue', feature_category: :team_planning do
       end
     end
 
+    context 'when adding labels past the work item labels limit' do
+      let(:mutation) do
+        graphql_mutation(:createIssue, input.merge(
+          'projectPath' => project.full_path,
+          'labelIds' => [project_label1.to_global_id.to_s, project_label2.to_global_id.to_s]
+        ))
+      end
+
+      before do
+        stub_const('Issue::MAX_NUMBER_OF_LABELS', 1)
+      end
+
+      it 'returns the error in the mutation errors without creating the issue', :aggregate_failures do
+        expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change { Issue.count }
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['issue']).to be_nil
+        expect(mutation_response['errors']).to include(a_string_matching(/Cannot add more than 1 labels/))
+      end
+    end
+
     context 'when both labels and labelIds params are provided' do
       before do
         input.merge!(

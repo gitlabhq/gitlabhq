@@ -308,7 +308,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
         it 'shows an error for invalid scopes' do
           subject
 
-          expect(response.body).to include 'Scopes doesn&#39;t match configured on the server.'
+          expect(response.body).to include 'Scopes doesn&#39;t match those configured on the server.'
           expect(response).to render_template('doorkeeper/applications/index')
         end
       end

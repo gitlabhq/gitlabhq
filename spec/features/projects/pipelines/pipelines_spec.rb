@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
+RSpec.describe 'Pipelines', :js, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
   include ListboxHelpers
   include ProjectForksHelper
   include Spec::Support::Helpers::ModalHelpers

@@ -12,9 +12,6 @@ RSpec.describe 'unsupported work item types use legacy issue views', :js, featur
 
   let_it_be(:user) { create(:user) }
 
-  let(:use_work_items_view) { false }
-  let!(:user_preference) { create(:user_preference, use_work_items_view: use_work_items_view) }
-
   before_all do
     project.add_developer(user)
   end
@@ -38,21 +35,11 @@ RSpec.describe 'unsupported work item types use legacy issue views', :js, featur
     let(:work_item) { incident }
 
     it_behaves_like 'a work item that renders using the legacy issue view'
-    context 'when use_work_items_view user setting is true' do
-      let(:use_work_items_view) { true }
-
-      it_behaves_like 'a work item that renders using the legacy issue view'
-    end
   end
 
   context 'when work item is a Service Desk ticket' do
     let(:work_item) { ticket }
 
     it_behaves_like 'a work item that renders using the legacy issue view'
-    context 'when use_work_items_view user setting is true' do
-      let(:use_work_items_view) { true }
-
-      it_behaves_like 'a work item that renders using the legacy issue view'
-    end
   end
 end

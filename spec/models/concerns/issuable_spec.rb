@@ -1251,6 +1251,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
   end
 
+  describe '#max_number_of_labels' do
+    it 'has no limit by default' do
+      expect(build_stubbed(:merge_request).max_number_of_labels).to be_nil
+    end
+  end
+
   describe '#supports_lock_on_merge?' do
     where(:issuable_type, :supports_lock_on_merge) do
       :issue         | false

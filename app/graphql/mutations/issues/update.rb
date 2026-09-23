@@ -49,12 +49,16 @@ module Mutations
 
         args = parse_arguments(args)
 
-        ::Issues::UpdateService.new(
-          container: project,
-          current_user: current_user,
-          params: args,
-          perform_spam_check: true
-        ).execute(issue)
+        begin
+          ::Issues::UpdateService.new(
+            container: project,
+            current_user: current_user,
+            params: args,
+            perform_spam_check: true
+          ).execute(issue)
+        rescue ::Issuable::Callbacks::Base::Error => e
+          issue.errors.add(:base, e.message)
+        end
 
         {
           issue: issue,

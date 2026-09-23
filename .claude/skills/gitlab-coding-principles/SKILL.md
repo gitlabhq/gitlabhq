@@ -69,7 +69,7 @@ ALWAYS load Database principles regardless of which files you are editing.
 - **Jest, jsdom, Vue Test Utils patterns**: Read .ai/principles/distilled/testing-jest.md
 - **Rails migrations testing patterns**: Read .ai/principles/distilled/testing-migrations.md
 - **Frontend testing hierarchy — which test type to write (unit vs frontend integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns**: Read .ai/principles/distilled/testing-frontend-testing-hierarchy.md
-- **How to write MSW integration tests correctly (setup, mounting, handlers, fixtures, request counting)**: Read .ai/principles/distilled/testing-msw.md
+- **How to write frontend integration tests correctly (setup, mounting, handlers, fixtures, request counting)**: Read .ai/principles/distilled/testing-frontend-integration.md
 - **End-to-end (QA) test patterns — resource readiness and explicit waits, reliable navigation, and avoiding timing-based flakiness in qa/ specs**: Read .ai/principles/distilled/testing-e2e.md
 
 **Performance:**

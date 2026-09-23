@@ -19941,7 +19941,7 @@ Arguments:
 | <a id="mutation-userpreferencesupdate-organizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | Introduced in GitLab 17.2. Status: Experiment. Default list view for organization groups and projects. |
 | <a id="mutation-userpreferencesupdate-organizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | Introduced in GitLab 17.2. Status: Experiment. Sort order for organization groups and projects. |
 | <a id="mutation-userpreferencesupdate-projectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
-| <a id="mutation-userpreferencesupdate-useworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
+| <a id="mutation-userpreferencesupdate-useworkitemsview"></a>`useWorkItemsView` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Deprecated in GitLab 19.5. Work item view is always used. |
 | <a id="mutation-userpreferencesupdate-visibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 | <a id="mutation-userpreferencesupdate-wikiuseautocommitmessage"></a>`wikiUseAutoCommitMessage` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Whether to skip the commit message modal and use the auto-generated commit message when saving changes to a wiki document. |
 | <a id="mutation-userpreferencesupdate-workitemsdisplaysettings"></a>`workItemsDisplaySettings` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.1. Status: Experiment. Display settings for the work item lists, e.g.: "{ shouldOpenItemsInSidePanel: false }". |
@@ -54065,7 +54065,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mergerequestriskassessment-assessedat"></a>`assessedAt` | [`Time`](#time) | When the classification completed. |
 | <a id="mergerequestriskassessment-confidence"></a>`confidence` | [`Int`](#int) | Confidence in the score, from 0 to 100. Derived from how much of the change could be measured and whether the signals agreed. |
-| <a id="mergerequestriskassessment-confidencetier"></a>`confidenceTier` | [`MergeRequestRiskTier`](#mergerequestrisktier) | Tier derived from the confidence score. |
+| <a id="mergerequestriskassessment-confidencetier"></a>`confidenceTier` | [`MergeRequestRiskConfidenceTier`](#mergerequestriskconfidencetier) | Tier derived from the confidence score. |
 | <a id="mergerequestriskassessment-contributingsignals"></a>`contributingSignals` | [`[MergeRequestRiskContributingSignal!]!`](#mergerequestriskcontributingsignal) | What each signal contributed to the score. |
 | <a id="mergerequestriskassessment-domaintags"></a>`domainTags` | [`[String!]!`](#string) | Risk domains the change touches, used to route specialist review. |
 | <a id="mergerequestriskassessment-duoworkflowid"></a>`duoWorkflowId` | [`Int`](#int) | ID of the Duo workflow session that produced the classification. |
@@ -65067,7 +65067,7 @@ Fields:
 | <a id="userpreferences-organizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | Introduced in GitLab 17.2. Status: Experiment. Sort order for organization groups and projects. |
 | <a id="userpreferences-projectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="userpreferences-timezone"></a>`timezone` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.7. Status: Experiment. Timezone of the user. |
-| <a id="userpreferences-useworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
+| <a id="userpreferences-useworkitemsview"></a>`useWorkItemsView` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Deprecated in GitLab 19.5. Work item view is always used. |
 | <a id="userpreferences-visibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 | <a id="userpreferences-wikiuseautocommitmessage"></a>`wikiUseAutoCommitMessage` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Whether to skip the commit message modal and use the auto-generated commit message when saving changes to a wiki document. |
 | <a id="userpreferences-workitemsdisplaysettings"></a>`workItemsDisplaySettings` | [`JSON!`](#json) | Display settings for the work item lists. |
@@ -72180,6 +72180,17 @@ Status of a merge request risk classification.
 | <a id="mergerequestriskassessmentstatus-failed"></a>`FAILED` | Classification could not be completed. |
 | <a id="mergerequestriskassessmentstatus-pending"></a>`PENDING` | Waiting to be classified. |
 | <a id="mergerequestriskassessmentstatus-queued"></a>`QUEUED` | Queued for (re)classification. |
+
+### `MergeRequestRiskConfidenceTier`
+
+Confidence tier derived from a merge request risk confidence score.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergerequestriskconfidencetier-high"></a>`HIGH` | High confidence. |
+| <a id="mergerequestriskconfidencetier-low"></a>`LOW` | Low confidence. |
+| <a id="mergerequestriskconfidencetier-medium"></a>`MEDIUM` | Medium confidence. |
+| <a id="mergerequestriskconfidencetier-very_high"></a>`VERY_HIGH` | Very high confidence. |
 
 ### `MergeRequestRiskTier`
 

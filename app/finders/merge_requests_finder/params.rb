@@ -2,6 +2,8 @@
 
 class MergeRequestsFinder
   class Params < IssuableFinder::Params
+    extend ::Gitlab::Utils::Override
+
     def filter_by_no_reviewer?
       params[:reviewer_id].to_s.downcase == FILTER_NONE
     end
@@ -69,6 +71,13 @@ class MergeRequestsFinder
       return unless params[:not][:review_states].present?
 
       params[:not][:review_states].map { |state| MergeRequestReviewer.states[state] }
+    end
+
+    private
+
+    override :min_access_level
+    def min_access_level
+      ::Gitlab::Access::PLANNER
     end
   end
 end

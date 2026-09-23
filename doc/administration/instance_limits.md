@@ -947,6 +947,20 @@ Issues and merge requests enforce these maximums:
 - Maximum assignees: 200
 - Maximum reviewers: 200
 
+## Maximum number of labels on a work item
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606182) in GitLab 19.5 [with a feature flag](feature_flags/_index.md) named `limit_labels_per_work_item`. Disabled by default.
+
+{{< /history >}}
+
+Work items (issues, epics, and tasks) can have a maximum of 100 labels.
+Work items that already have more than 100 labels are not affected. You can
+still remove their labels, but you cannot add more.
+
+Merge requests are not affected by this limit.
+
 ## Maximum number of project push mirrors
 
 {{< history >}}

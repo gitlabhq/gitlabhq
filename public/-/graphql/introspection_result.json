@@ -256957,7 +256957,7 @@
               "args": [],
               "type": {
                 "kind": "ENUM",
-                "name": "MergeRequestRiskTier",
+                "name": "MergeRequestRiskConfidenceTier",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -257150,6 +257150,41 @@
             {
               "name": "FAILED",
               "description": "Classification could not be completed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "MergeRequestRiskConfidenceTier",
+          "description": "Confidence tier derived from a merge request risk confidence score.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "LOW",
+              "description": "Low confidence.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MEDIUM",
+              "description": "Medium confidence.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "HIGH",
+              "description": "High confidence.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "VERY_HIGH",
+              "description": "Very high confidence.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -433090,15 +433125,15 @@
             },
             {
               "name": "useWorkItemsView",
-              "description": "Use work item view instead of legacy issue view.",
+              "description": "Use work item view instead of legacy issue view. Deprecated in GitLab 19.5: Work item view is always used.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Work item view is always used. Deprecated in GitLab 19.5."
             },
             {
               "name": "visibilityPipelineIdType",
@@ -433230,15 +433265,15 @@
             },
             {
               "name": "useWorkItemsView",
-              "description": "Use work item view instead of legacy issue view.",
+              "description": "Use work item view instead of legacy issue view. Deprecated in GitLab 19.5: Work item view is always used.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
                 "ofType": null
               },
               "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Work item view is always used. Deprecated in GitLab 19.5."
             },
             {
               "name": "visibilityPipelineIdType",

@@ -1,7 +1,7 @@
 <script>
 import { camelCase, chunk } from 'lodash-es';
 import { GlForm } from '@gitlab/ui';
-import { createAlert } from '~/alert';
+import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/alert';
 import { __, s__ } from '~/locale';
 import {
   BULK_EDIT_NO_VALUE,
@@ -28,6 +28,11 @@ const WorkItemBulkEditStatus = () =>
   import('ee_component/work_items/list/components/work_item_bulk_edit_status.vue');
 
 const BULK_EDIT_CHUNK_SIZE = 25;
+
+const TIMEOUT_ERROR_PREFIX = 'Timeout on ';
+
+const isTimeoutError = (error) =>
+  Boolean(error?.graphQLErrors?.some(({ message }) => message.startsWith(TIMEOUT_ERROR_PREFIX)));
 
 export default {
   name: 'WorkItemBulkEditSidebar',
@@ -172,8 +177,19 @@ export default {
         await this.performBulkEdit();
         this.$emit('success', { refetchCounts: Boolean(this.state) });
       } catch (error) {
+        const timedOut = (error.cause ?? []).some(isTimeoutError);
+
+        // The timeout is raised after the update has been applied, so treat the list
+        // as stale and refresh it the same way a successful edit would.
+        if (timedOut) {
+          this.$emit('success', { refetchCounts: Boolean(this.state) });
+        }
+
         createAlert({
-          message: s__('WorkItem|Something went wrong while bulk editing.'),
+          message: timedOut
+            ? s__('WorkItem|Bulk edit took longer than expected. The list has been updated.')
+            : s__('WorkItem|Something went wrong while bulk editing.'),
+          variant: timedOut ? VARIANT_INFO : VARIANT_DANGER,
           captureError: true,
           error,
         });

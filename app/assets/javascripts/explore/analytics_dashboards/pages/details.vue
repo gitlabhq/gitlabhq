@@ -5,7 +5,7 @@ import { s__ } from '~/locale';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
-import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
@@ -47,9 +47,9 @@ export default {
   provide() {
     return {
       namespaceFullPath: computed(() => this.selectedNamespaceFullPath),
-      namespaceId: computed(() => this.selectedProject?.id ?? this.selectedGroup?.id ?? null),
+      namespaceId: computed(() => this.primaryNamespace?.id ?? null),
       namespaceName: computed(() => this.selectedNamespaceName),
-      isProject: computed(() => Boolean(this.selectedProject)),
+      isProject: computed(() => this.isProjectScope),
 
       // TODO: Investigate how to handle this namespace specific check. It was
       //  previously done in the controller and passed as a data attribute, but it
@@ -63,25 +63,31 @@ export default {
   data() {
     return {
       filters: {},
-      selectedGroup: null,
-      selectedProject: null,
+      selectedNamespaces: [],
       activeViewIndex: 0,
       viewCount: 0,
       filtersKey: 0,
       dashboardFilterConfig: null,
       alert: null,
-      scopePath: getParameterByName(SCOPE_FILTER_QUERY_NAME) ?? '',
+      // The picker enforces the upper limit, so hand everything over as-is.
+      scopePaths: (getParameterByName(SCOPE_FILTER_QUERY_NAME) ?? '').split(',').filter(Boolean),
     };
   },
   computed: {
     hasNamespace() {
-      return Boolean(this.selectedGroup || this.selectedProject);
+      return this.selectedNamespaces.length > 0;
+    },
+    primaryNamespace() {
+      return this.selectedNamespaces[0] ?? null;
     },
     selectedNamespaceName() {
-      return this.selectedProject?.name ?? this.selectedGroup?.name ?? '';
+      return this.primaryNamespace?.name ?? '';
     },
     selectedNamespaceFullPath() {
-      return this.selectedProject?.fullPath ?? this.selectedGroup?.fullPath ?? '';
+      return this.primaryNamespace?.fullPath ?? '';
+    },
+    isProjectScope() {
+      return this.primaryNamespace?.type === TYPENAME_PROJECT;
     },
     // The filters are held in local time, the way the picker and the URL work. Panel queries
     // run in whole UTC days, so the range is converted here to be passed to the panels.
@@ -174,28 +180,30 @@ export default {
         replace: true,
       });
     },
-    // The picker emits one namespace, or null, and its type says which of the two the rest of
-    // the page should treat it as. Panels still read groups and projects separately.
-    setScopeFilter(namespace) {
-      const isProject = namespace?.type === TYPENAME_PROJECT;
-
-      this.selectedProject = isProject ? namespace : null;
-      this.selectedGroup = isProject ? null : namespace;
+    // The picker emits every pick at once; each namespace's type says whether it belongs in the
+    // groups list or the projects list, since panels read the two separately.
+    setScopeFilter(namespaces) {
+      this.selectedNamespaces = namespaces;
       this.filters = {
         ...this.filters,
-        groups: this.selectedGroup ? [this.selectedGroup.fullPath] : [],
-        projects: this.selectedProject ? [this.selectedProject.fullPath] : [],
+        groups: this.pathsOfType(TYPENAME_GROUP),
+        projects: this.pathsOfType(TYPENAME_PROJECT),
       };
 
-      this.scopePath = namespace?.fullPath ?? '';
-      this.syncScopeToUrl(this.scopePath);
+      this.scopePaths = namespaces.map(({ fullPath }) => fullPath);
+      this.syncScopeToUrl(this.scopePaths);
+    },
+    pathsOfType(type) {
+      return this.selectedNamespaces
+        .filter((namespace) => namespace.type === type)
+        .map(({ fullPath }) => fullPath);
     },
     // Written to history rather than through the router, because GlTabs pushes the `view` param
     // the same way: routing this would rebuild the URL from a $route that never saw that push,
     // dropping the active view. Replaced, not pushed, so Back leaves the dashboard.
-    syncScopeToUrl(fullPath) {
+    syncScopeToUrl(fullPaths) {
       updateHistory({
-        url: setUrlParams({ [SCOPE_FILTER_QUERY_NAME]: fullPath || null }),
+        url: setUrlParams({ [SCOPE_FILTER_QUERY_NAME]: fullPaths.join(',') || null }),
         replace: true,
       });
     },
@@ -243,10 +251,9 @@ export default {
     },
     resetFilters() {
       this.filters = this.defaultDateRangeFilter();
-      this.selectedGroup = null;
-      this.selectedProject = null;
-      this.scopePath = '';
-      this.syncScopeToUrl('');
+      this.selectedNamespaces = [];
+      this.scopePaths = [];
+      this.syncScopeToUrl([]);
       // Cleared rather than set to the default, so the URL only names a range the user chose.
       this.syncDateRangeToUrl({});
       // The controls own their selection, so remount them to clear it.
@@ -292,7 +299,7 @@ export default {
             :key="filtersKey"
             class="explore-dashboard-filters"
             :dashboard-filters="config.filters"
-            :scope-path="scopePath"
+            :scope-paths="scopePaths"
             :date-range-filter="filters"
             @set-date-range="setDateRangeFilter"
             @set-scope="setScopeFilter"
@@ -317,7 +324,7 @@ export default {
             :filters="filters"
             :panels="layoutConfig(config).panels"
             :duo-prompts="activeDuoPrompts(config)"
-            :is-project="Boolean(selectedProject)"
+            :is-project="isProjectScope"
             :is-system-dashboard="isSystemDashboard"
           ></slot>
         </template>

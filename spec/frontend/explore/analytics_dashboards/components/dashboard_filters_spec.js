@@ -6,7 +6,7 @@ describe('DashboardFilters', () => {
 
   const ScopePickerStub = {
     name: 'ScopePicker',
-    props: ['initialPath'],
+    props: { initialPaths: Array, multiSelect: Boolean },
     template: '<div />',
   };
   const DateRangeFilterStub = {
@@ -39,12 +39,13 @@ describe('DashboardFilters', () => {
       expect(region.attributes('aria-label')).toBe('Dashboard filters');
     });
 
-    it('renders the scope picker', () => {
+    it('renders the multi-select scope picker', () => {
       expect(findScopePicker().exists()).toBe(true);
+      expect(findScopePicker().props('multiSelect')).toBe(true);
     });
 
-    it('starts the scope picker with no selection when the page passes no scope path', () => {
-      expect(findScopePicker().props('initialPath')).toBe('');
+    it('starts the scope picker with no selection when the page passes no scope paths', () => {
+      expect(findScopePicker().props('initialPaths')).toEqual([]);
     });
 
     it('defaults the date range filter to the last 30 days', () => {
@@ -128,11 +129,14 @@ describe('DashboardFilters', () => {
     });
   });
 
-  describe('when the page passes a scope path, as it does from the URL param', () => {
-    beforeEach(() => createComponent({ props: { scopePath: 'gitlab-org/gitlab' } }));
+  describe('when the page passes scope paths, as it does from the URL param', () => {
+    const scopePaths = ['gitlab-org', 'gitlab-org/gitlab'];
 
-    it('hands it to the picker to start selected', () => {
-      expect(findScopePicker().props('initialPath')).toBe('gitlab-org/gitlab');
+    beforeEach(() => createComponent({ props: { scopePaths } }));
+
+    // Handed over whole: the picker is what caps the list, so the bar does not trim it here.
+    it('hands them to the picker to start selected', () => {
+      expect(findScopePicker().props('initialPaths')).toEqual(scopePaths);
     });
   });
 
@@ -140,7 +144,10 @@ describe('DashboardFilters', () => {
     beforeEach(() => createComponent());
 
     it('re-emits the picker change as set-scope', () => {
-      const payload = { id: 1, fullPath: 'gitlab-org', type: 'Group' };
+      const payload = [
+        { id: 1, fullPath: 'gitlab-org', type: 'Group' },
+        { id: 2, fullPath: 'gitlab-org/gitlab', type: 'Project' },
+      ];
 
       findScopePicker().vm.$emit('change', payload);
 

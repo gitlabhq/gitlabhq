@@ -230,6 +230,21 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
+    context 'when creating an issue with labels past the work item labels limit' do
+      before do
+        stub_const('Issue::MAX_NUMBER_OF_LABELS', 1)
+      end
+
+      it 'returns 400 and does not create the issue', :aggregate_failures do
+        expect do
+          post api("/projects/#{project.id}/issues", user), params: { title: 'new issue', labels: 'one, two' }
+        end.not_to change { Issue.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include('Cannot add more than 1 labels')
+      end
+    end
+
     it 'creates a new project issue with labels param as array' do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', labels: %w[label label2], weight: 3, assignee_ids: [user2.id] }

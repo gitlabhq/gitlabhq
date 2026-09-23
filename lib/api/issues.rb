@@ -11,6 +11,10 @@ module API
     allow_mcp_access_read
     allow_mcp_access_create
 
+    rescue_from ::Issuable::Callbacks::Base::Error do |e|
+      error!({ 'message' => e.message }, 400)
+    end
+
     helpers Helpers::IssuesHelpers
     helpers Helpers::MilestonesHelpers
     helpers Helpers::Authz::PostfilteringHelpers

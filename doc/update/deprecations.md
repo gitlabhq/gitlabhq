@@ -135,6 +135,18 @@ It will be replaced by a **Go virtual registry**, which will provide a more comp
 
 **Action required:** If you are using GitLab as a Go module proxy, plan to migrate to the Go virtual registry once it becomes available. In the interim, you may configure an alternative proxy (such as `proxy.golang.org` or a self-hosted solution) by updating your `GOPROXY` environment variable.
 
+### GraphQL `useWorkItemsView` user preference
+
+- Announced in GitLab 19.5
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/550770).
+
+The `useWorkItemsView` field on the `UserPreferences` type and the `useWorkItemsView` argument on the
+`userPreferencesUpdate` mutation are deprecated in GitLab 19.5 and will be removed in GitLab 20.0. The
+issue-to-work-item migration is complete and the work item view is always used, making this preference
+unnecessary. As of GitLab 19.5, the argument is accepted but ignored and the field always returns `true`.
+Remove the argument from your mutations and the field from your queries. There is no replacement.
+
 ### Legacy `retry:when` failure reasons `stuck_or_timeout_failure` and `job_execution_timeout` are deprecated
 
 - Announced in GitLab 19.1

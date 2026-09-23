@@ -1,0 +1,10 @@
+---
+name: tree_entries_filesystem_sort
+description: Sorts repository tree entries using trees-first filesystem byte order instead of Git's tree order.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/569650
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237455
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/600938
+milestone: '19.5'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

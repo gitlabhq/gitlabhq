@@ -226,6 +226,27 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
     end
   end
 
+  context 'when a prefixed GraphQL resource header matches the stored ETag', :clean_gitlab_redis_cache do
+    let(:path) { '/api/graphql' }
+    let(:resource_header) { '/api/graphql:pipelines/id/1' }
+    let(:etag) { Gitlab::EtagCaching::Store.new.touch(resource_header) }
+    let(:if_none_match) { %(W/"#{etag}") }
+
+    it 'returns a cached 304 response without calling the app', :aggregate_failures do
+      env = build_request(path, if_none_match).merge(
+        'HTTP_X_GITLAB_GRAPHQL_RESOURCE_ETAG' => resource_header
+      )
+
+      expect(app).not_to receive(:call)
+
+      status, headers, body = middleware.call(env)
+
+      expect(status).to eq(304)
+      expect(headers).to include('ETag' => if_none_match, 'X-Gitlab-From-Cache' => 'true')
+      expect(body).to be_empty
+    end
+  end
+
   context 'when If-None-Match header does not match ETag in store' do
     let(:path) { enabled_path }
     let(:if_none_match) { 'W/"abc"' }

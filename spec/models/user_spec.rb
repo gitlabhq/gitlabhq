@@ -157,9 +157,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to delegate_method(:dpop_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:dpop_enabled=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:use_work_items_view).to(:user_preference) }
-    it { is_expected.to delegate_method(:use_work_items_view=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type).to(:user_preference) }
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type=).to(:user_preference).with_arguments(:args) }
 

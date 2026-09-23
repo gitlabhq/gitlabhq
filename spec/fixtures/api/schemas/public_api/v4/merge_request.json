@@ -65,7 +65,7 @@
       "type": "integer"
     },
     "author": {
-      "$ref": "user/basic.json"
+      "$ref": "merge_request_author.json"
     },
     "assignee": {
       "$ref": "user/basic.json"

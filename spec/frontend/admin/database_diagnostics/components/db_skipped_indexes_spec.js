@@ -1,5 +1,5 @@
 import { GlIcon, GlBadge, GlTableLite, GlLink } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DbSkippedIndexes from '~/admin/database_diagnostics/components/db_skipped_indexes.vue';
 import { collationMismatchResults } from '../mock_data';
 
@@ -10,7 +10,7 @@ describe('DbSkippedIndexes component', () => {
   };
 
   const createComponent = ({ props = {} } = {}) => {
-    wrapper = shallowMountExtended(DbSkippedIndexes, {
+    wrapper = mountExtended(DbSkippedIndexes, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -31,7 +31,7 @@ describe('DbSkippedIndexes component', () => {
     });
 
     it('displays an information icon', () => {
-      expect(findIcon().attributes()).toMatchObject({
+      expect(findIcon().props()).toMatchObject({
         name: 'information-o',
         variant: 'info',
       });

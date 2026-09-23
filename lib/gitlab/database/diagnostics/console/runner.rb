@@ -12,12 +12,13 @@ module Gitlab
           PAGER = %w[less -R].freeze
 
           # interactive: nil auto-detects a terminal, so specs and pipes get the full report.
+          # A single view has nothing to pick from, so it also gets the full report.
           def initialize(
             database_names:, views:, output: $stdout, interactive: nil, prompt: nil, pager: nil)
             @database_names = database_names
             @printer = Printer.new(output: output)
             @views = views
-            @interactive = interactive.nil? ? output.tty? && $stdin.tty? : interactive
+            @interactive = interactive.nil? ? views.many? && output.tty? && $stdin.tty? : interactive
             @prompt = prompt
             @pager = pager
           end

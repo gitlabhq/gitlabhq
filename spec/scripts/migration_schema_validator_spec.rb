@@ -10,6 +10,10 @@ RSpec.describe MigrationSchemaValidator, feature_category: :database do
 
   describe '#validate!' do
     before do
+      # CI sets CI_MERGE_REQUEST_LABELS from the MR under test; clear it so the
+      # examples below do not inherit a real skip-validation label.
+      stub_env('CI_MERGE_REQUEST_LABELS', '')
+
       allow(validator).to receive(:validate_schema_on_rollback!)
       allow(validator).to receive(:validate_schema_on_migrate!)
       allow(validator).to receive(:validate_schema_version_files!)

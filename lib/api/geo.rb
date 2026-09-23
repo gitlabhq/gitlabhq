@@ -14,6 +14,7 @@ module API
 
     resource :geo do
       desc 'Returns a Geo proxy response' do
+        detail 'Determines if the current Geo site should proxy requests.'
         summary "Determine if a Geo site should proxy requests"
         success code: 200
         failure [{ code: 403, message: 'Forbidden' }]

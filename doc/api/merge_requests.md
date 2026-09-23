@@ -29,6 +29,7 @@ title: Merge requests API
 - `security_policy_violations` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/473704) in GitLab 18.4. Feature flag `policy_mergability_check` removed.
 - `draft` filter parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098) in GitLab 19.0.
 - `wip` filter parameter [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234098) in GitLab 19.0.
+- `author.bot` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256381/) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -135,6 +136,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `assignees.web_url`                      | string   | Full URL to the assignee's profile page. |
 | `author[]`                               | object   | Object with information about the user who created the merge request. |
 | `author.avatar_url`                      | string   | Full URL to the author's avatar image. |
+| `author.bot`                             | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `author.id`                              | integer  | The unique ID of the user who created the merge request. |
 | `author.locked`                          | boolean  | If `true`, the author's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
 | `author.name`                            | string   | Display name of the author. Might be redacted, based on current user's permissions. |
@@ -285,6 +287,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 1,
       "name": "Administrator",
       "username": "admin",
@@ -447,6 +450,7 @@ response attributes:
 | `[].assignee`                      | object   | First assignee of the merge request. |
 | `[].assignees`                     | array    | Assignees of the merge request. |
 | `[].author`                        | object   | User who created this merge request. |
+| `[].author.bot`                    | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `[].blocking_discussions_resolved` | boolean  | Indicates if all discussions are resolved only if all are required before the merge request can be merged. |
 | `[].closed_at`                     | datetime | Timestamp of when the merge request was closed. |
 | `[].closed_by`                     | object   | User who closed this merge request. |
@@ -540,6 +544,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 1,
       "name": "Administrator",
       "username": "admin",
@@ -713,6 +718,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `assignees.web_url`                      | string   | Full URL to the assignee's profile page. |
 | `author[]`                               | object   | Object with information about the user who created the merge request. |
 | `author.avatar_url`                      | string   | Full URL to the author's avatar image. |
+| `author.bot`                             | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `author.id`                              | integer  | The unique ID of the user who created the merge request. |
 | `author.locked`                          | boolean  | If `true`, the author's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
 | `author.name`                            | string   | Display name of the author. Might be redacted, based on current user's permissions. |
@@ -861,6 +867,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 1,
       "name": "Administrator",
       "username": "admin",
@@ -995,6 +1002,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `assignees.web_url`                                         | string   | Full URL to the assignee's profile page. |
 | `author[]`                                                  | object   | Object with information about the user who created the merge request. |
 | `author.avatar_url`                                         | string   | Full URL to the author's avatar image. |
+| `author.bot`                                                | boolean  | If `true`, the author is a bot. For a list of bot account types, see [BOT_USER_TYPES](https://gitlab.com/gitlab-org/gitlab/-/blob/997c762ef6ec61054ca39231597a909a4c264222/app/models/concerns/has_user_type.rb#L26). |
 | `author.id`                                                 | integer  | The unique ID of the user who created the merge request. |
 | `author.locked`                                             | boolean  | If `true`, the author's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
 | `author.name`                                               | string   | Display name of the author. Might be redacted, based on current user's permissions. |
@@ -1187,6 +1195,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 4155490,
     "username": "marcel.amirault",
     "name": "Marcel Amirault",
@@ -1578,6 +1587,7 @@ Example response:
       "upvotes": 0,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 2,
         "username": "aiguy123",
         "name": "AI GUY",
@@ -1688,6 +1698,7 @@ Example response:
       "upvotes": 1,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 2,
         "username": "aiguy123",
         "name": "AI GUY",
@@ -1891,6 +1902,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "id": 2,
       "username": "aiguy123",
       "name": "AI GUY",
@@ -2047,6 +2059,7 @@ Example response:
       "upvotes": 0,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 40,
         "username": "i-user-0-1720208283",
         "name": "I User0",
@@ -2120,6 +2133,7 @@ Example response:
       "upvotes": 0,
       "downvotes": 0,
       "author": {
+        "bot": false,
         "id": 1,
         "username": "root",
         "name": "Administrator",
@@ -2225,6 +2239,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "name": "Chad Hamill",
     "username": "jarrett",
     "id": 5,
@@ -2608,6 +2623,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -2768,6 +2784,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -2977,6 +2994,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -3182,6 +3200,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -3656,6 +3675,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -3821,6 +3841,7 @@ Example response:
   "upvotes": 0,
   "downvotes": 0,
   "author": {
+    "bot": false,
     "id": 1,
     "name": "Administrator",
     "username": "admin",
@@ -4003,6 +4024,7 @@ Example response:
     "upvotes": 0,
     "downvotes": 0,
     "author": {
+      "bot": false,
       "name": "Jarret O'Keefe",
       "username": "francisca",
       "id": 14,

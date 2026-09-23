@@ -648,6 +648,33 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
 
+    context 'with tree entry sorting' do
+      let(:pagination_params) { { limit: 3, page_token: nil } }
+
+      def expect_sort(sort)
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:get_tree_entries)
+          .with(gitaly_request_with_params({
+            pagination_params: Gitaly::PaginationParameter.new(limit: 3),
+            sort: sort
+          }), kind_of(Hash))
+          .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+      end
+
+      it 'uses TREES_FIRST_FILESYSTEM by default' do
+        expect_sort(:TREES_FIRST_FILESYSTEM)
+
+        is_expected.to eq([[], nil])
+      end
+
+      it 'falls back to TREES_FIRST when the flag is disabled' do
+        stub_feature_flags(tree_entries_filesystem_sort: false)
+        expect_sort(:TREES_FIRST)
+
+        is_expected.to eq([[], nil])
+      end
+    end
+
     context 'with structured errors' do
       context 'with ResolveTree error' do
         before do

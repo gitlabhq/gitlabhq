@@ -17,11 +17,22 @@ module Issuable # rubocop:disable Gitlab/BoundedContexts -- existing module we n
         existing_label_ids = issuable.label_ids.sort
         new_label_ids = compute_new_label_ids.sort
 
+        validate_labels_limit!(new_label_ids)
+
         issuable.label_ids = new_label_ids
         issuable.touch if issuable.persisted? && existing_label_ids != new_label_ids
       end
 
       private
+
+      def validate_labels_limit!(new_label_ids)
+        return unless issuable.labels_limit_exceeded?(new_label_ids)
+
+        raise_error format(
+          _("Cannot add more than %{limit} labels to a work item."),
+          limit: issuable.max_number_of_labels
+        )
+      end
 
       def normalize_and_filter_label_params!
         normalize_and_filter_param(:add_label_ids, :add_labels)

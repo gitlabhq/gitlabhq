@@ -1,10 +1,11 @@
 <script>
 import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce, xor } from 'lodash-es';
-import { s__, sprintf } from '~/locale';
+import { debounce, union, xor } from 'lodash-es';
+import { n__, s__, sprintf } from '~/locale';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
+import { MAX_SCOPES } from '~/glql/constants';
 import getFrecentGroupsQuery from '../graphql/get_frecent_groups.query.graphql';
 import getOrganizationGroupQuery from '../graphql/get_organization_group.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
@@ -28,6 +29,8 @@ const ITEM_TYPE_BY_TYPENAME = {
 const EMPTY_ITEM_SUFFIX = '::empty';
 const LOAD_MORE_ITEM_SUFFIX = '::load-more';
 
+const SCOPE_NAMESPACE_BATCH_KEY = 'analyticsDashboardScopeNamespace';
+
 export default {
   name: 'AnalyticsDashboardScopePicker',
   components: {
@@ -36,11 +39,18 @@ export default {
     ScopePickerItem,
   },
   props: {
-    // A namespace path to start selected (ex. URL param on page load)
-    initialPath: {
-      type: String,
+    // Namespace paths to preselect, read by the page from the `scope` URL param on load.
+    // multiSelect = true  -- Anything past the first MAX_SCOPES is dropped here.
+    // multiSelect = false -- Anything past the first path is dropped.
+    initialPaths: {
+      type: Array,
       required: false,
-      default: '',
+      default: () => [],
+    },
+    multiSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   emits: ['change', 'error'],
@@ -49,22 +59,21 @@ export default {
       topLevelGroups: [],
       topLevelGroupsPageInfo: null,
       isLoadingTopLevelGroups: false,
-      // The pick is held as the namespace itself, not its path. A path would have to be resolved
-      // against the loaded namespaces on every read, and a second search replaces the results the
-      // pick may have come from, so by then there would be nothing left to resolve it to.
-      selectedNamespace: null,
+      // Picks are held as namespace objects, not paths, because resolving a path would mean matching
+      // it against the loaded namespaces on every read -- and a search replaces those results, so
+      // by then there would be nothing left to match against.
+      selectedNamespaces: [],
       expandedPaths: [],
       // Each expanded group's projects, flattened across the subgroups below it, keyed by path.
       // Alongside them, the group's loading state and the cursor the next page starts from.
       subgroupProjects: {},
       searchTerm: '',
-      initialScope: null,
       searchResults: null,
       frecentGroup: null,
       validatedFrecentGroup: null,
       // A default is only derived for a load that named no scope, and only until the user picks
       // something: deriving it again would put a group back after they cleared it.
-      skipDefaultScope: Boolean(this.initialPath),
+      skipDefaultScope: this.initialPaths.length > 0,
     };
   },
   apollo: {
@@ -109,23 +118,6 @@ export default {
         captureException(error);
       },
     },
-    initialScope: {
-      query: getScopeNamespaceQuery,
-      variables() {
-        return { fullPath: this.initialPath, fullPaths: [this.initialPath] };
-      },
-      // Only update if a valid group/project is returned
-      update: ({ group, projects }) => group ?? projects?.nodes?.[0] ?? null,
-      // The page echoes the current selection back through `initialPath`, so a path that is
-      // already selected needs no lookup -- the click resolved that namespace already.
-      skip() {
-        return !this.initialPath || this.initialPath === this.selectedPath;
-      },
-      error(error) {
-        this.$emit('error', error);
-        captureException(error);
-      },
-    },
   },
   computed: {
     isLoadingFirstPage() {
@@ -154,11 +146,32 @@ export default {
         .filter(Boolean)
         .map((namespace) => this.asNamespace(namespace));
     },
-    selectedPath() {
-      return this.selectedNamespace?.fullPath ?? '';
+    selectedPaths() {
+      return this.selectedNamespaces.map(({ fullPath }) => fullPath);
+    },
+    maxSelections() {
+      return this.multiSelect ? MAX_SCOPES : 1;
+    },
+    isAtMaxSelections() {
+      return this.selectedNamespaces.length >= this.maxSelections;
+    },
+    slotsLeft() {
+      return sprintf(s__('AnalyticsDashboards|%{remaining} of %{max} slots left'), {
+        remaining: MAX_SCOPES - this.selectedNamespaces.length,
+        max: MAX_SCOPES,
+      });
     },
     toggleText() {
-      return this.selectedNamespace?.name ?? s__('AnalyticsDashboards|Select a group or project');
+      const [first] = this.selectedNamespaces;
+
+      if (!first) return s__('AnalyticsDashboards|Select a group or project');
+      if (this.selectedNamespaces.length === 1) return first.name;
+
+      return n__(
+        'AnalyticsDashboards|%d item selected',
+        'AnalyticsDashboards|%d items selected',
+        this.selectedNamespaces.length,
+      );
     },
     items() {
       return this.hasSearch ? this.searchItems : this.groupItems;
@@ -190,21 +203,16 @@ export default {
 
       return items;
     },
-    // Rows locked by a selected ancestor render checked, so the options behind them have to agree.
-    // The pick itself may be on none of them -- not paged in yet, or filtered out by a search --
-    // and it still has to count, or the listbox greys the toggle as if nothing were selected.
-    selectedPaths() {
+    // Rows locked by a selected ancestor render checked, so the options behind them must count as
+    // selected too or they lose aria-selected. A pick with no row on screen (unloaded page, or
+    // filtered out by a search) still has to be listed, or the toggle greys out as if empty.
+    listboxSelectedPaths() {
       const visible = this.items.filter(({ selected }) => selected).map(({ value }) => value);
 
-      return this.selectedPath && !visible.includes(this.selectedPath)
-        ? [this.selectedPath, ...visible]
-        : visible;
+      return union(this.selectedPaths, visible);
     },
   },
   watch: {
-    initialScope(namespace) {
-      this.selectResolvedNamespace(namespace);
-    },
     validatedFrecentGroup(namespace) {
       this.selectResolvedNamespace(namespace);
     },
@@ -218,34 +226,32 @@ export default {
     this.onSearch = debounce(this.setSearchTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
     this.loadTopLevelGroups();
+    this.loadInitialScope();
   },
   methods: {
-    // A namespace a query resolved rather than the user clicking it: the URL's path, or the
-    // derived default. Applied like a click, so the page treats it as an ordinary filter change.
-    // Anything the user picked meanwhile outranks it.
+    // A namespace a query resolved rather than the user clicking it: the derived default.
+    // Applied like a click, so the page treats it as an ordinary filter change. Anything the
+    // user picked meanwhile outranks it.
     selectResolvedNamespace(namespace) {
-      if (!namespace || this.selectedNamespace) return;
+      if (!namespace || this.selectedNamespaces.length) return;
 
-      this.selectedNamespace = this.asNamespace(namespace);
-      this.$emit('change', this.selectedNamespace);
+      this.selectedNamespaces = [this.asNamespace(namespace)];
+      this.$emit('change', this.selectedNamespaces);
     },
     asNamespace({ id, name, fullName, fullPath, __typename }) {
       return { id, name, fullName, fullPath, type: __typename };
     },
     asItem({ name, fullPath, type }) {
-      // A selected group covers everything beneath it, so those items cannot be picked on their own.
-      const isLockedByAncestor =
-        Boolean(this.selectedPath) && fullPath.startsWith(`${this.selectedPath}/`);
-
       const { isLoading, projects } = this.subgroupProjects[fullPath] ?? {};
 
       return {
         value: fullPath,
         text: name,
         itemType: ITEM_TYPE_BY_TYPENAME[type],
-        selected: this.selectedPath === fullPath || isLockedByAncestor,
+        // A selected group covers everything beneath it, so those rows read as selected as well.
+        selected: this.isSelected(fullPath) || this.hasSelectedAncestor(fullPath),
         indeterminate: this.hasSelectedDescendant(fullPath),
-        disabled: isLockedByAncestor,
+        disabled: !this.isSelectable(fullPath),
         expanded: this.isExpanded(fullPath),
         // Only the first page leaves the row with nothing to show, so later pages report on the
         // Load more button they were asked for from instead.
@@ -314,8 +320,20 @@ export default {
     isExpanded(fullPath) {
       return this.expandedPaths.includes(fullPath);
     },
+    isSelected(fullPath) {
+      return this.selectedPaths.includes(fullPath);
+    },
+    hasSelectedAncestor(fullPath) {
+      return this.selectedPaths.some((path) => fullPath.startsWith(`${path}/`));
+    },
     hasSelectedDescendant(fullPath) {
-      return this.selectedPath.startsWith(`${fullPath}/`);
+      return this.selectedPaths.some((path) => path.startsWith(`${fullPath}/`));
+    },
+    isSelectable(fullPath) {
+      if (this.hasSelectedAncestor(fullPath)) return false;
+      if (!this.multiSelect || !this.isAtMaxSelections) return true;
+
+      return this.isSelected(fullPath) || this.hasSelectedDescendant(fullPath);
     },
     async toggleExpanded(fullPath) {
       if (this.isExpanded(fullPath)) {
@@ -410,20 +428,85 @@ export default {
     onSelect(paths) {
       this.skipDefaultScope = true;
 
-      // The listbox reports the whole selection, but only one item can change per click and the
-      // picker is single-select, so apply that item's toggle rather than taking the list as given.
-      const [fullPath] = xor(paths, this.selectedPaths);
+      // The listbox reports the whole selection, but only one item can change per click.
+      // Determine what changed and update its value.
+      const [fullPath] = xor(paths, this.listboxSelectedPaths);
+      if (!fullPath) return;
 
-      // Ticking an item replaces the selection. Unticking it, or clearing an item left
-      // indeterminate by a descendant, empties the selection instead.
-      const clearsSelection =
-        this.selectedPath === fullPath || this.hasSelectedDescendant(fullPath);
+      const selected = this.isSelected(fullPath)
+        ? this.selectedNamespaces.filter((namespace) => namespace.fullPath !== fullPath)
+        : this.withNamespaceAdded(fullPath);
 
-      this.selectedNamespace = clearsSelection
-        ? null
-        : (this.knownNamespaces.find((namespace) => namespace.fullPath === fullPath) ?? null);
+      if (!selected) return;
 
-      this.$emit('change', this.selectedNamespace);
+      this.selectedNamespaces = selected;
+      this.$emit('change', selected);
+    },
+    // A selected group covers everything beneath it, so any picks already sitting beneath the
+    // newly selected group are dropped. Returns nothing when the selection is full or the path
+    // matches no loaded namespace.
+    withNamespaceAdded(fullPath) {
+      const namespace = this.knownNamespaces.find((known) => known.fullPath === fullPath);
+      if (!namespace) return null;
+
+      // Without multi-select there is nothing to merge with and no descendants
+      // to prune, so the pick just replaces it.
+      if (!this.multiSelect) return [namespace];
+
+      const kept = this.selectedNamespaces.filter(
+        ({ fullPath: selectedPath }) => !selectedPath.startsWith(`${fullPath}/`),
+      );
+
+      return kept.length < this.maxSelections ? [...kept, namespace] : null;
+    },
+    async loadInitialScope() {
+      const dedupedPaths = [...new Set(this.initialPaths)];
+
+      // Remove any children that already have a parent selected, and apply the selection limit.
+      const paths = dedupedPaths
+        .filter(
+          (path) => !dedupedPaths.some((other) => other !== path && path.startsWith(`${other}/`)),
+        )
+        .slice(0, this.maxSelections);
+
+      if (!paths.length) return;
+
+      const results = await Promise.allSettled(paths.map(this.fetchScopeNamespace));
+      const failures = results.filter(({ status }) => status === 'rejected');
+
+      // Paths that resolve to nothing (deleted, or no access) are dropped.
+      const restored = results
+        .filter(({ value }) => value)
+        .map(({ value }) => this.asNamespace(value));
+
+      // Requests go out in batches, so one rejected lookup must not sink the paths
+      // that resolved in other requests. Still log the failures to sentry.
+      failures.forEach(({ reason }) => captureException(reason));
+
+      // A partial restore still gives a usable selection, so the page stays quiet -- only a total
+      // loss leaves the picker empty and worth surfacing.
+      if (!restored.length) {
+        if (failures.length) this.$emit('error', failures[0].reason);
+        return;
+      }
+
+      // Discard if the user has already picked something by the time the lookups land.
+      if (this.selectedNamespaces.length) return;
+
+      this.selectedNamespaces = restored;
+      this.$emit('change', restored);
+    },
+    // A path from the `scope` param says nothing about whether it names a group or a project, so
+    // both are asked for and whichever resolves is the answer. One query runs per path, sharing a
+    // batch key so they leave as a single request.
+    async fetchScopeNamespace(fullPath) {
+      const { data } = await this.$apollo.query({
+        query: getScopeNamespaceQuery,
+        variables: { fullPath, fullPaths: [fullPath] },
+        context: { batchKey: SCOPE_NAMESPACE_BATCH_KEY },
+      });
+
+      return data.group ?? data.projects?.nodes?.[0] ?? null;
     },
     setSearchTerm(searchTerm) {
       this.searchTerm = searchTerm;
@@ -443,7 +526,7 @@ export default {
     multiple
     fluid-width
     :items="items"
-    :selected="selectedPaths"
+    :selected="listboxSelectedPaths"
     :toggle-text="toggleText"
     :header-text="s__('AnalyticsDashboards|Scope')"
     :loading="isLoadingFirstPage"
@@ -474,7 +557,16 @@ export default {
     </template>
 
     <template #footer>
-      <div class="gl-border-t gl-flex gl-justify-end gl-border-t-dropdown gl-p-3">
+      <div
+        class="gl-border-t gl-flex gl-items-center gl-justify-end gl-border-t-dropdown gl-px-4 gl-py-3"
+      >
+        <span
+          v-if="multiSelect"
+          class="gl-mr-auto gl-text-sm gl-text-subtle"
+          data-testid="scope-picker-slots-left"
+        >
+          {{ slotsLeft }}
+        </span>
         <gl-button category="primary" variant="confirm" size="small" @click="onDone">
           {{ __('Done') }}
         </gl-button>

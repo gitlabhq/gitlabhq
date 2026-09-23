@@ -188,6 +188,44 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
     end
 
+    context 'with legacy pagination when authenticated as a maintainer' do
+      let(:files) do
+        {
+          'Foo/x' => 'content',
+          'Foo.A/x' => 'content',
+          'Foo.A.Test/x' => 'content'
+        }
+      end
+
+      let(:project) { create(:project, :custom_repo, creator: user, files: files) }
+
+      it 'returns every entry once in trees-first filesystem order across pages' do
+        get api(route, user), params: { page: 1, per_page: 2 }
+        first_page_names = json_response.pluck('name')
+
+        get api(route, user), params: { page: 2, per_page: 2 }
+        second_page_names = json_response.pluck('name')
+
+        expect([first_page_names, second_page_names]).to eq([%w[Foo Foo.A], %w[Foo.A.Test]])
+      end
+
+      context 'when filesystem sorting is disabled' do
+        before do
+          stub_feature_flags(tree_entries_filesystem_sort: false)
+        end
+
+        it 'returns every entry once in trees-first order across pages' do
+          get api(route, user), params: { page: 1, per_page: 2 }
+          first_page_names = json_response.pluck('name')
+
+          get api(route, user), params: { page: 2, per_page: 2 }
+          second_page_names = json_response.pluck('name')
+
+          expect([first_page_names, second_page_names]).to eq([%w[Foo.A.Test Foo.A], %w[Foo]])
+        end
+      end
+    end
+
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository tree' do
         let(:project) { create(:project, :public, :repository) }

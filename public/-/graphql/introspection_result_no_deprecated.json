@@ -225036,18 +225036,6 @@
               "deprecationReason": null
             },
             {
-              "name": "useWorkItemsView",
-              "description": "Use work item view instead of legacy issue view.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "visibilityPipelineIdType",
               "description": "Determines whether the pipeline list shows ID or IID.",
               "args": [],
@@ -225143,16 +225131,6 @@
               "type": {
                 "kind": "ENUM",
                 "name": "MergeRequestSort",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "useWorkItemsView",
-              "description": "Use work item view instead of legacy issue view.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
                 "ofType": null
               },
               "defaultValue": null

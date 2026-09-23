@@ -137,7 +137,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
             before do
               allow_next_instance_of(described_class) do |presenter|
                 allow(presenter).to receive(:can?).and_return(false) # default stub for any other permission checks
-                allow(presenter).to receive(:can?).with(anything, permission, parent).and_return(has_permission)
+                allow(presenter).to receive(:can?).with(anything, permission, project).and_return(has_permission)
               end
             end
 

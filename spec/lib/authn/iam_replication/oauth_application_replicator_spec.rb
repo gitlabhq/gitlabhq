@@ -32,7 +32,8 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
           response_types: %w[code],
           created_at: Google::Protobuf::Timestamp.new(seconds: application.created_at.to_i),
           updated_at: Google::Protobuf::Timestamp.new(seconds: application.updated_at.to_i),
-          organization_id: application.organization.uuid
+          organization_id: application.organization.uuid,
+          owning_cell_id: Gitlab.config.cell.id.to_i
         )
       end
 
@@ -54,6 +55,26 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
             organization_id: match(/\A[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\z/)
           )
         )
+      end
+
+      it 'sends the current configured owning_cell_id' do
+        replicator.deliver(row)
+
+        expect(client).to have_received(:upsert_oauth_application).with(
+          hash_including(owning_cell_id: Gitlab.config.cell.id.to_i)
+        )
+      end
+
+      context 'with a different configured cell' do
+        before do
+          stub_config_cell(id: 7)
+        end
+
+        it 'sends the configured owning_cell_id' do
+          replicator.deliver(row)
+
+          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owning_cell_id: 7))
+        end
       end
 
       it 'delivers with a single upsert call' do

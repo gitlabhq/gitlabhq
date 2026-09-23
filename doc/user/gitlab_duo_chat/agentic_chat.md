@@ -125,12 +125,9 @@ most recent conversation, and that conversation is still active in the Chat draw
 {{< history >}}
 
 - Triggering foundational flows in a GitLab Duo Agentic Chat conversation [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20484) in GitLab 19.2 [with a feature flag](../../administration/feature_flags/_index.md) named `agentic_foundational_flow_tool`. Enabled by default.
+- Generally available in GitLab 19.5. Feature flag `agentic_foundational_flow_tool` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Where appropriate, the following foundational flows can be triggered from an Agentic Chat conversation to answer a question or accomplish a goal.
 

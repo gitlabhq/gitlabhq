@@ -40,6 +40,8 @@ export const paths = {
   adminUser: '/admin/users/id',
   ban: '/admin/users/id/ban',
   unban: '/admin/users/id/unban',
+  trust: '/admin/users/id/trust',
+  untrust: '/admin/users/id/untrust',
 };
 
 export const createMembershipCountResponse = (data) => ({

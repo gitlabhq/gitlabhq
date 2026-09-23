@@ -228,7 +228,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/testing-jest.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/testing-migrations.md @gitlab-org/maintainers/database
 /.ai/principles/distilled/testing-frontend-testing-hierarchy.md @gitlab-org/maintainers/frontend
-/.ai/principles/distilled/testing-msw.md @gitlab-org/maintainers/frontend
+/.ai/principles/distilled/testing-frontend-integration.md @gitlab-org/maintainers/frontend
 /.ai/principles/distilled/testing-e2e.md @gitlab-org/maintainers/rails-backend
 /.ai/principles/distilled/performance.md @gitlab-org/maintainers/rails-backend
 /.ai/principles/distilled/documentation.md @gitlab-org/technical-writing/tw-docops

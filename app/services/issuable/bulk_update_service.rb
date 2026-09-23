@@ -21,6 +21,14 @@ module Issuable
         schedule_group_issues_count_reset(updated_issuables)
       end
 
+      if failed_messages.any?
+        return response_error(
+          format(_("%{count} item(s) could not be updated: %{errors}"),
+            count: failed_messages.size, errors: failed_messages.uniq.join(', ')),
+          422
+        )
+      end
+
       response_success(payload: { count: updated_issuables.size })
     rescue ArgumentError => e
       response_error(e.message, 422)
@@ -63,15 +71,23 @@ module Issuable
       items.each do |issuable|
         next unless can?(current_user, :"update_#{type}", issuable)
 
-        authorized_issuables << issuable
         update_class.new(
           **update_class.constructor_container_arg(issuable.issuing_parent),
           current_user: current_user,
           params: dup_params
         ).execute(issuable)
+
+        authorized_issuables << issuable
+      rescue ::Issuable::Callbacks::Base::Error => e
+        # Keep processing the batch; per-item failures are reported after the loop.
+        failed_messages << e.message
       end
 
       authorized_issuables
+    end
+
+    def failed_messages
+      @failed_messages ||= []
     end
 
     # overridden in EE

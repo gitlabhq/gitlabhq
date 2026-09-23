@@ -10,6 +10,21 @@ RSpec.describe Gitlab::EtagCaching::Router::Graphql do
     expect(result.name).to eq 'pipelines_graph'
   end
 
+  it 'matches pipelines endpoint with a prefixed resource header', :aggregate_failures do
+    result = match_route('/api/graphql', '/api/graphql:pipelines/id/1')
+
+    expect(result).to be_present
+    expect(result.name).to eq 'pipelines_graph'
+  end
+
+  it 'does not match a resource header containing only the prefix' do
+    expect(match_route('/api/graphql', '/api/graphql:')).to be_nil
+  end
+
+  it 'does not match an unrelated resource header' do
+    expect(match_route('/api/graphql', 'unrelated')).to be_nil
+  end
+
   it 'has a valid feature category for every route', :aggregate_failures do
     feature_categories = Gitlab::FeatureCategories.default.categories
 
@@ -45,11 +60,29 @@ RSpec.describe Gitlab::EtagCaching::Router::Graphql do
       is_expected.to eq '/api/graphql:pipelines/id/1'
     end
 
+    context 'when the header includes the GraphQL API path' do
+      let(:header_value) { '/api/graphql:pipelines/id/1' }
+
+      it 'does not duplicate the path prefix in the cache key' do
+        is_expected.to eq '/api/graphql:pipelines/id/1'
+      end
+    end
+
     context 'when the header is missing' do
       let(:header_value) {}
 
       it 'does not raise errors' do
         is_expected.to eq '/api/graphql'
+      end
+    end
+
+    context 'when the resource header is blank after removing the prefix' do
+      where(:header_value) { ['', ' ', '/api/graphql:', '/api/graphql: '] }
+
+      with_them do
+        it 'uses only the request path as the cache key' do
+          is_expected.to eq '/api/graphql'
+        end
       end
     end
   end

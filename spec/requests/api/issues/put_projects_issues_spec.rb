@@ -310,6 +310,20 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(json_response['labels']).to contain_exactly(label.title, '1', '2')
     end
 
+    context 'when adding labels past the work item labels limit' do
+      before do
+        stub_const('Issue::MAX_NUMBER_OF_LABELS', 2)
+      end
+
+      it 'returns 400 without persisting the labels', :aggregate_failures do
+        put api_for_user, params: { add_labels: 'one, two' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include('Cannot add more than 2 labels')
+        expect(issue.reload.labels).to contain_exactly(label)
+      end
+    end
+
     context 'removes' do
       let_it_be(:label2) { create(:label, title: 'a-label', project: project) }
       let!(:label_link2) { create(:label_link, label: label2, target: issue) }

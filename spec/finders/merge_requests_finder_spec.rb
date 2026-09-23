@@ -1383,6 +1383,16 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       it 'returns only public merge requests' do
         expect(merge_requests).to eq([mr_public])
       end
+
+      context 'when added to the internal project as a planner' do
+        before do
+          internal.add_planner(user)
+        end
+
+        it 'returns merge requests from the internal project' do
+          expect(merge_requests).to eq([mr_internal, mr_public])
+        end
+      end
     end
 
     context 'with authenticated user' do
@@ -1399,11 +1409,40 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           end
         end
 
+        context 'as a planner' do
+          before_all { private_project.add_planner(user) }
+
+          it 'returns merge requests from the private project' do
+            expect(merge_requests).to eq([mr_internal, mr_private, mr_public])
+          end
+        end
+
         context 'as a developer' do
           before_all { private_project.add_developer(user) }
 
           it 'returns merge requests from the private project' do
             expect(merge_requests).to eq([mr_internal, mr_private, mr_public])
+          end
+        end
+      end
+
+      context 'being added to a private project that limits merge requests to members' do
+        let_it_be(:project_with_private_mrs) { create(:project, :private, :merge_requests_private) }
+        let_it_be(:mr_private_feature) { create(:merge_request, source_project: project_with_private_mrs) }
+
+        context 'as a planner' do
+          before_all { project_with_private_mrs.add_planner(user) }
+
+          it 'does not return merge requests from the project' do
+            expect(merge_requests).to eq([mr_internal, mr_public])
+          end
+        end
+
+        context 'as a reporter' do
+          before_all { project_with_private_mrs.add_reporter(user) }
+
+          it 'returns merge requests from the project' do
+            expect(merge_requests).to eq([mr_private_feature, mr_internal, mr_public])
           end
         end
       end

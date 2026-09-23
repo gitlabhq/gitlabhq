@@ -59,7 +59,8 @@ module Authn
           response_types: %w[code],
           created_at: timestamp(application.created_at),
           updated_at: timestamp(application.updated_at),
-          organization_id: application.organization.uuid
+          organization_id: application.organization.uuid,
+          owning_cell_id: Gitlab.config.cell.id.to_i
         }
       end
 

@@ -785,8 +785,6 @@ export default {
     'app/assets/javascripts/work_items/graphql/work_items_linked_items_slim.query.graphql',
     'app/assets/javascripts/work_items/graphql/work_items_reorder.mutation.graphql',
     'app/assets/javascripts/work_items/graphql/workspace_permissions.query.graphql',
-    'app/assets/javascripts/work_items_feedback/graphql/set_use_work_items_view.mutation.graphql',
-    'app/assets/javascripts/work_items_feedback/graphql/user_preferences.query.graphql',
     'app/graphql/queries/burndown_chart/burnup.iteration.query.graphql',
     'app/graphql/queries/burndown_chart/burnup.milestone.query.graphql',
     'app/graphql/queries/container_registry/get_container_repositories.query.graphql',

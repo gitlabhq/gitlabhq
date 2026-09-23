@@ -112,7 +112,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
         end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['scopes'][0]).to eq('doesn\'t match configured on the server.')
+        expect(json_response['message']['scopes'][0]).to eq('doesn\'t match those configured on the server.')
       end
 
       context 'multiple scopes' do
@@ -133,7 +133,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organ
           end.not_to change { Authn::OauthApplication.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['scopes'][0]).to eq('doesn\'t match configured on the server.')
+          expect(json_response['message']['scopes'][0]).to eq('doesn\'t match those configured on the server.')
         end
       end
 

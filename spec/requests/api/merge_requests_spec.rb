@@ -820,6 +820,39 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe 'GET /merge_requests' do
     include_context 'with merge requests'
 
+    context 'with bot authors' do
+      let_it_be(:bot_author) { create(:user, :project_bot) }
+      let_it_be(:bot_merge_request) do
+        create(:merge_request, :simple, source_project: project, target_project: project, author: bot_author)
+      end
+
+      it 'includes bot status for human and bot authors' do
+        get api('/merge_requests', user), params: { scope: 'all' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/merge_requests')
+        expect(json_response).to include(
+          a_hash_including('id' => merge_request.id, 'author' => a_hash_including('bot' => false)),
+          a_hash_including('id' => bot_merge_request.id, 'author' => a_hash_including('bot' => true))
+        )
+      end
+
+      it 'avoids N+1 queries when serializing bot authors', :request_store, :use_sql_query_cache do
+        get api('/merge_requests', user), params: { scope: 'all' }
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api('/merge_requests', user), params: { scope: 'all' }
+        end
+
+        create_list(:merge_request, 3, :simple, :closed, source_project: project, target_project: project,
+          author: create(:user, :service_account))
+
+        expect do
+          get api('/merge_requests', user), params: { scope: 'all' }
+        end.not_to exceed_all_query_limit(control).with_threshold(allowed_query_threshold)
+      end
+    end
+
     it_behaves_like 'issuable API rate-limited search' do
       let(:url) { '/merge_requests' }
       let(:issuable) { merge_request }

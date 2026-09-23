@@ -23,10 +23,10 @@ export default {
       required: false,
       default: () => ({}),
     },
-    scopePath: {
-      type: String,
+    scopePaths: {
+      type: Array,
       required: false,
-      default: '',
+      default: () => [],
     },
     // The range the page resolved for this load from the URL. The date
     // filter owns its selection after mount, so this only seeds it.
@@ -68,7 +68,8 @@ export default {
   >
     <gl-form-group class="gl-full-w gl-mb-0" :label="$options.i18n.scopeLabel">
       <scope-picker
-        :initial-path="scopePath"
+        multi-select
+        :initial-paths="scopePaths"
         @change="$emit('set-scope', $event)"
         @error="$emit('error', $event)"
       />

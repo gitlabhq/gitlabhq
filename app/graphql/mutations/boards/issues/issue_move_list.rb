@@ -86,6 +86,8 @@ module Mutations
             issue: issue.reset,
             errors: error_for(result)
           }
+        rescue ::Issuable::Callbacks::Base::Error => e
+          { issue: issue.reset, errors: [e.message] }
         end
 
         private

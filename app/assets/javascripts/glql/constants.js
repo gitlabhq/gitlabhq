@@ -70,6 +70,10 @@ export const MODE_ANALYTICS = 'analytics';
 export const EXECUTION_QUEUE_DEFAULT = 'glql-queue-default';
 export const EXECUTION_QUEUE_DASHBOARD = 'glql-queue-dashboard';
 
+// Analytics mode lets a query list several groups and projects,
+// but the compiler caps the combined total at this number.
+export const MAX_SCOPES = 20;
+
 export const FIELD_TYPES = {
   ATTRIBUTE: 'attribute',
   DIMENSION: 'dimension',

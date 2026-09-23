@@ -27,7 +27,8 @@ module Types
     # rubocop:disable GraphQL/ExtractType -- These are stored as user preferences
     field :use_work_items_view, GraphQL::Types::Boolean,
       description: 'Use work item view instead of legacy issue view.',
-      null: true
+      null: true,
+      deprecated: { reason: 'Work item view is always used', milestone: '19.5' }
 
     field :merge_request_dashboard_list_type, Types::MergeRequests::DashboardListTypeEnum,
       description: 'Merge request dashboard list rendering type.',
@@ -98,6 +99,11 @@ module Types
         user: user,
         marketplace_home_url: ::WebIde::ExtensionMarketplace.marketplace_home_url(user: user)
       )
+    end
+
+    # Deprecated: the work item view is always used, so the stored value is ignored.
+    def use_work_items_view
+      true
     end
   end
 end

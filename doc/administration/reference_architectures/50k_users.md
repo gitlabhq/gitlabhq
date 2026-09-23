@@ -27,41 +27,38 @@ For a full list of reference architectures, see
 - **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 - **Unsure which Reference Architecture to use**? [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with)
 
-| Service                                  | Nodes | Configuration           | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
+| Service                                  | Nodes | Configuration           | GCP example[^machine-types] | AWS example[^machine-types] | Azure example[^machine-types] |
 |------------------------------------------|-------|-------------------------|------------------|---------------|-----------|
-| External load balancer<sup>4</sup>       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | `c5.4xlarge`  | `F16s v2` |
-| Consul<sup>2</sup>                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
-| PostgreSQL<sup>2</sup>                   | 3     | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge`  | `D32s v3` |
-| PgBouncer<sup>2</sup>                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
-| Internal load balancer<sup>4</sup>       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | `c5.4xlarge`  | `F16s v2` |
-| Redis/Sentinel - Cache<sup>3</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
-| Redis/Sentinel - Persistent<sup>3</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
-| Gitaly<sup>6</sup><sup>7</sup>           | 3     | 64 vCPU, 240 GB memory  | `n1-standard-64` | `m5.16xlarge` | `D64s v3` |
-| Praefect<sup>6</sup>                     | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   | `F4s v2`  |
-| Praefect PostgreSQL<sup>2</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
-| Sidekiq<sup>8</sup>                      | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
-| GitLab Rails<sup>8</sup>                 | 12    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`  | `F32s v2` |
+| External load balancer[^external-load-balancer]       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | `c5.4xlarge`  | `F16s v2` |
+| Consul[^external-database]                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
+| PostgreSQL[^external-database]                   | 3     | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge`  | `D32s v3` |
+| PgBouncer[^external-database]                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
+| Internal load balancer[^external-load-balancer]       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | `c5.4xlarge`  | `F16s v2` |
+| Redis/Sentinel - Cache[^external-cache]       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
+| Redis/Sentinel - Persistent[^external-cache]  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
+| Gitaly[^storage-cluster], [^storage-specs]           | 3     | 64 vCPU, 240 GB memory  | `n1-standard-64` | `m5.16xlarge` | `D64s v3` |
+| Praefect[^storage-cluster]                     | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   | `F4s v2`  |
+| Praefect PostgreSQL[^external-database]          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
+| Sidekiq[^auto-scaling-groups]                      | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
+| GitLab Rails[^auto-scaling-groups]                 | 12    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`  | `F32s v2` |
 | Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   | `F4s v2`  |
-| Object storage<sup>5</sup>               | -     | -                       | -                | -             | -         |
+| Object storage[^external-object-storage]               | -     | -                       | -                | -             | -         |
 
-**Footnotes**:
+[^machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
+[^external-database]: Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
+[^external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
 
-<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
-<!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
-   - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
-4. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
-5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
-7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
-8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](../../install/sizing.md#autoscaling).
-   However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
-   such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
-<!-- markdownlint-enable MD029 -->
+    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
+
+[^external-load-balancer]: Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+[^external-object-storage]: Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
+[^storage-cluster]: Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
+[^storage-specs]: Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+    However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
+[^auto-scaling-groups]: Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](../../install/sizing.md#autoscaling).
+    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
+    such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 
 > [!note]
 > For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
@@ -2336,34 +2333,31 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
 
-| Service                                  | Nodes | Configuration          | GCP example<sup>1</sup> | AWS example<sup>1</sup> |
+| Service                                  | Nodes | Configuration          | GCP example[^cluster-topology-machine-types] | AWS example[^cluster-topology-machine-types] |
 |------------------------------------------|-------|------------------------|------------------|---------------|
-| Consul<sup>2</sup>                       | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
-| PostgreSQL<sup>2</sup>                   | 3     | 32 vCPU, 120 GB memory | `n1-standard-32` | `m5.8xlarge`  |
-| PgBouncer<sup>2</sup>                    | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
-| Internal load balancer<sup>4</sup>       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge`  |
-| Redis/Sentinel - Cache<sup>3</sup>       | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
-| Redis/Sentinel - Persistent<sup>3</sup>  | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
-| Gitaly<sup>6</sup><sup>7</sup>           | 3     | 64 vCPU, 240 GB memory | `n1-standard-64` | `m5.16xlarge` |
-| Praefect<sup>6</sup>                     | 3     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`   | `c5.xlarge`   |
-| Praefect PostgreSQL<sup>2</sup>          | 1+    | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
-| Object storage<sup>5</sup>               | -     | -                      | -                | -             |
+| Consul[^cluster-topology-external-database]                       | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
+| PostgreSQL[^cluster-topology-external-database]                   | 3     | 32 vCPU, 120 GB memory | `n1-standard-32` | `m5.8xlarge`  |
+| PgBouncer[^cluster-topology-external-database]                    | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
+| Internal load balancer[^cluster-topology-external-load-balancer]       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge`  |
+| Redis/Sentinel - Cache[^cluster-topology-external-cache]       | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
+| Redis/Sentinel - Persistent[^cluster-topology-external-cache]  | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
+| Gitaly[^cluster-topology-storage-cluster], [^cluster-topology-storage-specs]           | 3     | 64 vCPU, 240 GB memory | `n1-standard-64` | `m5.16xlarge` |
+| Praefect[^cluster-topology-storage-cluster]                     | 3     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`   | `c5.xlarge`   |
+| Praefect PostgreSQL[^cluster-topology-external-database]          | 1+    | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
+| Object storage[^cluster-topology-external-object-storage]               | -     | -                      | -                | -             |
 
-**Footnotes**:
+[^cluster-topology-machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
+[^cluster-topology-external-database]: Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
+[^cluster-topology-external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
 
-<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
-<!-- markdownlint-disable MD029 -->
-1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
-2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
-3. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
-   - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
-4. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
-5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
-7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-   However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
-<!-- markdownlint-enable MD029 -->
+    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
+
+[^cluster-topology-external-load-balancer]: Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+[^cluster-topology-external-object-storage]: Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
+[^cluster-topology-storage-cluster]: Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+    Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
+[^cluster-topology-storage-specs]: Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+    However, if you have [large monorepos](../../install/sizing.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 
 > [!note]
 > For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.

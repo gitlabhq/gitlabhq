@@ -614,6 +614,9 @@ msgstr ""
 msgid "%{approvals} of %{approvalRequired}"
 msgstr ""
 
+msgid "%{approved} of %{total} approved"
+msgstr ""
+
 msgid "%{argument_name} must be formatted correctly. For example: 1h 30m."
 msgstr ""
 
@@ -841,6 +844,9 @@ msgid "%{count} item"
 msgid_plural "%{count} items"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{count} item(s) could not be updated: %{errors}"
+msgstr ""
 
 msgid "%{count} items per page"
 msgstr ""
@@ -8933,7 +8939,13 @@ msgstr ""
 msgid "AiOverview|View pipeline"
 msgstr ""
 
+msgid "AiOverview|Viewing as reviewer"
+msgstr ""
+
 msgid "AiOverview|Waiting on: %{checks}."
+msgstr ""
+
+msgid "AiOverview|Your review is the blocker"
 msgstr ""
 
 msgid "AiPowered|%d check failed"
@@ -11211,10 +11223,18 @@ msgstr ""
 msgid "Analytics settings"
 msgstr ""
 
+msgid "AnalyticsDashboards|%d item selected"
+msgid_plural "AnalyticsDashboards|%d items selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "AnalyticsDashboards|%{count} groups selected"
 msgstr ""
 
 msgid "AnalyticsDashboards|%{name} deleted"
+msgstr ""
+
+msgid "AnalyticsDashboards|%{remaining} of %{max} slots left"
 msgstr ""
 
 msgid "AnalyticsDashboards|Add panel"
@@ -14536,6 +14556,9 @@ msgstr ""
 msgid "Awaiting input"
 msgstr ""
 
+msgid "Awaiting review"
+msgstr ""
+
 msgid "Awaiting user signup"
 msgstr ""
 
@@ -17831,6 +17854,9 @@ msgstr ""
 msgid "Cannot activate: Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
+msgid "Cannot add more than %{limit} labels to a work item."
+msgstr ""
+
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr ""
 
@@ -21123,6 +21149,9 @@ msgid "Comment type"
 msgstr ""
 
 msgid "Comment/Reply (quoting selected text)"
+msgstr ""
+
+msgid "Commented"
 msgstr ""
 
 msgid "Commented on %{link_to_project}"
@@ -42772,6 +42801,9 @@ msgstr ""
 msgid "High - S2"
 msgstr ""
 
+msgid "High confidence."
+msgstr ""
+
 msgid "High or unknown vulnerabilities present"
 msgstr ""
 
@@ -49303,6 +49335,9 @@ msgstr ""
 msgid "Low - S4"
 msgstr ""
 
+msgid "Low confidence."
+msgstr ""
+
 msgid "Low risk."
 msgstr ""
 
@@ -50285,6 +50320,9 @@ msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr ""
 
 msgid "Medium - S3"
+msgstr ""
+
+msgid "Medium confidence."
 msgstr ""
 
 msgid "Medium risk."
@@ -54297,6 +54335,9 @@ msgid "No results found"
 msgstr ""
 
 msgid "No results found."
+msgstr ""
+
+msgid "No reviewers yet"
 msgstr ""
 
 msgid "No runner executable"
@@ -68527,6 +68568,9 @@ msgid "Requested %{time_ago}"
 msgstr ""
 
 msgid "Requested a review from %{reviewer_users_sentence}."
+msgstr ""
+
+msgid "Requested changes"
 msgstr ""
 
 msgid "Requested review"
@@ -90000,6 +90044,9 @@ msgstr ""
 msgid "Versions"
 msgstr ""
 
+msgid "Very high confidence."
+msgstr ""
+
 msgid "View"
 msgstr ""
 
@@ -93916,6 +93963,9 @@ msgid "WorkItem|Browse views"
 msgstr ""
 
 msgid "WorkItem|Bug"
+msgstr ""
+
+msgid "WorkItem|Bulk edit took longer than expected. The list has been updated."
 msgstr ""
 
 msgid "WorkItem|Cancel"

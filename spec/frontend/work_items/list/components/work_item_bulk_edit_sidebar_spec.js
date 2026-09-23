@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
+import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/alert';
 import WorkItemBulkEditAssignee from '~/work_items/list/components/work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditLabels from '~/work_items/list/components/work_item_bulk_edit_labels.vue';
 import WorkItemBulkEditMilestone from '~/work_items/list/components/work_item_bulk_edit_milestone.vue';
@@ -226,6 +226,7 @@ describe('WorkItemBulkEditSidebar component', () => {
         captureError: true,
         error: new Error('1 out of 1 chunk(s) failed to update'),
         message: 'Something went wrong while bulk editing.',
+        variant: VARIANT_DANGER,
       });
     });
   });
@@ -728,7 +729,54 @@ describe('WorkItemBulkEditSidebar component', () => {
         captureError: true,
         error: expectedError,
         message: 'Something went wrong while bulk editing.',
+        variant: VARIANT_DANGER,
       });
+      expect(wrapper.emitted('success')).toBeUndefined();
+    });
+
+    it('shows a timeout-specific info alert when a chunk times out', async () => {
+      // A timed-out field comes back in the `errors` array of an otherwise successful
+      // response, so Apollo surfaces it as a GraphQL error rather than a network error.
+      const timeoutHandler = jest.fn().mockResolvedValue({
+        data: { workItemBulkUpdate: null },
+        errors: [{ message: 'Timeout on WorkItemBulkUpdate.updatedWorkItemCount' }],
+      });
+
+      createComponent({
+        mutationHandler: timeoutHandler,
+        props: { isEpicsList: false, fullPath: 'group/project' },
+      });
+      await waitForPromises();
+
+      findStateComponent().vm.$emit('input', 'reopen');
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: new Error('1 out of 1 chunk(s) failed to update'),
+        message: 'Bulk edit took longer than expected. The list has been updated.',
+        variant: VARIANT_INFO,
+      });
+    });
+
+    it('refreshes the list when a chunk times out, since the update has been applied', async () => {
+      const timeoutHandler = jest.fn().mockResolvedValue({
+        data: { workItemBulkUpdate: null },
+        errors: [{ message: 'Timeout on WorkItemBulkUpdate.updatedWorkItemCount' }],
+      });
+
+      createComponent({
+        mutationHandler: timeoutHandler,
+        props: { isEpicsList: false, fullPath: 'group/project' },
+      });
+      await waitForPromises();
+
+      findStateComponent().vm.$emit('input', 'reopen');
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
+      await waitForPromises();
+
+      expect(wrapper.emitted('success')).toEqual([[{ refetchCounts: true }]]);
     });
   });
 });

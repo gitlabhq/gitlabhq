@@ -5,6 +5,7 @@ class UserPreference < ApplicationRecord
   include SafelyChangeColumnDefault
 
   ignore_column :project_studio_enabled, remove_after: '2026-03-15', remove_with: '18.11'
+  ignore_column :use_work_items_view, remove_after: '2026-11-18', remove_with: '19.7'
 
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates

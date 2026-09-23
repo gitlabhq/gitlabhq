@@ -44,6 +44,7 @@ class Issue < ApplicationRecord
 
   SORTING_PREFERENCE_FIELD = :issues_sort
   MAX_BRANCH_TEMPLATE = 255
+  MAX_NUMBER_OF_LABELS = 100
 
   # Types of issues that should be displayed on issue lists across the app
   # for example, project issues list, group issues list, and issues dashboard.
@@ -839,6 +840,12 @@ class Issue < ApplicationRecord
 
   def supports_assignee?
     work_item_type_with_default.supports_assignee?(resource_parent)
+  end
+
+  def max_number_of_labels
+    return unless Feature.enabled?(:limit_labels_per_work_item, resource_parent.root_ancestor)
+
+    MAX_NUMBER_OF_LABELS
   end
 
   def supports_time_tracking?

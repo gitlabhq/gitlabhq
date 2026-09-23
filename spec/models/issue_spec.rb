@@ -1944,6 +1944,39 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '#labels_limit_exceeded?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:labels) { create_list(:label, 3, project: project) }
+
+    let(:issue) { create(:issue, project: project, labels: labels.first(2)) }
+
+    before do
+      stub_const('Issue::MAX_NUMBER_OF_LABELS', 2)
+    end
+
+    it 'is true only when the set grows past the limit' do
+      expect(issue.labels_limit_exceeded?(labels.map(&:id))).to be(true)
+      expect(issue.labels_limit_exceeded?(labels.first(2).map(&:id))).to be(false)
+      expect(issue.labels_limit_exceeded?([])).to be(false)
+    end
+
+    it 'allows an over-limit issue to shrink without dropping below the limit' do
+      issue.labels << labels.last
+
+      expect(issue.labels_limit_exceeded?(labels.first(3).map(&:id))).to be(false)
+    end
+
+    context 'when the limit_labels_per_work_item feature flag is disabled' do
+      before do
+        stub_feature_flags(limit_labels_per_work_item: false)
+      end
+
+      it 'is false' do
+        expect(issue.labels_limit_exceeded?(labels.map(&:id))).to be(false)
+      end
+    end
+  end
+
   describe '#supports_assignee?' do
     WorkItems::TypesFramework::SystemDefined::Type::BASE_TYPES.pluck(:base_type).each do |base_type|
       specify do

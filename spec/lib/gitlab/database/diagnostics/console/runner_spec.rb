@@ -123,6 +123,30 @@ RSpec.describe Gitlab::Database::Diagnostics::Console::Runner, feature_category:
       expect(rendered.index('Clean details')).to be > rendered.index('No issues found.')
     end
 
+    context 'when attached to a terminal' do
+      before do
+        allow(buffer).to receive(:tty?).and_return(true)
+        allow($stdin).to receive(:tty?).and_return(true)
+      end
+
+      it 'prints the details of a single check without a menu' do
+        expect(TTY::Prompt).not_to receive(:new)
+
+        run([build_view('Clean', body: 'Clean details')])
+
+        expect(rendered).to include('Clean details')
+      end
+
+      it 'offers a menu for several checks' do
+        prompt = instance_double(TTY::Prompt, select: :quit)
+        expect(TTY::Prompt).to receive(:new).and_return(prompt)
+
+        run([build_view('Clean', body: 'Clean details'), build_view('Other', body: 'Other details')])
+
+        expect(rendered).not_to include('Clean details', 'Other details')
+      end
+    end
+
     context 'when interactive' do
       let(:paged) { [] }
 

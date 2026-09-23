@@ -1485,6 +1485,12 @@ A `RemoteDevelopmentWorkspacesAgentConfigID` is a global ID. It is encoded as a 
 
 An example `RemoteDevelopmentWorkspacesAgentConfigID` is: `"gid://gitlab/RemoteDevelopment::WorkspacesAgentConfig/1"`.
 
+## `ResourceLabelEventID`
+
+A `ResourceLabelEventID` is a global ID. It is encoded as a string.
+
+An example `ResourceLabelEventID` is: `"gid://gitlab/ResourceLabelEvent/1"`.
+
 ## `SbomComponentID`
 
 A `SbomComponentID` is a global ID. It is encoded as a string.

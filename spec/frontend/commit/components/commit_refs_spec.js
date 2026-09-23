@@ -69,6 +69,23 @@ describe('Commit references component', () => {
     });
   });
 
+  describe('when the commit is not found in the repository', () => {
+    const nullCommitReferencesData = {
+      project: { id: 'gid://gitlab/Project/1', commitReferences: null, __typename: 'Project' },
+    };
+
+    it('renders the empty state without raising an alert', async () => {
+      await createComponent(successQueryHandler({ data: nullCommitReferencesData }));
+
+      expect(branchesList().props()).toMatchObject({
+        hasContainingRefs: false,
+        tippingRefs: [],
+        isLoading: false,
+      });
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+  });
+
   it('fetches containing refs on the fetch event', async () => {
     await createComponent();
     branchesList().vm.$emit(FETCH_CONTAINING_REFS_EVENT);

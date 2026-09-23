@@ -107,6 +107,27 @@ RSpec.describe Search::GroupService, feature_category: :global_search do
         let(:results_updated) { described_class.new(nil, group, search: 'updated', sort: sort).execute }
       end
     end
+
+    context 'when the project is private' do
+      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:project) { create(:project, :private, group: group) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project, title: 'searchable') }
+      let_it_be(:user) { create(:user) }
+
+      subject(:results) { described_class.new(user, group, search: 'searchable').execute.objects(scope) }
+
+      context 'with a planner' do
+        before_all { project.add_planner(user) }
+
+        it { is_expected.to contain_exactly(merge_request) }
+      end
+
+      context 'with a guest' do
+        before_all { project.add_guest(user) }
+
+        it { is_expected.to be_empty }
+      end
+    end
   end
 
   describe '#projects' do

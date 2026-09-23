@@ -229,6 +229,24 @@ describe('ScopePicker', () => {
       },
     });
 
+  // The picker asks per path, so the handler answers with whatever that one path names.
+  const respondWithScopeNamespaces = (namespacesByPath = {}) =>
+    jest.fn().mockImplementation(({ fullPath }) => {
+      const namespace = namespacesByPath[fullPath] ?? null;
+      const { __typename: typename } = namespace ?? {};
+      const isProject = typename === TYPENAME_PROJECT;
+
+      return Promise.resolve({
+        data: {
+          group: isProject ? null : namespace,
+          projects: {
+            __typename: 'ProjectConnection',
+            nodes: isProject ? [namespace] : [],
+          },
+        },
+      });
+    });
+
   // A page names the cursor the next one starts from, so naming one is what says there is more.
   const pageInfo = (endCursor) => ({
     __typename: 'PageInfo',
@@ -329,7 +347,7 @@ describe('ScopePicker', () => {
         [getFrecentGroupsQuery, frecentGroupsRequestHandler],
         [getOrganizationGroupQuery, organizationGroupRequestHandler],
       ]),
-      propsData: { ...props },
+      propsData: { multiSelect: true, ...props },
       stubs: { GlCollapsibleListbox: listboxStub },
     });
   };
@@ -369,6 +387,18 @@ describe('ScopePicker', () => {
   };
   const toggleExpanded = (namespace = mockGroup) =>
     findItemFor(namespace).vm.$emit('toggle-expanded');
+
+  // Each click reports the selection the listbox currently renders,
+  // so a pick has to land before the next one reads it.
+  const selectAll = (...namespaces) =>
+    namespaces.reduce(
+      (previousPicks, namespace) => previousPicks.then(() => toggleSelected(namespace)),
+      Promise.resolve(),
+    );
+
+  const findSelectedPaths = () => findListbox().props('selected');
+
+  const findSlotsLeft = () => wrapper.findByTestId('scope-picker-slots-left');
 
   // The listbox owns the search input, so typing arrives as an event. The handler is debounced.
   const search = async (term) => {
@@ -497,7 +527,7 @@ describe('ScopePicker', () => {
       it('emits the selected group', async () => {
         await toggleSelected(mockCapsuleCorp);
 
-        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockCapsuleCorp)]]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockCapsuleCorp)]]]);
       });
     });
 
@@ -784,6 +814,170 @@ describe('ScopePicker', () => {
       });
     });
   });
+
+  describe('selecting more than one namespace', () => {
+    beforeEach(async () => {
+      createWrapper();
+      await waitForPromises();
+      await selectAll(mockCapsuleCorp, mockAcme);
+    });
+
+    it('keeps every pick', () => {
+      expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath, mockAcme.fullPath]);
+    });
+
+    it('counts them on the toggle rather than naming one', () => {
+      expect(findListbox().props('toggleText')).toBe('2 items selected');
+    });
+
+    it('emits the whole selection, not just what changed', () => {
+      expect(wrapper.emitted('change').at(-1)).toEqual([
+        [asNamespace(mockCapsuleCorp), asNamespace(mockAcme)],
+      ]);
+    });
+
+    it('counts them against the cap, in the footer and the header alike', () => {
+      expect(findSlotsLeft().text()).toBe('18 of 20 slots left');
+    });
+
+    describe('when one of them is unticked', () => {
+      beforeEach(() => toggleSelected(mockCapsuleCorp));
+
+      it('leaves the other selected', () => {
+        expect(findSelectedPaths()).toEqual([mockAcme.fullPath]);
+      });
+
+      it('names the one that is left', () => {
+        expect(findListbox().props('toggleText')).toBe(mockAcme.name);
+      });
+
+      it('gives the slot back', () => {
+        expect(findSlotsLeft().text()).toBe('19 of 20 slots left');
+      });
+    });
+
+    // A group covers everything beneath it, so a project already picked there stops being a
+    // pick of its own rather than counting twice against the cap.
+    describe('when a group is picked over projects already selected beneath it', () => {
+      beforeEach(async () => {
+        createWrapper();
+        await waitForPromises();
+        await toggleExpanded(mockCapsuleCorp);
+        await waitForPromises();
+
+        await selectAll(mockCapsuleProjects[0], mockCapsuleCorp);
+      });
+
+      it('drops them, holding the group alone', () => {
+        expect(wrapper.emitted('change').at(-1)).toEqual([[asNamespace(mockCapsuleCorp)]]);
+      });
+
+      it('leaves one slot spent, not two', () => {
+        expect(findSlotsLeft().text()).toBe('19 of 20 slots left');
+      });
+    });
+  });
+
+  describe('when the selection is full', () => {
+    // One more than the cap, so there is always a row left that cannot be added.
+    const manyGroups = Array.from({ length: 21 }, (_, index) =>
+      mockTopLevelGroup({ id: 200 + index, name: `Group ${index}`, path: `group-${index}` }),
+    );
+    const [spareGroup] = manyGroups.slice(-1);
+
+    beforeEach(async () => {
+      createWrapper({ topLevelGroupsHandler: respondWithTopLevelGroups(manyGroups) });
+      await waitForPromises();
+      await selectAll(...manyGroups.slice(0, 20));
+    });
+
+    it('holds the cap GLQL can compile', () => {
+      expect(findSelectedPaths()).toHaveLength(20);
+      expect(findSlotsLeft().text()).toBe('0 of 20 slots left');
+    });
+
+    it('leaves the rows that would grow it unselectable', () => {
+      expect(findItemFor(spareGroup).props('disabled')).toBe(true);
+    });
+
+    it('refuses the pick even if the row is clicked anyway', async () => {
+      await toggleSelected(spareGroup);
+
+      expect(findSelectedPaths()).toHaveLength(20);
+      expect(findSelectedPaths()).not.toContain(spareGroup.fullPath);
+    });
+
+    it('keeps the picks themselves clickable, so the selection can be freed up', async () => {
+      expect(findItemFor(manyGroups[0]).props('disabled')).toBe(false);
+
+      await toggleSelected(manyGroups[0]);
+
+      expect(findSlotsLeft().text()).toBe('1 of 20 slots left');
+      expect(findItemFor(spareGroup).props('disabled')).toBe(false);
+    });
+  });
+
+  describe('when multi-select is off', () => {
+    beforeEach(async () => {
+      createWrapper({ props: { multiSelect: false } });
+      await waitForPromises();
+    });
+
+    it('holds one pick at a time, a second replacing the first', async () => {
+      await selectAll(mockCapsuleCorp, mockAcme);
+
+      expect(findSelectedPaths()).toEqual([mockAcme.fullPath]);
+      expect(wrapper.emitted('change').at(-1)).toEqual([[asNamespace(mockAcme)]]);
+    });
+
+    it('names the pick on the toggle', async () => {
+      await toggleSelected(mockCapsuleCorp);
+
+      expect(findListbox().props('toggleText')).toBe(mockCapsuleCorp.name);
+    });
+
+    it('keeps every row clickable once a pick is made', async () => {
+      await toggleSelected(mockCapsuleCorp);
+
+      expect(findItemFor(mockAcme).props('disabled')).toBe(false);
+    });
+
+    it('still clears the selection when the pick is unticked', async () => {
+      await toggleSelected(mockCapsuleCorp);
+      await toggleSelected(mockCapsuleCorp);
+
+      expectEmptyState();
+    });
+
+    it('does not show the slot count', () => {
+      expect(findSlotsLeft().exists()).toBe(false);
+    });
+
+    describe('when the URL names several paths', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: {
+            multiSelect: false,
+            initialPaths: [mockCapsuleCorp.fullPath, mockAcme.fullPath],
+          },
+          scopeNamespaceHandler: respondWithScopeNamespaces({
+            [mockCapsuleCorp.fullPath]: mockCapsuleCorp,
+            [mockAcme.fullPath]: mockAcme,
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('looks up only the one it can hold', () => {
+        expect(scopeNamespaceRequestHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it('restores that one alone', () => {
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+      });
+    });
+  });
+
   describe('when Done is clicked', () => {
     beforeEach(async () => {
       createWrapper();
@@ -852,7 +1046,7 @@ describe('ScopePicker', () => {
       it('selects a result the same way a browsed row is selected', async () => {
         await toggleSelected(mockDeepProject);
 
-        expect(wrapper.emitted('change').at(-1)).toEqual([asNamespace(mockDeepProject)]);
+        expect(wrapper.emitted('change').at(-1)).toEqual([[asNamespace(mockDeepProject)]]);
       });
 
       it('keeps the toggle text once the search is cleared', async () => {
@@ -906,7 +1100,7 @@ describe('ScopePicker', () => {
       });
 
       it('emits no change, nothing about the selection having been touched', () => {
-        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockDeepProject)]]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockDeepProject)]]]);
       });
 
       // Otherwise the listbox takes the toggle for an empty picker and greys the name it shows.
@@ -974,8 +1168,9 @@ describe('ScopePicker', () => {
     });
   });
 
-  describe('an initial path, as the `scope` URL param supplies', () => {
+  describe('the initial paths, as the `scope` URL param supplies', () => {
     const initialPath = mockFrontend.fullPath;
+    const initialPaths = [initialPath];
 
     const respondWithGroup = (group) => ({
       data: { group, projects: { __typename: 'ProjectConnection', nodes: [] } },
@@ -995,7 +1190,7 @@ describe('ScopePicker', () => {
       return { handler, resolve: (value) => resolveLookup(value) };
     };
 
-    it('does not look anything up when no path is given', async () => {
+    it('does not look anything up when no paths are given', async () => {
       createWrapper();
       await waitForPromises();
 
@@ -1003,10 +1198,15 @@ describe('ScopePicker', () => {
       expect(findListbox().props('toggleText')).toBe('Select a group or project');
     });
 
-    // The path alone does not say which kind it is, so both sides go in the same request.
-    it('looks the path up as both a group and a project', () => {
-      createWrapper({ props: { initialPath } });
+    // A path alone does not say which kind it is, so both sides go in the same request.
+    it('looks each path up as both a group and a project', () => {
+      createWrapper({ props: { initialPaths: [mockCapsuleCorp.fullPath, initialPath] } });
 
+      expect(scopeNamespaceRequestHandler).toHaveBeenCalledTimes(2);
+      expect(scopeNamespaceRequestHandler).toHaveBeenCalledWith({
+        fullPath: mockCapsuleCorp.fullPath,
+        fullPaths: [mockCapsuleCorp.fullPath],
+      });
       expect(scopeNamespaceRequestHandler).toHaveBeenCalledWith({
         fullPath: initialPath,
         fullPaths: [initialPath],
@@ -1017,7 +1217,7 @@ describe('ScopePicker', () => {
     // gating the list on the lookup flashed loading each time.
     it('leaves the list usable while the lookup is outstanding, naming the toggle once it lands', async () => {
       const lookup = deferLookup();
-      createWrapper({ props: { initialPath }, scopeNamespaceHandler: lookup.handler });
+      createWrapper({ props: { initialPaths }, scopeNamespaceHandler: lookup.handler });
       await waitForPromises();
 
       expect(findListbox().props('loading')).toBe(false);
@@ -1029,10 +1229,10 @@ describe('ScopePicker', () => {
       expect(findListbox().props('toggleText')).toBe(mockFrontend.name);
     });
 
-    describe('when the path is a group', () => {
+    describe('when a path is a group', () => {
       beforeEach(async () => {
         createWrapper({
-          props: { initialPath: mockCapsuleCorp.fullPath },
+          props: { initialPaths: [mockCapsuleCorp.fullPath] },
           scopeNamespaceHandler: respondWithScopeNamespace({ group: mockCapsuleCorp }),
         });
         await waitForPromises();
@@ -1043,19 +1243,19 @@ describe('ScopePicker', () => {
       });
 
       it('marks its row selected', () => {
-        expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
       });
 
       // Emitted like a click, so the page applies it as an ordinary filter change.
       it('emits it as a change', () => {
-        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockCapsuleCorp)]]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockCapsuleCorp)]]]);
       });
     });
 
-    describe('when the path is a project', () => {
+    describe('when a path is a project', () => {
       beforeEach(async () => {
         createWrapper({
-          props: { initialPath: mockScopeProject.fullPath },
+          props: { initialPaths: [mockScopeProject.fullPath] },
           scopeNamespaceHandler: respondWithScopeNamespace({ projects: [mockScopeProject] }),
         });
         await waitForPromises();
@@ -1066,20 +1266,174 @@ describe('ScopePicker', () => {
       });
 
       it('emits it as a change, typed as a project', () => {
-        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockScopeProject)]]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockScopeProject)]]]);
       });
 
       it('allows a non-loaded item to be selected by default', () => {
-        expect(findListbox().props('selected')).toEqual([mockScopeProject.fullPath]);
+        expect(findSelectedPaths()).toEqual([mockScopeProject.fullPath]);
         expect(findItemValues()).not.toContain(mockScopeProject.fullPath);
       });
     });
 
-    // Renamed, deleted, or not visible to this user.
-    describe('when the path resolves to neither', () => {
+    describe('when the paths name a mix of groups and projects', () => {
+      const paths = [mockScopeProject.fullPath, mockCapsuleCorp.fullPath, mockAcme.fullPath];
+
       beforeEach(async () => {
         createWrapper({
-          props: { initialPath },
+          props: { initialPaths: paths },
+          scopeNamespaceHandler: respondWithScopeNamespaces({
+            [mockScopeProject.fullPath]: mockScopeProject,
+            [mockCapsuleCorp.fullPath]: mockCapsuleCorp,
+            [mockAcme.fullPath]: mockAcme,
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('selects every one of them', () => {
+        expect(findSelectedPaths()).toEqual(paths);
+      });
+
+      it('counts them on the toggle rather than naming one', () => {
+        expect(findListbox().props('toggleText')).toBe('3 items selected');
+      });
+
+      it('emits them as a single change', () => {
+        expect(wrapper.emitted('change')).toEqual([
+          [[asNamespace(mockScopeProject), asNamespace(mockCapsuleCorp), asNamespace(mockAcme)]],
+        ]);
+      });
+    });
+
+    describe('when one path resolves to nothing', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPaths: [mockCapsuleCorp.fullPath, 'gone/missing'] },
+          scopeNamespaceHandler: respondWithScopeNamespaces({
+            [mockCapsuleCorp.fullPath]: mockCapsuleCorp,
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('drops it and keeps the rest', () => {
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+      });
+
+      it('emits the selection it could resolve', () => {
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockCapsuleCorp)]]]);
+      });
+
+      it('emits no error', () => {
+        expect(wrapper.emitted('error')).toBeUndefined();
+      });
+    });
+
+    describe('when one path errors while the rest resolve', () => {
+      const error = new Error('one bad path');
+
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPaths: [mockCapsuleCorp.fullPath, mockAcme.fullPath] },
+          scopeNamespaceHandler: jest.fn().mockImplementation(({ fullPath }) =>
+            fullPath === mockAcme.fullPath
+              ? Promise.reject(error)
+              : Promise.resolve({
+                  data: {
+                    group: mockCapsuleCorp,
+                    projects: { __typename: 'ProjectConnection', nodes: [] },
+                  },
+                }),
+          ),
+        });
+        await waitForPromises();
+      });
+
+      it('restores the ones that resolved', () => {
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockCapsuleCorp)]]]);
+      });
+
+      it('logs the failure to sentry', () => {
+        expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
+      });
+
+      it('tells the page nothing, the selection still being usable', () => {
+        expect(wrapper.emitted('error')).toBeUndefined();
+      });
+    });
+
+    describe('when the same path is named twice', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPaths: [mockCapsuleCorp.fullPath, mockCapsuleCorp.fullPath] },
+          scopeNamespaceHandler: respondWithScopeNamespaces({
+            [mockCapsuleCorp.fullPath]: mockCapsuleCorp,
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('looks it up once', () => {
+        expect(scopeNamespaceRequestHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it('spends one slot on it, not two', () => {
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSlotsLeft().text()).toBe('19 of 20 slots left');
+      });
+    });
+
+    describe('when a path is a descendant of another path', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: {
+            initialPaths: [mockCapsuleCorp.fullPath, mockCapsuleProjects[0].fullPath],
+          },
+          scopeNamespaceHandler: respondWithScopeNamespaces({
+            [mockCapsuleCorp.fullPath]: mockCapsuleCorp,
+            [mockCapsuleProjects[0].fullPath]: mockCapsuleProjects[0],
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('never looks the child path up', () => {
+        expect(scopeNamespaceRequestHandler).toHaveBeenCalledTimes(1);
+        expect(scopeNamespaceRequestHandler).toHaveBeenCalledWith({
+          fullPath: mockCapsuleCorp.fullPath,
+          fullPaths: [mockCapsuleCorp.fullPath],
+        });
+      });
+
+      it('holds the covering group alone', () => {
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSlotsLeft().text()).toBe('19 of 20 slots left');
+      });
+    });
+
+    describe('when the paths run past what the picker holds', () => {
+      const paths = Array.from({ length: 25 }, (_, index) => `group-${index}`);
+
+      beforeEach(async () => {
+        createWrapper({ props: { initialPaths: paths } });
+        await waitForPromises();
+      });
+
+      it('only looks up the first 20 items', () => {
+        expect(scopeNamespaceRequestHandler).toHaveBeenCalledTimes(20);
+        expect(scopeNamespaceRequestHandler).not.toHaveBeenCalledWith({
+          fullPath: 'group-20',
+          fullPaths: ['group-20'],
+        });
+      });
+    });
+
+    // Renamed, deleted, or not visible to this user.
+    describe('when no path resolves', () => {
+      beforeEach(async () => {
+        createWrapper({
+          props: { initialPaths },
           scopeNamespaceHandler: respondWithScopeNamespace(),
         });
         await waitForPromises();
@@ -1099,7 +1453,7 @@ describe('ScopePicker', () => {
 
       beforeEach(async () => {
         createWrapper({
-          props: { initialPath },
+          props: { initialPaths },
           scopeNamespaceHandler: jest.fn().mockRejectedValue(error),
         });
         await waitForPromises();
@@ -1114,7 +1468,7 @@ describe('ScopePicker', () => {
       });
 
       it('leaves the picker empty', () => {
-        expect(findListbox().props('selected')).toEqual([]);
+        expect(findSelectedPaths()).toEqual([]);
       });
     });
 
@@ -1126,7 +1480,7 @@ describe('ScopePicker', () => {
         await waitForPromises();
 
         await toggleSelected(mockCapsuleCorp);
-        await wrapper.setProps({ initialPath: mockCapsuleCorp.fullPath });
+        await wrapper.setProps({ initialPaths: [mockCapsuleCorp.fullPath] });
       });
 
       it('looks nothing up, the click having already resolved the namespace', () => {
@@ -1134,14 +1488,14 @@ describe('ScopePicker', () => {
       });
 
       it('keeps the pick', () => {
-        expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
       });
     });
 
     describe('when the user picks something before the lookup lands', () => {
       beforeEach(async () => {
         const lookup = deferLookup();
-        createWrapper({ props: { initialPath }, scopeNamespaceHandler: lookup.handler });
+        createWrapper({ props: { initialPaths }, scopeNamespaceHandler: lookup.handler });
         await waitForPromises();
 
         await toggleSelected(mockCapsuleCorp);
@@ -1152,7 +1506,7 @@ describe('ScopePicker', () => {
 
       // The pick is the more recent intent, so the arriving param must not stomp it.
       it('keeps what the user picked', () => {
-        expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
         expect(findListbox().props('toggleText')).toBe(mockCapsuleCorp.name);
       });
     });
@@ -1211,14 +1565,14 @@ describe('ScopePicker', () => {
       });
 
       it('emits it as a change', () => {
-        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockAcme)]]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockAcme)]]]);
       });
     });
 
     describe('when the `scope` URL param already names one', () => {
       beforeEach(async () => {
         createWrapper({
-          props: { initialPath: mockCapsuleCorp.fullPath },
+          props: { initialPaths: [mockCapsuleCorp.fullPath] },
           scopeNamespaceHandler: respondWithScopeNamespace({ group: mockCapsuleCorp }),
           frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
         });
@@ -1231,7 +1585,7 @@ describe('ScopePicker', () => {
       });
 
       it('keeps what the param named', () => {
-        expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
       });
     });
 
@@ -1290,7 +1644,7 @@ describe('ScopePicker', () => {
       });
 
       it('emits the cleared selection', () => {
-        expect(wrapper.emitted('change')).toEqual([[asNamespace(mockAcme)], [null]]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockAcme)]], [[]]]);
       });
     });
 
