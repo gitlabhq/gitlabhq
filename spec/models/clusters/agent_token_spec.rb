@@ -28,8 +28,8 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
     end
 
     describe 'status-related scopes' do
-      let!(:active_token) { create(:cluster_agent_token, agent: agent) }
-      let!(:revoked_token) { create(:cluster_agent_token, :revoked, agent: agent) }
+      let_it_be(:active_token) { create(:cluster_agent_token, agent: agent) }
+      let_it_be(:revoked_token) { create(:cluster_agent_token, :revoked, agent: agent) }
 
       describe '.with_status' do
         context 'when filtering by active status' do
@@ -77,9 +77,11 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
   end
 
   describe '#token' do
+    let_it_be(:agent) { create(:cluster_agent) }
+
     shared_examples 'has a prefix' do
       it 'starts with prefix' do
-        agent_token = build(:cluster_agent_token, token_encrypted: nil)
+        agent_token = build(:cluster_agent_token, agent: agent, token_encrypted: nil)
         agent_token.save!
 
         expect(agent_token.token).to start_with expected_prefix
@@ -87,7 +89,7 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
     end
 
     it 'is generated on save' do
-      agent_token = build(:cluster_agent_token, token_encrypted: nil)
+      agent_token = build(:cluster_agent_token, agent: agent, token_encrypted: nil)
       expect(agent_token.token).to be_nil
 
       agent_token.save!
@@ -96,7 +98,7 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
     end
 
     it 'is at least 50 characters' do
-      agent_token = create(:cluster_agent_token)
+      agent_token = create(:cluster_agent_token, agent: agent)
       expect(agent_token.token.length).to be >= 50
     end
 
@@ -105,7 +107,7 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
     end
 
     it 'is revoked on revoke!' do
-      agent_token = build(:cluster_agent_token, token_encrypted: nil)
+      agent_token = build(:cluster_agent_token, agent: agent, token_encrypted: nil)
       agent_token.save!
 
       agent_token.revoke!
@@ -139,7 +141,7 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
     include_context "with token authenticatable routable token context"
 
     describe "encrypted routable token" do
-      let(:agent_token) { create(:cluster_agent_token) }
+      let(:agent_token) { create(:cluster_agent_token, agent: agent) }
       let(:token_owner_record) { agent_token }
       let(:expected_token_prefix) { described_class::TOKEN_PREFIX }
 

@@ -20965,7 +20965,9 @@ Arguments:
 | <a id="mutation-workitemdecisionupdate-description"></a>`description` | [`String`](#string) | Context of the decision. |
 | <a id="mutation-workitemdecisionupdate-discussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the originating discussion thread. |
 | <a id="mutation-workitemdecisionupdate-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
-| <a id="mutation-workitemdecisionupdate-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. |
+| <a id="mutation-workitemdecisionupdate-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. Can only be updated on resolved decisions. |
+| <a id="mutation-workitemdecisionupdate-resolvedbyid"></a>`resolvedById` | [`UserID`](#userid) | Global ID of the user who resolved the decision. Can only be updated on resolved decisions. |
+| <a id="mutation-workitemdecisionupdate-resolvingnoteid"></a>`resolvingNoteId` | [`NoteID`](#noteid) | Global ID of the comment that resolved the decision. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-sourcelink"></a>`sourceLink` | [`String`](#string) | URL of the comment, discussion, or external resource that prompted the decision. |
 | <a id="mutation-workitemdecisionupdate-title"></a>`title` | [`String`](#string) | Question being decided. |
 
@@ -44239,7 +44241,7 @@ Fields:
 | <a id="duoworkflow-resourceiid"></a>`resourceIid` | [`Int`](#int) | IID of the associated resource (issue or merge request). |
 | <a id="duoworkflow-resourceweburl"></a>`resourceWebUrl` | [`String`](#string) | Web URL of the associated resource (issue or merge request). |
 | <a id="duoworkflow-sourcelink"></a>`sourceLink` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. URL or deep link to the location where the session was triggered from. |
-| <a id="duoworkflow-sourcetype"></a>`sourceType` {{< icon name="warning-solid" >}} | [`DuoWorkflowSourceType`](#duoworkflowsourcetype) | Introduced in GitLab 19.4. Status: Experiment. External system that initiated the session (for example, Slack). |
+| <a id="duoworkflow-sourcetype"></a>`sourceType` {{< icon name="warning-solid" >}} | [`DuoWorkflowSourceType`](#duoworkflowsourcetype) | Introduced in GitLab 19.4. Status: Experiment. Type of source that initiated the session. |
 | <a id="duoworkflow-stalled"></a>`stalled` | [`Boolean`](#boolean) | Workflow got created but has no checkpoints. |
 | <a id="duoworkflow-status"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
 | <a id="duoworkflow-statusgroup"></a>`statusGroup` | [`DuoWorkflowStatusGroup`](#duoworkflowstatusgroup) | Status group of the flow session. |
@@ -44570,6 +44572,7 @@ Fields:
 | <a id="duoworkflowsaggregationresponse-flowtypescount"></a>`flowTypesCount` | [`Int`](#int) | Number of unique flow types. |
 | <a id="duoworkflowsaggregationresponse-joineduserscount"></a>`joinedUsersCount` | [`Int`](#int) | Number of unique users who ran a flow in this period but not in the previous one. |
 | <a id="duoworkflowsaggregationresponse-mergedmrcount"></a>`mergedMrCount` | [`DuoWorkflowsAggregationResponseMergedMrCountMetrics`](#duoworkflowsaggregationresponsemergedmrcountmetrics) | Aggregated `merged_mr_count` metrics. |
+| <a id="duoworkflowsaggregationresponse-openmrcount"></a>`openMrCount` | [`DuoWorkflowsAggregationResponseOpenMrCountMetrics`](#duoworkflowsaggregationresponseopenmrcountmetrics) | Aggregated `open_mr_count` metrics. |
 | <a id="duoworkflowsaggregationresponse-previousperioduserscount"></a>`previousPeriodUsersCount` | [`Int`](#int) | Number of unique users in the previous period. |
 | <a id="duoworkflowsaggregationresponse-projectscount"></a>`projectsCount` | [`Int`](#int) | Number of unique projects. |
 | <a id="duoworkflowsaggregationresponse-returninguserscount"></a>`returningUsersCount` | [`Int`](#int) | Number of unique users who also ran a flow in the previous period. |
@@ -44749,6 +44752,33 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationresponsemergedmrcountmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
+
+### `DuoWorkflowsAggregationResponseOpenMrCountMetrics`
+
+Aggregated `open_mr_count` metrics for `DuoWorkflows` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponseopenmrcountmetrics-max"></a>`max` | [`Int`](#int) | Maximum number of merge requests created by the flow that are still open. |
+| <a id="duoworkflowsaggregationresponseopenmrcountmetrics-mean"></a>`mean` | [`Float`](#float) | Mean number of merge requests created by the flow that are still open. |
+| <a id="duoworkflowsaggregationresponseopenmrcountmetrics-min"></a>`min` | [`Int`](#int) | Minimum number of merge requests created by the flow that are still open. |
+| <a id="duoworkflowsaggregationresponseopenmrcountmetrics-sum"></a>`sum` | [`Float`](#float) | Sum of number of merge requests created by the flow that are still open. |
+
+#### Fields with arguments
+
+##### `DuoWorkflowsAggregationResponseOpenMrCountMetrics.quantile`
+
+Quantile of number of merge requests created by the flow that are still open.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponseopenmrcountmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
 
 ### `DuoWorkflowsAggregationScope`
 
@@ -70727,12 +70757,23 @@ Type of link between a GitLab Duo Agent Platform session and a pipeline.
 
 ### `DuoWorkflowSourceType`
 
-External system that initiated a Duo Workflow session.
+Where a Duo Workflow session was initiated from.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="duoworkflowsourcetype-convert_platform_ci_pipeline"></a>`CONVERT_PLATFORM_CI_PIPELINE` | Session initiated from converting a CI pipeline to GitLab CI. |
+| <a id="duoworkflowsourcetype-duo_cli_acp"></a>`DUO_CLI_ACP` | Session initiated from GitLab Duo CLI over ACP. |
+| <a id="duoworkflowsourcetype-duo_cli_interactive"></a>`DUO_CLI_INTERACTIVE` | Session initiated from GitLab Duo CLI in interactive mode. |
+| <a id="duoworkflowsourcetype-duo_cli_run"></a>`DUO_CLI_RUN` | Session initiated from GitLab Duo CLI in run mode. |
+| <a id="duoworkflowsourcetype-fix_pipeline"></a>`FIX_PIPELINE` | Session initiated from fixing a failed pipeline. |
+| <a id="duoworkflowsourcetype-ide_extension"></a>`IDE_EXTENSION` | Session initiated from an IDE extension. |
 | <a id="duoworkflowsourcetype-mcp"></a>`MCP` | Session initiated from MCP. |
+| <a id="duoworkflowsourcetype-merge_request_code_conflict"></a>`MERGE_REQUEST_CODE_CONFLICT` | Session initiated from resolving a merge request conflict. |
+| <a id="duoworkflowsourcetype-merge_request_dependency_bump"></a>`MERGE_REQUEST_DEPENDENCY_BUMP` | Session initiated from bumping a dependency on a merge request. |
+| <a id="duoworkflowsourcetype-merge_request_fix_pipeline"></a>`MERGE_REQUEST_FIX_PIPELINE` | Session initiated from fixing a failed pipeline on a merge request. |
+| <a id="duoworkflowsourcetype-merge_request_resolve_discussion"></a>`MERGE_REQUEST_RESOLVE_DISCUSSION` | Session initiated from resolving a discussion on a merge request. |
 | <a id="duoworkflowsourcetype-slack"></a>`SLACK` | Session initiated from Slack. |
+| <a id="duoworkflowsourcetype-work_item_to_merge_request"></a>`WORK_ITEM_TO_MERGE_REQUEST` | Session initiated from creating a merge request from a work item. |
 
 ### `DuoWorkflowStatus`
 

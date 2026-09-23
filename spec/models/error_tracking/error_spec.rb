@@ -39,9 +39,15 @@ RSpec.describe ErrorTracking::Error, type: :model, feature_category: :observabil
   end
 
   describe '.sort_by_attribute' do
-    let!(:error2) { create(:error_tracking_error, first_seen_at: Time.zone.now - 2.weeks, last_seen_at: Time.zone.now - 1.week) }
-    let!(:error3) { create(:error_tracking_error, first_seen_at: Time.zone.now - 3.weeks, last_seen_at: Time.zone.now.yesterday) }
-    let!(:errors) { [error, error2, error3] }
+    let_it_be_with_reload(:error2) do
+      create(:error_tracking_error, project: error.project, first_seen_at: Time.zone.now - 2.weeks, last_seen_at: Time.zone.now - 1.week)
+    end
+
+    let_it_be_with_reload(:error3) do
+      create(:error_tracking_error, project: error.project, first_seen_at: Time.zone.now - 3.weeks, last_seen_at: Time.zone.now.yesterday)
+    end
+
+    let(:errors) { [error, error2, error3] }
 
     subject { described_class.where(id: errors).sort_by_attribute(sort) }
 
@@ -85,7 +91,7 @@ RSpec.describe ErrorTracking::Error, type: :model, feature_category: :observabil
   end
 
   describe '#to_sentry_detailed_error' do
-    let_it_be_with_reload(:event) { create(:error_tracking_error_event, error: error) }
+    let_it_be(:event) { create(:error_tracking_error_event, error: error) }
 
     subject { error.to_sentry_detailed_error }
 

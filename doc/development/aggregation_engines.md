@@ -372,6 +372,46 @@ Calculates the ratio between rows matching a numerator condition and rows matchi
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
+#### `ratio` metric
+
+Computes one aggregate divided by another aggregate: `numerator_agg(numerator) / denominator_agg(denominator)`. `ratio` divides the sum of the numerator by the sum of the denominator, which is the correct semantics for "average X per Y" figures. Using `mean` over a row-level division expression instead yields a mean of ratios, which is a different number. For example, for rows `(credits: 10, mrs: 1)` and `(credits: 10, mrs: 9)`, a mean of ratios gives `avg(10, 1.11) = 5.56`, while `ratio` gives `20 / 10 = 2.0`.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Identifier name. Identifier becomes `:{name}_ratio` |
+| `type` | Symbol | No | Must be `:float`. Default: `:float`. Any other value raises `ArgumentError` |
+| `numerator` | Proc | Yes | Row-level expression for the numerator |
+| `denominator` | Proc | Yes | Row-level expression for the denominator |
+| `numerator_agg` | Symbol | No | Aggregate function applied to the numerator. Default: `:sum` |
+| `denominator_agg` | Symbol | No | Aggregate function applied to the denominator. Default: `:sum` |
+| `formatter` | Proc | No | Formatting function applied to results |
+| `description` | String | No | Human-readable description |
+| `parameters` | Hash | No | Parameter configuration |
+| `authorize` | Symbol | No | Additional authorization check for the metric |
+
+`numerator_agg` and `denominator_agg` accept `sum`, `count`, `uniqExact`, or `avg`; any other value raises `ArgumentError`. `count` maps to `count(col)`, which counts non-`NULL` values rather than rows. To count rows, use an always-non-null expression, for example `-> (_params) { sql('1') }`.
+
+Both `numerator` and `denominator` must return an expression for every parameter combination, because a ratio has no meaningful value with one side missing. A `nil` expression fails the request with a validation error; building a query without validating the plan first raises `ArgumentError`.
+
+`ratio` does not support the `if` option and raises `ArgumentError` if you pass one, because the denominator occupies the secondary expression slot that `if` uses on other metric types. Encode conditions inside `numerator` or `denominator` instead, for example with ClickHouse's `if(cond, value, NULL)`. Use `NULL` rather than `0` for the else branch. `sum` treats the two the same, but `count` counts a `0`, so the denominator becomes the full row count.
+
+When the aggregated denominator is `0`, the generated SQL wraps it in `nullIf(..., 0)`, so the metric returns `NULL` instead of `inf` or `nan`.
+
+Integer and `Float64` expressions divide to `Float64` at full precision. A `Decimal` numerator keeps the quotient at the numerator's scale, so the result is rounded: `toDecimal64(10, 2) / 3` gives `3.33`. The `:float` option on the metric only describes the type of the returned value; it does not change how ClickHouse performs the division. To avoid the rounding, cast a `Decimal` numerator with `toFloat64` inside the `numerator` expression.
+
+```ruby
+ratio :credits_per_created_mr,
+  numerator: ->(_params) { sql('credits_used') },
+  denominator: ->(_params) { sql('length(created_merge_request_ids)') },
+  description: 'Average credits spent per merge request created by a flow'
+```
+
+This generates:
+
+```sql
+sum(credits_used) / nullIf(sum(length(created_merge_request_ids)), 0)
+```
+
 #### `quantile` metric
 
 Calculates percentiles using ClickHouse's `quantile()` function. **Supports parameters.**
@@ -1071,8 +1111,13 @@ for every resource in the engine context's `authorization_resources`, or a calla
 When a user is not authorized for a part:
 
 - A protected metric is dropped from the request silently, and its field returns `null`. The
-  response shape does not change.
+  response shape does not change. When pruning leaves the request without any metrics, the
+  request fails validation with `access to metric '<identifier>' is not authorized` for each
+  pruned metric, so the caller can tell an authorization failure from an empty request.
 - A protected dimension, filter, order fails request validation with a clear error.
+
+Authorization validation errors are added with the `:unauthorized` type on the model errors,
+so callers can distinguish them from other validation errors.
 
 ### Example GraphQL query
 

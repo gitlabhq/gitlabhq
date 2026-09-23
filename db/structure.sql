@@ -15921,6 +15921,7 @@ CREATE TABLE billable_usage_daily_aggregates (
     CONSTRAINT check_90fae9b72d CHECK ((char_length(operation_type) <= 64)),
     CONSTRAINT check_billable_usage_daily_aggs_events_count_non_negative CHECK ((events_count >= 0)),
     CONSTRAINT check_billable_usage_daily_aggs_quantity_non_negative CHECK ((quantity >= (0)::numeric)),
+    CONSTRAINT check_billable_usage_daily_aggs_quantity_within_ceiling CHECK ((quantity <= (2147483647)::numeric)),
     CONSTRAINT check_d85c952c42 CHECK ((char_length(unit_of_measure) <= 64)),
     CONSTRAINT check_e4594e5241 CHECK ((char_length(feature_qualified_name) <= 255))
 );
@@ -59457,9 +59458,6 @@ ALTER TABLE ONLY bulk_import_entities
 
 ALTER TABLE ONLY namespace_import_users
     ADD CONSTRAINT fk_a49233ca5d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY abuse_report_user_mentions
-    ADD CONSTRAINT fk_a4bd02b7df FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT fk_a50430b375 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

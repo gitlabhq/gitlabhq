@@ -21,15 +21,16 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, :clean_gitlab
 
     before do
       allow(Bitbucket::Client).to receive(:new).and_return(client)
-      allow(client).to receive(:repo).and_return(Bitbucket::Representation::Repo.new({ 'has_issues' => true }))
-      allow(client).to receive(:issues_available?).and_return(true)
+      allow(client).to receive_messages(
+        repo: Bitbucket::Representation::Repo.new({ 'has_issues' => true }),
+        issues_available?: true
+      )
       page = instance_double('Bitbucket::Page', attrs: [], items: [
         Bitbucket::Representation::Issue.new({ 'id' => 1 }),
         Bitbucket::Representation::Issue.new({ 'id' => 2 })
       ])
       allow(client).to receive(:each_page).and_yield(page)
-      allow(page).to receive(:next?).and_return(true)
-      allow(page).to receive(:next).and_return('https://example.com/next')
+      allow(page).to receive_messages(next?: true, next: 'https://example.com/next')
     end
 
     context 'when the repo does not have issue tracking enabled' do

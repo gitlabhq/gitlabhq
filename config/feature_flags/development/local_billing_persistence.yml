@@ -1,0 +1,8 @@
+---
+name: local_billing_persistence
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249324
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/628679
+milestone: '19.5'
+type: development
+group: group::cost management
+default_enabled: false

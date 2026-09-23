@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Generic::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Generic::Package, feature_category: :package_registry do
   describe 'validations' do
     describe '#name' do
       it { is_expected.to allow_value('123').for(:name) }

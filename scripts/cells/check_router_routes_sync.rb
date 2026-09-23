@@ -178,9 +178,10 @@ module CheckRouterRoutesSync
 
         DOWNLOAD FAILED - this is not route drift.
 
-        The HTTP Router's snapshot could not be downloaded, so nothing was compared. Your
-        routes are fine and no HTTP Router merge request is needed. Retry the job; this check
-        does not block the merge.
+        The HTTP Router's snapshot could not be downloaded, so nothing was compared. This
+        check blocks the merge because it cannot confirm your routes are in sync. Retry the
+        job first. If the HTTP Router is genuinely unavailable, apply the #{SKIP_LABEL} label
+        and say why in the merge request description.
       MESSAGE
 
       DOWNLOAD_FAILED
@@ -250,7 +251,7 @@ module CheckRouterRoutesSync
         from one that needs a routing change, is here:
           #{ROUTER_DOCS_URL}
 
-        This check does not block merging yet. To merge anyway, apply the
+        This check blocks the merge. To merge anyway, apply the
         #{SKIP_LABEL} label and say why in the merge request description.
 
         Docs: #{DOCS_URL}

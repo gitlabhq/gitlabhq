@@ -1468,6 +1468,22 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           )
       end
     end
+
+    context 'when filtering by organization', :with_current_organization do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:org1_namespace) { create(:namespace, organization: current_organization) }
+      let_it_be(:other_namespace) { create(:namespace, organization: other_organization) }
+      let_it_be(:org1_project) { create(:project, :public, namespace: org1_namespace) }
+      let_it_be(:other_org_project) { create(:project, :public, namespace: other_namespace) }
+
+      it 'returns only projects belonging to the current organization' do
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |p| p['id'] }).to include(org1_project.id)
+        expect(json_response.map { |p| p['id'] }).not_to include(other_org_project.id)
+      end
+    end
   end
 
   describe 'POST /projects' do
@@ -2189,6 +2205,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       let(:boundary_object) { :user }
       let(:request) do
         get api("/users/#{user4.id}/projects/", personal_access_token: pat)
+      end
+    end
+
+    # This endpoint lists personal projects, and a user has a single personal namespace, so the
+    # organization filter is exercised across two users rather than within one result set.
+    context 'when filtering by organization', :with_current_organization do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:org_user) { create(:user, organization: current_organization) }
+      let_it_be(:other_org_user) { create(:user, organization: other_organization) }
+      let_it_be(:org_project) { create(:project, :public, namespace: org_user.namespace) }
+      let_it_be(:other_org_project) { create(:project, :public, namespace: other_org_user.namespace) }
+
+      it 'returns projects when the user namespace is in the current organization' do
+        get api("/users/#{org_user.id}/projects/", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.map { |p| p['id'] }).to contain_exactly(org_project.id)
+      end
+
+      it 'excludes projects when the user namespace is in another organization' do
+        get api("/users/#{other_org_user.id}/projects/", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
       end
     end
   end

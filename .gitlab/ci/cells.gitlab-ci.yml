@@ -29,6 +29,5 @@ cells-routes:router-in-sync:
     - .cells:rules:routes-router-in-sync
   stage: lint
   needs: []
-  allow_failure: true
   script:
     - scripts/cells/check_router_routes_sync.rb

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Helm::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Helm::Package, feature_category: :package_registry do
   describe 'validations' do
     describe '#name' do
       it { is_expected.to allow_value('prometheus').for(:name) }

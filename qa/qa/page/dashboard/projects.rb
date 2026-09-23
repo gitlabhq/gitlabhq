@@ -31,9 +31,9 @@ module QA
         end
 
         def filter_by_name(name)
-          filter_input = find_element('filtered-search-term-input')
-          filter_input.click
-          filter_input.set(name)
+          # Clicking the term input swaps it for the token segment input, so find the input again
+          find_element('filtered-search-term-input').click
+          find_element('filtered-search-token-segment-input').set(name)
           click_element 'search-button'
           wait_for_requests
         end

@@ -1,0 +1,11 @@
+---
+name: draft_note_merge_head_line_code
+description: Resolve a draft note's line_code against the merge head diff so review comments
+  render when the target branch has moved forward
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590869
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224697
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/604420
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

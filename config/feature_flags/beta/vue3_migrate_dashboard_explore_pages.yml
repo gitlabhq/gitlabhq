@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_dashboard_explore_pages
+description: Enables Vue 3 in compatibility mode for the dashboard, explore and root page entrypoints.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608128
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254091
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608128
+milestone: '19.5'
+group: group::organizations
+type: beta
+default_enabled: false

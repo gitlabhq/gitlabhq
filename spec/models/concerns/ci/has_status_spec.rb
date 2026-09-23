@@ -2,12 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
+RSpec.describe Ci::HasStatus, factory_default: :keep, feature_category: :continuous_integration do
+  let_it_be(:pipeline) { create_default(:ci_pipeline) }
+
   context 'for scope with one status' do
     shared_examples 'having a job' do |status|
       %i[ci_build generic_commit_status].each do |type|
         context "when it's #{status} #{type} job" do
-          let!(:job) { create(type, status) }
+          let_it_be(:job) { create(type, status) }
 
           describe ".#{status}" do
             it 'contains the job' do

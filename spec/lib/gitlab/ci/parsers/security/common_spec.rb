@@ -34,9 +34,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
       before do
         allow_next_instance_of(described_class) do |parser|
-          allow(parser).to receive(:create_location).and_return(location)
-          allow(parser).to receive(:tracking_data).and_return(tracking_data)
-          allow(parser).to receive(:create_flags).and_return(vulnerability_flags_data)
+          allow(parser).to receive_messages(
+            create_location: location,
+            tracking_data: tracking_data,
+            create_flags: vulnerability_flags_data
+          )
         end
       end
 
@@ -91,9 +93,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
           before do
             allow_next_instance_of(validator_class) do |instance|
-              allow(instance).to receive(:valid?).and_return(valid?)
-              allow(instance).to receive(:errors).and_return(errors)
-              allow(instance).to receive(:warnings).and_return(warnings)
+              allow(instance).to receive_messages(valid?: valid?, errors: errors, warnings: warnings)
             end
 
             allow(parser).to receive_messages(create_scanner: true, create_scan: true)

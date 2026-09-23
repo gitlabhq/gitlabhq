@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Protection::Rule, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   it_behaves_like 'having unique enum values'

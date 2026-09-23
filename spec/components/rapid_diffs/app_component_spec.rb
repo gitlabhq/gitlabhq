@@ -20,6 +20,7 @@ RSpec.describe RapidDiffs::AppComponent, feature_category: :code_review_workflow
   let(:linked_file) { nil }
   let(:empty_state_type) { nil }
   let(:diff_collection) { linked_file ? [linked_file] : (diffs_slice || []) }
+  let(:initial_file) { nil }
 
   let(:diff_presenter) do
     instance_double(
@@ -35,7 +36,8 @@ RSpec.describe RapidDiffs::AppComponent, feature_category: :code_review_workflow
       lazy?: lazy,
       linked_file: linked_file,
       empty_state_type: empty_state_type,
-      diff_collection: diff_collection
+      diff_collection: diff_collection,
+      initial_file: initial_file
     )
   end
 
@@ -82,6 +84,7 @@ RSpec.describe RapidDiffs::AppComponent, feature_category: :code_review_workflow
     expect(data['show_whitespace']).to eq(show_whitespace)
     expect(data['diff_view_type']).to eq(diff_view.to_s)
     expect(data['lazy']).to eq(lazy)
+    expect(data['initial_file']).to be_nil
     expect(data['file_by_file_mode']).to be(false)
   end
 
@@ -318,6 +321,28 @@ RSpec.describe RapidDiffs::AppComponent, feature_category: :code_review_workflow
           end
         end
         expect(result).not_to have_css('diff-file')
+      end
+    end
+  end
+
+  describe "initial_file in app data" do
+    let(:initial_file) { { old_path: 'old.txt', new_path: 'new.txt' } }
+
+    it "passes the presenter's initial_file through" do
+      render_component
+      app = page.find('[data-rapid-diffs]')
+      data = Gitlab::Json.parse(app['data-app-data'])
+      expect(data['initial_file']).to eq({ 'old_path' => 'old.txt', 'new_path' => 'new.txt' })
+    end
+
+    context "when the presenter rendered no diff file" do
+      let(:initial_file) { nil }
+
+      it "is nil" do
+        render_component
+        app = page.find('[data-rapid-diffs]')
+        data = Gitlab::Json.parse(app['data-app-data'])
+        expect(data['initial_file']).to be_nil
       end
     end
   end

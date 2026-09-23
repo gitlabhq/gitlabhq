@@ -61,5 +61,36 @@ namespace :gitlab do
 
       logger.info Rainbow('To delete these records run this command with DRY_RUN=false').yellow if dry_run
     end
+
+    desc 'GitLab | Pool Repositories | Classify member projects of sourceless pools on decommissioned shards'
+    task classify_dead_shard_members: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      shard_names = ENV['SHARD_NAMES'].to_s.split(',')
+      output_file = ENV['OUTPUT_FILE']
+      logger = Gitlab::PoolRepositories::RakeTask.logger
+
+      if shard_names.empty? || output_file.blank?
+        logger.error Rainbow('ERROR: SHARD_NAMES and OUTPUT_FILE environment variables are required').red
+        logger.info 'Usage: bin/rake gitlab:pool_repositories:classify_dead_shard_members ' \
+          'SHARD_NAMES=shard1,shard2 OUTPUT_FILE=/path/to/output.csv'
+        exit 1
+      end
+
+      begin
+        classifier = Gitlab::PoolRepositories::MissingShardClassifier.new(
+          shard_names: shard_names,
+          logger: logger,
+          output_file: output_file
+        )
+
+        classifier.run!
+      rescue Gitlab::PoolRepositories::MissingShardClassifier::ValidationError => e
+        logger.error Rainbow("ERROR: #{e.message}").red
+        exit 1
+      end
+
+      logger.info Rainbow("Classification complete. Results saved to #{output_file}").green
+    end
   end
 end

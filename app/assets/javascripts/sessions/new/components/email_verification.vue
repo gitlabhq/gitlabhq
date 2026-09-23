@@ -1,6 +1,5 @@
 <script>
 import { GlSprintf, GlForm, GlFormGroup, GlFormInput, GlButton, GlLink } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { applyDeepLinkFragment } from '~/authentication/sessions/post_signin_fragment';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
@@ -43,7 +42,6 @@ export default {
     GlCountdown,
     EmailForm,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     username: {
       type: String,

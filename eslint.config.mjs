@@ -668,7 +668,6 @@ export default [
               localName: 'glFeatureFlagsMixin',
               factory: true,
               members: ['glFeatures'],
-              reportUnused: false,
             },
             {
               source: '~/vue_shared/mixins/gl_abilities_mixin',

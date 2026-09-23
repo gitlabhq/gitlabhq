@@ -12,7 +12,6 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
@@ -67,7 +66,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     graphqlResourceEtag: {
       default: '',

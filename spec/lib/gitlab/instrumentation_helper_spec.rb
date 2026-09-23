@@ -196,6 +196,41 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       end
     end
 
+    context 'rate limit state' do
+      let(:rule) do
+        Labkit::RateLimit::Rule.new(
+          name: 'unauthenticated_web', limit: 100, period: 60, characteristics: [:ip]
+        )
+      end
+
+      let(:info) do
+        Labkit::RateLimit::Result::Info.new(
+          resolved_limit: 100, resolved_period: 60, count: 101, remaining: 0, reset_at: Time.current
+        )
+      end
+
+      context 'when no limiter reported a rule' do
+        it 'logs no field' do
+          subject
+
+          expect(payload).not_to have_key(:rate_limit_state)
+        end
+      end
+
+      context 'when a limiter reported a rule' do
+        it 'logs the limiter, the rule and its result' do
+          evaluation = Labkit::RateLimit::Result::Evaluation.new(rule: rule, exceeded: true, info: info)
+          Gitlab::Instrumentation::RateLimitState.track(
+            'rack_request' => Labkit::RateLimit::Result.new.add_evaluation(evaluation)
+          )
+
+          subject
+
+          expect(payload[:rate_limit_state]).to eq(['rack_request:unauthenticated_web:block'])
+        end
+      end
+    end
+
     it 'logs cpu_s duration' do
       subject
 

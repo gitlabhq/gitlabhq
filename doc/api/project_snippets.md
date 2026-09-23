@@ -44,11 +44,13 @@ following response attributes:
 | `created_at`        | string  | Date and time when the snippet was created in ISO 8601 format. |
 | `description`       | string  | Description of the snippet. |
 | `file_name`         | string  | Name of the snippet file. |
+| `http_url_to_repo`  | string  | HTTP URL to the snippet repository. Returned only if the snippet repository exists. |
 | `id`                | integer | ID of the snippet. |
 | `imported`          | boolean | If `true`, the snippet was imported. |
 | `imported_from`     | string  | Source of the import if the snippet was imported. |
 | `project_id`        | integer | ID of the project containing the snippet. |
 | `raw_url`           | string  | Direct URL to the raw snippet content. |
+| `ssh_url_to_repo`   | string  | SSH URL to the snippet repository. Returned only if the snippet repository exists. |
 | `title`             | string  | Title of the snippet. |
 | `updated_at`        | string  | Date and time when the snippet was last updated in ISO 8601 format. |
 | `web_url`           | string  | URL to view the snippet in the GitLab web interface. |
@@ -83,7 +85,9 @@ Example response:
     "imported_from": "none",
     "project_id": 1,
     "web_url": "http://example.com/example/example/snippets/1",
-    "raw_url": "http://example.com/example/example/snippets/1/raw"
+    "raw_url": "http://example.com/example/example/snippets/1/raw",
+    "ssh_url_to_repo": "ssh://git@example.com:example/example/snippets/1.git",
+    "http_url_to_repo": "http://example.com/example/example/snippets/1.git"
   },
   {
     "id": 3,
@@ -104,7 +108,9 @@ Example response:
     "imported_from": "none",
     "project_id": 1,
     "web_url": "http://example.com/example/example/snippets/3",
-    "raw_url": "http://example.com/example/example/snippets/3/raw"
+    "raw_url": "http://example.com/example/example/snippets/3/raw",
+    "ssh_url_to_repo": "ssh://git@example.com:example/example/snippets/3.git",
+    "http_url_to_repo": "http://example.com/example/example/snippets/3.git"
   }
 ]
 ```
@@ -138,11 +144,13 @@ following response attributes:
 | `created_at`        | string  | Date and time when the snippet was created in ISO 8601 format. |
 | `description`       | string  | Description of the snippet. |
 | `file_name`         | string  | Name of the snippet file. |
+| `http_url_to_repo`  | string  | HTTP URL to the snippet repository. Returned only if the snippet repository exists. |
 | `id`                | integer | ID of the snippet. |
 | `imported`          | boolean | If `true`, the snippet was imported. |
 | `imported_from`     | string  | Source of the import if the snippet was imported. |
 | `project_id`        | integer | ID of the project containing the snippet. |
 | `raw_url`           | string  | Direct URL to the raw snippet content. |
+| `ssh_url_to_repo`   | string  | SSH URL to the snippet repository. Returned only if the snippet repository exists. |
 | `title`             | string  | Title of the snippet. |
 | `updated_at`        | string  | Date and time when the snippet was last updated in ISO 8601 format. |
 | `web_url`           | string  | URL to view the snippet in the GitLab web interface. |
@@ -176,7 +184,9 @@ Example response:
   "imported_from": "none",
   "project_id": 1,
   "web_url": "http://example.com/example/example/snippets/2",
-  "raw_url": "http://example.com/example/example/snippets/2/raw"
+  "raw_url": "http://example.com/example/example/snippets/2/raw",
+  "ssh_url_to_repo": "ssh://git@example.com:example/example/snippets/2.git",
+  "http_url_to_repo": "http://example.com/example/example/snippets/2.git"
 }
 ```
 
@@ -221,11 +231,13 @@ following response attributes:
 | `created_at`        | string  | Date and time when the snippet was created in ISO 8601 format. |
 | `description`       | string  | Description of the snippet. |
 | `file_name`         | string  | Name of the snippet file. |
+| `http_url_to_repo`  | string  | HTTP URL to the snippet repository. Returned only if the snippet repository exists. |
 | `id`                | integer | ID of the snippet. |
 | `imported`          | boolean | If `true`, the snippet was imported. |
 | `imported_from`     | string  | Source of the import if the snippet was imported. |
 | `project_id`        | integer | ID of the project containing the snippet. |
 | `raw_url`           | string  | Direct URL to the raw snippet content. |
+| `ssh_url_to_repo`   | string  | SSH URL to the snippet repository. Returned only if the snippet repository exists. |
 | `title`             | string  | Title of the snippet. |
 | `updated_at`        | string  | Date and time when the snippet was last updated in ISO 8601 format. |
 | `web_url`           | string  | URL to view the snippet in the GitLab web interface. |
@@ -262,7 +274,9 @@ Example response:
   "imported_from": "none",
   "project_id": 1,
   "web_url": "http://example.com/example/example/snippets/1",
-  "raw_url": "http://example.com/example/example/snippets/1/raw"
+  "raw_url": "http://example.com/example/example/snippets/1/raw",
+  "ssh_url_to_repo": "ssh://git@example.com:example/example/snippets/1.git",
+  "http_url_to_repo": "http://example.com/example/example/snippets/1.git"
 }
 ```
 
@@ -307,11 +321,13 @@ following response attributes:
 | `created_at`        | string  | Date and time when the snippet was created in ISO 8601 format. |
 | `description`       | string  | Description of the snippet. |
 | `file_name`         | string  | Name of the snippet file. |
+| `http_url_to_repo`  | string  | HTTP URL to the snippet repository. Returned only if the snippet repository exists. |
 | `id`                | integer | ID of the snippet. |
 | `imported`          | boolean | If `true`, the snippet was imported. |
 | `imported_from`     | string  | Source of the import if the snippet was imported. |
 | `project_id`        | integer | ID of the project containing the snippet. |
 | `raw_url`           | string  | Direct URL to the raw snippet content. |
+| `ssh_url_to_repo`   | string  | SSH URL to the snippet repository. Returned only if the snippet repository exists. |
 | `title`             | string  | Title of the snippet. |
 | `updated_at`        | string  | Date and time when the snippet was last updated in ISO 8601 format. |
 | `web_url`           | string  | URL to view the snippet in the GitLab web interface. |
@@ -348,7 +364,9 @@ Example response:
   "imported_from": "none",
   "project_id": 1,
   "web_url": "http://example.com/example/example/snippets/2",
-  "raw_url": "http://example.com/example/example/snippets/2/raw"
+  "raw_url": "http://example.com/example/example/snippets/2/raw",
+  "ssh_url_to_repo": "ssh://git@example.com:example/example/snippets/2.git",
+  "http_url_to_repo": "http://example.com/example/example/snippets/2.git"
 }
 ```
 

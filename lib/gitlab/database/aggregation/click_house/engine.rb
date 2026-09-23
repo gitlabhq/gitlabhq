@@ -30,6 +30,7 @@ module Gitlab
                 min: Min,
                 max: Max,
                 rate: Rate,
+                ratio: Ratio,
                 quantile: Quantile,
                 sum: Sum,
                 retained_count: RetainedCount,

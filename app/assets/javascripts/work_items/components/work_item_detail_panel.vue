@@ -4,7 +4,6 @@ import { GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_ISSUE } from '~/issues/constants';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -41,7 +40,7 @@ export default {
     ),
     WorkItemMetadataProvider,
   },
-  mixins: [glFeatureFlagMixin(), glListenersMixin],
+  mixins: [glListenersMixin],
   inject: {
     preventRouterNav: {
       default: false,

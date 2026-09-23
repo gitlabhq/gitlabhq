@@ -36,8 +36,10 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
     with_them do
       before do
         stub_application_setting(require_two_factor_authentication: instance_level_enabled)
-        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
-        allow(user).to receive(:email_based_otp_required?).and_return(email_based_otp_required)
+        allow(user).to receive_messages(
+          require_two_factor_authentication_from_group?: group_level_enabled,
+          email_based_otp_required?: email_based_otp_required
+        )
         stub_application_setting(two_factor_grace_period: grace_period_expired ? 0 : 1.month.in_hours)
       end
 
@@ -146,22 +148,19 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
     end
 
     it 'returns false when current_user does not have temp email' do
-      allow(user).to receive(:two_factor_enabled?).and_return(false)
-      allow(user).to receive(:temp_oauth_email?).and_return(true)
+      allow(user).to receive_messages(two_factor_enabled?: false, temp_oauth_email?: true)
 
       expect(verifier.current_user_needs_to_setup_two_factor?).to be_falsey
     end
 
     it 'returns false when current_user has 2fa disabled' do
-      allow(user).to receive(:temp_oauth_email?).and_return(false)
-      allow(user).to receive(:two_factor_enabled?).and_return(true)
+      allow(user).to receive_messages(temp_oauth_email?: false, two_factor_enabled?: true)
 
       expect(verifier.current_user_needs_to_setup_two_factor?).to be_falsey
     end
 
     it 'returns true when user requires 2fa authentication' do
-      allow(user).to receive(:two_factor_enabled?).and_return(false)
-      allow(user).to receive(:temp_oauth_email?).and_return(false)
+      allow(user).to receive_messages(two_factor_enabled?: false, temp_oauth_email?: false)
 
       expect(verifier.current_user_needs_to_setup_two_factor?).to be_truthy
     end
@@ -176,15 +175,13 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
     end
 
     it 'returns grace period from groups if there is no period from settings' do
-      allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(true)
-      allow(user).to receive(:two_factor_grace_period).and_return(3)
+      allow(user).to receive_messages(require_two_factor_authentication_from_group?: true, two_factor_grace_period: 3)
 
       expect(verifier.two_factor_grace_period).to eq(3)
     end
 
     it 'returns minimal grace period if there is grace period from settings and from group' do
-      allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(true)
-      allow(user).to receive(:two_factor_grace_period).and_return(3)
+      allow(user).to receive_messages(require_two_factor_authentication_from_group?: true, two_factor_grace_period: 3)
       stub_application_setting two_factor_grace_period: 2
 
       expect(verifier.two_factor_grace_period).to eq(2)
@@ -234,8 +231,10 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
       before do
         stub_application_setting(require_two_factor_authentication: instance_level_enabled)
         stub_application_setting(require_admin_two_factor_authentication: required_for_admins)
-        allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(group_level_enabled)
-        allow(user).to receive(:can_access_admin_area?).and_return(user_is_admin)
+        allow(user).to receive_messages(
+          require_two_factor_authentication_from_group?: group_level_enabled,
+          can_access_admin_area?: user_is_admin
+        )
       end
 
       it 'returns correct reason' do

@@ -1,7 +1,6 @@
 <script>
 import { GlLink, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
@@ -26,7 +25,7 @@ export default {
     DisabledByPolicyPopover,
     GroupInheritancePopover,
   },
-  mixins: [glFeatureFlagsMixin(), glSlotsMixin],
+  mixins: [glSlotsMixin],
   inject: {
     canAdminGroupProtectedBranches: { default: false },
     groupSettingsRepositoryPath: { default: '' },

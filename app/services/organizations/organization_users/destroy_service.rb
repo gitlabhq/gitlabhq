@@ -5,6 +5,8 @@ module Organizations
     class DestroyService
       include BaseServiceUtility
 
+      MembershipRemovalError = Class.new(StandardError)
+
       def initialize(organization_user, current_user:)
         @organization_user = organization_user
         @current_user = current_user
@@ -12,15 +14,16 @@ module Organizations
 
       def execute
         return denied_response unless allowed?
-        return error_has_memberships if memberships_in_organization?
 
-        organization_user.destroy
+        removed_count = remove_memberships
+        organization_user.destroy!
 
-        if organization_user.destroyed?
-          ServiceResponse.success(payload: { organization_user: organization_user })
-        else
-          error_deleting
-        end
+        log_removal(removed_count)
+        ServiceResponse.success(payload: { organization_user: organization_user })
+      rescue MembershipRemovalError
+        error_membership_removal_failed
+      rescue ActiveRecord::RecordNotDestroyed
+        error_deleting
       end
 
       private
@@ -41,12 +44,36 @@ module Organizations
         organization_user.organization_id == organization_user.user.organization_id
       end
 
-      def memberships_in_organization?
-        Member
+      def remove_memberships
+        members = Member
           .with_user(organization_user.user)
           .non_request
           .in_organization(organization_user.organization_id)
-          .exists?
+          .to_a
+
+        members.each do |member|
+          ::Members::DestroyService.new(
+            member,
+            current_user: current_user,
+            skip_authorization: true,
+            skip_subresources: true,
+            unassign_issuables: true
+          ).execute
+
+          raise MembershipRemovalError unless member.destroyed?
+        end
+
+        members.size
+      end
+
+      def log_removal(removed_count)
+        Gitlab::AppLogger.info(
+          message: 'Removed user from organization and cascaded membership removal',
+          Labkit::Fields::GL_ORGANIZATION_ID => organization_user.organization_id,
+          target_user_id: organization_user.user_id,
+          current_user_id: current_user.id,
+          removed_memberships_count: removed_count
+        )
       end
 
       # The delete_organization_user ability covers both authorization and the last owner rule, so we only
@@ -72,11 +99,10 @@ module Organizations
         )
       end
 
-      def error_has_memberships
+      def error_membership_removal_failed
         ServiceResponse.error(
-          message: [_('You cannot remove a user from an organization while they are a member of groups ' \
-            'or projects in the organization')],
-          reason: :has_memberships
+          message: [_('Failed to remove the user from groups or projects in the organization')],
+          reason: :membership_removal_failed
         )
       end
 

@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Storybook
 ---
 
-To browse the Storybook for the `gitlab-org/gitlab` project, build it locally.
+The Storybook for the `gitlab-org/gitlab` project is available on our [GitLab Pages site](https://gitlab-org.gitlab.io/gitlab/storybook/).
 
 ## Storybook in local development
 

@@ -225,9 +225,11 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       let(:modified_paths) { ['some/modified/file'] }
 
       before do
-        allow(pipeline).to receive(:changed_paths).and_return(changed_paths)
-        allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
-        allow(pipeline).to receive(:modified_paths_since).and_return(['some/modified/file'])
+        allow(pipeline).to receive_messages(
+          changed_paths: changed_paths,
+          modified_paths: modified_paths,
+          modified_paths_since: ['some/modified/file']
+        )
         allow(pipeline.project).to receive(:commit).and_return(build_stubbed(:commit, sha: 'sha'))
       end
 
@@ -312,8 +314,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
 
       before do
-        allow(pipeline).to receive(:changed_paths).and_return(changed_paths)
-        allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
+        allow(pipeline).to receive_messages(changed_paths: changed_paths, modified_paths: modified_paths)
       end
 
       context 'when changed paths are nil' do

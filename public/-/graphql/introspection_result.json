@@ -149583,7 +149583,7 @@
             },
             {
               "name": "sourceType",
-              "description": "External system that initiated the session (for example, Slack). Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Type of source that initiated the session. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -151729,7 +151729,7 @@
         {
           "kind": "ENUM",
           "name": "DuoWorkflowSourceType",
-          "description": "External system that initiated a Duo Workflow session.",
+          "description": "Where a Duo Workflow session was initiated from.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -151743,6 +151743,72 @@
             {
               "name": "MCP",
               "description": "Session initiated from MCP.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST_CODE_CONFLICT",
+              "description": "Session initiated from resolving a merge request conflict.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST_DEPENDENCY_BUMP",
+              "description": "Session initiated from bumping a dependency on a merge request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST_FIX_PIPELINE",
+              "description": "Session initiated from fixing a failed pipeline on a merge request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MERGE_REQUEST_RESOLVE_DISCUSSION",
+              "description": "Session initiated from resolving a discussion on a merge request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WORK_ITEM_TO_MERGE_REQUEST",
+              "description": "Session initiated from creating a merge request from a work item.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FIX_PIPELINE",
+              "description": "Session initiated from fixing a failed pipeline.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CONVERT_PLATFORM_CI_PIPELINE",
+              "description": "Session initiated from converting a CI pipeline to GitLab CI.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_CLI_INTERACTIVE",
+              "description": "Session initiated from GitLab Duo CLI in interactive mode.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_CLI_RUN",
+              "description": "Session initiated from GitLab Duo CLI in run mode.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_CLI_ACP",
+              "description": "Session initiated from GitLab Duo CLI over ACP.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IDE_EXTENSION",
+              "description": "Session initiated from an IDE extension.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -152254,6 +152320,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "DuoWorkflowsAggregationResponseMergedMrCountMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "openMrCount",
+              "description": "Aggregated `open_mr_count` metrics.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowsAggregationResponseOpenMrCountMetrics",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -152947,6 +153025,90 @@
             {
               "name": "sum",
               "description": "Sum of number of merge requests created by the flow that were later merged",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowsAggregationResponseOpenMrCountMetrics",
+          "description": "Aggregated `open_mr_count` metrics for `DuoWorkflows` aggregation engine",
+          "fields": [
+            {
+              "name": "max",
+              "description": "Maximum number of merge requests created by the flow that are still open",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mean",
+              "description": "Mean number of merge requests created by the flow that are still open",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "min",
+              "description": "Minimum number of merge requests created by the flow that are still open",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "quantile",
+              "description": "Quantile of number of merge requests created by the flow that are still open",
+              "args": [
+                {
+                  "name": "quantile",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sum",
+              "description": "Sum of number of merge requests created by the flow that are still open",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -454532,10 +454694,34 @@
             },
             {
               "name": "resolutionRationale",
-              "description": "Reasoning for the resolution.",
+              "description": "Reasoning for the resolution. Can only be updated on resolved decisions.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resolvedById",
+              "description": "Global ID of the user who resolved the decision. Can only be updated on resolved decisions.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "UserID",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resolvingNoteId",
+              "description": "Global ID of the comment that resolved the decision. Can only be updated on resolved decisions.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "NoteID",
                 "ofType": null
               },
               "defaultValue": null,

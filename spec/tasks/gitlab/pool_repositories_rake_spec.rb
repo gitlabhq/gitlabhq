@@ -59,6 +59,82 @@ RSpec.describe 'gitlab:pool_repositories namespace rake task', :silence_stdout, 
     end
   end
 
+  describe 'classify_dead_shard_members' do
+    subject(:run_task) { run_rake_task(task_name) }
+
+    let(:task_name) { 'gitlab:pool_repositories:classify_dead_shard_members' }
+    let(:classifier) { instance_double(Gitlab::PoolRepositories::MissingShardClassifier) }
+    let(:logger) { instance_double(Logger, info: nil, error: nil) }
+
+    before do
+      Rake::Task[task_name].reenable
+      allow(Gitlab::PoolRepositories::RakeTask).to receive(:logger).and_return(logger)
+      allow(Gitlab::PoolRepositories::MissingShardClassifier).to receive(:new).and_return(classifier)
+      allow(classifier).to receive(:run!)
+    end
+
+    context 'when SHARD_NAMES and OUTPUT_FILE are set' do
+      before do
+        stub_env('SHARD_NAMES', 'nfs-file01,nfs-file02')
+        stub_env('OUTPUT_FILE', '/tmp/classification.csv')
+      end
+
+      it 'creates a classifier and runs it' do
+        run_task
+
+        expect(Gitlab::PoolRepositories::MissingShardClassifier).to have_received(:new).with(
+          shard_names: %w[nfs-file01 nfs-file02],
+          logger: logger,
+          output_file: '/tmp/classification.csv'
+        )
+        expect(classifier).to have_received(:run!)
+      end
+
+      it 'logs completion message' do
+        run_task
+
+        expect(logger).to have_received(:info).with(/Classification complete/)
+      end
+
+      context 'when the classifier raises a validation error' do
+        before do
+          allow(classifier).to receive(:run!)
+            .and_raise(Gitlab::PoolRepositories::MissingShardClassifier::ValidationError, 'bad shard')
+        end
+
+        it 'logs the error and exits' do
+          expect { run_task }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+
+          expect(logger).to have_received(:error).with(/bad shard/)
+        end
+      end
+    end
+
+    context 'when SHARD_NAMES is not set' do
+      before do
+        stub_env('SHARD_NAMES', nil)
+        stub_env('OUTPUT_FILE', '/tmp/classification.csv')
+      end
+
+      it 'logs an error and exits' do
+        expect { run_task }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+        expect(logger).to have_received(:error).with(/SHARD_NAMES and OUTPUT_FILE environment variables are required/)
+      end
+    end
+
+    context 'when OUTPUT_FILE is not set' do
+      before do
+        stub_env('SHARD_NAMES', 'nfs-file01')
+        stub_env('OUTPUT_FILE', nil)
+      end
+
+      it 'logs an error and exits' do
+        expect { run_task }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+        expect(logger).to have_received(:error).with(/SHARD_NAMES and OUTPUT_FILE environment variables are required/)
+      end
+    end
+  end
+
   describe 'discover_orphaned' do
     subject(:run_task) { run_rake_task(task_name) }
 

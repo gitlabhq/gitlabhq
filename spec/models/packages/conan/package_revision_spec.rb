@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Conan::PackageRevision, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Conan::PackageRevision, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   it { is_expected.to be_a(Packages::Conan::PackageFileable) }

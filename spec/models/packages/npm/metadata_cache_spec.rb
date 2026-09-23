@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Npm::MetadataCache, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:package_name) { '@root/test' }
 

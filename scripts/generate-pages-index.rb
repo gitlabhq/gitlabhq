@@ -19,7 +19,8 @@ abort "ERROR: pages directory '#{PAGES_DIR}' does not exist" unless PAGES_DIR.di
 DESCRIPTIONS = {
   'crystalball' => 'Test to source mapping',
   'knapsack' => 'Knapsack RSpec timing report',
-  'rspec' => 'Flaky RSpec tests'
+  'rspec' => 'Flaky RSpec tests',
+  'storybook' => 'Frontend component Storybook'
 }.freeze
 
 TEMPLATE = <<~ERB

@@ -375,22 +375,22 @@ describe('Diffs view store', () => {
       useFileBrowser().tree = files;
     });
 
-    it('resolves index from linked file data', () => {
-      store.resolveInitialFileIndex({ linkedFileData: { oldPath: 'c.js', newPath: 'c.js' } });
+    it('resolves index from a file', () => {
+      store.resolveInitialFileIndex({ file: { oldPath: 'c.js', newPath: 'c.js' } });
       expect(store.currentFileIndex).toBe(2);
     });
 
-    it('resolves index from snake_case linked file data set during SPA navigation', () => {
-      store.resolveInitialFileIndex({ linkedFileData: { old_path: 'c.js', new_path: 'c.js' } });
+    it('resolves index from snake_case file data set during SPA navigation', () => {
+      store.resolveInitialFileIndex({ file: { old_path: 'c.js', new_path: 'c.js' } });
       expect(store.currentFileIndex).toBe(2);
     });
 
-    it('keeps default index when linked file is not found', () => {
-      store.resolveInitialFileIndex({ linkedFileData: { oldPath: 'x.js', newPath: 'x.js' } });
+    it('keeps default index when the file is not found', () => {
+      store.resolveInitialFileIndex({ file: { oldPath: 'x.js', newPath: 'x.js' } });
       expect(store.currentFileIndex).toBe(0);
     });
 
-    it('keeps default index when no linked file data is provided', () => {
+    it('keeps default index when no file is provided', () => {
       store.resolveInitialFileIndex({});
       expect(store.currentFileIndex).toBe(0);
     });

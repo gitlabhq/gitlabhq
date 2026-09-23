@@ -146,7 +146,7 @@ and provisioning spikes without over-reserving on the node during steady state.
 
 **Memory** is driven by the number of OpenBao namespaces, which corresponds to
 the number of GitLab groups and projects with Secrets Manager enabled.
-Allocate approximately 5 MB per namespace, plus a 1 GB safety margin,
+Allocate approximately 1 MB per namespace, plus a 1 GB safety margin,
 with a minimum of 2 GB.
 Set the memory limit equal to the memory request (Guaranteed QoS class).
 OpenBao crashes immediately when it exceeds its memory limit with no graceful degradation.
@@ -239,11 +239,11 @@ sum(container_memory_working_set_bytes{container="openbao-server"})
 ```
 
 The result is in bytes. Memory grows as groups and projects enable Secrets Manager, at approximately
-5 MB per namespace. After a restart, memory stabilizes as OpenBao loads namespace metadata
+1 MB per namespace. After a restart, memory stabilizes as OpenBao loads namespace metadata
 from the database.
 
 To calculate the correct memory request, count the groups and projects with Secrets Manager
-enabled and multiply by 5 MB, then add 1 GB. Update your pod resources if the result exceeds
+enabled and multiply by 1 MB, then add 1 GB. Update your pod resources if the result exceeds
 your current memory request. If memory shows a sustained upward trend with no active
 provisioning, investigate for potential issues.
 

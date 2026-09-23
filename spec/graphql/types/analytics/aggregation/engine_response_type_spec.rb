@@ -8,7 +8,8 @@ RSpec.describe Types::Analytics::Aggregation::EngineResponseType, feature_catego
       def self.metrics_mapping
         {
           metric: Gitlab::Database::Aggregation::ClickHouse::MetricDefinition,
-          quantile: Gitlab::Database::Aggregation::ClickHouse::Quantile
+          quantile: Gitlab::Database::Aggregation::ClickHouse::Quantile,
+          ratio: Gitlab::Database::Aggregation::ClickHouse::Ratio
         }
       end
 
@@ -36,6 +37,10 @@ RSpec.describe Types::Analytics::Aggregation::EngineResponseType, feature_catego
         quantile :"duration.quantile", :float, ->(_params) { Arel.sql('duration') },
           description: 'Duration quantile',
           parameters: { quantile: { type: :float, description: 'Quantile to calculate' } }
+        ratio :credits_per_mr,
+          numerator: ->(_params) { Arel.sql('credits_used') },
+          denominator: ->(_params) { Arel.sql('mr_count') },
+          description: 'Credits spent per merge request'
       end
     end
   end
@@ -43,7 +48,15 @@ RSpec.describe Types::Analytics::Aggregation::EngineResponseType, feature_catego
   let(:response_type) { described_class.build(engine_class, { types_prefix: :test }) }
 
   it 'declares flat metrics and dimensions as top-level fields' do
-    expect(response_type.fields.keys).to contain_exactly('dimensions', 'total', 'duration')
+    expect(response_type.fields.keys)
+      .to contain_exactly('dimensions', 'total', 'duration', 'creditsPerMrRatio')
+  end
+
+  it 'exposes a ratio metric as a nullable Float field' do
+    field = response_type.fields['creditsPerMrRatio']
+
+    expect(field.type).to eq(GraphQL::Types::Float)
+    expect(field.description).to eq('Credits spent per merge request')
   end
 
   describe 'dimensions field' do

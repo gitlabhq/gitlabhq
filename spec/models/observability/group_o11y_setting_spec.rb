@@ -122,11 +122,9 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
   end
 
   describe 'encryption' do
-    let(:password_value) { 'super-secret-password' }
-    let(:secret_key_value) { 'super-secret-key' }
-    let(:setting) do
-      create(:observability_group_o11y_setting, o11y_service_password: password_value,
-        o11y_service_post_message_encryption_key: secret_key_value).tap(&:reload)
+    let_it_be_with_reload(:setting) do
+      create(:observability_group_o11y_setting, group: group, o11y_service_password: 'super-secret-password',
+        o11y_service_post_message_encryption_key: 'super-secret-key').tap(&:reload)
     end
 
     shared_examples 'encrypts field' do |field_name, field_value|
@@ -217,10 +215,10 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
   end
 
   describe '#gitlab_observability_export_variable' do
-    let(:setting) { create(:observability_group_o11y_setting, group: group) }
+    let_it_be_with_refind(:setting) { create(:observability_group_o11y_setting, group: group) }
 
     context 'when the variable exists' do
-      let!(:variable) do
+      let_it_be(:variable) do
         create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT', value: 'metrics,logs,traces')
       end
 
@@ -265,9 +263,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
 
     context 'when record is persisted' do
-      before do
-        setting.save!
-      end
+      let_it_be(:setting) { create(:observability_group_o11y_setting, group: group) }
 
       shared_examples 'returns true within window' do |time_offset|
         it "returns true at #{time_offset}" do
@@ -483,10 +479,10 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
 
     shared_examples 'traverses parent groups' do |resource_type|
-      let(:root_group) { create(:group) }
-      let(:parent_group) { create(:group, parent: root_group) }
-      let(:child_group) { create(:group, parent: parent_group) }
-      let(:resource) { resource_type == :project ? create(:project, group: child_group) : child_group }
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:parent_group) { create(:group, parent: root_group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let_it_be(:resource) { resource_type == :project ? create(:project, group: child_group) : child_group }
 
       it "returns setting when #{resource_type} group has setting" do
         setting = create(:observability_group_o11y_setting, group: child_group)
@@ -560,10 +556,10 @@ RSpec.describe 'Observability::GroupO11ySetting#observability_export_variable_fo
   describe '#observability_export_variable_for' do
     context 'when namespace is a group' do
       let_it_be(:group) { create(:group) }
-      let(:setting) { create(:observability_group_o11y_setting, group: group) }
+      let_it_be_with_refind(:setting) { create(:observability_group_o11y_setting, group: group) }
 
       context 'when the group variable exists' do
-        let!(:variable) do
+        let_it_be(:variable) do
           create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT', value: 'metrics,logs,traces')
         end
 
@@ -583,10 +579,10 @@ RSpec.describe 'Observability::GroupO11ySetting#observability_export_variable_fo
     context 'when namespace is a personal (user) namespace' do
       let_it_be(:user_namespace) { create(:namespace) }
       let_it_be(:personal_project) { create(:project, namespace: user_namespace) }
-      let(:setting) { create(:observability_group_o11y_setting, group: user_namespace) }
+      let_it_be(:setting) { create(:observability_group_o11y_setting, group: user_namespace) }
 
       context 'when the project variable exists' do
-        let!(:variable) do
+        let_it_be(:variable) do
           create(:ci_variable, project: personal_project, key: 'GITLAB_OBSERVABILITY_EXPORT',
             value: 'metrics,logs,traces')
         end

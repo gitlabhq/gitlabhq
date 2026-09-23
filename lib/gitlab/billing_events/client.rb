@@ -11,16 +11,44 @@ module Gitlab
         'dedicated' => 'Dedicated'
       }.freeze
 
+      COUNTER = :counter
+      SNAPSHOT = :snapshot
+
       def self.track_billing_event(**args)
         new.track_billing_event(**args)
       end
 
-      def track_billing_event( # rubocop:disable Metrics/ParameterLists -- billing schema has many fields
+      def self.track_billing_snapshot(**args)
+        new.track_billing_snapshot(**args)
+      end
+
+      # A tally: each call reports usage that happened, and repeated calls accumulate.
+      def track_billing_event(**args)
+        record_usage(**args, quantity_kind: COUNTER)
+      end
+
+      # A point-in-time reading: each call reports the current total, so repeated calls
+      # within a day supersede one another rather than adding up. Only air-gapped local
+      # persistence distinguishes the two; both emit identically over the network.
+      def track_billing_snapshot(**args)
+        record_usage(**args, quantity_kind: SNAPSHOT)
+      end
+
+      # Overridden in EE, where an air-gapped instance persists a local daily
+      # aggregate instead of emitting. Always false without EE.
+      def local_persistence_enabled?
+        false
+      end
+
+      private
+
+      def record_usage( # rubocop:disable Metrics/ParameterLists -- billing schema has many fields
         event_type:,
         category:,
         quantity:,
         unit_of_measure:,
         namespace:,
+        quantity_kind:,
         project: nil,
         user: nil,
         idempotency_key: nil,
@@ -53,24 +81,35 @@ module Gitlab
           metadata: metadata
         )
 
-        billing_context = SnowplowTracker::SelfDescribingJson.new(
-          BILLABLE_USAGE_SCHEMA,
-          context
-        )
+        # An air-gapped instance cannot reach the billing collector, and
+        # EventEligibilityChecker would discard the event before any HTTP attempt is
+        # made, so the local path replaces emission rather than supplementing it. Only
+        # emission is replaced: the internal event is a separate concern that works
+        # without connectivity, so it is tracked either way.
+        if local_persistence_enabled?
+          # Defined in EE. Unreachable here, since local_persistence_enabled? is
+          # always false without it.
+          persist_local_aggregate(context, quantity_kind)
+        else
+          billing_context = SnowplowTracker::SelfDescribingJson.new(
+            BILLABLE_USAGE_SCHEMA,
+            context
+          )
 
-        Gitlab::Tracking.billing_event(
-          category,
-          event_type,
-          context: [billing_context]
-        )
+          Gitlab::Tracking.billing_event(
+            category,
+            event_type,
+            context: [billing_context]
+          )
 
-        Gitlab::AppLogger.info(
-          message: 'BillingEvents: billing event tracked',
-          event_type: event_type,
-          event_id: event_id,
-          quantity: quantity,
-          namespace_id: namespace&.id
-        )
+          Gitlab::AppLogger.info(
+            message: 'BillingEvents: billing event tracked',
+            event_type: event_type,
+            event_id: event_id,
+            quantity: quantity,
+            namespace_id: namespace.id
+          )
+        end
 
         Gitlab::InternalEvents.track_event(
           'usage_billing_event',
@@ -98,8 +137,6 @@ module Gitlab
           namespace_id: namespace&.id
         )
       end
-
-      private
 
       def build_context( # rubocop:disable Metrics/ParameterLists -- mirrors billing schema fields
         event_id:, event_type:, unit_of_measure:, quantity:, timestamp:,

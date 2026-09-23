@@ -70,9 +70,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
 
       before do
         stub_env('EXTERNAL_VALIDATION_SERVICE_TOKEN', 'TOKEN_IN_ENV')
-        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:external_pipeline_validation_service_timeout).and_return(shorter_timeout)
-        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:external_pipeline_validation_service_token).and_return(validation_service_token)
-        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:external_pipeline_validation_service_url).and_return(alternate_validation_service_url)
+        allow(Gitlab::CurrentSettings.current_application_settings).to receive_messages(
+          external_pipeline_validation_service_timeout: shorter_timeout,
+          external_pipeline_validation_service_token: validation_service_token,
+          external_pipeline_validation_service_url: alternate_validation_service_url
+        )
       end
 
       it 'uses those values rather than env vars or defaults' do

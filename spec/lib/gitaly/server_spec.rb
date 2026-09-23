@@ -73,9 +73,7 @@ RSpec.describe Gitaly::Server do
     let(:storage_status) { double('storage_status') }
 
     before do
-      allow(storage_status).to receive(:storage_name).and_return('default')
-      allow(storage_status).to receive(:available).and_return(disk_available)
-      allow(storage_status).to receive(:used).and_return(disk_used)
+      allow(storage_status).to receive_messages(storage_name: 'default', available: disk_available, used: disk_used)
       response = double("response")
       allow(response).to receive(:storage_statuses).and_return([storage_status])
       allow_next_instance_of(Gitlab::GitalyClient::ServerService) do |instance|

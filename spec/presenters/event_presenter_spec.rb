@@ -66,7 +66,7 @@ RSpec.describe EventPresenter do
 
     context 'when project event has nil target_type' do
       it 'returns project for a project event' do
-        expect(build(:event, project: create(:project), action: :created).present)
+        expect(build(:event, project: project, action: :created).present)
           .to have_attributes(target_type_name: 'project')
       end
     end

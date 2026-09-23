@@ -13,6 +13,7 @@ upload-pages:
   environment: pages
   resource_group: pages
   needs:
+    - "compile-storybook"
     - "update-tests-metadata"
     - "generate-frontend-fixtures-mapping"
   variables:
@@ -21,6 +22,7 @@ upload-pages:
     - apt-get update && apt-get -y install brotli gzip
   script:
     - mkdir "$PAGES_DIR"
+    - mv storybook/public $PAGES_DIR/storybook || true
     - |
       (cd "$PAGES_DIR" && mkdir -p \
         $(dirname "$KNAPSACK_RSPEC_SUITE_REPORT_PATH") \

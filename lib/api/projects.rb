@@ -212,7 +212,7 @@ module API
       end
 
       def load_projects
-        project_params = project_finder_params.merge(current_organization: Current.organization)
+        project_params = project_finder_params.merge(organization: Current.organization)
         support_order_by_similarity!(project_params)
         verify_project_filters!(project_params)
         ProjectsFinder.new(current_user: current_user, params: project_params).execute

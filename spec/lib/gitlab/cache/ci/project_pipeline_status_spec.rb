@@ -64,10 +64,8 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
 
     it 'is true when all status information was loaded' do
       fake_commit = double
-      allow(fake_commit).to receive(:status).and_return('failed')
-      allow(fake_commit).to receive(:sha).and_return('failed424d1b73bc0d3cb726eb7dc4ce17a4d48552f8c6')
-      allow(pipeline_status).to receive(:commit).and_return(fake_commit)
-      allow(pipeline_status).to receive(:has_cache?).and_return(false)
+      allow(fake_commit).to receive_messages(status: 'failed', sha: 'failed424d1b73bc0d3cb726eb7dc4ce17a4d48552f8c6')
+      allow(pipeline_status).to receive_messages(commit: fake_commit, has_cache?: false)
 
       pipeline_status.load_status
 

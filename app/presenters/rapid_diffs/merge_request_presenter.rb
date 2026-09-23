@@ -207,12 +207,9 @@ module RapidDiffs
 
     private
 
-    override(:loaded_diffs_slice)
-    def loaded_diffs_slice
-      return if offset.nil? || offset == 0
-
-      @loaded_diffs_slice ||= resource.first_diffs_slice(offset,
-        diff_options.merge(only_context_commits: only_context_commits?))
+    override(:fetch_diffs_slice)
+    def fetch_diffs_slice(limit)
+      resource.first_diffs_slice(limit, diff_options.merge(only_context_commits: only_context_commits?))
     end
 
     def collection_unfolder

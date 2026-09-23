@@ -114,7 +114,7 @@ describe('RemoveOrganizationUserModal', () => {
 
         expect(findModal().vm.hideWasCalled).toBe(true);
         expect(showToast).toHaveBeenCalledWith(
-          'An error occurred while removing the user from the organization.',
+          'An error occurred while removing the user from the organization. Please try again.',
         );
         expect(refreshCurrentPageWithAlerts).not.toHaveBeenCalled();
         expect(findPrimaryLoading()).toBe(false);

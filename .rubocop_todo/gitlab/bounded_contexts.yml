@@ -1462,6 +1462,7 @@ Gitlab/BoundedContexts:
     - 'app/services/draft_notes/create_service.rb'
     - 'app/services/draft_notes/destroy_service.rb'
     - 'app/services/draft_notes/publish_service.rb'
+    - 'app/services/draft_notes/trace_merge_head_position_service.rb'
     - 'app/services/emails/base_service.rb'
     - 'app/services/emails/confirm_service.rb'
     - 'app/services/emails/create_service.rb'

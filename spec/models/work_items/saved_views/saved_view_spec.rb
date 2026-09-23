@@ -12,7 +12,7 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_vie
   let_it_be(:saved_view1) { create(:saved_view, namespace: group, name: 'SavedView1', author: user) }
   let_it_be(:saved_view2) { create(:saved_view, namespace: group, name: 'SavedView2', author: user) }
   let_it_be(:private_view) { create(:saved_view, namespace: group, author: other_user, private: true) }
-  let_it_be(:other_view) { create(:saved_view, namespace: other_group) }
+  let_it_be(:other_view) { create(:saved_view, namespace: other_group, author: other_user) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:namespace) }
@@ -40,7 +40,7 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_vie
   end
 
   describe '.subscribed_by' do
-    let!(:user_saved_view) { create(:user_saved_view, user: user, saved_view: saved_view1, namespace: group) }
+    let_it_be(:user_saved_view) { create(:user_saved_view, user: user, saved_view: saved_view1, namespace: group) }
 
     it 'returns saved views subscribed by user' do
       expect(described_class.subscribed_by(user)).to contain_exactly(saved_view1)
@@ -105,11 +105,11 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_vie
     end
 
     context 'when sort is :relative_position' do
-      let!(:user_saved_view1) do
+      let_it_be(:user_saved_view1) do
         create(:user_saved_view, user: user, saved_view: saved_view1, namespace: group, relative_position: 1000)
       end
 
-      let!(:user_saved_view2) do
+      let_it_be(:user_saved_view2) do
         create(:user_saved_view, user: user, saved_view: saved_view2, namespace: group, relative_position: 2000)
       end
 
@@ -169,13 +169,13 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_vie
     let_it_be(:unrelated_user) { create(:user) }
     let_it_be(:unrelated_saved_view) { create(:saved_view, namespace: namespace) }
     let_it_be(:unrelated_user_saved_view) do
-      create(:user_saved_view, saved_view: unrelated_saved_view, user: unrelated_user)
+      create(:user_saved_view, saved_view: unrelated_saved_view, user: unrelated_user, namespace: namespace)
     end
 
     before do
-      create(:user_saved_view, saved_view: saved_view, user: user)
-      create(:user_saved_view, saved_view: saved_view, user: other_user_1)
-      create(:user_saved_view, saved_view: saved_view, user: other_user_2)
+      create(:user_saved_view, saved_view: saved_view, user: user, namespace: namespace)
+      create(:user_saved_view, saved_view: saved_view, user: other_user_1, namespace: namespace)
+      create(:user_saved_view, saved_view: saved_view, user: other_user_2, namespace: namespace)
     end
 
     it 'deletes subscriptions for all users except the specified user' do
@@ -204,7 +204,7 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_vie
       let_it_be(:no_subscription_saved_view) { create(:saved_view, namespace: namespace) }
 
       before do
-        create(:user_saved_view, saved_view: no_subscription_saved_view, user: user)
+        create(:user_saved_view, saved_view: no_subscription_saved_view, user: user, namespace: namespace)
       end
 
       it 'does not change the subscription count' do
@@ -216,7 +216,7 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :planning_vie
     it 'does not trigger N+1 queries' do
       control = ActiveRecord::QueryRecorder.new { saved_view.unsubscribe_other_users!(user: user) }
 
-      5.times { create(:user_saved_view, saved_view: saved_view, user: create(:user)) }
+      5.times { create(:user_saved_view, saved_view: saved_view, user: create(:user), namespace: namespace) }
 
       expect { saved_view.unsubscribe_other_users!(user: user) }.not_to exceed_query_limit(control)
     end

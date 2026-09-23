@@ -134,10 +134,12 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors, feature_category: :g
     let(:group_actor) { instance_double(Group) }
 
     before do
-      allow(service).to receive(:user_actor).and_return(user_actor)
-      allow(service).to receive(:repository_actor).and_return(repository_actor)
-      allow(service).to receive(:project_actor).and_return(project_actor)
-      allow(service).to receive(:group_actor).and_return(group_actor)
+      allow(service).to receive_messages(
+        user_actor: user_actor,
+        repository_actor: repository_actor,
+        project_actor: project_actor,
+        group_actor: group_actor
+      )
       allow(Gitlab::GitalyClient).to receive(:with_feature_flag_actors).and_call_original
       allow(Gitlab::GitalyClient).to receive(:call).and_return(call_result)
     end

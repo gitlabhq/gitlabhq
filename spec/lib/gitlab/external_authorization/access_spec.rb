@@ -55,8 +55,7 @@ RSpec.describe Gitlab::ExternalAuthorization::Access, :clean_gitlab_redis_cache 
       end
 
       it 'assigns the accessibility, reason and loaded_at' do
-        allow(fake_response).to receive(:successful?).and_return(false)
-        allow(fake_response).to receive(:reason).and_return('Inaccessible label')
+        allow(fake_response).to receive_messages(successful?: false, reason: 'Inaccessible label')
 
         access.load!
 

@@ -1,7 +1,6 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
@@ -34,7 +33,6 @@ export default {
     GroupInheritancePopover,
     GroupBadge,
   },
-  mixins: [glFeatureFlagsMixin()],
   apollo: {
     squashOption: {
       query: squashOptionQuery,

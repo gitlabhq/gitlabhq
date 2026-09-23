@@ -90,10 +90,12 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
     end
 
     it 'returns empty array when bridge has no variables' do
-      allow(bridge).to receive(:yaml_variables).and_return([])
-      allow(bridge).to receive(:pipeline_variables).and_return([])
-      allow(bridge).to receive(:pipeline_schedule_variables).and_return([])
-      allow(bridge).to receive(:dependency_variables).and_return([])
+      allow(bridge).to receive_messages(
+        yaml_variables: [],
+        pipeline_variables: [],
+        pipeline_schedule_variables: [],
+        dependency_variables: []
+      )
 
       expect(generator.calculate).to be_empty
     end

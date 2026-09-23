@@ -18,7 +18,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def index
     drafts = prepare_notes_for_rendering(draft_notes)
-    render json: DraftNoteSerializer.new(current_user: current_user).represent(drafts)
+    render json: serialize_drafts(drafts)
   end
 
   def create
@@ -38,13 +38,13 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     prepare_notes_for_rendering(draft_note)
 
-    render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+    render json: serialize_drafts(draft_note)
   end
 
   def update
     if draft_note.update(draft_note_params)
       prepare_notes_for_rendering(draft_note)
-      render json: DraftNoteSerializer.new(current_user: current_user).represent(draft_note)
+      render json: serialize_drafts(draft_note)
     else
       render json: { errors: draft_note.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -166,6 +166,20 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def reviewer_state_params
     params.permit(:reviewer_state)
+  end
+
+  def serialize_drafts(drafts)
+    trace_merge_head_positions(drafts)
+
+    DraftNoteSerializer
+      .new(current_user: current_user)
+      .represent(drafts)
+  end
+
+  def trace_merge_head_positions(drafts)
+    return unless Feature.enabled?(:draft_note_merge_head_line_code, project)
+
+    DraftNotes::TraceMergeHeadPositionService.new(merge_request, drafts).execute
   end
 
   def prepare_notes_for_rendering(notes)

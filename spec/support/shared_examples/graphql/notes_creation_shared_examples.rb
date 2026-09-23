@@ -69,7 +69,7 @@ RSpec.shared_examples 'a Note mutation when there are rate limit validation erro
   context 'with rate limiter', :freeze_time, :clean_gitlab_redis_rate_limiting do
     before do
       stub_application_setting(notes_create_limit: 3)
-      3.times { post_graphql_mutation(mutation, current_user: current_user) }
+      3.times { Gitlab::ApplicationRateLimiter.throttled?(:notes_create, scope: [current_user]) }
     end
 
     it_behaves_like 'a Note mutation that does not create a Note'

@@ -1,18 +1,33 @@
 <script>
-import { GlBadge, GlSprintf, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
-import { n__, sprintf } from '~/locale';
+import { GlBadge, GlIcon, GlSprintf, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { __, n__, sprintf } from '~/locale';
 
 export default {
   name: 'DiscussionsBadge',
-  components: { GlBadge, GlSprintf },
+  components: { GlBadge, GlIcon, GlSprintf },
   directives: { GlTooltip },
   props: {
     mergeRequest: {
       type: Object,
       required: true,
     },
+    /**
+     * Renders a subtle icon and count instead of the badge, for dense lists where a
+     * coloured pill would compete with the merge request title for attention.
+     */
+    neutral: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
+    neutralText() {
+      return sprintf(__('%{resolvedDiscussionsCount} of %{resolvableDiscussionsCount}'), {
+        resolvedDiscussionsCount: this.mergeRequest.resolvedDiscussionsCount,
+        resolvableDiscussionsCount: this.mergeRequest.resolvableDiscussionsCount,
+      });
+    },
     isResolved() {
       return (
         this.mergeRequest.resolvedDiscussionsCount === this.mergeRequest.resolvableDiscussionsCount
@@ -58,7 +73,10 @@ export default {
     :aria-label="tooltipTitle"
     class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
   >
-    <gl-badge icon="comments" :variant="badgeVariant">
+    <span v-if="neutral" class="gl-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle">
+      <gl-icon name="comments" :size="12" variant="subtle" />{{ neutralText }}
+    </span>
+    <gl-badge v-else icon="comments" :variant="badgeVariant">
       <template v-if="isResolved">
         {{ __('Resolved') }}
       </template>

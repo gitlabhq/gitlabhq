@@ -3,14 +3,15 @@
 require "spec_helper"
 
 RSpec.describe API::MergeRequestDiffs, 'MergeRequestDiffs', feature_category: :source_code_management do
-  let!(:user)          { create(:user) }
-  let!(:merge_request) { create(:merge_request, importing: true) }
-  let!(:project)       { merge_request.target_project }
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:project) { create(:project, :repository, maintainers: user) }
+  let_it_be(:merge_request) do
+    create(:merge_request, importing: true, source_project: project, target_project: project)
+  end
 
-  before do
+  before_all do
     merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
     merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/versions' do

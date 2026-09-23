@@ -30,9 +30,9 @@ RSpec.describe BranchesHelper, feature_category: :source_code_management do
     end
 
     context 'when an access level tied to a deploy key is provided' do
-      let!(:protected_branch) { create(:protected_branch, :no_one_can_push) }
-      let!(:user) { create(:user, guest_of: protected_branch.project) }
-      let!(:deploy_key) { create(:deploy_key, user: user, write_access_to: protected_branch.project) }
+      let(:protected_branch) { create(:protected_branch, :no_one_can_push) }
+      let(:user) { create(:user, guest_of: protected_branch.project) }
+      let(:deploy_key) { create(:deploy_key, user: user, write_access_to: protected_branch.project) }
 
       let(:push_level) { protected_branch.push_access_levels.first }
       let(:deploy_key_push_level) { create(:protected_branch_push_access_level, protected_branch: protected_branch, deploy_key: deploy_key) }
@@ -62,9 +62,7 @@ RSpec.describe BranchesHelper, feature_category: :source_code_management do
     end
 
     context 'when merge request is closed' do
-      before do
-        merge_request.close
-      end
+      let(:merge_request) { build(:merge_request, :closed, title: title) }
 
       it { is_expected.to eq(icon: 'merge-request-close', title: "Closed - #{title}", variant: :danger) }
     end

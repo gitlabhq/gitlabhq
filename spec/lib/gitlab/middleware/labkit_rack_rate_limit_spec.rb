@@ -11,8 +11,12 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
   # middleware reconstructs the throttle name from it for the cohort lookup and the
   # 429 headers.
   let(:rule) { instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_web', action: :limit) }
+  let(:counted_evaluation) { instance_double(Labkit::RateLimit::Result::Evaluation, rule: rule, exceeded?: false) }
   let(:result) do
-    instance_double(Labkit::RateLimit::Result, action: :allow, error?: false, rule: rule, evaluations: [])
+    instance_double(
+      Labkit::RateLimit::Result,
+      action: :allow, error?: false, rule: rule, evaluations: [], skipped?: false
+    )
   end
 
   let(:limiter) { instance_double(Labkit::RateLimit::Limiter, check: result) }
@@ -60,6 +64,23 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
       expect(status).to eq(200)
       expect(body).to eq(['ok'])
       expect(headers).not_to include('RateLimit-Name')
+    end
+
+    it 'records the limiter state for the request log', :request_store do
+      # Only a counted rule becomes an evaluation, and that is what the state
+      # reads, so the counting rule has to arrive as one.
+      allow(limiter).to receive(:check).and_return(
+        instance_double(
+          Labkit::RateLimit::Result,
+          action: :allow, error?: false, rule: rule, evaluations: [counted_evaluation], skipped?: false
+        )
+      )
+
+      middleware.call(env)
+
+      expect(Gitlab::Instrumentation::RateLimitState.payload).to eq(
+        Gitlab::Instrumentation::RateLimitState::STATE => ["#{registry::GENERAL}:unauthenticated_web:allow"]
+      )
     end
 
     it 'never returns a 429 when only the shadow flag is on (enforce off)' do
@@ -129,6 +150,17 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         expect(headers).to include('Content-Type' => 'text/plain')
         expect(headers).to include('RateLimit-Limit', 'RateLimit-Remaining', 'RateLimit-Reset', 'Retry-After')
         expect(body).to eq([Gitlab::Throttle.rate_limiting_response_text])
+      end
+
+      # Instrumentation shares the request path but must never decide it.
+      it 'still renders the 429 when instrumentation raises', :request_store, :aggregate_failures do
+        allow(::Gitlab::Instrumentation::RateLimitState).to receive(:track).and_raise(StandardError, 'boom')
+        expect(::Gitlab::ErrorTracking).to receive(:track_exception).with(an_instance_of(StandardError))
+        expect(app).not_to receive(:call)
+
+        status, = middleware.call(env)
+
+        expect(status).to eq(429)
       end
 
       it 'returns a 429 byte-identical to the legacy Rack::Attack responder' do

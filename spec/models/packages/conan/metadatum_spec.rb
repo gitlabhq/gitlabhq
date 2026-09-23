@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Conan::Metadatum, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Conan::Metadatum, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   describe 'relationships' do

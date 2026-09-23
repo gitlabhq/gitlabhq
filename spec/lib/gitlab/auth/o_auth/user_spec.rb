@@ -533,14 +533,18 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:name).and_return('John Doe')
-              allow(ldap_user).to receive(:email).and_return(['johndoe@example.com', 'john2@example.com'])
+              allow(ldap_user).to receive_messages(
+                name: 'John Doe',
+                email: ['johndoe@example.com', 'john2@example.com']
+              )
               allow(ldap_user).to receive(:dn) { dn }
 
               allow(ldap_user_2).to receive(:uid) { uid_2 }
               allow(ldap_user_2).to receive(:username) { uid_2 }
-              allow(ldap_user_2).to receive(:name).and_return('Beck Potter')
-              allow(ldap_user_2).to receive(:email).and_return(['beckpotter@example.com', 'beck2@example.com'])
+              allow(ldap_user_2).to receive_messages(
+                name: 'Beck Potter',
+                email: ['beckpotter@example.com', 'beck2@example.com']
+              )
               allow(ldap_user_2).to receive(:dn) { dn }
             end
 
@@ -659,8 +663,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
             context 'when an LDAP person is not found by uid' do
               it 'tries to find an LDAP person by email and adds the omniauth identity to the user' do
-                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(nil)
-                allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).and_return(ldap_user)
+                allow(Gitlab::Auth::Ldap::Person).to receive_messages(find_by_uid: nil, find_by_email: ldap_user)
 
                 oauth_user.save # rubocop:disable Rails/SaveBang
 
@@ -672,9 +675,11 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
               context 'when also not found by email' do
                 it 'tries to find an LDAP person by DN and adds the omniauth identity to the user' do
-                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(nil)
-                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).and_return(nil)
-                  allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_dn).and_return(ldap_user)
+                  allow(Gitlab::Auth::Ldap::Person).to receive_messages(
+                    find_by_uid: nil,
+                    find_by_email: nil,
+                    find_by_dn: ldap_user
+                  )
 
                   oauth_user.save # rubocop:disable Rails/SaveBang
 
@@ -713,8 +718,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:name).and_return(nil)
-              allow(ldap_user).to receive(:email).and_return(nil)
+              allow(ldap_user).to receive_messages(name: nil, email: nil)
               allow(ldap_user).to receive(:dn) { dn }
 
               allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(ldap_user)
@@ -743,8 +747,10 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
           context 'and a corresponding LDAP person with a non-default username' do
             before do
               allow(ldap_user).to receive(:uid) { uid }
-              allow(ldap_user).to receive(:username).and_return('johndoe@example.com')
-              allow(ldap_user).to receive(:email).and_return(%w[johndoe@example.com john2@example.com])
+              allow(ldap_user).to receive_messages(
+                username: 'johndoe@example.com',
+                email: %w[johndoe@example.com john2@example.com]
+              )
               allow(ldap_user).to receive(:dn) { dn }
             end
 
@@ -762,9 +768,11 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
           context "and no corresponding LDAP person" do
             before do
-              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_uid).and_return(nil)
-              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_email).and_return(nil)
-              allow(Gitlab::Auth::Ldap::Person).to receive(:find_by_dn).and_return(nil)
+              allow(Gitlab::Auth::Ldap::Person).to receive_messages(
+                find_by_uid: nil,
+                find_by_email: nil,
+                find_by_dn: nil
+              )
             end
 
             include_examples "to verify compliance with allow_single_sign_on"

@@ -58,13 +58,30 @@ module Gitlab
         end
 
         # Adds validation errors for unauthorized dimensions, filters, and
-        # sort orders.
-        def validate_authorization!(plan)
+        # sort orders. `original_request` is the request before unauthorized
+        # metrics were pruned by `authorized_request`.
+        def validate_authorization!(plan, original_request = nil)
           return unless self.class.parts_require_authorization?
 
+          validate_pruned_metrics_authorization(plan, original_request)
           validate_dimensions_authorization(plan)
           validate_filters_authorization(plan)
           validate_order_authorization(plan)
+        end
+
+        # Pruning unauthorized metrics is silent by design when authorized
+        # metrics remain, but a request left with no metrics at all would fail
+        # plan validation with "at least one metric is required", which is
+        # misleading for a viewer whose real problem is authorization.
+        def validate_pruned_metrics_authorization(plan, original_request)
+          return if original_request.nil? || plan.metrics.any?
+
+          pruned_metrics = original_request.metrics - plan.request.metrics
+          pruned_metrics.each do |configuration|
+            add_authorization_error(
+              s_("AggregationEngine|access to metric '%{identifier}' is not authorized"),
+              identifier: configuration[:identifier])
+          end
         end
 
         def validate_dimensions_authorization(plan)
@@ -108,8 +125,12 @@ module Gitlab
               "`authorization_resources:` is required in the engine context"
         end
 
-        def add_authorization_error(message, definition)
-          errors.add(:base, format(message, identifier: definition.identifier))
+        # Typed :unauthorized so callers (for example, the GraphQL resolver) can
+        # distinguish authorization failures from other validation errors.
+        def add_authorization_error(message, definition = nil, identifier: nil)
+          identifier ||= definition.identifier
+
+          errors.add(:base, :unauthorized, message: format(message, identifier: identifier))
         end
 
         # Metric filters must also be authorized for the metric they reference.

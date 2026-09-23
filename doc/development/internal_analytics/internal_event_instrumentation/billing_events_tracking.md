@@ -12,6 +12,13 @@ and instances whose `CUSTOMER_PORTAL_URL` points at the staging Customers Portal
 Those use the staging billing collector, so their usage reaches the same CustomersDot
 environment as their subscription.
 
+The client has two entry points. Use `track_billing_event` for a tally and
+`track_billing_snapshot` for a point-in-time reading. See
+[Counters and snapshots](#counters-and-snapshots).
+
+On an air-gapped instance the same calls store usage locally instead of emitting it.
+See [Air-gapped instances](#air-gapped-instances).
+
 For the schema field reference, see [Billable events schema](billable_events_schema.md).
 
 ## Track a billing event
@@ -47,7 +54,7 @@ Gitlab::BillingEvents::Client.track_billing_event(
 | `user` | No | `nil` | `User` record. Sets `subject`, `subject_type`, and `global_user_id`. |
 | `idempotency_key` | No | `nil` | String used for generating `event_id`. The downstream billing collector deduplicates events based on `event_id`, so the supplied value needs to be unique for each event that should be billed. When absent, a random UUID is generated on every `track_billing_event` call. |
 | `timestamp` | No | `Time.current` | Time of the billable activity. Defaults to now. Pass a specific time for an event to represent a different reporting window. |
-| `metadata` | No | `nil` | Hash with product-specific context. Stored as a JSON object in the event payload. |
+| `metadata` | No | `nil` | Hash with product-specific context, stored as a JSON object in the event payload. Set `feature_qualified_name` for any event that should be billed: CustomersDot treats an event without one as unbillable. |
 
 ## Emitted payload example
 
@@ -88,6 +95,32 @@ The following is an example of the `billable_usage` context the client produces.
   it is the `gitlab_instance_uid` claim of the instance's Cloud Connector token, which CustomersDot issued
   for the instance. When no token is available, the client falls back to `Gitlab::GlobalAnonymousId.instance_uuid`,
   and CustomersDot cannot resolve the event.
+
+## Counters and snapshots
+
+Two methods take the same arguments and differ only in how repeated calls in a single
+day are treated:
+
+| Method | Use for | Repeated calls in a day |
+|--------|---------|-------------------------|
+| `track_billing_event` | Something that happened. A secret was read, a workflow completed. | Accumulate |
+| `track_billing_snapshot` | A current total. How many secrets exist, how many artifact versions are retained. | Supersede one another |
+
+Choose based on what the number means, not on how often you send it. A point-in-time
+reading sent through `track_billing_event` is summed, which inflates the total by
+counting the same underlying usage more than once.
+
+The distinction only affects air-gapped instances, where usage is folded into a daily
+row. Both methods emit identically over the network.
+
+## Air-gapped instances
+
+An air-gapped instance cannot reach the billing collector, so usage sent over the
+network is lost. When such an instance is licensed offline, the client writes to a
+local daily aggregate table instead of emitting, and an administrator exports that data
+for upload. This is behind the `local_billing_persistence` feature flag.
+
+Callers do not need to detect this. The same call works on both kinds of instance.
 
 ## Internal event for correlation
 

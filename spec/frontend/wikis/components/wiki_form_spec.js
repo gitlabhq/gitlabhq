@@ -929,8 +929,6 @@ describe('WikiForm', () => {
   });
 
   describe('save message mode preference', () => {
-    const immersiveProvide = { glFeatures: { wikiImmersiveEditor: true } };
-
     const autoCommitMessageQueryResponse = (value) =>
       jest.fn().mockResolvedValue({
         data: {
@@ -1046,7 +1044,6 @@ describe('WikiForm', () => {
           it('shows loading state on the save button while mutation is in-flight', async () => {
             createWrapper({
               pageInfo: { title: 'Foo' },
-              provide: immersiveProvide,
               autoCommitMessageQueryHandler: autoCommitMessageQueryResponse(preference),
             });
             await waitForPromises();

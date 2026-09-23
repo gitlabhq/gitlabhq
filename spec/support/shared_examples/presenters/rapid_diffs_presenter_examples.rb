@@ -50,18 +50,8 @@ RSpec.shared_examples 'rapid diffs presenter base diffs_resource' do |include_st
       allow(presenter).to receive(:diffs_slice).and_return(diff_files)
     end
 
-    it 'returns the diffs slice' do
+    it 'returns the diffs slice, which the offset has already capped' do
       expect(presenter.diff_collection).to eq(diff_files)
-    end
-
-    context 'when the user views diffs file by file' do
-      before do
-        allow(current_user).to receive(:view_diffs_file_by_file).and_return(true)
-      end
-
-      it 'returns only the first diff file' do
-        expect(presenter.diff_collection).to eq(diff_files.first(1))
-      end
     end
   end
 end

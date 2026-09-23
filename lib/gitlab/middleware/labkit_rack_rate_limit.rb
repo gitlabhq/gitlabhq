@@ -67,8 +67,16 @@ module Gitlab
 
         request = build_request(env)
         context = with_isolated_throttle_instrumentation { request.labkit_facts }
-        results = limiters.all.values.map { |limiter| limiter.check(context) }
-        { results: results, response: enforced_response(results) }
+        checks = limiters.all.transform_values { |limiter| limiter.check(context) }
+        results = checks.values
+        decision = { results: results, response: enforced_response(results) }
+
+        # Its own guard, not run's. Sharing run's would let a raise here return
+        # nil for the whole decision, dropping a 429 the rules had already
+        # counted, so instrumentation could switch enforcement off.
+        guard { ::Gitlab::Instrumentation::RateLimitState.track(checks) }
+
+        decision
       end
 
       # Outbound: proactive RateLimit-* headers for non-429 responses (a 429 already

@@ -1,6 +1,5 @@
 <script>
 import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import { REQUIRED_ICON, NOT_REQUIRED_ICON } from './constants';
 import DisabledByPolicyPopover from './disabled_by_policy_popover.vue';
@@ -15,7 +14,6 @@ export default {
     GroupInheritancePopover,
     DisabledByPolicyPopover,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     canAdminProtectedBranches: { default: false },
     canAdminGroupProtectedBranches: { default: false },

@@ -37,12 +37,10 @@ import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 import WorkItemTypeToken from '~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'IssueBoardFilteredSearch',
   components: { BoardFilteredSearch },
-  mixins: [glFeatureFlagMixin()],
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'isGroupBoard'],
   props: {
     board: {

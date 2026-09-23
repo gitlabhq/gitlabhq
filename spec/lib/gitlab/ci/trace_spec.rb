@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
   context 'when trace is migrated to object storage' do
     let!(:job) { create(:ci_build, :trace_artifact) }
     let!(:artifact1) { job.job_artifacts_trace }
-    let!(:artifact2) { job.reload.job_artifacts_trace }
     let(:test_data) { "hello world" }
 
     before do

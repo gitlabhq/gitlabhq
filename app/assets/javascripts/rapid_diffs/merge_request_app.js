@@ -45,7 +45,7 @@ export class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
 
     if (view.singleFileMode) {
       view.resolveInitialFileIndex({
-        linkedFileData: { old_path: position.old_path, new_path: position.new_path },
+        file: { old_path: position.old_path, new_path: position.new_path },
       });
       view.loadCurrentFile();
     }

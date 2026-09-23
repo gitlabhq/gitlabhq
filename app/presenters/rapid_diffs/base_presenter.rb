@@ -43,7 +43,7 @@ module RapidDiffs
     end
 
     def linked_file
-      return if linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?
+      return unless linked_file_requested?
       # `||=` would re-run the lookup on every call when the requested file is not in the diff,
       # and every caller of #offset asks for it.
       return @linked_file if defined?(@linked_file)
@@ -115,8 +115,19 @@ module RapidDiffs
     def diff_collection
       return [linked_file] if linked_file
 
-      result = diffs_slice || []
-      file_by_file_mode? ? result.first(1) : result
+      diffs_slice || []
+    end
+
+    # The client selects the file we rendered rather than the file browser's first entry: the browser
+    # list is built from a different collection and can be ordered differently, so an index would only
+    # agree with what we rendered by coincidence.
+    def initial_file
+      return unless file_by_file_mode?
+
+      file = diff_collection.first
+      return unless file
+
+      { old_path: file.old_path, new_path: file.new_path }
     end
 
     def file_by_file_mode?
@@ -127,8 +138,9 @@ module RapidDiffs
 
     def offset
       return 1 if linked_file
+      return if baseline_offset.nil?
 
-      baseline_offset
+      file_by_file_mode? ? 1 : baseline_offset
     end
 
     protected
@@ -161,6 +173,10 @@ module RapidDiffs
       false
     end
 
+    def fetch_diffs_slice(limit)
+      resource.first_diffs_slice(limit, diff_options)
+    end
+
     private
 
     def linked_line_unfolder
@@ -176,7 +192,7 @@ module RapidDiffs
     def loaded_diffs_slice
       return if offset.nil? || offset == 0
 
-      @loaded_diffs_slice ||= resource.first_diffs_slice(offset, diff_options)
+      @loaded_diffs_slice ||= fetch_diffs_slice(offset)
     end
 
     def highlight?
@@ -187,6 +203,10 @@ module RapidDiffs
 
     def transform_file_array(diff_files)
       diff_files.map { |file| transform_file(file) }
+    end
+
+    def linked_file_requested?
+      linked_file_params[:old_path].present? || linked_file_params[:new_path].present?
     end
 
     def linked_file_params

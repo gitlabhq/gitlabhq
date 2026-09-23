@@ -10,7 +10,6 @@ import {
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { MR_WORK_ITEM_RELATIONSHIP_TYPES } from '~/sidebar/constants';
 import {
   newWorkItemPath,
@@ -41,7 +40,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin(), GlToastMixin],
+  mixins: [GlToastMixin],
   props: {
     alwaysShowWorkItemTypeSelect: {
       type: Boolean,

@@ -71,7 +71,7 @@ caproni kubectl wait --for=condition=Ready pod \
   --namespace "$NAMESPACE" \
   --timeout=120s
 
-mirrord exec \
+caproni tool mirrord exec \
   --config-file "$CONFIG" \
   --target "$TARGET" \
   --target-namespace "$NAMESPACE" \

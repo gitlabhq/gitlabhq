@@ -10,7 +10,8 @@ module RapidDiffs
     attr_reader :presenter
 
     delegate :diffs_stream_url, :reload_stream_url, :diffs_stats_endpoint, :diff_files_endpoint, :diff_file_endpoint,
-      :sorted?, :diffs_slice, :lazy?, :environment, :linked_file, :diff_collection, :empty_state_type, to: :presenter
+      :sorted?, :diffs_slice, :lazy?, :environment, :linked_file, :diff_collection, :empty_state_type,
+      :initial_file, to: :presenter
 
     delegate :diff_view, to: :helpers
 
@@ -39,6 +40,7 @@ module RapidDiffs
         update_user_endpoint: update_user_endpoint,
         linked_file_data: linked_file_data,
         lazy: lazy?,
+        initial_file: initial_file,
         file_by_file_mode: file_by_file_mode?
       }.merge(@extra_app_data || {})
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::BuildInfo, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::BuildInfo, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }
     it { is_expected.to belong_to(:pipeline) }

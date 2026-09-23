@@ -18,6 +18,9 @@ class DraftNote < ApplicationRecord
   # Text with quick actions filtered out
   attr_accessor :rendered_note
 
+  # Set per request by DraftNotes::TraceMergeHeadPositionService, never persisted. Serialized as `positions`.
+  attr_accessor :merge_head_position
+
   belongs_to :author, class_name: 'User'
   belongs_to :merge_request
   belongs_to :project

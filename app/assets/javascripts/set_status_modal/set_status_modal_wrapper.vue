@@ -4,7 +4,6 @@ import { createAlert } from '~/alert';
 import { BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isUserBusy, computedClearStatusAfterValue } from './utils';
 import { AVAILABILITY_STATUS, SET_STATUS_MODAL_ID } from './constants';
 import SetStatusForm from './set_status_form.vue';
@@ -19,7 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin(), GlToastMixin],
+  mixins: [GlToastMixin],
   props: {
     defaultEmoji: {
       type: String,

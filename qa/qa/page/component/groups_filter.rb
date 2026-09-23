@@ -21,9 +21,9 @@ module QA
         # @param name [String] group name
         # @return [Boolean] whether the filter returned any group
         def filter_group(name)
-          filter_input = find_element('filtered-search-term-input')
-          filter_input.click
-          filter_input.set(name)
+          # Clicking the term input swaps it for the token segment input, so find the input again
+          find_element('filtered-search-term-input').click
+          find_element('filtered-search-token-segment-input').set(name)
           click_element 'search-button'
           # Loading starts a moment after `return` is sent. We mustn't jump ahead
           wait_for_requests if spinner_exists?

@@ -16,14 +16,11 @@ describe('wikis/components/wiki_sticky_header', () => {
     },
   };
 
-  function buildWrapper(props = {}, featureFlags = {}) {
+  function buildWrapper(props = {}) {
     wrapper = shallowMountExtended(WikiStickyHeader, {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      provide: {
-        glFeatures: featureFlags,
       },
     });
   }

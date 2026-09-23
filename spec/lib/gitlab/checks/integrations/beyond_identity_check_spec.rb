@@ -116,8 +116,7 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
         before do
           allow(Integrations::BeyondIdentity).to receive(:for_instance).and_return([beyond_identity_integration])
           allow_next_instances_of(CommitSignatures::GpgSignature, 2) do |signature|
-            allow(signature).to receive(:verified?).and_return(true)
-            allow(signature).to receive(:gpg_key).and_return(verified_gpg_key)
+            allow(signature).to receive_messages(verified?: true, gpg_key: verified_gpg_key)
           end
         end
 

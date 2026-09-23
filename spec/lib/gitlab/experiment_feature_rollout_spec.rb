@@ -14,9 +14,10 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
   describe "#enabled?" do
     before do
       stub_feature_flags(gitlab_experiment: true)
-      allow(experiment_instance).to receive(:feature_flag_defined?).and_return(true)
-      allow(experiment_instance)
-        .to receive(:feature_flag_instance).and_return(instance_double('Flipper::Feature', state: :on))
+      allow(experiment_instance).to receive_messages(
+        feature_flag_defined?: true,
+        feature_flag_instance: instance_double('Flipper::Feature', state: :on)
+      )
     end
 
     it { is_expected.not_to be_enabled }

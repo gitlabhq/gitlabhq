@@ -676,7 +676,6 @@ namespaces:
 - zoekt_enabled_namespaces.root_namespace_id
 - zoekt_replicas.namespace_id
 notes:
-- abuse_report_user_mentions.note_id
 - alert_management_alert_user_mentions.note_id
 - commit_user_mentions.note_id
 - design_user_mentions.note_id

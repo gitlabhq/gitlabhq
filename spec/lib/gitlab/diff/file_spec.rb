@@ -551,8 +551,10 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when diff has both to_id and from_id' do
       before do
-        allow(diff).to receive(:to_id).and_return('efd587ccb47caf5f31fc954edb21f0a713d9ecc3')
-        allow(diff).to receive(:from_id).and_return('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+        allow(diff).to receive_messages(
+          to_id: 'efd587ccb47caf5f31fc954edb21f0a713d9ecc3',
+          from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae'
+        )
       end
 
       it 'uses to_id over from_id' do
@@ -563,8 +565,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when diff has from_id but not to_id (deleted file)' do
       before do
-        allow(diff).to receive(:to_id).and_return(nil)
-        allow(diff).to receive(:from_id).and_return('0792c58905eff3432b721f8c4a64363d8e28d9ae')
+        allow(diff).to receive_messages(to_id: nil, from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae')
       end
 
       it 'does not load the blob' do
@@ -580,8 +581,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when diff has neither from_id nor to_id (persisted diff)' do
       before do
-        allow(diff).to receive(:to_id).and_return(nil)
-        allow(diff).to receive(:from_id).and_return(nil)
+        allow(diff).to receive_messages(to_id: nil, from_id: nil)
       end
 
       it 'falls back to blob.id' do
@@ -853,8 +853,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when mode changed' do
       before do
-        allow(diff_file).to receive(:content_changed?).and_return(nil)
-        allow(diff_file).to receive(:mode_changed?).and_return(true)
+        allow(diff_file).to receive_messages(content_changed?: nil, mode_changed?: true)
       end
 
       it 'returns a Mode Changed viewer' do
@@ -864,12 +863,14 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
     context 'when no other conditions apply' do
       before do
-        allow(diff_file).to receive(:content_changed?).and_return(false)
-        allow(diff_file).to receive(:new_file?).and_return(false)
-        allow(diff_file).to receive(:deleted_file?).and_return(false)
-        allow(diff_file).to receive(:renamed_file?).and_return(false)
-        allow(diff_file).to receive(:mode_changed?).and_return(false)
-        allow(diff_file).to receive(:text?).and_return(false)
+        allow(diff_file).to receive_messages(
+          content_changed?: false,
+          new_file?: false,
+          deleted_file?: false,
+          renamed_file?: false,
+          mode_changed?: false,
+          text?: false
+        )
       end
 
       it 'returns a No Preview viewer' do
@@ -1345,8 +1346,7 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     let(:text?) { true }
 
     before do
-      allow(diff_file).to receive(:diffable?).and_return(diffable?)
-      allow(diff_file).to receive(:text?).and_return(text?)
+      allow(diff_file).to receive_messages(diffable?: diffable?, text?: text?)
     end
 
     subject(:ai_reviewable?) { diff_file.ai_reviewable? }
@@ -1398,10 +1398,12 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     subject(:whitespace_only?) { diff_file.whitespace_only? }
 
     it 'returns true for non-collapsed empty diffs' do
-      allow(diff_file).to receive(:collapsed?).and_return(false)
-      allow(diff_file).to receive(:diff_lines_for_serializer).and_return(nil)
-      allow(diff_file).to receive(:added_lines).and_return(2)
-      allow(diff_file).to receive(:removed_lines).and_return(2)
+      allow(diff_file).to receive_messages(
+        collapsed?: false,
+        diff_lines_for_serializer: nil,
+        added_lines: 2,
+        removed_lines: 2
+      )
       expect(whitespace_only?).to be(true)
     end
 

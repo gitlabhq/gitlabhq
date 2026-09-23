@@ -9,7 +9,6 @@ import PersistedPagination from '~/packages_and_registries/shared/components/per
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   getPageParams,
   getNextPageParams,
@@ -48,7 +47,7 @@ export default {
     PersistedPagination,
     PersistedSearch,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   inject: ['config'],
   props: {
     id: {

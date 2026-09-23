@@ -61,7 +61,7 @@ export default {
     @select="emitRole"
   >
     <template #list-item="{ item }">
-      <div class="gl-flex gl-items-start gl-justify-between gl-gap-2" data-testid="role-data">
+      <div class="gl-line-clamp-2" data-testid="role-data">
         <span data-testid="role-name">{{ item.text }}</span>
       </div>
       <div

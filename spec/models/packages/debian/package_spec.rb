@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Debian::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Debian::Package, feature_category: :package_registry do
   describe 'associations' do
     it { is_expected.to have_one(:publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
 

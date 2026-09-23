@@ -7,7 +7,6 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/toolt
 import TooltipOnTruncateDirective from '~/vue_shared/directives/tooltip_on_truncate';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ICONS, PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
 import PipelineLabels from './pipeline_labels.vue';
 
@@ -25,7 +24,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     TooltipOnTruncate: TooltipOnTruncateDirective,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   props: {
     pipeline: {
       type: Object,

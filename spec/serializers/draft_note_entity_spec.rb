@@ -54,6 +54,35 @@ RSpec.describe DraftNoteEntity, feature_category: :code_review_workflow do
         expect(json.keys).not_to include(:position, :original_position)
       end
     end
+
+    # The renderer iterates a collection of positions, hence the array.
+    context 'when a merge_head position has been traced' do
+      let(:merge_head_position) { build(:text_diff_position) }
+
+      before do
+        draft_note.merge_head_position = merge_head_position
+      end
+
+      it 'exposes it as positions' do
+        expect(json[:positions]).to eq([merge_head_position])
+      end
+
+      context 'when the draft_note_merge_head_line_code feature flag is disabled' do
+        before do
+          stub_feature_flags(draft_note_merge_head_line_code: false)
+        end
+
+        it 'does not expose positions' do
+          expect(json.keys).not_to include(:positions)
+        end
+      end
+    end
+
+    context 'when no merge_head position has been traced' do
+      it 'does not expose positions' do
+        expect(json.keys).not_to include(:positions)
+      end
+    end
   end
 
   describe 'current_user' do

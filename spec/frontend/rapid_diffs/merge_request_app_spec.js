@@ -263,7 +263,7 @@ describe('Merge Request Rapid Diffs app', () => {
       useDiffsView().singleFileMode = true;
       app.scrollToDiffNote(discussion);
       expect(useDiffsView().resolveInitialFileIndex).toHaveBeenCalledWith({
-        linkedFileData: { old_path: 'file.js', new_path: 'file.js' },
+        file: { old_path: 'file.js', new_path: 'file.js' },
       });
       expect(useDiffsView().loadCurrentFile).toHaveBeenCalled();
     });

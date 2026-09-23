@@ -20,10 +20,10 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   let_it_be(:valid_label_title_2) { 'Label bar & foo:subgroup::v.2' }
   let_it_be(:valid_group_label_title_1) { 'Group label foobar:sub::v.1' }
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let!(:label1) { create(:label, description: 'the best label v.1', title: valid_label_title_1, project: project) }
-  let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, creator_id: user.id, namespace: user.namespace, maintainers: user) }
+  let_it_be_with_reload(:label1) { create(:label, description: 'the best label v.1', title: valid_label_title_1, project: project) }
+  let_it_be_with_reload(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 
   route_types = [:deprecated, :rest]
 
@@ -178,15 +178,11 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
   end
 
-  before do
-    project.add_maintainer(user)
-  end
-
   describe 'GET /projects/:id/labels' do
     let_it_be(:group) { create(:group) }
     let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
 
-    before do
+    before_all do
       project.update!(group: group)
     end
 
@@ -292,11 +288,10 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
 
     context 'with subgroups' do
-      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:subgroup) { create(:group, parent: group, owners: user) }
       let_it_be(:subgroup_label) { create(:group_label, title: 'support label', group: subgroup) }
 
-      before do
-        subgroup.add_owner(user)
+      before_all do
         project.update!(group: subgroup)
       end
 
@@ -536,7 +531,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       let_it_be(:group) { create(:group) }
       let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
 
-      before do
+      before_all do
         project.update!(group: group)
       end
 
@@ -611,7 +606,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       let_it_be(:group) { create(:group) }
       let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }
 
-      before do
+      before_all do
         project.update!(group: group)
       end
 
@@ -647,10 +642,11 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/labels/promote' do
-    let_it_be(:group) { create(:group) }
+    let_it_be(:group) { create(:group, owners: user) }
 
-    before do
-      group.add_owner(user)
+    let!(:label1) { create(:label, description: 'the best label v.1', title: 'Promotable label', project: project) }
+
+    before_all do
       project.update!(group: group)
     end
 
@@ -663,7 +659,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
     end
 
     context 'if group label already exists' do
-      let!(:group_label) { create(:group_label, title: label1.name, group: group) }
+      let!(:group_label) { create(:group_label, title: 'Promotable label', group: group) }
 
       it 'returns a status of 200' do
         put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name }
@@ -774,7 +770,7 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   end
 
   describe "POST /projects/:id/labels/:label_id/unsubscribe" do
-    before do
+    before_all do
       label1.subscribe(user, project)
     end
 
@@ -827,21 +823,16 @@ RSpec.describe API::Labels, feature_category: :team_planning do
   end
 
   describe 'granular token permissions' do
-    let_it_be(:granular_test_group) { create(:group) }
     let_it_be(:granular_test_user) { create(:user) }
+    let_it_be(:granular_test_group) { create(:group, owners: granular_test_user) }
     let_it_be(:granular_test_project) do
-      create(:project, creator_id: granular_test_user.id, namespace: granular_test_group)
+      create(:project, creator_id: granular_test_user.id, namespace: granular_test_group, developers: granular_test_user)
     end
 
     let_it_be(:read_label) { create(:label, title: 'read_test_label', project: granular_test_project) }
     let_it_be(:promote_label) { create(:label, title: 'promote_test_label', project: granular_test_project) }
     let_it_be(:update_label) { create(:label, title: 'update_test_label', project: granular_test_project) }
     let_it_be(:delete_label) { create(:label, title: 'delete_test_label', project: granular_test_project) }
-
-    before_all do
-      granular_test_project.add_developer(granular_test_user)
-      granular_test_group.add_owner(granular_test_user)
-    end
 
     context 'when reading labels with GET /projects/:id/labels' do
       it_behaves_like 'authorizing granular token permissions', :read_label do

@@ -42,11 +42,13 @@ response attributes:
 | `created_at`    | string  | Date and time when snippet was created. |
 | `description`   | string  | Description of snippet. |
 | `file_name`     | string  | Name of snippet file. |
+| `http_url_to_repo` | string | HTTP URL to snippet repository. Returned only if the snippet repository exists. |
 | `id`            | integer | ID of snippet. |
 | `imported`      | boolean | If `true`, the snippet was imported. |
 | `imported_from` | string  | Source of import. |
 | `project_id`    | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`       | string  | URL to raw snippet content. |
+| `ssh_url_to_repo` | string | SSH URL to snippet repository. Returned only if the snippet repository exists. |
 | `title`         | string  | Title of snippet. |
 | `updated_at`    | string  | Date and time when snippet was last updated. |
 | `visibility`    | string  | Visibility level of snippet. |
@@ -83,7 +85,9 @@ Example response:
         "created_at": "2018-09-18T01:12:26.383Z",
         "project_id": null,
         "web_url": "http://example.com/snippets/42",
-        "raw_url": "http://example.com/snippets/42/raw"
+        "raw_url": "http://example.com/snippets/42/raw",
+        "ssh_url_to_repo": "ssh://git@example.com:snippets/42.git",
+        "http_url_to_repo": "http://example.com/snippets/42.git"
     },
     {
         "id": 41,
@@ -105,7 +109,9 @@ Example response:
         "created_at": "2018-09-18T01:12:26.360Z",
         "project_id": 1,
         "web_url": "http://example.com/gitlab-org/gitlab-test/snippets/41",
-        "raw_url": "http://example.com/gitlab-org/gitlab-test/snippets/41/raw"
+        "raw_url": "http://example.com/gitlab-org/gitlab-test/snippets/41/raw",
+        "ssh_url_to_repo": "ssh://git@example.com:gitlab-org/gitlab-test/snippets/41.git",
+        "http_url_to_repo": "http://example.com/gitlab-org/gitlab-test/snippets/41.git"
     }
 ]
 ```
@@ -134,13 +140,13 @@ response attributes:
 | `description`      | string  | Description of snippet. |
 | `expires_at`       | string  | Date and time when snippet expires. |
 | `file_name`        | string  | Name of snippet file. |
-| `http_url_to_repo` | string  | HTTP URL to snippet repository. |
+| `http_url_to_repo` | string  | HTTP URL to snippet repository. Returned only if the snippet repository exists. |
 | `id`               | integer | ID of snippet. |
 | `imported`         | boolean | If `true`, the snippet was imported. |
 | `imported_from`    | string  | Source of import. |
 | `project_id`       | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`          | string  | URL to raw snippet content. |
-| `ssh_url_to_repo`  | string  | SSH URL to snippet repository. |
+| `ssh_url_to_repo`  | string  | SSH URL to snippet repository. Returned only if the snippet repository exists. |
 | `title`            | string  | Title of snippet. |
 | `updated_at`       | string  | Date and time when snippet was last updated. |
 | `visibility`       | string  | Visibility level of snippet. |
@@ -177,7 +183,9 @@ Example response:
   "created_at": "2012-06-28T10:52:04Z",
   "project_id": null,
   "web_url": "http://example.com/snippets/1",
-  "raw_url": "http://example.com/snippets/1/raw"
+  "raw_url": "http://example.com/snippets/1/raw",
+  "ssh_url_to_repo": "ssh://git@example.com:snippets/1.git",
+  "http_url_to_repo": "http://example.com/snippets/1.git"
 }
 ```
 
@@ -281,13 +289,13 @@ response attributes:
 | `expires_at`       | string  | Date and time when snippet expires. |
 | `file_name`        | string  | Name of snippet file. |
 | `files`            | array   | Array of snippet files. |
-| `http_url_to_repo` | string  | HTTP URL to snippet repository. |
+| `http_url_to_repo` | string  | HTTP URL to snippet repository. Returned only if the snippet repository exists. |
 | `id`               | integer | ID of snippet. |
 | `imported`         | boolean | If `true`, the snippet was imported. |
 | `imported_from`    | string  | Source of import. |
 | `project_id`       | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`          | string  | URL to raw snippet content. |
-| `ssh_url_to_repo`  | string  | SSH URL to snippet repository. |
+| `ssh_url_to_repo`  | string  | SSH URL to snippet repository. Returned only if the snippet repository exists. |
 | `title`            | string  | Title of snippet. |
 | `updated_at`       | string  | Date and time when snippet was last updated. |
 | `visibility`       | string  | Visibility level of snippet. |
@@ -342,8 +350,8 @@ Example response:
   "project_id": null,
   "web_url": "http://example.com/snippets/1",
   "raw_url": "http://example.com/snippets/1/raw",
-  "ssh_url_to_repo": "ssh://git@gitlab.example.com:snippets/1.git",
-  "http_url_to_repo": "https://gitlab.example.com/snippets/1.git",
+  "ssh_url_to_repo": "ssh://git@example.com:snippets/1.git",
+  "http_url_to_repo": "http://example.com/snippets/1.git",
   "file_name": "test.txt",
   "files": [
     {
@@ -392,13 +400,13 @@ response attributes:
 | `expires_at`       | string  | Date and time when snippet expires. |
 | `file_name`        | string  | Name of snippet file. |
 | `files`            | array   | Array of snippet files. |
-| `http_url_to_repo` | string  | HTTP URL to snippet repository. |
+| `http_url_to_repo` | string  | HTTP URL to snippet repository. Returned only if the snippet repository exists. |
 | `id`               | integer | ID of snippet. |
 | `imported`         | boolean | If `true`, the snippet was imported. |
 | `imported_from`    | string  | Source of import. |
 | `project_id`       | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`          | string  | URL to raw snippet content. |
-| `ssh_url_to_repo`  | string  | SSH URL to snippet repository. |
+| `ssh_url_to_repo`  | string  | SSH URL to snippet repository. Returned only if the snippet repository exists. |
 | `title`            | string  | Title of snippet. |
 | `updated_at`       | string  | Date and time when snippet was last updated. |
 | `visibility`       | string  | Visibility level of snippet. |
@@ -452,8 +460,8 @@ Example response:
   "project_id": null,
   "web_url": "http://example.com/snippets/1",
   "raw_url": "http://example.com/snippets/1/raw",
-  "ssh_url_to_repo": "ssh://git@gitlab.example.com:snippets/1.git",
-  "http_url_to_repo": "https://gitlab.example.com/snippets/1.git",
+  "ssh_url_to_repo": "ssh://git@example.com:snippets/1.git",
+  "http_url_to_repo": "http://example.com/snippets/1.git",
   "file_name": "renamed.md",
   "files": [
     {
@@ -519,9 +527,13 @@ response attributes:
 | `created_at`  | string  | Date and time when snippet was created. |
 | `description` | string  | Description of snippet. |
 | `file_name`   | string  | Name of snippet file. |
+| `http_url_to_repo` | string | HTTP URL to snippet repository. Returned only if the snippet repository exists. |
 | `id`          | integer | ID of snippet. |
+| `imported`    | boolean | If `true`, the snippet was imported. |
+| `imported_from` | string | Source of import. |
 | `project_id`  | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`     | string  | URL to raw snippet content. |
+| `ssh_url_to_repo` | string | SSH URL to snippet repository. Returned only if the snippet repository exists. |
 | `title`       | string  | Title of snippet. |
 | `updated_at`  | string  | Date and time when snippet was last updated. |
 | `visibility`  | string  | Visibility level of snippet. |
@@ -554,7 +566,11 @@ Example response:
         "updated_at": "2016-11-25T16:53:34.504Z",
         "project_id": null,
         "web_url": "http://example.com/snippets/49",
-        "raw_url": "http://example.com/snippets/49/raw"
+        "raw_url": "http://example.com/snippets/49/raw",
+        "ssh_url_to_repo": "ssh://git@example.com:snippets/49.git",
+        "http_url_to_repo": "http://example.com/snippets/49.git",
+        "imported": false,
+        "imported_from": "none"
     },
     {
         "author": {
@@ -572,7 +588,11 @@ Example response:
         "updated_at": "2016-11-25T16:53:34.479Z",
         "project_id": null,
         "web_url": "http://example.com/snippets/48",
-        "raw_url": "http://example.com/snippets/49/raw",
+        "raw_url": "http://example.com/snippets/48/raw",
+        "ssh_url_to_repo": "ssh://git@example.com:snippets/48.git",
+        "http_url_to_repo": "http://example.com/snippets/48.git",
+        "imported": false,
+        "imported_from": "none",
         "visibility": "public"
     }
 ]
@@ -608,12 +628,14 @@ response attributes:
 | `description`        | string  | Description of snippet. |
 | `file_name`          | string  | Name of snippet file. |
 | `files`              | array   | Array of snippet files. |
+| `http_url_to_repo`   | string  | HTTP URL to snippet repository. Returned only if the snippet repository exists. |
 | `id`                 | integer | ID of snippet. |
 | `imported`           | boolean | If `true`, the snippet was imported. |
 | `imported_from`      | string  | Source of import. |
 | `project_id`         | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`            | string  | URL to raw snippet content. |
 | `repository_storage` | string  | Repository storage used by snippet. |
+| `ssh_url_to_repo`    | string  | SSH URL to snippet repository. Returned only if the snippet repository exists. |
 | `title`              | string  | Title of snippet. |
 | `updated_at`         | string  | Date and time when snippet was last updated. |
 | `visibility`         | string  | Visibility level of snippet. |

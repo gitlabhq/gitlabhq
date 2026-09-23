@@ -14,7 +14,6 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import UserLinkWithTooltip from '~/vue_shared/components/user_link_with_tooltip.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   STATE_OPEN,
   WIDGET_TYPE_ASSIGNEES,
@@ -63,7 +62,6 @@ export default {
     SafeHtml,
   },
   titleInLinkSafeHtmlConfig,
-  mixins: [glFeatureFlagMixin()],
   inject: {
     preventRouterNav: {
       default: false,

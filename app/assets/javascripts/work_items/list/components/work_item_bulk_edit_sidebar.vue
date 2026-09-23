@@ -3,7 +3,6 @@ import { camelCase, chunk } from 'lodash-es';
 import { GlForm } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   BULK_EDIT_NO_VALUE,
   WIDGET_TYPE_ASSIGNEES,
@@ -60,7 +59,6 @@ export default {
     WorkItemBulkEditParent,
     WorkItemBulkMove,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['hasIssuableHealthStatusFeature', 'hasIterationsFeature', 'hasStatusFeature'],
   props: {
     checkedItems: {

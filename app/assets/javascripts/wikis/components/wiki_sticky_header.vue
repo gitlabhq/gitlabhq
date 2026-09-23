@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlLink, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WikiMoreDropdown from './wiki_more_dropdown.vue';
 import WikiSidebarToggle from './wiki_sidebar_toggle.vue';
 
@@ -17,7 +16,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     isStickyHeaderShowing: {
       type: Boolean,

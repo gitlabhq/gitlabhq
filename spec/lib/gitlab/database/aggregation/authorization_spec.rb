@@ -174,11 +174,12 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
         expect(response.payload[:data].metrics.map(&:identifier)).to contain_exactly(:total_count)
       end
 
-      it 'returns a validation error when every requested metric is unauthorized' do
+      it 'returns an authorization error when every requested metric is unauthorized' do
         response = engine.execute(build_request(metrics: [{ identifier: :owner_count }]))
 
         expect(response).to be_error
-        expect(response.message).to include('at least one metric is required')
+        expect(response.message).to include("access to metric 'owner_count' is not authorized")
+        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
       end
 
       it 'preserves unprotected request parts when pruning' do
@@ -230,6 +231,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("access to dimension 'owner_dimension' is not authorized")
+        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
       end
 
       it 'resolves association dimension aliases' do
@@ -260,6 +262,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("access to filter 'owner_filter' is not authorized")
+        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
       end
 
       it 'returns a validation error for metric filters referencing a protected metric' do
@@ -306,6 +309,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("ordering by 'owner_count' is not authorized")
+        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
       end
 
       it 'returns a validation error when ordering by a protected dimension' do

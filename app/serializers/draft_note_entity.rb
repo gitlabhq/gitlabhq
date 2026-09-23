@@ -9,6 +9,12 @@ class DraftNoteEntity < Grape::Entity
   expose :commit_id
   expose :position, if: ->(note, _) { note.on_diff? }
   expose :original_position, if: ->(note, _) { note.on_diff? }
+
+  # An array to match `positions` on DiscussionEntity, which the rapid diffs renderer iterates. The flag is checked
+  # here too so the payload cannot change unless it is on; the nil check first keeps the flag-off path free.
+  expose :positions, if: ->(note, _) { expose_merge_head_position?(note) } do |note|
+    [note.merge_head_position]
+  end
   expose :line_code
   expose :file_identifier_hash
   expose :file_hash
@@ -40,5 +46,11 @@ class DraftNoteEntity < Grape::Entity
 
   def current_user
     request.current_user
+  end
+
+  def expose_merge_head_position?(note)
+    return false unless note.merge_head_position.present?
+
+    Feature.enabled?(:draft_note_merge_head_line_code, note.project)
   end
 end

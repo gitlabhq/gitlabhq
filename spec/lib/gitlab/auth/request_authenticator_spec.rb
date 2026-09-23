@@ -22,8 +22,10 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
 
     it 'returns sessionless user first' do
       allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:find_sessionless_user).and_return(sessionless_user)
-        allow(instance).to receive(:find_user_from_warden).and_return(session_user)
+        allow(instance).to receive_messages(
+          find_sessionless_user: sessionless_user,
+          find_user_from_warden: session_user
+        )
       end
 
       expect(request_authenticator.user([:api])).to eq sessionless_user
@@ -465,18 +467,14 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       end
 
       it 'does not consult the other sessionless authentication methods' do
-        allow(request_authenticator)
-          .to receive(:find_user_from_dependency_proxy_token)
-          .and_return(dependency_proxy_user)
-        allow(request_authenticator).to receive(:find_user_from_feed_token).and_return(feed_token_user)
-        allow(request_authenticator)
-          .to receive(:find_user_from_static_object_token)
-          .and_return(static_object_token_user)
-        allow(request_authenticator).to receive(:find_user_from_job_token).and_return(job_token_user)
-        allow(request_authenticator)
-          .to receive(:find_user_from_personal_access_token_for_api_or_git)
-          .and_return(basic_auth_access_token_user)
-        allow(request_authenticator).to receive(:find_user_for_git_or_lfs_request).and_return(lfs_token_user)
+        allow(request_authenticator).to receive_messages(
+          find_user_from_dependency_proxy_token: dependency_proxy_user,
+          find_user_from_feed_token: feed_token_user,
+          find_user_from_static_object_token: static_object_token_user,
+          find_user_from_job_token: job_token_user,
+          find_user_from_personal_access_token_for_api_or_git: basic_auth_access_token_user,
+          find_user_for_git_or_lfs_request: lfs_token_user
+        )
 
         expect(request_authenticator.find_sessionless_user(:design)).to be_nil
       end
@@ -561,8 +559,10 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
     let_it_be(:user) { personal_access_token.user }
 
     before do
-      allow(request_authenticator).to receive(:has_basic_credentials?).and_return(true)
-      allow(request_authenticator).to receive(:user_name_and_password).and_return([user.username, personal_access_token.token])
+      allow(request_authenticator).to receive_messages(
+        has_basic_credentials?: true,
+        user_name_and_password: [user.username, personal_access_token.token]
+      )
     end
 
     context 'with API requests' do

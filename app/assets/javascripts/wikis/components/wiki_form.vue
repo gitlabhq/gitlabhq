@@ -22,7 +22,6 @@ import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -168,7 +167,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [trackingMixin, glFeatureFlagsMixin()],
+  mixins: [trackingMixin],
   inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'pageHeading', 'wikiUrl'],
   emits: ['is-editing'],
   saveOptions: [

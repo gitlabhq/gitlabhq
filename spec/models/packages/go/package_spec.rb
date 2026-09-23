@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Go::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Go::Package, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:golang_package) { build_stubbed(:golang_package) }

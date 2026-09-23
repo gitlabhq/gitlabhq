@@ -2,7 +2,6 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'ClickHouseHelpPopover',
@@ -11,7 +10,6 @@ export default {
     GlSprintf,
     HelpPopover,
   },
-  mixins: [glFeatureFlagsMixin()],
   clickHouseForAnalyticsHelpPagePath: helpPagePath('administration/analytics'),
 };
 </script>

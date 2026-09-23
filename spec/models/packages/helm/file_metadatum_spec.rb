@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Helm::FileMetadatum, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Helm::FileMetadatum, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to belong_to(:package_file) }
     it { is_expected.to belong_to(:project) }

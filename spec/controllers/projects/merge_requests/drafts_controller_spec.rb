@@ -37,6 +37,27 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect(json_response.first['author']['id']).to eq(user.id)
       expect(json_response.first['note_html']).not_to be_empty
     end
+
+    # Tracing itself is covered by the service spec; this only asserts the controller delegates to it.
+    it 'retraces draft note positions onto the merge_head diff before serializing' do
+      expect_next_instance_of(DraftNotes::TraceMergeHeadPositionService) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      get :index, params: params
+    end
+
+    context 'when the draft_note_merge_head_line_code feature flag is disabled' do
+      before do
+        stub_feature_flags(draft_note_merge_head_line_code: false)
+      end
+
+      it 'does not retrace draft note positions' do
+        expect(DraftNotes::TraceMergeHeadPositionService).not_to receive(:new)
+
+        get :index, params: params
+      end
+    end
   end
 
   describe 'POST #create' do

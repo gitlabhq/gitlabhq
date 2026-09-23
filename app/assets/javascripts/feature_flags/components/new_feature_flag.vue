@@ -2,7 +2,6 @@
 import { GlAlert } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
-import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import { ROLLOUT_STRATEGY_ALL_USERS } from '../constants';
 import FeatureFlagForm from './form.vue';
@@ -14,7 +13,6 @@ export default {
     FeatureFlagForm,
     GlAlert,
   },
-  mixins: [featureFlagsMixin()],
   computed: {
     ...mapState(['error', 'path']),
     strategies() {

@@ -18,7 +18,7 @@ include:
     - |
       bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE:-kind}" \
         --gitlab-domain "${GITLAB_DOMAIN}" \
-        --timeout "${DEPLOY_TIMEOUT:-5m}" \
+        --timeout "${DEPLOY_TIMEOUT:-10m}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --retry 1 \
@@ -249,7 +249,7 @@ cng-oauth:
     - |
       bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE:-kind}" \
         --gitlab-domain "${GITLAB_DOMAIN}" \
-        --timeout 5m \
+        --timeout 10m \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --retry 1 \

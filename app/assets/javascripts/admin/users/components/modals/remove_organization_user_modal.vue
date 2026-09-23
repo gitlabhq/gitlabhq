@@ -75,7 +75,9 @@ export default {
       } catch (error) {
         this.$refs.modal.hide();
         showToast(
-          s__('AdminUsers|An error occurred while removing the user from the organization.'),
+          s__(
+            'AdminUsers|An error occurred while removing the user from the organization. Please try again.',
+          ),
         );
         this.loading = false;
       }

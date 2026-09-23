@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ProjectPresenter do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user, freeze: false) { create(:user) }
+  let_it_be(:project, freeze: false) { create(:project) }
   let(:presenter) { described_class.new(project, current_user: user) }
 
   describe '#license_short_name' do
@@ -118,8 +118,8 @@ RSpec.describe ProjectPresenter do
     end
 
     context 'user signed in' do
-      let(:user) { create(:user, :readme) }
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:user, freeze: false) { create(:user, :readme) }
+      let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
 
       context 'when the user is allowed to see the code' do
         it 'returns the project view' do
@@ -130,8 +130,11 @@ RSpec.describe ProjectPresenter do
       end
 
       context 'with wikis enabled and the right policy for the user' do
-        before do
+        before_all do
           project.project_feature.update_attribute(:issues_access_level, 0)
+        end
+
+        before do
           allow(presenter).to receive(:can?).with(user, :read_code, project).and_return(false)
         end
 
@@ -282,7 +285,7 @@ RSpec.describe ProjectPresenter do
       end
 
       describe '#gitlab_ci_anchor_data' do
-        before do
+        before_all do
           project.update!(auto_devops_enabled: false)
         end
 
@@ -293,7 +296,7 @@ RSpec.describe ProjectPresenter do
         end
 
         context 'when user can collaborate' do
-          before do
+          before_all do
             project.add_developer(user)
           end
 
@@ -641,8 +644,11 @@ RSpec.describe ProjectPresenter do
       end
 
       context 'when user can admin pipeline and CI yml does not exist' do
-        before do
+        before_all do
           project.add_maintainer(user)
+        end
+
+        before do
           allow(project).to receive(:has_ci_config_file?).and_return(false)
         end
 
@@ -699,9 +705,11 @@ RSpec.describe ProjectPresenter do
 
     describe '#kubernetes_cluster_anchor_data' do
       context 'when user can create Kubernetes cluster' do
-        it 'returns link to cluster if only one exists' do
+        before_all do
           project.add_maintainer(user)
+        end
 
+        it 'returns link to cluster if only one exists' do
           cluster = create(:cluster, projects: [project])
 
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
@@ -713,8 +721,6 @@ RSpec.describe ProjectPresenter do
         end
 
         it 'returns link to clusters page if more than one exists' do
-          project.add_maintainer(user)
-
           create(:cluster, :production_environment, projects: [project])
           create(:cluster, projects: [project])
 
@@ -727,8 +733,6 @@ RSpec.describe ProjectPresenter do
         end
 
         it 'returns link to create a cluster if no cluster exists' do
-          project.add_maintainer(user)
-
           expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Add Kubernetes cluster'),
@@ -747,7 +751,7 @@ RSpec.describe ProjectPresenter do
 
     describe '#upload_anchor_data' do
       context 'when a user can push to the default branch' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -986,7 +990,7 @@ RSpec.describe ProjectPresenter do
     end
 
     context 'empty repo' do
-      let(:project) { create(:project, :stubbed_repository) }
+      let_it_be(:project, freeze: false) { create(:project, :stubbed_repository) }
 
       it 'includes a button to configure integrations for maintainers' do
         project.add_maintainer(user)
@@ -1008,7 +1012,7 @@ RSpec.describe ProjectPresenter do
       end
 
       context 'for a developer' do
-        before do
+        before_all do
           project.add_developer(user)
         end
 
@@ -1063,13 +1067,13 @@ RSpec.describe ProjectPresenter do
         end
 
         context 'and there is no cluster associated to this project' do
-          let(:project) { create(:project, clusters: []) }
+          let_it_be(:project, freeze: false) { create(:project, clusters: []) }
 
           it { is_expected.to be_truthy }
         end
 
         context 'and there is already a cluster associated to this project' do
-          let(:project) { create(:project, clusters: [create(:cluster)]) }
+          let_it_be(:project, freeze: false) { create(:project, clusters: [create(:cluster)]) }
 
           it { is_expected.to be_falsey }
         end
@@ -1079,7 +1083,7 @@ RSpec.describe ProjectPresenter do
           let_it_be(:group) { cluster.group }
 
           context 'and the project belongs to this group' do
-            let!(:project) { create(:project, group: group) }
+            let_it_be(:project, freeze: false) { create(:project, group: group) }
 
             it { is_expected.to be_falsey }
           end
@@ -1115,7 +1119,7 @@ RSpec.describe ProjectPresenter do
     let_it_be(:project, freeze: false) { create(:project, :repository) }
 
     context 'when review apps exist' do
-      let!(:environment) do
+      let_it_be(:environment) do
         create(:environment, :with_review_app, project: project)
       end
 
@@ -1123,7 +1127,7 @@ RSpec.describe ProjectPresenter do
     end
 
     context 'when review apps do not exist' do
-      let!(:environment) do
+      let_it_be(:environment) do
         create(:environment, project: project)
       end
 

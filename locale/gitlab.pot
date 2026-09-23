@@ -620,6 +620,9 @@ msgstr ""
 msgid "%{argument_name} must start with a number."
 msgstr ""
 
+msgid "%{attributes} can only be updated on resolved decisions"
+msgstr ""
+
 msgid "%{attributes} can't be blank"
 msgstr ""
 
@@ -7277,7 +7280,7 @@ msgstr ""
 msgid "AdminUsers|An error occurred while fetching this user's contributions, and the request cannot return the number of issues, merge requests, groups, and projects linked to this user. If you proceed with deleting the user, all their contributions will still be deleted."
 msgstr ""
 
-msgid "AdminUsers|An error occurred while removing the user from the organization."
+msgid "AdminUsers|An error occurred while removing the user from the organization. Please try again."
 msgstr ""
 
 msgid "AdminUsers|Approve"
@@ -8297,6 +8300,9 @@ msgstr ""
 msgid "AggregationEngine|access to filter '%{identifier}' is not authorized"
 msgstr ""
 
+msgid "AggregationEngine|access to metric '%{identifier}' is not authorized"
+msgstr ""
+
 msgid "AggregationEngine|at least one metric is required"
 msgstr ""
 
@@ -8304,6 +8310,9 @@ msgid "AggregationEngine|duplicated identifiers found: %{identifiers}"
 msgstr ""
 
 msgid "AggregationEngine|maximum size of %{max_size} exceeded for filter `%{key}`"
+msgstr ""
+
+msgid "AggregationEngine|metric '%{metric}' has no %{side} for the given parameters"
 msgstr ""
 
 msgid "AggregationEngine|metric '%{metric}' requires dimension '%{dimension}' to be requested"
@@ -12232,6 +12241,9 @@ msgid "Archived (%{movedToStart}moved%{movedToEnd})"
 msgstr ""
 
 msgid "Archived decisions cannot be deleted"
+msgstr ""
+
+msgid "Archived decisions cannot be updated"
 msgstr ""
 
 msgid "Archived in this version"
@@ -36726,6 +36738,9 @@ msgstr ""
 msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
+msgid "Failed to remove the user from groups or projects in the organization"
+msgstr ""
+
 msgid "Failed to remove timelog"
 msgstr ""
 
@@ -58475,7 +58490,7 @@ msgstr ""
 msgid "Organization|An error occurred while adding users to the organization. Please try again."
 msgstr ""
 
-msgid "Organization|An error occurred while leaving the organization."
+msgid "Organization|An error occurred while leaving the organization. Please try again."
 msgstr ""
 
 msgid "Organization|Are you sure you want to leave \"%{name}\"?"
@@ -96035,9 +96050,6 @@ msgid "You cannot modify security policy project for group designated as CSP."
 msgstr ""
 
 msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."
-msgstr ""
-
-msgid "You cannot remove a user from an organization while they are a member of groups or projects in the organization"
 msgstr ""
 
 msgid "You cannot rename an environment after it's created."

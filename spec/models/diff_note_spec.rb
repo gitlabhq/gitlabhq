@@ -14,6 +14,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
   end
 
   let_it_be(:path) { "files/ruby/popen.rb" }
+  let_it_be(:design_diff_note) { create(:diff_note_on_design) }
 
   let(:diff_refs) { merge_request.diff_refs }
   let!(:position) do
@@ -332,7 +333,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
     end
 
     context 'commit' do
-      let!(:diff_note) { create(:diff_note_on_commit, project: project) }
+      let_it_be_with_reload(:diff_note) { create(:diff_note_on_commit, project: project) }
 
       it 'creates a diff note file' do
         expect(diff_note.reload.note_diff_file).to be_present
@@ -397,8 +398,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
       end
 
       it 'does not enqueues CreateNoteDiffFileWorker if not first note of a discussion' do
-        mr = create(:merge_request)
-        diff_note = create(:diff_note_on_merge_request, project: mr.project, noteable: mr)
+        diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request)
         reply_diff_note = create(:diff_note_on_merge_request, in_reply_to: diff_note)
 
         expect(CreateNoteDiffFileWorker).not_to receive(:perform_async).with(reply_diff_note.id)
@@ -409,9 +409,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
 
     context 'when noteable is a Design' do
       it 'does not return a diff file' do
-        diff_note = create(:diff_note_on_design)
-
-        expect(diff_note.diff_file).to be_nil
+        expect(design_diff_note.diff_file).to be_nil
       end
     end
 
@@ -438,9 +436,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
   describe '#latest_diff_file' do
     context 'when noteable is a Design' do
       it 'does not return a diff file' do
-        diff_note = create(:diff_note_on_design)
-
-        expect(diff_note.latest_diff_file).to be_nil
+        expect(design_diff_note.latest_diff_file).to be_nil
       end
     end
 
@@ -537,7 +533,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
   end
 
   describe "#discussion_id" do
-    let(:note) { create(:diff_note_on_merge_request) }
+    let_it_be_with_reload(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
 
     context "when it is newly created" do
       it "has a discussion id" do
@@ -660,7 +656,7 @@ RSpec.describe DiffNote, feature_category: :code_review_workflow do
   end
 
   describe '#banzai_render_context' do
-    let(:note) { create(:diff_note_on_merge_request) }
+    let(:note) { build_stubbed(:diff_note_on_merge_request, project: project, noteable: merge_request) }
 
     it 'includes expected context' do
       context = note.banzai_render_context(:note)
