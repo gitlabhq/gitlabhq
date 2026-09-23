@@ -52,6 +52,8 @@ RSpec.describe 'Compare diffs stream', feature_category: :source_code_management
 
     include_examples 'diffs stream tests'
 
+    it_behaves_like 'diffs stream tests for anonymous users', ::Projects::CompareDiffsStreamController
+
     include_examples 'with diffs_blobs param'
 
     context 'when Gitaly is unavailable' do

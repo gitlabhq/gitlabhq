@@ -11,7 +11,6 @@ import ExternalLinksBlock from './external_links_block.vue';
 import JobsContainer from './jobs_container.vue';
 import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
 import JobSidebarDetailsContainer from './sidebar_job_details_container.vue';
-import SidebarHeader from './sidebar_header.vue';
 import StagesDropdown from './stages_dropdown.vue';
 import TriggerBlock from './trigger_block.vue';
 
@@ -24,7 +23,6 @@ export default {
     JobsContainer,
     JobRetryForwardDeploymentModal,
     JobSidebarDetailsContainer,
-    SidebarHeader,
     StagesDropdown,
     TriggerBlock,
     ExternalLinksBlock,
@@ -36,7 +34,6 @@ export default {
       default: '',
     },
   },
-  emits: ['update-variables'],
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
     ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
@@ -85,52 +82,38 @@ export default {
 };
 </script>
 <template>
-  <aside class="right-sidebar build-sidebar">
-    <div class="sidebar-container">
-      <div class="gl-p-4 gl-pt-0">
-        <sidebar-header
-          class="gl-py-4"
-          :rest-job="job"
-          :job-id="job.id"
-          @update-variables="$emit('update-variables')"
-        />
+  <aside class="build-sidebar">
+    <job-sidebar-details-container />
 
-        <job-sidebar-details-container />
+    <artifacts-block
+      v-if="hasArtifact"
+      class="build-sidebar-item"
+      :artifact="artifact"
+      :reports="reports"
+      :help-url="artifactHelpUrl"
+    />
 
-        <artifacts-block
-          v-if="hasArtifact"
-          class="build-sidebar-item"
-          :artifact="artifact"
-          :reports="reports"
-          :help-url="artifactHelpUrl"
-        />
+    <external-links-block
+      v-if="hasExternalLinks"
+      class="build-sidebar-item"
+      :external-links="externalLinks"
+    />
 
-        <external-links-block
-          v-if="hasExternalLinks"
-          class="build-sidebar-item"
-          :external-links="externalLinks"
-        />
+    <trigger-block v-if="hasTriggers" class="build-sidebar-item" :trigger="job.trigger" />
 
-        <trigger-block v-if="hasTriggers" class="build-sidebar-item" :trigger="job.trigger" />
+    <commit-block class="build-sidebar-item" :commit="commit" :merge-request="job.merge_request" />
 
-        <commit-block
-          class="build-sidebar-item"
-          :commit="commit"
-          :merge-request="job.merge_request"
-        />
+    <stages-dropdown
+      v-if="job.pipeline"
+      class="build-sidebar-item"
+      :pipeline="job.pipeline"
+      :selected-stage="selectedStage"
+      :stages="stages"
+      @request-sidebar-stage-dropdown="fetchJobsForStage"
+    />
 
-        <stages-dropdown
-          v-if="job.pipeline"
-          class="build-sidebar-item"
-          :pipeline="job.pipeline"
-          :selected-stage="selectedStage"
-          :stages="stages"
-          @request-sidebar-stage-dropdown="fetchJobsForStage"
-        />
+    <jobs-container v-if="jobs.length" :job-id="job.id" :jobs="jobs" />
 
-        <jobs-container v-if="jobs.length" :job-id="job.id" :jobs="jobs" />
-      </div>
-    </div>
     <job-retry-forward-deployment-modal
       v-if="shouldShowJobRetryForwardDeploymentModal"
       :modal-id="$options.forwardDeploymentFailureModalId"

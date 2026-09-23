@@ -71,7 +71,6 @@ describe('Sidebar Header', () => {
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findForceCancelButton = () => wrapper.findByTestId('force-cancel-button');
   const findEraseButton = () => wrapper.findByTestId('job-log-erase-link');
-  const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
   const findTerminalLink = () => wrapper.findByTestId('terminal-link');
   const findRetryButton = () => wrapper.findComponent(JobRetryButton);
 
@@ -81,7 +80,6 @@ describe('Sidebar Header', () => {
       expect(findCancelButton().exists()).toBe(false);
       expect(findEraseButton().exists()).toBe(false);
       expect(findRetryButton().exists()).toBe(false);
-      expect(findNewIssueButton().exists()).toBe(false);
       expect(findTerminalLink().exists()).toBe(false);
     });
 
@@ -98,11 +96,6 @@ describe('Sidebar Header', () => {
     it('renders an erase button with a path', async () => {
       await createComponentWithApollo({ restJob: { erase_path: 'erase/path' } });
       expect(findEraseButton().exists()).toBe(true);
-    });
-
-    it('should render link to new issue', async () => {
-      await createComponentWithApollo({ restJob: { new_issue_path: 'new/issue/path' } });
-      expect(findNewIssueButton().attributes('href')).toBe('new/issue/path');
     });
 
     it('should render terminal link', async () => {

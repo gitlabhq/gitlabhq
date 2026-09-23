@@ -26,6 +26,13 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
     sign_in(user)
   end
 
+  # Job actions render in the panel header actions portal, which is not visible
+  # in the test viewport, so click them via JS after locating them.
+  def click_panel_action(testid)
+    button = find_by_testid(testid, visible: :all)
+    execute_script("arguments[0].click()", button)
+  end
+
   describe "GET /:project/jobs" do
     context 'with no jobs' do
       before do
@@ -231,7 +238,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         end
 
         it 'shows New issue button' do
-          expect(page).to have_link('New issue')
+          expect(page).to have_css('[data-testid="job-new-issue"]', visible: :all)
         end
 
         it 'links to issues/new with the title and description filled in' do
@@ -241,9 +248,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
           href = new_project_issue_path(project, options)
 
-          page.within(find_by_testid('job-sidebar')) do
-            expect(find_by_testid('job-new-issue')['href']).to include(href)
-          end
+          expect(find_by_testid('job-new-issue', visible: :all)['href']).to include(href)
         end
       end
     end
@@ -259,7 +264,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
       context 'job is cancelable' do
         it 'shows cancel button' do
-          find_by_testid('cancel-button').click
+          click_panel_action('cancel-button')
 
           expect(page).to have_current_path(job_url, ignore_query: true)
         end
@@ -894,10 +899,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).to have_css('[data-testid="job-sidebar"].right-sidebar-collapsed', visible: :hidden)
-        expect(page).not_to have_css('[data-testid="job-sidebar"].right-sidebar-expanded', visible: :hidden)
-
-        expect(page).not_to have_css('[data-testid="job-sidebar"]', visible: :visible)
+        expect(page).not_to have_css('[data-testid="job-sidebar"]')
       end
     end
 
@@ -908,8 +910,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        expect(page).to have_css('[data-testid="job-sidebar"].right-sidebar-expanded')
-        expect(page).not_to have_css('[data-testid="job-sidebar"].right-sidebar-collapsed')
+        expect(page).to have_css('[data-testid="job-sidebar"]')
       end
     end
 
@@ -979,11 +980,11 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       before do
         job.run!
         visit project_job_path(project, job)
-        find_by_testid('cancel-button').click
+        click_panel_action('cancel-button')
       end
 
       it 'loads the page and shows all needed controls' do
-        expect(page).to have_selector('[data-testid="retry-button"')
+        expect(page).to have_selector('[data-testid="retry-button"]', visible: :all)
       end
     end
   end
@@ -996,12 +997,12 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        find_by_testid('retry-job-link').click
+        click_panel_action('retry-job-link')
       end
 
       it 'shows the right status and buttons' do
-        page.within('aside.right-sidebar') do
-          expect(page).to have_selector('[data-testid="cancel-button"')
+        page.within(find('.js-panel-actions-portal-target', visible: :all)) do
+          expect(page).to have_selector('[data-testid="cancel-button"]', visible: :all)
         end
       end
     end
@@ -1018,7 +1019,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       it 'does not show the Retry button' do
-        page.within('aside.right-sidebar') do
+        page.within(find('.js-panel-actions-portal-target', visible: :all)) do
           expect(page).not_to have_content 'Retry'
         end
       end
@@ -1031,7 +1032,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        find_by_testid('retry-job-button').click
+        click_panel_action('retry-job-button')
       end
 
       it 'shows a modal to warn the user' do

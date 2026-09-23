@@ -1,4 +1,6 @@
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import { createMockSubscription } from 'mock-apollo-client';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
@@ -7,16 +9,23 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
 import JobRunForm from '~/ci/job_details/components/job_run_form.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
 import JobApp from '~/ci/job_details/job_app.vue';
-import JobHeader from '~/ci/job_details/components/job_header.vue';
+import getJobQuery from '~/ci/job_details/graphql/queries/get_job.query.graphql';
+import jobCiStatusUpdatedSubscription from '~/ci/job_details/graphql/subscriptions/job_ci_status_updated.subscription.graphql';
 import JobLog from '~/ci/job_details/components/log/log.vue';
 import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import Sidebar from '~/ci/job_details/components/sidebar/sidebar.vue';
+import SidebarHeader from '~/ci/job_details/components/sidebar/sidebar_header.vue';
 import StuckBlock from '~/ci/job_details/components/stuck_block.vue';
 import UnmetPrerequisitesBlock from '~/ci/job_details/components/unmet_prerequisites_block.vue';
 import createStore from '~/ci/job_details/store';
@@ -24,9 +33,11 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { MANUAL_STATUS } from '~/ci/constants';
 import job from 'jest/ci/jobs_mock_data';
-import { mockPendingJobData } from './mock_data';
+import { mockPendingJobData, mockJobResponse } from './mock_data';
 
 jest.mock('~/panel_breakpoint_instance');
+
+Vue.use(VueApollo);
 
 describe('Job App', () => {
   Vue.use(Vuex);
@@ -35,6 +46,9 @@ describe('Job App', () => {
   let wrapper;
   let mock;
   let triggerResize;
+  let jobQueryHandler;
+  let subscriptionHandler;
+  let mockSubscription;
 
   const initSettings = {
     jobEndpoint: '/group1/project1/-/jobs/99.json',
@@ -50,12 +64,35 @@ describe('Job App', () => {
     projectPath: 'user-name/project-name',
   };
 
-  const createComponent = ({ abilities = {}, ...options } = {}) => {
+  const createComponent = ({
+    abilities = {},
+    stubs = {},
+    jobQueryResponse = mockJobResponse,
+    ...options
+  } = {}) => {
+    jobQueryHandler = jest.fn().mockResolvedValue(jobQueryResponse);
+    mockSubscription = createMockSubscription();
+    subscriptionHandler = jest.fn().mockReturnValue(mockSubscription);
+    const apolloProvider = createMockApollo([[getJobQuery, jobQueryHandler]]);
+    apolloProvider.defaultClient.setRequestHandler(
+      jobCiStatusUpdatedSubscription,
+      subscriptionHandler,
+    );
+
     wrapper = shallowMountExtended(JobApp, {
       propsData: { ...props },
       store,
+      apolloProvider,
       provide: {
         glAbilities: { troubleshootJobWithAi: false, ...abilities },
+        projectPath: 'user-name/project-name',
+      },
+      stubs: {
+        DetailLayout,
+        BaseLayout,
+        PageHeading,
+        PanelActionsPortal: { template: '<div><slot></slot></div>' },
+        ...stubs,
       },
       ...options,
     });
@@ -82,6 +119,7 @@ describe('Job App', () => {
 
   const findLoadingComponent = () => wrapper.findComponent(GlLoadingIcon);
   const findSidebar = () => wrapper.findComponent(Sidebar);
+  const findSidebarHeader = () => wrapper.findComponent(SidebarHeader);
   const findStuckBlockComponent = () => wrapper.findComponent(StuckBlock);
   const findFailedJobComponent = () => wrapper.findComponent(UnmetPrerequisitesBlock);
   const findEnvironmentsBlockComponent = () => wrapper.findComponent(EnvironmentsBlock);
@@ -90,9 +128,11 @@ describe('Job App', () => {
   const findJobForm = () => wrapper.findComponent(JobRunForm);
   const findJobLog = () => wrapper.findComponent(JobLog);
   const findJobLogTopBar = () => wrapper.findComponent(JobLogTopBar);
-  const findJobHeader = () => wrapper.findComponent(JobHeader);
+  const findJobName = () => wrapper.findByTestId('job-name');
+  const findCiIcon = () => wrapper.findComponent(CiIcon);
+  const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
 
-  const findJobContent = () => wrapper.findByTestId('job-content');
+  const findDetailLayout = () => wrapper.findComponent(DetailLayout);
   const findArchivedJob = () => wrapper.findByTestId('archived-job');
   const findStickyFooter = () => wrapper.findByTestId('rca-bar-component');
 
@@ -100,6 +140,8 @@ describe('Job App', () => {
     PanelBreakpointInstance.addResizeListener.mockImplementation((callback) => {
       triggerResize = callback;
     });
+    // Default to desktop so the sidebar stays open (rendered) after mount.
+    PanelBreakpointInstance.isDesktop.mockReturnValue(true);
     mock = new MockAdapter(axios);
     store = createStore();
   });
@@ -116,10 +158,10 @@ describe('Job App', () => {
       createComponent();
     });
 
-    it('renders loading icon', () => {
+    it('renders the layout in a loading state without the job log', () => {
       expect(findLoadingComponent().exists()).toBe(true);
-      expect(findSidebar().exists()).toBe(false);
-      expect(findJobContent().exists()).toBe(false);
+      expect(findDetailLayout().props('loading')).toBe(true);
+      expect(findJobLog().exists()).toBe(false);
     });
   });
 
@@ -232,16 +274,81 @@ describe('Job App', () => {
         });
       });
 
-      it('displays job header when job ID exists', async () => {
+      it('queries the job header data and renders the job name', async () => {
         await setupAndMount();
+        await waitForPromises();
 
-        expect(findJobHeader().exists()).toBe(true);
+        expect(jobQueryHandler).toHaveBeenCalledWith({
+          fullPath: 'user-name/project-name',
+          id: `gid://gitlab/Ci::Build/${job.id}`,
+        });
+        expect(findJobName().text()).toContain(mockJobResponse.data.project.job.name);
       });
 
-      it('does not display job header when job ID is missing', async () => {
-        await setupAndMount({ jobData: { id: 0 } });
+      it('renders the job name inside the page heading (h1)', async () => {
+        await setupAndMount();
+        await waitForPromises();
 
-        expect(findJobHeader().exists()).toBe(false);
+        const heading = wrapper.findByTestId('page-heading');
+
+        expect(heading.element.tagName).toBe('H1');
+        expect(heading.find('[data-testid="job-name"]').exists()).toBe(true);
+      });
+
+      it('does not render the job name when the header query returns no job', async () => {
+        const emptyResponse = {
+          data: { project: { ...mockJobResponse.data.project, job: null } },
+        };
+
+        await setupAndMount({ jobQueryResponse: emptyResponse });
+        await waitForPromises();
+
+        expect(findJobName().exists()).toBe(false);
+      });
+
+      it('renders the new issue button in the panel header actions', async () => {
+        await setupAndMount({ jobData: { new_issue_path: 'new/issue/path' } });
+        await waitForPromises();
+
+        expect(findNewIssueButton().attributes('href')).toBe('new/issue/path');
+      });
+
+      it('does not render the new issue button without a new issue path', async () => {
+        await setupAndMount({ jobData: { new_issue_path: null } });
+        await waitForPromises();
+
+        expect(findNewIssueButton().exists()).toBe(false);
+      });
+    });
+
+    describe('real time updates', () => {
+      it('updates the job status from the subscription', async () => {
+        await setupAndMount();
+        await waitForPromises();
+
+        expect(findCiIcon().props('status')).toMatchObject({ text: 'Passed' });
+
+        mockSubscription.next({
+          data: {
+            ciJobStatusUpdated: {
+              id: 'gid://gitlab/Ci::Build/389',
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                detailsPath: '/root/ci-project/-/jobs/389',
+                icon: 'status_running',
+                id: 'running-389-389',
+                text: 'Running',
+              },
+            },
+          },
+        });
+
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledWith({
+          jobId: `gid://gitlab/Ci::Build/${job.id}`,
+        });
+        expect(findCiIcon().props('status')).toMatchObject({ text: 'Running' });
       });
     });
 
@@ -434,7 +541,7 @@ describe('Job App', () => {
         });
       });
 
-      it('renders job form block when sidebar emits update variables', async () => {
+      it('renders job form block when the sidebar header emits update variables', async () => {
         await setupAndMount({
           jobData: {
             has_trace: false,
@@ -458,7 +565,7 @@ describe('Job App', () => {
             },
           },
         });
-        findSidebar().vm.$emit('update-variables');
+        findSidebarHeader().vm.$emit('update-variables');
         await nextTick();
         expect(findJobForm().exists()).toBe(true);
       });

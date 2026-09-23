@@ -38,55 +38,32 @@
   }
 }
 
-.right-sidebar.build-sidebar {
-  padding: 0;
-  top: calc($calc-application-header-height + 0.25rem); // Offset used for alignment with the panel header
-
-  @include gl-container-width-up(lg, panel) {
-    border-left-width: 0;
+// stylelint-disable-next-line gitlab/no-gl-class
+.gl-detail-layout-container-has-sidebar {
+  // stylelint-disable-next-line gitlab/no-gl-class
+ .gl-detail-layout-content {
+  @include gl-container-width-down(lg, panel) {
+    grid-column: 1 / -1;
   }
+ }
 
-  &.right-sidebar-collapsed {
-    display: none;
-  }
-
-  .sidebar-container {
-    max-height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .trigger-build-value {
-    padding: 2px 4px;
-    color: var(--black, $black);
-  }
-
-  .blocks-container {
-    width: 289px;
-  }
-
-  .builds-container {
-    overflow: auto;
-
-    .icon-arrow-right {
-      @apply gl-top-3;
-      @apply gl-left-3;
-    }
-
-    .build-job {
-      &.retried {
-        @apply gl-bg-subtle;
-      }
-
-      &:hover {
-        @apply gl-bg-strong;
-      }
-
-      a:focus-visible {
-        @apply gl-relative;
-        @apply gl-z-2;
-      }
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-detail-layout-sidebar {
+    @include gl-container-width-down(lg, panel) {
+      @apply gl-z-9999;
+      @apply gl-fixed;
+      @apply gl-top-1;
+      @apply gl-right-0;
+      @apply gl-px-5;
+      @apply gl-py-3;
+      @apply gl-bg-default;
+      @apply gl-rounded-l-lg;
+      @apply gl-shadow-md;
+      @apply gl-overflow-y-auto;
+      width: $right-sidebar-width;
+      // stylelint-disable-next-line value-no-vendor-prefix
+      height: -webkit-fill-available;
+      height: stretch;
     }
   }
 }
@@ -94,6 +71,26 @@
 .build-sidebar {
   .container-fluid.container-limited {
     max-width: 100%;
+  }
+
+  .icon-arrow-right {
+    @apply gl-top-3;
+    @apply gl-left-3;
+  }
+
+  .build-job {
+    &.retried {
+      @apply gl-bg-subtle;
+    }
+
+    &:hover {
+      @apply gl-bg-strong;
+    }
+
+    a:focus-visible {
+      @apply gl-relative;
+      @apply gl-z-2;
+    }
   }
 }
 
@@ -104,16 +101,6 @@
   &:not(:first-child) {
     @apply gl-border-t;
     @apply gl-border-subtle;
-  }
-}
-
-.with-job-sidebar-expanded {
-  padding-right: 0;
-}
-
-@include gl-container-width-up(lg, panel) {
-  .with-job-sidebar-expanded {
-    padding-right: $right-sidebar-width;
   }
 }
 

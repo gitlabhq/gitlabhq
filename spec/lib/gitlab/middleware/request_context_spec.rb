@@ -62,5 +62,14 @@ RSpec.describe Gitlab::Middleware::RequestContext, feature_category: :applicatio
         end
       end
     end
+
+    context 'setting the user agent' do
+      let(:user_agent) { 'GitLabMobile/1.2.0 (iOS 26.0.1; build 45)' }
+      let(:env) { Rack::MockRequest.env_for("/").merge('HTTP_USER_AGENT' => user_agent) }
+
+      it 'sets the `user_agent`' do
+        expect { subject }.to change { instance.user_agent }.from(nil).to(user_agent)
+      end
+    end
   end
 end

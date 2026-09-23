@@ -182,6 +182,21 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       end
     end
 
+    context 'when the visitor is signed out' do
+      let_it_be(:project) { create(:project, :public, :repository) }
+      let_it_be(:merge_request) do
+        create(
+          :merge_request_with_diffs,
+          source_branch: 'expand-collapse-files',
+          target_branch: 'master',
+          target_project: project,
+          source_project: project
+        )
+      end
+
+      it_behaves_like 'diffs stream tests for anonymous users', ::Projects::MergeRequests::DiffsStreamController
+    end
+
     context 'when an exception occurs' do
       before do
         allow(::RapidDiffs::DiffFileComponent)

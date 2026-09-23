@@ -29,7 +29,10 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
     # scroll to the top of the page first
     execute_script "window.scrollTo(0,0)"
     accept_gl_confirm(button_text: 'Erase job log') do
-      find_by_testid('job-log-erase-link').click
+      # The erase action renders in the panel header actions portal, which is not
+      # visible in the test viewport, so click it via JS after locating it.
+      erase_button = find_by_testid('job-log-erase-link', visible: :all)
+      execute_script("arguments[0].click()", erase_button)
     end
 
     wait_for_requests

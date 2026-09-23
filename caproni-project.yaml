@@ -35,7 +35,7 @@ reloaders:
         read_only:
           - "^/etc/gitlab/.*"
         mapping:
-          "^(?<path>/(?:Users|home)/.*/gitlab/config/)gitlab.yml": "${path}/gitlab-sidekiq.yml"
+          "^(?<path>/.*/config/)gitlab.yml": "${path}/gitlab-sidekiq.yml"
       edit_mode_processes:
         sidekiq:
           # mirrord copies prometheus_multiproc_dir=/metrics from the pod env,

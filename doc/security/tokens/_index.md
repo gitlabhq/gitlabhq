@@ -408,22 +408,20 @@ This table shows default scopes per token. For some tokens, you can limit scopes
 | Personal access token       | {{< yes >}}             | {{< yes >}}             | {{< yes >}}       |
 | OAuth 2.0 token             | {{< yes >}}             | {{< no >}}              | {{< yes >}}       |
 | Impersonation token         | {{< yes >}}             | {{< yes >}}             | {{< yes >}}       |
-| Project access token        | {{< yes >}}<sup>1</sup> | {{< yes >}}<sup>1</sup> | {{< yes >}}<sup>1</sup> |
-| Group access token          | {{< yes >}}<sup>2</sup> | {{< yes >}}<sup>2</sup> | {{< yes >}}<sup>2</sup> |
+| Project access token        | {{< yes >}}[^limited-one-project] | {{< yes >}}[^limited-one-project] | {{< yes >}}[^limited-one-project] |
+| Group access token          | {{< yes >}}[^limited-one-group] | {{< yes >}}[^limited-one-group] | {{< yes >}}[^limited-one-group] |
 | Deploy token                | {{< no >}}              | {{< yes >}}             | {{< yes >}}       |
 | Deploy key                  | {{< no >}}              | {{< no >}}              | {{< yes >}}       |
-| Runner registration token   | {{< no >}}              | {{< no >}}              | Limited<sup>3</sup> |
-| Runner authentication token | {{< no >}}              | {{< no >}}              | Limited<sup>3</sup> |
-| Job token                   | Limited<sup>4</sup>     | {{< no >}}              | {{< yes >}}       |
+| Runner registration token   | {{< no >}}              | {{< no >}}              | Limited[^runner-registration-authentication] |
+| Runner authentication token | {{< no >}}              | {{< no >}}              | Limited[^runner-registration-authentication] |
+| Job token                   | Limited[^certain-endpoints]     | {{< no >}}              | {{< yes >}}       |
 
-**Footnotes**:
-
-1. Limited to the one project.
-1. Limited to the one group.
-1. Runner registration and authentication tokens don't provide direct access
-   to repositories, but can be used to register and authenticate new runners
-   that can execute jobs which do have access to repositories.
-1. Only [certain endpoints](../../ci/jobs/ci_job_token.md).
+[^limited-one-project]: Limited to the one project.
+[^limited-one-group]: Limited to the one group.
+[^runner-registration-authentication]: Runner registration and authentication tokens don't provide direct access
+    to repositories, but can be used to register and authenticate new runners
+    that can execute jobs which do have access to repositories.
+[^certain-endpoints]: Only [certain endpoints](../../ci/jobs/ci_job_token.md).
 
 ## Token prefixes
 

@@ -32,6 +32,7 @@ module Gitlab
             property: property,
             value: value,
             context: context,
+            subject: request_subject,
             tstamp: (Time.now.to_f * 1000).to_i
           )
           increment_total_events_counter
@@ -111,6 +112,18 @@ module Gitlab
             namespace: SNOWPLOW_NAMESPACE,
             app_id: app_id
           )
+        end
+
+        # Attributes the event to the client that made the current request, as
+        # frontend events already are through the browser: the subject's `ua`
+        # is the event's `useragent` once processed. Outside a request (Sidekiq)
+        # there is no user agent and the tracker's default subject stands.
+        # The header is client-controlled and Snowplow caps `useragent`, so it is sanitised first.
+        def request_subject
+          user_agent = Gitlab::Audit::Sanitizer.sanitize_user_agent(Gitlab::RequestContext.instance.user_agent)
+          return if user_agent.blank?
+
+          SnowplowTracker::Subject.new.set_useragent(user_agent)
         end
 
         def emitter

@@ -9,10 +9,13 @@ RSpec.describe Gitlab::RequestContext, :request_store, feature_category: :applic
     allow(subject).to receive(:enabled?).and_return(true)
   end
 
-  it { is_expected.to have_attributes(client_ip: nil, start_thread_cpu_time: nil, request_start_time: nil) }
+  it 'starts with nothing recorded' do
+    is_expected.to have_attributes(client_ip: nil, user_agent: nil, start_thread_cpu_time: nil, request_start_time: nil)
+  end
 
   describe '.start_request_context' do
-    let(:request) { ActionDispatch::Request.new({ 'REMOTE_ADDR' => '1.2.3.4' }) }
+    let(:user_agent) { 'GitLabMobile/1.2.0 (iOS 26.0.1; build 45)' }
+    let(:request) { ActionDispatch::Request.new({ 'REMOTE_ADDR' => '1.2.3.4', 'HTTP_USER_AGENT' => user_agent }) }
     let(:start_request_context) { described_class.start_request_context(request: request) }
 
     before do
@@ -21,6 +24,10 @@ RSpec.describe Gitlab::RequestContext, :request_store, feature_category: :applic
 
     it 'sets the client IP' do
       expect { start_request_context }.to change { subject.client_ip }.from(nil).to('1.2.3.4')
+    end
+
+    it 'sets the user agent' do
+      expect { start_request_context }.to change { subject.user_agent }.from(nil).to(user_agent)
     end
 
     it 'sets the spam params' do

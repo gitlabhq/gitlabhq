@@ -1,6 +1,6 @@
 ---
-source_checksum: a03187fdcb79118a
-distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
+source_checksum: 2d2b9d36c77ddb9f
+distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -9,6 +9,10 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 # Database Principles
 
 ## Checklist
+
+### Schema Location
+
+- The database schema is stored as SQL in `db/structure.sql` (there is no `db/schema.rb`); grep it for table definitions and column constraints.
 
 ### Indexes
 

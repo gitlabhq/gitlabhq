@@ -5,7 +5,6 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlModalDirective,
-  GlTooltipDirective,
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
@@ -28,7 +27,6 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
-    GlTooltip: GlTooltipDirective,
   },
   inject: ['canSetPipelineVariables'],
   props: {
@@ -104,40 +102,37 @@ export default {
     <gl-button
       v-if="hasForwardDeploymentFailure"
       v-gl-modal="modalId"
-      v-gl-tooltip.bottom
-      :title="retryButtonTitle"
       :aria-label="retryButtonTitle"
       category="primary"
       variant="confirm"
-      icon="retry"
       data-testid="retry-job-button"
-    />
+    >
+      {{ retryButtonTitle }}
+    </gl-button>
 
     <gl-button
       v-else-if="isManualJob"
-      v-gl-tooltip.bottom
-      :title="retryButtonTitle"
       :aria-label="retryButtonTitle"
       category="primary"
       variant="confirm"
-      icon="retry"
       data-testid="manual-run-again-btn"
       :loading="isLoading"
       @click="retryManualJob"
-    />
+    >
+      {{ retryButtonTitle }}
+    </gl-button>
 
     <gl-button
       v-else
-      v-gl-tooltip.bottom
       :href="href"
-      :title="retryButtonTitle"
       :aria-label="retryButtonTitle"
       category="primary"
       variant="confirm"
-      icon="retry"
       data-method="post"
       data-testid="retry-job-link"
-    />
+    >
+      {{ retryButtonTitle }}
+    </gl-button>
 
     <gl-disclosure-dropdown
       v-if="showRetryWithModifiedValues"

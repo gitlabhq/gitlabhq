@@ -995,6 +995,19 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe '#downstream_project=' do
+    let(:bridge) { create(:ci_bridge, options: { trigger: { project: 'my/project' } }) }
+    let(:other_project) { build_stubbed(:project) }
+
+    it 'replaces the memoized downstream project' do
+      expect(bridge.downstream_project).to be_nil
+
+      bridge.downstream_project = other_project
+
+      expect(bridge.downstream_project).to equal(other_project)
+    end
+  end
+
   describe '#downstream_project_path' do
     context 'when trigger is defined' do
       context 'when using variable expansion' do

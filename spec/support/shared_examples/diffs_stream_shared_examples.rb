@@ -56,3 +56,29 @@ RSpec.shared_examples 'diffs stream tests' do
     end
   end
 end
+
+RSpec.shared_examples 'diffs stream tests for anonymous users' do |controller_class|
+  before do
+    sign_out(user)
+
+    allow_next_instance_of(controller_class) do |controller|
+      allow(controller).to receive(:stream_diff_files).and_wrap_original do |method, *args|
+        # ReleaseEnv is mounted in config.ru, which request specs never boot, so drop
+        # Warden by hand to stand in for the env the committed response no longer owns.
+        controller.request.env.delete('warden')
+
+        method.call(*args)
+      end
+    end
+  end
+
+  it 'streams every diff file', :aggregate_failures do
+    go
+
+    expect(response.body).not_to include('streaming-error')
+
+    diff_files.each do |diff_file|
+      expect(response.body).to include(diff_file.new_path)
+    end
+  end
+end

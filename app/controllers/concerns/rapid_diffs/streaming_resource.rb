@@ -5,6 +5,13 @@ module RapidDiffs
     extend ActiveSupport::Concern
     include ActionController::Live
     include DiffHelper
+    include Gitlab::Utils::StrongMemoize
+
+    included do
+      # Warden lives in the Rack env, which the response stops owning once it is
+      # committed, so the user has to be resolved before anything is streamed.
+      before_action :current_user, only: :diffs_stream
+    end
 
     def diffs_stream
       stream_headers
@@ -28,6 +35,11 @@ module RapidDiffs
     ensure
       response.stream.close unless response.stream.closed?
     end
+
+    def current_user # rubocop:disable Lint/UselessMethodDefinition -- memoized below; Devise skips anonymous users
+      super
+    end
+    strong_memoize_attr :current_user
 
     def request
       # We only need to do this in rapid diffs streaming endpoints

@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
           expect(tracker)
             .to have_received(:track_struct_event)
                   .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5,
-                    context: nil, tstamp: (Time.now.to_f * 1000).to_i)
+                    context: nil, subject: nil, tstamp: (Time.now.to_f * 1000).to_i)
         end
 
         it 'increase total snowplow events counter' do
@@ -90,6 +90,40 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
                                        .and_return(counter)
 
           subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+        end
+
+        context 'when the current request carries a User-Agent', :request_store do
+          let(:user_agent) { 'GitLabMobile/1.2.0 (iOS 26.0.1; build 45)' }
+
+          before do
+            Gitlab::RequestContext.instance.user_agent = user_agent
+          end
+
+          it 'attributes the event to that client' do
+            subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+            expect(tracker)
+              .to have_received(:track_struct_event)
+                    .with(hash_including(
+                      subject: an_object_having_attributes(details: hash_including('ua' => user_agent))
+                    ))
+          end
+
+          context 'when the User-Agent is oversized and contains control characters' do
+            let(:user_agent) { "GitLabMobile/1.2.0\u0000 #{'x' * 300}" }
+
+            it 'sends the sanitised value' do
+              subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+              expect(tracker)
+                .to have_received(:track_struct_event)
+                      .with(hash_including(
+                        subject: an_object_having_attributes(
+                          details: hash_including('ua' => "GitLabMobile/1.2.0 #{'x' * 231}")
+                        )
+                      ))
+            end
+          end
         end
       end
 

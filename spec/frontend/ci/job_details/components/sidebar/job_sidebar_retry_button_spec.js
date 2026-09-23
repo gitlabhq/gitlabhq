@@ -74,8 +74,8 @@ describe('Job Sidebar Retry Button', () => {
       expect(findRetryButton().attributes()).toMatchObject({
         category: 'primary',
         variant: 'confirm',
-        icon: 'retry',
       });
+      expect(findRetryButton().text()).toBe('Retry');
     });
   });
 
@@ -86,8 +86,8 @@ describe('Job Sidebar Retry Button', () => {
       expect(findRetryLink().attributes()).toMatchObject({
         'data-method': 'post',
         href: job.retry_path,
-        icon: 'retry',
       });
+      expect(findRetryLink().text()).toBe('Retry');
     });
   });
 

@@ -37,6 +37,8 @@ RSpec.describe 'Commit diffs stream', feature_category: :source_code_management 
 
     include_examples 'diffs stream tests'
 
+    it_behaves_like 'diffs stream tests for anonymous users', ::Projects::CommitDiffsStreamController
+
     include_examples 'with diffs_blobs param'
 
     context 'with environment' do

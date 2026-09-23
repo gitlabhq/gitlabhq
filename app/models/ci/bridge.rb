@@ -126,6 +126,11 @@ module Ci
       end
     end
 
+    def downstream_project=(project)
+      clear_memoization(:downstream_project)
+      strong_memoize(:downstream_project) { project }
+    end
+
     def downstream_project_path
       strong_memoize(:downstream_project_path) do
         project = options&.dig(:trigger, :project)

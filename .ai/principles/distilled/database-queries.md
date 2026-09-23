@@ -1,6 +1,6 @@
 ---
-source_checksum: ea7286f7dbe0db17
-distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
+source_checksum: ba3af85eae0fea45
+distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -98,6 +98,10 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ### Partitioned Tables
 
 - Leverage partition pruning wherever possible when querying partitioned tables to minimize LWLock contention
+
+### Agent Session Environment
+
+- Duo agent sessions have no PostgreSQL server or `config/database.yml`, so RSpec cannot run locally; verify by reading code and rely on CI to run tests.
 
 ### Query Plan Analysis
 

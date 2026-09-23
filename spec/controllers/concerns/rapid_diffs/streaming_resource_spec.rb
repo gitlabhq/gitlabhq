@@ -41,6 +41,40 @@ RSpec.describe RapidDiffs::StreamingResource, feature_category: :source_code_man
     end
   end
 
+  describe '#current_user' do
+    let(:controller_instance) { controller.new }
+    let(:user) { nil }
+    let(:warden) { instance_double(Warden::Proxy, authenticate: user) }
+
+    before do
+      allow(controller_instance).to receive_messages(warden: warden, session: {})
+    end
+
+    it 'resolves the user through Warden while nothing is memoized' do
+      expect(controller_instance.current_user).to be_nil
+      expect(warden).to have_received(:authenticate)
+    end
+
+    context 'when the user was resolved before streaming started' do
+      before do
+        controller_instance.current_user
+        allow(controller_instance).to receive(:warden).and_raise(Devise::MissingWarden)
+      end
+
+      it 'reuses the anonymous user' do
+        expect(controller_instance.current_user).to be_nil
+      end
+
+      context 'with a signed in user' do
+        let(:user) { build_stubbed(:user) }
+
+        it 'reuses the signed in user' do
+          expect(controller_instance.current_user).to eq(user)
+        end
+      end
+    end
+  end
+
   describe '#environment' do
     let(:controller_instance) { controller.new }
 

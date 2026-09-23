@@ -200,10 +200,9 @@
   @apply gl-border;
   @apply gl-border-section;
   @apply gl-text-default;
-  @apply gl-mt-5;
   z-index: 2;
   position: sticky;
-  top: calc(var(--gl-spacing-scale-2) - 1px); // Offsets the visual border
+  top: 32px;
   @apply gl-rounded-t-lg;
 
   &.is-stuck {

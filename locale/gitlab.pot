@@ -12448,11 +12448,26 @@ msgid_plural "ArtifactRegistry|%d referrers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ArtifactRegistry|%d repository loaded."
+msgid_plural "ArtifactRegistry|%d repositories loaded."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ArtifactRegistry|%d repository matches."
+msgid_plural "ArtifactRegistry|%d repositories match."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|%{artifactType} for %{digest}"
 msgstr ""
 
 msgid "ArtifactRegistry|%{count} of %{cap}"
 msgstr ""
+
+msgid "ArtifactRegistry|%{count} repository selected. The list will hold %{total} of %{cap}."
+msgid_plural "ArtifactRegistry|%{count} repositories selected. The list will hold %{total} of %{cap}."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ArtifactRegistry|%{date} by %{user}"
 msgstr ""
@@ -12482,6 +12497,9 @@ msgid "ArtifactRegistry|%{verdict}. Last verified: not yet checked"
 msgstr ""
 
 msgid "ArtifactRegistry|+%{count} more"
+msgstr ""
+
+msgid "ArtifactRegistry|0 loaded repositories match. Keep scrolling to load and search more."
 msgstr ""
 
 msgid "ArtifactRegistry|A hosted repository directly hosts artifacts. You can publish artifacts to and pull them from a hosted repository."
@@ -12842,6 +12860,9 @@ msgstr ""
 msgid "ArtifactRegistry|Failed to connect. Check the URL and credentials."
 msgstr ""
 
+msgid "ArtifactRegistry|Failed to load repositories."
+msgstr ""
+
 msgid "ArtifactRegistry|Failed to load upstream repositories."
 msgstr ""
 
@@ -12998,6 +13019,9 @@ msgstr ""
 msgid "ArtifactRegistry|Maven (settings.xml):"
 msgstr ""
 
+msgid "ArtifactRegistry|Maximum number of upstream repositories reached."
+msgstr ""
+
 msgid "ArtifactRegistry|Media type: %{mediaType}"
 msgstr ""
 
@@ -13057,6 +13081,9 @@ msgstr ""
 msgid "ArtifactRegistry|New virtual repository"
 msgstr ""
 
+msgid "ArtifactRegistry|No %{format} repositories are available to add. Create a hosted or remote repository first."
+msgstr ""
+
 msgid "ArtifactRegistry|No connection information available."
 msgstr ""
 
@@ -13072,10 +13099,13 @@ msgstr ""
 msgid "ArtifactRegistry|No repositories added to this virtual repository yet"
 msgstr ""
 
-msgid "ArtifactRegistry|No repositories added yet. Select %{addLabel} to add a source."
+msgid "ArtifactRegistry|No repositories added yet. Select Add repository to add a source."
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories match your filters."
+msgstr ""
+
+msgid "ArtifactRegistry|No repositories match your search."
 msgstr ""
 
 msgid "ArtifactRegistry|No versions found for %{name}."
@@ -13229,6 +13259,11 @@ msgstr ""
 msgid "ArtifactRegistry|Remote repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Remove %{count} repository from the selection to stay within the maximum of %{cap}."
+msgid_plural "ArtifactRegistry|Remove %{count} repositories from the selection to stay within the maximum of %{cap}."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|Remove %{name}"
 msgstr ""
 
@@ -13298,6 +13333,9 @@ msgid "ArtifactRegistry|SLSA attestation"
 msgstr ""
 
 msgid "ArtifactRegistry|SLSA attestation for %{digest}"
+msgstr ""
+
+msgid "ArtifactRegistry|Search by name or URL"
 msgstr ""
 
 msgid "ArtifactRegistry|Set up Artifact registry"
@@ -47192,7 +47230,7 @@ msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Job|An error occurred while fetching the job header data."
+msgid "Job|An error occurred while fetching the job status."
 msgstr ""
 
 msgid "Job|An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again."
@@ -70969,6 +71007,9 @@ msgid "ScanProfiles|All"
 msgstr ""
 
 msgid "ScanProfiles|All vulnerabilities"
+msgstr ""
+
+msgid "ScanProfiles|Analyzer settings for %{trigger}"
 msgstr ""
 
 msgid "ScanProfiles|Apply profile"
