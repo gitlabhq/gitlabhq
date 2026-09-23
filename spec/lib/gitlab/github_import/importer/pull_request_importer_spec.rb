@@ -317,7 +317,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
     context 'when user mapping is disabled' do
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       end
 
       context 'when author and assignee are found' do

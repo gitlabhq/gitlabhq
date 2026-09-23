@@ -475,7 +475,11 @@ export default {
           :toggle-text="$options.i18n.optionsDropdownTitle"
           text-sr-only
         >
-          <gl-disclosure-dropdown-item ref="viewButton" :item="viewFileDropdownItem" />
+          <gl-disclosure-dropdown-item
+            v-if="diffFile.view_path"
+            ref="viewButton"
+            :item="viewFileDropdownItem"
+          />
           <template v-if="showEditButton">
             <gl-disclosure-dropdown-item
               v-if="diffFile.edit_path && (diffFile.can_modify_blob || canCurrentUserFork)"

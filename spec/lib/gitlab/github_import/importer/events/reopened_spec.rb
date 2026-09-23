@@ -164,7 +164,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reopened, :clean_gitlab_r
     end
 
     before do
-      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+      project.build_or_assign_import_data(data: {}).save!
+      allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
         allow(finder).to receive(:find).with(1000, 'github_author').and_return(user.id)
       end

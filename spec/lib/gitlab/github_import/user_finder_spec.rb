@@ -22,9 +22,11 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   subject(:finder) { described_class.new(project, client) }
 
   before do
-    project.build_or_assign_import_data(data: {
-      user_contribution_mapping_enabled: user_mapping_enabled
-    })
+    project.build_or_assign_import_data(data: {})
+    # Since gitlab-org/gitlab#628379, ProjectImportData#user_mapping_enabled?
+    # no longer reads the stored data blob; stub the accessor directly so
+    # tests can exercise both the mapping-enabled and legacy branches.
+    allow(project.import_data).to receive(:user_mapping_enabled?).and_return(user_mapping_enabled)
   end
 
   describe '#author_id_for' do

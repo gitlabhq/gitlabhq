@@ -130,17 +130,22 @@ describe('diff_file utilities', () => {
       expect(preppedFile).not.toHaveProp('id');
     });
 
-    it('does not set the id property if the file is missing a `blob.id`', () => {
-      const fileMissingContentSha = { ...files[0] };
-
-      delete fileMissingContentSha.blob.id;
-
+    it('still sets the id property if the file is missing a `blob.id`', () => {
+      // A blob that can't be resolved arrives with no id. Leaving the file
+      // unkeyed makes the diffs virtual scroller throw and blank the whole list.
       const preppedFile = prepareRawDiffFile({
-        file: fileMissingContentSha,
+        file: { ...files[0], blob: {} },
         allFiles: files,
       });
 
-      expect(preppedFile).not.toHaveProp('id');
+      expect(preppedFile.id).toEqual(expect.any(String));
+    });
+
+    it('gives two files missing a `blob.id` different ids', () => {
+      const first = prepareRawDiffFile({ file: { ...files[0], blob: {} }, allFiles: files });
+      const second = prepareRawDiffFile({ file: { ...files[1], blob: {} }, allFiles: files });
+
+      expect(first.id).not.toBe(second.id);
     });
 
     it('does not set the id property if the file is missing a `load_collapsed_diff_url` property', () => {

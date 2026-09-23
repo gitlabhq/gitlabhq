@@ -6,7 +6,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
   let_it_be(:user) { create(:user) }
   let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:project, freeze: false) { create(:project, group: group) }
-  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
@@ -53,6 +53,11 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
       end
 
       allow(pipeline).to receive(:set_source_objects_counter)
+
+      # These specs assert against the legacy user-resolution path where the
+      # importing user becomes the author. They predate contribution mapping
+      # being always-on and would otherwise exercise SourceUsersMapper end-to-end.
+      allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
 
       pipeline.run
     end

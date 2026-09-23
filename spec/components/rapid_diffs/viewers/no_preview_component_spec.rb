@@ -379,6 +379,21 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
     end
   end
 
+  describe 'when the file path contains traversal segments' do
+    before do
+      allow(diff_file).to receive_messages(
+        diffable_text?: true, collapsed?: true, too_large?: true, path_traversal?: true
+      )
+    end
+
+    it 'emits no blob URL for either side' do
+      render_component
+
+      expect(page).not_to have_link("View original file")
+      expect(page).not_to have_link("View changed file")
+    end
+  end
+
   def render_component
     render_inline(instance)
   end

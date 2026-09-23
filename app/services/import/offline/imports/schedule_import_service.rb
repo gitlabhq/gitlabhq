@@ -23,7 +23,6 @@ module Import
           create_entities(bulk_import)
           cache_source_ghost_user_id
 
-          ::Import::BulkImports::EphemeralData.new(bulk_import.id).enable_importer_user_mapping
           BulkImportWorker.perform_async(bulk_import.id)
 
           ServiceResponse.success

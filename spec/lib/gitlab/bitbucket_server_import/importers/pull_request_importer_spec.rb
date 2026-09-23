@@ -197,7 +197,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       let_it_be(:reviewer_2) { create(:user, username: 'jane_doe', email: 'jane@doe.com') }
 
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       end
 
       it 'annotates the description with the source username when no matching user is found' do

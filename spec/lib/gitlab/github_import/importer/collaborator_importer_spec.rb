@@ -86,7 +86,8 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
 
       context 'when user contribution mapping is disabled' do
         before do
-          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+          project.build_or_assign_import_data(data: {})
+          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
         end
 
         it 'creates expected member' do
@@ -171,7 +172,8 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
 
       context 'when user contribution mapping is disabled' do
         before do
-          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+          project.build_or_assign_import_data(data: {})
+          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
         end
 
         it 'skips creating member for the project' do

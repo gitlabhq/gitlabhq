@@ -131,6 +131,20 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
     end
   end
 
+  describe 'when the file path contains traversal segments' do
+    let_it_be_with_reload(:diff_file) { build(:diff_file) }
+
+    before do
+      allow(diff_file).to receive(:path_traversal?).and_return(true)
+    end
+
+    it 'omits diff_lines_path so no traversal URL is fetched into the DOM' do
+      render_component
+
+      expect(file_data['diff_lines_path']).to be_nil
+    end
+  end
+
   def render_component(**args, &block)
     render_inline(described_class.new(diff_file: diff_file, plain_view: true, **args), &block)
   end

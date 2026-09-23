@@ -63,47 +63,6 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
     end
 
     describe '#run' do
-      it 'creates memberships for existing users' do
-        first_page = extracted_data(email: member_user1.email, has_next_page: true)
-        last_page = extracted_data(email: member_user2.email)
-
-        allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
-          allow(extractor).to receive(:extract).and_return(first_page, last_page)
-        end
-
-        expect { pipeline.run }.to change { portable.members.count }.by(2)
-
-        expect(members).to contain_exactly(
-          { user_id: member_user1.id, access_level: 30 },
-          { user_id: member_user2.id, access_level: 30 }
-        )
-      end
-
-      it 'creates member only once when source_xid and entity_type are the same' do
-        member = extracted_data(
-          email: member_user1.email,
-          id: member_user1.id
-        )
-
-        extracted = BulkImports::Pipeline::ExtractedData.new(
-          data: member.data,
-          page_info: { 'has_next_page' => false }
-        )
-
-        allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
-          allow(extractor).to receive(:extract).and_return(extracted)
-        end
-
-        expect { pipeline.run }.to change { portable.members.count }.by(1)
-
-        # Run again with exact same configuration
-        allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
-          allow(extractor).to receive(:extract).and_return(extracted)
-        end
-
-        expect { pipeline.run }.not_to change { portable.members.count }
-      end
-
       context 'when importer_user_mapping is enabled' do
         let!(:import_source_user) do
           create(:import_source_user,

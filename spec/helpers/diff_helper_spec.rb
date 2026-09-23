@@ -495,6 +495,31 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     it 'returns data for project files' do
       expect(subject).to include(blob_diff_path: helper.project_blob_diff_path(project, "#{sha}/#{path}"))
     end
+
+    context 'when the file path contains traversal segments' do
+      let(:path) { 'x/../../../../raw/main' }
+
+      it 'omits the blob_diff_path so no traversal URL reaches the browser' do
+        expect(subject[:blob_diff_path]).to be_nil
+      end
+    end
+  end
+
+  describe '#diff_file_blob_raw_url and #diff_file_old_blob_raw_url' do
+    before do
+      helper.instance_variable_set(:@project, project)
+    end
+
+    context 'when the file path contains traversal segments' do
+      before do
+        allow(diff_file).to receive(:path_traversal?).and_return(true)
+      end
+
+      it 'returns nil for both raw URLs' do
+        expect(helper.diff_file_blob_raw_url(diff_file)).to be_nil
+        expect(helper.diff_file_old_blob_raw_url(diff_file)).to be_nil
+      end
+    end
   end
 
   describe "#collapsed_diff_url" do
