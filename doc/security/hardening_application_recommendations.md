@@ -49,7 +49,7 @@ The adjustments help limit pushes to established and authorized users.
 ## Deploy keys
 
 1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Deploy keys**.
+1. In the left sidebar, select **Access** > **Deploy keys**.
 
 Public deploy keys are used to give read or read/write access to
 all projects on the instance, and are intended for remote automation to access

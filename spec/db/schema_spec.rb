@@ -38,6 +38,7 @@ RSpec.describe 'Database schema',
       ai_usage_events: %w[user_id],
       ai_events_counts: %w[user_id namespace_id],
       ai_flow_schedules: %w[project_id],
+      ai_governance_sessions: %w[project_id user_id workflow_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
       ascp_component_dependencies: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)

@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/issues/dashboard/components/issues_dashboard_app.vue',
     'app/assets/javascripts/security_configuration/components/app.vue',
     'app/assets/javascripts/security_configuration/components/ref_tracking_list.vue',
   ],

@@ -21,6 +21,7 @@ setup-test-env:
       optional: true
   variables:
     SETUP_DB: "false"
+    GIT_DEPTH: "1"
   script:
     - source scripts/gitlab_component_helpers.sh
     - setup_test_env

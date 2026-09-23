@@ -11698,40 +11698,6 @@ paths:
       tags:
       - ci_jobs
       operationId: getApiV4ProjectsIdJobsJobId
-  "/api/v4/projects/{id}/jobs/{job_id}/runtime_environment_key":
-    get:
-      summary: Get the runtime environment key for a job
-      description: Retrieves the runtime environment key linked to a job, if the job
-        is resuming a suspended environment.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: job_id
-        description: The ID of a job
-        type: integer
-        format: int32
-        required: true
-        example: 88
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get the runtime environment key for a job
-          schema:
-            "$ref": "#/definitions/API_Entities_Ci_RuntimeEnvironmentKey"
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-      tags:
-      - ci_jobs
-      operationId: getApiV4ProjectsIdJobsJobIdRuntimeEnvironmentKey
   "/api/v4/projects/{id}/jobs/{job_id}/trace":
     get:
       summary: Get a trace of a specific job of a project
@@ -43119,6 +43085,39 @@ paths:
       tags:
       - jobs
       operationId: putApiV4JobsId
+  "/api/v4/jobs/{id}/runtime_environment_key":
+    get:
+      summary: Get the runtime environment key for a job
+      description: Retrieves the runtime environment key linked to a job, if the job
+        is resuming a suspended environment.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: Job's ID
+        type: integer
+        format: int32
+        required: true
+      - in: query
+        name: token
+        description: Job's authentication token
+        type: string
+        required: false
+      responses:
+        '200':
+          description: Get the runtime environment key for a job
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_RuntimeEnvironmentKey"
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too Many Requests
+      tags:
+      - jobs
+      operationId: getApiV4JobsIdRuntimeEnvironmentKey
   "/api/v4/jobs/{id}/trace":
     patch:
       description: Append a patch to the job trace

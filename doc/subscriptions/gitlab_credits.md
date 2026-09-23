@@ -49,6 +49,21 @@ For a click-through demo, see [GitLab Credits](https://gitlab.navattic.com/credi
 
 For information about credit pricing, see [GitLab pricing](https://about.gitlab.com/pricing/).
 
+## Features
+
+The following features are usage-based and available with GitLab Credits.
+
+### Agentic features
+
+- [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md)
+
+### Non-Agentic features
+
+These features use a different consumption model:
+
+- [GitLab Secrets Manager](../ci/secrets/secrets_manager/credit_usage.md)
+- [Hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md#usage-and-monitoring)
+
 ## For the Free tier
 
 {{< details >}}
@@ -254,10 +269,8 @@ This represents one interaction from the user's perspective.
 A model call represents the underlying API calls made to LLMs to fulfill a user request.
 A single user request might trigger multiple model calls. For example, one call to understand context and another call to generate a response.
 
-### Models
-
-The following table lists the number of LLM calls you can make with one GitLab Credit for different [models](../user/duo_agent_platform/model_selection.md).
-Newer, more complex models have a higher multiplier and require more credits.
+The number of LLM calls you get from one GitLab Credit depends on the [model](../user/duo_agent_platform/model_selection.md) you use.
+Newer, more complex models have a higher multiplier, so they cost more credits per call.
 
 You are charged for model usage based on the following billing methods:
 
@@ -268,7 +281,10 @@ You are charged for model usage based on the following billing methods:
   - On GitLab.com with GitLab-managed models, a flow that fails before it completes deducts no credits, even if some LLM calls were already made.
   - On GitLab Self-Managed with self-hosted models, for features that do not use a flat price, billing is based on individual LLM calls, not flow completion. Each call is metered when it starts, so calls made before a flow fails are still billed. This means a flow that fails partway through may still consume credits for the calls that were already initiated. For flat-priced features, the full flat price is charged even if the flow fails, regardless of how many LLM calls were actually made.
 
-For subsidized models with basic integration:
+### Basic models
+
+The following table lists the number of LLM calls you can make with one GitLab Credit
+for models with basic integration:
 
 | Model | Calls with one credit |
 |-------|------------------------|
@@ -278,7 +294,10 @@ For subsidized models with basic integration:
 | `gpt-5-mini` | 8.0 |
 | `gpt-5-4-nano` | 8.0 |
 
-For premium models with optimized integration:
+### Premium models
+
+The following table lists the number of LLM calls you can make with one GitLab Credit
+for premium models with optimized integration:
 
 | Model                                                            | Calls with one credit |
 |------------------------------------------------------------------|-----------------------|
@@ -332,7 +351,7 @@ For premium models with optimized integration:
 [^short-context-window]: Short context window of up to 272,000 tokens.
 [^long-context-window]: Long context window of more than 272,000 tokens.
 
-### Features
+### Feature-specific
 
 {{< history >}}
 
@@ -344,10 +363,16 @@ For premium models with optimized integration:
 > The availability of the self-hosted model discount is controlled by a feature flag.
 > For more information, see the history.
 
-The following table lists the number of executions you can make with one GitLab Credit for different features.
-This pricing applies to all models (including self-hosted models) available for the feature.
-
+Most agentic features are billed for each model call, so their cost depends on the model you select.
 A feature that runs on a [self-hosted model](../administration/gitlab_duo_self_hosted/_index.md) receives a 20% discount.
+
+For GitLab Duo Agentic Chat, one sent message counts as one or more billable requests,
+because one or more LLM calls are made to answer the question.
+One conversation window can include multiple messages, and so multiple billable requests.
+
+The following table lists the number of executions you can make with one GitLab Credit for different features
+that are billed at a flat rate for each end-to-end execution.
+This pricing applies to all models (including self-hosted models) available for the feature.
 
 | Feature | Executions with one credit (GitLab-managed model) | Executions with one credit (self-hosted model) |
 |---------|----------------------------|------------------------------------------------|
@@ -355,13 +380,3 @@ A feature that runs on a [self-hosted model](../administration/gitlab_duo_self_h
 | Code Review Flow | 4 | 5 |
 | SAST False Positive Detection Flow | 1 | 1.25 |
 | SAST Vulnerability Resolution Flow | 0.25 | 0.3125 |
-
-For GitLab Duo Agentic Chat, one sent message counts as one or more billable requests,
-because one or more LLM calls are made to answer the question.
-One conversation window can include multiple messages, and so multiple billable requests.
-The pricing depends on the selected model.
-
-The following features also consume credits, but with a different consumption model:
-
-- [GitLab Secrets Manager](../ci/secrets/secrets_manager/credit_usage.md)
-- [Hosted runners for GitLab Dedicated](../administration/dedicated/hosted_runners.md#usage-cap-exemptions)

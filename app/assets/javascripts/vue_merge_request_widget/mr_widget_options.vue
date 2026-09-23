@@ -4,6 +4,7 @@ import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/ap
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state.query.graphql';
+import getStateSubscription from 'ee_else_ce/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
@@ -38,7 +39,6 @@ import {
 } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
-import getStateSubscription from './queries/get_state.subscription.graphql';
 import mergeChecksQuery from './queries/merge_checks.query.graphql';
 import mergeChecksSubscription from './queries/merge_checks.subscription.graphql';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
@@ -111,6 +111,7 @@ export default {
         variables() {
           return {
             issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
+            targetBranches: this.mergeRequestQueryVariables.targetBranches,
           };
         },
         updateQuery(

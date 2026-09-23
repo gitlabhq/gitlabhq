@@ -27833,6 +27833,29 @@ Fields:
 | <a id="googlecloudloggingconfigurationtypeedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="googlecloudloggingconfigurationtypeedge-node"></a>`node` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | The item at the end of the edge. |
 
+#### `GovernPolicyConnection`
+
+The connection type for [`GovernPolicy`](#governpolicy).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicyconnection-edges"></a>`edges` | [`[GovernPolicyEdge]`](#governpolicyedge) | A list of edges. |
+| <a id="governpolicyconnection-nodes"></a>`nodes` | [`[GovernPolicy]`](#governpolicy) | A list of nodes. |
+| <a id="governpolicyconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GovernPolicyEdge`
+
+The edge type for [`GovernPolicy`](#governpolicy).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="governpolicyedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="governpolicyedge-node"></a>`node` | [`GovernPolicy`](#governpolicy) | The item at the end of the edge. |
+
 #### `GovernPolicyEvaluationConnection`
 
 The connection type for [`GovernPolicyEvaluation`](#governpolicyevaluation).
@@ -44593,6 +44616,7 @@ Fields:
 | <a id="duoworkflowsaggregationresponse-churneduserscount"></a>`churnedUsersCount` | [`Int`](#int) | Number of unique users who ran a flow in the previous period but not in this one. |
 | <a id="duoworkflowsaggregationresponse-closedmrcount"></a>`closedMrCount` | [`DuoWorkflowsAggregationResponseClosedMrCountMetrics`](#duoworkflowsaggregationresponseclosedmrcountmetrics) | Aggregated `closed_mr_count` metrics. |
 | <a id="duoworkflowsaggregationresponse-createdmrcount"></a>`createdMrCount` | [`DuoWorkflowsAggregationResponseCreatedMrCountMetrics`](#duoworkflowsaggregationresponsecreatedmrcountmetrics) | Aggregated `created_mr_count` metrics. |
+| <a id="duoworkflowsaggregationresponse-creditspermergedmrratio"></a>`creditsPerMergedMrRatio` | [`Float`](#float) | Credits used per Duo-created merge request that was later merged. |
 | <a id="duoworkflowsaggregationresponse-creditsused"></a>`creditsUsed` | [`DuoWorkflowsAggregationResponseCreditsUsedMetrics`](#duoworkflowsaggregationresponsecreditsusedmetrics) | Aggregated `credits_used` metrics. |
 | <a id="duoworkflowsaggregationresponse-dimensions"></a>`dimensions` | [`DuoWorkflowsAggregationResponseDimensions`](#duoworkflowsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
 | <a id="duoworkflowsaggregationresponse-flowtypescount"></a>`flowTypesCount` | [`Int`](#int) | Number of unique flow types. |
@@ -57651,9 +57675,13 @@ Fields:
 
 {{< /details >}}
 
-Policies stored in the policy store for the organization or group. Returns `null` when the current user cannot read the policies of the container.
+Policies stored in the policy store for the organization or group, paginated forward only. Page with `pageInfo.endCursor` and keep `first` the same between requests; the `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container.
 
-Returns [`[GovernPolicy!]`](#governpolicy).
+Returns [`GovernPolicyConnection`](#governpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 Arguments:
 

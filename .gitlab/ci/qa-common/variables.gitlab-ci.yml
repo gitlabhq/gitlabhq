@@ -15,10 +15,10 @@ variables:
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
   # Helm chart ref used by test-on-cng pipeline
-  GITLAB_HELM_CHART_REF: "de3e7b9df7ef43c3df8a747d1f05f2b4da05130e"
+  GITLAB_HELM_CHART_REF: "2d1fbe943b35674258af76312ecf3e038ff8097e"
   # Specific ref for cng-mirror project to trigger builds for
-  GITLAB_CNG_MIRROR_REF: "5d777776c1d919878a19b2d21b6eca718a9b6433"
-  CAPRONI_VERSION: "4.15.0"
+  GITLAB_CNG_MIRROR_REF: "3a3b13d76a59e41fd8d78adf333d09cecf2ce00f"
+  CAPRONI_VERSION: "4.23.0"
   K3D_VERSION: "v5.9.0"
   # Makes sure some of the common scripts from pipeline-common use bundler to execute commands
   RUN_WITH_BUNDLE: "true"

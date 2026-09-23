@@ -809,7 +809,7 @@ The file is returned as committed at `ref`, so uncommitted changes in a local ch
 | Parameter    | Type    | Required | Description |
 |--------------|---------|----------|-------------|
 | `url`        | string  | No       | URL of the file, for example `https://gitlab.example.com/my-group/my-project/-/blob/main/app/models/user.rb`. Provide this, or `project_id`, `file_path`, and `ref`. |
-| `project_id` | string  | No       | ID or full path of the project. Required if `url` is not provided. |
+| `project_id` | string  | No       | ID or full path of the project. Required if `url` is not provided. If `url` is also provided, both must refer to the same project. |
 | `file_path`  | string  | No       | Path of the file relative to the repository root. Required if `url` is not provided. |
 | `ref`        | string  | No       | Branch name, tag name, or commit SHA. Use `HEAD` for the default branch. Required if `url` is not provided. |
 | `offset`     | integer | No       | Zero-indexed line to start reading from. Default is `0`. |

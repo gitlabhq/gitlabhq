@@ -98,6 +98,7 @@ export default {
     },
   },
   emits: ['change'],
+  expose: ['show'],
   data() {
     return {
       attributesList: [],
@@ -193,7 +194,6 @@ export default {
       };
     },
   },
-  expose: ['show'],
   methods: {
     isAttributeChecked(attributeId) {
       return (

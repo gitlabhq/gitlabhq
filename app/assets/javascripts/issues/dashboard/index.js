@@ -56,6 +56,7 @@ export function mountIssuesDashboardApp() {
       hasQualityManagementFeature: parseBoolean(hasQualityManagementFeature),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
       hasStatusFeature: parseBoolean(hasStatusFeature),
+      hasStatusSortFeature: false,
       initialSort,
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),

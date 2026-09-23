@@ -38,7 +38,6 @@ describe('~/security_configuration/components/app', () => {
   const createComponent = ({
     shouldShowCallout = true,
     vulnerabilitiesAcrossContexts = true,
-    glFeatures = {},
     mergeRequestsEnabled = true,
     licensedFeatures = {},
     ...propsData
@@ -57,7 +56,6 @@ describe('~/security_configuration/components/app', () => {
         ...provideMock,
         glFeatures: {
           vulnerabilitiesAcrossContexts,
-          ...glFeatures,
         },
       },
       stubs: {

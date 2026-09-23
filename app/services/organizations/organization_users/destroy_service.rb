@@ -15,9 +15,11 @@ module Organizations
       def execute
         return denied_response unless allowed?
 
+        owner_removed = organization_user.owner?
         removed_count = remove_memberships
         organization_user.destroy!
 
+        revoke_organization_admin_role if owner_removed
         log_removal(removed_count)
         ServiceResponse.success(payload: { organization_user: organization_user })
       rescue MembershipRemovalError
@@ -29,6 +31,13 @@ module Organizations
       private
 
       attr_reader :organization_user, :current_user
+
+      def revoke_organization_admin_role
+        return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+        ::Authz::Organizations::RevokeOwnerRoleWorker.perform_async(
+          organization_user.organization_id, organization_user.user_id, current_user.id)
+      end
 
       def allowed?
         current_user&.can?(:delete_organization_user, organization_user)
@@ -122,5 +131,3 @@ module Organizations
     end
   end
 end
-
-Organizations::OrganizationUsers::DestroyService.prepend_mod

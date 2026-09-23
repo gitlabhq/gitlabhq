@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Commits RSS', feature_category: :source_code_management do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:path) { project_commits_path(project, :master) }
 
   before do
@@ -12,8 +12,11 @@ RSpec.describe 'Project Commits RSS', feature_category: :source_code_management 
   end
 
   context 'when signed in' do
-    before do
+    before_all do
       project.add_developer(user)
+    end
+
+    before do
       sign_in(user)
       visit path
     end
@@ -37,8 +40,11 @@ RSpec.describe 'Project Commits RSS', feature_category: :source_code_management 
     end
 
     context 'when signed in', :js do
-      before do
+      before_all do
         project.add_developer(user)
+      end
+
+      before do
         sign_in(user)
         visit path
         click_button 'Actions'

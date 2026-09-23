@@ -95,7 +95,6 @@ describe('issue_comment_form component', () => {
     noteableData = noteableDataMock,
     notesData = notesDataMock,
     userData = userDataMock,
-    features = {},
     mountFunction = shallowMountExtended,
     stubs = {},
   } = {}) => {
@@ -113,9 +112,6 @@ describe('issue_comment_form component', () => {
         };
       },
       pinia,
-      provide: {
-        glFeatures: features,
-      },
       stubs,
     });
   };

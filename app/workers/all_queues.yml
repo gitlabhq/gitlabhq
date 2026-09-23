@@ -3175,6 +3175,26 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: authz_organizations_grant_owner_role
+  :worker_name: Authz::Organizations::GrantOwnerRoleWorker
+  :feature_category: :system_access
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: authz_organizations_revoke_owner_role
+  :worker_name: Authz::Organizations::RevokeOwnerRoleWorker
+  :feature_category: :system_access
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: batched_git_ref_updates_project_cleanup
   :worker_name: BatchedGitRefUpdates::ProjectCleanupWorker
   :feature_category: :gitaly

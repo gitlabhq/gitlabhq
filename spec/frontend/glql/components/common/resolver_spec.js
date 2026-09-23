@@ -122,18 +122,22 @@ describe('Resolver', () => {
       createWrapper();
       await waitForPromises();
 
-      expect(execute).toHaveBeenCalledWith('query {}', expect.anything(), {
-        queue: 'glql-queue-default',
-      });
+      expect(execute).toHaveBeenCalledWith(
+        'query {}',
+        expect.anything(),
+        expect.objectContaining({ queue: 'glql-queue-default' }),
+      );
     });
 
     it('runs the query on the given queue', async () => {
       createWrapper({ queue: 'glql-queue-dashboard' });
       await waitForPromises();
 
-      expect(execute).toHaveBeenCalledWith('query {}', expect.anything(), {
-        queue: 'glql-queue-dashboard',
-      });
+      expect(execute).toHaveBeenCalledWith(
+        'query {}',
+        expect.anything(),
+        expect.objectContaining({ queue: 'glql-queue-dashboard' }),
+      );
     });
 
     it('runs the comparison query and further pages on the same queue', async () => {
@@ -146,10 +150,30 @@ describe('Resolver', () => {
       await waitForPromises();
 
       expect(execute.mock.calls).toEqual([
-        ['query {}', expect.anything(), { queue: 'glql-queue-dashboard' }],
-        ['query {}', expect.anything(), { queue: 'glql-queue-dashboard' }],
-        ['query {}', expect.anything(), { queue: 'glql-queue-dashboard' }],
+        ['query {}', expect.anything(), expect.objectContaining({ queue: 'glql-queue-dashboard' })],
+        ['query {}', expect.anything(), expect.objectContaining({ queue: 'glql-queue-dashboard' })],
+        ['query {}', expect.anything(), expect.objectContaining({ queue: 'glql-queue-dashboard' })],
       ]);
+    });
+  });
+
+  describe('when the component is destroyed', () => {
+    beforeEach(async () => {
+      mockUtils();
+      execute.mockReturnValue(new Promise(() => {}));
+
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('aborts the signal its queued requests carry', () => {
+      const { signal } = execute.mock.calls[0][2];
+
+      expect(signal.aborted).toBe(false);
+
+      wrapper.destroy();
+
+      expect(signal.aborted).toBe(true);
     });
   });
 
@@ -522,6 +546,47 @@ describe('Resolver', () => {
       });
 
       it('captures the failure for debugging', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      });
+    });
+
+    describe('when the component is destroyed while the comparison is pending', () => {
+      let rejectComparison;
+
+      beforeEach(async () => {
+        mockParse();
+        execute.mockImplementation((query) =>
+          isComparison(query)
+            ? new Promise((_resolve, reject) => {
+                rejectComparison = reject;
+              })
+            : Promise.resolve(CURRENT),
+        );
+        transform.mockImplementation(identity);
+
+        createWrapper({
+          glqlQuery: GLQL_QUERY,
+          comparison: { query: COMPARISON_QUERY },
+          scope: SCOPE,
+        });
+        await waitForPromises();
+
+        wrapper.destroy();
+      });
+
+      it('does not report the comparison the queue dropped', async () => {
+        rejectComparison(execute.mock.calls[1][2].signal.reason);
+        await waitForPromises();
+
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
+
+      it('still reports a comparison that failed for another reason', async () => {
+        const error = new Error('Internal server error');
+
+        rejectComparison(error);
+        await waitForPromises();
+
         expect(Sentry.captureException).toHaveBeenCalledWith(error);
       });
     });

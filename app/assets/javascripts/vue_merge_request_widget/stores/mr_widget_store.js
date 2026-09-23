@@ -221,6 +221,7 @@ export default class MergeRequestStore {
   setGraphqlSubscriptionData(data) {
     this.commitsCount = data.commitCount || this.commitsCount;
     this.detailedMergeStatus = data.detailedMergeStatus || this.detailedMergeStatus;
+    this.autoMergeEnabled = data.autoMergeEnabled ?? this.autoMergeEnabled;
     this.availableAutoMergeStrategies =
       data.availableAutoMergeStrategies || this.availableAutoMergeStrategies;
     this.preferredAutoMergeStrategy = MergeRequestStore.getPreferredAutoMergeStrategy(

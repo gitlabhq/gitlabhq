@@ -836,6 +836,7 @@ compile-production-assets-rspack:
 build-assets-image:
   extends:
     - .base-image-build-buildx
+    - .fast-no-clone-job
     - .production
     - .frontend:rules:compile-production-assets
   stage: prepare
@@ -857,9 +858,16 @@ build-assets-image:
     GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env.env"
     ARCH: linux/amd64,linux/arm64
     HEALTHCHECK_TCP_PORT: "2375"
+    FILES_TO_DOWNLOAD: >
+      Dockerfile.assets
+      scripts/build_assets_image
+  before_script:
+    - !reference [".fast-no-clone-job", before_script]
+    - !reference [".default-utils-before_script", before_script]
+    - !reference [".buildx-setup", before_script]
   script:
     - cp --recursive --no-clobber rspack-assets/webpack/. public/assets/webpack/
-    - scripts/build_assets_image
+    - chmod u+x scripts/build_assets_image && scripts/build_assets_image
   after_script:
     - source scripts/utils.sh
     - echo "GLCI_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH

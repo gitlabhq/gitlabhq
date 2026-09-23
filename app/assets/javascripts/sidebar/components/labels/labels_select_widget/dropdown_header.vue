@@ -36,12 +36,12 @@ export default {
     },
   },
   emits: ['close-dropdown', 'input', 'search-enter', 'toggle-dropdown-contents-create-view'],
+  expose: ['focusInput'],
   computed: {
     dropdownTitle() {
       return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
     },
   },
-  expose: ['focusInput'],
   methods: {
     focusInput() {
       this.$refs.searchInput?.focusInput();

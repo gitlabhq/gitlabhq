@@ -7838,6 +7838,9 @@ msgstr ""
 msgid "Admin|Abuse reports"
 msgstr ""
 
+msgid "Admin|Access"
+msgstr ""
+
 msgid "Admin|Additional users must be reviewed and approved by a system administrator. Learn more about %{help_link_start}usage caps%{help_link_end}."
 msgstr ""
 
@@ -12996,6 +12999,9 @@ msgid "ArtifactRegistry|Loading files."
 msgstr ""
 
 msgid "ArtifactRegistry|Loading manifest details."
+msgstr ""
+
+msgid "ArtifactRegistry|Loading referrers."
 msgstr ""
 
 msgid "ArtifactRegistry|Loading repositories."

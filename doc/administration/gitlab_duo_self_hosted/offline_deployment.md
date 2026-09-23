@@ -402,6 +402,19 @@ For offline flow execution, use a custom executor image with
    image: registry.internal.example.com/duo/duo-executor:v0.0.14
    ```
 
+If the image is in a project's container registry on this GitLab instance,
+the flow's CI/CD job pulls it across projects. The job runs as an external
+account, and an internal project looks private to an external account, so
+the registry refuses the pull.
+For the access the host project must grant, see
+[Configure flows to pull the image from the GitLab container registry](../../user/duo_agent_platform/flows/execution/images.md#configure-flows-to-pull-the-image-from-the-gitlab-container-registry).
+If the registry requires credentials, configure them on the runner.
+By default, a flow's job does not receive CI/CD variables configured at the
+project, group, or instance level, so a `DOCKER_AUTH_CONFIG` variable defined
+there does not apply.
+For more information, see
+[Provide credentials for the image pull](../../user/duo_agent_platform/flows/execution/images.md#provide-credentials-for-the-image-pull).
+
 ## Verify the deployment
 
 1. Confirm that the AI Gateway is running:

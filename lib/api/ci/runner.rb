@@ -285,6 +285,33 @@ module API
           end
         end
 
+        desc 'Get the runtime environment key for a job' do
+          detail 'Retrieves the runtime environment key linked to a job, if the job is resuming a suspended environment.'
+          success code: 200, model: Entities::Ci::RuntimeEnvironmentKey
+          failure [[403, 'Forbidden'],
+            [404, 'Not found'],
+            [429, 'Too Many Requests']]
+          tags ['jobs']
+        end
+        params do
+          requires :id, type: Integer, desc: "Job's ID"
+          optional :token, type: String, desc: "Job's authentication token" # token can also be present in header
+        end
+        route_setting :authorization, skip_granular_token_authorization: :job_token_auth
+        get '/:id/runtime_environment_key', urgency: :low, feature_category: :runner_core do
+          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+
+          job = authenticate_job!
+
+          not_found! unless ::Feature.enabled?(:ci_suspendable_environment_runner_routing, job.project,
+            type: :gitlab_com_derisk)
+
+          not_found!('Runtime environment key') unless
+            job.job_runtime_environment&.runtime_environment&.environment_key
+
+          present job, with: Entities::Ci::RuntimeEnvironmentKey
+        end
+
         desc 'Append a patch to the job trace' do
           success code: 202, message: 'Trace was patched'
           failure [[400, 'Missing Content-Range header'],

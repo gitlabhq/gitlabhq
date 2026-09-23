@@ -116,11 +116,16 @@ export default {
       );
     },
   },
+  created() {
+    // Not reactive: aborting it drops this instance's requests still waiting in the queue.
+    this.abortController = new AbortController();
+  },
   mounted() {
     this.executeQuery();
   },
   beforeDestroy() {
     this.discarded = true;
+    this.abortController.abort();
   },
   methods: {
     resetData() {
@@ -194,7 +199,10 @@ export default {
           this.setVariable('limit', AGGREGATED_AUTO_PAGE_SIZE);
         }
 
-        const executionResult = await execute(query, variables, { queue: this.queue });
+        const executionResult = await execute(query, variables, {
+          queue: this.queue,
+          signal: this.abortController.signal,
+        });
 
         this.data = await transform(executionResult, { fields, mode, source });
 
@@ -228,18 +236,27 @@ export default {
           this.comparison.query,
           this.scope,
         );
-        const executionResult = await execute(query, variables, { queue: this.queue });
+        const executionResult = await execute(query, variables, {
+          queue: this.queue,
+          signal: this.abortController.signal,
+        });
         const result = await transform(executionResult, { fields, mode, source });
 
         return { ...result, metric: this.comparison.metric };
       } catch (error) {
+        // Skip only the queue's own abort rejection, so real failures after teardown still report.
+        if (error === this.abortController.signal.reason) return undefined;
+
         Sentry.captureException(error);
         return undefined;
       }
     },
 
     async fetchNextPage() {
-      const executionResult = await execute(this.query, this.variables, { queue: this.queue });
+      const executionResult = await execute(this.query, this.variables, {
+        queue: this.queue,
+        signal: this.abortController.signal,
+      });
 
       const data = await transform(executionResult, {
         fields: this.fields,

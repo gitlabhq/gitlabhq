@@ -75012,6 +75012,43 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_efbbd1be5812"
+  "/api/v4/jobs/{id}/runtime_environment_key":
+    get:
+      operationId: getApiV4JobsIdRuntimeEnvironmentKey
+      summary: Get the runtime environment key for a job
+      description: Retrieves the runtime environment key linked to a job, if the job
+        is resuming a suspended environment.
+      tags:
+      - Jobs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesCiRuntimeEnvironmentKey"
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too Many Requests
+        '400':
+          description: Bad Request
+      parameters:
+      - name: id
+        required: true
+        description: Job's ID
+        schema:
+          type: integer
+        in: path
+      - name: token
+        required: false
+        description: Job's authentication token
+        schema:
+          type: string
+          nullable: true
+        in: query
   "/api/v4/jobs/{id}/trace":
     patch:
       operationId: patchApiV4JobsIdTrace
@@ -75476,46 +75513,6 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesCiJob"
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-        '400':
-          description: Bad Request
-      parameters:
-      - name: job_id
-        required: true
-        description: The ID of a job
-        schema:
-          type: integer
-        in: path
-        example: 88
-      - name: id
-        required: true
-        description: The ID or URL-encoded path of the project
-        schema:
-          oneOf:
-          - type: string
-          - type: integer
-        in: path
-        example: 1
-  "/api/v4/projects/{id}/jobs/{job_id}/runtime_environment_key":
-    get:
-      operationId: getApiV4ProjectsIdJobsJobIdRuntimeEnvironmentKey
-      summary: Get the runtime environment key for a job
-      description: Retrieves the runtime environment key linked to a job, if the job
-        is resuming a suspended environment.
-      tags:
-      - CI jobs
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/APIEntitiesCiRuntimeEnvironmentKey"
         '401':
           description: Unauthorized
         '403':
@@ -99982,6 +99979,12 @@ components:
           type: string
         policy_options:
           type: string
+    APIEntitiesCiRuntimeEnvironmentKey:
+      type: object
+      properties:
+        runtime_environment_key:
+          type: string
+          example: 42/s_machineid/data
     APIEntitiesCiResourceGroup:
       type: object
       properties:
@@ -100074,12 +100077,6 @@ components:
             ci_job_token_scope_enabled:
               type: string
               example: false
-    APIEntitiesCiRuntimeEnvironmentKey:
-      type: object
-      properties:
-        runtime_environment_key:
-          type: string
-          example: 42/s_machineid/data
     APIEntitiesAiSettings:
       type: object
       properties:

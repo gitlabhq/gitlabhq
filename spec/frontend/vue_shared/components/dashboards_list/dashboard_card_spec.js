@@ -98,7 +98,6 @@ describe('DashboardCard', () => {
     it('renders the actions dropdown with a per-card accessible name', () => {
       expect(findActions().props()).toMatchObject({
         actionLabel: 'More actions for First custom dashboard',
-        dashboardUrl: mockCustomDashboard.dashboardUrl,
       });
     });
 
@@ -168,7 +167,6 @@ describe('DashboardCard', () => {
     it('renders the actions dropdown flagged as a system dashboard', () => {
       expect(findActions().props()).toMatchObject({
         actionLabel: 'More actions for System dashboard',
-        dashboardUrl: mockSystemDashboard.dashboardUrl,
       });
     });
   });

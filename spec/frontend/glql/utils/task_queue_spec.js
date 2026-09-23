@@ -68,22 +68,70 @@ describe('TaskQueue', () => {
       await expect(successPromise).resolves.toBe('success');
       await expect(errorPromise).rejects.toThrow('Task failed');
     });
-  });
 
-  describe('clear', () => {
-    it('clears the queue and resets running tasks', () => {
-      taskQueue.enqueue(() => sleep(0.01));
-      taskQueue.enqueue(() => sleep(0.01));
-      taskQueue.enqueue(() => sleep(0.01));
-      taskQueue.enqueue(() => sleep(0.01));
+    describe('when a waiting task is aborted', () => {
+      let releaseRunning;
+      let runningTasks;
+      let abortedTask;
+      let abortedPromise;
+      let laterTask;
+      let laterPromise;
 
-      // two have begun executing and two pending
-      expect(taskQueue.size).toBe(2);
+      beforeEach(() => {
+        const running = new Promise((resolve) => {
+          releaseRunning = resolve;
+        });
+        runningTasks = [jest.fn(() => running), jest.fn(() => running)];
+        abortedTask = jest.fn().mockResolvedValue('aborted');
+        laterTask = jest.fn().mockResolvedValue('later');
 
-      taskQueue.clear();
+        const controller = new AbortController();
 
-      expect(taskQueue.size).toBe(0);
-      expect(taskQueue.isEmpty).toBe(true);
+        runningTasks.forEach((task) => taskQueue.enqueue(task));
+        abortedPromise = taskQueue.enqueue(abortedTask, { signal: controller.signal });
+        laterPromise = taskQueue.enqueue(laterTask);
+        // Only the first example awaits the rejection; the others must not leave it unhandled.
+        abortedPromise.catch(() => {});
+
+        controller.abort(new Error('Discarded'));
+        releaseRunning();
+      });
+
+      it('rejects it with the abort reason without running it', async () => {
+        await expect(abortedPromise).rejects.toThrow('Discarded');
+        expect(abortedTask).not.toHaveBeenCalled();
+      });
+
+      it('still runs the tasks queued after it', async () => {
+        await expect(laterPromise).resolves.toBe('later');
+        expect(laterTask).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not count it against the concurrency limit', async () => {
+        await laterPromise;
+
+        const next = [jest.fn(() => new Promise(() => {})), jest.fn(() => new Promise(() => {}))];
+        next.forEach((task) => taskQueue.enqueue(task));
+
+        expect(next[0]).toHaveBeenCalledTimes(1);
+        expect(next[1]).toHaveBeenCalledTimes(1);
+        expect(taskQueue.size).toBe(0);
+      });
+    });
+
+    describe('when a running task is aborted', () => {
+      it('runs it to completion', async () => {
+        const controller = new AbortController();
+        const promise = taskQueue.enqueue(
+          () => {
+            controller.abort();
+            return Promise.resolve('done');
+          },
+          { signal: controller.signal },
+        );
+
+        await expect(promise).resolves.toBe('done');
+      });
     });
   });
 

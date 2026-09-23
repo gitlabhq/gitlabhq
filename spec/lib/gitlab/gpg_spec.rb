@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Gpg do
     it 'downcases the email' do
       public_key = double(:key)
       fingerprints = double(:fingerprints)
-      uid = double(:uid, name: +'Nannie Bernhard', email: +'NANNIE.BERNHARD@EXAMPLE.COM')
+      uid = double(:uid, name: +'Nannie Bernhard', email: +'NANNIE.BERNHARD@EXAMPLE.COM', revoked?: false)
       raw_key = double(:raw_key, uids: [uid])
       allow(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(public_key).and_return(fingerprints)
       allow(GPGME::Key).to receive(:find).with(:public, anything).and_return([raw_key])
@@ -81,12 +81,29 @@ RSpec.describe Gitlab::Gpg do
       public_key = double(:key)
       fingerprints = double(:fingerprints)
       email = (+"\xEEch@test.com").force_encoding('ASCII-8BIT')
-      uid = double(:uid, name: +'Test User', email: email)
+      uid = double(:uid, name: +'Test User', email: email, revoked?: false)
       raw_key = double(:raw_key, uids: [uid])
       allow(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(public_key).and_return(fingerprints)
       allow(GPGME::Key).to receive(:find).with(:public, anything).and_return([raw_key])
 
       user_infos = described_class.user_infos_from_key(public_key)
+      expect(user_infos).to eq([])
+    end
+
+    it 'rejects revoked uids and keeps the live ones' do
+      user_infos = described_class.user_infos_from_key(GpgHelpers::UserWithRevokedUid.public_key)
+
+      expect(user_infos).to eq([{
+        name: GpgHelpers::UserWithRevokedUid.names.first,
+        email: GpgHelpers::UserWithRevokedUid.emails.first
+      }])
+      expect(user_infos.map { |info| info[:email] })
+        .not_to include(GpgHelpers::UserWithRevokedUid.revoked_emails.first)
+    end
+
+    it 'returns an empty array when every uid of the key is revoked' do
+      user_infos = described_class.user_infos_from_key(GpgHelpers::UserWithOnlyRevokedUid.public_key)
+
       expect(user_infos).to eq([])
     end
   end

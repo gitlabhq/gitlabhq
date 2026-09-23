@@ -186,7 +186,7 @@ To interact with GitLab Duo, mention `@GitLabDuo` on your merge request:
 - In a new comment thread, to ask a question about the changes.
 - In reply to a review comment, to ask for clarification or alternative approaches.
 
-Interactions in comments use the model selected for Code Review Flow and [consume GitLab Credits](../../../subscriptions/gitlab_credits.md#models)
+Interactions in comments use the model selected for Code Review Flow and [consume GitLab Credits](../../../subscriptions/gitlab_credits.md#credit-multipliers)
 separately from the flow.
 
 However, if you ask `@GitLabDuo` for a review, GitLab Duo starts Code Review Flow and that flow's billing

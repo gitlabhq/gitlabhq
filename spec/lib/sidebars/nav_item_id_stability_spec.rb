@@ -42,6 +42,7 @@ KNOWN_STABLE_CE_IDS = %i[
   dashboard
   database_diagnostics
   dependency_proxy
+  deploy_keys
   dev_ops_reports
   environments
   error_tracking
@@ -117,6 +118,7 @@ KNOWN_STABLE_CE_IDS = %i[
   service_map
   services
   setup
+  ssh_certificates
   ssh_keys
   system_info
   tags

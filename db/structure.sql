@@ -13182,6 +13182,36 @@ CREATE SEQUENCE ai_flow_triggers_id_seq
 
 ALTER SEQUENCE ai_flow_triggers_id_seq OWNED BY ai_flow_triggers.id;
 
+CREATE TABLE ai_governance_sessions (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    project_id bigint,
+    user_id bigint NOT NULL,
+    workflow_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    session_started_at timestamp with time zone NOT NULL,
+    session_finished_at timestamp with time zone,
+    source smallint DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    external_xid text,
+    agent_type text,
+    flow_type text,
+    CONSTRAINT check_9a68a35540 CHECK ((char_length(flow_type) <= 255)),
+    CONSTRAINT check_9ceb097d60 CHECK ((char_length(external_xid) <= 255)),
+    CONSTRAINT check_aaebd6889a CHECK ((char_length(agent_type) <= 50)),
+    CONSTRAINT check_ai_session_is_duo_or_external CHECK ((num_nonnulls(workflow_id, external_xid) = 1))
+);
+
+CREATE SEQUENCE ai_governance_sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_governance_sessions_id_seq OWNED BY ai_governance_sessions.id;
+
 CREATE TABLE ai_instance_accessible_entity_rules (
     id bigint NOT NULL,
     through_namespace_id bigint,
@@ -36872,6 +36902,8 @@ ALTER TABLE ONLY ai_flow_schedules ALTER COLUMN id SET DEFAULT nextval('ai_flow_
 
 ALTER TABLE ONLY ai_flow_triggers ALTER COLUMN id SET DEFAULT nextval('ai_flow_triggers_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_governance_sessions ALTER COLUMN id SET DEFAULT nextval('ai_governance_sessions_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_instance_accessible_entity_rules ALTER COLUMN id SET DEFAULT nextval('ai_instance_accessible_entity_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_namespace_feature_access_rules ALTER COLUMN id SET DEFAULT nextval('ai_namespace_feature_access_rules_id_seq'::regclass);
@@ -39767,6 +39799,9 @@ ALTER TABLE ONLY ai_flow_schedules
 
 ALTER TABLE ONLY ai_flow_triggers
     ADD CONSTRAINT ai_flow_triggers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_governance_sessions
+    ADD CONSTRAINT ai_governance_sessions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_instance_accessible_entity_rules
     ADD CONSTRAINT ai_instance_accessible_entity_rules_pkey PRIMARY KEY (id);
@@ -45493,6 +45528,12 @@ CREATE UNIQUE INDEX finding_link_occurrence_id_name_url_idx ON vulnerability_fin
 
 CREATE UNIQUE INDEX i_affected_packages_unique_for_upsert ON pm_affected_packages USING btree (pm_advisory_id, purl_type, package_name, distro_version);
 
+CREATE UNIQUE INDEX i_ai_governance_sessions_on_namespace_source_external_xid ON ai_governance_sessions USING btree (namespace_id, source, external_xid) WHERE (external_xid IS NOT NULL);
+
+CREATE INDEX i_ai_governance_sessions_on_namespace_started_at_id ON ai_governance_sessions USING btree (namespace_id, session_started_at, id);
+
+CREATE UNIQUE INDEX i_ai_governance_sessions_on_namespace_workflow ON ai_governance_sessions USING btree (namespace_id, workflow_id) WHERE (workflow_id IS NOT NULL);
+
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
 
 CREATE UNIQUE INDEX i_bulk_import_export_batches_id_batch_number ON bulk_import_export_batches USING btree (export_id, batch_number);
@@ -46973,6 +47014,10 @@ CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btre
 
 CREATE INDEX index_ai_flow_triggers_on_user_id_and_project_id ON ai_flow_triggers USING btree (user_id, project_id);
 
+CREATE INDEX index_ai_governance_sessions_on_project_id ON ai_governance_sessions USING btree (project_id);
+
+CREATE INDEX index_ai_governance_sessions_on_user_id ON ai_governance_sessions USING btree (user_id);
+
 CREATE UNIQUE INDEX index_ai_iaer_on_through_namespace_on_accessible_entity ON ai_instance_accessible_entity_rules USING btree (through_namespace_id, accessible_entity);
 
 CREATE INDEX index_ai_nfar_on_root_namespace_on_accessible_entity ON ai_namespace_feature_access_rules USING btree (root_namespace_id, accessible_entity);
@@ -47744,6 +47789,8 @@ CREATE INDEX index_ci_pending_builds_on_plan_id ON ci_pending_builds USING btree
 CREATE INDEX index_ci_pending_builds_on_plan_name_uid ON ci_pending_builds USING btree (plan_name_uid);
 
 CREATE INDEX index_ci_pending_builds_on_project_id ON ci_pending_builds USING btree (project_id);
+
+CREATE INDEX index_ci_pending_builds_on_runner_machine_id ON ci_pending_builds USING btree (runner_machine_id) WHERE (runner_machine_id IS NOT NULL);
 
 CREATE INDEX index_ci_pending_builds_on_tag_ids ON ci_pending_builds USING btree (tag_ids) WHERE (cardinality(tag_ids) > 0);
 

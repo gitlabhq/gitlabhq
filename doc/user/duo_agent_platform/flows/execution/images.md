@@ -173,6 +173,73 @@ To configure flows for an offline environment:
    image: registry.internal.example.com/duo-executor:latest
    ```
 
+### Configure flows to pull the image from the GitLab container registry
+
+If you push the image to a project's container registry on the same GitLab
+instance, a flow's CI/CD job pulls it across projects. That pull fails until
+you configure it, because the job runs as the
+[service account](../../composite_identity.md) GitLab creates for flows, and
+GitLab creates that account as an
+[external user](../../../../administration/external_users.md). An internal
+project looks private to an external account, so the registry refuses the
+pull.
+
+Two conditions must both hold for the pull to succeed. The service account
+must be able to read the host project's container registry, and so must the
+person who triggers the flow.
+[Composite identity](../../composite_identity.md) limits the service account
+to the access of that person, so a flow never has permissions the triggering
+user lacks. Satisfying one condition alone leaves the pull refused.
+
+To give the service account access, either make it non-external, or make it a
+member of the host project.
+
+To make the account non-external:
+
+1. Set the project that hosts the image to
+   [internal visibility](../../../public_access.md#change-project-visibility).
+   Set the container registry visibility to **Everyone With Access**. If you select **Only Project Members**, the pull fails. For more information, see
+   [Configure project features and permissions](../../../project/settings/_index.md#configure-project-features-and-permissions).
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Overview** > **Users**.
+1. Find the service account GitLab created for flows, then select **Edit**.
+1. In the **Access** section, clear the **External** checkbox.
+1. Select **Save changes**.
+
+To make the account a member of the host project instead:
+
+1. Add the service account to the host project as a member with at least the
+   Developer role.
+1. Add the project that runs the flow to the host project's
+   [job token allowlist](../../../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist).
+
+Membership without the allowlist entry is not enough.
+
+The people who trigger flows need access to the host project by the same
+rules as any other user. On an internal host project, they must not be
+external users. On a private host project, they must be members with at least
+the Reporter role. The Guest role is not enough, because a Guest can see the
+project but cannot pull from its container registry.
+
+### Provide credentials for the image pull
+
+If the registry that contains the image requires credentials, configure them on
+the runner that runs the flow's jobs. You can configure credentials on registries
+that GitLab hosts and does not host.
+By default, a flow's job does not receive CI/CD variables configured at the
+project, group, or instance level, so a `DOCKER_AUTH_CONFIG` variable defined
+there does not apply, and the value cannot be
+[masked](../../../../ci/variables/_index.md#mask-a-cicd-variable).
+
+To supply credentials on the runner:
+
+1. On the project that hosts the image, create a
+   [deploy token](../../../project/deploy_tokens/_index.md#pull-images-from-a-container-registry)
+   with the `read_registry` scope.
+1. [Add `DOCKER_AUTH_CONFIG` to the runner](../../../../ci/docker/using_docker_images.md#configuring-a-runner)
+   as an entry in the `environment` list of the `[[runners]]` section of its
+   `config.toml` file.
+
 ## Use a Red Hat Universal Base Image 9 Minimal
 
 {{< history >}}

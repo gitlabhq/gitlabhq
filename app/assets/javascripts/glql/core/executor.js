@@ -50,7 +50,7 @@ export default class Executor {
     return this;
   }
 
-  async execute(query, variables = {}, { queue } = {}) {
+  async execute(query, variables = {}, { queue, signal } = {}) {
     return this.#enqueue(
       query,
       assign(
@@ -60,7 +60,7 @@ export default class Executor {
           })),
         )),
       ),
-      queue,
+      { queue, signal },
     );
   }
 
@@ -79,8 +79,8 @@ export default class Executor {
     return data;
   }
 
-  async #enqueue(query, variables, queue) {
-    return Executor.taskQueue(queue).enqueue(() => this.#execute(query, variables));
+  async #enqueue(query, variables, { queue, signal } = {}) {
+    return Executor.taskQueue(queue).enqueue(() => this.#execute(query, variables), { signal });
   }
 }
 

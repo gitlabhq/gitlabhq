@@ -223,5 +223,113 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater, :sidekiq_inline do
         )
       end
     end
+
+    context 'gpg signature was verified under a uid that has since been revoked' do
+      let(:signature) do
+        {
+          signature: GpgHelpers::UserWithRevokedUid.signed_commit_signature,
+          signed_text: GpgHelpers::UserWithRevokedUid.signed_commit_base_data
+        }
+      end
+
+      let(:committer_email) { GpgHelpers::UserWithRevokedUid.revoked_emails.first }
+
+      let!(:user) do
+        create(:user, email: GpgHelpers::UserWithRevokedUid.emails.first).tap do |user|
+          create :email, :confirmed, user: user, email: committer_email
+        end
+      end
+
+      context 'and the key is still in place' do
+        let!(:gpg_key) { create :gpg_key, key: GpgHelpers::UserWithRevokedUid.public_key, user: user }
+
+        let!(:verified_gpg_signature) do
+          create :gpg_signature,
+            project: project,
+            commit_sha: commit_sha,
+            gpg_key: gpg_key,
+            gpg_key_primary_keyid: GpgHelpers::UserWithRevokedUid.primary_keyid,
+            verification_status: 'verified'
+        end
+
+        it 'leaves the verified signature untouched' do
+          described_class.new(gpg_key).run
+
+          expect(verified_gpg_signature.reload).to have_attributes(
+            gpg_key: gpg_key,
+            gpg_key_primary_keyid: GpgHelpers::UserWithRevokedUid.primary_keyid,
+            verification_status: 'verified'
+          )
+        end
+
+        context 'and the commit was signed with a subkey' do
+          let(:signature) do
+            {
+              signature: GpgHelpers::UserWithRevokedUid.subkey_signed_commit_signature,
+              signed_text: GpgHelpers::UserWithRevokedUid.subkey_signed_commit_base_data
+            }
+          end
+
+          let(:subkey) { gpg_key.subkeys.last }
+
+          let!(:verified_gpg_signature) do
+            create :gpg_signature,
+              project: project,
+              commit_sha: commit_sha,
+              gpg_key: subkey,
+              gpg_key_primary_keyid: subkey.keyid,
+              verification_status: 'verified'
+          end
+
+          it 're-derives the signature, since a subkey signature carries no gpg_key_id' do
+            described_class.new(gpg_key).run
+
+            expect(verified_gpg_signature.reload).to have_attributes(
+              gpg_key: subkey,
+              gpg_key_subkey_id: subkey.id,
+              gpg_key_primary_keyid: subkey.keyid,
+              verification_status: 'same_user_different_email'
+            )
+          end
+        end
+      end
+
+      context 'and the key was removed and added again' do
+        let!(:verified_gpg_signature) do
+          create :gpg_signature,
+            project: project,
+            commit_sha: commit_sha,
+            gpg_key: nil,
+            gpg_key_primary_keyid: GpgHelpers::UserWithRevokedUid.primary_keyid,
+            verification_status: 'verified'
+        end
+
+        it 're-derives the signature against the remaining uids of the key' do
+          # InvalidGpgSignatureUpdater is called by the after_create hook
+          gpg_key = create :gpg_key, key: GpgHelpers::UserWithRevokedUid.public_key, user: user
+
+          expect(verified_gpg_signature.reload).to have_attributes(
+            gpg_key: gpg_key,
+            gpg_key_primary_keyid: GpgHelpers::UserWithRevokedUid.primary_keyid,
+            verification_status: 'same_user_different_email'
+          )
+        end
+
+        context 'when the user never confirmed the revoked email' do
+          let!(:user) { create :user, email: GpgHelpers::UserWithRevokedUid.emails.first }
+
+          it 'marks the signature as made by another user' do
+            # InvalidGpgSignatureUpdater is called by the after_create hook
+            gpg_key = create :gpg_key, key: GpgHelpers::UserWithRevokedUid.public_key, user: user
+
+            expect(verified_gpg_signature.reload).to have_attributes(
+              gpg_key: gpg_key,
+              gpg_key_primary_keyid: GpgHelpers::UserWithRevokedUid.primary_keyid,
+              verification_status: 'other_user'
+            )
+          end
+        end
+      end
+    end
   end
 end

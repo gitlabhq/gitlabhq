@@ -29,6 +29,7 @@ export default {
     },
   },
   emits: ['cancel-delete', 'confirm-delete'],
+  expose: ['show'],
   data() {
     return {
       inputImageName: '',
@@ -79,7 +80,6 @@ export default {
       };
     },
   },
-  expose: ['show'],
   methods: {
     show() {
       this.$refs.deleteModal.show();

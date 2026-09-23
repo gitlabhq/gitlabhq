@@ -24,7 +24,8 @@ module Mcp
               },
               project_id: {
                 type: 'string',
-                description: 'ID or full path of the project. Required if url is not provided.'
+                description: 'ID or full path of the project. Required if url is not provided. ' \
+                  'If url is also provided, both must refer to the same project.'
               },
               file_path: {
                 type: 'string',
@@ -34,7 +35,7 @@ module Mcp
               ref: {
                 type: 'string',
                 description: 'Branch name, tag name, or commit SHA. Use HEAD for the default branch. ' \
-                  'Required if url is not provided. Overrides any ref in url.'
+                  'Required if url is not provided.'
               },
               offset: {
                 type: 'integer',

@@ -252,6 +252,7 @@ db:invalidate-old-pipeline-results:
   needs:
     - job: cache:ruby-gems
       optional: true
+    - !reference [.repo-from-artifacts, needs]
   script:
     - |
       git fetch "$CI_REPOSITORY_URL" "+$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:refs/remotes/origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"

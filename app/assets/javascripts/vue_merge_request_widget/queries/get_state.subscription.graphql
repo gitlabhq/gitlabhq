@@ -1,5 +1,3 @@
-#import "ee_else_ce/vue_merge_request_widget/queries/states/merge_train_position.fragment.graphql"
-
 subscription getStateSubscription($issuableId: IssuableID!) {
   mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
     ... on MergeRequest {
@@ -7,8 +5,7 @@ subscription getStateSubscription($issuableId: IssuableID!) {
       detailedMergeStatus
       commitCount
       availableAutoMergeStrategies
-
-      ...MergeTrainPosition
+      autoMergeEnabled
     }
   }
 }

@@ -378,7 +378,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       it.each([
         { revoke_path: '/-/user_settings/personal_access_tokens/1/revoke', rotate_path: null },
         { revoke_path: null, rotate_path: '/-/user_settings/personal_access_tokens/1/rotate' },
-      ])(`% in some tokens, shows revoke or rotate button`, async (input) => {
+      ])(`%p in some tokens, shows revoke or rotate button`, async (input) => {
         createComponent({
           initialActiveAccessTokens: [
             defaultActiveAccessTokens.map((data) => ({ ...data, ...input }))[0],

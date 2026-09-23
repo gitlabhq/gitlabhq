@@ -344,11 +344,61 @@ RSpec.describe Mcp::Tools::Repositories::GetRepositoryFileService, feature_categ
           .to include('Project mismatch')
       end
 
+      context 'when a numeric project ID contradicts the url' do
+        let_it_be(:inaccessible_project) { create(:project, :private) }
+
+        it 'rejects the request before reading the repository' do
+          expect(::ExtractsRef::RefExtractor).not_to receive(:new)
+          expect(GitlabSchema).not_to receive(:execute)
+
+          result = call({ 'url' => blob_url, 'project_id' => inaccessible_project.id.to_s })
+
+          expect(result[:isError]).to be(true)
+          expect(error_text(result)).to include(
+            "Project mismatch: project_id is '#{inaccessible_project.id}' but url contains '#{project.full_path}'"
+          )
+        end
+
+        it 'rejects a negative numeric project ID' do
+          result = call({ 'url' => blob_url, 'project_id' => '-5' })
+
+          expect(result[:isError]).to be(true)
+          expect(error_text(result)).to include(
+            "Project mismatch: project_id is '-5' but url contains '#{project.full_path}'"
+          )
+        end
+      end
+
+      context 'when a numeric project ID agrees with the url' do
+        it 'reads the file' do
+          result = call({ 'url' => blob_url, 'project_id' => project.id.to_s })
+
+          expect(result[:isError]).to be_falsey
+          expect(result[:structuredContent][:path]).to eq(text_file)
+          expect(result[:structuredContent][:content]).to eq(project.repository.blob_at(ref, text_file).data)
+        end
+
+        it 'accepts a zero-padded project ID' do
+          result = call({ 'url' => blob_url, 'project_id' => "0#{project.id}" })
+
+          expect(result[:isError]).to be_falsey
+          expect(result[:structuredContent][:content]).to eq(project.repository.blob_at(ref, text_file).data)
+        end
+      end
+
       it 'rejects a url that is not a file url' do
         url = "#{Gitlab.config.gitlab.url}/#{project.full_path}/-/tree/#{ref}/files"
 
         expect(error_text(call({ 'url' => url }))).to include('Invalid file URL format')
       end
+    end
+
+    it 'reads a file with a numeric project ID' do
+      result = call({ 'project_id' => project.id.to_s, 'file_path' => text_file, 'ref' => ref })
+
+      expect(result[:isError]).to be_falsey
+      expect(result[:structuredContent][:path]).to eq(text_file)
+      expect(result[:structuredContent][:content]).to eq(project.repository.blob_at(ref, text_file).data)
     end
 
     context 'when the user cannot read the code' do

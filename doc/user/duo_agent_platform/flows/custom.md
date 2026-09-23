@@ -376,6 +376,8 @@ To use a flow:
    For example, if you enable a flow called `Security scanner` in the `GitLab Duo` group, the service account user is `ai-security-scanner-gitlab-duo`.
 1. After the flow has completed the task, you see a confirmation, and either a ready-to-merge change or an inline comment.
 
+You can also start a flow from a [GitLab Duo Agentic Chat slash command](../../gitlab_duo_chat/agentic_chat.md#trigger-a-flow-with-a-slash-command) if the flow has been turned on for the project.
+
 > [!warning]
 > The service account can access all projects that both:
 >

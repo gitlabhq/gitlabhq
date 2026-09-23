@@ -56,6 +56,7 @@ module Mcp
           identifier = project_identifier(args)
           project = find_project!(identifier)
           authorize_read_code!(project, identifier)
+          validate_numeric_project_id_consistency!(project, identifier, args[:project_id]) if args[:url].present?
           ref, path, ref_type = resolve_ref_and_path(project, args)
 
           { project: project, ref: ref, path: path, ref_type: ref_type }
@@ -101,6 +102,15 @@ module Mcp
           end
 
           [args[:ref], normalize_path(args[:file_path]), nil]
+        end
+
+        def validate_numeric_project_id_consistency!(project, url_path, raw_project_id)
+          project_id = raw_project_id.to_s
+          return unless ::Gitlab::ResourceLookup::INTEGER_ID_REGEX.match?(project_id)
+          return if project.id == project_id.to_i
+
+          raise ArgumentError,
+            "Project mismatch: project_id is '#{project_id}' but url contains '#{url_path}'"
         end
 
         def validate_url_consistency!(args, parsed, url_ref, url_path)

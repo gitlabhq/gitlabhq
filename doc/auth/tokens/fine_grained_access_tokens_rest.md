@@ -372,7 +372,6 @@ Grants the ability to delete, read, run, and update jobs.
 | Read | Project | `GET` | `/projects/:id/jobs/:job_id/trace` |
 | Run | Project | `POST` | `/projects/:id/jobs/:job_id/play` |
 | Run | Project | `POST` | `/projects/:id/jobs/:job_id/retry` |
-| Update | Project | `GET` | `/projects/:id/jobs/:job_id/runtime_environment_key` |
 | Update | Project | `POST` | `/projects/:id/jobs/:job_id/cancel` |
 
 #### Job Artifact
@@ -4169,6 +4168,7 @@ incompatible with personal access tokens.
 | `GET` | `/jobs/:id/artifacts` | CI job token |
 | `POST` | `/jobs/:id/artifacts` | CI job token |
 | `POST` | `/jobs/:id/artifacts/authorize` | CI job token |
+| `GET` | `/jobs/:id/runtime_environment_key` | CI job token |
 | `POST` | `/jobs/:id/sbom_scans` | CI job token |
 | `POST` | `/jobs/:id/sbom_scans/:sbom_digest` | CI job token |
 | `GET` | `/jobs/:id/sbom_scans/:sbom_scan_id` | CI job token |

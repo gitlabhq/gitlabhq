@@ -75,6 +75,7 @@ describe('IssuesDashboardApp component', () => {
     hasQualityManagementFeature: true,
     hasScopedLabelsFeature: true,
     hasStatusFeature: true,
+    hasStatusSortFeature: false,
     initialSort: CREATED_DESC,
     isPublicVisibilityRestricted: false,
     isSignedIn: true,
@@ -184,8 +185,7 @@ describe('IssuesDashboardApp component', () => {
             hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
             hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
             hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
-            hasStatusFeature:
-              defaultProvide.hasStatusFeature && gon.features?.workItemStatusOnDashboard,
+            hasStatusFeature: defaultProvide.hasStatusSortFeature,
             hasManualSort: false,
           }),
         );
@@ -372,12 +372,14 @@ describe('IssuesDashboardApp component', () => {
     });
 
     describe('sort options', () => {
-      describe('when workItemStatusOnDashboard=true', () => {
-        it('includes Status in sort options', () => {
+      describe('when status sorting is available', () => {
+        beforeEach(() => {
           mountComponent({
-            provide: { hasStatusFeature: true, glFeatures: { workItemStatusOnDashboard: true } },
+            provide: { hasStatusSortFeature: true },
           });
+        });
 
+        it('includes Status in sort options', () => {
           expect(findIssuableList().props('sortOptions')).toEqual([
             expect.objectContaining({ title: 'Priority' }),
             expect.objectContaining({ title: 'Created date' }),
@@ -396,12 +398,14 @@ describe('IssuesDashboardApp component', () => {
         });
       });
 
-      describe('when workItemStatusOnDashboard=false', () => {
-        it('does not include Status in sort options', () => {
+      describe('when status sorting is unavailable', () => {
+        beforeEach(() => {
           mountComponent({
-            provide: { hasStatusFeature: true, glFeatures: { workItemStatusOnDashboard: false } },
+            provide: { hasStatusSortFeature: false },
           });
+        });
 
+        it('does not include Status in sort options', () => {
           expect(findIssuableList().props('sortOptions')).toEqual([
             expect.objectContaining({ title: 'Priority' }),
             expect.objectContaining({ title: 'Created date' }),

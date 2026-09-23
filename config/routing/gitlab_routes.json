@@ -10179,6 +10179,12 @@
     "dottedExample": "/api/v4/jobs/john.doe/artifacts/authorize"
   },
   {
+    "template": "/api/:version/jobs/:id/runtime_environment_key",
+    "example": "/api/v4/jobs/foo/runtime_environment_key",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/jobs/john.doe/runtime_environment_key"
+  },
+  {
     "template": "/api/:version/jobs/:id/sbom_scans",
     "example": "/api/v4/jobs/foo/sbom_scans",
     "acceptsFormat": true,
@@ -12276,12 +12282,6 @@
     "example": "/api/v4/projects/foo/jobs/foo/retry",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/jobs/john.doe/retry"
-  },
-  {
-    "template": "/api/:version/projects/:id/jobs/:job_id/runtime_environment_key",
-    "example": "/api/v4/projects/foo/jobs/foo/runtime_environment_key",
-    "acceptsFormat": true,
-    "dottedExample": "/api/v4/projects/john.doe/jobs/john.doe/runtime_environment_key"
   },
   {
     "template": "/api/:version/projects/:id/jobs/:job_id/trace",

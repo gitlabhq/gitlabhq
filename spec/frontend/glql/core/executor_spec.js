@@ -45,6 +45,18 @@ describe('Executor', () => {
     expect(data).toEqual(MOCK_QUERY_RESPONSE);
   });
 
+  describe('when the signal is aborted before the query leaves the queue', () => {
+    it('rejects without sending the query', async () => {
+      const controller = new AbortController();
+      controller.abort(new Error('Discarded'));
+
+      await expect(
+        executor.execute('{ issues { nodes { id } } }', {}, { signal: controller.signal }),
+      ).rejects.toThrow('Discarded');
+      expect(queryFn).not.toHaveBeenCalled();
+    });
+  });
+
   it('executes a query with variables', async () => {
     const mockEpicQuery = `query GLQL { group(fullPath: "gitlab-org") { epics(iid: "123") { id } } }`;
     const mockIssueQuery = `query GLQL($epicId: String) { project(fullPath: "gitlab-org/gitlab") { issues(epicId: $epicId) { nodes { id title} } } }`;

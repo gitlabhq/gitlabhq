@@ -1,4 +1,8 @@
-import vueNoUnusedProperties from 'eslint-plugin-vue/lib/rules/no-unused-properties.js';
+import vuePlugin from 'eslint-plugin-vue';
+
+// Read through the plugin's public `rules` map: eslint-plugin-vue v10 moved its
+// rule files from `lib/` to `dist/`, so deep paths are not a stable import.
+const vueNoUnusedProperties = vuePlugin.rules['no-unused-properties'];
 
 /**
  * Disallow unused `inject` declarations in Vue components.

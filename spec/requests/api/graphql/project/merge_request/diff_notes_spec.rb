@@ -23,6 +23,47 @@ RSpec.describe 'getting notes for a merge request', feature_category: :code_revi
 
   it_behaves_like "exposing regular notes on a noteable in GraphQL"
 
+  context 'system notes on a merge request' do
+    let_it_be(:project) { noteable.project }
+    let_it_be(:user) { create(:user, developer_of: project) }
+
+    # Mirrors the selection of the external `getProjectsMergeRequestNotes` client,
+    # see https://gitlab.com/gitlab-org/gitlab/-/issues/629326
+    let(:query) do
+      noteable_query(
+        <<~NOTES
+        notes(filter: ONLY_ACTIVITY) {
+          nodes {
+            id createdAt updatedAt body internal system
+            resolvable resolved resolvedAt
+            author { id username name }
+            resolvedBy { id username name }
+          }
+        }
+        NOTES
+      )
+    end
+
+    def create_system_notes(count)
+      create_list(:system_note, count, noteable: noteable, project: project).each do |note|
+        create(:system_note_metadata, note: note, action: 'title')
+      end
+    end
+
+    it 'avoids N+1 queries when resolving system notes', :request_store, :use_sql_query_cache do
+      create_system_notes(2)
+      post_graphql(query, current_user: user)
+      expect_graphql_errors_to_be_empty
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_graphql(query, current_user: user) }
+
+      create_system_notes(3)
+
+      expect { post_graphql(query, current_user: user) }.to issue_same_number_of_queries_as(control)
+      expect(noteable_data['notes']['nodes'].size).to eq(5)
+    end
+  end
+
   context 'diff notes on a merge request' do
     let(:project) { noteable.project }
     let!(:note) { create(:diff_note_on_merge_request, noteable: noteable, project: project) }

@@ -137,7 +137,7 @@ Prerequisites:
 To create a public deploy key:
 
 1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Deploy keys**.
+1. In the left sidebar, select **Access** > **Deploy keys**.
 1. Select **New deploy key**.
 1. Complete the fields.
    - Use a meaningful description for **Name**. For example, include the name of the external host

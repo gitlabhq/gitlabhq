@@ -253,4 +253,86 @@ RSpec.describe Organizations::OrganizationUsers::DestroyService, feature_categor
       end
     end
   end
+
+  describe 'Organization Administrator role sync' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_owner) { create(:organization_owner, organization: organization) }
+
+    subject(:execute) do
+      described_class.new(organization_user, current_user: current_user).execute
+    end
+
+    before do
+      allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+    end
+
+    context 'when removing an owner' do
+      let_it_be_with_refind(:organization_owner) { create(:organization_owner, organization: organization) }
+      let(:organization_user) { organization_owner }
+      let(:current_user) { other_owner.user }
+
+      before_all do
+        # A user must remain associated with at least one organization, so the
+        # target needs a second membership for the destroy itself to succeed.
+        create(:organization_user, user: organization_owner.user)
+      end
+
+      it 'enqueues RevokeOwnerRoleWorker with the acting user as the third argument' do
+        expect(Authz::Organizations::RevokeOwnerRoleWorker).to receive(:perform_async)
+          .with(organization.id, organization_owner.user_id, other_owner.user.id)
+
+        execute
+      end
+
+      context 'when the owner removes themselves' do
+        let(:current_user) { organization_owner.user }
+
+        it 'enqueues RevokeOwnerRoleWorker with themselves as the acting user' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).to receive(:perform_async)
+            .with(organization.id, organization_owner.user_id, organization_owner.user_id)
+
+          execute
+        end
+      end
+
+      context 'when the owner role sync is unavailable' do
+        before do
+          allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(false)
+        end
+
+        it 'does not enqueue RevokeOwnerRoleWorker' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+          execute
+        end
+      end
+
+      context 'when the removal fails' do
+        let(:organization_user) { create(:organization_owner, organization: organization) }
+
+        before do
+          create(:organization_user, user: organization_user.user)
+          allow(organization_user).to receive(:destroy!)
+            .and_raise(ActiveRecord::RecordNotDestroyed.new('failed', organization_user))
+        end
+
+        it 'does not enqueue RevokeOwnerRoleWorker' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+          execute
+        end
+      end
+    end
+
+    context 'when removing a non-owner' do
+      let(:organization_user) { create(:organization_user, organization: organization) }
+      let(:current_user) { other_owner.user }
+
+      it 'does not enqueue RevokeOwnerRoleWorker' do
+        expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+        execute
+      end
+    end
+  end
 end

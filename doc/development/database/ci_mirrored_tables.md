@@ -62,8 +62,8 @@ graph LR
 
 This replication was restricted only to a few attributes that are needed from each model:
 
-- From `Namespace` we replicate `traversal_ids`.
-- From `Project` we replicate only the `namespace_id`, which represents the group which the project belongs to.
+- From `Namespace` we replicate `traversal_ids` and `organization_id`.
+- From `Project` we replicate `namespace_id` and `organization_id`.
 
 ## Keeping the CI mirrored tables in sync with the source tables
 

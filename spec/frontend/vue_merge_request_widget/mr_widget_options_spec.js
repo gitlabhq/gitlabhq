@@ -24,7 +24,7 @@ import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
 import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state.query.graphql';
-import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
+import getStateSubscription from 'ee_else_ce/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import mrPipelineUpdatedSubscription from '~/vue_merge_request_widget/subscriptions/mr_pipeline_updated.subscription.graphql';
 import mrPipelineCreationRequestUpdated from '~/vue_merge_request_widget/subscriptions/mr_pipeline_creation_request_updated.subscription.graphql';

@@ -3,6 +3,7 @@ import path from 'node:path';
 import { existsSync } from 'node:fs';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
+import gitlabPlugin from '@gitlab/eslint-plugin';
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import noUnsanitizedPlugin from 'eslint-plugin-no-unsanitized';
 import globals from 'globals';
@@ -257,16 +258,13 @@ export default [
       '.claude/skills/**',
     ],
   },
+  ...gitlabPlugin.configs.default,
+  ...gitlabPlugin.configs.i18n,
   // Legacy plugin configs (via FlatCompat)
-  ...compat.extends(
-    'plugin:@gitlab/default',
-    'plugin:@gitlab/i18n',
-    'plugin:no-jquery/slim',
-    'plugin:no-jquery/deprecated-3.4',
-    'plugin:@gitlab/jest',
-    'plugin:@gitlab/tailwind',
-  ),
+  ...compat.extends('plugin:no-jquery/slim', 'plugin:no-jquery/deprecated-3.4'),
   ...compat.plugins('no-jquery'),
+  ...gitlabPlugin.configs.jest,
+  ...gitlabPlugin.configs.tailwind,
   // Native flat config plugins
   noUnsanitizedPlugin.configs.recommended,
   // Registered here with no `files` key so it applies to every linted file:
@@ -588,6 +586,9 @@ export default [
     files: ['*.vue', '**/*.vue'],
     rules: {
       'vue/require-name-property': 'error',
+      // eslint-plugin-vue v10 ships this at `warn`; raised to `error` so the
+      // `.eslint_todo` exemption list is the only thing keeping it green.
+      'vue/no-required-prop-with-default': 'error',
       'vue/no-unused-properties': [
         'error',
         {
@@ -606,7 +607,10 @@ export default [
 
       // Vue 3 events compatibility
       'vue/v-on-event-hyphenation': 'error',
-      'vue/custom-event-name-casing': ['error', 'kebab-case'],
+      // `update:` events must match their prop name exactly for `.sync`/v-model
+      // to bind, so they cannot be kebab-cased. eslint-plugin-vue v9 exempted
+      // them implicitly; v10 checks each colon-separated segment instead.
+      'vue/custom-event-name-casing': ['error', 'kebab-case', { ignores: ['/^update:/'] }],
       'vue/require-explicit-emits': 'error',
 
       // Vue 3 deprecated features

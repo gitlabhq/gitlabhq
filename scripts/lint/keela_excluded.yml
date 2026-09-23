@@ -14,6 +14,8 @@ delegations:
   ee/app/models/work_items/widgets/agent_plan.rb:
     - readiness_score_feedback_html: Read by the GraphQL markdown field added in !252884
 methods:
+  ee/lib/security/dependency_firewall/availability.rb:
+    - dashboard_v2_enabled?: Called by the prevented-package write and read paths landing in stacked follow-up MRs of the 627538 series
   app/helpers/mirror_helper.rb:
     - remote_mirrors_table_data: Will be called from HAML view in follow-up feature-flagged MR for Vue mirror list table
   app/helpers/routing/groups/members_helper.rb:
@@ -127,6 +129,10 @@ methods:
 scopes:
   ee/app/models/govern/policy.rb:
     - for_lifecycle_state: Will be used by the enabled filter on the policy store list endpoint, landing in a stacked follow-up MR
+  ee/app/models/security/dependency_firewall_prevented_package.rb:
+    - for_rule_types: Used by the prevented-stats collectors landing in a stacked follow-up MR of the 627538 series
+    - blocked_since: Used by the prevented-stats collectors landing in a stacked follow-up MR of the 627538 series
+    - warned_only_since: Used by the prevented-stats collectors landing in a stacked follow-up MR of the 627538 series
 constants:
   app/services/mcp/tools/toolsets.rb:
     - ALWAYS_ON: Used by Manager#tools_in_toolsets to always include meta tools

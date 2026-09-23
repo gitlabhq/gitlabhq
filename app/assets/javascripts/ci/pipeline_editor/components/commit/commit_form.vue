@@ -21,7 +21,6 @@ export default {
     GlFormTextarea,
     GlSprintf,
   },
-  expose: ['resetCommitMessage'],
   props: {
     currentBranch: {
       type: String,
@@ -48,6 +47,7 @@ export default {
     },
   },
   emits: ['submit', 'reset-content'],
+  expose: ['resetCommitMessage'],
   data() {
     return {
       message: this.defaultMessage,

@@ -138,6 +138,40 @@ Where appropriate, the following foundational flows can be triggered from an Age
 - [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review/_index.md#use-the-flow)
 - [Fix CI/CD Pipeline Flow](../duo_agent_platform/flows/foundational_flows/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
 
+#### Trigger a flow with a slash command
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252920) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `duo_chat_flow_commands`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/629298) in GitLab 19.4.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+In GitLab Duo Agentic Chat, you can start a flow with a slash command. Use a flow command when a flow does not have a configured trigger, or when you want to start the flow yourself instead of waiting for a trigger.
+
+Prerequisites:
+
+- You must have Chat open in a project. Flow commands are not available outside a project.
+- The flow must be [enabled in the project](../duo_agent_platform/flows/custom.md#enable-a-flow).
+
+> [!warning]
+> If you trigger a flow with a slash command, it has write access to the GitLab API and to Git.
+> The flow can commit and push changes, and post comments on issues and merge requests.
+> Unlike Chat, a flow does not ask you to approve these actions.
+> [Tool approvals](#tool-approvals) apply to the Chat session only, not to flows that the session starts.
+> Each flow run also uses [CI/CD minutes](../../ci/pipelines/compute_minutes.md), because flows started from the GitLab UI run as a CI/CD pipeline.
+
+To trigger a flow from Chat:
+
+1. In the Chat message box, enter `/` at the start of your message. 
+1. In the **Flows** section, select a flow. The command is the flow name in slug format, with a `/flow:` prefix. For example, a flow named `Security scanner` becomes `/flow:security-scanner`. If two flows in a project have names that produce the same command, a numeric ID is appended to the second command.
+1. Optional. After the command, enter the goal for the flow. For example, `/flow:security-scanner check the auth module`.
+1. Press <kbd>Enter</kbd> or select **Send**.
+
 ### Use GitLab Duo Chat in VS Code
 
 Prerequisites:

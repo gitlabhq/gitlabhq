@@ -48,6 +48,28 @@ RSpec.describe 'User Settings > GPG keys', feature_category: :user_profile do
     expect(page).to have_selector('time.js-timeago', text: gpg_key.created_at.strftime('%b %d, %Y'))
   end
 
+  it 'user does not see the email of a revoked uid', :aggregate_failures do
+    create(:email, :confirmed, user: user, email: GpgHelpers::UserWithRevokedUid.emails.first)
+    create(:email, :confirmed, user: user, email: GpgHelpers::UserWithRevokedUid.revoked_emails.first)
+    create(:gpg_key, user: user, key: GpgHelpers::UserWithRevokedUid.public_key)
+    visit user_settings_gpg_keys_path
+
+    expect(page).to have_content("#{GpgHelpers::UserWithRevokedUid.emails.first} Verified")
+    expect(page).not_to have_content(GpgHelpers::UserWithRevokedUid.revoked_emails.first)
+    expect(page).to have_content(GpgHelpers::UserWithRevokedUid.fingerprint)
+  end
+
+  it 'user sees no email for a key whose every uid is revoked', :aggregate_failures do
+    create(:email, :confirmed, user: user, email: GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first)
+    create(:gpg_key, user: user, key: GpgHelpers::UserWithOnlyRevokedUid.public_key)
+    visit user_settings_gpg_keys_path
+
+    expect(page).to have_content(GpgHelpers::UserWithOnlyRevokedUid.fingerprint)
+    expect(page).not_to have_content(GpgHelpers::UserWithOnlyRevokedUid.revoked_emails.first)
+    expect(page).not_to have_content('Verified')
+    expect(page).not_to have_content('Unverified')
+  end
+
   it 'user removes a key via the key index' do
     create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
     visit user_settings_gpg_keys_path

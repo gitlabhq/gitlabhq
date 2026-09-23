@@ -20,6 +20,10 @@ ai_flow_triggers:
   - table: projects
     column: project_id
     on_delete: async_delete
+ai_governance_sessions:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 ai_instance_accessible_entity_rules:
   - table: namespaces
     column: through_namespace_id
@@ -220,6 +224,9 @@ ci_namespace_mirrors:
     column: organization_id
     on_delete: async_delete
 ci_pending_builds:
+  - table: ci_runner_machines
+    column: runner_machine_id
+    on_delete: async_nullify
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
