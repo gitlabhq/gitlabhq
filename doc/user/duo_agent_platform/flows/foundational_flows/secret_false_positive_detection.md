@@ -41,6 +41,7 @@ Results are based on AI analysis and should be reviewed by security professional
 - Turn on **Allow foundational flows** and **Secret Detection False Positive Detection** [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
 - [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+- Recommended. Create an [agent configuration file](../execution/_index.md#create-the-agent-configuration-file) so the flow has access to your project's toolchain and dependencies.
 
 ## Running secret false positive detection
 

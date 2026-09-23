@@ -61,6 +61,7 @@ This flow:
 - [Configure your own runners](../../execution/_index.md#configure-runners-to-execute-flows) with the `gitlab--duo` tag and
   an executor that supports Docker images, or turn on [GitLab hosted runners](../../../../../ci/runners/hosted_runners/_index.md)
   for your project. Code Review Flow runs as a CI/CD job and requires a runner to execute.
+- Recommended. Create an [agent configuration file](../../execution/_index.md#create-the-agent-configuration-file) so the flow has access to your project's toolchain and dependencies.
 
 ## Use the flow
 

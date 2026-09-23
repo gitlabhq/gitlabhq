@@ -50,8 +50,9 @@ across multiple projects and groups at once, use the
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
 - Turn on **Allow foundational flows** and **SAST False Positive Detection** [for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../../duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
 - Set [a default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace) in your user preferences.
+- [Configure your own runners](../../duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) for your project.
+- Recommended. Create an [agent configuration file](../../duo_agent_platform/flows/execution/_index.md#create-the-agent-configuration-file) so the flow has access to your project's toolchain and dependencies.
 
 ## Allow foundational flow for a group
 

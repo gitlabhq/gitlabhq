@@ -175,7 +175,7 @@ The `container` component type supports the following schema properties only:
 
 | Property             | Description |
 |----------------------|-------------|
-| `image` <sup>1</sup> | Name of the container image to use for the workspace. |
+| `image`[^create-custom-container] | Name of the container image to use for the workspace. |
 | `memoryRequest`      | Minimum amount of memory the container can use. |
 | `memoryLimit`        | Maximum amount of memory the container can use. |
 | `cpuRequest`         | Minimum amount of CPU the container can use. |
@@ -186,13 +186,11 @@ The `container` component type supports the following schema properties only:
 | `command`            | The command to override the container entrypoint. See [`overrideCommand` attribute](#overridecommand-attribute). |
 | `args`               | The arguments for the command of the container. See [`overrideCommand` attribute](#overridecommand-attribute). |
 
-**Footnotes**:
-
-1. When you create custom container images for the `image` property, you can use the
-   [workspace base image](#workspace-base-image) as your foundation.
-   It includes critical configurations for SSH access, user permissions, and workspace
-   compatibility. If you choose not to use the base image, ensure your custom image meets
-   all workspace requirements.
+[^create-custom-container]: When you create custom container images for the `image` property, you can use the
+    [workspace base image](#workspace-base-image) as your foundation.
+    It includes critical configurations for SSH access, user permissions, and workspace
+    compatibility. If you choose not to use the base image, ensure your custom image meets
+    all workspace requirements.
 
 #### `overrideCommand` attribute
 
@@ -225,15 +223,13 @@ are used in the table:
 | `false`           | Specified         | Specified       | Devfile component `command`/`args` used as entrypoint. |
 | `false`           | Specified         | Not specified   | Devfile component `command`/`args` used as entrypoint. |
 | `false`           | Not specified     | Specified       | Container image `Entrypoint`/`Cmd` used. |
-| `false`           | Not specified     | Not specified   | Container exits prematurely (`CrashLoopBackOff`). <sup>1</sup> |
+| `false`           | Not specified     | Not specified   | Container exits prematurely (`CrashLoopBackOff`).[^create-workspace-cannot] |
 
-**Footnotes**:
-
-1. When you create a workspace, it cannot access container image details, for example, from private
-   or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
-   or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
-   You must ensure that either the Devfile or container specifies these fields, or the container exits
-   prematurely and the workspace fails to start.
+[^create-workspace-cannot]: When you create a workspace, it cannot access container image details, for example, from private
+    or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
+    or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
+    You must ensure that either the Devfile or container specifies these fields, or the container exits
+    prematurely and the workspace fails to start.
 
 ### User-defined `postStart` events
 

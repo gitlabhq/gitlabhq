@@ -170,9 +170,10 @@ The code flow information is shown in the **Data flow** tab and includes:
 {{< history >}}
 
 - C# version support [increased from 10.0 to 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/570499) in GitLab 18.6.
-- Support for Dart [added](https://gitlab.com/gitlab-org/security-products/analyzers/static-analysis-toolkit/-/work_items/62) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
-- Support for Scala [added](https://gitlab.com/gitlab-org/security-products/analyzers/static-analysis-toolkit/-/work_items/63) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
-- Support for Kotlin [added](https://gitlab.com/groups/gitlab-org/-/work_items/23283) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for Dart [added](https://gitlab.com/gitlab-org/gitlab/-/issues/630101) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for Scala [added](https://gitlab.com/gitlab-org/gitlab/-/issues/630101) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for Kotlin [added](https://gitlab.com/gitlab-org/gitlab/-/issues/630101) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for Rust [added](https://gitlab.com/gitlab-org/gitlab/-/issues/630101) in GitLab 19.5 as a [beta](../../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 
@@ -189,6 +190,7 @@ GitLab Advanced SAST supports the following languages:
 - PHP
 - Python
 - Ruby
+- Rust (beta)
 - Scala (beta)
 - Swift (beta)
 
@@ -196,18 +198,19 @@ GitLab Advanced SAST CPP requires additional configuration, including a compilat
 details, see [C/C++ configuration](advanced_sast_cpp.md). GitLab Advanced SAST CPP and Semgrep both
 run for C/C++ projects, each with different rule sets.
 
-Dart, Kotlin, Objective-C, Scala, and Swift support is in
+Dart, Kotlin, Objective-C, Rust, Scala, and Swift support is in
 [beta](../../../policy/development_stages_support.md#beta).
 Analysis runs as a separate CI/CD job, `gitlab-advanced-sast-ext`, when GitLab Advanced SAST is
 enabled and the repository contains files for one of these languages. No additional variable is
 required. For Swift and Objective-C, see
 [Swift and Objective-C configuration](advanced_sast_swift_objc.md).
 
-While a language is in beta, `gitlab-advanced-sast-ext` runs alongside `semgrep-sast` and defers to
-it for the weaknesses Semgrep already reports for that language, so the same weakness class is not
-reported twice. For Kotlin these are CWE-89, CWE-78, CWE-22, CWE-79, CWE-327, and CWE-295. For Swift
+For Kotlin, Objective-C, Scala, and Swift, `semgrep-sast` also runs, and `gitlab-advanced-sast-ext`
+defers to it for the weaknesses Semgrep already reports, so the same weakness class is not reported
+twice. For Kotlin these are CWE-89, CWE-78, CWE-22, CWE-79, CWE-327, and CWE-295. For Swift
 it is the Keychain accessibility check (CWE-922). Use `GITLAB_ADVANCED_SAST_EXT_DEDUP_LANGUAGES` to
-change or turn off this behavior.
+change or turn off this behavior. For Dart and Rust, `semgrep-sast` does not run, because the SAST
+template does not route `.dart` or `.rs` files to it.
 
 ### PHP known issues
 
@@ -786,10 +789,10 @@ You can adjust GitLab Advanced SAST behavior using the following variables:
 
 | CI/CD variable                              | Default                | Description                                                                                                                                                                                     |
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Dart, Kotlin, Objective-C, Scala, and Swift analysis runs as a separate `gitlab-advanced-sast-ext` job. |
+| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Dart, Kotlin, Objective-C, Rust, Scala, and Swift analysis runs as a separate `gitlab-advanced-sast-ext` job. |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.                                                                                                                       |
 | `GITLAB_ADV_SAST_INCR_SCAN`                 | `false`                | Enable [incremental scanning](#incremental-scanning) to cache taint signatures between pipeline runs. |
-| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Applies only to the `gitlab-advanced-sast-ext` analyzer (Swift, Objective-C, Dart, Scala, and Kotlin), which has [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) enabled by default. Set to `false` to turn it off. Has no effect on repositories without files for those languages. For other languages, use `GITLAB_ADV_SAST_INCR_SCAN` instead. |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Applies only to the `gitlab-advanced-sast-ext` analyzer (Dart, Kotlin, Objective-C, Rust, Scala, and Swift), which has [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) enabled by default. Set to `false` to turn it off. Has no effect on repositories without files for those languages. For other languages, use `GITLAB_ADV_SAST_INCR_SCAN` instead. |
 | `GITLAB_ADVANCED_SAST_EXT_DEDUP_LANGUAGES` | `kotlin,swift` | Applies only to the `gitlab-advanced-sast-ext` analyzer. Comma-separated list of beta languages for which the analyzer defers to `semgrep-sast` for the weaknesses Semgrep already reports, so they are not reported twice. For Kotlin: CWE-89, CWE-78, CWE-22, CWE-79, CWE-327, and CWE-295. For Swift: the Keychain accessibility check (CWE-922). Set to an empty value to turn the de-duplication off, for example when benchmarking. |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.                                                                                                                  |

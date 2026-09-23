@@ -451,6 +451,20 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
     Scala projects.
 [^including-android]: Including Android.
 
+### Languages with GitLab Advanced SAST support only
+
+These languages are supported by GitLab Advanced SAST (Ultimate) in
+[beta](../../../policy/development_stages_support.md#beta), but not by the standard analyzers:
+
+| Language | GitLab Advanced SAST |
+|----------|----------------------|
+| Dart     | {{< yes >}}          |
+| Rust     | {{< yes >}}          |
+
+Analysis runs in a separate `gitlab-advanced-sast-ext` CI/CD job, which is enabled together with
+GitLab Advanced SAST by the `GITLAB_ADVANCED_SAST_ENABLED` CI/CD variable.
+For more information, see [GitLab Advanced SAST](gitlab_advanced_sast.md#supported-languages).
+
 The SAST CI/CD template also includes an analyzer job that can scan Kubernetes manifests and Helm charts; this job is off by default.
 See [Enabling Kubesec analyzer](#enabling-kubesec-analyzer) or consider [IaC scanning](../iac_scanning/_index.md), which supports additional platforms, instead.
 
@@ -672,34 +686,34 @@ you must
 to cover them. You must also modify the `rules` of the `semgrep-sast` CI/CD job so that the job runs
 when the relevant files are modified.
 
-#### Scan a Rust application
+#### Scan an OCaml application
 
 Prerequisites:
 
 - The Developer, Maintainer, or Owner role for the project.
 
-To scan a Rust application, complete these steps:
+To scan an OCaml application, complete these steps:
 
-1. Provide a custom ruleset for Rust. Create a file named `sast-ruleset.toml` in a `.gitlab/`
+1. Provide a custom ruleset for OCaml. Create a file named `sast-ruleset.toml` in a `.gitlab/`
    directory at the root of your repository.
 
-   The following example uses the Semgrep registry's default ruleset for Rust:
+   The following example uses the Semgrep registry's ruleset for OCaml:
 
    ```toml
    [semgrep]
-     description = "Rust ruleset for Semgrep"
+     description = "OCaml ruleset for Semgrep"
      targetdir = "/sgrules"
      timeout = 60
 
      [[semgrep.passthrough]]
        type  = "url"
-       value = "https://semgrep.dev/c/p/rust"
-       target = "rust.yml"
+       value = "https://semgrep.dev/c/p/ocaml"
+       target = "ocaml.yml"
    ```
 
    For more details, see
    [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-default-rules).
-1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files.
+1. Override the `semgrep-sast` job to add a rule that detects OCaml (`.ml`) files.
 
    Define the following in the `.gitlab-ci.yml` file:
 
@@ -711,7 +725,7 @@ To scan a Rust application, complete these steps:
      rules:
        - if: $CI_COMMIT_BRANCH
          exists:
-           - '**/*.rs'
+           - '**/*.ml'
            # include any other file extensions you need to scan from the semgrep-sast template: Jobs/SAST.gitlab-ci.yml
    ```
 

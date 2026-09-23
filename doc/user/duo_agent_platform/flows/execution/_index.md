@@ -57,10 +57,53 @@ For a list of supported keys and their types, see the [`agent-config.yml` refere
 
 ### Create the agent configuration file
 
+{{< history >}}
+
+- Generating the agent configuration file with GitLab Duo [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22591) in GitLab 19.5 [with a feature flag](../../../../administration/feature_flags/_index.md) named `duo_agent_readiness_settings`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+You can generate the agent configuration file with GitLab Duo, or create it manually.
+
+{{< tabs >}}
+
+{{< tab title="Generate with GitLab Duo" >}}
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- Flow execution turned on for the project.
+
+To generate the file:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. In the **Agent configuration file** row, select **Generate**.
+   GitLab Duo generates the file and opens a merge request to add it to your project.
+1. Review the merge request and merge it when ready.
+
+If the file is already on the default branch, or a merge request that adds it is open,
+the **Agent configuration file** row includes a link to it instead.
+
+{{< /tab >}}
+
+{{< tab title="Create manually" >}}
+
+To create the file manually:
+
 1. In your project's repository, create a `.gitlab/duo/` folder.
 1. In the folder, create a configuration file named `agent-config.yml`.
 1. Add your required configuration options.
 1. Commit and push the file to your default branch.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 The configuration is applied when flows run in CI/CD for your project.
 
@@ -268,6 +311,29 @@ To configure your own runner for flows:
    - [Allow outbound connections from the runner](../../../../administration/gitlab_duo/configure/_index.md#allow-connections-from-the-runner) to the Agent Platform.
    - For instances with self-signed certificates in the certificate chain, complete the
      [additional GitLab Duo CLI configuration](../../../gitlab_duo_cli/use.md#certificate-errors).
+
+### Verify the runner configuration
+
+{{< history >}}
+
+- **CI/CD runner** check under project settings [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22591) in GitLab 19.5 [with a feature flag](../../../../administration/feature_flags/_index.md) named `duo_agent_readiness_settings`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+To verify that the runner is configured correctly for flows:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. In the **CI/CD runner** row, check the status.
+
+The check verifies that the runner is online and has the correct tag, executor, and scope.
+
+To rerun the check after you register or fix a runner, select **Check again**.
 
 ### Use the execution environment sandbox to secure flows
 

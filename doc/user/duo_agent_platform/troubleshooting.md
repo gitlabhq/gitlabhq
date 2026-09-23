@@ -129,6 +129,8 @@ To resolve this issue:
    1. In the top bar, select **Search or go to** and find your project or top-level group.
    1. In the left sidebar, select **Build** > **Runners**.
    1. Confirm that a runner with the `gitlab--duo` tag is online.
+1. Optional. [Verify the runner configuration](flows/execution/_index.md#verify-the-runner-configuration)
+   from project settings, which checks the tag, executor, and scope together.
 1. If no runner meets the requirements, [configure a runner to execute flows](flows/execution/_index.md#configure-runners-to-execute-flows).
 
 If a runner meets all of the requirements but jobs still do not start, check the following:

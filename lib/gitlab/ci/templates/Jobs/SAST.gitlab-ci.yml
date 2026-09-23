@@ -409,7 +409,7 @@ gitlab-advanced-sast-cpp:
   # (`**/{*.swift,*.m,*.mm}`). GitLab classifies the brace form as a `pattern`
   # glob, which short-circuits to a match once the file-count limit is exceeded
   # (50,000 files), so the job would run even in large repositories with no
-  # Swift/Objective-C files. Extension globs are evaluated directly, without
+  # Swift/Objective-C/Rust files. Extension globs are evaluated directly, without
   # that limit.
   exists:
     - '**/*.swift'
@@ -420,6 +420,7 @@ gitlab-advanced-sast-cpp:
     - '**/*.sc'
     - '**/*.kt'
     - '**/*.kts'
+    - '**/*.rs'
 
 gitlab-advanced-sast-ext:
   extends: .sast-analyzer

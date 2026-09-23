@@ -53,15 +53,13 @@ in the UI:
 
 | Diagram format                                  | Extensions                                                              | Availability |
 |-------------------------------------------------|-------------------------------------------------------------------------|--------------|
-| [Mermaid](https://mermaid.js.org/) <sup>1</sup> | `mermaid`                                                               | Always available. |
-| [PlantUML](https://plantuml.com/) <sup>2</sup>  | `plantuml`, `pu`, `puml`, `iuml`                                        | Requires an administrator to [enable the PlantUML integration](../../../../administration/integration/plantuml.md). |
-| [Kroki](https://kroki.io/) <sup>2</sup>         | `d2`, `dot`, `gv`, `noml`, `plantuml`, `pu`, `puml`, `iuml`, `vg`, `vl` | Requires an administrator to [enable the Kroki integration](../../../../administration/integration/kroki.md). |
+| [Mermaid](https://mermaid.js.org/)[^mermaid-diagrams-mermaid] | `mermaid`                                                               | Always available. |
+| [PlantUML](https://plantuml.com/)[^both-plantuml-kroki]  | `plantuml`, `pu`, `puml`, `iuml`                                        | Requires an administrator to [enable the PlantUML integration](../../../../administration/integration/plantuml.md). |
+| [Kroki](https://kroki.io/)[^both-plantuml-kroki]         | `d2`, `dot`, `gv`, `noml`, `plantuml`, `pu`, `puml`, `iuml`, `vg`, `vl` | Requires an administrator to [enable the Kroki integration](../../../../administration/integration/kroki.md). |
 
-**Footnotes**:
-
-1. For Mermaid diagrams, only the `mermaid` extension is rendered. The `mmd` extension is not supported.
-1. If both the PlantUML and Kroki integrations are enabled, GitLab uses PlantUML to render files with
-   the `plantuml`, `pu`, `puml`, and `iuml` extensions.
+[^mermaid-diagrams-mermaid]: For Mermaid diagrams, only the `mermaid` extension is rendered. The `mmd` extension is not supported.
+[^both-plantuml-kroki]: If both the PlantUML and Kroki integrations are enabled, GitLab uses PlantUML to render files with
+    the `plantuml`, `pu`, `puml`, and `iuml` extensions.
 
 For information about diagram syntax, see [diagrams in Markdown](../../../markdown.md#diagrams-and-flowcharts) and
 [diagrams in AsciiDoc](../../../asciidoc.md#diagrams-and-flowcharts).

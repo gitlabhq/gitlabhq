@@ -43,12 +43,10 @@ For a click-through demo, see [GitLab Flex](https://click-through-demo-generator
 |---|---|---|---|---|
 | **Metering** | Credit usage is tracked and debited daily. | Credit usage is synced to GitLab servers daily. | Credit usage is tracked by GitLab. | Credit usage is tracked locally and reported twice a year. |
 | **Provisioning** | Is instant, changes apply within minutes. | Requires cloud licensing enabled on your instance. | Requires coordination with your GitLab account team. | GitLab generates and delivers license files. |
-| **Billing** | Reservations debit your balance on the last day of the calendar month. On-demand usage from the prior month debits your balance at the start of the next month. | Reservations debit your balance on the last day of the calendar month. On-demand usage from the prior month debits your balance at the start of the next month. | Reservations debit your balance on the last day of the calendar month. On-demand usage from the prior month debits your balance at the start of the next month. <sup>1</sup> | Reservations debit your balance on the last day of the calendar month. Actual usage is reconciled twice a year through [true-up](quarterly_reconciliation.md#annual-true-up). |
+| **Billing** | Reservations debit your balance on the last day of the calendar month. On-demand usage from the prior month debits your balance at the start of the next month. | Reservations debit your balance on the last day of the calendar month. On-demand usage from the prior month debits your balance at the start of the next month. | Reservations debit your balance on the last day of the calendar month. On-demand usage from the prior month debits your balance at the start of the next month.[^administration-fee-storage] | Reservations debit your balance on the last day of the calendar month. Actual usage is reconciled twice a year through [true-up](quarterly_reconciliation.md#annual-true-up). |
 | **On-demand invoicing** | Begins only after your commitment is exhausted. Auto-billed monthly to the payment method on file, or otherwise invoiced in accordance with your applicable payment terms. | Begins only after your commitment is exhausted. Auto-billed monthly to the payment method on file, or otherwise invoiced in accordance with your applicable payment terms. | Begins only after your commitment is exhausted. Auto-billed monthly to the payment method on file, or otherwise invoiced in accordance with your applicable payment terms. | Begins only after your commitment is exhausted. Invoiced twice a year based on reported usage. |
 
-**Footnotes:**
-
-1. The administration fee and storage are billed separately and do not draw from your GitLab Flex commitment.
+[^administration-fee-storage]: The administration fee and storage are billed separately and do not draw from your GitLab Flex commitment.
 
 ## Monthly drawdown cycle
 

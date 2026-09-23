@@ -810,22 +810,22 @@ GitLab Flavored Markdown recognizes the following:
 | Issue                                                                                | ``#123``, `GL-123`, or `[issue:123]`                  | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
 | [Work item](work_items/_index.md)                                                    | `[work_item:123]`                                     | `[work_item:namespace/project/123]`            | `[work_item:project/123]`          |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
-| Snippet <sup>3</sup>                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| Personal snippet <sup>3</sup>                                                                     | `$123`                                                |                                                |                                    |
+| Snippet[^snippet-ids-unique]                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
+| Personal snippet[^snippet-ids-unique]                                                                     | `$123`                                                |                                                |                                    |
 | [Epic](group/epics/_index.md)                                                        | `#123`, `&123`, `[work_item:123]`, or `[epic:123]`    | `group1/subgroup#123`, `group1/subgroup&123`, `[work_item:group1/subgroup/123]`, or `[epic:group1/subgroup/123]` |  |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
-| [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
-| [Iteration cadence](group/iterations/_index.md) by title (one word)<sup>1</sup>      | `[cadence:plan]`                                      |                                                |                                    |
-| [Iteration cadence](group/iterations/_index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                 |                                                |                                    |
+| [Iteration cadence](group/iterations/_index.md) by ID[^iteration-cadence-references]                    | `[cadence:123]`                                       |                                                |                                    |
+| [Iteration cadence](group/iterations/_index.md) by title (one word)[^iteration-cadence-references]      | `[cadence:plan]`                                      |                                                |                                    |
+| [Iteration cadence](group/iterations/_index.md) by title (multiple words)[^iteration-cadence-references] | `[cadence:"plan a"]`                                 |                                                |                                    |
 | [Vulnerability](application_security/vulnerabilities/_index.md)                       | `[vulnerability:123]`                                | `[vulnerability:namespace/project/123]`        | `[vulnerability:project/123]`      |
 | Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`         | `[feature_flag:project/123]`       |
-| Label by ID <sup>2</sup>                                                             | `~123`                                                | `namespace/project~123`                        | `project~123`                      |
-| Label by name (one word) <sup>2</sup>                                                | `~bug`                                                | `namespace/project~bug`                        | `project~bug`                      |
-| Label by name (multiple words) <sup>2</sup>                                          | `~"feature request"`                                  | `namespace/project~"feature request"`          | `project~"feature request"`        |
-| Label by name (scoped) <sup>2</sup>                                                  | `~"priority::high"`                                   | `namespace/project~"priority::high"`           | `project~"priority::high"`         |
-| Project milestone by ID <sup>2</sup>                                                 | `%123`                                                | `namespace/project%123`                        | `project%123`                      |
-| Milestone by name (one word) <sup>2</sup>                                            | `%v1.23`                                              | `namespace/project%v1.23`                      | `project%v1.23`                    |
-| Milestone by name (multiple words) <sup>2</sup>                                      | `%"release candidate"`                                | `namespace/project%"release candidate"`        | `project%"release candidate"`      |
+| Label by ID[^labels-milestones-prepend]                                                             | `~123`                                                | `namespace/project~123`                        | `project~123`                      |
+| Label by name (one word)[^labels-milestones-prepend]                                                | `~bug`                                                | `namespace/project~bug`                        | `project~bug`                      |
+| Label by name (multiple words)[^labels-milestones-prepend]                                          | `~"feature request"`                                  | `namespace/project~"feature request"`          | `project~"feature request"`        |
+| Label by name (scoped)[^labels-milestones-prepend]                                                  | `~"priority::high"`                                   | `namespace/project~"priority::high"`           | `project~"priority::high"`         |
+| Project milestone by ID[^labels-milestones-prepend]                                                 | `%123`                                                | `namespace/project%123`                        | `project%123`                      |
+| Milestone by name (one word)[^labels-milestones-prepend]                                            | `%v1.23`                                              | `namespace/project%v1.23`                      | `project%v1.23`                    |
+| Milestone by name (multiple words)[^labels-milestones-prepend]                                      | `%"release candidate"`                                | `namespace/project%"release candidate"`        | `project%"release candidate"`      |
 | Commit (specific)                                                                    | `9ba12248`                                            | `namespace/project@9ba12248`                   | `project@9ba12248`                 |
 | Commit range comparison                                                              | `9ba12248...b19a04f5`                                 | `namespace/project@9ba12248...b19a04f5`        | `project@9ba12248...b19a04f5`      |
 | Repository file reference                                                            | `[README](doc/README.md)`                             |                                                |                                    |
@@ -835,15 +835,13 @@ GitLab Flavored Markdown recognizes the following:
 | [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)      | `[[Home]]` or `[wiki_page:Home]`                      | `[wiki_page:namespace/project:Home]` or `[wiki_page:group1/subgroup:Home]` |        |
 | [Wiki page](project/wiki/_index.md) (if the page slug is different from the title)   | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
 
-**Footnotes**:
-
-1. Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
-   For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
-   iterations cadence's ID is `1`.
-1. For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
-   or milestone, removing any possible ambiguity.
-1. Snippet IDs are unique across personal and project snippets, so a given ID always identifies
-   a single snippet.
+[^iteration-cadence-references]: Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
+    For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
+    iterations cadence's ID is `1`.
+[^labels-milestones-prepend]: For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
+    or milestone, removing any possible ambiguity.
+[^snippet-ids-unique]: Snippet IDs are unique across personal and project snippets, so a given ID always identifies
+    a single snippet.
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is

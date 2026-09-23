@@ -90,14 +90,12 @@ for keyboard navigation:
 | <kbd>Up arrow</kbd>                                  | Move focus to the previous file or directory without opening or closing directories. Does nothing if focus is on the first item. |
 | <kbd>Right arrow</kbd>                               | When focus is on a closed directory, open it. When focus is on an open directory, move focus to the first item inside. Does nothing if focus is on a file. |
 | <kbd>Left arrow</kbd>                                | When focus is on an open directory, close it. When focus is on a file or nested item, move focus to its parent directory. Does nothing if focus is on a closed root directory. |
-| <kbd>Home</kbd> <sup>1</sup>                                     | Move focus to the first file or directory without opening or closing directories. |
-| <kbd>End</kbd> <sup>1</sup>                                       | Move focus to the last file or directory without expanding closed directories. |
+| <kbd>Home</kbd>[^home-end-keys]                                     | Move focus to the first file or directory without opening or closing directories. |
+| <kbd>End</kbd>[^home-end-keys]                                       | Move focus to the last file or directory without expanding closed directories. |
 | <kbd>a</kbd>-<kbd>z</kbd>, <kbd>A</kbd>-<kbd>Z</kbd> | Move focus to the next file or directory with a name starting with the typed character. Search wraps to the first item if no match is found. Ignores items inside closed directories. |
 | <kbd>*</kbd> (asterisk)                              | Expand all closed directories at the same level as the focused item. Focus does not move. |
 
-**Footnotes**:
-
-1. <kbd>Home</kbd> and <kbd>End</kbd> keys might not be available on all keyboards.
+[^home-end-keys]: <kbd>Home</kbd> and <kbd>End</kbd> keys might not be available on all keyboards.
 
 ## Related topics
 

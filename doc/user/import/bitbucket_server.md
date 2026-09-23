@@ -32,21 +32,19 @@ The Bitbucket Server importer imports a subset of items from Bitbucket Server.
 | Git repository data                                                           | {{< yes >}} |
 | Pull requests, including comments, user mentions, reviewers, and merge events | {{< yes >}} |
 | LFS objects                                                                   | {{< yes >}} |
-| Comments on code<sup>1</sup>                                                  | {{< yes >}} |
-| Threads<sup>2</sup>                                                           | {{< yes >}} |
-| Project filters<sup>3</sup>                                                   | {{< yes >}} |
+| Comments on code[^doesn-allow-comments]                                                  | {{< yes >}} |
+| Threads[^multiple-threading-levels]                                                           | {{< yes >}} |
+| Project filters[^project-filtering-doesn]                                                   | {{< yes >}} |
 | Attachments in Markdown                                                       | {{< no >}} |
 | Task lists                                                                    | {{< no >}} |
 | Emoji reactions                                                               | {{< no >}} |
 | Pull request approvals                                                        | {{< no >}} |
 | Approval rules for pull requests                                              | {{< no >}} |
 
-Footnotes:
-
-1. GitLab doesn't allow comments on arbitrary lines of code. Any out-of-bounds Bitbucket comments are inserted as
-   comments in the merge request.
-1. Multiple threading levels are collapsed into one thread and quotes are added as part of the original comment.
-1. Project filtering doesn't support fuzzy search. Only starts with or full match strings are supported.
+[^doesn-allow-comments]: GitLab doesn't allow comments on arbitrary lines of code. Any out-of-bounds Bitbucket comments are inserted as
+    comments in the merge request.
+[^multiple-threading-levels]: Multiple threading levels are collapsed into one thread and quotes are added as part of the original comment.
+[^project-filtering-doesn]: Project filtering doesn't support fuzzy search. Only starts with or full match strings are supported.
 
 ## Known issues
 

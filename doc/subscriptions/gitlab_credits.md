@@ -280,59 +280,57 @@ For subsidized models with basic integration:
 
 For premium models with optimized integration:
 
-| Model | Calls with one credit |
-|-------|------------------------|
-| `gpt-5.6-luna` | 8.0 |
-| `gpt-6-luna` | 8.0 |
-| `minimax-m3` | 8.0 |
-| `claude-4.5-haiku` | 6.7 |
-| `gemini-3.6-flash` <sup>1</sup> | 6.7 |
-| `gemini-3.7-flash` <sup>1</sup> | 6.7 |
-| `gemini-3.8-flash` <sup>1</sup> | 6.7 |
-| `gpt-5-4-mini` | 6.7 |
-| `glm-5.3` | 5.0 |
-| `gemini-3.5-flash` | 3.3 |
-| `gpt-5` | 3.3 |
-| `gpt-5-codex` | 3.3 |
-| `claude-sonnet-5` | 3.2 |
-| `gpt-6-sol` <sup>3</sup> | 2.86 |
-| `gpt-5.2` | 2.5 |
-| `gpt-5.2-codex` | 2.5 |
-| `gpt-5.3-codex` | 2.5 |
-| `gpt-5.6-terra` <sup>3</sup> | 2.5 |
-| `claude-3.5-sonnet` | 2.0 |
-| `claude-3.7-sonnet` | 2.0 |
-| `claude-sonnet-4.5` | 2.0 |
-| `claude-sonnet-4.6` | 2.0 |
-| `gpt-5.4` <sup>3</sup> | 2.0 |
-| `kimi-k3` | 1.82 |
-| `gpt-6-sol` <sup>4</sup> | 1.54 |
-| `gpt-5.6-terra` <sup>4</sup> | 1.43 |
-| `claude-opus-5.5` | 1.35 |
-| `gpt-5.6-sol` <sup>2</sup> <sup>3</sup> | 1.33 |
-| `claude-opus-4.5` | 1.2 |
-| `gpt-5.4` <sup>4</sup> | 1.11 |
-| `claude-opus-4.6` | 1.1 |
-| `claude-opus-4.7` | 1.1 |
-| `claude-opus-4.8` | 1.1 |
-| `claude-opus-5` | 1.1 |
-| `gpt-5.5` <sup>3</sup> | 1.0 |
-| `gpt-5.6-sol` <sup>4</sup> | 0.76 |
-| `claude-fable-5` | 0.6 |
-| `claude-fable-5.1` | 0.6 |
-| `gpt-5.5` <sup>4</sup> | 0.57 |
-| `gpt-6-astra` <sup>3</sup> | 0.54 |
-| `gpt-6-astra` <sup>4</sup> | 0.31 |
+| Model                                                            | Calls with one credit |
+|------------------------------------------------------------------|-----------------------|
+| `gpt-5.6-luna`                                                   | 8.0                   |
+| `gpt-6-luna`                                                     | 8.0                   |
+| `minimax-m3`                                                     | 8.0                   |
+| `claude-4.5-haiku`                                               | 6.7                   |
+| `gemini-3.6-flash`[^promotional-pricing-through]                 | 6.7                   |
+| `gemini-3.7-flash`[^promotional-pricing-through]                 | 6.7                   |
+| `gemini-3.8-flash`[^promotional-pricing-through]                 | 6.7                   |
+| `gpt-5-4-mini`                                                   | 6.7                   |
+| `glm-5.3`                                                        | 5.0                   |
+| `gemini-3.5-flash`                                               | 3.3                   |
+| `gpt-5`                                                          | 3.3                   |
+| `gpt-5-codex`                                                    | 3.3                   |
+| `claude-sonnet-5`                                                | 3.2                   |
+| `gpt-6-sol`[^short-context-window]                               | 2.86                  |
+| `gpt-5.2`                                                        | 2.5                   |
+| `gpt-5.2-codex`                                                  | 2.5                   |
+| `gpt-5.3-codex`                                                  | 2.5                   |
+| `gpt-5.6-terra`[^short-context-window]                           | 2.5                   |
+| `claude-3.5-sonnet`                                              | 2.0                   |
+| `claude-3.7-sonnet`                                              | 2.0                   |
+| `claude-sonnet-4.5`                                              | 2.0                   |
+| `claude-sonnet-4.6`                                              | 2.0                   |
+| `gpt-5.4`[^short-context-window]                                 | 2.0                   |
+| `kimi-k3`                                                        | 1.82                  |
+| `gpt-6-sol`[^long-context-window]                                | 1.54                  |
+| `gpt-5.6-terra`[^long-context-window]                            | 1.43                  |
+| `claude-opus-5.5`                                                | 1.35                  |
+| `gpt-5.6-sol`[^promotional-pricing-gpt], [^short-context-window] | 1.33                  |
+| `claude-opus-4.5`                                                | 1.2                   |
+| `gpt-5.4`[^long-context-window]                                  | 1.11                  |
+| `claude-opus-4.6`                                                | 1.1                   |
+| `claude-opus-4.7`                                                | 1.1                   |
+| `claude-opus-4.8`                                                | 1.1                   |
+| `claude-opus-5`                                                  | 1.1                   |
+| `gpt-5.5`[^short-context-window]                                 | 1.0                   |
+| `gpt-5.6-sol`[^long-context-window]                              | 0.76                  |
+| `claude-fable-5`                                                 | 0.6                   |
+| `claude-fable-5.1`                                               | 0.6                   |
+| `gpt-5.5`[^long-context-window]                                  | 0.57                  |
+| `gpt-6-astra`[^short-context-window]                             | 0.54                  |
+| `gpt-6-astra`[^long-context-window]                              | 0.31                  |
 
-**Footnotes**:
-
-1. Promotional pricing through December 31, 2026.
-   Afterwards, the rate changes to approximately 3.3 calls per credit.
-1. Promotional pricing for GPT-5.6 Sol through November 21, 2026.
-   Afterwards, the rates change to approximately 1.0 calls per credit
-   for the short context window and 0.57 for the long context window.
-1. Short context window of up to 272,000 tokens.
-1. Long context window of more than 272,000 tokens.
+[^promotional-pricing-through]: Promotional pricing through December 31, 2026.
+    Afterwards, the rate changes to approximately 3.3 calls per credit.
+[^promotional-pricing-gpt]: Promotional pricing for GPT-5.6 Sol through November 21, 2026.
+    Afterwards, the rates change to approximately 1.0 calls per credit
+    for the short context window and 0.57 for the long context window.
+[^short-context-window]: Short context window of up to 272,000 tokens.
+[^long-context-window]: Long context window of more than 272,000 tokens.
 
 ### Features
 

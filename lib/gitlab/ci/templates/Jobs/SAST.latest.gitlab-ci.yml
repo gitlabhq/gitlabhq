@@ -363,6 +363,7 @@ gitlab-advanced-sast-cpp:
     - '**/*.sc'
     - '**/*.kt'
     - '**/*.kts'
+    - '**/*.rs'
 
 gitlab-advanced-sast-ext:
   extends: .sast-analyzer

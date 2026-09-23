@@ -69,6 +69,7 @@ a GitLab Duo Chat feature to troubleshoot single-job failures.
 - Have an existing failed pipeline.
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
 - [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
+- Recommended. Create an [agent configuration file](../execution/_index.md#create-the-agent-configuration-file) so the flow has access to your project's toolchain and dependencies.
 
 ## Fix the pipeline in a merge request
 

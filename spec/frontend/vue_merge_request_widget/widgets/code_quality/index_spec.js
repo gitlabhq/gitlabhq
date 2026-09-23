@@ -89,7 +89,7 @@ describe('Code Quality widget', () => {
     describe('when request succeeds', () => {
       it.each`
         scenario               | response                          | message                                                          | statusIcon
-        ${'no findings'}       | ${responseNoFindings}             | ${"Code Quality hasn't changed."}                                | ${'neutral'}
+        ${'no findings'}       | ${responseNoFindings}             | ${"Code Quality hasn't changed."}                                | ${'success'}
         ${'new findings'}      | ${responseNewFindings}            | ${'Code Quality scans found 1 new finding.'}                     | ${'warning'}
         ${'resolved findings'} | ${responseResolvedFindings}       | ${'Code Quality scans found 1 fixed finding.'}                   | ${'success'}
         ${'new and resolved'}  | ${responseNewAndResolvedFindings} | ${'Code Quality scans found 1 new finding and 1 fixed finding.'} | ${'warning'}

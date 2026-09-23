@@ -68,7 +68,7 @@ export default {
       if (this.collapsedData?.resolved_errors?.length >= 1) {
         return EXTENSION_ICONS.success;
       }
-      return EXTENSION_ICONS.neutral;
+      return EXTENSION_ICONS.success;
     },
     shouldCollapse() {
       const { new_errors: newErrors, resolved_errors: resolvedErrors } = this.collapsedData;

@@ -122,13 +122,13 @@ Create another Jira automation workflow as described above, with the following c
    | ------ | ------ |
    | Title | issue.fields.summary |
    | Description | issue.fields.status.description |
-   | End time | issue.fields.resolutiondate<sup>1</sup> |
+   | End time | issue.fields.resolutiondate[^needed-set-incident] |
    | Monitoring tool | issue.fields.reporter.accountType |
    | Severity | issue.fields.priority.name |
    | Fingerprint | issue.key |
    | Environment | issue.fields.project.name |
 
-<sup>1</sup> This is only needed if you set up the incident resolution automation. If this field doesn't appear as an option, make sure you entered a _resolved_ issue key to test with in step 2 above.
+[^needed-set-incident]: This is only needed if you set up the incident resolution automation. If this field doesn't appear as an option, make sure you entered a _resolved_ issue key to test with in step 2 above.
 
 1. Finally, click **Save integration**.
 

@@ -59,16 +59,14 @@ You can also use exact code search in a project or group.
 Scopes describe the type of data you're searching.
 The following scopes are available for exact code search:
 
-| Scope | Global <sup>1</sup> <sup>2</sup> |    Group    | Project     |
+| Scope | Global[^disable-global-search-scopes], [^com-global-search] |    Group    | Project     |
 |-------|:--------------------------------:|:-----------:|:-----------:|
 | Code  |           {{< no >}}             | {{< yes >}} | {{< yes >}} |
 
-**Footnotes**:
-
-1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
-   In GitLab 18.6 and earlier, to enable global search on GitLab Self-Managed,
-   an administrator must also enable the `zoekt_cross_namespace_search` feature flag.
-1. On GitLab.com, global search is not enabled.
+[^disable-global-search-scopes]: An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
+    In GitLab 18.6 and earlier, to enable global search on GitLab Self-Managed,
+    an administrator must also enable the `zoekt_cross_namespace_search` feature flag.
+[^com-global-search]: On GitLab.com, global search is not enabled.
 
 ## Zoekt search API
 
