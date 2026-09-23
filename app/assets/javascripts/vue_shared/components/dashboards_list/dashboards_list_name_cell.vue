@@ -35,7 +35,7 @@ export default {
     <gl-link
       data-testid="dashboard-redirect-link"
       :href="dashboardUrl"
-      class="gl-text-lg gl-font-bold !gl-text-strong !gl-no-underline gl-break-anywhere"
+      class="gl-font-bold !gl-text-strong gl-break-anywhere"
       :class="{ 'gl-stretched-link': stretched }"
       >{{ name }}</gl-link
     >
@@ -44,7 +44,7 @@ export default {
     <p
       v-if="description"
       :title="description"
-      class="gl-m-0 gl-line-clamp-2 gl-text-subtle gl-break-anywhere"
+      class="gl-m-0 gl-line-clamp-2 gl-text-sm gl-text-subtle gl-break-anywhere"
       data-testid="dashboard-description"
     >
       {{ description }}

@@ -195,6 +195,22 @@ describe('Resolver', () => {
     });
   });
 
+  describe('when execute fails after a successful parse', () => {
+    beforeEach(() => {
+      mockUtils({ executeError: true });
+      createWrapper();
+      return waitForPromises();
+    });
+
+    // Consumers size their error states by the display type, which the query still declares.
+    it('keeps the parsed config through the failure', () => {
+      expect(wrapper.emitted('change').at(-1)[0]).toMatchObject({
+        error: new Error('execute error'),
+        config: MOCK_PARSE_OUTPUT.config,
+      });
+    });
+  });
+
   describe.each(['parse', 'execute', 'transform'])('when %s throws an error', (errorUtil) => {
     beforeEach(() => {
       mockUtils({
@@ -272,12 +288,14 @@ describe('Resolver', () => {
       });
     });
 
-    it('emits change event with error payload when data presenter has an error', async () => {
+    it('drops the rows and emits the error when the data presenter fails', async () => {
       const error = new Error('presenter error');
       findPresenter().vm.$emit('error', error);
       await nextTick();
 
-      expectEmittedChanges([{ loading: true }, { loading: false }, { error }]);
+      // The presenter cannot render these rows, so nothing is worth keeping on screen.
+      expectEmittedChanges([{ loading: true }, { loading: false }, { error, data: undefined }]);
+      expect(findPresenter().exists()).toBe(false);
     });
 
     it('does not show the pagination component', () => {
@@ -418,47 +436,112 @@ describe('Resolver', () => {
       ]);
     });
 
-    it('runs the comparison query once the main one has resolved', async () => {
+    describe('while the main query is still running', () => {
       let resolveCurrent;
-      mockParse();
-      execute.mockImplementation((query) =>
-        isComparison(query)
-          ? Promise.resolve(PREVIOUS)
-          : new Promise((resolve) => {
-              resolveCurrent = resolve;
-            }),
-      );
-      transform.mockImplementation(identity);
 
-      createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
-      await waitForPromises();
+      beforeEach(async () => {
+        mockParse();
+        execute.mockImplementation((query) =>
+          isComparison(query)
+            ? Promise.resolve(PREVIOUS)
+            : new Promise((resolve) => {
+                resolveCurrent = resolve;
+              }),
+        );
+        transform.mockImplementation(identity);
 
-      expect(execute.mock.calls.map(([query]) => query)).toEqual(['query {}']);
-      expect(findPresenter().props('loading')).toBe(true);
+        createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
+        await waitForPromises();
+      });
 
-      resolveCurrent(CURRENT);
-      await waitForPromises();
+      it('runs the comparison query without waiting for it', () => {
+        expect(execute.mock.calls.map(([query]) => query)).toEqual([
+          'query {}',
+          'query previous {}',
+        ]);
+      });
 
-      expect(execute.mock.calls.map(([query]) => query)).toEqual(['query {}', 'query previous {}']);
-      expect(findPresenter().props()).toMatchObject({
-        loading: false,
-        data: CURRENT,
-        comparisonData: PREVIOUS,
+      it('holds back the comparison result until the main one arrives', () => {
+        expect(findPresenter().props()).toMatchObject({ loading: true, comparisonData: null });
+        expectEmittedChanges([{ loading: true }]);
+      });
+
+      describe('when the main query resolves', () => {
+        beforeEach(async () => {
+          resolveCurrent(CURRENT);
+          await waitForPromises();
+        });
+
+        it('renders both results in a single change', () => {
+          expect(findPresenter().props()).toMatchObject({
+            loading: false,
+            data: CURRENT,
+            comparisonData: PREVIOUS,
+          });
+          expectEmittedChanges([
+            { loading: true },
+            { loading: false, data: CURRENT, comparisonData: PREVIOUS },
+          ]);
+        });
       });
     });
 
-    it('skips the comparison when the main result outgrows a single page', async () => {
+    it('drops the comparison when the main result outgrows a single page', async () => {
       mockParse();
       execute.mockImplementation((query) =>
-        Promise.resolve(isComparison(query) ? PREVIOUS : { ...CURRENT, count: 500 }),
+        Promise.resolve(isComparison(query) ? PREVIOUS : { ...CURRENT, count: 101 }),
       );
       transform.mockImplementation(identity);
 
       createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
       await waitForPromises();
 
-      expect(execute.mock.calls.map(([query]) => query)).toEqual(['query {}']);
-      expect(findPresenter().props('comparisonData')).toBeNull();
+      expect(findPresenter().props()).toMatchObject({
+        data: { ...CURRENT, count: 101 },
+        comparisonData: null,
+      });
+    });
+
+    it('keeps the comparison when the main result fills exactly one page', async () => {
+      mockParse();
+      execute.mockImplementation((query) =>
+        Promise.resolve(isComparison(query) ? PREVIOUS : { ...CURRENT, count: 100 }),
+      );
+      transform.mockImplementation(identity);
+
+      createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
+      await waitForPromises();
+
+      expect(findPresenter().props('comparisonData')).toEqual(PREVIOUS);
+    });
+
+    describe('when the main query fails', () => {
+      const mainError = new Error('main execute error');
+      const comparisonError = new Error('comparison execute error');
+
+      beforeEach(async () => {
+        mockParse();
+        execute.mockImplementation((query) =>
+          Promise.reject(isComparison(query) ? comparisonError : mainError),
+        );
+        transform.mockImplementation(identity);
+
+        createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
+        await waitForPromises();
+      });
+
+      it('reports the main error without a comparison', () => {
+        expect(wrapper.emitted('change').slice(-1)[0][0]).toMatchObject({
+          loading: false,
+          error: mainError,
+          data: undefined,
+          comparisonData: undefined,
+        });
+      });
+
+      it('still captures the comparison failure for debugging', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(comparisonError);
+      });
     });
 
     it('renders both results through the presenter', async () => {

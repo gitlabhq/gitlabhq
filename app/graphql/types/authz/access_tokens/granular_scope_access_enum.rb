@@ -14,11 +14,11 @@ module Types
 
         value 'ALL_MEMBERSHIPS',
           value: 'all_memberships',
-          description: 'Grants access to resources belonging to all groups and projects the user is a member of.'
+          description: 'Grants access to resources belonging to all groups and projects the user can access.'
 
         value 'SELECTED_MEMBERSHIPS',
           value: 'selected_memberships',
-          description: 'Grants access to resources belonging to selected groups and projects the user is a member of.'
+          description: 'Grants access to resources belonging to selected groups and projects the user can access.'
 
         value 'USER',
           value: 'user',

@@ -38,10 +38,10 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
           create(:identity, user: user, provider: 'jwt', extern_uid: 'jwt-uid')
         end
 
-        it 'redirects to profile account path' do
+        it 'redirects to the Password and authentication page' do
           request
 
-          expect(response).to redirect_to profile_account_path
+          expect(response).to redirect_to profile_two_factor_auth_path
         end
       end
     end
@@ -130,7 +130,7 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
       it 'redirects and notifies the user that authentication method was updated' do
         request
 
-        expect(response).to redirect_to profile_account_path
+        expect(response).to redirect_to profile_two_factor_auth_path
         expect(flash[:notice]).to eq(_('Authentication method updated'))
       end
     end
@@ -148,7 +148,7 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
       it 'redirects and notifies the user that errors occurred' do
         request
 
-        expect(response).to redirect_to profile_account_path
+        expect(response).to redirect_to profile_two_factor_auth_path
         expect(flash[:notice]).to eq(
           format(_('Error linking identity: %{errors}'), errors: 'Provider and Extern UID must be in the session.')
         )
@@ -191,7 +191,7 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
       it 'links the identity and notifies the user' do
         request
 
-        expect(response).to redirect_to profile_account_path
+        expect(response).to redirect_to profile_two_factor_auth_path
         expect(flash[:notice]).to eq(_('Authentication method updated'))
       end
     end
@@ -212,7 +212,7 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
       it 'redirects and notifies the user that errors occurred' do
         request
 
-        expect(response).to redirect_to profile_account_path
+        expect(response).to redirect_to profile_two_factor_auth_path
         expect(flash[:notice]).to eq(
           format(_('Error linking identity: %{errors}'),
             errors: "Extern uid has already been taken. " \

@@ -27,6 +27,10 @@ module Suggestible
     target_line + real_below
   end
 
+  def oversized?
+    lines_above > MAX_LINES_CONTEXT || lines_below > MAX_LINES_CONTEXT
+  end
+
   def diff_file
     raise NotImplementedError
   end

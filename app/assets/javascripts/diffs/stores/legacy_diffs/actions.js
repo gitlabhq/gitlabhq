@@ -939,6 +939,9 @@ export function toggleFullDiff(filePath) {
 }
 
 export function switchToFullDiffFromRenamedFile({ diffFile }) {
+  // Dropped by the backend for paths with traversal segments; nothing to expand.
+  if (!diffFile.context_lines_path) return Promise.reject();
+
   return axios
     .get(diffFile.context_lines_path, {
       params: {

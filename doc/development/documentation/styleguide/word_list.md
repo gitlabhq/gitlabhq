@@ -1279,7 +1279,7 @@ You can also use `glab`.
 ## GitLab-managed model
 
 Use **GitLab-managed model** to refer to large language models that customers access through the GitLab
-AI Gateway through the [Cloud Connector](../../cloud_connector/architecture.md).
+AI Gateway through the [Cloud Connector](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/).
 
 Do not use this term for models that customers self-host on their own AI Gateway.
 

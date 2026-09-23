@@ -75215,6 +75215,17 @@ paths:
           type: boolean
           default: false
         in: query
+      - name: download_mode
+        required: false
+        description: Requested download transfer mode (`proxy` or `direct`). Only
+          honored when allowed by the object storage configuration.
+        schema:
+          type: string
+          enum:
+          - proxy
+          - direct
+          nullable: true
+        in: query
   "/api/v4/projects/{id}/resource_groups":
     get:
       operationId: getApiV4ProjectsIdResourceGroups

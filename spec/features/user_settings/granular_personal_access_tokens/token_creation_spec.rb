@@ -25,7 +25,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
       fill_in 'Name', with: 'My Fine-Grained PAT'
       fill_in 'Description', with: 'My fine-grained PAT description'
 
-      choose 'Only specific groups or projects that I\'m a member of'
+      choose 'Only specific groups or projects I have access to'
 
       click_button 'Add group or project'
       select_listbox_item group.full_path, exact_text: true
@@ -76,7 +76,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
     it 'allows removing a previously selected namespace' do
       fill_in 'Name', with: 'My Fine-Grained PAT'
 
-      choose 'Only specific groups or projects that I\'m a member of'
+      choose 'Only specific groups or projects I have access to'
 
       click_button 'Add group or project'
       select_listbox_item group.full_path, exact_text: true
@@ -120,7 +120,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
       fill_in 'Name', with: 'All-memberships PAT'
       fill_in 'Description', with: 'Covers everything I\'m a member of'
 
-      choose 'All groups and projects that I\'m a member of'
+      choose 'All groups and projects I have access to'
 
       expect(page).not_to have_button 'Add group or project'
 
@@ -144,7 +144,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
     fill_in 'Name', with: 'Multi-tab PAT'
     fill_in 'Description', with: 'PAT spanning namespace, user, and instance scopes'
 
-    choose 'All groups and projects that I\'m a member of'
+    choose 'All groups and projects I have access to'
 
     within_testid('resource-tree') do
       click_button 'Toggle Groups category'
@@ -194,7 +194,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
       fill_in 'Name', with: 'Select-all PAT'
       fill_in 'Description', with: 'Token created via category select-all'
 
-      choose 'All groups and projects that I\'m a member of'
+      choose 'All groups and projects I have access to'
     end
 
     it 'adds every resource in the category to the selection and creates a token' do
@@ -266,7 +266,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
   context 'with form validation' do
     it 'requires a name' do
       fill_in 'Description', with: 'has description but no name'
-      choose 'All groups and projects that I\'m a member of'
+      choose 'All groups and projects I have access to'
       select_avatar_read_permission
 
       click_on 'Generate token'
@@ -277,7 +277,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
 
     it 'requires a description' do
       fill_in 'Name', with: 'has name but no description'
-      choose 'All groups and projects that I\'m a member of'
+      choose 'All groups and projects I have access to'
       select_avatar_read_permission
 
       click_on 'Generate token'
@@ -312,7 +312,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
       fill_in 'Name', with: 'No namespace PAT'
       fill_in 'Description', with: 'No namespace PAT description'
 
-      choose 'Only specific groups or projects that I\'m a member of'
+      choose 'Only specific groups or projects I have access to'
       select_avatar_read_permission
 
       click_on 'Generate token'

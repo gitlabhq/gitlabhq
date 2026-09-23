@@ -29,10 +29,16 @@ module RapidDiffs
 
     def file_data
       project = @diff_file.repository.project
-      params = tree_join(@diff_file.content_sha, @diff_file.file_path)
+      diff_lines_path = unless @diff_file.path_traversal?
+                          project_blob_diff_lines_path(
+                            project,
+                            tree_join(@diff_file.content_sha, @diff_file.file_path)
+                          )
+                        end
+
       data = {
         viewer: viewer_component.viewer_name,
-        diff_lines_path: project_blob_diff_lines_path(project, params),
+        diff_lines_path: diff_lines_path,
         old_path: @diff_file.old_path,
         new_path: @diff_file.new_path
       }

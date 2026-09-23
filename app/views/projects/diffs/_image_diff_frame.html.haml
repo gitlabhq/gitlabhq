@@ -2,4 +2,6 @@
 - note_type = local_assigns.fetch(:note_type, '')
 
 .frame{ class: class_name, data: { position: position, note_type: note_type } }
-  = image_tag(image_path, alt: alt, draggable: false, lazy: false)
+  -# The raw URL is dropped for paths with traversal segments; keep an <img> so
+  -# image_diff.js can still find one.
+  = image_tag(image_path || placeholder_image, alt: alt, draggable: false, lazy: false)

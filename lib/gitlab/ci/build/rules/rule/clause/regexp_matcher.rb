@@ -43,7 +43,7 @@ module Gitlab
                   return true
                 end
 
-                pattern = Regexp.new(@expanded_pattern, timeout: REGEXP_TIMEOUT_SECONDS)
+                pattern = compile_pattern
                 deadline = current_monotonic_time + REGEXP_TOTAL_TIMEOUT_SECONDS
 
                 paths.any? do |path|
@@ -64,6 +64,13 @@ module Gitlab
               end
 
               private
+
+              def compile_pattern
+                Clause.compile_regexp(@expanded_pattern, timeout: REGEXP_TIMEOUT_SECONDS)
+              rescue RegexpError => e
+                log(:warn, 'regexp rejected at compile time', regexp: sanitized_pattern)
+                raise ParseError, "#{@log_scope}:regexp is invalid: #{e.message}"
+              end
 
               def current_monotonic_time
                 Gitlab::Metrics::System.monotonic_time

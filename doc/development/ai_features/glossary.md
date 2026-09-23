@@ -55,7 +55,7 @@ Automated mechanism for determining the helpfulness and accuracy of GitLab Duo C
 
 ### Cloud Connector
 
-Cloud Connector is a way to access services common to multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the set of technical solutions and APIs used to make such services available to all GitLab customers. For more information, see the [Cloud Connector architecture](../cloud_connector/architecture.md).
+Cloud Connector is a way to access services common to multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the set of technical solutions and APIs used to make such services available to all GitLab customers. For more information, see the [Cloud Connector architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/).
 
 ### Closed source model
 

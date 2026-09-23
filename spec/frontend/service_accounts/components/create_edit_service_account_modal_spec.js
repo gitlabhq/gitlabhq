@@ -87,14 +87,6 @@ describe('CreateEditServiceAccountModal', () => {
     });
 
     it('contains correct fields', () => {
-      createComponent({
-        provide: {
-          glFeatures: {
-            editServiceAccountEmail: true,
-          },
-        },
-      });
-
       expect(findForm().props('fields')).toMatchObject({
         name: {
           label: 'Name',

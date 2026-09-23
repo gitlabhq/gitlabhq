@@ -180,9 +180,11 @@ describe('DashboardCardThumbnail', () => {
 
       const statTile = findStatTiles().at(0);
 
+      const [titleBar, accentPill] = statTile.element.firstElementChild.children;
+
       expect(statTile.element.firstElementChild.children).toHaveLength(2);
-      expect(statTile.find('.gl-bg-strong').exists()).toBe(true);
-      expect(statTile.find('.gl-bg-data-viz-orange-500').exists()).toBe(true);
+      expect([...titleBar.classList]).toContain('gl-bg-[var(--gl-border-color-default)]');
+      expect([...accentPill.classList]).toContain('gl-bg-data-viz-orange-500');
     });
 
     it('renders three bars in a bar-rows block, coloring at least one with the accent', () => {
@@ -190,9 +192,13 @@ describe('DashboardCardThumbnail', () => {
 
       const barsBlock = findBarsBlocks().at(0);
 
-      expect(barsBlock.element.firstElementChild.children).toHaveLength(3);
-      expect(barsBlock.find('.gl-bg-data-viz-orange-500').exists()).toBe(true);
-      expect(barsBlock.find('.gl-bg-strong').exists()).toBe(true);
+      const barClassLists = [...barsBlock.element.firstElementChild.children].map((bar) => [
+        ...bar.classList,
+      ]);
+
+      expect(barClassLists).toHaveLength(3);
+      expect(barClassLists.flat()).toContain('gl-bg-data-viz-orange-500');
+      expect(barClassLists.flat()).toContain('gl-bg-[var(--gl-border-color-default)]');
     });
 
     it('strokes the line chart with a single accent curve over a soft area fill', () => {
@@ -210,14 +216,12 @@ describe('DashboardCardThumbnail', () => {
       expect(paths.at(1).attributes('fill')).toBe('none');
     });
 
-    it('renders borderless soft-fill tiles on a plain thumbnail surface', () => {
+    it('renders pieces directly on the surface without tile boxes', () => {
       createWrapper({ seedKey: 'dap_impact' });
-
-      expect(findThumbnail().classes()).toContain('gl-bg-default');
 
       const tile = findStatTiles().at(0);
 
-      expect(tile.classes()).toContain('gl-bg-subtle');
+      expect(tile.classes()).not.toContain('gl-bg-subtle');
       expect(tile.classes()).not.toContain('gl-border');
     });
   });

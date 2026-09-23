@@ -142,7 +142,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > tokens drawer'
 
       within('#contextual-panel-portal') do
         expect(page).to have_text('Group and project access')
-        expect(page).to have_text("Only specific group or projects that I'm a member of")
+        expect(page).to have_text("Only specific groups or projects I have access to")
         expect(page).to have_link(group.full_name, href: group.web_url)
       end
     end

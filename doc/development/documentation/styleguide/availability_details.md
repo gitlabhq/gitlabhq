@@ -272,8 +272,8 @@ The models available for GitLab Duo features, including default models, are defi
 [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). In most
 cases, model changes reach all GitLab versions immediately and are not gated by GitLab releases.
 
-In the history item, use a date instead of a milestone. Link the AI Gateway merge
-request that made the change, not the documentation merge request.
+In the history item, use a date instead of a milestone. Link to the AI Gateway merge
+request that made the change.
 
 ```markdown
 - Claude Sonnet 5 [added](https://ai-gateway-mr-link) as a supported model for Code Review Flow on August 3, 2026.

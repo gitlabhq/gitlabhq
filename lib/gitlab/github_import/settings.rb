@@ -72,8 +72,10 @@ module Gitlab
         !enabled?(stage_name)
       end
 
+      # User contribution mapping is the only supported mode for GitHub imports.
+      # See gitlab-org/gitlab#628379.
       def user_mapping_enabled?
-        project.import_data&.data&.dig('user_contribution_mapping_enabled') || false
+        true
       end
 
       def map_to_personal_namespace_owner?

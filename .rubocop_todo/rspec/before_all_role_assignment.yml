@@ -400,7 +400,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/features/work_items/issues/list/filtered_search/dropdown_milestone_spec.rb'
     - 'spec/features/work_items/issues/list/filtered_search/dropdown_release_spec.rb'
     - 'spec/features/work_items/issues/list/filtered_search/search_bar_spec.rb'
-    - 'spec/features/work_items/issues/list/user_resets_their_incoming_email_token_spec.rb'
     - 'spec/features/work_items/issues/new/user_creates_issue_spec.rb'
     - 'spec/features/work_items/issues/user_comments_on_issue_spec.rb'
     - 'spec/features/work_items/issues/user_edits_issue_spec.rb'

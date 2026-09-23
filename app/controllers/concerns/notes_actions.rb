@@ -15,7 +15,8 @@ module NotesActions
     before_action :set_polling_interval_header, only: [:index]
     before_action :require_last_fetched_at_header!, only: [:index]
     before_action :require_noteable!, only: [:index, :create]
-    before_action :authorize_admin_note!, only: [:update, :destroy]
+    before_action :authorize_update_note!, only: [:update]
+    before_action :authorize_delete_note!, only: [:destroy]
     before_action :note_project, only: [:create]
     before_action -> {
       check_rate_limit!(:notes_create,
@@ -222,8 +223,12 @@ module NotesActions
     )
   end
 
-  def authorize_admin_note!
-    access_denied! unless can?(current_user, :admin_note, note)
+  def authorize_update_note!
+    access_denied! unless can?(current_user, :update_note, note)
+  end
+
+  def authorize_delete_note!
+    access_denied! unless can?(current_user, :delete_note, note)
   end
 
   def create_note_params

@@ -637,6 +637,7 @@ approval_policy:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420724) in GitLab 16.8 [with a feature flag](../../../administration/feature_flags/_index.md) named `scan_result_policy_block_group_branch_modification`.
   - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437306) in GitLab 17.6.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/503930) in GitLab 17.7. Feature flag `scan_result_policy_block_group_branch_modification` removed.
+- The `remove_code_owner_approvals_with_new_commit` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242393) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `approval_policy_selective_code_owner_removals`. Disabled by default.
 
 {{< /history >}}
 
@@ -648,7 +649,8 @@ The settings set in the policy overwrite settings in the project.
 | `block_group_branch_modification`   | `boolean` or `object` | false    | `true`, `false`, `{ enabled: boolean, exceptions: [{ id: Integer}] }` | All                  | When enabled, prevents a user from removing group-level protected branches on every group the policy applies to. If `block_branch_modification` is `true`, implicitly defaults to `true`. Add top-level groups that support [group-level protected branches](../../project/repository/branches/protected.md#in-a-group) as `exceptions` |
 | `prevent_approval_by_author`        | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge. |
 | `prevent_approval_by_commit_author` | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge. |
-| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
+| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. Mutually exclusive with `remove_code_owner_approvals_with_new_commit`. |
+| `remove_code_owner_approvals_with_new_commit` | `boolean`   | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if a new commit changes files owned by Code Owners who already approved, only those Code Owner approvals are removed. Other approvals remain. If the project is configured to remove all approvals when a commit is added, that broader setting takes precedence and all approvals are removed. Mutually exclusive with `remove_approvals_with_new_commit`. Available behind the `approval_policy_selective_code_owner_removals` feature flag, disabled by default. |
 | `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, approvers must authenticate again before approving. The approver can re-authenticate using their password or SAML, depending on their configured authentication method. This adds an extra layer of security to ensure the approver's identity. For more information, see [require user re-authentication to approve](../../project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve). |
 | `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch. Creation of a branch that does not yet exist is governed by the standard [protected branch](../../project/repository/branches/protected.md) rules; this setting applies to subsequent pushes and force-pushes once the branch exists. |
 
@@ -659,6 +661,7 @@ These settings are enforced only on merge requests that have violations against 
 - `prevent_approval_by_author`
 - `prevent_approval_by_commit_author`
 - `remove_approvals_with_new_commit`
+- `remove_code_owner_approvals_with_new_commit`
 - `require_password_to_approve`
 
 If a merge request has no policy violations, the settings have no effect on that

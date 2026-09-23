@@ -1095,13 +1095,13 @@
             },
             {
               "name": "ALL_MEMBERSHIPS",
-              "description": "Grants access to resources belonging to all groups and projects the user is a member of.",
+              "description": "Grants access to resources belonging to all groups and projects the user can access.",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "SELECTED_MEMBERSHIPS",
-              "description": "Grants access to resources belonging to selected groups and projects the user is a member of.",
+              "description": "Grants access to resources belonging to selected groups and projects the user can access.",
               "isDeprecated": false,
               "deprecationReason": null
             },

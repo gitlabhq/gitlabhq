@@ -8,7 +8,9 @@ class AddCompositeIndexToSecurityFindingEnrichmentsOnCreatedAtAndId < Gitlab::Da
   NEW_INDEX_NAME = 'index_sec_finding_enrichments_on_created_at_and_id'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- table size was reclassified after this migration was created
     add_concurrent_index :security_finding_enrichments, [:created_at, :id], name: NEW_INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
     remove_concurrent_index_by_name :security_finding_enrichments, OLD_INDEX_NAME
   end
 

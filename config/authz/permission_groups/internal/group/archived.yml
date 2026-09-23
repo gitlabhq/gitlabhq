@@ -72,6 +72,7 @@ permissions:
   - create_test_case
   - create_vulnerability_export
   - create_wiki
+  - delete_note
   - delete_timelog
   - destroy_deploy_token
   - destroy_epic
@@ -102,6 +103,7 @@ permissions:
   - update_git_access_protocol
   - update_issue
   - update_max_artifacts_size
+  - update_note
   - update_o11y_settings
   - update_runner
   - update_runners_registration_token

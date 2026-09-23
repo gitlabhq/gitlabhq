@@ -96,7 +96,7 @@ export default {
         >{{ $options.uiText.loadError }}</gl-alert
       >
       <span test-id="plaintext">{{ $options.uiText.description }}</span>
-      <gl-link :href="diffFile.view_path" @click="clickLink">
+      <gl-link v-if="diffFile.view_path" :href="diffFile.view_path" @click="clickLink">
         <span v-if="canLoadFullDiff">{{ $options.uiText.showLink }}</span>
         <gl-sprintf v-else :message="$options.uiText.commitLink">
           <template #commitSha>{{ shortSha }}</template>

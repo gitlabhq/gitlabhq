@@ -1,8 +1,9 @@
 <script>
 import GITLAB_LOGO_SVG_URL from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
-import { GlAvatarLabeled, GlAvatarLink, GlSprintf } from '@gitlab/ui';
+import { GlAvatarLabeled, GlAvatarLink, GlCard } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getTimeago, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DashboardsListItemActions from 'ee_else_ce/vue_shared/components/dashboards_list/dashboards_list_item_actions.vue';
 import DashboardCardThumbnail from './dashboard_card_thumbnail.vue';
@@ -14,7 +15,7 @@ export default {
   components: {
     GlAvatarLabeled,
     GlAvatarLink,
-    GlSprintf,
+    GlCard,
     DashboardCardThumbnail,
     DashboardsListItemActions,
     DashboardsListNameCell,
@@ -35,11 +36,21 @@ export default {
         name: this.dashboard.name,
       });
     },
-    authorLabel() {
-      return sprintf(s__('AnalyticsDashboards|By %{name}'), {
-        name: this.dashboard.system
-          ? this.$options.createdByGitLab.label
-          : this.dashboard.createdBy?.name,
+    authorName() {
+      return this.dashboard.system
+        ? this.$options.createdByGitLab.label
+        : this.dashboard.createdBy?.name;
+    },
+    // Full sentence so translations keep their own word order; the visible
+    // footer shows only the name.
+    authorSrLabel() {
+      return sprintf(s__('AnalyticsDashboards|Created by %{name}'), { name: this.authorName });
+    },
+    // The aria-label sentence for the timestamp; must format the time the same
+    // way as the default-configured TimeAgoTooltip rendering the visible text.
+    updatedLabel() {
+      return sprintf(__('Updated %{timeAgo}'), {
+        timeAgo: getTimeago().format(this.dashboard.updatedAt, timeagoLanguageCode),
       });
     },
     // Custom dashboards can have a null slug, so fall back to the id to keep
@@ -65,39 +76,54 @@ export default {
 };
 </script>
 <template>
-  <li
-    class="gl-border gl-relative gl-flex gl-flex-col gl-rounded-lg gl-border-default gl-bg-default gl-transition-all focus-within:-gl-translate-y-1 focus-within:gl-shadow-md hover:-gl-translate-y-1 hover:gl-shadow-md"
-    data-testid="dashboard-card"
-  >
-    <dashboard-card-thumbnail :seed-key="thumbnailSeedKey" :pieces="thumbnailPieces" />
-    <div class="gl-flex gl-grow gl-flex-col gl-gap-2 gl-p-5">
+  <li class="gl-relative gl-flex" data-testid="dashboard-card">
+    <gl-card
+      class="gl-w-full focus-within:gl-focus hover:!gl-border-strong"
+      header-class="!gl-p-0 gl-overflow-hidden"
+      body-class="gl-flex gl-grow gl-flex-col"
+      footer-class="gl-flex gl-items-center gl-gap-2"
+    >
+      <template #header>
+        <dashboard-card-thumbnail :seed-key="thumbnailSeedKey" :pieces="thumbnailPieces" />
+      </template>
       <dashboards-list-name-cell
         :name="dashboard.name"
         :description="dashboard.description"
         :dashboard-url="dashboard.dashboardUrl"
         stretched
       />
-      <div class="gl-mt-auto gl-flex gl-flex-wrap gl-items-center gl-gap-2 gl-pt-4">
-        <gl-avatar-labeled
-          v-if="dashboard.system"
-          :src="$options.createdByGitLab.avatarUrl"
-          :size="$options.avatarSize"
-          :label="authorLabel"
-          :entity-name="$options.createdByGitLab.label"
-          shape="circle"
-          fallback-on-error
-        />
+      <template #footer>
+        <!-- The sr-only sentence announces authorship, so the decorative
+             avatar block is hidden from assistive technology. -->
+        <template v-if="dashboard.system">
+          <span class="gl-sr-only" data-testid="dashboard-card-authorship">{{
+            authorSrLabel
+          }}</span>
+          <span aria-hidden="true">
+            <gl-avatar-labeled
+              :src="$options.createdByGitLab.avatarUrl"
+              :size="$options.avatarSize"
+              :label="authorName"
+              :entity-name="$options.createdByGitLab.label"
+              shape="circle"
+              fallback-on-error
+            />
+          </span>
+        </template>
+        <!-- aria-label keeps the link's accessible name a full sentence; it
+             contains the visible name, satisfying label-in-name. -->
         <gl-avatar-link
           v-else-if="dashboard.createdBy"
-          class="gl-relative gl-z-1"
+          class="gl-relative gl-z-1 gl-min-w-0 gl-break-anywhere"
           :href="dashboard.createdBy.webPath"
+          :aria-label="authorSrLabel"
         >
           <!-- entity-name/entity-id seed the identicon fallback so a broken
                avatar image degrades to a lettered circle rather than a blank one. -->
           <gl-avatar-labeled
             :src="dashboard.createdBy.avatarUrl"
             :size="$options.avatarSize"
-            :label="authorLabel"
+            :label="authorName"
             :entity-name="dashboard.createdBy.name"
             :entity-id="creatorEntityId"
             shape="circle"
@@ -108,26 +134,26 @@ export default {
           <span v-if="dashboard.createdBy" aria-hidden="true" class="gl-text-sm gl-text-subtle"
             >·</span
           >
-          <span class="gl-text-sm gl-text-subtle" data-testid="dashboard-updated-at">
-            <gl-sprintf :message="__('Updated %{timeAgo}')">
-              <template #timeAgo>
-                <time-ago-tooltip :time="dashboard.updatedAt" />
-              </template>
-            </gl-sprintf>
+          <!-- aria-label keeps the focusable time announcing the full sentence;
+               it contains the visible text, satisfying label-in-name. -->
+          <span
+            class="gl-whitespace-nowrap gl-text-sm gl-text-subtle"
+            data-testid="dashboard-updated-at"
+          >
+            <time-ago-tooltip :aria-label="updatedLabel" :time="dashboard.updatedAt" />
           </span>
         </template>
-      </div>
-    </div>
-    <!-- After the name cell so tab order reads name-then-actions; gl-absolute escapes
-         the thumbnail's overflow clipping and gl-z-1 sits above the stretched link. -->
-    <div class="gl-absolute gl-right-3 gl-top-3 gl-z-1" data-testid="dashboard-card-actions">
-      <dashboards-list-item-actions
-        :id="dashboard.id"
-        :name="dashboard.name"
-        :action-label="actionsLabel"
-        :dashboard-url="dashboard.dashboardUrl"
-        :system="dashboard.system"
-      />
-    </div>
+        <!-- gl-z-1 keeps the dropdown clickable above the name cell's stretched link. -->
+        <div class="gl-relative gl-z-1 gl-ml-auto" data-testid="dashboard-card-actions">
+          <dashboards-list-item-actions
+            :id="dashboard.id"
+            :name="dashboard.name"
+            :action-label="actionsLabel"
+            :dashboard-url="dashboard.dashboardUrl"
+            :system="dashboard.system"
+          />
+        </div>
+      </template>
+    </gl-card>
   </li>
 </template>

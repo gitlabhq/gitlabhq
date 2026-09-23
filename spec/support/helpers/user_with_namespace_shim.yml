@@ -568,7 +568,6 @@
 - spec/features/work_items/issues/issue_detail_spec.rb
 - spec/features/work_items/issues/issue_sidebar_spec.rb
 - spec/features/work_items/issues/list/csv_spec.rb
-- spec/features/work_items/issues/list/user_resets_their_incoming_email_token_spec.rb
 - spec/features/work_items/issues/list/user_sorts_issues_spec.rb
 - spec/features/work_items/issues/markdown_toolbar_spec.rb
 - spec/features/work_items/issues/move_spec.rb

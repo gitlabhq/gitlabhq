@@ -139,7 +139,7 @@ The following table documents functionality that Code Suggestions offers today, 
 
 Code Suggestions for GitLab Self-Managed was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/work_items/10516).
 
-For more information on the technical solution for this project see the [Cloud Connector architecture documentation](cloud_connector/architecture.md).
+For more information on the technical solution for this project see the [Cloud Connector architecture documentation](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/).
 
 The intention is to evolve this solution to service other AI features under the Cloud Connector product umbrella.
 

@@ -88,7 +88,8 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
         external_user,
         unconfirmed_user,
         omniauth_user,
-        service_account_user
+        service_account_user,
+        other_organization_user
       ]
     end
 

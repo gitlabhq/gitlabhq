@@ -1,11 +1,14 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GlqlVisualization from '~/analytics/analytics_dashboards/components/visualizations/glql.vue';
+import PanelState from '~/analytics/shared/components/panel_state.vue';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import GlqlViewSourceModal from '~/glql/components/common/view_source_modal.vue';
 import { copyGLQLContents } from '~/glql/utils/copy_as_gfm';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
+jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/glql/utils/copy_as_gfm', () => ({
   copyGLQLContents: jest.fn(),
 }));
@@ -22,7 +25,11 @@ describe('GlqlVisualization', () => {
 
   const findResolver = () => wrapper.findComponent(GlqlResolver);
   const findModal = () => wrapper.findComponent(GlqlViewSourceModal);
-  const findEmptyState = () => wrapper.findByText('No results match your query or filter.');
+  const findPanelState = () => wrapper.findComponent(PanelState);
+  const findEmptyState = () => {
+    const state = findPanelState();
+    return state.exists() && state.props('variant') === 'no-data' ? state : { exists: () => false };
+  };
   const lastActions = () => wrapper.emitted('set-actions').at(-1)[0];
   const findAction = (text) => lastActions().find((action) => action.text === text);
 
@@ -146,31 +153,115 @@ describe('GlqlVisualization', () => {
   });
 
   describe('error handling', () => {
+    const graphQLError = (extensions) => ({ graphQLErrors: [{ message: 'failed', extensions }] });
+
     beforeEach(() => {
       createWrapper({ data: 'type = Issue AND state = opened' });
     });
 
-    it('forwards a resolver error to the panel via set-alerts', () => {
-      const error = new Error('Something went wrong');
-
+    it.each`
+      failure                            | error                                                                                                                              | variant
+      ${'a deterministic query error'}   | ${new Error('boom')}                                                                                                               | ${'error-no-retry'}
+      ${'a generic error'}               | ${graphQLError({ code: 'SOMETHING_UNEXPECTED' })}                                                                                  | ${'error'}
+      ${'an authorization error'}        | ${graphQLError({ code: 'AGGREGATION_NOT_AUTHORIZED' })}                                                                            | ${'no-access'}
+      ${'a legacy authorization error'}  | ${{ message: "ordering by 'x' is not authorized" }}                                                                                | ${'no-access'}
+      ${'Siphon being unavailable'}      | ${graphQLError({ code: 'SIPHON_REPLICATION_DISABLED' })}                                                                           | ${'unavailable'}
+      ${'ClickHouse not configured'}     | ${graphQLError({ code: 'CLICKHOUSE_NOT_CONFIGURED' })}                                                                             | ${'not-configured'}
+      ${'a query timeout (HTTP 503)'}    | ${{ networkError: { statusCode: 503 } }}                                                                                           | ${'error'}
+      ${'being rate limited (HTTP 403)'} | ${{ networkError: { statusCode: 403, result: { errors: [{ message: 'Query temporarily blocked due to repeated timeouts.' }] } } }} | ${'error-no-retry'}
+      ${'an authorization 403'}          | ${{ networkError: { statusCode: 403 } }}                                                                                           | ${'no-access'}
+    `('renders the $variant panel state for $failure', async ({ error, variant }) => {
       findResolver().vm.$emit('change', { error });
+      await nextTick();
 
-      expect(wrapper.emitted('set-alerts')).toEqual([
-        [
-          {
-            errors: [error],
-            title: 'An error occurred when trying to display this panel',
-            description: 'Something went wrong',
-            canRetry: false,
-          },
-        ],
-      ]);
+      expect(findPanelState().props('variant')).toBe(variant);
+      expect(findResolver().exists()).toBe(false);
     });
 
-    it('does not emit set-alerts when the resolver reports no error', () => {
+    it('renders the error state compact for a stat display', async () => {
+      findResolver().vm.$emit('change', { error: new Error('boom'), config: { display: 'stat' } });
+      await nextTick();
+
+      expect(findPanelState().props('compact')).toBe(true);
+    });
+
+    // A parse failure produces no config; only the compiler may read the query text,
+    // so the state falls back to the full-size layout.
+    it('renders the full-size error state when parsing failed before a config existed', async () => {
+      findResolver().vm.$emit('change', { error: new Error('parse error') });
+      await nextTick();
+
+      expect(findPanelState().props('compact')).toBe(false);
+    });
+
+    it('keeps loaded rows instead of an error state when a continuation page fails', async () => {
+      findResolver().vm.$emit('change', {
+        data: { count: 4, nodes: [{ id: 1 }, { id: 2 }] },
+        error: new Error('page 2 failed'),
+      });
+      await nextTick();
+
+      expect(findPanelState().exists()).toBe(false);
+      expect(findResolver().exists()).toBe(true);
+    });
+
+    it('describes a timeout with actionable copy', async () => {
+      findResolver().vm.$emit('change', { error: { networkError: { statusCode: 503 } } });
+      await nextTick();
+
+      expect(findPanelState().props('description')).toBe(
+        'The query timed out. Select a shorter date range and try again.',
+      );
+    });
+
+    it('captures generic errors in Sentry', async () => {
+      const error = graphQLError({ code: 'SOMETHING_UNEXPECTED' });
+
+      findResolver().vm.$emit('change', { error });
+      await nextTick();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+
+    // Parse, transform and presenter errors are query mistakes; only the author can fix them.
+    it('does not capture deterministic query errors in Sentry', async () => {
+      findResolver().vm.$emit('change', { error: new Error('Unknown field `foo`') });
+      await nextTick();
+
+      expect(Sentry.captureException).not.toHaveBeenCalled();
+    });
+
+    it('shows the query error message so the author can fix the query', async () => {
+      findResolver().vm.$emit('change', { error: new Error('Unknown field `foo`') });
+      await nextTick();
+
+      expect(findPanelState().props('description')).toBe('Unknown field `foo`');
+    });
+
+    it('does not capture expected states in Sentry', async () => {
+      findResolver().vm.$emit('change', {
+        error: graphQLError({ code: 'AGGREGATION_NOT_AUTHORIZED' }),
+      });
+      await nextTick();
+
+      expect(Sentry.captureException).not.toHaveBeenCalled();
+    });
+
+    it('renders no panel state when the resolver reports no error', () => {
       findResolver().vm.$emit('change', { error: undefined });
 
-      expect(wrapper.emitted('set-alerts')).toBeUndefined();
+      expect(findPanelState().exists()).toBe(false);
+    });
+
+    it('re-runs the query with a fresh resolver on retry', async () => {
+      findResolver().vm.$emit('change', { error: new Error('boom') });
+      await nextTick();
+
+      findPanelState().vm.$emit('retry');
+      await nextTick();
+
+      expect(findPanelState().exists()).toBe(false);
+      expect(findResolver().exists()).toBe(true);
     });
 
     it('only emits the "Reload" action when the resolver reports an error', () => {
@@ -212,6 +303,37 @@ describe('GlqlVisualization', () => {
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findResolver().exists()).toBe(true);
+    });
+
+    it('renders the full empty state by default', async () => {
+      findResolver().vm.$emit('change', { data: { nodes: [] }, config: { display: 'table' } });
+      await nextTick();
+
+      expect(findPanelState().props('compact')).toBe(false);
+    });
+
+    it('renders the compact empty state for a stat display', async () => {
+      findResolver().vm.$emit('change', { data: { nodes: [] }, config: { display: 'stat' } });
+      await nextTick();
+
+      expect(findPanelState().props('compact')).toBe(true);
+    });
+
+    it('passes the empty state copy configured on the panel', async () => {
+      createWrapper({
+        data: 'type = Issue AND state = opened',
+        options: {
+          emptyState: { title: 'No data in this range', description: 'Use Duo to see data here.' },
+        },
+      });
+
+      findResolver().vm.$emit('change', { data: { nodes: [] } });
+      await nextTick();
+
+      expect(findPanelState().props()).toMatchObject({
+        title: 'No data in this range',
+        description: 'Use Duo to see data here.',
+      });
     });
 
     it('resets the resolver data when the query changes', async () => {
@@ -310,6 +432,16 @@ describe('GlqlVisualization', () => {
       expect(wrapper.emitted('reload')).toEqual([[]]);
     });
 
+    // The panel re-fetch yields the same query string, so only a remount re-runs the query.
+    it('remounts the resolver when "Reload" is triggered', async () => {
+      const original = findResolver().vm;
+
+      findAction('Reload').action();
+      await nextTick();
+
+      expect(findResolver().vm).not.toBe(original);
+    });
+
     describe('when the panel opts out with showActions: false', () => {
       const createOptedOutWrapper = async (change) => {
         createWrapper({ data: glqlQuery, options: { showActions: false } });
@@ -331,22 +463,11 @@ describe('GlqlVisualization', () => {
         expect(lastActions()).toEqual([]);
       });
 
-      // The kebab's Reload is gone, so the alert popover's Retry has to stand in for it.
-      it('forwards a resolver error to the panel with a retry offered', async () => {
-        const error = new Error('Something went wrong');
+      // The kebab's Reload is gone, so the inline state has to stand in for it.
+      it('renders the inline error state', async () => {
+        await createOptedOutWrapper({ error: new Error('Something went wrong') });
 
-        await createOptedOutWrapper({ error });
-
-        expect(wrapper.emitted('set-alerts')).toEqual([
-          [
-            {
-              errors: [error],
-              title: 'An error occurred when trying to display this panel',
-              description: 'Something went wrong',
-              canRetry: true,
-            },
-          ],
-        ]);
+        expect(findPanelState().props('variant')).toBe('error-no-retry');
       });
     });
 

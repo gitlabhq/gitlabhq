@@ -43,13 +43,11 @@ describe('PersonalAccessTokenScopeSelector', () => {
     expect(findRadioButtons().at(0).text()).toContain('Only my personal projects');
 
     expect(findRadioButtons().at(1).attributes('value')).toBe('ALL_MEMBERSHIPS');
-    expect(findRadioButtons().at(1).text()).toContain(
-      "All groups and projects that I'm a member of",
-    );
+    expect(findRadioButtons().at(1).text()).toContain('All groups and projects I have access to');
 
     expect(findRadioButtons().at(2).attributes('value')).toBe('SELECTED_MEMBERSHIPS');
     expect(findRadioButtons().at(2).text()).toContain(
-      "Only specific groups or projects that I'm a member of",
+      'Only specific groups or projects I have access to',
     );
   });
 

@@ -199,20 +199,31 @@ export default {
           this.setVariable('limit', AGGREGATED_AUTO_PAGE_SIZE);
         }
 
-        const executionResult = await execute(query, variables, {
+        // Started before the comparison, so the main query is queued first, and awaited only once
+        // the comparison is underway, so both run at once.
+        const mainRequest = execute(query, variables, {
           queue: this.queue,
           signal: this.abortController.signal,
         });
+        const comparisonRequest = this.fetchComparison();
+        const executionResult = await mainRequest;
 
         this.data = await transform(executionResult, { fields, mode, source });
 
         if (this.pagination === PAGINATION_AUTO) await this.autoPaginate();
 
-        this.comparisonData = await this.fetchComparison();
+        const comparisonData = await comparisonRequest;
+        this.comparisonData =
+          this.data?.count > AGGREGATED_AUTO_PAGE_SIZE ? undefined : comparisonData;
 
         this.trackRender();
       } catch (error) {
+        // Keep the parsed config through the failure: consumers size their error
+        // states by the display type, which the query still declares.
+        const { config } = this;
+
         this.resetData();
+        this.config = config;
         this.error = error;
       } finally {
         this.loading = false;
@@ -220,16 +231,15 @@ export default {
       }
     },
 
-    // Runs once, as a single page. The previous period is a different result set with its own
-    // rows, order and count, so it cannot be paged in step with the main query; presenters pair
-    // the two by dimension identity instead. That pairing is only sound when both sides are
-    // complete, so the comparison is skipped once the main result exceeds one page. A comparison
-    // that fails to compile or run is dropped and reported, so the main result still renders
-    // without it.
+    // Runs once, as a single page, alongside the main query. The previous period is a different
+    // result set with its own rows, order and count, so it cannot be paged in step with the main
+    // query; presenters pair the two by dimension identity instead. That pairing is only sound
+    // when both sides are complete, so `executeQuery` discards the comparison once the main result
+    // exceeds one page. The comparison request has already run by then, because the page count
+    // isn't known until the main query finishes. Never rejects: a comparison that fails to
+    // compile or run is reported and dropped, so the main result still renders without it.
     async fetchComparison() {
       if (!this.comparison?.query) return undefined;
-
-      if (this.data?.count > AGGREGATED_AUTO_PAGE_SIZE) return undefined;
 
       try {
         const { query, variables, fields, mode, source } = await parse(
@@ -333,6 +343,8 @@ export default {
     },
 
     handlePresenterError(error) {
+      // The presenter cannot render these rows, so there is nothing worth keeping on screen.
+      this.data = undefined;
       this.error = error;
       this.emitChange();
     },
@@ -341,8 +353,9 @@ export default {
 </script>
 <template>
   <div>
+    <!-- An error with rows already loaded (a failed continuation page) keeps them visible. -->
     <data-presenter
-      v-if="hasDisplayType"
+      v-if="hasDisplayType && (data || !error)"
       :data="data"
       :comparison-data="comparisonData"
       :fields="fields"

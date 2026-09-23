@@ -123,6 +123,7 @@ describe('note utils', () => {
       ${'duo code review progress note (bot author)'}  | ${{ system: true, author: { user_type: 'duo_code_review_bot' } }}                                        | ${true}
       ${'duo bot cross-reference note (comment-dots)'} | ${{ system: true, system_note_icon_name: 'comment-dots', author: { user_type: 'duo_code_review_bot' } }} | ${false}
       ${'duo bot approval note (check)'}               | ${{ system: true, system_note_icon_name: 'check', author: { user_type: 'duo_code_review_bot' } }}        | ${false}
+      ${'duo bot approval note (error)'}               | ${{ system: true, system_note_icon_name: 'error', author: { user_type: 'duo_code_review_bot' } }}        | ${false}
       ${'plain system note'}                           | ${{ system: true, author: { user_type: 'human' } }}                                                      | ${false}
       ${'non-system note with duo_session_status'}     | ${{ system: false, duo_session_status: 'running', author: {} }}                                          | ${false}
       ${'undefined note'}                              | ${undefined}                                                                                             | ${false}

@@ -59,7 +59,6 @@ describe('AdminProjectsApp', () => {
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
-    features = {},
     stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
@@ -70,7 +69,6 @@ describe('AdminProjectsApp', () => {
       propsData: defaultPropsData,
       apolloProvider,
       router,
-      provide: { glFeatures: { customAbilityReadAdminProjects: false, ...features } },
       stubs,
     });
   };

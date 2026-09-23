@@ -127,10 +127,14 @@ module RapidDiffs
       end
 
       def old_blob_path
+        return if @diff_file.path_traversal?
+
         project_blob_path(project, helpers.tree_join(@diff_file.old_content_sha, @diff_file.old_path))
       end
 
       def new_blob_path
+        return if @diff_file.path_traversal?
+
         project_blob_path(project, helpers.tree_join(@diff_file.content_sha, @diff_file.file_path))
       end
 

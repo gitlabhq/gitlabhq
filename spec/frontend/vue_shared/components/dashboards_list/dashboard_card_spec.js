@@ -68,14 +68,19 @@ describe('DashboardCard', () => {
       expect(wrapper.text()).toContain(mockCustomDashboard.description);
     });
 
-    it('renders the creator avatar with a By-author label, linking to their profile', () => {
+    it('names the creator link with a full authorship sentence', () => {
+      expect(findAvatarLink().attributes('aria-label')).toBe('Created by Fake User');
+      expect(wrapper.findByTestId('dashboard-card-authorship').exists()).toBe(false);
+    });
+
+    it('renders the creator avatar with their name, linking to their profile', () => {
       expect(findAvatarLink().attributes('href')).toBe(mockCustomDashboard.createdBy.webPath);
       expect(findAvatar().props()).toMatchObject({
         src: mockCustomDashboard.createdBy.avatarUrl,
         size: 24,
         shape: 'circle',
         fallbackOnError: true,
-        label: 'By Fake User',
+        label: 'Fake User',
       });
     });
 
@@ -87,8 +92,13 @@ describe('DashboardCard', () => {
     });
 
     it('renders the last updated time as relative time next to the creator', () => {
-      expect(findUpdatedAt().text()).toBe('Updated 5 days ago');
+      expect(findUpdatedAt().find('time').text()).toBe('5 days ago');
       expect(wrapper.text()).toContain('·');
+    });
+
+    it('announces the timestamp as a full sentence', () => {
+      expect(findUpdatedAt().find('time').attributes('aria-label')).toBe('Updated 5 days ago');
+      expect(findUpdatedAt().find('time').attributes('aria-hidden')).toBeUndefined();
     });
 
     it('stretches the title link over the whole card', () => {
@@ -131,8 +141,13 @@ describe('DashboardCard', () => {
       expect(findAvatar().exists()).toBe(false);
     });
 
+    it('does not announce authorship when there is no creator to name', () => {
+      expect(wrapper.findByTestId('dashboard-card-authorship').exists()).toBe(false);
+      expect(wrapper.text()).not.toContain('Created by');
+    });
+
     it('still renders the last updated time, without a leading separator', () => {
-      expect(findUpdatedAt().text()).toBe('Updated 5 days ago');
+      expect(findUpdatedAt().find('time').text()).toBe('5 days ago');
       expect(wrapper.text()).not.toContain('·');
     });
   });
@@ -147,14 +162,19 @@ describe('DashboardCard', () => {
       expect(findDashboardLink().attributes('href')).toBe(mockSystemDashboard.dashboardUrl);
     });
 
-    it('renders a By GitLab label without a profile link', () => {
+    it('announces authorship as a visually hidden sentence and hides the decorative avatar', () => {
+      expect(wrapper.findByTestId('dashboard-card-authorship').text()).toBe('Created by GitLab');
+      expect(findAvatar().element.closest('[aria-hidden="true"]')).not.toBeNull();
+    });
+
+    it('renders a GitLab label without a profile link', () => {
       expect(findAvatarLink().exists()).toBe(false);
       expect(findAvatar().props()).toMatchObject({
         src: GITLAB_LOGO_SVG_URL,
         size: 24,
         shape: 'circle',
         fallbackOnError: true,
-        label: 'By GitLab',
+        label: 'GitLab',
         entityName: 'GitLab',
       });
     });

@@ -6,7 +6,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
   let_it_be(:user, freeze: false) { create(:user) }
   let_it_be(:group, freeze: false) { create(:group) }
   let_it_be(:project, freeze: false) { create(:project, group: group) }
-  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, user: user) }
+  let_it_be(:bulk_import, freeze: false) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:entity, freeze: false) do
     create(
       :bulk_import_entity,
@@ -51,6 +51,11 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
       end
 
       allow(pipeline).to receive(:set_source_objects_counter)
+
+      # These specs assert against the legacy user-resolution path. They predate
+      # contribution mapping being always-on and would otherwise exercise the
+      # full SourceUsersMapper stack.
+      allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
     end
 
     it 'imports release into destination project' do

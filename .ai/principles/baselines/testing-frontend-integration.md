@@ -52,6 +52,31 @@ For the decision of *which* test type to write, see
 ### Finding Elements & Interactions
 
 - Use `@testing-library/vue` queries to locate elements
+- Prefer `screen.queryByTestId('foo')` and `screen.queryAllByTestId('foo')` over
+  `document.querySelector('[data-testid="foo"]')` and
+  `document.querySelectorAll('[data-testid="foo"]')`; `screen` is available from
+  `@testing-library/vue` and the suite's `test_helpers.js`
+- Prefer role/label queries (`screen.queryByRole`, `screen.queryByLabelText`)
+  for one-shot assertions — they match the way users and assistive technology
+  find elements, so they double as an accessibility check (see the
+  [query priority guide](https://testing-library.com/docs/queries/about/#priority))
+- DO NOT poll an unscoped role query (`waitForElement`/`waitFor` +
+  `screen.queryByRole` on the full tree). `ByRole` computes visibility and an
+  accessible name for every candidate on every poll tick, which is cripplingly
+  slow in a `fullMount`. Address the container by test ID and query the role
+  inside it, with a null guard because `within(null)` throws:
+  `const form = screen.queryByTestId('x'); return form ? within(form).queryByRole(…) : null;`
+- Scoping queries with `within()` to the region under test is good practice
+  for any query type in a full mount, but DO NOT scope past a portal boundary
+  (`GlModal`, dropdowns, and tooltips render outside their parent) — query
+  portaled content from `screen`
+- DO NOT key finders off an accessible name that changes with state (for
+  example, a toggle that relabels itself): a copy change reads as "element
+  missing" instead of "label changed". Address the element by test ID once and
+  read state from ARIA attributes (`aria-pressed`, and so on)
+- `querySelector` remains acceptable for scoping a search inside an
+  already-found element, and for selectors Testing Library cannot express
+  (class or ID selectors)
 - Drive navigation and state changes through user-facing UI actions (click
   the link or button); DO NOT push routes or call component methods to get
   the app into a state.

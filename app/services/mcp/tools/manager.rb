@@ -172,7 +172,9 @@ module Mcp
 
         raise VersionNotFoundError.new(name, version, [tool_version]) if version && version != tool_version
 
-        tool
+        # Each caller needs its own instance because execute stores @request/@params on it.
+        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/604494
+        tool.dup
       end
 
       def build_alias_map

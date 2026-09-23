@@ -17,14 +17,14 @@ RSpec.describe Members::InviteUsersFinder, feature_category: :groups_and_project
   let_it_be(:internal_user) { Users::Internal.in_organization(current_user.organization).alert_bot }
   let_it_be(:project_bot_user) { create(:user, :project_bot) }
   let_it_be(:service_account_user) { create(:user, :service_account) }
-  let(:organization) { current_user.organization }
+  let_it_be(:other_organization_user) { create(:user, organization: create(:organization)) }
 
   before_all do
     root_group.add_owner(current_user)
   end
 
   subject(:finder) do
-    described_class.new(current_user, resource, organization_id: organization.id)
+    described_class.new(current_user, resource)
   end
 
   describe '#execute' do
@@ -37,7 +37,8 @@ RSpec.describe Members::InviteUsersFinder, feature_category: :groups_and_project
           external_user,
           unconfirmed_user,
           omniauth_user,
-          service_account_user
+          service_account_user,
+          other_organization_user
         ].sort_by(&:id).reverse
       end
 
@@ -47,7 +48,7 @@ RSpec.describe Members::InviteUsersFinder, feature_category: :groups_and_project
 
       context 'for search param' do
         subject(:finder) do
-          described_class.new(current_user, resource, organization_id: organization.id, search: search)
+          described_class.new(current_user, resource, search: search)
         end
 
         context 'with empty string' do
@@ -65,17 +66,6 @@ RSpec.describe Members::InviteUsersFinder, feature_category: :groups_and_project
             expect(finder.execute).to eq([regular_user])
           end
         end
-      end
-    end
-
-    context 'when scoping by organization' do
-      let_it_be(:resource) { root_group }
-      let_it_be(:other_organization) { create(:organization) }
-      let_it_be(:other_user) { create(:user, organization: other_organization) }
-      let(:organization) { other_organization }
-
-      it 'scopes results correctly' do
-        expect(finder.execute).to eq([other_user])
       end
     end
 

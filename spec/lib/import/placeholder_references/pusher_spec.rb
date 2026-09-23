@@ -87,8 +87,14 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
       end
     end
 
-    context 'when user mapping is disabled' do
-      let(:user_mapping_enabled) { false }
+    # gitlab-org/gitlab#628379: user mapping is now always on except for
+    # Bitbucket Server with the bitbucket_server_user_mapping FF disabled.
+    context 'when user mapping is disabled (Bitbucket Server with FF off)' do
+      let(:project) { create(:project, namespace: group, import_type: 'bitbucket_server') }
+
+      before do
+        stub_feature_flags(bitbucket_server_user_mapping: false)
+      end
 
       it 'does not create a placeholder reference' do
         expect { pusher.push_reference(project, record, attribute, import_source_user_identifier) }
@@ -257,6 +263,10 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   end
 
   describe '#user_mapping_enabled?' do
+    # gitlab-org/gitlab#628379: ProjectImportData#user_mapping_enabled? no longer
+    # reads the stored flag (which ProjectImportState wipes on cancel/fail);
+    # it fails closed to true for every importer except Bitbucket Server with
+    # the bitbucket_server_user_mapping feature flag explicitly disabled.
     context 'when user mapping is enabled' do
       let(:user_mapping_enabled) { true }
 
@@ -265,8 +275,20 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
       end
     end
 
-    context 'when user mapping is disabled' do
+    context 'when the stored flag is disabled for a non-Bitbucket-Server import' do
       let(:user_mapping_enabled) { false }
+
+      it 'ignores the stored flag and returns true' do
+        expect(pusher.user_mapping_enabled?(project)).to be true
+      end
+    end
+
+    context 'when the import is Bitbucket Server and the FF is disabled' do
+      let(:project) { create(:project, namespace: group, import_type: 'bitbucket_server') }
+
+      before do
+        stub_feature_flags(bitbucket_server_user_mapping: false)
+      end
 
       it 'returns false' do
         expect(pusher.user_mapping_enabled?(project)).to be false

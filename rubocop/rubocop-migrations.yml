@@ -41,6 +41,7 @@ Migration/UpdateLargeTable:
   - :todos
   - :vulnerabilities
   - :vulnerability_finding_links
+  - :vulnerability_occurrence_identifiers
   - :vulnerability_occurrences
   - :vulnerability_reads
   - :web_hook_logs_daily
@@ -66,8 +67,10 @@ Migration/UpdateLargeTable:
   - :projects
   - :resource_state_events
   - :sbom_occurrences
+  - :security_finding_enrichments
   - :security_scans
   - :vulnerabilities
+  - :vulnerability_detection_transitions
   - :vulnerability_occurrence_identifiers
   - :vulnerability_state_transitions
   DeniedMethods:

@@ -14,5 +14,5 @@
 = gitlab_ui_form_for(@identity, url: user_settings_identities_path, method: :post) do |f|
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
     = _("Authorize")
-  = render Pajamas::ButtonComponent.new(href: profile_account_path, block: true) do
+  = render Pajamas::ButtonComponent.new(href: profile_two_factor_auth_path, block: true) do
     = _('Cancel')

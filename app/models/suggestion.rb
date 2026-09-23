@@ -65,6 +65,7 @@ class Suggestion < ApplicationRecord
       next _("This merge request was merged. To apply this suggestion, edit this file directly.") if noteable.merged?
       next _("This merge request is closed. To apply this suggestion, edit this file directly.") if noteable.closed?
       next _("Can't apply as the source branch was deleted.") unless noteable.source_branch_exists?
+      next oversized_reason if oversized?
       next outdated_reason if outdated?(cached: cached) || !note.active?
       next _("This suggestion already matches its content.") unless different_content?
       next _("This file was modified for readability, and can't accept suggestions. Edit it directly.") if file_path.end_with? "ipynb"
@@ -91,6 +92,13 @@ class Suggestion < ApplicationRecord
 
   def different_content?
     from_content != to_content
+  end
+
+  def oversized_reason
+    format(
+      _("Cannot apply as this suggestion spans more than %{max_lines} lines."),
+      max_lines: Suggestible::MAX_LINES_CONTEXT
+    )
   end
 
   def outdated_reason

@@ -46,7 +46,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-border-b gl-flex gl-h-20 gl-flex-col gl-gap-4 gl-overflow-hidden gl-rounded-t-lg gl-border-subtle gl-bg-default gl-p-4"
+    class="gl-flex gl-h-13 gl-w-full gl-flex-col gl-gap-4 gl-overflow-hidden gl-p-5"
     data-testid="dashboard-card-thumbnail"
     aria-hidden="true"
   >
@@ -59,27 +59,42 @@ export default {
       <div
         v-for="(piece, pieceIndex) in row.pieces"
         :key="pieceIndex"
-        class="gl-min-w-0 gl-overflow-hidden gl-rounded-base gl-bg-subtle gl-p-4"
+        class="gl-min-w-0 gl-overflow-hidden"
         :class="row.half ? 'gl-w-1/2' : 'gl-flex-1'"
         :data-testid="`dashboard-card-thumbnail-${piece.type}`"
       >
+        <!-- The wireframe grey needs the border token as a background; no
+             semantic bg utility maps to it. Tracked in
+             https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3665 -->
+        <!-- eslint-disable tailwindcss/no-arbitrary-value -->
         <div
           v-if="piece.type === $options.PREVIEW_PIECE_STAT"
           class="gl-flex gl-h-full gl-flex-col gl-justify-between gl-gap-2"
         >
-          <div class="gl-h-1 gl-rounded-full gl-bg-strong" :class="piece.titleWidth"></div>
-          <div class="gl-h-2 gl-w-1/4 gl-rounded-full" :class="layout.accent.bar"></div>
+          <div
+            class="gl-h-2 gl-rounded-full gl-bg-[var(--gl-border-color-default)]"
+            :class="piece.titleWidth"
+          ></div>
+          <div class="gl-h-3 gl-w-1/3 gl-rounded-base" :class="layout.accent.bar"></div>
         </div>
         <div
           v-else-if="piece.type === $options.PREVIEW_PIECE_BAR_ROWS"
           class="gl-flex gl-h-full gl-flex-col gl-justify-evenly gl-gap-2"
         >
-          <div
-            v-for="(bar, barIndex) in piece.bars"
-            :key="barIndex"
-            class="gl-h-2 gl-rounded-full"
-            :class="[bar.width, bar.colored ? layout.accent.bar : 'gl-bg-strong']"
-          ></div>
+          <template v-for="(bar, barIndex) in piece.bars">
+            <div
+              v-if="bar.colored"
+              :key="barIndex"
+              class="gl-h-3 gl-rounded-base"
+              :class="[bar.width, layout.accent.bar]"
+            ></div>
+            <div
+              v-else
+              :key="barIndex"
+              class="gl-h-3 gl-rounded-base gl-bg-[var(--gl-border-color-default)]"
+              :class="bar.width"
+            ></div>
+          </template>
         </div>
         <div
           v-else-if="piece.type === $options.PREVIEW_PIECE_TEXT_LINES"
@@ -88,10 +103,11 @@ export default {
           <div
             v-for="(lineWidth, lineIndex) in piece.lines"
             :key="lineIndex"
-            class="gl-h-1 gl-rounded-full gl-bg-strong"
+            class="gl-h-2 gl-rounded-full gl-bg-[var(--gl-border-color-default)]"
             :class="lineWidth"
           ></div>
         </div>
+        <!-- eslint-enable tailwindcss/no-arbitrary-value -->
         <svg
           v-else-if="piece.type === $options.PREVIEW_PIECE_LINE_CHART"
           class="gl-h-full gl-w-full"

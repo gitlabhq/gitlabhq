@@ -142,7 +142,8 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
         external_user,
         unconfirmed_user,
         omniauth_user,
-        service_account_user
+        service_account_user,
+        other_organization_user
       ]
     end
 

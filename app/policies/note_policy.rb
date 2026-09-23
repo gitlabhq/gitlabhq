@@ -34,11 +34,17 @@ class NotePolicy < BasePolicy
 
   rule { ~notes_widget_enabled }.prevent_all
 
-  rule { ~editable }.prevent :admin_note
+  rule { ~editable }.policy do
+    prevent :admin_note
+    prevent :update_note
+    prevent :delete_note
+  end
 
   # If user can't read the issue/MR/etc then they should not be allowed to do anything to their own notes
   rule { ~can_read_noteable }.policy do
     prevent :admin_note
+    prevent :update_note
+    prevent :delete_note
     prevent :resolve_note
     prevent :reposition_note
     prevent :award_emoji
@@ -52,11 +58,15 @@ class NotePolicy < BasePolicy
   rule { is_author }.policy do
     enable :read_note
     enable :admin_note
+    enable :update_note
+    enable :delete_note
     enable :resolve_note
   end
 
   rule { is_noteable_author & for_personal_snippet }.policy do
     enable :admin_note
+    enable :update_note
+    enable :delete_note
   end
 
   rule { discussion_locked & ~is_member }.policy do
@@ -66,6 +76,8 @@ class NotePolicy < BasePolicy
   rule { ~is_visible }.policy do
     prevent :read_note
     prevent :admin_note
+    prevent :update_note
+    prevent :delete_note
     prevent :resolve_note
     prevent :reposition_note
     prevent :award_emoji
@@ -82,6 +94,8 @@ class NotePolicy < BasePolicy
   rule { internal & ~can?(:read_internal_note) }.policy do
     prevent :read_note
     prevent :admin_note
+    prevent :update_note
+    prevent :delete_note
     prevent :resolve_note
     prevent :reposition_note
     prevent :award_emoji
@@ -94,6 +108,8 @@ class NotePolicy < BasePolicy
   rule { admin }.policy do
     enable :read_note
     enable :admin_note
+    enable :update_note
+    enable :delete_note
     enable :resolve_note
     enable :reposition_note
     enable :award_emoji

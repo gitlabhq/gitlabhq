@@ -3063,8 +3063,6 @@
 - './spec/features/work_items/issues/list/user_bulk_edits_work_items_labels_spec.rb'
 - './spec/features/work_items/issues/list/user_bulk_edits_work_items_spec.rb'
 - './spec/features/work_items/issues/list/user_creates_work_item_by_email_spec.rb'
-- './spec/features/work_items/issues/list/user_filters_work_items_spec.rb'
-- './spec/features/work_items/issues/list/user_resets_their_incoming_email_token_spec.rb'
 - './spec/features/work_items/issues/list/user_sees_empty_state_spec.rb'
 - './spec/features/work_items/issues/list/user_sorts_work_items_spec.rb'
 - './spec/features/work_items/issues/list/user_views_work_items_spec.rb'

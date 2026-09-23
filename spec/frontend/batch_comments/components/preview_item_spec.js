@@ -25,7 +25,7 @@ describe('Batch comments draft preview item component', () => {
     useNotes();
   });
 
-  function createComponent(extra = {}, improvedReviewExperience = false) {
+  function createComponent(extra = {}) {
     draft = {
       ...createDraft(),
       ...extra,
@@ -34,9 +34,6 @@ describe('Batch comments draft preview item component', () => {
     wrapper = mountExtended(PreviewItem, {
       pinia,
       propsData: { draft },
-      provide: {
-        glFeatures: { improvedReviewExperience },
-      },
     });
   }
 

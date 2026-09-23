@@ -2,7 +2,6 @@
 Gitlab/Authz/PermissionCheck:
   Exclude:
     - 'app/controllers/clusters/base_controller.rb'
-    - 'app/controllers/concerns/notes_actions.rb'
     - 'app/controllers/concerns/snippet_authorizations.rb'
     - 'app/controllers/groups/achievements_controller.rb'
     - 'app/controllers/groups/application_controller.rb'
@@ -21,7 +20,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/controllers/projects/merge_requests/drafts_controller.rb'
     - 'app/controllers/projects/milestones_controller.rb'
     - 'app/controllers/projects/mirrors_controller.rb'
-    - 'app/controllers/projects/notes_controller.rb'
     - 'app/controllers/projects/pipeline_schedules_controller.rb'
     - 'app/controllers/projects/project_members_controller.rb'
     - 'app/controllers/projects/settings/packages_and_registries_controller.rb'

@@ -42,6 +42,8 @@ module RapidDiffs
     end
 
     def blob_raw_path
+      return if @diff_file.path_traversal?
+
       project = @diff_file.repository.project
       helpers.project_raw_path(project, helpers.tree_join(@diff_file.content_sha, @diff_file.file_path))
     end
@@ -77,6 +79,7 @@ module RapidDiffs
       return unless @diff_file.text?
       return if @diff_file.stored_externally?
       return unless @merge_request.source_project
+      return if @diff_file.path_traversal?
 
       editor_path = helpers.project_edit_blob_path(
         @merge_request.source_project,

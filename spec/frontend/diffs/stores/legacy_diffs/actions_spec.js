@@ -1949,6 +1949,17 @@ describe('legacyDiffs actions', () => {
         },
       );
     });
+
+    describe('when context_lines_path is dropped for a traversal path (#security)', () => {
+      it('rejects without making a request', async () => {
+        renamedFile = { ...testFile, context_lines_path: undefined };
+
+        await expect(
+          store.switchToFullDiffFromRenamedFile({ diffFile: renamedFile }),
+        ).rejects.toBeUndefined();
+        expect(mock.history.get).toHaveLength(0);
+      });
+    });
   });
 
   describe('setFileCollapsedByUser', () => {

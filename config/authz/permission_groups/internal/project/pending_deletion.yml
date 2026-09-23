@@ -70,6 +70,7 @@ permissions:
   - create_vulnerability
   - create_vulnerability_feedback
   - create_wiki
+  - delete_note
   - delete_timelog
   - manage_trigger
   - push_code

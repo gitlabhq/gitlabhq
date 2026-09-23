@@ -108,6 +108,27 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, feature_category: :cod
       expect(file_data['blob_raw_path']).to include(diff_file.new_path)
     end
 
+    context 'when the file path contains traversal segments' do
+      before do
+        allow(diff_file).to receive(:path_traversal?).and_return(true)
+      end
+
+      it 'omits blob_raw_path' do
+        render_component
+
+        diff_file_element = page.find('diff-file')
+        file_data = Gitlab::Json.parse(diff_file_element['data-file-data'])
+        expect(file_data['blob_raw_path']).to be_nil
+      end
+
+      it 'omits the single-file editor menu item' do
+        render_component
+
+        options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+        expect(options_menu_items.pluck('text')).not_to include('Edit single file')
+      end
+    end
+
     it 'merges externally-provided extra_file_data into file_data' do
       render_component(extra_file_data: { show_whitespace: true, custom_key: 'custom_value' })
 

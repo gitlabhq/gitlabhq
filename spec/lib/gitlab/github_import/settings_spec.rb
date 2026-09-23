@@ -99,10 +99,9 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   end
 
   describe '#user_mapping_enabled?' do
-    it 'returns true after writing settings' do
-      project.build_or_assign_import_data(credentials: { user: 'token' })
-      settings.write(data_input)
-
+    # See gitlab-org/gitlab#628379. User contribution mapping is the only
+    # supported mode for GitHub imports.
+    it 'returns true' do
       expect(settings.user_mapping_enabled?).to be(true)
     end
   end

@@ -4486,10 +4486,10 @@ msgstr ""
 msgid "AccessTokens|Adding a group includes its subgroups and projects"
 msgstr ""
 
-msgid "AccessTokens|All groups and projects that I'm a member of"
+msgid "AccessTokens|All groups and projects I have access to"
 msgstr ""
 
-msgid "AccessTokens|All groups and projects that I'm a member of, including future ones"
+msgid "AccessTokens|All groups and projects I have access to, including future ones"
 msgstr ""
 
 msgid "AccessTokens|Allows the token to %{linkStart}make API requests as another user%{linkEnd}. The token cannot perform actions that are restricted for either the impersonated user or the token itself."
@@ -4821,10 +4821,7 @@ msgstr ""
 msgid "AccessTokens|Only my personal projects, including future ones"
 msgstr ""
 
-msgid "AccessTokens|Only specific group or projects that I'm a member of"
-msgstr ""
-
-msgid "AccessTokens|Only specific groups or projects that I'm a member of"
+msgid "AccessTokens|Only specific groups or projects I have access to"
 msgstr ""
 
 msgid "AccessTokens|Permissions"
@@ -11249,9 +11246,6 @@ msgstr ""
 msgid "AnalyticsDashboards|Add to dashboard"
 msgstr ""
 
-msgid "AnalyticsDashboards|An error occurred when trying to display this panel"
-msgstr ""
-
 msgid "AnalyticsDashboards|Analyze with Duo"
 msgstr ""
 
@@ -11259,9 +11253,6 @@ msgid "AnalyticsDashboards|Are you sure you want to permanently delete the %{nam
 msgstr ""
 
 msgid "AnalyticsDashboards|Ask me about the data on this dashboard."
-msgstr ""
-
-msgid "AnalyticsDashboards|By %{name}"
 msgstr ""
 
 msgid "AnalyticsDashboards|Cancel"
@@ -11277,6 +11268,9 @@ msgid "AnalyticsDashboards|Code Suggestions"
 msgstr ""
 
 msgid "AnalyticsDashboards|Collapse %{name}"
+msgstr ""
+
+msgid "AnalyticsDashboards|Created by %{name}"
 msgstr ""
 
 msgid "AnalyticsDashboards|Dashboard description"
@@ -11328,9 +11322,6 @@ msgid "AnalyticsDashboards|Failed to load namespace metadata."
 msgstr ""
 
 msgid "AnalyticsDashboards|Failed to update dashboard. Please try again."
-msgstr ""
-
-msgid "AnalyticsDashboards|GitLab Analytics"
 msgstr ""
 
 msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most"
@@ -11417,6 +11408,12 @@ msgstr ""
 msgid "Analytics|Analytics settings for '%{group_name}' were successfully updated."
 msgstr ""
 
+msgid "Analytics|ClickHouse must be configured before this data is available."
+msgstr ""
+
+msgid "Analytics|Configuration required"
+msgstr ""
+
 msgid "Analytics|Configure analytics reports."
 msgstr ""
 
@@ -11427,6 +11424,9 @@ msgid "Analytics|Custom"
 msgstr ""
 
 msgid "Analytics|Dashboard not found"
+msgstr ""
+
+msgid "Analytics|Data isn't available yet"
 msgstr ""
 
 msgid "Analytics|Date range"
@@ -11473,7 +11473,13 @@ msgstr ""
 msgid "Analytics|No dashboard matches the specified URL path."
 msgstr ""
 
+msgid "Analytics|No data yet"
+msgstr ""
+
 msgid "Analytics|No results match your query or filter."
+msgstr ""
+
+msgid "Analytics|Nothing to show for this scope and period."
 msgstr ""
 
 msgid "Analytics|Refresh the page to try again."
@@ -11500,6 +11506,12 @@ msgstr ""
 msgid "Analytics|The analytics dashboards page is being rebuilt and moved to the %{boldStart}Explore%{boldEnd} page to give you visibility across your entire organization."
 msgstr ""
 
+msgid "Analytics|The query timed out. Select a shorter date range and try again."
+msgstr ""
+
+msgid "Analytics|This data isn't being collected for this scope yet."
+msgstr ""
+
 msgid "Analytics|Try analytics dashboards in Explore"
 msgstr ""
 
@@ -11519,6 +11531,18 @@ msgid "Analytics|View available dashboards"
 msgstr ""
 
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
+msgstr ""
+
+msgid "Analytics|We couldn't load this data. Please try again later."
+msgstr ""
+
+msgid "Analytics|We couldn't load this data. Try again."
+msgstr ""
+
+msgid "Analytics|You don't have access"
+msgstr ""
+
+msgid "Analytics|You don't have permission to view this data. Ask an owner for access."
 msgstr ""
 
 msgid "Analytics|You have insufficient %{linkStart}permissions%{linkEnd} to view this panel."
@@ -17855,6 +17879,9 @@ msgid "Cannot activate: Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
 msgid "Cannot add more than %{limit} labels to a work item."
+msgstr ""
+
+msgid "Cannot apply as this suggestion spans more than %{max_lines} lines."
 msgstr ""
 
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
@@ -71095,6 +71122,12 @@ msgstr ""
 msgid "ScanProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage."
 msgstr ""
 
+msgid "ScanProfiles|Create new profile"
+msgstr ""
+
+msgid "ScanProfiles|Created “%{profileName}”"
+msgstr ""
+
 msgid "ScanProfiles|Currently active"
 msgstr ""
 
@@ -71114,9 +71147,6 @@ msgid "ScanProfiles|Deleted “%{profileName}”"
 msgstr ""
 
 msgid "ScanProfiles|Differs by trigger"
-msgstr ""
-
-msgid "ScanProfiles|Enable at least one trigger."
 msgstr ""
 
 msgid "ScanProfiles|Full repository"
@@ -71141,9 +71171,6 @@ msgid "ScanProfiles|Managed by"
 msgstr ""
 
 msgid "ScanProfiles|Merge Request Pipelines"
-msgstr ""
-
-msgid "ScanProfiles|Name is required."
 msgstr ""
 
 msgid "ScanProfiles|New vulnerabilities only"
@@ -71638,6 +71665,9 @@ msgid "ScanResultPolicy|Recommended settings"
 msgstr ""
 
 msgid "ScanResultPolicy|Remove all approvals with new commit"
+msgstr ""
+
+msgid "ScanResultPolicy|Remove approvals by Code Owners if their files changed"
 msgstr ""
 
 msgid "ScanResultPolicy|Remove override"
@@ -72853,6 +72883,9 @@ msgstr ""
 msgid "SecretsManager|You pay for GitLab Secrets Manager through GitLab Credits. Usage across all projects and subgroups is combined."
 msgstr ""
 
+msgid "SecretsManager|You will be granted 500 trial credits for a period of 30 days for use across all projects and subgroups in your group."
+msgstr ""
+
 msgid "SecretsManager|You will be granted 500 trial credits for a period of 30 days for use across all projects and subgroups in your instance."
 msgstr ""
 
@@ -73317,6 +73350,9 @@ msgstr ""
 msgid "SecurityConfiguration|Available with Ultimate"
 msgstr ""
 
+msgid "SecurityConfiguration|Changes to “%{profileName}” were saved, but the list could not be refreshed. Please refresh the page."
+msgstr ""
+
 msgid "SecurityConfiguration|Choose exactly which projects and scanners to enable and which profiles to apply. We'll guide you through each step."
 msgstr ""
 
@@ -73353,7 +73389,13 @@ msgstr ""
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
 msgstr ""
 
+msgid "SecurityConfiguration|Create %{scannerName} profile"
+msgstr ""
+
 msgid "SecurityConfiguration|Create merge request"
+msgstr ""
+
+msgid "SecurityConfiguration|Create profile"
 msgstr ""
 
 msgid "SecurityConfiguration|Custom"
@@ -73426,6 +73468,9 @@ msgid "SecurityConfiguration|Exit setup"
 msgstr ""
 
 msgid "SecurityConfiguration|Failed"
+msgstr ""
+
+msgid "SecurityConfiguration|Failed to create “%{profileName}”."
 msgstr ""
 
 msgid "SecurityConfiguration|Failed to delete “%{profileName}”."
@@ -73764,6 +73809,9 @@ msgid "SecurityConfiguration|~3 min"
 msgstr ""
 
 msgid "SecurityConfiguration|~9 min"
+msgstr ""
+
+msgid "SecurityConfiguration|“%{profileName}” was created, but the list could not be refreshed. Please refresh the page."
 msgstr ""
 
 msgid "SecurityDescription|The linked group refers to the groups that are linked to security policy projects. Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."

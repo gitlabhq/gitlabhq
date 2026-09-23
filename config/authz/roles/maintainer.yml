@@ -97,6 +97,7 @@ project:
   - delete_external_status_check
   - delete_freeze_period
   - delete_job_artifact
+  - delete_note
   - delete_protected_tag
   - delete_security_scan_profiles
   - delete_service_account
@@ -182,6 +183,7 @@ project:
   - update_external_status_check
   - update_feature_flags_minimum_role_setting
   - update_freeze_period
+  - update_note
   - update_package
   - update_pages
   - update_pipeline_variable_override_setting
@@ -240,6 +242,7 @@ group:
   - create_virtual_registry
   - create_work_item_type
   - delete_custom_emoji
+  - delete_note
   - delete_security_scan_profiles
   - delete_timelog
   - destroy_package
@@ -272,6 +275,7 @@ group:
   - transfer_projects
   - update_ci_namespace_settings
   - update_cluster
+  - update_note
   - update_protected_branch
   - update_secret_detection_validity_check
   - update_security_scan_profiles

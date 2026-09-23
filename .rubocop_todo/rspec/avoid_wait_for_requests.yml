@@ -404,7 +404,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/work_items/issues/issue_detail_spec.rb'
     - 'spec/features/work_items/issues/issue_sidebar_spec.rb'
     - 'spec/features/work_items/issues/list/user_bulk_edits_work_items_spec.rb'
-    - 'spec/features/work_items/issues/list/user_resets_their_incoming_email_token_spec.rb'
     - 'spec/features/work_items/issues/move_spec.rb'
     - 'spec/features/work_items/issues/note_polling_spec.rb'
     - 'spec/features/work_items/issues/user_scrolls_to_deeplinked_note_spec.rb'

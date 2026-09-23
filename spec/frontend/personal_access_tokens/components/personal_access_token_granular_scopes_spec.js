@@ -49,7 +49,7 @@ describe('PersonalAccessTokenGranularScopes', () => {
       });
 
       expect(wrapper.text()).toContain('Group and project access');
-      expect(wrapper.text()).toContain("Only specific group or projects that I'm a member of");
+      expect(wrapper.text()).toContain('Only specific groups or projects I have access to');
     });
 
     it('renders all memberships description', () => {
@@ -59,7 +59,7 @@ describe('PersonalAccessTokenGranularScopes', () => {
 
       expect(wrapper.text()).toContain('Group and project access');
       expect(wrapper.text()).toContain(
-        "All groups and projects that I'm a member of, including future ones",
+        'All groups and projects I have access to, including future ones',
       );
     });
 

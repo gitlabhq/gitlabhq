@@ -48,6 +48,8 @@ class IssuablePolicy < BasePolicy
   rule { locked & ~is_container_member }.policy do
     prevent :create_note
     prevent :admin_note
+    prevent :update_note
+    prevent :delete_note
     prevent :award_emoji
   end
 

@@ -460,6 +460,9 @@ module API
           requires :id, type: Integer, desc: "Job's ID"
           optional :token, type: String, desc: "Job's authentication token" # token can also be present in header
           optional :direct_download, default: false, type: Boolean, desc: 'Perform direct download from remote storage instead of proxying artifacts'
+          optional :download_mode, type: String, values: %w[proxy direct],
+            desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
+              'object storage configuration.'
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
@@ -474,7 +477,8 @@ module API
           not_found! unless current_job.artifacts_file&.exists?
 
           audit_download(current_job, current_job.artifacts_file.filename)
-          present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
+          present_artifacts_file!(current_job.artifacts_file,
+            supports_direct_download: params[:direct_download] || params[:download_mode] == 'direct')
         end
       end
     end

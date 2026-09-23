@@ -510,6 +510,32 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     end
   end
 
+  describe '#path_traversal?' do
+    it 'is false for a normal path' do
+      allow(diff_file).to receive_messages(old_path: 'foo/bar.rb', new_path: 'foo/bar.rb')
+
+      expect(diff_file.path_traversal?).to be(false)
+    end
+
+    it 'is false for filenames that merely contain dots' do
+      allow(diff_file).to receive_messages(old_path: 'foo/..bar', new_path: 'a..b')
+
+      expect(diff_file.path_traversal?).to be(false)
+    end
+
+    it 'detects a traversal segment in new_path' do
+      allow(diff_file).to receive_messages(old_path: 'placeholder.txt', new_path: 'x/../../../../raw/main')
+
+      expect(diff_file.path_traversal?).to be(true)
+    end
+
+    it 'detects a traversal segment in old_path' do
+      allow(diff_file).to receive_messages(old_path: '../escape', new_path: 'safe.rb')
+
+      expect(diff_file.path_traversal?).to be(true)
+    end
+  end
+
   describe '#file_hash' do
     it 'returns a hash of file_path' do
       expect(diff_file.file_hash).to eq(Digest::SHA1.hexdigest(diff_file.file_path))

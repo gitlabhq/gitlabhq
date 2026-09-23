@@ -9,11 +9,13 @@ class ReplaceVulnDetectionTransitionsIndex < Gitlab::Database::Migration[2.3]
   OLD_INDEX_NAME = 'idx_vuln_detection_transitions_on_occurrence_id_detected_id'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- table size was reclassified after this migration was created
     add_concurrent_index(
       :vulnerability_detection_transitions,
       [:vulnerability_occurrence_id, :id],
       name: NEW_INDEX_NAME
     )
+    # rubocop:enable Migration/PreventIndexCreation
 
     remove_concurrent_index_by_name(
       :vulnerability_detection_transitions,

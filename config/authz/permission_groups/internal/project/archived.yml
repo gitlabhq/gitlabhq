@@ -71,6 +71,7 @@ permissions:
   - create_vulnerability
   - create_vulnerability_feedback
   - create_wiki
+  - delete_note
   - delete_timelog
   - destroy_approvers
   - destroy_build

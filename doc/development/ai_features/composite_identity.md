@@ -9,7 +9,7 @@ For security reasons, you should use composite identity for any AI-generated act
 
 Features that use Composite Identity:
 
-- [GitLab Duo with Amazon Q](../../user/gitlab_duo/security.md)
+- [GitLab Duo with Amazon Q](../../user/duo_amazon_q/_index.md)
 
 ## Prerequisites
 

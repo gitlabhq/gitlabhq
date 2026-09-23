@@ -49,6 +49,7 @@ export const updateNoteErrorMessage = (e) => {
   return UPDATE_COMMENT_FORM.defaultError;
 };
 
+const DUO_SYSTEM_NOTE_ICON_EXCLUSIONS = ['comment-dots', 'check', 'error'];
 /**
  * Whether a system note should render with the styled GitLab Duo treatment
  * (avatar + progress spinner) rather than as a plain system note.
@@ -62,16 +63,14 @@ export const updateNoteErrorMessage = (e) => {
  *   `duo_code_review_bot` is the dedicated internal GitLab Duo user (see
  *   Users::Internal); it is the author's account type, not a per-note flag.
  *
- * The bot also authors `cross_reference` notes ("mentioned in ...") from its
- * review summary, which must stay plain, so the author branch excludes the
- * `comment-dots` icon that only `cross_reference` produces.
+ * The bot also authors `cross_reference` notes, can approve and request changes
+ * so the author branch excludes the icons from `DUO_SYSTEM_NOTE_ICON_EXCLUSIONS`.
  */
 export const shouldRenderAsDuoSystemNote = (note) =>
   Boolean(note?.system) &&
   (note.duo_session_status !== undefined ||
     (note.author?.user_type === 'duo_code_review_bot' &&
-      note.system_note_icon_name !== 'comment-dots' &&
-      note.system_note_icon_name !== 'check'));
+      !DUO_SYSTEM_NOTE_ICON_EXCLUSIONS.includes(note.system_note_icon_name)));
 
 const matchesAuthor = (candidate, authorId) =>
   shouldRenderAsDuoSystemNote(candidate) && candidate.author?.id === authorId;

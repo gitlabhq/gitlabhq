@@ -22,6 +22,7 @@ module RapidDiffs
       def diff_file_old_blob_raw_url
         sha = @diff_file.old_content_sha
         return unless sha
+        return if @diff_file.path_traversal?
 
         project_raw_url(
           @diff_file.repository.project,
@@ -31,6 +32,8 @@ module RapidDiffs
       end
 
       def diff_file_blob_raw_url
+        return if @diff_file.path_traversal?
+
         project_raw_url(
           @diff_file.repository.project,
           tree_join(@diff_file.content_sha, @diff_file.file_path),

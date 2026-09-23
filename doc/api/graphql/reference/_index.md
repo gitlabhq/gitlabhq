@@ -68344,10 +68344,10 @@ Access configured on a granular scope.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="accesstokengranularscopeaccess-all_memberships"></a>`ALL_MEMBERSHIPS` | Grants access to resources belonging to all groups and projects the user is a member of. |
+| <a id="accesstokengranularscopeaccess-all_memberships"></a>`ALL_MEMBERSHIPS` | Grants access to resources belonging to all groups and projects the user can access. |
 | <a id="accesstokengranularscopeaccess-instance"></a>`INSTANCE` | Grants access to standalone instance-level resources. |
 | <a id="accesstokengranularscopeaccess-personal_projects"></a>`PERSONAL_PROJECTS` | Grants access to resources belonging to all personal projects of a user. |
-| <a id="accesstokengranularscopeaccess-selected_memberships"></a>`SELECTED_MEMBERSHIPS` | Grants access to resources belonging to selected groups and projects the user is a member of. |
+| <a id="accesstokengranularscopeaccess-selected_memberships"></a>`SELECTED_MEMBERSHIPS` | Grants access to resources belonging to selected groups and projects the user can access. |
 | <a id="accesstokengranularscopeaccess-user"></a>`USER` | Grants access to standalone user-level resources. |
 
 ### `AccessTokenSort`

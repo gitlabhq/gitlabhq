@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_category: :importers do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:bulk_import) { create(:bulk_import, user: user) }
+  let(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let(:context) { BulkImports::Pipeline::Context.new(tracker) }
   let(:source_project_id) { nil } # if set, then exported_milestone is a project milestone
@@ -50,6 +50,11 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_categ
     end
 
     allow(subject).to receive(:set_source_objects_counter)
+
+    # These specs assert against the legacy user-resolution path. They predate
+    # contribution mapping being always-on and would otherwise exercise the
+    # full SourceUsersMapper stack.
+    allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
   end
 
   subject { described_class.new(context) }

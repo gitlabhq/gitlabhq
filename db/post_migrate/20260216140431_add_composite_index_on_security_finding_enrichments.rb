@@ -8,7 +8,9 @@ class AddCompositeIndexOnSecurityFindingEnrichments < Gitlab::Database::Migratio
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- table size was reclassified after this migration was created
     add_concurrent_index :security_finding_enrichments, [:cve_enrichment_id, :id], name: NEW_INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
     remove_concurrent_index_by_name :security_finding_enrichments, OLD_INDEX_NAME
   end
 

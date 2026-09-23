@@ -58,7 +58,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token duplicat
     expect(find_field('Description').value).to eq(active_token.description)
     expect(find_field('Expiration date').value).not_to be_empty
 
-    expect(page).to have_checked_field("Only specific groups or projects that I'm a member of")
+    expect(page).to have_checked_field("Only specific groups or projects I have access to")
 
     within_testid('selected-namespaces') do
       expect(page).to have_text(group.full_path)

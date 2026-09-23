@@ -134,12 +134,36 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
       it { is_expected.to eq("Can't apply this suggestion.") }
     end
 
+    context 'when the suggestion spans more lines below than MAX_LINES_CONTEXT allows' do
+      let(:suggestion) { build(:suggestion, note: note, lines_below: Suggestible::MAX_LINES_CONTEXT + 1) }
+
+      it { is_expected.to eq("Cannot apply as this suggestion spans more than 100 lines.") }
+    end
+
+    context 'when the suggestion spans more lines above than MAX_LINES_CONTEXT allows' do
+      let(:suggestion) { build(:suggestion, note: note, lines_above: Suggestible::MAX_LINES_CONTEXT + 1) }
+
+      it { is_expected.to eq("Cannot apply as this suggestion spans more than 100 lines.") }
+    end
+
+    context 'when the suggestion spans exactly MAX_LINES_CONTEXT lines' do
+      let(:suggestion) { build(:suggestion, note: note, lines_below: Suggestible::MAX_LINES_CONTEXT) }
+
+      it { is_expected.to be_nil }
+    end
+
     context 'when merge request was merged' do
       before do
         merge_request.mark_as_merged!
       end
 
       it { is_expected.to eq("This merge request was merged. To apply this suggestion, edit this file directly.") }
+
+      context 'and the suggestion also spans more lines than MAX_LINES_CONTEXT allows' do
+        let(:suggestion) { build(:suggestion, note: note, lines_below: Suggestible::MAX_LINES_CONTEXT + 1) }
+
+        it { is_expected.to eq("This merge request was merged. To apply this suggestion, edit this file directly.") }
+      end
     end
 
     context 'when merge request is closed' do

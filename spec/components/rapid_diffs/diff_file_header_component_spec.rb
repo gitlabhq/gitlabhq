@@ -18,6 +18,16 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, feature_category: :code_revi
     expect(link[:class]).to include('has-tooltip')
   end
 
+  it "renders the file path unlinked when it contains traversal segments" do
+    allow(diff_file).to receive(:path_traversal?).and_return(true)
+
+    render_component
+
+    title = header.find('h2')
+    expect(title.text).to include(diff_file.file_path)
+    expect(title).to have_no_css('a')
+  end
+
   it "renders file toggle with tooltips" do
     render_component
     toggle = 'button[data-click="toggleFile"]'

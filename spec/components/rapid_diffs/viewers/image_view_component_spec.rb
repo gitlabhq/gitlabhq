@@ -26,6 +26,19 @@ RSpec.describe RapidDiffs::Viewers::ImageViewComponent, feature_category: :code_
     })
   end
 
+  context 'when the file path contains traversal segments' do
+    before do
+      allow(diff_file).to receive(:path_traversal?).and_return(true)
+    end
+
+    it 'omits both raw URLs' do
+      render_component
+
+      expect(image_data['old_path']).to be_nil
+      expect(image_data['new_path']).to be_nil
+    end
+  end
+
   it 'renders image app mount element' do
     render_component
     expect(page).to have_css('[data-image-view]')

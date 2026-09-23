@@ -1258,10 +1258,10 @@ RSpec.describe OmniauthCallbacksController, feature_category: :system_access do
         expect(flash[:notice]).to eq 'Request to link SAML account must be authorized'
       end
 
-      it 'redirects to profile account page' do
+      it 'redirects to the Password and authentication page' do
         post :saml, params: { SAMLResponse: mock_saml_response }
 
-        expect(response).to redirect_to(profile_account_path)
+        expect(response).to redirect_to(profile_two_factor_auth_path)
       end
 
       it 'doesn\'t link a new identity to the user' do
@@ -1396,7 +1396,7 @@ RSpec.describe OmniauthCallbacksController, feature_category: :system_access do
         it 'cannot be enabled' do
           reauthenticate_and_check_admin_mode(expected_admin_mode: false)
 
-          expect(response).to redirect_to(profile_account_path)
+          expect(response).to redirect_to(profile_two_factor_auth_path)
         end
       end
 
@@ -1425,7 +1425,7 @@ RSpec.describe OmniauthCallbacksController, feature_category: :system_access do
           it 'cannot be enabled' do
             reauthenticate_and_check_admin_mode(expected_admin_mode: false)
 
-            expect(response).to redirect_to(profile_account_path)
+            expect(response).to redirect_to(profile_two_factor_auth_path)
           end
         end
       end

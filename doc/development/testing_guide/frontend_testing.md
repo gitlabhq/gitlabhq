@@ -1885,8 +1885,9 @@ mirrors the feature area. Each file should:
    and automatically attaches to `document.body`.
 1. Use `waitFor` from `@testing-library/dom` after actions that trigger
    API calls.
-1. Interact with the UI through native DOM APIs (`.click()`,
-   `.dispatchEvent()`, `.querySelector()`).
+1. Locate elements with Testing Library `screen` queries
+   (`screen.queryByTestId()`, `screen.queryByRole()`) and interact with
+   them through native DOM APIs (`.click()`, `.dispatchEvent()`).
 1. Assert on the DOM, not on Vue component state.
 
 #### Prefer DOM assertions over Vue Test Utils wrappers
@@ -1907,6 +1908,7 @@ Use native DOM equivalents instead:
 
 | Vue Test Utils | DOM equivalent |
 |---|---|
+| `.find('[data-testid="foo"]')` | `screen.queryByTestId('foo')` |
 | `.find(selector)` | `.querySelector(selector)` |
 | `.trigger('click')` | `.click()` |
 | `.trigger('submit')` | `.dispatchEvent(new Event('submit', { bubbles: true }))` |
@@ -1914,6 +1916,104 @@ Use native DOM equivalents instead:
 | `.attributes('name')` | `.getAttribute('name')` or `.dataset` |
 | `.exists()` | `!== null` |
 | `.setValue(val)` | `el.value = val; el.dispatchEvent(new Event('input', { bubbles: true }))` |
+
+#### Prefer `screen` queries over `document.querySelector` for test IDs
+
+When locating elements by `data-testid` attribute, use `screen.queryByTestId`
+or `screen.queryAllByTestId` (both exported from `@testing-library/vue` and
+re-exported by the suite's `test_helpers.js`) instead of raw
+`document.querySelector` or `document.querySelectorAll` calls. Unlike
+`querySelector`, `queryByTestId` returns `null` when nothing matches and
+throws when more than one element matches, so ambiguous selectors are caught
+immediately rather than silently resolved to the first result.
+
+```javascript
+// Bad
+const findResult = () => document.querySelector('[data-testid="result"]');
+
+// Good
+const findResult = () => screen.queryByTestId('result');
+```
+
+Higher-priority queries in the
+[Testing Library query priority](https://testing-library.com/docs/queries/about/#priority),
+such as `screen.queryByRole` or `screen.queryByLabelText`, locate elements the
+way users and assistive technology do — a role query only matches when the
+element exposes the right role and accessible name, so it doubles as an
+accessibility check. Prefer them for one-shot assertions, but prefer test IDs
+for finders you poll on: role queries are expensive to re-run on a fully
+mounted page (see the next section). Raw `querySelector` remains acceptable
+for scoping a search inside an already-found element, and for selectors
+Testing Library cannot express (for example, class or ID selectors).
+
+#### Scope the queries you poll on
+
+Scoping a query with `within` to the region under test is good practice for
+any query type in a full mount: the entire page is rendered, so an unscoped
+query can match an unrelated sidebar, drawer, or breadcrumb, and a narrower
+scope means less work per call.
+
+For role queries inside a poll, scoping is essential. `ByRole` runs a
+visibility check and computes an accessible name for every candidate element
+in scope, and `waitFor` re-runs its callback on every poll tick and DOM
+mutation. In a `fullMount` the default scope is the entire application tree,
+so an unscoped polled role query re-walks the whole page every tick — one
+real-world wait took 5470 ms by role and 78 ms by test ID. This is a
+[known open issue in Testing Library](https://github.com/testing-library/dom-testing-library/issues/820).
+Address the container by test ID and use the role query inside it:
+
+```javascript
+// Bad - re-walks the whole mounted app on every poll tick
+const findSubmit = () => screen.queryByRole('button', { name: /submit/i });
+await waitForElement(findSubmit);
+
+// Good - test ID addresses the container, role selects inside it
+const findSubmit = () => {
+  const form = screen.queryByTestId('merge-request-form');
+  return form ? within(form).queryByRole('button', { name: /submit/i }) : null;
+};
+await waitForElement(findSubmit);
+```
+
+The null guard is not optional: `within(null)` throws when the container is
+absent on the first tick. Both `screen` and `within` are re-exported from the
+suite's `test_helpers.js`.
+
+Role queries work best in one-shot assertions, where the accessible name is
+the thing under test and the query runs only once:
+
+```javascript
+// Good - one-shot assertion, and the accessible name is the thing under test
+expect(
+  within(findToolbar()).queryByRole('button', { name: 'Mark to-do items done' }),
+).not.toBe(null);
+
+// Bad - same query, but now it runs on every tick of the wait
+await waitForElement(() =>
+  within(findToolbar()).queryByRole('button', { name: /mark to-do/i }),
+);
+```
+
+One caveat: content rendered in portals (`GlModal`, dropdowns, tooltips)
+escapes its parent container in the DOM, so don't scope past a portal
+boundary — query portaled content from `screen`.
+
+#### Don't let the accessible name double as state
+
+A toggle that relabels itself is one element, not two. Keying finders off the
+label silently returns `null` when the copy changes, which reads as "element
+missing" rather than "label changed" — the wrong signal when developing.
+Address the element once and read its state from ARIA:
+
+```javascript
+// Bad - two finders for one button, and both break on a copy change
+const findMarkDone = () => screen.queryByRole('button', { name: /mark to-do items done/i });
+const findAddTodo = () => screen.queryByRole('button', { name: /add a to-do item/i });
+
+// Good - address the element once, read its state from ARIA
+const findTodoToggle = () => screen.queryByTestId('todos-toggle');
+const todoIsPending = () => findTodoToggle()?.getAttribute('aria-pressed') === 'true';
+```
 
 The following helpers from `ee_jest/integration/helpers/test_helpers` cover common async interaction patterns:
 
@@ -1938,7 +2038,7 @@ import { waitFor } from '@testing-library/dom';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { createRouter } from '~/my_feature/router';
 import MyApp from '~/my_feature/components/app.vue';
-import { assignRouter, fullMount, waitForElement, getText } from 'ee_jest/integration/helpers/test_helpers';
+import { assignRouter, fullMount, screen, waitForElement, getText } from 'ee_jest/integration/helpers/test_helpers';
 
 Vue.use(VueApollo);
 
@@ -1948,8 +2048,7 @@ describe('My feature test', () => {
     routerPath: 'my_feature',
   });
 
-  const findResult = () =>
-    document.querySelector('[data-testid="result"]');
+  const findResult = () => screen.queryByTestId('result');
 
   const createComponent = () => {
     fullMount(MyApp, {
@@ -1968,12 +2067,10 @@ describe('My feature test', () => {
   it('renders the page and responds to user interaction', async () => {
     createComponent();
 
-    const el = await waitForElement(
-      () => document.querySelector('[data-testid="my-element"]'),
-    );
+    const el = await waitForElement(() => screen.queryByTestId('my-element'));
     expect(el).not.toBe(null);
 
-    document.querySelector('[data-testid="my-button"]').click();
+    screen.getByTestId('my-button').click();
 
     await waitFor(() => {
       expect(getText(findResult())).toContain('Updated');
