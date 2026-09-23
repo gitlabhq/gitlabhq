@@ -10,7 +10,6 @@ import {
   removeHierarchyChild,
   addHierarchyChildren,
   updateParent,
-  updateWorkItemCurrentTodosWidget,
   setNewWorkItemCache,
   getNewWorkItemSharedCache,
   legacyGetNewWorkItemSharedCache,
@@ -19,7 +18,6 @@ import {
 } from '~/work_items/graphql/cache_utils';
 import {
   findHierarchyWidget,
-  findCurrentUserTodosWidget,
   findDescriptionWidget,
   findNotesWidget,
   getWorkItemWidgets,
@@ -30,7 +28,6 @@ import { setCurrentUser } from 'helpers/current_user_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemCrmContactsQuery from '~/work_items/graphql/work_item_crm_contacts.query.graphql';
-import workItemCurrentUserTodosQuery from '~/work_items/graphql/work_item_current_user_todos.query.graphql';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
 import workItemLinkedItemsSlimQuery from '~/work_items/graphql/work_items_linked_items_slim.query.graphql';
@@ -45,7 +42,6 @@ import {
   workItemResponseFactory,
   workItemByIidResponseFactory,
   mockRolledUpCountsByType,
-  workItemCurrentUserTodosResponseFactory,
   workItemHierarchyTreeResponse,
   buildFeaturesTreeResponse,
   confidentialWorkItemTask,
@@ -858,61 +854,6 @@ describe('work items graphql cache utils', () => {
         const before = cache.extract();
 
         updateParent({ cache, fullPath, iid, workItem: { id: 'gid://gitlab/WorkItem/999' } });
-
-        expect(cache.extract()).toEqual(before);
-      });
-    });
-  });
-
-  describe.each`
-    path          | useWorkItemFeatures
-    ${'widgets'}  | ${false}
-    ${'features'} | ${true}
-  `('updateWorkItemCurrentTodosWidget on the $path path', ({ useWorkItemFeatures }) => {
-    const fullPath = 'gitlab-org';
-    const iid = '1';
-    const variables = { fullPath, iid, useWorkItemFeatures };
-    const newTodos = [
-      { id: 'gid://gitlab/Todo/2', state: 'done', __typename: 'Todo' },
-      { id: 'gid://gitlab/Todo/3', state: 'pending', __typename: 'Todo' },
-    ];
-
-    const readTodoIds = () =>
-      findCurrentUserTodosWidget(
-        cache.readQuery({ query: workItemCurrentUserTodosQuery, variables })?.namespace?.workItem,
-      ).currentUserTodos.nodes.map((todo) => todo.id);
-
-    beforeEach(() => {
-      window.gon.features = { workItemFeaturesField: useWorkItemFeatures };
-    });
-
-    describe('when the work item is in the cache', () => {
-      beforeEach(() => {
-        cache.writeQuery({
-          query: workItemCurrentUserTodosQuery,
-          variables,
-          data: workItemCurrentUserTodosResponseFactory({ useWorkItemFeatures }).data,
-        });
-
-        updateWorkItemCurrentTodosWidget({ cache, fullPath, iid, todos: newTodos });
-      });
-
-      // `currentUserTodos` has no field policy, so the nodes are replaced wholesale rather
-      // than merged with what was already cached.
-      it('replaces the cached todos', () => {
-        expect(readTodoIds()).toEqual(newTodos.map((todo) => todo.id));
-      });
-
-      it('leaves the todos query fully readable from the cache', () => {
-        expectCacheHit(cache, { query: workItemCurrentUserTodosQuery, variables });
-      });
-    });
-
-    describe('when the work item is not in the cache', () => {
-      it('leaves the cache untouched', () => {
-        const before = cache.extract();
-
-        updateWorkItemCurrentTodosWidget({ cache, fullPath, iid, todos: newTodos });
 
         expect(cache.extract()).toEqual(before);
       });

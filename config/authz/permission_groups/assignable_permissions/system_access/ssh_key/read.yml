@@ -10,3 +10,7 @@ available_for:
 permissions:
   - read_ssh_key
   - read_user_ssh_key
+assignable_when:
+  - condition: saas
+    boundaries:
+      - group

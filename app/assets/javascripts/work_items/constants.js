@@ -168,7 +168,6 @@ export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
 
 export const TODO_ADD_ICON = 'todo-add';
 export const TODO_DONE_ICON = 'todo-done';
-export const TODO_PENDING_STATE = 'pending';
 
 export const WORK_ITEM_TO_ISSUABLE_MAP = {
   [WIDGET_TYPE_ASSIGNEES]: 'assignees',

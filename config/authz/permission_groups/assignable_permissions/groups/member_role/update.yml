@@ -8,3 +8,10 @@ available_for:
   - granular_access_token
 permissions:
   - update_member_role
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
+  - condition: saas
+    boundaries:
+      - group

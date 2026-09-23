@@ -36,7 +36,6 @@ import {
   WIDGET_TYPE_DECISION_LOG,
 } from 'ee_else_ce/work_items/constants';
 import {
-  findCurrentUserTodosWidget,
   findHierarchyWidget,
   findHierarchyWidgetChildren,
   findNotesWidget,
@@ -49,7 +48,6 @@ import {
   getWorkItemFeatures,
 } from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
-import workItemCurrentUserTodosQuery from './work_item_current_user_todos.query.graphql';
 import workItemCrmContactsQuery from './work_item_crm_contacts.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
@@ -68,6 +66,8 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
     draftData.namespace.workItem.widgets[noteWidgetIndex] = notesWidget;
   }
 };
+
+const workItemFeaturesEnabled = () => Boolean(window.gon?.features?.workItemFeaturesField);
 
 /**
  * Work Item note create subscription update query callback
@@ -201,7 +201,7 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
     query: getWorkItemTreeQuery,
     variables: {
       id,
-      useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+      useWorkItemFeatures: workItemFeaturesEnabled(),
     },
   };
   const sourceData = cache.readQuery(queryArgs);
@@ -282,7 +282,7 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
     query: getWorkItemTreeQuery,
     variables: {
       id,
-      useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+      useWorkItemFeatures: workItemFeaturesEnabled(),
     },
   };
   const sourceData = cache.readQuery(queryArgs);
@@ -310,7 +310,7 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
     variables: {
       fullPath,
       iid,
-      useWorkItemFeatures: Boolean(window.gon.features.workItemFeaturesField),
+      useWorkItemFeatures: workItemFeaturesEnabled(),
     },
   };
   const sourceData = cache.readQuery(queryArgs);
@@ -327,35 +327,6 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
       if (index >= 0) children.splice(index, 1);
     }),
   });
-};
-
-export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }) => {
-  const query = {
-    query: workItemCurrentUserTodosQuery,
-    variables: {
-      fullPath,
-      iid,
-      useWorkItemFeatures: Boolean(window.gon.features.workItemFeaturesField),
-    },
-  };
-
-  const sourceData = cache.readQuery(query);
-
-  if (!sourceData) {
-    return;
-  }
-
-  const newData = produce(sourceData, (draftState) => {
-    const widgetCurrentUserTodos = findCurrentUserTodosWidget(draftState.namespace.workItem);
-
-    if (!widgetCurrentUserTodos?.currentUserTodos) {
-      return;
-    }
-
-    widgetCurrentUserTodos.currentUserTodos.nodes = todos;
-  });
-
-  cache.writeQuery({ ...query, data: newData });
 };
 
 export const getNewWorkItemSharedCache = ({
@@ -1183,20 +1154,6 @@ export const setNewWorkItemCache = ({
   });
 };
 
-export const optimisticUserPermissions = {
-  adminParentLink: false,
-  adminWorkItemLink: false,
-  createNote: false,
-  deleteWorkItem: false,
-  markNoteAsInternal: false,
-  moveWorkItem: false,
-  reportSpam: false,
-  setWorkItemMetadata: false,
-  summarizeComments: false,
-  updateWorkItem: false,
-  __typename: 'WorkItemPermissions',
-};
-
 export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing }) => {
   if (!parentId) {
     return null;
@@ -1204,7 +1161,7 @@ export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing
 
   const variables = {
     id: parentId,
-    useWorkItemFeatures: Boolean(window.gon?.features?.workItemFeaturesField),
+    useWorkItemFeatures: workItemFeaturesEnabled(),
   };
 
   const parent = cache.readQuery({

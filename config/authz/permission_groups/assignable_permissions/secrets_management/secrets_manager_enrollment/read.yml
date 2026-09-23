@@ -7,3 +7,6 @@ available_for:
   - granular_access_token
 permissions:
   - read_secrets_manager_enrollment
+assignable_when:
+  - condition: admin
+  - condition: self_managed

@@ -968,28 +968,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, :silence_st
         end
       end
 
-      context 'when the permission is consumed through additional scopes' do
-        let(:yaml_assignable_when) { [{ condition: 'admin' }] }
-        let(:rest_routes) do
-          [rest_route(
-            permissions: :update_wiki, boundary_type: :project, assignable_when: [:admin],
-            additional_scopes: [{ permissions: :update_wiki, boundary_type: :instance }]
-          )]
-        end
-
-        let(:graphql_directives) do
-          [
-            { permissions: %w[update_wiki], boundary_type: 'PROJECT', assignable_when: %w[admin] },
-            { permissions: %w[update_wiki], boundary_type: 'INSTANCE', assignable_when: %w[admin],
-              requirement_group: 'additional_0' }
-          ]
-        end
-
-        it 'counts the additional scopes as consumers' do
-          expect { run }.to output(/Assignable permission definitions are valid/).to_stdout
-        end
-      end
-
       context 'when consumers skip granular token authorization' do
         let(:yaml_assignable_when) { [{ condition: 'admin', boundaries: ['project'] }] }
         let(:rest_routes) do

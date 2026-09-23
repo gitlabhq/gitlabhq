@@ -26,6 +26,7 @@ module WorkItems
         status_widget
         title
         weight
+        work_item_type_id
       ].freeze
 
       def initialize(work_item, action:, updated_changes: nil)

@@ -135,6 +135,19 @@ module Emails
       )
     end
 
+    def import_source_user_revoked(source_user_id)
+      @source_user = Import::SourceUser.find(source_user_id)
+      title = safe_format(
+        s_('UserMapping|Reassignments in %{group} revoked'),
+        group: @source_user.namespace.full_path
+      )
+
+      email_with_layout(
+        to: @source_user.reassigned_by_user.notification_email_or_default,
+        subject: subject(title)
+      )
+    end
+
     def offline_export_complete(user_id, offline_export_id)
       @offline_export = Import::Offline::Export.find(offline_export_id)
       @configuration = @offline_export.configuration

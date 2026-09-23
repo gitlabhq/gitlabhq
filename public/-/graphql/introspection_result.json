@@ -38723,6 +38723,26 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "childrenPreview",
+              "description": "First ten platform children of a manifest index, child digest ascending, each with its digest and platform triple. Empty on an image manifest and on a remote repository. childrenCount on this type already carries the true total; read the complete children list on the detail type. Null on a deployment predating the field. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ArtifactRegistryManifestPlatform",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "createdAt",
               "description": "Time the manifest was pushed. Null if the timestamp is absent or unparseable. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
@@ -38807,6 +38827,26 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "parentsPreview",
+              "description": "First ten digests of the indexes that reference this manifest, in the order Artifact Registry returns them. Empty when no index references it. The list carries no parent count; read the complete list, and the total in parentsCount, on the detail type. Null on a deployment predating the field. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "referrersCount",
               "description": "Number of manifests in the image that name this digest as their subject. Zero when none do, and always zero on a remote repository. Null on a deployment predating the field. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
@@ -38854,6 +38894,26 @@
                 "kind": "SCALAR",
                 "name": "Int",
                 "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "tagsPreview",
+              "description": "First ten tags pointing at the manifest, name ascending. Empty when untagged. tagsCount on this type already carries the true total; read the complete tags list on the detail type. Null on a deployment predating the field. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
@@ -475562,18 +475622,6 @@
             {
               "name": "boundaryArgument",
               "description": "Argument name containing the authorization boundary (path or GlobalID). Use for mutations and query fields where the boundary is passed as an argument.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "requirementGroup",
-              "description": "Label grouping directives that are alternative boundaries for the same requirement. The token must be authorized on any one boundary in a group, and on every group. Absent means the primary group. Set for a second container, such as a move target.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",

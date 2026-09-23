@@ -334,6 +334,34 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     it_behaves_like 'appearance header and footer not enabled'
   end
 
+  describe '#import_source_user_revoked' do
+    let(:user) { build_stubbed(:user) }
+    let(:owner) { build_stubbed(:owner) }
+    let(:group) { build_stubbed(:group) }
+    let(:source_user) do
+      build_stubbed(:import_source_user, namespace: group, reassign_to_user: user, reassigned_by_user: owner)
+    end
+
+    subject { Notify.import_source_user_revoked('user_id') }
+
+    before do
+      allow(Import::SourceUser).to receive(:find).and_return(source_user)
+    end
+
+    it 'sends revoked email' do
+      is_expected.to deliver_to(owner.email)
+      is_expected.to have_subject("Reassignments in #{group.full_path} revoked")
+      is_expected.to have_content('Reassignment revoked')
+      is_expected.to have_content("#{user.name} (@#{user.username}) has revoked their previously approved reassignment")
+      is_expected.to have_content("Contributions already reassigned to #{user.name} remain attributed to them.")
+      is_expected.to have_content('To reassign these contributions to another user, go to the Members page')
+      is_expected.to have_link('Members page', href: group_group_members_url(group, tab: 'placeholders'))
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
   describe '#import_source_user_complete' do
     let(:user) { build_stubbed(:user) }
     let(:group) { build_stubbed(:group) }

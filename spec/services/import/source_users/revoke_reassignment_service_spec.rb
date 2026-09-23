@@ -3,14 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::RevokeReassignmentService, feature_category: :importers do
-  let(:import_source_user) { create(:import_source_user, :completed) }
+  let_it_be_with_reload(:import_source_user) { create(:import_source_user, :completed, :with_reassigned_by_user) }
   let(:current_user) { import_source_user.reassign_to_user }
   let(:service) { described_class.new(import_source_user, current_user: current_user) }
 
   let(:result) { service.execute }
 
   describe '#execute' do
+    let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
+
+    before do
+      allow(message_delivery).to receive(:deliver_now)
+      allow(Notify).to receive(:import_source_user_revoked).and_return(message_delivery)
+    end
+
     it 'returns success' do
+      expect(Notify).to receive_message_chain(:import_source_user_revoked, :deliver_now)
       expect { result }
         .to trigger_internal_events('revoke_placeholder_user_reassignment')
         .with(
@@ -31,8 +39,20 @@ RSpec.describe Import::SourceUsers::RevokeReassignmentService, feature_category:
       expect(import_source_user.reload).to be_revoked
     end
 
+    context 'when reassigned_by_user is nil' do
+      let(:import_source_user) { create(:import_source_user, :completed) }
+
+      it 'does not send the revoked email' do
+        expect(Notify).not_to receive(:import_source_user_revoked)
+
+        expect(result).to be_success
+      end
+    end
+
     shared_examples 'current user does not have permission to revoke reassignment' do
-      it 'returns error no permissions' do
+      it 'returns error no permissions and does not send the revoked email' do
+        expect(Notify).not_to receive(:import_source_user_revoked)
+
         expect(result).to be_error
         expect(result.message).to eq('You have insufficient permissions to update the import source user')
       end
@@ -65,7 +85,9 @@ RSpec.describe Import::SourceUsers::RevokeReassignmentService, feature_category:
           full_messages: ['Error']))
       end
 
-      it 'returns an error' do
+      it 'returns an error and does not send the revoked email' do
+        expect(Notify).not_to receive(:import_source_user_revoked)
+
         expect(result).to be_error
         expect(result.message).to eq(['Error'])
       end

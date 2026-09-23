@@ -85,6 +85,9 @@ describe('GitlabDuoSettings', () => {
     wrapper.findComponentByTestId('tool-approval-for-session-enabled');
   const findToolApprovalCascadingLockIcon = () =>
     wrapper.findByTestId('tool-approval-cascading-lock-icon');
+  const findDuoAutoModeToggle = () => wrapper.findComponentByTestId('duo-auto-mode-enabled');
+  const findDuoAutoModeCascadingLockIcon = () =>
+    wrapper.findByTestId('duo-auto-mode-cascading-lock-icon');
   const findDapSessionTrackingToggle = () =>
     wrapper.findComponentByTestId('dap-session-tracking-enabled');
   const findAuditEventsStorageToggle = () =>
@@ -672,6 +675,69 @@ describe('GitlabDuoSettings', () => {
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
 
           await findToolApprovalToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('Auto mode settings', () => {
+        it.each`
+          scenario                       | props                                                                                | exists   | disabled
+          ${'available and Duo enabled'} | ${{ duoFeaturesEnabled: true, duoAutoModeAvailable: true }}                          | ${true}  | ${false}
+          ${'not available'}             | ${{ duoFeaturesEnabled: true, duoAutoModeAvailable: false }}                         | ${false} | ${undefined}
+          ${'Duo features disabled'}     | ${{ duoFeaturesEnabled: false, duoAutoModeAvailable: true }}                         | ${false} | ${undefined}
+          ${'Duo features locked'}       | ${{ duoFeaturesEnabled: true, duoAutoModeAvailable: true, duoFeaturesLocked: true }} | ${true}  | ${false}
+        `('renders correctly when $scenario', ({ props, exists, disabled }) => {
+          wrapper = createWrapper({ amazonQAvailable: false, ...props });
+
+          expect(findDuoAutoModeToggle().exists()).toBe(exists);
+          if (exists) {
+            expect(findDuoAutoModeToggle().props('disabled')).toBe(disabled);
+          }
+        });
+
+        it('disables the toggle when cascading lock is active', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoAutoModeAvailable: true,
+            amazonQAvailable: false,
+            duoAutoModeLocked: true,
+            duoAutoModeCascadingSettings: {
+              lockedByAncestor: true,
+              lockedByApplicationSetting: false,
+            },
+          });
+
+          expect(findDuoAutoModeToggle().props('disabled')).toBe(true);
+          expect(findDuoAutoModeCascadingLockIcon().exists()).toBe(true);
+        });
+
+        it('does not show cascading lock icon when not locked', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoAutoModeAvailable: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoAutoModeCascadingLockIcon().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoAutoModeAvailable: true,
+            amazonQAvailable: false,
+            initialDuoAutoModeEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_auto_mode_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoAutoModeToggle().vm.$emit('change', false);
 
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
         });

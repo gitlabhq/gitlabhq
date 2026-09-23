@@ -6256,20 +6256,26 @@ export const getTodosMutationResponse = (state) => {
   };
 };
 
-export const getMarkAllDoneTodosMutationResponse = () => {
+export const workItemCurrentUserTodosMutationResponseFactory = ({
+  todos = [],
+  useWorkItemFeatures = false,
+} = {}) => {
+  const widget = {
+    __typename: 'WorkItemWidgetCurrentUserTodos',
+    type: 'CURRENT_USER_TODOS',
+    currentUserTodos: { nodes: todos, __typename: 'TodoConnection' },
+  };
+
   return {
     data: {
       workItemUpdate: {
+        __typename: 'WorkItemUpdatePayload',
         workItem: {
+          __typename: 'WorkItem',
           id: 'gid://gitlab/WorkItem/1',
-          widgets: [
-            {
-              type: 'CURRENT_USER_TODOS',
-              currentUserTodos: {
-                nodes: [],
-              },
-            },
-          ],
+          ...(useWorkItemFeatures
+            ? { features: { __typename: 'WorkItemFeatures', currentUserTodos: widget } }
+            : { widgets: [widget] }),
         },
         errors: [],
       },

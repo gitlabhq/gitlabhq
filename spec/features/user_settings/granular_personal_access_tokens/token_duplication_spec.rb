@@ -18,7 +18,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token duplicat
       expires_at: 1.month.from_now,
       last_used_at: 1.day.ago,
       boundary: ::Authz::Boundary.for(group),
-      permissions: [:read_member_role, :create_member_role]
+      permissions: [:read_ssh_certificate, :create_ssh_certificate]
     )
   end
 
@@ -64,7 +64,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token duplicat
       expect(page).to have_text(group.full_path)
     end
 
-    within(find_by_testid('selected-resource', text: 'Member Role')) do
+    within(find_by_testid('selected-resource', text: 'SSH Certificate')) do
       expect(page).to have_button('Read')
       expect(page).to have_button('Create')
     end

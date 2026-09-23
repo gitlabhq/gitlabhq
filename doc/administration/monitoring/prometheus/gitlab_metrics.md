@@ -948,7 +948,7 @@ and the metrics all have these labels:
 | Metric                                              | Type  | Since | Description |
 |:----------------------------------------------------|:------|:------|:------------|
 | `gitlab_database_connection_pool_size`              | Gauge | 13.0  | Total connection pool capacity |
-| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Number of connections that have been created in the pool. <sup>1</sup> |
+| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Number of connections that have been created in the pool.[^idle-connection-count] |
 | `gitlab_database_connection_pool_busy`              | Gauge | 13.0  | Connections in use where the owner is still alive |
 | `gitlab_database_connection_pool_dead`              | Gauge | 13.0  | Connections in use where the owner is not alive |
 | `gitlab_database_connection_pool_idle`              | Gauge | 13.0  | Connections created, but not currently in use |
@@ -956,9 +956,7 @@ and the metrics all have these labels:
 | `gitlab_database_extended_connection_pool_busy`     | Gauge | 18.11 | Connections in use where the owner is still alive, per thread |
 | `gitlab_database_extended_connection_pool_dead`     | Gauge | 18.11 | Connections in use where the owner is not alive, per thread |
 
-**Footnotes**:
-
-1. Because `idle` counts only initialized connections that are not in use, the total of `busy`, `dead`, and `idle` connections can be less than or equal to the total number of connections.
+[^idle-connection-count]: Because `idle` counts only initialized connections that are not in use, the total of `busy`, `dead`, and `idle` connections can be less than or equal to the total number of connections.
 
 In GitLab 18.11 and later, the default connection pool gauges are
 aggregated across Puma worker processes, so a single time series is

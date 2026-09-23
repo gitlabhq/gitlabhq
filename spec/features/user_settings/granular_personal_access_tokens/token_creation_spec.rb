@@ -201,7 +201,7 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
       check 'Groups'
 
       expect(selected_resource_names('Groups'))
-        .to include('Avatar', 'Group', 'Member Role', 'SSH Certificate', 'Template')
+        .to include('Avatar', 'Group', 'SSH Certificate', 'Template')
 
       within(find_by_testid('selected-resource', text: 'Avatar')) do
         click_button 'Select permissions'

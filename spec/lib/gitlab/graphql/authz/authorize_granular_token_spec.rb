@@ -103,21 +103,18 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
         expect(directive.arguments[:assignable_when]).to eq(['admin'])
       end
 
-      it 'applies the conditions to every boundary and additional scope' do
+      it 'applies the conditions to every boundary' do
         test_mutation.authorize_granular_token(
           permissions: :update_runner,
           boundaries: [
             { boundary_argument: :id, boundary_type: :project },
             { boundary_argument: :id, boundary_type: :group }
           ],
-          additional_scopes: [
-            { permissions: :read_project, boundary_argument: :project_path, boundary_type: :project }
-          ],
           assignable_when: [:admin, :self_managed]
         )
 
         directives = test_mutation.directives.select { |d| d.is_a?(Directives::Authz::GranularScope) }
-        expect(directives.size).to eq(3)
+        expect(directives.size).to eq(2)
         expect(directives).to all(satisfy { |d| d.arguments[:assignable_when] == %w[admin self_managed] })
       end
 

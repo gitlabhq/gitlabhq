@@ -471,16 +471,14 @@ Some API endpoints have specific JSON validation limits.
 | Endpoint                                                                                     | Description           | Methods | Max depth | Max array size | Max hash size | Max total elements | Max JSON size | Mode |
 |:---------------------------------------------------------------------------------------------|:----------------------|:--------|:----------|:---------------|:--------------|:-------------------|:--------------|:-----|
 | All other paths                                                                              | Default               | All     | 32        | 50,000         | 50,000        | 100,000            | 0 (disabled)  | enforced |
-| `/api/v4/projects/{id}/terraform/state/`                                                     | Terraform state       | POST    | 64        | 50,000         | 50,000        | 250,000            | 50 MB         | logging <sup>1</sup> |
+| `/api/v4/projects/{id}/terraform/state/`                                                     | Terraform state       | POST    | 64        | 50,000         | 50,000        | 250,000            | 50 MB         | logging[^terraform-state-max] |
 | `/api/v4/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\|audits/quick}`               | NPM instance packages | POST    | 32        | 50,000         | 50,000        | 250,000            | 50 MB         | enforced |
 | `/api/v4/groups/{id}/-/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\|audits/quick}` | NPM group packages    | POST    | 32        | 50,000         | 50,000        | 250,000            | 50 MB         | enforced |
 | `/api/v4/projects/{id}/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\|audits/quick}` | NPM project packages  | POST    | 32        | 50,000         | 50,000        | 250,000            | 50 MB         | enforced |
 | `/api/v4/internal/*`                                                                         | Internal API          | POST    | 32        | 50,000         | 50,000        | 0 (disabled)       | 10 MB         | enforced |
 | `/api/v4/ai/duo_workflows/workflows/*`                                                        | GitLab Duo Workflow API      | POST    | 32        | 5,000          | 5,000         | 0 (disabled)       | 25 MB         | enforced |
 
-**Footnotes**:
-
-1. The Terraform state max size limit can be set by using the [application settings API](../api/settings.md) to set `max_terraform_state_size_bytes`.
+[^terraform-state-max]: The Terraform state max size limit can be set by using the [application settings API](../api/settings.md) to set `max_terraform_state_size_bytes`.
 
 ### Environment variable configuration
 

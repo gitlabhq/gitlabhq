@@ -22,7 +22,6 @@ import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 import { restWorkItemsResolver } from 'ee_else_ce/work_items/list/graphql/rest/work_items_rest_resolver';
-import { decisionLogStubResolvers } from 'ee_else_ce/work_items/components/decision_log/graphql/stub_resolvers';
 import { preserveDetailsState } from '~/work_items/utils';
 import {
   linkedItems,
@@ -620,10 +619,8 @@ const restWorkItemsResolvers = window.gon?.features?.workItemRestApiFrontendUser
 export const resolvers = {
   Query: {
     ...restWorkItemsResolvers,
-    ...decisionLogStubResolvers.Query,
   },
   Mutation: {
-    ...decisionLogStubResolvers.Mutation,
     updateIssueState: (_, { issueType = undefined, isDirty = false }, { cache }) => {
       const sourceData = cache.readQuery({ query: getIssueStateQuery });
       const data = produce(sourceData, (draftData) => {

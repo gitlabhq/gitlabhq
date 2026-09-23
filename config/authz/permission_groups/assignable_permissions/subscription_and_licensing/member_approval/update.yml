@@ -7,3 +7,6 @@ available_for:
   - granular_access_token
 permissions:
   - update_member_approval
+assignable_when:
+  - condition: admin
+  - condition: self_managed

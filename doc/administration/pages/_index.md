@@ -429,7 +429,7 @@ For more information, see
 
 | Setting                                 | Default                                               | Description |
 |-----------------------------------------|-------------------------------------------------------|-------------|
-| `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [custom domains with TLS support](#custom-domains-with-tls-support). |
+| `pages_external_url`[^external-node-setting]       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [custom domains with TLS support](#custom-domains-with-tls-support). |
 | **`gitlab_pages[]`**                    | Not applicable                                        |             |
 | `access_control`                        | Not applicable                                        | Whether to turn on [access control](#access-control). |
 | `api_secret_key`                        | Auto-generated                                        | Full path to file with secret key used to authenticate with the GitLab API. |
@@ -510,10 +510,8 @@ For more information, see
 | `server_write_timeout`                  | `0`                                                   | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. |
 | `server_keep_alive`                     | `15s`                                                 | The `Keep-Alive` period for network connections accepted by this listener. If `0`, `Keep-Alive` is turned on if supported by the protocol and operating system. If negative, `Keep-Alive` is turned off. |
 
-**Footnotes**:
-
-1. When you use an external Sidekiq node, you must add `pages_external_url` to your
-   configuration. Without this setting, the external Sidekiq node cannot process deploy jobs.
+[^external-node-setting]: When you use an external Sidekiq node, you must add `pages_external_url` to your
+    configuration. Without this setting, the external Sidekiq node cannot process deploy jobs.
 
 ## Advanced configuration
 

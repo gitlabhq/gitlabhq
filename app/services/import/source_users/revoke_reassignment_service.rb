@@ -23,6 +23,7 @@ module Import
         return error_invalid_permissions if invalid_permissions
 
         if revoke_successful
+          send_user_reassign_revoked_email
           track_reassignment_event('revoke_placeholder_user_reassignment')
 
           ServiceResponse.success(payload: import_source_user)
@@ -37,6 +38,12 @@ module Import
         return false if current_user.nil?
 
         current_user.id == import_source_user.reassign_to_user_id
+      end
+
+      def send_user_reassign_revoked_email
+        return if import_source_user.reassigned_by_user.nil?
+
+        Notify.import_source_user_revoked(import_source_user.id).deliver_now
       end
     end
   end

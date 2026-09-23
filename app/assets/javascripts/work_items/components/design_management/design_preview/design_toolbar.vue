@@ -64,8 +64,13 @@ export default {
       type: Boolean,
       required: false,
     },
+    isTodoUpdating: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['archive-design', 'todos-updated', 'toggle-sidebar'],
+  emits: ['archive-design', 'toggle-todo', 'toggle-sidebar'],
   computed: {
     isLoggedIn() {
       return isLoggedIn();
@@ -103,10 +108,10 @@ export default {
     >
       <todos-toggle
         v-if="isLoggedIn"
-        :item-id="design.id"
         :current-user-todos="currentUserDesignTodos"
+        :is-updating="isTodoUpdating"
         todos-button-type="tertiary"
-        @todos-updated="$emit('todos-updated', $event)"
+        @toggle="$emit('toggle-todo')"
       />
       <gl-button
         v-gl-tooltip.bottom

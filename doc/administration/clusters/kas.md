@@ -287,20 +287,18 @@ Key configuration points:
 | `gitlab_kas['private_api_key_file']`                | Full path of the KAS server certificate key file. Required when `OWN_PRIVATE_API_SCHEME` or `OWN_PRIVATE_API_URL` is `grpcs`. |
 | `OWN_PRIVATE_API_SCHEME`                            | Optional value used to specify what scheme to use when constructing `OWN_PRIVATE_API_URL`. Can be `grpc` or `grpcs`. |
 | `OWN_PRIVATE_API_URL`                               | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
-| `OWN_PRIVATE_API_HOST`                              | Optional value used to verify the TLS certificate hostname. <sup>1</sup> A client compares this value to the hostname in the server's TLS certificate file. |
+| `OWN_PRIVATE_API_HOST`                              | Optional value used to verify the TLS certificate hostname.[^outbound-tls] A client compares this value to the hostname in the server's TLS certificate file. |
 | `OWN_PRIVATE_API_PORT`                              | Optional value used to specify what port to use when constructing `OWN_PRIVATE_API_URL`. |
 | `OWN_PRIVATE_API_CIDR`                              | Optional value used to specify which IP addresses from the available networks to use when constructing `OWN_PRIVATE_API_URL`. |
 | `gitlab_kas['client_timeout_seconds']`              | The timeout for the client to connect to the KAS. |
-| `gitlab_kas_external_url`                           | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>2</sup> or a GitLab external URL. <sup>3</sup> If blank, defaults to a GitLab external URL. |
+| `gitlab_kas_external_url`                           | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain,[^subdomain-example] or a GitLab external URL.[^instance-path-example] If blank, defaults to a GitLab external URL. |
 | `gitlab_rails['gitlab_kas_external_url']`           | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`. |
 | `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`. |
 | `gitlab_rails['gitlab_kas_internal_url']`           | The internal URL the GitLab backend uses to communicate with KAS. |
 
-**Footnotes**:
-
-1. TLS for outbound connections is enabled when `OWN_PRIVATE_API_URL` or `OWN_PRIVATE_API_SCHEME` starts with `grpcs`.
-1. For example, `grpcs://kas.gitlab.example.com/`.
-1. For example, `grpcs://gitlab.example.com`.
+[^outbound-tls]: TLS for outbound connections is enabled when `OWN_PRIVATE_API_URL` or `OWN_PRIVATE_API_SCHEME` starts with `grpcs`.
+[^subdomain-example]: For example, `grpcs://kas.gitlab.example.com/`.
+[^instance-path-example]: For example, `grpcs://gitlab.example.com`.
 
 #### Configure a standalone KAS node
 

@@ -32,10 +32,8 @@ module Gitlab
           directives.any? { |directive| directive.arguments[:skip_reason].present? }
         end
 
-        def permissions_for(group)
-          directives
-            .find { |directive| directive.arguments[:requirement_group] == group }
-            &.arguments&.fetch(:permissions, [])&.sort || []
+        def permissions
+          @permissions ||= directives.first.arguments.fetch(:permissions, []).sort
         end
 
         def authorized?(object, context, arguments)
@@ -55,19 +53,10 @@ module Gitlab
             return success
           end
 
-          boundary_extractor(object, arguments).extract_groups.each do |group, boundary_objects|
-            authorized, message = authorize_group(group, boundary_objects, context)
+          boundary_objects = boundary_extractor(object, arguments).extract
+          key = cache_key(boundary_objects)
 
-            return error(message) unless authorized
-          end
-
-          success
-        end
-
-        def authorize_group(group, boundary_objects, context)
-          permissions = permissions_for(group)
-
-          fetch_cached(context, cache_key(permissions, boundary_objects)) do
+          fetch_cached(context, key) do
             response = ::Authz::Tokens::AuthorizeGranularScopesService.new(
               boundaries: boundary_objects.map { |resource| ::Authz::Boundary.for(resource) },
               permissions: permissions,
@@ -94,7 +83,7 @@ module Gitlab
           cache[key] = yield
         end
 
-        def cache_key(permissions, boundary_objects)
+        def cache_key(boundary_objects)
           [
             permissions,
             boundary_objects.map { |boundary| cache_identifier_for(boundary) }.sort_by(&:to_s)

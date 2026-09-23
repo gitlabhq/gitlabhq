@@ -8231,6 +8231,9 @@ msgstr ""
 msgid "AgentPlan|Not yet created"
 msgstr ""
 
+msgid "AgentPlan|Preparing to generate..."
+msgstr ""
+
 msgid "AgentPlan|Ready for review"
 msgstr ""
 
@@ -88994,6 +88997,9 @@ msgstr[1] ""
 msgid "UserMapping|%{reassign_to_name} (%{reassign_to_username}) has declined your request to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to them in %{destination_group}. To reassign these contributions to another user, go to the \"Members\" page of %{destination_group}."
 msgstr ""
 
+msgid "UserMapping|%{reassign_to_name} (%{reassign_to_username}) has revoked their previously approved reassignment of contributions from %{source_name} (%{source_username}) on %{source_hostname} in %{destination_group}. Contributions already reassigned to %{reassign_to_name} remain attributed to them."
+msgstr ""
+
 msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}."
 msgstr ""
 
@@ -89204,6 +89210,9 @@ msgstr ""
 msgid "UserMapping|Reassignment rejected by user."
 msgstr ""
 
+msgid "UserMapping|Reassignment revoked"
+msgstr ""
+
 msgid "UserMapping|Reassignment status"
 msgstr ""
 
@@ -89220,6 +89229,9 @@ msgid "UserMapping|Reassignments in %{group} completed"
 msgstr ""
 
 msgid "UserMapping|Reassignments in %{group} rejected"
+msgstr ""
+
+msgid "UserMapping|Reassignments in %{group} revoked"
 msgstr ""
 
 msgid "UserMapping|Reassignments in %{group} waiting for review"
@@ -89292,6 +89304,9 @@ msgid "UserMapping|The provided spreadsheet contains duplicate email addresses o
 msgstr ""
 
 msgid "UserMapping|This limit is shared with all subgroups in the group's hierarchy."
+msgstr ""
+
+msgid "UserMapping|To reassign these contributions to another user, go to the %{link_start}Members page%{link_end} of %{destination_group}."
 msgstr ""
 
 msgid "UserMapping|Upload the completed CSV file."
@@ -93362,12 +93377,6 @@ msgstr ""
 msgid "WorkItemDecisionLog|Rationale for choosing this option over others."
 msgstr ""
 
-msgid "WorkItemDecisionLog|Recorded from a thread on this work item"
-msgstr ""
-
-msgid "WorkItemDecisionLog|Recorded manually on this work item"
-msgstr ""
-
 msgid "WorkItemDecisionLog|Select a user"
 msgstr ""
 
@@ -93395,13 +93404,13 @@ msgstr ""
 msgid "WorkItemDecisionLog|Source link"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Suggested answer to an open question raised by %{author}"
-msgstr ""
-
 msgid "WorkItemDecisionLog|View source"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Why"
+msgstr ""
+
+msgid "WorkItemDecisionLog|You can change this value, but you cannot remove it."
 msgstr ""
 
 msgid "WorkItemDuoQuestion|An answer is required to submit"

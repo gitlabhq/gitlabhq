@@ -64,6 +64,12 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, :clean_gitlab_redi
       it_behaves_like 'broadcasts the event'
     end
 
+    context 'when the work item type changed' do
+      let(:updated_changes) { %w[work_item_type_id] }
+
+      it_behaves_like 'broadcasts the event'
+    end
+
     context 'when only irrelevant fields changed' do
       let(:updated_changes) { %w[description] }
 

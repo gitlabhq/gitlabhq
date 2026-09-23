@@ -100,6 +100,10 @@ To download a repository's source code as a compressed file:
 The checksums of generated archives can change even if the repository itself doesn't
 change. For example, this occurs if Git or a third-party library that GitLab uses changes.
 
+> [!note]
+> Do not use an archive checksum to confirm that two downloads contain the same repository contents.
+> Instead, verify contents with [signed commits and tags](signed_commits/_index.md).
+
 ## View repository by Git revision
 
 To view all repository files and folders at a specific Git revision, such as a commit SHA,

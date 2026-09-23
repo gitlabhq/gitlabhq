@@ -181,6 +181,26 @@ export default {
       required: false,
       default: false,
     },
+    duoAutoModeAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    duoAutoModeCascadingSettings: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    initialDuoAutoModeEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    duoAutoModeLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     duoAgentPlatformEnabled: {
       type: Boolean,
       required: false,
@@ -235,6 +255,7 @@ export default {
       duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
       duoVulnerabilityContextAnalysisEnabled: this.initialDuoVulnerabilityContextAnalysisEnabled,
       toolApprovalForSessionEnabled: this.initialToolApprovalForSessionEnabled,
+      duoAutoModeEnabled: this.initialDuoAutoModeEnabled,
       dapSessionTrackingEnabled: this.initialDapSessionTrackingEnabled,
       auditEventsStorageEnabled: this.aiAuditEventsStorageEnabled,
       showAutoRemediationModal: false,
@@ -284,6 +305,13 @@ export default {
         this.toolApprovalForSessionLocked &&
         (this.toolApprovalForSessionCascadingSettings?.lockedByAncestor ||
           this.toolApprovalForSessionCascadingSettings?.lockedByApplicationSetting)
+      );
+    },
+    showDuoAutoModeCascadingLock() {
+      return (
+        this.duoAutoModeLocked &&
+        (this.duoAutoModeCascadingSettings?.lockedByAncestor ||
+          this.duoAutoModeCascadingSettings?.lockedByApplicationSetting)
       );
     },
     showAuditEventsStorageCascadingLock() {
@@ -406,6 +434,9 @@ export default {
     governanceTitle: s__('AiPowered|Governance'),
     governanceDescription: s__('AiPowered|Control how your AI-powered features are used.'),
     governanceAction: s__('AiPowered|Change governance'),
+    duoAutoModeHelpText: s__(
+      'AiPowered|Control whether users can relax governance "Always Ask" rules to "Always Allow" in the IDE and CLI. "Always Deny" rules always hold, regardless of mode.',
+    ),
   },
 };
 </script>
@@ -616,6 +647,35 @@ export default {
           label-position="hidden"
           name="project[project_setting_attributes][tool_approval_for_session_enabled]"
           data-testid="tool-approval-for-session-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="duoAutoModeAvailable && showAllSettings"
+        :label="s__('AiPowered|Auto mode')"
+        class="gl-mt-5"
+        :help-text="$options.i18n.duoAutoModeHelpText"
+        :locked="showDuoAutoModeCascadingLock"
+      >
+        <template #label-icon>
+          <cascading-lock-icon
+            v-if="showDuoAutoModeCascadingLock"
+            data-testid="duo-auto-mode-cascading-lock-icon"
+            :is-locked-by-group-ancestor="duoAutoModeCascadingSettings.lockedByAncestor"
+            :is-locked-by-application-settings="
+              duoAutoModeCascadingSettings.lockedByApplicationSetting
+            "
+            :ancestor-namespace="duoAutoModeCascadingSettings.ancestorNamespace"
+            class="gl-ml-1"
+          />
+        </template>
+        <gl-toggle
+          v-model="duoAutoModeEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled || showDuoAutoModeCascadingLock"
+          :label="s__('AiPowered|Auto mode')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_auto_mode_enabled]"
+          data-testid="duo-auto-mode-enabled"
         />
       </project-setting-row>
       <project-setting-row

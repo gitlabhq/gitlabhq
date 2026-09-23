@@ -553,6 +553,12 @@ class NotifyPreview < ActionMailer::Preview
     Notify.import_source_user_complete(source_user.id)
   end
 
+  def import_source_user_revoked
+    source_user = Import::SourceUser.last
+
+    Notify.import_source_user_revoked(source_user.id)
+  end
+
   def repository_rewrite_history_success_email
     Notify.repository_rewrite_history_success_email(project, user)
   end

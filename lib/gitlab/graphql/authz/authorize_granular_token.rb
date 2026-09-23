@@ -11,10 +11,10 @@ module Gitlab
           # Pass `boundaries:` for multi-boundary fields; otherwise a single-element array is returned.
           def granular_scope_directive(
             permissions:, boundary_type: nil, boundary: nil, boundary_argument: nil,
-            boundaries: nil, additional_scopes: nil, assignable_when: nil)
+            boundaries: nil, assignable_when: nil)
             validate_boundaries!(boundaries) if boundaries
 
-            requirement_scopes(permissions, boundaries, additional_scopes, assignable_when,
+            requirement_scopes(permissions, boundaries, assignable_when,
               boundary: boundary, boundary_argument: boundary_argument, boundary_type: boundary_type).map do |b|
               {
                 Directives::Authz::GranularScope => granular_scope_arguments(**b)
@@ -25,16 +25,16 @@ module Gitlab
           # Applies the GranularScope directives to a type or mutation class.
           def authorize_granular_token(
             permissions: nil, boundary_type: nil, boundary: nil, boundary_argument: nil,
-            boundaries: nil, skip_reason: nil, additional_scopes: nil, assignable_when: nil)
+            boundaries: nil, skip_reason: nil, assignable_when: nil)
             other_args = { permissions:, boundary_type:, boundary:, boundary_argument:, boundaries:,
-                           additional_scopes:, assignable_when: }
+                           assignable_when: }
             return apply_skip_directive(skip_reason, other_args) if skip_reason
 
             raise ArgumentError, 'missing keyword: :permissions' if permissions.nil?
 
             validate_boundaries!(boundaries) if boundaries
 
-            requirement_scopes(permissions, boundaries, additional_scopes, assignable_when,
+            requirement_scopes(permissions, boundaries, assignable_when,
               boundary: boundary, boundary_argument: boundary_argument, boundary_type: boundary_type).each do |b|
               directive Directives::Authz::GranularScope, **granular_scope_arguments(**b)
             end
@@ -44,11 +44,8 @@ module Gitlab
 
           # The call-level `assignable_when` describes the access gate of the type or
           # mutation itself, so it applies to every scope; a scope hash can add its own.
-          def requirement_scopes(permissions, boundaries, additional_scopes, assignable_when, **primary)
-            scopes = (boundaries || [primary]).map { |b| b.merge(permissions: permissions) } +
-              Array(additional_scopes).each_with_index.map do |b, index|
-                b.merge(requirement_group: b[:boundary_argument]&.to_s || "additional_#{index}")
-              end
+          def requirement_scopes(permissions, boundaries, assignable_when, **primary)
+            scopes = (boundaries || [primary]).map { |b| b.merge(permissions: permissions) }
 
             scopes.map { |b| b.merge(assignable_when: Array.wrap(assignable_when) | Array.wrap(b[:assignable_when])) }
           end
@@ -78,14 +75,12 @@ module Gitlab
           end
 
           def granular_scope_arguments(
-            permissions:, assignable_when:, boundary: nil, boundary_argument: nil, boundary_type: nil,
-            requirement_group: nil)
+            permissions:, assignable_when:, boundary: nil, boundary_argument: nil, boundary_type: nil)
             {
               permissions: Array.wrap(permissions).map(&:to_s),
               boundary: boundary&.to_s,
               boundary_argument: boundary_argument&.to_s,
               boundary_type: boundary_type&.to_s&.upcase,
-              requirement_group: requirement_group,
               assignable_when: assignable_when.map(&:to_s).presence
             }.compact
           end

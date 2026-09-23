@@ -32,7 +32,8 @@ module API
           documentation: { type: 'file' }
       end
       route_setting :lifecycle, :experiment
-      route_setting :authorization, permissions: :create_organization, boundary_type: :instance
+      route_setting :authorization, permissions: :create_organization, boundary_type: :instance,
+        assignable_when: [:saas]
       post do
         forbidden! unless ::Organizations::Release.enabled?(:org_creation, current_user)
         check_rate_limit!(:create_organization_api, scope: current_user)

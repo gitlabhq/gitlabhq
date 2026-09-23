@@ -15,8 +15,8 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
     expect(described_class.get_deduplicate_strategy).to eq(:until_executing)
   end
 
-  it 'allows at most 5 concurrent executions' do
-    expect(described_class.get_concurrency_limit).to eq(5)
+  it 'allows at most 10 concurrent executions' do
+    expect(described_class.get_concurrency_limit).to eq(10)
   end
 
   describe '#perform' do

@@ -2,12 +2,17 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { MountingPortal } from 'portal-vue';
 
+import { GlAlert } from '@gitlab/ui';
+import { cloneDeepWith } from 'lodash-es';
 import { createAlert } from '~/alert';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import todosMarkAllDoneMutation from '~/sidebar/queries/todos_mark_all_done.mutation.graphql';
+import createWorkItemTodosMutation from '~/work_items/graphql/create_work_item_todos.mutation.graphql';
 import getDesignQuery from '~/work_items/components/design_management/graphql/design_details.query.graphql';
 import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
 import createImageDiffNoteMutation from '~/work_items/components/design_management/graphql/create_image_diff_note.mutation.graphql';
@@ -39,6 +44,7 @@ import {
 } from '../mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/sidebar/utils');
 jest.mock('~/work_items/components/design_management/cache_updates', () => ({
   updateWorkItemDesignCurrentTodosWidget: jest.fn(),
   updateStoreAfterAddImageDiffNote: jest.fn(),
@@ -90,6 +96,35 @@ describe('DesignDetails', () => {
   const error = new Error('ruh roh some error');
   const errorQueryHandler = jest.fn().mockRejectedValue(error);
 
+  const pendingTodos = [
+    { id: 'gid://gitlab/Todo/5', state: 'pending', __typename: 'Todo' },
+    { id: 'gid://gitlab/Todo/6', state: 'pending', __typename: 'Todo' },
+  ];
+
+  const todoCreateHandler = jest.fn().mockResolvedValue({
+    data: {
+      todoMutation: {
+        todo: { id: 'gid://gitlab/Todo/5', state: 'pending', __typename: 'Todo' },
+        errors: [],
+        __typename: 'TodoCreatePayload',
+      },
+    },
+  });
+  const todosMarkAllDoneHandler = jest.fn().mockResolvedValue({
+    data: {
+      todoMutation: {
+        todos: pendingTodos,
+        errors: [],
+        __typename: 'TodosMarkAllDonePayload',
+      },
+    },
+  });
+
+  const designResponseWithTodos = (todos) =>
+    cloneDeepWith(getDesignResponse, (value, key) =>
+      key === 'currentUserTodos' ? { nodes: todos, __typename: 'TodoConnection' } : undefined,
+    );
+
   function createComponent({
     queryHandler = getDesignQueryHandler,
     archiveDesignMutationHandler = archiveDesignSuccessMutationHandler,
@@ -105,6 +140,8 @@ describe('DesignDetails', () => {
         [archiveDesignMutation, archiveDesignMutationHandler],
         [createImageDiffNoteMutation, createImageDiffNoteMutationSuccessHandler],
         [repositionImageDiffNoteMutation, repositionImageMutationHandler],
+        [createWorkItemTodosMutation, todoCreateHandler],
+        [todosMarkAllDoneMutation, todosMarkAllDoneHandler],
       ]),
       data() {
         return data;
@@ -285,16 +322,151 @@ describe('DesignDetails', () => {
       expect(findDesignSidebar().props('isOpen')).toBe(false);
     });
 
-    it('updates cache when todos are updated', () => {
-      findDesignToolbar().vm.$emit('todos-updated', { cache: expect.anything(), todos: [] });
+    const expectedTodosQuery = {
+      query: getDesignQuery,
+      variables: { id: 'gid://gitlab/DesignManagement::DesignAtVersion/33.1' },
+    };
 
-      expect(updateWorkItemDesignCurrentTodosWidget).toHaveBeenCalledWith({
-        store: expect.anything(),
-        todos: [],
-        query: {
-          query: getDesignQuery,
-          variables: { id: 'gid://gitlab/DesignManagement::DesignAtVersion/33.1' },
-        },
+    describe('when the design has no pending to-do item', () => {
+      beforeEach(async () => {
+        findDesignToolbar().vm.$emit('toggle-todo');
+        await waitForPromises();
+      });
+
+      it('creates a to-do item targeting the design', () => {
+        expect(todoCreateHandler).toHaveBeenCalledWith({
+          input: { targetId: mockDesign.id },
+        });
+      });
+
+      it('writes the new to-do item into the design cache', () => {
+        expect(updateWorkItemDesignCurrentTodosWidget).toHaveBeenCalledWith({
+          store: expect.anything(),
+          todos: [{ __typename: 'Todo', id: 'gid://gitlab/Todo/5', state: 'pending' }],
+          query: expectedTodosQuery,
+        });
+      });
+
+      it('increments the global to-do count', () => {
+        expect(updateGlobalTodoCount).toHaveBeenCalledWith(1);
+      });
+    });
+
+    describe('when creating the to-do item returns errors', () => {
+      beforeEach(async () => {
+        todoCreateHandler.mockResolvedValueOnce({
+          data: {
+            todoMutation: {
+              todo: null,
+              errors: ['Cannot create to-do item'],
+              __typename: 'TodoCreatePayload',
+            },
+          },
+        });
+
+        findDesignToolbar().vm.$emit('toggle-todo');
+        await waitForPromises();
+      });
+
+      it('shows the error and leaves the global count alone', () => {
+        expect(wrapper.findComponent(GlAlert).text()).toBe('Cannot create to-do item');
+        expect(updateGlobalTodoCount).not.toHaveBeenCalled();
+      });
+
+      it('leaves the design cache alone', () => {
+        expect(updateWorkItemDesignCurrentTodosWidget).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the design has pending to-do items', () => {
+      beforeEach(async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(designResponseWithTodos(pendingTodos)),
+        });
+        await waitForPromises();
+
+        findDesignToolbar().vm.$emit('toggle-todo');
+        await waitForPromises();
+      });
+
+      // `todosMarkAllDone` is scoped by target, so one call clears every pending to-do on
+      // the design. `workItemUpdate` cannot be used here: it only accepts a work item id.
+      it('clears them in a single call scoped to the design', () => {
+        expect(todosMarkAllDoneHandler).toHaveBeenCalledTimes(1);
+        expect(todosMarkAllDoneHandler).toHaveBeenCalledWith({
+          input: { targetId: mockDesign.id },
+        });
+      });
+
+      it('clears them from the design cache', () => {
+        expect(updateWorkItemDesignCurrentTodosWidget).toHaveBeenCalledWith({
+          store: expect.anything(),
+          todos: [],
+          query: expectedTodosQuery,
+        });
+      });
+
+      it('decrements the global to-do count by the number marked done', () => {
+        expect(updateGlobalTodoCount).toHaveBeenCalledWith(-pendingTodos.length);
+      });
+    });
+
+    describe('when the response marks fewer to-do items done than the design query held', () => {
+      beforeEach(async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(designResponseWithTodos(pendingTodos)),
+        });
+        await waitForPromises();
+
+        todosMarkAllDoneHandler.mockResolvedValueOnce({
+          data: {
+            todoMutation: {
+              todos: [pendingTodos[0]],
+              errors: [],
+              __typename: 'TodosMarkAllDonePayload',
+            },
+          },
+        });
+
+        findDesignToolbar().vm.$emit('toggle-todo');
+        await waitForPromises();
+      });
+
+      // The design query can be stale, so only the mutation knows the real number.
+      it('decrements the global to-do count by what the response reports', () => {
+        expect(updateGlobalTodoCount).toHaveBeenCalledWith(-1);
+      });
+    });
+
+    describe('when marking the to-do items done returns errors', () => {
+      beforeEach(async () => {
+        createComponent({
+          queryHandler: jest.fn().mockResolvedValue(designResponseWithTodos([pendingTodos[0]])),
+        });
+        await waitForPromises();
+
+        todosMarkAllDoneHandler.mockResolvedValueOnce({
+          data: {
+            todoMutation: {
+              todos: [],
+              errors: ['Cannot mark to-do items done'],
+              __typename: 'TodosMarkAllDonePayload',
+            },
+          },
+        });
+
+        findDesignToolbar().vm.$emit('toggle-todo');
+        await waitForPromises();
+      });
+
+      it('shows the error and leaves the global count alone', () => {
+        expect(wrapper.findComponent(GlAlert).text()).toBe('Cannot mark to-do items done');
+        expect(updateGlobalTodoCount).not.toHaveBeenCalled();
+      });
+
+      // Without this the toggle would flip to "Add a to-do item" while the error is showing.
+      it('leaves the pending to-do items in the design cache', () => {
+        expect(updateWorkItemDesignCurrentTodosWidget).not.toHaveBeenCalled();
       });
     });
   });

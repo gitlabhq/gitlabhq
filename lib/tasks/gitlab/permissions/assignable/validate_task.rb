@@ -186,10 +186,9 @@ module Tasks
                 label: rest_route_label(route)
               }
 
-              [authorization, *Array(authorization[:additional_scopes])].each do |scope|
-                Array(scope[:permissions]).product(rest_boundary_types(scope)).each do |permission, boundary_type|
-                  consumers[[permission.to_sym, boundary_type.to_sym]] << entry
-                end
+              Array(authorization[:permissions])
+                .product(rest_boundary_types(authorization)).each do |permission, boundary_type|
+                consumers[[permission.to_sym, boundary_type.to_sym]] << entry
               end
             end
           end

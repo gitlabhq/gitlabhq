@@ -79,6 +79,13 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner, featur
       expect(scanner.test_count(:read_merge_request_discussion)).to eq(1)
       expect(scanner.test_count(:create_issue_discussion)).to eq(0)
     end
+
+    it 'accumulates counts for repeated dynamic patterns' do
+      line = 'it_behaves_like \'authorizing granular token permissions\', :"read_#{noteable_type}_discussion" do'
+      allow(File).to receive(:read).with('test.rb').and_return("#{line}\nend\n#{line}\nend\n")
+
+      expect(scanner.test_count(:read_issue_discussion)).to eq(2)
+    end
   end
 
   describe 'permission extraction' do
@@ -169,50 +176,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::SpecPermissionScanner, featur
 
       expect(scanner.test_count(:read_issue_state_event)).to eq(1)
       expect(scanner.test_count(:read_merge_request_state_event)).to eq(1)
-    end
-
-    it 'extracts additional scope permissions on the same line' do
-      content = "it_behaves_like 'authorizing granular token permissions', " \
-        ":move_issue, additional_scope_permissions: :create_work_item do"
-      allow(File).to receive(:read).with('test.rb').and_return(content)
-
-      expect(scanner.test_count(:move_issue)).to eq(1)
-      expect(scanner.test_count(:create_work_item)).to eq(1)
-    end
-
-    it 'extracts additional scope permissions from a continuation line' do
-      content = <<~RUBY
-        it_behaves_like 'authorizing granular token permissions', :move_issue,
-          additional_scope_permissions: [:create_work_item, :read_work_item] do
-        end
-      RUBY
-      allow(File).to receive(:read).with('test.rb').and_return(content)
-
-      expect(scanner.test_count(:move_issue)).to eq(1)
-      expect(scanner.test_count(:create_work_item)).to eq(1)
-      expect(scanner.test_count(:read_work_item)).to eq(1)
-    end
-
-    it 'does not attribute a neighboring invocation keyword to the call above it' do
-      content = <<~RUBY
-        it_behaves_like 'authorizing granular token permissions', :move_issue do
-        end
-        it_behaves_like 'authorizing granular token permissions', :move_epic,
-          additional_scope_permissions: :create_work_item do
-        end
-      RUBY
-      allow(File).to receive(:read).with('test.rb').and_return(content)
-
-      expect(scanner.test_count(:create_work_item)).to eq(1)
-    end
-
-    it 'ignores additional scope permissions passed as a variable' do
-      content = "it_behaves_like 'authorizing granular token permissions', " \
-        ":move_issue, additional_scope_permissions: additional_scope_permissions do"
-      allow(File).to receive(:read).with('test.rb').and_return(content)
-
-      expect(scanner.test_count(:move_issue)).to eq(1)
-      expect(scanner.test_count(:additional_scope_permissions)).to eq(0)
     end
   end
 

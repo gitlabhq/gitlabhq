@@ -10,9 +10,9 @@ module Authz
     feature_category :permissions
     idempotent!
     deduplicate :until_executing
-    concurrency_limit -> { 5 }
+    concurrency_limit -> { 10 }
 
-    MAX_RUNTIME = 270.seconds
+    MAX_RUNTIME = 200.seconds
 
     def perform
       return if Feature.enabled?(:do_not_run_safety_net_auth_refresh_jobs, :instance)
