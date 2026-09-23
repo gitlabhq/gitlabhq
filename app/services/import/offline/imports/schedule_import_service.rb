@@ -19,7 +19,6 @@ module Import
           update_bulk_import
           create_entities(bulk_import)
 
-          ::Import::BulkImports::EphemeralData.new(bulk_import.id).enable_importer_user_mapping
           BulkImportWorker.perform_async(bulk_import.id)
 
           ServiceResponse.success

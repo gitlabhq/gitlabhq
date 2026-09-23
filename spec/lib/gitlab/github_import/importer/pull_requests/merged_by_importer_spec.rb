@@ -82,7 +82,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
 
     context 'when user mapping is disabled' do
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       end
 
       shared_examples 'adds a note referencing the merger user' do

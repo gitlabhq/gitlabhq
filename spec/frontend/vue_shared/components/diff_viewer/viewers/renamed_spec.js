@@ -139,6 +139,17 @@ describe('Renamed Diff Viewer', () => {
     );
   });
 
+  describe('when the diff path contains traversal segments (#security)', () => {
+    // The backend drops view_path for such paths, so there is nothing to link to
+    // and the link would otherwise render as a control that does nothing.
+    it('does not render the link', () => {
+      createRenamedComponent({ props: { diffFile: { ...diffFile, view_path: undefined } } });
+
+      expect(findShowFullDiffBtn().exists()).toBe(false);
+      expect(findPlainText().text()).toBe('File renamed with no changes.');
+    });
+  });
+
   describe('dismissError', () => {
     beforeEach(() => {
       createRenamedComponent({ props: { diffFile } });

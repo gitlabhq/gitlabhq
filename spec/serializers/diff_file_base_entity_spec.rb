@@ -170,4 +170,22 @@ RSpec.describe DiffFileBaseEntity do
       end
     end
   end
+
+  context 'when the file path contains traversal segments', feature_category: :code_review_workflow do
+    let(:merge_request) do
+      create(:merge_request, source_project: project, target_branch: 'master', source_branch: 'feature')
+    end
+
+    let(:diff_file) { merge_request.diffs.diff_files.to_a.last }
+    let(:options) { { request: EntityRequest.new(current_user: user), merge_request: merge_request } }
+
+    before do
+      allow(diff_file).to receive(:path_traversal?).and_return(true)
+    end
+
+    it 'omits both edit paths' do
+      expect(entity[:edit_path]).to be_nil
+      expect(entity[:ide_edit_path]).to be_nil
+    end
+  end
 end

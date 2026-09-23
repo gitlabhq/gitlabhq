@@ -247,6 +247,8 @@ module BulkImports
       #   #<Note:0x0006: {"author_id"=>2"]}
       # }
       def push_placeholder_references(original_users_map)
+        return unless original_users_map
+
         original_users_map.each do |object, user_references|
           next unless object.persisted?
 

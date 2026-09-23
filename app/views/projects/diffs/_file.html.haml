@@ -20,7 +20,7 @@
           - unless @diff_notes_disabled
             = link_button_to nil, '#', class: 'js-toggle-diff-comments has-tooltip', icon: 'comment', title: _("Toggle comments for this file")
           \
-          - if editable_diff?(diff_file)
+          - if editable_diff?(diff_file) && !diff_file.path_traversal?
             - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
             = edit_blob_button(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
                              blob: diff_file.blob, link_opts: link_opts)
@@ -30,11 +30,12 @@
             = diff_mode_swap_button('rendered', file_hash)
             = diff_mode_swap_button('raw', file_hash)
 
-        - if image_diff && image_replaced
-          = view_file_button(diff_file.old_content_sha, diff_file.old_path, project, replaced: true)
+        - unless diff_file.path_traversal?
+          - if image_diff && image_replaced
+            = view_file_button(diff_file.old_content_sha, diff_file.old_path, project, replaced: true)
 
-        = view_file_button(diff_file.content_sha, diff_file.file_path, project)
-        = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment
+          = view_file_button(diff_file.content_sha, diff_file.file_path, project)
+          = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment
 
   = render_fork_suggestion
 

@@ -308,6 +308,23 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
           end
         end
       end
+
+      it 'returns distinct instances whose per-request state is isolated' do
+        tool_a = manager.get_tool(name: 'search')
+        tool_b = manager.get_tool(name: 'search')
+
+        expect(tool_a).not_to equal(tool_b)
+
+        fake_request = instance_double(Rack::Request)
+        fake_params = { arguments: { entity_type: 'issues' } }
+        allow(tool_a).to receive(:perform_default).and_return(Mcp::Tools::Base::Response.success('ok'))
+        tool_a.execute(request: fake_request, params: fake_params)
+
+        expect(tool_a.instance_variable_get(:@request)).to eq(fake_request)
+        expect(tool_a.instance_variable_get(:@params)).to eq(fake_params)
+        expect(tool_b.instance_variable_get(:@request)).to be_nil
+        expect(tool_b.instance_variable_get(:@params)).to be_nil
+      end
     end
 
     context 'with tool alias' do

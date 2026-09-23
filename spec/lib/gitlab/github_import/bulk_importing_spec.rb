@@ -260,7 +260,8 @@ RSpec.describe Gitlab::GithubImport::BulkImporting, feature_category: :importers
 
     context 'when user mapping is disabled' do
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+        project.build_or_assign_import_data(data: {})
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       end
 
       it 'bulk inserts rows into the database' do

@@ -341,7 +341,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter, feature_
             end
 
             before do
-              project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+              project.build_or_assign_import_data(data: {}).save!
+              allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
             end
 
             context 'when the users are found on GitLab' do

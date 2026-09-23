@@ -94,7 +94,8 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
       context 'when user contribution mapping is disabled' do
         before do
           allow(client).to receive(:user).and_return(gitea_user)
-          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+          project.build_or_assign_import_data(data: {}).save!
+          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
         end
 
         it 'returns GitLab user id when user confirmed primary email matches Gitea email' do
@@ -153,7 +154,8 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
       context 'and improved user mapping is disabled' do
         before do
           allow(client).to receive(:user).and_return(ghost_user)
-          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+          project.build_or_assign_import_data(data: {}).save!
+          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
         end
 
         it 'returns nil' do
@@ -240,7 +242,8 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
     context 'when user contribution mapping is disabled' do
       before do
         allow(client).to receive(:user).and_return(gitea_user)
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+        project.build_or_assign_import_data(data: {}).save!
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
       end
 
       it 'returns nil' do

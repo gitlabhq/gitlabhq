@@ -41,24 +41,54 @@ RSpec.describe ProjectImportData do
   end
 
   describe '#user_mapping_enabled?' do
-    it 'returns user_contribution_mapping_enabled when present in data' do
-      import_data_enabled = described_class.new(data: { 'user_contribution_mapping_enabled' => true })
-      import_data_disabled = described_class.new(data: { 'user_contribution_mapping_enabled' => false })
+    # See gitlab-org/gitlab#628379. User contribution mapping is the safe
+    # default; only Bitbucket Server can opt out via feature flag. The
+    # accessor no longer reads the stored `data` blob because that blob is
+    # deleted by ProjectImportState on cancel/fail, and an attacker who
+    # cancels their own import mid-flight would otherwise downgrade running
+    # workers to the legacy user-resolution path.
+    subject(:user_mapping_enabled?) { import_data.user_mapping_enabled? }
 
-      expect(import_data_enabled.user_mapping_enabled?).to be(true)
-      expect(import_data_disabled.user_mapping_enabled?).to be(false)
+    context 'when there is no project' do
+      let(:import_data) { described_class.new }
+
+      it { is_expected.to be(true) }
     end
 
-    it 'returns false when user_contribution_mapping_enabled is not present in data' do
-      import_data = described_class.new(data: { 'number' => 10 })
+    context 'for a non-Bitbucket-Server import' do
+      let(:project) { build_stubbed(:project, import_type: 'github') }
+      let(:import_data) { described_class.new(project: project) }
 
-      expect(import_data.user_mapping_enabled?).to be(false)
+      it { is_expected.to be(true) }
+
+      context 'when data explicitly sets user_contribution_mapping_enabled to false' do
+        let(:import_data) do
+          described_class.new(project: project, data: { 'user_contribution_mapping_enabled' => false })
+        end
+
+        it { is_expected.to be(true) }
+      end
     end
 
-    it 'returns false when data is nil' do
-      import_data = described_class.new
+    context 'for a Bitbucket Server import' do
+      let(:project) { build_stubbed(:project, import_type: 'bitbucket_server') }
+      let(:import_data) { described_class.new(project: project) }
 
-      expect(import_data.user_mapping_enabled?).to be(false)
+      context 'when the bitbucket_server_user_mapping feature flag is enabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping: true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when the bitbucket_server_user_mapping feature flag is disabled' do
+        before do
+          stub_feature_flags(bitbucket_server_user_mapping: false)
+        end
+
+        it { is_expected.to be(false) }
+      end
     end
   end
 end

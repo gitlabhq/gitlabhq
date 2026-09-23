@@ -406,6 +406,17 @@ describe('DiffFileHeader component', () => {
             `View file @ ${getFirstDiffFile().content_sha.substr(0, 8)}`,
           );
         });
+
+        it('does not render the file view button when view_path is dropped', () => {
+          createComponent({
+            props: {
+              diffFile: { ...createDiffFile(), view_path: null },
+              addMergeRequestButtons: true,
+            },
+          });
+
+          expect(findViewFileButton().exists()).toBe(false);
+        });
       });
     });
 

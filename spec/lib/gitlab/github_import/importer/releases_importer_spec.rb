@@ -304,7 +304,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
     let_it_be(:user) { create(:user, username: author[:login]) }
 
     before do
-      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+      project.build_or_assign_import_data(data: {}).save!
+      allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
 
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |instance|
         allow(instance).to receive(:email_for_github_username)

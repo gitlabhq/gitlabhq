@@ -63,12 +63,10 @@ RSpec.describe Import::Offline::Imports::ScheduleImportService, :aggregate_failu
       service.execute
     end
 
-    it 'enables importer user mapping' do
-      expect_next_instance_of(::Import::BulkImports::EphemeralData, bulk_import.id) do |ephemeral_data|
-        expect(ephemeral_data).to receive(:enable_importer_user_mapping)
-      end
-
+    it 'creates the import with user contribution mapping enabled' do
       service.execute
+
+      expect(::Import::BulkImports::EphemeralData.new(bulk_import.id).importer_user_mapping_enabled?).to be true
     end
 
     context 'when the metadata file raises MetadataError for unsupported version' do
