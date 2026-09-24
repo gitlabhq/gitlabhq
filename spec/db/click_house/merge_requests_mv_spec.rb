@@ -39,8 +39,8 @@ RSpec.describe 'merge_requests created_by_duo enrichment', :click_house, feature
 
     # created_by_duo is a joined column, so the insert path leaves it false and the
     # enrichment pass fills it in. Nothing here is time-dependent, so one pass is enough.
-    conn.execute('SYSTEM REFRESH VIEW merge_requests_enriched_mv')
-    conn.execute('SYSTEM WAIT VIEW merge_requests_enriched_mv')
+    ClickHouse::Client.execute('SYSTEM REFRESH VIEW merge_requests_enriched_mv', click_house_admin_database)
+    ClickHouse::Client.execute('SYSTEM WAIT VIEW merge_requests_enriched_mv', click_house_admin_database)
   end
 
   it 'marks only merge requests with a live created link', :aggregate_failures do

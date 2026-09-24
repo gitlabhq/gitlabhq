@@ -112,6 +112,21 @@ To enable Auto DevOps for a project:
 
 GitLab triggers the Auto DevOps pipeline on the default branch.
 
+To verify that Auto DevOps is working:
+
+1. In the left sidebar, select **Build** > **Pipelines**.
+1. Find the pipeline triggered on the default branch.
+   It should be running or recently completed.
+1. Select the pipeline to view its jobs and stages.
+
+The pipeline includes jobs for the Auto DevOps stages like `build`, `test`, `code_quality`, and `sast`
+configured for your project.
+
+If the pipeline does not run or is missing these jobs:
+
+- Ensure your project meets the [Auto DevOps requirements](requirements.md).
+- Ensure **Default to Auto DevOps pipeline** is selected in **Settings** > **CI/CD** > **Auto DevOps**.
+
 To disable it, follow the same process and clear the
 **Default to Auto DevOps pipeline** checkbox.
 

@@ -357,6 +357,21 @@ describe('multi-year time dimensions', () => {
     expect(bars).toEqual([{ name: 'ruby', data: [5, 7] }]);
   });
 
+  it('buildStackedByDimension fills missing pairs with missingValue', () => {
+    const nodes = [...MULTI_YEAR_NODES, { created: '2026-06-01', language: 'go', totalCount: 3 }];
+    const build = (options) =>
+      buildStackedByDimension({
+        nodes,
+        primaryDim: DAILY,
+        secondaryDim: LANGUAGE,
+        metric: METRIC,
+        ...options,
+      }).bars;
+
+    expect(build()[1].data).toEqual([0, 3]);
+    expect(build({ missingValue: null })[1].data).toEqual([null, 3]);
+  });
+
   it('daily labels carry the year when buckets span multiple years', () => {
     const format = dimensionLabelFormatter(MULTI_YEAR_NODES, DAILY);
 

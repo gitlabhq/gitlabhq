@@ -49,6 +49,12 @@ describe('TwoDimensionsColumnChart', () => {
     ]);
   });
 
+  it('leaves pairs with no row empty rather than zero', () => {
+    createComponent({ data: { nodes: DATA.nodes.slice(0, 3) } });
+
+    expect(findChart().props('bars')[1]).toEqual({ name: 'python', data: [6, '-'] });
+  });
+
   it('labels the axes from both dimensions and the metric', () => {
     expect(findChart().props('xAxisTitle')).toBe('User by Language');
     expect(findChart().props('yAxisTitle')).toBe('Total count');
@@ -157,6 +163,28 @@ describe('TwoDimensionsColumnChart', () => {
 
       expect(w.text()).toContain('1,234');
       expect(w.text()).toContain('567');
+    });
+
+    it('omits padded pairs but keeps genuine zeros', () => {
+      const w = mountExtended(TwoDimensionsColumnChart, {
+        propsData: {
+          data: DATA,
+          primaryDimension: PRIMARY_DIM,
+          secondaryDimension: SECONDARY_DIM,
+          metric: METRIC,
+        },
+        stubs: {
+          GlStackedColumnChart: chartTooltipStub({
+            seriesData: [
+              { seriesName: 'ruby', value: 0, color: '#aaa' },
+              { seriesName: 'python', value: '-', color: '#bbb' },
+            ],
+          }),
+        },
+      });
+
+      expect(w.text()).toContain('ruby');
+      expect(w.text()).not.toContain('python');
     });
   });
 });

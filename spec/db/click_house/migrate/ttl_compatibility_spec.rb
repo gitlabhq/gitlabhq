@@ -32,7 +32,8 @@ RSpec.describe 'ClickHouse TTL compatibility', click_house: :without_migrations,
       expect(table_definition).to eq(original_definition)
       expect(table_definition).to include("TTL toDateTime(#{column}) + #{interval}")
       expect(connection.select("SELECT #{column} FROM #{table}")).to eq(original_rows)
-      expect(connection.select(<<~SQL)).to be_empty
+      # system.mutations is not readable by the least-privilege user CI runs as.
+      expect(ClickHouse::Client.select(<<~SQL, click_house_admin_database)).to be_empty
         SELECT mutation_id FROM system.mutations
         WHERE database = currentDatabase() AND table = '#{table}'
       SQL

@@ -142,7 +142,15 @@ const seriesNamesFor = (values, nodes, dimension) => {
   return names;
 };
 
-export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metric }) => {
+// `missingValue` fills pairs the query returned no row for. Bar-type charts pass
+// an empty value so those pairs draw no segment; 0 would still draw a border.
+export const buildStackedByDimension = ({
+  nodes,
+  primaryDim,
+  secondaryDim,
+  metric,
+  missingValue = 0,
+}) => {
   if (!nodes?.length || !primaryDim || !secondaryDim || !metric) {
     return { groups: [], bars: [] };
   }
@@ -169,7 +177,7 @@ export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metri
 
   const bars = [...valuesBySecondary.entries()].map(([value, valuesByIndex]) => ({
     name: names.get(value),
-    data: groups.map((_, i) => valuesByIndex[i] ?? 0),
+    data: groups.map((_, i) => valuesByIndex[i] ?? missingValue),
   }));
 
   return { groups, bars };

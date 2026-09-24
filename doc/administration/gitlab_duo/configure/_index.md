@@ -67,7 +67,19 @@ If you have issues:
 - If you use reverse proxies like Apache, you might see GitLab Duo Chat connection issues in your
   logs, like **WebSocket connection to .... failures**.
 
-To resolve this issue, edit your proxy settings:
+To resolve this issue, edit your proxy settings.
+
+For Apache 2.4.47 and later, add `upgrade=websocket` to the `ProxyPass` directive
+so that Apache upgrades the connection for WebSocket traffic:
+
+```apache
+# Needs proxy_http and proxy_wstunnel enabled
+ProxyPass / http://127.0.0.1:8181/ upgrade=websocket
+ProxyPassReverse / http://127.0.0.1:8181/
+```
+
+For earlier Apache versions, use rewrite rules to route WebSocket
+traffic to the `ws://` protocol:
 
 ```apache
 # Enable WebSocket reverse Proxy
@@ -76,6 +88,10 @@ To resolve this issue, edit your proxy settings:
   RewriteCond %{HTTP:Connection} upgrade [NC]
   RewriteRule ^/?(.*) "ws://127.0.0.1:8181/$1" [P,L]
 ```
+
+A missing WebSocket upgrade on the proxy also breaks other GitLab features that
+stream over Action Cable (`/-/cable`), like live updates of merge request and
+pipeline status.
 
 ## Allow connections from the runner
 

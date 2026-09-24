@@ -46,6 +46,7 @@ export default {
         primaryDim: this.primaryDimension,
         secondaryDim: this.secondaryDimension,
         metric: this.metric,
+        missingValue: null,
       });
     },
     // GlBarChart has no `group-by` prop (unlike GlStackedColumnChart) and no
@@ -100,8 +101,10 @@ export default {
     formatTooltipValue(_label, value) {
       return this.metricFormatter(value);
     },
+    // Drop the padded pairs before the helper turns their null into 0.
     contentFromParams(params) {
-      return tooltipContentFromParams(params, DISPLAY_TYPES.BAR_CHART);
+      const seriesData = params?.seriesData?.filter(({ value }) => value?.[0] != null);
+      return tooltipContentFromParams({ ...params, seriesData }, DISPLAY_TYPES.BAR_CHART);
     },
     tooltipTitle(params) {
       return tooltipTitleFromParams(params, {

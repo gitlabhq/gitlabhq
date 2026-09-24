@@ -296,6 +296,12 @@
     CLICKHOUSE_USER: default
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
+    CLICKHOUSE_HOST_URL: http://clickhouse:8123
+    # The app connects as this least-privilege user, not as `default`. See
+    # scripts/click_house/setup_ci_user.rb. The GITLAB_ prefix keeps these clear of the
+    # image entrypoint's own CLICKHOUSE_PASSWORD and the coverage exporter's CLICKHOUSE_USERNAME.
+    GITLAB_CLICKHOUSE_USER: gitlab
+    GITLAB_CLICKHOUSE_PASSWORD: gitlab_clickhouse_ci
 
 .use-pg17-clickhouse26:
   extends: .use-pg17
@@ -307,6 +313,12 @@
     CLICKHOUSE_USER: default
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
+    CLICKHOUSE_HOST_URL: http://clickhouse:8123
+    # The app connects as this least-privilege user, not as `default`. See
+    # scripts/click_house/setup_ci_user.rb. The GITLAB_ prefix keeps these clear of the
+    # image entrypoint's own CLICKHOUSE_PASSWORD and the coverage exporter's CLICKHOUSE_USERNAME.
+    GITLAB_CLICKHOUSE_USER: gitlab
+    GITLAB_CLICKHOUSE_PASSWORD: gitlab_clickhouse_ci
 
 # Adds a SECOND Postgres started with a non-UTC server `timezone`
 # (`reset_val = America/Los_Angeles`), exposed under the `postgres-tz` alias,

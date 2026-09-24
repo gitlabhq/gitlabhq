@@ -67,6 +67,15 @@ describe('TwoDimensionsBarChart', () => {
     });
   });
 
+  it('leaves pairs with no row empty rather than zero', () => {
+    createComponent({ data: { nodes: DATA.nodes.slice(0, 3) } });
+
+    expect(findChart().props('data').python).toEqual([
+      [6, 'u0'],
+      [null, 'u2'],
+    ]);
+  });
+
   describe('with showAxisTitles=false', () => {
     beforeEach(() => {
       createComponent({ showAxisTitles: false });
@@ -214,6 +223,28 @@ describe('TwoDimensionsBarChart', () => {
 
       expect(w.text()).toContain('1,234');
       expect(w.text()).toContain('567');
+    });
+
+    it('omits padded pairs but keeps genuine zeros', () => {
+      const w = mountExtended(TwoDimensionsBarChart, {
+        propsData: {
+          data: DATA,
+          primaryDimension: PRIMARY_DIM,
+          secondaryDimension: SECONDARY_DIM,
+          metric: METRIC,
+        },
+        stubs: {
+          GlBarChart: chartTooltipStub({
+            seriesData: [
+              { seriesName: 'ruby', value: [0, 'u0'], color: '#aaa' },
+              { seriesName: 'python', value: [null, 'u0'], color: '#bbb' },
+            ],
+          }),
+        },
+      });
+
+      expect(w.text()).toContain('ruby');
+      expect(w.text()).not.toContain('python');
     });
 
     it('still names the dimensions in the title when axis titles are hidden', () => {

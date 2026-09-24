@@ -3917,7 +3917,7 @@ REFRESH EVERY 15 MINUTE APPEND TO duo_workflows_workflows_enriched
     `_version` DateTime64(6, 'UTC'),
     `_watermark` DateTime64(6, 'UTC')
 )
-DEFINER = default SQL SECURITY DEFINER
+DEFINER = CURRENT_USER SQL SECURITY DEFINER
 AS WITH
     (
         SELECT max(_watermark) - toIntervalMinute(30)
@@ -4157,7 +4157,7 @@ REFRESH EVERY 12 HOUR APPEND TO duo_workflows_workflows_enriched
     `_version` DateTime64(6, 'UTC'),
     `_watermark` DateTime64(6, 'UTC')
 )
-DEFINER = default SQL SECURITY DEFINER
+DEFINER = CURRENT_USER SQL SECURITY DEFINER
 AS WITH
     unresolved AS
     (
@@ -4562,7 +4562,7 @@ REFRESH EVERY 1 MINUTE APPEND TO merge_requests
     `_siphon_enriched` Bool,
     `_siphon_watermark` DateTime64(6, 'UTC')
 )
-DEFINER = default SQL SECURITY DEFINER
+DEFINER = CURRENT_USER SQL SECURITY DEFINER
 AS WITH
     base AS
     (

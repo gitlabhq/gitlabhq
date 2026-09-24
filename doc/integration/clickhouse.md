@@ -206,14 +206,22 @@ To create the necessary user and database objects:
 
 {{< tab title="Single-node or ClickHouse Cloud" >}}
 
+<!-- gitlab-clickhouse-grants:start -->
+<!-- scripts/click_house/setup_ci_user.rb replays the SQL block between these markers against
+     the CI ClickHouse service, so CI runs on the grants documented here. Keep one statement
+     per line, keep them idempotent, and keep the database name as
+     gitlab_clickhouse_main_production. -->
+
 ```sql
-CREATE DATABASE gitlab_clickhouse_main_production;
-CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
-CREATE ROLE gitlab_app;
+CREATE DATABASE IF NOT EXISTS gitlab_clickhouse_main_production;
+CREATE USER IF NOT EXISTS gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
+CREATE ROLE IF NOT EXISTS gitlab_app;
 GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE, dictGet ON gitlab_clickhouse_main_production.* TO gitlab_app;
 GRANT SELECT ON information_schema.* TO gitlab_app;
 GRANT gitlab_app TO gitlab;
 ```
+
+<!-- gitlab-clickhouse-grants:end -->
 
 {{< /tab >}}
 
@@ -222,9 +230,9 @@ GRANT gitlab_app TO gitlab;
 Replace `CLUSTER_NAME_HERE` with your cluster's name:
 
 ```sql
-CREATE DATABASE gitlab_clickhouse_main_production ON CLUSTER CLUSTER_NAME_HERE ENGINE = Replicated('/clickhouse/databases/{cluster}/gitlab_clickhouse_main_production', '{shard}', '{replica}');
-CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE' ON CLUSTER CLUSTER_NAME_HERE;
-CREATE ROLE gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
+CREATE DATABASE IF NOT EXISTS gitlab_clickhouse_main_production ON CLUSTER CLUSTER_NAME_HERE ENGINE = Replicated('/clickhouse/databases/{cluster}/gitlab_clickhouse_main_production', '{shard}', '{replica}');
+CREATE USER IF NOT EXISTS gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE' ON CLUSTER CLUSTER_NAME_HERE;
+CREATE ROLE IF NOT EXISTS gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
 GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE, dictGet ON gitlab_clickhouse_main_production.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
 GRANT SELECT ON information_schema.* TO gitlab_app ON CLUSTER CLUSTER_NAME_HERE;
 GRANT gitlab_app TO gitlab ON CLUSTER CLUSTER_NAME_HERE;

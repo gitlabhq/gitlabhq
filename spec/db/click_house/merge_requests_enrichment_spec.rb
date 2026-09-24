@@ -12,8 +12,8 @@ RSpec.describe 'merge_requests enrichment', :click_house, feature_category: :dat
 
   # Trigger the scheduled view automatically
   def enrich!
-    conn.execute('SYSTEM REFRESH VIEW merge_requests_enriched_mv')
-    conn.execute('SYSTEM WAIT VIEW merge_requests_enriched_mv')
+    ClickHouse::Client.execute('SYSTEM REFRESH VIEW merge_requests_enriched_mv', click_house_admin_database)
+    ClickHouse::Client.execute('SYSTEM WAIT VIEW merge_requests_enriched_mv', click_house_admin_database)
   end
 
   def insert_mr(id: mr_id, version: base_version, deleted: false, title: 'Test MR')

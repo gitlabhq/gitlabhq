@@ -27,8 +27,21 @@ include:
 .clickhouse-setup:
   script:
     - !reference [.base-script, script]
+    - bundle exec ruby scripts/click_house/setup_ci_user.rb
     - cp config/click_house.yml.example config/click_house.yml
-    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
+    - 'sed -i "s|url:.*$|url: ${CLICKHOUSE_HOST_URL}|g" config/click_house.yml'
+    - 'sed -i "s|username:.*$|username: ${GITLAB_CLICKHOUSE_USER}|g" config/click_house.yml'
+    - 'sed -i "s|password:$|password: ${GITLAB_CLICKHOUSE_PASSWORD}|g" config/click_house.yml'
+    # Elevated connection over the same database, for the handful of specs needing a privilege
+    # production doesn't grant. Appended after the seds so it keeps the `default` credentials.
+    - |
+      cat >> config/click_house.yml <<YAML
+        main_admin:
+          database: ${CLICKHOUSE_DB}
+          url: ${CLICKHOUSE_HOST_URL}
+          username: ${CLICKHOUSE_USER}
+          password:
+      YAML
 
 .single-db:
   variables:

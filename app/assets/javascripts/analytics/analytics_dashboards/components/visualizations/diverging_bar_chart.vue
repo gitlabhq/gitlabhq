@@ -46,7 +46,8 @@ const DEFAULT_DIVERGING_BAR_CHART_OPTIONS = {
     icon: 'square',
     itemWidth: LEGEND_ICON_SIZE,
     itemHeight: LEGEND_ICON_SIZE,
-    textStyle: { fontSize: VALUE_LABEL_SIZE },
+    // The legend's own default colour shadows the theme's, so dark mode needs it set.
+    textStyle: { fontSize: VALUE_LABEL_SIZE, color: 'var(--gl-text-color-default)' },
   },
 };
 

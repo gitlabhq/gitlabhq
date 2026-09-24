@@ -11,6 +11,8 @@ import {
 import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
 
+const EMPTY_VALUE = '-';
+
 export default {
   name: 'TwoDimensionsColumnChart',
   components: { GlStackedColumnChart, FormattedTooltipContent },
@@ -39,6 +41,8 @@ export default {
         primaryDim: this.primaryDimension,
         secondaryDim: this.secondaryDimension,
         metric: this.metric,
+        // ECharts' empty marker; gitlab-ui's tooltip formatter throws on a bare null.
+        missingValue: EMPTY_VALUE,
       });
     },
     metricFormatter() {
@@ -76,7 +80,10 @@ export default {
         axisName: this.xAxisTitle,
       });
     },
-    contentFromParams: tooltipContentFromParams,
+    contentFromParams(params) {
+      const seriesData = params?.seriesData?.filter(({ value }) => value !== EMPTY_VALUE);
+      return tooltipContentFromParams({ ...params, seriesData });
+    },
   },
 };
 </script>

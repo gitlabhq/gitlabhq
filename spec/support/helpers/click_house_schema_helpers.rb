@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module ClickHouseSchemaHelpers
+  # Points at the same physical database as `main` but with elevated credentials. Only CI
+  # configures it, for the few specs needing a privilege the production `gitlab` user is not
+  # granted. It must never be migrated, dropped or truncated separately.
+  ADMIN_DATABASE = :main_admin
+
+  def admin_database?(identifier)
+    identifier.to_sym == ADMIN_DATABASE
+  end
+
   def migrate(migration_context, target_version, step = nil)
     quietly { migration_context.up(target_version, step) }
   end
@@ -48,7 +57,7 @@ module ClickHouseSchemaHelpers
   end
 
   def clear_db(configuration = ClickHouse::Client.configuration)
-    identifiers = configuration.databases.each_key.to_a
+    identifiers = configuration.databases.each_key.reject { |id| admin_database?(id) }
     identifiers.each do |identifier|
       db_config = ClickHouse::Client.configuration.databases[identifier]
       connection = ::ClickHouse::Connection.new(identifier, configuration)

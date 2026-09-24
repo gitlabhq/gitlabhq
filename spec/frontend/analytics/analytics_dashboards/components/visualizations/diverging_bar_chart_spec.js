@@ -140,6 +140,10 @@ describe('DivergingBarChart', () => {
       expect(chartOptions().series.map(({ name }) => name)).toEqual(seriesNames);
     });
 
+    it('colours the legend text from the theme token', () => {
+      expect(chartOptions().legend.textStyle.color).toBe('var(--gl-text-color-default)');
+    });
+
     // Regression: the track spans the whole grid and covered the labels at the default z.
     it('draws the axes above the bar tracks', () => {
       const barSeriesZ = 2;

@@ -63,6 +63,8 @@ namespace :gitlab do
       schema_sql = File.read(schema_dump_path)
 
       ClickHouse::Client.configuration.databases.each_key do |db|
+        next unless Gitlab::ClickHouse::DATABASES.include?(db)
+
         database_config = ClickHouse::Client.configuration.databases[:main]
         connection = ::ClickHouse::Connection.new(db)
 
@@ -124,6 +126,11 @@ namespace :gitlab do
 
       result = ClickHouse::DictionaryCredentialsHandler.replace_credentials_with_variables(database_name, result)
       result = result.gsub(/#{database_name}\./, '')
+
+      # ClickHouse stamps the creating user into DEFINER, so the dump would otherwise differ
+      # between CI (`gitlab`) and local development (`default`). CURRENT_USER is accepted on
+      # load and resolves to whoever runs the migration.
+      result = result.gsub(/DEFINER = \S+/, 'DEFINER = CURRENT_USER')
 
       path_to_sql = Rails.root.join('db', 'click_house', "#{database}.sql")
       if File.writable?(path_to_sql)

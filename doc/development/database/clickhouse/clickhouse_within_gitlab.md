@@ -650,6 +650,41 @@ RSpec.describe MyClickHouseFeature, :click_house do
 end
 ```
 
+### Database users in CI/CD
+
+In CI/CD, the `:main` connection runs as a least-privilege user named `gitlab`.
+That user holds only the grants that GitLab Self-Managed administrators create for production.
+For more information, see [ClickHouse integration](../../../integration/clickhouse.md).
+
+A query or a migration that needs a privilege production does not grant therefore fails in CI/CD
+rather than in production.
+To add a privilege, add it to the documented grant block. This needs to be carefully planned as
+the new grants need to be adjusted for GitLab Self-Managed, SaaS, and GitLab Dedicated environments
+as well.
+
+Locally, and in the GDK, `main` uses the ClickHouse `default` user, which is an administrator with
+full privileges.
+A test that needs an elevated privilege therefore passes locally and fails in CI/CD with an
+`ACCESS_DENIED` error.
+
+### Statements that need administrator access
+
+CI/CD also configures a second connection, `main_admin`, that points at the same database but uses
+the `default` administrator credentials.
+Use it for tests that must run a statement production is not granted.
+
+Do not reference `:main_admin` directly, because it does not exist locally.
+Use the `click_house_admin_database` helper from `ClickHouseHelpers`, which is available in any
+test tagged `:click_house`.
+The helper returns `:main_admin` in CI/CD and falls back to `:main` locally.
+
+```ruby
+ClickHouse::Client.execute('SYSTEM RELOAD DICTIONARY my_dictionary', click_house_admin_database)
+```
+
+Use the admin connection only when the statement is test scaffolding rather than the behavior
+under test.
+
 ## Multiple databases
 
 By design, the `ClickHouse::Client` library supports configuring multiple databases. Because we're still at a very early stage of development, we only have one database called `main`.

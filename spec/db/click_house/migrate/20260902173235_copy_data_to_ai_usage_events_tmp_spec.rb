@@ -43,7 +43,8 @@ RSpec.describe CopyDataToAiUsageEventsTmp, :click_house, feature_category: :valu
   # reloading evicts it.
   after do
     connection.execute('TRUNCATE TABLE namespace_traversal_paths')
-    connection.execute('SYSTEM RELOAD DICTIONARY namespace_traversal_paths_dict')
+    ClickHouse::Client.execute('SYSTEM RELOAD DICTIONARY namespace_traversal_paths_dict',
+      click_house_admin_database)
   end
 
   # Leaving traversal_path at the `'0/'` sentinel stands in for a row written before the dual write.

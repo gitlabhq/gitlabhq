@@ -340,8 +340,8 @@ job B:
     - cat vendor/hello.txt
 ```
 
-If one machine has one runner installed, then all jobs for your project
-run on the same host:
+If your project uses a single runner installed on one machine, all jobs
+run on that host:
 
 1. Pipeline starts.
 1. `job A` runs.
@@ -363,6 +363,22 @@ By using a single runner on a single machine, you don't have the issue where
 cache can be reused between stages. It only works if the execution goes from the `build` stage
 to the `test` stage in the same runner/machine. Otherwise, the cache [might not be available](#cache-mismatch).
 
+This restriction exists because the cache created for one runner
+is often not valid when used by a different one. A different runner might use a
+different architecture, so cached binary files might not work. Runners can also run on
+different machines, so GitLab uses the same runner by default to keep the cache reliable.
+
+```mermaid
+flowchart LR
+    accTitle: Cache archive and extraction across two jobs
+    accDescr: Job A archives the cache to the runner's storage, and job B can only extract it if both jobs run on the same runner.
+
+    A[Job A runs] --> B[Cache archived to cache.zip]
+    B --> C{Job B on same runner?}
+    C -->|Yes| D[Cache extracted for job B]
+    C -->|No| E[Cache not available for job B]
+```
+
 During the caching process, also consider the following:
 
 - If some other job, with another cache configuration, had saved its
@@ -374,12 +390,6 @@ During the caching process, also consider the following:
   extracted in the job's working directory (usually the repository which is
   pulled down), and the runner doesn't mind if the archive of `job A` overwrites
   things in the archive of `job B`.
-
-It works this way because the cache created for one runner
-often isn't valid when used by a different one. A different runner may run on a
-different architecture (for example, when the cache includes binary files). Also,
-because the different steps might be executed by runners running on different
-machines, it is a safe default.
 
 ## Clearing the cache
 
