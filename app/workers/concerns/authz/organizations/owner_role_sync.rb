@@ -12,7 +12,9 @@ module Authz
         data_consistency :sticky
         urgency :low
         idempotent!
-        deduplicate :until_executed
+        # reschedule_once: an owner set written while a job is mid-run is
+        # picked up by one follow-up run instead of being dropped as a duplicate.
+        deduplicate :until_executed, if_deduplicated: :reschedule_once
         worker_has_external_dependencies!
         # Caps concurrent load on the IAM data access service, since a bulk
         # operation could otherwise enqueue a large burst of these at once.

@@ -12,6 +12,7 @@
 import { h, defineComponent } from 'vue';
 
 export default defineComponent({
+  name: 'VueVirtualScrollListVue3',
   compatConfig: {
     MODE: 3,
   },
@@ -224,7 +225,6 @@ export default defineComponent({
 
     filter() {
       const { delta } = this;
-      // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
       const defaultSlot = this.$slots.default;
       const slots = (typeof defaultSlot === 'function' ? defaultSlot() : defaultSlot) || [];
 

@@ -13,6 +13,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import { Mousetrap, MOUSETRAP_COPY_KEYBOARD_SHORTCUT } from '~/lib/mousetrap';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'InputCopyToggleVisibility',
@@ -31,6 +32,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     value: {
       type: String,
@@ -209,8 +211,7 @@ export default {
         </gl-button-group>
       </template>
     </gl-form-input-group>
-    <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-    <template v-for="slot in Object.keys($slots)" #[slot]>
+    <template v-for="slot in Object.keys(glSlots())" #[slot]>
       <slot :name="slot"></slot>
     </template>
   </gl-form-group>

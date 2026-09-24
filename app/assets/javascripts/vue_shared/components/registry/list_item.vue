@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ListItem',
@@ -8,6 +9,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     first: {
       type: Boolean,
@@ -23,7 +25,6 @@ export default {
   data() {
     return {
       isDetailsShown: false,
-      detailsSlots: [],
     };
   },
   computed: {
@@ -43,11 +44,10 @@ export default {
       return this.isDetailsShown ? __('Hide details') : __('Show details');
     },
   },
-  mounted() {
-    // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
-    this.detailsSlots = Object.keys(this.$slots).filter((k) => k.startsWith('details-'));
-  },
   methods: {
+    detailsSlots() {
+      return Object.keys(this.glSlots()).filter((k) => k.startsWith('details-'));
+    },
     toggleDetails() {
       this.isDetailsShown = !this.isDetailsShown;
     },
@@ -62,8 +62,9 @@ export default {
   >
     <div class="gl-flex gl-py-3">
       <div
-        v-if="$slots['left-action'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */"
+        v-if="glSlots()['left-action']"
         class="gl-flex gl-w-7 gl-justify-start gl-pt-2"
+        data-testid="left-action-container"
       >
         <slot name="left-action"></slot>
       </div>
@@ -72,14 +73,12 @@ export default {
       >
         <div class="gl-mb-3 gl-flex gl-min-w-0 gl-grow gl-flex-col @sm/panel:gl-mb-0">
           <div
-            v-if="
-              $slots['left-primary'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
-            "
+            v-if="glSlots()['left-primary']"
             class="gl-min-h-6 gl-min-w-0 gl-items-center gl-font-semibold gl-text-default @sm/panel:gl-flex"
           >
             <slot name="left-primary"></slot>
             <gl-button
-              v-if="detailsSlots.length > 0"
+              v-if="detailsSlots().length > 0"
               v-gl-tooltip
               :icon="toggleDetailsIcon"
               :aria-label="toggleDetailsLabel"
@@ -92,11 +91,7 @@ export default {
             />
           </div>
           <div
-            v-if="
-              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
-                'left-secondary'
-              ]
-            "
+            v-if="glSlots()['left-secondary']"
             class="gl-flex gl-min-h-6 gl-min-w-0 gl-grow gl-items-center gl-gap-3 gl-text-sm gl-text-subtle"
           >
             <slot name="left-secondary"></slot>
@@ -106,33 +101,20 @@ export default {
           class="gl-flex gl-shrink-0 gl-flex-col gl-justify-center gl-text-subtle @sm/panel:gl-items-end"
         >
           <div
-            v-if="
-              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
-                'right-primary'
-              ]
-            "
+            v-if="glSlots()['right-primary']"
             class="gl-flex gl-min-h-6 gl-items-center @sm/panel:gl-text-default"
           >
             <slot name="right-primary"></slot>
           </div>
           <div
-            v-if="
-              /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
-                'right-secondary'
-              ]
-            "
+            v-if="glSlots()['right-secondary']"
             class="gl-flex gl-min-h-6 gl-items-center gl-text-sm"
           >
             <slot name="right-secondary"></slot>
           </div>
         </div>
       </div>
-      <div
-        v-if="
-          $slots['right-action'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
-        "
-        class="gl-items-center gl-pl-3 @sm/panel:gl-flex"
-      >
+      <div v-if="glSlots()['right-action']" class="gl-items-center gl-pl-3 @sm/panel:gl-flex">
         <slot name="right-action"></slot>
       </div>
     </div>
@@ -142,7 +124,7 @@ export default {
         class="gl-mb-3 gl-flex gl-grow gl-flex-col gl-rounded-base gl-bg-subtle gl-shadow-inner-1-gray-100"
       >
         <div
-          v-for="(row, detailIndex) in detailsSlots"
+          v-for="(row, detailIndex) in detailsSlots()"
           :key="detailIndex"
           class="gl-px-5 gl-py-2"
           :class="{

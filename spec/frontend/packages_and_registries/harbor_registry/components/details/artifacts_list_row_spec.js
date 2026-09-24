@@ -15,7 +15,6 @@ describe('Harbor artifact list row', () => {
     ...RealListItem,
     data() {
       return {
-        detailsSlots: [],
         isDetailsShown: true,
       };
     },

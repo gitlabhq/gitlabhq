@@ -221,12 +221,14 @@ To revoke a personal access token:
 ## Access token expiration
 
 Personal, group, project, and impersonation access tokens expire at midnight UTC on the expiry date.
-After they expire, they can no longer be used to authenticate requests.
+Expired tokens can no longer be used to authenticate requests and cannot be reactivated.
+You must create a new token instead.
 
 By default, new access tokens must have an expiry date.
 If an expiry date isn't explicitly set during token creation, an expiry date of 365 days from the current date is applied.
 If an administrator [turns off this requirement](../../administration/settings/account_and_limit_settings.md#require-expiration-dates-for-new-access-tokens),
 new tokens created without an expiry date never expire.
+
 In GitLab Ultimate, administrators can configure a
 [maximum allowable lifetime](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
 for access tokens.

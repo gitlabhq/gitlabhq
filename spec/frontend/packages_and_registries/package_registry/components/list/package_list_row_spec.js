@@ -219,15 +219,23 @@ describe('packages_list_row', () => {
   });
 
   describe('left action template', () => {
-    it('does not render checkbox if not permitted', () => {
-      mountComponent({
-        provide: {
-          ...defaultProvide,
-          canDeletePackages: false,
-        },
+    describe('when deleting packages is not permitted', () => {
+      beforeEach(() => {
+        mountComponent({
+          provide: {
+            ...defaultProvide,
+            canDeletePackages: false,
+          },
+        });
       });
 
-      expect(findBulkDeleteAction().exists()).toBe(false);
+      it('does not render checkbox', () => {
+        expect(findBulkDeleteAction().exists()).toBe(false);
+      });
+
+      it('does not leave an empty left action container', () => {
+        expect(wrapper.findByTestId('left-action-container').exists()).toBe(false);
+      });
     });
 
     it('renders checkbox', () => {

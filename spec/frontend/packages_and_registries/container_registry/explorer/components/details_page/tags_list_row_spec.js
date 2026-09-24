@@ -1,7 +1,6 @@
 import {
   GlFormCheckbox,
   GlSprintf,
-  GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlLink,
@@ -41,7 +40,7 @@ describe('tags list row', () => {
   const findSize = () => wrapper.findByTestId('size');
   const findTime = () => wrapper.findByTestId('time');
   const findShortRevision = () => wrapper.findByTestId('digest');
-  const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
+  const findClipboardButton = () => wrapper.findComponentByTestId('location-clipboard-button');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findDetailsRows = () => wrapper.findAllComponents(DetailsRow);
   const findPublishedDateDetail = () => wrapper.findComponentByTestId('published-date-detail');
@@ -50,7 +49,7 @@ describe('tags list row', () => {
   const findManifestPlatformsRow = () => wrapper.findComponentByTestId('manifest-platforms-row');
   const findConfigurationDetail = () => wrapper.findComponentByTestId('configuration-detail');
   const findSignaturesDetails = () => wrapper.findAllComponentsByTestId('signatures-detail');
-  const findWarningIcon = () => wrapper.findComponent(GlIcon);
+  const findWarningIcon = () => wrapper.findComponentByTestId('warning-icon');
   const findAdditionalActionsMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findSignedBadge = () => wrapper.findComponentByTestId('signed-badge');
@@ -82,10 +81,18 @@ describe('tags list row', () => {
       expect(findCheckbox().exists()).toBe(true);
     });
 
-    it('is hidden when canDelete is false', () => {
-      mountComponent({ ...defaultProps, canDelete: false });
+    describe('when canDelete is false', () => {
+      beforeEach(() => {
+        mountComponent({ ...defaultProps, canDelete: false });
+      });
 
-      expect(findCheckbox().exists()).toBe(false);
+      it('is hidden', () => {
+        expect(findCheckbox().exists()).toBe(false);
+      });
+
+      it('does not leave an empty left action container', () => {
+        expect(wrapper.findByTestId('left-action-container').exists()).toBe(false);
+      });
     });
 
     it.each`

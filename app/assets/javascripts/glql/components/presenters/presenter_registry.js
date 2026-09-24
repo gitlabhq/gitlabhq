@@ -23,6 +23,7 @@ import CollectionPresenter from './collection.vue';
 import LinkPresenter from './link.vue';
 import TimePresenter from './time.vue';
 import TextPresenter from './text.vue';
+import TierBandPresenter from './tier_band.vue';
 import UrlPresenter from './url.vue';
 import PercentagePresenter from './percentage.vue';
 import NumberPresenter from './number.vue';
@@ -214,7 +215,11 @@ const presenterByPrimitiveType = (field) => {
 const isDateBucket = (field, parameters) =>
   Boolean(parameters.granularity) && typeof field === 'string';
 
-// Resolves a presenter for (item, fieldKey) via: null → bucket → field-key → typename → primitive.
+// Tier values are opaque `tier_0`, `tier_1`... strings, named from the field's thresholds.
+const isTierBand = (field, parameters) =>
+  Boolean(parameters.thresholds?.length) && typeof field === 'string';
+
+// Resolves a presenter for (item, fieldKey) via: null → bucket → tier → field-key → typename → primitive.
 // `fieldKey` is the data key for value lookup; `presenterKey` (falls back to `fieldKey`)
 // is used for `presentersByFieldKey` — needed because aliased fields store data under
 // the alias, not the base field key.
@@ -226,6 +231,7 @@ export const presenterFor = (
   const field = dataForField(item, fieldKey, presenterKey);
   if (field == null) return NullPresenter;
   if (isDateBucket(field, parameters)) return DateBucketPresenter;
+  if (isTierBand(field, parameters)) return TierBandPresenter;
   return (
     presenterByFieldKey(presenterKey || fieldKey, item, variant) ||
     presenterByObjectType(field, variant) ||

@@ -350,4 +350,53 @@ RSpec.describe Organizations::ActivateService, :freeze_time, feature_category: :
       "redis_hll_counters.count_distinct_target_organization_id_from_#{event}_weekly"
     ]
   end
+
+  describe 'Organization Administrator role sync' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:other_owner) { create(:user) }
+    let_it_be_with_reload(:organization) { create(:organization, :confirmed, owners: user) }
+    let_it_be(:top_level_group) { create(:group, organization: organization, owners: [user, other_owner]) }
+
+    let(:organization_id) { organization.id }
+
+    subject(:response) { described_class.new(user, { organization_id: organization_id }).execute }
+
+    before do
+      allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+      allow_next_instance_of(Organizations::Transfer::GroupsService) do |service|
+        allow(service).to receive(:execute).and_return(ServiceResponse.success)
+      end
+    end
+
+    describe '#execute' do
+      it 'enqueues one owner sync job after the transfer, acting as the activating user', :aggregate_failures do
+        expect(Authz::Organizations::GrantOwnerRoleWorker).to receive(:perform_async)
+          .with(organization.id, nil, user.id)
+
+        expect(response).to be_success
+      end
+
+      context 'when the owner role sync is unavailable' do
+        before do
+          allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(false)
+        end
+
+        it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(response).to be_success
+        end
+      end
+
+      context 'when the organization cannot be activated' do
+        let(:organization_id) { non_existing_record_id }
+
+        it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(response).to be_error
+        end
+      end
+    end
+  end
 end

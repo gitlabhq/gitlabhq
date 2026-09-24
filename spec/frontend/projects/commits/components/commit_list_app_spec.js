@@ -90,10 +90,12 @@ describe('CommitListApp', () => {
     groupCommitsByDay.mockReturnValue([
       {
         day: '2025-06-23',
+        isRepeatedDay: false,
         commits: [mockCommitsNodes[0], mockCommitsNodes[1]],
       },
       {
         day: '2025-06-21',
+        isRepeatedDay: false,
         commits: [mockCommitsNodes[2]],
       },
     ]);
@@ -252,6 +254,32 @@ describe('CommitListApp', () => {
       timeElements.wrappers.forEach((timeElement, index) => {
         expect(timeElement.attributes('datetime')).toBe(expectedDatetime[index]);
         expect(timeElement.text()).toBe(expectedDateText[index]);
+      });
+    });
+
+    it('does not render a screen reader hint', () => {
+      expect(wrapper.findAllByTestId('repeated-day-hint')).toHaveLength(0);
+    });
+
+    describe('when a day repeats non-consecutively', () => {
+      beforeEach(async () => {
+        groupCommitsByDay.mockReturnValue([
+          { day: '2025-06-23', isRepeatedDay: false, commits: [mockCommitsNodes[0]] },
+          { day: '2025-06-21', isRepeatedDay: false, commits: [mockCommitsNodes[2]] },
+          { day: '2025-06-23', isRepeatedDay: true, commits: [mockCommitsNodes[1]] },
+        ]);
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('renders a screen reader hint only on the repeat occurrence', () => {
+        const hints = wrapper.findAllByTestId('repeated-day-hint');
+        expect(hints).toHaveLength(1);
+        expect(hints.at(0).text()).toBe('This is another group of commits from this date.');
+        expect(hints.at(0).classes()).toContain('gl-sr-only');
+        expect(findDailyCommits().at(2).find('h2').text()).toContain(
+          'This is another group of commits from this date.',
+        );
       });
     });
 

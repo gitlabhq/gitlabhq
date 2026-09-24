@@ -78,7 +78,7 @@ module API
       def delete_note(noteable, note_id)
         note = noteable.notes.find(note_id)
 
-        authorize! :admin_note, note
+        authorize! :delete_note, note
 
         parent = noteable_parent(noteable)
         project = parent if parent.is_a?(Project)

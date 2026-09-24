@@ -21373,6 +21373,9 @@ msgstr ""
 msgid "Commits|Something went wrong while loading the commit description. Please try again."
 msgstr ""
 
+msgid "Commits|This is another group of commits from this date."
+msgstr ""
+
 msgid "Commits|Unable to load commits"
 msgstr ""
 
@@ -74548,6 +74551,12 @@ msgstr ""
 msgid "SecurityOrchestration|Allow list"
 msgstr ""
 
+msgid "SecurityOrchestration|Allow or deny packages with vulnerabilities at or above a specified severity level."
+msgstr ""
+
+msgid "SecurityOrchestration|Allow packages based on the selected software license."
+msgstr ""
+
 msgid "SecurityOrchestration|Allowed licenses"
 msgstr ""
 
@@ -74844,10 +74853,16 @@ msgstr ""
 msgid "SecurityOrchestration|Denied severity: %{severity}."
 msgstr ""
 
-msgid "SecurityOrchestration|Deny a package when it has more vulnerabilities at a severity than the threshold allows."
+msgid "SecurityOrchestration|Deny list"
 msgstr ""
 
-msgid "SecurityOrchestration|Deny list"
+msgid "SecurityOrchestration|Deny packages based on the selected software license."
+msgstr ""
+
+msgid "SecurityOrchestration|Deny packages flagged as malicious by GitLab."
+msgstr ""
+
+msgid "SecurityOrchestration|Deny packages that exceed a specified number of vulnerabilities."
 msgstr ""
 
 msgid "SecurityOrchestration|Denylist details"
@@ -74970,16 +74985,7 @@ msgstr ""
 msgid "SecurityOrchestration|Enforcement type"
 msgstr ""
 
-msgid "SecurityOrchestration|Enter package URLs (PURLs) to exempt, separated by commas"
-msgstr ""
-
 msgid "SecurityOrchestration|Enter up to %{maxBranches} branch names, separated by commas."
-msgstr ""
-
-msgid "SecurityOrchestration|Enter vulnerability IDs (e.g. CVEs) or package URLs (PURLs) to exempt, separated by commas"
-msgstr ""
-
-msgid "SecurityOrchestration|Enter vulnerability IDs (e.g. CVEs) to exempt, separated by commas"
 msgstr ""
 
 msgid "SecurityOrchestration|Error: %{error}"
@@ -75407,6 +75413,9 @@ msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
 msgid "SecurityOrchestration|Package (purl)"
+msgstr ""
+
+msgid "SecurityOrchestration|Package URLs (PURLs), separated by commas"
 msgstr ""
 
 msgid "SecurityOrchestration|Pipeline execution"
@@ -76026,12 +76035,6 @@ msgstr ""
 msgid "SecurityOrchestration|This project"
 msgstr ""
 
-msgid "SecurityOrchestration|This rule is active as soon as it appears in the rules list, and always denies packages flagged by the malicious packages data feed - it cannot be switched to an allow list. To turn it off, remove this rule using the button on the right."
-msgstr ""
-
-msgid "SecurityOrchestration|This rule is an allow list. New license rules can only deny; to change this rule back to a deny list, edit the policy YAML directly."
-msgstr ""
-
 msgid "SecurityOrchestration|This schedule uses a format rule mode cannot display, like a range, step, or minute offset. The YAML is valid and the policy still runs. Switch to YAML mode to change the schedule."
 msgstr ""
 
@@ -76159,6 +76162,12 @@ msgid "SecurityOrchestration|Vulnerabilities have EPSS score less than %{value}.
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability"
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability IDs (such as CVEs) or package URLs (PURLs), separated by commas"
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability IDs (such as CVEs), separated by commas"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability age is greater than %{vulnerabilityAge}."
@@ -76473,6 +76482,9 @@ msgid "SecurityOrchestration|less than"
 msgstr ""
 
 msgid "SecurityOrchestration|license scan"
+msgstr ""
+
+msgid "SecurityOrchestration|licenses"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"

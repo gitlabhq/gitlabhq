@@ -966,9 +966,9 @@ Grants the ability to update Geo registries.
 
 ### GitLab Orbit resources
 
-#### Knowledge Graph Setting
+#### Orbit Setting
 
-Grants the ability to update knowledge graph settings.
+Grants the ability to update Orbit settings.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |

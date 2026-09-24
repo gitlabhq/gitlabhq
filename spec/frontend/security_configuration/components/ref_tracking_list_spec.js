@@ -77,7 +77,7 @@ describe('RefTrackingList component', () => {
     queryHandler,
     trackMutationHandler,
     untrackMutationHandler,
-    glFeatures = {},
+    refTrackingAvailable = false,
     maxTrackedRefs = MAX_TRACKED_REFS,
   } = {}) => {
     wrapper = shallowMountExtended(RefTrackingList, {
@@ -89,7 +89,7 @@ describe('RefTrackingList component', () => {
       provide: {
         projectFullPath: 'namespace/project',
         maxTrackedRefs,
-        glFeatures,
+        refTrackingAvailable,
       },
       stubs: {
         GlCard,
@@ -700,11 +700,9 @@ describe('RefTrackingList component', () => {
   });
 
   describe('VAC Open Beta indicators', () => {
-    const withFfOn = { vulnerabilitiesAcrossContexts: true };
-
-    describe('when the vulnerabilitiesAcrossContexts feature flag is on', () => {
+    describe('when ref tracking is available', () => {
       beforeEach(async () => {
-        createComponent({ glFeatures: withFfOn });
+        createComponent({ refTrackingAvailable: true });
         await waitForPromises();
       });
 
@@ -731,16 +729,16 @@ describe('RefTrackingList component', () => {
       });
 
       it('reflects the injected maxTrackedRefs value in the Beta popover', async () => {
-        createComponent({ glFeatures: withFfOn, maxTrackedRefs: 10 });
+        createComponent({ refTrackingAvailable: true, maxTrackedRefs: 10 });
         await waitForPromises();
 
         expect(findBetaPopover().text()).toContain("you're limited to 10 refs per project");
       });
     });
 
-    describe('when the vulnerabilitiesAcrossContexts feature flag is off', () => {
+    describe('when ref tracking is unavailable', () => {
       beforeEach(async () => {
-        createComponent({ glFeatures: {} });
+        createComponent({ refTrackingAvailable: false });
         await waitForPromises();
       });
 

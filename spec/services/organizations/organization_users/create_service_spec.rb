@@ -95,4 +95,78 @@ RSpec.describe Organizations::OrganizationUsers::CreateService, feature_category
       end
     end
   end
+
+  describe 'Organization Administrator role sync' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:organization_owner) { create(:organization_owner, organization: organization) }
+    let_it_be(:user) { create(:user) }
+
+    let(:user_type) { :owner }
+    let(:params) { { username: user.username, user_type: user_type } }
+
+    subject(:execute) do
+      described_class.new(organization, current_user: organization_owner.user, params: params).execute
+    end
+
+    before do
+      allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+    end
+
+    describe '#execute' do
+      context 'when the user is added as an owner' do
+        it 'enqueues GrantOwnerRoleWorker with the acting owner as the third argument', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).to receive(:perform_async)
+            .with(organization.id, user.id, organization_owner.user.id)
+
+          expect(execute).to be_success
+        end
+      end
+
+      context 'when the user is added with the default access level' do
+        let(:user_type) { :default }
+
+        it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(execute).to be_success
+        end
+      end
+
+      context 'when the identifier does not match a user' do
+        let(:params) { { username: 'nonexistent-username', user_type: user_type } }
+
+        it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(execute).to be_error
+        end
+      end
+
+      context 'when the record is invalid' do
+        before do
+          allow_next_instance_of(Organizations::OrganizationUser) do |organization_user|
+            allow(organization_user).to receive(:save!).and_raise(ActiveRecord::RecordInvalid, organization_user)
+          end
+        end
+
+        it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(execute).to be_error
+        end
+      end
+
+      context 'when the owner role sync is unavailable' do
+        before do
+          allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(false)
+        end
+
+        it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(execute).to be_success
+        end
+      end
+    end
+  end
 end

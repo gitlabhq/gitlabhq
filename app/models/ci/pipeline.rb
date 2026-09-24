@@ -1553,15 +1553,17 @@ module Ci
       complete? && has_reports?(reports_scope)
     end
 
-    def complete_and_has_self_or_descendant_reports?(reports_scope)
-      return false unless complete?
-
+    def has_self_or_descendant_reports?(reports_scope)
       hierarchy_builds = builds_in_self_and_project_descendants
 
       reports_scope
         .where(job_id: hierarchy_builds.select(:id))
         .in_partition(hierarchy_builds.where_values_hash['partition_id'] || self)
         .exists?
+    end
+
+    def complete_and_has_self_or_descendant_reports?(reports_scope)
+      complete? && has_self_or_descendant_reports?(reports_scope)
     end
 
     def complete_or_manual_and_has_reports?(reports_scope)
@@ -1906,6 +1908,10 @@ module Ci
 
     def auto_cancel_on_new_commit
       pipeline_metadata&.auto_cancel_on_new_commit || 'conservative'
+    end
+
+    def interruptible_protected?
+      !!pipeline_processing_data&.interruptible_protected
     end
 
     def cancel_async_on_job_failure

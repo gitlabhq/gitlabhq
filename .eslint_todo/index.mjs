@@ -8,14 +8,12 @@ export { default as gitlabVueNoHardcodedUrls } from './gitlab-vue-no-hardcoded-u
 
 export { default as localRulesGraphqlRequireFeatureCategory } from './local-rules-graphql-require-feature-category.mjs';
 
-export { default as localRulesNoOrphanedFeatureFlagReferences } from './local-rules-no-orphaned-feature-flag-references.mjs';
-
 export { default as localRulesNoWebUrl } from './local-rules-no-web-url.mjs';
 
 export { default as localRulesVueNoWebUrl } from './local-rules-vue-no-web-url.mjs';
 
 export { default as tailwindcssNoArbitraryValue } from './tailwindcss-no-arbitrary-value.mjs';
 
-export { default as localRulesVueNoUnusedInjects } from './local-rules-vue-no-unused-injects.mjs';
+export { default as vueNoUnusedPropertiesInject } from './vue-no-unused-properties-inject.mjs';
 
 export { default as vueNoRequiredPropWithDefault } from './vue-no-required-prop-with-default.mjs';

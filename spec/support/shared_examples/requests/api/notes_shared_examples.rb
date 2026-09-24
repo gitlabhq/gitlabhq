@@ -380,6 +380,21 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
     it_behaves_like '412 response' do
       let(:request) { api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{note.id}", user, admin_mode: user.admin?) }
     end
+
+    context 'when the user is a developer and not the note author' do
+      let(:developer) { create(:user) }
+
+      before do
+        parent.add_developer(developer)
+      end
+
+      it 'returns a 403 error' do
+        delete api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes/#{note.id}", developer)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(Note.exists?(note.id)).to be(true)
+      end
+    end
   end
 end
 

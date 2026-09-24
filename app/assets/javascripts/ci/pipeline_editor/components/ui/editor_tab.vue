@@ -2,6 +2,7 @@
 import { GlAlert, GlTab } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 /**
  * Wrapper of <gl-tab> to optionally lazily render this tab's content
  * when its shown **without dismounting after its hidden**.
@@ -61,7 +62,7 @@ export default {
       render: () => null,
     },
   },
-  mixins: [glListenersMixin],
+  mixins: [glListenersMixin, glSlotsMixin],
   inheritAttrs: false,
   props: {
     emptyMessage: {
@@ -106,12 +107,6 @@ export default {
       isLazy: this.lazy,
     };
   },
-  computed: {
-    slots() {
-      // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
-      return Object.keys(this.$slots);
-    },
-  },
   methods: {
     onContentMounted() {
       // When a child is first mounted make the entire tab
@@ -135,7 +130,7 @@ export default {
     >
     <gl-alert v-else-if="isInvalid" variant="danger">{{ $options.i18n.invalid }}</gl-alert>
     <template v-else>
-      <slot v-for="slot in slots" :name="slot"></slot>
+      <slot v-for="slot in Object.keys(glSlots())" :name="slot"></slot>
       <mount-spy @hook:mounted="onContentMounted" />
     </template>
   </gl-tab>

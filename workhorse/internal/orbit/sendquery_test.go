@@ -671,13 +671,72 @@ func TestInjectQuotaExhaustedMCP(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
 	sq.Inject(recorder, req, sendData)
 
+	require.Equal(t, "GitLab credits exhausted", requireMCPToolError(t, recorder, "req-1"))
+}
+
+func TestInjectMCPFailuresReturnToolError(t *testing.T) {
+	tests := []struct {
+		name     string
+		gkgReply func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error
+		wantText string
+	}{
+		{
+			name: "stream deadline",
+			gkgReply: func(_ grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
+				time.Sleep(5 * time.Second)
+				return nil
+			},
+			wantText: "orbit.SendQuery: query did not finish in time, narrow the query and try again",
+		},
+		{
+			name: "stream error",
+			gkgReply: func(_ grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
+				return status.Error(codes.Internal, "something went wrong")
+			},
+			wantText: "orbit.SendQuery: stream error",
+		},
+	}
+
+	for i, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testAddress := fmt.Sprintf("test-mcp-failure-%d:50051", i)
+
+			lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
+				if _, err := stream.Recv(); err != nil {
+					return err
+				}
+				return tt.gkgReply(stream)
+			})
+			injectTestClient(t, lis, testAddress)
+
+			sq := NewSendQuery(newTestAPI(t, "http://unused.test"), "test-version")
+			sendData := buildSendData(t, sendQueryParams{
+				GkgServer: GkgServer{Address: testAddress},
+				Query:     `{"match":{}}`,
+				McpID:     "req-1",
+			})
+
+			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+			defer cancel()
+			recorder := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/mcp", nil).WithContext(ctx)
+			sq.Inject(recorder, req, sendData)
+
+			require.Contains(t, requireMCPToolError(t, recorder, "req-1"), tt.wantText)
+		})
+	}
+}
+
+func requireMCPToolError(t *testing.T, recorder *httptest.ResponseRecorder, wantID string) string {
+	t.Helper()
+
 	require.Equal(t, http.StatusOK, recorder.Code)
 	require.Equal(t, "application/json", recorder.Header().Get("Content-Type"))
 
 	var resp mcpResponse
 	require.NoError(t, json.NewDecoder(recorder.Body).Decode(&resp))
 	require.Equal(t, "2.0", resp.JSONRPC)
-	require.Equal(t, "req-1", resp.ID)
+	require.Equal(t, wantID, resp.ID)
 
 	toolResult, ok := resp.Result.(map[string]any)
 	require.True(t, ok, "MCP Result must decode as object")
@@ -687,7 +746,8 @@ func TestInjectQuotaExhaustedMCP(t *testing.T) {
 	require.Len(t, content, 1)
 	first := content[0].(map[string]any)
 	require.Equal(t, "text", first["type"])
-	require.Equal(t, "GitLab credits exhausted", first["text"])
+
+	return first["text"].(string)
 }
 
 func TestInjectHeaders(t *testing.T) {

@@ -44,7 +44,10 @@ module Organizations
         end
       end
 
-      publish_activated_event if response&.success?
+      if response&.success?
+        publish_activated_event
+        grant_organization_admin_roles
+      end
 
       track_transfer_finished(response)
 
@@ -144,6 +147,14 @@ module Organizations
 
     def create_organization_users
       Organizations::Transfer::OrganizationUsersService.new(organization: organization).execute
+    end
+
+    # Onboarding writes the owner set with upsert_all, which no service hook
+    # sees, so the whole owner set is synced once the transfer has committed.
+    def grant_organization_admin_roles
+      return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+      ::Authz::Organizations::GrantOwnerRoleWorker.perform_async(organization.id, nil, current_user.id)
     end
 
     def already_transferred_error?(result)

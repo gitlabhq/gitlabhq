@@ -3459,9 +3459,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def pipeline_has_report_in_self_or_descendants?(report_type, pipeline = diff_head_pipeline)
-    !!pipeline
-      &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
-      &.exists?
+    !!pipeline&.has_self_or_descendant_reports?(::Ci::JobArtifact.of_report_type(report_type))
   end
 
   def resolve_diff_version(diff_options = {})

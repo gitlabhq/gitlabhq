@@ -10,6 +10,7 @@ exports[`packages_list_row renders 1`] = `
   >
     <div
       class="gl-flex gl-justify-start gl-pt-2 gl-w-7"
+      data-testid="left-action-container"
     >
       <gl-form-checkbox-stub
         class="gl-m-0"

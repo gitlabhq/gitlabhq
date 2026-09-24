@@ -12,7 +12,6 @@ import {
 } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { untrackRefsOptimisticResponse, updateUntrackedRefsCache } from '../graphql/cache_utils';
 import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql';
 import untrackSecurityRefsMutation from '../graphql/untrack_security_refs.mutation.graphql';
@@ -40,8 +39,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   betaHelpPath: helpPagePath('user/application_security/vulnerability_report/_index.md'),
-  mixins: [glFeatureFlagMixin()],
-  inject: ['projectFullPath', 'maxTrackedRefs'],
+  inject: {
+    projectFullPath: {},
+    maxTrackedRefs: {},
+    refTrackingAvailable: { default: false },
+  },
   apollo: {
     trackedRefs: {
       query: securityTrackedRefs,
@@ -113,7 +115,7 @@ export default {
       return this.totalCount >= this.maxTrackedRefs;
     },
     showBeta() {
-      return Boolean(this.glFeatures?.vulnerabilitiesAcrossContexts);
+      return this.refTrackingAvailable;
     },
     betaPopoverDescription() {
       return sprintf(

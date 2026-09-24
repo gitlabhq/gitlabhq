@@ -1046,24 +1046,6 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			},
 			shouldCallWS: true,
 		},
-		{
-			name: "MCP tool action with call error",
-			action: &pb.Action{
-				RequestID: "req-mcp-error",
-				Action: &pb.Action_RunMCPTool{
-					RunMCPTool: &pb.RunMCPTool{
-						Name: "gitlab_get_issue",
-						Args: `{"issue_id": "123"}`,
-					},
-				},
-			},
-			mcpManager: &mockMcpManager{
-				hasToolResult: true,
-				callToolError: errors.New("mcp call failed"),
-			},
-			shouldCallMcp:  true,
-			expectedErrMsg: "handleAgentAction: failed to call MCP tool: mcp call failed",
-		},
 	}
 
 	for _, tt := range tests {
@@ -1218,6 +1200,41 @@ func TestRunner_handleAgentAction_UnknownMcpToolUnsupportedByClient(t *testing.T
 	require.NotEmpty(t, sendEvents[0].GetActionResponse().GetPlainTextResponse().Error)
 }
 
+func TestRunner_handleAgentAction_McpToolCallFails(t *testing.T) {
+	mockWf := &mockWorkflowStream{}
+	mcpManager := &mockMcpManager{
+		hasToolResult: true,
+		callToolError: errors.New("CallTool: failed to call MCP tool: 504 Gateway Timeout"),
+	}
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	r := &runner{
+		originalReq:   req,
+		client:        newWsManager(&mockWebSocketConn{}),
+		streamManager: newTestStreamManager(t, mockWf),
+		mcpManager:    mcpManager,
+	}
+
+	action := &pb.Action{
+		RequestID: "req-mcp-error",
+		Action: &pb.Action_RunMCPTool{
+			RunMCPTool: &pb.RunMCPTool{Name: "orbit_invoke_command", Args: `{"command_name": "query_graph"}`},
+		},
+	}
+
+	require.NoError(t, r.handleAgentAction(context.Background(), action), "a failed tool call must not end the workflow")
+
+	require.Len(t, mcpManager.callToolInvocations, 1)
+
+	sendEvents := mockWf.getSendEvents()
+	require.Len(t, sendEvents, 1, "DWS must get a response so the workflow does not stall")
+
+	response := sendEvents[0].GetActionResponse()
+	require.Equal(t, "req-mcp-error", response.RequestID)
+	require.Equal(t, "CallTool: failed to call MCP tool: 504 Gateway Timeout", response.GetPlainTextResponse().Error)
+	require.Empty(t, response.GetPlainTextResponse().Response)
+}
+
 func TestRunner_handleAgentAction_UnsupportedActionSendFails(t *testing.T) {
 	transport := &unsupportedActionTransport{}
 	mockWf := &mockWorkflowStream{sendError: errors.New("stream closed")}
@@ -1238,7 +1255,7 @@ func TestRunner_handleAgentAction_UnsupportedActionSendFails(t *testing.T) {
 	require.EqualError(
 		t,
 		r.handleAgentAction(context.Background(), action),
-		"writeActionToClient: failed to send gRPC message: stream closed",
+		"sendActionError: failed to send gRPC message: stream closed",
 	)
 }
 
@@ -2062,6 +2079,27 @@ func TestRunner_Close_shutdownCoordination(t *testing.T) {
 			require.NoError(t, err)
 		case <-time.After(2 * time.Second):
 			t.Fatal("Close should return after shutdownDone is closed")
+		}
+	})
+
+	// A session that finishes while the instance drains has nothing left for
+	// Shutdown to tell the client, and Shutdown only wakes on the drain deadline.
+	// Waiting for it held the client's connection open for the whole grace period.
+	t.Run("does not wait for shutdownDone when the workflow already ended", func(t *testing.T) {
+		r := newRunnerForClose(t)
+		r.stop.shutdownStarted.Store(true)
+		r.stop.workflowEnded.Store(true)
+
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should not wait for shutdownDone once the workflow has ended")
 		}
 	})
 }

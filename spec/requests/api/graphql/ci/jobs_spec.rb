@@ -80,6 +80,54 @@ RSpec.describe 'Query.jobs', feature_category: :continuous_integration do
       end
     end
   end
+
+  describe '.expandedEnvironmentName' do
+    let_it_be(:environment) { create(:environment, project: project, name: 'production') }
+    let_it_be(:deploy_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', environment: 'production') }
+    let_it_be(:job_environment) do
+      create(:job_environment, project: project, environment: environment, pipeline: pipeline, job: deploy_job)
+    end
+
+    let(:fields) { ['... on CiJob { expandedEnvironmentName }'] }
+
+    it 'returns the recorded name only for jobs that deploy to an environment' do
+      post_graphql(query, current_user: admin)
+
+      expect(jobs_graphql_data).to contain_exactly(
+        a_graphql_entity_for(deploy_job, 'expandedEnvironmentName' => 'production'),
+        a_graphql_entity_for(build, 'expandedEnvironmentName' => be_nil)
+      )
+    end
+
+    it 'does not generate N+1 queries as jobs span more projects',
+      :request_store, :use_sql_query_cache, :aggregate_failures do
+      post_graphql(query, current_user: admin)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: admin)
+      end
+
+      2.times { |index| create_deploy_job_in_new_project("staging-#{index}") }
+
+      expect { post_graphql(query, current_user: admin) }.not_to exceed_all_query_limit(control)
+      expect(resolved_environment_names).to contain_exactly('production', 'staging-0', 'staging-1')
+    end
+
+    def create_deploy_job_in_new_project(environment_name)
+      other_project = create(:project)
+      other_pipeline = create(:ci_pipeline, project: other_project)
+
+      create(:job_environment,
+        project: other_project,
+        environment: create(:environment, project: other_project, name: environment_name),
+        pipeline: other_pipeline,
+        job: create(:ci_build, pipeline: other_pipeline, name: 'deploy', environment: environment_name))
+    end
+
+    def resolved_environment_names
+      jobs_graphql_data.filter_map { |job| job['expandedEnvironmentName'] }
+    end
+  end
 end
 
 RSpec.describe 'Query.jobs.runner', feature_category: :continuous_integration do

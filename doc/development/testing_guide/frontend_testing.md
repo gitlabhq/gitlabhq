@@ -2165,6 +2165,35 @@ Key differences from unit tests:
   `server.close`) is handled globally by `test_setup.js`. Do not add
   these calls in individual test files.
 
+### Register apps booted by their page bootstrap
+
+Most specs mount a component with `fullMount`.
+Some feature areas instead call the real page bootstrap function, for example the default export of `ee/security_orchestration/security_policies_list`.
+That function is what parses the HAML `data` attributes into the app's `provide` values, and covering that wiring is the point of the spec.
+
+An app created this way is not a Vue Test Utils wrapper, so `enableAutoDestroy` does not tear it down.
+Pass the app the bootstrap returns to `registerBootstrappedApp`.
+The harness then unmounts it and removes its root element in `afterEach`, and clears its Apollo cache in the next `beforeEach`.
+The app replaces its mount element, so specs do not remove it themselves.
+On the Vue 2 lane only that root element goes: content an app renders elsewhere in the document, such as a modal appended to `body` or a nested app root, is not covered.
+
+```javascript
+import { registerBootstrappedApp } from 'ee_jest/integration/helpers/test_helpers';
+
+export function mountMyApp() {
+  const el = document.createElement('div');
+  Object.assign(el.dataset, MY_APP_DATASET);
+  document.body.appendChild(el);
+
+  return registerBootstrappedApp(initMyApp(el));
+}
+```
+
+Registration fails when the bootstrap returns no app, which usually means its mount element was missing.
+It also fails when the app exposes no Apollo client, because a cache the harness never sees is never cleared, which surfaces as an unrelated test failing later.
+
+Some domains still need their own `afterEach` for state the harness cannot reach, such as websocket, workflow stream, and panel storage teardown: the `ai_duo_panel` specs register a `teardownDuoChatTest` helper, exported from `ee/spec/frontend/integration/ai_duo_panel/test_support/test_setup.js`, in their own `afterEach`.
+
 ### Test isolation for Apollo requests
 
 MSW 2 streams response bodies across multiple event-loop ticks. When a test

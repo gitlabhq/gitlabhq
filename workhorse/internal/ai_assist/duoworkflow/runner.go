@@ -385,7 +385,11 @@ func (r *runner) Close() error {
 	// client never sees that signal and won't reconnect to the new instance. In
 	// the normal request path Shutdown is never called, so we must not block on
 	// shutdownDone there.
-	if r.stop.shutdownStarted.Load() {
+	//
+	// Not when the workflow already ended: Shutdown sends nothing to the client
+	// then, and it only wakes on the drain deadline, so waiting would hold a
+	// finished session's connection open for the whole grace period.
+	if r.stop.shutdownStarted.Load() && !r.stop.workflowEnded.Load() {
 		<-r.stop.shutdownDone
 	}
 
@@ -489,7 +493,12 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 
 		event, err := r.mcpManager.CallTool(ctx, action)
 		if err != nil {
-			return fmt.Errorf("handleAgentAction: failed to call MCP tool: %v", err)
+			log.WithContextFields(ctx, log.Fields{
+				"request_id": action.RequestID,
+				"name":       mcpTool.Name,
+			}).WithError(err).Error("handleAgentAction: reporting failed MCP tool call back to DWS")
+
+			return r.sendActionError(action, err)
 		}
 
 		if err := r.streamManager.Send(event); err != nil {
@@ -506,9 +515,7 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 
 // writeActionToClient hands an action to the client for execution. Transports
 // whose client cannot execute actions reject them with errActionUnsupported;
-// those are reported back to Duo Workflow Service as a failed action, because
-// it waits for a response to every action it emits and would otherwise stall
-// until its own timeout.
+// those are reported back to Duo Workflow Service as a failed action.
 func (r *runner) writeActionToClient(ctx context.Context, action *pb.Action) error {
 	err := r.client.WriteAction(ctx, action)
 	if !errors.Is(err, errActionUnsupported) {
@@ -519,19 +526,24 @@ func (r *runner) writeActionToClient(ctx context.Context, action *pb.Action) err
 		"request_id": action.RequestID,
 	}).WithError(err).Info("writeActionToClient: reporting unsupported action back to DWS")
 
+	return r.sendActionError(action, err)
+}
+
+// sendActionError answers the action with an error so DWS does not wait forever.
+func (r *runner) sendActionError(action *pb.Action, actionErr error) error {
 	event := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
 			ActionResponse: &pb.ActionResponse{
 				RequestID: action.RequestID,
 				ResponseType: &pb.ActionResponse_PlainTextResponse{
-					PlainTextResponse: &pb.PlainTextResponse{Error: err.Error()},
+					PlainTextResponse: &pb.PlainTextResponse{Error: actionErr.Error()},
 				},
 			},
 		},
 	}
 
-	if sendErr := r.streamManager.Send(event); sendErr != nil {
-		return fmt.Errorf("writeActionToClient: failed to send gRPC message: %w", sendErr)
+	if err := r.streamManager.Send(event); err != nil {
+		return fmt.Errorf("sendActionError: failed to send gRPC message: %w", err)
 	}
 
 	return nil

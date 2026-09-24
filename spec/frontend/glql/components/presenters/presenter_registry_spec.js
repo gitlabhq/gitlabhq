@@ -7,6 +7,7 @@ import CiStatusPresenter from '~/glql/components/presenters/ci_status.vue';
 import CodePresenter from '~/glql/components/presenters/code.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import DateBucketPresenter from '~/glql/components/presenters/date_bucket.vue';
+import TierBandPresenter from '~/glql/components/presenters/tier_band.vue';
 import DurationPresenter from '~/glql/components/presenters/duration.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
@@ -342,6 +343,28 @@ describe('presenter_registry', () => {
 
       it('returns NullPresenter when the bucket value is null', () => {
         expect(presenterFor({ created: null }, 'created', monthly)).toBe(NullPresenter);
+      });
+    });
+
+    describe('tier band dispatch', () => {
+      const tiers = { parameters: { thresholds: ['5', '25', '100'] } };
+
+      it('routes a tier value on a field with thresholds to TierBandPresenter', () => {
+        expect(presenterFor({ userTier: 'tier_0' }, 'userTier', tiers)).toBe(TierBandPresenter);
+      });
+
+      it('routes an aliased tier dimension to TierBandPresenter', () => {
+        expect(
+          presenterFor({ Tier: 'tier_0' }, 'Tier', { presenterKey: 'userTier', ...tiers }),
+        ).toBe(TierBandPresenter);
+      });
+
+      it('keeps regular dispatch for tier values without thresholds', () => {
+        expect(presenterFor({ userTier: 'tier_0' }, 'userTier')).toBe(TextPresenter);
+      });
+
+      it('returns NullPresenter when the tier value is null', () => {
+        expect(presenterFor({ userTier: null }, 'userTier', tiers)).toBe(NullPresenter);
       });
     });
 

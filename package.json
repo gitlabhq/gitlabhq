@@ -271,8 +271,6 @@
     "yjs": "^13.6.30"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.7",
-    "@eslint/js": "^9.39.5",
     "@gitlab/eslint-plugin": "^22.0.0",
     "@gitlab/jest-metrics-exporter": "^0.2.0",
     "@gitlab/noop": "^1.0.1",
@@ -304,7 +302,7 @@
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.11",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-no-jquery": "3.1.1",
+    "eslint-plugin-no-jquery": "6.0.0",
     "eslint-plugin-no-unsanitized": "^4.1.5",
     "fake-indexeddb": "^4.0.1",
     "fast-glob": "^3.2.9",

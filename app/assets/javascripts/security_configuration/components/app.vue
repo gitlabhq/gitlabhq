@@ -8,7 +8,6 @@ import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import {
   REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY,
@@ -98,8 +97,9 @@ export default {
     ),
   },
   directives: { SafeHtml },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
+    vulnerabilityArchivesAvailable: { default: false },
+    refTrackingAvailable: { default: false },
     projectFullPath: { default: '' },
     vulnerabilityTrainingDocsPath: { default: '' },
     canReadAttributes: { default: false },
@@ -165,10 +165,10 @@ export default {
       );
     },
     shouldShowVulnerabilityArchives() {
-      return this.glFeatures?.vulnerabilityArchival;
+      return this.vulnerabilityArchivesAvailable;
     },
     shouldShowRefsTracking() {
-      return this.glFeatures?.vulnerabilitiesAcrossContexts;
+      return this.refTrackingAvailable;
     },
     shouldShowSecurityAttributes() {
       return window.gon?.licensed_features?.securityAttributes && this.canReadAttributes;

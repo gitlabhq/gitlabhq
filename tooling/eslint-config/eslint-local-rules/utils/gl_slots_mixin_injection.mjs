@@ -1,7 +1,6 @@
 // Shared machinery for rules whose fixes introduce `glSlots()` calls into a
 // component: injecting the `glSlotsMixin` import and registering it in the
-// default export's `mixins` array. Used by `vue3-gl-slots` and
-// `vue3-no-unconditional-slot-forwarding`.
+// default export's `mixins` array. Used by `vue3-no-unconditional-slot-forwarding`.
 
 export const MIXIN_NAME = 'glSlotsMixin';
 export const MIXIN_SOURCE = '~/lib/utils/vue3compat/gl_slots_mixin';

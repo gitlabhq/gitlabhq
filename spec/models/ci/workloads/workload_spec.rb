@@ -77,6 +77,18 @@ RSpec.describe Ci::Workloads::Workload, feature_category: :continuous_integratio
         expect(workload.logs_url).to eq('logs-url')
       end
     end
+
+    context 'when the earliest job was retried' do
+      let!(:retried_job) { create(:ci_build, :retried, pipeline: workload.pipeline) }
+      let!(:latest_job) { create(:ci_build, pipeline: workload.pipeline) }
+
+      it 'returns the url of the non-retried job' do
+        allow(Gitlab::Routing).to receive_message_chain(:url_helpers, :project_job_url)
+          .with(workload.project, latest_job).and_return('logs-url')
+
+        expect(workload.logs_url).to eq('logs-url')
+      end
+    end
   end
 
   describe 'state transitions' do

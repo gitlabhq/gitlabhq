@@ -34,7 +34,6 @@ export const ListItem = {
   ...RealListItem,
   data() {
     return {
-      detailsSlots: [],
       isDetailsShown: true,
     };
   },

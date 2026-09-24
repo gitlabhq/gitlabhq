@@ -5,7 +5,7 @@ module Mutations
     class Destroy < Base
       graphql_name 'DestroyNote'
 
-      authorize :admin_note
+      authorize :delete_note
 
       authorize_granular_token permissions: :delete_note,
         boundaries: [

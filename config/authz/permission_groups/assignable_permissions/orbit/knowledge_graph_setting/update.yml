@@ -1,6 +1,6 @@
 ---
 name: update_knowledge_graph_setting
-description: Grants the ability to manage Knowledge Graph settings.
+description: Grants the ability to manage Orbit settings.
 boundaries:
   - group
   - instance

@@ -5040,20 +5040,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     subject { merge_request.has_sast_reports_for?(pipeline) }
 
     context 'when the pipeline has sast reports' do
-      let(:report_builds) { instance_double(ActiveRecord::Relation, exists?: true) }
       let(:pipeline) do
-        instance_double(Ci::Pipeline, complete_or_manual?: true,
-          latest_report_builds_in_self_and_project_descendants: report_builds)
+        instance_double(Ci::Pipeline, complete_or_manual?: true, has_self_or_descendant_reports?: true)
       end
 
       it { is_expected.to be(true) }
     end
 
     context 'when the pipeline has no sast reports' do
-      let(:report_builds) { instance_double(ActiveRecord::Relation, exists?: false) }
       let(:pipeline) do
-        instance_double(Ci::Pipeline, complete_or_manual?: true,
-          latest_report_builds_in_self_and_project_descendants: report_builds)
+        instance_double(Ci::Pipeline, complete_or_manual?: true, has_self_or_descendant_reports?: false)
       end
 
       it { is_expected.to be(false) }
@@ -5085,6 +5081,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let_it_be_with_refind(:merge_request) { create(:merge_request, :with_sast_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
+
+      it 'checks artifacts using a build subquery instead of a correlated EXISTS' do
+        recorder = ActiveRecord::QueryRecorder.new { merge_request.has_sast_reports? }
+
+        artifact_existence_query = recorder.log.find do |query|
+          query.include?('SELECT 1 AS one FROM "p_ci_job_artifacts"')
+        end
+
+        expect(artifact_existence_query).to include('"p_ci_job_artifacts"."job_id" IN (SELECT "p_ci_builds"."id"')
+      end
 
       context 'when head pipeline is blocked by manual jobs' do
         before do

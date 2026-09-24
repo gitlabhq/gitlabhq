@@ -75,4 +75,61 @@ RSpec.describe Organizations::CreateService, feature_category: :organization do
       end
     end
   end
+
+  describe 'Organization Administrator role sync' do
+    let_it_be(:user) { create(:user) }
+
+    let(:params) { attributes_for(:organization) }
+
+    subject(:response) { described_class.new(current_user: user, params: params).execute }
+
+    before do
+      allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+    end
+
+    describe '#execute' do
+      context 'when the creator becomes the first owner', :saas do
+        it 'enqueues one owner sync job, acting as the creator' do
+          enqueued = nil
+          allow(Authz::Organizations::GrantOwnerRoleWorker).to receive(:perform_async) { |*args| enqueued = args }
+
+          organization = response.payload[:organization]
+
+          expect(enqueued).to eq([organization.id, nil, user.id])
+        end
+
+        context 'when the owner role sync is unavailable' do
+          before do
+            allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(false)
+          end
+
+          it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(response).to be_success
+          end
+        end
+
+        context 'when the organization is not persisted' do
+          let(:params) { attributes_for(:organization).merge(name: nil) }
+
+          it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+            expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+            expect(response).to be_error
+          end
+        end
+      end
+
+      context 'when authorization is skipped and there is no current user' do
+        subject(:response) { described_class.new(current_user: nil, params: params).execute(skip_authorization: true) }
+
+        it 'does not enqueue GrantOwnerRoleWorker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+
+          expect(response).to be_success
+        end
+      end
+    end
+  end
 end

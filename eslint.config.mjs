@@ -1,16 +1,39 @@
 /* eslint-disable import/no-default-export */
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
 import gitlabPlugin from '@gitlab/eslint-plugin';
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import noUnsanitizedPlugin from 'eslint-plugin-no-unsanitized';
+import noJQueryPlugin from 'eslint-plugin-no-jquery';
 import globals from 'globals';
 import confusingBrowserGlobals from 'confusing-browser-globals';
 import { conditionalIgnores } from './tooling/eslint-config/conditional_ignores.js';
 import * as todoLists from './.eslint_todo/index.mjs';
 import { eslintLocalRules } from './tooling/eslint-config/eslint-local-rules/index.mjs';
+
+// Follows the legacy `extends` chain, since no-jquery doesn't ship flat configs.
+function resolveNoJQueryConfigRules(configName) {
+  const config = noJQueryPlugin.configs[configName];
+  if (!config) {
+    throw new Error(
+      `
+Can't find no-jquery config "${configName}".
+Available configs are:${Object.keys(noJQueryPlugin.configs)
+        .map((name) => `\n- ${name}`)
+        .join('')}`,
+    );
+  }
+
+  const parentRules = [config.extends ?? []]
+    .flat()
+    .map((parent) => resolveNoJQueryConfigRules(parent.replace('plugin:no-jquery/', '')));
+
+  return Object.assign({}, ...parentRules, config.rules);
+}
+
+function noJQueryDeprecatedUntilVersion(version) {
+  return { rules: resolveNoJQueryConfigRules(`deprecated-${version}`) };
+}
 
 let { REVEAL_ESLINT_TODO } = process.env;
 if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO === '0') {
@@ -35,11 +58,6 @@ const relaxedUrlAndI18nRules = {
 };
 
 const { dirname } = import.meta;
-const compat = new FlatCompat({
-  baseDirectory: dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
 
 // Allowing JiHu to add rules on their side since the update from
 // eslintrc.yml to eslint.config.mjs is not allowing subdirectory
@@ -67,6 +85,7 @@ const jestConfig = {
 
   rules: {
     '@gitlab/vtu-no-explicit-wrapper-destroy': 'error',
+    'vue/require-name-property': 'off',
     'jest/expect-expect': [
       'off',
       {
@@ -175,6 +194,21 @@ const specRestrictedImportsPaths = [
   },
 ];
 
+const VUE_SET_DELETE_MESSAGE =
+  "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.";
+
+// Restricted `Vue.*` statics, shared by the app and spec blocks.
+const vueGlobalRestrictedProperties = [
+  { object: 'Vue', property: 'delete', message: VUE_SET_DELETE_MESSAGE },
+  { object: 'Vue', property: 'set', message: VUE_SET_DELETE_MESSAGE },
+  {
+    object: 'Vue',
+    property: 'observable',
+    message:
+      'Use `observable()` from `~/lib/utils/observable` instead. Vue.observable is not shared across Vue 2/Vue 3 module boundaries.',
+  },
+];
+
 const baseNoRestrictedSyntax = [
   {
     selector: "ImportSpecifier[imported.name='GlSkeletonLoading']",
@@ -188,11 +222,6 @@ const baseNoRestrictedSyntax = [
     selector: "ImportSpecifier[imported.name='GlBreakpointInstance']",
     message:
       'GlBreakpointInstance only checks viewport breakpoints. You may want the breakpoints of a panel. Use PanelBreakpointInstance at ~/panel_breakpoint_instance instead (or add eslint-ignore here).',
-  },
-  {
-    selector: "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
-    message:
-      "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
   },
 ];
 
@@ -221,8 +250,7 @@ const specNoRestrictedSyntax = [
   },
   {
     selector: 'CallExpression[callee.property.name=/(\\$delete|\\$set)/]',
-    message:
-      "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
+    message: VUE_SET_DELETE_MESSAGE,
   },
 ];
 
@@ -260,11 +288,10 @@ export default [
   },
   ...gitlabPlugin.configs.default,
   ...gitlabPlugin.configs.i18n,
-  // Legacy plugin configs (via FlatCompat)
-  ...compat.extends('plugin:no-jquery/slim', 'plugin:no-jquery/deprecated-3.4'),
-  ...compat.plugins('no-jquery'),
   ...gitlabPlugin.configs.jest,
   ...gitlabPlugin.configs.tailwind,
+  noJQueryPlugin.configs.slim,
+  noJQueryDeprecatedUntilVersion('3.4'),
   // Native flat config plugins
   noUnsanitizedPlugin.configs.recommended,
   // Registered here with no `files` key so it applies to every linted file:
@@ -274,6 +301,7 @@ export default [
   {
     plugins: {
       'local-rules': eslintLocalRules,
+      'no-jquery': noJQueryPlugin,
     },
 
     rules: {
@@ -356,6 +384,13 @@ export default [
       ],
 
       '@gitlab/vue-no-undef-apollo-properties': 'error',
+      'vue/no-deprecated-delete-set': 'error',
+      // Covers new Vue(), Vue.extend(), defineComponent() and createApp() too.
+      // The name is stamped on Vue 3 app roots as data-gitlab-vue3-app.
+      'vue/require-name-property': 'error',
+      // Prefers $scopedSlots, which vue/no-deprecated-dollar-scopedslots-api
+      // forbids. Removed upstream in gitlab-org/frontend/eslint-plugin!175.
+      '@gitlab/vue-prefer-dollar-scopedslots': 'off',
 
       // URL rules
       '@gitlab/no-hardcoded-urls': ['error', NO_HARDCODED_URLS_OPTIONS],
@@ -455,7 +490,17 @@ export default [
       ],
 
       // Restricted syntax, properties, and imports
-      'no-restricted-syntax': ['error', ...baseNoRestrictedSyntax],
+      'no-restricted-syntax': [
+        'error',
+        ...baseNoRestrictedSyntax,
+        {
+          // vue/no-deprecated-delete-set only sees component bodies, so a
+          // .js mixin object needs this guard. The .vue block drops it.
+          selector:
+            "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
+          message: VUE_SET_DELETE_MESSAGE,
+        },
+      ],
 
       'no-restricted-globals': ['error', ...restrictedGlobals],
 
@@ -484,36 +529,7 @@ export default [
           message:
             'Use `copyToClipboard` in `~/lib/utils/copy_to_clipboard.js` to support copying in secure and non-secure environments.',
         },
-        {
-          object: 'vm',
-          property: '$delete',
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-        {
-          object: 'Vue',
-          property: 'delete',
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-        {
-          object: 'vm',
-          property: '$set',
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-        {
-          object: 'Vue',
-          property: 'set',
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-        {
-          object: 'Vue',
-          property: 'observable',
-          message:
-            'Use `observable()` from `~/lib/utils/observable` instead. Vue.observable is not shared across Vue 2/Vue 3 module boundaries.',
-        },
+        ...vueGlobalRestrictedProperties,
       ],
 
       'no-restricted-imports': [
@@ -556,7 +572,6 @@ export default [
       // Local rules
       'local-rules/require-valid-help-page-path': 'error',
       'local-rules/vue-require-valid-help-page-link-component': 'error',
-      'local-rules/vue-require-vue-constructor-name': 'error',
       'local-rules/no-orphaned-feature-flag-references': 'error',
       'local-rules/no-root-toast': 'error',
       'local-rules/no-web-url': 'error',
@@ -585,18 +600,15 @@ export default [
   {
     files: ['*.vue', '**/*.vue'],
     rules: {
-      'vue/require-name-property': 'error',
       // eslint-plugin-vue v10 ships this at `warn`; raised to `error` so the
       // `.eslint_todo` exemption list is the only thing keeping it green.
       'vue/no-required-prop-with-default': 'error',
       'vue/no-unused-properties': [
         'error',
         {
-          groups: ['props', 'data', 'computed', 'methods', 'setup'],
+          groups: ['props', 'data', 'computed', 'methods', 'setup', 'inject'],
         },
       ],
-      // Mirrors `vue/no-unused-properties` for `inject` declarations
-      'local-rules/vue-no-unused-injects': 'error',
       'local-rules/vue-no-router-view-listeners-or-slots': 'error',
       'vue/no-undef-components': [
         'error',
@@ -604,6 +616,17 @@ export default [
           ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$', 'fe-island-duo-next'],
         },
       ],
+      // Under Vue 3, apps share no global directive registrations, so an
+      // unregistered `v-x` silently renders nothing.
+      'vue/no-undef-directives': 'error',
+
+      // Vue 3 essentials that the Vue 2 preset leaves off
+      'vue/no-lifecycle-after-await': 'error',
+      'vue/no-watch-after-await': 'error',
+      'vue/no-expose-after-await': 'error',
+      'vue/prefer-import-from-vue': 'error',
+      'vue/require-slots-as-functions': 'error',
+      'vue/require-toggle-inside-transition': 'error',
 
       // Vue 3 events compatibility
       'vue/v-on-event-hyphenation': 'error',
@@ -613,24 +636,20 @@ export default [
       'vue/custom-event-name-casing': ['error', 'kebab-case', { ignores: ['/^update:/'] }],
       'vue/require-explicit-emits': 'error',
 
-      // Vue 3 deprecated features
-      'vue/no-deprecated-data-object-declaration': 'error',
+      // Vue 3 deprecated features that @gitlab/eslint-plugin does not enable.
+      // Left off on purpose while the code still uses the Vue 2 syntax:
+      // no-deprecated-destroyed-lifecycle and no-deprecated-model-definition.
       // $listeners reads are converted to the dual-runtime glListeners()
       // mixin (lib/utils/vue3compat/gl_listeners_mixin.js): Vue 3 removed
       // $listeners, and on Vue 2 $attrs never contains listeners, so
       // neither spelling works alone on both runtimes.
       // Batch-fix with `scripts/frontend/codemods/vue3_gl_listeners.mjs`.
       'vue/no-deprecated-dollar-listeners-api': 'error',
-      'vue/no-deprecated-html-element-is': 'error',
-      'vue/no-deprecated-inline-template': 'error',
-      'vue/no-deprecated-props-default-this': 'error',
+      'vue/no-deprecated-dollar-scopedslots-api': 'error',
       'vue/no-deprecated-router-link-tag-prop': 'error',
-      'vue/no-deprecated-slot-attribute': 'error',
       'vue/no-deprecated-v-bind-sync': 'error',
       'vue/no-deprecated-v-is': 'error',
       'vue/no-deprecated-v-on-native-modifier': 'error',
-      'vue/no-deprecated-v-on-number-modifiers': 'error',
-      'vue/no-deprecated-vue-config-keycodes': 'error',
 
       // Vue 3 components with render()
       'no-restricted-syntax': [
@@ -642,9 +661,6 @@ export default [
             'Renderless components must be wrapped in normalizeRender(...) to ensure Vue.js 3 compatibility, e.g. export default normalizeRender({ ... }).',
         },
       ],
-
-      // Vue 3 components slots mixin
-      'local-rules/vue3-gl-slots': 'error',
 
       // A mixin registration and a usage of what it supplies must appear in
       // the same file, both ways. Mixins are identified by import, so local
@@ -727,9 +743,6 @@ export default [
   // spec/frontend/vue3migration and storybook helpers stay unguarded.
   {
     files: ['{,ee/,jh/}app/assets/javascripts/**/*.vue'],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
     rules: {
       'local-rules/vue3-no-unconditional-slot-forwarding': 'error',
     },
@@ -740,9 +753,6 @@ export default [
       'ee/app/assets/javascripts/groups/settings/components/comma_separated_list_token_selector.vue',
       'ee/app/assets/javascripts/members/components/action_dropdowns/ldap_override_dropdown_item.vue',
     ],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
     rules: {
       'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
     },
@@ -752,9 +762,6 @@ export default [
       'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue',
       'app/assets/javascripts/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue',
     ],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
     rules: {
       'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
     },
@@ -786,27 +793,7 @@ export default [
         },
       ],
 
-      'no-restricted-properties': [
-        'error',
-        {
-          object: 'Vue',
-          property: 'delete',
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-        {
-          object: 'Vue',
-          property: 'set',
-          message:
-            "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.",
-        },
-        {
-          object: 'Vue',
-          property: 'observable',
-          message:
-            'Use `observable()` from `~/lib/utils/observable` instead. Vue.observable is not shared across Vue 2/Vue 3 module boundaries.',
-        },
-      ],
+      'no-restricted-properties': ['error', ...vueGlobalRestrictedProperties],
 
       'no-unsanitized/method': 'off',
       'no-unsanitized/property': 'off',

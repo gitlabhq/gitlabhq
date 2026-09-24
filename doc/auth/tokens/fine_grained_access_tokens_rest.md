@@ -866,33 +866,6 @@ Grants the ability to create, delete, read, repair, and update Geo sites.
 
 ### GitLab Orbit resources
 
-#### GitLab Orbit MCP tool
-
-Grants the ability to execute tools through the GitLab Orbit MCP server.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Execute | User | `GET` | `/orbit/mcp` |
-| Execute | User | `POST` | `/orbit/mcp` |
-
-#### Knowledge Graph
-
-Grants the ability to read knowledge graph data.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/orbit/agent/commands` |
-| Read | User | `GET` | `/orbit/graph_status` |
-| Read | User | `GET` | `/orbit/query/templates` |
-| Read | User | `GET` | `/orbit/schema` |
-| Read | User | `GET` | `/orbit/schema/dsl` |
-| Read | User | `GET` | `/orbit/schema/format` |
-| Read | User | `GET` | `/orbit/status` |
-| Read | User | `GET` | `/orbit/tools` |
-| Read | User | `POST` | `/orbit/agent/commands/:name` |
-| Read | User | `POST` | `/orbit/query` |
-| Read | User | `POST` | `/orbit/query/:name` |
-
 #### Knowledge Graph Enabled Namespace
 
 Grants the ability to create, delete, and read knowledge graph enabled namespaces.
@@ -902,6 +875,26 @@ Grants the ability to create, delete, and read knowledge graph enabled namespace
 | Create | Instance | `PUT` | `/admin/knowledge_graph/namespaces/:id` |
 | Delete | Instance | `DELETE` | `/admin/knowledge_graph/namespaces/:id` |
 | Read | Instance | `GET` | `/admin/knowledge_graph/namespaces` |
+
+#### Orbit
+
+Grants the ability to read Orbit data the token owner can access in GitLab. Group and project selections do not limit it.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/orbit/agent/commands` |
+| Read | User | `GET` | `/orbit/graph_status` |
+| Read | User | `GET` | `/orbit/mcp` |
+| Read | User | `GET` | `/orbit/query/templates` |
+| Read | User | `GET` | `/orbit/schema` |
+| Read | User | `GET` | `/orbit/schema/dsl` |
+| Read | User | `GET` | `/orbit/schema/format` |
+| Read | User | `GET` | `/orbit/status` |
+| Read | User | `GET` | `/orbit/tools` |
+| Read | User | `POST` | `/orbit/agent/commands/:name` |
+| Read | User | `POST` | `/orbit/mcp` |
+| Read | User | `POST` | `/orbit/query` |
+| Read | User | `POST` | `/orbit/query/:name` |
 
 ### Groups resources
 

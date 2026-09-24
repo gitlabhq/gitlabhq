@@ -351,12 +351,10 @@ RSpec.describe MergeRequests::VersionedMergeRequest, feature_category: :code_rev
     end
 
     describe '#has_sast_reports?' do
-      let(:report_builds) { instance_double(ActiveRecord::Relation, exists?: true) }
-
       before do
         allow(head_pipeline).to receive_messages(
           complete_or_manual?: true,
-          latest_report_builds_in_self_and_project_descendants: report_builds
+          has_self_or_descendant_reports?: true
         )
       end
 

@@ -520,8 +520,6 @@ module Ci
     end
 
     def trigger_stage_subscription
-      return unless Feature.enabled?(:ci_stage_subscription, project)
-
       GraphqlTriggers.ci_stage_updated(self)
     end
 

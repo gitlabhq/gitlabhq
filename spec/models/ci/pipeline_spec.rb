@@ -6302,9 +6302,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#complete_and_has_self_or_descendant_reports?' do
-    subject(:complete_and_has_self_or_descendant_reports?) do
-      pipeline.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
+  describe '#has_self_or_descendant_reports?' do
+    subject(:has_self_or_descendant_reports?) do
+      pipeline.has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
     end
 
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success) }
@@ -6315,7 +6315,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       create(:ci_build, :test_reports, pipeline: child_pipeline)
 
       recorder = ActiveRecord::QueryRecorder.new do
-        complete_and_has_self_or_descendant_reports?
+        has_self_or_descendant_reports?
       end
 
       artifact_existence_query = recorder.log.find do |query|
@@ -6334,6 +6334,44 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           .and include('"p_ci_job_artifacts"."partition_id"')
           .and include('"p_ci_builds"."partition_id"')
       end
+    end
+
+    context 'when the pipeline has reports' do
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :with_test_reports, :success) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when the pipeline is not complete' do
+        before do
+          pipeline.update!(status: 'running')
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when the pipeline does not have reports' do
+      it { is_expected.to be_falsey }
+
+      context 'when the child pipeline has reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the child pipeline is in another partition' do
+        let_it_be(:child_pipeline) do
+          create(:ci_pipeline, :with_test_reports, :success, partition_id: 101, child_of: pipeline)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#complete_and_has_self_or_descendant_reports?' do
+    subject(:complete_and_has_self_or_descendant_reports?) do
+      pipeline.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
     end
 
     context 'when the pipeline has reports' do

@@ -139,9 +139,12 @@ When adding a flow to the `FoundationalFlow` model, you must provide the followi
 | `feature_maturity` | String | Yes | Maturity level: "experimental", "beta", or "ga"                        |
 | `ai_feature` | String | Yes | Associated AI feature name (typically "duo_agent_platform")            |
 | `agent_privileges` | Array | Yes | Required permissions (see [Agent Privileges](#agent-privileges))        |
+| `pre_approved_agent_privileges` | Array | No | Subset of `agent_privileges` the flow can use without requesting approval. When omitted, all privileges in `agent_privileges` are pre-approved. An explicit empty array pre-approves nothing. See [Agent privileges](#agent-privileges). |
+| `allow_agent_to_request_user` | Boolean | No | Whether the flow can pause to ask its user for input or approval (default: `false`). See [Agent privileges](#agent-privileges). |
 | `avatar` | String | No | Icon filename (must exist in GitLab SVGs)                              |
 | `environment` | String | No | Execution environment: "web", "ambient", or "cli" (default: "ambient") |
 | `triggers` | Array | No | Event types that can trigger the flow (default: empty array)           |
+| `coding_environment` | Enum | No | Repository setup required before execution: `full` or `none` (default: `full`). `full` prepares a checkout and tooling. `none` skips the repository clone and setup for API-only flows. See the [custom flow YAML schema](../../user/duo_agent_platform/flows/custom_flows_schema.md#coding_environment). |
 
 ### Agent privileges
 
@@ -167,6 +170,36 @@ agent_privileges = [
   ::Ai::DuoWorkflows::Workflow::AgentPrivileges::USE_GIT
 ]
 ```
+
+`agent_privileges` sets the upper bound of what a flow can use, and `pre_approved_agent_privileges` is the subset of those privileges the flow can use without pausing for approval.
+Because it is a subset, `pre_approved_agent_privileges` must not name any privilege that `agent_privileges` does not grant.
+When `pre_approved_agent_privileges` is `nil`, it falls back to `agent_privileges`, so every granted privilege is pre-approved, while an explicit empty array `[]` pre-approves nothing.
+A privilege that is granted but not pre-approved can make a running workflow pause and enter an approval-required state, but only when the execution surface and the Duo Workflow Service flow configuration support approvals.
+The `allow_agent_to_request_user` setting (model default `false`) declares that a flow can pause to ask its user, so set it to `true` only for a flow with a user-facing continuation path, such as a messaging surface. It does not by itself enable approval prompts because the Duo Workflow Service flow configuration must also enable approval handling, such as `require_tool_approval: true` where supported.
+
+For example, this flow grants read, write, and start-flow privileges but pre-approves only read:
+
+```ruby
+{
+  display_name: "Slack Assistant",
+  foundational_flow_reference: "slack_assistant/v1",
+  agent_privileges: [
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_ONLY_GITLAB,
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_WRITE_GITLAB,
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::START_FLOWS
+  ],
+  pre_approved_agent_privileges: [
+    ::Ai::DuoWorkflows::Workflow::AgentPrivileges::READ_ONLY_GITLAB
+  ],
+  allow_agent_to_request_user: true,
+  environment: "ambient",
+  coding_environment: "none",
+  triggers: []
+}
+```
+
+Read operations run without approval, while write operations and starting another flow stay granted but require approval.
+The `coding_environment: "none"` value means the flow needs no prepared repository checkout.
 
 ### Triggers
 

@@ -1,0 +1,9 @@
+---
+name: read_orbit
+description: Grants the ability to query and read Orbit data across everything the token owner can access in GitLab
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - read_orbit

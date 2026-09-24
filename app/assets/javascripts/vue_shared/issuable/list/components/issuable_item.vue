@@ -307,8 +307,7 @@ export default {
   },
   methods: {
     hasSlotContents(slotName) {
-      // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
-      return Boolean(this.$slots[slotName]);
+      return Boolean(this.glSlots()[slotName]);
     },
     scopedLabel(label) {
       const allowsScopedLabels =
@@ -575,8 +574,7 @@ export default {
         v-if="showIssuableMeta"
         class="controls gl-flex gl-max-w-full gl-flex-wrap-reverse gl-justify-end gl-gap-3 gl-gap-y-2"
       >
-        <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-        <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
+        <li v-if="glSlots().status" data-testid="issuable-status" class="!gl-mr-0">
           <button
             v-if="!isOpen"
             v-gl-tooltip.top

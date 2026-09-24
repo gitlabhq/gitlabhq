@@ -100,6 +100,20 @@ This error occurs when Code Review Flow is unable to retrieve the source branch 
 
 Try to restart the review.
 
+## `Error DCR4010`
+
+You might get an error that states
+`Usage billing is not available for this account. To continue using Code Review Flow, contact your administrator. Error code: DCR4010`.
+
+This error occurs when you have used all of your allocated GitLab Credits and your administrator has not accepted the usage billing terms required for On-Demand credits.
+
+Ask your administrator to do one of the following:
+
+- Accept the usage billing terms in the [GitLab Credits dashboard](../../../../../subscriptions/gitlab_credits_dashboard.md) in the Customers Portal. This allows you to use On-Demand credits.
+- Purchase a [Monthly Commitment Pool](../../../../../subscriptions/gitlab_credits.md#monthly-commitment-pool).
+
+When credits are available again, request a new review.
+
 ## `Error DCR4011`
 
 You might get an error that states

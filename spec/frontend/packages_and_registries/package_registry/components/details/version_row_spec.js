@@ -91,12 +91,21 @@ describe('VersionRow', () => {
   });
 
   describe('left action template', () => {
-    it('does not render checkbox if not permitted', () => {
-      createComponent({
-        packageEntity: { ...packageVersion, userPermissions: { destroyPackage: false } },
+    describe('when destroying the package is not permitted', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          packageEntity: { ...packageVersion, userPermissions: { destroyPackage: false } },
+        });
       });
 
-      expect(findBulkDeleteAction().exists()).toBe(false);
+      it('does not render checkbox', () => {
+        expect(findBulkDeleteAction().exists()).toBe(false);
+      });
+
+      it('does not leave an empty left action container', () => {
+        expect(wrapper.findByTestId('left-action-container').exists()).toBe(false);
+      });
     });
 
     it('renders checkbox', () => {
