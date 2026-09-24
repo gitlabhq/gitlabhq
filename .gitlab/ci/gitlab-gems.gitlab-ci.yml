@@ -31,6 +31,9 @@ include:
       gem_name: "gitlab-safe_request_store"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
+      gem_name: "gitlab-safe_string_conversion"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
       gem_name: "safe_zip"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
@@ -83,3 +86,6 @@ include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-test-balancing"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-mfe"

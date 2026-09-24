@@ -10,16 +10,16 @@ module Mcp
 
         MAX_BYTE_LIMIT = 1.megabyte
         MIN_BYTE_OFFSET = 0
-        # Hard ceiling on bytes inflated per call: the zip stream cannot seek, so reaching
-        # an offset inflates everything before it, and the entry's declared size cannot be
-        # trusted to bound that (a deflate bomb can declare anything).
-        MAX_BYTE_OFFSET = 100.megabytes
         # Zip::File.open builds one Ruby object per entry, so a small archive stuffed
         # with a huge number of tiny files is a memory bomb independent of its byte size.
         MAX_ARCHIVE_ENTRIES = 1_000
-        # The whole archive is downloaded to read one entry, and this runs in a
-        # synchronous request, unlike the workers that read artifact archives.
+        # Zip::File.open_buffer still loads the whole central directory, and the entry
+        # cap above only runs when the metadata file exists, so this bounds that load.
         MAX_ARCHIVE_BYTES = 20.megabytes
+        # Reaching an offset walks everything before it: inflating it for a compressed
+        # entry, or one 128 KB Range request per chunk for a stored one on object storage.
+        # A stored entry cannot exceed its archive, so the archive cap bounds both.
+        MAX_BYTE_OFFSET = MAX_ARCHIVE_BYTES
         # libgit2's binary sniff window: binary detection looks at the first 8000 bytes.
         SAMPLE_BYTES = 8000
         LISTED_PATHS_LIMIT = 20
@@ -214,21 +214,32 @@ module Mcp
         strong_memoize_attr :all_entries
 
         def read_from_archive
-          job.artifacts_file.use_open_file(unlink_early: false) do |open_file|
-            # rubocop:disable Performance/Rubyzip -- reading one entry needs random access by name
-            Zip::File.open(open_file.file_path) do |zip_file|
-              entry = zip_file.find_entry(artifact_path)
+          with_archive_io do |io|
+            zip_file = Zip::File.open_buffer(io)
+            entry = zip_file.find_entry(artifact_path)
 
-              if entry.nil?
-                entry_not_found_error
-              elsif entry.ftype != :file
-                not_regular_file_error
-              else
-                read_entry(entry)
-              end
+            if entry.nil?
+              entry_not_found_error
+            elsif entry.ftype != :file
+              not_regular_file_error
+            else
+              read_entry(entry)
             end
-            # rubocop:enable Performance/Rubyzip
           end
+        rescue ::Gitlab::HttpIO::FailedToGetChunkError, Zip::Error, Zlib::Error
+          archive_unreadable_error
+        end
+
+        # Remote archives are read through ranged requests (central directory plus
+        # the one entry) instead of downloading the whole archive to a Tempfile;
+        # local storage hands back a plain File, which rubyzip reads directly.
+        def with_archive_io
+          io = job.artifacts_file.open
+          io = RangedZipIo.new(io) if io.is_a?(::Gitlab::HttpIO)
+
+          yield io
+        ensure
+          io&.close
         end
 
         def read_entry(entry)
@@ -328,6 +339,10 @@ module Mcp
         def archive_too_large_error
           error("The artifacts archive of job #{job.id} is #{job.artifacts_size} bytes, which exceeds " \
             "the #{MAX_ARCHIVE_BYTES} bytes this tool reads. Download it from #{download_url} instead.")
+        end
+
+        def archive_unreadable_error
+          error("Could not read the artifacts archive of job #{job.id}. Download it from #{download_url} instead.")
         end
 
         def entry_not_found_error

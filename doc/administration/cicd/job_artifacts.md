@@ -328,6 +328,12 @@ Otherwise, they expire per the [default artifacts expiration setting](../setting
 
 Expired artifacts are deleted by the `Ci::ScheduleBulkDeleteJobArtifactCronWorker` Sidekiq cron job, which runs every 30 minutes (`*/30 * * * *` in [Cron](../../topics/cron/_index.md) syntax) and enqueues `Ci::BulkDeleteExpiredJobArtifactsWorker` to perform the deletion.
 
+On [Geo](../geo/_index.md) deployments, expiring artifacts also reduces storage use on
+secondary sites and the load from Geo sync, verification, and
+[metrics collection](../geo/replication/troubleshooting/common.md#excessive-database-io-from-geo-metrics-collection).
+For more information, see
+[Reduce the amount of replicated data](../geo/replication/tuning.md#reduce-the-amount-of-replicated-data).
+
 ## Set the maximum file size of the artifacts
 
 If artifacts are enabled, you can change the maximum file size of the

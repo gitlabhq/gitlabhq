@@ -722,6 +722,8 @@ class ApplicationSetting < ApplicationRecord
       :throttle_authenticated_git_http_requests_per_period,
       :throttle_authenticated_git_lfs_period_in_seconds,
       :throttle_authenticated_git_lfs_requests_per_period,
+      :throttle_authenticated_mcp_period_in_seconds,
+      :throttle_authenticated_mcp_requests_per_period,
       :throttle_authenticated_packages_api_period_in_seconds,
       :throttle_authenticated_packages_api_requests_per_period,
       :throttle_authenticated_web_period_in_seconds,
@@ -1466,6 +1468,9 @@ class ApplicationSetting < ApplicationRecord
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],
       throttle_authenticated_git_http_period_in_seconds:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD }],
+      throttle_authenticated_mcp_enabled: [:boolean, { default: false }],
+      throttle_authenticated_mcp_requests_per_period: [:integer, { default: 600 }],
+      throttle_authenticated_mcp_period_in_seconds: [:integer, { default: 60 }],
       throttle_authenticated_dependency_proxy_enabled: [:boolean, { default: false }],
       throttle_authenticated_dependency_proxy_requests_per_period:
         [:integer, { default: DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT }],

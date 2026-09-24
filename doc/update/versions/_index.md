@@ -19,4 +19,13 @@ Upgrade notes for supported GitLab versions. For upgrade notes for older version
 
 {{< /cards >}}
 
-For the latest release notes, see the [GitLab blog](https://about.gitlab.com/releases/categories/releases/) or review the [changelog file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md).
+## Related topics
+
+<!--
+The release notes link uses angle brackets to avoid the Vale RelativeLinks test.
+The release notes index is built in docs-gitlab-com, so no relative link exists.
+-->
+
+- [GitLab release notes](<https://docs.gitlab.com/releases/>)
+- [Deprecations and removals](../deprecations.md)
+- [GitLab changelog](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md)

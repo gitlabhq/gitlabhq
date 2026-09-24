@@ -53,6 +53,13 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     ) { authorization.authorize }
   end
 
+  # doorkeeper-openid_connect >= 1.10 lets `prompt=none` silently skip
+  # authorization when an active token covers the request; restrict that to
+  # confidential clients so public clients (e.g. MCP apps) keep the consent step.
+  def oidc_matching_subset_token?(owner)
+    super && pre_auth.client.application.confidential?
+  end
+
   def permitted_params
     params.permit(:resource, :client_id, :code_challenge, :code_challenge_method)
   end

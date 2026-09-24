@@ -15,6 +15,8 @@ module Ci
         # The pipeline ref will be deleted when the pipeline transitions to a finished state.
         pipeline.ensure_persistent_ref
 
+        Ci::RedundantPipelines::RegisterCandidateService.for(pipeline).execute
+
         Ci::UpdateBuildNamesWorker.perform_async(pipeline.id)
         Ci::ProcessPipelineService.new(pipeline).execute
         Ci::ProjectWithPipelineVariable.upsert_for_pipeline(pipeline)

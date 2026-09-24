@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tmpdir'
+require 'fileutils'
 
 RSpec.describe Gitlab::Mfe::VendorFile, feature_category: :compliance_management do
   using RSpec::Parameterized::TableSyntax
 
-  let(:config_path) { Rails.root.join(described_class::CONFIG_PATH) }
+  let(:tmpdir) { Dir.mktmpdir }
 
   before do
     described_class.reset!
@@ -13,10 +15,18 @@ RSpec.describe Gitlab::Mfe::VendorFile, feature_category: :compliance_management
 
   after do
     described_class.reset!
+    FileUtils.remove_entry(tmpdir) if File.directory?(tmpdir)
   end
 
   def stub_vendor_file(contents)
-    stub_file_read(config_path, content: contents)
+    path = File.join(tmpdir, 'mfe.yml')
+    File.write(path, contents)
+    Gitlab::Mfe.configure { |config| config.vendor_file_path = path }
+  end
+
+  def stub_missing_vendor_file
+    path = File.join(tmpdir, 'does-not-exist.yml')
+    Gitlab::Mfe.configure { |config| config.vendor_file_path = path }
   end
 
   describe '.entries' do
@@ -246,7 +256,7 @@ RSpec.describe Gitlab::Mfe::VendorFile, feature_category: :compliance_management
 
     context 'when the pin file is missing' do
       before do
-        stub_file_read(config_path, error: Errno::ENOENT)
+        stub_missing_vendor_file
       end
 
       it 'fails loudly instead of raising a raw filesystem error' do
@@ -255,7 +265,12 @@ RSpec.describe Gitlab::Mfe::VendorFile, feature_category: :compliance_management
       end
     end
 
-    context 'with the committed vendor file (no stubs)' do
+    context 'with the committed vendor fixture (no stubs)' do
+      before do
+        fixture = File.expand_path('../../../fixtures/mfe.yml', __dir__)
+        Gitlab::Mfe.configure { |config| config.vendor_file_path = fixture }
+      end
+
       it 'parses cleanly, guarding the hand-edited pin file against corruption' do
         expect(described_class.entries)
           .to all(have_attributes(name: be_present, version: be_present, sha: be_present))

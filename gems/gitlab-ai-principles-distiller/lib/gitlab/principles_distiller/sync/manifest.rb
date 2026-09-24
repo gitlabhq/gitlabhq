@@ -35,7 +35,7 @@ module Gitlab
 
         # Files regenerated from the manifest/distilled principles on every
         # run that are committed to the separate "tooling" MR rather than any
-        # per-team branch (see Sync::AutoMr). AGENTS.md, CLAUDE.md, and the
+        # per-team branch (see Sync::AutoMr). AGENTS.md and the
         # SKILL.md files embed the full routing table for ALL principles, so
         # SSOT teams have no stake in their content.
         #
@@ -46,7 +46,6 @@ module Gitlab
         # mergeable.
         TOOLING_PATHS = [
           'AGENTS.md',
-          'CLAUDE.md',
           AGENTS_SKILL_PATH,
           CLAUDE_SKILL_PATH,
           CODEOWNERS_PATH
@@ -403,8 +402,7 @@ module Gitlab
           end
         end
 
-        # Refreshes the generated OpenCode-context section in AGENTS.md (and
-        # copies the result to CLAUDE.md for parity).
+        # Refreshes the generated OpenCode-context section in AGENTS.md.
         def generate_agents_md_context_loading
           routing_table = build_skill_routing_table
 
@@ -433,10 +431,7 @@ module Gitlab
 
           File.write(agents_path, updated)
 
-          claude_path = Workspace.safe_join('CLAUDE.md')
-          File.write(claude_path, updated)
-
-          puts "  Updated AGENTS.md and CLAUDE.md (#{principles.size} principles, " \
+          puts "  Updated AGENTS.md (#{principles.size} principles, " \
             "#{static_entries.size} static entries)"
         end
 

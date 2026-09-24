@@ -267,7 +267,7 @@ RSpec.describe EventCollection do
 
       context 'with pagination through events' do
         let_it_be(:project_events, freeze: false) { create_list(:event, 4, project: project) }
-        let_it_be(:group_events, freeze: false) { create_list(:event, 4, group: group, author: user) }
+        let_it_be(:group_events, freeze: false) { create_list(:event, 4, group: group, project: nil, author: user) }
 
         subject(:events) { described_class.new(projects, limit: 4, offset: 2, groups: groups).to_a }
 

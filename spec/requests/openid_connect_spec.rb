@@ -145,7 +145,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       end
 
       it 'does not include any unknown claims' do
-        expect(json_response.keys).to eq %w[sub sub_legacy] + user_info_claims.keys
+        expect(json_response.keys).to match_array %w[sub sub_legacy] + user_info_claims.keys
       end
 
       it 'includes email and email_verified claims' do
@@ -196,8 +196,8 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       end
 
       it 'does not include any unknown properties' do
-        expect(@payload.keys).to eq %w[iss sub aud exp iat auth_time sub_legacy name nickname preferred_username given_name
-          family_name email email_verified website profile picture groups_direct]
+        expect(@payload.keys).to match_array %w[iss sub aud exp iat auth_time sub_legacy name nickname
+          preferred_username given_name family_name email email_verified website profile picture groups_direct]
       end
 
       it 'does include groups' do

@@ -600,6 +600,13 @@ module API
       optional :throttle_authenticated_git_http_requests_per_period,
         desc: 'Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. ' \
           'Default value: `3600`.'
+      optional :throttle_authenticated_mcp_enabled,
+        desc: 'If `true`, enforces the MCP Server request rate limit. Default value: `false`.'
+      optional :throttle_authenticated_mcp_period_in_seconds,
+        desc: 'Rate limit period in seconds. `throttle_authenticated_mcp_enabled` must be `true`. Default value: `60`.'
+      optional :throttle_authenticated_mcp_requests_per_period,
+        desc: 'Maximum requests per period per user. `throttle_authenticated_mcp_enabled` must be `true`. Default ' \
+          'value: `600`.'
       optional :throttle_authenticated_dependency_proxy_enabled,
         desc: 'If `true`, enforces the authenticated dependency proxy request rate limit. Default value: `false`.'
       optional :throttle_authenticated_dependency_proxy_period_in_seconds,

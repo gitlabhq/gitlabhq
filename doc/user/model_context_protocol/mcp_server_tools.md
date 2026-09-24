@@ -252,6 +252,55 @@ Example:
 Get merge request 15 in project gitlab-org/gitlab with its commits
 ```
 
+## `list_duo_agents_and_flows`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/617173) in GitLab 19.5.
+
+{{< /history >}}
+
+Lists the GitLab Duo agents and flows enabled in a project, so you can discover what is
+available instead of guessing a flow name. Which agents and flows a project offers is
+configured per project, and their IDs differ between projects.
+
+Each entry includes `can_start_session`, which is `true` only for a flow you have permission to
+run. Agents and external agents are listed for discovery and are never startable, and a flow you
+cannot execute, or whose version is unreleased or still a draft, is listed as not startable too.
+Only startable entries carry the `ai_catalog_item_consumer_id` that `start_duo_session` takes;
+every other entry has it set to `null`. Descriptions might be truncated.
+
+The list covers the agents, flows and external agents configured in the project, plus the
+foundational chat agents. The chat agents are a fixed list rather than part of the paginated
+project results, so they are returned with the first page only, and are omitted unless agents
+are included. They come in addition to `first`, so the first page can contain more
+entries than you asked for. They carry a `workflow_definition` instead of an
+`ai_catalog_item_consumer_id`, which also tells apart the two agents that share the display
+name `GitLab Duo`; entries configured in the project have `workflow_definition` set to `null`.
+
+Foundational chat agents are governed by the project's top-level group on GitLab.com, and by the
+organization on GitLab Self-Managed, rather than by the project.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `project_id` | string  | Yes      | Numeric ID or full path of the project to list agents and flows for. |
+| `item_type`  | string  | No       | Return only `agent`, `flow` or `third_party_flow` entries. All kinds are returned when omitted. |
+| `after`      | string  | No       | Cursor for forward pagination. |
+| `first`      | integer | No       | Number of agents and flows to return for forward pagination. Default is 20, maximum is 100. |
+
+Each call returns a single page of results.
+If more pages exist, the response includes `pageInfo.endCursor` that you can pass as `after`.
+
+Items that are configured but disabled are dropped after the page is fetched, so a page can
+hold fewer entries than `first`, or none at all, while `pageInfo.hasNextPage` is still `true`.
+Keep paging until `hasNextPage` is `false` instead of stopping at an empty page.
+
+Example:
+
+```plaintext
+Which Duo flows can I run in gitlab-org/gitlab?
+```
+
 ## `start_duo_session`
 
 {{< history >}}
@@ -270,7 +319,7 @@ suggested polling delay; use `get_duo_session` with the returned `workflow_id` t
 | Parameter                     | Type    | Required | Description |
 |-------------------------------|---------|----------|-------------|
 | `project_id`                  | string  | Yes      | ID or full path of the project the flow runs in. |
-| `ai_catalog_item_consumer_id` | integer | Yes      | ID of the AI Catalog item consumer that configures which flow to run. |
+| `ai_catalog_item_consumer_id` | integer | Yes      | ID of the AI Catalog item consumer that configures which flow to run. Use `list_duo_agents_and_flows` to find it. |
 | `goal`                        | string  | Yes      | What the agent should do. This is the prompt the flow starts from. |
 
 Example:

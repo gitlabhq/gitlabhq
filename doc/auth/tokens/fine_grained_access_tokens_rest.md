@@ -4120,6 +4120,7 @@ incompatible with personal access tokens.
 | `POST` | `/internal/observability/project/:id/write/logs` | Workhorse verification |
 | `POST` | `/internal/observability/project/:id/write/metrics` | Workhorse verification |
 | `POST` | `/internal/observability/project/:id/write/traces` | Workhorse verification |
+| `GET` | `/internal/orbit/cloud_connector_token` | GitLab Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/info` | GitLab Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id` | GitLab Orbit internal token |
 | `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id/raw_diffs` | GitLab Orbit internal token |

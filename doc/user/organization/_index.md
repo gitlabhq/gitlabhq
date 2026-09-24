@@ -9,99 +9,74 @@ description: Namespace hierarchy.
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a feature flag](../../administration/feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
-
-{{< /history >}}
-
 > [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but still in development and not ready for production use.
+> The availability of this feature is controlled by feature flags.
+> This feature is not ready for production use.
 
-Organizations will be above the [top-level namespaces](../namespace/_index.md) for you to manage
-everything you do as a GitLab administrator, including:
+An organization is the top-level entity in the GitLab hierarchy. Each organization
+contains one or more [top-level groups](../namespace/_index.md),
+and all of their subgroups and projects.
 
-- Defining and applying settings to all of your groups, subgroups, and projects.
-- Aggregating data from all your groups, subgroups, and projects.
-
-> [!disclaimer]
+An organization acts as an administration layer above those groups,
+with a dedicated admin area where you can administer organization
+settings and manage users.
 
 For more information about the state of organization development,
 see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
+Organizations are in closed beta, and available by invitation only to a limited set of
+beta participants.
+To request access, contact your GitLab account team.
+
 ## Create an organization
+
+Create an organization from an existing top-level group.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441531) in GitLab 16.11 [with a feature flag](../../administration/feature_flags/_index.md) named `allow_organization_creation`. Disabled by default.
-- Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/549062) to `organization_switching` in GitLab 18.4. Disabled by default. Feature flag `allow_organization_creation` removed.
-- Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249678) to `org_stage_experimental` in GitLab 19.4. Disabled by default. Feature flag `organization_switching` removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247436) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `org_stage_beta`. Disabled by default.
 
 {{< /history >}}
 
-You create an organization from one of your existing top-level groups. During this process you can also move your other top-level groups into the organization.
-
 Prerequisites:
 
-- You must have the Owner role for the top-level group you start from, and for any other top-level groups you want to include.
+- The Owner role for the top-level group you start from,
+  and for any other top-level group you want to include.
 
-Create an organization from an existing top-level group.
-After you create your organization, all of your groups,
-projects, and users are transferred from the top-level
-group into your organization.
-
-If you have the Owner role for multiple top-level groups,
-you can optionally transfer those top-level groups into the
-organization.
-
-Prerequisites:
-
-- The Owner role for any top-level groups you want to transfer to an organization.
-
-To create an organization:
+To create an organization from an existing top-level group:
 
 1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Create an organization** section, select **Create organization**.
 1. In the **Create your Organizations** confirmation dialog, select the group you want to create an organization with, then select **Continue**.
-1. If you have the Owner role for multiple top-level groups (if you do not have multiple top-level groups, skip this step):
-   - In the **Assign top-level groups** confirmation dialog, drag top-level groups into the organization container to assign them. Groups you do not assign are not included in the organization.
-   - Select **Continue**.
-1. In the **Confirm your organization** confirmation dialog, review the proposed organization structure. After you confirm your organization structure, you cannot delete the organization or remove or add top-level groups.
+1. Optional. If you have the Owner role for multiple top-level groups, in the
+   **Assign top-level groups** confirmation dialog, drag those groups into the organization container.
+   Groups you do not assign are not included.
+   Select **Continue**.
+1. In the **Confirm your organization** confirmation dialog, review the proposed structure.
 1. Select **Confirm**.
-
-> [!note]
-> After you confirm your organization structure, you cannot delete the organization or remove or
-> add top-level groups yourself. [Contact support](https://support.gitlab.com/) if you must make changes.
 
 After you confirm your organization structure:
 
-- Your groups, projects, and users are transferred into the
-organization asynchronously. You receive an email when the organization is ready. Larger groups might
-take longer to transfer.
-- Any users with the Owner role for top-level groups
-assigned to the organization automatically become Organization Administrators. You can make changes to roles and permissions in **Organization settings**.
+- Your groups and projects transfer into the organization asynchronously.
+- Users who are members of a transferred group or project become organization members.
+- You receive an email when the transfer is ready. Larger groups take longer to transfer.
+- Any user with the Owner role in all of the transferred top-level groups becomes an organization administrator.
 
-When the organization is ready, you can:
+You can change the organization name, URL, description, visibility, and avatar later from the organization admin area.
 
-- Access your organization in the UI or
-from the link in the notification email.
-- Rename the organization, change its URL,
-and manage organization roles and permissions.
+> [!note]
+> After you confirm your organization structure, you cannot add or remove top-level groups yourself. If you want to add additional top-level groups to your organization after confirmation, contact support for help.
+> You also cannot delete the organization while it holds groups or projects.
+> If you must make changes, [contact support](https://support.gitlab.com/).
 
 ## Go to your organization
-
-Prerequisites:
-
-- An organization is available.
 
 If you are a member of one or more organizations, you can go to any of them from the
 **Organizations** page. To access an organization:
@@ -109,9 +84,95 @@ If you are a member of one or more organizations, you can go to any of them from
 1. In the left sidebar, select **Organizations**.
 1. From the list, select the organization you want to go to.
 
-## Supported Markdown for Organization description
+## Organization URLs
 
-The Organization description field supports a limited subset of [GitLab Flavored Markdown](../markdown.md), including:
+An organization, and everything it contains, is addressed under `/o/<organization-path>/`.
+For example, `https://gitlab.example.com/o/my-org/-/overview`.
+Existing group and project URLs keep working.
+
+Because `o` is a reserved path, no top-level group can use `o` as its path.
+
+The default organization is an exception to this URL scheme.
+Its content stays on unscoped URLs.
+
+## The default organization
+
+Every GitLab instance has one default organization.
+Every account starts in the default organization.
+The default organization cannot be deleted.
+
+You leave the default organization when your top-level group moves into an organization of your own.
+
+## User types and permissions
+
+An organization has two user types, organization administrator and organization regular user.
+
+A user type describes a person's relationship to the organization.
+For an organization regular user, group and project roles govern access to groups and projects.
+Organization administrators have full access to all groups and projects inside the organization.
+
+The following table lists the actions available to each user type:
+
+| Action | Organization administrator | Organization regular user |
+|--------|----------------------------|-------------------|
+| View the organization | {{< yes >}} | {{< yes >}} |
+| Create a group | {{< yes >}} | {{< yes >}} |
+| Update the organization | {{< yes >}} | {{< no >}} |
+| Access the organization admin area | {{< yes >}} | {{< no >}} |
+| Add a user to the organization | {{< yes >}} | {{< no >}} |
+| View organization users | {{< yes >}} | {{< no >}} |
+| Update an organization user | {{< yes >}} | {{< no >}} |
+| Remove a user from the organization | {{< yes >}} | {{< no >}} |
+| Transfer a top-level group into the organization | {{< yes >}} | {{< no >}} |
+| Delete the organization | {{< yes >}} | {{< no >}} |
+| Leave the organization | {{< yes >}} | {{< yes >}} |
+
+Only instance administrators can restore a deleted organization.
+
+Organization administrators can also purchase organization-scoped products, such as the
+artifact registry.
+After you purchase a product, you can assign product-specific roles to organization users.
+
+### Group and project roles
+
+Inside an organization, [default roles](../permissions.md#default-roles) still control access
+to groups and projects.
+
+When a top-level group transfers into an organization, its group and project members
+become organization users.
+They keep their pre-existing roles and permissions.
+
+## Organization visibility
+
+An organization is either public or private.
+Internal visibility is not available for organizations.
+
+| Visibility | Who can view the organization | Group and project visibility allowed |
+|------------|-------------------------------|--------------------------------------|
+| Public | Everyone | Public and private |
+| Private | Organization users only | Private |
+
+An organization cannot be more restrictive than the groups it contains.
+For example, you cannot make an organization private while it holds a public group.
+
+## Organization deletion
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599345) in GitLab 19.2.
+
+{{< /history >}}
+
+You can delete an organization only when it contains no groups and no projects, and it is not
+the default organization.
+GitLab soft-deletes the organization rather than removing it immediately.
+Only instance administrators can restore a deleted organization.
+
+To delete an organization, you can also [use the API](../../api/organizations.md).
+
+## Supported Markdown for organization description
+
+The organization description field supports a limited subset of [GitLab Flavored Markdown](../markdown.md), including:
 
 - [Emphasis](../markdown.md#emphasis)
 - [Links](../markdown.md#links)

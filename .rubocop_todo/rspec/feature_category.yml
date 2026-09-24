@@ -1129,7 +1129,6 @@ RSpec/FeatureCategory:
     - 'spec/initializers/sawyer_patch_spec.rb'
     - 'spec/initializers/session_store_spec.rb'
     - 'spec/initializers/settings_spec.rb'
-    - 'spec/initializers/string_conversion_safety_spec.rb'
     - 'spec/initializers/trusted_proxies_spec.rb'
     - 'spec/initializers/validate_database_config_spec.rb'
     - 'spec/initializers/validate_puma_spec.rb'

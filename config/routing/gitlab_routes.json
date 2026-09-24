@@ -9953,6 +9953,11 @@
     "dottedExample": "/api/v4/internal/observability/project/john.doe/write/traces"
   },
   {
+    "template": "/api/:version/internal/orbit/cloud_connector_token",
+    "example": "/api/v4/internal/orbit/cloud_connector_token",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/internal/orbit/project/:project_id/info",
     "example": "/api/v4/internal/orbit/project/foo/info",
     "acceptsFormat": true,

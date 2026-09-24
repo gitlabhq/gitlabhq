@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Mfe, feature_category: :compliance_management do
+RSpec.describe 'MFE gem wiring', feature_category: :compliance_management do
   using RSpec::Parameterized::TableSyntax
 
-  describe '.enabled?' do
-    subject(:enabled) { described_class.enabled? }
+  describe 'Gitlab::Mfe.enabled?' do
+    subject(:enabled) { Gitlab::Mfe.enabled? }
 
     where(:config_enabled, :flag_enabled, :result) do
       true  | true  | true
@@ -27,14 +27,15 @@ RSpec.describe Gitlab::Mfe, feature_category: :compliance_management do
     context 'when the mfe config section is missing' do
       before do
         allow(Gitlab.config).to receive(:mfe).and_raise(Gitlab::Configs::MissingConfig)
+        stub_feature_flags(mfe_enabled: true)
       end
 
       it { is_expected.to be(false) }
     end
   end
 
-  describe '.registry_url' do
-    subject(:registry_url) { described_class.registry_url }
+  describe 'Gitlab::Mfe.registry_url' do
+    subject(:registry_url) { Gitlab::Mfe.registry_url }
 
     context 'when the mfe config section is present' do
       before do
@@ -50,6 +51,13 @@ RSpec.describe Gitlab::Mfe, feature_category: :compliance_management do
       end
 
       it { is_expected.to eq(Gitlab::Mfe::DEFAULT_REGISTRY_URL) }
+    end
+  end
+
+  describe 'Gitlab::Mfe::VendorFile.entries' do
+    it 'reads the committed pin file at the repository root' do
+      expect(Gitlab::Mfe::VendorFile.entries)
+        .to all(have_attributes(name: be_present, version: be_present, sha: be_present))
     end
   end
 end

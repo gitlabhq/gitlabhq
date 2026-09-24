@@ -6,8 +6,6 @@ module Gitlab
     # under-specified pin file fails loudly instead of silently disabling
     # delivery; only an empty `apps:` list is a clean no-op.
     class VendorFile
-      CONFIG_PATH = 'vendor/mfe.yml'
-
       NAME_PATTERN = /\A[a-z0-9][a-z0-9_-]*\z/
       VERSION_PATTERN = /\A\d+\.\d+\.\d+\z/
       SHA256_PATTERN = /\A[0-9a-f]{64}\z/
@@ -72,7 +70,7 @@ module Gitlab
         end
 
         def config_file_path
-          Rails.root.join(CONFIG_PATH)
+          Mfe.configuration.vendor_file_path
         end
 
         # A missing pin file is a broken checkout, not a no-op.

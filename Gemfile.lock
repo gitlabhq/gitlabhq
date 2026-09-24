@@ -141,6 +141,13 @@ PATH
       net-http (= 0.6.0)
 
 PATH
+  remote: gems/gitlab-mfe
+  specs:
+    gitlab-mfe (0.1.0)
+      activesupport (>= 7, < 9)
+      gitlab-utils (~> 0.1)
+
+PATH
   remote: gems/gitlab-policy-store
   specs:
     gitlab-policy-store (0.1.0)
@@ -169,6 +176,11 @@ PATH
     gitlab-safe_request_store (0.1.0)
       rack (~> 2.2.8)
       request_store
+
+PATH
+  remote: gems/gitlab-safe_string_conversion
+  specs:
+    gitlab-safe_string_conversion (0.1.0)
 
 PATH
   remote: gems/gitlab-schema-validation
@@ -630,7 +642,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-two-factor (6.4.0)
+    devise-two-factor (6.4.1)
       activesupport (>= 7.2, < 8.2)
       devise (>= 4.0, < 6.0)
       railties (>= 7.2, < 8.2)
@@ -645,7 +657,7 @@ GEM
       railties (>= 5)
     doorkeeper-device_authorization_grant (1.0.3)
       doorkeeper (~> 5.5)
-    doorkeeper-openid_connect (1.9.0)
+    doorkeeper-openid_connect (1.10.5)
       doorkeeper (>= 5.5, < 6.0)
       jwt (>= 2.5)
       ostruct (>= 0.5)
@@ -1009,7 +1021,7 @@ GEM
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-container_v1 (0.100.0)
       google-apis-core (>= 0.15.0, < 2.a)
-    google-apis-container_v1beta1 (0.91.0)
+    google-apis-container_v1beta1 (0.107.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-core (0.18.0)
       addressable (~> 2.5, >= 2.5.1)
@@ -2485,7 +2497,7 @@ DEPENDENCIES
   diffy (~> 3.4)
   doorkeeper (~> 5.8, >= 5.8.1)
   doorkeeper-device_authorization_grant (~> 1.0.0)
-  doorkeeper-openid_connect (~> 1.9.0)
+  doorkeeper-openid_connect (~> 1.10.0)
   drb (~> 2.2)
   duo_api (~> 1.3)
   ed25519 (~> 1.4.0)
@@ -2546,6 +2558,7 @@ DEPENDENCIES
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 1.1.0)
   gitlab-markup (~> 2.1.0)
+  gitlab-mfe!
   gitlab-net-dns (~> 0.15.0)
   gitlab-orbit-proto (~> 0.105.0)
   gitlab-policy-store!
@@ -2553,6 +2566,7 @@ DEPENDENCIES
   gitlab-rspec-metrics-exporter (~> 0.2.0)
   gitlab-rspec_flaky!
   gitlab-safe_request_store!
+  gitlab-safe_string_conversion!
   gitlab-schema-validation!
   gitlab-sdk (~> 0.3.0)
   gitlab-secret_detection (< 1.0)
@@ -2572,7 +2586,7 @@ DEPENDENCIES
   google-apis-cloudresourcemanager_v1 (~> 0.45.0)
   google-apis-compute_v1 (~> 0.154.0)
   google-apis-container_v1 (~> 0.100.0)
-  google-apis-container_v1beta1 (~> 0.91.0)
+  google-apis-container_v1beta1 (~> 0.107.0)
   google-apis-core (~> 0.18.0, >= 0.18.0)
   google-apis-iam_v1 (~> 0.79.0)
   google-apis-serviceusage_v1 (~> 0.28.0)
@@ -2942,7 +2956,7 @@ CHECKSUMS
   device_detector (1.1.3) sha256=c5fe3fe42cab2e8aa01f193b2074b8bb1510373ce47127206f28c7dea75a9c79
   devise (4.9.4) sha256=920042fe5e704c548aa4eb65ebdd65980b83ffae67feb32c697206bfd975a7f8
   devise-pbkdf2-encryptable (0.0.0)
-  devise-two-factor (6.4.0) sha256=09e3a23b5b9ae7da78881d238a89860454d9e2ba0912e175576e9c028757adb4
+  devise-two-factor (6.4.1) sha256=82f70ebc1d0b2efa751da214bb9fc9ea1c6d506b35e8934396528b0f42322086
   diff-lcs (1.5.0) sha256=49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67
   diff_match_patch (0.1.0)
   diffy (3.4.4) sha256=79384ab5ca82d0e115b2771f0961e27c164c456074bd2ec46b637ebf7b6e47e3
@@ -2950,7 +2964,7 @@ CHECKSUMS
   domain_name (0.5.20190701) sha256=000a600454cb4a344769b2f10b531765ea7bd3a304fe47ed12e5ca1eab969851
   doorkeeper (5.9.3) sha256=e6d120235bd134494bd02d08e8063c994fc1a58a681285077e671529bfc5d90b
   doorkeeper-device_authorization_grant (1.0.3) sha256=94c3ac12a0d50942850ecd58ed64298b397a5e903e8880cb68d4085600932679
-  doorkeeper-openid_connect (1.9.0) sha256=f689f727bbe60a0e7174b00ccd1e38c52a12c0c34dd096d49018b98cfaec7eb3
+  doorkeeper-openid_connect (1.10.5) sha256=1382e5573e2fdfef2b16ce9969af777e61496b8e9cff0197789d8bf9c12efb02
   dotenv (2.7.6) sha256=2451ed5e8e43776d7a787e51d6f8903b98e446146c7ad143d5678cc2c409d547
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   dry-cli (1.0.0) sha256=28ead169f872954dd08910eb8ead59cf86cd18b4aab321e8eeefe945749569f0
@@ -3067,6 +3081,7 @@ CHECKSUMS
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f
+  gitlab-mfe (0.1.0)
   gitlab-net-dns (0.15.0) sha256=d229aae205055b86b2ad166981257eb589ce6d6a146aa79b3ea2b1e5d9741f46
   gitlab-orbit-proto (0.105.2) sha256=e926e9e8103e4e2498bdacd853a305300d49bb8cd20a5c2a407a6ee07c3c5aaf
   gitlab-policy-store (0.1.0)
@@ -3074,6 +3089,7 @@ CHECKSUMS
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63
   gitlab-rspec_flaky (0.1.0)
   gitlab-safe_request_store (0.1.0)
+  gitlab-safe_string_conversion (0.1.0)
   gitlab-schema-validation (0.1.0)
   gitlab-sdk (0.3.1) sha256=48ba49084f4ab92df7c7ef9f347020d9dfdf6ed9c1e782b67264e98ffe6ea710
   gitlab-secret_detection (0.45.0) sha256=61413bac4fb68085318d1ba0362f504a449d95886447be87eea90974b48159fc
@@ -3098,7 +3114,7 @@ CHECKSUMS
   google-apis-cloudresourcemanager_v1 (0.45.0) sha256=ea936d4d51dd0556fb93f4a78131c0441c308906bf076d543c8852dbeec27d45
   google-apis-compute_v1 (0.154.0) sha256=8209a6414ccdf0f59a13ae4d0c4cc3c021689d2839b3be086fdf2ebc357d2452
   google-apis-container_v1 (0.100.0) sha256=5a5ae56036e384830263de6d48ed9b9f9ef26818b28b6b027206432e718d1853
-  google-apis-container_v1beta1 (0.91.0) sha256=9639664bf4876059627b44e3feca67cf34bb48c3520d60fbdfc42f4f37f5c299
+  google-apis-container_v1beta1 (0.107.0) sha256=6f3c10d86b54106525cf91850fd7597b8b70852360edaab39f7a1af96c59691a
   google-apis-core (0.18.0) sha256=96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee
   google-apis-dns_v1 (0.36.0) sha256=5dd273d78ab37d03d1bc07837186f79ad0399e9f2b8b1ec2629ed682ea347d47
   google-apis-iam_v1 (0.79.0) sha256=dc014a4cc18c964795f9423f13e032f30ae037ec3b4325d852dee5df67577ae8

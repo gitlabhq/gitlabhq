@@ -34,7 +34,7 @@ RSpec.describe 'Database schema',
     {
       abuse_reports: %w[user_id],
       conversational_development_index_metrics: %w[usage_data_id],
-      ai_audit_events: %w[author_id workflow_id cloud_event_id],
+      ai_audit_events: %w[author_id workflow_id cloud_event_id ai_governance_session_id],
       ai_usage_events: %w[user_id],
       ai_events_counts: %w[user_id namespace_id],
       ai_flow_schedules: %w[project_id],

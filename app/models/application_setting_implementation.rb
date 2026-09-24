@@ -241,6 +241,9 @@ module ApplicationSettingImplementation
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT,
         throttle_authenticated_dependency_proxy_period_in_seconds:
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD,
+        throttle_authenticated_mcp_enabled: false,
+        throttle_authenticated_mcp_requests_per_period: 600,
+        throttle_authenticated_mcp_period_in_seconds: 60,
         throttle_authenticated_git_lfs_enabled: false,
         throttle_authenticated_git_lfs_period_in_seconds: 60,
         throttle_authenticated_git_lfs_requests_per_period: 1000,

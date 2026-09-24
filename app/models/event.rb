@@ -83,7 +83,7 @@ class Event < ApplicationRecord
   has_one :push_event_payload
 
   # Callbacks
-  before_save :ensure_sharding_key
+  before_validation :ensure_sharding_key
   after_create :update_project, unless: :imported?
 
   # Scopes
@@ -145,6 +145,15 @@ class Event < ApplicationRecord
   # We're just validating the presence of the ID here as foreign key constraints
   # should ensure the ID points to a valid user.
   validates :author_id, presence: true
+
+  # Scoped to :create: existing rows can still carry two sharding keys until the
+  # NullifyPersonalNamespaceIdOnGroupWikiEvents backfill is finalized. Widen it then -
+  # https://gitlab.com/gitlab-org/gitlab/-/work_items/598786
+  validates_with ExactlyOnePresentValidator,
+    fields: [:group_sharding_key_present?, :project_sharding_key_present?,
+      :personal_namespace_sharding_key_present?],
+    message: ->(_fields) { _('must have exactly one of group_id, project_id, or personal_namespace_id') },
+    on: :create
 
   validates :action_enum_value,
     if: :design?,
@@ -397,6 +406,21 @@ class Event < ApplicationRecord
     end
   end
 
+  # True when the key is set, either as an FK or as a record that is assigned but
+  # not saved yet and so has no ID. Reading the FK first keeps a create from
+  # loading the association.
+  def group_sharding_key_present?
+    group_id.present? || association(:group).target.present?
+  end
+
+  def project_sharding_key_present?
+    project_id.present? || association(:project).target.present?
+  end
+
+  def personal_namespace_sharding_key_present?
+    personal_namespace_id.present? || association(:personal_namespace).target.present?
+  end
+
   def body?
     if push_action?
       push_with_commits?
@@ -408,9 +432,10 @@ class Event < ApplicationRecord
   end
 
   def ensure_sharding_key
-    return unless group_id.nil? && project_id.nil? && personal_namespace_id.nil?
+    return if group_sharding_key_present? || project_sharding_key_present? ||
+      personal_namespace_sharding_key_present?
 
-    self.personal_namespace_id = author.namespace_id
+    self.personal_namespace_id = author&.namespace_id
   end
 
   def update_project

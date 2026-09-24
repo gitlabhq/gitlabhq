@@ -554,6 +554,12 @@ Audit event types belong to the following product categories.
 | [`incident_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is created using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`incident_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is reopened using a project access token | {{< yes >}} | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 
+### Knowledge graph
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`orbit_cloud_connector_token_issued`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253400) | Orbit fetches the instance Cloud Connector token to authenticate billing-event emission | {{< yes >}} | GitLab [19.5](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1229) | Instance |
+
 ### Mcp server
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

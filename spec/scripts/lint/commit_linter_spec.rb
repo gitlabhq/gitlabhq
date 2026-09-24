@@ -2,9 +2,12 @@
 
 require 'fast_spec_helper'
 require 'tempfile'
+require 'gitlab/rspec/stub_env'
 require_relative '../../../scripts/lint/commit_linter'
 
 RSpec.describe Lint::CommitLinter, feature_category: :tooling do
+  include StubENV
+
   let(:valid_message) { "Add a valid commit message here" }
   let(:commit_data) { described_class::CommitData.new(valid_message, 'abc1234') }
 
@@ -106,12 +109,62 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
     end
   end
 
+  describe '.base_ref' do
+    subject(:base_ref) { described_class.base_ref }
+
+    context 'when COMMIT_LINT_BASE is unset' do
+      before do
+        stub_env('COMMIT_LINT_BASE', nil)
+      end
+
+      it 'falls back to the default branch ref' do
+        expect(base_ref).to eq(described_class::DEFAULT_BRANCH_REF)
+      end
+    end
+
+    context 'when COMMIT_LINT_BASE is set' do
+      before do
+        stub_env('COMMIT_LINT_BASE', 'security/master')
+      end
+
+      it 'returns the overridden ref' do
+        expect(base_ref).to eq('security/master')
+      end
+    end
+
+    context 'when COMMIT_LINT_BASE is set but empty' do
+      before do
+        stub_env('COMMIT_LINT_BASE', '')
+      end
+
+      it 'falls back to the default branch ref' do
+        expect(base_ref).to eq(described_class::DEFAULT_BRANCH_REF)
+      end
+    end
+  end
+
   describe '.first_commit_on_branch?' do
     subject(:result) { described_class.first_commit_on_branch? }
 
     let(:merge_base_sha) { 'a' * 40 }
 
     let(:merge_base_cmd) { "git merge-base #{described_class::DEFAULT_BRANCH_REF} HEAD" }
+
+    context 'when COMMIT_LINT_BASE overrides the base ref' do
+      before do
+        stub_env('COMMIT_LINT_BASE', 'security/master')
+        allow(described_class).to receive(:run_command)
+          .with("git merge-base security/master HEAD")
+          .and_return(["#{merge_base_sha}\n", true])
+        allow(described_class).to receive(:run_command)
+          .with("git rev-list #{merge_base_sha}..HEAD")
+          .and_return(["#{'b' * 40}\n", true])
+      end
+
+      it 'uses the overridden ref for merge-base' do
+        expect(result).to be true
+      end
+    end
 
     context 'when merge-base fails' do
       before do
@@ -433,6 +486,25 @@ RSpec.describe Lint::CommitLinter, feature_category: :tooling do
         expect(result.length).to eq(1)
         expect(result.first.sha).to eq('abc1234')
         expect(result.first.message).to eq('Add a valid commit message')
+      end
+    end
+
+    context 'when COMMIT_LINT_BASE overrides the base ref' do
+      before do
+        stub_env('COMMIT_LINT_BASE', 'security/master')
+        allow(described_class).to receive(:run_command)
+          .with("git merge-base security/master HEAD")
+          .and_return(["#{merge_base_sha}\n", true])
+        allow(described_class).to receive(:run_command)
+          .with("git rev-list #{merge_base_sha}..HEAD")
+          .and_return(["#{commit_sha}\n", true])
+        allow(described_class).to receive(:run_command)
+          .with("git log -1 --no-show-signature --format='%h%n%B' #{commit_sha}")
+          .and_return(["abc1234\nAdd a valid commit message", true])
+      end
+
+      it 'computes the merge base against the overridden ref' do
+        expect(result.first.sha).to eq('abc1234')
       end
     end
 

@@ -20966,6 +20966,7 @@ Arguments:
 | <a id="mutation-workitemdecisionupdate-description"></a>`description` | [`String`](#string) | Context of the decision. |
 | <a id="mutation-workitemdecisionupdate-discussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the originating discussion thread. |
 | <a id="mutation-workitemdecisionupdate-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
+| <a id="mutation-workitemdecisionupdate-options"></a>`options` | [`[WorkItemDecisionOptionUpdateInput!]`](#workitemdecisionoptionupdateinput) | Existing options of the decision to update. Maximum of 5 options. |
 | <a id="mutation-workitemdecisionupdate-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-resolvedbyid"></a>`resolvedById` | [`UserID`](#userid) | Global ID of the user who resolved the decision. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-resolvingnoteid"></a>`resolvingNoteId` | [`NoteID`](#noteid) | Global ID of the comment that resolved the decision. Can only be updated on resolved decisions. |
@@ -35267,6 +35268,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogitemconsumerpermissions-adminaicatalogitemconsumer"></a>`adminAiCatalogItemConsumer` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_ai_catalog_item_consumer` on this resource. |
+| <a id="aicatalogitemconsumerpermissions-executeaicatalogitem"></a>`executeAiCatalogItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `execute_ai_catalog_item` on this resource. |
 | <a id="aicatalogitemconsumerpermissions-readaicatalogitemconsumer"></a>`readAiCatalogItemConsumer` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_ai_catalog_item_consumer` on this resource. |
 
 ### `AiCatalogItemPermissions`
@@ -80397,6 +80399,19 @@ Arguments:
 | <a id="workitemdecisionoptioninput-content"></a>`content` | [`String!`](#string) | Content of the decision option. |
 | <a id="workitemdecisionoptioninput-description"></a>`description` | [`String`](#string) | Reasoning behind the decision option. |
 | <a id="workitemdecisionoptioninput-recommended"></a>`recommended` | [`Boolean`](#boolean) | Indicates the option is recommended by GitLab Duo. |
+
+### `WorkItemDecisionOptionUpdateInput`
+
+Attributes to update on an existing option of a work item decision.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdecisionoptionupdateinput-content"></a>`content` | [`String`](#string) | Content of the decision option. |
+| <a id="workitemdecisionoptionupdateinput-description"></a>`description` | [`String`](#string) | Reasoning behind the decision option. |
+| <a id="workitemdecisionoptionupdateinput-id"></a>`id` | [`WorkItemsDecisionOptionID!`](#workitemsdecisionoptionid) | Global ID of the decision option. |
+| <a id="workitemdecisionoptionupdateinput-selected"></a>`selected` | [`Boolean`](#boolean) | Indicates the option is selected. Can only be updated on resolved decisions. |
 
 ### `WorkItemDecisionResolutionInput`
 

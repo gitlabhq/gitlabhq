@@ -1445,6 +1445,9 @@ msgstr ""
 msgid "%{seconds}s"
 msgstr ""
 
+msgid "%{section}, matching files: %{patterns}"
+msgstr ""
+
 msgid "%{selectedLabelsCount} label"
 msgid_plural "%{selectedLabelsCount} labels"
 msgstr[0] ""
@@ -49906,6 +49909,9 @@ msgstr ""
 msgid "Match not found; try refining your search query."
 msgstr ""
 
+msgid "Matching files"
+msgstr ""
+
 msgid "MatrixIntegration|Leave blank to use your current token."
 msgstr ""
 
@@ -57650,6 +57656,9 @@ msgstr ""
 msgid "Optimize repository period"
 msgstr ""
 
+msgid "Option %{attributes} can't be blank"
+msgstr ""
+
 msgid "Optional"
 msgstr ""
 
@@ -57663,6 +57672,15 @@ msgid "Options"
 msgstr ""
 
 msgid "Options are not supported when creating a resolved decision"
+msgstr ""
+
+msgid "Options must be unique"
+msgstr ""
+
+msgid "Options must belong to the decision"
+msgstr ""
+
+msgid "Options must include an attribute to update"
 msgstr ""
 
 msgid "Orbit|%{boldStart}The initial scan can take some time depending on the amount of content.%{boldEnd} After that, updated content is automatically re-indexed. You can turn off GitLab Orbit at any time."
@@ -72728,6 +72746,9 @@ msgstr ""
 msgid "SecretsManager|Contact your administrator to start a trial."
 msgstr ""
 
+msgid "SecretsManager|Contact your group owner or instance administrator to enable GitLab Secrets Manager."
+msgstr ""
+
 msgid "SecretsManager|Contact your subscription owner or visit the %{linkStart}Customer Portal%{linkEnd} to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing. After your subscription owner has completed this task, you can enable GitLab Secrets Manager with GitLab Credits."
 msgstr ""
 
@@ -72801,6 +72822,9 @@ msgid "SecretsManager|GitLab Secrets Manager consumes GitLab Credits to store an
 msgstr ""
 
 msgid "SecretsManager|GitLab Secrets Manager consumes GitLab Credits when storing new secrets or fetching secrets."
+msgstr ""
+
+msgid "SecretsManager|GitLab Secrets Manager could not be enabled. If the problem persists, contact your group owner or instance administrator."
 msgstr ""
 
 msgid "SecretsManager|GitLab Secrets Manager has been enabled for this group. %{linkStart}Manage permissions.%{linkEnd}"
@@ -72933,9 +72957,6 @@ msgid "SecretsManager|The name should be unique within this project and can cont
 msgstr ""
 
 msgid "SecretsManager|The trial has started, but the instance failed to enable the secrets manager. Please try again with the toggle below."
-msgstr ""
-
-msgid "SecretsManager|There was a problem enabling the GitLab Secrets Manager. Try again later."
 msgstr ""
 
 msgid "SecretsManager|This field is required and must be 200 characters or less."
@@ -73471,9 +73492,6 @@ msgstr ""
 msgid "SecurityConfiguration|Create profile"
 msgstr ""
 
-msgid "SecurityConfiguration|Custom"
-msgstr ""
-
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."
 msgstr ""
 
@@ -73562,9 +73580,6 @@ msgid "SecurityConfiguration|Failed to update “%{profileName}”."
 msgstr ""
 
 msgid "SecurityConfiguration|Get broad security coverage in minutes. We'll enable recommended scanners across your projects using GitLab's default profiles. You'll review all changes before anything is applied."
-msgstr ""
-
-msgid "SecurityConfiguration|GitLab"
 msgstr ""
 
 msgid "SecurityConfiguration|Go to security configuration"
@@ -78111,6 +78126,9 @@ msgid "Selected for all items."
 msgstr ""
 
 msgid "Selected for some items."
+msgstr ""
+
+msgid "Selected options can only be updated on resolved decisions"
 msgstr ""
 
 msgid "Selected options must belong to the decision"
@@ -99446,6 +99464,9 @@ msgid "must have a valid format and be greater than or equal to zero."
 msgstr ""
 
 msgid "must have an associated workspaces agent config"
+msgstr ""
+
+msgid "must have exactly one of group_id, project_id, or personal_namespace_id"
 msgstr ""
 
 msgid "must have the 'enabled' flag set to true"

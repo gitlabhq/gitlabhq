@@ -5950,8 +5950,10 @@ CREATE TABLE ai_audit_events (
     ip_address inet,
     workflow_id bigint,
     details text,
+    ai_governance_session_id bigint,
     CONSTRAINT check_3e009d5357 CHECK ((char_length(event_name) <= 255)),
-    CONSTRAINT check_547b01c40f CHECK ((num_nonnulls(namespace_id, project_id) = 1))
+    CONSTRAINT check_547b01c40f CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
+    CONSTRAINT check_ai_audit_event_has_workflow_or_session CHECK ((num_nonnulls(ai_governance_session_id, workflow_id) >= 1))
 )
 PARTITION BY RANGE (created_at);
 

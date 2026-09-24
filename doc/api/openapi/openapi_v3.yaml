@@ -19920,7 +19920,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_adeba0f18ef6"
+              "$ref": "#/components/schemas/RequestBody_8a71f6a2efea"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -91479,6 +91479,12 @@ components:
           type: string
         throttle_authenticated_web_requests_per_period:
           type: string
+        throttle_authenticated_mcp_enabled:
+          type: string
+        throttle_authenticated_mcp_period_in_seconds:
+          type: string
+        throttle_authenticated_mcp_requests_per_period:
+          type: string
         throttle_authenticated_packages_api_enabled:
           type: string
         throttle_authenticated_packages_api_period_in_seconds:
@@ -106986,7 +106992,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_adeba0f18ef6:
+    RequestBody_8a71f6a2efea:
       type: object
       properties:
         admin_mode:
@@ -108665,6 +108671,21 @@ components:
           type: string
           description: 'Maximum requests per period per user. `throttle_authenticated_git_http_enabled`
             must be `true`. Default value: `3600`.'
+          nullable: true
+        throttle_authenticated_mcp_enabled:
+          type: string
+          description: 'If `true`, enforces the MCP Server request rate limit. Default
+            value: `false`.'
+          nullable: true
+        throttle_authenticated_mcp_period_in_seconds:
+          type: string
+          description: 'Rate limit period in seconds. `throttle_authenticated_mcp_enabled`
+            must be `true`. Default value: `60`.'
+          nullable: true
+        throttle_authenticated_mcp_requests_per_period:
+          type: string
+          description: 'Maximum requests per period per user. `throttle_authenticated_mcp_enabled`
+            must be `true`. Default value: `600`.'
           nullable: true
         throttle_authenticated_dependency_proxy_enabled:
           type: string

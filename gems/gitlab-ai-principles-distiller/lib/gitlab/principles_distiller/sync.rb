@@ -84,7 +84,7 @@ module Gitlab
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
 
-        # In --push mode the static artifacts (AGENTS.md, CLAUDE.md, both SKILL.md files) are regenerated inside the
+        # In --push mode the static artifacts (AGENTS.md, both SKILL.md files) are regenerated inside the
         # dedicated tooling branch during publish, so they don't leak into the per-team branches.
         # Outside --push we write them straight to the working tree as before.
         regenerate_static_artifacts unless options[:push]
@@ -459,7 +459,7 @@ module Gitlab
         puts Rainbow(message).bold
       end
 
-      # The AGENTS.md/CLAUDE.md/SKILL.md/CODEOWNERS generators are manifest-driven (they do not read distilled bodies),
+      # The AGENTS.md/SKILL.md/CODEOWNERS generators are manifest-driven (they do not read distilled bodies),
       # so they can be regenerated straight from the manifest here.
       #
       # The Duo Code Review fences are deliberately NOT regenerated in this path: they are reconciled from merged-master

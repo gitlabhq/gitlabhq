@@ -91,7 +91,6 @@ permissions:
   - destroy_label
   - destroy_merge_request
   - destroy_milestone
-  - destroy_note
   - destroy_package
   - destroy_pages
   - destroy_pipeline

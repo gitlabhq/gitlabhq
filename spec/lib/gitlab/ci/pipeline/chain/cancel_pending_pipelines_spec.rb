@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines, feature_category: :continuous_integration do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines, :clean_gitlab_redis_shared_state,
+  feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
@@ -18,6 +19,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines, feature_cate
         .with(pipeline.id, { 'partition_id' => pipeline.partition_id })
 
       subject
+    end
+
+    describe 'redundant pipeline candidate cache' do
+      it 'registers the pipeline before it asks for the cancellation' do
+        expect(Ci::RedundantPipelines::RegisterCandidateService).to receive(:for).ordered.and_call_original
+        expect(Ci::CancelRedundantPipelinesWorker).to receive(:perform_async).ordered
+
+        subject
+      end
+
+      it 'registers the pipeline for the pipelines that come after it' do
+        subject
+
+        cache = Gitlab::Ci::RedundantPipelines::CandidateCache
+          .for(project_id: project.id, ref: pipeline.ref)
+
+        expect(cache)
+          .to be_registered(Gitlab::Ci::RedundantPipelines::PipelineKey.of(pipeline))
+      end
     end
 
     context 'with scheduled pipelines' do

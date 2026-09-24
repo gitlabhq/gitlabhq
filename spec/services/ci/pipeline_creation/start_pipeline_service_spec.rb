@@ -37,6 +37,25 @@ RSpec.describe Ci::PipelineCreation::StartPipelineService, feature_category: :co
       service.execute
     end
 
+    describe 'redundant pipeline candidate cache', :clean_gitlab_redis_shared_state do
+      it 'registers the pipeline before it is processed' do
+        expect(Ci::RedundantPipelines::RegisterCandidateService).to receive(:for).ordered.and_call_original
+        expect(Ci::ProcessPipelineService).to receive(:new).ordered.and_call_original
+
+        service.execute
+      end
+
+      it 'registers the pipeline for the pipelines that come after it' do
+        service.execute
+
+        cache = Gitlab::Ci::RedundantPipelines::CandidateCache
+          .for(project_id: project.id, ref: pipeline.ref)
+
+        expect(cache)
+          .to be_registered(Gitlab::Ci::RedundantPipelines::PipelineKey.of(pipeline))
+      end
+    end
+
     context 'when stop_ci_persistent_ref_creation is enabled for the project' do
       it 'does not create pipeline ref' do
         expect { service.execute }

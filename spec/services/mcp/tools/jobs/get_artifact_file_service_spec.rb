@@ -55,7 +55,7 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
           byte_offset: {
             type: 'integer',
             minimum: 0,
-            maximum: 100.megabytes,
+            maximum: 20.megabytes,
             description: 'Byte offset to start reading the file from.'
           },
           byte_limit: {
@@ -264,6 +264,117 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent][:content]).to eq(text_file_content)
+      end
+
+      it 'fetches only ranged slices of a large archive', :aggregate_failures do
+        zipfile = Tempfile.new(['ranged', '.zip'])
+        Zip::OutputStream.open(zipfile.path) do |zos|
+          zos.put_next_entry('first_small.txt')
+          zos.write('needle content')
+          3.times do |i|
+            zos.put_next_entry("big_#{i}.bin")
+            zos.write(SecureRandom.random_bytes(300.kilobytes))
+          end
+        end
+        zip_bytes = File.binread(zipfile.path)
+        big_job = create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_job_artifact, :remote_store, job: big_job, file_type: :archive, file_format: :zip,
+          file: UploadedFile.new(zipfile.path, filename: 'ci_build_artifacts.zip'))
+        zipfile.close!
+
+        fetched = []
+        stub_request(:get, %r{\Ahttps://artifacts\.s3\.amazonaws\.com/}).to_return do |request|
+          m = request.headers['Range'].to_s.match(/bytes=(\d+)-(\d+)/)
+          range_start = m[1].to_i
+          range_end = [m[2].to_i, zip_bytes.size - 1].min
+          fetched << (range_end - range_start + 1)
+          { status: 206, body: zip_bytes[range_start..range_end],
+            headers: { 'Content-Range' => "bytes #{range_start}-#{range_end}/#{zip_bytes.size}" } }
+        end
+
+        result = execute({ project_id: project.full_path, job_id: big_job.id, artifact_path: 'first_small.txt' })
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent][:content]).to eq('needle content')
+        # Central directory (tail) plus the one entry (head), never the middle.
+        expect(fetched.sum).to be < zip_bytes.size / 2
+      end
+
+      it 'points to the download URL when the archive cannot be opened', :aggregate_failures do
+        allow(::Gitlab::HttpIO).to receive(:new).and_raise(::Gitlab::HttpIO::FailedToGetChunkError)
+
+        result = execute({ project_id: project.full_path, job_id: remote_job.id, artifact_path: text_file })
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job #{remote_job.id}")
+        expect(result[:content].first[:text]).to include(
+          Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, remote_job)
+        )
+      end
+
+      it 'points to the download URL when a ranged request fails', :aggregate_failures do
+        stub_request(:get, %r{\Ahttps://artifacts\.s3\.amazonaws\.com/}).to_return(status: 500)
+
+        result = execute({ project_id: project.full_path, job_id: remote_job.id, artifact_path: text_file })
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job #{remote_job.id}")
+        expect(result[:content].first[:text]).to include(
+          Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, remote_job)
+        )
+      end
+    end
+
+    context 'when an entry has corrupted compressed data' do
+      let_it_be(:damaged_job) { create(:ci_build, :success, pipeline: pipeline) }
+
+      before_all do
+        damaged = Tempfile.new(['damaged', '.zip'])
+        Zip::OutputStream.open(damaged.path) do |zos|
+          zos.put_next_entry('ci_artifacts.txt')
+          zos.write('compressible ' * 2_000)
+        end
+        # Local header is 30 bytes plus the name; overwrite the deflate stream right after it.
+        data_start = 30 + 'ci_artifacts.txt'.bytesize
+        bytes = File.binread(damaged.path)
+        bytes[data_start, 64] = ("\xFF" * 64).b
+        File.binwrite(damaged.path, bytes)
+        create(:ci_job_artifact, job: damaged_job, file_type: :archive, file_format: :zip,
+          file: UploadedFile.new(damaged.path, filename: 'ci_build_artifacts.zip'))
+        damaged.unlink
+      end
+
+      it 'points to the download URL', :aggregate_failures do
+        result = execute({ project_id: project.full_path, job_id: damaged_job.id, artifact_path: text_file })
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job")
+        expect(result[:content].first[:text]).to include(
+          Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, damaged_job)
+        )
+      end
+    end
+
+    context 'when the archive is not a valid zip' do
+      let_it_be(:corrupt_job) { create(:ci_build, :success, pipeline: pipeline) }
+
+      before_all do
+        corrupt = Tempfile.new(['corrupt', '.zip'])
+        corrupt.write('not a zip')
+        corrupt.close
+        create(:ci_job_artifact, job: corrupt_job, file_type: :archive, file_format: :zip,
+          file: UploadedFile.new(corrupt.path, filename: 'ci_build_artifacts.zip'))
+        corrupt.unlink
+      end
+
+      it 'points to the download URL', :aggregate_failures do
+        result = execute({ project_id: project.full_path, job_id: corrupt_job.id, artifact_path: text_file })
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Could not read the artifacts archive of job")
+        expect(result[:content].first[:text]).to include(
+          Gitlab::Routing.url_helpers.download_project_job_artifacts_url(project, corrupt_job)
+        )
       end
     end
 

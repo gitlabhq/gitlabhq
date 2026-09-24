@@ -1662,7 +1662,7 @@ class User < ApplicationRecord
     authorized_groups&.top_level&.pluck(:id)
   end
 
-  # Used to search on the user's authorized_groups effeciently by using a CTE
+  # Used to search on the user's authorized_groups efficiently by using a CTE
   def search_on_authorized_groups(query, use_minimum_char_limit: true)
     authorized_groups_cte = Gitlab::SQL::CTE.new(:authorized_groups, authorized_groups)
     authorized_groups_cte_alias = authorized_groups_cte.table.alias(Group.table_name)

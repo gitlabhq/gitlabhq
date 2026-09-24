@@ -98,6 +98,76 @@ RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access
         end
       end
 
+      # doorkeeper-openid_connect >= 1.10 changed prompt=none to auto-issue a code
+      # whenever an active token covers the request. These specs pin GitLab's stance
+      # on that change: silent issuance stays confidential-only, public clients keep
+      # the pre-1.10 consent behavior (see #oidc_matching_subset_token? override).
+      context 'with an OIDC prompt=none request and an active token' do
+        let(:application_scopes) { 'openid profile' }
+
+        let(:params) do
+          {
+            response_type: 'code',
+            client_id: application.uid,
+            redirect_uri: application.redirect_uri,
+            state: 'state',
+            scope: 'openid',
+            prompt: 'none'
+          }
+        end
+
+        before do
+          scopes = Doorkeeper::OAuth::Scopes.from_string('openid profile')
+
+          allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+
+          create(:oauth_access_token, application: application, resource_owner_id: user.id, scopes: token_scopes)
+        end
+
+        context 'when the token scopes are a superset of the requested scopes' do
+          let(:token_scopes) { 'openid profile' }
+
+          context 'when application is confidential' do
+            let(:confidential) { true }
+
+            # Deliberately adopted gem 1.10 behavior: 1.9 refused superset-token
+            # silent reauth even for confidential clients.
+            it 'silently authorizes and shows the user a page that redirects' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to render_template('doorkeeper/authorizations/redirect')
+            end
+          end
+
+          context 'when application is not confidential' do
+            let(:confidential) { false }
+
+            it 'refuses with consent_required instead of silently authorizing' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:found)
+              expect(response.location).to include('error=consent_required')
+            end
+          end
+        end
+
+        context 'when the token scopes match the requested scopes exactly' do
+          let(:token_scopes) { 'openid' }
+
+          context 'when application is not confidential' do
+            let(:confidential) { false }
+
+            it 'renders the consent form instead of silently authorizing' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to render_template('doorkeeper/authorizations/new')
+            end
+          end
+        end
+      end
+
       context 'without valid params' do
         it 'returns 200 code and renders error view' do
           get :new

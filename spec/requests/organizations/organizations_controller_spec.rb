@@ -237,7 +237,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
 
         let_it_be(:group) { create(:group, :private, organization: organization) }
         let_it_be(:events) do
-          create_list(:event, limit, :created, target: create(:milestone, group: group), group: group)
+          create_list(:event, limit, :created, target: create(:milestone, group: group), group: group, project: nil)
         end
 
         let_it_be(:private_group) { create(:group, :private, organization: organization) }
@@ -247,6 +247,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
             limit,
             :created,
             group: private_group,
+            project: nil,
             target: create(:milestone, group: private_group)
           )
         end

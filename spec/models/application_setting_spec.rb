@@ -309,6 +309,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_LIMIT,
         throttle_authenticated_dependency_proxy_period_in_seconds:
           ApplicationSetting::DEFAULT_AUTHENTICATED_DEPENDENCY_PROXY_PERIOD,
+        throttle_authenticated_mcp_enabled: false,
+        throttle_authenticated_mcp_requests_per_period: 600,
+        throttle_authenticated_mcp_period_in_seconds: 60,
         throttle_unauthenticated_git_http_enabled: false,
         throttle_unauthenticated_git_http_period_in_seconds: 3600,
         throttle_unauthenticated_git_http_requests_per_period: 3600,

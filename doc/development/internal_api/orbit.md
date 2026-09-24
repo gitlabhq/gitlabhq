@@ -42,6 +42,38 @@ Direct Rails calls to Gitaly use the Rails client name instead.
 
 ## Internal Endpoints
 
+### Cloud Connector
+
+#### Fetch the Cloud Connector token
+
+Use a GET request to retrieve the Cloud Connector token for authenticating billing-event emission on Self-Managed and Dedicated instances where workload-identity authentication is unavailable.
+
+```plaintext
+GET /internal/orbit/cloud_connector_token
+```
+
+Example request:
+
+```shell
+curl --header "Gitlab-Orbit-Api-Request: <json-web-token>" "https://gitlab.example.com/api/v4/internal/orbit/cloud_connector_token"
+```
+
+Example response:
+
+```json
+{
+  "token": "<json-web-token>"
+}
+```
+
+The token carries its own `exp` claim.
+Callers that need the expiry decode it from the token instead of relying on a separate field.
+
+If no Cloud Connector token is available or the token is malformed, the endpoint returns `503`.
+
+> [!note]
+> A successful call to this endpoint is recorded as an `orbit_cloud_connector_token_issued` [audit event](../../user/compliance/audit_events.md), attributed to the Orbit indexer at the instance scope rather than to a direct user action.
+
 ### Project
 
 #### Fetch project info

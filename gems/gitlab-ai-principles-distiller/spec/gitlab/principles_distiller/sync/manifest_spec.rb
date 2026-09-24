@@ -732,7 +732,6 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
     before do
       Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
       File.write(File.join(tmpdir, 'AGENTS.md'), agents_md_content)
-      File.write(File.join(tmpdir, 'CLAUDE.md'), agents_md_content)
     end
 
     it 'replaces the generated section with grouped principles' do
@@ -764,12 +763,11 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
       expect(database_pos).to be < backend_pos
     end
 
-    it 'keeps CLAUDE.md identical to AGENTS.md' do
+    it 'does not write CLAUDE.md' do
       manifest.data = manifest_data
       manifest.generate_agents_md_context_loading
 
-      expect(File.read(File.join(tmpdir, 'AGENTS.md')))
-        .to eq(File.read(File.join(tmpdir, 'CLAUDE.md')))
+      expect(File.exist?(File.join(tmpdir, 'CLAUDE.md'))).to be(false)
     end
 
     it 'does nothing when AGENTS.md does not exist' do

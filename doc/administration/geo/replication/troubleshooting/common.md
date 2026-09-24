@@ -784,6 +784,17 @@ If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/git
 
 ### Excessive database IO from Geo metrics collection
 
+Geo metrics collection scans large tables such as `ci_job_artifact_states` and
+`job_artifact_registry`, so its cost grows with the amount of replicated data.
+Consider these remediations in order:
+
+1. [Reduce the amount of replicated data](../tuning.md#reduce-the-amount-of-replicated-data),
+   which addresses the root cause and also reduces sync and verification load.
+1. [Use pre-calculated verification summaries](#use-pre-calculated-verification-summaries),
+   which replaces full-table scans with incremental updates.
+1. Reduce the frequency of metrics collection, which trades monitoring freshness
+   for lower database load.
+
 If you're experiencing high database load due to frequent Geo metrics collection, you can reduce the frequency of the `geo_metrics_update_worker` job. This adjustment can help alleviate database strain in large GitLab instances where metrics collection significantly impacts database performance.
 
 Increasing the interval means that your Geo metrics are updated less frequently. This results in metrics being out-of-date for longer periods of time, which may impact your ability to monitor Geo replication in real-time. If metrics are out-of-date for more than 10 minutes, the site is arbitrarily marked as "Unhealthy" in the Admin Area.

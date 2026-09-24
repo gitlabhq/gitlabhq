@@ -15779,6 +15779,22 @@
               "deprecationReason": null
             },
             {
+              "name": "executeAiCatalogItem",
+              "description": "If `true`, the user can perform `execute_ai_catalog_item` on this resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "readAiCatalogItemConsumer",
               "description": "If `true`, the user can perform `read_ai_catalog_item_consumer` on this resource",
               "args": [],
@@ -455355,6 +455371,69 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "WorkItemDecisionOptionUpdateInput",
+          "description": "Attributes to update on an existing option of a work item decision.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "id",
+              "description": "Global ID of the decision option.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "WorkItemsDecisionOptionID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "content",
+              "description": "Content of the decision option.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Reasoning behind the decision option.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "selected",
+              "description": "Indicates the option is selected. Can only be updated on resolved decisions.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "WorkItemDecisionResolutionInput",
           "description": "Attributes for recording a work item decision as resolved at creation.",
           "fields": null,
@@ -455688,6 +455767,26 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "options",
+              "description": "Existing options of the decision to update. Maximum of 5 options.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "WorkItemDecisionOptionUpdateInput",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null,
               "isDeprecated": false,

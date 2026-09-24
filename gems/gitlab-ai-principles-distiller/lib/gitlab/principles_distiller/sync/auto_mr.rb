@@ -160,7 +160,7 @@ module Gitlab
         end
 
         # Builds, pushes, and opens/updates the tooling MR carrying the global routing-table files (AGENTS.md,
-        # CLAUDE.md, both SKILL.md, CODEOWNERS).
+        # both SKILL.md, CODEOWNERS).
         # These are regenerated in-branch so they never leak into the per-team branches.
         #
         # The Duo review-instructions fences are NOT part of this MR: they are reconciled from merged-master content.
@@ -198,7 +198,7 @@ module Gitlab
           commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
         Update AI principles routing tables (tooling)
 
-        Regenerates AGENTS.md, CLAUDE.md, the gitlab-coding-principles
+        Regenerates AGENTS.md, the gitlab-coding-principles
         SKILL.md files, and the per-file CODEOWNERS rules from the
         principles manifest.
 
@@ -827,7 +827,7 @@ module Gitlab
         This MR updates AI development principles based on recent changes to the
         development documentation (SSOT). It is one of several
         team-scoped MRs from this run; the global routing tables (AGENTS.md,
-        CLAUDE.md, SKILL.md) are updated in a separate tooling MR.
+        SKILL.md) are updated in a separate tooling MR.
 
         #{ping_line}
         #{why_you_were_pinged_section(outcome)}
@@ -865,7 +865,7 @@ module Gitlab
 
         This MR regenerates the global AI-principles routing tables from
         [`.ai/principles/manifest.yml`](#{manifest_url}): `AGENTS.md`,
-        `CLAUDE.md`, the `gitlab-coding-principles` SKILL.md files, and the
+        the `gitlab-coding-principles` SKILL.md files, and the
         per-file CODEOWNERS rules.
 
         These files embed the routing table for **all** principles, so they are

@@ -45,12 +45,14 @@ gem 'ffi', '~> 1.17.3', feature_category: :shared # rubocop:todo Gemfile/Missing
 gem 'openssl', '~> 3.3.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'gitlab-safe_request_store', path: 'gems/gitlab-safe_request_store', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'gitlab-safe_string_conversion', path: 'gems/gitlab-safe_string_conversion', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'safe_zip', path: 'gems/safe_zip', feature_category: :job_artifacts
 
 # GitLab Monorepo Gems
 group :monorepo do
   gem 'gitlab-utils', path: 'gems/gitlab-utils', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'gitlab-configs', path: 'gems/gitlab-configs', feature_category: :settings
+  gem 'gitlab-mfe', path: 'gems/gitlab-mfe', feature_category: :compliance_management
   gem 'gitlab-email_handler', path: 'gems/gitlab-email_handler', require: false,
     feature_category: :service_desk
 end
@@ -88,7 +90,7 @@ gem 'devise-pbkdf2-encryptable', '~> 0.0.0', path: 'vendor/gems/devise-pbkdf2-en
   feature_category: :system_access
 gem 'bcrypt', '~> 3.1', '>= 3.1.14', feature_category: :system_access
 gem 'doorkeeper', '~> 5.8', '>= 5.8.1', feature_category: :system_access
-gem 'doorkeeper-openid_connect', '~> 1.9.0', feature_category: :system_access
+gem 'doorkeeper-openid_connect', '~> 1.10.0', feature_category: :system_access
 gem 'doorkeeper-device_authorization_grant', '~> 1.0.0', feature_category: :system_access
 gem 'rexml', '~> 3.4.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'ruby-saml', '~> 1.18', feature_category: :system_access
@@ -231,7 +233,7 @@ gem 'google-cloud-storage', '~> 1.62.0', feature_category: :shared # rubocop:tod
 gem 'google-apis-core', '~> 0.18.0', '>= 0.18.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-apis-compute_v1', '~> 0.154.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-apis-container_v1', '~> 0.100.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'google-apis-container_v1beta1', '~> 0.91.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'google-apis-container_v1beta1', '~> 0.107.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-apis-cloudbilling_v1', '~> 0.41.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-apis-cloudresourcemanager_v1', '~> 0.45.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-apis-iam_v1', '~> 0.79.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

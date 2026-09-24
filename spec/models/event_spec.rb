@@ -107,6 +107,74 @@ RSpec.describe Event, feature_category: :user_profile do
         end
       end
     end
+
+    describe 'sharding key' do
+      let_it_be(:author) { create(:user) }
+      let_it_be(:group) { create(:group) }
+
+      it 'is valid with only project_id set' do
+        event = build(:event, project: project, group: nil, author: author)
+
+        expect(event).to be_valid
+      end
+
+      it 'is valid with only group_id set' do
+        event = build(:event, :created, project: nil, group: group, author: author)
+
+        expect(event).to be_valid
+      end
+
+      it 'is valid with only personal_namespace_id set' do
+        event = build(:event, :joined, project: nil, group: nil,
+          personal_namespace: author.namespace, author: author)
+
+        expect(event).to be_valid
+      end
+
+      it 'is invalid when more than one sharding key is set', :aggregate_failures do
+        event = build(:event, :joined, project: nil, group: group, author: author)
+        event.personal_namespace_id = author.namespace_id
+
+        expect(event).not_to be_valid
+        expect(event.errors[:base]).to include(
+          _('must have exactly one of group_id, project_id, or personal_namespace_id')
+        )
+      end
+
+      it 'sets personal_namespace_id from author when no sharding key is provided', :aggregate_failures do
+        event = build(:event, :joined, project: nil, group: nil, author: author)
+        event.personal_namespace_id = nil
+
+        event.valid?
+
+        expect(event.personal_namespace_id).to eq(author.namespace_id)
+        expect(event).to be_valid
+      end
+
+      it 'reports a missing author instead of raising when no sharding key is provided', :aggregate_failures do
+        event = build(:event, :joined, project: nil, group: nil, author: nil)
+        event.personal_namespace_id = nil
+
+        expect(event).not_to be_valid
+        expect(event.errors[:author_id]).to include("can't be blank")
+      end
+
+      it 'does not invalidate existing records that already have more than one sharding key' do
+        event = create(:event, project: project, group: nil, author: author)
+        event.update_column(:personal_namespace_id, author.namespace_id)
+
+        expect(event.reload).to be_valid
+      end
+
+      it 'keeps a single sharding key when the project is not saved yet', :aggregate_failures do
+        event = build(:event, author: author)
+
+        expect(event.project).not_to be_persisted
+        expect(event.save).to be(true)
+        expect(event.reload.personal_namespace_id).to be_nil
+        expect(event.project_id).to be_present
+      end
+    end
   end
 
   describe 'scopes' do
