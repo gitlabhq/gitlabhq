@@ -9,3 +9,7 @@ available_for:
   - granular_access_token
 permissions:
   - update_service_account
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

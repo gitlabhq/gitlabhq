@@ -51,7 +51,8 @@ module API
           optional :dismissable, type: Boolean, desc: 'Is dismissable'
           optional :theme, type: String, values: System::BroadcastMessage.themes.keys, desc: 'The theme for the message'
         end
-        route_setting :authorization, permissions: :create_broadcast_message, boundary_type: :instance
+        route_setting :authorization, permissions: :create_broadcast_message, boundary_type: :instance,
+          assignable_when: [:admin]
         post do
           authenticated_as_admin!
 
@@ -102,7 +103,8 @@ module API
           optional :dismissable, type: Boolean, desc: 'Is dismissable'
           optional :theme, type: String, values: System::BroadcastMessage.themes.keys, desc: 'The theme for the message'
         end
-        route_setting :authorization, permissions: :update_broadcast_message, boundary_type: :instance
+        route_setting :authorization, permissions: :update_broadcast_message, boundary_type: :instance,
+          assignable_when: [:admin]
         put ':id' do
           authenticated_as_admin!
 
@@ -123,7 +125,8 @@ module API
         params do
           requires :id, type: Integer, desc: 'Broadcast message ID'
         end
-        route_setting :authorization, permissions: :delete_broadcast_message, boundary_type: :instance
+        route_setting :authorization, permissions: :delete_broadcast_message, boundary_type: :instance,
+          assignable_when: [:admin]
         delete ':id' do
           authenticated_as_admin!
 

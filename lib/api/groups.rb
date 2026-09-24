@@ -661,7 +661,7 @@ module API
       params do
         requires :project_id, type: String, desc: 'The ID or path of the project'
       end
-      route_setting :authorization, permissions: :transfer_project, boundary_type: :instance
+      route_setting :authorization, permissions: :transfer_project, boundary_type: :instance, assignable_when: [:admin]
       post ":id/projects/:project_id", requirements: { project_id: /.+/ }, feature_category: :groups_and_projects do
         authenticated_as_admin!
         group = find_group!(params[:id])

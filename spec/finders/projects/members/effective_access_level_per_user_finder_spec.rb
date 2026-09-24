@@ -7,8 +7,7 @@ RSpec.describe Projects::Members::EffectiveAccessLevelPerUserFinder, '#execute' 
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:user) { create(:user) }
 
-  # The result set is being converted to json just for the ease of testing.
-  subject { described_class.new(project, user).execute.as_json }
+  subject(:effective_access_levels) { described_class.new(project, user).execute }
 
   context 'a combination of all possible avenues of membership' do
     let_it_be(:another_user) { create(:user) }
@@ -27,13 +26,8 @@ RSpec.describe Projects::Members::EffectiveAccessLevelPerUserFinder, '#execute' 
     end
 
     it 'includes the highest access level from all avenues of memberships for the specific user alone' do
-      expect(subject.first).to match(hash_including(
-        {
-          'user_id' => user.id,
-          'access_level' => Gitlab::Access::MAINTAINER, # From project_group_link
-          'id' => nil
-        }
-      ))
+      # MAINTAINER comes from the project_group_link
+      expect(effective_access_levels).to contain_exactly([user.id, Gitlab::Access::MAINTAINER])
     end
   end
 end

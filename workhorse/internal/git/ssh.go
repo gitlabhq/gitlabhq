@@ -34,20 +34,30 @@ func (f *flushWriter) Write(p []byte) (int, error) {
 
 // SSHUploadPack handles git pull via SSH connection between GitLab-Shell and Gitaly through Workhorse
 func SSHUploadPack(a *api.API) http.Handler {
-	return repoPreAuthorizeHandler(a, handleSSHUploadPack)
+	return withFullDuplex(repoPreAuthorizeHandler(a, handleSSHUploadPack))
 }
 
 // SSHReceivePack handles git push via SSH connection between GitLab-Shell and Gitaly through Workhorse
 func SSHReceivePack(a *api.API) http.Handler {
-	return repoPreAuthorizeHandler(a, handleSSHReceivePack)
+	return withFullDuplex(repoPreAuthorizeHandler(a, handleSSHReceivePack))
+}
+
+// withFullDuplex must run before preauth: otherwise net/http drains the request
+// body before sending a rejection, and the SSH client's stdin stays silent until
+// it gets a response, so the rejection never arrives.
+func withFullDuplex(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if err := http.NewResponseController(w).EnableFullDuplex(); err != nil { //nolint:bodyclose // false-positive https://github.com/timakin/bodyclose/issues/52
+			fail.Request(w, r, fmt.Errorf("enabling full duplex: %v", err))
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func handleSSHUploadPack(w http.ResponseWriter, r *http.Request, a *api.Response) {
 	controller := http.NewResponseController(w) //nolint:bodyclose // false-positive https://github.com/timakin/bodyclose/issues/52
-	if err := controller.EnableFullDuplex(); err != nil {
-		fail.Request(w, r, fmt.Errorf("enabling full duplex: %v", err))
-		return
-	}
 
 	conn, err := gitaly.NewConnection(a.GitalyServer)
 	if err != nil {
@@ -78,10 +88,6 @@ func handleSSHUploadPack(w http.ResponseWriter, r *http.Request, a *api.Response
 
 func handleSSHReceivePack(w http.ResponseWriter, r *http.Request, a *api.Response) {
 	controller := http.NewResponseController(w) //nolint:bodyclose // false-positive https://github.com/timakin/bodyclose/issues/52
-	if err := controller.EnableFullDuplex(); err != nil {
-		fail.Request(w, r, fmt.Errorf("enabling full duplex: %v", err))
-		return
-	}
 
 	conn, err := gitaly.NewConnection(a.GitalyServer)
 	if err != nil {

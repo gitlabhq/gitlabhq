@@ -307,7 +307,8 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
-      route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance
+      route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance,
+        assignable_when: [:admin]
       get ":id/user_agent_detail" do
         authenticated_as_admin!
 

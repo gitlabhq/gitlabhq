@@ -537,7 +537,7 @@ Parameters:
 | `name`        | string         | yes      | Name of personal access token. |
 | `description` | string         | no       | Description of personal access token. |
 | `scopes`      | array          | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
-| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 
 Example request:
 
@@ -627,7 +627,7 @@ Parameters:
 | `id`         | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `user_id`    | integer        | yes      | The ID of the service account. |
 | `token_id`   | integer        | yes      | The ID of the token. |
-| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, the token has no expiration date. |
 
 Example request:
 
@@ -961,7 +961,7 @@ Parameters:
 | `name`        | string         | yes      | Name of personal access token. |
 | `description` | string         | no       | Description of personal access token. |
 | `scopes`      | array          | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
-| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 
 Example request:
 
@@ -1045,7 +1045,7 @@ Parameters:
 | `id`         | integer or string | yes      | The ID or [URL-encoded path of the target project](rest/_index.md#namespaced-paths). |
 | `user_id`    | integer        | yes      | The ID of the service account. |
 | `token_id`   | integer        | yes      | The ID of the token. |
-| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, the token has no expiration date. |
 
 Example request:
 

@@ -10,3 +10,7 @@ available_for:
 permissions:
   - read_deploy_key
   - read_user_project_deploy_key
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

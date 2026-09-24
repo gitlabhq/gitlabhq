@@ -946,7 +946,7 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
 
     context 'private project' do
       let_it_be(:project) { create(:project, :repository, :private) }
-      let_it_be(:user) { create(:user, static_object_token: 'ABCD1234') }
+      let_it_be(:user) { create(:user).tap(&:reset_static_object_token!) }
 
       before do
         project.add_developer(user)

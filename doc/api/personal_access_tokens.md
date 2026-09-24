@@ -187,7 +187,7 @@ POST /personal_access_tokens/:id/rotate
 | Attribute | Type      | Required | Description         |
 |-----------|-----------|----------|---------------------|
 | `id` | integer or string | yes      | ID of a personal access token or the keyword `self`. |
-| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If the token requires an expiration date, defaults to 1 week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If the token requires an expiration date, defaults to one week. If not required, the token has no expiration date. |
 
 ```shell
 curl --request POST \

@@ -14,6 +14,8 @@ import (
 	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 const (
@@ -58,24 +60,6 @@ func TestSSHUploadPack_GitalyConnection(t *testing.T) {
 	require.Equal(t, http.StatusInternalServerError, res.StatusCode)
 }
 
-func TestSSHUploadPack_FullDuplex(t *testing.T) {
-	addr := setupGitalyServer(t)
-	a := &api.Response{GitalyServer: api.GitalyServer{Address: addr}}
-
-	time.Sleep(10 * time.Millisecond)
-	r := httptest.NewRequest("POST", sshUploadPackPath, nil)
-	w := httptest.NewRecorder()
-
-	handleSSHUploadPack(w, r, a)
-
-	res := w.Result()
-
-	err := res.Body.Close()
-	require.NoError(t, err)
-
-	require.Equal(t, http.StatusInternalServerError, res.StatusCode)
-}
-
 func TestReceivePack(t *testing.T) {
 	addr := setupGitalyServer(t)
 	a := &api.Response{GitalyServer: api.GitalyServer{Address: addr}}
@@ -113,15 +97,15 @@ func TestReceivePack_GitalyConnection(t *testing.T) {
 	require.Equal(t, http.StatusInternalServerError, res.StatusCode)
 }
 
-func TestReceive_FullDuplex(t *testing.T) {
-	addr := setupGitalyServer(t)
-	a := &api.Response{GitalyServer: api.GitalyServer{Address: addr}}
+func TestWithFullDuplex_Unsupported(t *testing.T) {
+	next := http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		t.Fatal("next handler must not run")
+	})
 
-	time.Sleep(10 * time.Millisecond)
-	r := httptest.NewRequest("POST", sshReceivePackPath, nil)
+	r := httptest.NewRequest(http.MethodPost, sshReceivePackPath, nil)
 	w := httptest.NewRecorder()
 
-	handleSSHReceivePack(w, r, a)
+	withFullDuplex(next).ServeHTTP(w, r)
 
 	res := w.Result()
 
@@ -129,6 +113,61 @@ func TestReceive_FullDuplex(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, http.StatusInternalServerError, res.StatusCode)
+}
+
+func TestSSHPreAuthorizeRejection_OpenRequestBody(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	rails := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = io.WriteString(w, "not found")
+	}))
+	defer rails.Close()
+
+	a := api.NewAPI(helper.URLMustParse(rails.URL), "123", http.DefaultTransport)
+
+	tests := []struct {
+		name    string
+		handler http.Handler
+		path    string
+	}{
+		{name: "upload pack", handler: SSHUploadPack(a), path: sshUploadPackPath},
+		{name: "receive pack", handler: SSHReceivePack(a), path: sshReceivePackPath},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ts := httptest.NewServer(tt.handler)
+			defer ts.Close()
+
+			// gitlab-shell streams the SSH client's stdin, which stays silent until
+			// the client gets a response.
+			body, bodyWriter := io.Pipe()
+			defer bodyWriter.Close()
+
+			type result struct {
+				status int
+				err    error
+			}
+			done := make(chan result, 1)
+			go func() {
+				res, err := http.Post(ts.URL+tt.path, "application/octet-stream", body)
+				if err != nil {
+					done <- result{err: err}
+					return
+				}
+				done <- result{status: res.StatusCode, err: res.Body.Close()}
+			}()
+
+			select {
+			case r := <-done:
+				require.NoError(t, r.err)
+				require.Equal(t, http.StatusNotFound, r.status)
+			case <-time.After(5 * time.Second):
+				t.Fatal("rejection not sent while the request body was open")
+			}
+		})
+	}
 }
 
 func setupGitalyServer(t *testing.T) string {

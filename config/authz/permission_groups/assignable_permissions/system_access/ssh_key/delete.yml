@@ -10,6 +10,9 @@ available_for:
 permissions:
   - delete_user_ssh_key
 assignable_when:
+  - condition: admin
+    boundaries:
+      - instance
   - condition: saas
     boundaries:
       - group

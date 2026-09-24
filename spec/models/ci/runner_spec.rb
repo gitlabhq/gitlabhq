@@ -1337,6 +1337,27 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     end
   end
 
+  describe '#predefined_variables' do
+    subject(:runner_tags) { runner.predefined_variables['CI_RUNNER_TAGS'].value }
+
+    let(:runner) { create(:ci_runner, tag_list: tag_list).reload }
+
+    context 'with ordinary tags' do
+      let(:tag_list) { %w[docker ruby] }
+
+      it { is_expected.to eq('["docker", "ruby"]') }
+    end
+
+    context 'with a tag that requires JSON escaping' do
+      let(:tag) { "prefix\u001bsuffix" }
+      let(:tag_list) { [tag] }
+
+      it 'returns valid JSON that preserves the tag' do
+        expect(Gitlab::Json::SafeParser.parse(runner_tags)).to eq([tag])
+      end
+    end
+  end
+
   describe '.search' do
     let_it_be(:runner, freeze: true) { create(:ci_runner, token: '123abc', description: 'test runner') }
 

@@ -61,7 +61,23 @@ The service container for MySQL is accessible under the hostname `mysql`.
 To access your database service, connect to the host named `mysql` instead of a
 socket or `localhost`. Read more in [accessing the services](#accessing-the-services).
 
-## How the health check of services works
+## Docker integration workflow
+
+The following is a high level overview of the steps performed by Docker during job
+time.
+
+1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
+1. Create a cache container to store all volumes as defined in `config.toml` and
+   `Dockerfile` of build image (`ruby:4.0` as in the previous examples).
+1. Create a build container and link any service container to build container.
+1. Start the build container, and send a job script to the container.
+1. Run the job script.
+1. Checkout code in: `/builds/group-name/project-name/`.
+1. Run any step defined in `.gitlab-ci.yml`.
+1. Check the exit status of build script.
+1. Remove the build container and all created service containers.
+
+## Service health check workflow
 
 Services are designed to provide additional features which are network accessible.
 They may be a database like MySQL, or Redis, and even `docker:dind` which
@@ -484,22 +500,6 @@ For this solution to work, you must:
 - Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker/#create-a-network-for-each-job).
 - [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-docker-socket-binding).
   If you must, then in the previous example, instead of `host`, use the dynamic network name created for this job.
-
-## How Docker integration works
-
-The following is a high level overview of the steps performed by Docker during job
-time.
-
-1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
-1. Create a cache container to store all volumes as defined in `config.toml` and
-   `Dockerfile` of build image (`ruby:4.0` as in the previous examples).
-1. Create a build container and link any service container to build container.
-1. Start the build container, and send a job script to the container.
-1. Run the job script.
-1. Checkout code in: `/builds/group-name/project-name/`.
-1. Run any step defined in `.gitlab-ci.yml`.
-1. Check the exit status of build script.
-1. Remove the build container and all created service containers.
 
 ## Capturing service container logs
 

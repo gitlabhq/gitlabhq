@@ -5,8 +5,6 @@ module AuthorizedProjectUpdate
     # Service for refreshing all the authorizations to a particular project.
     include Gitlab::Utils::StrongMemoize
 
-    BATCH_SIZE = 1000
-
     def initialize(project)
       @project = project
     end
@@ -33,17 +31,9 @@ module AuthorizedProjectUpdate
     end
 
     def fresh_authorizations
-      strong_memoize(:fresh_authorizations) do
-        result = []
-
-        effective_access_levels
-          .each_batch(of: BATCH_SIZE, column: :user_id) do |member_batch|
-            result += member_batch.pluck(:user_id, 'MAX(access_level)') # rubocop: disable CodeReuse/ActiveRecord
-          end
-
-        result
-      end
+      effective_access_levels
     end
+    strong_memoize_attr :fresh_authorizations
 
     def user_ids_to_remove
       strong_memoize(:user_ids_to_remove) do

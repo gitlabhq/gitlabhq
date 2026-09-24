@@ -45,6 +45,7 @@ class User < ApplicationRecord
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
+  ignore_column :static_object_token, remove_with: '19.6', remove_after: '2026-10-18'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -98,7 +99,7 @@ class User < ApplicationRecord
   add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, insecure: true, format_with_prefix: :prefix_for_feed_token
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/439294
-  add_authentication_token_field :static_object_token, encrypted: :optional # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439294
+  add_authentication_token_field :static_object_token, encrypted: :required # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439294
 
   attribute :admin, default: false
   attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }

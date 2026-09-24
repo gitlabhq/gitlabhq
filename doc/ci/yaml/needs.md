@@ -27,7 +27,7 @@ Use cases:
 > Use [`needs: project`](_index.md#needsproject) to fetch artifacts from other pipelines.
 > Use [`needs: pipeline`](_index.md#needspipeline) to mirror the pipeline status from an upstream pipeline.
 
-## How `needs` works
+## `needs` workflow
 
 By default, jobs run in stages. All jobs in a stage must finish successfully before
 any job in a later stage can start. For example, with the default `build`, `test`, and `deploy` stages,

@@ -28,7 +28,8 @@ module Mutations
 
         authorize :admin_all_resources
         authorize_granular_token permissions: :delete_integration_exclusion, boundary: :instance,
-          boundary_type: :instance
+          boundary_type: :instance,
+          assignable_when: [:admin]
 
         def resolve(integration_name:, project_ids: [], group_ids: [])
           authorize!(:global)

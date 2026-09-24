@@ -26,7 +26,8 @@ module API
         optional :email, type: String, desc: 'Custom email address for the user'
       end
 
-      route_setting :authorization, permissions: :create_service_account, boundary_type: :instance
+      route_setting :authorization, permissions: :create_service_account, boundary_type: :instance,
+        assignable_when: [:admin]
       post feature_category: :user_management do
         check_rate_limit!(:service_account_creation, scope: current_user)
 
@@ -63,7 +64,8 @@ module API
       end
 
       # rubocop: disable CodeReuse/ActiveRecord -- for the user or reorder
-      route_setting :authorization, permissions: :read_service_account, boundary_type: :instance
+      route_setting :authorization, permissions: :read_service_account, boundary_type: :instance,
+        assignable_when: [:admin]
       get do
         authorize! :admin_service_accounts
 
@@ -94,7 +96,8 @@ module API
         optional :email, type: String, desc: 'Custom email address for the user'
       end
 
-      route_setting :authorization, permissions: :update_service_account, boundary_type: :instance
+      route_setting :authorization, permissions: :update_service_account, boundary_type: :instance,
+        assignable_when: [:admin]
       patch ":user_id", feature_category: :user_management do
         authorize! :admin_service_accounts
 

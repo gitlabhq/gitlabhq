@@ -12,14 +12,17 @@ module Projects
         @project = project
       end
 
+      # @return [Array<[user_id, access_level]>] the highest access level per user
       def execute
-        return Member.none if no_members?
+        highest_access_level_per_user = {}
 
-        # rubocop: disable CodeReuse/ActiveRecord
-        Member.from(generate_from_statement(user_ids_and_access_levels_from_all_memberships))
-          .select([:user_id, 'MAX(access_level) AS access_level'])
-          .group(:user_id)
-        # rubocop: enable CodeReuse/ActiveRecord
+        user_ids_and_access_levels_from_all_memberships.each do |user_id, access_level|
+          current = highest_access_level_per_user[user_id]
+
+          highest_access_level_per_user[user_id] = access_level if current.nil? || current < access_level
+        end
+
+        highest_access_level_per_user.to_a
       end
 
       private
@@ -30,10 +33,6 @@ module Projects
         values_list = Arel::Nodes::ValuesList.new(user_ids_and_access_levels).to_sql
 
         "(#{values_list}) members (user_id, access_level)"
-      end
-
-      def no_members?
-        user_ids_and_access_levels_from_all_memberships.blank?
       end
 
       def all_possible_avenues_of_membership

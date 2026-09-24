@@ -35,7 +35,8 @@ module API
               type: String,
               desc: 'The table name'
           end
-          route_setting :authorization, permissions: :read_database_dictionary, boundary_type: :instance
+          route_setting :authorization, permissions: :read_database_dictionary, boundary_type: :instance,
+            assignable_when: [:admin]
           get do
             table_dictionary = ::Gitlab::Database::Dictionary.entry(params[:table_name])
             not_found!('Table not found') unless table_dictionary

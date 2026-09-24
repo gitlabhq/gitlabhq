@@ -7,6 +7,7 @@ export const LOAD_PERFORMANCE_ROUTE = 'load-performance';
 export const ACCESSIBILITY_ROUTE = 'accessibility';
 export const ROOT_ROUTE = 'reports-root';
 export const METRICS_ROUTE = 'metrics';
+export const TEST_SUMMARY_ROUTE = 'test-summary';
 
 export const EMPTY_STATE_NO_PIPELINE = 'no-pipeline';
 export const EMPTY_STATE_PIPELINE_RUNNING = 'pipeline-running';
@@ -25,4 +26,5 @@ export const TRACKING_LABEL_BY_ROUTE = {
   [BROWSER_PERFORMANCE_ROUTE]: 'browser_performance',
   [LOAD_PERFORMANCE_ROUTE]: 'load_performance',
   [ACCESSIBILITY_ROUTE]: 'accessibility',
+  [TEST_SUMMARY_ROUTE]: 'test_summary',
 };

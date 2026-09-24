@@ -309,7 +309,7 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 If you use cache and artifacts to store the same path in your jobs, the cache might
 be overwritten because caches are restored before artifacts.
 
-### How archiving and extracting works
+### Archive and extraction workflow
 
 This example shows two jobs in two consecutive stages:
 

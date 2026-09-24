@@ -379,7 +379,9 @@ RSpec.describe 'Database schema',
       # Decrement by 2 after the removal of the temporary indexes from
       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848 and
       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250028
-      users: 35,
+      # Decremented to 34 after dropping index_users_on_static_object_token in
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256528
+      users: 34,
       vulnerability_reads: 25 # Increased by one for tmp index on BBM https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235514
     }.with_indifferent_access.freeze
   end

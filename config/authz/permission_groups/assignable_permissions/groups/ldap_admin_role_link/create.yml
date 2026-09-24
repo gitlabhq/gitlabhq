@@ -7,3 +7,5 @@ available_for:
   - granular_access_token
 permissions:
   - create_ldap_admin_role_link
+assignable_when:
+  - condition: admin

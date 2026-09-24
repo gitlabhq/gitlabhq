@@ -9,3 +9,5 @@ available_for:
   - granular_access_token
 permissions:
   - read_custom_attribute
+assignable_when:
+  - condition: admin

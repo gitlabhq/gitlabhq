@@ -31,7 +31,8 @@ module API
         success Entities::CustomAttribute
         tags ['custom_attributes']
       end
-      route_setting :authorization, permissions: :read_custom_attribute, boundary_type: boundary_type
+      route_setting :authorization, permissions: :read_custom_attribute, boundary_type: boundary_type,
+        assignable_when: [:admin]
       get ':id/custom_attributes' do
         resource = find_resource(attributable_finder, params[:id])
         authorize! :read_custom_attribute
@@ -47,7 +48,8 @@ module API
       params do
         use :custom_attributes_key
       end
-      route_setting :authorization, permissions: :read_custom_attribute, boundary_type: boundary_type
+      route_setting :authorization, permissions: :read_custom_attribute, boundary_type: boundary_type,
+        assignable_when: [:admin]
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/custom_attributes/:key' do
         resource = find_resource(attributable_finder, params[:id])
@@ -69,7 +71,8 @@ module API
         use :custom_attributes_key
         requires :value, type: String, desc: 'The value of the custom attribute'
       end
-      route_setting :authorization, permissions: :update_custom_attribute, boundary_type: boundary_type
+      route_setting :authorization, permissions: :update_custom_attribute, boundary_type: boundary_type,
+        assignable_when: [:admin]
       put ':id/custom_attributes/:key' do
         resource = find_resource(attributable_finder, params[:id])
         authorize! :update_custom_attribute
@@ -97,7 +100,8 @@ module API
       params do
         use :custom_attributes_key
       end
-      route_setting :authorization, permissions: :delete_custom_attribute, boundary_type: boundary_type
+      route_setting :authorization, permissions: :delete_custom_attribute, boundary_type: boundary_type,
+        assignable_when: [:admin]
       delete ':id/custom_attributes/:key' do
         resource = find_resource(attributable_finder, params[:id])
         authorize! :update_custom_attribute

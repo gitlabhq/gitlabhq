@@ -523,7 +523,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     context 'when external storage is enabled' do
-      let(:user) { create(:user, static_object_token: 'hunter1') }
+      let(:user) { create(:user) }
 
       before do
         stub_application_setting(static_objects_external_storage_url: 'https://cdn.gitlab.com')

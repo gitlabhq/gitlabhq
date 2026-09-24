@@ -12505,6 +12505,11 @@ msgstr ""
 msgid "Artifact was successfully deleted."
 msgstr ""
 
+msgid "ArtifactRegistry|%d platform"
+msgid_plural "ArtifactRegistry|%d platforms"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|%d referrer"
 msgid_plural "ArtifactRegistry|%d referrers"
 msgstr[0] ""
@@ -12867,6 +12872,9 @@ msgid "ArtifactRegistry|Description cannot be longer than %{maxLength} character
 msgstr ""
 
 msgid "ArtifactRegistry|Digest"
+msgstr ""
+
+msgid "ArtifactRegistry|Digest copied to clipboard."
 msgstr ""
 
 msgid "ArtifactRegistry|Disable Artifact Registry"
@@ -13291,6 +13299,11 @@ msgstr ""
 msgid "ArtifactRegistry|Referenced by"
 msgstr ""
 
+msgid "ArtifactRegistry|Referenced by manifest %{digests}"
+msgid_plural "ArtifactRegistry|Referenced by manifests %{digests}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|Referrer"
 msgstr ""
 
@@ -13656,6 +13669,9 @@ msgid "ArtifactRegistry|npm (.npmrc):"
 msgstr ""
 
 msgid "ArtifactRegistry|pnpm"
+msgstr ""
+
+msgid "ArtifactRegistry|referenced by %{manifests}"
 msgstr ""
 
 msgid "ArtifactRegistry|sbt"
@@ -53140,6 +53156,9 @@ msgstr ""
 msgid "MrReports|Start a pipeline to generate reports."
 msgstr ""
 
+msgid "MrReports|Test summary"
+msgstr ""
+
 msgid "MrReports|View CI/CD documentation"
 msgstr ""
 
@@ -68309,6 +68328,9 @@ msgid "Reports|Test summary failed to load results"
 msgstr ""
 
 msgid "Reports|Test summary results are being parsed"
+msgstr ""
+
+msgid "Reports|Test summary results are not available"
 msgstr ""
 
 msgid "Reports|View partial report"

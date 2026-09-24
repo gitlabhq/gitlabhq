@@ -198,12 +198,6 @@ If there are no known version compatibility issues left, and the grace
 period has passed, all affected repositories and developer tools should be updated to make the new Ruby
 default.
 
-At this point, update the [GitLab Compose Kit (GCK)](https://gitlab.com/gitlab-org/gitlab-compose-kit).
-This is an alternative development environment for users that prefer to run GitLab in `docker-compose`.
-This project relies on the same Docker images as our runners, so it should maintain parity with changes
-in that repository. This change is only necessary when the minor or major version changes
-([example](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/merge_requests/176).)
-
 As mentioned above, if the impact of the Ruby upgrade on SaaS availability is uncertain, it is
 prudent to skip this step until you have verified that it runs smoothly in production via a staged
 rollout. In this case, go to the next step first, and then, after the verification period has passed, promote

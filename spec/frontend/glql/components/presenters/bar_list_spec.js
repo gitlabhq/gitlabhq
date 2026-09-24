@@ -6,6 +6,7 @@ import DimensionRoutedChart from '~/glql/components/presenters/chart/dimension_r
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import {
   MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+  MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
   MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
   MOCK_AGGREGATED_DATA_ONE_DIM,
   MOCK_AGGREGATED_COMPARISON_DATA_ONE_DIM,
@@ -198,6 +199,45 @@ describe('BarListPresenter', () => {
       expect(findEmittedErrorMessage()).toBe(
         'Unknown `color`: `green`. Supported values are: `orange`, `blue`, `gray`.',
       );
+    });
+  });
+
+  // A window metric can't drop its date dimension, so a panel that wants one row per metric
+  // has to ask for that layout explicitly - `metricRows` reads its values off the first row.
+  describe('with metricRows in the display config', () => {
+    const createWithMetricRows = (displayConfig) =>
+      createComponent({
+        fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
+        displayConfig,
+      });
+
+    it.each([undefined, { metricRows: false }])(
+      'lays the dimension out as rows for %p',
+      (displayConfig) => {
+        createWithMetricRows(displayConfig);
+
+        expect(rows().map(({ name }) => name)).toEqual(['ruby', 'python', 'go']);
+      },
+    );
+
+    it('renders one row per metric instead, valued from the first node', () => {
+      createWithMetricRows({ metricRows: true });
+
+      expect(rows()).toMatchObject([
+        { name: 'Total count', value: 21 },
+        { name: 'Acceptance rate', value: 0.625 },
+      ]);
+    });
+
+    // With no metrics there's nothing to build rows from, so `metricRows` has no effect and
+    // the query falls through to the routing shell, which doesn't handle it either.
+    it('renders no chart when the query selected no metrics', () => {
+      createComponent({
+        fields: [{ key: 'language', label: 'Language', name: 'language', type: 'dimension' }],
+        displayConfig: { metricRows: true },
+      });
+
+      expect(findChart().exists()).toBe(false);
     });
   });
 

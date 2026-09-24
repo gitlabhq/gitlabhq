@@ -42,7 +42,8 @@
           %br
           = notification_reason_text(reason: @reason, show_manage_notifications_link: !@labels_url, show_help_link: true, manage_label_subscriptions_url: @labels_url, unsubscribe_url: @unsubscribe_url, format: :html)
           %span{ style: "color:transparent;font-size:0;display:none;overflow:hidden;opacity:0;width:0;height:0;max-width:0;max-height:0" }
-            = 'Notification message regarding ' + @target_url + " at #{Time.current.to_i}"
+            - marker = Feature.enabled?(:randomize_notification_email_marker, @project) ? SecureRandom.hex(16) : Time.current.to_i
+            = 'Notification message regarding ' + @target_url + " at #{marker}"
 
           = email_action @target_url
 

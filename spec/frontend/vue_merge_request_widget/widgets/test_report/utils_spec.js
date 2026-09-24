@@ -254,4 +254,54 @@ describe('test report widget extension utils', () => {
       expect(utils.formatFilePath(file)).toBe(expected);
     });
   });
+
+  describe('testSummarySections', () => {
+    const test = (name, extra = {}) => ({ name, file: `${name}.rb`, ...extra });
+    const suite = {
+      name: 'rspec',
+      status: 'failed',
+      summary: { total: 3, failed: 2, resolved: 1, errored: 0 },
+      new_failures: [test('new', { recent_failures: { count: 2, base_branch: 'main' } })],
+      new_errors: [test('errored')],
+      existing_failures: [test('existing')],
+      existing_errors: [],
+      resolved_failures: [test('fixed')],
+      resolved_errors: [],
+    };
+
+    it('builds a section for each suite with its tests grouped as new, existing and fixed', () => {
+      const onViewDetails = jest.fn();
+      const [section] = utils.testSummarySections([suite], onViewDetails);
+
+      expect(section).toMatchObject({
+        header: 'rspec: 2 failed and 1 fixed test result, 3 total tests',
+        text: '1 out of 2 failed tests has failed more than once in the last 14 days',
+        children: [
+          {
+            text: 'new',
+            icon: { name: 'failed' },
+            badge: { text: 'New' },
+            supportingText: 'Failed 2 times in main in the last 14 days',
+          },
+          { text: 'errored', icon: { name: 'failed' }, badge: { text: 'New' } },
+          { text: 'existing', icon: { name: 'failed' } },
+          { text: 'fixed', icon: { name: 'success' }, badge: { text: 'Fixed' } },
+        ],
+      });
+
+      section.children[0].actions[0].onClick();
+
+      expect(onViewDetails).toHaveBeenCalledWith(suite.new_failures[0]);
+    });
+
+    it('puts each suite parsing error on its own line', () => {
+      const [section] = utils.testSummarySections([
+        { ...suite, suite_errors: { head: 'head failed', base: 'base failed' } },
+      ]);
+
+      expect(section.text).toBe(
+        'Head report parsing error: head failed\nBase report parsing error: base failed',
+      );
+    });
+  });
 });

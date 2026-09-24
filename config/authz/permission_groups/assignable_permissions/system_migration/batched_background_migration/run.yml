@@ -8,3 +8,5 @@ available_for:
 permissions:
   - pause_batched_background_migration
   - resume_batched_background_migration
+assignable_when:
+  - condition: admin

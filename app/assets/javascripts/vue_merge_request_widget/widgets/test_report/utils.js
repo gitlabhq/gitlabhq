@@ -1,5 +1,7 @@
-import { isEmpty } from 'lodash-es';
-import { i18n } from './constants';
+import { isEmpty, uniq } from 'lodash-es';
+import { __ } from '~/locale';
+import { EXTENSION_ICONS } from '../../constants';
+import { i18n, TESTS_FAILED_STATUS, ERROR_STATUS } from './constants';
 
 const textBuilder = (results, boldNumbers = false) => {
   const { failed, errored, resolved, total } = results;
@@ -97,3 +99,71 @@ export const countRecentlyFailedTests = (subject) => {
 export const formatFilePath = (file) => {
   return file.replace(/^\.?\/*/, '');
 };
+
+export const failedTestFiles = (suites = []) =>
+  uniq(suites.flatMap((suite) => (suite.new_failures || []).map((failure) => failure.file)))
+    .join(' ')
+    .trim();
+
+export const testSummaryStatusIcon = ({ status = null, hasSuiteError = false } = {}) => {
+  if (status === TESTS_FAILED_STATUS) {
+    return EXTENSION_ICONS.warning;
+  }
+  if (hasSuiteError) {
+    return EXTENSION_ICONS.failed;
+  }
+  return EXTENSION_ICONS.success;
+};
+
+export const testSummary = ({ hasSuiteError = false, summary = {} } = {}) => {
+  if (hasSuiteError) {
+    return { title: i18n.error };
+  }
+  return {
+    title: summaryTextBuilder(i18n.label, summary),
+    subtitle: recentFailuresTextBuilder(summary),
+  };
+};
+
+export const parseTestReport = (data = {}) => {
+  const { suites = [], summary = {} } = data;
+
+  return {
+    hasSuiteError: suites.some((suite) => suite.status === ERROR_STATUS),
+    ...data,
+    summary: {
+      recentlyFailed: countRecentlyFailedTests(suites),
+      ...summary,
+    },
+  };
+};
+
+export const testSummarySections = (suites = [], onViewDetails) =>
+  suites.map((suite) => {
+    const toItem = (iconName, badgeText) => (test) => ({
+      text: test.name,
+      icon: { name: iconName },
+      badge: badgeText && { text: badgeText },
+      supportingText: test.recent_failures?.count
+        ? i18n.recentFailureCount(test.recent_failures)
+        : '',
+      actions: [{ text: __('View details'), onClick: () => onViewDetails(test) }],
+    });
+    const summary = { recentlyFailed: countRecentlyFailedTests(suite), ...suite.summary };
+
+    return {
+      header: reportTextBuilder(suite),
+      text: reportSubTextBuilder({ ...suite, summary }).join('\n'),
+      children: [
+        ...[...suite.new_failures, ...suite.new_errors].map(
+          toItem(EXTENSION_ICONS.failed, i18n.newHeader),
+        ),
+        ...[...suite.existing_failures, ...suite.existing_errors].map(
+          toItem(EXTENSION_ICONS.failed),
+        ),
+        ...[...suite.resolved_failures, ...suite.resolved_errors].map(
+          toItem(EXTENSION_ICONS.success, i18n.fixedHeader),
+        ),
+      ],
+    };
+  });

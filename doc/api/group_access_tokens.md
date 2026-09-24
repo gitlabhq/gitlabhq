@@ -151,7 +151,7 @@ POST /groups/:id/access_tokens
 | `description`  | string            | no       | Description of the group access token. Maximum: 255 characters. |
 | `scopes`       | `Array[String]`   | yes      | List of [scopes](../security/tokens/access_token_scopes.md) available to the token. |
 | `access_level` | Integer           | no       | Role for the token. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), and `50` (Owner). Default value: `40`. |
-| `expires_at`   | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at`   | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 
 ```shell
 curl --request POST \
@@ -203,7 +203,7 @@ POST /groups/:id/access_tokens/:token_id/rotate
 | ------------ | ----------------- | -------- | ----------- |
 | `id`         | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
 | `token_id`   | integer or string | yes      | ID of a group access token or the keyword `self`. |
-| `expires_at` | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If the token requires an expiration date, defaults to 1 week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If the token requires an expiration date, defaults to one week. If not required, the token has no expiration date. |
 
 ```shell
 curl --request POST \

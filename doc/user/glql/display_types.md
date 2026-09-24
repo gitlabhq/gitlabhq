@@ -327,6 +327,7 @@ sort: acceptedCount asc
 - `valueLabels`, `color`, and `scale` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628026) in GitLab 19.5.
 - Rows from metrics for a query without a dimension, and `color: gray`, [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628932) in GitLab 19.5.
 - Two-dimension stacked bars and the `maxSeries` display option [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23470) in GitLab 19.5.
+- `metricRows` display option [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628025) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -353,6 +354,11 @@ rather than as a number of milliseconds. These rows keep their order, are never 
 `Other` row, and show no change against the previous period. A metric with no value in the
 response, such as a percentile over no merge requests, renders as an em dash (`—`) with an empty
 bar.
+
+Some metrics cannot drop their dimension. A metric that compares one time bucket against the
+previous one, such as `returningUsersCount`, requires the date dimension. To get one row per
+metric from a query that has one, set `metricRows: true` under `displayConfig`. Values come
+from the first row of the response, so sort the query to put the row you want first.
 
 With dimensions, the `maxRows` option under `displayConfig` sets how many rows show before the
 rest fold into a single row named `Other (N)`, where `N` is the number of rows folded in and the
@@ -476,6 +482,25 @@ displayConfig:
 mode: analytics
 query: type = MergeRequest and merged >= -30d
 metrics: timeToMergeQuantile(0.5) as "Median", timeToMergeQuantile(0.75) as "p75"
+```
+````
+
+To split the users active in a period into those who also had a session in the period before and
+those who did not, as one row each. The query covers two consecutive 30-day periods, because
+`returningUsersCount` has nothing to compare against without the earlier one, and sorts the newest
+bucket first so `metricRows` reads the later one. `origin` anchors the buckets to the start of the
+range, so they line up with it instead of counting from the Unix epoch:
+
+````yaml
+```glql
+display: barList
+displayConfig:
+  metricRows: true
+mode: analytics
+query: type = DuoWorkflow and created >= 2026-07-16 and created < 2026-09-14
+dimensions: created(granularity=30d, origin=2026-07-16)
+metrics: joinedUsersCount as "New", returningUsersCount as "Returning"
+sort: created desc
 ```
 ````
 

@@ -23,7 +23,8 @@ module API
 
               at_least_one_of(*Gitlab::SidekiqQueue::ALLOWED_KEYS)
             end
-            route_setting :authorization, permissions: :drop_sidekiq_job, boundary_type: :instance
+            route_setting :authorization, permissions: :drop_sidekiq_job, boundary_type: :instance,
+              assignable_when: [:admin]
             delete ':queue_name' do
               result =
                 Gitlab::SidekiqQueue

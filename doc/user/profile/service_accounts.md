@@ -331,6 +331,7 @@ To create a personal access token for a service account:
 1. In **Expiration date**, enter an expiration date for the token.
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
+   - If expiration dates are not required, the token is created with no expiry date.
    - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
 1. Select the [desired scopes](../../security/tokens/access_token_scopes.md).
 1. Select **Create personal access token**.

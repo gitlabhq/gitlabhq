@@ -23,7 +23,7 @@ module API
           is_array true
           tags %w[clusters]
         end
-        route_setting :authorization, permissions: :read_cluster, boundary_type: :instance
+        route_setting :authorization, permissions: :read_cluster, boundary_type: :instance, assignable_when: [:admin]
         get '/clusters' do
           authorize! :read_cluster, clusterable_instance
           present paginate(clusters_for_current_user), with: Entities::Cluster
@@ -41,7 +41,7 @@ module API
         params do
           requires :cluster_id, type: Integer, desc: "The cluster ID"
         end
-        route_setting :authorization, permissions: :read_cluster, boundary_type: :instance
+        route_setting :authorization, permissions: :read_cluster, boundary_type: :instance, assignable_when: [:admin]
         get '/clusters/:cluster_id' do
           authorize! :read_cluster, cluster
 
@@ -74,7 +74,7 @@ module API
             optional :authorization_type, type: String, values: ::Clusters::Platforms::Kubernetes.authorization_types.keys, default: 'rbac', desc: 'Cluster authorization type, defaults to RBAC'
           end
         end
-        route_setting :authorization, permissions: :create_cluster, boundary_type: :instance
+        route_setting :authorization, permissions: :create_cluster, boundary_type: :instance, assignable_when: [:admin]
         post '/clusters/add' do
           authorize! :add_cluster, clusterable_instance
 
@@ -115,7 +115,7 @@ module API
             optional :namespace, type: String, desc: 'Unique namespace related to Project'
           end
         end
-        route_setting :authorization, permissions: :update_cluster, boundary_type: :instance
+        route_setting :authorization, permissions: :update_cluster, boundary_type: :instance, assignable_when: [:admin]
         put '/clusters/:cluster_id' do
           authorize! :update_cluster, cluster
 
@@ -141,7 +141,7 @@ module API
         params do
           requires :cluster_id, type: Integer, desc: "The cluster ID"
         end
-        route_setting :authorization, permissions: :delete_cluster, boundary_type: :instance
+        route_setting :authorization, permissions: :delete_cluster, boundary_type: :instance, assignable_when: [:admin]
         delete '/clusters/:cluster_id' do
           authorize! :admin_cluster, cluster
 

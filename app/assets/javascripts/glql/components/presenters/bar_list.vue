@@ -95,9 +95,13 @@ export default {
     queryMetrics() {
       return metricsOf(this.fields);
     },
-    // Without a dimension the query returns a single node, and each metric becomes a row.
+    // A dimensioned query normally gets one row per value, but a window metric can't drop its
+    // date dimension, so `metricRows` forces one row per metric, read from the first node.
     metricRows() {
-      return dimensionsOf(this.fields).length === 0 && this.queryMetrics.length > 0;
+      return (
+        this.queryMetrics.length > 0 &&
+        (dimensionsOf(this.fields).length === 0 || this.displayConfig?.metricRows === true)
+      );
     },
     maxRows() {
       const maxRows = Number(this.displayConfig.maxRows);

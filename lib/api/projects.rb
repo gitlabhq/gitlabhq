@@ -525,7 +525,7 @@ module API
         use :create_params
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :create_project, boundary_type: :user
+      route_setting :authorization, permissions: :create_project, boundary_type: :user, assignable_when: [:admin]
       post "user/:user_id", feature_category: :groups_and_projects do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         authenticated_as_admin!
@@ -1253,7 +1253,7 @@ module API
       params do
         requires :id, type: String, desc: 'ID of a project'
       end
-      route_setting :authorization, permissions: :read_storage, boundary_type: :project
+      route_setting :authorization, permissions: :read_storage, boundary_type: :project, assignable_when: [:admin]
       get ':id/storage', feature_category: :source_code_management do
         authenticated_as_admin!
 

@@ -16,7 +16,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID of an SSH key', documentation: { example: '2' }
       end
-      route_setting :authorization, permissions: :read_ssh_key, boundary_type: :instance
+      route_setting :authorization, permissions: :read_ssh_key, boundary_type: :instance, assignable_when: [:admin]
       get ":id" do
         authenticated_as_admin!
 

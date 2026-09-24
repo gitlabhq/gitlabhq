@@ -296,6 +296,22 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
     end
   end
 
+  context 'when scope is milestones and a result is a group milestone' do
+    let_it_be(:group, freeze: false) { create(:group) }
+    let_it_be(:group_milestone, freeze: false) { create(:milestone, group: group, title: 'testing') }
+
+    let(:scope) { 'milestones' }
+    let(:term) { 'testing' }
+    let(:search_objects) { Milestone.id_in(group_milestone.id).page(1) }
+
+    it 'links to the group milestone and shows the group name' do
+      render
+
+      expect(rendered).to have_link(href: group_milestone_path(group, group_milestone))
+      expect(rendered).to have_content(group.full_name)
+    end
+  end
+
   context 'when scope is snippet_titles' do
     let_it_be(:snippets) { create_list(:personal_snippet, 2, :public, title: 'testing snippet') }
 

@@ -859,7 +859,7 @@ GEM
     gitlab-experiment (2.0.0)
       activesupport (>= 3.0)
       request_store (>= 1.0)
-    gitlab-fog-azure-rm (2.5.1)
+    gitlab-fog-azure-rm (2.5.2)
       base64
       faraday (~> 2.0)
       faraday-follow_redirects (~> 0.5.0)
@@ -1000,7 +1000,7 @@ GEM
       request_store (>= 1.0)
     google-apis-androidpublisher_v3 (0.107.0)
       google-apis-core (>= 0.15.0, < 2.a)
-    google-apis-cloudbilling_v1 (0.40.0)
+    google-apis-cloudbilling_v1 (0.41.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-cloudresourcemanager_v1 (0.45.0)
       google-apis-core (>= 0.15.0, < 2.a)
@@ -2570,7 +2570,7 @@ DEPENDENCIES
   gitlab_query_language (~> 0.39.0)
   gon (~> 6.6.0)
   google-apis-androidpublisher_v3 (~> 0.107.0)
-  google-apis-cloudbilling_v1 (~> 0.40.0)
+  google-apis-cloudbilling_v1 (~> 0.41.0)
   google-apis-cloudresourcemanager_v1 (~> 0.45.0)
   google-apis-compute_v1 (~> 0.154.0)
   google-apis-container_v1 (~> 0.100.0)
@@ -3050,7 +3050,7 @@ CHECKSUMS
   gitlab-duo-workflow-service-client (0.13)
   gitlab-email_handler (0.1.0)
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
-  gitlab-fog-azure-rm (2.5.1) sha256=87872a19bc2384ec038115f1047ea6df634b740d80de0e0fcfc8f29b5389fcb6
+  gitlab-fog-azure-rm (2.5.2) sha256=075f28509c83e717f39eaaea44c4c877ded5808e7b06150b37b99876ae50fbed
   gitlab-glaz (1.2.0) sha256=6dc4376c86dd56f660d81bcf75266424949c5a524e462abac514c35e7f4be7f1
   gitlab-glaz (1.2.0-aarch64-linux-gnu) sha256=3e2afad4dcedc1ca5c51afce5e7acaeca6262a92f7177e80333ceeb667faff85
   gitlab-glaz (1.2.0-arm64-darwin) sha256=8bd4267d7c4475e111062297018a387ceb556d7b2dce2408efce697ef98c1810
@@ -3097,7 +3097,7 @@ CHECKSUMS
   globalid (1.1.0) sha256=b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f
   gon (6.6.0) sha256=4c0be4e4f05fc8eb5db5ac2f7d47ae28ee04826f2b153338f7fb03c0e8f6ecd1
   google-apis-androidpublisher_v3 (0.107.0) sha256=b8207eecc89e6a9f7ea11aa88a07bccdcae5ca90121330079db4ef4696a2f3ff
-  google-apis-cloudbilling_v1 (0.40.0) sha256=5b7b1e93946c7a4631f9eadb5ca79e1d7f760b2eaf718f069d778359bdf93268
+  google-apis-cloudbilling_v1 (0.41.0) sha256=5d82d6e8ef39023ea6e23cac66cb72a3d824517ac65be459817efb38853bfcfc
   google-apis-cloudresourcemanager_v1 (0.45.0) sha256=ea936d4d51dd0556fb93f4a78131c0441c308906bf076d543c8852dbeec27d45
   google-apis-compute_v1 (0.154.0) sha256=8209a6414ccdf0f59a13ae4d0c4cc3c021689d2839b3be086fdf2ebc357d2452
   google-apis-container_v1 (0.100.0) sha256=5a5ae56036e384830263de6d48ed9b9f9ef26818b28b6b027206432e718d1853

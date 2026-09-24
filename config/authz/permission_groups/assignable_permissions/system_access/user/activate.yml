@@ -7,3 +7,5 @@ available_for:
   - granular_access_token
 permissions:
   - activate_user
+assignable_when:
+  - condition: admin

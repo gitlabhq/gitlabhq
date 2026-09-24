@@ -303,7 +303,10 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when passed days_to_expire parameter' do
-        subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name, days_to_expire: 42) }
+        subject do
+          Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name,
+            days_to_expire: 42)
+        end
 
         it { is_expected.to have_body_text('42') }
       end
@@ -329,7 +332,10 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when passed days_to_expire parameter' do
-        subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name, days_to_expire: 42) }
+        subject do
+          Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name,
+            days_to_expire: 42)
+        end
 
         it { is_expected.to have_body_text('42') }
       end
@@ -527,7 +533,9 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     shared_examples 'includes the email reason' do
-      it { is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>} }
+      it do
+        is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
+      end
     end
 
     shared_examples 'valid use case' do
@@ -586,7 +594,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         include_examples 'valid use case'
 
         it_behaves_like 'has the correct subject', /Your SSH key expires soon/
-        it_behaves_like 'has the correct body text', /SSH keys with the following fingerprints are scheduled to expire soon/
+        it_behaves_like 'has the correct body text',
+          /SSH keys with the following fingerprints are scheduled to expire soon/
       end
 
       context 'when invalid' do
@@ -603,6 +612,41 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
 
           it_behaves_like 'does not send email'
         end
+      end
+    end
+  end
+
+  describe 'notification footer without a project', :freeze_time, feature_category: :notifications do
+    subject(:footer_marker) do
+      Nokogiri::HTML((email.html_part || email).body.decoded)
+        .at_css('.footer span:contains("Notification message regarding")').text.strip
+    end
+
+    let_it_be(:user) { create(:user) }
+    let(:email) { Notify.ssh_key_expiring_soon_email(user, ['aa:bb:cc:dd:ee:zz']) }
+    let(:marker_prefix) { "Notification message regarding #{user_settings_ssh_keys_url} at " }
+
+    it 'uses a random marker when globally enabled' do
+      expect(footer_marker).to match(/\A#{Regexp.escape(marker_prefix)}\h{32}\z/)
+    end
+
+    context 'when randomize_notification_email_marker is disabled' do
+      before do
+        stub_feature_flags(randomize_notification_email_marker: false)
+      end
+
+      it 'preserves the timestamp marker' do
+        expect(footer_marker).to eq("#{marker_prefix}#{Time.current.to_i}")
+      end
+    end
+
+    context 'when enabled for 100 percent of actors' do
+      before do
+        Feature.enable_percentage_of_actors(:randomize_notification_email_marker, 100)
+      end
+
+      it 'preserves the timestamp marker' do
+        expect(footer_marker).to eq("#{marker_prefix}#{Time.current.to_i}")
       end
     end
   end

@@ -8,3 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - update_subscription_usage_cap
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

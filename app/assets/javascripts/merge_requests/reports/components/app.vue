@@ -10,6 +10,7 @@ import {
   LOAD_PERFORMANCE_ROUTE,
   ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
+  TEST_SUMMARY_ROUTE,
   ROOT_ROUTE,
   EMPTY_STATE_NO_PIPELINE,
   EMPTY_STATE_PIPELINE_RUNNING,
@@ -25,6 +26,7 @@ const REPORT_ROUTES = [
   LOAD_PERFORMANCE_ROUTE,
   ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
+  TEST_SUMMARY_ROUTE,
 ];
 const OWNED_ROUTES = [ROOT_ROUTE, ...REPORT_ROUTES];
 
@@ -82,6 +84,12 @@ export default {
     MetricsNavItem: defineAsyncComponent(
       () => import('ee_component/merge_requests/reports/metrics/metrics_nav_item.vue'),
     ),
+    TestSummaryProvider: defineAsyncComponent(
+      () => import('~/merge_requests/reports/test_summary/test_summary_provider.vue'),
+    ),
+    TestSummaryNavItem: defineAsyncComponent(
+      () => import('~/merge_requests/reports/test_summary/test_summary_nav_item.vue'),
+    ),
   },
   mixins: [mergeRequestData],
   inject: {
@@ -102,6 +110,7 @@ export default {
         [LOAD_PERFORMANCE_ROUTE]: this.hasLoadPerformanceReports,
         [ACCESSIBILITY_ROUTE]: this.hasAccessibilityReports,
         [METRICS_ROUTE]: this.hasMetricsReports,
+        [TEST_SUMMARY_ROUTE]: this.hasTestSummaryReports,
       };
 
       return REPORT_ROUTES.filter((route) => isConfigured[route]);
@@ -195,6 +204,9 @@ export default {
           <metrics-provider v-if="hasMetricsReports" :mr="mr">
             <metrics-nav-item />
           </metrics-provider>
+          <test-summary-provider v-if="hasTestSummaryReports" :mr="mr">
+            <test-summary-nav-item />
+          </test-summary-provider>
         </template>
       </nav>
     </aside>

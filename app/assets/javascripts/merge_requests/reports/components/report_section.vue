@@ -141,7 +141,7 @@ export default {
             <strong class="gl-block" data-testid="section-header">{{ section.header }}</strong>
             <span
               v-if="section.text"
-              class="gl-block gl-text-secondary"
+              class="gl-block gl-whitespace-pre-line gl-text-secondary"
               data-testid="section-text"
               >{{ section.text }}</span
             >

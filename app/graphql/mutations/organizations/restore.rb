@@ -6,7 +6,8 @@ module Mutations
       graphql_name 'OrganizationRestore'
 
       authorize :restore_organization
-      authorize_granular_token permissions: :restore_organization, boundary: :instance, boundary_type: :instance
+      authorize_granular_token permissions: :restore_organization, boundary: :instance, boundary_type: :instance,
+        assignable_when: [:admin]
 
       argument :id,
         Types::GlobalIDType[::Organizations::Organization],

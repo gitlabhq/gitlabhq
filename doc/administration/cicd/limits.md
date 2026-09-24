@@ -327,6 +327,7 @@ To change this limit on your GitLab Self-Managed instance:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0 [with a feature flag](../feature_flags/_index.md) named `ci_enforce_throttle_pipelines_creation`. Disabled by default. Enabled on GitLab.com
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196545) in 18.3.
 - CI Lint rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/599486) in GitLab 19.2 [with a feature flag](../feature_flags/_index.md) named `ci_enforce_ci_lint_rate_limit`. Disabled by default.
+- `ci_lint_limit_per_user` [reset to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256176) on all instances in GitLab 19.5.
 
 {{< /history >}}
 
@@ -342,9 +343,9 @@ GitLab enforces the following rate limits in this section:
 - **Per user for CI lint requests**: Limits [CI lint](../../ci/yaml/lint.md) requests made by a user across all
   projects. CI lint requests are similar to pipeline creation requests.
 
-On new installations, `ci_lint_limit_per_user` is set to `0` (no limit).
-On instances upgraded to GitLab 19.2, if `pipeline_limit_per_user` is already set to a value greater than `0`,
-`ci_lint_limit_per_user` is initialized to that same value.
+By default, `ci_lint_limit_per_user` is set to `0` (no limit).
+Upgrading to GitLab 19.5 resets this value to `0` on every instance, even where an administrator
+had previously set a limit. If you want to limit CI lint requests, set the value again after upgrading.
 
 For example, if you set a per-user limit of `100`, and a user sends `101` pipeline creation requests
 to the [trigger API](../../ci/triggers/_index.md) within one minute across different projects,

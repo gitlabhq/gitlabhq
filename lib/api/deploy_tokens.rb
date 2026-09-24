@@ -42,7 +42,7 @@ module API
       use :pagination
       use :filter_params
     end
-    route_setting :authorization, permissions: :read_deploy_token, boundary_type: :instance
+    route_setting :authorization, permissions: :read_deploy_token, boundary_type: :instance, assignable_when: [:admin]
     get 'deploy_tokens' do
       authenticated_as_admin!
 

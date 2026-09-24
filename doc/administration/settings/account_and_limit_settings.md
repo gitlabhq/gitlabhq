@@ -306,6 +306,7 @@ This setting is turned on by default and applies to:
 - Personal access tokens for non-service account users.
 - Group access tokens.
 - Project access tokens.
+- Impersonation tokens.
 
 For personal access tokens for service accounts, use the `service_access_tokens_expiration_enforced`
 setting in the [Application settings API](../../api/settings.md).
@@ -315,7 +316,7 @@ To require expiration dates for new access tokens:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Account and limit**.
-1. Select the **Personal / Project / Group access token expiration** checkbox.
+1. Select the **Require expiration date** checkbox.
 1. Select **Save changes**.
 
 When you require expiration dates for new access tokens:

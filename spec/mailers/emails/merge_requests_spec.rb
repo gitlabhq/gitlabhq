@@ -35,7 +35,8 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_referable_subject(merge_request, reply: true)
         is_expected.to have_body_text(project_merge_request_path(project, merge_request))
         is_expected.to have_body_text('You have been mentioned in merge request')
-        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+        is_expected.to have_link(merge_request.to_reference,
+          href: project_merge_request_url(merge_request.target_project, merge_request))
         is_expected.to have_text_part_content(assignee.name)
         is_expected.to have_text_part_content(reviewer.name)
         is_expected.to have_html_part_content(assignee.name)
@@ -70,7 +71,8 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_referable_subject(merge_request, reply: true)
         is_expected.to have_body_text(project_merge_request_path(project, merge_request))
         is_expected.to have_body_text('due to conflict.')
-        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+        is_expected.to have_link(merge_request.to_reference,
+          href: project_merge_request_url(merge_request.target_project, merge_request))
         is_expected.to have_text_part_content(assignee.name)
         is_expected.to have_html_part_content(assignee.name)
         is_expected.to have_text_part_content(reviewer.name)
@@ -124,7 +126,8 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_body_text('closed')
         is_expected.to have_body_text(current_user_sanitized)
         is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+        is_expected.to have_link(merge_request.to_reference,
+          href: project_merge_request_url(merge_request.target_project, merge_request))
 
         expect(subject.text_part).to have_content(assignee.name)
         expect(subject.text_part).to have_content(reviewer.name)
@@ -160,7 +163,8 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_referable_subject(merge_request, reply: true)
         is_expected.to have_body_text('merged')
         is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+        is_expected.to have_link(merge_request.to_reference,
+          href: project_merge_request_url(merge_request.target_project, merge_request))
 
         expect(subject.text_part).to have_content(assignee.name)
         expect(subject.text_part).to have_content(reviewer.name)
@@ -169,6 +173,36 @@ RSpec.describe Emails::MergeRequests do
 
     it "uses the correct layout template" do
       is_expected.to have_html_part_content('determine_layout returned template notify')
+    end
+
+    describe 'notification footer', :freeze_time, feature_category: :notifications do
+      subject(:footer_marker) do
+        Nokogiri::HTML(email.html_part.body.decoded).at_css(marker_selector).text.strip
+      end
+
+      let(:email) { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
+      let(:target_url) { project_merge_request_url(project, merge_request) }
+      let(:marker_selector) { '.footer span:contains("Notification message regarding")' }
+
+      it 'uses different markers for notifications rendered in the same second', :aggregate_failures do
+        other_email = Notify.merged_merge_request_email(reviewer.id, merge_request.id, merge_author.id)
+        other_marker = Nokogiri::HTML(other_email.html_part.body.decoded).at_css(marker_selector).text.strip
+
+        expect(footer_marker).to start_with("Notification message regarding #{target_url} at ")
+        expect(footer_marker).to match(/at \h{32}\z/)
+        expect(footer_marker).not_to eq(other_marker)
+        expect(email.text_part.body.decoded).not_to include('Notification message regarding')
+      end
+
+      context 'when randomize_notification_email_marker is disabled' do
+        before do
+          stub_feature_flags(randomize_notification_email_marker: false)
+        end
+
+        it 'preserves the timestamp marker' do
+          expect(footer_marker).to eq("Notification message regarding #{target_url} at #{Time.current.to_i}")
+        end
+      end
     end
   end
 
@@ -196,7 +230,8 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_body_text(status)
         is_expected.to have_body_text(current_user_sanitized)
         is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-        is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
+        is_expected.to have_link(merge_request.to_reference,
+          href: project_merge_request_url(merge_request.target_project, merge_request))
 
         expect(subject.text_part).to have_content(assignee.name)
         expect(subject.text_part).to have_content(reviewer.name)
@@ -307,7 +342,9 @@ RSpec.describe Emails::MergeRequests do
         }
       end
 
-      it { expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MiB.') }
+      it 'includes the truncation notice' do
+        expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MiB.')
+      end
     end
 
     it "uses the correct layout template" do

@@ -176,10 +176,10 @@ RSpec.describe 'User Settings > Granular personal access tokens > token creation
 
     within_testid('resource-tree') do
       click_button 'CI/CD'
-      check 'Cluster'
+      check 'Runner'
     end
 
-    within(find_by_testid('selected-resource', text: 'Cluster')) do
+    within(find_by_testid('selected-resource', text: 'Runner')) do
       click_button 'Select permissions'
       select_listbox_item 'Read'
     end

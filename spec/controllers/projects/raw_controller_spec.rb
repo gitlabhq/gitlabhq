@@ -158,10 +158,10 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
     context 'as a sessionless user' do
       let_it_be_with_reload(:project) { create(:project, :private, :repository) }
-      let_it_be_with_reload(:user) { create(:user, static_object_token: 'very-secure-token', developer_of: project) }
+      let_it_be_with_reload(:user) { create(:user, developer_of: project) }
       let_it_be(:file_path) { 'master/README.md' }
 
-      let(:token) { user.static_object_token }
+      let(:token) { user.reload.static_object_token }
 
       context 'when no token is provided' do
         it 'redirects to sign in page' do

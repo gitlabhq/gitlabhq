@@ -71,7 +71,7 @@ module API
       optional :organization_id, type: Integer, default: -> { ::Current.organization.id },
         desc: 'The organization id for the topic'
     end
-    route_setting :authorization, permissions: :create_topic, boundary_type: :instance
+    route_setting :authorization, permissions: :create_topic, boundary_type: :instance, assignable_when: [:admin]
     post 'topics' do
       authenticated_as_admin!
 
@@ -98,7 +98,7 @@ module API
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
         documentation: { type: 'file' }
     end
-    route_setting :authorization, permissions: :update_topic, boundary_type: :instance
+    route_setting :authorization, permissions: :update_topic, boundary_type: :instance, assignable_when: [:admin]
     put 'topics/:id' do
       authenticated_as_admin!
 
@@ -121,7 +121,7 @@ module API
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
     end
-    route_setting :authorization, permissions: :delete_topic, boundary_type: :instance
+    route_setting :authorization, permissions: :delete_topic, boundary_type: :instance, assignable_when: [:admin]
     delete 'topics/:id' do
       authenticated_as_admin!
 
@@ -140,7 +140,7 @@ module API
       requires :source_topic_id, type: Integer, desc: 'ID of source project topic'
       requires :target_topic_id, type: Integer, desc: 'ID of target project topic'
     end
-    route_setting :authorization, permissions: :merge_topic, boundary_type: :instance
+    route_setting :authorization, permissions: :merge_topic, boundary_type: :instance, assignable_when: [:admin]
     post 'topics/merge' do
       authenticated_as_admin!
 

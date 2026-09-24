@@ -3482,7 +3482,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   describe 'static object token' do
-    let_it_be_with_refind(:user) { create(:user, static_object_token: nil) }
+    let_it_be_with_refind(:user) { create(:user) }
 
     it 'ensures a static object token on read' do
       static_object_token = user.static_object_token
@@ -3501,10 +3501,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user[:static_object_token_encrypted]).to be_present
     end
 
-    it 'prefers an encoded version of the token' do
+    it 'ignores a plaintext version of the token' do
       token = user.static_object_token
 
-      user.update_column(:static_object_token, 'Test')
+      described_class.where(id: user.id).update_all(static_object_token: 'Test')
 
       expect(user.static_object_token).not_to eq('Test')
       expect(user.static_object_token).to eq(token)
@@ -3512,20 +3512,18 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   describe 'enabled_static_object_token' do
-    let_it_be(:static_object_token) { 'ilqx6jm1u945macft4eff0nw' }
-
     it 'returns static object token when supported' do
       allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(true)
 
-      user = create(:user, static_object_token: static_object_token)
+      user = create(:user)
 
-      expect(user.enabled_static_object_token).to eq(static_object_token)
+      expect(user.enabled_static_object_token).to eq(user.static_object_token)
     end
 
     it 'returns `nil` when not supported' do
       allow(Gitlab::CurrentSettings).to receive(:static_objects_external_storage_enabled?).and_return(false)
 
-      user = create(:user, static_object_token: static_object_token)
+      user = create(:user)
 
       expect(user.enabled_static_object_token).to be_nil
     end

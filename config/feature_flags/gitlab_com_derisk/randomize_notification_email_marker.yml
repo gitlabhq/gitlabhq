@@ -1,0 +1,11 @@
+---
+name: randomize_notification_email_marker
+description: Use a random marker to prevent Gmail from trimming duplicate notification
+  emails
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/630361
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257053
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630387
+milestone: '19.5'
+group: group::work items
+type: gitlab_com_derisk
+default_enabled: false

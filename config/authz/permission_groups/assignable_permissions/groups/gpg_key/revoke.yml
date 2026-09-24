@@ -8,3 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - revoke_user_gpg_key
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

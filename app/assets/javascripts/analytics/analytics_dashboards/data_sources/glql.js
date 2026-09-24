@@ -62,6 +62,10 @@ const usesWholeDateRange = (glql, variables) =>
  *   dimensions: created(%{dynamicGranularity})
  * A panel that does not ask for it, such as a stat, is unaffected.
  *
+ * `%{rangeDays}` and `%{previousStartDate}` fold the whole range into one bucket and pull
+ * in the one right before it, since a window metric compares against what came before.
+ * Neither one reaches the comparison query, so they can't combine with `showTrends`.
+ *
  * The visualization's own `data.query.dateRange` is the window used when the dashboard
  * has no date range filter. The dashboard filter wins when both are set, matching the
  * precedence the other analytics data sources already apply to a panel date range.
@@ -86,6 +90,8 @@ export default function fetch({
   );
   const dateVariables = dateRangeVariables(dateRange);
   const dynamicGranularity = dateRangeGranularity(dateRange);
+  const rangeDays = dateRangeDayCount(dateRange);
+  const previousStartDate = toISODateFormat(previousDateRange(dateRange).startDate, true);
 
   // Checked against the date variables alone: a stat carries no granularity placeholder,
   // requiring one here would cost every trend stat its comparison query.
@@ -100,5 +106,10 @@ export default function fetch({
     });
   }
 
-  return interpolate(glql, { ...dateVariables, dynamicGranularity });
+  return interpolate(glql, {
+    ...dateVariables,
+    dynamicGranularity,
+    rangeDays,
+    previousStartDate,
+  });
 }

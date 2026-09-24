@@ -189,7 +189,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of the Issue'
       end
-      route_setting :authorization, permissions: :read_issue, boundary_type: :instance
+      route_setting :authorization, permissions: :read_issue, boundary_type: :instance, assignable_when: [:admin]
       get ":id" do
         authenticated_as_admin!
         issue = Issue.find(params['id'])
@@ -627,7 +627,8 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      route_setting :authorization, permissions: :read_issue_user_agent_detail, boundary_type: :project
+      route_setting :authorization, permissions: :read_issue_user_agent_detail, boundary_type: :project,
+        assignable_when: [:admin]
       get ":id/issues/:issue_iid/user_agent_detail" do
         authenticated_as_admin!
 

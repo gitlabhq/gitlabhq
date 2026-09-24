@@ -8,6 +8,7 @@ import {
   ACCESSIBILITY_ROUTE,
   ROOT_ROUTE,
   METRICS_ROUTE,
+  TEST_SUMMARY_ROUTE,
 } from './constants';
 
 const CATCH_ALL_ROUTE = '/:pathMatch(.*)*';
@@ -60,6 +61,11 @@ export default [
     name: METRICS_ROUTE,
     path: `/${METRICS_ROUTE}`,
     component: () => import('ee_component/merge_requests/reports/metrics/metrics_page.vue'),
+  },
+  {
+    name: TEST_SUMMARY_ROUTE,
+    path: `/${TEST_SUMMARY_ROUTE}`,
+    component: () => import('~/merge_requests/reports/test_summary/test_summary_page.vue'),
   },
   {
     path: CATCH_ALL_ROUTE,

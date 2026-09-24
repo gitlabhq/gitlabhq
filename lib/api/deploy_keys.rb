@@ -38,7 +38,7 @@ module API
       use :pagination
       optional :public, type: Boolean, default: false, desc: "Only return deploy keys that are public"
     end
-    route_setting :authorization, permissions: :read_deploy_key, boundary_type: :instance
+    route_setting :authorization, permissions: :read_deploy_key, boundary_type: :instance, assignable_when: [:admin]
     get "deploy_keys" do
       authenticated_as_admin!
 
@@ -64,7 +64,7 @@ module API
       requires :title, type: String, desc: "New deploy key's title"
       optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
     end
-    route_setting :authorization, permissions: :create_deploy_key, boundary_type: :instance
+    route_setting :authorization, permissions: :create_deploy_key, boundary_type: :instance, assignable_when: [:admin]
     post "deploy_keys" do
       authenticated_as_admin!
 

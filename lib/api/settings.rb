@@ -28,7 +28,8 @@ module API
         { code: 403, message: 'Forbidden' }
       ]
     end
-    route_setting :authorization, permissions: :read_application_setting, boundary_type: :instance
+    route_setting :authorization, permissions: :read_application_setting, boundary_type: :instance,
+      assignable_when: [:admin]
     get "application/settings" do
       present current_settings, with: Entities::ApplicationSetting
     end
@@ -713,7 +714,8 @@ module API
       # rubocop:enable API/ParameterType, API/ParameterDescription
       at_least_one_of(*Helpers::SettingsHelpers.optional_attributes)
     end
-    route_setting :authorization, permissions: :update_application_setting, boundary_type: :instance
+    route_setting :authorization, permissions: :update_application_setting, boundary_type: :instance,
+      assignable_when: [:admin]
     put "application/settings" do
       attrs = declared_params(include_missing: false)
 

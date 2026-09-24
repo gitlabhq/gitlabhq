@@ -1,8 +1,15 @@
 <script>
-import { uniqueId, uniq } from 'lodash-es';
-import { __ } from '~/locale';
+import { uniqueId } from 'lodash-es';
+import { __, s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
+import { joinPaths } from '~/lib/utils/url_utility';
+import {
+  TEST_SUMMARY_ROUTE,
+  CLICK_VIEW_REPORT_ON_MERGE_REQUEST_WIDGET,
+  TRACKING_LABEL_BY_ROUTE,
+} from '~/merge_requests/reports/constants';
+import { InternalEvents } from '~/tracking';
 import TestCaseDetails from '~/ci/pipeline_details/test_reports/test_case_details.vue';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import MrWidgetRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
@@ -10,12 +17,14 @@ import { testReportProjectPipelinePath } from '~/lib/utils/path_helpers/pipeline
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
 import {
-  summaryTextBuilder,
   reportTextBuilder,
   reportSubTextBuilder,
   countRecentlyFailedTests,
-  recentFailuresTextBuilder,
   formatFilePath,
+  failedTestFiles,
+  parseTestReport,
+  testSummary,
+  testSummaryStatusIcon,
 } from './utils';
 import { i18n, TESTS_FAILED_STATUS, ERROR_STATUS } from './constants';
 
@@ -31,6 +40,7 @@ export default {
     TestCaseDetails,
   },
   i18n,
+  mixins: [InternalEvents.mixin()],
   props: {
     mr: {
       type: Object,
@@ -54,46 +64,20 @@ export default {
       return undefined;
     },
     failedTestNames() {
-      const { data: { suites = [] } = {} } = this.collapsedData;
-
       if (!this.hasSuites) {
         return '';
       }
 
-      const newFailures = suites.flatMap((suite) => [suite.new_failures || []]);
-      const fileNames = newFailures.flatMap((newFailure) => {
-        return newFailure.map((failure) => {
-          return failure.file;
-        });
-      });
-
-      return uniq(fileNames).join(' ').trim();
+      return failedTestFiles(this.collapsedData.data?.suites);
     },
     summary() {
-      const { data: { parsingInProgress = false, hasSuiteError = false, summary = {} } = {} } =
-        this.collapsedData;
-
-      if (parsingInProgress) {
+      if (this.collapsedData.data?.parsingInProgress) {
         return { title: this.$options.i18n.loading };
       }
-      if (hasSuiteError) {
-        return { title: this.$options.i18n.error };
-      }
-      return {
-        title: summaryTextBuilder(this.$options.i18n.label, summary),
-        subtitle: recentFailuresTextBuilder(summary),
-      };
+      return testSummary(this.collapsedData.data);
     },
     statusIcon() {
-      const { data: { status = null, hasSuiteError = false } = {} } = this.collapsedData;
-
-      if (status === TESTS_FAILED_STATUS) {
-        return EXTENSION_ICONS.warning;
-      }
-      if (hasSuiteError) {
-        return EXTENSION_ICONS.failed;
-      }
-      return EXTENSION_ICONS.success;
+      return testSummaryStatusIcon(this.collapsedData.data);
     },
     tertiaryButtons() {
       const actionButtons = [];
@@ -124,6 +108,21 @@ export default {
         tooltipText: this.shouldShowLoading ? this.$options.i18n.partialReportTooltipText : '',
       });
 
+      if (this.hasReportsTab) {
+        actionButtons.push({
+          text: s__('MrReports|View report'),
+          href: joinPaths(this.mr.reportsTabPath, TEST_SUMMARY_ROUTE),
+          onClick: (action, e) => {
+            e.preventDefault();
+            this.trackEvent(CLICK_VIEW_REPORT_ON_MERGE_REQUEST_WIDGET, {
+              label: TRACKING_LABEL_BY_ROUTE[TEST_SUMMARY_ROUTE],
+            });
+            window.history.pushState(null, null, action.href);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          },
+        });
+      }
+
       return actionButtons;
     },
     testResultsPath() {
@@ -132,27 +131,24 @@ export default {
     hasSuites() {
       return this.suites.length > 0;
     },
+    hasReportsTab() {
+      return Boolean(this.mr.reportsTabPath) && !this.shouldShowLoading;
+    },
   },
   methods: {
     fetchCollapsedData() {
       return axios.get(this.testResultsPath).then((response) => {
         const { data = {}, status } = response;
-        const { suites = [], summary = {} } = data;
 
         this.collapsedData = {
           ...response,
           data: {
-            hasSuiteError: suites.some((suite) => suite.status === ERROR_STATUS),
             parsingInProgress: status === HTTP_STATUS_NO_CONTENT,
-            ...data,
-            summary: {
-              recentlyFailed: countRecentlyFailedTests(suites),
-              ...summary,
-            },
+            ...parseTestReport(data),
           },
         };
         this.suites = this.prepareSuites(this.collapsedData);
-        this.$emit('loaded', summary.failed || 0);
+        this.$emit('loaded', data.summary?.failed || 0);
 
         return response;
       });
@@ -262,7 +258,7 @@ export default {
       :widget-name="$options.name"
       :summary="summary"
       :fetch-collapsed-data="fetchCollapsedData"
-      :is-collapsible="hasSuites"
+      :is-collapsible="!hasReportsTab && hasSuites"
       :expand-button-label="s__('Reports|Expand test summary')"
       :collapse-button-label="s__('Reports|Collapse test summary')"
     >

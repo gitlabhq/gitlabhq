@@ -30,7 +30,8 @@ module API
               desc: 'The name of the database',
               default: 'main'
           end
-          route_setting :authorization, permissions: :read_database_migration, boundary_type: :instance
+          route_setting :authorization, permissions: :read_database_migration, boundary_type: :instance,
+            assignable_when: [:admin]
           get 'pending' do
             response = Database::ListMigrationsService.new(
               connection: base_model.connection,
@@ -76,7 +77,8 @@ module API
               type: Integer,
               desc: 'The migration version timestamp'
           end
-          route_setting :authorization, permissions: :mark_database_migration, boundary_type: :instance
+          route_setting :authorization, permissions: :mark_database_migration, boundary_type: :instance,
+            assignable_when: [:admin]
           post do
             response = Database::MarkMigrationService.new(
               connection: base_model.connection,

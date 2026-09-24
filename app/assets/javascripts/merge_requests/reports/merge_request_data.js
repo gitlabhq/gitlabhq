@@ -10,6 +10,7 @@ import {
   hasLicenseComplianceReport,
   hasLoadPerformanceReport,
   hasMetricsReport,
+  hasTestSummaryReport,
 } from 'ee_else_ce/merge_requests/reports/configured_reports';
 
 export const PIPELINE_STATE = {
@@ -109,6 +110,9 @@ export default {
     },
     hasMetricsReports() {
       return hasMetricsReport(state.mr);
+    },
+    hasTestSummaryReports() {
+      return hasTestSummaryReport(state.mr);
     },
     pipelineState() {
       return pipelineStateOf(state.mr);

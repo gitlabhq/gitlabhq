@@ -170,6 +170,42 @@ describe('GLQL data source', () => {
     });
   });
 
+  // A window metric compares a bucket against the one before it, so a panel that wants the
+  // whole range as one number still has to ask for two buckets: the range and its predecessor.
+  describe('range length and previous window', () => {
+    const RETENTION_QUERY = [
+      'type = DuoWorkflow and created >= "%{previousStartDate}" and created <= "%{endDate}"',
+      'dimensions: created(granularity="%{rangeDays}d", origin="%{previousStartDate}")',
+    ].join('\n');
+
+    const fetchRetention = (filters) => fetch({ query: { glql: RETENTION_QUERY }, filters });
+
+    it('resolves the range length and the start of the window before it', () => {
+      expect(fetchRetention({ dateRangeOption: '7d' })).toBe(
+        [
+          // Both bounds count, so a 7d preset spans eight days.
+          'type = DuoWorkflow and created >= "2020-06-21" and created <= "2020-07-06"',
+          'dimensions: created(granularity="8d", origin="2020-06-21")',
+        ].join('\n'),
+      );
+    });
+
+    it('resolves both for a custom range', () => {
+      const filters = {
+        dateRangeOption: 'custom',
+        startDate: new Date(Date.UTC(2026, 0, 11)),
+        endDate: new Date(Date.UTC(2026, 0, 20)),
+      };
+
+      expect(fetchRetention(filters)).toBe(
+        [
+          'type = DuoWorkflow and created >= "2026-01-01" and created <= "2026-01-20"',
+          'dimensions: created(granularity="10d", origin="2026-01-01")',
+        ].join('\n'),
+      );
+    });
+  });
+
   // A panel sets its own window with `data.query.dateRange`. The dashboard filter wins
   // when both are set, matching the precedence the other analytics data sources apply.
   describe('with a panel date range', () => {

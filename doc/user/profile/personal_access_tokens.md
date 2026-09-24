@@ -220,11 +220,13 @@ To revoke a personal access token:
 
 ## Access token expiration
 
-Personal, group, and project access tokens expire at midnight UTC on the expiry date.
+Personal, group, project, and impersonation access tokens expire at midnight UTC on the expiry date.
 After they expire, they can no longer be used to authenticate requests.
 
-New access tokens must have an expiry date. If an expiry date isn't
-explicitly set during token creation, an expiry date of 365 days from the current date is applied.
+By default, new access tokens must have an expiry date.
+If an expiry date isn't explicitly set during token creation, an expiry date of 365 days from the current date is applied.
+If an administrator [turns off this requirement](../../administration/settings/account_and_limit_settings.md#require-expiration-dates-for-new-access-tokens),
+new tokens created without an expiry date never expire.
 In GitLab Ultimate, administrators can configure a
 [maximum allowable lifetime](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
 for access tokens.
@@ -252,7 +254,7 @@ You can subscribe to an iCalendar endpoint which contains events at the expiry d
 
 ### Create a service account personal access token with no expiry date
 
-You can [create a personal access token for a service account](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
+You can [create a personal access token for a service account](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account) with no expiry date. These personal access tokens never expire.
 
 > [!note]
 > Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
@@ -279,9 +281,11 @@ Prerequisites:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Account and limit**.
-1. Clear the **Service account token expiration** checkbox.
+1. Clear the **Require expiration date for service accounts** checkbox.
 
 You can now create personal access tokens for a service account user with no expiry date.
+
+On GitLab Self-Managed Community Edition (CE), the **Require expiration date for service accounts** checkbox is not available. Use the [**Require expiration date**](../../administration/settings/account_and_limit_settings.md#require-expiration-dates-for-new-access-tokens) setting instead.
 
 ## Clone repository using personal access token
 

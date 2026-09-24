@@ -514,10 +514,12 @@ module Ci
     end
 
     def predefined_variables
+      serialized_tags = tag_list.to_a.map { |tag| Gitlab::Json.generate(tag) }.join(', ')
+
       Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_RUNNER_ID', value: id.to_s)
         .append(key: 'CI_RUNNER_DESCRIPTION', value: description)
-        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_a.to_s)
+        .append(key: 'CI_RUNNER_TAGS', value: "[#{serialized_tags}]")
     end
 
     def tick_runner_queue

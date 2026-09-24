@@ -18,7 +18,7 @@ module API
       ]
       tags %w[instance]
     end
-    route_setting :authorization, permissions: :read_statistic, boundary_type: :instance
+    route_setting :authorization, permissions: :read_statistic, boundary_type: :instance, assignable_when: [:admin]
     get "application/statistics", urgency: :low do
       counts = Gitlab::Database::Count.approximate_counts(COUNTED_ITEMS)
       present counts, with: Entities::ApplicationStatistics

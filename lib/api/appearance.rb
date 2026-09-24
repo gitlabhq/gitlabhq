@@ -21,7 +21,8 @@ module API
         { code: 403, message: 'Forbidden' }
       ]
     end
-    route_setting :authorization, permissions: :read_application_appearance, boundary_type: :instance
+    route_setting :authorization, permissions: :read_application_appearance, boundary_type: :instance,
+      assignable_when: [:admin]
     get "application/appearance" do
       present current_appearance, with: Entities::Appearance
     end
@@ -57,7 +58,8 @@ module API
       optional :email_header_and_footer_enabled, type: Boolean, desc: 'Add header and footer to all outgoing emails if enabled'
       optional :site_name, type: String, desc: 'Last part of the webpage title. Defaults to empty.'
     end
-    route_setting :authorization, permissions: :update_application_appearance, boundary_type: :instance
+    route_setting :authorization, permissions: :update_application_appearance, boundary_type: :instance,
+      assignable_when: [:admin]
     put "application/appearance" do
       attrs = declared_params(include_missing: false)
 

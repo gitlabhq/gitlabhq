@@ -252,7 +252,8 @@ module API
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance
+      route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance,
+        assignable_when: [:admin]
       get ":id/snippets/:snippet_id/user_agent_detail" do
         authenticated_as_admin!
 

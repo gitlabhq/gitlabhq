@@ -19,7 +19,7 @@ module API
         ]
         tags features_tags
       end
-      route_setting :authorization, permissions: :read_feature, boundary_type: :instance
+      route_setting :authorization, permissions: :read_feature, boundary_type: :instance, assignable_when: [:admin]
       get do
         features = Feature.all
 
@@ -36,7 +36,7 @@ module API
         ]
         tags features_tags
       end
-      route_setting :authorization, permissions: :read_feature, boundary_type: :instance
+      route_setting :authorization, permissions: :read_feature, boundary_type: :instance, assignable_when: [:admin]
       get :definitions do
         definitions = ::Feature::Definition.definitions.values.map(&:to_h)
 
@@ -99,7 +99,7 @@ module API
         mutually_exclusive :key, :runner
         mutually_exclusive :key, :endpoint
       end
-      route_setting :authorization, permissions: :update_feature, boundary_type: :instance
+      route_setting :authorization, permissions: :update_feature, boundary_type: :instance, assignable_when: [:admin]
       post ':name' do
         flag_params = declared_params(include_missing: false)
         response = ::Admin::SetFeatureFlagService
@@ -122,7 +122,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the feature flag'
       end
-      route_setting :authorization, permissions: :delete_feature, boundary_type: :instance
+      route_setting :authorization, permissions: :delete_feature, boundary_type: :instance, assignable_when: [:admin]
       delete ':name' do
         Feature.remove(params[:name])
 

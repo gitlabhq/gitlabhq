@@ -8,3 +8,7 @@ available_for:
   - granular_access_token
 permissions:
   - delete_user_email
+assignable_when:
+  - condition: admin
+    boundaries:
+      - instance

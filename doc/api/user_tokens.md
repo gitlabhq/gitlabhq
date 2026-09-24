@@ -41,7 +41,7 @@ Supported attributes:
 | `user_id`    | integer | yes      | ID of user account. |
 | `name`       | string  | yes      | Name of personal access token. |
 | `description`| string  | no       | Description of personal access token. Maximum: 255 characters. |
-| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 | `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [access token scopes](../security/tokens/access_token_scopes.md). |
 
 Example request:
@@ -103,7 +103,7 @@ Supported attributes:
 | `name`       | string | yes      | Name of personal access token. |
 | `description`| string | no       | Description of personal access token. Maximum: 255 characters. |
 | `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy` and `self_rotate`. |
-| `expires_at` | date  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined and the token requires an expiration date, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). If not required, the token has no expiration date. |
 
 Example request:
 

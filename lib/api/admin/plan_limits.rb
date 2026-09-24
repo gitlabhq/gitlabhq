@@ -30,7 +30,7 @@ module API
         optional :plan_name, type: String, values: Plan.all_plans, default: Plan::DEFAULT,
           desc: 'Name of the plan to get the limits from. Default: default.'
       end
-      route_setting :authorization, permissions: :read_plan_limit, boundary_type: :instance
+      route_setting :authorization, permissions: :read_plan_limit, boundary_type: :instance, assignable_when: [:admin]
       get "application/plan_limits" do
         params = declared_params(include_missing: false)
         plan = current_plan(params.delete(:plan_name))
@@ -100,7 +100,7 @@ module API
         optional :max_pipelines_per_merge_train, type: Integer,
           desc: 'Maximum number of parallel pipelines per merge train'
       end
-      route_setting :authorization, permissions: :update_plan_limit, boundary_type: :instance
+      route_setting :authorization, permissions: :update_plan_limit, boundary_type: :instance, assignable_when: [:admin]
       put "application/plan_limits" do
         params = declared_params(include_missing: false)
         plan = current_plan(params.delete(:plan_name))
