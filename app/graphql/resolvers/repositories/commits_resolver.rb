@@ -82,8 +82,15 @@ module Resolvers
           pagination_params[:page_token] = Base64.decode64(page_token) if page_token
         end
         arguments[:literal_pathspec] = true
+        arguments[:follow] = follow?(arguments[:path])
 
         arguments
+      end
+
+      def follow?(path)
+        path.present? &&
+          Feature.enabled?(:list_commits_follow, repository.project) &&
+          Feature.disabled?(:remove_file_commit_history_following, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Instance-level
       end
 
       def empty_result

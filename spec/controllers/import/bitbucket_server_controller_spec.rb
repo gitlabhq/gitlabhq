@@ -54,13 +54,22 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'sets request_channel: :ui on the service' do
+      expect_next_instance_of(Import::BitbucketServerService) do |service|
+        expect(service).to receive(:request_channel=).with(:ui)
+        allow(service).to receive(:execute).and_return(status: :success, project: project)
+      end
+
+      post :create, params: params, format: :json
+    end
+
     it 'passes the project key and repo slug explicitly and drops unpermitted params', :aggregate_failures do
       expect(Import::BitbucketServerService).to receive(:new) do |_client, _user, service_params|
         expect(service_params[:bitbucket_server_project]).to eq(project_key)
         expect(service_params[:bitbucket_server_repo]).to eq(repo_slug)
         expect(service_params.to_h).not_to have_key('admin')
 
-        double(execute: { status: :success, project: project })
+        double(execute: { status: :success, project: project }, :request_channel= => nil)
       end
 
       post :create, params: params.merge(admin: true), format: :json

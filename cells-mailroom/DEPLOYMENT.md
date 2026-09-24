@@ -75,9 +75,10 @@ Unlike the existing mailroom, `cells-mailroom` loads no Rails environment,
 routes each email to the owning **cell** via the Topology Service, and forwards
 the raw email directly to each cell's internal mail_room endpoint (rather than
 posting to Workhorse). It runs as `bundle exec ruby run.rb` from the
-`cells-mailroom/` directory (see `run.rb`) and, like the existing mailroom, only
-makes outbound connections — it has no HTTP listener. How it is packaged and
-deployed is still under discussion.
+`cells-mailroom/` directory (see `run.rb`). Its only network dependencies are
+outbound (IMAP, Redis, the Topology Service, and cell internal APIs); the one
+listener is mail_room's health check server, which serves `/liveness` when a
+health check port is configured, the same as the existing mailroom.
 
 ## Configuration
 
@@ -158,3 +159,39 @@ double-processing:
   first (canary), or disable the legacy mailroom for the mailboxes cells-mailroom
   owns. The `route_unidentified_to_default_cell` toggle lets unidentifiable
   emails fall back to the default cell during migration.
+
+Both services share mail_room's Redis arbitration lock (namespace
+`mail_room:gitlab`), so a message is processed once even while both poll the
+same mailbox. Which service wins a given message is non-deterministic, which is
+the other reason to prefer a separate canary mailbox when verifying.
+
+### JWT verification during the transition
+
+The internal mail_room API accepts both token types at once, so the two signers
+can run side by side with no per-request coordination
+([!242985](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242985)):
+
+- The legacy mailroom signs **symmetric HS256** (no `kid`).
+- cells-mailroom signs **asymmetric ES256** (with a `kid`).
+- Each cell selects the method from its own configuration and the token's `kid`,
+  never from the token's `alg` header. A cell that has both a `secret_file` and
+  `public_key_files` verifies HS256 or ES256 per message; a cell with only a
+  `secret_file` rejects ES256 tokens.
+
+This makes the rollout order safety-critical:
+
+1. Publish the **public key** to every cell's `public_key_files` first. Cells
+   then accept HS256 and ES256; nothing signs ES256 yet, so behavior is
+   unchanged and this step is independently reversible.
+2. Only then enable cells-mailroom (private key + Topology Service cert). It now
+   signs ES256, which every cell can already verify.
+3. Disable the legacy mailroom for the migrated mailboxes.
+
+Roll back in reverse; remove the public keys **last**. Removing them while
+cells-mailroom is still signing ES256 would make every forwarded request fail
+verification.
+
+A forwarding failure (for example a cell that rejects a token because the order
+above was not followed) is safe: cells-mailroom reports the failure to mail_room,
+which leaves the message in the mailbox for a later retry rather than deleting
+it.

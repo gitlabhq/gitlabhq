@@ -35,6 +35,13 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
 
         token
       end
+
+      it 'does not log for tokens without the gliamat- prefix' do
+        expect(Gitlab::AuthLogger).not_to receive(:info)
+
+        expect(described_class.from_jwt('some-doorkeeper-token')).to be_nil
+        expect(described_class.from_jwt(nil)).to be_nil
+      end
     end
 
     context 'when IAM is enabled' do

@@ -45,7 +45,9 @@ module API
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
 
       import_params = declared(params, include_parent_namespaces: false).merge(organization_id: Current.organization.id)
-      result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider)
+      import_service = Import::GithubService.new(client, current_user, import_params)
+      import_service.request_channel = ::Gitlab::Import::RequestChannel.detect(request)
+      result = import_service.execute(access_params, provider)
 
       if result[:status] == :success
         present ProjectSerializer.new.represent(result[:project], { serializer: :import, warning: result[:warning] })

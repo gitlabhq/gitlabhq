@@ -32,6 +32,9 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
     subject(:project_pipeline) { described_class.new(context) }
 
     before do
+      # Mirror production: CreateService seeds EphemeralData before any event fires.
+      ::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel = :api
+
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: project_data))
       end
@@ -77,7 +80,11 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
           project: imported_project,
           user: user,
           namespace: group,
-          additional_properties: { label: 'gitlab_migration', property: entity.hashed_import_source }
+          additional_properties: {
+            label: 'gitlab_migration',
+            property: entity.hashed_import_source,
+            request_channel: 'api'
+          }
         )
     end
   end

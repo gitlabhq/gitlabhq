@@ -12,6 +12,13 @@ import { DISPLAY_TYPES } from '../../constants';
 import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
 import FormattedTooltipContent from './chart/formatted_tooltip_content.vue';
 
+// A capped axis keeps its busiest entries and drops the rest, so the colour
+// ramp spans the values on screen. The panel title has to say it is capped.
+// Ties break on the label, so which entry survives the cap does not depend on
+// the order the query happened to return.
+const largestFirst = (entries, max) =>
+  [...entries].sort((a, b) => b.total - a.total || a.label.localeCompare(b.label)).slice(0, max);
+
 export default {
   name: 'HeatMapPresenter',
   components: { DimensionRoutedChart, FormattedTooltipContent, HeatMapChart },
@@ -42,6 +49,13 @@ export default {
     description() {
       return this.displayConfig?.description;
     },
+    // A dense grid can cap either axis, keeping the busiest entries.
+    maxColumns() {
+      return this.axisCap(this.displayConfig?.maxColumns);
+    },
+    maxRows() {
+      return this.axisCap(this.displayConfig?.maxRows);
+    },
   },
   methods: {
     // The chart takes semantic cells; turning a GLQL result into them is this
@@ -56,13 +70,38 @@ export default {
       });
       const formatColumn = dimensionLabelFormatter(this.data.nodes, columnDimension);
 
-      return bars.flatMap(({ name, data }) =>
-        data.map((value, index) => ({
-          column: formatColumn(groups[index]),
-          row: name,
-          value,
+      const columns = this.cappedAxis(
+        groups.map((group, index) => ({
+          label: formatColumn(group),
+          index,
+          total: bars.reduce((sum, { data }) => sum + data[index], 0),
+        })),
+        this.maxColumns,
+      );
+      const rows = this.cappedAxis(
+        bars.map(({ name, data }, index) => ({
+          label: name,
+          index,
+          total: data.reduce((sum, value) => sum + value, 0),
+        })),
+        this.maxRows,
+      );
+
+      return rows.flatMap((row) =>
+        columns.map((column) => ({
+          column: column.label,
+          row: row.label,
+          value: bars[row.index].data[column.index],
         })),
       );
+    },
+    axisCap(value) {
+      const max = Number(value);
+
+      return Number.isInteger(max) && max > 0 ? max : null;
+    },
+    cappedAxis(entries, max) {
+      return max ? largestFirst(entries, max) : entries;
     },
     // Compact in the cell so a value fits a narrow column, full digits in the
     // tooltip where there is room. The chart cannot name its own axes, so the

@@ -752,7 +752,7 @@ rspec:coverage:
       else
         echo "Warning: coverage/coverage.xml not found, skipping whitespace stripping"
       fi
-  coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
+  coverage: '/Line Coverage: (\d+\.\d+%)/'
   artifacts:
     name: coverage
     expire_in: 31d

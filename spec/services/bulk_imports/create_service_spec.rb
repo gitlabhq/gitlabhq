@@ -6,6 +6,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
   include GraphqlHelpers
 
   let(:user) { create(:user) }
+  let(:request_channel) { :api }
   let(:credentials) { { url: 'http://gitlab.example', access_token: 'token' } }
   let(:destination_group) { create(:group, path: 'destination1') }
   let(:migrate_projects) { true }
@@ -45,7 +46,9 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
   let(:source_entity_identifier) { ERB::Util.url_encode(params[0][:source_full_path]) }
   let(:source_entity_type) { BulkImports::CreateService::ENTITY_TYPES_MAPPING.fetch(params[0][:source_type]) }
 
-  subject(:service) { described_class.new(user, params, credentials, fallback_organization:) }
+  subject(:service) do
+    described_class.new(user, params, credentials, fallback_organization:, request_channel:)
+  end
 
   describe '#execute' do
     context 'when gitlab version is 15.5 or higher' do
@@ -227,6 +230,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           expect(last_bulk_import.user).to eq(user)
           expect(last_bulk_import.source_version).to eq(source_version[:version])
           expect(last_bulk_import.source_enterprise).to be false
+          expect(::Import::BulkImports::EphemeralData.new(last_bulk_import.id).request_channel).to eq('api')
 
           expect_snowplow_event(
             category: 'BulkImports::CreateService',
@@ -234,6 +238,26 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             label: 'bulk_import_group',
             extra: { source_equals_destination: false }
           )
+        end
+
+        context 'when initiated from the UI' do
+          let(:request_channel) { :ui }
+
+          it 'persists request_channel: ui in EphemeralData' do
+            service.execute
+
+            expect(::Import::BulkImports::EphemeralData.new(BulkImport.last.id).request_channel).to eq('ui')
+          end
+        end
+
+        context 'when initiated by Congregate' do
+          let(:request_channel) { :congregate }
+
+          it 'persists request_channel: congregate in EphemeralData' do
+            service.execute
+
+            expect(::Import::BulkImports::EphemeralData.new(BulkImport.last.id).request_channel).to eq('congregate')
+          end
         end
 
         context 'when a destination_namespace is provided' do

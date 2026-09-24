@@ -312,8 +312,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         before do
           project.add_maintainer(user)
 
-          allow(project).to receive(:empty_repo?).and_return(false)
-          allow(project).to receive(:branch_allows_collaboration?).and_return(true)
+          allow(project).to receive_messages(empty_repo?: false, branch_allows_collaboration?: true)
         end
 
         it 'enables updates if user is maintainer', :aggregate_failures do
@@ -326,8 +325,7 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         subject { policy }
 
         before do
-          allow(project).to receive(:empty_repo?).and_return(false)
-          allow(project).to receive(:branch_allows_collaboration?).and_return(true)
+          allow(project).to receive_messages(empty_repo?: false, branch_allows_collaboration?: true)
         end
 
         context 'on a public project' do

@@ -50,6 +50,13 @@ RSpec.describe Gitlab::Database::SyncSequencesWithTableData, :delete, feature_ca
         expect(next_value_of('_test_shared_id_seq')).to eq(1501)
       end
 
+      it 'disables and resets the transaction timeout around the sync' do
+        expect(Gitlab::Database::TransactionTimeout).to receive(:disable).at_least(:once).ordered
+        expect(Gitlab::Database::TransactionTimeout).to receive(:reset).at_least(:once).ordered
+
+        sync!('_test_shared_id_seq')
+      end
+
       it 'advances the sequence past the max of the owner table when it is higher', :aggregate_failures do
         connection.execute('INSERT INTO _test_seq_owner (id) VALUES (500)')
         connection.execute('INSERT INTO _test_seq_consumer (id) VALUES (10)')

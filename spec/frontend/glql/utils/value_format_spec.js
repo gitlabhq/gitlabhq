@@ -134,52 +134,55 @@ describe('formatDurationCompact', () => {
 
 describe('formatterFor', () => {
   it.each`
-    fieldKey                      | input     | expected
-    ${'totalCount'}               | ${1234}   | ${'1,234'}
-    ${'usersCount'}               | ${42}     | ${'42'}
-    ${'shownCount'}               | ${1801}   | ${'1,801'}
-    ${'acceptedCount'}            | ${1}      | ${'1'}
-    ${'rejectedCount'}            | ${567}    | ${'567'}
-    ${'suggestionSizeSum'}        | ${500000} | ${'500,000'}
-    ${'acceptanceRate'}           | ${0.75}   | ${'75%'}
-    ${'successRate'}              | ${0.95}   | ${'95%'}
-    ${'failureRate'}              | ${0.04}   | ${'4%'}
-    ${'canceledRate'}             | ${0.01}   | ${'1%'}
-    ${'skippedRate'}              | ${0.001}  | ${'0.1%'}
-    ${'throughputCount'}          | ${25}     | ${'25'}
-    ${'featuresCount'}            | ${3}      | ${'3'}
-    ${'returningUsersCount'}      | ${1200}   | ${'1,200'}
-    ${'previousPeriodUsersCount'} | ${8}      | ${'8'}
-    ${'duration'}                 | ${3600}   | ${'1h'}
-    ${'queuedDuration'}           | ${90}     | ${'1m 30s'}
-    ${'durationQuantile'}         | ${3661}   | ${'1h 1m 1s'}
-    ${'timeToMergeQuantile'}      | ${250}    | ${'4m 10s'}
-    ${'timeToMergeMean'}          | ${90}     | ${'1m 30s'}
-    ${'timeToMergeMin'}           | ${30}     | ${'30s'}
-    ${'timeToMergeMax'}           | ${3600}   | ${'1h'}
-    ${'timeToMergeSum'}           | ${3661}   | ${'1h 1m 1s'}
-    ${'completionRate'}           | ${0.6}    | ${'60%'}
-    ${'finishedCount'}            | ${789}    | ${'789'}
-    ${'durationMean'}             | ${90}     | ${'1m 30s'}
-    ${'durationMin'}              | ${30}     | ${'30s'}
-    ${'durationMax'}              | ${3600}   | ${'1h'}
-    ${'durationSum'}              | ${3661}   | ${'1h 1m 1s'}
-    ${'projectsCount'}            | ${5}      | ${'5'}
-    ${'creditsUsedMin'}           | ${0.25}   | ${'0.25'}
-    ${'creditsUsedMax'}           | ${41.36}  | ${'41.36'}
-    ${'creditsUsedMean'}          | ${18.456} | ${'18.46'}
-    ${'creditsUsedSum'}           | ${1234.5} | ${'1,234.5'}
-    ${'creditsUsedQuantile'}      | ${19.12}  | ${'19.12'}
-    ${'flowTypesCount'}           | ${3}      | ${'3'}
-    ${'joinedUsersCount'}         | ${1200}   | ${'1,200'}
-    ${'churnedUsersCount'}        | ${8}      | ${'8'}
-    ${'createdMrCountMin'}        | ${0}      | ${'0'}
-    ${'createdMrCountMax'}        | ${4}      | ${'4'}
-    ${'createdMrCountMean'}       | ${1.5}    | ${'1.5'}
-    ${'createdMrCountSum'}        | ${1234}   | ${'1,234'}
-    ${'createdMrCountQuantile'}   | ${2}      | ${'2'}
-    ${'mergedMrCountSum'}         | ${37}     | ${'37'}
-    ${'closedMrCountSum'}         | ${5}      | ${'5'}
+    fieldKey                      | input      | expected
+    ${'totalCount'}               | ${1234}    | ${'1,234'}
+    ${'usersCount'}               | ${42}      | ${'42'}
+    ${'shownCount'}               | ${1801}    | ${'1,801'}
+    ${'acceptedCount'}            | ${1}       | ${'1'}
+    ${'rejectedCount'}            | ${567}     | ${'567'}
+    ${'suggestionSizeSum'}        | ${500000}  | ${'500,000'}
+    ${'acceptanceRate'}           | ${0.75}    | ${'75%'}
+    ${'successRate'}              | ${0.95}    | ${'95%'}
+    ${'failureRate'}              | ${0.04}    | ${'4%'}
+    ${'canceledRate'}             | ${0.01}    | ${'1%'}
+    ${'skippedRate'}              | ${0.001}   | ${'0.1%'}
+    ${'throughputCount'}          | ${25}      | ${'25'}
+    ${'featuresCount'}            | ${3}       | ${'3'}
+    ${'returningUsersCount'}      | ${1200}    | ${'1,200'}
+    ${'previousPeriodUsersCount'} | ${8}       | ${'8'}
+    ${'duration'}                 | ${3600}    | ${'1h'}
+    ${'queuedDuration'}           | ${90}      | ${'1m 30s'}
+    ${'durationQuantile'}         | ${3661}    | ${'1h 1m 1s'}
+    ${'timeToMergeQuantile'}      | ${250}     | ${'4m 10s'}
+    ${'timeToMergeMean'}          | ${90}      | ${'1m 30s'}
+    ${'timeToMergeMin'}           | ${30}      | ${'30s'}
+    ${'timeToMergeMax'}           | ${3600}    | ${'1h'}
+    ${'timeToMergeSum'}           | ${3661}    | ${'1h 1m 1s'}
+    ${'completionRate'}           | ${0.6}     | ${'60%'}
+    ${'finishedCount'}            | ${789}     | ${'789'}
+    ${'durationMean'}             | ${90}      | ${'1m 30s'}
+    ${'durationMin'}              | ${30}      | ${'30s'}
+    ${'durationMax'}              | ${3600}    | ${'1h'}
+    ${'durationSum'}              | ${3661}    | ${'1h 1m 1s'}
+    ${'projectsCount'}            | ${5}       | ${'5'}
+    ${'creditsUsedMin'}           | ${0.25}    | ${'0.25'}
+    ${'creditsUsedMax'}           | ${41.36}   | ${'41.36'}
+    ${'creditsUsedMean'}          | ${18.456}  | ${'18.46'}
+    ${'creditsUsedSum'}           | ${1234.5}  | ${'1,234.5'}
+    ${'creditsUsedQuantile'}      | ${19.12}   | ${'19.12'}
+    ${'flowTypesCount'}           | ${3}       | ${'3'}
+    ${'joinedUsersCount'}         | ${1200}    | ${'1,200'}
+    ${'churnedUsersCount'}        | ${8}       | ${'8'}
+    ${'createdMrCountMin'}        | ${0}       | ${'0'}
+    ${'createdMrCountMax'}        | ${4}       | ${'4'}
+    ${'createdMrCountMean'}       | ${1.5}     | ${'1.5'}
+    ${'createdMrCountSum'}        | ${1234}    | ${'1,234'}
+    ${'createdMrCountQuantile'}   | ${2}       | ${'2'}
+    ${'mergedMrCountSum'}         | ${37}      | ${'37'}
+    ${'closedMrCountSum'}         | ${5}       | ${'5'}
+    ${'openMrCountSum'}           | ${12}      | ${'12'}
+    ${'openMrCountMean'}          | ${0.75}    | ${'0.75'}
+    ${'creditsPerMergedMrRatio'}  | ${543.351} | ${'543.35'}
   `(
     'returns a formatter for $fieldKey that maps $input to $expected',
     ({ fieldKey, input, expected }) => {

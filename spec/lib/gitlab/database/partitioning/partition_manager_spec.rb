@@ -934,6 +934,17 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
     it_behaves_like 'run only once analyze within interval'
 
+    it 'bounds the analyze transaction by the statement timeout' do
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:parent_table_has_loose_foreign_key?).and_return(false)
+      end
+
+      expect(Gitlab::Database::TransactionTimeout)
+        .to receive(:set).with(connection, described_class::STATEMENT_TIMEOUT, local: true)
+
+      described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+    end
+
     context 'when analyze is false' do
       let(:analyze) { false }
 

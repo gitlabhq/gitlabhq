@@ -69,7 +69,9 @@ class Import::BulkImportsController < ApplicationController
       end
 
       ::BulkImports::CreateService.new(
-        current_user, entry.to_h, credentials, fallback_organization: Current.organization
+        current_user, entry.to_h, credentials,
+        fallback_organization: Current.organization,
+        request_channel: ::Gitlab::Import::RequestChannel::UI
       ).execute
     end
 

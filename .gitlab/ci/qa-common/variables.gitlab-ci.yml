@@ -25,3 +25,6 @@ variables:
   # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder
   QA_PATH: "qa"
   MAX_E2E_TEST_EXECUTION_TIME: 45m
+  # Pinned runner image used by QA tests that spin up Docker runners.
+  # Upgrade via MR to validate compatibility before it reaches master.
+  QA_RUNNER_CONTAINER_IMAGE: "gitlab-runner:alpine-v19.4.1"

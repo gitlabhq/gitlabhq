@@ -267,8 +267,7 @@ module API
         end
 
         desc 'List all pipeline variables' do
-          detail 'Lists all pipeline variables for a specified pipeline. Use the `page` and `per_page` pagination ' \
-            'parameters to control the pagination of results.'
+          detail 'Lists all pipeline variables for a specified pipeline.'
           success status: 200, model: Entities::Ci::Variable
           failure [
             { code: 401, message: 'Unauthorized' },

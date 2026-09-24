@@ -1142,6 +1142,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'Govern::PolicyEvaluation',
               'Group',
               'ImportFailure',
+              'Import::Sync::Repository',
               'MemberRole',
               'Project',
               'ProjectSnippet',

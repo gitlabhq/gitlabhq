@@ -6,12 +6,12 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 
+    subject(:service) { described_class.new(project_1, user) }
+
     context 'without a group' do
-      let!(:project_1) { create(:project) }
+      let_it_be(:project_1) { create(:project) }
 
-      let!(:project_label_1_1) { create(:label, project: project_1) }
-
-      subject(:service) { described_class.new(project_1, user) }
+      let_it_be(:project_label_1_1) { create(:label, project: project_1) }
 
       it 'fails on project without group' do
         expect(service.execute(project_label_1_1)).to be_falsey
@@ -54,8 +54,6 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
       let_it_be(:issue_board_list_2_1) { create(:list, board: issue_board_2_1, label: project_label_2_1) }
 
       let(:new_label) { group_1.labels.find_by(title: promoted_label_name) }
-
-      subject(:service) { described_class.new(project_1, user) }
 
       it 'fails on group label' do
         group_label = create(:group_label, group: group_1)
@@ -173,7 +171,7 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
       end
 
       context 'when there is an existing identical group label' do
-        let!(:existing_group_label) { create(:group_label, group: group_1, title: project_label_1_1.title) }
+        let_it_be(:existing_group_label) { create(:group_label, group: group_1, title: project_label_1_1.title) }
 
         it 'uses the existing group label' do
           expect { service.execute(project_label_1_1) }

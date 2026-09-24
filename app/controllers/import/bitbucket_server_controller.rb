@@ -28,11 +28,9 @@ class Import::BitbucketServerController < Import::BaseController
       }, status: :unprocessable_entity
     end
 
-    result = Import::BitbucketServerService.new(
-      client,
-      current_user,
-      bitbucket_server_import_params
-    ).execute(credentials)
+    import_service = Import::BitbucketServerService.new(client, current_user, bitbucket_server_import_params)
+    import_service.request_channel = ::Gitlab::Import::RequestChannel::UI
+    result = import_service.execute(credentials)
 
     if result[:status] == :success
       render json: ProjectSerializer.new.represent(result[:project], serializer: :import)

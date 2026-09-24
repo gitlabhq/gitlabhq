@@ -141,6 +141,21 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
 
               subject.run {}
             end
+
+            it 'disables the transaction timeout for the transaction while it sleeps' do
+              allow(connection).to receive(:transaction_open?).and_return(true)
+
+              n = 0
+              allow(subject).to receive(:run_block_with_lock_timeout).twice do
+                n += 1
+                raise(ActiveRecord::LockWaitTimeout) if n == 1
+              end
+
+              expect(Gitlab::Database::TransactionTimeout).to receive(:disable).with(connection, local: true).once
+              expect(Gitlab::Database::TransactionTimeout).not_to receive(:reset)
+
+              subject.run {}
+            end
           end
         end
       end

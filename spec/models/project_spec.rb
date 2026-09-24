@@ -4360,8 +4360,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
 
         it 'updates the project storage location' do
-          allow(project).to receive(:disk_path).and_return('fancy/new/path')
-          allow(project).to receive(:repository_storage).and_return('foo')
+          allow(project).to receive_messages(disk_path: 'fancy/new/path', repository_storage: 'foo')
           allow(project.repository).to receive(:object_format).and_return('sha1')
 
           project.track_project_repository
@@ -4376,8 +4375,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it 'refreshes a memoized repository value' do
           previous_repository = project.repository
 
-          allow(project).to receive(:disk_path).and_return('fancy/new/path')
-          allow(project).to receive(:repository_storage).and_return('foo')
+          allow(project).to receive_messages(disk_path: 'fancy/new/path', repository_storage: 'foo')
           allow(project.repository).to receive(:object_format).and_return('sha1')
 
           project.track_project_repository

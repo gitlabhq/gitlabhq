@@ -1356,8 +1356,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         context 'when base_sha and head_sha dont match' do
           before do
             mr_diff.update!(patch_id_sha: nil)
-            allow(mr_diff).to receive(:head_commit_sha).and_return('123123')
-            allow(mr_diff).to receive(:base_commit_sha).and_return('43121')
+            allow(mr_diff).to receive_messages(head_commit_sha: '123123', base_commit_sha: '43121')
           end
 
           it 'returns nil' do

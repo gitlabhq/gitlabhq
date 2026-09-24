@@ -57,6 +57,10 @@ module Organizations
             "Govern::PolicyEvaluation",
             "Group", # migrated by a dedicated service
             "ImportFailure",
+            # Import::Sync::Repository follows the project instead of connected_by_user. It
+            # declares no organization association today, so it's already excluded; this entry
+            # makes the intent explicit.
+            "Import::Sync::Repository",
             "MemberRole",
             "Project", # migrated by a dedicated service
             "ProjectSnippet",

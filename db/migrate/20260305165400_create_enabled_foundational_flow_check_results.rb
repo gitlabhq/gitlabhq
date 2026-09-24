@@ -4,6 +4,7 @@ class CreateEnabledFoundationalFlowCheckResults < Gitlab::Database::Migration[2.
   milestone '18.11'
 
   def up
+    # rubocop:disable Migration/EnsureFactoryForTable -- factory removed with the model; table dropped in https://gitlab.com/gitlab-org/gitlab/-/work_items/628248
     create_table :enabled_foundational_flow_check_results do |t|
       t.bigint :organization_id, null: false
       t.bigint :enabled_foundational_flow_id, null: false
@@ -12,6 +13,7 @@ class CreateEnabledFoundationalFlowCheckResults < Gitlab::Database::Migration[2.
       t.text :message, limit: 4096
       t.timestamps_with_timezone null: false
     end
+    # rubocop:enable Migration/EnsureFactoryForTable
 
     add_index :enabled_foundational_flow_check_results, [:organization_id],
       name: 'idx_enabled_foundational_flow_check_results_on_organization'

@@ -44,7 +44,7 @@ consistent with the current implementation. This includes:
 
 - `SPECIFICATION/` files (01–04) — do they accurately describe the current
   contracts, constraints, scenarios, and architecture?
-- `AGENTS.md` / `CLAUDE.md` (in `tooling/ai_harness/doctor/`) — does the
+- `AGENTS.md` (in `tooling/ai_harness/doctor/`) — does the
   file layout, architecture description, and check table match the implementation?
 - `tooling/ai_harness/doctor/README.md` — does it accurately describe usage,
   options, and behavior?
@@ -62,7 +62,7 @@ any drift:
 Read all the markdown files related to the doctor tool:
 - tooling/ai_harness/doctor/SPECIFICATION/ (all files)
 - tooling/ai_harness/doctor/README.md
-- tooling/ai_harness/doctor/AGENTS.md (and its identical copy CLAUDE.md)
+- tooling/ai_harness/doctor/AGENTS.md
 
 Then read the current implementation:
 - tooling/ai_harness/doctor/ (all .rb files)
@@ -81,8 +81,7 @@ Look for:
    that cover scenarios not documented in 04_scenarios.md
 
 Fix any inconsistencies you find. Update documentation to match code — not
-the other way around (code is truth, docs describe it). Ensure AGENTS.md
-and CLAUDE.md remain identical after any edits.
+the other way around (code is truth, docs describe it).
 
 Report what you found and fixed.
 ~~~

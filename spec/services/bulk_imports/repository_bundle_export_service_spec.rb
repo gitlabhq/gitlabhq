@@ -16,8 +16,7 @@ RSpec.describe BulkImports::RepositoryBundleExportService, feature_category: :im
     shared_examples 'repository export' do
       context 'when repository exists' do
         it 'bundles repository to disk' do
-          allow(repository).to receive(:exists?).and_return(true)
-          allow(repository).to receive(:empty?).and_return(false)
+          allow(repository).to receive_messages(exists?: true, empty?: false)
           expect(repository).to receive(:bundle_to_disk).with(File.join(export_path, "#{export_filename}.bundle"))
 
           service.execute

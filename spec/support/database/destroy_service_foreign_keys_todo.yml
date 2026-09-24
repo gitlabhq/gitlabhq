@@ -163,6 +163,7 @@ issues:
 - duo_workflows_workflows.issue_id
 - epic_issues.issue_id
 - epics.issue_id
+- import_sync_external_objects.issue_id
 - incident_management_issuable_escalation_statuses.issue_id
 - incident_management_pending_issue_escalations.issue_id
 - incident_management_timeline_events.issue_id
@@ -274,6 +275,7 @@ merge_requests:
 - duo_workflows_workflows.merge_request_id
 - environments.merge_request_id
 - excluded_merge_requests.merge_request_id
+- import_sync_external_objects.merge_request_id
 - merge_request_approval_metrics.merge_request_id
 - merge_request_assignees.merge_request_id
 - merge_request_assignment_events.merge_request_id
@@ -682,6 +684,7 @@ notes:
 - diff_note_positions.note_id
 - duo_workflows_workflow_notes.note_id
 - epic_user_mentions.note_id
+- import_sync_external_objects.note_id
 - incident_management_timeline_events.promoted_from_note_id
 - issue_user_mentions.note_id
 - merge_request_user_mentions.note_id
@@ -956,6 +959,9 @@ projects:
 - import_export_uploads.project_id
 - import_failures.project_id
 - import_placeholder_memberships.project_id
+- import_sync_external_objects.project_id
+- import_sync_repositories.project_id
+- import_sync_repository_states.project_id
 - incident_management_escalation_policies.project_id
 - incident_management_escalation_rules.project_id
 - incident_management_oncall_participants.project_id
@@ -1338,6 +1344,7 @@ users:
 - import_source_users.placeholder_user_id
 - import_source_users.reassign_to_user_id
 - import_source_users.reassigned_by_user_id
+- import_sync_repositories.connected_by_user_id
 - incident_management_escalation_rules.user_id
 - incident_management_oncall_participants.user_id
 - incident_management_timeline_events.author_id

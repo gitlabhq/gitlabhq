@@ -541,7 +541,8 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
           },
           { entities: entity_params },
           current_user: user,
-          fallback_organization: current_organization
+          fallback_organization: current_organization,
+          request_channel: :api
         )
 
         request
@@ -636,10 +637,23 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
           anything,
           { import_all: { destination_namespace: destination_namespace } },
           current_user: user,
-          fallback_organization: current_organization
+          fallback_organization: current_organization,
+          request_channel: :api
         )
 
         request
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'passes request_channel: :congregate when the caller identifies as Congregate' do
+        expect(Import::Offline::Imports::CreateService).to receive(:new).with(
+          anything,
+          anything,
+          hash_including(request_channel: :congregate)
+        )
+
+        post api('/offline_imports', user), params: params, headers: { 'User-Agent' => 'GitLabApiClient' }
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -652,7 +666,8 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
             anything,
             { import_all: { destination_namespace: '' } },
             current_user: user,
-            fallback_organization: current_organization
+            fallback_organization: current_organization,
+            request_channel: :api
           )
 
           request

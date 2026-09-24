@@ -133,15 +133,30 @@ RSpec.describe Gitlab::LanguageDetection, feature_category: :source_code_managem
       first_update = subject.updates.first
 
       expect(first_update).not_to be_nil
-      expect(first_update[:programming_language_id]).to eq(ruby.id)
       expect(first_update[:share]).to eq(66.63)
       expect(first_update[:language_id]).to eq(ruby.language_id)
     end
 
     it 'does not include languages to be removed' do
-      ids = subject.updates.map { |h| h[:programming_language_id] }
+      targets = subject.updates.map { |h| h[:target] }
 
-      expect(ids).not_to include(haskell.id)
+      expect(targets).not_to include(programming_language_id: haskell.id)
+    end
+
+    context 'when the row has a language_id' do
+      let(:repository_languages) do
+        [RepositoryLanguage.new(share: 10, programming_language: ruby, language_id: ruby.language_id)]
+      end
+
+      it 'targets the row by the stable language_id' do
+        expect(subject.updates.first[:target]).to eq(language_id: ruby.language_id)
+      end
+    end
+
+    context 'when the row has no language_id' do
+      it 'falls back to targeting the row by the legacy programming_language_id' do
+        expect(subject.updates.first[:target]).to eq(language_id: nil, programming_language_id: ruby.id)
+      end
     end
 
     context 'when silent writes occur' do
@@ -187,10 +202,10 @@ RSpec.describe Gitlab::LanguageDetection, feature_category: :source_code_managem
         )]
       end
 
-      it 'uses the stable programming language while retaining the legacy row target', :aggregate_failures do
+      it 'targets the row by the stable language_id when legacy IDs differ', :aggregate_failures do
         first_update = subject.updates.first
 
-        expect(first_update[:programming_language_id]).to eq(haskell.id)
+        expect(first_update[:target]).to eq(language_id: ruby.language_id)
         expect(first_update[:language_id]).to eq(ruby.language_id)
       end
     end
@@ -215,14 +230,14 @@ RSpec.describe Gitlab::LanguageDetection, feature_category: :source_code_managem
   end
 
   describe '#deletions' do
+    let(:haskell_row) { RepositoryLanguage.new(share: 5, programming_language: haskell) }
+
     let(:repository_languages) do
-      [RepositoryLanguage.new(share: 10, programming_language: ruby),
-        RepositoryLanguage.new(share: 5, programming_language: haskell)]
+      [RepositoryLanguage.new(share: 10, programming_language: ruby), haskell_row]
     end
 
-    it 'lists undetected languages' do
-      expect(subject.deletions).not_to be_empty
-      expect(subject.deletions).to include(haskell.id)
+    it 'lists the repository languages of undetected languages' do
+      expect(subject.deletions).to contain_exactly(haskell_row)
     end
   end
 end

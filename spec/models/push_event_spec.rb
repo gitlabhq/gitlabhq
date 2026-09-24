@@ -142,8 +142,7 @@ RSpec.describe PushEvent, feature_category: :source_code_management do
 
   describe '#push_with_commits?' do
     it 'returns true when both the first and last commit are present' do
-      allow(event).to receive(:commit_from).and_return('123')
-      allow(event).to receive(:commit_to).and_return('456')
+      allow(event).to receive_messages(commit_from: '123', commit_to: '456')
 
       expect(event).to be_push_with_commits
     end
@@ -281,8 +280,7 @@ RSpec.describe PushEvent, feature_category: :source_code_management do
     end
 
     it 'returns the SHA of the first commit if the last commit is not present' do
-      allow(event).to receive(:commit_to).and_return(nil)
-      allow(event).to receive(:commit_from).and_return('123')
+      allow(event).to receive_messages(commit_to: nil, commit_from: '123')
 
       expect(event.commit_id).to eq('123')
     end

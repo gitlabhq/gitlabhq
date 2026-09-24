@@ -13372,6 +13372,9 @@ msgstr ""
 msgid "ArtifactRegistry|Repositories list updated."
 msgstr ""
 
+msgid "ArtifactRegistry|Repositories: %{count}"
+msgstr ""
+
 msgid "ArtifactRegistry|Repository"
 msgid_plural "ArtifactRegistry|Repositories"
 msgstr[0] ""
@@ -13456,6 +13459,9 @@ msgid "ArtifactRegistry|Sorts alphabetically, not by version order. Ascending pu
 msgstr ""
 
 msgid "ArtifactRegistry|Source"
+msgstr ""
+
+msgid "ArtifactRegistry|Storage used: %{size}"
 msgstr ""
 
 msgid "ArtifactRegistry|Store and manage packages and container images by creating a hosted or remote repository."
@@ -14597,6 +14603,9 @@ msgid "Average merge requests created per flow."
 msgstr ""
 
 msgid "Average merged merge requests created per flow."
+msgstr ""
+
+msgid "Average open merge requests created per flow."
 msgstr ""
 
 msgid "Average per day: %{average}"
@@ -26528,6 +26537,9 @@ msgstr ""
 msgid "Credits used per flow at a given quantile."
 msgstr ""
 
+msgid "Credits used per merge request created by a flow and later merged."
+msgstr ""
+
 msgid "Critical - S1"
 msgstr ""
 
@@ -37301,9 +37313,6 @@ msgstr ""
 msgid "FeatureLibrary|Searching with Gemini …"
 msgstr ""
 
-msgid "FeatureLibrary|Share feedback about this feature library"
-msgstr ""
-
 msgid "FeatureLibrary|Showing %{count} feature in %{category}"
 msgid_plural "FeatureLibrary|Showing %{count} features in %{category}"
 msgstr[0] ""
@@ -37361,6 +37370,9 @@ msgid "Fewest merge requests created by a single flow."
 msgstr ""
 
 msgid "Fewest merged merge requests created by a single flow."
+msgstr ""
+
+msgid "Fewest open merge requests created by a single flow."
 msgstr ""
 
 msgid "File"
@@ -53030,6 +53042,9 @@ msgstr ""
 msgid "Most merged merge requests created by a single flow."
 msgstr ""
 
+msgid "Most open merge requests created by a single flow."
+msgstr ""
+
 msgid "Most recent commit."
 msgstr ""
 
@@ -57526,6 +57541,9 @@ msgid "Open issue"
 msgid_plural "Open issues"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Open merge requests created per flow at a given quantile."
+msgstr ""
 
 msgid "Open navigation menu"
 msgstr ""
@@ -71216,6 +71234,9 @@ msgstr ""
 msgid "ScanProfiles|New vulnerabilities only"
 msgstr ""
 
+msgid "ScanProfiles|No profiles match your search."
+msgstr ""
+
 msgid "ScanProfiles|None of this profile's triggers use analyzer settings, so there is nothing to configure."
 msgstr ""
 
@@ -71247,6 +71268,9 @@ msgid "ScanProfiles|Scans new commits to merge requests · All branches"
 msgstr ""
 
 msgid "ScanProfiles|Scope:"
+msgstr ""
+
+msgid "ScanProfiles|Search profiles..."
 msgstr ""
 
 msgid "ScanProfiles|Secret push protection"
@@ -86103,6 +86127,9 @@ msgstr ""
 msgid "Total of child items"
 msgstr ""
 
+msgid "Total open merge requests created by all flows."
+msgstr ""
+
 msgid "Total test time for all commits/merges"
 msgstr ""
 
@@ -98888,9 +98915,6 @@ msgstr ""
 msgid "mrWidgetNothingToMerge|Use merge requests to propose changes to your project and discuss them with your team. To make changes, use the %{boldStart}Code%{boldEnd} dropdown list above, then test them with %{linkStart}CI/CD%{linkEnd} before merging."
 msgstr ""
 
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} denied licenses must be removed."
-msgstr ""
-
 msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} to see new changes and rerun this merge check, refresh this page."
 msgstr ""
 
@@ -99376,6 +99400,9 @@ msgstr ""
 msgid "must belong to the same project as the vulnerability"
 msgstr ""
 
+msgid "must belong to the same project."
+msgstr ""
+
 msgid "must belong to the specified namespace"
 msgstr ""
 
@@ -99431,6 +99458,9 @@ msgid "must not be an owner of the namespace"
 msgstr ""
 
 msgid "must not contain commonly used combinations of words and letters"
+msgstr ""
+
+msgid "must not exceed the desired generation."
 msgstr ""
 
 msgid "must only be set for bot user types"

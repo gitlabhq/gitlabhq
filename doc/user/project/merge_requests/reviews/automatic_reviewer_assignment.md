@@ -120,10 +120,12 @@ For more information about creating and editing triggers, see
 
 ### Reviewer selection
 
-The Recommend Reviewers flow reads the required approval rules on the merge request.
-For each rule, it recommends and assigns the minimum number of reviewers needed to satisfy the rule.
+The Recommend Reviewers flow reads the required approval rules and the optional approval rules on the merge request.
+An optional approval rule is a rule that requires zero approvals.
+The flow skips an optional **All Members** rule, and optional rules created by merge request approval policies.
+For each required rule, the flow recommends and assigns the minimum number of reviewers needed to satisfy the rule.
+For each remaining optional rule, the flow recommends one reviewer, unless a current reviewer or a reviewer it already recommended for another rule is an eligible approver for that rule.
 It then adds a note to explain the recommendations.
-The flow ignores optional approval rules.
 
 To choose between the eligible approvers for a rule, the flow considers the
 following for each approver:

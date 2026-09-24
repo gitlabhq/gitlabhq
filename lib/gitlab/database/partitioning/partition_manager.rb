@@ -345,6 +345,7 @@ module Gitlab
                 connection.execute(
                   format("SET LOCAL statement_timeout TO '%ds'", statement_timeout)
                 )
+                Gitlab::Database::TransactionTimeout.set(connection, statement_timeout, local: true)
               end
 
               yield

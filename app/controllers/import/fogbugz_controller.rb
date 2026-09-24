@@ -61,7 +61,9 @@ class Import::FogbugzController < Import::BaseController
       organization_id: Current.organization.id
     )
 
-    result = Import::FogbugzService.new(client, current_user, service_params).execute(credentials)
+    import_service = Import::FogbugzService.new(client, current_user, service_params)
+    import_service.request_channel = ::Gitlab::Import::RequestChannel::UI
+    result = import_service.execute(credentials)
 
     if result[:status] == :success
       render json: ProjectSerializer.new.represent(result[:project], serializer: :import)

@@ -17,7 +17,6 @@ import {
   TREND_CHANGE_KEY,
   TREND_PREVIOUS_KEY,
   hasTemporalDimension,
-  hasUniqueRowKeys,
   withTrendValues,
 } from './utils/table';
 
@@ -120,9 +119,6 @@ export default {
     trendColumn() {
       if (!this.trendField || !this.comparisonData?.nodes?.length) return null;
       if (hasTemporalDimension(this.dimensions)) return null;
-      // Both periods: a duplicate identity on either side mispairs rows on the other.
-      if (!hasUniqueRowKeys(this.data.nodes, this.dimensions)) return null;
-      if (!hasUniqueRowKeys(this.comparisonData.nodes, this.dimensions)) return null;
 
       return {
         key: TREND_CHANGE_KEY,

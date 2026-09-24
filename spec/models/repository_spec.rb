@@ -888,6 +888,26 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
+    describe 'follow' do
+      let(:raw_repo) { repository.raw_repository }
+
+      before do
+        allow(raw_repo).to receive(:list_commits).and_call_original
+      end
+
+      it 'defaults follow to false' do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb')
+
+        expect(raw_repo).to have_received(:list_commits).with(a_hash_including(follow: false))
+      end
+
+      it 'forwards follow: true to the raw repository' do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb', follow: true)
+
+        expect(raw_repo).to have_received(:list_commits).with(a_hash_including(follow: true))
+      end
+    end
+
     context 'with filename with pathspec characters' do
       let(:project) { create(:project, :empty_repo) }
       let(:filename) { ':wq' }
@@ -2004,8 +2024,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     with_them do
       it do
-        allow(repository).to receive(:branch_names).and_return(branch_names)
-        allow(repository).to receive(:tag_names).and_return(tag_names)
+        allow(repository).to receive_messages(branch_names: branch_names, tag_names: tag_names)
 
         expect(repository.has_ambiguous_refs?).to eq(result)
       end

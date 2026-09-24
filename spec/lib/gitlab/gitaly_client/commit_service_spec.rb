@@ -1135,6 +1135,33 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
 
+    context 'with follow' do
+      before do
+        ::Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'sets follow to true on the request when follow is truthy', :aggregate_failures do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.follow).to be(true)
+            expect(request.paths.size).to eq(1)
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', { path: 'files/ruby/popen.rb', follow: true })
+      end
+
+      it 'sets follow to false when follow is falsy' do
+        expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
+          expect(service).to receive(:list_commits) do |request, _options|
+            expect(request.follow).to be(false)
+          end.and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
+        end
+
+        client.list_commits('master', { path: 'files/ruby/popen.rb' })
+      end
+    end
+
     describe 'pagination' do
       it 'returns an opaque next_cursor and accepts it in the following request', :aggregate_failures do
         response_1 = client.list_commits('master', { pagination_params: { limit: 1 } })

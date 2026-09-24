@@ -20,21 +20,23 @@ const DEFAULTS = {
 describe('statPresentationFor', () => {
   describe('defaults derived from the metric', () => {
     it.each`
-      source               | fieldKey                 | expected
-      ${'CodeSuggestions'} | ${'acceptanceRate'}      | ${'Ratio of accepted to shown suggestions.'}
-      ${'CodeSuggestions'} | ${'acceptedCount'}       | ${'Number of accepted suggestions.'}
-      ${'AiUsageEvents'}   | ${'featuresCount'}       | ${'Number of unique features used.'}
-      ${'Pipelines'}       | ${'failureRate'}         | ${'Ratio of failed pipelines to finished pipelines.'}
-      ${'Pipelines'}       | ${'durationQuantile'}    | ${'Pipeline duration quantile, in seconds.'}
-      ${'MergeRequests'}   | ${'timeToMergeQuantile'} | ${'Time from creation to merge, in seconds.'}
-      ${'MergeRequests'}   | ${'timeToMergeMean'}     | ${'Average time from creation to merge, in seconds.'}
-      ${'Pipelines'}       | ${'durationSum'}         | ${'Total duration of all pipelines, in seconds.'}
-      ${'Contributions'}   | ${'usersCount'}          | ${'Number of unique contributors.'}
-      ${'DuoWorkflows'}    | ${'creditsUsedSum'}      | ${'Total credits used by all flows.'}
-      ${'DuoWorkflows'}    | ${'projectsCount'}       | ${'Number of unique projects.'}
-      ${'DuoWorkflows'}    | ${'createdMrCountSum'}   | ${'Total merge requests created by all flows.'}
-      ${'DuoWorkflows'}    | ${'joinedUsersCount'}    | ${'Number of unique users who ran a flow in this period but not in the previous one.'}
-      ${'MergeRequests'}   | ${'acceptanceRate'}      | ${'Share of merge requests that were merged.'}
+      source               | fieldKey                     | expected
+      ${'CodeSuggestions'} | ${'acceptanceRate'}          | ${'Ratio of accepted to shown suggestions.'}
+      ${'CodeSuggestions'} | ${'acceptedCount'}           | ${'Number of accepted suggestions.'}
+      ${'AiUsageEvents'}   | ${'featuresCount'}           | ${'Number of unique features used.'}
+      ${'Pipelines'}       | ${'failureRate'}             | ${'Ratio of failed pipelines to finished pipelines.'}
+      ${'Pipelines'}       | ${'durationQuantile'}        | ${'Pipeline duration quantile, in seconds.'}
+      ${'MergeRequests'}   | ${'timeToMergeQuantile'}     | ${'Time from creation to merge, in seconds.'}
+      ${'MergeRequests'}   | ${'timeToMergeMean'}         | ${'Average time from creation to merge, in seconds.'}
+      ${'Pipelines'}       | ${'durationSum'}             | ${'Total duration of all pipelines, in seconds.'}
+      ${'Contributions'}   | ${'usersCount'}              | ${'Number of unique contributors.'}
+      ${'DuoWorkflows'}    | ${'creditsUsedSum'}          | ${'Total credits used by all flows.'}
+      ${'DuoWorkflows'}    | ${'projectsCount'}           | ${'Number of unique projects.'}
+      ${'DuoWorkflows'}    | ${'createdMrCountSum'}       | ${'Total merge requests created by all flows.'}
+      ${'DuoWorkflows'}    | ${'openMrCountSum'}          | ${'Total open merge requests created by all flows.'}
+      ${'DuoWorkflows'}    | ${'creditsPerMergedMrRatio'} | ${'Credits used per merge request created by a flow and later merged.'}
+      ${'DuoWorkflows'}    | ${'joinedUsersCount'}        | ${'Number of unique users who ran a flow in this period but not in the previous one.'}
+      ${'MergeRequests'}   | ${'acceptanceRate'}          | ${'Share of merge requests that were merged.'}
     `('derives the description of $fieldKey in $source', ({ source, fieldKey, expected }) => {
       expect(statPresentationFor(source, metric(fieldKey)).description).toBe(expected);
     });
@@ -216,20 +218,22 @@ describe('trendPresentationFor', () => {
 
 describe('positiveDirectionFor', () => {
   it.each`
-    source               | fieldKey                 | expected
-    ${'CodeSuggestions'} | ${'totalCount'}          | ${'up'}
-    ${'CodeSuggestions'} | ${'acceptanceRate'}      | ${'up'}
-    ${'CodeSuggestions'} | ${'rejectedCount'}       | ${'down'}
-    ${'Pipelines'}       | ${'successRate'}         | ${'up'}
-    ${'Pipelines'}       | ${'failureRate'}         | ${'down'}
-    ${'Pipelines'}       | ${'durationQuantile'}    | ${'down'}
-    ${'MergeRequests'}   | ${'timeToMergeQuantile'} | ${'down'}
-    ${'DuoWorkflows'}    | ${'creditsUsedSum'}      | ${null}
-    ${'DuoWorkflows'}    | ${'churnedUsersCount'}   | ${'down'}
-    ${'DuoWorkflows'}    | ${'closedMrCountSum'}    | ${'down'}
-    ${'DuoWorkflows'}    | ${'createdMrCountSum'}   | ${'up'}
-    ${'MergeRequests'}   | ${'acceptanceRate'}      | ${'up'}
-    ${'CodeSuggestions'} | ${'somethingCustom'}     | ${null}
+    source               | fieldKey                     | expected
+    ${'CodeSuggestions'} | ${'totalCount'}              | ${'up'}
+    ${'CodeSuggestions'} | ${'acceptanceRate'}          | ${'up'}
+    ${'CodeSuggestions'} | ${'rejectedCount'}           | ${'down'}
+    ${'Pipelines'}       | ${'successRate'}             | ${'up'}
+    ${'Pipelines'}       | ${'failureRate'}             | ${'down'}
+    ${'Pipelines'}       | ${'durationQuantile'}        | ${'down'}
+    ${'MergeRequests'}   | ${'timeToMergeQuantile'}     | ${'down'}
+    ${'DuoWorkflows'}    | ${'creditsUsedSum'}          | ${null}
+    ${'DuoWorkflows'}    | ${'churnedUsersCount'}       | ${'down'}
+    ${'DuoWorkflows'}    | ${'closedMrCountSum'}        | ${'down'}
+    ${'DuoWorkflows'}    | ${'createdMrCountSum'}       | ${'up'}
+    ${'DuoWorkflows'}    | ${'openMrCountSum'}          | ${'up'}
+    ${'DuoWorkflows'}    | ${'creditsPerMergedMrRatio'} | ${'down'}
+    ${'MergeRequests'}   | ${'acceptanceRate'}          | ${'up'}
+    ${'CodeSuggestions'} | ${'somethingCustom'}         | ${null}
   `('returns $expected for $fieldKey in $source', ({ source, fieldKey, expected }) => {
     expect(positiveDirectionFor(source, metric(fieldKey))).toBe(expected);
   });

@@ -14,8 +14,10 @@ namespace :dev do
       # so ANALYZE can take more than default 15s statement timeout. This being a dev task,
       # we disable the statement timeout for ANALYZE to run and enable it back afterwards.
       connection.execute('SET statement_timeout TO 0')
+      Gitlab::Database::TransactionTimeout.disable(connection)
       connection.execute('ANALYZE')
       connection.execute('RESET statement_timeout')
+      Gitlab::Database::TransactionTimeout.reset(connection)
     end
 
     Rake::Task["gitlab:shell:setup"].invoke

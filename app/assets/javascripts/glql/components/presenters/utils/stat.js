@@ -111,6 +111,10 @@ const METRIC_PRESENTATION = {
       description: __('Merge requests created per flow at a given quantile.'),
     },
     createdMrCountSum: { description: __('Total merge requests created by all flows.') },
+    creditsPerMergedMrRatio: {
+      description: __('Credits used per merge request created by a flow and later merged.'),
+      positiveDirection: 'down',
+    },
     creditsUsedMax: { description: __('Most credits used by a single flow.') },
     creditsUsedMean: { description: __('Average credits used per flow.') },
     creditsUsedMin: { description: __('Fewest credits used by a single flow.') },
@@ -129,6 +133,13 @@ const METRIC_PRESENTATION = {
       description: __('Merged merge requests created per flow at a given quantile.'),
     },
     mergedMrCountSum: { description: __('Total merged merge requests created by all flows.') },
+    openMrCountMax: { description: __('Most open merge requests created by a single flow.') },
+    openMrCountMean: { description: __('Average open merge requests created per flow.') },
+    openMrCountMin: { description: __('Fewest open merge requests created by a single flow.') },
+    openMrCountQuantile: {
+      description: __('Open merge requests created per flow at a given quantile.'),
+    },
+    openMrCountSum: { description: __('Total open merge requests created by all flows.') },
     previousPeriodUsersCount: { description: __('Number of unique users in the previous period.') },
     projectsCount: { description: __('Number of unique projects.') },
     returningUsersCount: {

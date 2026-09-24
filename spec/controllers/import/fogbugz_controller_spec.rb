@@ -172,7 +172,7 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
 
     it 'returns the new project' do
       expect(Import::FogbugzService).to receive(:new).with(client, user, hash_including(organization_id: current_organization.id)).and_return(
-        instance_double(Import::FogbugzService, execute: ServiceResponse.success)
+        instance_double(Import::FogbugzService, execute: ServiceResponse.success, :request_channel= => nil)
       )
 
       post :create, format: :json
@@ -180,12 +180,21 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'sets request_channel: :ui on the service' do
+      service = instance_double(Import::FogbugzService, execute: ServiceResponse.success)
+      allow(Import::FogbugzService).to receive(:new).and_return(service)
+
+      expect(service).to receive(:request_channel=).with(:ui)
+
+      post :create, format: :json
+    end
+
     it 'returns an error when service reports an error' do
       message = 'Error message'
       status = :unprocessable_entity
 
       expect(Import::FogbugzService).to receive(:new).and_return(
-        instance_double(Import::FogbugzService, execute: ServiceResponse.error(message: message, http_status: status))
+        instance_double(Import::FogbugzService, execute: ServiceResponse.error(message: message, http_status: status), :request_channel= => nil)
       )
 
       post :create, format: :json

@@ -200,9 +200,11 @@ module Gitlab
       # (e.g. loose_foreign_keys_deleted_records) and abort the promotion.
       def without_statement_timeout(connection)
         connection.execute('SET statement_timeout TO 0')
+        Gitlab::Database::TransactionTimeout.disable(connection)
         yield
       ensure
         connection.execute('RESET statement_timeout')
+        Gitlab::Database::TransactionTimeout.reset(connection)
       end
 
       # Each physical database contains a copy of every table, including

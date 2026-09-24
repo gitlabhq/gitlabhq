@@ -2,8 +2,11 @@
 
 require 'open3'
 
-# rubocop:disable Gitlab/NoCodeCoverageComment -- see check_parity.rb for explanation
-# of :nocov: on rightward assignment lines (SimpleCov #1033).
+# rubocop:disable Gitlab/NoCodeCoverageComment -- Ruby 3 rightward assignment (`=>`) and
+# `case/in` pattern matching generate implicit `:else` branches in Ruby's Coverage API for
+# the NoMatchingPatternError path. SimpleCov 0.22 reports these as uncovered with no way to
+# suppress them (https://github.com/simplecov-ruby/simplecov/issues/1033). All reachable
+# branches are tested; `:nocov:` excludes only the unreachable implicit else paths.
 
 module AiHarness
   module Doctor

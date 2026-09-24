@@ -67,8 +67,7 @@ RSpec.describe DiffViewer::Base do
   describe '#collapsed?' do
     context 'when diff is not expanded' do
       before do
-        allow(diff_file).to receive(:collapsed?).and_return(true)
-        allow(diff_file).to receive(:raw_size).and_return(1025.kilobytes)
+        allow(diff_file).to receive_messages(collapsed?: true, raw_size: 1025.kilobytes)
       end
 
       it 'returns true for large files' do
@@ -78,8 +77,7 @@ RSpec.describe DiffViewer::Base do
 
     context 'when diff is expanded' do
       before do
-        allow(diff_file).to receive(:collapsed?).and_return(false)
-        allow(diff_file).to receive(:raw_size).and_return(1025.kilobytes)
+        allow(diff_file).to receive_messages(collapsed?: false, raw_size: 1025.kilobytes)
       end
 
       it 'returns false even when large' do
@@ -123,8 +121,7 @@ RSpec.describe DiffViewer::Base do
     let(:text) { true }
 
     before do
-      allow(viewer).to receive(:too_large?).and_return(too_large)
-      allow(viewer).to receive(:text?).and_return(text)
+      allow(viewer).to receive_messages(too_large?: too_large, text?: text)
     end
 
     it 'is expandable' do

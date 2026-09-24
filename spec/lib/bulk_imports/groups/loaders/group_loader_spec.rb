@@ -219,6 +219,22 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
           )
       end
 
+      it 'forwards the request_channel captured at creation', :clean_gitlab_redis_shared_state do
+        ::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel = :ui
+
+        expect { subject.load(context, data) }
+          .to trigger_internal_events('start_group_import')
+          .with(
+            user: user,
+            namespace: created_group,
+            additional_properties: {
+              label: 'gitlab_migration',
+              property: entity.hashed_import_source,
+              request_channel: 'ui'
+            }
+          )
+      end
+
       context 'when the bulk_import is offline' do
         let(:bulk_import) do
           create(:bulk_import, :with_offline_configuration, user: user, organization: organization)

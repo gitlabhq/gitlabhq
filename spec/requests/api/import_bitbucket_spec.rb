@@ -107,6 +107,26 @@ RSpec.describe API::ImportBitbucket, :with_current_organization, feature_categor
 
       it_behaves_like 'bitbucket import endpoint'
 
+      describe 'request_channel' do
+        it 'defaults to :api' do
+          expect_next_instance_of(Import::BitbucketService) do |service|
+            expect(service).to receive(:request_channel=).with(:api)
+            allow(service).to receive(:execute).and_return(status: :success, project: project)
+          end
+
+          post api('/import/bitbucket', user), params: params
+        end
+
+        it 'is :congregate when the caller identifies as Congregate' do
+          expect_next_instance_of(Import::BitbucketService) do |service|
+            expect(service).to receive(:request_channel=).with(:congregate)
+            allow(service).to receive(:execute).and_return(status: :success, project: project)
+          end
+
+          post api('/import/bitbucket', user), params: params, headers: { 'User-Agent' => 'GitLabApiClient' }
+        end
+      end
+
       context 'when missing required credentials' do
         it 'returns validation error' do
           post api('/import/bitbucket', user), params: {

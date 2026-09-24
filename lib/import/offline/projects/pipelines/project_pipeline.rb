@@ -44,7 +44,7 @@ module Import
           private
 
           def track_start_project_import(entity)
-            track_internal_event('start_project_import', entity.project_import_event_attributes)
+            track_internal_event('start_project_import', entity.start_project_import_event_attributes)
           end
 
           def project_import_error_message(project)

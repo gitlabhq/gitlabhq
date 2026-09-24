@@ -12,6 +12,34 @@ RSpec.describe ProjectImportState, feature_category: :importers do
     it { is_expected.to belong_to(:project) }
   end
 
+  describe '#request_channel', :clean_gitlab_redis_shared_state, :request_store do
+    it 'is populated from the request store when the record is created' do
+      Gitlab::Import::RequestChannel.stash(:ui)
+
+      project = create(:project, import_type: 'github', import_url: 'https://github.com/foo/bar.git')
+
+      expect(project.import_state.request_channel).to eq('ui')
+    end
+
+    it 'returns nil when nothing was stored' do
+      expect(import_state.request_channel).to be_nil
+    end
+
+    it 'round-trips a symbol as a string' do
+      import_state.request_channel = :ui
+
+      expect(import_state.request_channel).to eq('ui')
+    end
+
+    it 'is scoped per project' do
+      import_state.request_channel = :congregate
+
+      other_state = create(:import_state)
+
+      expect(other_state.request_channel).to be_nil
+    end
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
 
@@ -174,7 +202,7 @@ RSpec.describe ProjectImportState, feature_category: :importers do
     end
   end
 
-  describe 'import state transitions' do
+  describe 'import state transitions', :clean_gitlab_redis_shared_state do
     context 'state transition: [:started] => [:finished]' do
       it 'resets last_error' do
         error_message = 'Some error'
@@ -290,6 +318,20 @@ RSpec.describe ProjectImportState, feature_category: :importers do
             user: project.creator,
             namespace: project.namespace,
             additional_properties: { label: 'github' }
+          )
+      end
+
+      it 'forwards request_channel when the importer captured one' do
+        project = create(:project, :import_scheduled, import_type: 'github')
+        project.import_state.request_channel = :ui
+
+        expect { project.import_state.start }
+          .to trigger_internal_events('start_project_import')
+          .with(
+            project: project,
+            user: project.creator,
+            namespace: project.namespace,
+            additional_properties: { label: 'github', request_channel: 'ui' }
           )
       end
 
@@ -500,6 +542,32 @@ RSpec.describe ProjectImportState, feature_category: :importers do
         import_state.cancel
 
         expect(import_state.user_mapping_enabled).to be(true)
+      end
+    end
+
+    context 'when the importer captured a request_channel' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:transition, :event) do
+        :finish  | 'finish_project_import'
+        :fail_op | 'fail_project_import'
+        :cancel  | 'cancel_project_import'
+      end
+
+      with_them do
+        it 'does not forward request_channel on terminal events' do
+          project = create(:project, :import_started, import_type: 'github')
+          project.import_state.request_channel = :ui
+
+          expect { project.import_state.public_send(transition) }
+            .to trigger_internal_events(event)
+            .with(
+              project: project,
+              user: project.creator,
+              namespace: project.namespace,
+              additional_properties: { label: 'github' }
+            )
+        end
       end
     end
 

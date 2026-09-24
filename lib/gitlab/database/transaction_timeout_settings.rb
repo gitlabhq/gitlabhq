@@ -11,10 +11,12 @@ module Gitlab
 
       def disable_timeouts
         @connection.execute("SET #{SETTING} = 0")
+        Gitlab::Database::TransactionTimeout.disable(@connection)
       end
 
       def restore_timeouts
         @connection.execute("RESET #{SETTING}")
+        Gitlab::Database::TransactionTimeout.reset(@connection)
       end
     end
   end

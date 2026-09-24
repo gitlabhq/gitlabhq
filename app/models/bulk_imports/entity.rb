@@ -307,6 +307,10 @@ class BulkImports::Entity < ApplicationRecord
     import_event_attributes.merge(project: project, namespace: project&.namespace)
   end
 
+  def start_project_import_event_attributes
+    with_request_channel(project_import_event_attributes)
+  end
+
   def track_group_import_event(action)
     return unless group?
 
@@ -317,6 +321,10 @@ class BulkImports::Entity < ApplicationRecord
 
   def group_import_event_attributes
     import_event_attributes.merge(namespace: group)
+  end
+
+  def start_group_import_event_attributes
+    with_request_channel(group_import_event_attributes)
   end
 
   # Fires for both project and group entities, and may fire before any
@@ -353,6 +361,19 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   private
+
+  # request_channel is captured at CreateService time in EphemeralData
+  # (Redis) rather than on the BulkImport record, matching the pattern used
+  # by importer_user_mapping_enabled?. Only sent on start_* events, and
+  # deliberately not added to entity_import_event_attributes, per the design in
+  # gitlab-org/gitlab#617884.
+  def with_request_channel(attrs)
+    attrs.merge(
+      additional_properties: attrs[:additional_properties].merge(
+        request_channel: ::Import::BulkImports::EphemeralData.new(bulk_import_id).request_channel
+      ).compact
+    )
+  end
 
   def validate_parent_is_a_group
     errors.add(:parent, s_('BulkImport|must be a group.')) unless parent.group_entity?

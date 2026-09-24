@@ -18,41 +18,41 @@ module SimpleCovEnvCore
       enable_coverage :branch
 
       # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194688#note_2595596467
-      add_filter %r{^/(ee/|jh/)?spec/}
+      skip %r{^/(ee/|jh/)?spec/}
 
-      add_filter %r{^/(ee/)?(bin|gems|vendor)}
-      add_filter %r{^/(ee/)?db/fixtures/development}
-      add_filter %r{^/(ee/)?db/migrate/\d{14}_init_schema\.rb\z}
+      skip %r{^/(ee/)?(bin|gems|vendor)}
+      skip %r{^/(ee/)?db/fixtures/development}
+      skip %r{^/(ee/)?db/migrate/\d{14}_init_schema\.rb\z}
 
-      add_group 'Channels',           %r{^/(ee/)?app/channels}
-      add_group 'Components',         %r{^/(ee/)?app/components}
-      add_group 'Config',             %r{^/(ee/)?config}
-      add_group 'Controllers',        %r{^/(ee/)?app/controllers}
-      add_group 'Elastic migrations', %r{^/(ee/)?elastic}
-      add_group 'Enums',              %r{^/(ee/)?app/enums}
-      add_group 'Events',             %r{^/(ee/)?app/events}
-      add_group 'Experiments',        %r{^/(ee/)?app/experiments}
-      add_group 'Finders',            %r{^/(ee/)?app/finders}
-      add_group 'Fixtures',           %r{^/(ee/)?db/fixtures}
-      add_group 'GraphQL',            %r{^/(ee/)?app/graphql}
-      add_group 'Helpers',            %r{^/(ee/)?app/helpers}
-      add_group 'Libraries',          %r{^/(ee/)?lib}
-      add_group 'Mailers',            %r{^/(ee/)?app/mailers}
-      add_group 'Metrics server',     %r{^/(ee/)?metrics_server}
-      add_group 'Migrations',         %r{^/(ee/)?db/(geo/)?(migrate|optional_migrations|post_migrate)}
-      add_group 'Models',             %r{^/(ee/)?app/models}
-      add_group 'Policies',           %r{^/(ee/)?app/policies}
-      add_group 'Presenters',         %r{^/(ee/)?app/presenters}
-      add_group 'Replicators',        %r{^/(ee/)?app/replicators}
-      add_group 'Seeds',              %r{^/(ee/)?db/seeds}
-      add_group 'Serializers',        %r{^/(ee/)?app/serializers}
-      add_group 'Services',           %r{^/(ee/)?app/services}
-      add_group 'Sidekiq cluster',    %r{^/(ee/)?sidekiq_cluster}
-      add_group 'Tooling',            %r{^/(ee/)?(danger|haml_lint|rubocop|scripts|tooling)}
-      add_group 'Uploaders',          %r{^/(ee/)?app/uploaders}
-      add_group 'Validators',         %r{^/(ee/)?app/validators}
-      add_group 'Views',              %r{^/(ee/)?app/views}
-      add_group 'Workers',            %r{^/(ee/)?app/workers}
+      group 'Channels',           %r{^/(ee/)?app/channels}
+      group 'Components',         %r{^/(ee/)?app/components}
+      group 'Config',             %r{^/(ee/)?config}
+      group 'Controllers',        %r{^/(ee/)?app/controllers}
+      group 'Elastic migrations', %r{^/(ee/)?elastic}
+      group 'Enums',              %r{^/(ee/)?app/enums}
+      group 'Events',             %r{^/(ee/)?app/events}
+      group 'Experiments',        %r{^/(ee/)?app/experiments}
+      group 'Finders',            %r{^/(ee/)?app/finders}
+      group 'Fixtures',           %r{^/(ee/)?db/fixtures}
+      group 'GraphQL',            %r{^/(ee/)?app/graphql}
+      group 'Helpers',            %r{^/(ee/)?app/helpers}
+      group 'Libraries',          %r{^/(ee/)?lib}
+      group 'Mailers',            %r{^/(ee/)?app/mailers}
+      group 'Metrics server',     %r{^/(ee/)?metrics_server}
+      group 'Migrations',         %r{^/(ee/)?db/(geo/)?(migrate|optional_migrations|post_migrate)}
+      group 'Models',             %r{^/(ee/)?app/models}
+      group 'Policies',           %r{^/(ee/)?app/policies}
+      group 'Presenters',         %r{^/(ee/)?app/presenters}
+      group 'Replicators',        %r{^/(ee/)?app/replicators}
+      group 'Seeds',              %r{^/(ee/)?db/seeds}
+      group 'Serializers',        %r{^/(ee/)?app/serializers}
+      group 'Services',           %r{^/(ee/)?app/services}
+      group 'Sidekiq cluster',    %r{^/(ee/)?sidekiq_cluster}
+      group 'Tooling',            %r{^/(ee/)?(danger|haml_lint|rubocop|scripts|tooling)}
+      group 'Uploaders',          %r{^/(ee/)?app/uploaders}
+      group 'Validators',         %r{^/(ee/)?app/validators}
+      group 'Views',              %r{^/(ee/)?app/views}
+      group 'Workers',            %r{^/(ee/)?app/workers}
 
       merge_timeout 365 * 24 * 3600
     end

@@ -104,6 +104,15 @@ export default {
     userCannotMerge() {
       return this.target.dataset.cannotMerge;
     },
+    recommendationReason() {
+      return this.target.dataset.recommendationReason;
+    },
+    recommendationReasonIconVariant() {
+      return this.isBusy ? 'subtle' : 'info';
+    },
+    recommendationReasonIconName() {
+      return this.isBusy ? 'status-waiting' : 'status-active';
+    },
     userIsLoading() {
       return !this.user?.loaded;
     },
@@ -141,6 +150,14 @@ export default {
 
       if (this.userCannotMerge) {
         classList.push('user-popover-cannot-merge');
+      }
+
+      // Skip the recommendation accent when "Cannot merge" is shown so its
+      // warning header background wins; both classes style .popover-header.
+      if (this.recommendationReason && !this.userCannotMerge) {
+        classList.push(
+          this.isBusy ? 'user-popover-recommendation-busy' : 'user-popover-recommendation',
+        );
       }
 
       return classList;
@@ -213,10 +230,27 @@ export default {
     triggers="hover focus manual"
     data-testid="user-popover"
   >
-    <template v-if="userCannotMerge" #title>
-      <div class="gl-flex gl-items-center gl-pb-3" data-testid="cannot-merge">
+    <template v-if="userCannotMerge || recommendationReason" #title>
+      <div
+        v-if="userCannotMerge"
+        class="gl-flex gl-items-center gl-pb-3"
+        data-testid="cannot-merge"
+      >
         <gl-icon name="warning-solid" class="gl-mr-2" variant="warning" />
         <span class="gl-font-normal">{{ __('Cannot merge') }}</span>
+      </div>
+      <div
+        v-if="recommendationReason"
+        class="gl-flex gl-items-start gl-pb-3 gl-font-normal"
+        data-testid="user-popover-recommendation-reason"
+      >
+        <gl-icon
+          :size="12"
+          :name="recommendationReasonIconName"
+          class="gl-mr-2 gl-mt-1 gl-shrink-0"
+          :variant="recommendationReasonIconVariant"
+        />
+        <span>{{ recommendationReason }}</span>
       </div>
     </template>
     <div class="gl-mb-3">

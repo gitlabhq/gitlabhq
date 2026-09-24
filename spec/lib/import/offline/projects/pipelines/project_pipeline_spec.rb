@@ -80,6 +80,7 @@ RSpec.describe Import::Offline::Projects::Pipelines::ProjectPipeline, feature_ca
 
     it 'tracks the start_project_import internal event, labeled as offline_transfer' do
       imported_project = create(:project, namespace: group, import_type: 'offline_transfer')
+      ::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel = :api
 
       allow_next_instance_of(::Projects::CreateService) do |service|
         allow(service).to receive(:execute).and_return(imported_project)
@@ -91,7 +92,11 @@ RSpec.describe Import::Offline::Projects::Pipelines::ProjectPipeline, feature_ca
           project: imported_project,
           user: user,
           namespace: group,
-          additional_properties: { label: 'offline_transfer', property: entity.hashed_import_source }
+          additional_properties: {
+            label: 'offline_transfer',
+            property: entity.hashed_import_source,
+            request_channel: 'api'
+          }
         )
     end
 

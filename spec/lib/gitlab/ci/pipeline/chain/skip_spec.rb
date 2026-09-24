@@ -45,16 +45,16 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
 
     context 'when pipeline is readonly' do
       before do
-        pipeline.readonly!
+        allow(pipeline).to receive(:readonly?).and_return(true)
       end
 
       it 'breaks the chain' do
+        expect(pipeline).not_to receive(:skip)
+        expect(pipeline).not_to receive(:ensure_project_iid!)
+
         step.perform!
 
         expect(step.break?).to be true
-
-        expect(pipeline).not_to receive(:skip)
-        expect(pipeline).not_to receive(:ensure_project_iid!)
       end
 
       it 'does not raise error' do
@@ -63,7 +63,81 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
     end
   end
 
-  context 'when pipeline has not been skipped' do
+  context 'when a merge request is provided' do
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project, title: title) }
+    let(:ignore_skip_ci) { false }
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project,
+        current_user: user,
+        ignore_skip_ci: ignore_skip_ci,
+        save_incompleted: true,
+        merge_request: merge_request,
+        origin_ref: project.default_branch_or_main
+      )
+    end
+
+    shared_examples 'skips the pipeline for the merge request title' do |skip_directive|
+      let(:title) { "Merge request title #{skip_directive}" }
+
+      it 'breaks the chain' do
+        step.perform!
+
+        expect(step.break?).to be true
+      end
+
+      it 'skips the pipeline' do
+        step.perform!
+
+        expect(pipeline.reload).to be_skipped
+      end
+    end
+
+    context 'when the title contains [ci skip]' do
+      it_behaves_like 'skips the pipeline for the merge request title', '[ci skip]'
+    end
+
+    context 'when the title contains [skip ci]' do
+      it_behaves_like 'skips the pipeline for the merge request title', '[skip ci]'
+    end
+
+    context 'when the title does not contain a skip directive' do
+      let(:title) { 'Merge request title' }
+
+      it 'does not break the chain' do
+        step.perform!
+
+        expect(step.break?).to be false
+      end
+    end
+
+    context 'when [ci skip] should be ignored' do
+      let(:title) { 'Merge request title [ci skip]' }
+      let(:ignore_skip_ci) { true }
+
+      it 'does not break the chain' do
+        step.perform!
+
+        expect(step.break?).to be false
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      let(:title) { 'Merge request title [ci skip]' }
+
+      before do
+        stub_feature_flags(ci_skip_pipeline_from_mr_title: false)
+      end
+
+      it 'does not break the chain' do
+        step.perform!
+
+        expect(step.break?).to be false
+      end
+    end
+  end
+
+  context 'when there is no merge request' do
     before do
       step.perform!
     end
@@ -74,6 +148,31 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip, feature_category: :pipeline_co
 
     it 'does not skip a pipeline chain' do
       expect(pipeline.reload).not_to be_skipped
+    end
+  end
+
+  context 'when the ci.skip push option is provided' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project,
+        current_user: user,
+        ignore_skip_ci: false,
+        save_incompleted: true,
+        push_options: Ci::PipelineCreation::PushOptions.new({ 'ci' => { 'skip' => true } }),
+        origin_ref: project.default_branch_or_main
+      )
+    end
+
+    before do
+      step.perform!
+    end
+
+    it 'breaks the chain' do
+      expect(step.break?).to be true
+    end
+
+    it 'skips the pipeline' do
+      expect(pipeline.reload).to be_skipped
     end
   end
 

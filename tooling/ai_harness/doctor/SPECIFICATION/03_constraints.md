@@ -152,7 +152,7 @@ The doctor script follows functional programming patterns.
   Steps produce data in the context hash; stdout is handled by
   `PrintStdout` via `inspect_ok`, stderr by `PrintStderr` via
   `inspect_err` (see `02_contracts.md` §2.2). The one exception to the
-  no-IO rule is `--fix` mode: fixable check steps (parity, gitignore)
+  no-IO rule is `--fix` mode: fixable check steps (gitignore)
   write files as a side effect when `fix: true`. This is an inherent
   requirement of the fixability rules (see §5) and is the documented
   exception to the pure functions constraint.
@@ -207,19 +207,7 @@ The doctor script follows functional programming patterns.
   `.and_then` and `.map` pass through `Result.err` unchanged, so a
   `ParseArgv` err skips all subsequent steps.
 
-### 3.5 No Symlinks for Instruction Files
-
-Neither `AGENTS.md` nor `CLAUDE.md` may be a symlink at any directory level.
-Symlinks between the two files would silently satisfy the parity check
-while behaving differently across platforms and tools (some follow
-symlinks, some don't). The parity check detects symlinks before
-checking content and reports them as issues.
-
-In `--fix` mode, a symlinked file is replaced with a regular file
-containing the symlink target's content (read → delete → write). This
-preserves the content while eliminating the symlink.
-
-### 3.6 .ai/ Reference Resolution
+### 3.5 .ai/ Reference Resolution
 
 `.ai/` references extracted from an `AGENTS.md` file are resolved **relative
 to the directory containing that `AGENTS.md` file**, not relative to the
@@ -268,8 +256,6 @@ For example:
 
 | Check | Fixable? | Fix behavior |
 |-------|----------|-------------|
-| Parity (missing/differs) | Yes | Copy AGENTS.md → CLAUDE.md (or create missing file) |
-| Parity (symlink) | Yes | Replace symlink with a regular file copy of target content |
 | .ai/ references | No | Missing files must be created manually |
 | .gitignore | Yes | Append missing entries |
 | Forbidden files | No | Hard fail. User must remove/gitignore |

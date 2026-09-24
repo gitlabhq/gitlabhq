@@ -1,4 +1,4 @@
-import { GlAvatarLabeled, GlBadge, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlSkeletonLoader, GlIcon, GlPopover } from '@gitlab/ui';
 import mrDiffCommentFixture from 'test_fixtures/merge_requests/diff_comment.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { sprintf } from '~/locale';
@@ -594,6 +594,98 @@ describe('User Popover Component', () => {
       const cannotMergeWarning = wrapper.findByTestId('cannot-merge');
 
       expect(cannotMergeWarning.exists()).toBe(false);
+    });
+  });
+
+  describe('when the target has a recommendation reason', () => {
+    const target = document.createElement('a');
+    target.classList.add('js-user-link');
+
+    const findRecommendationReason = () =>
+      wrapper.findByTestId('user-popover-recommendation-reason');
+
+    const findReasonIcon = () => findRecommendationReason().findComponent(GlIcon);
+
+    it('renders the reason with the status-active icon', () => {
+      target.dataset.recommendationReason = 'Owns the changed files.';
+
+      createWrapper({}, target);
+
+      expect(findRecommendationReason().exists()).toBe(true);
+      expect(findRecommendationReason().text()).toBe('Owns the changed files.');
+      expect(findReasonIcon().props('name')).toBe('status-active');
+    });
+
+    it('applies the info accent class when the user is available', () => {
+      target.dataset.recommendationReason = 'Owns the changed files.';
+
+      createWrapper(
+        { user: { ...DEFAULT_PROPS.user, status: { availability: AVAILABILITY_STATUS.NOT_SET } } },
+        target,
+      );
+
+      expect(wrapper.findComponent(GlPopover).props('cssClasses')).toContain(
+        'user-popover-recommendation',
+      );
+    });
+
+    it('applies the subtle accent class when the user is busy', () => {
+      target.dataset.recommendationReason = 'Owns the changed files.';
+
+      createWrapper(
+        { user: { ...DEFAULT_PROPS.user, status: { availability: AVAILABILITY_STATUS.BUSY } } },
+        target,
+      );
+
+      expect(wrapper.findComponent(GlPopover).props('cssClasses')).toContain(
+        'user-popover-recommendation-busy',
+      );
+    });
+
+    it('uses the status-active icon in info variant when the user is available', () => {
+      target.dataset.recommendationReason = 'Owns the changed files.';
+
+      createWrapper(
+        { user: { ...DEFAULT_PROPS.user, status: { availability: AVAILABILITY_STATUS.NOT_SET } } },
+        target,
+      );
+
+      expect(findReasonIcon().props('name')).toBe('status-active');
+      expect(findReasonIcon().props('variant')).toBe('info');
+    });
+
+    it('uses the status-waiting icon in subtle variant when the user is busy', () => {
+      target.dataset.recommendationReason = 'Owns the changed files.';
+
+      createWrapper(
+        { user: { ...DEFAULT_PROPS.user, status: { availability: AVAILABILITY_STATUS.BUSY } } },
+        target,
+      );
+
+      expect(findReasonIcon().props('name')).toBe('status-waiting');
+      expect(findReasonIcon().props('variant')).toBe('subtle');
+    });
+
+    it('does not apply the recommendation accent when the user cannot merge', () => {
+      target.dataset.recommendationReason = 'Owns the changed files.';
+      target.dataset.cannotMerge = 'true';
+
+      createWrapper({}, target);
+
+      const cssClasses = wrapper.findComponent(GlPopover).props('cssClasses');
+      expect(cssClasses).toContain('user-popover-cannot-merge');
+      expect(cssClasses).not.toContain('user-popover-recommendation');
+      expect(cssClasses).not.toContain('user-popover-recommendation-busy');
+
+      delete target.dataset.cannotMerge;
+    });
+
+    it('does not render the reason when the target has none', () => {
+      delete target.dataset.recommendationReason;
+
+      createWrapper({}, target);
+
+      expect(findRecommendationReason().exists()).toBe(false);
     });
   });
 });

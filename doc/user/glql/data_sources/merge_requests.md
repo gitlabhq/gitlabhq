@@ -52,6 +52,7 @@ Use these fields in the `query` parameter to filter your results.
 | [Merged by user](#mr-merged-by-user)                     | `merger`, `mergedBy`                         | `=`                        |
 | [Milestone](#mr-milestone)                               | `milestone`                                  | `=`, `!=`                  |
 | [My reaction emoji](#mr-my-reaction-emoji)               | `myReaction`, `myReactionEmoji`              | `=`, `!=`                  |
+| [Review state](#mr-review-state)                         | `reviewState`, `reviewStates`                | `=`, `!=`, `in`            |
 | [Reviewers](#mr-reviewers)                               | `reviewer`, `reviewers`, `reviewedBy`        | `=`, `!=`                  |
 | [Source branch](#mr-source-branch)                       | `sourceBranch`                               | `=`, `in`, `!=`            |
 | [State](#mr-state)                                       | `state`                                      | `=`                        |
@@ -270,6 +271,34 @@ Use these fields in the `query` parameter to filter your results.
 
 **Allowed value types**: `String`
 
+### Review state {#mr-review-state}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/508) in GitLab 19.5.
+
+{{< /history >}}
+
+**Description**: Query merge requests by the review state of their reviewers.
+For more information about review states, see [Merge request reviews](../../project/merge_requests/reviews/_index.md).
+
+**Allowed value types**:
+
+- `Enum`, one of `unreviewed`, `review_started`, `reviewed`, `requested_changes`, `approved`, or `unapproved`
+- `List` (containing `Enum` values)
+
+**Notes**:
+
+- `List` values are only supported with the `in` and `!=` operators.
+- A merge request matches when at least one of its reviewers is in the given state,
+  not when every reviewer is.
+- When combined with `reviewer = @username`, `=` and `in` apply to that reviewer only.
+  `!=` applies to all reviewers: `reviewer = @username and reviewState != approved`
+  returns merge requests where the user is a reviewer and no reviewer has approved.
+- Merge requests without reviewers never match, so `reviewState` cannot be combined
+  with `reviewer = any` or `reviewer = none`.
+- To exclude more than one state, use a `List`: `reviewState != (approved, unapproved)`.
+
 ### Reviewers {#mr-reviewers}
 
 {{< history >}}
@@ -402,6 +431,18 @@ Use these fields in the `query` parameter to filter your results.
 | Updated at    | `updated`, `updatedAt` | Sort by last updated date                       |
 
 ## Examples
+
+- List open merge requests in the `gitlab-org/gitlab` project that are waiting for a first review:
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, author, reviewer, updated
+  sort: updated asc
+  query: project = "gitlab-org/gitlab" and type = MergeRequest and state = opened and draft = false and reviewState = unreviewed
+  limit: 10
+  ```
+  ````
 
 - List all merge requests in the `gitlab-org` group created by me sorted by the merge date (latest first):
 

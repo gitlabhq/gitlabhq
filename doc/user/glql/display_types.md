@@ -610,6 +610,7 @@ metrics: shownCount, acceptedCount
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628031) in GitLab 19.4.
+- The `maxColumns` and `maxRows` display options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628031) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -630,6 +631,17 @@ value at all are shaded a neutral gray rather than the lightest color, so that a
 mistaken for an absent one. Hover a cell for its row, column, and exact value.
 
 To describe the panel above the grid, set `description` under `displayConfig`.
+
+To limit how many dimension values the grid draws, set `maxColumns` or `maxRows` under
+`displayConfig`. `maxColumns` caps the first dimension, which runs along the columns, and
+`maxRows` caps the second, which runs down the rows. The values kept are the largest, ranked by
+the metric totaled across the other axis, and a capped axis is ordered largest first, with
+ties broken by label. That
+ordering replaces the one `sort` gives to that axis. The other axis still follows the query.
+
+Values past the limit are dropped, and nothing on the grid shows that they are missing, so state
+the limit in the panel title or description. Neither option has a default, and a value that is
+not a whole number greater than zero is ignored.
 
 ### Example
 
@@ -652,6 +664,21 @@ To add a description above the grid:
 display: heatMap
 displayConfig:
   description: Code Suggestions accepted per language, by IDE.
+mode: analytics
+query: type = CodeSuggestion and timestamp >= -30d
+dimensions: ideName, language
+metrics: acceptedCount
+```
+````
+
+To show only the five busiest IDEs:
+
+````yaml
+```glql
+display: heatMap
+displayConfig:
+  description: Code Suggestions accepted per language, for the five busiest IDEs.
+  maxColumns: 5
 mode: analytics
 query: type = CodeSuggestion and timestamp >= -30d
 dimensions: ideName, language

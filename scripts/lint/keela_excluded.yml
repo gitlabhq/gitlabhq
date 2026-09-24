@@ -124,6 +124,12 @@ methods:
     - security_tracked_context_quota_explicitly_set?: Will be used in #598087 for quota enforcement service
   ee/app/models/ee/user.rb:
     - security_policy_bot_project: Returns the bot's associated project; preserved for backward compatibility with bot-specific access flows
+  ee/app/models/import/sync/external_object.rb:
+    - self.for_local_record: Will be called by the initial-import adoption service in a follow-up MR
+  ee/app/models/import/sync/repository.rb:
+    - application_generation_current?: Will be called by the reconciliation worker in a follow-up MR
+  ee/app/models/import/sync/repository_state.rb:
+    - lagging?: Will be called by the reconciliation worker in a follow-up MR
   ee/app/models/security/scan_profile_project_status.rb:
     - profile_failed?: Will be used in follow-up MR to expose profile statuses via GraphQL (Task 4, #593133)
 scopes:

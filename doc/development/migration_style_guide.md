@@ -330,6 +330,8 @@ depending on [how long a migration takes](#how-long-a-migration-should-take)
 
 The migration helper `disable_statement_timeout` enables you to
 temporarily set the statement timeout to `0` per transaction or per connection.
+On PostgreSQL 17 and later, the helper also sets `transaction_timeout` to `0` for the same scope.
+A database-wide transaction limit then does not terminate the connection while the statement runs.
 
 - You use the per-connection option when your statement does not support
   running inside an explicit transaction, like `CREATE INDEX CONCURRENTLY`.

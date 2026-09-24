@@ -34,10 +34,12 @@ module API
     route_setting :authorization, permissions: :create_bitbucket_import,
       boundaries: [{ boundary_type: :group, boundary_param: :target_namespace }, { boundary_type: :user }]
     post 'import/bitbucket' do
-      result = Import::BitbucketService.new(
+      import_service = Import::BitbucketService.new(
         current_user,
         params.merge(organization_id: Current.organization.id)
-      ).execute
+      )
+      import_service.request_channel = ::Gitlab::Import::RequestChannel.detect(request)
+      result = import_service.execute
 
       if result[:status] == :success
         present ProjectSerializer.new.represent(result[:project], serializer: :import)

@@ -71,6 +71,7 @@ class Import::GithubController < Import::BaseController
   def create
     import_service = Import::GithubService.new(client, current_user,
       import_params.merge(organization_id: Current.organization.id))
+    import_service.request_channel = ::Gitlab::Import::RequestChannel::UI
     result = import_service.execute(access_params, provider_name)
 
     if result[:status] == :success

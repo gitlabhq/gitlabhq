@@ -89,6 +89,61 @@ RSpec.describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_s
       end
     end
 
+    context 'with a previous detection that predates the language_id backfill' do
+      let_it_be(:ruby) { create(:programming_language, name: 'Ruby', language_id: 326) }
+      let_it_be(:haskell) { create(:programming_language, name: 'Haskell', language_id: 365) }
+
+      before do
+        create(:repository_language, project: project, programming_language: ruby, share: 10, language_id: nil)
+        create(:repository_language, project: project, programming_language: haskell, share: 90, language_id: nil)
+
+        allow(project.repository).to receive(:languages).and_return(
+          [{ value: 99.63, label: 'Ruby', color: '#701516', highlight: '#701516', language_id: 326 }]
+        )
+      end
+
+      it 'updates the detected row through the legacy programming_language_id', :aggregate_failures do
+        subject.execute
+
+        row = RepositoryLanguage.find_by(project_id: project.id, programming_language_id: ruby.id)
+
+        expect(row.share).to eq(99.63)
+        expect(row.language_id).to eq(326)
+      end
+
+      it 'deletes the undetected row through the legacy programming_language_id' do
+        expect { subject.execute }
+          .to change { RepositoryLanguage.exists?(project_id: project.id, programming_language_id: haskell.id) }
+          .from(true).to(false)
+      end
+    end
+
+    context 'with a previous detection that already carries language_id' do
+      let_it_be(:ruby) { create(:programming_language, name: 'Ruby', language_id: 326) }
+      let_it_be(:haskell) { create(:programming_language, name: 'Haskell', language_id: 365) }
+
+      before do
+        create(:repository_language, project: project, programming_language: ruby, share: 10, language_id: 326)
+        create(:repository_language, project: project, programming_language: haskell, share: 90, language_id: 365)
+
+        allow(project.repository).to receive(:languages).and_return(
+          [{ value: 99.63, label: 'Ruby', color: '#701516', highlight: '#701516', language_id: 326 }]
+        )
+      end
+
+      it 'updates the detected row through the stable language_id' do
+        subject.execute
+
+        expect(RepositoryLanguage.find_by(project_id: project.id, language_id: 326).share).to eq(99.63)
+      end
+
+      it 'deletes the undetected row through the stable language_id' do
+        expect { subject.execute }
+          .to change { RepositoryLanguage.exists?(project_id: project.id, language_id: 365) }
+          .from(true).to(false)
+      end
+    end
+
     context 'when no repository exists' do
       let_it_be_with_reload(:project) { create(:project) }
 

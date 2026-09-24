@@ -2,10 +2,27 @@
 
 module Import
   class BaseService < ::BaseService
+    # request_channel (:api / :ui / :congregate) is captured at the request
+    # boundary by the calling controller or API endpoint and forwarded onto
+    # the created project's import state, so lifecycle events fired from
+    # ProjectImportState state-machine transitions can include it.
+    attr_reader :request_channel
+
     def initialize(client, user, params)
       @client = client
       @current_user = user
       @params = params
+    end
+
+    # Stashed in the request store so ProjectImportState#after_create
+    # picks it up as soon as the record is persisted (which happens inside
+    # Projects::CreateService via Project#create_import_state). If we only
+    # wrote in #success, the import Sidekiq job enqueued by
+    # ProjectImportState#schedule could start before Redis has the value and
+    # start_project_import would fire without request_channel.
+    def request_channel=(value)
+      @request_channel = value
+      ::Gitlab::Import::RequestChannel.stash(value)
     end
 
     def authorized?

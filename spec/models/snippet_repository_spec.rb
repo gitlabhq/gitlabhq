@@ -248,9 +248,7 @@ RSpec.describe SnippetRepository, feature_category: :source_code_management do
 
       before do
         allow(snippet).to receive(:repository).and_return(repo)
-        allow(repo).to receive(:ls_files).and_return([])
-        allow(repo).to receive(:root_ref).and_return('master')
-        allow(repo).to receive(:empty?).and_return(false)
+        allow(repo).to receive_messages(ls_files: [], root_ref: 'master', empty?: false)
       end
 
       it 'infers the commit action based on the parameters if not present' do

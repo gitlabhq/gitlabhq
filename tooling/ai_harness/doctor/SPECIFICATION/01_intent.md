@@ -6,10 +6,9 @@
    1. [Problem Statement](#11-problem-statement)
    2. [Design Principles](#12-design-principles)
 2. [What It Validates](#2-what-it-validates)
-   1. [CLAUDE.md / AGENTS.md Parity](#21-claudemd--agentsmd-parity)
-   2. [.ai/ Reference Resolution](#22-ai-reference-resolution)
-   3. [.gitignore Coverage](#23-gitignore-coverage)
-   4. [Forbidden Committed Files](#24-forbidden-committed-files)
+   1. [.ai/ Reference Resolution](#21-ai-reference-resolution)
+   2. [.gitignore Coverage](#22-gitignore-coverage)
+   3. [Forbidden Committed Files](#23-forbidden-committed-files)
 3. [Architecture](#3-architecture)
    1. [Namespace and File Layout](#31-namespace-and-file-layout)
    2. [ROP Chain Design](#32-rop-chain-design)
@@ -45,37 +44,32 @@ See: https://gitlab.com/gitlab-org/gitlab/-/work_items/594821
    files. All tool-specific configuration (skills, hooks, settings, agents) is
    gitignored and stays local.
 
-2. **Tool-agnostic parity.** `AGENTS.md` (tool-agnostic) and `CLAUDE.md`
-   (Claude Code specific) must always have identical content at every directory
-   level. `AGENTS.md` is the source of truth; the doctor copies it to
-   `CLAUDE.md` during `--fix`.
-
-3. **No Rails dependency.** The doctor script must work standalone — no
+2. **No Rails dependency.** The doctor script must work standalone — no
    `require 'rails_helper'`, no ActiveRecord, no application boot. It uses
    only Ruby stdlib and `lib/gitlab/fp/`.
 
-4. **Railway Oriented Programming.** The script follows the ROP pattern
+3. **Railway Oriented Programming.** The script follows the ROP pattern
    using `Gitlab::Fp::Result` and `Gitlab::Fp::Message` with conventions
    for context passing, step composition, and message matching. See
    `ee/lib/remote_development/README.md` for the full ROP pattern reference.
 
-5. **Type safety through pattern matching.** All context hash access uses
+4. **Type safety through pattern matching.** All context hash access uses
    Ruby rightward assignment pattern matching with type assertions, following
    the ROP pattern matching conventions. This catches type errors
    at runtime instead of silently propagating nils.
 
-6. **Pure functions and stateless classes.** All step classes use class
+5. **Pure functions and stateless classes.** All step classes use class
    (singleton) methods only. No instance variables, no constructors, no
    mutable state. Each step is a pure function from context → Result.
    Steps do NOT perform IO — they accumulate data in the context hash.
    (Exception: `--fix` mode steps write files; see `03_constraints.md` §3.2.)
 
-7. **Fail loud on unexpected state.** Unmatched Result types raise
+6. **Fail loud on unexpected state.** Unmatched Result types raise
    `Gitlab::Fp::UnmatchedResultError`. Missing hash keys raise
    `NoMatchingPatternKeyError`. Type mismatches in rightward assignment
    raise `NoMatchingPatternError`. The script never silently swallows errors.
 
-8. **Fixable vs. unfixable.** Each check declares whether it is auto-fixable.
+7. **Fixable vs. unfixable.** Each check declares whether it is auto-fixable.
    `--fix` repairs what it can and reports what it cannot. Forbidden committed
    files are always a hard fail.
 
@@ -83,16 +77,9 @@ See: https://gitlab.com/gitlab-org/gitlab/-/work_items/594821
 
 ## 2. What It Validates
 
-The doctor script runs four checks, in order:
+The doctor script runs three checks, in order:
 
-### 2.1 CLAUDE.md / AGENTS.md Parity
-
-At every directory level where either file exists, both must exist and have
-identical content. `AGENTS.md` is the source of truth for `--fix` operations.
-When only `CLAUDE.md` exists (no `AGENTS.md`), `--fix` creates `AGENTS.md`
-from `CLAUDE.md`.
-
-### 2.2 .ai/ Reference Resolution
+### 2.1 .ai/ Reference Resolution
 
 Every `AGENTS.md` file in the repo (root and subdirectories) is scanned.
 All `.ai/*` references found must resolve to existing files. References are
@@ -108,7 +95,7 @@ so agents read them on demand based on task context.
 **Implementation note:** The doctor's regex extracts `.ai/` paths without
 the `@` prefix, since `.ai/` references never use it.
 
-### 2.3 .gitignore Coverage
+### 2.2 .gitignore Coverage
 
 The root `.gitignore` must contain non-rooted entries for `CLAUDE.local.md`,
 `AGENTS.local.md`, and `.ai/*` to ensure user local override files are
@@ -116,7 +103,7 @@ properly ignored at all directory levels. `--fix` appends missing entries.
 Note: committed instruction files (like `AGENTS.md`) must be force-added
 (`git add --force`) since the gitignore patterns are non-rooted.
 
-### 2.4 Forbidden Committed Files
+### 2.3 Forbidden Committed Files
 
 No tool-specific configuration files (`.claude/`, `.opencode/`,
 `.gitlab/duo/`) may be in a staged or committed state. These files in a
@@ -183,8 +170,8 @@ These are acceptance criteria verified against the running system. For
 code-level constraints (type safety, functional patterns, testing rules),
 see `03_constraints.md`.
 
-- All four checks implemented and passing against the real repo
-- `--fix` mode correctly repairs parity and gitignore issues
+- All three checks implemented and passing against the real repo
+- `--fix` mode correctly repairs gitignore issues
 - `--help` prints usage and exits 0
 - `scripts/ai_harness/doctor` runs clean against the real repo (exit 0)
 - All scenarios in `04_scenarios.md` pass

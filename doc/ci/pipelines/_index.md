@@ -269,8 +269,28 @@ non-manual jobs, the option is not displayed.
 
 ### Skip a pipeline
 
+{{< history >}}
+
+- Merge request title support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256546) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_skip_pipeline_from_mr_title`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
 To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
 capitalization, to your commit message.
+
+To skip merge request pipelines, add `[ci skip]` or `[skip ci]`, using any capitalization,
+to the merge request title.
+This skips basic merge request pipelines, merged results pipelines, and merge train pipelines.
+The directive also applies when the merge request has conflicts.
+If you add the directive while a merge request is on a merge train, GitLab removes the merge request
+from the train because the skipped pipeline is not successful.
+Merge request pipelines remain skipped until you remove the directive from the title.
+With merged results pipelines, pipelines can remain skipped after you remove the directive until the
+next push regenerates the virtual commit.
 
 Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 The `ci.skip` push option does not skip merge request pipelines.

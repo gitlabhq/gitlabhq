@@ -82,11 +82,6 @@ export default {
       required: false,
       default: '',
     },
-    showFeedbackLink: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     showFeatureLibraryShimmer: {
       type: Boolean,
       required: false,
@@ -493,7 +488,6 @@ export default {
       :supports-pins="supportsPins"
       :sections="nonStaticItems"
       :current-pinned-ids="changedPinnedItemIds.ids"
-      :show-feedback-link="showFeedbackLink"
       @pin-toggle="onModalPinToggle"
     />
     <hr

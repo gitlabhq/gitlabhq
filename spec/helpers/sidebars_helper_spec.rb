@@ -132,7 +132,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         shortcut_links: global_shortcut_links,
         work_items: nil,
         has_multiple_organizations: false,
-        show_feature_library_feedback: true,
         show_feature_library_shimmer: true
       })
     end
@@ -204,10 +203,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           is_expected.not_to have_key(:gitlab_version_check)
         end
       end
-    end
-
-    describe 'show_feature_library_feedback' do
-      it { is_expected.to include(show_feature_library_feedback: true) }
     end
 
     describe 'ai_search_available' do

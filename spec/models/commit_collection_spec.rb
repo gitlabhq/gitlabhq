@@ -65,8 +65,7 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
 
       before do
         allow(commit).to receive_message_chain(:signature, :verified_system?).and_return(true)
-        allow(commit).to receive(:author_email).and_return(author_email)
-        allow(commit).to receive(:committer_email).and_return(committer_email)
+        allow(commit).to receive_messages(author_email: author_email, committer_email: committer_email)
       end
 
       it 'users committer email to identify committers' do
@@ -94,8 +93,7 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
 
       before do
         allow(commit).to receive_message_chain(:signature, :verified_system?).and_return(true)
-        allow(commit).to receive(:author_email).and_return(author_email)
-        allow(commit).to receive(:committer_email).and_return(committer_email)
+        allow(commit).to receive_messages(author_email: author_email, committer_email: committer_email)
       end
 
       it 'returns the committer email' do

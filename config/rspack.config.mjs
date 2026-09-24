@@ -7,7 +7,6 @@ import { fileURLToPath } from 'node:url';
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
 // eslint-disable-next-line import/no-unresolved -- resolver doesn't read @rspack/core's exports field
 import rspack from '@rspack/core';
-import CompressionPlugin from 'compression-webpack-plugin';
 import gqlTag from 'graphql-tag';
 
 import { buildOutput } from './helpers/output.js';
@@ -18,6 +17,7 @@ import { cacheGroups } from './rspack/cache_groups.js';
 import { define } from './rspack/define.js';
 import { entries } from './rspack/entries.js';
 import GraphqlKnownOperationsPlugin from './plugins/graphql_known_operations_plugin.js';
+import GzipAssetsPlugin from './plugins/gzip_assets_plugin.js';
 import Vue3MigrationManifestPlugin from './vue3migration/plugins/manifest.js';
 import { buildLoaderRules } from './rspack/loader_rules.js';
 import { slimManifest } from './rspack/manifest_plugin.js';
@@ -91,7 +91,7 @@ const plugins = [
   }),
   new rspack.DefinePlugin(define),
   new rspack.IgnorePlugin({ resourceRegExp: /moment/, contextRegExp: /pikaday/ }),
-  IS_PRODUCTION && COMPRESSION !== false && new CompressionPlugin(),
+  IS_PRODUCTION && COMPRESSION !== false && new GzipAssetsPlugin(),
   RSDOCTOR &&
     new RsdoctorRspackPlugin(
       RSDOCTOR_LEAN

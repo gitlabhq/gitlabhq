@@ -450,8 +450,10 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     let!(:processable) { create(:ci_build, :running, pipeline: pipeline, user: create(:user)) }
 
     before do
-      allow(processable).to receive(:can_auto_cancel_pipeline_on_job_failure?).and_return(can_auto_cancel_pipeline_on_job_failure)
-      allow(processable).to receive(:allow_failure?).and_return(allow_failure)
+      allow(processable).to receive_messages(
+        can_auto_cancel_pipeline_on_job_failure?: can_auto_cancel_pipeline_on_job_failure,
+        allow_failure?: allow_failure
+      )
     end
 
     where(:can_auto_cancel_pipeline_on_job_failure, :allow_failure, :result) do

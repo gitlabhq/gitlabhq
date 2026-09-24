@@ -71,6 +71,41 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
       expect(json_response['name']).to eq(project.name)
     end
 
+    describe 'request_channel' do
+      before do
+        allow(Gitlab::LegacyGithubImport::ProjectCreator)
+          .to receive(:new).and_return(double(execute: project))
+      end
+
+      it 'sets :api on the service for a plain API caller' do
+        expect_next_instance_of(Import::GithubService) do |service|
+          expect(service).to receive(:request_channel=).with(:api)
+          allow(service).to receive(:execute).and_return(status: :success, project: project)
+        end
+
+        post api("/import/github", user), params: {
+          target_namespace: user.namespace_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+      end
+
+      it 'sets :congregate when the caller identifies as Congregate' do
+        expect_next_instance_of(Import::GithubService) do |service|
+          expect(service).to receive(:request_channel=).with(:congregate)
+          allow(service).to receive(:execute).and_return(status: :success, project: project)
+        end
+
+        post api("/import/github", user),
+          params: {
+            target_namespace: user.namespace_path,
+            personal_access_token: token,
+            repo_id: non_existing_record_id
+          },
+          headers: { 'User-Agent' => 'GitLabApiClient' }
+      end
+    end
+
     it 'imports the project into the current organization', :aggregate_failures, :with_current_organization do
       stub_application_setting(import_sources: ['github'])
 

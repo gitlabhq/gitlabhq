@@ -1,7 +1,6 @@
 ---
 table_name: enabled_foundational_flow_check_results
-classes:
-- Ai::Catalog::EnabledFoundationalFlowCheckResult
+classes: []
 feature_categories:
 - duo_agent_platform
 description: Stores the results of foundational flow checks run for top-level namespaces,

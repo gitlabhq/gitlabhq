@@ -83,6 +83,30 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
         )
     end
 
+    it 'stores request_channel: api in EphemeralData by default', :clean_gitlab_redis_shared_state do
+      bulk_import = service.execute.payload
+
+      expect(::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel).to eq('api')
+    end
+
+    context 'when initiated by Congregate', :clean_gitlab_redis_shared_state do
+      subject(:service) do
+        described_class.new(
+          object_storage_configuration,
+          params,
+          current_user: user,
+          fallback_organization: organization,
+          request_channel: :congregate
+        )
+      end
+
+      it 'stores request_channel: congregate in EphemeralData' do
+        bulk_import = service.execute.payload
+
+        expect(::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel).to eq('congregate')
+      end
+    end
+
     it 'creates the offline transfer configuration' do
       expect { service.execute }
         .to change { Import::Offline::Configuration.count }.by(1)

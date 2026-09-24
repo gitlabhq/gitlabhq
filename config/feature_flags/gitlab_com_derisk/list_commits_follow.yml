@@ -1,0 +1,10 @@
+---
+name: list_commits_follow
+description: Follow file renames on the commits page (ListCommits.follow)
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/595517
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256649
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/629563
+milestone: '19.5'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

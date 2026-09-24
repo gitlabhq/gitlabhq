@@ -588,8 +588,10 @@ RSpec.configure do |config|
 
     example.run
 
+    # The configuration is deliberately kept: resetting it restores a $stdout logger, and a
+    # checkpoint logged after teardown (feature specs keep serving requests) then reaches the
+    # LabKit field validator and fails the job on an offense no example is responsible for.
     Labkit::UserExperienceSli::Current.reset
-    Labkit::UserExperienceSli.reset_configuration
   end
 
   config.backtrace_exclusion_patterns << %r{lib/gitlab/database}

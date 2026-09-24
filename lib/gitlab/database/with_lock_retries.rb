@@ -184,8 +184,11 @@ module Gitlab
         timing_configuration[current_iteration - 1][1].to_f
       end
 
+      # Deliberately never RESET: that would restore the cluster limit for the rest of the outer
+      # transaction, which is a migration or maintenance path that must not be cancelled.
       def disable_idle_in_transaction_timeout
         execute("SET LOCAL idle_in_transaction_session_timeout TO '0'")
+        Gitlab::Database::TransactionTimeout.disable(connection, local: true)
       end
 
       def disable_lock_timeout

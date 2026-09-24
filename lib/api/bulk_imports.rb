@@ -110,7 +110,8 @@ module API
           current_user,
           params[:entities],
           params[:configuration].slice(:url, :access_token),
-          fallback_organization: Current.organization
+          fallback_organization: Current.organization,
+          request_channel: ::Gitlab::Import::RequestChannel.detect(request)
         ).execute
 
         if response.success?

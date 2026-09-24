@@ -216,7 +216,6 @@ export default {
             :is-logged-in="sidebarData.is_logged_in"
             :panel-type="sidebarData.panel_type"
             :pinned-item-ids="sidebarData.pinned_items"
-            :show-feedback-link="sidebarData.show_feature_library_feedback"
             :show-feature-library-shimmer="sidebarData.show_feature_library_shimmer"
           />
         </scroll-scrim>

@@ -457,15 +457,28 @@ describe('TablePresenter', () => {
     });
 
     describe('when a row is duplicated in the previous period', () => {
-      it('does not add the column, because either pairing would be a guess', async () => {
+      beforeEach(async () => {
         const duplicated = MOCK_AGGREGATED_DATA_ONE_DIM.nodes[0];
 
         await createWrapper(
-          { ...trendProps, comparisonData: { nodes: [duplicated, duplicated] } },
+          {
+            ...trendProps,
+            comparisonData: {
+              nodes: [duplicated, duplicated, { language: 'python', totalCount: 7 }],
+            },
+          },
           mountExtended,
         );
+      });
 
-        expect(headerLabels()).toEqual(['Language', 'Total count']);
+      it('still adds the column', () => {
+        expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+      });
+
+      it('shows only the ambiguous row as unknown, since the rest still pair', () => {
+        expect(rowLabels()).toEqual(['ruby', 'python', 'go']);
+        expect(badges()).toHaveLength(1);
+        expect(wrapper.findAllByTestId('trend-unknown')).toHaveLength(2);
       });
     });
 

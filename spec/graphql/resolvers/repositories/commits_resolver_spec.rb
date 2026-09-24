@@ -120,6 +120,87 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
         end
       end
 
+      describe 'follow' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:list_commits_follow, :remove_following, :path, :expected) do
+          true  | false | 'files/ruby/popen.rb' | true
+          true  | true  | 'files/ruby/popen.rb' | false
+          true  | false | nil                   | false
+          false | false | 'files/ruby/popen.rb' | false
+        end
+
+        with_them do
+          let(:arguments) { { ref: ref, path: path } }
+
+          before do
+            stub_feature_flags(
+              list_commits_follow: list_commits_follow,
+              remove_file_commit_history_following: remove_following
+            )
+          end
+
+          it 'passes the expected follow value to list_commits' do
+            expect(repository).to receive(:list_commits)
+              .with(hash_including(follow: expected))
+              .and_call_original
+
+            commits
+          end
+        end
+
+        context 'when the path was renamed in its history' do
+          let(:ref) { 'blame-on-renamed' }
+          let(:path) { 'files/plain_text/renamed' }
+          let(:arguments) { { ref: ref, path: path, first: 100 } }
+
+          before do
+            stub_feature_flags(remove_file_commit_history_following: false)
+          end
+
+          it 'returns commits from before the rename' do
+            followed_ids = commits.map(&:id)
+            literal_ids = repository.list_commits(ref: ref, path: path, follow: false).commits.map(&:id)
+
+            expect(literal_ids).to be_present
+            expect(followed_ids).to include(*literal_ids)
+            expect(followed_ids.size).to be > literal_ids.size
+          end
+
+          context 'when paginating' do
+            # The commit that renamed this path is second in its followed history, so a
+            # two-per-page walk puts every pre-rename commit on page two. Gitaly accepts
+            # only page_token alongside follow, never skip, so this covers the cursor path.
+            let(:page_size) { 2 }
+            let(:arguments) { { ref: ref, path: path, first: page_size } }
+
+            it 'follows the rename onto the second page', :aggregate_failures do
+              followed_ids = repository.list_commits(ref: ref, path: path, follow: true).commits.map(&:id)
+              literal_ids = repository.list_commits(ref: ref, path: path, follow: false).commits.map(&:id)
+              pre_rename_ids = followed_ids - literal_ids
+
+              expect(pre_rename_ids).to be_present
+
+              first_page = resolved
+
+              expect(first_page.items.map(&:id)).to eq(followed_ids.first(page_size))
+              expect(first_page.has_next_page).to be(true)
+
+              second_page = resolve_field(
+                field_instance,
+                repository,
+                args: arguments.merge(after: first_page.end_cursor),
+                object_type: resolver_parent,
+                schema: schema
+              )
+
+              expect(second_page.items.map(&:id)).to eq(followed_ids.drop(page_size))
+              expect(second_page.items.map(&:id)).to include(*pre_rename_ids)
+            end
+          end
+        end
+      end
+
       describe 'first_parent' do
         let(:arguments) { { ref: ref, first_parent: true } }
 

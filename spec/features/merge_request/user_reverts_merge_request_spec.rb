@@ -31,7 +31,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
     # code correctly on page update that adds the `revert` button
   end
 
-  it 'reverts a merge request', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450869' do
+  it 'reverts a merge request', :sidekiq_might_not_need_inline do
     revert_commit
 
     Sidekiq::Worker.skipping_transaction_check do
@@ -70,7 +70,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
       project.update!(merge_requests_ff_only_enabled: true)
     end
 
-    it 'reverts a merge request', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454303' do
+    it 'reverts a merge request', :sidekiq_might_not_need_inline do
       revert_commit
 
       Sidekiq::Worker.skipping_transaction_check do

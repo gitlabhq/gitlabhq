@@ -67,6 +67,7 @@ RSpec.describe 'Database schema',
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
       iam_outbox: %w[entity_id], # generic source-row id (entity_type, entity_id), not a single-table FK
+      import_sync_repositories: %w[provider_repository_node_id], # GitHub's opaque node ID, not a GitLab FK
       govern_policy_enforcements: %w[project_id], # No FK: the Policy Store owns its integrity so it can be extracted, per GOVERN-008
       govern_policy_evaluations: %w[project_id environment_id user_id], # No FK per GOVERN-008; audit-style rows keep their scope/principal refs after deletion
       instance_audit_events: %w[author_id target_id],

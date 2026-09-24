@@ -1917,16 +1917,17 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
   describe '#card_attributes' do
     it 'includes the author name' do
-      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
-      allow(subject).to receive(:assignees).and_return([])
+      allow(subject).to receive_messages(author: double(name: 'Robert'), assignees: [])
 
       expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => "" })
     end
 
     it 'includes the assignees name' do
-      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
-      allow(subject).to receive(:assignees).and_return([double(name: 'Douwe'), double(name: 'Robert')])
+      allow(subject).to receive_messages(
+        author: double(name: 'Robert'),
+        assignees: [double(name: 'Douwe'), double(name: 'Robert')]
+      )
 
       expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe and Robert' })
@@ -2310,16 +2311,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it 'does not cache closed issues when merge request is closed' do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
 
-      allow(subject).to receive(:commits).and_return([commit])
-      allow(subject).to receive(:state_id).and_return(described_class.available_states[:closed])
+      allow(subject).to receive_messages(commits: [commit], state_id: described_class.available_states[:closed])
 
       expect { subject.persist_merge_request_issues!(subject.author) }.not_to change { subject.merge_request_closing_issues.count }
     end
 
     it 'does not cache closed issues when merge request is merged' do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
-      allow(subject).to receive(:commits).and_return([commit])
-      allow(subject).to receive(:state_id).and_return(described_class.available_states[:merged])
+      allow(subject).to receive_messages(commits: [commit], state_id: described_class.available_states[:merged])
 
       expect { subject.persist_merge_request_issues!(subject.author) }.not_to change { subject.merge_request_closing_issues.count }
     end
@@ -3227,8 +3226,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:closing_issues) { (1..17).map { |id| Issue.new(id: id) } }
 
       before do
-        allow(subject).to receive(:referenced_issues_in_description).and_return(referenced_work_items)
-        allow(subject).to receive(:visible_closing_issues_for).and_return(closing_issues)
+        allow(subject).to receive_messages(
+          referenced_issues_in_description: referenced_work_items,
+          visible_closing_issues_for: closing_issues
+        )
       end
 
       it 'excludes the closing records by ID' do
@@ -3244,8 +3245,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         create(:jira_integration, project: subject.project)
         subject.project.reload
 
-        allow(subject).to receive(:commits).and_return([commit])
-        allow(subject).to receive(:description).and_return('Is related to TEST-2 and TEST-3')
+        allow(subject).to receive_messages(commits: [commit], description: 'Is related to TEST-2 and TEST-3')
         allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
       end
 
@@ -9997,8 +9997,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when context_commits_diff is not empty' do
         before do
-          allow(context_commits_diff).to receive(:empty?).and_return(false)
-          allow(context_commits_diff).to receive(:diffs).and_return(context_diffs)
+          allow(context_commits_diff).to receive_messages(empty?: false, diffs: context_diffs)
         end
 
         it 'returns diffs from context_commits_diff' do
@@ -10048,8 +10047,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:merge_request) { build_stubbed(:merge_request) }
 
     before do
-      allow(merge_request).to receive(:source_branch_sha).and_return(source_branch_sha)
-      allow(merge_request).to receive(:target_branch_sha).and_return(target_branch_sha)
+      allow(merge_request).to receive_messages(
+        source_branch_sha: source_branch_sha,
+        target_branch_sha: target_branch_sha
+      )
     end
 
     context 'when both source_branch_sha and target_branch_sha are present' do
@@ -10165,8 +10166,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when context_commits_diff is not empty' do
         before do
-          allow(context_commits_diff).to receive(:empty?).and_return(false)
-          allow(context_commits_diff).to receive(:first_diffs_slice).and_return(diffs)
+          allow(context_commits_diff).to receive_messages(empty?: false, first_diffs_slice: diffs)
         end
 
         it 'returns diff files from context_commits_diff' do

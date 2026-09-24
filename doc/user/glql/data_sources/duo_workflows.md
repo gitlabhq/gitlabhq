@@ -21,6 +21,8 @@ title: Duo workflows
 - `userTier` dimension and `flowTypesUsed` and `activeDays` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/516) in GitLab 19.5.
 - `status` parameter on `totalCount` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/527) in GitLab 19.5.
 - `group` dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/530) in GitLab 19.5.
+- `openMrCount` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/534) in GitLab 19.5.
+- `creditsPerMergedMrRatio` metric [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/533) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -166,6 +168,7 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 | Created MR count min        | `createdMrCountMin`        | Fewest merge requests created by a single flow. |
 | Created MR count quantile   | `createdMrCountQuantile`   | Merge requests created per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `createdMrCountQuantile(0.95)`. |
 | Created MR count sum        | `createdMrCountSum`        | Total merge requests created by all flows. |
+| Credits per merged MR ratio | `creditsPerMergedMrRatio`  | Credits used per merge request created by a flow and later merged. Credits from every flow count, including flows that created no merge request. |
 | Credits used max            | `creditsUsedMax`           | Most credits used by a single flow. |
 | Credits used mean           | `creditsUsedMean`          | Average credits used per flow. |
 | Credits used min            | `creditsUsedMin`           | Fewest credits used by a single flow. |
@@ -178,6 +181,11 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 | Merged MR count min         | `mergedMrCountMin`         | Fewest merged merge requests created by a single flow. |
 | Merged MR count quantile    | `mergedMrCountQuantile`    | Merged merge requests created per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `mergedMrCountQuantile(0.95)`. |
 | Merged MR count sum         | `mergedMrCountSum`         | Total merged merge requests created by all flows. |
+| Open MR count max           | `openMrCountMax`           | Most open merge requests created by a single flow. |
+| Open MR count mean          | `openMrCountMean`          | Average open merge requests created per flow. |
+| Open MR count min           | `openMrCountMin`           | Fewest open merge requests created by a single flow. |
+| Open MR count quantile      | `openMrCountQuantile`      | Open merge requests created per flow at a given quantile. Accepts a [`quantile` parameter](../_index.md#field-parameters) between `0.01` and `0.99` (default: `0.5`). For example, `openMrCountQuantile(0.95)`. |
+| Open MR count sum           | `openMrCountSum`           | Total open merge requests created by all flows. |
 | Previous period users count | `previousPeriodUsersCount` | Number of unique users in the previous period. |
 | Projects count              | `projectsCount`            | Number of unique projects. Flows that are not scoped to a project are not counted, so the row for those flows shows `0`. |
 | Returning users count       | `returningUsersCount`      | Number of unique users who also ran a flow in the previous period. |
@@ -185,7 +193,7 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 | Users count                 | `usersCount`               | Number of unique users. |
 
 > [!note]
-> The credits metrics require the Owner or Security Manager role for the group or project, or a
+> The credits metrics, including `creditsPerMergedMrRatio`, require the Owner or Security Manager role for the group or project, or a
 > [custom role](../../custom_roles/abilities.md) with the `read_agent_artifacts` permission.
 > For other users, these metrics are empty.
 
@@ -194,8 +202,9 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 - The `returningUsersCount`, `joinedUsersCount`, `churnedUsersCount`, and `previousPeriodUsersCount`
   metrics compare each `created` bucket with the preceding one, so they are only valid when the
   `created` dimension is also selected. A `created` filter alone is not enough.
-- The `mergedMrCount` and `closedMrCount` metrics count merge requests a flow created that were
-  later merged, or closed without merging. They can lag behind the current state of those merge requests.
+- The `mergedMrCount`, `closedMrCount`, and `openMrCount` metrics count merge requests a flow created that
+  were later merged, closed without merging, or are still open. They can lag behind the current state of
+  those merge requests, so a merge request merged recently can still be counted as open.
 
 ## Sort fields
 
@@ -256,7 +265,7 @@ information, see [analytics mode sorting](../_index.md#sorting).
   mode: analytics
   query: type = DuoWorkflow and group = "gitlab-org" and created > -30d
   dimensions: status as "Status"
-  metrics: totalCount as "Flows", createdMrCountSum as "MRs created", mergedMrCountSum as "MRs merged"
+  metrics: totalCount as "Flows", createdMrCountSum as "MRs created", mergedMrCountSum as "MRs merged", openMrCountSum as "MRs open"
   sort: status asc
   ```
   ````

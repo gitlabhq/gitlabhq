@@ -639,7 +639,6 @@ GEM
     diffy (3.4.4)
     digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
-    docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     doorkeeper (5.9.3)
@@ -983,15 +982,15 @@ GEM
       rspec-parameterized (>= 1.0, < 3.0)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_query_language (0.39.0)
+    gitlab_query_language (0.40.0)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.39.0-aarch64-linux-gnu)
+    gitlab_query_language (0.40.0-aarch64-linux-gnu)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.39.0-arm64-darwin)
+    gitlab_query_language (0.40.0-arm64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.39.0-x86_64-darwin)
+    gitlab_query_language (0.40.0-x86_64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.39.0-x86_64-linux-gnu)
+    gitlab_query_language (0.40.0-x86_64-linux-gnu)
       rb_sys (~> 0.9.91)
     globalid (1.1.0)
       activesupport (>= 5.0)
@@ -2159,14 +2158,10 @@ GEM
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
     simple_po_parser (1.1.6)
-    simplecov (0.22.0)
-      docile (~> 1.1)
-      simplecov-html (~> 0.11)
-      simplecov_json_formatter (~> 0.1)
-    simplecov-cobertura (3.1.0)
+    simplecov (1.3.0)
+    simplecov-cobertura (4.0.0)
       rexml
-      simplecov (~> 0.19)
-    simplecov-html (0.12.3)
+      simplecov (~> 1.0)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
     simpleidn (0.2.3)
@@ -2361,11 +2356,11 @@ GEM
     vite_rails (3.10.0)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
-    vite_ruby (3.10.2)
+    vite_ruby (3.11.0)
       dry-cli (>= 0.7, < 2)
       logger (~> 1.6)
       mutex_m
-      rack-proxy (~> 0.6, >= 0.6.1)
+      rack-proxy (>= 0.6.1)
       zeitwerk (~> 2.2)
     vmstat (2.3.1)
     warden (1.2.9)
@@ -2570,7 +2565,7 @@ DEPENDENCIES
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.3.0)
   gitlab_quality-test_tooling (~> 3.22.0)
-  gitlab_query_language (~> 0.39.0)
+  gitlab_query_language (~> 0.40.0)
   gon (~> 6.6.0)
   google-apis-androidpublisher_v3 (~> 0.107.0)
   google-apis-cloudbilling_v1 (~> 0.41.0)
@@ -2770,8 +2765,8 @@ DEPENDENCIES
   sidekiq-cron (~> 2.3.0)
   sigdump (~> 0.2.4)
   simple_po_parser (~> 1.1.6)
-  simplecov (~> 0.22)
-  simplecov-cobertura (~> 3.1.0)
+  simplecov (~> 1.3)
+  simplecov-cobertura (~> 4.0)
   simplecov-lcov (~> 0.8.0)
   slack-messenger (~> 2.3.5)
   snowplow-tracker (~> 0.8.0)
@@ -2807,7 +2802,7 @@ DEPENDENCIES
   version_sorter (~> 2.3)
   view_component (~> 4.12.0)
   vite_rails (~> 3.10.0)
-  vite_ruby (~> 3.10.1)
+  vite_ruby (~> 3.11.0)
   vmstat (~> 2.3.0)
   warning (~> 1.5.0)
   webauthn (~> 3.0)
@@ -2952,7 +2947,6 @@ CHECKSUMS
   diff_match_patch (0.1.0)
   diffy (3.4.4) sha256=79384ab5ca82d0e115b2771f0961e27c164c456074bd2ec46b637ebf7b6e47e3
   digest-crc (0.6.5) sha256=5ca456f3352dc5ff17eb95deb3dd5a79dc79f8bf751d8005abca5b7b9b252124
-  docile (1.4.0) sha256=5f1734bde23721245c20c3d723e76c104208e1aa01277a69901ce770f0ebb8d3
   domain_name (0.5.20190701) sha256=000a600454cb4a344769b2f10b531765ea7bd3a304fe47ed12e5ca1eab969851
   doorkeeper (5.9.3) sha256=e6d120235bd134494bd02d08e8063c994fc1a58a681285077e671529bfc5d90b
   doorkeeper-device_authorization_grant (1.0.3) sha256=94c3ac12a0d50942850ecd58ed64298b397a5e903e8880cb68d4085600932679
@@ -3092,11 +3086,11 @@ CHECKSUMS
   gitlab_chronic_duration (0.12.0) sha256=0d766944d415b5c831f176871ee8625783fc0c5bfbef2d79a3a616f207ffc16d
   gitlab_omniauth-ldap (2.3.0) sha256=167036fe37c2711f2e1d2047260766e4c9b31ac37dfc873b101bcd4ea2a3a3b4
   gitlab_quality-test_tooling (3.22.0) sha256=f29fb32ea3910c9fe35292c1e28929d37758a664c0adfd817465139e693ef1df
-  gitlab_query_language (0.39.0) sha256=01885e00eba5fa37f1730bb040f26ae1d1e1b9a318b16323e1184b007c34135f
-  gitlab_query_language (0.39.0-aarch64-linux-gnu) sha256=ac75816c49308b3cd46096291809b17f95b4cbfeeea716023d92c6a4b9f98372
-  gitlab_query_language (0.39.0-arm64-darwin) sha256=751fee6d22391896f1b49f39fa33e401df993f6a7124ee4b0c16129705957e49
-  gitlab_query_language (0.39.0-x86_64-darwin) sha256=52c99fd4eb742478127b795f7ec997972c12938b42dcce6d8bf66757fd7f2803
-  gitlab_query_language (0.39.0-x86_64-linux-gnu) sha256=7132c8a697400fb394bb9e053fe2137aab74cb1e257d40fb4760336cd506f00a
+  gitlab_query_language (0.40.0) sha256=2cd69613251bb5ff4d2bdeb5affe8509a5d311455251741cfcd584fd5d068482
+  gitlab_query_language (0.40.0-aarch64-linux-gnu) sha256=f0c54db591fbf4d6c47a22177c18f28317024f971056916c172fde1c3e8128ef
+  gitlab_query_language (0.40.0-arm64-darwin) sha256=81f0e7ff9bcc7a284186178b7dd7c5ac5617d07958a42267d51bdc98bf976f00
+  gitlab_query_language (0.40.0-x86_64-darwin) sha256=e44a4dd46e0397e4ba0be419051c639ed4a7edca4b36076442c024200bf6e7ef
+  gitlab_query_language (0.40.0-x86_64-linux-gnu) sha256=47afac816c60a8aac430c81cd4249d875223dfc83cc3a503a5c9faa3b02bf4f5
   globalid (1.1.0) sha256=b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f
   gon (6.6.0) sha256=4c0be4e4f05fc8eb5db5ac2f7d47ae28ee04826f2b153338f7fb03c0e8f6ecd1
   google-apis-androidpublisher_v3 (0.107.0) sha256=b8207eecc89e6a9f7ea11aa88a07bccdcae5ca90121330079db4ef4696a2f3ff
@@ -3529,9 +3523,8 @@ CHECKSUMS
   sigdump (0.2.5) sha256=bb706c1cce70458b285d2c3a57121e801ccb79f68be7f7377692eb40b5437242
   signet (0.19.0) sha256=537f3939f57f141f691e6069a97ec40f34fadafc4c7e5ba94edb06cf4350dd31
   simple_po_parser (1.1.6) sha256=122687d44d3de516a0e69e2f383a4180f5015e8c5ed5a7f2258f2b376f64cbf3
-  simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
-  simplecov-cobertura (3.1.0) sha256=6d7f38aa32c965ca2174b2e5bd88cb17138eaf629518854976ac50e628925dc5
-  simplecov-html (0.12.3) sha256=4b1aad33259ffba8b29c6876c12db70e5750cb9df829486e4c6e5da4fa0aa07b
+  simplecov (1.3.0) sha256=d9886307863c1ead47657dcbed869bfffd82318808b09014d8f0ff77dcfe7492
+  simplecov-cobertura (4.0.0) sha256=e4fb3159b1ecea545b44f5452a8611305323e78ad23eae8aed35924d072e01ea
   simplecov-lcov (0.8.0) sha256=0115f31cb7ef5ec4334f5d9382c67fd43de2e5270e21b65bfc693da82dd713c1
   simplecov_json_formatter (0.1.4) sha256=529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428
   simpleidn (0.2.3) sha256=08ce96f03fa1605286be22651ba0fc9c0b2d6272c9b27a260bc88be05b0d2c29
@@ -3618,7 +3611,7 @@ CHECKSUMS
   version_sorter (2.3.0) sha256=2147f2a1a3804fbb8f60d268b7d7c1ec717e6dd727ffe2c165b4e05e82efe1da
   view_component (4.12.0) sha256=b9a5979d1c43eba2aa21a06a86f661aab3990104855f2909ef7c3779acdcdcb4
   vite_rails (3.10.0) sha256=8c4471554870c043e8d9ff7d379302a01d147ade2cd61476ddf020fed32a107a
-  vite_ruby (3.10.2) sha256=db465451eb180abbdc81f596ba63671d2b2552e2bb7bf3c1f7b79f9d58ca9a86
+  vite_ruby (3.11.0) sha256=29bc3b11633fc666afa7a5972c6470dfa77acf67d0ab24a0b67fec3fc3119340
   vmstat (2.3.1) sha256=5587cb430a54dbfc4a5c29dd01bd6a4031b2ff4c1d387504d74ff246f3b39104
   warden (1.2.9) sha256=46684f885d35a69dbb883deabf85a222c8e427a957804719e143005df7a1efd0
   warning (1.5.0) sha256=0f12c49fea0c06757778eefdcc7771e4fd99308901e3d55c504d87afdd718c53

@@ -76,11 +76,12 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
     end
   end
 
-  context 'when entity finishes successfully' do
+  context 'when entity finishes successfully', :clean_gitlab_redis_shared_state do
     it 'tracks the finish_project_import internal event for project entities' do
       entity = create(:bulk_import_entity, :project_entity, :started,
         project: create(:project, import_type: 'gitlab_project_migration'),
         bulk_import: create(:bulk_import, :with_configuration))
+      ::Import::BulkImports::EphemeralData.new(entity.bulk_import_id).request_channel = :api
       pipeline_tracker = create(:bulk_import_tracker, entity: entity)
       context = BulkImports::Pipeline::Context.new(pipeline_tracker)
 
@@ -128,6 +129,7 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category:
         :bulk_import_entity, :group_entity, :started, group: group,
         bulk_import: create(:bulk_import, :with_configuration)
       )
+      ::Import::BulkImports::EphemeralData.new(entity.bulk_import_id).request_channel = :api
       pipeline_tracker = create(:bulk_import_tracker, entity: entity)
       context = BulkImports::Pipeline::Context.new(pipeline_tracker)
 

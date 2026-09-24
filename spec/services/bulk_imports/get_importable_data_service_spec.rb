@@ -43,8 +43,7 @@ RSpec.describe BulkImports::GetImportableDataService, feature_category: :importe
 
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
-        allow(instance).to receive(:instance_version).and_return(source_version)
-        allow(instance).to receive(:instance_enterprise).and_return(false)
+        allow(instance).to receive_messages(instance_version: source_version, instance_enterprise: false)
       end
     end
 

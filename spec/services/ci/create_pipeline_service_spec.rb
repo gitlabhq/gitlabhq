@@ -692,6 +692,54 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
+    context 'when merge request title contains a [ci skip] directive' do
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: project,
+          source_branch: 'feature',
+          target_project: project,
+          target_branch: 'master',
+          title: 'Merge request title [ci skip]')
+      end
+
+      let(:pipeline) do
+        execute_service(
+          source: :merge_request_event,
+          merge_request: merge_request,
+          ref: merge_request.ref_path,
+          source_sha: project.commit(merge_request.source_branch).id
+        ).payload
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(<<~YAML)
+          workflow:
+            rules:
+              - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          rspec:
+            script: rspec
+        YAML
+      end
+
+      it 'creates a skipped merge request pipeline' do
+        expect(pipeline).to be_persisted
+        expect(pipeline).to be_merge_request_event
+        expect(pipeline).to be_skipped
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_skip_pipeline_from_mr_title: false)
+        end
+
+        it 'does not skip the merge request pipeline' do
+          expect(pipeline).to be_persisted
+          expect(pipeline).to be_merge_request_event
+          expect(pipeline).not_to be_skipped
+        end
+      end
+    end
+
     context 'when push options contain ci.skip' do
       let(:push_options) do
         { 'ci' => { 'skip' => true } }

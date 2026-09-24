@@ -237,6 +237,49 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
           expect(entity).to be_valid
         end
       end
+
+      context 'when the import is an offline transfer' do
+        let_it_be(:offline_bulk_import, freeze: false) { create(:bulk_import, :with_offline_configuration) }
+
+        context 'when source instance and destination instance are the same' do
+          before do
+            offline_bulk_import.offline_configuration.update!(source_hostname: 'https://example.gitlab.com')
+            allow(Settings.gitlab).to receive(:host).and_return('example.gitlab.com')
+          end
+
+          it 'is invalid if destination namespace is the source namespace' do
+            group_a = create(:group, path: 'group_a')
+
+            entity = build(
+              :bulk_import_entity,
+              :group_entity,
+              source_full_path: group_a.full_path,
+              destination_namespace: group_a.full_path,
+              bulk_import: offline_bulk_import
+            )
+
+            expect(entity).not_to be_valid
+            expect(entity.errors[:base])
+              .to include('Import failed. The destination cannot be a subgroup of the source group. Change the destination and try again.')
+          end
+        end
+
+        context 'when source instance and destination instance are not the same' do
+          it 'is valid if destination namespace is the source namespace' do
+            group_a = create(:group, path: 'group_a')
+
+            entity = build(
+              :bulk_import_entity,
+              :group_entity,
+              source_full_path: group_a.full_path,
+              destination_namespace: group_a.full_path,
+              bulk_import: offline_bulk_import
+            )
+
+            expect(entity).to be_valid
+          end
+        end
+      end
     end
 
     context 'when source_type is a project_entity' do
@@ -349,7 +392,13 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
     end
   end
 
-  describe 'internal events on state transitions' do
+  describe 'internal events on state transitions', :clean_gitlab_redis_shared_state do
+    # Seeded so these specs prove terminal events omit request_channel even
+    # though BulkImports::CreateService always stores one.
+    before do
+      ::Import::BulkImports::EphemeralData.new(entity.bulk_import_id).request_channel = :api
+    end
+
     context 'for a project entity' do
       let_it_be(:project) { create(:project, import_type: 'gitlab_project_migration') }
       let(:bulk_import) { create(:bulk_import, :with_configuration) }

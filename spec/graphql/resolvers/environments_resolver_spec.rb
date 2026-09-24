@@ -8,18 +8,14 @@ RSpec.describe Resolvers::EnvironmentsResolver do
   let_it_be(:current_user) { create(:user) }
 
   context "with a group" do
-    let_it_be(:group)   { create(:group) }
-    let_it_be(:project) { create(:project, :public, group: group) }
+    let_it_be(:group)   { create(:group, developers: current_user) }
+    let_it_be(:project) { create(:project, :public, group: group, creator: current_user) }
     let_it_be(:environment1) { create(:environment, :available, name: 'production', project: project) }
     let_it_be(:environment2) { create(:environment, :stopped, name: 'test', project: project) }
     let_it_be(:environment3) { create(:environment, :available, name: 'test2', project: project) }
     let_it_be(:environment4) { create(:environment, :available, name: 'folder1/test1', project: project) }
     let_it_be(:environment5) { create(:environment, :available, name: 'folder1/test2', project: project) }
     let_it_be(:environment6) { create(:environment, :available, name: 'folder2/test3', project: project) }
-
-    before_all do
-      group.add_developer(current_user)
-    end
 
     describe '#resolve' do
       it 'finds all environments' do

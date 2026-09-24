@@ -97,6 +97,17 @@ pointing at the shared queues Redis (a `redis_url`, or `sentinels` for a Sentine
 setup). When no Redis is configured the service runs without arbitration, which
 is fine for a single instance or local development.
 
+A forwarding failure (an unreachable cell, or a cell that rejects the request)
+is reported back to mail_room, which leaves the message in the mailbox to be
+retried on a later poll rather than deleting it.
+
+### Health check
+
+When a port is set under `cell.email_forwarding.health_check`, the service runs
+mail_room's health check server, which serves `/liveness`. This is the endpoint
+a container liveness probe targets. With no port configured no server starts, so
+local runs bind no port.
+
 ### Authentication
 
 Requests to the cell's internal mail_room endpoint are authenticated with an

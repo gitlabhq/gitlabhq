@@ -337,6 +337,7 @@ module Gitlab
         request.order = params[:order].upcase if params[:order].present?
         request.skip = params[:skip].to_i if params[:skip].present?
         request.first_parent = !!params[:first_parent]
+        request.follow = !!params[:follow]
 
         if params[:commit_message_patterns]
           request.commit_message_patterns += encode_repeated(Array.wrap(params[:commit_message_patterns]))

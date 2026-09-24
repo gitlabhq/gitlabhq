@@ -547,13 +547,18 @@ describe('BarListPresenter', () => {
             nodes: [
               { language: 'ruby', totalCount: 5 },
               { language: 'ruby', totalCount: 15 },
+              { language: 'python', totalCount: 7 },
             ],
           },
         }),
       );
 
-      it('gives no row a trend, since either pairing would be a guess', () => {
-        expect(rows().every((row) => !('trend' in row))).toBe(true);
+      it('gives that row no trend, since either pairing would be a guess', () => {
+        expect(rows().find((row) => row.name === 'ruby')).not.toHaveProperty('trend');
+      });
+
+      it('leaves the rows it can still tell apart with their own', () => {
+        expect(trendOf('python')).toEqual({ text: '+100%', variant: 'success' });
       });
     });
   });

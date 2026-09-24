@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { GlModal, GlSearchBoxByType, GlCollapse, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlModal, GlSearchBoxByType, GlCollapse, GlEmptyState } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
@@ -124,14 +124,13 @@ describe('FeatureLibraryModal', () => {
   const createWrapper = ({
     currentPinnedIds = [],
     panelType = 'project',
-    showFeedbackLink = false,
     sections = defaultSections,
     aiSearchAvailable = false,
     resourceId = null,
     supportsPins,
   } = {}) => {
     wrapper = shallowMountExtended(FeatureLibraryModal, {
-      propsData: { sections, currentPinnedIds, showFeedbackLink, supportsPins },
+      propsData: { sections, currentPinnedIds, supportsPins },
       provide: { panelType, aiSearchAvailable, resourceId },
       // Stub GlModal (declared props stay props, everything else surfaces as
       // attrs) and render all its slots so footer/body content is inspectable.
@@ -171,7 +170,6 @@ describe('FeatureLibraryModal', () => {
     const button = findCategoryFilters().wrappers.find((w) => w.text() === label);
     await button.vm.$emit('click');
   };
-  const findFeedbackLink = () => wrapper.findComponent(GlLink);
   const findGeminiButton = () => wrapper.findComponentByTestId('search-with-gemini-button');
   const findGeminiSection = () => wrapper.findByTestId('gemini-results-grid');
   const findHideGeminiButton = () => wrapper.findComponentByTestId('hide-gemini-section');
@@ -293,25 +291,9 @@ describe('FeatureLibraryModal', () => {
       });
 
       describe('footer visibility', () => {
-        describe('when the feedback link is enabled', () => {
-          beforeEach(() => createWrapper({ showFeedbackLink: true }));
-
-          it('shows the footer', () => {
-            expect(findModal().attributes('hide-footer')).toBeUndefined();
-          });
-        });
-
-        describe('when there is no feedback link to show', () => {
-          beforeEach(() => createWrapper({ showFeedbackLink: false }));
-
-          it('hides the footer', () => {
-            expect(findModal().attributes('hide-footer')).toBe('true');
-          });
-        });
-
         describe('when the gemini search button is not available', () => {
           beforeEach(() => {
-            createWrapper({ showFeedbackLink: false, aiSearchAvailable: false, resourceId: 1 });
+            createWrapper({ aiSearchAvailable: false, resourceId: 1 });
           });
 
           it('hides the footer', () => {
@@ -324,7 +306,7 @@ describe('FeatureLibraryModal', () => {
             mockSearch();
             mockAiSearch();
 
-            createWrapper({ showFeedbackLink: false, aiSearchAvailable: true, resourceId: 1 });
+            createWrapper({ aiSearchAvailable: true, resourceId: 1 });
             await emitSearch('re');
             await waitForPromises();
             await clickGeminiSearch();
@@ -1903,38 +1885,6 @@ describe('FeatureLibraryModal', () => {
     // search_with_gemini_in_feature_library_modal event definition is EE-only
     // (tiers: premium, ultimate) and lives in ee/config/events/:
     // ee/spec/frontend/super_sidebar/components/feature_library_modal_spec.js
-  });
-
-  describe('feedback link', () => {
-    describe('when showFeedbackLink is true', () => {
-      beforeEach(() => createWrapper({ showFeedbackLink: true }));
-
-      it('renders the feedback link', () => {
-        expect(findFeedbackLink().exists()).toBe(true);
-      });
-
-      it('points the feedback link at the feedback issue', () => {
-        expect(findFeedbackLink().attributes('href')).toBe(
-          'https://gitlab.com/gitlab-org/gitlab/-/work_items/604008',
-        );
-      });
-    });
-
-    describe('when showFeedbackLink is false', () => {
-      beforeEach(() => createWrapper({ showFeedbackLink: false }));
-
-      it('does not render the feedback link', () => {
-        expect(findFeedbackLink().exists()).toBe(false);
-      });
-    });
-
-    describe('by default', () => {
-      beforeEach(() => createWrapper());
-
-      it('does not render the feedback link', () => {
-        expect(findFeedbackLink().exists()).toBe(false);
-      });
-    });
   });
 
   describe('destroy', () => {

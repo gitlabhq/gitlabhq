@@ -22765,6 +22765,111 @@ CREATE SEQUENCE import_source_users_id_seq
 
 ALTER SEQUENCE import_source_users_id_seq OWNED BY import_source_users.id;
 
+CREATE TABLE import_sync_external_objects (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    import_sync_repository_id bigint NOT NULL,
+    issue_id bigint,
+    merge_request_id bigint,
+    note_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    provider_updated_at timestamp with time zone,
+    provider_object_xid bigint NOT NULL,
+    kind smallint NOT NULL,
+    CONSTRAINT chk_import_sync_external_objects_kind CHECK (((kind >= 0) AND (kind <= 2))),
+    CONSTRAINT chk_import_sync_external_objects_one_local_record CHECK ((num_nonnulls(issue_id, merge_request_id, note_id) = 1)),
+    CONSTRAINT chk_import_sync_external_objects_provider_xid CHECK ((provider_object_xid > 0))
+);
+
+CREATE SEQUENCE import_sync_external_objects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_sync_external_objects_id_seq OWNED BY import_sync_external_objects.id;
+
+CREATE TABLE import_sync_repositories (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    connected_by_user_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cutover_requested_at timestamp with time zone,
+    cutover_completed_at timestamp with time zone,
+    provider_installation_xid bigint NOT NULL,
+    provider_account_xid bigint NOT NULL,
+    provider_repository_xid bigint NOT NULL,
+    application_generation bigint DEFAULT 0 NOT NULL,
+    authority_state smallint DEFAULT 0 NOT NULL,
+    disconnect_reason smallint,
+    restore_authority_state smallint,
+    provider smallint DEFAULT 0 NOT NULL,
+    provider_account_login text NOT NULL,
+    provider_repository_node_id text NOT NULL,
+    provider_full_name text NOT NULL,
+    provider_default_branch text,
+    CONSTRAINT check_40e5f3d631 CHECK ((char_length(provider_default_branch) <= 255)),
+    CONSTRAINT check_6e9da9633d CHECK ((char_length(provider_account_login) <= 255)),
+    CONSTRAINT check_94a7426e52 CHECK ((char_length(provider_repository_node_id) <= 255)),
+    CONSTRAINT check_dd03f3c714 CHECK ((char_length(provider_full_name) <= 255)),
+    CONSTRAINT chk_import_sync_repositories_account_xid CHECK ((provider_account_xid > 0)),
+    CONSTRAINT chk_import_sync_repositories_application_gen CHECK ((application_generation >= 0)),
+    CONSTRAINT chk_import_sync_repositories_authority_state CHECK (((authority_state >= 0) AND (authority_state <= 6))),
+    CONSTRAINT chk_import_sync_repositories_disconnect_reason CHECK (((disconnect_reason IS NULL) OR ((disconnect_reason >= 0) AND (disconnect_reason <= 3)))),
+    CONSTRAINT chk_import_sync_repositories_installation_xid CHECK ((provider_installation_xid > 0)),
+    CONSTRAINT chk_import_sync_repositories_provider CHECK ((provider = 0)),
+    CONSTRAINT chk_import_sync_repositories_provider_repo_xid CHECK ((provider_repository_xid > 0)),
+    CONSTRAINT chk_import_sync_repositories_restore_authority CHECK (((restore_authority_state IS NULL) OR (restore_authority_state = ANY (ARRAY[0, 2]))))
+);
+
+CREATE SEQUENCE import_sync_repositories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_sync_repositories_id_seq OWNED BY import_sync_repositories.id;
+
+CREATE TABLE import_sync_repository_states (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    import_sync_repository_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    bootstrap_started_at timestamp with time zone,
+    last_event_at timestamp with time zone,
+    last_sync_started_at timestamp with time zone,
+    last_successful_sync_at timestamp with time zone,
+    desired_generation bigint DEFAULT 0 NOT NULL,
+    synced_generation bigint DEFAULT 0 NOT NULL,
+    domain smallint NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    cursor text,
+    last_error_code text,
+    last_error_message text,
+    CONSTRAINT check_09aa783812 CHECK ((char_length(cursor) <= 2048)),
+    CONSTRAINT check_9f3e735cf1 CHECK ((char_length(last_error_code) <= 255)),
+    CONSTRAINT check_ca97abcbda CHECK ((char_length(last_error_message) <= 1024)),
+    CONSTRAINT chk_import_sync_repository_states_desired_gen CHECK ((desired_generation >= 0)),
+    CONSTRAINT chk_import_sync_repository_states_domain CHECK (((domain >= 0) AND (domain <= 2))),
+    CONSTRAINT chk_import_sync_repository_states_generation_order CHECK ((synced_generation <= desired_generation)),
+    CONSTRAINT chk_import_sync_repository_states_state CHECK (((state >= 0) AND (state <= 6))),
+    CONSTRAINT chk_import_sync_repository_states_synced_gen CHECK ((synced_generation >= 0))
+);
+
+CREATE SEQUENCE import_sync_repository_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_sync_repository_states_id_seq OWNED BY import_sync_repository_states.id;
+
 CREATE TABLE incident_management_escalation_policies (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -28151,8 +28256,8 @@ CREATE TABLE pm_affected_packages (
     overridden_advisory_fields jsonb DEFAULT '{}'::jsonb NOT NULL,
     versions jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT check_5dd528a2be CHECK ((char_length(package_name) <= 256)),
-    CONSTRAINT check_80dea16c7b CHECK ((char_length(affected_range) <= 512)),
     CONSTRAINT check_d1d4646298 CHECK ((char_length(solution) <= 2048)),
+    CONSTRAINT check_e77c8ef7de CHECK ((char_length(affected_range) <= 1024)),
     CONSTRAINT check_ec4c8efb5e CHECK ((char_length(distro_version) <= 256)),
     CONSTRAINT chk_rails_a0f80d74e0 CHECK ((cardinality(fixed_versions) <= 10))
 );
@@ -37610,6 +37715,12 @@ ALTER TABLE ONLY import_source_user_placeholder_references ALTER COLUMN id SET D
 
 ALTER TABLE ONLY import_source_users ALTER COLUMN id SET DEFAULT nextval('import_source_users_id_seq'::regclass);
 
+ALTER TABLE ONLY import_sync_external_objects ALTER COLUMN id SET DEFAULT nextval('import_sync_external_objects_id_seq'::regclass);
+
+ALTER TABLE ONLY import_sync_repositories ALTER COLUMN id SET DEFAULT nextval('import_sync_repositories_id_seq'::regclass);
+
+ALTER TABLE ONLY import_sync_repository_states ALTER COLUMN id SET DEFAULT nextval('import_sync_repository_states_id_seq'::regclass);
+
 ALTER TABLE ONLY incident_management_escalation_policies ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY incident_management_escalation_rules ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_rules_id_seq'::regclass);
@@ -41213,6 +41324,15 @@ ALTER TABLE ONLY import_source_user_placeholder_references
 
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT import_source_users_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_sync_external_objects
+    ADD CONSTRAINT import_sync_external_objects_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_sync_repositories
+    ADD CONSTRAINT import_sync_repositories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_sync_repository_states
+    ADD CONSTRAINT import_sync_repository_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT inc_mgmnt_no_overlapping_oncall_shifts EXCLUDE USING gist (rotation_id WITH =, tstzrange(starts_at, ends_at, '[)'::text) WITH &&);
@@ -46056,6 +46176,16 @@ CREATE UNIQUE INDEX idx_import_placeholder_memberships_on_source_user_project_id
 
 CREATE INDEX idx_import_source_user_placeholder_references_on_user_model_id ON import_source_user_placeholder_references USING btree (source_user_id, model, user_reference_column, alias_version, id);
 
+CREATE UNIQUE INDEX idx_import_sync_external_objects_on_issue_id ON import_sync_external_objects USING btree (issue_id) WHERE (issue_id IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_import_sync_external_objects_on_merge_request_id ON import_sync_external_objects USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_import_sync_external_objects_on_note_id ON import_sync_external_objects USING btree (note_id) WHERE (note_id IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_import_sync_external_objects_on_repository_kind_provider ON import_sync_external_objects USING btree (import_sync_repository_id, kind, provider_object_xid);
+
+CREATE UNIQUE INDEX idx_import_sync_repository_states_on_repository_and_domain ON import_sync_repository_states USING btree (import_sync_repository_id, domain);
+
 CREATE INDEX idx_incident_management_pending_alert_escalations_on_project_id ON ONLY incident_management_pending_alert_escalations USING btree (project_id);
 
 CREATE INDEX idx_incident_management_pending_issue_esc_on_namespace_id ON ONLY incident_management_pending_issue_escalations USING btree (namespace_id);
@@ -49071,6 +49201,18 @@ CREATE INDEX index_import_source_users_on_placeholder_user_id ON import_source_u
 CREATE INDEX index_import_source_users_on_reassigned_by_user_id ON import_source_users USING btree (reassigned_by_user_id);
 
 CREATE INDEX index_import_source_users_on_reassignment_expires_at ON import_source_users USING btree (reassignment_expires_at);
+
+CREATE INDEX index_import_sync_external_objects_on_project_id ON import_sync_external_objects USING btree (project_id);
+
+CREATE INDEX index_import_sync_repositories_on_connected_by_user_id ON import_sync_repositories USING btree (connected_by_user_id);
+
+CREATE UNIQUE INDEX index_import_sync_repositories_on_project_id ON import_sync_repositories USING btree (project_id);
+
+CREATE INDEX index_import_sync_repositories_on_provider_installation_xid ON import_sync_repositories USING btree (provider_installation_xid);
+
+CREATE INDEX index_import_sync_repositories_on_provider_repository_xid ON import_sync_repositories USING btree (provider_repository_xid);
+
+CREATE INDEX index_import_sync_repository_states_on_project_id ON import_sync_repository_states USING btree (project_id);
 
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 
@@ -57856,6 +57998,9 @@ ALTER TABLE ONLY users_star_projects
 ALTER TABLE ONLY dependency_list_export_upload_states
     ADD CONSTRAINT fk_232fc50378 FOREIGN KEY (dependency_list_export_upload_id) REFERENCES dependency_list_export_uploads(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_sync_external_objects
+    ADD CONSTRAINT fk_23420d47c1 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_2358b75436 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
 
@@ -57960,6 +58105,9 @@ ALTER TABLE ONLY system_access_group_microsoft_graph_access_tokens
 
 ALTER TABLE ONLY cd_rollout_environments
     ADD CONSTRAINT fk_295e6e178e FOREIGN KEY (environment_id) REFERENCES cd_environments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_sync_repositories
+    ADD CONSTRAINT fk_29e9138408 FOREIGN KEY (connected_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_29f6f15f82 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -58207,6 +58355,9 @@ ALTER TABLE ONLY agent_activity_events
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_3b3f2f0470 FOREIGN KEY (protected_environment_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_sync_external_objects
+    ADD CONSTRAINT fk_3b67b4de12 FOREIGN KEY (import_sync_repository_id) REFERENCES import_sync_repositories(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_3b8c72ea56 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE SET NULL;
 
@@ -58245,6 +58396,9 @@ ALTER TABLE ONLY security_scheduled_pipeline_execution_policy_test_runs
 
 ALTER TABLE ONLY work_item_custom_types
     ADD CONSTRAINT fk_3eb8ff21e3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_sync_external_objects
+    ADD CONSTRAINT fk_3f49aae4b8 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_3fe6467b93 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -58759,6 +58913,9 @@ ALTER TABLE ONLY custom_dashboard_versions
 ALTER TABLE ONLY observability_project_o11y_settings
     ADD CONSTRAINT fk_6b996fb6f9 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_sync_repository_states
+    ADD CONSTRAINT fk_6be0a2f5d6 FOREIGN KEY (import_sync_repository_id) REFERENCES import_sync_repositories(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT fk_6c95e61a6e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -59065,6 +59222,9 @@ ALTER TABLE ONLY labels
 ALTER TABLE ONLY bulk_import_export_uploads
     ADD CONSTRAINT fk_7e03e410b4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_sync_repository_states
+    ADD CONSTRAINT fk_7eeaef28d7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_7f28d925f3 FOREIGN KEY (merged_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -59296,6 +59456,9 @@ ALTER TABLE ONLY work_item_type_visibilities
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_sync_external_objects
+    ADD CONSTRAINT fk_9208212b58 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_9227dc44c3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -59340,6 +59503,9 @@ ALTER TABLE ONLY import_offline_configurations
 
 ALTER TABLE ONLY boards_epic_list_user_preferences
     ADD CONSTRAINT fk_95eac55851 FOREIGN KEY (epic_list_id) REFERENCES boards_epic_lists(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_sync_repositories
+    ADD CONSTRAINT fk_9624a1126c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
@@ -59841,6 +60007,9 @@ ALTER TABLE ONLY security_orchestration_policy_rule_schedules
 
 ALTER TABLE ONLY namespace_bans
     ADD CONSTRAINT fk_bcc024eef2 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_sync_external_objects
+    ADD CONSTRAINT fk_bcd404d0e1 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_bd0c4019c3 FOREIGN KEY (hosted_plan_id) REFERENCES plans(id) ON DELETE CASCADE;

@@ -22,12 +22,7 @@ import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
 import { foldTail } from './bar_list/fold_tail';
 import TwoDimensionsBarList from './bar_list/two_dimensions_bar_list.vue';
 import { NO_VALUE, trendPresentationFor } from './utils/stat';
-import {
-  TREND_PREVIOUS_KEY,
-  hasTemporalDimension,
-  hasUniqueRowKeys,
-  withTrendValues,
-} from './utils/table';
+import { TREND_PREVIOUS_KEY, hasTemporalDimension, withTrendValues } from './utils/table';
 import { formatSignedChange, trendChangeFor } from './utils/trend';
 
 // Six rows plus a rolled-up Other row, which is the shape of the design this
@@ -176,9 +171,6 @@ export default {
 
       const dimensions = [dimension];
       if (hasTemporalDimension(dimensions)) return null;
-      // Both periods: a duplicate identity on either side mispairs rows on the other.
-      if (!hasUniqueRowKeys(nodes, dimensions)) return null;
-      if (!hasUniqueRowKeys(comparisonNodes, dimensions)) return null;
 
       return withTrendValues(nodes, { comparisonNodes, dimensions, metric }).map(
         (node) => node[TREND_PREVIOUS_KEY],

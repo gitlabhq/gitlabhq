@@ -415,14 +415,14 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
           expect_next_instance_of(
             ::BulkImports::CreateService, user, bulk_import_params[0], { url: instance_url, access_token: pat },
-            fallback_organization: current_organization
+            fallback_organization: current_organization, request_channel: :ui
           ) do |service|
             allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
           end
 
           expect_next_instance_of(
             ::BulkImports::CreateService, user, bulk_import_params[1], { url: instance_url, access_token: pat },
-            fallback_organization: current_organization
+            fallback_organization: current_organization, request_channel: :ui
           ) do |service|
             allow(service).to receive(:execute).and_return(error_response)
           end
@@ -456,7 +456,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
             expect_next_instance_of(
               ::BulkImports::CreateService, user, entity, { url: instance_url, access_token: pat },
-              fallback_organization: current_organization
+              fallback_organization: current_organization, request_channel: :ui
             ) do |service|
               allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
             end
@@ -498,10 +498,26 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
         context 'when current organization is set' do
           it 'passes the current organization to the ::BulkImports::CreateService' do
             expect_next_instance_of(
-              ::BulkImports::CreateService, anything, anything, anything, fallback_organization: current_organization
+              ::BulkImports::CreateService, anything, anything, anything,
+              fallback_organization: current_organization, request_channel: :ui
             ) do |service|
               allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
             end.twice
+
+            post :create, params: { bulk_import: bulk_import_params }
+          end
+        end
+
+        context 'request_channel' do
+          it 'is :ui regardless of the incoming user-agent' do
+            expect_next_instance_of(
+              ::BulkImports::CreateService, anything, anything, anything,
+              hash_including(request_channel: :ui)
+            ) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
+            end.twice
+
+            request.headers['User-Agent'] = 'GitLabApiClient'
 
             post :create, params: { bulk_import: bulk_import_params }
           end

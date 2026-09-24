@@ -6249,8 +6249,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     with_them do
       before do
-        allow(user).to receive(:solo_owned_groups).and_return(solo_owned_groups)
-        allow(user).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+        allow(user).to receive_messages(
+          solo_owned_groups: solo_owned_groups,
+          solo_owned_organizations: solo_owned_organizations
+        )
       end
 
       it { is_expected.to be(result) }
@@ -6269,8 +6271,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       with_them do
         before do
           stub_feature_flags(ui_for_organizations: false)
-          allow(user).to receive(:solo_owned_groups).and_return(solo_owned_groups)
-          allow(user).to receive(:solo_owned_organizations).and_return(solo_owned_organizations)
+          allow(user).to receive_messages(
+            solo_owned_groups: solo_owned_groups,
+            solo_owned_organizations: solo_owned_organizations
+          )
         end
 
         it { is_expected.to be(result) }
@@ -7965,8 +7969,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     subject(:projects_limit_left) { user.projects_limit_left }
 
     before do
-      allow(user).to receive(:projects_limit).and_return(10)
-      allow(user).to receive(:personal_projects_count).and_return(5)
+      allow(user).to receive_messages(projects_limit: 10, personal_projects_count: 5)
     end
 
     it { is_expected.to eq(5) }
@@ -10827,8 +10830,10 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     with_them do
       before do
-        allow(user).to receive(:assigned_open_merge_requests_count).and_return(assigned_count)
-        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(returned_count)
+        allow(user).to receive_messages(
+          assigned_open_merge_requests_count: assigned_count,
+          returned_to_you_merge_requests_count: returned_count
+        )
       end
 
       it do

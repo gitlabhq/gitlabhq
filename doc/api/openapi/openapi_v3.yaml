@@ -73485,8 +73485,7 @@ paths:
     get:
       operationId: getApiV4ProjectsIdPipelinesPipelineIdVariables
       summary: List all pipeline variables
-      description: Lists all pipeline variables for a specified pipeline. Use the
-        `page` and `per_page` pagination parameters to control the pagination of results.
+      description: Lists all pipeline variables for a specified pipeline.
       tags:
       - Pipelines
       responses:

@@ -200,6 +200,34 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         truncate_legacy_tables
       end
 
+      context 'when the database supports transaction_timeout' do
+        let(:dry_run) { true }
+
+        before do
+          allow(Gitlab::Database::TransactionTimeout).to receive(:supported?).and_return(true)
+        end
+
+        it 'also disables the transaction timeout inside the truncate transaction' do
+          expect(logger).to receive(:info).with("SET LOCAL statement_timeout = 0").ordered
+          expect(logger).to receive(:info).with("SET LOCAL transaction_timeout = 0").ordered
+          expect(logger).to receive(:info).with(/TRUNCATE TABLE/).ordered
+
+          truncate_legacy_tables
+        end
+      end
+
+      context 'when the database does not support transaction_timeout' do
+        before do
+          allow(Gitlab::Database::TransactionTimeout).to receive(:supported?).and_return(false)
+        end
+
+        it 'does not touch the transaction timeout' do
+          expect(logger).not_to receive(:info).with("SET LOCAL transaction_timeout = 0")
+
+          truncate_legacy_tables
+        end
+      end
+
       context 'when running in dry_run mode' do
         let(:dry_run) { true }
 

@@ -297,7 +297,9 @@ use `include:project` and `include:file`.
 - `include:file` A full file path, or array of file paths, relative to the root directory (`/`).
   The YAML files must have the `.yml` or `.yaml` extension.
 - `include:ref`: Optional. The ref to retrieve the file from. Defaults to the `HEAD` of the project
-  when not specified.
+  when not specified. Can be a branch name, tag name, or commit SHA. To avoid ambiguity between
+  branches and tags with the same name, use a fully qualified ref like `refs/heads/<branch>`
+  or `refs/tags/<tag>`.
 - You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
 **Example of `include:project`**:
@@ -317,10 +319,13 @@ You can also specify a `ref`:
 ```yaml
 include:
   - project: 'my-group/my-project'
-    ref: main                                      # Git branch
+    ref: refs/heads/main                           # Git branch, fully qualified
     file: '/templates/.gitlab-ci-template.yml'
   - project: 'my-group/my-project'
-    ref: v1.0.0                                    # Git Tag
+    ref: refs/tags/v1.0.0                          # Git tag, fully qualified
+    file: '/templates/.gitlab-ci-template.yml'
+  - project: 'my-group/my-project'
+    ref: main                                      # Git branch or tag, short form
     file: '/templates/.gitlab-ci-template.yml'
   - project: 'my-group/my-project'
     ref: 787123b47f14b552955ca2786bc9542ae66fee5b  # Git SHA
@@ -346,6 +351,10 @@ include:
   - Using a specific SHA hash, which should be the most stable option. Use the
     full 40-character SHA hash to ensure the desired commit is referenced, because
     using a short SHA hash for the `ref` might be ambiguous.
+  - Using a fully qualified ref like `refs/heads/<branch>` or `refs/tags/<tag>` instead of
+    a short name like `main`. A short name can match both a branch and a tag. If both exist,
+    the file is retrieved from the tag, even if you intended to include the file from a
+    protected branch with the same name.
   - Applying both [protected branch](../../user/project/repository/branches/protected.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-branch-names) rules to
     the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 

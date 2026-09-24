@@ -702,6 +702,17 @@
           drop-shadow(0 1px 0 var(--gl-background-color-default));
 }
 
+// Overlays the recommendation-reason status badge on the bottom-right of the
+// 24px reviewer avatar, mirroring the "cannot merge" merge-icon treatment.
+.suggested-reviewer-reason-icon {
+  bottom: -1px;
+  left: 18px;
+  filter: drop-shadow(1px 0 0 var(--gl-background-color-default))
+          drop-shadow(-1px 0 0 var(--gl-background-color-default))
+          drop-shadow(0 -1px 0 var(--gl-background-color-default))
+          drop-shadow(0 1px 0 var(--gl-background-color-default));
+}
+
 .sidebar-help-wrap {
   .sidebar-help-state {
     margin: 16px -20px -20px;

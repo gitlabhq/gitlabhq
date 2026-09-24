@@ -352,6 +352,13 @@ a YAML definition in `config/feature_flags` or `ee/config/feature_flags`.
 
 Only feature flags that have a YAML definition file can be used when running the development or testing environments.
 
+When the tool prompts you to create a rollout issue, it copies the generated template to your
+clipboard, opens the **New issue** form in your browser, and waits for the issue URL.
+The tool does not submit the form.
+Paste the template into the form, submit it, and enter the new issue URL at the prompt.
+Create the rollout issue only once. Do not create another issue from the same template through
+the API or another tool while the form is open, because that produces duplicate rollout issues.
+
 ```shell
 $ bin/feature-flag my_feature_flag
 >> Specify the feature flag type
@@ -377,7 +384,7 @@ You picked the group 'group::group2'
 ?> [Return]
 
 >> Press any key and paste the issue content that we copied to your clipboard! 🚀
-?> [Return automatically opens the "New issue" page where you only have to paste the issue content]
+?> [Return opens the "New issue" page. Paste the issue content and submit the issue.]
 
 >> URL of the rollout issue (enter to skip):
 ?> https://gitlab.com/gitlab-org/gitlab/-/issues/437162

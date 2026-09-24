@@ -10,6 +10,11 @@ class ProjectImportState < ApplicationRecord
   attr_accessor :user_mapping_enabled, :safe_import_url, :timed_out
   alias_method :timed_out?, :timed_out
 
+  # Written by Import::BaseService#request_channel= at the request boundary,
+  # before Projects::CreateService creates the project (and thus this record).
+  # after_create fires while the caller still holds control, so Redis has the
+  # value before ProjectImportState#schedule enqueues the import job.
+  after_create :capture_request_channel_from_request_store
   after_commit :expire_etag_cache
 
   belongs_to :project, inverse_of: :import_state
@@ -199,6 +204,19 @@ class ProjectImportState < ApplicationRecord
     self.safe_import_url ||= project.safe_import_url(masked: false)
   end
 
+  # request_channel (api/ui/congregate) is captured in Redis at request time
+  # by the importer's controller/API/service, and read here when start_project_import
+  # fires from the state machine transition in Sidekiq. Stored in
+  # Redis rather than a column to match the pattern used by
+  # Import::BulkImports::EphemeralData for Direct Transfer.
+  def request_channel=(value)
+    Gitlab::Cache::Import::Caching.write(request_channel_cache_key, value.to_s) if value.present?
+  end
+
+  def request_channel
+    Gitlab::Cache::Import::Caching.read(request_channel_cache_key)
+  end
+
   def track_project_import_event(action)
     return if project.mirror?
     return unless Gitlab::ImportSources.importable_project_types.include?(project.import_type)
@@ -212,13 +230,24 @@ class ProjectImportState < ApplicationRecord
         additional_properties: {
           label: project.import_type,
           property: hashed_import_source,
-          source_hosting: project.source_hosting
+          source_hosting: project.source_hosting,
+          # Start-only: the channel can't change mid-import, and the 24h cache TTL
+          # can expire before a long import reaches its terminal event.
+          request_channel: (request_channel if action == 'start_project_import')
         }.compact
       )
     end
   end
 
   private
+
+  def request_channel_cache_key
+    "project_import_request_channel_#{project_id}"
+  end
+
+  def capture_request_channel_from_request_store
+    self.request_channel = ::Gitlab::Import::RequestChannel.stashed
+  end
 
   def hashed_import_source
     # masked: false strips credentials rather than replacing them with a placeholder,

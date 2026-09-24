@@ -29,7 +29,8 @@ module Gitlab
           private
 
           def skipped?
-            !@command.ignore_skip_ci && (commit_message_skips_ci? || !!@command.push_options&.skips_ci?)
+            !@command.ignore_skip_ci &&
+              (commit_message_skips_ci? || merge_request_title_skips_ci? || !!@command.push_options&.skips_ci?)
           end
 
           def commit_message_skips_ci?
@@ -39,6 +40,14 @@ module Gitlab
               !!(@pipeline.git_commit_message =~ SKIP_PATTERN)
             end
           end
+
+          def merge_request_title_skips_ci?
+            return false unless @command.merge_request
+            return false unless Feature.enabled?(:ci_skip_pipeline_from_mr_title, project)
+
+            !!(@command.merge_request.title =~ SKIP_PATTERN)
+          end
+          strong_memoize_attr :merge_request_title_skips_ci?
 
           def config_exists?
             pipeline_config = ::Gitlab::Ci::ProjectConfig.new(

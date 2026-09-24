@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Gitlab/NoCodeCoverageComment -- see steps/perform_doctor_checks/check_parity.rb
+# rubocop:disable Gitlab/NoCodeCoverageComment -- see steps/perform_doctor_checks/check_ai_references.rb
 # for explanation of :nocov: on rightward assignment and pattern matching lines (SimpleCov #1033).
 
 require_relative '../../../lib/gitlab/fp/result'

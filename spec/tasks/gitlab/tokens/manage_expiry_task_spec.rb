@@ -53,6 +53,13 @@ RSpec.describe 'Tasks::Gitlab::Tokens::ManageExpiryTask', feature_category: :sys
       expect { task.send(:show_most_common_pat_expiration_dates) }.to output(
         /#{expires_at}.*\|\s+2\s+\|\n\|\s+#{second}\s+\|\s+1\s+/).to_stdout
     end
+
+    it 'lifts the transaction timeout for the unbounded read' do
+      expect(Gitlab::Database::TransactionTimeout)
+        .to receive(:disable).with(ApplicationRecord.connection, local: true)
+
+      expect { task.send(:show_most_common_pat_expiration_dates) }.to output.to_stdout
+    end
   end
 
   describe '.extend_expiration_date' do
@@ -85,6 +92,19 @@ RSpec.describe 'Tasks::Gitlab::Tokens::ManageExpiryTask', feature_category: :sys
 
       expect(personal_access_token1.reload.expires_at).to be_nil
       expect(personal_access_token2.reload.expires_at).to be_nil
+    end
+
+    it 'lifts the transaction timeout while counting the affected tokens' do
+      prompt = instance_double(TTY::Prompt)
+
+      allow(task).to receive(:prompt_expiration_date_selection).and_return(expires_at)
+      allow(TTY::Prompt).to receive(:new).and_return(prompt)
+      allow(prompt).to receive(:yes?).and_return(false)
+
+      expect(Gitlab::Database::TransactionTimeout)
+        .to receive(:disable).with(ApplicationRecord.connection, local: true)
+
+      expect { task.send(:remove_expiration_date) }.to output.to_stdout
     end
   end
 end

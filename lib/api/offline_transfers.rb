@@ -228,7 +228,8 @@ module API
           storage_config,
           import_entities_params,
           current_user: current_user,
-          fallback_organization: Current.organization
+          fallback_organization: Current.organization,
+          request_channel: ::Gitlab::Import::RequestChannel.detect(request)
         ).execute
 
         if response.success?

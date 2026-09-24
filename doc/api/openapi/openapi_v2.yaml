@@ -13011,8 +13011,7 @@ paths:
   "/api/v4/projects/{id}/pipelines/{pipeline_id}/variables":
     get:
       summary: List all pipeline variables
-      description: Lists all pipeline variables for a specified pipeline. Use the
-        `page` and `per_page` pagination parameters to control the pagination of results.
+      description: Lists all pipeline variables for a specified pipeline.
       produces:
       - application/json
       parameters:

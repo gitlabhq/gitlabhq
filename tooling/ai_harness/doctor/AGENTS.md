@@ -10,7 +10,7 @@ GitLab monorepo conventions, see the top-level `AGENTS.md`.
 # Run the doctor checks against the real repo
 scripts/ai_harness/doctor
 
-# Auto-repair fixable problems (parity and gitignore)
+# Auto-repair fixable problems (gitignore)
 scripts/ai_harness/doctor --fix
 
 # Print help
@@ -23,7 +23,7 @@ bin/rspec spec/tooling/ai_harness/doctor/
 bin/rspec spec/tooling/ai_harness/doctor/integration_spec.rb
 
 # Run just the unit tests for a specific step
-bin/rspec spec/tooling/ai_harness/doctor/steps/perform_doctor_checks/check_parity_spec.rb
+bin/rspec spec/tooling/ai_harness/doctor/steps/perform_doctor_checks/check_gitignore_spec.rb
 ```
 
 ## SPECIFICATION — Source of Truth
@@ -54,17 +54,16 @@ making any changes, read the relevant SPECIFICATION files.**
 
 ## What This Tool Does
 
-The doctor script validates four conventions enforced across the monorepo:
+The doctor script validates three conventions enforced across the monorepo:
 
 | Check | Description | Auto-fixable? |
 |---|---|---|
-| **CLAUDE.md / AGENTS.md parity** | Every directory with either file must have both, with identical content. `AGENTS.md` is the source of truth. Symlinks are forbidden — both must be regular files. | ✅ `--fix` copies AGENTS.md → CLAUDE.md |
 | **.ai/ reference resolution** | Every `.ai/<path>` reference in any `AGENTS.md` must point to an existing file. | ❌ Must create missing files manually |
 | **.gitignore coverage** | Root `.gitignore` must contain `CLAUDE.local.md`, `AGENTS.local.md`, and `.ai/*` as non-rooted entries. | ✅ `--fix` appends missing entries |
 | **Forbidden committed files** | Tool-specific config (`.claude/`, `.opencode/`, `.gitlab/duo/chat-rules.md`, `*.local.md`) must never be tracked by git. | ❌ Hard fail — remove and `git rm --cached` |
 
-For full details on each check — including parity rules, forbidden file list,
-and fixability behavior — see `01_intent.md §2` and `02_contracts.md §3`.
+For full details on each check — including the forbidden file list and
+fixability behavior — see `01_intent.md §2` and `02_contracts.md §3`.
 
 ## File Layout
 
@@ -73,8 +72,7 @@ tooling/ai_harness/                 ← harness-wide
   config.yml                        runtime config (allowed_committed_files allowlist; future harness-wide keys go here)
 
 tooling/ai_harness/doctor/          ← implementation
-  AGENTS.md                         agent instructions (this file; CLAUDE.md is identical)
-  CLAUDE.md                         copy of AGENTS.md (parity convention)
+  AGENTS.md                         agent instructions (this file)
   main.rb                           top-level ROP chain (AiHarness::Doctor::Main.main)
   messages.rb                       Gitlab::Fp::Message subclasses
   steps/
@@ -84,10 +82,9 @@ tooling/ai_harness/doctor/          ← implementation
     print_stdout.rb                 inspect_ok side effect: prints stdout_text
     print_stderr.rb                 inspect_err side effect: prints stderr_text
     perform_doctor_checks/
-      main.rb                       sub-chain: runs all four checks
+      main.rb                       sub-chain: runs all three checks
       resolve_repo_root.rb          git rev-parse --show-toplevel → context[:repo_root]
       load_config.rb                loads `tooling/ai_harness/config.yml` → context[:config]
-      check_parity.rb               CLAUDE.md/AGENTS.md parity check (fixable)
       check_ai_references.rb        .ai/ reference resolution check (not fixable)
       check_gitignore.rb            .gitignore coverage check (fixable)
       check_forbidden_files.rb      forbidden tracked files check (not fixable)
@@ -110,7 +107,6 @@ spec/tooling/ai_harness/doctor/     ← tests (mirrors tooling/ structure)
       main_spec.rb
       resolve_repo_root_spec.rb
       load_config_spec.rb
-      check_parity_spec.rb
       check_ai_references_spec.rb
       check_gitignore_spec.rb
       check_forbidden_files_spec.rb
@@ -147,12 +143,3 @@ Read `00_process.md` for the full TDD iteration cycle. The short version:
 
 For code-level constraints (type safety, functional patterns, ROP chain rules,
 testing requirements), see `03_constraints.md`.
-
-## Parity Convention
-
-Per the repo root's AI instruction conventions: `AGENTS.md` is the source of
-truth, and `CLAUDE.md` must be identical in content (not a symlink). This
-convention is enforced by the doctor's own parity check — which means **this
-file (`tooling/ai_harness/doctor/AGENTS.md`) and its copy
-(`tooling/ai_harness/doctor/CLAUDE.md`) must always have identical
-content**. Run `scripts/ai_harness/doctor --fix` to sync them automatically.

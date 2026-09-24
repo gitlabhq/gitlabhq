@@ -143,6 +143,7 @@ describe('presenter_registry', () => {
         ${'creditsUsedMean'}          | ${18.456}        | ${CreditsPresenter}
         ${'creditsUsedSum'}           | ${2214.77}       | ${CreditsPresenter}
         ${'creditsUsedQuantile'}      | ${19.12}         | ${CreditsPresenter}
+        ${'creditsPerMergedMrRatio'}  | ${543.35}        | ${CreditsPresenter}
         ${'flowTypesCount'}           | ${3}             | ${NumberPresenter}
         ${'joinedUsersCount'}         | ${6}             | ${NumberPresenter}
         ${'churnedUsersCount'}        | ${3}             | ${NumberPresenter}
@@ -161,6 +162,11 @@ describe('presenter_registry', () => {
         ${'closedMrCountMean'}        | ${1.5}           | ${NumberPresenter}
         ${'closedMrCountSum'}         | ${37}            | ${NumberPresenter}
         ${'closedMrCountQuantile'}    | ${2}             | ${NumberPresenter}
+        ${'openMrCountMin'}           | ${0}             | ${NumberPresenter}
+        ${'openMrCountMax'}           | ${4}             | ${NumberPresenter}
+        ${'openMrCountMean'}          | ${1.5}           | ${NumberPresenter}
+        ${'openMrCountSum'}           | ${37}            | ${NumberPresenter}
+        ${'openMrCountQuantile'}      | ${2}             | ${NumberPresenter}
       `(
         'resolves field key $fieldKey to the matching presenter',
         ({ fieldKey, field, presenter }) => {

@@ -227,6 +227,109 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
     end
   end
 
+  shared_examples_for 'repo visibility variations' do
+    let_it_be(:group) { create(:group) }
+
+    context 'but the repo is disabled' do
+      let_it_be(:project) { create(:project, :public, :repository, :repository_disabled, namespace: group) }
+      let(:path) { "#{project.full_path}.git" }
+      let(:env) { {} }
+
+      it_behaves_like 'pulls require Basic HTTP Authentication'
+      it_behaves_like 'pushes require Basic HTTP Authentication'
+      it_behaves_like 'operations are not allowed with expired password'
+    end
+
+    context 'but the repo is enabled' do
+      let_it_be(:project) { create(:project, :public, :repository, :repository_enabled, namespace: group) }
+      let(:path) { "#{project.full_path}.git" }
+      let(:env) { {} }
+
+      it_behaves_like 'pulls are allowed'
+    end
+
+    context 'but only project members are allowed' do
+      let_it_be(:project) { create(:project, :public, :repository, :repository_private, namespace: group) }
+
+      it_behaves_like 'pulls require Basic HTTP Authentication'
+      it_behaves_like 'pushes require Basic HTTP Authentication'
+      it_behaves_like 'operations are not allowed with expired password'
+    end
+  end
+
+  shared_examples_for 'and build created by' do
+    shared_examples 'can download code only' do
+      let(:path) { "#{project.full_path}.git" }
+      let(:env) { { user: 'gitlab-ci-token', password: build.token } }
+
+      it_behaves_like 'pulls are allowed'
+
+      context 'when the repo does not exist' do
+        let(:project) { create(:project, reporters: user) }
+
+        it 'rejects pulls with 404 Not Found' do
+          clone_get(path, **env)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to eq(git_access_error(:no_repo))
+        end
+      end
+
+      it 'rejects pushes with 403 Forbidden' do
+        push_get(path, **env)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response.body).to eq(git_access_error(:push_code))
+      end
+    end
+
+    context 'administrator' do
+      let_it_be(:user) { create(:admin, reporter_of: project) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it_behaves_like 'can download code only'
+
+        it 'downloads from other project get status 403' do
+          clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it_behaves_like 'can download code only'
+
+        it 'downloads from other project get status 403' do
+          clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'regular user' do
+      let_it_be_with_reload(:user) { create(:user, reporter_of: project) }
+
+      it_behaves_like 'can download code only'
+
+      it 'downloads from other project get status 403' do
+        clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      context 'when users password is expired' do
+        it 'rejects pulls with 401 unauthorized' do
+          user.update!(password_expires_at: 2.days.ago)
+
+          download(path, user: 'gitlab-ci-token', password: build.token) do |response|
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+      end
+    end
+  end
+
   describe "User with no identities" do
     let(:user) { create(:user) }
 
@@ -509,31 +612,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the repo is public' do
-          context 'but the repo is disabled' do
-            let(:project) { create(:project, :public, :repository, :repository_disabled) }
-            let(:path) { "#{project.full_path}.git" }
-            let(:env) { {} }
-
-            it_behaves_like 'pulls require Basic HTTP Authentication'
-            it_behaves_like 'pushes require Basic HTTP Authentication'
-            it_behaves_like 'operations are not allowed with expired password'
-          end
-
-          context 'but the repo is enabled' do
-            let(:project) { create(:project, :public, :repository, :repository_enabled) }
-            let(:path) { "#{project.full_path}.git" }
-            let(:env) { {} }
-
-            it_behaves_like 'pulls are allowed'
-          end
-
-          context 'but only project members are allowed' do
-            let(:project) { create(:project, :public, :repository, :repository_private) }
-
-            it_behaves_like 'pulls require Basic HTTP Authentication'
-            it_behaves_like 'pushes require Basic HTTP Authentication'
-            it_behaves_like 'operations are not allowed with expired password'
-          end
+          it_behaves_like 'repo visibility variations'
         end
 
         context 'and the user requests a redirected path' do
@@ -751,13 +830,9 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               end
 
               context 'when user has 2FA enabled' do
-                let(:user) { create(:user, :two_factor) }
-                let(:access_token) { create(:personal_access_token, user: user) }
+                let_it_be_with_reload(:user) { create(:user, :two_factor, maintainer_of: project) }
+                let_it_be_with_reload(:access_token) { create(:personal_access_token, user: user) }
                 let(:path) { "#{project.full_path}.git" }
-
-                before do
-                  project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
-                end
 
                 context 'when username and password are provided' do
                   it_behaves_like 'pulls are disallowed'
@@ -931,13 +1006,9 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               end
 
               context 'when user has email OTP enabled' do
-                let(:user) { create(:user, email_otp_required_after: 1.second.ago) }
-                let(:access_token) { create(:personal_access_token, user: user) }
+                let_it_be(:user) { create(:user, email_otp_required_after: 1.second.ago, maintainer_of: project) }
+                let_it_be(:access_token) { create(:personal_access_token, user: user) }
                 let(:path) { "#{project.full_path}.git" }
-
-                before do
-                  project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
-                end
 
                 context 'when username and password are provided' do
                   it_behaves_like 'pulls are allowed'
@@ -969,15 +1040,13 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               context 'for ensuring the valid state of `email_otp_required_after`' do
                 context 'when email_otp_required_after is unset despite instance requirement' do
                   let_it_be_with_reload(:user) do
-                    create(:user, email_otp_required_after: nil)
+                    create(:user, email_otp_required_after: nil, maintainer_of: project)
                   end
 
                   let_it_be(:access_token) { create(:personal_access_token, user: user) }
                   let(:path) { "#{project.full_path}.git" }
 
                   before do
-                    project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
-
                     stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
                   end
 
@@ -1103,7 +1172,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               end
 
               context 'and the user requests a redirected path' do
-                let!(:redirect) { project.route.create_redirect('foo/bar') }
+                let_it_be(:redirect) { project.route.create_redirect('foo/bar') }
                 let(:path) { "#{redirect.path}.git" }
                 let(:project_moved_message) do
                   <<-MSG.strip_heredoc
@@ -1164,13 +1233,14 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context "when a gitlab ci token is provided" do
-          let(:project) { create(:project, :repository) }
-          let(:build) { create(:ci_build, :running, project: project, user: user) }
-          let(:other_project) do
+          let_it_be(:project) { create(:project, :repository) }
+          let_it_be(:other_project) do
             create(:project, :repository).tap do |o|
               make_project_fully_accessible(project, o)
             end
           end
+
+          let(:build) { create(:ci_build, :running, project: project, user: user) }
 
           context 'when build created by system is authenticated' do
             let(:user) { nil }
@@ -1195,90 +1265,18 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
           end
 
           context 'and build created by' do
-            before do
-              project.add_reporter(user)
-            end
-
-            shared_examples 'can download code only' do
-              let(:path) { "#{project.full_path}.git" }
-              let(:env) { { user: 'gitlab-ci-token', password: build.token } }
-
-              it_behaves_like 'pulls are allowed'
-
-              context 'when the repo does not exist' do
-                let(:project) { create(:project) }
-
-                it 'rejects pulls with 404 Not Found' do
-                  clone_get(path, **env)
-
-                  expect(response).to have_gitlab_http_status(:not_found)
-                  expect(response.body).to eq(git_access_error(:no_repo))
-                end
-              end
-
-              it 'rejects pushes with 403 Forbidden' do
-                push_get(path, **env)
-
-                expect(response).to have_gitlab_http_status(:forbidden)
-                expect(response.body).to eq(git_access_error(:push_code))
-              end
-            end
-
-            context 'administrator' do
-              let(:user) { create(:admin) }
-
-              context 'when admin mode is enabled', :enable_admin_mode do
-                it_behaves_like 'can download code only'
-
-                it 'downloads from other project get status 403' do
-                  clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
-
-                  expect(response).to have_gitlab_http_status(:forbidden)
-                end
-              end
-
-              context 'when admin mode is disabled' do
-                it_behaves_like 'can download code only'
-
-                it 'downloads from other project get status 403' do
-                  clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
-
-                  expect(response).to have_gitlab_http_status(:forbidden)
-                end
-              end
-            end
-
-            context 'regular user' do
-              let(:user) { create(:user) }
-
-              it_behaves_like 'can download code only'
-
-              it 'downloads from other project get status 403' do
-                clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
-
-                expect(response).to have_gitlab_http_status(:forbidden)
-              end
-
-              context 'when users password is expired' do
-                it 'rejects pulls with 401 unauthorized' do
-                  user.update!(password_expires_at: 2.days.ago)
-
-                  download(path, user: 'gitlab-ci-token', password: build.token) do |response|
-                    expect(response).to have_gitlab_http_status(:unauthorized)
-                  end
-                end
-              end
-            end
+            it_behaves_like 'and build created by'
           end
         end
       end
 
       it_behaves_like 'project path without .git suffix' do
-        let(:repository_path) { create(:project, :repository, :public, path: 'project.git-project').full_path }
+        let_it_be(:project) { create(:project, :repository, :public, path: 'project.git-project') }
+        let(:repository_path) { project.full_path }
       end
 
       context "retrieving an info/refs file" do
-        let(:project) { create(:project, :repository, :public) }
+        let_it_be(:project) { create(:project, :repository, :public) }
 
         context "when the file exists" do
           before do
@@ -1418,31 +1416,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the repo is public' do
-          context 'but the repo is disabled' do
-            let(:project) { create(:project, :public, :repository, :repository_disabled) }
-            let(:path) { "#{project.full_path}.git" }
-            let(:env) { {} }
-
-            it_behaves_like 'pulls require Basic HTTP Authentication'
-            it_behaves_like 'pushes require Basic HTTP Authentication'
-            it_behaves_like 'operations are not allowed with expired password'
-          end
-
-          context 'but the repo is enabled' do
-            let(:project) { create(:project, :public, :repository, :repository_enabled) }
-            let(:path) { "#{project.full_path}.git" }
-            let(:env) { {} }
-
-            it_behaves_like 'pulls are allowed'
-          end
-
-          context 'but only project members are allowed' do
-            let(:project) { create(:project, :public, :repository, :repository_private) }
-
-            it_behaves_like 'pulls require Basic HTTP Authentication'
-            it_behaves_like 'pushes require Basic HTTP Authentication'
-            it_behaves_like 'operations are not allowed with expired password'
-          end
+          it_behaves_like 'repo visibility variations'
         end
 
         context 'and the user requests a redirected path' do
@@ -1583,13 +1557,9 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               end
 
               context 'when user has 2FA enabled' do
-                let(:user) { create(:user, :two_factor) }
-                let(:access_token) { create(:personal_access_token, user: user) }
+                let_it_be_with_reload(:user) { create(:user, :two_factor, maintainer_of: project) }
+                let_it_be(:access_token) { create(:personal_access_token, user: user) }
                 let(:path) { "#{project.full_path}.git" }
-
-                before do
-                  project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let (basic auth password and per-example mutation prevent let_it_be), so before_all cannot access it
-                end
 
                 context 'when username and password are provided' do
                   it_behaves_like 'pulls are disallowed'
@@ -1704,7 +1674,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               end
 
               context 'and the user requests a redirected path' do
-                let!(:redirect) { project.route.create_redirect('foo/bar') }
+                let_it_be(:redirect) { project.route.create_redirect('foo/bar') }
                 let(:path) { "#{redirect.path}.git" }
                 let(:project_moved_message) do
                   <<-MSG.strip_heredoc
@@ -1747,13 +1717,14 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context "when a gitlab ci token is provided" do
-          let(:project) { create(:project, :repository) }
-          let(:build) { create(:ci_build, :running, project: project, user: user) }
-          let(:other_project) do
+          let_it_be(:project) { create(:project, :repository) }
+          let_it_be(:other_project) do
             create(:project, :repository).tap do |o|
               make_project_fully_accessible(project, o)
             end
           end
+
+          let(:build) { create(:ci_build, :running, project: project, user: user) }
 
           # legacy behavior that is blocked/deprecated
           context 'when build created by system is authenticated' do
@@ -1775,95 +1746,24 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
           end
 
           context 'and build created by' do
-            before do
-              project.add_reporter(user)
-            end
-
-            shared_examples 'can download code only' do
-              let(:path) { "#{project.full_path}.git" }
-              let(:env) { { user: 'gitlab-ci-token', password: build.token } }
-
-              it_behaves_like 'pulls are allowed'
-
-              context 'when the repo does not exist' do
-                let(:project) { create(:project) }
-
-                it 'rejects pulls with 404 Not Found' do
-                  clone_get(path, **env)
-
-                  expect(response).to have_gitlab_http_status(:not_found)
-                  expect(response.body).to eq(git_access_error(:no_repo))
-                end
-              end
-
-              it 'rejects pushes with 403 Forbidden' do
-                push_get(path, **env)
-
-                expect(response).to have_gitlab_http_status(:forbidden)
-                expect(response.body).to eq(git_access_error(:push_code))
-              end
-            end
-
-            context 'administrator' do
-              let(:user) { create(:admin) }
-
-              context 'when admin mode is enabled', :enable_admin_mode do
-                it_behaves_like 'can download code only'
-
-                it 'downloads from other project get status 403' do
-                  clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
-
-                  expect(response).to have_gitlab_http_status(:forbidden)
-                end
-              end
-
-              context 'when admin mode is disabled' do
-                it_behaves_like 'can download code only'
-
-                it 'downloads from other project get status 403' do
-                  clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
-
-                  expect(response).to have_gitlab_http_status(:forbidden)
-                end
-              end
-            end
-
-            context 'regular user' do
-              let(:user) { create(:user) }
-
-              it_behaves_like 'can download code only'
-
-              it 'downloads from other project get status 403' do
-                clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
-
-                expect(response).to have_gitlab_http_status(:forbidden)
-              end
-
-              context 'when users password is expired' do
-                it 'rejects pulls with 401 unauthorized' do
-                  user.update!(password_expires_at: 2.days.ago)
-
-                  download(path, user: 'gitlab-ci-token', password: build.token) do |response|
-                    expect(response).to have_gitlab_http_status(:unauthorized)
-                  end
-                end
-              end
-            end
+            it_behaves_like 'and build created by'
           end
 
           context 'and project is internal' do
             let_it_be(:user) { create(:user) }
             let_it_be(:top_level_group) { create(:group, name: 'top-level-group', visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-            let_it_be(:main_project) { create(:project, :repository,  name: 'main', group: top_level_group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false) }
+            let_it_be(:main_project) do
+              create(:project, :repository, name: 'main', group: top_level_group,
+                visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+                package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false, reporters: user)
+            end
+
             let_it_be(:project) { create(:project, :repository, name: 'internal', group: top_level_group, visibility_level: Gitlab::VisibilityLevel::INTERNAL, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false) }
 
             let_it_be(:main_ci_build) { create(:ci_build, status: :running, project: main_project, user: user) }
             let(:env) { { user: 'gitlab-ci-token', password: main_ci_build.token } }
             let(:path) { "#{project.full_path}.git" }
 
-            before_all do
-              main_project.add_reporter(user)
-            end
             context 'regular user with internal project' do
               it_behaves_like 'pulls are allowed'
 
@@ -1901,44 +1801,42 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
       end
 
-      it_behaves_like 'project path without .git suffix' do
-        let(:repository_path) do
-          project = create(:project, :repository, :public)
-          project.update_attribute(:path, 'project.')
-          project.full_path
-        end
-      end
-
-      context "retrieving an info/refs file" do
-        let(:project) do
-          project = create(:project, :repository, :public)
-          project.update_attribute(:path, 'project.')
-          project
+      context 'for a public project with the same path suffix' do
+        let_it_be(:project) do
+          create(:project, :repository, :public).tap do |project|
+            project.update_attribute(:path, 'project.')
+          end
         end
 
-        context "when the file exists" do
-          before do
-            # Provide a dummy file in its place
-            allow_any_instance_of(Repository).to receive(:blob_at).and_call_original
-            allow_any_instance_of(Repository).to receive(:blob_at).with('b83d6e391c22777fca1ed3012fce84f633d7fed0', 'info/refs') do
-              Blob.decorate(Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt'), project)
+        it_behaves_like 'project path without .git suffix' do
+          let(:repository_path) { project.full_path }
+        end
+
+        context "retrieving an info/refs file" do
+          context "when the file exists" do
+            before do
+              # Provide a dummy file in its place
+              allow_any_instance_of(Repository).to receive(:blob_at).and_call_original
+              allow_any_instance_of(Repository).to receive(:blob_at).with('b83d6e391c22777fca1ed3012fce84f633d7fed0', 'info/refs') do
+                Blob.decorate(Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt'), project)
+              end
+
+              get "/#{project.full_path}/-/blob/master/info/refs"
             end
 
-            get "/#{project.full_path}/-/blob/master/info/refs"
+            it "returns the file" do
+              expect(response).to have_gitlab_http_status(:ok)
+            end
           end
 
-          it "returns the file" do
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
+          context "when the file does not exist" do
+            before do
+              get "/#{project.full_path}/-/blob/master/info/refs"
+            end
 
-        context "when the file does not exist" do
-          before do
-            get "/#{project.full_path}/-/blob/master/info/refs"
-          end
-
-          it "redirects" do
-            expect(response).to have_gitlab_http_status(:found)
+            it "redirects" do
+              expect(response).to have_gitlab_http_status(:found)
+            end
           end
         end
       end
@@ -2077,7 +1975,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
   end
 
   describe "User with LDAP identity" do
-    let(:user) { create(:omniauth_user, :ldap) }
+    let_it_be_with_reload(:user) { create(:omniauth_user, :ldap) }
     let(:path) { 'doesnt/exist.git' }
 
     before do
@@ -2099,15 +1997,11 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
       end
 
       context "when the project exists" do
-        let(:project) { create(:project, :repository) }
+        let_it_be(:project) { create(:project, :repository, maintainers: user) }
         let(:path) { "#{project.full_path}.git" }
         let(:env) { { user: user.username, password: user.password } }
 
         context 'and the user is on the team' do
-          before do
-            project.add_maintainer(user)
-          end
-
           it "responds with status 200" do
             clone_get(path, **env) do |response|
               expect(response).to have_gitlab_http_status(:ok)
@@ -2140,13 +2034,12 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
   end
 
   context 'when terms are enforced' do
-    let(:project) { create(:project, :repository) }
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, maintainers: user) }
     let(:path) { "#{project.full_path}.git" }
     let(:env) { { user: user.username, password: user.password } }
 
     before do
-      project.add_maintainer(user)
       enforce_terms
     end
 

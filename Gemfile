@@ -476,7 +476,7 @@ gem 'gitlab-security_report_schemas', '0.2.1.min15.0.0.max15.2.4', feature_categ
 
 # Frontend bundling
 gem 'vite_rails', '~> 3.10.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'vite_ruby', '~> 3.10.1', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'vite_ruby', '~> 3.11.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Provide Rails path helpers to the frontend
 gem "js-routes", "~> 2.3", feature_category: :organization
@@ -601,9 +601,9 @@ group :development, :test do
   gem 'gitlab-dangerfiles', '~> 4.12.0', require: false, feature_category: :tooling
 
   # Gems required for code coverage
-  gem 'simplecov', '~> 0.22', require: false, feature_category: :tooling
+  gem 'simplecov', '~> 1.3', require: false, feature_category: :tooling
   gem 'simplecov-lcov', '~> 0.8.0', require: false, feature_category: :tooling
-  gem 'simplecov-cobertura', '~> 3.1.0', require: false, feature_category: :tooling
+  gem 'simplecov-cobertura', '~> 4.0', require: false, feature_category: :tooling
   gem 'undercover', '~> 0.8.0', require: false, feature_category: :tooling
 
   # Gems required in various pipelines
@@ -803,7 +803,7 @@ gem "gitlab-cloud-connector", "~> 1.53", require: 'gitlab/cloud_connector', feat
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'gitlab_query_language', '~> 0.39.0', feature_category: :integrations
+gem 'gitlab_query_language', '~> 0.40.0', feature_category: :integrations
 
 # standard Gem, version increase to resolve vulnerabilities
 gem "zlib", "~> 3.2", ">= 3.2.3", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593

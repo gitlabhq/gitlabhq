@@ -776,16 +776,14 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   describe '#card_attributes' do
     it 'includes the author name' do
-      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
-      allow(subject).to receive(:assignees).and_return([])
+      allow(subject).to receive_messages(author: double(name: 'Robert'), assignees: [])
 
       expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => '' })
     end
 
     it 'includes the assignee name' do
-      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
-      allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
+      allow(subject).to receive_messages(author: double(name: 'Robert'), assignees: [double(name: 'Douwe')])
 
       expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })

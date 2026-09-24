@@ -148,8 +148,13 @@ RSpec.describe Environments::CreateService, :with_current_organization, feature_
     end
 
     context 'with a cluster agent' do
-      let_it_be(:agent_management_project) { create(:project, organization: current_organization) }
-      let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
+      let_it_be(:agent_management_project) do
+        create(:project, namespace: project.namespace, organization: current_organization)
+      end
+
+      let_it_be(:cluster_agent) do
+        create(:cluster_agent, project: agent_management_project, created_by_user: developer)
+      end
 
       let(:params) do
         {
@@ -162,7 +167,7 @@ RSpec.describe Environments::CreateService, :with_current_organization, feature_
 
       context 'when skip_agent_auth is true' do
         let(:params) { { name: 'production', skip_agent_auth: true } }
-        let!(:authorization) { nil }
+        let(:authorization) { nil }
 
         it 'creates an environment without checking the cluster agent authorization' do
           expect { subject }.to change { ::Environment.count }.by(1)
@@ -179,7 +184,7 @@ RSpec.describe Environments::CreateService, :with_current_organization, feature_
 
       context 'when skip_agent_auth is nil' do
         context 'when user has permission to read the agent' do
-          let!(:authorization) do
+          let_it_be(:authorization) do
             create(:agent_user_access_project_authorization, project: project, agent: cluster_agent)
           end
 
@@ -194,7 +199,7 @@ RSpec.describe Environments::CreateService, :with_current_organization, feature_
         end
 
         context 'when user does not have permission to read the agent' do
-          let!(:authorization) { nil }
+          let(:authorization) { nil }
 
           it 'returns an error' do
             response = subject

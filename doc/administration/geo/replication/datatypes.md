@@ -33,59 +33,55 @@ verification methods:
 | Type                 | Feature / component                             | Replication method                           | Verification method           |
 |:---------------------|:------------------------------------------------|:---------------------------------------------|:------------------------------|
 | Database             | Application data in PostgreSQL                  | Native                                       | Native                        |
-| Database             | Redis                                           | Not applicable <sup>1</sup>                  | Not applicable                |
+| Database             | Redis                                           | Not applicable[^replication-note]            | Not applicable                |
 | Database             | Advanced search (Elasticsearch or OpenSearch)   | Native                                       | Native                        |
 | Database             | Exact code search (Zoekt)                       | Native                                       | Native                        |
 | Database             | SSH public keys                                 | PostgreSQL Replication                       | PostgreSQL Replication        |
 | Git                  | Project repository                              | Geo with Gitaly                              | Gitaly Checksum               |
 | Git                  | Project wiki repository                         | Geo with Gitaly                              | Gitaly Checksum               |
 | Git                  | Project designs repository                      | Geo with Gitaly                              | Gitaly Checksum               |
-| Git                  | Project Snippets                                | Geo with Gitaly                              | Gitaly Checksum               |
-| Git                  | Personal Snippets                               | Geo with Gitaly                              | Gitaly Checksum               |
+| Git                  | Snippets                                        | Geo with Gitaly                              | Gitaly Checksum               |
 | Git                  | Group wiki repository                           | Geo with Gitaly                              | Gitaly Checksum               |
 | Blob                 | User uploads _(file system)_                    | Geo with API                                 | SHA256 checksum               |
-| Blob                 | User uploads _(object storage)_                 | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | User uploads _(object storage)_                 | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | LFS objects _(file system)_                     | Geo with API                                 | SHA256 checksum               |
-| Blob                 | LFS objects _(object storage)_                  | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | LFS objects _(object storage)_                  | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | CI job artifacts _(file system)_                | Geo with API                                 | SHA256 checksum               |
-| Blob                 | CI job artifacts _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | CI job artifacts _(object storage)_             | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Archived CI build traces _(file system)_        | Geo with API                                 | Not implemented             |
-| Blob                 | Archived CI build traces _(object storage)_     | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Archived CI build traces _(object storage)_     | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
-| Blob                 | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Container registry _(object storage)_           | Geo with API/Managed/Docker API[^object-storage-provider-replication] | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Package registry _(file system)_                | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Package registry _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Package registry _(object storage)_             | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Packages Helm Metadata Cache _(file system)_    | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Packages Helm Metadata Cache _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Packages Helm Metadata Cache _(object storage)_ | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Terraform Module Registry _(file system)_       | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Terraform Module Registry _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Terraform Module Registry _(object storage)_    | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Versioned Terraform State _(file system)_       | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Versioned Terraform State _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Versioned Terraform State _(object storage)_    | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | External merge request diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
-| Blob                 | External merge request diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | External merge request diffs _(object storage)_ | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Pipeline artifacts _(file system)_              | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Pipeline artifacts _(object storage)_           | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Pipeline artifacts _(object storage)_           | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Pages _(file system)_                           | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Pages _(object storage)_                        | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob                 | CI Secure Files _(file system)_                 | Geo with API                                 | SHA256 checksum               |
-| Blob                 | CI Secure Files _(object storage)_              | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Pages _(object storage)_                        | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
+| Blob                 | Project-level CI Secure Files _(file system)_   | Geo with API                                 | SHA256 checksum               |
+| Blob                 | Project-level CI Secure Files _(object storage)_ | Geo with API/Managed[^object-storage-provider-replication]           | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Incident Metric Images _(file system)_          | Geo with API/Managed                         | SHA256 checksum               |
-| Blob                 | Incident Metric Images _(object storage)_       | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Incident Metric Images _(object storage)_       | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Alert Metric Images _(file system)_             | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Alert Metric Images _(object storage)_          | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blob                 | Alert Metric Images _(object storage)_          | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
 | Blob                 | Dependency Proxy Images _(file system)_         | Geo with API                                 | SHA256 checksum               |
-| Blob                 | Dependency Proxy Images _(object storage)_      | Geo with API/managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob                 | Packages nuget symbols _(file system)_      |  Geo with API                                   | SHA256 checksum |
-| Blob                 | Packages nuget symbols _(object storage)_              |  Geo with API/Docker API                           | SHA256 checksum <sup>3</sup> |
+| Blob                 | Dependency Proxy Images _(object storage)_      | Geo with API/Managed[^object-storage-provider-replication]            | SHA256 checksum[^object-storage-verification-note]  |
+| Blob                 | Packages NuGet Symbol _(file system)_      |  Geo with API                                   | SHA256 checksum |
+| Blob                 | Packages NuGet Symbol _(object storage)_              |  Geo with API/Managed[^object-storage-provider-replication]                           | SHA256 checksum[^object-storage-verification-note] |
 | Container Repository | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
-| Container Repository | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
+| Container Repository | Container registry _(object storage)_           | Geo with API/Managed/Docker API[^object-storage-provider-replication] | SHA256 checksum[^object-storage-verification-note]  |
 
-**Footnotes**:
-
-1. Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo sites.
-1. Object storage replication can be performed by Geo or by your object storage provider/appliance
-   native replication feature.
-1. Object storage verification [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8056) in GitLab 16.4 [with a feature flag](../../feature_flags/_index.md) named `geo_object_storage_verification`. Enabled by default.
+[^replication-note]: Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo sites.
+[^object-storage-provider-replication]: Object storage replication can be performed by Geo or by your object storage provider/appliance native replication feature.
+[^object-storage-verification-note]: See [Object storage verification](object_storage.md#object-storage-verification) for information about the feature flag `geo_object_storage_verification`, which is enabled by default.
 
 ### Git repositories
 

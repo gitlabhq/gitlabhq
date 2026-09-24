@@ -85,7 +85,6 @@ module SidebarsHelper
       shortcut_links: shortcut_links(user: user, project: project),
       work_items: work_items_modal_data(group, project),
       has_multiple_organizations: user.has_multiple_organizations?,
-      show_feature_library_feedback: show_feature_library_feedback?,
       show_feature_library_shimmer: show_feature_library_shimmer?,
       ai_search_available: feature_library_ai_search_available?(project: project, group: group),
       manage_organization_link: manage_organization_link(user)
@@ -212,10 +211,6 @@ module SidebarsHelper
     # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- Explicitly scope the link to the current organization
     organization_admin_root_path(organization)
     # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
-  end
-
-  def show_feature_library_feedback?
-    true
   end
 
   # overridden on EE with the FF/trial/resource checks

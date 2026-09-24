@@ -6,9 +6,10 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, :unlock_pipelines, :clean_git
   describe '#perform' do
     subject(:perform) { worker.perform(project_id, user_id, ref) }
 
+    let_it_be(:ref) { 'refs/heads/master' }
+    let_it_be(:project) { create(:project) }
+
     let(:worker) { described_class.new }
-    let(:ref) { 'refs/heads/master' }
-    let(:project) { create(:project) }
     let(:enqueue_pipelines_to_unlock_service_class) { Ci::Refs::EnqueuePipelinesToUnlockService }
     let(:enqueue_pipelines_to_unlock_service_instance_spy) { instance_double(Ci::Refs::EnqueuePipelinesToUnlockService) }
 
@@ -24,7 +25,7 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, :unlock_pipelines, :clean_git
         let(:user_id) { project.creator.id }
 
         context 'when ci ref exists for project' do
-          let!(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
+          let_it_be(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
 
           it 'calls the enqueue pipelines to unlock service' do
             expect(worker).to receive(:log_extra_metadata_on_done).with(:total_pending_entries, 3)
@@ -38,7 +39,7 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, :unlock_pipelines, :clean_git
         end
 
         context 'when ci ref does not exist for the given project' do
-          let!(:another_ci_ref) { create(:ci_ref, ref_path: ref) }
+          let_it_be(:another_ci_ref) { create(:ci_ref, ref_path: ref) }
 
           it 'does not call the service' do
             expect(enqueue_pipelines_to_unlock_service_class).not_to receive(:new)
@@ -48,8 +49,8 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, :unlock_pipelines, :clean_git
         end
 
         context 'when same ref path exists for a different project' do
-          let!(:another_ci_ref) { create(:ci_ref, ref_path: ref) }
-          let!(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
+          let_it_be(:another_ci_ref) { create(:ci_ref, ref_path: ref) }
+          let_it_be(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
 
           it 'calls the enqueue pipelines to unlock service with the correct ref' do
             expect(enqueue_pipelines_to_unlock_service_instance_spy)
@@ -83,13 +84,13 @@ RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, :unlock_pipelines, :clean_git
     end
 
     it_behaves_like 'an idempotent worker' do
+      let_it_be(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, ci_ref: ci_ref, project: project, locked: :artifacts_locked) }
+
       let(:project_id) { project.id }
       let(:user_id) { project.creator.id }
       let(:exec_times) { IdempotentWorkerHelper::WORKER_EXEC_TIMES }
       let(:job_args) { [project_id, user_id, ref] }
-
-      let!(:ci_ref) { create(:ci_ref, ref_path: ref, project: project) }
-      let!(:pipeline) { create(:ci_pipeline, ci_ref: ci_ref, project: project, locked: :artifacts_locked) }
 
       it 'enqueues all pipelines for the ref to be unlocked' do
         subject

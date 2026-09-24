@@ -1226,7 +1226,7 @@
 # When adding new runtime dependencies to doctor, add their paths here
 # in the same MR.
 .ai-harness-doctor-patterns: &ai-harness-doctor-patterns
-  # Parity / .ai-reference inputs (check_parity.rb, check_ai_references.rb)
+  # .ai-reference inputs (check_ai_references.rb)
   - "**/AGENTS.md"
   - "**/CLAUDE.md"
   - ".ai/**/*"

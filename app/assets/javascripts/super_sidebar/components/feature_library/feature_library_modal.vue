@@ -6,7 +6,6 @@ import {
   GlIcon,
   GlCollapse,
   GlEmptyState,
-  GlLink,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -30,7 +29,7 @@ import {
 } from '../../tracking_constants';
 import { HIDDEN_NAV_ITEM_CLASS, PANEL_TYPES } from '../../constants';
 import ScrollScrim from '../scroll_scrim.vue';
-import { FEEDBACK_ISSUE_URL, MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
+import { MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
 import { rankSearchResults } from './search';
 import FeatureLibraryItem from './feature_library_item.vue';
 
@@ -48,7 +47,6 @@ export default {
     GlIcon,
     GlCollapse,
     GlEmptyState,
-    GlLink,
     GlLoadingIcon,
     ScrollScrim,
     FeatureLibraryItem,
@@ -56,7 +54,6 @@ export default {
   mixins: [trackingMixin],
   modalId: MODAL_ID,
   DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-  FEEDBACK_ISSUE_URL,
   searchInputDescriptionId: 'feature-library-search-input-description',
   i18n: {
     geminiSearching: s__('FeatureLibrary|Searching with Gemini …'),
@@ -88,11 +85,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    showFeedbackLink: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   emits: ['pin-toggle'],
@@ -275,7 +267,7 @@ export default {
       );
     },
     showFooter() {
-      return this.showFeedbackLink || this.showGeminiButton;
+      return this.showGeminiButton;
     },
     emptyStateTitle() {
       return s__('FeatureLibrary|No features match your search');
@@ -773,12 +765,6 @@ export default {
             <span>{{ s__('FeatureLibrary|Powered by Gemini') }}</span>
           </span>
         </gl-button>
-
-        <div v-if="showFeedbackLink" class="gl-text-center gl-text-sm">
-          <gl-link :href="$options.FEEDBACK_ISSUE_URL" show-external-icon target="_blank">{{
-            s__('FeatureLibrary|Share feedback about this feature library')
-          }}</gl-link>
-        </div>
       </div>
     </template>
   </gl-modal>

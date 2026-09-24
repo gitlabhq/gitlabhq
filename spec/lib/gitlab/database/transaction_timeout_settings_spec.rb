@@ -17,6 +17,12 @@ RSpec.describe Gitlab::Database::TransactionTimeoutSettings, feature_category: :
 
       expect(current_timeout).to eq("0")
     end
+
+    it 'disables the transaction timeout for the session' do
+      expect(Gitlab::Database::TransactionTimeout).to receive(:disable).with(connection)
+
+      subject.disable_timeouts
+    end
   end
 
   describe '#restore_timeouts' do
@@ -25,7 +31,14 @@ RSpec.describe Gitlab::Database::TransactionTimeoutSettings, feature_category: :
     end
 
     it 'resets value' do
+      allow(connection).to receive(:execute).and_call_original
       expect(connection).to receive(:execute).with('RESET idle_in_transaction_session_timeout').and_call_original
+
+      subject.restore_timeouts
+    end
+
+    it 'resets the transaction timeout' do
+      expect(Gitlab::Database::TransactionTimeout).to receive(:reset).with(connection)
 
       subject.restore_timeouts
     end

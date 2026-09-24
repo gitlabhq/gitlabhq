@@ -196,4 +196,16 @@ $avatar-sizes: (
       background-color: var(--gl-feedback-warning-background-color);
     }
   }
+
+  &.user-popover-recommendation {
+    .popover-header {
+      background-color: var(--gl-feedback-info-background-color);
+    }
+  }
+
+  &.user-popover-recommendation-busy {
+    .popover-header {
+      background-color: var(--gl-background-color-subtle);
+    }
+  }
 }

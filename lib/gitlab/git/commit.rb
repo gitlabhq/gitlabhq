@@ -143,7 +143,7 @@ module Gitlab
         end
 
         # ListCommits lists all commits reachable via a set of references by doing a graph walk.
-        # This deprecates FindCommits (except Follow is not yet supported).
+        # This deprecates FindCommits.
         # Any unknown revisions will cause the RPC to fail.
         def list_all(repo, options = {})
           wrapped_gitaly_errors do

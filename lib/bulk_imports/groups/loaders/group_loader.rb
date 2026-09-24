@@ -42,7 +42,7 @@ module BulkImports
         private
 
         def track_start_group_import(entity)
-          track_internal_event('start_group_import', entity.group_import_event_attributes)
+          track_internal_event('start_group_import', entity.start_group_import_event_attributes)
         end
 
         def organization_id(organization, destination_namespace, user)

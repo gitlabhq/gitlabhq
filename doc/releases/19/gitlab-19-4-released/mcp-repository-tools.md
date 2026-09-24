@@ -14,7 +14,7 @@ New repository tools let agents browse a project's structure, read its commit
 history, and propose changes through the GitLab MCP server:
 
 - `list_repository_tree` explores the file tree.
-- `list_branches` and `list_tags` enumerate refs.
+- `list_tags` enumerates refs.
 - `list_releases` inspects published releases.
 - `get_commit` retrieves a commit's metadata, diff, or notes.
 - `list_commits` pages through a branch's history.

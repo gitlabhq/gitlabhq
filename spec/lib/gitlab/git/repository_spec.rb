@@ -3629,6 +3629,33 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    describe 'follow' do
+      let(:gitaly_commit_client) { repository.gitaly_commit_client }
+
+      before do
+        allow(gitaly_commit_client).to receive(:list_commits).and_call_original
+      end
+
+      it 'defaults follow to false' do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb')
+
+        expect(gitaly_commit_client)
+          .to have_received(:list_commits)
+          .with(['master'], a_hash_including(follow: false))
+      end
+
+      it 'forwards follow: true without reverse or skip', :aggregate_failures do
+        repository.list_commits(ref: 'master', path: 'files/ruby/popen.rb', follow: true)
+
+        expect(gitaly_commit_client)
+          .to have_received(:list_commits)
+          .with(['master'], a_hash_including(follow: true, reverse: false))
+        expect(gitaly_commit_client)
+          .to have_received(:list_commits)
+          .with(['master'], hash_excluding(:skip))
+      end
+    end
+
     describe 'when storage is broken', :broken_storage do
       let(:broken_repository) { create(:project, :broken_storage).repository }
 

@@ -95,6 +95,15 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexCreator, feature_category: :
       subject.perform
     end
 
+    it 'creates the index while the transaction timeout matches the statement timeout' do
+      allow(connection).to receive(:execute).and_call_original
+      expect(Gitlab::Database::TransactionTimeout).to receive(:set).with(connection, 20.hours).ordered
+      expect(connection).to receive(:execute).with(async_index.definition).ordered.and_call_original
+      expect(Gitlab::Database::TransactionTimeout).to receive(:reset).with(connection).ordered
+
+      subject.perform
+    end
+
     it 'removes the index preparation record from postgres_async_indexes' do
       expect(async_index).to receive(:destroy!).and_call_original
 

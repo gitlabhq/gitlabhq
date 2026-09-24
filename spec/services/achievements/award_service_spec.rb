@@ -98,8 +98,7 @@ RSpec.describe Achievements::AwardService, feature_category: :user_profile do
         let(:user_achievement) { instance_double('Achievements::UserAchievement') }
 
         it 'returns the correct error' do
-          allow(user_achievement).to receive(:persisted?).and_return(false)
-          allow(user_achievement).to receive(:errors).and_return(nil)
+          allow(user_achievement).to receive_messages(persisted?: false, errors: nil)
           allow(Achievements::UserAchievement).to receive(:create).and_return(user_achievement)
 
           expect(response).to be_error

@@ -27,9 +27,12 @@ module Cells
         @options = delivery_options
       end
 
+      # mail_room only removes a message from the mailbox when the delivery
+      # handler returns truthy, so the Processor result must be propagated: a
+      # forwarding failure has to return falsy to keep the message for a later
+      # retry rather than silently dropping it.
       def deliver(raw)
         processor.process(raw)
-        true
       end
 
       private

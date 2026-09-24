@@ -27,11 +27,16 @@ module Import
         #   a subset of the entities defined in the export's metadata.json.
         # @option params [import_all] A hash with a single destination_namespace, to
         #   import every top-level group in the export. Mutually exclusive with entities.
-        def initialize(storage_configuration, params, current_user:, fallback_organization:)
+        # @param request_channel [Symbol] how the import was initiated, see {Gitlab::Import::RequestChannel}
+        def initialize(
+          storage_configuration, params, current_user:, fallback_organization:,
+          request_channel: ::Gitlab::Import::RequestChannel::API
+        )
           @params = params
           @storage_configuration = storage_configuration
           @current_user = current_user
           @fallback_organization = fallback_organization
+          @request_channel = request_channel
         end
 
         def execute
@@ -44,6 +49,8 @@ module Import
               create_offline_transfer_config(bulk_import)
             end
           end
+
+          ::Import::BulkImports::EphemeralData.new(bulk_import.id).request_channel = request_channel
 
           ScheduleImportWorker.perform_async(
             bulk_import.id,
@@ -58,7 +65,7 @@ module Import
 
         private
 
-        attr_reader :current_user, :storage_configuration, :params, :fallback_organization
+        attr_reader :current_user, :storage_configuration, :params, :fallback_organization, :request_channel
 
         def create_bulk_import
           BulkImport.create!(

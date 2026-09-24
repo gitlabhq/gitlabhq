@@ -18,6 +18,8 @@ RSpec.describe BulkImport, feature_category: :importers do
     it { is_expected.to have_one(:configuration) }
     it { is_expected.to have_one(:offline_configuration) }
     it { is_expected.to have_many(:entities) }
+    it { is_expected.to have_many(:failures).through(:entities) }
+    it { is_expected.to have_many(:trackers).through(:entities) }
   end
 
   describe 'validations' do
@@ -284,6 +286,142 @@ RSpec.describe BulkImport, feature_category: :importers do
     end
   end
 
+  describe 'gitlab_migration job-level events tracking', :clean_gitlab_redis_shared_state do
+    describe 'start_gitlab_migration' do
+      context 'when the import is a direct transfer' do
+        let(:import) { create(:bulk_import, :created) }
+
+        it 'tracks the event with the gitlab_migration label and same_instance' do
+          allow(import).to receive(:source_equals_destination?).and_return(true)
+
+          expect { import.start! }
+            .to trigger_internal_events('start_gitlab_migration')
+            .with(user: import.user, additional_properties: { label: 'gitlab_migration', same_instance: 'true' })
+        end
+      end
+
+      context 'when the import is an offline transfer' do
+        let(:import) { create(:bulk_import, :created, :with_offline_configuration) }
+
+        it 'tracks the event with the offline_transfer label and same_instance' do
+          allow(import).to receive(:source_equals_destination?).and_return(false)
+
+          expect { import.start! }
+            .to trigger_internal_events('start_gitlab_migration')
+            .with(user: import.user, additional_properties: { label: 'offline_transfer', same_instance: 'false' })
+        end
+      end
+    end
+
+    describe 'finish_gitlab_migration' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started) }
+      let_it_be(:entity_a) { create(:bulk_import_entity, :finished, bulk_import: import) }
+      let_it_be(:entity_b) { create(:bulk_import_entity, :finished, bulk_import: import) }
+      let_it_be(:entity_c) { create(:bulk_import_entity, :failed, bulk_import: import) }
+
+      before_all do
+        create_list(:bulk_import_failure, 2, entity: entity_a)
+        create(:bulk_import_tracker, entity: entity_a, imported_objects_count: 3)
+        create(:bulk_import_tracker, entity: entity_b, imported_objects_count: 4)
+      end
+
+      it 'tracks the event with counts aggregated across every entity, counting only finished entities as migrated' do
+        travel_to(import.created_at + 42.seconds, with_usec: true) do
+          expect { import.finish! }
+            .to trigger_internal_events('finish_gitlab_migration')
+            .with(user: import.user, additional_properties: {
+              label: 'gitlab_migration',
+              total_failure_count: 2,
+              duration_seconds: 42,
+              imported_objects_count: 7,
+              migrated_entities_count: 2
+            })
+        end
+      end
+    end
+
+    describe 'fail_gitlab_migration' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started) }
+      let_it_be(:entity) { create(:bulk_import_entity, :failed, bulk_import: import) }
+
+      before_all do
+        create(:bulk_import_failure, entity: entity)
+      end
+
+      it 'tracks the event with duration and total_failure_count' do
+        travel_to(import.created_at + 10.seconds, with_usec: true) do
+          expect { import.fail_op! }
+            .to trigger_internal_events('fail_gitlab_migration')
+            .with(user: import.user, additional_properties: {
+              label: 'gitlab_migration',
+              total_failure_count: 1,
+              duration_seconds: 10
+            })
+        end
+      end
+
+      context 'when the import has already ended' do
+        where(state: %i[finished failed timeout canceled])
+
+        with_them do
+          let(:ended_import) do
+            create(:bulk_import, status: described_class.state_machines[:status].states[state].value)
+          end
+
+          it 'does not track the event again' do
+            expect { ended_import.fail_op! }.not_to trigger_internal_events('fail_gitlab_migration')
+          end
+        end
+      end
+    end
+
+    describe 'cancel_gitlab_migration' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started) }
+
+      it 'tracks the event with duration and total_failure_count' do
+        travel_to(import.created_at + 5.seconds, with_usec: true) do
+          expect { import.cancel! }
+            .to trigger_internal_events('cancel_gitlab_migration')
+            .with(user: import.user, additional_properties: {
+              label: 'gitlab_migration',
+              total_failure_count: 0,
+              duration_seconds: 5
+            })
+        end
+      end
+
+      context 'when the import has already ended' do
+        where(state: %i[finished failed timeout canceled])
+
+        with_them do
+          let(:ended_import) do
+            create(:bulk_import, status: described_class.state_machines[:status].states[state].value)
+          end
+
+          it 'does not track the event again' do
+            expect { ended_import.cancel! }.not_to trigger_internal_events('cancel_gitlab_migration')
+          end
+        end
+      end
+    end
+
+    describe 'timeout_gitlab_migration' do
+      let_it_be_with_reload(:import) { create(:bulk_import, :started) }
+
+      it 'tracks the event with duration and total_failure_count' do
+        travel_to(import.created_at + 7.seconds, with_usec: true) do
+          expect { import.cleanup_stale! }
+            .to trigger_internal_events('timeout_gitlab_migration')
+            .with(user: import.user, additional_properties: {
+              label: 'gitlab_migration',
+              total_failure_count: 0,
+              duration_seconds: 7
+            })
+        end
+      end
+    end
+  end
+
   describe '#destination_group_roots' do
     let_it_be(:import, freeze: false) { create(:bulk_import, :started) }
 
@@ -324,30 +462,71 @@ RSpec.describe BulkImport, feature_category: :importers do
   end
 
   describe '#source_equals_destination?' do
-    subject(:bulk_import) do
-      build_stubbed(:bulk_import,
-        configuration: build_stubbed(:bulk_import_configuration, url: source_url)
-      )
+    context 'when the import is a direct transfer' do
+      subject(:bulk_import) do
+        build_stubbed(:bulk_import,
+          configuration: build_stubbed(:bulk_import_configuration, url: source_url)
+        )
+      end
+
+      before do
+        allow(Settings.gitlab).to receive(:host).and_return('gitlab.example')
+      end
+
+      where(:source_url, :value) do
+        'https://gitlab.example' | true
+        'https://gitlab.example:443' | true
+        'https://gitlab.example/' | true
+        'https://gitlab.example/dir' | true
+        'http://gitlab.example' | true
+        'https://gitlab.example2' | false
+        'https://subdomain.example' | false
+        'https://subdomain.gitlab.example' | false
+        'http://192.168.1.1' | false
+      end
+
+      with_them do
+        it { expect(bulk_import.source_equals_destination?).to eq(value) }
+      end
+
+      context 'when configuration is missing' do
+        subject(:bulk_import) { build_stubbed(:bulk_import) }
+
+        it { expect(bulk_import.source_equals_destination?).to be(false) }
+      end
     end
 
-    before do
-      allow(Settings.gitlab).to receive(:host).and_return('gitlab.example')
-    end
+    context 'when the import is an offline transfer' do
+      subject(:bulk_import) do
+        build_stubbed(:bulk_import, :with_offline_configuration).tap do |import|
+          import.offline_configuration.source_hostname = source_hostname
+        end
+      end
 
-    where(:source_url, :value) do
-      'https://gitlab.example' | true
-      'https://gitlab.example:443' | true
-      'https://gitlab.example/' | true
-      'https://gitlab.example/dir' | true
-      'http://gitlab.example' | true
-      'https://gitlab.example2' | false
-      'https://subdomain.example' | false
-      'https://subdomain.gitlab.example' | false
-      'http://192.168.1.1' | false
-    end
+      before do
+        allow(Settings.gitlab).to receive(:host).and_return('gitlab.example')
+      end
 
-    with_them do
-      it { expect(bulk_import.source_equals_destination?).to eq(value) }
+      where(:source_hostname, :value) do
+        'https://gitlab.example' | true
+        'https://gitlab.example:443' | true
+        'https://gitlab.example/' | true
+        'http://gitlab.example' | true
+        'https://gitlab.example2' | false
+        'https://subdomain.gitlab.example' | false
+        'http://exa mple.com' | false
+        nil | false
+      end
+
+      with_them do
+        it { expect(bulk_import.source_equals_destination?).to eq(value) }
+      end
+
+      context 'when offline_configuration is missing' do
+        subject(:bulk_import) { build_stubbed(:bulk_import, :offline) }
+
+        it { expect(bulk_import.source_equals_destination?).to be(false) }
+      end
     end
   end
 

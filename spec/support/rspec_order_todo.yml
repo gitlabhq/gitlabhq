@@ -6299,7 +6299,6 @@
 - './spec/requests/api/wikis_spec.rb'
 - './spec/requests/dashboard_controller_spec.rb'
 - './spec/requests/dashboard/projects_controller_spec.rb'
-- './spec/requests/git_http_spec.rb'
 - './spec/requests/groups/autocomplete_sources_spec.rb'
 - './spec/requests/groups_controller_spec.rb'
 - './spec/requests/groups/crm/contacts_controller_spec.rb'
