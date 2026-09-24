@@ -642,6 +642,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="query-aiflowsmetadata-clienttype"></a>`clientType` | [`AiFlowsMetadataClientType`](#aiflowsmetadataclienttype) | Client surface making the request. Used to gate per-surface capabilities. When omitted, defaults to CLI behavior for backwards compatibility. |
 | <a id="query-aiflowsmetadata-namespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the group or personal namespace to compute flow capabilities for. When omitted, only namespace-independent capabilities are returned. |
 | <a id="query-aiflowsmetadata-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project to compute flow capabilities for. Takes precedence over `namespaceId` when both are given. |
 
@@ -33605,6 +33606,29 @@ Fields:
 | <a id="wikipageedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="wikipageedge-node"></a>`node` | [`WikiPage`](#wikipage) | The item at the end of the edge. |
 
+#### `WorkItemAgentPlanQuestionConnection`
+
+The connection type for [`WorkItemAgentPlanQuestion`](#workitemagentplanquestion).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemagentplanquestionconnection-edges"></a>`edges` | [`[WorkItemAgentPlanQuestionEdge]`](#workitemagentplanquestionedge) | A list of edges. |
+| <a id="workitemagentplanquestionconnection-nodes"></a>`nodes` | [`[WorkItemAgentPlanQuestion]`](#workitemagentplanquestion) | A list of nodes. |
+| <a id="workitemagentplanquestionconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemAgentPlanQuestionEdge`
+
+The edge type for [`WorkItemAgentPlanQuestion`](#workitemagentplanquestion).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemagentplanquestionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemagentplanquestionedge-node"></a>`node` | [`WorkItemAgentPlanQuestion`](#workitemagentplanquestion) | The item at the end of the edge. |
+
 #### `WorkItemClosingMergeRequestConnection`
 
 The connection type for [`WorkItemClosingMergeRequest`](#workitemclosingmergerequest).
@@ -44196,8 +44220,21 @@ Fields:
 | <a id="duousageeventsaggregationresponse-featurescount"></a>`featuresCount` | [`Int`](#int) | Number of unique features. |
 | <a id="duousageeventsaggregationresponse-previousperioduserscount"></a>`previousPeriodUsersCount` | [`Int`](#int) | Number of unique users in the previous period. |
 | <a id="duousageeventsaggregationresponse-returninguserscount"></a>`returningUsersCount` | [`Int`](#int) | Number of users who also used this feature in the previous period. |
-| <a id="duousageeventsaggregationresponse-totalcount"></a>`totalCount` | [`Int`](#int) | Total number of events. |
 | <a id="duousageeventsaggregationresponse-userscount"></a>`usersCount` | [`Int`](#int) | Number of unique users. |
+
+#### Fields with arguments
+
+##### `DuoUsageEventsAggregationResponse.totalCount`
+
+Total number of events, optionally filtered by event name.
+
+Returns [`Int`](#int).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duousageeventsaggregationresponse-totalcount-event"></a>`event` | [`[String!]`](#string) | Only count the given events. |
 
 ### `DuoUsageEventsAggregationResponseDimensions`
 
@@ -66735,6 +66772,18 @@ Arguments:
 | <a id="workitem-widgets-excepttypes"></a>`exceptTypes` | [`[WorkItemWidgetType!]`](#workitemwidgettype) | Except widgets of the given types. |
 | <a id="workitem-widgets-onlytypes"></a>`onlyTypes` | [`[WorkItemWidgetType!]`](#workitemwidgettype) | Only widgets of the given types. |
 
+### `WorkItemAgentPlanQuestion`
+
+Represents a question a workplan flow asked on a work item.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemagentplanquestion-answered"></a>`answered` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether someone whose role is above Guest has replied in the thread. |
+| <a id="workitemagentplanquestion-discussionid"></a>`discussionId` {{< icon name="warning-solid" >}} | [`DiscussionID!`](#discussionid) | Introduced in GitLab 19.5. Status: Experiment. Global ID of the thread the question was asked in. |
+| <a id="workitemagentplanquestion-noteid"></a>`noteId` {{< icon name="warning-solid" >}} | [`NoteID!`](#noteid) | Introduced in GitLab 19.5. Status: Experiment. Global ID of the comment that asked the question. |
+
 ### `WorkItemClosingMergeRequest`
 
 Fields:
@@ -67133,6 +67182,8 @@ Fields:
 | <a id="workitemwidgetagentplan-content"></a>`content` | [`String`](#string) | Content of the agent plan. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-contenthtml"></a>`contentHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `content`. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-generationstatus"></a>`generationStatus` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanGenerationStatus`](#workitemagentplangenerationstatus) | Introduced in GitLab 19.4. Status: Experiment. Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `duo_workplan_async_flow` feature flag. |
+| <a id="workitemwidgetagentplan-openquestionscount"></a>`openQuestionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of questions asked by workplan flows that nobody above Guest has replied to, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgetagentplan-questions"></a>`questions` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanQuestionConnection`](#workitemagentplanquestionconnection) | Introduced in GitLab 19.5. Status: Experiment. Questions asked by workplan flows, across every run on the work item, oldest first. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
 | <a id="workitemwidgetagentplan-readinessscorefeedback"></a>`readinessScoreFeedback` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Markdown feedback explaining the readiness score. Null when no feedback is available. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-readinessscorefeedbackhtml"></a>`readinessScoreFeedbackHtml` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. GitLab Flavored Markdown rendering of `readiness_score_feedback`. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |
@@ -68694,6 +68745,15 @@ Possible event types for flow triggers.
 | <a id="aiflowtriggereventtype-pipeline_hooks"></a>`PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
 | <a id="aiflowtriggereventtype-scheduled"></a>`SCHEDULED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Flow trigger scheduled event. |
 | <a id="aiflowtriggereventtype-work_item"></a>`WORK_ITEM` | Flow trigger work_item event. |
+
+### `AiFlowsMetadataClientType`
+
+Client surface requesting Duo Agent Platform flow metadata.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiflowsmetadataclienttype-cli"></a>`CLI` | Duo CLI client. |
+| <a id="aiflowsmetadataclienttype-ide"></a>`IDE` | IDE extension client (for example, VS Code or JetBrains). |
 
 ### `AiGovernanceAgentClass`
 

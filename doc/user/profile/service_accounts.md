@@ -368,6 +368,17 @@ To revoke a personal access token for a service account:
 1. Select **Revoke**.
 1. On the confirmation dialog, select **Revoke**.
 
+## Service account emails
+
+When you create a service account, GitLab generates a no-reply email address with one of the following prefixes:
+
+- Instance: `service_account_`
+- Group: `service_account_group_`
+- Project: `service_account_project_`
+
+Custom email addresses require confirmation, unless the top-level group has a matching [verified domain](../enterprise_user/_index.md#manage-group-domains)
+or email confirmation settings are [turned off](../../administration/settings/sign_up_restrictions.md#confirm-user-email).
+
 ## Rate limits
 
 [Rate limits](../../rate_limits/_index.md) apply to service accounts:

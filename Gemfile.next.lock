@@ -845,7 +845,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.6)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (1.53.0)
+    gitlab-cloud-connector (1.54.0)
       activesupport (>= 7.0)
       jwt (~> 2.10, >= 2.10.3)
     gitlab-crystalball (1.1.3)
@@ -2522,7 +2522,7 @@ DEPENDENCIES
   gitlab-cd-driver-orchestration!
   gitlab-cells-http_router!
   gitlab-chronic (~> 0.10.5)
-  gitlab-cloud-connector (~> 1.53)
+  gitlab-cloud-connector (~> 1.54)
   gitlab-configs!
   gitlab-crystalball (~> 1.1.3)
   gitlab-dangerfiles (~> 4.12.0)
@@ -3035,7 +3035,7 @@ CHECKSUMS
   gitlab-cd-driver-orchestration (0.7.0)
   gitlab-cells-http_router (0.1.0)
   gitlab-chronic (0.10.6) sha256=a244d11a1396d2aac6ae9b2f326adf1605ec1ad20c29f06e8b672047d415a9ac
-  gitlab-cloud-connector (1.53.0) sha256=cdacefc13725bbf65d8b932f41fca3b238d3cf330966a577450dd8c03ac1b67d
+  gitlab-cloud-connector (1.54.0) sha256=46c93e3ce7d26ba8df37d31ea068770e0c8b23cf0fd9375b48d27d301ec7571e
   gitlab-configs (0.1.0)
   gitlab-crystalball (1.1.3) sha256=ea9a90d659704a042d763ce6d343a9f664cd650e0787a19adec7036ea4390861
   gitlab-dangerfiles (4.12.0) sha256=0b8b7b00bf1ab155c3ab37cfc7c9815b5b82f403f85ddaf62aea137129403072

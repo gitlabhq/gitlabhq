@@ -42,7 +42,7 @@ module API
       def update_note(noteable, note_id, noteable_class = nil)
         note = noteable.notes.find(note_id)
 
-        authorize! :admin_note, note
+        authorize! :update_note, note
 
         opts = {
           note: params[:body],

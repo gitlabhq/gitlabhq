@@ -155,6 +155,29 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
         ])
       end
 
+      context 'when the bucketed column is Nullable' do
+        # `anyIfMerge` yields NULL for a session that never started, and ClickHouse
+        # evaluates `toStartOfInterval` over the whole block, so that NULL reaches it
+        # as the type default 1970-01-01.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/629599.
+        let(:session_without_start) do
+          { session_id: 4, user_id: 4, project_id: 1, namespace_path: '1/2/', flow_type: 'chat',
+            environment: 'prod', session_year: 2025,
+            created_event_at: DateTime.parse('2025-04-05 00:00:00 UTC') }
+        end
+
+        let(:all_data_rows) { [session3, session_without_start] }
+
+        it 'buckets the non-null rows and keeps a null bucket' do
+          instance_key = dimension_definition.instance_key(parameters: { granularity: '30d', origin: origin })
+
+          expect(engine).to execute_aggregation(origin_request(origin)).and_return(an_array_matching([
+            { instance_key => nil, total_count: 1 },
+            { instance_key => origin, total_count: 1 }
+          ]))
+        end
+      end
+
       it 'raises for a non-Time origin instead of anchoring silently' do
         # GraphQL inputs are coerced to Time by the API layer; direct callers
         # must do the same.
@@ -173,6 +196,25 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::DateBucketDimension, :
         expect(engine).to execute_aggregation(request).with_errors(array_including(
           a_string_matching(/Parameter `origin` requires a dynamic day granularity/)
         ))
+      end
+
+      context 'when the granularity is not a fixed-day one' do
+        let(:context) do
+          # `validate_origin` rejects this combination, so this only guards the
+          # rendering path against being reached without that validation.
+          {
+            started_event_at: { parameters: { granularity: 'monthly', origin: origin } },
+            inner_query_name: 'inner_query',
+            scope: query_builder
+          }
+        end
+
+        it 'drops the origin' do
+          sql = dimension_definition.to_outer_arel(context).to_sql
+
+          expect(sql).to include('INTERVAL 1 month')
+          expect(sql).not_to include('toDateTime64')
+        end
       end
 
       it 'rejects an arbitrarily long day count without parsing it' do

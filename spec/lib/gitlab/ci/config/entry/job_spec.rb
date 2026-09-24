@@ -111,9 +111,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
   describe 'validations' do
     before do
-      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
-        entry.compose!
-      end
+      entry.compose!
     end
 
     context 'when entry config value is correct' do

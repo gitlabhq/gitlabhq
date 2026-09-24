@@ -313,6 +313,76 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :disabled | :anonymous  | nil   | 0
   end
 
+  # Repository-gated search scopes, where Planner has the same access as Reporter.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_repository_access
+    :public   | :enabled  | :admin      | true  | 1
+    :public   | :enabled  | :admin      | false | 1
+    :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
+    :public   | :enabled  | :guest      | nil   | 1
+    :public   | :enabled  | :non_member | nil   | 1
+    :public   | :enabled  | :anonymous  | nil   | 1
+
+    :public   | :private  | :admin      | true  | 1
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 1
+    :public   | :private  | :planner    | nil   | 1
+    :public   | :private  | :guest      | nil   | 1
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 1
+    :internal | :enabled  | :admin      | false | 1
+    :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
+    :internal | :enabled  | :guest      | nil   | 1
+    :internal | :enabled  | :non_member | nil   | 1
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 1
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 1
+    :internal | :private  | :guest      | nil   | 1
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :enabled  | :admin      | true  | 1
+    :private  | :enabled  | :admin      | false | 0
+    :private  | :enabled  | :reporter   | nil   | 1
+    :private  | :enabled  | :planner    | nil   | 1
+    :private  | :enabled  | :guest      | nil   | 0
+    :private  | :enabled  | :non_member | nil   | 0
+    :private  | :enabled  | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 1
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 1
+    :private  | :private  | :guest      | nil   | 0
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
   # :project_level, :issues_access_level, :merge_requests_access_level, :membership, :admin_mode, :expected_count
   def permission_table_for_milestone_access
     :public   | :enabled  | :enabled  | :admin      | true  | 1

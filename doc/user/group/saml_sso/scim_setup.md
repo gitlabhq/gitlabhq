@@ -317,3 +317,8 @@ adding them to the SCIM identity provider.
 After the identity provider performs a sync based on its configured schedule,
 the user's SCIM identity is reactivated and their group memberships are restored.
 Because the linked SAML identity is retained during deprovisioning, users can immediately sign in using SSO.
+
+GitLab processes SCIM deprovisioning asynchronously.
+If you reactivate a user before the process completes, the reactivation request fails.
+For more information, see
+[Error: `User is pending deprovisioning`](troubleshooting_scim.md#error-user-is-pending-deprovisioning).

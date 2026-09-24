@@ -3,15 +3,44 @@ stage: Analytics
 group: Knowledge Graph
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab Orbit
-description: Configure GitLab Orbit for a GitLab Self-Managed instance.
+description: Configure GitLab Orbit for GitLab Self-Managed and GitLab Dedicated.
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+## Orbit in GitLab Duo default
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1319) in GitLab 19.5.
+
+{{< /history >}}
+
+Orbit in GitLab Duo is enabled by default on GitLab Self-Managed and GitLab Dedicated.
+The instance default is not applicable on GitLab.com.
+A user's explicit Orbit preference overrides the instance default.
+
+This default doesn't bypass Orbit availability, licensing, or namespace enrollment requirements.
+
+### Turn off Orbit in GitLab Duo by default
+
+Prerequisites:
+
+- You must have administrator access.
+- Your instance must have a license with the Orbit feature.
+
+To turn off Orbit in GitLab Duo for users who haven't set an Orbit preference:
+
+1. In the left sidebar, at the bottom, select **Admin**.
+1. Select **Orbit**.
+1. Expand **Orbit settings**.
+1. Clear **Enable Orbit in GitLab Duo by default**.
+1. Select **Save changes**.
 
 ## Index top-level group namespaces automatically
 

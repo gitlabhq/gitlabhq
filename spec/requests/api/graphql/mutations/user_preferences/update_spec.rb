@@ -262,8 +262,10 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         post_orbit_mutation({ 'enabled' => false })
 
         expect(response).to have_gitlab_http_status(:success)
+        expected_response = { 'enabled' => false }
+        expected_response.merge!(UserPreference::ORBIT_SUBSETTINGS.index_with(false)) if Gitlab.ee?
         expect(graphql_data.dig('userPreferencesUpdate', 'userPreferences', 'orbitSettings'))
-          .to eq({ 'enabled' => false })
+          .to eq(expected_response)
         expect(UserPreference.find_by(user: current_user).orbit_settings)
           .to eq({ 'enabled' => false })
       end
@@ -288,8 +290,15 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         post_orbit_mutation({})
 
         expect(response).to have_gitlab_http_status(:success)
+
+        expected_response = if Gitlab.ee?
+                              { 'enabled' => true }.merge(UserPreference::ORBIT_SUBSETTINGS.index_with(true))
+                            else
+                              {}
+                            end
+
         expect(graphql_data.dig('userPreferencesUpdate', 'userPreferences', 'orbitSettings'))
-          .to eq({})
+          .to eq(expected_response)
       end
     end
   end

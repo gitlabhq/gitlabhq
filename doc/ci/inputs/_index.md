@@ -215,9 +215,10 @@ test_job:
 
 #### Array type
 
-The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
-like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. To reuse a list across
-configuration files, define an array input in an
+The content of the items in an array type can be any valid YAML map, sequence, or scalar. Do not use
+more complex YAML features like [`!reference`](../yaml/yaml_optimization.md#reference-tags), which
+[can produce unexpected results in input values](#input-value-looks-like-gitlabciconfigyamltagsreference).
+To reuse a list across configuration files, define an array input in an
 [external file](#define-pipeline-inputs-in-external-files). You can then
 [extend it with additional items](#extend-an-array-input-with-additional-items).
 
@@ -601,6 +602,10 @@ Input values are only available in the same file as the `spec` section defining 
 A file added with `include` cannot access inputs defined in other files, or the including file.
 To use a value from an included file, pass it explicitly with `include:inputs`.
 
+> [!note]
+> Do not use a [`!reference` tag](../yaml/yaml_optimization.md#reference-tags) as an input
+> value or in an input `default:`, because [tags are resolved after inputs are interpolated](#input-value-looks-like-gitlabciconfigyamltagsreference).
+
 #### With multiple `include` entries
 
 Inputs must be specified separately for each include entry. For example:
@@ -693,6 +698,10 @@ trigger-job:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+> [!note]
+> Do not use a [`!reference` tag](../yaml/yaml_optimization.md#reference-tags) as an input
+> value or in an input `default:`, because [tags are resolved after inputs are interpolated](#input-value-looks-like-gitlabciconfigyamltagsreference).
 
 #### Define pipeline inputs in external files
 
@@ -1072,3 +1081,27 @@ syntax after the input is evaluated. When quotes are nested, use `"` for the inn
 quotes and `'` for the outer quotes, or the inverse.
 
 Jobs names do not need to be quoted.
+
+### Input value looks like `#<Gitlab::Ci::Config::Yaml::Tags::Reference...>`
+
+An input value might contain a string like `#<Gitlab::Ci::Config::Yaml::Tags::Reference:0x000079ec9b09bda0>`
+instead of your expected value.
+
+This happens when you use a [`!reference` tag](../yaml/yaml_optimization.md#reference-tags)
+as an input value. For example:
+
+```yaml
+.my-shared-list:
+  - value1
+  - value2
+
+include:
+  - local: include.yml
+    inputs:
+      my_input: !reference [.my-shared-list]
+```
+
+Inputs are interpolated before reference tags, so the input resolves to the reference tag's
+internal object. For an alternative, you can define an array input in an
+[external file](#define-pipeline-inputs-in-external-files) and
+[extend it with additional items](#extend-an-array-input-with-additional-items).

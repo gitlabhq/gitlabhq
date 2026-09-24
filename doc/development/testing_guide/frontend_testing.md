@@ -1381,8 +1381,9 @@ spec.
 
 ### Handler architecture
 
-`handlers.js` acts as a thin GraphQL router. `buildHandlers`
-registers a single `graphql.operation` handler that delegates
+`handlers.js` acts as a thin router for GraphQL and REST
+requests. For GraphQL, `buildHandlers` registers a single
+`graphql.operation` handler that delegates
 to the feature resolvers in `featureHandlers`, in order. The
 first resolver that returns a result wins, so routing through
 one operation handler keeps request capture and
@@ -1392,6 +1393,7 @@ missing-operation reporting in one place:
 import { graphql, http, HttpResponse } from 'msw';
 import { handleWorkItemOperation, workItemRestEndpoints } from './work_items/handlers';
 import { captureMissingOperation, captureRequest } from './core/operation_helpers';
+import { getActiveVariant } from './core/fixture_variant_schema';
 
 export const featureHandlers = [handleWorkItemOperation];
 export const restEndpoints = [...workItemRestEndpoints];
@@ -1402,7 +1404,11 @@ export function buildHandlers(allFeatureHandlers, allRestEndpoints) {
       const operationName = endpoint.name || `REST:${endpoint.method}:${endpoint.path}`;
       captureRequest(operationName, request);
 
-      return HttpResponse.json(endpoint.response, { headers: endpoint.headers });
+      const response = endpoint.variants
+        ? (getActiveVariant(endpoint.variants.query) ?? endpoint.variants.BASE)
+        : endpoint.response;
+
+      return HttpResponse.json(response, { headers: endpoint.headers });
     }),
   );
 
@@ -1446,9 +1452,12 @@ REST endpoints are declared as plain descriptor objects
 handlers. `path` can be a string or a regular expression. Set
 `name` to control the key requests are captured under (it
 defaults to `REST:<method>:<path>`), and `headers` to add extra
-response headers. A trailing `http.get('*')` handler catches
-any unmocked GET request, logs the unhandled URL, and returns
-a 400, so an unmocked request is visible in the test output.
+response headers. An endpoint can set `variants` instead of
+`response` to serve a different body per test. See
+[Fixture variants](#fixture-variants). A trailing `http.get('*')`
+handler catches any unmocked GET request, logs the unhandled
+URL, and returns a 400, so an unmocked request is visible in
+the test output.
 
 `server.js` builds the MSW node server from these handlers:
 
@@ -1615,7 +1624,7 @@ export function handleMyFeatureOperation({ operationName, variables }) {
 
 ### Fixture variants
 
-Recorded fixtures provide the base response for a GraphQL query.
+Recorded fixtures provide the base response for a GraphQL query or a REST endpoint.
 To test a different response shape such as an error, an empty list, or a flipped flag, you declare named variants instead of editing handlers.
 
 Place a variant file at `ee/spec/frontend/integration/<feature>/fixture_variants/<query>.js`.
@@ -1662,6 +1671,55 @@ it('renders the empty state', async () => {
 When the variant key is a runtime value, such as a shared helper that receives the key, use the low-level `activateVariant('operationName', variantKey)` instead.
 
 The feature handler serves the active variant by calling `getActiveVariant('operationName')` and falls back to its default fixture when none is active.
+
+#### REST endpoint variants
+
+A REST endpoint can have variants too.
+Use `defineRestFixtureVariants({ query, variants })` from `ee_jest/integration/core/fixture_variant_schema`.
+The same rules as `defineFixtureVariants` apply: `BASE` is required, keys are UPPER_SNAKE_CASE, each `query` is registered once, you activate a variant with `setQueryVariant`, and the active variant resets to `BASE` after each test.
+
+The differences are in the fixture shape and the wiring.
+Each variant is the raw JSON body, an array or an object, served as is.
+There is no `data` or `errors` shape, and no `errors: []` is added.
+`query` is only a registry key. By convention, use the fixture's camelCase name, such as `restWorkItemsList`.
+Set the variant file's default export as the endpoint descriptor's `variants` property instead of `response`.
+`buildHandlers` serves the active variant, or `BASE` when none is active.
+Importing the variant file in the handler, to set `variants`, also registers it, so no separate side-effect import is needed.
+
+```javascript
+import restWorkItemsList from 'test_fixtures/graphql/work_items/integration/rest_work_items_list.json';
+import restWorkItemsListStatusUnlicensed from 'test_fixtures/graphql/work_items/integration/rest_work_items_list_status_unlicensed.json';
+import { defineRestFixtureVariants } from 'ee_jest/integration/core/fixture_variant_schema';
+
+export default defineRestFixtureVariants({
+  query: 'restWorkItemsList',
+  variants: {
+    BASE: restWorkItemsList,
+    STATUS_UNLICENSED: restWorkItemsListStatusUnlicensed,
+  },
+});
+```
+
+```javascript
+import restWorkItemsListVariants from './fixture_variants/rest_work_items_list';
+
+export const GET_WORK_ITEMS_REST_ENDPOINT = {
+  name: 'getWorkItemsRest',
+  method: 'get',
+  path: /\/api\/v4\/namespaces\/.*\/-\/work_items/,
+  variants: restWorkItemsListVariants,
+  headers: { 'x-next-cursor': '', 'x-prev-cursor': '' },
+};
+```
+
+Activate the variant in the spec the same way as a GraphQL variant:
+
+```javascript
+setQueryVariant(restWorkItemsListVariants).statusUnlicensed();
+```
+
+Keep REST variants separate from GraphQL variants.
+Do not derive a REST response from which GraphQL variant is active. Activate each one in the spec.
 
 #### How the variant registry works
 
@@ -1821,8 +1879,8 @@ setQueryVariant(namespaceWorkItemFeaturesVariants).statusUnlicensed();
 Responses that write onto the same cached entity can reintroduce data you expect to be missing.
 For example, the work item list rows and the work item detail query merge their widgets onto the
 same cached work item.
-The REST list payload therefore has to follow the detail variant, and the `work_items` handler
-does that for you.
+The REST list payload therefore has to carry the same unlicensed shape, so the spec activates the
+`restWorkItemsList` variant too, alongside the `namespaceWorkItem` variant.
 Check that every response feeding the component under test carries the unlicensed shape.
 
 ### Assert Apollo cache integrity

@@ -23432,6 +23432,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AiFlowsMetadataClientType",
+          "description": "Client surface requesting Duo Agent Platform flow metadata.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "CLI",
+              "description": "Duo CLI client.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IDE",
+              "description": "IDE extension client (for example, VS Code or JetBrains).",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AiFoundationalChatAgent",
           "description": "Core Agent available for GitLab features.",
@@ -148940,8 +148963,29 @@
             },
             {
               "name": "totalCount",
-              "description": "Total number of events",
-              "args": [],
+              "description": "Total number of events, optionally filtered by event name",
+              "args": [
+                {
+                  "name": "event",
+                  "description": "Only count the given events.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
@@ -361957,6 +362001,18 @@
                   "defaultValue": null,
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "clientType",
+                  "description": "Client surface making the request. Used to gate per-surface capabilities. When omitted, defaults to CLI behavior for backwards compatibility.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiFlowsMetadataClientType",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 }
               ],
               "type": {
@@ -452480,6 +452536,163 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "WorkItemAgentPlanQuestion",
+          "description": "Represents a question a workplan flow asked on a work item.",
+          "fields": [
+            {
+              "name": "answered",
+              "description": "Whether someone whose role is above Guest has replied in the thread. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "discussionId",
+              "description": "Global ID of the thread the question was asked in. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "DiscussionID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "noteId",
+              "description": "Global ID of the comment that asked the question. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "NoteID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WorkItemAgentPlanQuestionConnection",
+          "description": "The connection type for WorkItemAgentPlanQuestion.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "WorkItemAgentPlanQuestionEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "WorkItemAgentPlanQuestion",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "WorkItemAgentPlanQuestionEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemAgentPlanQuestion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "WorkItemAvailabilityAction",
           "description": "Action to apply to work item type availability",
@@ -463900,6 +464113,79 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "openQuestionsCount",
+              "description": "Number of questions asked by workplan flows that nobody above Guest has replied to, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "questions",
+              "description": "Questions asked by workplan flows, across every run on the work item, oldest first. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemAgentPlanQuestionConnection",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "readinessScore",

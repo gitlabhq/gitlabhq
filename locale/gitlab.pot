@@ -8945,6 +8945,9 @@ msgstr ""
 msgid "AiOverview|View pipeline"
 msgstr ""
 
+msgid "AiOverview|Viewing as author"
+msgstr ""
+
 msgid "AiOverview|Viewing as reviewer"
 msgstr ""
 
@@ -57858,6 +57861,9 @@ msgid "Orbit|Double-click to explore connections"
 msgstr ""
 
 msgid "Orbit|Enable GitLab Duo Agent Platform to ask…"
+msgstr ""
+
+msgid "Orbit|Enable Orbit in GitLab Duo by default"
 msgstr ""
 
 msgid "Orbit|Enable indexing for a top-level group to make its projects queryable."

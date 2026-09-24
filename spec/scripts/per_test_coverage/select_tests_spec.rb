@@ -27,6 +27,8 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
     ]
   end
 
+  let(:file_exists) { ->(_path) { true } }
+
   subject(:select_tests) do
     described_class.new(
       clickhouse_client: clickhouse_client,
@@ -35,7 +37,8 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
       git: git,
       project_path: project_path,
       output_dir: output_dir,
-      test_file_glob: -> { all_test_files }
+      test_file_glob: -> { all_test_files },
+      file_exists: file_exists
     )
   end
 
@@ -71,7 +74,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
       let(:stale_tests) { %w[spec/services/foo_spec.rb] }
 
       before do
-        allow(clickhouse_client).to receive(:query).with(/max\(captured_sha\)/,
+        allow(clickhouse_client).to receive(:query).with(/argMax\(captured_sha, timestamp\)/,
           anything).and_return([{ 'sha' => last_capture_sha }])
         allow(git).to receive(:diff_files).with(last_capture_sha,
           described_class::SOURCE_FILE_PATHS).and_return(changed_source_files)
@@ -94,7 +97,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
       it 'queries ClickHouse for last_capture_sha, delta tests, and stale-rescue tests' do
         select_tests.run!
 
-        expect(clickhouse_client).to have_received(:query).with(/max\(captured_sha\)/, anything).once
+        expect(clickhouse_client).to have_received(:query).with(/argMax\(captured_sha, timestamp\)/, anything).once
         expect(clickhouse_client).to have_received(:query).with(/test_files_by_source_file/, anything).once
         expect(clickhouse_client).to have_received(:query).with(/INTERVAL 14 DAY/, anything).once
       end
@@ -113,6 +116,34 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
           expect { select_tests.run! }.to raise_error(SystemExit) do |error|
             expect(error.status).to eq(2)
           end
+        end
+      end
+
+      context 'when the base commit cannot be diffed against' do
+        let(:stale_tests) { %w[spec/services/foo_spec.rb] }
+
+        before do
+          allow(git).to receive(:diff_files).and_raise(
+            PerTestCoverage::SelectTests::Git::Error,
+            "git diff --name-only #{last_capture_sha}..HEAD failed: bad object"
+          )
+        end
+
+        it 'still writes the stale-rescue queue instead of raising' do
+          expect { select_tests.run! }.not_to raise_error
+          expect(File.read(foss_queue_path).split("\n")).to match_array(stale_tests)
+        end
+
+        it 'logs the degraded delta with a greppable prefix' do
+          expect { select_tests.run! }.to output(
+            /DEGRADED: delta diff against #{last_capture_sha} failed/
+          ).to_stdout
+        end
+
+        it 'still queries stale-rescue so the capture writes a fresh base SHA' do
+          select_tests.run!
+
+          expect(clickhouse_client).to have_received(:query).with(/INTERVAL 14 DAY/, anything).once
         end
       end
 
@@ -227,7 +258,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         before do
           allow(gitlab_api).to receive(:count_schedule_pipelines_since).and_return(2)
           # Falls through to weekday queries.
-          allow(clickhouse_client).to receive(:query).with(/max\(captured_sha\)/, anything)
+          allow(clickhouse_client).to receive(:query).with(/argMax\(captured_sha, timestamp\)/, anything)
             .and_return([{ 'sha' => last_capture_sha }])
           allow(git).to receive(:diff_files).and_return([])
           allow(clickhouse_client).to receive(:query).with(/INTERVAL 14 DAY/, anything).and_return(
@@ -238,7 +269,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         it 'runs the weekday delta path instead of the bucket sweep' do
           select_tests.run!
 
-          expect(clickhouse_client).to have_received(:query).with(/max\(captured_sha\)/, anything)
+          expect(clickhouse_client).to have_received(:query).with(/argMax\(captured_sha, timestamp\)/, anything)
           expect(clickhouse_client).to have_received(:query).with(/INTERVAL 14 DAY/, anything)
           expect(File.read(foss_queue_path).split("\n")).to eq(%w[spec/models/user_spec.rb])
         end
@@ -251,7 +282,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         before do
           allow(gitlab_api).to receive(:count_schedule_pipelines_since)
             .and_raise(RuntimeError, 'GitLab API 401 for .../pipeline_schedules/23503/pipelines')
-          allow(clickhouse_client).to receive(:query).with(/max\(captured_sha\)/, anything)
+          allow(clickhouse_client).to receive(:query).with(/argMax\(captured_sha, timestamp\)/, anything)
             .and_return([{ 'sha' => last_capture_sha }])
           allow(git).to receive(:diff_files).and_return([])
           allow(clickhouse_client).to receive(:query).with(/INTERVAL 14 DAY/, anything).and_return(
@@ -272,7 +303,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
 
         before do
           allow(gitlab_api).to receive(:count_schedule_pipelines_since).and_return(18)
-          allow(clickhouse_client).to receive(:query).with(/max\(captured_sha\)/, anything)
+          allow(clickhouse_client).to receive(:query).with(/argMax\(captured_sha, timestamp\)/, anything)
             .and_return([{ 'sha' => 'sha' }])
           allow(git).to receive(:diff_files).and_return([])
           allow(clickhouse_client).to receive(:query).with(/INTERVAL 14 DAY/, anything).and_return([])
@@ -335,7 +366,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         allow(gitlab_api).to receive(:count_schedule_pipelines_since)
         # Weekday-path stubs so that, without the feature, run! completes and the
         # bucket assertions fail rather than erroring on a nil ClickHouse result.
-        allow(clickhouse_client).to receive(:query).with(/max\(captured_sha\)/, anything)
+        allow(clickhouse_client).to receive(:query).with(/argMax\(captured_sha, timestamp\)/, anything)
           .and_return([{ 'sha' => 'sha' }])
         allow(git).to receive(:diff_files).and_return([])
         allow(clickhouse_client).to receive(:query).with(/INTERVAL 14 DAY/, anything)
@@ -399,7 +430,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
       let(:now) { Time.utc(2026, 5, 12, 10, 0, 0) } # Tuesday
 
       before do
-        allow(clickhouse_client).to receive(:query).with(/max\(captured_sha\)/,
+        allow(clickhouse_client).to receive(:query).with(/argMax\(captured_sha, timestamp\)/,
           anything).and_return([{ 'sha' => 'sha' }])
         allow(git).to receive(:diff_files).and_return([])
         allow(clickhouse_client).to receive(:query).with(/INTERVAL 14 DAY/, anything).and_return(
@@ -407,8 +438,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
             { 'test_file' => 'spec/models/user_spec.rb' },         # FOSS rspec
             { 'test_file' => 'spec/frontend/foo_spec.js' },        # jest
             { 'test_file' => 'ee/spec/models/license_spec.rb' },   # EE rspec
-            { 'test_file' => 'ee/spec/frontend/bar_spec.js' },     # jest (ee/ prefix, but jest)
-            { 'test_file' => 'qa/qa/specs/features/foo_spec.rb' }  # FOSS rspec (qa is not ee)
+            { 'test_file' => 'ee/spec/frontend/bar_spec.js' }      # jest (ee/ prefix, but jest)
           ]
         )
       end
@@ -417,7 +447,7 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         select_tests.run!
 
         expect(File.read(foss_queue_path).split("\n")).to match_array(
-          %w[spec/models/user_spec.rb qa/qa/specs/features/foo_spec.rb]
+          %w[spec/models/user_spec.rb]
         )
         expect(File.read(ee_queue_path).split("\n")).to match_array(
           %w[ee/spec/models/license_spec.rb]
@@ -425,6 +455,161 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         expect(File.read(jest_queue_path).split("\n")).to match_array(
           %w[spec/frontend/foo_spec.js ee/spec/frontend/bar_spec.js]
         )
+      end
+    end
+
+    context 'when the queue contains deleted files or qa/ paths' do
+      let(:now) { Time.utc(2026, 5, 12, 10, 0, 0) } # Tuesday
+      let(:file_exists) { ->(path) { %w[spec/deleted_spec.rb ee/spec/frontend/deleted_spec.js].exclude?(path) } }
+
+      before do
+        allow(clickhouse_client).to receive(:query).with(/argMax\(captured_sha, timestamp\)/, anything)
+          .and_return([{ 'sha' => 'sha' }])
+        allow(git).to receive(:diff_files).and_return([])
+        allow(clickhouse_client).to receive(:query).with(/INTERVAL 14 DAY/, anything).and_return(
+          [
+            { 'test_file' => 'spec/models/user_spec.rb' },
+            { 'test_file' => 'spec/deleted_spec.rb' },
+            { 'test_file' => 'ee/spec/frontend/deleted_spec.js' },
+            { 'test_file' => 'qa/qa/specs/features/foo_spec.rb' }
+          ]
+        )
+      end
+
+      it 'drops deleted and qa/ files from the queues', :aggregate_failures do
+        select_tests.run!
+
+        expect(File.read(foss_queue_path).split("\n")).to match_array(%w[spec/models/user_spec.rb])
+        expect(File.read(ee_queue_path).split("\n")).to be_empty
+        expect(File.read(jest_queue_path).split("\n")).to be_empty
+      end
+
+      it 'logs how many files were dropped and why' do
+        expect { select_tests.run! }.to output(
+          %r{Dropped 2 queued file\(s\) that no longer exist on disk.*Dropped 1 qa/ file\(s\)}m
+        ).to_stdout
+      end
+
+      it 'names the dropped paths, not just the counts', :aggregate_failures do
+        expect { select_tests.run! }.to output(
+          %r{no longer exist on disk: ee/spec/frontend/deleted_spec\.js, spec/deleted_spec\.rb}
+        ).to_stdout
+
+        expect { select_tests.run! }.to output(
+          %r{qa/ file\(s\) that no child pipeline can run: qa/qa/specs/features/foo_spec\.rb}
+        ).to_stdout
+      end
+
+      it 'excludes qa/ paths in the stale-rescue query so they cannot consume the LIMIT budget' do
+        select_tests.run!
+
+        expect(clickhouse_client).to have_received(:query).with(%r{test_file NOT LIKE 'qa/%'}, anything)
+      end
+
+      context 'when every queued file is deleted' do
+        let(:file_exists) { ->(_path) { false } }
+
+        it 'exits with sentinel status 2 for an empty queue' do
+          expect { select_tests.run! }.to raise_error(SystemExit) do |error|
+            expect(error.status).to eq(2)
+          end
+        end
+      end
+    end
+  end
+end
+
+RSpec.describe PerTestCoverage::SelectTests::Git, :silence_stdout, feature_category: :tooling do
+  let(:base_sha) { 'abc123def456' }
+  let(:paths) { %w[app lib] }
+  let(:success_status) { instance_double(Process::Status, success?: true) }
+  let(:failure_status) { instance_double(Process::Status, success?: false) }
+
+  subject(:git) { described_class.new }
+
+  def stub_commit_present(present)
+    allow(Open3).to receive(:capture3)
+      .with('git', 'cat-file', '-e', "#{base_sha}^{commit}")
+      .and_return(['', '', present ? success_status : failure_status])
+  end
+
+  def stub_fetch(status:, stderr: '')
+    allow(Open3).to receive(:capture3)
+      .with('git', 'fetch', '--depth=1', 'origin', base_sha)
+      .and_return(['', stderr, status])
+  end
+
+  def stub_diff(status:, stdout: '', stderr: '')
+    allow(Open3).to receive(:capture3)
+      .with('git', 'diff', '--name-only', '--diff-filter=ACMR', "#{base_sha}..HEAD", '--', *paths)
+      .and_return([stdout, stderr, status])
+  end
+
+  describe '#diff_files' do
+    it 'returns an empty list without running git when base_sha is nil' do
+      expect(Open3).not_to receive(:capture3)
+
+      expect(git.diff_files(nil, paths)).to eq([])
+    end
+
+    it 'returns an empty list without running git when base_sha is empty' do
+      expect(Open3).not_to receive(:capture3)
+
+      expect(git.diff_files('', paths)).to eq([])
+    end
+
+    context 'when the base commit is already in the clone' do
+      before do
+        stub_commit_present(true)
+      end
+
+      it 'diffs without fetching', :aggregate_failures do
+        stub_diff(status: success_status, stdout: "app/models/user.rb\nlib/foo.rb\n")
+
+        expect(git.diff_files(base_sha, paths)).to eq(%w[app/models/user.rb lib/foo.rb])
+        expect(Open3).not_to have_received(:capture3).with('git', 'fetch', any_args)
+      end
+
+      it 'returns an empty list when nothing changed' do
+        stub_diff(status: success_status, stdout: "\n")
+
+        expect(git.diff_files(base_sha, paths)).to eq([])
+      end
+
+      it 'raises instead of returning an empty list when the diff fails' do
+        stub_diff(status: failure_status, stderr: "fatal: bad object #{base_sha}")
+
+        expect { git.diff_files(base_sha, paths) }
+          .to raise_error(described_class::Error, /fatal: bad object #{base_sha}/)
+      end
+    end
+
+    context 'when the base commit is missing from the clone' do
+      before do
+        stub_commit_present(false)
+      end
+
+      it 'fetches the commit before diffing', :aggregate_failures do
+        stub_fetch(status: success_status)
+        stub_diff(status: success_status, stdout: "app/models/user.rb\n")
+
+        expect(git.diff_files(base_sha, paths)).to eq(%w[app/models/user.rb])
+        expect(Open3).to have_received(:capture3).with('git', 'fetch', '--depth=1', 'origin', base_sha)
+      end
+
+      it 'logs the fetch so the job log shows the base commit being brought in' do
+        stub_fetch(status: success_status)
+        stub_diff(status: success_status)
+
+        expect { git.diff_files(base_sha, paths) }
+          .to output(/Fetching missing base commit #{base_sha}/).to_stdout
+      end
+
+      it 'raises when the fetch fails' do
+        stub_fetch(status: failure_status, stderr: 'fatal: remote error: upload-pack: not our ref')
+
+        expect { git.diff_files(base_sha, paths) }
+          .to raise_error(described_class::Error, /not our ref/)
       end
     end
   end

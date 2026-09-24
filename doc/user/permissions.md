@@ -834,7 +834,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
     or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
     or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
     that role to the users. In GitLab 18.7 and later, users with the Planner role can view private repository content.
-[^project-repositories-users-planner-role]: Users with the Planner role can not use exact code search or advanced search for code, commits, and comments on commits in private projects. For more information, see [epic &17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
+[^project-repositories-users-planner-role]: Users with the Planner role cannot use exact code search, advanced search for code, or advanced search for comments on commits in private projects. For more information, see [epic &17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 [^branch-protected-depends]: If the [branch is protected](project/repository/branches/protected.md), this depends on the
     access given to Developers and Maintainers.
 [^project-repositories-guest-role-limited-2]: On GitLab Self-Managed, users with the Guest role are able to perform this action only on public

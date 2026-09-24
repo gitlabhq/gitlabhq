@@ -633,6 +633,21 @@ If you are using the Linux package installation, something might have failed dur
 - Run `sudo gitlab-ctl reconfigure`.
 - Manually trigger the database migration by running: `sudo gitlab-rake db:migrate:geo` as root on the secondary site.
 
+### Error `PG::UndefinedTable` when running `gitlab-rake gitlab:geo:status`
+
+You might get a `PG::UndefinedTable` error when running `sudo gitlab-rake gitlab:geo:status`.
+This issue occurs when the Geo tracking database migrations never ran, or stopped partway
+through, so a registry table is missing.
+
+The resolution is to check which migrations are pending and run them:
+
+```shell
+sudo gitlab-rake db:migrate:status:geo
+sudo gitlab-rake db:migrate:geo
+```
+
+Then rerun `sudo gitlab-rake gitlab:geo:status` to confirm the tracking database is up to date.
+
 ### GitLab indicates that more than 100% of repositories were synced
 
 This can be caused by orphaned records in the project registry. They are being cleaned

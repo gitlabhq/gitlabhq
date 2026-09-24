@@ -308,7 +308,7 @@ duration {
 
 #### `count` metric
 
-Counts rows with support for distinct counting and conditional counting using `countIf()`.
+Counts rows with support for distinct counting and conditional counting using `countIf()`. **Supports parameters.**
 
 | Option | Type | Required | Description |
 |--------|------|----------|-------------|
@@ -317,6 +317,7 @@ Counts rows with support for distinct counting and conditional counting using `c
 | `expression` | Proc | No | Custom expression for counting specific values |
 | `if` | Proc | No | Condition expression for conditional counting (`countIf`) |
 | `distinct` | Boolean | No | Enable distinct counting. Default: `false` |
+| `parameters` | Hash | No | Parameter configuration. A parameter declared with an `in:` allowlist adds a `countIf` condition on the column named by the parameter key |
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
