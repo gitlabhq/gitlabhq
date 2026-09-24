@@ -1,0 +1,14 @@
+---
+table_name: sec_project_mirrors
+classes:
+- Security::ProjectMirror
+feature_categories:
+- organization
+description: Mirrors some data from the `main` database into the `sec` database so
+  that we can join directly in a single query
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627115
+milestone: '19.5'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects
+table_size: small

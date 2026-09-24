@@ -388,27 +388,27 @@ module SidebarsHelper
     shortcut_links = [
       {
         title: _('Milestones'),
-        href: dashboard_milestones_path(organization_path: nil),
+        href: dashboard_milestones_path,
         css_class: 'dashboard-shortcuts-milestones'
       },
       {
         title: _('Snippets'),
-        href: dashboard_snippets_path(organization_path: nil),
+        href: dashboard_snippets_path,
         css_class: 'dashboard-shortcuts-snippets'
       },
       {
         title: _('Activity'),
-        href: activity_dashboard_path(organization_path: nil),
+        href: activity_dashboard_path,
         css_class: 'dashboard-shortcuts-activity'
       },
       {
         title: _('Groups'),
-        href: dashboard_groups_path(organization_path: nil),
+        href: dashboard_groups_path,
         css_class: 'dashboard-shortcuts-groups'
       },
       {
         title: _('Projects'),
-        href: dashboard_projects_path(organization_path: nil),
+        href: dashboard_projects_path,
         css_class: 'dashboard-shortcuts-projects'
       }
     ]

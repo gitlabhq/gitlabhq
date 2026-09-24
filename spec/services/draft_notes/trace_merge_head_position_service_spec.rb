@@ -183,6 +183,27 @@ RSpec.describe DraftNotes::TraceMergeHeadPositionService, feature_category: :cod
       end
     end
 
+    # Nothing to retrace when the MR diff already is the merge_head diff, so no tracer is built either.
+    context 'when the merge request diff refs already match the merge_head diff refs' do
+      let(:merge_head_refs) { merge_request.merge_head_diff.diff_refs }
+
+      before do
+        allow(merge_request).to receive(:diff_refs).and_return(merge_head_refs)
+      end
+
+      it 'leaves the stored line_code untouched and builds no tracer', :aggregate_failures do
+        merge_head_draft = create(:draft_note_on_text_diff, merge_request: merge_request, author: user,
+          path: path, line_number: source_sum_line, diff_refs: merge_head_refs)
+        original = merge_head_draft.line_code
+        expect(Gitlab::Diff::PositionTracer).not_to receive(:new)
+
+        described_class.new(merge_request, [merge_head_draft]).execute
+
+        expect(merge_head_draft.line_code).to eq(original)
+        expect(merge_head_draft.merge_head_position).to be_nil
+      end
+    end
+
     context 'when a draft note is not on a diff' do
       it 'skips it and still retraces the diff draft in the same call', :aggregate_failures do
         plain_draft = create(:draft_note, merge_request: merge_request, author: user)

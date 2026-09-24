@@ -1,0 +1,14 @@
+---
+table_name: sec_namespace_mirrors
+classes:
+- Security::NamespaceMirror
+feature_categories:
+- organization
+description: Mirrors some data from the `main` database into the `sec` database so
+  that we can join directly in a single query
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627115
+milestone: '19.5'
+gitlab_schema: gitlab_sec
+sharding_key:
+  namespace_id: namespaces
+table_size: small

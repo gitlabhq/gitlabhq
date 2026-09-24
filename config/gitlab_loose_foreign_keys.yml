@@ -946,6 +946,23 @@ sbom_sources:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+sec_namespace_mirrors:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+sec_project_mirrors:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 security_attributes:
   - table: namespaces
     column: namespace_id

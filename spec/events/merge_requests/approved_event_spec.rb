@@ -11,13 +11,22 @@ RSpec.describe MergeRequests::ApprovedEvent, feature_category: :code_review_work
     invalid_types: {
       current_user_id: 'not_an_integer',
       merge_request_id: 'not_an_integer',
-      approved_at: 'not-a-date'
+      approved_at: 'not-a-date',
+      organization_id: 'not_an_integer'
     }
 
   describe '#schema' do
     context 'with valid optional approved_at' do
       it 'accepts a date-time string' do
         data = { current_user_id: 1, merge_request_id: 2, approved_at: '2024-01-10T12:00:00Z' }
+
+        expect { described_class.new(data: data) }.not_to raise_error
+      end
+    end
+
+    context 'with valid optional organization_id' do
+      it 'accepts an integer' do
+        data = { current_user_id: 1, merge_request_id: 2, organization_id: 3 }
 
         expect { described_class.new(data: data) }.not_to raise_error
       end

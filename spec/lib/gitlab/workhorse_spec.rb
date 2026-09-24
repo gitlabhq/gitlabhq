@@ -272,8 +272,19 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
   describe '.send_git_diff' do
     let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
+    let(:client_name) { nil }
 
-    subject { described_class.send_git_diff(repository, diff_refs) }
+    subject { described_class.send_git_diff(repository, diff_refs, client_name: client_name) }
+
+    context 'with a client name' do
+      let(:client_name) { 'orbit-indexer' }
+
+      it 'includes the client name in call metadata' do
+        _, _, params = decode_workhorse_header(subject)
+
+        expect(params.dig('GitalyServer', 'call_metadata', 'client_name')).to eq(client_name)
+      end
+    end
 
     it 'sets the header correctly' do
       key, command, params = decode_workhorse_header(subject)

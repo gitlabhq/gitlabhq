@@ -30,12 +30,15 @@ To authenticate using the JWT, clients:
 
 All endpoints require the `knowledge_graph_infra` feature flag to be enabled.
 
-> [!note]
-> When the knowledge graph service calls these endpoints, the request executes
-> in an authenticated user context. As a result, project [audit events](../../user/compliance/audit_events.md)
-> can show an authenticated user performing repository operations (for example,
-> `repository_download_operation`) that were triggered by indexer activity rather
-> than by a direct user action.
+Project endpoints require both Workhorse internal API authentication and a valid knowledge graph JWT.
+The JWT identifies a service, not a GitLab user. Rails API request logs identify authenticated
+indexer traffic with `meta.client_service=orbit-indexer`, alongside the endpoint's `meta.caller_id`.
+The request does not populate a user name in Rails or Gitaly logs.
+
+Repository archive [audit events](../../user/compliance/audit_events.md) use the
+`GitLab Orbit Indexer` audit author rather than a user. For Workhorse-assisted archive,
+changed-path, blob, and raw-diff requests, Gitaly receives `client_name=orbit-indexer`.
+Direct Rails calls to Gitaly use the Rails client name instead.
 
 ## Internal Endpoints
 

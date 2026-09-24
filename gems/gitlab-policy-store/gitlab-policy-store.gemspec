@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "gitlab-glaz", "~> 1.2"
+  spec.add_dependency "gitlab-glaz", "~> 2.0"
 
   spec.add_development_dependency "gitlab-styles"
   spec.add_development_dependency "rspec", "~> 3.12"

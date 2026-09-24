@@ -38,7 +38,8 @@ module MergeRequests
       Gitlab::EventStore.publish(
         MergeRequests::ApprovedEvent.new(
           data: { current_user_id: current_user.id, merge_request_id: merge_request.id,
-                  approved_at: approval.created_at.iso8601 }
+                  approved_at: approval.created_at.iso8601,
+                  organization_id: merge_request.project.organization_id }
         )
       )
 

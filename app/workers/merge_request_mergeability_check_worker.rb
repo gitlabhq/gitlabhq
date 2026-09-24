@@ -22,6 +22,10 @@ class MergeRequestMergeabilityCheckWorker
       return
     end
 
+    if Feature.enabled?(:mark_mergeability_checking_in_worker, merge_request.project)
+      MergeRequest.batch_mark_as_checking([merge_request.id])
+    end
+
     result =
       ::MergeRequests::MergeabilityCheckService
         .new(merge_request)

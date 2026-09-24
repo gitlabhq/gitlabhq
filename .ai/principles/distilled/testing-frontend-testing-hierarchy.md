@@ -65,7 +65,7 @@ For frontend integration setup, handlers, fixtures, and request counting, see
 
 ### Test File Placement
 
-- Place Jest unit, component, and integration tests in `spec/frontend/`; place frontend integration tests in `ee/spec/frontend/integration/` (EE-only — adding any file under `spec/frontend/integration/` fails ESLint); place Capybara feature tests in `spec/features/`.
+- Place Jest unit and component tests in `spec/frontend/`; place frontend integration tests in `ee/spec/frontend/integration/` (EE-only — adding any file under `spec/frontend/integration/` fails ESLint); place Capybara feature tests in `spec/features/`.
 - Place EE-specific tests under the `ee/spec` folder following the same structure.
 
 ## Authoritative sources

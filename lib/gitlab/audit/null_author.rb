@@ -6,7 +6,8 @@ module Gitlab
       UNAUTHENTICATED_AUTHOR_ID = -1
       DEPLOY_TOKEN_AUTHOR_ID = -2
       DEPLOY_KEY_AUTHOR_ID = -3
-      ORBIT_INDEXER_AUTHOR_ID = -4
+      UNKNOWN_USER_AUTHOR_ID = -4
+      ORBIT_INDEXER_AUTHOR_ID = -5
 
       attr_reader :id, :name
 

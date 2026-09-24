@@ -73,10 +73,22 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
   let(:merge_request) { create(:merge_request, merge_status: :unchecked, source_project: project, target_project: project) }
 
   describe '#async_execute' do
-    it 'updates merge status to checking' do
+    it 'leaves the merge status for the worker to update' do
       described_class.new(merge_request).async_execute
 
-      expect(merge_request).to be_checking
+      expect(merge_request).to be_unchecked
+    end
+
+    context 'when the mark_mergeability_checking_in_worker feature flag is disabled' do
+      before do
+        stub_feature_flags(mark_mergeability_checking_in_worker: false)
+      end
+
+      it 'updates merge status to checking' do
+        described_class.new(merge_request).async_execute
+
+        expect(merge_request).to be_checking
+      end
     end
 
     it 'enqueues MergeRequestMergeabilityCheckWorker' do

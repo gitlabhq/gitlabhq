@@ -16603,8 +16603,6 @@ CREATE TABLE catalog_bundled_resource_versions (
     semver_patch integer NOT NULL,
     semver_prefixed boolean DEFAULT false NOT NULL,
     semver_prerelease text,
-    readme text,
-    readme_html text,
     cached_markdown_version integer,
     file_store smallint DEFAULT 1 NOT NULL,
     CONSTRAINT check_82c917cc60 CHECK ((char_length(semver_prerelease) <= 255))
@@ -31126,6 +31124,18 @@ CREATE SEQUENCE scim_oauth_access_tokens_id_seq
 
 ALTER SEQUENCE scim_oauth_access_tokens_id_seq OWNED BY scim_oauth_access_tokens.id;
 
+CREATE TABLE sec_namespace_mirrors (
+    namespace_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+);
+
+CREATE TABLE sec_project_mirrors (
+    project_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    organization_id bigint NOT NULL
+);
+
 CREATE TABLE secret_detection_token_statuses (
     vulnerability_occurrence_id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -42428,6 +42438,12 @@ ALTER TABLE ONLY scim_identities
 ALTER TABLE ONLY scim_oauth_access_tokens
     ADD CONSTRAINT scim_oauth_access_tokens_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY sec_namespace_mirrors
+    ADD CONSTRAINT sec_namespace_mirrors_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY sec_project_mirrors
+    ADD CONSTRAINT sec_project_mirrors_pkey PRIMARY KEY (project_id);
+
 ALTER TABLE ONLY secret_detection_token_statuses
     ADD CONSTRAINT secret_detection_token_statuses_pkey PRIMARY KEY (vulnerability_occurrence_id);
 
@@ -48754,6 +48770,8 @@ CREATE INDEX index_gin_ci_namespace_mirrors_on_traversal_ids ON ci_namespace_mir
 
 CREATE INDEX index_gin_ci_pending_builds_on_namespace_traversal_ids ON ci_pending_builds USING gin (namespace_traversal_ids);
 
+CREATE INDEX index_gin_sec_namespace_mirrors_on_traversal_ids ON sec_namespace_mirrors USING gin (traversal_ids);
+
 CREATE INDEX index_gitlab_subscription_histories_on_end_date ON gitlab_subscription_histories USING btree (end_date);
 
 CREATE INDEX index_gitlab_subscription_histories_on_gitlab_subscription_id ON gitlab_subscription_histories USING btree (gitlab_subscription_id);
@@ -51253,6 +51271,14 @@ CREATE UNIQUE INDEX index_sec_finding_enrichments_on_finding_and_cve ON security
 CREATE INDEX index_sec_finding_enrichments_on_project_id ON security_finding_enrichments USING btree (project_id);
 
 CREATE INDEX index_sec_finding_enrichments_on_vulnerability_id ON security_finding_enrichments USING btree (vulnerability_id);
+
+CREATE INDEX index_sec_namespace_mirrors_on_organization_id_and_namespace_id ON sec_namespace_mirrors USING btree (organization_id, namespace_id);
+
+CREATE INDEX index_sec_namespace_mirrors_on_traversal_ids_unnest ON sec_namespace_mirrors USING btree ((traversal_ids[1]), (traversal_ids[2]), (traversal_ids[3]), (traversal_ids[4])) INCLUDE (traversal_ids, namespace_id);
+
+CREATE INDEX index_sec_project_mirrors_on_namespace_id ON sec_project_mirrors USING btree (namespace_id);
+
+CREATE INDEX index_sec_project_mirrors_on_organization_id_and_project_id ON sec_project_mirrors USING btree (organization_id, project_id);
 
 CREATE INDEX index_secret_rotation_infos_on_next_reminder_at ON secret_rotation_infos USING btree (next_reminder_at);
 

@@ -1107,9 +1107,9 @@ module API
       body ''
     end
 
-    def send_git_diff(repository, diff_refs)
+    def send_git_diff(repository, diff_refs, client_name: nil)
       verify_workhorse_api!
-      header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
+      header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs, client_name: client_name))
 
       headers['Content-Disposition'] = 'inline'
 

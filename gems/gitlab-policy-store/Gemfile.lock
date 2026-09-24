@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     gitlab-policy-store (0.1.0)
-      gitlab-glaz (~> 1.2)
+      gitlab-glaz (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -27,19 +27,19 @@ GEM
     connection_pool (3.0.2)
     diff-lcs (1.6.2)
     drb (2.2.3)
-    gitlab-glaz (1.2.0)
+    gitlab-glaz (2.0.0)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.2.0-aarch64-linux-gnu)
+    gitlab-glaz (2.0.0-aarch64-linux-gnu)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.2.0-arm64-darwin)
+    gitlab-glaz (2.0.0-arm64-darwin)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.2.0-x86_64-darwin)
+    gitlab-glaz (2.0.0-x86_64-darwin)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
-    gitlab-glaz (1.2.0-x86_64-linux-gnu)
+    gitlab-glaz (2.0.0-x86_64-linux-gnu)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
     gitlab-styles (14.1.0)
@@ -165,11 +165,11 @@ CHECKSUMS
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
-  gitlab-glaz (1.2.0) sha256=6dc4376c86dd56f660d81bcf75266424949c5a524e462abac514c35e7f4be7f1
-  gitlab-glaz (1.2.0-aarch64-linux-gnu) sha256=3e2afad4dcedc1ca5c51afce5e7acaeca6262a92f7177e80333ceeb667faff85
-  gitlab-glaz (1.2.0-arm64-darwin) sha256=8bd4267d7c4475e111062297018a387ceb556d7b2dce2408efce697ef98c1810
-  gitlab-glaz (1.2.0-x86_64-darwin) sha256=ef05ccd79f862c3f2626ae297ab2b9d034035baa1ed2bfe6c42ba0ac2492c4a4
-  gitlab-glaz (1.2.0-x86_64-linux-gnu) sha256=11c45533a470a9d9a99c983aae4f59c7d5fd5c0153d000d0ea427109fb61c09a
+  gitlab-glaz (2.0.0) sha256=871c54533bb37fcc1752e6c9a6defe71af86ae3a582992c828b78d0164e3ad98
+  gitlab-glaz (2.0.0-aarch64-linux-gnu) sha256=4586f22e3d67618e33a63ebb62b7d8b096b819808bf05e1b8c26107573675502
+  gitlab-glaz (2.0.0-arm64-darwin) sha256=2151b9f9ea4beb65a09409db5e2735e807fe7ea3dc9d3a659db5d44b6252b7e3
+  gitlab-glaz (2.0.0-x86_64-darwin) sha256=2765093b76c91c44dfb98b40a488e17d4a63f6d1245c4cce66a6f44679f4db8c
+  gitlab-glaz (2.0.0-x86_64-linux-gnu) sha256=2b4e68e6adabffa237181d5e0256bc6482a061fbed8673346e524d676aa92257
   gitlab-policy-store (0.1.0)
   gitlab-styles (14.1.0) sha256=f39bc5619636bad3690d574438d70b865f48e38d57a38d7823bdeff2a90d2d5a
   google-protobuf (4.36.1) sha256=893ac9d66b36b6ea50da5418f856bc7c2d2072099a578aeefc2d7757dcab6a77

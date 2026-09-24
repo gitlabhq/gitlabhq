@@ -173,9 +173,9 @@ module Gitlab
         ]
       end
 
-      def send_git_diff(repository, diff_refs)
+      def send_git_diff(repository, diff_refs, client_name: nil)
         params = {
-          'GitalyServer' => gitaly_server_hash(repository),
+          'GitalyServer' => gitaly_server_hash(repository, client_name: client_name),
           'RawDiffRequest' => Gitaly::RawDiffRequest.new(
             gitaly_diff_or_patch_hash(repository, diff_refs)
           ).to_json

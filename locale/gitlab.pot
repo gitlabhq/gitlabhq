@@ -4003,6 +4003,9 @@ msgstr ""
 msgid "APIFuzzing|Show code snippet for the profile"
 msgstr ""
 
+msgid "APIFuzzing|Something went wrong while loading the API fuzzing configuration."
+msgstr ""
+
 msgid "APIFuzzing|Target URL"
 msgstr ""
 
@@ -8436,15 +8439,6 @@ msgstr[1] ""
 msgid "AiGovernance|AI Governance"
 msgstr ""
 
-msgid "AiGovernance|AI agent inventory"
-msgstr ""
-
-msgid "AiGovernance|AI agents"
-msgstr ""
-
-msgid "AiGovernance|AI sessions"
-msgstr ""
-
 msgid "AiGovernance|Action"
 msgstr ""
 
@@ -8467,9 +8461,6 @@ msgid "AiGovernance|Always deny"
 msgstr ""
 
 msgid "AiGovernance|Audit events"
-msgstr ""
-
-msgid "AiGovernance|Audit logs"
 msgstr ""
 
 msgid "AiGovernance|Block"
@@ -8503,9 +8494,6 @@ msgid "AiGovernance|Date range"
 msgstr ""
 
 msgid "AiGovernance|Destroy"
-msgstr ""
-
-msgid "AiGovernance|Developer activity"
 msgstr ""
 
 msgid "AiGovernance|External"
@@ -8562,7 +8550,16 @@ msgstr ""
 msgid "AiGovernance|MCP servers"
 msgstr ""
 
+msgid "AiGovernance|Most active developers using agents"
+msgstr ""
+
+msgid "AiGovernance|Most recent sessions"
+msgstr ""
+
 msgid "AiGovernance|Most risky skills"
+msgstr ""
+
+msgid "AiGovernance|Most used agents"
 msgstr ""
 
 msgid "AiGovernance|No MCP servers found."
@@ -8592,7 +8589,7 @@ msgstr ""
 msgid "AiGovernance|Overrides group"
 msgstr ""
 
-msgid "AiGovernance|Project exposure"
+msgid "AiGovernance|Projects with the most active agent sessions"
 msgstr ""
 
 msgid "AiGovernance|Read"
@@ -8638,6 +8635,12 @@ msgid "AiGovernance|Tool management"
 msgstr ""
 
 msgid "AiGovernance|Tool name"
+msgstr ""
+
+msgid "AiGovernance|Total number of agent sessions"
+msgstr ""
+
+msgid "AiGovernance|Total number of agents"
 msgstr ""
 
 msgid "AiGovernance|Type"

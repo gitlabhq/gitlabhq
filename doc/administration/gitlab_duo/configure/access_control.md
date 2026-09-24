@@ -28,7 +28,7 @@ for a group or restrict access to GitLab Duo for one or more groups.
 
 - Default **No group** rule [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225728) in GitLab 18.10.
 - **Member access** section and **No group** rule [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229785) in GitLab 18.11.
-- Selecting subgroups on GitLab Self-Managed and GitLab Dedicated [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255453) in GitLab 19.5 [with a feature flag](../../feature_flags/_index.md) named `duo_admin_access_rules_subgroups`. Disabled by default.
+- Selecting subgroups on GitLab Self-Managed and GitLab Dedicated [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255453) in GitLab 19.5 [with a feature flag](../../feature_flags/_index.md) named `duo_admin_access_rules_subgroups`. Enabled by default.
 
 {{< /history >}}
 
@@ -104,10 +104,8 @@ To restrict access to GitLab Duo for an instance:
 These settings apply to users who are direct members of one of the groups
 configured under **Restrict access based on group membership**.
 
-If you enable the `duo_admin_access_rules_subgroups` feature flag,
-you can select any top-level group or subgroup.
-Otherwise, you can select only top-level groups.
-
+When you configure access controls, you can select
+any top-level group or subgroup.
 Changes to access rules can take up to five minutes to take effect
 because access decisions are cached for each user.
 

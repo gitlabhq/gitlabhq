@@ -194,7 +194,8 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
           .to publish_event(MergeRequests::ApprovedEvent)
           .with(current_user_id: user.id,
             merge_request_id: merge_request.id,
-            approved_at: anything)
+            approved_at: anything,
+            organization_id: merge_request.project.organization_id)
       end
 
       it 'publishes MergeRequests::ApprovedCloudEvent' do

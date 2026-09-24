@@ -21,7 +21,7 @@ module MergeRequests
     def async_execute
       return service_error if service_error
 
-      merge_request.mark_as_checking
+      merge_request.mark_as_checking unless mark_as_checking_in_worker?
       MergeRequestMergeabilityCheckWorker.perform_async(merge_request.id)
     end
 
@@ -210,6 +210,12 @@ module MergeRequests
       result = MergeRequests::MergeToRefService.new(project: project, current_user: merge_request.author, params: {}).execute(merge_request)
 
       result[:status] == :success
+    end
+
+    # The checking write moves to the worker so the GET request that triggers the
+    # check does not write to the database.
+    def mark_as_checking_in_worker?
+      Feature.enabled?(:mark_mergeability_checking_in_worker, project)
     end
 
     def service_error

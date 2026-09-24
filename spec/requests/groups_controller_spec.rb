@@ -1473,7 +1473,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
 
     context 'when the release flag is disabled' do
       before do
-        stub_feature_flags(org_stage_experimental: false)
+        stub_organization_release(create_org_from_group_settings: false)
       end
 
       it 'returns not found' do

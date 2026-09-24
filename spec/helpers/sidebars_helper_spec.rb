@@ -281,6 +281,65 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
             ])
           end
         end
+
+        context 'when the request is organization-scoped' do
+          let(:organization_scoped_shortcut_links) do
+            [
+              {
+                title: _('Milestones'),
+                href: dashboard_milestones_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-milestones'
+              },
+              {
+                title: _('Snippets'),
+                href: dashboard_snippets_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-snippets'
+              },
+              {
+                title: _('Activity'),
+                href: activity_dashboard_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-activity'
+              },
+              {
+                title: _('Groups'),
+                href: dashboard_groups_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-groups'
+              },
+              {
+                title: _('Projects'),
+                href: dashboard_projects_path(organization_path: organization.path),
+                css_class: 'dashboard-shortcuts-projects'
+              }
+            ]
+          end
+
+          before do
+            Current.organization_resolver =
+              instance_double(
+                Gitlab::Current::Organization,
+                from_organization_params: organization,
+                from_request: organization,
+                from_params: organization
+              )
+            Current.data_context = Gitlab::Current::DataContext.new(organization: organization, user: user)
+          end
+
+          context 'and the organization is not isolated' do
+            let_it_be(:organization) { build_stubbed(:organization) }
+
+            it 'returns shortcut links scoped to the organization' do
+              expect(subject[:shortcut_links]).to eq(organization_scoped_shortcut_links)
+            end
+          end
+
+          context 'and the organization is isolated' do
+            let_it_be(:organization) { build_stubbed(:organization, :isolated) }
+
+            it 'still returns shortcut links scoped to the organization' do
+              expect(subject[:shortcut_links]).to eq(organization_scoped_shortcut_links)
+            end
+          end
+        end
       end
     end
 

@@ -11,11 +11,11 @@ RSpec.describe 'gitlab:graphql:check_docs rake task', :silence_stdout, feature_c
     Rake.application.rake_require 'tasks/gitlab/graphql'
     Rake::Task.define_task(:environment)
 
-    # These prerequisites redefine Gitlab.com? and Feature.enabled? with `def`, which no
-    # stub can undo: Feature.enabled? would stay true for every later example in the
-    # process. They only matter when the schema is really rendered, which it is not here.
-    allow(Rake::Task['gitlab:simulate_saas']).to receive(:invoke)
-    allow(Rake::Task['gitlab:enable_feature_flags']).to receive(:invoke)
+    # These prerequisites redefine Gitlab.com? and Feature.enabled? with `def`, which leaks
+    # into every later example in the process. Rake runs prerequisites through `execute`,
+    # not `invoke`, so `execute` is the method to stub.
+    allow(Rake::Task['gitlab:simulate_saas']).to receive(:execute)
+    allow(Rake::Task['gitlab:enable_feature_flags']).to receive(:execute)
 
     # Rendering the real schema takes minutes, and the task only compares two strings.
     allow(Tooling::Graphql::DeprecatedDocs::Renderer).to receive(:new).and_return(

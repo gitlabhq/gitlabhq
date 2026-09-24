@@ -1,0 +1,10 @@
+---
+name: mark_mergeability_checking_in_worker
+description: Write the checking merge status from the mergeability check worker instead of during GET requests.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628132
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256999
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630354
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

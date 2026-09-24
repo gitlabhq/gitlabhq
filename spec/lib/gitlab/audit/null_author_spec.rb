@@ -97,13 +97,26 @@ RSpec.describe Gitlab::Audit::NullAuthor, feature_category: :compliance_manageme
       expect(subject.for(-3, audit_event)).to have_attributes(id: -3, name: 'Test deploy key')
     end
 
-    it 'returns OrbitIndexerAuthor when id equals -4', :aggregate_failures do
-      allow(audit_event).to receive(:[]).with(:author_name).and_return('GitLab Orbit Indexer')
-      allow(audit_event).to receive(:details).and_return({})
-      allow(audit_event).to receive(:target_type)
+    it 'preserves the security policy Unknown User author with id -4', :aggregate_failures do
+      allow(audit_event).to receive(:[]).with(:author_name).and_return('Unknown User')
+      allow(audit_event).to receive_messages(details: {}, target_type: 'Project')
 
-      expect(subject.for(-4, audit_event)).to be_a(Gitlab::Audit::OrbitIndexerAuthor)
-      expect(subject.for(-4, audit_event)).to have_attributes(id: -4, name: 'GitLab Orbit Indexer')
+      author = subject.for(-4, audit_event)
+
+      expect(author).to be_a(Gitlab::Audit::DeletedAuthor)
+      expect(author).to have_attributes(id: -4, name: 'Unknown User')
+    end
+
+    it 'round-trips the Orbit indexer author with a distinct id', :aggregate_failures do
+      indexer = Gitlab::Audit::OrbitIndexerAuthor.new
+      allow(audit_event).to receive(:[]).with(:author_name).and_return(indexer.name)
+      allow(audit_event).to receive_messages(details: {}, target_type: 'Project')
+
+      author = subject.for(indexer.id, audit_event)
+
+      expect(author).to be_a(Gitlab::Audit::OrbitIndexerAuthor)
+      expect(author).to have_attributes(id: indexer.id, name: indexer.name)
+      expect(author.id).not_to eq(-4)
     end
   end
 

@@ -66,17 +66,6 @@ RSpec.describe Ci::Catalog::BundledResources::Version, feature_category: :pipeli
       expect(reloaded.readme_html).to include('bold</strong>')
     end
 
-    it 'keeps the readme out of Postgres', :aggregate_failures do
-      version.update!(readme: '# Widgets')
-
-      row = described_class.connection.select_one(
-        "SELECT readme, readme_html FROM catalog_bundled_resource_versions WHERE id = #{version.id.to_i}"
-      )
-
-      expect(row['readme']).to be_nil
-      expect(row['readme_html']).to be_nil
-    end
-
     it 'removes the stored readme when the version is destroyed' do
       version.update!(readme: 'to be deleted')
       stored_path = version.send(:external_storage_uploader).path

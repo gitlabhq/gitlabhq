@@ -238,7 +238,7 @@ They're useful, for example, to test permissions, redirections, API endpoints, w
 | `app/controllers/` | `spec/requests/`, `spec/controllers` | RSpec | Request specs are preferred over legacy controller specs. Request specs are encouraged for API endpoints. |
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/frontend/` | Jest | [More details below](#frontend-integration-tests) |
+| `app/assets/javascripts/` | `ee/spec/frontend/integration/` | Jest | [More details below](#frontend-integration-tests) |
 
 ### Frontend integration tests
 
