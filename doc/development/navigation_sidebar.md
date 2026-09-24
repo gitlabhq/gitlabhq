@@ -17,22 +17,6 @@ the sidebar is a work in progress, and so is this documentation.
 Before adding an item to the sidebar, ensure you review and follow the
 processes outlined in the [handbook page for navigation](https://handbook.gitlab.com/handbook/product/ux/navigation/).
 
-## Adding page-specific Vue content
-
-Pages can render arbitrary content into the sidebar using the `SidebarPortal`
-component. Content passed to its default slot is rendered below that
-page's navigation items in the sidebar.
-
-> [!note]
-> Only one instance of this component on a given page is supported. This is to
-> avoid ordering issues and cluttering the sidebar.
->
-> You can use arbitrary content. You should implement nav items by subclassing `::Sidebars::Panel`.
-> If you must use Vue to render nav items (for example, if you need to use Vue Router) you can make an exception.
-> However, in the corresponding `panel.rb` file, you must add a comment that explains how the nav items are rendered.
->
-> Do not use the `SidebarPortalTarget` component. It is internal to the sidebar.
-
 ## Snowplow Tracking
 
 All clicks on the nav items should be automatically tracked in Snowplow, but may require additional input.

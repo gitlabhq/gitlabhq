@@ -589,7 +589,7 @@ describe('WorkItemTree', () => {
     });
 
     // A contextual panel puts its own key in `show`, which is not an encoded child reference.
-    describe.each(['work-item-detail', 'agent-plan', 'decision-log'])(
+    describe.each(['work-item-detail', 'workplan', 'decision-log'])(
       'when the URL requests the %s panel',
       (panel) => {
         beforeEach(async () => {

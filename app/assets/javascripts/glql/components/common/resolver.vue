@@ -69,6 +69,16 @@ export default {
       type: String,
       default: EXECUTION_QUEUE_DEFAULT,
     },
+    /**
+     * Control bindings, each names a query field and the value to inject into it.
+     * The compiler rewrites the query's filters from these, so the caller never templates the
+     * query text. Only dashboard panels set this.
+     */
+    bindings: {
+      required: false,
+      type: Array,
+      default: () => [],
+    },
   },
   emits: ['change'],
   data() {
@@ -179,6 +189,7 @@ export default {
         const { query, config, variables, fields, mode, source } = await parse(
           this.glqlQuery,
           this.scope,
+          { bindings: this.bindings },
         );
 
         this.query = query;
@@ -245,6 +256,7 @@ export default {
         const { query, variables, fields, mode, source } = await parse(
           this.comparison.query,
           this.scope,
+          { bindings: this.bindings },
         );
         const executionResult = await execute(query, variables, {
           queue: this.queue,

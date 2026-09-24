@@ -495,6 +495,24 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            pipeline_retry: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_retries_by_user_pipeline',
+              characteristics: %i[user ci_pipeline],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
+            # Busiest observed actor plus headroom, measured in
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/627233.
+            pipeline_retry_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_retries_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.pipeline_retry_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
             pipelines_create: ::Labkit::RateLimit::Rule.new(
               name: 'limit_pipelines_by_project_user_sha',
               characteristics: %i[project user sha],

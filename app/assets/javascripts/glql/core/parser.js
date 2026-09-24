@@ -1,6 +1,6 @@
 import jsYaml from 'js-yaml';
 import { glql } from '@gitlab/query-language-rust';
-import { DEFAULT_DISPLAY_TYPE, MODE_STANDARD } from '../constants';
+import { DEFAULT_DISPLAY_TYPE, MODE_ANALYTICS, MODE_STANDARD } from '../constants';
 import { extractGroupOrProject } from '../utils/common';
 import { glqlFeatureFlags } from '../utils/feature_flags';
 
@@ -58,7 +58,12 @@ export const parseYAML = (yaml) => {
   return { query, config };
 };
 
-export const parse = (yaml, scope = null) => {
+export const parse = (yaml, scope = null, { bindings = [] } = {}) => {
   const { query, config } = parseYAML(yaml);
+
+  // Only analytics sources accept lists of groups and projects; the compiler rejects them
+  // elsewhere, so other queries keep the regular scope.
+  if (bindings.length && config.mode === MODE_ANALYTICS) config.bindings = bindings;
+
   return parseQuery(query, config, scope);
 };

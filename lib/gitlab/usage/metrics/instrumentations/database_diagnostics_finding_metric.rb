@@ -17,7 +17,8 @@ module Gitlab
         class DatabaseDiagnosticsFindingMetric < GenericMetric
           CHECKS = {
             'autovacuum_settings' => ::Gitlab::Database::Diagnostics::Checks::AutovacuumSettings,
-            'search_path' => ::Gitlab::Database::Diagnostics::Checks::SchemaResolution
+            'search_path' => ::Gitlab::Database::Diagnostics::Checks::SchemaResolution,
+            'timeouts' => ::Gitlab::Database::Diagnostics::Checks::Timeouts
           }.freeze
 
           value do

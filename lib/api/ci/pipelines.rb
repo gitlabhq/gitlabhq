@@ -404,7 +404,8 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['pipelines']
         end

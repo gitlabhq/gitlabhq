@@ -121,6 +121,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
           members_delete_limit downstream_pipeline_trigger_limit_per_project_user_sha
           pipeline_cancel_limit_per_user_project
+          pipeline_retry_limit_per_user_project
           group_api_limit group_projects_api_limit groups_api_limit project_api_limit projects_api_limit
           user_contributed_projects_api_limit user_projects_api_limit user_starred_projects_api_limit
           users_api_limit_followers users_api_limit_following users_api_limit_status users_api_limit_ssh_keys

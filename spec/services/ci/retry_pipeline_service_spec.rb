@@ -469,6 +469,122 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
     end
   end
 
+  context 'with rate limiting', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+    context 'when the user can retry the pipeline' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      before do
+        create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
+      end
+
+      it 'retries the pipeline while under both limits' do
+        expect(service.execute(pipeline)).to be_success
+      end
+
+      it 'throttles the sixth retry of the same pipeline in a minute', :aggregate_failures do
+        5.times { expect(service.execute(pipeline)).to be_success }
+
+        response = service.execute(pipeline)
+
+        expect(response).to be_error
+        expect(response.reason).to eq(:rate_limited)
+        expect(response.http_status).to eq(:too_many_requests)
+        expect(response.message).to eq(throttle_message)
+      end
+
+      context 'when the per-project limit is exceeded' do
+        let(:other_pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+
+        before do
+          stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+        end
+
+        it 'throttles a retry of a different pipeline in the same project', :aggregate_failures do
+          expect(service.execute(pipeline)).to be_success
+
+          response = service.execute(other_pipeline)
+
+          expect(response).to be_error
+          expect(response.reason).to eq(:rate_limited)
+          expect(response.http_status).to eq(:too_many_requests)
+        end
+      end
+
+      context 'when the per-project limit is disabled' do
+        before do
+          stub_application_setting(pipeline_retry_limit_per_user_project: 0)
+        end
+
+        it 'does not throttle on the per-project limit' do
+          4.times { expect(service.execute(pipeline)).to be_success }
+        end
+
+        it 'still applies the fixed per-pipeline limit', :aggregate_failures do
+          5.times { expect(service.execute(pipeline)).to be_success }
+
+          expect(service.execute(pipeline).reason).to eq(:rate_limited)
+        end
+      end
+
+      context 'when the per-pipeline limit is already exceeded' do
+        let(:other_pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+
+        before do
+          stub_application_setting(pipeline_retry_limit_per_user_project: 8)
+        end
+
+        it 'does not spend the per-project budget on the blocked calls' do
+          # 5 allowed, then 10 blocked per-pipeline. Were the blocked calls counted,
+          # they would exhaust the per-project budget of 8 and block other pipelines.
+          15.times { service.execute(pipeline) }
+
+          expect(service.execute(other_pipeline)).to be_success
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(rate_limit_pipeline_retry: false)
+          stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+        end
+
+        it 'does not throttle' do
+          2.times { expect(service.execute(pipeline)).to be_success }
+        end
+      end
+    end
+
+    context 'when the user cannot retry the pipeline' do
+      before do
+        stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+      end
+
+      it 'counts the rejected call against the bucket, and still reports the real reason',
+        :aggregate_failures do
+        2.times { expect(service.execute(pipeline).http_status).to eq(:forbidden) }
+
+        project.add_developer(user)
+        create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
+
+        expect(service.execute(pipeline).reason).to eq(:rate_limited)
+      end
+    end
+
+    context 'when there is no current user' do
+      let(:service) { described_class.new(project, nil) }
+
+      it 'does not check the rate limit', :aggregate_failures do
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+        expect(service.execute(pipeline).http_status).to eq(:forbidden)
+      end
+    end
+  end
+
   context 'when maintainer is allowed to push to forked project' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public, :small_repo) }

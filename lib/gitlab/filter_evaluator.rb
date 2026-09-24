@@ -62,7 +62,8 @@ module Gitlab
           break
         end
 
-        value[key] || value[key.to_sym]
+        # key? rather than || so a legitimate false value is not treated as missing.
+        value.key?(key) ? value[key] : value[key.to_sym]
       end
     end
     private_class_method :dig_value

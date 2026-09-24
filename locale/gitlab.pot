@@ -6887,6 +6887,9 @@ msgstr ""
 msgid "AdminSettings|Maximum pipeline cancellations per project"
 msgstr ""
 
+msgid "AdminSettings|Maximum pipeline retries per project"
+msgstr ""
+
 msgid "AdminSettings|Maximum size of a CycloneDX artifact in MB"
 msgstr ""
 
@@ -7095,6 +7098,9 @@ msgid "AdminSettings|The maximum number of included files per pipeline."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of pipeline cancellations allowed per minute for a given project. Set to 0 to disable this limit."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of pipeline retries allowed per minute for a given project. Set to 0 to disable this limit."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of tag or branch pipelines triggered by a single Git push. Setting the limit to 0 will remove the limit."
@@ -12545,6 +12551,9 @@ msgstr ""
 msgid "ArtifactRegistry|%{name} moved to position %{position} of %{total}."
 msgstr ""
 
+msgid "ArtifactRegistry|%{name} removed from this virtual repository."
+msgstr ""
+
 msgid "ArtifactRegistry|%{tab} tab for manifest %{digest} of %{name}."
 msgstr ""
 
@@ -13343,6 +13352,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "ArtifactRegistry|Remove %{name}"
+msgstr ""
+
+msgid "ArtifactRegistry|Remove repository"
+msgstr ""
+
+msgid "ArtifactRegistry|Remove repository %{name}"
 msgstr ""
 
 msgid "ArtifactRegistry|Repositories"

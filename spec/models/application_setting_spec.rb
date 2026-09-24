@@ -221,6 +221,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         pg_ash_sample_interval_seconds: 1,
         pg_ash_sampling_enabled: false,
         pipeline_cancel_limit_per_user_project: 120,
+        pipeline_retry_limit_per_user_project: 200,
         plantuml_enabled: false,
         plantuml_diagram_proxy_enabled: false,
         project_api_limit: 400,
@@ -704,6 +705,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           packages_cleanup_package_file_worker_capacity
           pipeline_cancel_limit_per_user_project
           pipeline_limit_per_project_user_sha
+          pipeline_retry_limit_per_user_project
           create_organization_api_limit
           project_api_limit
           project_create_limit

@@ -11,6 +11,11 @@ module ActiveContext
         @collections ||= {}
       end
 
+      def reset
+        @collections = nil
+        @last_refreshed_at = nil
+      end
+
       def fetch(value)
         by_id(value) || by_name(value)
       end

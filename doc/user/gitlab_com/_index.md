@@ -88,6 +88,8 @@ the related documentation:
 | Maximum downstream pipeline trigger rate (for a given project, user, and commit) | `350` each minute                                                                                          | See [Maximum downstream pipeline trigger rate](../../administration/cicd/limits.md#limit-downstream-pipeline-trigger-rate). |
 | Maximum pipeline cancellation rate per pipeline (for a given user) | `5` each minute   | See [Pipeline cancellation rate limits](../../administration/cicd/limits.md#pipeline-cancellation-rate-limits). |
 | Maximum pipeline cancellation rate per project (for a given user)  | `120` each minute | See [Pipeline cancellation rate limits](../../administration/cicd/limits.md#pipeline-cancellation-rate-limits). |
+| Maximum pipeline retry rate per pipeline (for a given user) | `5` each minute   | See [Pipeline retry rate limits](../../administration/cicd/limits.md#pipeline-retry-rate-limits). |
+| Maximum pipeline retry rate per project (for a given user)  | `200` each minute | See [Pipeline retry rate limits](../../administration/cicd/limits.md#pipeline-retry-rate-limits). |
 | Maximum number of downstream pipelines in a pipeline's hierarchy tree            | `1000`                                                                                                     | See [Limit pipeline hierarchy size](../../administration/cicd/limits.md#limit-pipeline-hierarchy-size). |
 | Maximum number of pipeline creation requests per project, commit, and user (per minute) | `25`                                                                                                | See [pipeline creation rate limits](../../administration/cicd/limits.md#pipeline-creation-rate-limits). |
 

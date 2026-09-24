@@ -45,6 +45,7 @@ describe('GlqlVisualization', () => {
       trackingEventName: 'render_analytics_dashboard_glql_panel',
       scope: null,
       queue: 'glql-queue-dashboard',
+      bindings: [],
     });
   });
 
@@ -67,6 +68,16 @@ describe('GlqlVisualization', () => {
       const original = findResolver().vm;
 
       wrapper.setProps({ namespace: 'gitlab-com' });
+      await nextTick();
+
+      expect(findResolver().vm).not.toBe(original);
+    });
+
+    it('remounts the resolver when the scope filters change', async () => {
+      createWrapper({ data: query, filters: { groups: ['gitlab-org'] } });
+      const original = findResolver().vm;
+
+      wrapper.setProps({ filters: { groups: ['gitlab-org', 'gitlab-com'] } });
       await nextTick();
 
       expect(findResolver().vm).not.toBe(original);
@@ -149,6 +160,56 @@ describe('GlqlVisualization', () => {
       createWrapper({ data: glqlQuery, namespace: 'gitlab-org/gitlab', isProject: true });
 
       expect(findResolver().props('scope')).toEqual({ project: 'gitlab-org/gitlab' });
+    });
+  });
+
+  describe('the scope bindings', () => {
+    const glqlQuery = 'type = Issue AND state = opened';
+
+    it('is empty when the dashboard filters name no scope', () => {
+      createWrapper({ data: glqlQuery });
+
+      expect(findResolver().props('bindings')).toEqual([]);
+    });
+
+    it('binds the selected groups onto the query', () => {
+      createWrapper({ data: glqlQuery, filters: { groups: ['gitlab-org', 'gitlab-com'] } });
+
+      expect(findResolver().props('bindings')).toEqual([
+        {
+          target: { kind: 'filter', field: 'group' },
+          value: { kind: 'list', values: ['gitlab-org', 'gitlab-com'] },
+        },
+      ]);
+    });
+
+    it('binds groups and projects as separate filters', () => {
+      createWrapper({
+        data: glqlQuery,
+        filters: { groups: ['gitlab-org'], projects: ['gitlab-com/www-gitlab-com'] },
+      });
+
+      expect(findResolver().props('bindings')).toEqual([
+        {
+          target: { kind: 'filter', field: 'group' },
+          value: { kind: 'list', values: ['gitlab-org'] },
+        },
+        {
+          target: { kind: 'filter', field: 'project' },
+          value: { kind: 'list', values: ['gitlab-com/www-gitlab-com'] },
+        },
+      ]);
+    });
+
+    it('leaves out a filter the dashboard has nothing selected for', () => {
+      createWrapper({ data: glqlQuery, filters: { groups: [], projects: ['gitlab-org/gitlab'] } });
+
+      expect(findResolver().props('bindings')).toEqual([
+        {
+          target: { kind: 'filter', field: 'project' },
+          value: { kind: 'list', values: ['gitlab-org/gitlab'] },
+        },
+      ]);
     });
   });
 
@@ -364,6 +425,41 @@ describe('GlqlVisualization', () => {
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findResolver().exists()).toBe(true);
+    });
+
+    it('resets the resolver data when the scope filters change', async () => {
+      createWrapper({
+        data: 'type = Issue AND state = opened',
+        filters: { groups: ['gitlab-org'] },
+      });
+
+      findResolver().vm.$emit('change', { data: { nodes: [] } });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(true);
+
+      wrapper.setProps({ filters: { groups: ['gitlab-com'] } });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findResolver().exists()).toBe(true);
+    });
+
+    it('keeps the resolver data when only the date range changes', async () => {
+      createWrapper({
+        data: 'type = Issue AND state = opened',
+        filters: { groups: ['gitlab-org'], dateRangeOption: '7d' },
+      });
+
+      findResolver().vm.$emit('change', { data: { nodes: [] } });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(true);
+
+      wrapper.setProps({ filters: { groups: ['gitlab-org'], dateRangeOption: '30d' } });
+      await nextTick();
+
+      expect(findEmptyState().exists()).toBe(true);
     });
   });
 

@@ -16,7 +16,6 @@ import {
   toggleSuperSidebarIconOnly,
 } from '../super_sidebar_collapsed_state_manager';
 import { trackContextAccess } from '../utils';
-import SidebarPortalTarget from './sidebar_portal_target.vue';
 import IconOnlyToggle from './icon_only_toggle.vue';
 import ManageOrganizationButton from './manage_organization_button.vue';
 import HelpCenter from './help_center.vue';
@@ -30,7 +29,6 @@ export default {
     ManageOrganizationButton,
     HelpCenter,
     SidebarMenu,
-    SidebarPortalTarget,
     ScrollScrim,
     PortalTarget,
     TrialWidget: defineAsyncComponent(
@@ -221,7 +219,6 @@ export default {
             :show-feedback-link="sidebarData.show_feature_library_feedback"
             :show-feature-library-shimmer="sidebarData.show_feature_library_shimmer"
           />
-          <sidebar-portal-target />
         </scroll-scrim>
         <portal-target
           v-if="glFeatures.hideUnpinnedSidebarItems"

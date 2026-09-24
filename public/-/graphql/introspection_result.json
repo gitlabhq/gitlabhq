@@ -38391,6 +38391,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "statistics",
+              "description": "Namespace-wide Artifact Registry statistics, read as the current user when this field is selected. `null` on any unresolved read, so an unavailable service or a drifted slug omits the figures rather than raising. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this field is not reached. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryNamespaceStatistics",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "status",
               "description": "Status Artifact Registry returned, one of `active`, `suspended`, `disabled`, `blocked`, `deleted`, or `purged`, or `unknown` when the mapped namespace did not resolve. Deliberately a string rather than an enum so a status Artifact Registry adds within its API version reaches the response instead of raising. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
@@ -40669,6 +40681,41 @@
                   "name": "Boolean",
                   "ofType": null
                 }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryNamespaceStatistics",
+          "description": "Namespace-wide statistics for an Artifact Registry.",
+          "fields": [
+            {
+              "name": "deduplicatedSizeBytes",
+              "description": "Namespace's storage footprint in bytes, counting each distinct blob once. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "repositoriesCount",
+              "description": "Number of active repositories in the namespace, every format and kind. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."

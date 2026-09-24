@@ -19920,7 +19920,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_02f7c66b6a32"
+              "$ref": "#/components/schemas/RequestBody_685443e2baf0"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -73658,6 +73658,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+        '429':
+          description: Too Many Requests
         '400':
           description: Bad Request
       parameters:
@@ -91832,6 +91834,8 @@ components:
           type: string
         pipeline_cancel_limit_per_user_project:
           type: string
+        pipeline_retry_limit_per_user_project:
+          type: string
         asciidoc_max_includes:
           type: string
         ai_action_api_rate_limit:
@@ -106981,7 +106985,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_02f7c66b6a32:
+    RequestBody_685443e2baf0:
       type: object
       properties:
         admin_mode:
@@ -107896,6 +107900,11 @@ components:
           type: integer
           description: Maximum number of pipeline cancellations allowed per minute
             for a given project.
+          nullable: true
+        pipeline_retry_limit_per_user_project:
+          type: integer
+          description: Maximum number of pipeline retries allowed per minute for a
+            given project.
           nullable: true
         ai_action_api_rate_limit:
           type: integer

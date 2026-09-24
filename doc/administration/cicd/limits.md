@@ -439,6 +439,43 @@ To configure the per user and project limit:
 1. Set a value for **Maximum pipeline cancellations per project**.
 1. Select **Save changes**.
 
+## Pipeline retry rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627233) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_pipeline_retry`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Retrying a pipeline clones every retryable job, so the cost of retrying scales with the size of the pipeline.
+Repeated retries, whether on one large pipeline or spread across many pipelines in a project, can add up to
+excessive load on your instance. You can limit how often pipelines can be retried to protect against this.
+
+This rate limit applies to pipeline retries made with the
+[retry pipeline REST API](../../api/pipelines.md#retry-jobs-in-a-pipeline), the
+[`pipelineRetry`](../../api/graphql/reference/_index.md#mutationpipelineretry) GraphQL mutation, or the GitLab UI.
+The limit does not apply to automatic job retries, such as those triggered by the
+[`retry`](../../ci/yaml/_index.md#retry) keyword, which uses a different code path.
+
+GitLab enforces the following limits:
+
+- Per user and pipeline: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `200` requests each minute.
+  Set the limit to `0` to disable this per-project limit. The per user and pipeline limit still applies.
+
+If either limit is exceeded, the retry request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum pipeline retries per project**.
+1. Select **Save changes**.
+
 ## Maximum artifacts size
 
 Set size limits for job artifacts to control storage use.

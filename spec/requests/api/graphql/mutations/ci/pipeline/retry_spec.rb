@@ -53,4 +53,21 @@ RSpec.describe 'PipelineRetry', feature_category: :pipeline_composition do
     expect(response).to have_gitlab_http_status(:success)
     expect(mutation_response['pipeline']['id']).to eq(pipeline_id)
   end
+
+  context 'when the pipeline retry rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    before do
+      stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+    end
+
+    it 'surfaces the throttle in the mutation errors', :aggregate_failures do
+      post_graphql_mutation(mutation, current_user: user)
+      expect(graphql_mutation_response(:pipeline_retry)['errors']).to be_empty
+
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(graphql_mutation_response(:pipeline_retry)['errors'])
+        .to contain_exactly(_('This endpoint has been requested too many times. Try again later.'))
+    end
+  end
 end

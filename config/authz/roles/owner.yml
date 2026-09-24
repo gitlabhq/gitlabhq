@@ -36,6 +36,7 @@ project:
   - manage_owners
   - mark_issue_for_publication
   - modify_security_policy
+  - provision_secrets_manager
   - read_ai_tool_rule
   - read_compliance_adherence_report
   - read_compliance_dashboard

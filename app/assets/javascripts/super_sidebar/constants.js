@@ -2,7 +2,6 @@
 // details for the sidebar. They should not be imported by anything outside of
 // the super_sidebar directory.
 
-export const SIDEBAR_PORTAL_ID = 'sidebar-portal-mount';
 export const SETTINGS_DISCLOSURE_PORTAL_NAME = 'super-sidebar-settings-disclosure';
 export const SETTINGS_MENU_ITEM_ID = 'settings_menu';
 

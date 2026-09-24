@@ -102,14 +102,40 @@ describe('Resolver', () => {
       createWrapper();
       await waitForPromises();
 
-      expect(parse).toHaveBeenCalledWith('assignee = "foo"', null);
+      expect(parse).toHaveBeenCalledWith('assignee = "foo"', null, { bindings: [] });
     });
 
     it('parses the query with the given scope', async () => {
       createWrapper({ scope: { group: 'gitlab-org' } });
       await waitForPromises();
 
-      expect(parse).toHaveBeenCalledWith('assignee = "foo"', { group: 'gitlab-org' });
+      expect(parse).toHaveBeenCalledWith(
+        'assignee = "foo"',
+        { group: 'gitlab-org' },
+        {
+          bindings: [],
+        },
+      );
+    });
+  });
+
+  describe('bindings', () => {
+    const bindings = [
+      {
+        target: { kind: 'filter', field: 'group' },
+        value: { kind: 'list', values: ['gitlab-org'] },
+      },
+    ];
+
+    beforeEach(() => {
+      mockUtils();
+    });
+
+    it('hands them to the compiler', async () => {
+      createWrapper({ bindings });
+      await waitForPromises();
+
+      expect(parse).toHaveBeenCalledWith('assignee = "foo"', null, { bindings });
     });
   });
 
@@ -431,8 +457,8 @@ describe('Resolver', () => {
       await setup();
 
       expect(parse.mock.calls).toEqual([
-        [GLQL_QUERY, SCOPE],
-        [COMPARISON_QUERY, SCOPE],
+        [GLQL_QUERY, SCOPE, { bindings: [] }],
+        [COMPARISON_QUERY, SCOPE, { bindings: [] }],
       ]);
     });
 

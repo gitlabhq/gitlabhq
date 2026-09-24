@@ -347,6 +347,86 @@ query: assignee = currentUser()
 }
 `);
   });
+
+  describe('bindings', () => {
+    const analyticsQuery = `---
+display: stat
+mode: analytics
+metrics: usersCount
+---
+type = DuoWorkflow`;
+
+    const scopeBinding = (field, values) => ({
+      target: { kind: 'filter', field },
+      value: { kind: 'list', values },
+    });
+
+    it('compiles a scope binding into the query, in place of the namespace the URL names', async () => {
+      const { query } = await parse(analyticsQuery, null, {
+        bindings: [scopeBinding('group', ['gitlab-org', 'gitlab-com'])],
+      });
+
+      expect(query).toContain('descendantsScope: {groupFullPaths: ["gitlab-org", "gitlab-com"]}');
+    });
+
+    it('carries groups and projects together in one scope', async () => {
+      const { query } = await parse(analyticsQuery, null, {
+        bindings: [
+          scopeBinding('group', ['gitlab-org']),
+          scopeBinding('project', ['gitlab-org/gitlab']),
+        ],
+      });
+
+      expect(query).toContain(
+        'descendantsScope: {groupFullPaths: ["gitlab-org"], projectFullPaths: ["gitlab-org/gitlab"]}',
+      );
+    });
+
+    it('outranks the default scope pulled from the page', async () => {
+      const { query } = await parse(analyticsQuery, null, {
+        bindings: [scopeBinding('project', ['gitlab-org/gitlab', 'gitlab-com/www-gitlab-com'])],
+      });
+
+      expect(query).toContain(
+        'descendantsScope: {projectFullPaths: ["gitlab-org/gitlab", "gitlab-com/www-gitlab-com"]}',
+      );
+      expect(query).not.toContain('project(fullPath: "gitlab-org/gitlab")');
+    });
+
+    it('outranks an explicit scope as well', async () => {
+      const { query } = await parse(
+        analyticsQuery,
+        { project: 'gitlab-org/gitlab' },
+        { bindings: [scopeBinding('group', ['gitlab-com'])] },
+      );
+
+      expect(query).toContain('group(fullPath: "gitlab-com")');
+      expect(query).not.toContain('gitlab-org/gitlab');
+    });
+
+    it('scopes the query the usual way when none are given', async () => {
+      const { query } = await parse(analyticsQuery);
+
+      expect(query).not.toContain('descendantsScope');
+      expect(query).toContain('project(fullPath: "gitlab-org/gitlab")');
+    });
+
+    it('scopes the query the default way when the list is empty', async () => {
+      const { query } = await parse(analyticsQuery, null, { bindings: [] });
+
+      expect(query).not.toContain('descendantsScope');
+      expect(query).toContain('project(fullPath: "gitlab-org/gitlab")');
+    });
+
+    it('ignores bindings for standard queries', async () => {
+      const { query } = await parse('type = Issue', null, {
+        bindings: [scopeBinding('group', ['gitlab-com'])],
+      });
+
+      expect(query).toContain('project(fullPath: "gitlab-org/gitlab")');
+      expect(query).not.toContain('gitlab-com');
+    });
+  });
 });
 
 describe('parseYAMLConfig', () => {

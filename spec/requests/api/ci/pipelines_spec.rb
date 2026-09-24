@@ -1597,6 +1597,26 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(json_response['id']).to be_nil
       end
     end
+
+    context 'when the pipeline retry rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      let_it_be(:pipeline) do
+        create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+      end
+
+      before do
+        stub_application_setting(pipeline_retry_limit_per_user_project: 1)
+      end
+
+      it 'returns 429', :aggregate_failures do
+        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
+        expect(response).to have_gitlab_http_status(:created)
+
+        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", user)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']).to eq(_('This endpoint has been requested too many times. Try again later.'))
+      end
+    end
   end
 
   describe 'POST /projects/:id/pipelines/:pipeline_id/cancel' do

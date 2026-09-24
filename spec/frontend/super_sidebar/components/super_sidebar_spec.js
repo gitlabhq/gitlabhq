@@ -9,7 +9,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
-import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
@@ -47,7 +46,6 @@ describe('SuperSidebar component', () => {
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
-  const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
   const findSettingsDisclosureTarget = () =>
     wrapper
       .findAllComponents(PortalTarget)
@@ -117,11 +115,6 @@ describe('SuperSidebar component', () => {
     it('renders SidebarMenu with menu items', () => {
       createWrapper();
       expect(findSidebarMenu().props('items')).toBe(mockSidebarData.current_menu_items);
-    });
-
-    it('renders SidebarPortalTarget', () => {
-      createWrapper();
-      expect(findSidebarPortalTarget().exists()).toBe(true);
     });
 
     describe('settings disclosure portal target', () => {
@@ -457,7 +450,6 @@ describe('SuperSidebar component', () => {
         stubs: {
           UserBar: true,
           HelpCenter: true,
-          SidebarPortalTarget: true,
           IconOnlyToggle: true,
           TrialWidget: true,
           PinnedSection: true,

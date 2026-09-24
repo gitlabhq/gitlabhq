@@ -36707,6 +36707,7 @@ Fields:
 | <a id="artifactregistry-createdat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.4. Status: Experiment. Timestamp the registry was provisioned, presented as the active-since date. `null` when the status is `unknown`. |
 | <a id="artifactregistry-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.5. Status: Experiment. Artifact Registry's UUID for the namespace mapped to the organization. Neither a GitLab namespace nor a GitLab global ID. Pass it as `resourceId` to the Artifact Registry role mutations. Present even when the status is `unknown`. |
 | <a id="artifactregistry-slug"></a>`slug` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Registry slug, Artifact Registry's immutable identifier for the namespace. `null` when the status is `unknown`. |
+| <a id="artifactregistry-statistics"></a>`statistics` {{< icon name="warning-solid" >}} | [`ArtifactRegistryNamespaceStatistics`](#artifactregistrynamespacestatistics) | Introduced in GitLab 19.5. Status: Experiment. Namespace-wide Artifact Registry statistics, read as the current user when this field is selected. `null` on any unresolved read, so an unavailable service or a drifted slug omits the figures rather than raising. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this field is not reached. |
 | <a id="artifactregistry-status"></a>`status` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Status Artifact Registry returned, one of `active`, `suspended`, `disabled`, `blocked`, `deleted`, or `purged`, or `unknown` when the mapped namespace did not resolve. Deliberately a string rather than an enum so a status Artifact Registry adds within its API version reaches the response instead of raising. |
 | <a id="artifactregistry-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`ArtifactRegistryNamespacePermissions!`](#artifactregistrynamespacepermissions) | Introduced in GitLab 19.5. Status: Experiment. Permissions Artifact Registry grants the current user on the namespace, read from the namespace details as the user when this field is selected. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. The parent field returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
 
@@ -36933,6 +36934,17 @@ Fields:
 | <a id="artifactregistrynamespacepermissions-readrepository"></a>`readRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can read repositories of the namespace and their metadata. |
 | <a id="artifactregistrynamespacepermissions-updaterepository"></a>`updateRepository` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change the settings of the namespace's repositories. |
 | <a id="artifactregistrynamespacepermissions-updaterepositoryupstream"></a>`updateRepositoryUpstream` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the user can change an upstream of the namespace's repositories. |
+
+### `ArtifactRegistryNamespaceStatistics`
+
+Namespace-wide statistics for an Artifact Registry.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynamespacestatistics-deduplicatedsizebytes"></a>`deduplicatedSizeBytes` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.5. Status: Experiment. Namespace's storage footprint in bytes, counting each distinct blob once. |
+| <a id="artifactregistrynamespacestatistics-repositoriescount"></a>`repositoriesCount` {{< icon name="warning-solid" >}} | [`BigInt`](#bigint) | Introduced in GitLab 19.5. Status: Experiment. Number of active repositories in the namespace, every format and kind. |
 
 ### `ArtifactRegistryNpmDistTag`
 

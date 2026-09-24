@@ -594,6 +594,9 @@ Example of response
 
 Retries failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
 
+If you exceed the [pipeline retry rate limits](../administration/cicd/limits.md#pipeline-retry-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code.
+
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry
 ```

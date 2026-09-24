@@ -249,10 +249,10 @@ export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 
 export const WORK_ITEM_DETAIL_PANEL = 'work-item-detail';
-export const AGENT_PLAN_PANEL = 'agent-plan';
+export const WORKPLAN_PANEL = 'workplan';
 export const DECISION_LOG_PANEL = 'decision-log';
 // Every value `show` can hold that is a panel key rather than an encoded child reference.
-export const CONTEXTUAL_PANEL_KEYS = [WORK_ITEM_DETAIL_PANEL, AGENT_PLAN_PANEL, DECISION_LOG_PANEL];
+export const CONTEXTUAL_PANEL_KEYS = [WORK_ITEM_DETAIL_PANEL, WORKPLAN_PANEL, DECISION_LOG_PANEL];
 export const ROUTES = {
   index: 'planningView',
   workItem: 'workItem',

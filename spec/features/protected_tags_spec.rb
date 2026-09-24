@@ -5,7 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_code_management do
   include ProtectedTagHelpers
 
-  let(:project) { create(:project, :repository) }
+  # `ProtectedRef` declares `belongs_to :project, touch: true`, so creating a protected
+  # tag writes `project.updated_at` and the project cannot be frozen.
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+
   let(:user) { project.first_owner }
   let(:commit) { create(:commit, project: project) }
 
@@ -27,16 +30,21 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
       expect(ProtectedTag.last.name).to eq('some-tag')
     end
 
-    it "displays the last commit on the matching tag if it exists" do
-      project.repository.add_tag(user, 'some-tag', commit.id)
+    context 'when the tag already exists in the repository' do
+      # Adding a tag mutates the repository, so this context needs its own project.
+      let(:project) { create(:project, :repository) }
 
-      visit project_protected_tags_path(project)
-      click_button('Add tag')
-      set_protected_tag_name('some-tag')
-      set_allowed_to('create')
-      click_on_protect
+      it "displays the last commit on the matching tag" do
+        project.repository.add_tag(user, 'some-tag', commit.id)
 
-      within(".protected-tags-list") { expect(page).to have_content(commit.id[0..7]) }
+        visit project_protected_tags_path(project)
+        click_button('Add tag')
+        set_protected_tag_name('some-tag')
+        set_allowed_to('create')
+        click_on_protect
+
+        within(".protected-tags-list") { expect(page).to have_content(commit.id[0..7]) }
+      end
     end
 
     it "displays an error message if the named tag does not exist" do
@@ -64,25 +72,29 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
       expect(ProtectedTag.last.name).to eq('*-stable')
     end
 
-    it "displays all the tags matching the wildcard" do
-      project.repository.add_tag(user, 'production-stable', 'master')
-      project.repository.add_tag(user, 'staging-stable', 'master')
-      project.repository.add_tag(user, 'development', 'master')
+    context 'when matching tags exist in the repository' do
+      let(:project) { create(:project, :repository) }
 
-      visit project_protected_tags_path(project)
+      it "displays all the tags matching the wildcard" do
+        project.repository.add_tag(user, 'production-stable', 'master')
+        project.repository.add_tag(user, 'staging-stable', 'master')
+        project.repository.add_tag(user, 'development', 'master')
 
-      click_button('Add tag')
-      set_protected_tag_name('*-stable')
-      set_allowed_to('create')
-      click_on_protect
+        visit project_protected_tags_path(project)
 
-      visit project_protected_tags_path(project)
-      click_on "2 matching tags"
+        click_button('Add tag')
+        set_protected_tag_name('*-stable')
+        set_allowed_to('create')
+        click_on_protect
 
-      within(".protected-tags-list") do
-        expect(page).to have_content("production-stable")
-        expect(page).to have_content("staging-stable")
-        expect(page).not_to have_content("development")
+        visit project_protected_tags_path(project)
+        click_on "2 matching tags"
+
+        within(".protected-tags-list") do
+          expect(page).to have_content("production-stable")
+          expect(page).to have_content("staging-stable")
+          expect(page).not_to have_content("development")
+        end
       end
     end
   end

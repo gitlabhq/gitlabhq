@@ -137,6 +137,15 @@ RSpec.describe Gitlab::FilterEvaluator, feature_category: :duo_agent_platform do
       it { is_expected.to be(true) }
     end
 
+    context 'when a string-keyed value is false' do
+      let(:data) { { 'object_attributes' => { 'default_branch' => false } } }
+      let(:filter) do
+        { 'rules' => [{ 'field' => 'object_attributes.default_branch', 'operator' => 'eq', 'value' => false }] }
+      end
+
+      it { is_expected.to be(true) }
+    end
+
     context 'with match any' do
       let(:filter) do
         {

@@ -410,6 +410,7 @@ Example response:
   "relation_export_batch_size": 50,
   "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
   "pipeline_cancel_limit_per_user_project": 120,
+  "pipeline_retry_limit_per_user_project": 200,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
@@ -490,6 +491,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `pipeline_cancel_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627270) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_pipeline_cancel`. Disabled by default.
 - `pg_ash_sampling_enabled` and `pg_ash_sample_interval_seconds` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250170) in GitLab 19.4.
 - `group_audit_events_api_limit` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255336) in GitLab 19.5.
+- `pipeline_retry_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627233) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_pipeline_retry`. Disabled by default.
 
 {{< /history >}}
 
@@ -761,6 +763,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `pg_ash_sampling_enabled`                | boolean          | no                                   | Whether to sample active session history. Has no effect until pg_ash is installed. Default is `false`. |
 | `pipeline_limit_per_project_user_sha`    | integer          | no                                   | Maximum number of pipeline creation requests per minute per user and commit. Disabled by default. |
 | `pipeline_limit_per_user`                | integer          | no                                   | Maximum number of pipeline creation requests per minute per user. |
+| `pipeline_retry_limit_per_user_project`  | integer          | no                                   | [Pipeline retry rate limits](../administration/cicd/limits.md#pipeline-retry-rate-limits). Default: `200`. |
 | `ci_lint_limit_per_user`                 | integer          | no                                   | Maximum number of CI Lint requests per minute per user. Disabled by default. |
 | `gitpod_enabled`                         | boolean          | no                                   | (**If enabled, requires**: `gitpod_url`) Enable [Ona integration](../integration/gitpod.md). Default is `false`. |
 | `gitpod_url`                             | string           | required by: `gitpod_enabled`        | The Ona instance URL for integration. |

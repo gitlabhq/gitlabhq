@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseDiagnosticsFind
   describe 'the check option' do
     it 'rejects a check that does not exist' do
       expect { metric(check: 'not_a_check', finding_code: 'autovacuum_disabled') }
-        .to raise_error(ArgumentError, "option 'check' must be one of: autovacuum_settings, search_path")
+        .to raise_error(ArgumentError, "option 'check' must be one of: autovacuum_settings, search_path, timeouts")
     end
   end
 
@@ -133,6 +133,37 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseDiagnosticsFind
 
       it 'has one definition per code the check emits' do
         expect(defined_finding_codes('search_path')).to match_array(emitted_finding_codes('search_path'))
+      end
+    end
+
+    context 'for timeouts' do
+      # No single pair of values trips all three heuristics: the first two are
+      # alternatives for the session value, and the third needs a session value of
+      # its own, so the codes are collected over one run per case.
+      let(:cases) do
+        [
+          { setting: '0', reset_val: '0' },
+          { setting: '200000', reset_val: '0' }
+        ]
+      end
+
+      before do
+        allow(connection).to receive(:quote) { |value| "'#{value}'" }
+      end
+
+      def stub_setting(setting:, reset_val:)
+        row = { 'name' => 'statement_timeout', 'setting' => setting, 'reset_val' => reset_val }
+
+        allow(connection).to receive(:select_all) { |sql| sql.include?('pg_settings') ? [row] : [] }
+      end
+
+      it 'has one definition per code the check emits' do
+        emitted = cases.flat_map do |values|
+          stub_setting(**values)
+          emitted_finding_codes('timeouts')
+        end
+
+        expect(defined_finding_codes('timeouts')).to match_array(emitted)
       end
     end
   end

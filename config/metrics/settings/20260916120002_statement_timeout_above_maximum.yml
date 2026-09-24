@@ -1,0 +1,22 @@
+---
+key_path: settings.database.statement_timeout_above_maximum
+description: Whether statement_timeout for GitLab's own connection exceeds 60 seconds, holding a slow query's connection longer than recommended.
+product_group: database_health
+product_categories:
+- database
+value_type: boolean
+status: active
+milestone: "19.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255789
+time_frame: none
+data_source: system
+data_category: optional
+instrumentation_class: DatabaseDiagnosticsFindingMetric
+options:
+  check: timeouts
+  finding_code: statement_timeout_above_maximum
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

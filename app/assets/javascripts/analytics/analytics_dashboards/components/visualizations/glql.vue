@@ -67,6 +67,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    filters: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   emits: ['set-actions', 'reload'],
   data() {
@@ -111,7 +116,20 @@ export default {
     // `retryCount` is part of the key because a retry re-runs the same query: nothing else
     // in the key changes, so only a remount forces re-execution.
     resolverKey() {
-      return `${this.retryCount}|${this.isProject}|${this.namespace}|${this.data}`;
+      return `${this.retryCount}|${this.isProject}|${this.namespace}|${this.data}|${JSON.stringify(this.bindings)}`;
+    },
+    bindings() {
+      const { groups = [], projects = [] } = this.filters;
+
+      return [
+        ['group', groups],
+        ['project', projects],
+      ]
+        .filter(([, paths]) => paths.length)
+        .map(([field, paths]) => ({
+          target: { kind: 'filter', field },
+          value: { kind: 'list', values: paths },
+        }));
     },
     // Null, not an empty object, so the resolver falls back to deriving the namespace from the URL.
     scope() {
@@ -127,6 +145,12 @@ export default {
     // Also clears the empty and error states, so the resolver remounts under the new key.
     scope() {
       this.resetState();
+    },
+    // The filters prop also carries the date range, so bindings can get a new array
+    // reference even when the groups/projects haven't changed. Only reset when the
+    // content actually changes, matching the resolver's key, or we'd wipe loaded results.
+    bindings(newValue, oldValue) {
+      if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) this.resetState();
     },
   },
   methods: {
@@ -226,6 +250,7 @@ export default {
       :comparison="comparison"
       :scope="scope"
       :queue="$options.EXECUTION_QUEUE_DASHBOARD"
+      :bindings="bindings"
       tracking-event-name="render_analytics_dashboard_glql_panel"
       @change="handleResolverChange"
     />

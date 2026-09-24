@@ -25,6 +25,7 @@ module Gitlab
       ["#{result.stdout}#{result.stderr}", status]
     end
 
+    # Returns a Process::Status. exitstatus is nil when a signal killed the process.
     def popen_with_streaming(cmd, path = nil, vars = {}, &block)
       vars, options = prepare_popen_command(cmd, path, vars)
 
@@ -40,7 +41,7 @@ module Gitlab
         stdout_thread.join
         stderr_thread.join
 
-        cmd_status = wait_thr.value&.exitstatus || wait_thr.value.to_i
+        cmd_status = wait_thr.value
       end
 
       cmd_status
