@@ -398,6 +398,9 @@ describe('ScopePicker', () => {
 
   const findSelectedPaths = () => findListbox().props('selected');
 
+  // Multi-select picks only reach the consumer once the listbox closes.
+  const hideListbox = () => findListbox().vm.$emit('hidden');
+
   const findSlotsLeft = () => wrapper.findByTestId('scope-picker-slots-left');
 
   // The listbox owns the search input, so typing arrives as an event. The handler is debounced.
@@ -526,6 +529,7 @@ describe('ScopePicker', () => {
 
       it('emits the selected group', async () => {
         await toggleSelected(mockCapsuleCorp);
+        await hideListbox();
 
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockCapsuleCorp)]]]);
       });
@@ -830,7 +834,9 @@ describe('ScopePicker', () => {
       expect(findListbox().props('toggleText')).toBe('2 items selected');
     });
 
-    it('emits the whole selection, not just what changed', () => {
+    it('emits the whole selection, not just what changed', async () => {
+      await hideListbox();
+
       expect(wrapper.emitted('change').at(-1)).toEqual([
         [asNamespace(mockCapsuleCorp), asNamespace(mockAcme)],
       ]);
@@ -868,13 +874,62 @@ describe('ScopePicker', () => {
         await selectAll(mockCapsuleProjects[0], mockCapsuleCorp);
       });
 
-      it('drops them, holding the group alone', () => {
+      it('drops them, holding the group alone', async () => {
+        await hideListbox();
+
         expect(wrapper.emitted('change').at(-1)).toEqual([[asNamespace(mockCapsuleCorp)]]);
       });
 
       it('leaves one slot spent, not two', () => {
         expect(findSlotsLeft().text()).toBe('19 of 20 slots left');
       });
+    });
+  });
+
+  describe('while the listbox is open', () => {
+    beforeEach(async () => {
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('holds picks back rather than emitting each one', async () => {
+      await selectAll(mockCapsuleCorp, mockAcme);
+
+      expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath, mockAcme.fullPath]);
+      expect(wrapper.emitted('change')).toBeUndefined();
+    });
+
+    it('emits the whole selection once when it closes', async () => {
+      await selectAll(mockCapsuleCorp, mockAcme);
+      await hideListbox();
+
+      expect(wrapper.emitted('change')).toEqual([
+        [[asNamespace(mockCapsuleCorp), asNamespace(mockAcme)]],
+      ]);
+    });
+
+    it('emits nothing on close when the picks cancel out', async () => {
+      await selectAll(mockCapsuleCorp, mockCapsuleCorp);
+      await hideListbox();
+
+      expect(wrapper.emitted('change')).toBeUndefined();
+    });
+
+    it('emits nothing when it closes again without further changes', async () => {
+      await toggleSelected(mockCapsuleCorp);
+      await hideListbox();
+      await hideListbox();
+
+      expect(wrapper.emitted('change')).toHaveLength(1);
+    });
+
+    it('emits an emptied selection when everything is unticked', async () => {
+      await toggleSelected(mockCapsuleCorp);
+      await hideListbox();
+      await toggleSelected(mockCapsuleCorp);
+      await hideListbox();
+
+      expect(wrapper.emitted('change').at(-1)).toEqual([[]]);
     });
   });
 
@@ -928,6 +983,12 @@ describe('ScopePicker', () => {
 
       expect(findSelectedPaths()).toEqual([mockAcme.fullPath]);
       expect(wrapper.emitted('change').at(-1)).toEqual([[asNamespace(mockAcme)]]);
+    });
+
+    it('emits each pick straight away, without waiting for the listbox to close', async () => {
+      await toggleSelected(mockCapsuleCorp);
+
+      expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockCapsuleCorp)]]]);
     });
 
     it('names the pick on the toggle', async () => {
@@ -1045,6 +1106,7 @@ describe('ScopePicker', () => {
 
       it('selects a result the same way a browsed row is selected', async () => {
         await toggleSelected(mockDeepProject);
+        await hideListbox();
 
         expect(wrapper.emitted('change').at(-1)).toEqual([[asNamespace(mockDeepProject)]]);
       });
@@ -1092,6 +1154,7 @@ describe('ScopePicker', () => {
 
         await search('pajamas');
         await toggleSelected(mockDeepProject);
+        await hideListbox();
         await search('charts');
       });
 
@@ -1643,7 +1706,9 @@ describe('ScopePicker', () => {
         expect(organizationGroupRequestHandler).toHaveBeenCalledTimes(1);
       });
 
-      it('emits the cleared selection', () => {
+      it('emits the cleared selection', async () => {
+        await hideListbox();
+
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockAcme)]], [[]]]);
       });
     });

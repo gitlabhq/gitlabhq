@@ -36,12 +36,14 @@ class Import::GithubController < Import::BaseController
       provider_unauthorized
     else
       session[access_token_key] = get_token(callback_params[:code])
+      session[oauth_token_key] = true
       redirect_to status_import_url
     end
   end
 
   def personal_access_token
     session[access_token_key] = personal_access_token_param&.strip
+    session.delete(oauth_token_key)
     redirect_to status_import_url
   end
 
@@ -181,7 +183,13 @@ class Import::GithubController < Import::BaseController
   end
 
   def import_params
-    params.permit(permitted_import_params)
+    permitted_params = params.permit(permitted_import_params)
+
+    unless oauth_token? && ::Feature.enabled?(:github_continuous_import, current_user)
+      permitted_params[:optional_stages]&.delete(:continuous_sync)
+    end
+
+    permitted_params
   end
 
   def permitted_import_params
@@ -290,6 +298,15 @@ class Import::GithubController < Import::BaseController
   def access_token_key
     :"#{provider_name}_access_token"
   end
+
+  def oauth_token_key
+    :"#{provider_name}_oauth_token"
+  end
+
+  def oauth_token?
+    session[oauth_token_key].present?
+  end
+  helper_method :oauth_token?
 
   def access_params
     { github_access_token: session[access_token_key] }

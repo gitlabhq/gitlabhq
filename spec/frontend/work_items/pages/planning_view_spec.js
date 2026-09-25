@@ -178,6 +178,15 @@ jest.mock('ee_else_ce/work_items/list/utils', () => {
     getFilterTokens: jest.fn(actual.getFilterTokens),
   };
 });
+// The board view mode is EE-only, but most of the board behaviour below is shared, so this
+// defaults to true (overridden per test) rather than testing every case under FOSS_ONLY too.
+let mockHasBoardViewMode = true;
+jest.mock('ee_else_ce/work_items/view_modes', () => ({
+  ...jest.requireActual('ee_else_ce/work_items/view_modes'),
+  get hasBoardViewMode() {
+    return mockHasBoardViewMode;
+  },
+}));
 
 useLocalStorageSpy();
 
@@ -435,6 +444,7 @@ describe('planning-view', () => {
       jest.requireActual('~/lib/utils/url_utility').getParameterByName(...args),
     );
     resetPlanningViewState();
+    mockHasBoardViewMode = true;
   });
 
   it('passes correct queryVariables to list-view', async () => {
@@ -2138,12 +2148,14 @@ describe('planning-view', () => {
       });
 
       it.each`
-        message                      | planningViewBoards | listViewExists | boardViewExists
-        ${'falls back to list view'} | ${false}           | ${true}        | ${false}
-        ${'restores board view'}     | ${true}            | ${false}       | ${true}
+        message                      | hasBoardViewMode | planningViewBoards | listViewExists | boardViewExists
+        ${'falls back to list view'} | ${false}         | ${true}            | ${true}        | ${false}
+        ${'falls back to list view'} | ${true}          | ${false}           | ${true}        | ${false}
+        ${'restores board view'}     | ${true}          | ${true}            | ${false}       | ${true}
       `(
-        '$message from the unsaved draft when planningViewBoards is $planningViewBoards',
-        async ({ planningViewBoards, listViewExists, boardViewExists }) => {
+        '$message from the unsaved draft when hasBoardViewMode is $hasBoardViewMode and planningViewBoards is $planningViewBoards',
+        async ({ hasBoardViewMode, planningViewBoards, listViewExists, boardViewExists }) => {
+          mockHasBoardViewMode = hasBoardViewMode;
           localStorage.setItem(
             'full/path-saved-view-3',
             JSON.stringify({

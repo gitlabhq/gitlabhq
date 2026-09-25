@@ -46,6 +46,199 @@ GQL follows openCypher 9 syntax.
 The flag targets individual users.
 REST and MCP callers cannot override the mode through parameters or headers.
 
+## Skills
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1063) in GitLab 19.5.
+
+{{< /history >}}
+
+Skill endpoints require authentication with the `read_api` scope.
+They don't require Orbit entitlement, so you can retrieve setup and troubleshooting guidance before you
+configure Orbit access.
+An older knowledge graph service without skill RPCs returns `404 Not Found` with the message
+`Skills are not available`.
+
+### List deployed skills
+
+Lists the Orbit skills deployed with the connected knowledge graph service.
+
+```plaintext
+GET /orbit/skills
+```
+
+This request takes no attributes.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type | Description |
+| --------- | ---- | ----------- |
+| `server_version` | string | Version of the deployed knowledge graph service. |
+| `skills` | array | Deployed skills. |
+| `skills[].compatibility` | string | Environment requirements from the skill manifest. |
+| `skills[].description` | string | Description from the skill manifest. |
+| `skills[].name` | string | Skill name. |
+| `skills[].version` | string | Skill version from the manifest. |
+
+The response includes an `ETag` header derived from the sorted skill names and versions,
+and a `Cache-Control` header set to `private, max-age=0, must-revalidate`.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/orbit/skills"
+```
+
+Example response:
+
+```json
+{
+  "skills": [
+    {
+      "name": "orbit",
+      "version": "0.29.0",
+      "description": "Use the glab orbit CLI for knowledge graph queries.",
+      "compatibility": "Requires Orbit CLI"
+    }
+  ],
+  "server_version": "0.31.0"
+}
+```
+
+### Retrieve a deployed skill
+
+Retrieves a complete deployed Orbit skill tree.
+
+```plaintext
+GET /orbit/skills/:name
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | Yes | Skill name. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type | Description |
+| --------- | ---- | ----------- |
+| `compatibility` | string | Environment requirements from the skill manifest. |
+| `files` | array | Files in the skill tree. |
+| `files[].content` | string | UTF-8 file content. |
+| `files[].path` | string | Normalized path relative to the skill root. |
+| `files[].sha256` | string | SHA-256 hash of the file content. |
+| `name` | string | Skill name. |
+| `server_version` | string | Version of the deployed knowledge graph service. |
+| `version` | string | Skill version. |
+
+The response includes these headers:
+
+| Header | Description |
+| ------ | ----------- |
+| `Cache-Control` | Set to `private, max-age=0, must-revalidate`. |
+| `ETag` | Set to `"<version>"`. |
+
+Send the current `ETag` value in the `If-None-Match` request header to revalidate a cached skill tree.
+A matching value returns `304 Not Modified` with no response body.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/orbit/skills/orbit"
+```
+
+Example response:
+
+```json
+{
+  "name": "orbit",
+  "version": "0.29.0",
+  "compatibility": "Requires Orbit CLI",
+  "server_version": "0.31.0",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "sha256": "93f2655e8772217e4aa8c8fbe3ad0c1f36b2bdf4a63f9f6e2f6d89a3b01da9f8",
+      "content": "# Orbit skill\n"
+    }
+  ]
+}
+```
+
+If the skill doesn't exist, returns `404 Not Found` with the known skill names in the error message.
+
+### Check deployed skill metadata
+
+Checks the identity and cache headers of a deployed skill without retrieving its files.
+
+```plaintext
+HEAD /orbit/skills/:name
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | Yes | Skill name. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes), the same `ETag` and `Cache-Control`
+headers as `GET /orbit/skills/:name`, and no response body.
+
+Example request:
+
+```shell
+curl --head \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/orbit/skills/orbit"
+```
+
+### Retrieve a deployed skill file
+
+Retrieves one file from a deployed skill as raw UTF-8 text. Use this route to fetch
+`SKILL.md` directly or follow relative links to files in the same skill tree.
+
+```plaintext
+GET /orbit/skills/:name/*path
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | Yes | Deployed skill name. |
+| `path` | string | Yes | File path relative to the skill root, for example `references/usage.md`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the file content,
+not a JSON object. Markdown files (`.md`) have the content type `text/markdown; charset=utf-8`.
+Other files have the content type `text/plain; charset=utf-8`; no skill file is served as HTML.
+Only exact paths listed in the skill manifest are available. Unknown paths return `404 Not Found`.
+Malformed paths can return `400 Bad Request`. API error responses are JSON, rather than raw file content;
+requests blocked by path traversal middleware can return a plain-text error.
+
+The response includes a strong `ETag` from the file's SHA-256 and a `Cache-Control` header
+set to `private, max-age=0, must-revalidate`. Send the `ETag` in `If-None-Match` to receive
+`304 Not Modified` when the file is unchanged. `HEAD` returns the same headers without a body.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/orbit/skills/orbit/SKILL.md"
+```
+
+Example response:
+
+```markdown
+# Orbit skill
+```
+
 ## Named queries
 
 Prefer `POST /api/v4/orbit/query/:name` over `POST /api/v4/orbit/query` for

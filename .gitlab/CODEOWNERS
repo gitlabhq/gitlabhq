@@ -2081,6 +2081,15 @@ ee/lib/gitlab/llm/embeddings/
 # Fulfillment::Seat Management
 [Seat Management] @gitlab-org/fulfillment/seat-management/engineers
 /ee/app/workers/authn/
+# These files produce gitlab_subscriptions.seats_in_use on .com, which CustomersDot bills on as a
+# monthly high watermark minus reserved seats (Flex seat overage, charged via Zuora). That makes it
+# SOX in scope, so Seat Management approval here is the change control over that billing data flow.
+/ee/lib/ee/api/entities/namespace.rb
+/ee/lib/gitlab_subscriptions/api/internal/namespaces.rb
+/ee/app/finders/namespaces/billed_users_finder.rb
+/ee/app/workers/gitlab_subscriptions/refresh_seats_worker.rb
+/ee/app/models/concerns/gitlab_subscriptions/billing/group.rb
+/ee/app/models/concerns/gitlab_subscriptions/billing/gitlab_subscription.rb
 # END Fulfillment::Seat Management
 
 ^[Foundations::Personal Productivity] @gitlab-org/foundations/personal-productivity/engineering

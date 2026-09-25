@@ -151,7 +151,7 @@ export default {
       return `@${this.user?.username}`;
     },
     cssClasses() {
-      const classList = ['user-popover', 'gl-w-34'];
+      const classList = ['user-popover', 'gl-w-34', 'gl-overflow-clip'];
 
       if (this.userCannotMerge) {
         classList.push('user-popover-cannot-merge');
@@ -242,11 +242,11 @@ export default {
         data-testid="cannot-merge"
       >
         <gl-icon name="warning-solid" class="gl-mr-2" variant="warning" />
-        <span class="gl-font-normal">{{ __('Cannot merge') }}</span>
+        <span class="gl-font-semibold">{{ __('Cannot merge') }}</span>
       </div>
       <div
         v-if="recommendationReason"
-        class="gl-flex gl-items-start gl-pb-3 gl-font-normal"
+        class="gl-flex gl-items-start gl-pb-3 gl-font-semibold"
         data-testid="user-popover-recommendation-reason"
       >
         <gl-icon

@@ -23,7 +23,7 @@ import {
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
-import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import WorkItemDatesAttribute from '~/work_items/components/shared/work_item_dates_attribute.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 import { BOARD_CARD_NO_DRAG_CLASS } from '../constants';
@@ -43,7 +43,7 @@ export default {
     IssuableAssignees,
     WorkItemTypeIcon,
     IssueMilestone,
-    IssueDueDate,
+    WorkItemDatesAttribute,
     WorkItemRelationshipIcons,
     WorkItemParentMetadata,
     IssueWeight: defineAsyncComponent(
@@ -129,6 +129,9 @@ export default {
     milestone() {
       return findMilestoneWidget(this.item)?.milestone ?? null;
     },
+    startDate() {
+      return findStartAndDueDateWidget(this.item)?.startDate ?? null;
+    },
     dueDate() {
       return findStartAndDueDateWidget(this.item)?.dueDate ?? null;
     },
@@ -175,7 +178,7 @@ export default {
       return Boolean(this.iteration) && !this.isMetadataHidden(METADATA_KEYS.ITERATION);
     },
     showDates() {
-      return Boolean(this.dueDate) && !this.isMetadataHidden(METADATA_KEYS.DATES);
+      return Boolean(this.startDate || this.dueDate) && !this.isMetadataHidden(METADATA_KEYS.DATES);
     },
     showHealthStatus() {
       return Boolean(this.healthStatus) && !this.isMetadataHidden(METADATA_KEYS.HEALTH);
@@ -291,11 +294,15 @@ export default {
           :iteration="iteration"
           :namespace-path="rootPageFullPath"
         />
-        <issue-due-date
+        <work-item-dates-attribute
           v-if="showDates"
-          data-testid="work-item-due-date"
-          :date="dueDate"
-          :closed="Boolean(item.closedAt)"
+          anchor-id="work-item-dates"
+          wrapper-component="span"
+          wrapper-component-class="gl-text-subtle"
+          :start-date="startDate"
+          :due-date="dueDate"
+          :is-closed="Boolean(item.closedAt)"
+          :icon-size="12"
         />
       </div>
       <div v-if="showLabels" class="gl-flex gl-flex-wrap gl-gap-2">

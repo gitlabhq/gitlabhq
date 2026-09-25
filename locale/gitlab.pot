@@ -7552,6 +7552,9 @@ msgstr ""
 msgid "AdminUsers|No access."
 msgstr ""
 
+msgid "AdminUsers|Organization admin"
+msgstr ""
+
 msgid "AdminUsers|Owned groups will be left"
 msgstr ""
 
@@ -34086,6 +34089,9 @@ msgstr ""
 msgid "Duo|Source project"
 msgstr ""
 
+msgid "Duplicate"
+msgstr ""
+
 msgid "Duplicate entries found for compliance controls for the requirement."
 msgstr ""
 
@@ -39624,6 +39630,12 @@ msgstr ""
 msgid "GitHubImporter|Import direct repository collaborators who are not outside collaborators. Imported collaborators who aren't members of the group you imported the project into consume seats on your GitLab instance."
 msgstr ""
 
+msgid "GitHubImporter|Keep the imported project up to date with changes from GitHub. Requires GitLab Premium or Ultimate."
+msgstr ""
+
+msgid "GitHubImporter|Keep this project updated from GitHub"
+msgstr ""
+
 msgid "GitLab"
 msgstr ""
 
@@ -40147,6 +40159,9 @@ msgid "GithubImport|Learn more about %{linkStart}Gitea personal access tokens%{l
 msgstr ""
 
 msgid "GithubImport|Namespace or group to import repository into does not exist."
+msgstr ""
+
+msgid "GithubImport|Not available with updates on. Choose a Premium or Ultimate group."
 msgstr ""
 
 msgid "GithubImport|Target namespace is required"
@@ -58667,9 +58682,6 @@ msgstr ""
 msgid "Organization|Accessible without any authentication."
 msgstr ""
 
-msgid "Organization|Admin"
-msgstr ""
-
 msgid "Organization|After confirmation, you cannot:"
 msgstr ""
 
@@ -58734,6 +58746,9 @@ msgid "Organization|Are you sure you want to leave \"%{name}\"?"
 msgstr ""
 
 msgid "Organization|Assign top-level groups"
+msgstr ""
+
+msgid "Organization|Back to organization"
 msgstr ""
 
 msgid "Organization|Cancel"
@@ -58999,12 +59014,6 @@ msgid "Organization|Unconfirmed"
 msgstr ""
 
 msgid "Organization|Update your organization name, description, and avatar. %{linkStart}Learn more about organizations%{linkEnd}."
-msgstr ""
-
-msgid "Organization|User"
-msgstr ""
-
-msgid "Organization|User type"
 msgstr ""
 
 msgid "Organization|User was successfully added to the organization."
@@ -69215,85 +69224,121 @@ msgstr ""
 msgid "RightSidebar|Issue email"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Critical"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Critical with high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with low confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Critical with low confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with medium confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Critical with medium confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with very high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Critical with very high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Evaluating…"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Evaluating…"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} High"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} High with high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with low confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} High with low confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with medium confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} High with medium confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with very high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} High with very high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Low"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Low with high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with low confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Low with low confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with medium confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Low with medium confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with very high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Low with very high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Medium"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Medium with high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with low confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Medium with low confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with medium confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Medium with medium confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with very high confidence"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Medium with very high confidence"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Not available"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Not available"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Pending"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Pending"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Queued"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Queued"
 msgstr ""
 
-msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Unavailable"
+msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Unavailable"
+msgstr ""
+
+msgid "RiskAssessment|Assessing risk"
+msgstr ""
+
+msgid "RiskAssessment|Based on a partial picture: %{missing} could not be measured."
+msgstr ""
+
+msgid "RiskAssessment|Critical risk"
+msgstr ""
+
+msgid "RiskAssessment|Failed to load the risk assessment"
+msgstr ""
+
+msgid "RiskAssessment|High risk"
+msgstr ""
+
+msgid "RiskAssessment|Low risk"
+msgstr ""
+
+msgid "RiskAssessment|Medium risk"
+msgstr ""
+
+msgid "RiskAssessment|New commits were pushed after this assessment. It reflects an earlier version of the changes."
+msgstr ""
+
+msgid "RiskAssessment|Rationale"
+msgstr ""
+
+msgid "RiskAssessment|Risk level not available"
+msgstr ""
+
+msgid "RiskAssessment|Risk level: %{level}"
+msgstr ""
+
+msgid "RiskAssessment|Updating…"
+msgstr ""
+
+msgid "RiskAssessment|What contributed to this score"
 msgstr ""
 
 msgid "RiskClassification|Agent-authored commits"
-msgstr ""
-
-msgid "RiskClassification|Assessing risk"
 msgstr ""
 
 msgid "RiskClassification|Authentication, session handling, or identity verification"
@@ -69306,9 +69351,6 @@ msgid "RiskClassification|Author experience"
 msgstr ""
 
 msgid "RiskClassification|Authorization, access control, or tenant isolation"
-msgstr ""
-
-msgid "RiskClassification|Based on a partial picture: %{missing} could not be measured."
 msgstr ""
 
 msgid "RiskClassification|Change shape"
@@ -69329,9 +69371,6 @@ msgstr ""
 msgid "RiskClassification|Concentration of the change across files"
 msgstr ""
 
-msgid "RiskClassification|Critical risk"
-msgstr ""
-
 msgid "RiskClassification|Cryptography, key management, or credential handling"
 msgstr ""
 
@@ -69347,28 +69386,13 @@ msgstr ""
 msgid "RiskClassification|Destructive database migration"
 msgstr ""
 
-msgid "RiskClassification|Failed to load the risk assessment"
-msgstr ""
-
 msgid "RiskClassification|Feature flag rollout"
-msgstr ""
-
-msgid "RiskClassification|High risk"
 msgstr ""
 
 msgid "RiskClassification|How new the author is to this project"
 msgstr ""
 
-msgid "RiskClassification|Low risk"
-msgstr ""
-
 msgid "RiskClassification|Manifest file changed directly"
-msgstr ""
-
-msgid "RiskClassification|Medium risk"
-msgstr ""
-
-msgid "RiskClassification|New commits were pushed after this assessment. It reflects an earlier version of the changes."
 msgstr ""
 
 msgid "RiskClassification|Number of dependency ecosystems touched"
@@ -69386,9 +69410,6 @@ msgstr ""
 msgid "RiskClassification|Public API contract, REST or GraphQL"
 msgstr ""
 
-msgid "RiskClassification|Rationale"
-msgstr ""
-
 msgid "RiskClassification|Reversibility"
 msgstr ""
 
@@ -69399,12 +69420,6 @@ msgid "RiskClassification|Reverts a previously merged change"
 msgstr ""
 
 msgid "RiskClassification|Risk assessment cannot be refreshed while %{status}."
-msgstr ""
-
-msgid "RiskClassification|Risk level not available"
-msgstr ""
-
-msgid "RiskClassification|Risk level: %{level}"
 msgstr ""
 
 msgid "RiskClassification|Size of change"
@@ -69423,12 +69438,6 @@ msgid "RiskClassification|Test evidence"
 msgstr ""
 
 msgid "RiskClassification|Uncovered changed lines"
-msgstr ""
-
-msgid "RiskClassification|Updating…"
-msgstr ""
-
-msgid "RiskClassification|What contributed to this score"
 msgstr ""
 
 msgid "RiskClassification|diff_sha %{diff_sha} does not match any known revision of this merge request."
@@ -71309,6 +71318,12 @@ msgstr ""
 msgid "ScanExecutionPolicy|selected automatically"
 msgstr ""
 
+msgid "ScanProfiles|%{name} (copy %{counter})"
+msgstr ""
+
+msgid "ScanProfiles|%{name} (copy)"
+msgstr ""
+
 msgid "ScanProfiles|%{scanTypeName} profile"
 msgstr ""
 
@@ -71316,6 +71331,12 @@ msgid "ScanProfiles|A scan is automatically run each time new commits are pushed
 msgstr ""
 
 msgid "ScanProfiles|A scan is automatically run when changes are merged or pushed to the default branch. All vulnerabilities found are reported, providing a complete picture of your default branch's security posture."
+msgstr ""
+
+msgid "ScanProfiles|Add %{scanner} variable"
+msgstr ""
+
+msgid "ScanProfiles|Add variable"
 msgstr ""
 
 msgid "ScanProfiles|Advanced configuration"
@@ -71372,6 +71393,9 @@ msgstr ""
 msgid "ScanProfiles|Differs by trigger"
 msgstr ""
 
+msgid "ScanProfiles|Enable a trigger that supports configuration to add a variable."
+msgstr ""
+
 msgid "ScanProfiles|Full repository"
 msgstr ""
 
@@ -71400,6 +71424,9 @@ msgid "ScanProfiles|New vulnerabilities only"
 msgstr ""
 
 msgid "ScanProfiles|No profiles match your search."
+msgstr ""
+
+msgid "ScanProfiles|No variables found."
 msgstr ""
 
 msgid "ScanProfiles|None of this profile's triggers use analyzer settings, so there is nothing to configure."
@@ -71441,6 +71468,9 @@ msgstr ""
 msgid "ScanProfiles|Secret push protection"
 msgstr ""
 
+msgid "ScanProfiles|Select a variable"
+msgstr ""
+
 msgid "ScanProfiles|Settings passed to the analyzer that override its default behavior."
 msgstr ""
 
@@ -71460,6 +71490,9 @@ msgid "ScanProfiles|Value"
 msgstr ""
 
 msgid "ScanProfiles|Variable"
+msgstr ""
+
+msgid "ScanProfiles|Variables passed to the analyzer that override its default behavior."
 msgstr ""
 
 msgid "ScanProfiles|View documentation"
@@ -73640,6 +73673,12 @@ msgid "SecurityConfiguration|Define security settings once and reuse them everyw
 msgstr ""
 
 msgid "SecurityConfiguration|Disable profile-based scanning"
+msgstr ""
+
+msgid "SecurityConfiguration|Duplicate %{scannerName} profile"
+msgstr ""
+
+msgid "SecurityConfiguration|Duplicate profile"
 msgstr ""
 
 msgid "SecurityConfiguration|Edit %{scannerName} profile"

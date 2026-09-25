@@ -2271,6 +2271,94 @@ paths:
           default: raw
         in: query
       x-gitlab-lifecycle: beta
+  "/api/v4/orbit/skills":
+    get:
+      operationId: getApiV4OrbitSkills
+      summary: List deployed Orbit skills
+      description: Lists the Orbit skills deployed with the connected knowledge graph
+        service.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesOrbitSkillCollection"
+        '401':
+          description: Unauthorized
+      x-gitlab-lifecycle: beta
+  "/api/v4/orbit/skills/{name}":
+    get:
+      operationId: getApiV4OrbitSkillsName
+      summary: Retrieve a deployed Orbit skill
+      description: Retrieves a complete deployed Orbit skill tree. HEAD requests retrieve
+        only skill metadata.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesOrbitSkill"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Skill not found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: name
+        required: true
+        description: Deployed skill name
+        schema:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9\\-]*$"
+        in: path
+      x-gitlab-lifecycle: beta
+  "/api/v4/orbit/skills/{name}/{path}":
+    get:
+      operationId: getApiV4OrbitSkillsNamePath
+      summary: Retrieve a deployed Orbit skill file
+      description: Retrieves a UTF-8 file from a deployed Orbit skill as raw text.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+          content:
+            text/markdown:
+              schema:
+                type: string
+            text/plain:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+        '404':
+          description: Skill file not found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: name
+        required: true
+        description: Deployed skill name
+        schema:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9\\-]*$"
+        in: path
+      - name: path
+        required: true
+        description: File path relative to the skill root
+        schema:
+          type: string
+          pattern: "^[^\\/]+(?:\\/[^\\/]+)*$"
+        in: path
+        example: references/usage.md
+      x-gitlab-lifecycle: beta
   "/api/v4/orbit/tools":
     get:
       operationId: getApiV4OrbitTools
@@ -82752,6 +82840,62 @@ components:
           type: string
           format: date-time
           example: '2026-07-22T11:42:00Z'
+    APIEntitiesOrbitSkillSummary:
+      type: object
+      properties:
+        name:
+          type: string
+          example: orbit
+        version:
+          type: string
+          example: 0.29.0
+        compatibility:
+          type: string
+          example: Orbit CLI
+        description:
+          type: string
+          example: Use the glab orbit CLI.
+    APIEntitiesOrbitSkillCollection:
+      type: object
+      properties:
+        skills:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesOrbitSkillSummary"
+        server_version:
+          type: string
+          example: 0.31.0
+    APIEntitiesOrbitSkillFile:
+      type: object
+      properties:
+        path:
+          type: string
+          example: SKILL.md
+        sha256:
+          type: string
+          example: abc123
+        content:
+          type: string
+          example: "# Orbit skill"
+    APIEntitiesOrbitSkill:
+      type: object
+      properties:
+        name:
+          type: string
+          example: orbit
+        version:
+          type: string
+          example: 0.29.0
+        compatibility:
+          type: string
+          example: Orbit CLI
+        server_version:
+          type: string
+          example: 0.31.0
+        files:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesOrbitSkillFile"
     APIEntitiesSecurityVulnerabilityScanningSbomScan:
       type: object
       properties:

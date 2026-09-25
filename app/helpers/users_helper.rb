@@ -127,10 +127,18 @@ module UsersHelper
     end
   end
 
-  def user_badges_in_admin_section(user)
+  def user_badges_in_admin_section(user, authorization_context = nil)
     [].tap do |badges|
       badges << blocked_user_badge(user) if user.blocked?
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin
+
+      if authorization_context&.owner_user_ids&.include?(user.id)
+        badges << {
+          text: s_('AdminUsers|Organization admin'),
+          variant: 'success'
+        }
+      end
+
       badges << { text: s_('AdminUsers|Bot'), variant: 'neutral' } if user.bot?
       badges << { text: s_('AdminUsers|Deactivated'), variant: 'danger' } if user.deactivated?
       badges << { text: s_('AdminUsers|External'), variant: 'neutral' } if user.external?
@@ -211,7 +219,7 @@ module UsersHelper
 
   def has_contact_info?(user)
     contact_fields = %i[bluesky discord linkedin mastodon orcid twitter website_url github]
-    has_contact = contact_fields.any? { |field| user.public_send(field).present? }  # rubocop:disable GitlabSecurity/PublicSend -- fields are controlled, it is safe.
+    has_contact = contact_fields.any? { |field| user.public_send(field).present? } # rubocop:disable GitlabSecurity/PublicSend -- fields are controlled, it is safe.
     has_contact || display_public_email?(user)
   end
 

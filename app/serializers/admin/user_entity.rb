@@ -12,7 +12,7 @@ module Admin
     expose :avatar_url
     expose :note
     expose :badges do |user|
-      user_badges_in_admin_section(user)
+      user_badges_in_admin_section(user, authorization_context)
     end
 
     expose :actions do |user|
@@ -24,6 +24,10 @@ module Admin
     end
 
     private
+
+    def authorization_context
+      options[:authorization_context]
+    end
 
     def current_user
       options[:current_user]

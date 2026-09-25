@@ -24,6 +24,7 @@ export const PANEL_TYPES = {
   GROUP: 'group',
   PROJECT: 'project',
   ORGANIZATION: 'organization',
+  ORGANIZATION_ADMIN: 'organization_admin',
   YOUR_WORK: 'your_work',
 };
 

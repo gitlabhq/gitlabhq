@@ -2365,11 +2365,11 @@ GEM
     vite_rails (3.10.0)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
-    vite_ruby (3.11.0)
+    vite_ruby (3.10.2)
       dry-cli (>= 0.7, < 2)
       logger (~> 1.6)
       mutex_m
-      rack-proxy (>= 0.6.1)
+      rack-proxy (~> 0.6, >= 0.6.1)
       zeitwerk (~> 2.2)
     vmstat (2.3.1)
     warden (1.2.9)
@@ -2813,7 +2813,7 @@ DEPENDENCIES
   version_sorter (~> 2.3)
   view_component (~> 4.12.0)
   vite_rails (~> 3.10.0)
-  vite_ruby (~> 3.11.0)
+  vite_ruby (~> 3.10.1)
   vmstat (~> 2.3.0)
   warning (~> 1.5.0)
   webauthn (~> 3.0)
@@ -3624,7 +3624,7 @@ CHECKSUMS
   version_sorter (2.3.0) sha256=2147f2a1a3804fbb8f60d268b7d7c1ec717e6dd727ffe2c165b4e05e82efe1da
   view_component (4.12.0) sha256=b9a5979d1c43eba2aa21a06a86f661aab3990104855f2909ef7c3779acdcdcb4
   vite_rails (3.10.0) sha256=8c4471554870c043e8d9ff7d379302a01d147ade2cd61476ddf020fed32a107a
-  vite_ruby (3.11.0) sha256=29bc3b11633fc666afa7a5972c6470dfa77acf67d0ab24a0b67fec3fc3119340
+  vite_ruby (3.10.2) sha256=db465451eb180abbdc81f596ba63671d2b2552e2bb7bf3c1f7b79f9d58ca9a86
   vmstat (2.3.1) sha256=5587cb430a54dbfc4a5c29dd01bd6a4031b2ff4c1d387504d74ff246f3b39104
   warden (1.2.9) sha256=46684f885d35a69dbb883deabf85a222c8e427a957804719e143005df7a1efd0
   warning (1.5.0) sha256=0f12c49fea0c06757778eefdcc7771e4fd99308901e3d55c504d87afdd718c53

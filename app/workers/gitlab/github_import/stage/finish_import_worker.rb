@@ -19,9 +19,6 @@ module Gitlab
           project.after_import
 
           report_import_time
-
-          # Placeholder guard for the upcoming continuous import feature (work item 628581).
-          Feature.enabled?(:github_continuous_import, project)
         end
 
         private

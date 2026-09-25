@@ -87,7 +87,7 @@ module SidebarsHelper
       has_multiple_organizations: user.has_multiple_organizations?,
       show_feature_library_shimmer: show_feature_library_shimmer?,
       ai_search_available: feature_library_ai_search_available?(project: project, group: group),
-      manage_organization_link: manage_organization_link(user)
+      manage_organization_link: manage_organization_link(user, panel_type)
     })
   end
 
@@ -198,7 +198,7 @@ module SidebarsHelper
 
   private
 
-  def manage_organization_link(user)
+  def manage_organization_link(user, panel_type)
     # Only surface the link on organization- or group-scoped pages, where the request
     # itself names an Organization. from_request is nil on unscoped pages
     # (e.g. the dashboard), unlike ::Current.organization which always falls back to the
@@ -209,6 +209,8 @@ module SidebarsHelper
     return unless user&.can?(:access_organization_admin_area, organization)
 
     # rubocop:disable Gitlab/AvoidOrganizationUrlRoutes -- Explicitly scope the link to the current organization
+    return organization_path(organization) if panel_type == 'organization_admin'
+
     organization_admin_root_path(organization)
     # rubocop:enable Gitlab/AvoidOrganizationUrlRoutes
   end

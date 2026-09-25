@@ -43,6 +43,19 @@ RSpec.describe Gitlab::EventStore::Event, feature_category: :service_ping do
       end
     end
 
+    describe '#data_hash' do
+      let(:data) { { project_id: 123, details: { list: [{ key: 'value' }] } } }
+
+      it 'returns plain hashes with string keys, including nested ones' do
+        data_hash = event.data_hash
+
+        expect(data_hash).to eq('project_id' => 123, 'details' => { 'list' => [{ 'key' => 'value' }] })
+        expect(data_hash).to be_instance_of(Hash)
+        expect(data_hash['details']).to be_instance_of(Hash)
+        expect(data_hash['details']['list'].first).to be_instance_of(Hash)
+      end
+    end
+
     describe 'schema validation' do
       context 'when data matches the schema' do
         it 'initializes the event correctly' do

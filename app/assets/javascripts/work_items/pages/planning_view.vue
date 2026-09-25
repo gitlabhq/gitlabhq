@@ -111,6 +111,7 @@ import {
   convertToSearchQuery,
   updateNamespaceDisplaySettings,
 } from 'ee_else_ce/work_items/list/utils';
+import { hasBoardViewMode } from 'ee_else_ce/work_items/view_modes';
 
 import {
   CREATED_DESC,
@@ -226,7 +227,6 @@ export default {
   CREATION_CONTEXT_LIST_ROUTE,
   VIEW_CONTEXT,
   VIEW_MODE_LIST,
-  VIEW_MODE_BOARD,
   searchProjectsQuery,
   i18n: {
     boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
@@ -537,7 +537,7 @@ export default {
 
   computed: {
     isPlanningViewBoardEnabled() {
-      return Boolean(this.glFeatures.planningViewBoards);
+      return hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards);
     },
     isPlanningViewTableEnabled() {
       return Boolean(this.glFeatures.planningViewTable);
@@ -2474,7 +2474,7 @@ export default {
             {{ __('Bulk edit') }}
           </gl-button>
           <gl-button
-            v-if="isPlanningViewBoardEnabled && viewMode === $options.VIEW_MODE_BOARD"
+            v-if="isBoardView"
             size="small"
             variant="link"
             class="!gl-text-sm"
@@ -2543,7 +2543,7 @@ export default {
     </template>
     <component
       :is="isTableView ? 'table-view' : 'list-view'"
-      v-if="viewMode !== $options.VIEW_MODE_BOARD"
+      v-if="!isBoardView"
       data-testid="list-view"
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
@@ -2643,7 +2643,7 @@ export default {
       </template>
     </component>
     <board-view
-      v-if="viewMode === $options.VIEW_MODE_BOARD && isPlanningViewBoardEnabled"
+      v-if="isBoardView"
       :root-page-full-path="rootPageFullPath"
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"

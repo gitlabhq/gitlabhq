@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_analytics do
   let_it_be(:group) { create(:group) }
-  let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:subproject) { create(:project, group: subgroup) }
-  let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-  let_it_be(:organization) { create(:organization) }
 
+  let(:subgroup) { build_stubbed(:group) }
+  let(:subproject) { build_stubbed(:project, group: subgroup) }
+  let(:issue) { build_stubbed(:issue, project: project) }
+  let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
+  let(:organization) { build_stubbed(:organization) }
   let(:subject) { helper.masked_page_url(group: group, project: project) }
 
   before do

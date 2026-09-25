@@ -8,7 +8,7 @@ import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { JS_TOGGLE_EXPAND_CLASS, SETTINGS_DISCLOSURE_PORTAL_NAME } from '../constants';
+import { JS_TOGGLE_EXPAND_CLASS, PANEL_TYPES, SETTINGS_DISCLOSURE_PORTAL_NAME } from '../constants';
 import { sidebarState } from '../state';
 import {
   isCollapsed,
@@ -80,6 +80,9 @@ export default {
     },
     manageOrganizationPath() {
       return this.sidebarData.manage_organization_link;
+    },
+    isInOrganizationAdminArea() {
+      return this.sidebarData.panel_type === PANEL_TYPES.ORGANIZATION_ADMIN;
     },
   },
   watch: {
@@ -230,7 +233,10 @@ export default {
           />
         </div>
         <div v-if="manageOrganizationPath" class="gl-px-3 gl-pt-3">
-          <manage-organization-button :href="manageOrganizationPath" />
+          <manage-organization-button
+            :href="manageOrganizationPath"
+            :is-exit="isInOrganizationAdminArea"
+          />
         </div>
         <help-center
           v-if="canIconOnly"

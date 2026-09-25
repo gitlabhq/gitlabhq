@@ -46,6 +46,7 @@ apply only to that method. All other items apply to all installation methods.
 Before upgrading to GitLab 19.5, review the following:
 
 - [19.5.0] - [Agent for Kubernetes address defaults to native gRPC](#agent-for-kubernetes-address-defaults-to-native-grpc) (Linux package, Helm chart)
+- [19.5.0] - [Duo Agent Platform checkpoint migration](#duo-agent-platform-checkpoint-migration)
 
 ### Upgrade to 19.4
 
@@ -117,6 +118,36 @@ over HTTP/1.1. In that case, keep advertising WebSocket by setting the address e
 
 For more information, see [GitLab Relay (KAS)](../../administration/clusters/kas.md) and the
 [KAS chart documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#agent-connection-protocol).
+
+### Duo Agent Platform checkpoint migration
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: All installation methods
+- Affected versions: 19.5.0
+
+GitLab 19.5 queues a batched background migration named `BackfillDuoWorkflowsCheckpointHeadersAndBlobs`.
+It copies GitLab Duo Agent Platform session checkpoints from the table
+`p_duo_workflows_checkpoints` into the tables `p_duo_workflows_checkpoint_headers` and
+`p_duo_workflows_checkpoint_blobs`. This is the storage format the application now writes and reads.
+
+The migration runs in the background after the upgrade. It only processes rows that are not
+already stored in the new format, and it skips sessions older than 30 days because their data
+is past the retention period.
+
+Sessions created before the upgrade remain readable while the migration runs. A later GitLab
+version removes the code that reads the old table, so this migration must finish before that
+upgrade. Before you upgrade past 19.5, check the migration status on the **Admin area** >
+**Background migrations** page (`/admin/background_migrations`). For more information on how
+to check the status and how to finish the migration manually, see
+[background migrations](../background_migrations.md).
+
+The time the migration takes depends on how many sessions the instance stored in the last 30
+days. Each processed checkpoint can be several megabytes.
 
 ### Geo SSH proxying enabled by default
 

@@ -35,6 +35,25 @@ Additionally, usernames and group names must contain only letters (`a-zA-Z`), di
 - Valid username: `sidney.jones` or `sidney ⭐ jones`
 - Valid group name: `Web Development Team (Frontend)`
 
+Usernames cannot start with one of these reserved top-level route names followed by a dot (`.`):
+
+- `admin`
+- `dashboard`
+- `explore`
+- `groups`
+- `health_check`
+- `help`
+- `projects`
+- `public`
+- `search`
+
+These routes take priority over the username route, so the profile page would be unreachable.
+This restriction applies only to usernames, not to group names.
+For example:
+
+- Invalid username: `admin.jones` or `help.jones`
+- Valid username: `admin_jones` or `administrator.jones`
+
 Project names must contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), pluses (`+`), dashes (`-`), or spaces. For example:
 
 - `web-app-v2+features`

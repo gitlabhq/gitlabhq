@@ -10,7 +10,8 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   let(:optional_stages) do
     {
       attachments_import: false,
-      collaborators_import: false
+      collaborators_import: false,
+      continuous_sync: false
     }
   end
 
@@ -78,6 +79,13 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       expect(project.import_data.data['pagination_limit'])
         .to eq(50)
     end
+
+    it 'persists a checked continuous import stage' do
+      settings.write(optional_stages: { continuous_sync: 'true' })
+
+      expect(project.import_data.data['optional_stages']).to include('continuous_sync' => true)
+      expect(settings.enabled?(:continuous_sync)).to be(true)
+    end
   end
 
   describe '#enabled?' do
@@ -86,6 +94,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       expect(settings.enabled?(:attachments_import)).to be false
       expect(settings.enabled?(:collaborators_import)).to be false
+      expect(settings.enabled?(:continuous_sync)).to be false
     end
   end
 

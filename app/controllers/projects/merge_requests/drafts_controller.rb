@@ -61,10 +61,9 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     # is visible in the app, submit_and_notify_mr_review_ui keeps running until the
     # todos and notifications have been delivered in ProcessDraftNotePublishedWorker.
     submit_experience = Labkit::UserExperienceSli.start(:submit_mr_review_ui)
-    submit_and_notify_experience = Labkit::UserExperienceSli.start(:submit_and_notify_mr_review_ui)
+    submit_and_notify_experience = start_submit_and_notify_experience
 
-    result = DraftNotes::PublishService.new(merge_request, current_user, draft_note_ids_param)
-      .execute(draft: draft_note(allow_nil: true))
+    result = publish_service.execute(draft: draft_note(allow_nil: true))
 
     if create_note_params[:note]
       ::Notes::CreateService.new(@project, current_user, create_note_params).execute
@@ -76,12 +75,11 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     if result[:status] == :success
       submit_experience.complete
-      submit_and_notify_experience.complete(notes_published: false) unless result[:async_notifications]
 
       head :ok
     else
       submit_experience.error!(result[:message]).complete
-      submit_and_notify_experience.error!(result[:message]).complete
+      submit_and_notify_experience.error!(result[:message]).complete if submit_and_notify_experience
 
       render json: { message: result[:message] }, status: :internal_server_error
     end
@@ -118,6 +116,19 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     strong_memoize(:draft_notes) do
       merge_request.draft_notes.authored_by(current_user)
     end
+  end
+
+  def publish_service
+    strong_memoize(:publish_service) do
+      DraftNotes::PublishService.new(merge_request, current_user, draft_note_ids_param)
+    end
+  end
+
+  # Completed by ProcessDraftNotePublishedWorker, which only runs when draft notes are published.
+  def start_submit_and_notify_experience
+    return unless publish_service.publishes_draft_notes?(draft: draft_note(allow_nil: true))
+
+    Labkit::UserExperienceSli.start(:submit_and_notify_mr_review_ui)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

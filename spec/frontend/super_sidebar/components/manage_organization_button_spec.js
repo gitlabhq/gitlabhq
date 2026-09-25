@@ -8,9 +8,9 @@ describe('ManageOrganizationButton', () => {
 
   const href = '/o/my-org/admin';
 
-  const createComponent = (provide = {}) => {
+  const createComponent = ({ provide = {}, propsData = {} } = {}) => {
     wrapper = mountExtended(ManageOrganizationButton, {
-      propsData: { href },
+      propsData: { href, ...propsData },
       provide: {
         isIconOnly: false,
         ...provide,
@@ -25,7 +25,7 @@ describe('ManageOrganizationButton', () => {
 
   describe('when sidebar is expanded', () => {
     beforeEach(() => {
-      createComponent({ isIconOnly: false });
+      createComponent({ provide: { isIconOnly: false } });
     });
 
     it('renders the admin icon', () => {
@@ -47,9 +47,27 @@ describe('ManageOrganizationButton', () => {
     });
   });
 
+  describe('when isExit is true', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { isExit: true } });
+    });
+
+    it('renders the leave icon', () => {
+      expect(findNavItem().props('icon')).toBe('go-back');
+    });
+
+    it('displays the exit text', () => {
+      expect(findNavItem().text()).toBe('Back to organization');
+    });
+
+    it('uses the exit text as the aria-label', () => {
+      expect(findNavItem().attributes('aria-label')).toBe('Back to organization');
+    });
+  });
+
   describe('when sidebar is icon only', () => {
     beforeEach(() => {
-      createComponent({ isIconOnly: true });
+      createComponent({ provide: { isIconOnly: true } });
     });
 
     it('renders as icon only with an aria-label', () => {

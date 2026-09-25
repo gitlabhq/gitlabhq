@@ -14,6 +14,9 @@ This guide outlines best practices and implementation details for syntax highlig
 
 The source code viewer uses this dual approach to ensure broad language support and optimal performance when viewing files in the repository.
 
+For the CSS grid layout that aligns the blame gutter, line numbers, and code, see
+[Source viewer layout development guidelines](source_viewer.md).
+
 ## Components overview
 
 The syntax highlighting implementation consists of several key components:

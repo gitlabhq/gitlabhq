@@ -193,19 +193,21 @@ $avatar-sizes: (
 .user-popover {
   &.user-popover-cannot-merge {
     .popover-header {
-      background-color: var(--gl-feedback-warning-background-color);
+      @apply gl-text-feedback-warning;
+      @apply gl-bg-feedback-warning;
     }
   }
 
   &.user-popover-recommendation {
     .popover-header {
-      background-color: var(--gl-feedback-info-background-color);
+      @apply gl-text-feedback-info;
+      @apply gl-bg-feedback-info;
     }
   }
 
   &.user-popover-recommendation-busy {
     .popover-header {
-      background-color: var(--gl-background-color-subtle);
+      @apply gl-bg-subtle;
     }
   }
 }

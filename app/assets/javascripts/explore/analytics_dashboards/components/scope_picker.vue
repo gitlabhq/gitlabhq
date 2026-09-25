@@ -63,6 +63,9 @@ export default {
       // it against the loaded namespaces on every read -- and a search replaces those results, so
       // by then there would be nothing left to match against.
       selectedNamespaces: [],
+      // The paths last emitted. In multi-select, picks stay local until the listbox closes, so
+      // building a selection refreshes the dashboard once rather than on every click.
+      committedPaths: [],
       expandedPaths: [],
       // Each expanded group's projects, flattened across the subgroups below it, keyed by path.
       // Alongside them, the group's loading state and the cursor the next page starts from.
@@ -236,7 +239,11 @@ export default {
       if (!namespace || this.selectedNamespaces.length) return;
 
       this.selectedNamespaces = [this.asNamespace(namespace)];
-      this.$emit('change', this.selectedNamespaces);
+      this.commitChange(this.selectedNamespaces);
+    },
+    commitChange(namespaces) {
+      this.committedPaths = namespaces.map(({ fullPath }) => fullPath);
+      this.$emit('change', namespaces);
     },
     asNamespace({ id, name, fullName, fullPath, __typename }) {
       return { id, name, fullName, fullPath, type: __typename };
@@ -440,7 +447,12 @@ export default {
       if (!selected) return;
 
       this.selectedNamespaces = selected;
-      this.$emit('change', selected);
+      if (!this.multiSelect) this.commitChange(selected);
+    },
+    onHidden() {
+      if (xor(this.selectedPaths, this.committedPaths).length) {
+        this.commitChange(this.selectedNamespaces);
+      }
     },
     // A selected group covers everything beneath it, so any picks already sitting beneath the
     // newly selected group are dropped. Returns nothing when the selection is full or the path
@@ -494,7 +506,7 @@ export default {
       if (this.selectedNamespaces.length) return;
 
       this.selectedNamespaces = restored;
-      this.$emit('change', restored);
+      this.commitChange(restored);
     },
     // A path from the `scope` param says nothing about whether it names a group or a project, so
     // both are asked for and whichever resolves is the answer. One query runs per path, sharing a
@@ -536,6 +548,7 @@ export default {
     :no-results-text="s__('AnalyticsDashboards|No groups or projects found')"
     @search="onSearch"
     @select="onSelect"
+    @hidden="onHidden"
   >
     <template #list-item="{ item }">
       <span

@@ -6,7 +6,7 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
   include MembersPresentation
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, group: create(:group)) }
+  let_it_be_with_reload(:project) { create(:project, group: create(:group), maintainers: current_user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(current_user)
@@ -15,11 +15,11 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
   # These examples cover the helper's wiring: serializer construction, params
   # plumbing and JSON rendering.
   describe '#project_members_app_data_json' do
-    let_it_be(:links, freeze: false) { ::Members::GroupLinksCollection.new([]) }
-    let_it_be(:members) { create_list(:project_member, 2, project: project) }
-    let_it_be(:invited) { create_list(:project_member, 2, :invited, project: project) }
-    let_it_be(:access_requests) { create_list(:project_member, 2, :access_request, project: project) }
+    let_it_be(:members) { create_list(:project_member, 2, source: project) }
+    let_it_be(:invited) { create_list(:project_member, 2, :invited, source: project) }
+    let_it_be(:access_requests) { create_list(:project_member, 2, :access_request, source: project) }
 
+    let(:links) { ::Members::GroupLinksCollection.new([]) }
     let(:available_roles) do
       Gitlab::Access.options_with_owner.map { |name, access_level| { title: name, value: "static-#{access_level}" } }
     end
@@ -35,10 +35,6 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
           pending_members_count: nil
         )
       )
-    end
-
-    before_all do
-      project.add_maintainer(current_user)
     end
 
     it 'returns expected json' do

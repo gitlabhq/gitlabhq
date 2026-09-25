@@ -6,19 +6,14 @@ require 'spec_helper'
 require 'mime/types'
 
 RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
-  # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-  # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-  # subject, or an in-memory mutation that survives reload/refind). Do not
-  # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-  # (see gitlab-org/gitlab#602925).
-  let_it_be(:project, freeze: false) { create(:project, :private) }
-  let_it_be(:experiment, freeze: false) do
+  let_it_be_with_reload(:project) { create(:project, :private) }
+  let_it_be_with_reload(:experiment) do
     create(:ml_experiments, :with_model, user: project.creator, project: project)
   end
 
-  let_it_be(:pipeline, freeze: false) { create(:ci_pipeline, project: project) }
-  let_it_be(:build, freeze: false) { create(:ci_build, user: project.creator, pipeline: pipeline) }
-  let_it_be(:candidate0, freeze: false) do
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be_with_reload(:build) { create(:ci_build, user: project.creator, pipeline: pipeline) }
+  let_it_be_with_reload(:candidate0) do
     create(:ml_candidates,
       :with_artifact,
       experiment: experiment,
@@ -26,17 +21,17 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
       project: project,
       ci_build: build
     ).tap do |c|
-      c.params.build([{ name: 'param1', value: 'p1' }, { name: 'param2', value: 'p2' }])
+      c.params.create!([{ name: 'param1', value: 'p1' }, { name: 'param2', value: 'p2' }])
       c.metrics.create!(
         [{ name: 'metric1', value: 0.1 }, { name: 'metric2', value: 0.2 }, { name: 'metric3', value: 0.3 }]
       )
     end
   end
 
-  let_it_be(:candidate1, freeze: false) do
+  let_it_be_with_reload(:candidate1) do
     create(:ml_candidates, experiment: experiment, user: project.creator, name: 'candidate1',
       project: project).tap do |c|
-      c.params.build([{ name: 'param2', value: 'p3' }, { name: 'param3', value: 'p4' }])
+      c.params.create!([{ name: 'param2', value: 'p3' }, { name: 'param3', value: 'p4' }])
       c.metrics.create!(name: 'metric3', value: 0.4)
     end
   end
@@ -157,16 +152,10 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
       experiment.candidates.keyset_paginate(cursor: cursor, per_page: 1)
     end
 
-    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-    # subject, or an in-memory mutation that survives reload/refind). Do not
-    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-    # (see gitlab-org/gitlab#602925).
     subject { helper.page_info(page) }
 
-    let_it_be(:first_page, freeze: false) { paginator }
-    let_it_be(:second_page, freeze: false) { paginator(first_page.cursor_for_next_page) }
-
+    let(:first_page) { paginator }
+    let(:second_page) { paginator(first_page.cursor_for_next_page) }
     let(:page) { nil }
 
     context 'when is first page' do

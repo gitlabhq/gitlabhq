@@ -843,7 +843,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
 
     context 'when there is a user' do
-      subject(:path) { helper.send(:manage_organization_link, user) }
+      subject(:path) { helper.send(:manage_organization_link, user, panel_type) }
+
+      let(:panel_type) { 'organization' }
 
       context 'when the user can access the organization admin area' do
         before do
@@ -854,6 +856,14 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
         it 'returns the organization admin root path' do
           expect(path).to eq(organization_admin_root_path(current_organization))
+        end
+
+        context 'when already in the organization admin area' do
+          let(:panel_type) { 'organization_admin' }
+
+          it 'returns the organization overview path' do
+            expect(path).to eq(organization_path(current_organization))
+          end
         end
 
         context 'when the request is not organization-scoped' do
@@ -886,7 +896,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
 
     context 'when there is no user' do
-      subject(:path) { helper.send(:manage_organization_link, nil) }
+      subject(:path) { helper.send(:manage_organization_link, nil, 'organization') }
 
       it { is_expected.to be_nil }
     end

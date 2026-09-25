@@ -51,10 +51,10 @@ RSpec.describe BoardsHelper, feature_category: :planning_views do
     end
 
     context 'project under user namespace' do
-      let_it_be(:project_under_user) { create(:project, namespace: user.namespace) }
+      let(:project_under_user) { build_stubbed(:project, namespace: user.namespace) }
 
       context 'when project board' do
-        let_it_be(:project_board) { create(:board, project: project_under_user) }
+        let(:project_board) { build_stubbed(:board, project: project_under_user) }
 
         it 'returns the correct namespace' do
           assign(:project, project_under_user)

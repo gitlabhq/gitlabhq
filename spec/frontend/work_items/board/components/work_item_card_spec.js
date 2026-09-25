@@ -5,7 +5,7 @@ import WorkItemCard from '~/work_items/board/components/work_item_card.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
-import IssueDueDate from '~/boards/components/issue_due_date.vue';
+import WorkItemDatesAttribute from '~/work_items/components/shared/work_item_dates_attribute.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
 import {
@@ -46,7 +46,7 @@ describe('WorkItemCard', () => {
   const findStatusBadge = () => wrapper.findComponent({ name: 'WorkItemStatusBadge' });
   const findMetadataRow = () => wrapper.findByTestId('work-item-metadata');
   const findMilestone = () => wrapper.findComponent(IssueMilestone);
-  const findDueDate = () => wrapper.findComponent(IssueDueDate);
+  const findDates = () => wrapper.findComponent(WorkItemDatesAttribute);
   const findWeight = () => wrapper.findByTestId('work-item-weight');
   const findIteration = () => wrapper.findByTestId('work-item-iteration');
   const findHealthStatus = () => wrapper.findComponentByTestId('work-item-health-status');
@@ -335,20 +335,41 @@ describe('WorkItemCard', () => {
       expect(findMilestone().classes()).toContain('!gl-max-w-28');
     });
 
-    it('renders the due date from the START_AND_DUE_DATE widget', () => {
-      createComponent({
-        item: buildItem({ widgets: [buildStartAndDueDateWidget({ dueDate: '2026-03-01' })] }),
+    describe('dates', () => {
+      it.each`
+        case            | startDate       | dueDate
+        ${'start only'} | ${'2026-02-01'} | ${null}
+        ${'due only'}   | ${null}         | ${'2026-03-01'}
+        ${'both dates'} | ${'2026-02-01'} | ${'2026-03-01'}
+      `('renders the dates attribute when $case is set', ({ startDate, dueDate }) => {
+        createComponent({
+          item: buildItem({ widgets: [buildStartAndDueDateWidget({ startDate, dueDate })] }),
+        });
+
+        expect(findDates().props()).toMatchObject({ startDate, dueDate });
       });
 
-      expect(findDueDate().props('date')).toBe('2026-03-01');
-    });
+      it('does not render the dates attribute when neither date is set', () => {
+        createComponent({
+          item: buildItem({
+            widgets: [buildStartAndDueDateWidget({ startDate: null, dueDate: null })],
+          }),
+        });
 
-    it('does not render the due date when the widget has no due date', () => {
-      createComponent({
-        item: buildItem({ widgets: [buildStartAndDueDateWidget({ dueDate: null })] }),
+        expect(findDates().exists()).toBe(false);
       });
 
-      expect(findDueDate().exists()).toBe(false);
+      it.each`
+        case        | closedAt
+        ${'open'}   | ${null}
+        ${'closed'} | ${'2026-01-02T00:00:00Z'}
+      `('passes isClosed as $case', ({ closedAt }) => {
+        createComponent({
+          item: buildItem({ closedAt, widgets: [buildStartAndDueDateWidget()] }),
+        });
+
+        expect(findDates().props('isClosed')).toBe(Boolean(closedAt));
+      });
     });
 
     it('renders the weight from the WEIGHT widget', () => {
@@ -442,13 +463,13 @@ describe('WorkItemCard', () => {
       expect(findMilestone().exists()).toBe(false);
     });
 
-    it('hides the due date when "dates" is in hiddenMetadataKeys', () => {
+    it('hides the dates attribute when "dates" is in hiddenMetadataKeys', () => {
       createComponent({
         item: buildItem({ widgets: [buildStartAndDueDateWidget()] }),
         hiddenMetadataKeys: ['dates'],
       });
 
-      expect(findDueDate().exists()).toBe(false);
+      expect(findDates().exists()).toBe(false);
     });
 
     it('hides the weight when "weight" is in hiddenMetadataKeys', () => {

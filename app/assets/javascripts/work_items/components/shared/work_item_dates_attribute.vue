@@ -63,9 +63,15 @@ export default {
     dueDateStatus() {
       return getDueDateStatus(this.dueDate, !this.isClosed);
     },
+    datesLabel() {
+      if (this.startDate && this.dueDate) {
+        return __('Dates');
+      }
+      return this.startDate ? __('Start date') : __('Due date');
+    },
     datesTooltipTitle() {
       const { statusLabel } = this.dueDateStatus;
-      return statusLabel ? `${__('Dates')} (${statusLabel})` : __('Dates');
+      return statusLabel ? `${this.datesLabel} (${statusLabel})` : this.datesLabel;
     },
   },
 };
@@ -80,6 +86,7 @@ export default {
     :title="datesText"
     :tooltip-text="datesTooltipTitle"
     :tooltip-placement="tooltipPlacement"
+    :sr-only-text="datesTooltipTitle"
   >
     <template #icon>
       <gl-icon

@@ -10,7 +10,7 @@ import { extractGroupOrProject } from '../utils/common';
 // blocks hit Postgres from every viewer. Dashboards have few viewers and bounded panels.
 const CONCURRENCY_LIMITS = {
   [EXECUTION_QUEUE_DEFAULT]: 1,
-  [EXECUTION_QUEUE_DASHBOARD]: 4,
+  [EXECUTION_QUEUE_DASHBOARD]: 6,
 };
 
 export const resolveToScalar = (obj) => {

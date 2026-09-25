@@ -121,6 +121,7 @@ export default {
     </template>
 
     <template #cell(name)="{ item }">
+      <!-- eslint-disable-next-line vue/slot-name-casing -->
       <slot v-if="glSlots()['cell(name)']" name="cell(name)" v-bind="{ item }"></slot>
       <div v-else class="gl-flex gl-items-center">
         <span class="gl-text-subtle">
@@ -130,6 +131,7 @@ export default {
     </template>
 
     <template #cell(status)="{ item }">
+      <!-- eslint-disable-next-line vue/slot-name-casing -->
       <slot v-if="glSlots()['cell(status)']" name="cell(status)" v-bind="{ item }"></slot>
       <div v-else class="gl-flex gl-flex-col">
         {{ __('—') }}
@@ -137,11 +139,13 @@ export default {
     </template>
 
     <template #cell(lastScan)="{ item }">
+      <!-- eslint-disable-next-line vue/slot-name-casing -->
       <slot v-if="glSlots()['cell(last-scan)']" name="cell(last-scan)" v-bind="{ item }"></slot>
       <span v-else>{{ item.lastScan || __('—') }}</span>
     </template>
 
     <template #cell(actions)="{ item }">
+      <!-- eslint-disable-next-line vue/slot-name-casing -->
       <slot v-if="glSlots()['cell(actions)']" name="cell(actions)" v-bind="{ item }"></slot>
       <div v-else>
         <gl-button-group>

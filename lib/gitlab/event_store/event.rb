@@ -46,6 +46,12 @@ module Gitlab
         raise NotImplementedError, 'must specify schema to validate the event'
       end
 
+      # Plain Hash for Sidekiq job arguments. Unlike `#to_h`, `#to_hash` also converts
+      # nested HashWithIndifferentAccess values, which Sidekiq's strict_args rejects.
+      def data_hash
+        data.to_hash
+      end
+
       private
 
       def validate_schema!

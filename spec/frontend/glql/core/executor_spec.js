@@ -107,9 +107,9 @@ describe('Executor', () => {
       expect(Executor.taskQueue('glql-queue-typo')).toBe(Executor.taskQueue());
     });
 
-    it('runs one request at a time by default and four for dashboards', () => {
+    it('runs one request at a time by default and six for dashboards', () => {
       expect(Executor.taskQueue().concurrencyLimit).toBe(1);
-      expect(Executor.taskQueue('glql-queue-dashboard').concurrencyLimit).toBe(4);
+      expect(Executor.taskQueue('glql-queue-dashboard').concurrencyLimit).toBe(6);
     });
 
     it('does not hold a dashboard request behind the default queue', async () => {

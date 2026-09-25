@@ -181,6 +181,19 @@ describe('SuperSidebar component', () => {
 
       expect(findManageOrganizationButton().exists()).toBe(true);
       expect(findManageOrganizationButton().props('href')).toBe(manageOrganizationLink);
+      expect(findManageOrganizationButton().props('isExit')).toBe(false);
+    });
+
+    it('puts the manage organization button in exit mode within the organization admin panel', () => {
+      createWrapper({
+        sidebarData: {
+          ...mockSidebarData,
+          manage_organization_link: '/o/my-org/-/overview',
+          panel_type: 'organization_admin',
+        },
+      });
+
+      expect(findManageOrganizationButton().props('isExit')).toBe(true);
     });
 
     it('renders the context header', () => {

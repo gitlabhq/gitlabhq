@@ -5,11 +5,12 @@ module Gitlab
     class Settings
       OPTIONAL_STAGES = {
         attachments_import: { selected: false },
-        collaborators_import: { selected: true }
+        collaborators_import: { selected: true },
+        continuous_sync: { selected: false }
       }.freeze
 
-      def self.stages_array(_current_user)
-        OPTIONAL_STAGES.map do |stage_name, data|
+      def self.stages_array(current_user, oauth: false)
+        available_stages(current_user, oauth: oauth).map do |stage_name, data|
           {
             name: stage_name.to_s,
             label: stage_label(stage_name),
@@ -19,10 +20,17 @@ module Gitlab
         end
       end
 
+      # Continuous sync is a licensed feature, so it is only offered by the EE override.
+      def self.available_stages(_current_user, oauth: false) # rubocop:disable Lint/UnusedMethodArgument -- used by the EE override
+        OPTIONAL_STAGES.except(:continuous_sync)
+      end
+      private_class_method :available_stages
+
       def self.stage_label(stage_name)
         {
           attachments_import: s_('GitHubImporter|Import Markdown attachments (links)'),
-          collaborators_import: s_('GitHubImporter|Import collaborators')
+          collaborators_import: s_('GitHubImporter|Import collaborators'),
+          continuous_sync: s_('GitHubImporter|Keep this project updated from GitHub')
         }[stage_name]
       end
       private_class_method :stage_label
@@ -37,7 +45,9 @@ module Gitlab
           collaborators_import: s_('GitHubImporter|Import direct repository collaborators who are not ' \
             'outside collaborators. Imported collaborators who aren\'t members ' \
             'of the group you imported the project into consume seats on your ' \
-            'GitLab instance.')
+            'GitLab instance.'),
+          continuous_sync: s_('GitHubImporter|Keep the imported project up to date with changes from ' \
+            'GitHub. Requires GitLab Premium or Ultimate.')
         }[stage_name]
       end
       private_class_method :stage_details
@@ -97,3 +107,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GithubImport::Settings.prepend_mod

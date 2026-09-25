@@ -86,6 +86,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         get :callback, params: { state: valid_auth_state }
 
         expect(session[:github_access_token]).to eq(token)
+        expect(session[:github_oauth_token]).to be(true)
         expect(controller).to redirect_to(status_import_github_url)
       end
 
@@ -101,6 +102,14 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
   describe "POST personal_access_token" do
     it_behaves_like 'a GitHub-ish import controller: POST personal_access_token'
+
+    it 'clears the OAuth marker from a previous OAuth session' do
+      session[:github_oauth_token] = true
+
+      post :personal_access_token, params: { personal_access_token: 'pat' }
+
+      expect(session[:github_oauth_token]).to be_nil
+    end
   end
 
   describe "GET status" do
@@ -401,6 +410,58 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     end
 
     it_behaves_like 'project import rate limiter'
+
+    context 'with the continuous_sync optional stage' do
+      let(:optional_stages) { { 'attachments_import' => 'true', 'continuous_sync' => 'true' } }
+
+      before do
+        assign_session_token(provider)
+      end
+
+      def expect_service_to_receive_optional_stages(expected_stages)
+        expect(Import::GithubService).to receive(:new) do |_client, _user, params|
+          expect(params[:optional_stages].to_h).to eq(expected_stages)
+
+          instance_double(
+            Import::GithubService,
+            execute: { status: :error, http_status: :unprocessable_entity },
+            :request_channel= => nil
+          )
+        end
+      end
+
+      context 'when authenticated with OAuth' do
+        before do
+          session[:github_oauth_token] = true
+        end
+
+        it 'passes the continuous_sync stage to the service' do
+          expect_service_to_receive_optional_stages(optional_stages)
+
+          post :create, params: { target_namespace: user.namespace_path, optional_stages: optional_stages }, format: :json
+        end
+
+        context 'when the github_continuous_import feature flag is disabled' do
+          before do
+            stub_feature_flags(github_continuous_import: false)
+          end
+
+          it 'removes the continuous_sync stage' do
+            expect_service_to_receive_optional_stages(optional_stages.except('continuous_sync'))
+
+            post :create, params: { target_namespace: user.namespace_path, optional_stages: optional_stages }, format: :json
+          end
+        end
+      end
+
+      context 'when authenticated with a personal access token' do
+        it 'removes the continuous_sync stage' do
+          expect_service_to_receive_optional_stages(optional_stages.except('continuous_sync'))
+
+          post :create, params: { target_namespace: user.namespace_path, optional_stages: optional_stages }, format: :json
+        end
+      end
+    end
   end
 
   describe "GET realtime_changes" do

@@ -889,6 +889,9 @@ Grants the ability to read Orbit data the token owner can access in GitLab. Grou
 | Read | User | `GET` | `/orbit/schema` |
 | Read | User | `GET` | `/orbit/schema/dsl` |
 | Read | User | `GET` | `/orbit/schema/format` |
+| Read | User | `GET` | `/orbit/skills` |
+| Read | User | `GET` | `/orbit/skills/:name` |
+| Read | User | `GET` | `/orbit/skills/:name/*path` |
 | Read | User | `GET` | `/orbit/status` |
 | Read | User | `GET` | `/orbit/tools` |
 | Read | User | `POST` | `/orbit/agent/commands/:name` |

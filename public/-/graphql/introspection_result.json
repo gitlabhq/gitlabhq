@@ -224589,6 +224589,12 @@
               "deprecationReason": null
             },
             {
+              "name": "GITHUB_CONTINUOUS_SYNC",
+              "description": "Github continuous sync feature.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "GROUP_ALLOWED_EMAIL_DOMAINS",
               "description": "Group allowed email domains feature.",
               "isDeprecated": false,

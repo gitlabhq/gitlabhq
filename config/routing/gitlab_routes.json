@@ -10537,6 +10537,23 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/orbit/skills",
+    "example": "/api/v4/orbit/skills",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/api/:version/orbit/skills/:name",
+    "example": "/api/v4/orbit/skills/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/orbit/skills/john.doe"
+  },
+  {
+    "template": "/api/:version/orbit/skills/:name/?*path",
+    "example": "/api/v4/orbit/skills/foo/?foo/bar",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/orbit/skills/john.doe/?john.doe/bar"
+  },
+  {
     "template": "/api/:version/orbit/status",
     "example": "/api/v4/orbit/status",
     "acceptsFormat": true

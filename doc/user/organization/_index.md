@@ -142,6 +142,68 @@ When a top-level group transfers into an organization, its group and project mem
 become organization users.
 They keep their pre-existing roles and permissions.
 
+## Manage organization users
+
+Use the organization admin area to add organization users, change their user type, and remove them.
+
+Prerequisites:
+
+- You must be an organization administrator.
+
+### View organization users
+
+To view the users in your organization:
+
+1. In the left sidebar, select **Organizations**.
+1. From the dropdown list, select the organization you want to go to.
+1. In the left sidebar, select **Manage organization**.
+1. Select **Organization overview** > **Users**.
+
+### Add a user to an organization
+
+To add a user to an organization:
+
+1. In the left sidebar, select **Organizations**.
+1. From the dropdown list, select the organization you want to go to.
+1. In the left sidebar, select **Manage organization**.
+1. Select **Organization overview** > **Users**.
+1. Select **Invite organization user**.
+1. In **GitLab usernames**, search for and select one or more users by username.
+1. Under **Organization user type**, select one of the following:
+   - **Organization regular user**: Grants a user access to groups and projects they are a member of.
+   - **Organization administrator**: Grants access to all groups, projects, users, features, and the **Organization Admin** area.
+1. Select **Invite**.
+
+You can also add a user to an organization by adding them to a group or project in the organization.
+
+### Change a user's type
+
+To change whether a user is an organization regular user or an organization administrator:
+
+1. In the left sidebar, select **Organizations**.
+1. From the dropdown list, select the organization you want to go to.
+1. In the left sidebar, select **Manage organization**.
+1. Select **Organization overview** > **Users**.
+1. Next to the user, select **Edit**.
+1. Under **Organization user type**, select one of the following:
+   - **Organization regular user**: Grants a user access to groups and projects they are a member of.
+   - **Organization administrator**: Grants access to all groups, projects, users, features, and the **Organization Admin** area.
+1. Select **Save changes**.
+
+### Remove a user from an organization
+
+When you remove a user from an organization, they are also removed from all groups
+and projects in the organization.
+
+To remove a user from an organization:
+
+1. In the left sidebar, select **Organizations**.
+1. From the dropdown list, select the organization you want to go to.
+1. In the left sidebar, select **Manage organization**.
+1. Select **Organization overview** > **Users**.
+1. Next to the user, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Remove from organization**.
+1. In the confirmation dialog, select **Remove**.
+
 ## Organization visibility
 
 An organization is either public or private.

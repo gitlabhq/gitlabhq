@@ -252,7 +252,9 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       allow(helper).to receive(:current_user).and_return(admin)
     end
 
-    subject(:badges) { filter_ee_badges(helper.user_badges_in_admin_section(user)) }
+    let(:authorization_context) { nil }
+
+    subject(:badges) { filter_ee_badges(helper.user_badges_in_admin_section(user, authorization_context)) }
 
     context 'with a blocked user' do
       let(:user) { create(:user, state: 'blocked') }
@@ -276,6 +278,13 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       let(:user) { create(:admin) }
 
       it { is_expected.to match_array([{ text: s_("AdminUsers|Admin"), variant: "success" }]) }
+    end
+
+    context 'when an organization admin' do
+      let(:user) { create(:user) }
+      let(:authorization_context) { create(:organization, owners: user) }
+
+      it { is_expected.to match_array([{ text: s_("AdminUsers|Organization admin"), variant: "success" }]) }
     end
 
     context 'with a bot' do

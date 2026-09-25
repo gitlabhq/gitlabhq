@@ -59,7 +59,7 @@ describe('WorkItemDatesAttribute component', () => {
           variant: 'danger',
           name: 'calendar-overdue',
         });
-        expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates (overdue)');
+        expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date (overdue)');
       });
 
       it('does not render as overdue when closed', () => {
@@ -69,7 +69,7 @@ describe('WorkItemDatesAttribute component', () => {
           variant: 'current',
           name: 'calendar',
         });
-        expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates');
+        expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date');
       });
     });
 
@@ -81,7 +81,7 @@ describe('WorkItemDatesAttribute component', () => {
           variant: 'warning',
           name: 'calendar-due',
         });
-        expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates (due soon)');
+        expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date (due soon)');
       });
 
       it('renders the approaching icon when due within 6 days', () => {
@@ -113,15 +113,31 @@ describe('WorkItemDatesAttribute component', () => {
     });
 
     describe('when there is only a start date', () => {
-      it('renders the neutral icon and tooltip', () => {
+      it('renders the neutral icon and the "Start date" tooltip', () => {
         createComponent({ startDate: '2020-11-30' });
 
         expect(findIcon().props()).toMatchObject({
           variant: 'current',
           name: 'calendar',
         });
+        expect(findWorkItemAttribute().props('tooltipText')).toBe('Start date');
+      });
+    });
+
+    describe('when both dates are set', () => {
+      it('renders the "Dates" tooltip', () => {
+        createComponent({ startDate: '2020-11-30', dueDate: '2020-12-12' });
+
         expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates');
       });
+    });
+  });
+
+  describe('screen reader label', () => {
+    it('passes the tooltip text as srOnlyText', () => {
+      createComponent({ dueDate: '2020-01-01' });
+
+      expect(findWorkItemAttribute().props('srOnlyText')).toBe('Due date (overdue)');
     });
   });
 

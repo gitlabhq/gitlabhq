@@ -17,11 +17,9 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
     end
 
     context 'when in a project page' do
-      let_it_be(:project) { create(:project) }
+      let_it_be(:project) { create(:project, developers: user) }
 
       before do
-        project.add_developer(user)
-
         assign(:project, project)
         allow(helper).to receive(:controller) { ProjectsController.new }
       end
@@ -30,11 +28,9 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
     end
 
     context 'when in a group page' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group) { create(:group, developers: user) }
 
       before do
-        group.add_developer(user)
-
         assign(:group, group)
         allow(helper).to receive(:controller) { GroupsController.new }
       end
@@ -51,11 +47,13 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
     subject { helper.current_broadcast_notification_message }
 
     context 'with available broadcast notification messages' do
-      let!(:broadcast_message_1) do
+      let_it_be(:broadcast_message_1) do
         create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now - 1.day)
       end
 
-      let!(:broadcast_message_2) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now) }
+      let_it_be(:broadcast_message_2) do
+        create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now)
+      end
 
       it { is_expected.to eq broadcast_message_2 }
 
@@ -135,14 +133,9 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
 
   describe '#render_broadcast_message' do
     context 'when message is banner' do
-      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-      # subject, or an in-memory mutation that survives reload/refind). Do not
-      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-      # (see gitlab-org/gitlab#602925).
-      let_it_be(:broadcast_message, freeze: false) do
+      let(:broadcast_message) do
         System::BroadcastMessage.new(message: 'Current Message', broadcast_type: :banner)
-      end.freeze
+      end
 
       it 'renders broadcast message' do
         expect(helper.render_broadcast_message(broadcast_message)).to eq("<p>Current Message</p>")
@@ -150,9 +143,9 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
     end
 
     context 'when message is notification' do
-      let_it_be(:broadcast_message, freeze: false) do
+      let(:broadcast_message) do
         System::BroadcastMessage.new(message: 'Current Message', broadcast_type: :notification)
-      end.freeze
+      end
 
       it 'renders broadcast message' do
         expect(helper.render_broadcast_message(broadcast_message)).to eq("<p>Current Message</p>")

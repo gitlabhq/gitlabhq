@@ -144,6 +144,25 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
       expect(json_response['name']).to eq(project.name)
     end
 
+    it 'removes the continuous_sync optional stage' do
+      expect(Import::GithubService).to receive(:new).with(
+        client, user, a_hash_including('optional_stages' => { 'attachments_import' => 'true' })
+      ).and_return(
+        instance_double(
+          Import::GithubService,
+          execute: { status: :error, http_status: :unprocessable_entity },
+          :request_channel= => nil
+        )
+      )
+
+      post api("/import/github", user), params: {
+        target_namespace: user.namespace_path,
+        personal_access_token: token,
+        repo_id: non_existing_record_id,
+        optional_stages: { attachments_import: true, continuous_sync: true }
+      }
+    end
+
     it 'returns 422 response when user can not create projects in the chosen namespace' do
       other_namespace = create(:group, name: 'other_namespace')
 

@@ -45,6 +45,8 @@ module API
       Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
 
       import_params = declared(params, include_parent_namespaces: false).merge(organization_id: Current.organization.id)
+      # Continuous sync is only offered to OAuth imports; the API always uses a personal access token.
+      import_params[:optional_stages].delete(:continuous_sync)
       import_service = Import::GithubService.new(client, current_user, import_params)
       import_service.request_channel = ::Gitlab::Import::RequestChannel.detect(request)
       result = import_service.execute(access_params, provider)

@@ -20,9 +20,9 @@ module Gitlab
         return unless condition_met?(event)
 
         if delay
-          worker.perform_in(delay, event.class.name, event.data.deep_stringify_keys.to_h)
+          worker.perform_in(delay, event.class.name, event.data_hash)
         else
-          worker.perform_async(event.class.name, event.data.deep_stringify_keys.to_h)
+          worker.perform_async(event.class.name, event.data_hash)
         end
 
         # We rescue and track any exceptions here because we don't want to
@@ -68,7 +68,7 @@ module Gitlab
 
       def events_worker_args(event_class, events)
         events
-          .map { |event| event.data.deep_stringify_keys.to_h }
+          .map(&:data_hash)
           .each_slice(group_size)
           .map { |events_data_group| [event_class.name, events_data_group] }
       end

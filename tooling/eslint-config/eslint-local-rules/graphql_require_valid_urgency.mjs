@@ -46,7 +46,7 @@ function hasQueryMutationOrSubscription(node) {
  * @returns {object|null} Object with urgency, validFormat, and location, or null if not found
  */
 function findUrgencyComment(context) {
-  const sourceCode = context.getSourceCode();
+  const { sourceCode } = context;
   const comments = sourceCode.getAllComments();
 
   for (const comment of comments) {

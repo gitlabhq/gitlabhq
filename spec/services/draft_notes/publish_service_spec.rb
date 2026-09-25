@@ -73,8 +73,8 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       publish(draft: drafts.first)
     end
 
-    it 'reports that review delivery is handled asynchronously' do
-      expect(publish(draft: drafts.first)[:async_notifications]).to be(true)
+    it 'reports that there are draft notes to publish' do
+      expect(service.publishes_draft_notes?(draft: drafts.first)).to be(true)
     end
 
     context 'commit_id is set' do
@@ -149,8 +149,8 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       expect(result[:status]).to eq(:success)
     end
 
-    it 'reports that review delivery is handled asynchronously' do
-      expect(publish[:async_notifications]).to be(true)
+    it 'reports that there are draft notes to publish' do
+      expect(service.publishes_draft_notes?).to be(true)
     end
 
     it 'publishes all draft notes for a user in a merge request' do
@@ -190,6 +190,14 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
       it 'publishes draft notes by ID' do
         expect { publish }.to change { DraftNote.count }.by(-1).and change { Note.count }.by(1)
+      end
+
+      context 'when none of the ids match a draft note of the user' do
+        let(:params) { { ids: [non_existing_record_id] } }
+
+        it 'reports that there are no draft notes to publish' do
+          expect(service.publishes_draft_notes?).to be(false)
+        end
       end
     end
 
@@ -293,8 +301,8 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       publish
     end
 
-    it 'reports that review delivery is not handled asynchronously' do
-      expect(publish[:async_notifications]).to be(false)
+    it 'reports that there are no draft notes to publish' do
+      expect(service.publishes_draft_notes?).to be(false)
     end
 
     it 'does not track the publish event' do

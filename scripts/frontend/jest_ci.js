@@ -13,7 +13,8 @@ const VUE_3_TESTING_DOCS_URL =
 const VUE_3_TESTING_EPIC = 'https://gitlab.com/groups/gitlab-org/-/epics/11740';
 
 // Force basic color output in CI
-const chalk = new defaultChalk.constructor({ level: IS_CI ? 1 : undefined });
+const { constructor: Chalk } = defaultChalk;
+const chalk = new Chalk({ level: IS_CI ? 1 : undefined });
 
 // Reads a list of test file paths, one per line. Blank lines are dropped.
 function readFilterFile(path) {

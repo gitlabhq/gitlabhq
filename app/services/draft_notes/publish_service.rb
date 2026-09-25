@@ -15,17 +15,17 @@ module DraftNotes
         merge_request_activity_counter.track_publish_review_action(user: current_user) if review
       end
 
-      # `handle_notifications` publishes MergeRequests::DraftNotePublishedEvent,
-      # which enqueues MergeRequests::ProcessDraftNotePublishedWorker. Report
-      # back whether that async delivery was scheduled so the caller knows the
-      # submit_and_notify_mr_review_ui experience will be completed in the worker
-      # rather than synchronously.
-      async_notifications = (draft || review).present?
-      handle_notifications(current_user, merge_request, review) if async_notifications
-      success(async_notifications: async_notifications)
+      handle_notifications(current_user, merge_request, review) if draft || review
+      success
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(', ')} "
       error(message)
+    end
+
+    # Whether there are draft notes for #execute to publish. Only then does it
+    # publish MergeRequests::DraftNotePublishedEvent.
+    def publishes_draft_notes?(draft: nil)
+      draft.present? || draft_notes.present?
     end
 
     private

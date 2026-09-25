@@ -371,11 +371,15 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       end
     end
 
-    context 'when nothing is delivered asynchronously' do
-      it 'completes both user experiences in the request' do
+    context 'without draft notes to publish' do
+      it 'completes the submit_mr_review_ui user experience in the request' do
         expect { post :publish, params: params }
           .to complete_user_experience(:submit_mr_review_ui)
-          .and complete_user_experience(:submit_and_notify_mr_review_ui)
+      end
+
+      it 'does not start the submit_and_notify_mr_review_ui user experience' do
+        expect { post :publish, params: params }
+          .not_to start_user_experience(:submit_and_notify_mr_review_ui)
       end
     end
 
@@ -444,6 +448,24 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect { post :publish, params: params }
           .to complete_user_experience(:submit_mr_review_ui, error: true)
           .and complete_user_experience(:submit_and_notify_mr_review_ui, error: true)
+      end
+
+      context 'without draft notes to publish' do
+        before do
+          expect_next_instance_of(DraftNotes::PublishService) do |service|
+            allow(service).to receive(:execute).and_return({ message: 'boom', status: :error })
+          end
+        end
+
+        it 'completes the submit_mr_review_ui user experience with an error' do
+          expect { post :publish, params: params }
+            .to complete_user_experience(:submit_mr_review_ui, error: true)
+        end
+
+        it 'does not start the submit_and_notify_mr_review_ui user experience' do
+          expect { post :publish, params: params }
+            .not_to start_user_experience(:submit_and_notify_mr_review_ui)
+        end
       end
     end
 

@@ -498,7 +498,7 @@
     .sidebar-collapsed-container {
       &.with-sub-blocks .sub-block:hover,
       &:not(.with-sub-blocks):hover {
-        background-color: $gray-100;
+        background-color: var(--gl-action-neutral-background-color-hover);
       }
     }
 
@@ -557,8 +557,8 @@
       }
 
       .todo-undone {
-        color: $blue-600;
-        fill: $blue-600;
+        color: var(--gl-status-info-text-color);
+        fill: var(--gl-status-info-icon-color);
       }
 
       .author {

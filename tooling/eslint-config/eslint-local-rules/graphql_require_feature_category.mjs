@@ -55,7 +55,7 @@ function hasQueryMutationOrSubscription(node) {
  * @returns {object|null} Object with category and location, or null if not found
  */
 function findFeatureCategoryComment(context) {
-  const sourceCode = context.getSourceCode();
+  const { sourceCode } = context;
   const comments = sourceCode.getAllComments();
 
   for (const comment of comments) {

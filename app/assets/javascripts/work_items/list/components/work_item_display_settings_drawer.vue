@@ -11,6 +11,7 @@ import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
+import { hasBoardViewMode, viewModeOptions } from 'ee_else_ce/work_items/view_modes';
 import {
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
   DISPLAY_SETTINGS_PAGE_ROOT,
@@ -47,23 +48,7 @@ export default {
     groupBy: s__('WorkItems|Group by'),
     goBack: __('Go back'),
   },
-  viewModeOptions: [
-    {
-      value: VIEW_MODE_LIST,
-      text: s__('WorkItemPlanningView|List'),
-      props: { icon: 'list-bulleted' },
-    },
-    {
-      value: VIEW_MODE_TABLE,
-      text: s__('WorkItemPlanningView|Table'),
-      props: { icon: 'table' },
-    },
-    {
-      value: VIEW_MODE_BOARD,
-      text: s__('WorkItemPlanningView|Board (Beta)'),
-      props: { icon: 'work-item-issue-board' },
-    },
-  ],
+  viewModeOptions,
   props: {
     open: {
       type: Boolean,
@@ -129,7 +114,7 @@ export default {
       return this.viewMode !== VIEW_MODE_BOARD && this.sortOptions.length > 0;
     },
     isPlanningViewBoardEnabled() {
-      return Boolean(this.glFeatures.planningViewBoards);
+      return hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards);
     },
     isPlanningViewTableEnabled() {
       return Boolean(this.glFeatures.planningViewTable);
@@ -231,7 +216,7 @@ export default {
           />
         </gl-button-group>
         <gl-segmented-control
-          v-else-if="isPlanningViewBoardEnabled"
+          v-else-if="isPlanningViewBoardEnabled && labelledViewModeOptions.length > 1"
           :options="labelledViewModeOptions"
           :value="viewMode"
           class="gl-mx-5 gl-mt-5"

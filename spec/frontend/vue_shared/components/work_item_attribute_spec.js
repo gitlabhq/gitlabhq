@@ -181,6 +181,22 @@ describe('WorkItemAttribute Component', () => {
     });
   });
 
+  describe('when `srOnlyText` is provided', () => {
+    it('renders a visually hidden span with the text', () => {
+      createComponent({ srOnlyText: 'Due date (overdue)', anchorId: 'test-anchor' });
+
+      const srOnlyEl = wrapper.findByTestId('test-anchor-sr-only');
+      expect(srOnlyEl.classes()).toContain('gl-sr-only');
+      expect(srOnlyEl.text()).toBe('Due date (overdue)');
+    });
+  });
+
+  it('does not render a visually hidden span when `srOnlyText` is not provided', () => {
+    createComponent();
+
+    expect(wrapper.find('.gl-sr-only').exists()).toBe(false);
+  });
+
   describe('when `popoverAttributes` is provided', () => {
     const popoverAttributes = {
       'data-reference-type': 'milestone',
