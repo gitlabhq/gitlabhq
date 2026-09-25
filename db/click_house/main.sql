@@ -1190,6 +1190,41 @@ PRIMARY KEY (id, traversal_path)
 ORDER BY (id, traversal_path)
 SETTINGS index_granularity = 1024;
 
+CREATE TABLE siphon_dependency_firewall_prevented_packages
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `project_id` Int64,
+    `first_seen_at` DateTime64(6, 'UTC'),
+    `last_blocked_at` Nullable(DateTime64(6, 'UTC')),
+    `last_warned_at` Nullable(DateTime64(6, 'UTC')),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `rule_type` Int16,
+    `severity` Nullable(Int16),
+    `identifier` String,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048;
+
+CREATE TABLE siphon_dependency_firewall_prevented_packages_pg_pkey_ordered
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `traversal_path` String DEFAULT '0/' CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (id, traversal_path)
+ORDER BY (id, traversal_path)
+SETTINGS index_granularity = 1024;
+
 CREATE TABLE siphon_deployment_merge_requests
 (
     `deployment_id` Int64,
@@ -5424,6 +5459,20 @@ AS SELECT
     _siphon_replicated_at,
     _siphon_deleted
 FROM siphon_container_repositories;
+
+CREATE MATERIALIZED VIEW siphon_dependency_firewall_prevented_packages_pg_pkey_ordered_mv TO siphon_dependency_firewall_prevented_packages_pg_pkey_ordered
+(
+    `id` Int64,
+    `traversal_path` String,
+    `_siphon_replicated_at` DateTime64(6, 'UTC'),
+    `_siphon_deleted` Bool
+)
+AS SELECT
+    id,
+    traversal_path,
+    _siphon_replicated_at,
+    _siphon_deleted
+FROM siphon_dependency_firewall_prevented_packages;
 
 CREATE MATERIALIZED VIEW siphon_duo_workflows_workflow_merge_requests_pg_pkey_ordered_mv TO siphon_duo_workflows_workflow_merge_requests_pg_pkey_ordered
 (

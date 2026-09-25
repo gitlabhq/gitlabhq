@@ -819,7 +819,9 @@ module.exports = {
     }),
 
     // compression can require a lot of compute time and is disabled in CI
-    IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),
+    // The cache never hits in CI and its temp files can collide:
+    // https://gitlab.com/gitlab-org/gitlab/-/work_items/630662
+    IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin({ cache: !process.env.CI }),
 
     // WatchForChangesPlugin
     // TODO: publish this as a separate plugin

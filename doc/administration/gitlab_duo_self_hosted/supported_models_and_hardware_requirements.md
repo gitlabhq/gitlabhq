@@ -43,6 +43,13 @@ depending on the specific model and feature combination.
 - {{< icon name="dash-circle" >}} Limited functionality: The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
   Models that have limited functionality for a feature will not receive GitLab support for that specific feature.
 
+GitLab.com adds new [GitLab-managed models](../../user/duo_agent_platform/model_selection.md#supported-models)
+as soon as they're validated on the GitLab-hosted AI Gateway.
+Self-hosted support for a new model might arrive in a later release
+after validation with each supported platform (such as AWS Bedrock,
+Gemini Enterprise Agent Platform, and Azure OpenAI).
+Any models supported on GitLab.com should also work on GitLab Duo Self-Hosted.
+
 <!-- vale gitlab_base.Spelling = NO -->
 
 | Model family | Model | Code completion | Code generation | GitLab Duo Non-Agentic Chat | GitLab Duo Agent Platform |
