@@ -39,9 +39,9 @@ describe('DashboardFilters', () => {
       expect(region.attributes('aria-label')).toBe('Dashboard filters');
     });
 
-    it('renders the multi-select scope picker', () => {
+    it('renders a single-select scope picker', () => {
       expect(findScopePicker().exists()).toBe(true);
-      expect(findScopePicker().props('multiSelect')).toBe(true);
+      expect(findScopePicker().props('multiSelect')).toBe(false);
     });
 
     it('starts the scope picker with no selection when the page passes no scope paths', () => {
@@ -80,12 +80,30 @@ describe('DashboardFilters', () => {
       expect(findDateRangeFilter().exists()).toBe(false);
     });
 
+    it('hides the scope picker when the YAML disables it', () => {
+      createComponent({
+        props: { dashboardFilters: { scope: { enabled: false } } },
+      });
+
+      expect(findScopePicker().exists()).toBe(false);
+    });
+
+    it('makes the scope picker multi-select when the YAML enables multiSelect', () => {
+      createComponent({
+        props: { dashboardFilters: { scope: { enabled: true, multiSelect: true } } },
+      });
+
+      expect(findScopePicker().props('multiSelect')).toBe(true);
+    });
+
     it('falls back to the built-in defaults when the YAML omits the filters section', () => {
       createComponent({ props: { dashboardFilters: {} } });
 
       expect(findDateRangeFilter().props('defaultOption')).toBe('30d');
       expect(findDateRangeFilter().props('options')).toBeUndefined();
       expect(findDateRangeFilter().props('dateRangeLimit')).toBe(0);
+      expect(findScopePicker().exists()).toBe(true);
+      expect(findScopePicker().props('multiSelect')).toBe(false);
     });
   });
 

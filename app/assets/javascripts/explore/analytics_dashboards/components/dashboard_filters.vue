@@ -38,6 +38,15 @@ export default {
   },
   emits: ['set-date-range', 'set-scope', 'error'],
   computed: {
+    scopeConfig() {
+      return this.dashboardFilters?.scope ?? {};
+    },
+    showScopePicker() {
+      return this.scopeConfig.enabled !== false;
+    },
+    scopeMultiSelect() {
+      return this.scopeConfig.multiSelect === true;
+    },
     dateRangeConfig() {
       return this.dashboardFilters?.dateRange ?? {};
     },
@@ -66,9 +75,13 @@ export default {
     :aria-label="$options.i18n.region"
     class="gl-flex gl-flex-col gl-gap-5 md:gl-flex-row md:gl-gap-3"
   >
-    <gl-form-group class="gl-full-w gl-mb-0" :label="$options.i18n.scopeLabel">
+    <gl-form-group
+      v-if="showScopePicker"
+      class="gl-full-w gl-mb-0"
+      :label="$options.i18n.scopeLabel"
+    >
       <scope-picker
-        multi-select
+        :multi-select="scopeMultiSelect"
         :initial-paths="scopePaths"
         @change="$emit('set-scope', $event)"
         @error="$emit('error', $event)"

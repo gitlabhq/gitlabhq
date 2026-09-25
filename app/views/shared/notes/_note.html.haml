@@ -2,7 +2,7 @@
 - return unless note.readable_by?(current_user)
 
 - show_image_comment_badge = local_assigns.fetch(:show_image_comment_badge, false)
-- note_editable = can?(current_user, :admin_note, note)
+- note_editable = can?(current_user, :update_note, note)
 - note_counter = local_assigns.fetch(:note_counter, 0)
 
 %li.timeline-entry.note-wrapper{ id: dom_id(note),

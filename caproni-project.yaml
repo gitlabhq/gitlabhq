@@ -36,12 +36,18 @@ reloaders:
           - "^/etc/gitlab/.*"
         mapping:
           "^(?<path>/.*/config/)gitlab.yml": "${path}/gitlab-sidekiq.yml"
+      # Premailer fetches mailer stylesheets from the local Vite dev server.
+      network:
+        outgoing:
+          ignore_localhost: true
       edit_mode_processes:
         sidekiq:
           # mirrord copies prometheus_multiproc_dir=/metrics from the pod env,
           # but that path (an emptyDir) only exists inside the pod, not on the
           # host machine, so metrics are silently disabled without this override.
-          command: "bash -c 'prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/sidekiq mise exec -- bin/background_jobs start_foreground'"
+          # VITE_ENABLED: without it, mailer layouts fall back to Sprockets,
+          # which can't compile SCSS and fails with "cannot load such file -- sass".
+          command: "bash -c 'prometheus_multiproc_dir=tmp/prometheus_multiproc_dir/sidekiq VITE_ENABLED=true mise exec -- bin/background_jobs start_foreground'"
   gitlab:
     type: mirror
     repository: gitlab

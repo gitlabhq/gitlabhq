@@ -182,10 +182,34 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchTool, feature_catego
       expect(result[:structuredContent].keys).to match_array(%w[branch errors])
 
       branch = result[:structuredContent]['branch']
-      expect(branch.keys).to match_array(%w[name commit])
+      expect(branch.keys).to match_array(%w[name commit web_url])
       expect(branch['name']).to eq('my-feature')
       expect(branch['commit']['sha']).to eq(project.repository.commit('master').id)
+      expect(branch['web_url']).to eq(Gitlab::Routing.url_helpers.project_tree_url(project, 'my-feature'))
       expect(project.repository.branch_exists?('my-feature')).to be true
+
+      # Asserted here rather than in a separate example: the repository is shared
+      # across examples, so a second execute would hit "branch already exists".
+      text = Gitlab::Json::SafeParser.parse(result[:content].first[:text])
+      expect(text.dig('branch', 'web_url')).to eq(branch['web_url'])
+    end
+
+    # A slash is the shape that could break quietly here: project_tree_url keeps it
+    # only because the tree route is a glob. 'feature/foo' itself is unusable in this
+    # spec, because the fixture repository already has a 'feature' branch and git
+    # cannot nest a ref under an existing one.
+    it 'keeps a slash unescaped in the URL of a branch whose name contains one' do
+      params[:branch] = 'mcp/feature-foo'
+
+      result = tool.execute
+
+      expect(result[:isError]).to be(false)
+
+      branch = result[:structuredContent]['branch']
+      expect(branch['name']).to eq('mcp/feature-foo')
+      expect(branch['web_url']).to end_with('/-/tree/mcp/feature-foo')
+      expect(branch['web_url'])
+        .to eq(Gitlab::Routing.url_helpers.project_tree_url(project, 'mcp/feature-foo'))
     end
 
     context 'when the user cannot push code' do
@@ -228,6 +252,20 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchTool, feature_catego
 
         expect(result[:isError]).to be(true)
         expect(result[:content].first[:text]).to include('Branch name is invalid')
+      end
+    end
+
+    # Without the early return, the nil branch would be assigned into and raise
+    # NoMethodError instead of passing the mutation's own payload back.
+    context 'when the mutation reports no error but returns no branch' do
+      it 'passes the payload through without adding a URL' do
+        allow(GitlabSchema).to receive(:execute)
+          .and_return({ 'data' => { 'createBranch' => { 'branch' => nil, 'errors' => [] } } })
+
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]).to eq({ 'branch' => nil, 'errors' => [] })
       end
     end
   end

@@ -152,8 +152,16 @@ RSpec.describe Authz::Organizations::GrantOwnerRoleWorker, feature_category: :sy
           .update_columns(access_level: Gitlab::Access::GUEST)
       end
 
-      it 'does not call IAM' do
+      it 'does not call IAM and logs a run with no owner counted', :aggregate_failures do
         expect(client).not_to receive(:grant_roles)
+        allow(Gitlab::AppLogger).to receive(:info)
+        expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+          'message' => 'Organization admin role sync finished',
+          Labkit::Fields::GL_USER_ID => user.id,
+          'granted_count' => 0,
+          'skipped_instance_admin_count' => 0,
+          'failed_count' => 0
+        ))
 
         perform
       end
@@ -165,8 +173,14 @@ RSpec.describe Authz::Organizations::GrantOwnerRoleWorker, feature_category: :sy
       context 'when the owner row is on their home organization' do
         subject(:perform) { described_class.new.perform(organization.id, admin_owner.id, actor.id) }
 
-        it 'does not call IAM, since the row comes from the admin flag' do
+        it 'does not call IAM and counts the row as an instance admin skip', :aggregate_failures do
           expect(client).not_to receive(:grant_roles)
+          allow(Gitlab::AppLogger).to receive(:info)
+          expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+            Labkit::Fields::GL_USER_ID => admin_owner.id,
+            'granted_count' => 0,
+            'skipped_instance_admin_count' => 1
+          ))
 
           perform
         end
@@ -200,12 +214,19 @@ RSpec.describe Authz::Organizations::GrantOwnerRoleWorker, feature_category: :sy
       context 'when one of the owners is an instance admin homed on this organization' do
         let_it_be(:admin_owner) { create(:admin, organization: organization, owner_of: organization) }
 
-        it 'grants the other owners only' do
+        it 'grants the other owners only and logs the counts for the run', :aggregate_failures do
           expect(client).to receive(:grant_roles) do |inputs, **|
             expect(inputs.map { |input| input[:assignee_id] }).to contain_exactly(actor.id, user.id)
 
             ::Gitlab::Iam::Update::V1::WriteRelationshipsResponse.new
           end
+          allow(Gitlab::AppLogger).to receive(:info)
+          expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+            Labkit::Fields::GL_ORGANIZATION_ID => organization.id,
+            'granted_count' => 2,
+            'skipped_instance_admin_count' => 1,
+            'failed_count' => 0
+          ))
 
           perform
         end
@@ -296,9 +317,11 @@ RSpec.describe Authz::Organizations::GrantOwnerRoleWorker, feature_category: :sy
           )
         end
 
-        it 'logs the failure once per owner in the batch', :aggregate_failures do
+        it 'logs the failure once per owner in the batch and counts them as failed', :aggregate_failures do
           expect(Gitlab::AppLogger).to receive(:error).with(hash_including(Labkit::Fields::GL_USER_ID => actor.id))
           expect(Gitlab::AppLogger).to receive(:error).with(hash_including(Labkit::Fields::GL_USER_ID => user.id))
+          allow(Gitlab::AppLogger).to receive(:info)
+          expect(Gitlab::AppLogger).to receive(:info).with(hash_including('granted_count' => 0, 'failed_count' => 2))
 
           expect { perform }.not_to raise_error
         end

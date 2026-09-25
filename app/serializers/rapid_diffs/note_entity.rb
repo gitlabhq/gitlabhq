@@ -37,7 +37,7 @@ module RapidDiffs
 
     expose :current_user do
       expose :can_edit do |note|
-        can?(current_user, :admin_note, note)
+        can?(current_user, :update_note, note)
       end
       expose :can_award_emoji do |note|
         can?(current_user, :award_emoji, note)

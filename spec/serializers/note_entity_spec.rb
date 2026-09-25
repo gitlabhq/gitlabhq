@@ -25,6 +25,21 @@ RSpec.describe NoteEntity, feature_category: :team_planning do
 
   it_behaves_like 'note entity'
 
+  context 'when the current user is the note author' do
+    # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Persisted records required
+    let_it_be(:project) { create(:project) }
+    let_it_be(:author) { create(:user, developer_of: project) }
+    let_it_be(:authored_note) { create(:note, project: project, author: author) }
+    # rubocop:enable RSpec/FactoryBot/AvoidCreate
+
+    let(:request) { double('request', current_user: author, noteable: authored_note.noteable) }
+    let(:entity) { described_class.new(authored_note, request: request) }
+
+    it 'lets them edit the note' do
+      expect(entity_hash[:current_user][:can_edit]).to be(true)
+    end
+  end
+
   context 'when note from external participant', feature_category: :service_desk do
     let!(:note_metadata) { build(:note_metadata, note: note) }
 

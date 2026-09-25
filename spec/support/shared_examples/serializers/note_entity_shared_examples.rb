@@ -42,6 +42,10 @@ RSpec.shared_examples 'note entity' do
       expect(subject[:report_abuse_path]).to eq(add_category_abuse_reports_path)
     end
 
+    it 'does not let a user who is not the note author edit it' do
+      expect(subject[:current_user][:can_edit]).to be(false)
+    end
+
     describe ':can_resolve_discussion' do
       context 'discussion is resolvable' do
         before do
