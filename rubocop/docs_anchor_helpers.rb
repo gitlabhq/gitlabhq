@@ -6,6 +6,8 @@ module RuboCop
   # Resolves files under doc/ and the heading anchors inside them, for the cops that check
   # links into the documentation.
   module DocsAnchorHelpers
+    MSG_ANCHOR_NOT_FOUND = 'The anchor `#%{anchor}` was not found in `%{file_path}`.'
+
     HEADER_ID = /(?:[ \t]+\{\#([A-Za-z][\w:-]*)\})?/
     ATX_HEADER_MATCH = /^(\#{1,6})(.+?(?:\\#)?)\s*?#*#{HEADER_ID}\s*?\n/
     NON_WORD_RE = /[^\p{Word}\- \t]/

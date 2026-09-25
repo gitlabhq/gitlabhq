@@ -19,6 +19,7 @@ title: Orbit API
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19744) as an [experiment](../policy/development_stages_support.md) in GitLab 18.10 [with a feature flag](../administration/feature_flags/_index.md) named `knowledge_graph`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237959) from experiment to beta in GitLab 19.1.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245620) in GitLab 19.3.
+- [GQL mode introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256465) in GitLab 19.4 with a feature flag named `orbit_gql_queries`. Disabled by default.
 
 {{< /history >}}
 
@@ -37,34 +38,47 @@ responses, see the [interactive API reference](https://api.gitlab.com/rest/#tag/
 The following sections cover query DSL behavior and worked examples that the
 generated reference doesn't show.
 
+## Query mode
+
+Queries require JSON DSL objects by default.
+Enabling `orbit_gql_queries` switches queries to read-only GQL strings and discovery to GQL guidance.
+GQL follows openCypher 9 syntax.
+The flag targets individual users.
+REST and MCP callers cannot override the mode through parameters or headers.
+
 ## Named queries
 
 Prefer `POST /api/v4/orbit/query/:name` over `POST /api/v4/orbit/query` for
 programmatic consumers. A named query's structure lives on the server, so it
 cannot drift from the DSL grammar or ontology.
+Named requests keep JSON envelopes and run templates in the active mode.
 
 ## Query templates
 
 The named query templates listed at `GET /api/v4/orbit/query/templates`
-include the query DSL (`raw_query`) rendered for the authenticated user. The
-rendered DSL is not the same for every user:
+include `raw_query` rendered for the authenticated user:
 
+- Templates contain JSON objects in JSON mode and GQL strings in GQL mode.
 - Identity values, like the ID of the authenticated user, are resolved
   server-side from the request credentials. The same request returns
   different `raw_query` values for different users. Do not cache or share
-  templates across users.
-- Placeholders for caller-supplied values, like the selected nodes in
-  `expand_neighbors`, are filled with server-declared example values. Replace
-  them with real values before you execute the query.
+  templates across users or modes.
+- Invoke parameterized queries by name with their arguments, as the catalog excludes them.
 
 Prefer executing named queries directly over using templates. Use templates
-only where displaying the query DSL text is the goal, such as populating a
+only where displaying the query text is the goal, such as populating a
 query editor or explorer with the text of a preset.
 
 ## Query examples
 
 The following examples show the Orbit query DSL for each query type. All
 examples use `POST /api/v4/orbit/query`.
+
+In GQL mode, pass a GQL string as the `query` value to `POST /api/v4/orbit/query`:
+
+```json
+{"query": "MATCH (u:User {id: 1}) RETURN u LIMIT 1"}
+```
 
 Retrieve a user by username:
 

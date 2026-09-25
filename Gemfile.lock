@@ -944,7 +944,7 @@ GEM
       wikicloth (= 0.8.1)
     gitlab-net-dns (0.15.0)
       logger
-    gitlab-orbit-proto (0.105.2)
+    gitlab-orbit-proto (0.130.0)
       grpc (~> 1.0)
     gitlab-rspec-metrics-exporter (0.2.0)
       logger (>= 1.4, < 2.0)
@@ -2560,7 +2560,7 @@ DEPENDENCIES
   gitlab-markup (~> 2.1.0)
   gitlab-mfe!
   gitlab-net-dns (~> 0.15.0)
-  gitlab-orbit-proto (~> 0.105.0)
+  gitlab-orbit-proto (~> 0.130.0)
   gitlab-policy-store!
   gitlab-rspec!
   gitlab-rspec-metrics-exporter (~> 0.2.0)
@@ -3083,7 +3083,7 @@ CHECKSUMS
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f
   gitlab-mfe (0.1.0)
   gitlab-net-dns (0.15.0) sha256=d229aae205055b86b2ad166981257eb589ce6d6a146aa79b3ea2b1e5d9741f46
-  gitlab-orbit-proto (0.105.2) sha256=e926e9e8103e4e2498bdacd853a305300d49bb8cd20a5c2a407a6ee07c3c5aaf
+  gitlab-orbit-proto (0.130.0) sha256=63ffa41c9a939b4d0eadf7d46c154f1b2f00e6e51488a03b1e6fe34c1db7b449
   gitlab-policy-store (0.1.0)
   gitlab-rspec (0.1.0)
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63

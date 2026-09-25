@@ -35,7 +35,6 @@ module RuboCop
           MSG_FILE_NOT_FOUND = 'This file does not exist: `%{file_path}`.'
           MSG_ANCHOR_NOT_A_STRING = '`help_page_path`\'s `anchor` argument must be passed as a string ' \
             'so that Rubocop can ensure it exists within the linked file.'
-          MSG_ANCHOR_NOT_FOUND = 'The anchor `#%{anchor}` was not found in `%{file_path}`.'
 
           # @!method help_page_path?(node)
           def_node_matcher :help_page_path?, <<~PATTERN

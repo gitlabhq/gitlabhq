@@ -186,6 +186,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /doc-locale/ko-kr/ @gitlab-com/localization/maintainers/tech-docs @gitlab-com/localization/maintainers/korean
 /argo_translation.yml @gitlab-com/localization/maintainers/tech-docs
 /doc-locale/.markdownlint/ @gitlab-com/localization/maintainers/tech-docs
+/.gitlab/.argo/ @gitlab-com/localization/maintainers/tech-docs
 /lib/gitlab/i18n.rb @gitlab-com/localization/maintainers/i18n @gitlab-org/maintainers/rails-backend
 /doc/development/i18n @gitlab-com/localization/maintainers/i18n
 

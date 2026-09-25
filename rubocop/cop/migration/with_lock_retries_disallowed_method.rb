@@ -40,6 +40,8 @@ module RuboCop
           validate_foreign_key
           track_record_deletions
           track_record_deletions_override_table_name
+          track_record_deletions_override_table_name_with_sharding_keys
+          track_record_deletions_with_sharding_keys
           untrack_record_deletions
         ].sort.freeze
 

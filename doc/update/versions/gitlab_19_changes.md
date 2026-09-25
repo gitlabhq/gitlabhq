@@ -76,6 +76,7 @@ Before upgrading to GitLab 19.0, review the following:
 - [19.0.0] - [Container registry S3 storage driver replaced by s3_v2](#container-registry-s3-storage-driver-replaced-by-s3_v2) (Linux package, self-compiled)
 - [19.0.0 - 19.1.0] - [Orphaned `.agents` and `.claude` directories on Linux package RPM installs](#orphaned-agents-and-claude-directories-on-linux-package-rpm-installs) (Linux package)
 - [19.0.0] - [PostgreSQL 17 minimum requirement](#postgresql-17-minimum-requirement)
+- [19.0.0] - [Webhook payload timestamps changed to ISO 8601 format](#webhook-payload-timestamps-changed-to-iso-8601-format)
 - [19.0.0] - [Linux package support for Ubuntu 20.04 discontinued](#linux-package-support-for-ubuntu-2004-discontinued) (Linux package)
 - [19.0.0] - [Redis 6 support removed](#redis-6-support-removed) (Linux package)
 - [19.0.0] - [Mattermost removed from the Linux package](#mattermost-removed-from-the-linux-package) (Linux package)
@@ -418,6 +419,30 @@ The minimum supported version of PostgreSQL is now version 17. Before installing
   [upgrade the packaged PostgreSQL server](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 - If you use an [external PostgreSQL](../../administration/postgresql/external.md) instance,
   upgrade it to PostgreSQL 17.
+
+### Webhook payload timestamps changed to ISO 8601 format
+
+- Affects: All installation methods
+- Affected versions: 19.0.0
+
+Before GitLab 19.0, timestamp values in webhook payloads (for example `object_attributes.created_at`)
+used the format `YYYY-MM-DD HH:MM:SS` followed by a time zone. For example, `2026-04-23 12:30:45 UTC`.
+In GitLab 19.0 and later, these timestamps use ISO 8601 format with millisecond precision and a time zone
+designator. For example, `2026-04-23T12:30:45.123Z`.
+
+This change applies to all timestamps for project webhooks, group webhooks, and
+custom webhook templates, with one exception. Pipeline events keep the previous format
+for the `created_at`, `started_at`, and `finished_at` fields inside `builds[]` and `bridges[]`.
+
+If your webhook receiver parses these timestamp fields, update it to accept ISO 8601 with
+millisecond precision.
+For the format of each field, see
+[webhook events](../../user/project/integrations/webhook_events.md).
+
+This change was introduced in
+[merge request 233400](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233400).
+It is tracked in
+[issue 622832](https://gitlab.com/gitlab-org/gitlab/-/work_items/622832).
 
 ### Geo container repository sync silently skips OCI image index tags
 

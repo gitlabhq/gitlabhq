@@ -24,7 +24,10 @@ import (
 const defaultStreamingTimeout = 30 * time.Second
 const maxStreamingTimeout = 120 * time.Second
 
-const queryTypeNamed = "named"
+const (
+	queryTypeRaw   = "raw"
+	queryTypeNamed = "named"
+)
 
 // SendQuery is a senddata.Injecter that handles GKG graph queries via gRPC.
 type SendQuery struct {
@@ -46,6 +49,7 @@ type sendQueryParams struct {
 	GkgServer      GkgServer `json:"GkgServer"`
 	Query          string    `json:"Query"`
 	QueryType      string    `json:"QueryType,omitempty"`
+	Language       string    `json:"Language,omitempty"`
 	Format         string    `json:"Format"`
 	TimeoutSeconds int       `json:"TimeoutSeconds,omitempty"`
 	McpID          any       `json:"McpId,omitempty"`
@@ -137,9 +141,26 @@ func sendInitialRequest(
 	params sendQueryParams,
 	format orbitpb.ResponseFormat,
 ) bool {
-	queryType := orbitpb.QueryType_QUERY_TYPE_JSON
-	if params.QueryType == queryTypeNamed {
+	var queryType orbitpb.QueryType
+	switch params.QueryType {
+	case "", queryTypeRaw:
+		queryType = orbitpb.QueryType_QUERY_TYPE_JSON
+	case queryTypeNamed:
 		queryType = orbitpb.QueryType_QUERY_TYPE_NAMED
+	default:
+		writeQueryError(w, r, params.McpID, "validation_error", "Invalid query type", "")
+		return false
+	}
+
+	var language orbitpb.QueryLanguage
+	switch params.Language {
+	case "", "json":
+		language = orbitpb.QueryLanguage_QUERY_LANGUAGE_JSON
+	case "gql":
+		language = orbitpb.QueryLanguage_QUERY_LANGUAGE_GQL
+	default:
+		writeQueryError(w, r, params.McpID, "validation_error", "Invalid query language", "")
+		return false
 	}
 
 	initialMsg := &orbitpb.ExecuteQueryMessage{
@@ -148,6 +169,7 @@ func sendInitialRequest(
 				Query:     params.Query,
 				Format:    format,
 				QueryType: queryType,
+				Language:  language,
 			},
 		},
 	}

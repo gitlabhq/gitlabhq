@@ -2169,7 +2169,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_cbff8babb92e"
+              "$ref": "#/components/schemas/RequestBody_c8d16cfa818f"
       x-gitlab-lifecycle: beta
   "/api/v4/orbit/query/{name}":
     post:
@@ -101226,13 +101226,17 @@ components:
             - channel_name
             - token
           nullable: true
-    RequestBody_cbff8babb92e:
+    RequestBody_c8d16cfa818f:
       type: object
       properties:
         query:
-          type: object
-          description: Query DSL object
-          nullable: true
+          oneOf:
+          - type: object
+            nullable: true
+          - type: string
+            nullable: true
+          description: JSON query object, or GQL text when enabled for the current
+            user
         response_format:
           type: string
           enum:

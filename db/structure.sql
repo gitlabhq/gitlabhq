@@ -56710,9 +56710,9 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION vulne
 
 CREATE TRIGGER ai_active_context_connections_loose_fk_trigger AFTER DELETE ON ai_active_context_connections REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER ai_conversation_threads_loose_fk_trigger AFTER DELETE ON ai_conversation_threads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER ai_conversation_threads_loose_fk_trigger AFTER DELETE ON ai_conversation_threads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_organization_deleted_records","column":"organization_id","source":"organization_id"}]');
 
-CREATE TRIGGER approval_policy_rules_loose_fk_trigger AFTER DELETE ON approval_policy_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER approval_policy_rules_loose_fk_trigger AFTER DELETE ON approval_policy_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"security_policy_management_project_id"}]');
 
 CREATE TRIGGER ascp_scans_loose_fk_trigger AFTER DELETE ON ascp_scans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -56746,7 +56746,7 @@ CREATE TRIGGER assign_p_knowledge_graph_code_indexing_tasks_id_trigger BEFORE IN
 
 CREATE TRIGGER assign_zoekt_tasks_id_trigger BEFORE INSERT ON zoekt_tasks FOR EACH ROW EXECUTE FUNCTION assign_zoekt_tasks_id_value();
 
-CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_user_deleted_records","column":"user_id","source":"user_id"}]');
 
 CREATE TRIGGER ci_pipeline_artifacts_loose_fk_trigger AFTER DELETE ON ci_pipeline_artifacts REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -56758,17 +56758,17 @@ ALTER TABLE ci_runner_taggings ENABLE ALWAYS TRIGGER ci_runner_taggings_heal_tag
 
 CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
 
-CREATE TRIGGER ci_secure_files_loose_fk_trigger AFTER DELETE ON ci_secure_files REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER ci_secure_files_loose_fk_trigger AFTER DELETE ON ci_secure_files REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
-CREATE TRIGGER ci_triggers_loose_fk_trigger AFTER DELETE ON ci_triggers REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER ci_triggers_loose_fk_trigger AFTER DELETE ON ci_triggers REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
-CREATE TRIGGER cluster_agents_loose_fk_trigger AFTER DELETE ON cluster_agents REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER cluster_agents_loose_fk_trigger AFTER DELETE ON cluster_agents REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
 CREATE TRIGGER clusters_loose_fk_trigger AFTER DELETE ON clusters REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"},{"table":"loose_foreign_keys_namespace_deleted_records","column":"namespace_id","source":"group_id"},{"table":"loose_foreign_keys_organization_deleted_records","column":"organization_id","source":"organization_id"}]');
 
 CREATE TRIGGER custom_dashboard_search_vector_trigger AFTER INSERT OR UPDATE OF name, description ON custom_dashboards FOR EACH ROW EXECUTE FUNCTION custom_dashboard_search_vector_update();
 
-CREATE TRIGGER dependency_proxy_blobs_loose_fk_trigger AFTER DELETE ON dependency_proxy_blobs REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER dependency_proxy_blobs_loose_fk_trigger AFTER DELETE ON dependency_proxy_blobs REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_namespace_deleted_records","column":"namespace_id","source":"group_id"}]');
 
 CREATE TRIGGER duo_workflows_workflows_loose_fk_trigger AFTER DELETE ON duo_workflows_workflows REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -56804,7 +56804,7 @@ CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE 
 
 CREATE TRIGGER organizations_loose_fk_trigger AFTER DELETE ON organizations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER p_ai_active_context_code_enabled_namespaces_loose_fk_trigger AFTER DELETE ON p_ai_active_context_code_enabled_namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER p_ai_active_context_code_enabled_namespaces_loose_fk_trigger AFTER DELETE ON p_ai_active_context_code_enabled_namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ai_active_context_code_enabled_namespaces', '[{"table":"loose_foreign_keys_namespace_deleted_records","column":"namespace_id","source":"namespace_id"}]');
 
 CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_builds');
 
@@ -56812,15 +56812,15 @@ CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines RE
 
 CREATE TRIGGER p_ci_workloads_loose_fk_trigger AFTER DELETE ON p_ci_workloads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_workloads', '[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
-CREATE TRIGGER packages_debian_project_component_files_loose_fk_trigger AFTER DELETE ON packages_debian_project_component_files REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER packages_debian_project_component_files_loose_fk_trigger AFTER DELETE ON packages_debian_project_component_files REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
-CREATE TRIGGER packages_nuget_symbols_loose_fk_trigger AFTER DELETE ON packages_nuget_symbols REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER packages_nuget_symbols_loose_fk_trigger AFTER DELETE ON packages_nuget_symbols REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
 CREATE TRIGGER packages_package_files_loose_fk_trigger AFTER DELETE ON packages_package_files REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER pool_repositories_loose_fk_trigger AFTER DELETE ON pool_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER pool_repositories_loose_fk_trigger AFTER DELETE ON pool_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_organization_deleted_records","column":"organization_id","source":"organization_id"}]');
 
 CREATE TRIGGER prevent_custom_work_item_type_deletion_if_referenced BEFORE DELETE ON work_item_custom_types FOR EACH ROW EXECUTE FUNCTION work_item_custom_types_integrity_children_check();
 
@@ -56836,9 +56836,9 @@ CREATE TRIGGER project_wiki_repositories_loose_fk_trigger AFTER DELETE ON projec
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
-CREATE TRIGGER security_policies_loose_fk_trigger AFTER DELETE ON security_policies REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER security_policies_loose_fk_trigger AFTER DELETE ON security_policies REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"security_policy_management_project_id"}]');
 
 CREATE TRIGGER set_namespace_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 
@@ -56854,7 +56854,7 @@ CREATE TRIGGER set_user_id_for_gpg_key_subkeys_on_insert_and_update BEFORE INSER
 
 CREATE TRIGGER shards_loose_fk_trigger AFTER DELETE ON shards REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER slsa_attestations_loose_fk_trigger AFTER DELETE ON slsa_attestations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER slsa_attestations_loose_fk_trigger AFTER DELETE ON slsa_attestations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
 CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
 
@@ -56864,7 +56864,7 @@ CREATE TRIGGER table_sync_trigger_57c8465cd7_insert AFTER INSERT ON merge_reques
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER terraform_state_versions_loose_fk_trigger AFTER DELETE ON terraform_state_versions REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER terraform_state_versions_loose_fk_trigger AFTER DELETE ON terraform_state_versions REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_project_deleted_records","column":"project_id","source":"project_id"}]');
 
 CREATE TRIGGER trigger_009314eae986 BEFORE INSERT OR UPDATE ON protected_branch_push_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_009314eae986();
 
@@ -57480,15 +57480,15 @@ CREATE TRIGGER validate_work_item_type_on_insert_or_update_type_visibility_def B
 
 CREATE TRIGGER validate_work_item_type_on_insert_or_update_work_item_user_pref BEFORE INSERT OR UPDATE OF work_item_type_id ON work_item_type_user_preferences FOR EACH ROW EXECUTE FUNCTION validate_work_item_type_id_is_valid();
 
-CREATE TRIGGER virtual_registries_container_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_container_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER virtual_registries_container_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_container_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_namespace_deleted_records","column":"namespace_id","source":"group_id"}]');
 
-CREATE TRIGGER virtual_registries_packages_maven_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_maven_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER virtual_registries_packages_maven_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_maven_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_namespace_deleted_records","column":"namespace_id","source":"group_id"}]');
 
-CREATE TRIGGER virtual_registries_packages_npm_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_npm_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER virtual_registries_packages_npm_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_npm_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_namespace_deleted_records","column":"namespace_id","source":"group_id"}]');
 
 CREATE TRIGGER vulnerabilities_loose_fk_trigger AFTER DELETE ON vulnerabilities REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER work_item_custom_types_loose_fk_trigger AFTER DELETE ON work_item_custom_types REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER work_item_custom_types_loose_fk_trigger AFTER DELETE ON work_item_custom_types REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records('[{"table":"loose_foreign_keys_namespace_deleted_records","column":"namespace_id","source":"namespace_id"},{"table":"loose_foreign_keys_organization_deleted_records","column":"organization_id","source":"organization_id"}]');
 
 ALTER TABLE ONLY ai_conversation_threads
     ADD CONSTRAINT fk_00234c7444 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

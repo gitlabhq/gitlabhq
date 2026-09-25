@@ -36,7 +36,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'ee/app/services/ai/amazon_q/amazon_q_trigger_service.rb'
     - 'ee/app/services/ai/messaging/workspace_project_service.rb'
     - 'ee/lib/ai/catalog/built_in_tool_definitions.rb'
-    - 'ee/lib/api/admin/data_management.rb'
     - 'ee/lib/ee/api/internal/kubernetes.rb'
     - 'ee/lib/ee/gitlab/checks/file_size_limit_check.rb'
     - 'ee/lib/gitlab/ai/catalog/third_party_flows/seeder.rb'

@@ -719,16 +719,20 @@ if [[ -f "$VITE_GDK_JSON" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 6a. Set duo_workflow.service_url before Puma caches config/gitlab.yml at boot.
+# 6a. Set duo_workflow.service_url before Puma and Sidekiq cache their config
+#     at boot. Sidekiq reads config/gitlab-sidekiq.yml instead of gitlab.yml;
+#     without the setting it falls back to the cloud Duo Workflow Service.
 # ---------------------------------------------------------------------------
 
-if [[ -f "$GITLAB_YML" ]] && ! grep -q '^  duo_workflow:' "$GITLAB_YML"; then
-  echo ""
-  echo "==> Setting duo_workflow.service_url in config/gitlab.yml..."
-  awk '/^development:/ && !d {print; print "  duo_workflow:"; print "    service_url: ai-gateway.ai-gateway.svc.cluster.local:50052"; print "    secure: false"; d=1; next} 1' \
-    "$GITLAB_YML" > "$GITLAB_YML.tmp" && mv "$GITLAB_YML.tmp" "$GITLAB_YML"
-  echo "  ✓ config/gitlab.yml duo_workflow.service_url set."
-fi
+for yml in "$GITLAB_YML" "$SIDEKIQ_GITLAB_YML"; do
+  if [[ -f "$yml" ]] && ! grep -q '^  duo_workflow:' "$yml"; then
+    echo ""
+    echo "==> Setting duo_workflow.service_url in config/$(basename "$yml")..."
+    awk '/^development:/ && !d {print; print "  duo_workflow:"; print "    service_url: ai-gateway.ai-gateway.svc.cluster.local:50052"; print "    secure: false"; d=1; next} 1' \
+      "$yml" > "$yml.tmp" && mv "$yml.tmp" "$yml"
+    echo "  ✓ config/$(basename "$yml") duo_workflow.service_url set."
+  fi
+done
 
 # ---------------------------------------------------------------------------
 # 7. Summary

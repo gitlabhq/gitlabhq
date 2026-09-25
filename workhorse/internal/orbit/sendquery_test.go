@@ -802,21 +802,26 @@ func TestInjectQueryTypeSelection(t *testing.T) {
 		name      string
 		address   string
 		queryType string
+		language  string
+		query     string
 		want      orbitpb.QueryType
 	}{
-		{name: "defaults to json", address: "test-query-type-json:50051", queryType: "", want: orbitpb.QueryType_QUERY_TYPE_JSON},
-		{name: "named selects the named query type", address: "test-query-type-named:50051", queryType: "named", want: orbitpb.QueryType_QUERY_TYPE_NAMED},
+		{name: "defaults to json", address: "test-query-type-json:50051", query: `{"nodes":["User"]}`, want: orbitpb.QueryType_QUERY_TYPE_JSON},
+		{name: "explicit json", address: "test-query-type-explicit-json:50051", queryType: "raw", language: "json", query: `{"nodes":["User"]}`, want: orbitpb.QueryType_QUERY_TYPE_JSON},
+		{name: "named JSON", address: "test-query-type-named:50051", queryType: "named", language: "json", query: `{"name":"my_neighbors"}`, want: orbitpb.QueryType_QUERY_TYPE_NAMED},
+		{name: "named GQL", address: "test-named-gql:50051", queryType: "named", language: "gql", query: `{"name":"my_neighbors"}`, want: orbitpb.QueryType_QUERY_TYPE_NAMED},
+		{name: "GQL preserves text", address: "test-query-type-gql:50051", queryType: "raw", language: "gql", query: " MATCH (u:User {name: 'Zoë \\\"雪\\\"'}) RETURN u LIMIT 1\n", want: orbitpb.QueryType_QUERY_TYPE_JSON},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			got := make(chan orbitpb.QueryType, 1)
+			got := make(chan *orbitpb.ExecuteQueryRequest, 1)
 			lis := startMockGKGServer(t, func(stream grpc.BidiStreamingServer[orbitpb.ExecuteQueryMessage, orbitpb.ExecuteQueryMessage]) error {
 				msg, err := stream.Recv()
 				if err != nil {
 					return err
 				}
-				got <- msg.GetRequest().GetQueryType()
+				got <- msg.GetRequest()
 
 				return stream.Send(&orbitpb.ExecuteQueryMessage{
 					Content: &orbitpb.ExecuteQueryMessage_Result{
@@ -832,17 +837,71 @@ func TestInjectQueryTypeSelection(t *testing.T) {
 			sq := NewSendQuery(newTestAPI(t, "http://localhost"), "test-version")
 			sendData := buildSendData(t, sendQueryParams{
 				GkgServer: GkgServer{Address: tc.address},
-				Query:     `{"name":"my_neighbors"}`,
+				Query:     tc.query,
 				QueryType: tc.queryType,
+				Language:  tc.language,
 				Format:    "raw",
 			})
 
 			recorder := httptest.NewRecorder()
 			req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query/my_neighbors", nil)
+			req.Header.Set("X-Gitlab-Orbit-Query-Language", "untrusted")
 			sq.Inject(recorder, req, sendData)
 
 			require.Equal(t, http.StatusOK, recorder.Code)
-			require.Equal(t, tc.want, <-got)
+			request := <-got
+			require.Equal(t, tc.want, request.GetQueryType())
+			language := orbitpb.QueryLanguage_QUERY_LANGUAGE_JSON
+			if tc.language == "gql" {
+				language = orbitpb.QueryLanguage_QUERY_LANGUAGE_GQL
+			}
+			require.Equal(t, language, request.GetLanguage())
+			require.Equal(t, tc.query, request.GetQuery())
+			require.Equal(t, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW, request.GetFormat())
 		})
+	}
+}
+
+func TestSendInitialRequestRejectsUnknownQueryType(t *testing.T) {
+	for _, queryType := range []string{"gql", "invalid", "GQL", "2"} {
+		for _, mcpID := range []any{nil, "mcp-gql"} {
+			t.Run(fmt.Sprintf("%s/%v", queryType, mcpID), func(t *testing.T) {
+				recorder := httptest.NewRecorder()
+				req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
+				ok := sendInitialRequest(req.Context(), recorder, req, nil,
+					sendQueryParams{QueryType: queryType, McpID: mcpID}, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW)
+
+				require.False(t, ok)
+				if mcpID == nil {
+					require.Equal(t, http.StatusBadRequest, recorder.Code)
+					require.JSONEq(t, `{"code":"validation_error","message":"Invalid query type"}`, recorder.Body.String())
+				} else {
+					require.Equal(t, http.StatusOK, recorder.Code)
+					require.JSONEq(t, `{"jsonrpc":"2.0","id":"mcp-gql","result":{"isError":true,"content":[{"type":"text","text":"Invalid query type"}]}}`, recorder.Body.String())
+				}
+			})
+		}
+	}
+}
+
+func TestSendInitialRequestRejectsUnknownLanguage(t *testing.T) {
+	for _, language := range []string{"cypher", "GQL", "JSON", "1"} {
+		for _, mcpID := range []any{nil, "mcp-lang"} {
+			t.Run(fmt.Sprintf("%s/%v", language, mcpID), func(t *testing.T) {
+				recorder := httptest.NewRecorder()
+				req := httptest.NewRequest(http.MethodPost, "/api/v4/orbit/query", nil)
+				ok := sendInitialRequest(req.Context(), recorder, req, nil,
+					sendQueryParams{Language: language, McpID: mcpID}, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW)
+
+				require.False(t, ok)
+				if mcpID == nil {
+					require.Equal(t, http.StatusBadRequest, recorder.Code)
+					require.JSONEq(t, `{"code":"validation_error","message":"Invalid query language"}`, recorder.Body.String())
+				} else {
+					require.Equal(t, http.StatusOK, recorder.Code)
+					require.JSONEq(t, `{"jsonrpc":"2.0","id":"mcp-lang","result":{"isError":true,"content":[{"type":"text","text":"Invalid query language"}]}}`, recorder.Body.String())
+				}
+			})
+		}
 	}
 }

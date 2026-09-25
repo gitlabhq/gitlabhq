@@ -34,7 +34,7 @@ require (
 	gitlab.com/gitlab-org/gitaly/v18 v18.11.11
 	gitlab.com/gitlab-org/labkit v1.64.20
 	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20260907133215-216f117680e2
-	gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb v0.100.0
+	gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb v0.130.0
 	go.uber.org/goleak v1.3.0
 	gocloud.dev v0.46.0
 	golang.org/x/image v0.43.0
