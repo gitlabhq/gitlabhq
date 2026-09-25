@@ -210,6 +210,47 @@ RSpec.describe Gitlab::Diff::LinesUnfolder, feature_category: :code_review_workf
 
   subject { described_class.new(diff_file, position) }
 
+  context 'when the old blob no longer resolves at the recorded base_sha' do
+    let(:position) { build(:text_diff_position, old_line: 43, new_line: 40) }
+
+    before do
+      allow(diff_file).to receive(:old_blob).and_return(nil)
+    end
+
+    it 'bails instead of raising', :aggregate_failures do
+      expect { subject }.not_to raise_error
+      expect(subject.unfold_required?).to be(false)
+      expect(subject.unfolded_diff_lines).to be_nil
+    end
+
+    context 'when the unfold_diff_note_large_blob feature flag is enabled' do
+      before do
+        stub_feature_flags(unfold_diff_note_large_blob: true)
+      end
+
+      it 'bails instead of raising', :aggregate_failures do
+        expect { subject }.not_to raise_error
+        expect(subject.unfold_required?).to be(false)
+        expect(subject.unfolded_diff_lines).to be_nil
+      end
+    end
+
+    # The flag is stubbed explicitly so this keeps exercising the
+    # BlobHelper#lines fallback, which is the branch that used to raise,
+    # even once the flag defaults to enabled.
+    context 'when the unfold_diff_note_large_blob feature flag is disabled' do
+      before do
+        stub_feature_flags(unfold_diff_note_large_blob: false)
+      end
+
+      it 'treats the missing blob as empty instead of raising', :aggregate_failures do
+        expect { subject }.not_to raise_error
+        expect(subject.unfold_required?).to be(false)
+        expect(subject.unfolded_diff_lines).to be_nil
+      end
+    end
+  end
+
   context 'when the old blob is larger than 1 MB (BlobHelper#lines is empty)' do
     let(:old_blob) { Blob.decorate(Gitlab::Git::Blob.new(data: raw_old_blob, size: 2.megabytes)) }
     let(:position) { build(:text_diff_position, old_line: 43, new_line: 40) }

@@ -3,9 +3,9 @@
 module WorkItems
   module SavedViews
     class UpdateService < BaseService
-      # Attributes that change which work items a viewer sees, or how they are laid out. Only these are worth
-      # pushing to other viewers of a shared view; name, description and visibility are not.
-      BROADCAST_ATTRIBUTES = %w[display_settings filter_data sort].freeze
+      # Attributes that change what other viewers of a shared view see: the name shows in the view title and
+      # tabs, the rest change which work items are listed and how.
+      BROADCAST_ATTRIBUTES = %w[name display_settings filter_data sort].freeze
 
       attr_reader :current_user, :saved_view, :params, :container
 

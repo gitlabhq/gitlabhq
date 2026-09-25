@@ -5768,7 +5768,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -5776,9 +5776,7 @@ paths:
         in: path
       - name: package_manager
         required: false
-        description: 'Returns dependencies belonging to specified package managers:
-          bundler, yarn, npm, pnpm, bun, maven, composer, pip, conan, go, nuget, sbt,
-          gradle, pipenv, poetry, setuptools, apk, conda, pub, cargo.'
+        description: Filter results by the specified package manager.
         schema:
           type: array
           items:
@@ -5888,7 +5886,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a188d7937e44"
+              "$ref": "#/components/schemas/RequestBody_1daa2f40139e"
   "/api/v4/project_aliases/{name}":
     get:
       operationId: getApiV4ProjectAliasesName
@@ -5912,7 +5910,7 @@ paths:
       parameters:
       - name: name
         required: true
-        description: The alias of the project
+        description: Name of the alias. Must be unique.
         schema:
           type: string
         in: path
@@ -5934,7 +5932,7 @@ paths:
       parameters:
       - name: name
         required: true
-        description: The alias of the project
+        description: Name of the alias. Must be unique.
         schema:
           type: string
         in: path
@@ -9353,14 +9351,14 @@ paths:
       parameters:
       - name: workspace_host
         required: true
-        description: Host of the workspace being accessed
+        description: Host of the workspace being accessed.
         schema:
           type: string
           nullable: true
         in: query
       - name: user_id
         required: true
-        description: User ID of the user accessing the workspace
+        description: ID of the user accessing the workspace.
         schema:
           type: integer
           nullable: true
@@ -9627,7 +9625,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_90c26864a87c"
+              "$ref": "#/components/schemas/RequestBody_67a88a6636b1"
   "/api/v4/license/usage_export":
     get:
       operationId: getApiV4LicenseUsageExport
@@ -9667,7 +9665,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the GitLab license
+        description: ID of the GitLab license.
         schema:
           type: integer
         in: path
@@ -9687,7 +9685,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the GitLab license
+        description: ID of the GitLab license.
         schema:
           type: integer
         in: path
@@ -9716,7 +9714,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the GitLab license
+        description: ID of the GitLab license.
         schema:
           type: integer
         in: path
@@ -9927,7 +9925,7 @@ paths:
       parameters:
       - name: search
         required: false
-        description: Search for a specific LDAP group
+        description: Search for a specific LDAP group.
         schema:
           type: string
           default: ''
@@ -9954,13 +9952,13 @@ paths:
       parameters:
       - name: provider
         required: true
-        description: The LDAP provider name
+        description: Name of the LDAP provider.
         schema:
           type: string
         in: path
       - name: search
         required: false
-        description: Search for a specific LDAP group
+        description: Search for a specific LDAP group.
         schema:
           type: string
           default: ''
@@ -10655,7 +10653,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5c6d6eacec15"
+              "$ref": "#/components/schemas/RequestBody_fe7b07e787f5"
   "/api/v4/elasticsearch_indexed_namespaces/rollback":
     put:
       operationId: putApiV4ElasticsearchIndexedNamespacesRollback
@@ -10680,7 +10678,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5c6d6eacec15"
+              "$ref": "#/components/schemas/RequestBody_fe7b07e787f5"
   "/api/v4/groups/{id}/related_epic_links":
     get:
       operationId: getApiV4GroupsIdRelatedEpicLinks
@@ -12475,7 +12473,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12483,7 +12481,7 @@ paths:
         in: path
       - name: target_branch
         required: false
-        description: Branch that scoped approval rules apply to
+        description: Branch that scoped approval rules apply to.
         schema:
           type: string
           nullable: true
@@ -12509,7 +12507,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12542,7 +12540,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12576,7 +12574,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13065,7 +13063,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13107,7 +13105,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13140,7 +13138,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13148,7 +13146,7 @@ paths:
         in: path
       - name: approval_rule_id
         required: true
-        description: The ID of an approval rule
+        description: ID of the approval rule.
         schema:
           type: integer
         in: path
@@ -13178,7 +13176,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13212,7 +13210,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13570,7 +13568,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -13603,7 +13601,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -13625,7 +13623,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -13659,13 +13657,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
       - name: runner_id
         required: true
-        description: ID of the runner
+        description: ID of the runner.
         schema:
           type: integer
         in: path
@@ -13687,13 +13685,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
       - name: runner_id
         required: true
-        description: ID of the runner
+        description: ID of the runner.
         schema:
           type: integer
         in: path
@@ -14827,7 +14825,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -14836,7 +14834,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_fe9841796934"
+              "$ref": "#/components/schemas/RequestBody_41568e59f327"
     get:
       operationId: getApiV4GroupsIdBoards
       summary: List all group issue boards in a group
@@ -14898,7 +14896,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -16263,7 +16261,7 @@ paths:
       parameters:
       - name: settings_context_hash
         required: true
-        description: The settings context hash
+        description: Settings context hash.
         schema:
           type: string
         in: path
@@ -16291,7 +16289,7 @@ paths:
       parameters:
       - name: resource_name
         required: true
-        description: Name of the resource such as settings
+        description: Name of the resource such as settings.
         schema:
           type: string
           enum:
@@ -16307,7 +16305,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: ID of the resource to retrieve
+        description: ID of the resource to retrieve.
         schema:
           type: string
         in: path
@@ -16335,13 +16333,13 @@ paths:
       parameters:
       - name: settings_context_hash
         required: true
-        description: The settings context hash
+        description: Settings context hash.
         schema:
           type: string
         in: path
       - name: resource_name
         required: true
-        description: Name of the resource such as settings
+        description: Name of the resource such as settings.
         schema:
           type: string
           enum:
@@ -16357,7 +16355,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: ID of the resource to retrieve
+        description: ID of the resource to retrieve.
         schema:
           type: string
         in: path
@@ -16383,7 +16381,7 @@ paths:
       parameters:
       - name: resource_name
         required: true
-        description: Name of the resource such as settings
+        description: Name of the resource such as settings.
         schema:
           type: string
           enum:
@@ -16414,7 +16412,7 @@ paths:
       parameters:
       - name: resource_name
         required: true
-        description: Name of the resource such as settings
+        description: Name of the resource such as settings.
         schema:
           type: string
           enum:
@@ -16450,13 +16448,13 @@ paths:
       parameters:
       - name: settings_context_hash
         required: true
-        description: The settings context hash
+        description: Settings context hash.
         schema:
           type: string
         in: path
       - name: resource_name
         required: true
-        description: Name of the resource such as settings
+        description: Name of the resource such as settings.
         schema:
           type: string
           enum:
@@ -16487,13 +16485,13 @@ paths:
       parameters:
       - name: settings_context_hash
         required: true
-        description: The settings context hash
+        description: Settings context hash.
         schema:
           type: string
         in: path
       - name: resource_name
         required: true
-        description: Name of the resource such as settings
+        description: Name of the resource such as settings.
         schema:
           type: string
           enum:
@@ -16540,7 +16538,7 @@ paths:
       parameters:
       - name: settings_context_hash
         required: true
-        description: The settings context hash
+        description: Settings context hash.
         schema:
           type: string
         in: path
@@ -16929,14 +16927,14 @@ paths:
         in: query
       - name: skip_ldap
         required: false
-        description: Skip LDAP users
+        description: If `true`, excludes LDAP users from the results.
         schema:
           type: boolean
           default: false
         in: query
       - name: auditors
         required: false
-        description: Filters only auditor users
+        description: If `true`, returns only auditor users.
         schema:
           type: boolean
           default: false
@@ -19113,14 +19111,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: epic_iid
         required: true
-        description: The internal ID of a group’s epic
+        description: Internal ID of the epic.
         schema:
           type: integer
         in: path
@@ -28040,7 +28037,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1f1c1894d905"
+              "$ref": "#/components/schemas/RequestBody_1b5bf1d7a2f9"
   "/api/v4/user_counts":
     get:
       operationId: getApiV4UserCounts
@@ -28112,7 +28109,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2eb3f076a74e"
+              "$ref": "#/components/schemas/RequestBody_9527c171cd9b"
   "/api/v4/usage_data/increment_unique_users":
     post:
       operationId: postApiV4UsageDataIncrementUniqueUsers
@@ -28133,7 +28130,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_2eb3f076a74e"
+              "$ref": "#/components/schemas/RequestBody_9527c171cd9b"
   "/api/v4/usage_data/track_events":
     post:
       operationId: postApiV4UsageDataTrackEvents
@@ -28155,7 +28152,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f7a70312c3cf"
+              "$ref": "#/components/schemas/RequestBody_73e9a9a18525"
   "/api/v4/usage_data/metric_definitions":
     get:
       operationId: getApiV4UsageDataMetricDefinitions
@@ -28179,7 +28176,7 @@ paths:
       parameters:
       - name: include_paths
         required: false
-        description: Include file paths in the metric definitions
+        description: If `true`, includes file paths in the metric definitions.
         schema:
           type: boolean
           nullable: true
@@ -28201,20 +28198,20 @@ paths:
       parameters:
       - name: project_id
         required: true
-        description: The ID of a project
+        description: ID of the project.
         schema:
           type: string
         in: path
       - name: instance_id
         required: false
-        description: The instance ID of Unleash Client
+        description: Instance ID of Unleash Client.
         schema:
           type: string
           nullable: true
         in: query
       - name: app_name
         required: false
-        description: The application name of Unleash Client
+        description: Application name of Unleash Client.
         schema:
           type: string
           nullable: true
@@ -28237,20 +28234,20 @@ paths:
       parameters:
       - name: project_id
         required: true
-        description: The ID of a project
+        description: ID of the project.
         schema:
           type: string
         in: path
       - name: instance_id
         required: false
-        description: The instance ID of Unleash Client
+        description: Instance ID of Unleash Client.
         schema:
           type: string
           nullable: true
         in: query
       - name: app_name
         required: false
-        description: The application name of Unleash Client
+        description: Application name of Unleash Client.
         schema:
           type: string
           nullable: true
@@ -28271,20 +28268,20 @@ paths:
       parameters:
       - name: project_id
         required: true
-        description: The ID of a project
+        description: ID of the project.
         schema:
           type: string
         in: path
       - name: instance_id
         required: false
-        description: The instance ID of Unleash Client
+        description: Instance ID of Unleash Client.
         schema:
           type: string
           nullable: true
         in: query
       - name: app_name
         required: false
-        description: The application name of Unleash Client
+        description: Application name of Unleash Client.
         schema:
           type: string
           nullable: true
@@ -28305,7 +28302,7 @@ paths:
       parameters:
       - name: project_id
         required: true
-        description: The ID of a project
+        description: ID of the project.
         schema:
           type: string
         in: path
@@ -28314,7 +28311,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e90aaad40751"
+              "$ref": "#/components/schemas/RequestBody_9898d466447b"
   "/api/v4/feature_flags/unleash/{project_id}/client/metrics":
     post:
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientMetrics
@@ -28331,7 +28328,7 @@ paths:
       parameters:
       - name: project_id
         required: true
-        description: The ID of a project
+        description: ID of the project.
         schema:
           type: string
         in: path
@@ -28340,7 +28337,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e90aaad40751"
+              "$ref": "#/components/schemas/RequestBody_9898d466447b"
   "/api/v4/topics":
     get:
       operationId: getApiV4Topics
@@ -28539,7 +28536,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -28547,13 +28544,13 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
       - name: serial
         required: true
-        description: The version number of the state
+        description: Version number of the Terraform state.
         schema:
           type: integer
         in: path
@@ -28575,7 +28572,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -28583,13 +28580,13 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
       - name: serial
         required: true
-        description: The version number of the state
+        description: Version number of the Terraform state.
         schema:
           type: integer
         in: path
@@ -29202,19 +29199,19 @@ paths:
       parameters:
       - name: module_namespace
         required: true
-        description: Group's ID or slug
+        description: Group's ID or slug.
         schema:
           type: string
         in: path
       - name: module_name
         required: true
-        description: The module name
+        description: Name of the module.
         schema:
           type: string
         in: path
       - name: module_system
         required: true
-        description: The module system (provider)
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -29237,19 +29234,19 @@ paths:
       parameters:
       - name: module_namespace
         required: true
-        description: Group's ID or slug
+        description: Group's ID or slug.
         schema:
           type: string
         in: path
       - name: module_name
         required: true
-        description: The module name
+        description: Name of the module.
         schema:
           type: string
         in: path
       - name: module_system
         required: true
-        description: The module system (provider)
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -29276,19 +29273,19 @@ paths:
       parameters:
       - name: module_namespace
         required: true
-        description: Group's ID or slug
+        description: Group's ID or slug.
         schema:
           type: string
         in: path
       - name: module_name
         required: true
-        description: The module name
+        description: Name of the module.
         schema:
           type: string
         in: path
       - name: module_system
         required: true
-        description: The module system (provider)
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -29311,19 +29308,19 @@ paths:
       parameters:
       - name: module_namespace
         required: true
-        description: Group's ID or slug
+        description: Group's ID or slug.
         schema:
           type: string
         in: path
       - name: module_name
         required: true
-        description: The module name
+        description: Name of the module.
         schema:
           type: string
         in: path
       - name: module_system
         required: true
-        description: The module system (provider)
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -29357,19 +29354,19 @@ paths:
       parameters:
       - name: module_namespace
         required: true
-        description: Group's ID or slug
+        description: Group's ID or slug.
         schema:
           type: string
         in: path
       - name: module_name
         required: true
-        description: The module name
+        description: Name of the module.
         schema:
           type: string
         in: path
       - name: module_system
         required: true
-        description: The module system (provider)
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -29402,19 +29399,19 @@ paths:
       parameters:
       - name: module_namespace
         required: true
-        description: Group's ID or slug
+        description: Group's ID or slug.
         schema:
           type: string
         in: path
       - name: module_name
         required: true
-        description: The module name
+        description: Name of the module.
         schema:
           type: string
         in: path
       - name: module_system
         required: true
-        description: The module system (provider)
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -38915,7 +38912,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38959,7 +38956,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38970,7 +38967,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_4b4287109dd0"
+              "$ref": "#/components/schemas/RequestBody_189100f1ae0e"
   "/api/v4/projects/{id}/hooks/{hook_id}":
     get:
       operationId: getApiV4ProjectsIdHooksHookId
@@ -38992,7 +38989,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -39000,7 +38997,7 @@ paths:
         in: path
       - name: hook_id
         required: true
-        description: The ID of a project hook
+        description: ID of the project webhook.
         schema:
           type: integer
         in: path
@@ -39026,7 +39023,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -39034,7 +39031,7 @@ paths:
         in: path
       - name: hook_id
         required: true
-        description: The ID of the project hook
+        description: ID of the project webhook.
         schema:
           type: integer
         in: path
@@ -39043,7 +39040,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a04091578d2e"
+              "$ref": "#/components/schemas/RequestBody_1197d07af02c"
     delete:
       operationId: deleteApiV4ProjectsIdHooksHookId
       summary: Delete a project webhook
@@ -39064,7 +39061,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -39072,7 +39069,7 @@ paths:
         in: path
       - name: hook_id
         required: true
-        description: The ID of the project hook
+        description: ID of the project webhook.
         schema:
           type: integer
         in: path
@@ -70427,7 +70424,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70435,8 +70432,8 @@ paths:
         in: path
       - name: ref_name
         required: false
-        description: The name of a repository branch or tag, if not given the default
-          branch is used
+        description: Name of a repository branch, tag, or revision range. Uses the
+          default branch if not given.
         schema:
           type: string
           nullable: true
@@ -70444,7 +70441,7 @@ paths:
         example: v1.1.0
       - name: since
         required: false
-        description: Only commits after or on this date will be returned
+        description: Only commits after or on this date are returned.
         schema:
           type: string
           format: date-time
@@ -70453,7 +70450,7 @@ paths:
         example: '2021-09-20T11:50:22.001Z'
       - name: until
         required: false
-        description: Only commits before or on this date will be returned
+        description: Only commits before or on this date are returned.
         schema:
           type: string
           format: date-time
@@ -70462,7 +70459,7 @@ paths:
         example: '2021-09-20T11:50:22.001Z'
       - name: path
         required: false
-        description: The file path
+        description: File path relative to the repository.
         schema:
           type: string
           nullable: true
@@ -70470,14 +70467,17 @@ paths:
         example: README.md
       - name: follow
         required: false
-        description: Follow file renames when filtering by path
+        description: If `true`, follows file renames when filtering commits by `path`
+          and returns commits for the file even if it was renamed. If `false`, returns
+          only commits where the file existed at its current path. Used only when
+          `path` specifies a single file.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: author
         required: false
-        description: Search commits by commit author
+        description: Filter commits by commit author.
         schema:
           type: string
           nullable: true
@@ -70485,28 +70485,31 @@ paths:
         example: John Smith
       - name: all
         required: false
-        description: Every commit will be returned
+        description: If `true`, retrieves every commit from the repository and ignores
+          the `ref_name` parameter.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: with_stats
         required: false
-        description: Stats about each commit will be added to the response
+        description: If `true`, includes statistics for each commit in the response.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: first_parent
         required: false
-        description: Only include the first parent of merges
+        description: If `true`, follows only the first parent commit upon seeing a
+          merge commit.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: order
         required: false
-        description: List commits in order
+        description: Order in which to list commits, either reverse chronological
+          or [topological](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order).
         schema:
           type: string
           enum:
@@ -70516,7 +70519,8 @@ paths:
         in: query
       - name: trailers
         required: false
-        description: Parse and include Git trailers for every commit
+        description: If `true`, parses and includes [Git trailers](https://git-scm.com/docs/git-interpret-trailers)
+          for every commit.
         schema:
           type: boolean
           default: false
@@ -70539,7 +70543,7 @@ paths:
         example: 20
       - name: pagination
         required: false
-        description: Specify the pagination method
+        description: Specify the pagination method.
         schema:
           type: string
           enum:
@@ -70549,7 +70553,7 @@ paths:
         in: query
       - name: page_token
         required: false
-        description: Record from which to start the keyset pagination
+        description: Record from which to start the keyset pagination.
         schema:
           type: string
           nullable: true
@@ -70578,7 +70582,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70612,7 +70616,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70620,13 +70624,13 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit sha, or the name of a branch or tag
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
         in: path
       - name: stats
         required: false
-        description: Include commit stats
+        description: If `true`, includes commit statistics in the response.
         schema:
           type: boolean
           default: true
@@ -70652,7 +70656,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70660,7 +70664,7 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit sha, or the name of a branch or tag
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
         in: path
@@ -70709,7 +70713,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70733,7 +70737,7 @@ paths:
         example: 20
       - name: sha
         required: true
-        description: A commit sha, or the name of a branch or tag
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
         in: path
@@ -70759,7 +70763,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70767,8 +70771,7 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit sha, or the name of a branch or tag on which to post
-          a comment
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
         in: path
@@ -70777,7 +70780,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_61c505dac8bc"
+              "$ref": "#/components/schemas/RequestBody_3be31bc0ca07"
   "/api/v4/projects/{id}/repository/commits/{sha}/sequence":
     get:
       operationId: getApiV4ProjectsIdRepositoryCommitsShaSequence
@@ -70799,7 +70802,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70807,13 +70810,14 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit SHA
+        description: Commit SHA.
         schema:
           type: string
         in: path
       - name: first_parent
         required: false
-        description: Only include the first parent of merges
+        description: If `true`, follows only the first parent commit upon seeing a
+          merge commit.
         schema:
           type: boolean
           default: false
@@ -70839,7 +70843,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70847,7 +70851,7 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit sha, or the name of a branch or tag to be cherry-picked
+        description: Commit SHA, or name of a repository branch or tag, to cherry-pick.
         schema:
           type: string
         in: path
@@ -70856,7 +70860,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_55d9a3c34efb"
+              "$ref": "#/components/schemas/RequestBody_db5626e8d17c"
   "/api/v4/projects/{id}/repository/commits/{sha}/revert":
     post:
       operationId: postApiV4ProjectsIdRepositoryCommitsShaRevert
@@ -70878,7 +70882,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70886,7 +70890,7 @@ paths:
         in: path
       - name: sha
         required: true
-        description: Commit SHA to revert
+        description: Commit SHA to revert.
         schema:
           type: string
         in: path
@@ -70895,7 +70899,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_8e366f151024"
+              "$ref": "#/components/schemas/RequestBody_7430f3dd907e"
   "/api/v4/projects/{id}/repository/commits/{sha}/refs":
     get:
       operationId: getApiV4ProjectsIdRepositoryCommitsShaRefs
@@ -70919,7 +70923,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70927,13 +70931,13 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit sha
+        description: Commit SHA.
         schema:
           type: string
         in: path
       - name: type
         required: false
-        description: Scope
+        description: Type of references to return for the commit.
         schema:
           type: string
           enum:
@@ -70979,7 +70983,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70987,14 +70991,15 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit sha, or the name of a branch or tag on which to find
-          Merge Requests
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
         in: path
       - name: state
         required: false
-        description: Filter merge-requests by state
+        description: 'Filter merge requests by state: `opened`, `closed`, `locked`,
+          or `merged`. If omitted, merge requests of all states are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191169)
+          in GitLab 18.2.'
         schema:
           type: string
           nullable: true
@@ -71038,7 +71043,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -71046,7 +71051,7 @@ paths:
         in: path
       - name: sha
         required: true
-        description: A commit sha, or the name of a branch or tag
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
         in: path
@@ -76106,7 +76111,8 @@ paths:
         in: query
       - name: repository_storage
         required: false
-        description: Filter by repository storage used by the group
+        description: Filter by repository storage used by the group. Administrators
+          only. Premium and Ultimate only.
         schema:
           type: string
           nullable: true
@@ -76740,7 +76746,8 @@ paths:
         in: query
       - name: with_security_reports
         required: false
-        description: Return only projects having security report artifacts present
+        description: If `true`, returns only projects that have security report artifacts
+          present in any of their builds. Ultimate only.
         schema:
           type: boolean
           default: false
@@ -77037,7 +77044,8 @@ paths:
         in: query
       - name: repository_storage
         required: false
-        description: Filter by repository storage used by the group
+        description: Filter by repository storage used by the group. Administrators
+          only. Premium and Ultimate only.
         schema:
           type: string
           nullable: true
@@ -77216,7 +77224,8 @@ paths:
         in: query
       - name: repository_storage
         required: false
-        description: Filter by repository storage used by the group
+        description: Filter by repository storage used by the group. Administrators
+          only. Premium and Ultimate only.
         schema:
           type: string
           nullable: true
@@ -81598,7 +81607,7 @@ paths:
       parameters:
       - name: database_name
         required: true
-        description: The database name
+        description: Name of the database.
         schema:
           type: string
           enum:
@@ -81608,7 +81617,7 @@ paths:
         in: path
       - name: table_name
         required: true
-        description: The table name
+        description: Name of the table.
         schema:
           type: string
         in: path
@@ -102981,17 +102990,17 @@ components:
                 description: The number of approvals required for this rule
                 default: 1
           nullable: true
-    RequestBody_a188d7937e44:
+    RequestBody_1daa2f40139e:
       type: object
       properties:
         project_id:
           type: string
-          description: The ID or URL-encoded path of the project
+          description: ID or URL-encoded path of the project.
           example: gitlab-org/gitlab
           nullable: true
         name:
           type: string
-          description: The alias of the project
+          description: Name of the alias. Must be unique.
           example: gitlab
           nullable: true
       required:
@@ -104574,12 +104583,12 @@ components:
           description: Only mirror branches with names that match this regex. Mutually
             exclusive with `only_mirror_protected_branches`.
           nullable: true
-    RequestBody_90c26864a87c:
+    RequestBody_67a88a6636b1:
       type: object
       properties:
         license:
           type: string
-          description: The license string
+          description: License string.
           nullable: true
       required:
       - license
@@ -105041,14 +105050,15 @@ components:
           nullable: true
       required:
       - variant
-    RequestBody_5c6d6eacec15:
+    RequestBody_fe7b07e787f5:
       type: object
       properties:
         percentage:
           type: integer
           minimum: 0
           maximum: 100
-          description: Percentage of namespaces to rollout Elasticsearch for
+          description: Percentage of namespaces to enable or disable Elasticsearch
+            indexing for.
         plan:
           type: string
           enum:
@@ -105061,7 +105071,7 @@ components:
           - ultimate_trial_paid_customer
           - premium_trial
           - opensource
-          description: Subscription tier to rollout Elasticsearch for
+          description: Subscription tier to rollout Elasticsearch for.
           minLength: 1
       required:
       - percentage
@@ -105906,12 +105916,12 @@ components:
           type: boolean
           description: Read the user list and user details in the Admin area.
           default: false
-    RequestBody_fe9841796934:
+    RequestBody_41568e59f327:
       type: object
       properties:
         name:
           type: string
-          description: The board name
+          description: Name of the board.
           nullable: true
       required:
       - name
@@ -110959,6 +110969,15 @@ components:
           nullable: true
       required:
       - body
+    RequestBody_fe9841796934:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The board name
+          nullable: true
+      required:
+      - name
     RequestBody_4439a3ef1900:
       type: object
       properties:
@@ -111036,7 +111055,7 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_1f1c1894d905:
+    RequestBody_1b5bf1d7a2f9:
       type: object
       properties:
         runner_type:
@@ -111099,51 +111118,55 @@ components:
         token_expires_at:
           type: string
           format: date-time
-          description: The expiration time for the runner authentication token (ISO
-            8601 format). Must be between 5 minutes and 15 days in the future, and
-            cannot exceed instance/group/project limits.
+          description: Expiration time for the runner authentication token in ISO
+            8601 format. Must be between 5 minutes and 15 days in the future and cannot
+            exceed instance, group, or project-level limits. Only applies to the initial
+            token. Rotated tokens use the computed expiry from settings. Premium and
+            Ultimate only.
           nullable: true
         token_rotation_deadline:
           type: string
           format: date-time
-          description: The deadline for token rotation (ISO 8601 format). Must be
-            specified with token_expires_at and be <= token_expires_at.
+          description: Deadline after which token rotation requests are rejected.
+            Requires `token_expires_at` and must be less than or equal to it. Setting
+            both to the same value disables token rotation. Cleared on successful
+            rotation. Premium and Ultimate only.
           nullable: true
       required:
       - runner_type
       - group_id
       - project_id
-    RequestBody_2eb3f076a74e:
+    RequestBody_9527c171cd9b:
       type: object
       properties:
         event:
           type: string
-          description: The event name that should be tracked
+          description: Event name that should be tracked.
           example: i_quickactions_page
           nullable: true
       required:
       - event
-    RequestBody_f7a70312c3cf:
+    RequestBody_73e9a9a18525:
       type: object
       properties:
         events:
           type: array
           items:
             type: object
-          description: An array of internal events. Maximum 50 events allowed.
+          description: Array of internal events to track. Maximum of 50 events.
           nullable: true
       required:
       - events
-    RequestBody_e90aaad40751:
+    RequestBody_9898d466447b:
       type: object
       properties:
         instance_id:
           type: string
-          description: The instance ID of Unleash Client
+          description: Instance ID of Unleash Client.
           nullable: true
         app_name:
           type: string
-          description: The application name of Unleash Client
+          description: Application name of Unleash Client.
           nullable: true
     RequestBody_f15ee8951d80:
       type: object
@@ -116283,7 +116306,7 @@ components:
       - access_key_id
       - secret_access_key
       - path
-    RequestBody_4b4287109dd0:
+    RequestBody_189100f1ae0e:
       type: object
       properties:
         url:
@@ -116293,102 +116316,110 @@ components:
           nullable: true
         name:
           type: string
-          description: Name of the hook
+          description: Name of the project webhook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         description:
           type: string
-          description: Description of the hook
+          description: Description of the project webhook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         push_events:
           type: boolean
-          description: Trigger hook on push events
+          description: If `true`, triggers the project webhook on push events.
           nullable: true
         issues_events:
           type: boolean
-          description: Trigger hook on issues events
+          description: If `true`, triggers the project webhook on issue events.
           nullable: true
         confidential_issues_events:
           type: boolean
-          description: Trigger hook on confidential issues events
+          description: If `true`, triggers the project webhook on confidential issue
+            events.
           nullable: true
         merge_requests_events:
           type: boolean
-          description: Trigger hook on merge request events
+          description: If `true`, triggers the project webhook on merge request events.
           nullable: true
         tag_push_events:
           type: boolean
-          description: Trigger hook on tag push events
+          description: If `true`, triggers the project webhook on tag push events.
           nullable: true
         note_events:
           type: boolean
-          description: Trigger hook on note (comment) events
+          description: If `true`, triggers the project webhook on note events.
           nullable: true
         confidential_note_events:
           type: boolean
-          description: Trigger hook on confidential note (comment) events
+          description: If `true`, triggers the project webhook on confidential note
+            events.
           nullable: true
         job_events:
           type: boolean
-          description: Trigger hook on job events
+          description: If `true`, triggers the project webhook on job events.
           nullable: true
         pipeline_events:
           type: boolean
-          description: Trigger hook on pipeline events
+          description: If `true`, triggers the project webhook on pipeline events.
           nullable: true
         wiki_page_events:
           type: boolean
-          description: Trigger hook on wiki events
+          description: If `true`, triggers the project webhook on wiki page events.
           nullable: true
         deployment_events:
           type: boolean
-          description: Trigger hook on deployment events
+          description: If `true`, triggers the project webhook on deployment events.
           nullable: true
         feature_flag_events:
           type: boolean
-          description: Trigger hook on feature flag events
+          description: If `true`, triggers the project webhook on feature flag events.
           nullable: true
         releases_events:
           type: boolean
-          description: Trigger hook on release events
+          description: If `true`, triggers the project webhook on release events.
           nullable: true
         milestone_events:
           type: boolean
-          description: Trigger hook on milestone events
+          description: If `true`, triggers the project webhook on milestone events.
           nullable: true
         emoji_events:
           type: boolean
-          description: Trigger hook on emoji events
+          description: If `true`, triggers the project webhook on emoji events.
           nullable: true
         resource_access_token_events:
           type: boolean
-          description: Trigger hook on project access token expiry events
+          description: If `true`, triggers the project webhook on project access token
+            expiry events.
           nullable: true
         resource_deploy_token_events:
           type: boolean
-          description: Trigger hook on deploy token expiry events
+          description: If `true`, triggers the project webhook on project deploy token
+            expiry events.
           nullable: true
         enable_ssl_verification:
           type: boolean
-          description: Do SSL verification when triggering the hook
+          description: If `true`, verifies the SSL certificate when the webhook is
+            triggered.
           nullable: true
         token:
           type: string
-          description: Secret token to validate received payloads; this will not be
-            returned in the response
+          description: Secret token used to validate received payloads. Not returned
+            in the response, and changing the webhook URL resets it.
           nullable: true
         signing_token:
           type: string
-          description: HMAC signing token used to compute the webhook-signature header.
-            Must be in whsec_<base64> format encoding a 32-byte key. Not returned
-            in the response
+          description: HMAC signing token used to compute the `webhook-signature`
+            header. Must be in `whsec_<base64>` format encoding a 32-byte key, and
+            is not returned in the response. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)
+            in GitLab 19.0.
           nullable: true
         push_events_branch_filter:
           type: string
-          description: Trigger hook on specified branch only
+          description: Filter push events by branch name.
           nullable: true
         custom_webhook_template:
           type: string
-          description: Custom template for the request payload
+          description: Custom template for the webhook request payload.
           nullable: true
         branch_filter_strategy:
           type: string
@@ -116396,18 +116427,19 @@ components:
           - wildcard
           - regex
           - all_branches
-          description: Filter push events by branch. Possible values are `wildcard`
-            (default), `regex`, and `all_branches`
+          description: Filter push events by branch. Defaults to `wildcard`.
           nullable: true
         vulnerability_events:
           type: boolean
-          description: Trigger hook on vulnerability events
+          description: If `true`, triggers the project webhook on vulnerability events.
           nullable: true
         duo_flow_callback_enabled:
           type: boolean
-          description: Allow Duo Agent Platform flows to send lifecycle and progress
-            events to this webhook. A flow must reference this webhook's ID as callback_hook_id
-            when it starts
+          description: If `true`, allows Duo Agent Platform flows to send lifecycle
+            and progress events to this project webhook. A flow must reference the
+            webhook's ID as `callback_hook_id` when it starts. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149)
+            in GitLab 19.4 [with a feature flag](https://docs.gitlab.com/administration/feature_flags/)
+            named `duo_flow_callback_hooks`. Disabled by default.
           nullable: true
         url_variables:
           type: array
@@ -116451,7 +116483,7 @@ components:
           nullable: true
       required:
       - url
-    RequestBody_a04091578d2e:
+    RequestBody_1197d07af02c:
       type: object
       properties:
         url:
@@ -116460,102 +116492,110 @@ components:
           nullable: true
         name:
           type: string
-          description: Name of the hook
+          description: Name of the project webhook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         description:
           type: string
-          description: Description of the hook
+          description: Description of the project webhook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         push_events:
           type: boolean
-          description: Trigger hook on push events
+          description: If `true`, triggers the project webhook on push events.
           nullable: true
         issues_events:
           type: boolean
-          description: Trigger hook on issues events
+          description: If `true`, triggers the project webhook on issue events.
           nullable: true
         confidential_issues_events:
           type: boolean
-          description: Trigger hook on confidential issues events
+          description: If `true`, triggers the project webhook on confidential issue
+            events.
           nullable: true
         merge_requests_events:
           type: boolean
-          description: Trigger hook on merge request events
+          description: If `true`, triggers the project webhook on merge request events.
           nullable: true
         tag_push_events:
           type: boolean
-          description: Trigger hook on tag push events
+          description: If `true`, triggers the project webhook on tag push events.
           nullable: true
         note_events:
           type: boolean
-          description: Trigger hook on note (comment) events
+          description: If `true`, triggers the project webhook on note events.
           nullable: true
         confidential_note_events:
           type: boolean
-          description: Trigger hook on confidential note (comment) events
+          description: If `true`, triggers the project webhook on confidential note
+            events.
           nullable: true
         job_events:
           type: boolean
-          description: Trigger hook on job events
+          description: If `true`, triggers the project webhook on job events.
           nullable: true
         pipeline_events:
           type: boolean
-          description: Trigger hook on pipeline events
+          description: If `true`, triggers the project webhook on pipeline events.
           nullable: true
         wiki_page_events:
           type: boolean
-          description: Trigger hook on wiki events
+          description: If `true`, triggers the project webhook on wiki page events.
           nullable: true
         deployment_events:
           type: boolean
-          description: Trigger hook on deployment events
+          description: If `true`, triggers the project webhook on deployment events.
           nullable: true
         feature_flag_events:
           type: boolean
-          description: Trigger hook on feature flag events
+          description: If `true`, triggers the project webhook on feature flag events.
           nullable: true
         releases_events:
           type: boolean
-          description: Trigger hook on release events
+          description: If `true`, triggers the project webhook on release events.
           nullable: true
         milestone_events:
           type: boolean
-          description: Trigger hook on milestone events
+          description: If `true`, triggers the project webhook on milestone events.
           nullable: true
         emoji_events:
           type: boolean
-          description: Trigger hook on emoji events
+          description: If `true`, triggers the project webhook on emoji events.
           nullable: true
         resource_access_token_events:
           type: boolean
-          description: Trigger hook on project access token expiry events
+          description: If `true`, triggers the project webhook on project access token
+            expiry events.
           nullable: true
         resource_deploy_token_events:
           type: boolean
-          description: Trigger hook on deploy token expiry events
+          description: If `true`, triggers the project webhook on project deploy token
+            expiry events.
           nullable: true
         enable_ssl_verification:
           type: boolean
-          description: Do SSL verification when triggering the hook
+          description: If `true`, verifies the SSL certificate when the webhook is
+            triggered.
           nullable: true
         token:
           type: string
-          description: Secret token to validate received payloads; this will not be
-            returned in the response
+          description: Secret token used to validate received payloads. Not returned
+            in the response, and changing the webhook URL resets it.
           nullable: true
         signing_token:
           type: string
-          description: HMAC signing token used to compute the webhook-signature header.
-            Must be in whsec_<base64> format encoding a 32-byte key. Not returned
-            in the response
+          description: HMAC signing token used to compute the `webhook-signature`
+            header. Must be in `whsec_<base64>` format encoding a 32-byte key, and
+            is not returned in the response. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)
+            in GitLab 19.0.
           nullable: true
         push_events_branch_filter:
           type: string
-          description: Trigger hook on specified branch only
+          description: Filter push events by branch name.
           nullable: true
         custom_webhook_template:
           type: string
-          description: Custom template for the request payload
+          description: Custom template for the webhook request payload.
           nullable: true
         branch_filter_strategy:
           type: string
@@ -116563,18 +116603,19 @@ components:
           - wildcard
           - regex
           - all_branches
-          description: Filter push events by branch. Possible values are `wildcard`
-            (default), `regex`, and `all_branches`
+          description: Filter push events by branch. Defaults to `wildcard`.
           nullable: true
         vulnerability_events:
           type: boolean
-          description: Trigger hook on vulnerability events
+          description: If `true`, triggers the project webhook on vulnerability events.
           nullable: true
         duo_flow_callback_enabled:
           type: boolean
-          description: Allow Duo Agent Platform flows to send lifecycle and progress
-            events to this webhook. A flow must reference this webhook's ID as callback_hook_id
-            when it starts
+          description: If `true`, allows Duo Agent Platform flows to send lifecycle
+            and progress events to this project webhook. A flow must reference the
+            webhook's ID as `callback_hook_id` when it starts. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149)
+            in GitLab 19.4 [with a feature flag](https://docs.gitlab.com/administration/feature_flags/)
+            named `duo_flow_callback_hooks`. Disabled by default.
           nullable: true
         url_variables:
           type: array
@@ -122962,22 +123003,22 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_61c505dac8bc:
+    RequestBody_3be31bc0ca07:
       type: object
       properties:
         note:
           type: string
-          description: The text of the comment
+          description: Text of the comment.
           example: Nice code!
           nullable: true
         path:
           type: string
-          description: The file path
+          description: File path relative to the repository.
           example: doc/update/5.4-to-6.0.md
           nullable: true
         line:
           type: integer
-          description: The line number
+          description: Line number where the comment should be placed.
           example: 11
           nullable: true
         line_type:
@@ -122985,43 +123026,43 @@ components:
           enum:
           - new
           - old
-          description: The type of the line
+          description: Line type.
           minLength: 1
           default: new
       required:
       - note
       - line
       - line_type
-    RequestBody_55d9a3c34efb:
+    RequestBody_db5626e8d17c:
       type: object
       properties:
         branch:
           type: string
-          description: The name of the branch
+          description: Name of the branch.
           example: master
           nullable: true
         dry_run:
           type: boolean
-          description: Does not commit any changes
+          description: If `true`, does not commit any changes.
           default: false
         message:
           type: string
-          description: A custom commit message to use for the picked commit
+          description: Custom commit message to use for the new commit.
           example: Initial commit
           nullable: true
       required:
       - branch
-    RequestBody_8e366f151024:
+    RequestBody_7430f3dd907e:
       type: object
       properties:
         branch:
           type: string
-          description: Target branch name
+          description: Name of the target branch.
           example: master
           nullable: true
         dry_run:
           type: boolean
-          description: Does not commit any changes
+          description: If `true`, does not commit any changes.
           default: false
       required:
       - branch

@@ -18,7 +18,7 @@ developer perspective and includes technical details.
 
 On GitLab.com, the `governing_namespace` [method](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/concerns/ai/user_authorizable.rb)
 determines the authoritative namespace for GitLab Duo usage-based billing and governance in a user's request context.
-Governing namespace is not applicable to self-managed or dedicated instances.
+Governing namespace is not applicable to GitLab Self-Managed or dedicated instances.
 
 The `governing_namespace` method follows this decision process:
 
@@ -271,13 +271,13 @@ Instance administrators can:
 
 ##### License Tier Differences in Self-Managed and Dedicated Instances
 
-The same feature differentiation between GitLab Duo Core, GitLab Duo Pro, and GitLab Duo Enterprise applies to self-managed and dedicated instances:
+The same feature differentiation between GitLab Duo Core, GitLab Duo Pro, and GitLab Duo Enterprise applies to GitLab Self-Managed and dedicated instances:
 
 - **GitLab Duo Core**: Basic AI capabilities limited to IDE use cases and general coding assistance
 - **GitLab Duo Pro**: Enhanced AI capabilities with broader feature access
 - **GitLab Duo Enterprise**: Comprehensive AI capabilities with additional enterprise controls
 
-Self-managed instances have additional configuration options for integrating with self-hosted AI models and controlling feature behavior.
+GitLab Self-Managed instances have additional configuration options for integrating with self-hosted AI models and controlling feature behavior.
 
 This flow diagram shows how GitLab Duo feature availability works on non-GitLab.com
 instances with GitLab Duo Core settings taken into consideration:
@@ -307,7 +307,7 @@ flowchart TD
 
 #### GitLab Self-Managed and Dedicated Settings Pages
 
-The following settings pages are available for configuring GitLab Duo on self-managed and dedicated instances:
+The following settings pages are available for configuring GitLab Duo on GitLab Self-Managed and dedicated instances:
 
 ##### Instance Admin Settings
 

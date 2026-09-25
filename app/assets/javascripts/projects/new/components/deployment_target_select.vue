@@ -17,10 +17,10 @@ const trackingMixin = Tracking.mixin({ label: DEPLOYMENT_TARGET_LABEL });
 export default {
   name: 'DeploymentTargetSelect',
   i18n: {
-    deploymentTargetLabel: s__('Deployment Target|Project deployment target (optional)'),
-    defaultOption: s__('Deployment Target|Select the deployment target'),
+    deploymentTargetLabel: s__('DeploymentTarget|Project deployment target (optional)'),
+    defaultOption: s__('DeploymentTarget|Select the deployment target'),
     k8sEducationText: s__(
-      'Deployment Target|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}',
+      'DeploymentTarget|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}',
     ),
   },
   deploymentTargets: DEPLOYMENT_TARGET_SELECTIONS,

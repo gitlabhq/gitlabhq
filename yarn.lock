@@ -3457,10 +3457,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.2.tgz#821f8442f4175d8f0467b9daf26e3a18e2d02af2"
   integrity sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==
 
-"@sourcegraph/code-host-integration@0.0.96":
-  version "0.0.96"
-  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.96.tgz#f5dec0f0fa60cf0ec3e16c4e0cec7802ca98dd91"
-  integrity sha512-uRlBoJnOjsoi1qNPpbM8LgIiriF7GgPxyWMBMEpwpVOEX1tRkWqLPrUe6XcKea42rVsnvythA2MDMGi0eaLOfw==
+"@sourcegraph/code-host-integration@0.0.97":
+  version "0.0.97"
+  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.97.tgz#78bb978f509189c7f10cceed6e303febf97416b3"
+  integrity sha512-Ilbw77+V6OLJ9zaji0slSctOFcH2CrzM3LJwLVqRw+059LVF0GQNgEAzGk4V49KQXpRyo/JsjqeOBy1ogUXlyw==
 
 "@standard-schema/spec@^1.0.0":
   version "1.0.0"

@@ -129,9 +129,15 @@ module Gitlab
         #   - git_http: a plain path match, but carried as a fact because the
         #     unauthenticated rules need its negation (`git_http: false`) and a
         #     Labkit match is an AND of positive conditions;
+        #   - git_http_non_lfs: the same reason, for predicates that treat LFS as
+        #     web rather than git. Rack::Attack spells it `git_path? &&
+        #     !git_lfs_path?`, which no pair of independent facts expresses under AND;
         #   - bypass: the safelist header, matched by the bypass rule.
         def classification_facts
           settings = ::Gitlab::Throttle.settings
+          # Both git facts need it and the route regex is unanchored, so it scans
+          # the whole path. #matches? memoizes nothing.
+          git_http = git_path?
 
           {
             web_or_frontend: web_request? || frontend_request?,
@@ -140,7 +146,8 @@ module Gitlab
             deprecated: deprecated_api_request?, # TODO use path matchers for deprecated API requests: https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/work_items/71
             runner_jobs: runner_jobs?,
             dependency_proxy: dependency_proxy_path?,
-            git_http: git_path?,
+            git_http: git_http,
+            git_http_non_lfs: git_http && !git_lfs_path?,
             bypass: labkit_bypassed?,
 
             # per-throttle enable settings each rule matches on (option 2: matched

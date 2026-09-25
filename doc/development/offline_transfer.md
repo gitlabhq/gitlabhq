@@ -150,7 +150,7 @@ small Fog wrapper built for this feature:
   - `s3_compatible` (for example MinIO) is only offered when the `allow_s3_compatible_storage_for_offline_transfer`
     application setting is enabled.
   - `gcs_application_default` (GCS Application Default Credentials) resolves to the service account of the instance
-    running GitLab, so it's never offered on GitLab.com and only offered on self-managed when an administrator has
+    running GitLab, so it's never offered on GitLab.com and only offered on GitLab Self-Managed when an administrator has
     enabled the `allow_application_default_credentials_for_offline_transfer` application setting.
 - Uploading calls `directory.files.create`, using multipart upload above a 100 MB threshold. Downloading streams the
   file in chunks through `directory.files.get`.

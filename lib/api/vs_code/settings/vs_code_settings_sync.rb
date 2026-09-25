@@ -27,7 +27,7 @@ module API
 
         resource :vscode do
           params do
-            optional :settings_context_hash, type: String, desc: 'The settings context hash'
+            optional :settings_context_hash, type: String, desc: 'Settings context hash.'
           end
           resource '/settings_sync(/:settings_context_hash)' do
             content_type :json, 'application/json'
@@ -62,9 +62,9 @@ module API
               tags %w[vscode]
             end
             params do
-              requires :resource_name, type: String, desc: 'Name of the resource such as settings',
+              requires :resource_name, type: String, desc: 'Name of the resource such as settings.',
                 values: SETTINGS_TYPES
-              requires :id, type: String, desc: 'ID of the resource to retrieve'
+              requires :id, type: String, desc: 'ID of the resource to retrieve.'
             end
             route_setting :authorization, permissions: :read_vscode_setting, boundary_type: :user
             get '/v1/resource/:resource_name/:id' do
@@ -96,7 +96,7 @@ module API
               tags %w[vscode]
             end
             params do
-              requires :resource_name, type: String, desc: 'Name of the resource such as settings',
+              requires :resource_name, type: String, desc: 'Name of the resource such as settings.',
                 values: SETTINGS_TYPES
             end
             route_setting :authorization, permissions: :read_vscode_setting, boundary_type: :user
@@ -115,7 +115,7 @@ module API
               tags %w[vscode]
             end
             params do
-              requires :resource_name, type: String, desc: 'Name of the resource such as settings',
+              requires :resource_name, type: String, desc: 'Name of the resource such as settings.',
                 values: SETTINGS_TYPES
             end
             route_setting :authorization, permissions: :update_vscode_setting, boundary_type: :user

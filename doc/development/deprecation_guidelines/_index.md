@@ -97,7 +97,7 @@ following are true:
 - `breaking_change` is `true`.
 - `gitlab_com` is not `false`. If the field is absent, it defaults to `true`.
   Set `gitlab_com: false` for breaking changes that do not affect GitLab.com
-  (for example, changes that only affect self-managed instances).
+  (for example, changes that only affect GitLab Self-Managed instances).
 
 ### Window assignment
 

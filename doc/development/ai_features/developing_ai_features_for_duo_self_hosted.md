@@ -62,7 +62,7 @@ Alternatively, to generate access keys on AWS, you can follow this [video on how
 
 ## Setting up your GDK environment
 
-GitLab Duo Self-Hosted requires that your GDK environment runs on Self-Managed mode. It does not work in Multi-Tenant/SaaS mode.
+GitLab Duo Self-Hosted requires that your GDK environment runs on GitLab Self-Managed mode. It does not work in Multi-Tenant/SaaS mode.
 
 To set up your GDK environment to run the GitLab Duo Self-Hosted, follow the steps in this [AI development documentation](_index.md#run-gitlabduosetup-task), under **GitLab Self-Managed / Dedicated mode**.
 

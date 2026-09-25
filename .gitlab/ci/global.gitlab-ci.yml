@@ -9,6 +9,8 @@
       - stuck_or_timeout_failure
       - unknown_failure
     # See https://docs.gitlab.com/development/pipelines/internals/#custom-exit-codes
+    # `.rspec-base` in .gitlab/ci/rails/shared.gitlab-ci.yml restates this list.
+    # When you add a code here, add it there too.
     exit_codes:
       - 112  # known flaky test detected, retry the whole job
       - 201  # low free disk space

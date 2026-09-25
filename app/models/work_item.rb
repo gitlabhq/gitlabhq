@@ -326,6 +326,12 @@ class WorkItem < Issue
     end
   end
 
+  # Overrides Issue#has_widget?, which rebuilds the licensed/flagged widget list on every call.
+  # Reading the memoized definitions matters here because entities check this once per feature per row.
+  def has_widget?(widget)
+    widget_definitions.key?(widget.to_sym)
+  end
+
   def widget_definitions
     work_item_type
       .widgets(resource_parent)

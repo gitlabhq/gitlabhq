@@ -23,6 +23,7 @@
     "build",
     "capacity_planning",
     "cell",
+    "chat_engine",
     "ci_scaling",
     "cloud_native_installation",
     "code_quality",

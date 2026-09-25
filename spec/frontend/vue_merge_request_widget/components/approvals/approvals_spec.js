@@ -291,6 +291,12 @@ describe('MRWidget approvals', () => {
           it('calls service approve with publish_review false when no drafts', () => {
             expect(service.approveMergeRequest).toHaveBeenCalledWith({ publish_review: false });
           });
+
+          it('emits mr-widget-check-status to refresh auto-merge strategies after approval', async () => {
+            await waitForPromises();
+
+            expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-check-status');
+          });
         });
 
         describe('when user has pending drafts', () => {

@@ -47,6 +47,8 @@ module WorkItems
       # rubocop:disable RSpec/AnyInstanceOf -- To simulate work item without certain widgets
       # Set up default behavior to call original for any widget not explicitly stubbed
       allow_any_instance_of(WorkItem).to receive(:get_widget).and_call_original
+      # WorkItem overrides has_widget?, so stub it too. Subclass must be stubbed before Issue or RSpec raises NameError.
+      allow_any_instance_of(WorkItem).to receive(:has_widget?).and_call_original
       allow_any_instance_of(Issue).to receive(:has_widget?).and_call_original
 
       widgets.each do |widget, enabled|
@@ -56,6 +58,7 @@ module WorkItems
           allow_any_instance_of(WorkItem).to receive(:get_widget).with(widget).and_return(nil)
         end
 
+        allow_any_instance_of(WorkItem).to receive(:has_widget?).with(widget).and_return(enabled)
         allow_any_instance_of(Issue).to receive(:has_widget?).with(widget).and_return(enabled)
       end
       # rubocop:enable RSpec/AnyInstanceOf

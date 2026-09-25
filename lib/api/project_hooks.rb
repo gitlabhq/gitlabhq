@@ -26,45 +26,51 @@ module API
       end
 
       params :common_hook_parameters do
-        optional :name, type: String, desc: 'Name of the hook'
-        optional :description, type: String, desc: 'Description of the hook'
-        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
-        optional :issues_events, type: Boolean, desc: "Trigger hook on issues events"
-        optional :confidential_issues_events, type: Boolean, desc: "Trigger hook on confidential issues events"
-        optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
-        optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
-        optional :note_events, type: Boolean, desc: "Trigger hook on note (comment) events"
-        optional :confidential_note_events, type: Boolean, desc: "Trigger hook on confidential note (comment) events"
-        optional :job_events, type: Boolean, desc: "Trigger hook on job events"
-        optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
-        optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"
-        optional :deployment_events, type: Boolean, desc: "Trigger hook on deployment events"
-        optional :feature_flag_events, type: Boolean, desc: "Trigger hook on feature flag events"
-        optional :releases_events, type: Boolean, desc: "Trigger hook on release events"
-        optional :milestone_events, type: Boolean, desc: "Trigger hook on milestone events"
-        optional :emoji_events, type: Boolean, desc: "Trigger hook on emoji events"
-        optional :resource_access_token_events, type: Boolean, desc: "Trigger hook on project access token expiry events"
-        optional :resource_deploy_token_events, type: Boolean, desc: 'Trigger hook on deploy token expiry events'
-        optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
-        optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
+        optional :name, type: String,
+          desc: 'Name of the project webhook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) ' \
+            'in GitLab 17.1.'
+        optional :description, type: String, desc: 'Description of the project webhook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.'
+        optional :push_events, type: Boolean, desc: 'If `true`, triggers the project webhook on push events.'
+        optional :issues_events, type: Boolean, desc: 'If `true`, triggers the project webhook on issue events.'
+        optional :confidential_issues_events, type: Boolean, desc: 'If `true`, triggers the project webhook on confidential issue events.'
+        optional :merge_requests_events, type: Boolean, desc: 'If `true`, triggers the project webhook on merge request events.'
+        optional :tag_push_events, type: Boolean, desc: 'If `true`, triggers the project webhook on tag push events.'
+        optional :note_events, type: Boolean, desc: 'If `true`, triggers the project webhook on note events.'
+        optional :confidential_note_events, type: Boolean, desc: 'If `true`, triggers the project webhook on confidential note events.'
+        optional :job_events, type: Boolean, desc: 'If `true`, triggers the project webhook on job events.'
+        optional :pipeline_events, type: Boolean, desc: 'If `true`, triggers the project webhook on pipeline events.'
+        optional :wiki_page_events, type: Boolean, desc: 'If `true`, triggers the project webhook on wiki page events.'
+        optional :deployment_events, type: Boolean, desc: 'If `true`, triggers the project webhook on deployment events.'
+        optional :feature_flag_events, type: Boolean, desc: 'If `true`, triggers the project webhook on feature flag events.'
+        optional :releases_events, type: Boolean, desc: 'If `true`, triggers the project webhook on release events.'
+        optional :milestone_events, type: Boolean, desc: 'If `true`, triggers the project webhook on milestone events.'
+        optional :emoji_events, type: Boolean, desc: 'If `true`, triggers the project webhook on emoji events.'
+        optional :resource_access_token_events, type: Boolean, desc: 'If `true`, triggers the project webhook on project access token expiry events.'
+        optional :resource_deploy_token_events, type: Boolean, desc: 'If `true`, triggers the project webhook on project deploy token expiry events.'
+        optional :enable_ssl_verification, type: Boolean, desc: 'If `true`, verifies the SSL certificate when the webhook is triggered.'
+        optional :token, type: String, desc: 'Secret token used to validate received payloads. Not returned in the response, and changing the webhook URL resets it.'
         optional :signing_token, type: String,
-          desc: "HMAC signing token used to compute the webhook-signature header. " \
-            "Must be in whsec_<base64> format encoding a 32-byte key. Not returned in the response"
-        optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
-        optional :custom_webhook_template, type: String, desc: "Custom template for the request payload"
+          desc: 'HMAC signing token used to compute the `webhook-signature` header. Must be in ' \
+            '`whsec_<base64>` format encoding a 32-byte key, and is not returned in the response. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0.'
+        optional :push_events_branch_filter, type: String, desc: 'Filter push events by branch name.'
+        optional :custom_webhook_template, type: String, desc: 'Custom template for the webhook request payload.'
         optional :branch_filter_strategy, type: String, values: WebHook.branch_filter_strategies.keys,
-          desc: "Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`"
-        optional :vulnerability_events, type: Boolean, desc: "Trigger hook on vulnerability events"
+          desc: 'Filter push events by branch. Defaults to `wildcard`.'
+        optional :vulnerability_events, type: Boolean, desc: 'If `true`, triggers the project webhook on vulnerability events.'
         optional :duo_flow_callback_enabled, type: Boolean,
-          desc: "Allow Duo Agent Platform flows to send lifecycle and progress events to this webhook. " \
-            "A flow must reference this webhook's ID as callback_hook_id when it starts"
+          desc: "If `true`, allows Duo Agent Platform flows to send lifecycle and progress events to this " \
+            "project webhook. A flow must reference the webhook's ID as `callback_hook_id` when it starts. " \
+            "[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149) in GitLab 19.4 " \
+            "[with a feature flag](https://docs.gitlab.com/administration/feature_flags/) named " \
+            "`duo_flow_callback_hooks`. Disabled by default."
         use :url_variables
         use :custom_headers
       end
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/hooks' do
@@ -87,7 +93,7 @@ module API
       end
 
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of a project hook'
+        requires :hook_id, type: Integer, desc: 'ID of the project webhook.'
       end
       namespace ":id/hooks/:hook_id/" do
         desc 'Retrieve a project webhook' do
@@ -99,7 +105,7 @@ module API
           tags project_hooks_tags
         end
         params do
-          requires :hook_id, type: Integer, desc: 'The ID of a project hook'
+          requires :hook_id, type: Integer, desc: 'ID of the project webhook.'
         end
         route_setting :authorization, permissions: :read_webhook, boundary_type: :project
         get do
@@ -118,7 +124,7 @@ module API
           tags project_hooks_tags
         end
         params do
-          requires :hook_id, type: Integer, desc: 'The ID of the project hook'
+          requires :hook_id, type: Integer, desc: 'ID of the project webhook.'
           use :optional_url
           use :common_hook_parameters
         end
@@ -136,7 +142,7 @@ module API
           tags project_hooks_tags
         end
         params do
-          requires :hook_id, type: Integer, desc: 'The ID of the project hook'
+          requires :hook_id, type: Integer, desc: 'ID of the project webhook.'
         end
         route_setting :authorization, permissions: :delete_webhook, boundary_type: :project
         delete do

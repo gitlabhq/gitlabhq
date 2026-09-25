@@ -10,6 +10,7 @@ import { s__, __, n__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { useBatchComments } from '~/batch_comments/store';
 import approvalsMixin from '../../mixins/approvals';
+import eventHub from '../../event_hub';
 import StateContainer from '../state_container.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
@@ -252,6 +253,9 @@ export default {
         .then(() => {
           // TODO: Remove this line when we move to Apollo subscriptions
           this.$apollo.queries.approvals.refetch();
+          // Approval changes which auto-merge strategies are available; refresh them so the
+          // merge button doesn't stay stale until the next (backed-off) poll (#629566).
+          eventHub.$emit('mr-widget-check-status');
         })
         .catch(errFn)
         .then(() => {

@@ -367,8 +367,14 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :planning
         it_behaves_like 'broadcasts the update'
       end
 
-      context 'when only the name changes' do
+      context 'when the name changes' do
         let(:params) { { name: 'Renamed View' } }
+
+        it_behaves_like 'broadcasts the update'
+      end
+
+      context 'when only the description changes' do
+        let(:params) { { description: 'New description' } }
 
         it_behaves_like 'does not broadcast the update'
       end

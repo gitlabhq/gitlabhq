@@ -384,6 +384,26 @@ describe('MrWidgetOptions', () => {
           eventHub.$emit('mr-widget-update-requested');
           expect(mockSetData).toHaveBeenCalled();
         });
+
+        it('refreshes strategies via REST (no redundant state refetch) on mr-widget-check-status', async () => {
+          const mockSetData = jest.fn();
+          await createComponent({
+            data: {
+              mr: {
+                setData: mockSetData,
+                setGraphqlData: jest.fn(),
+                setGraphqlSubscriptionData: jest.fn(),
+              },
+            },
+          });
+          const refetchStateSpy = jest.spyOn(wrapper.vm, 'refetchState');
+
+          eventHub.$emit('mr-widget-check-status');
+          await waitForPromises();
+
+          expect(mockSetData).toHaveBeenCalled();
+          expect(refetchStateSpy).not.toHaveBeenCalled();
+        });
       });
 
       describe('initDeploymentsPolling', () => {

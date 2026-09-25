@@ -100,7 +100,7 @@ Breaking changes that may not be obvious:
 
 Environment compatibility:
 
-- **Self-managed considerations**: Ensure components work with older GitLab versions, custom Certification Authorities, disabled container registries, and various project restrictions
+- **GitLab Self-Managed considerations**: Ensure components work with older GitLab versions, custom Certification Authorities, disabled container registries, and various project restrictions
 - **Dedicated environment support**: Account for version lag (typically 1 milestone behind) and different infrastructure constraints
 - **CI syntax compatibility**: Avoid cutting-edge CI features if supporting a wide range of GitLab versions
 

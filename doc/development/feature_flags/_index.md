@@ -61,9 +61,9 @@ period of time, consider introducing
 [Cascading Settings](../cascading_settings.md) or [Application Settings](../application_settings.md)
 instead. Settings
 offer a way for customers to enable or disable features for themselves on
-GitLab.com or self-managed and can remain in the codebase as long as needed. In
+GitLab.com or GitLab Self-Managed and can remain in the codebase as long as needed. In
 contrast users have no way to enable or disable feature flags for themselves on
-GitLab.com and only self-managed admins can change the feature flags.
+GitLab.com and only GitLab Self-Managed admins can change the feature flags.
 Also,
 [feature flags are not supported in GitLab Dedicated](../enabling_features_on_dedicated.md#feature-flags)
 which is another reason you should not use them as a replacement for settings.
@@ -921,7 +921,7 @@ This search works on GitLab.com logs, available at [`log.gprd.gitlab.net`](https
 
 We want to avoid introducing a changelog when features are not accessible by an end-user either directly (example: ability to use the feature) or indirectly (examples: ability to take advantage of background jobs, performance improvements, or database migration updates).
 
-- Database migrations are always accessible by an end-user indirectly, as self-managed customers need to be aware of database changes before upgrading. For this reason, they should have a changelog entry.
+- Database migrations are always accessible by an end-user indirectly, as GitLab Self-Managed customers need to be aware of database changes before upgrading. For this reason, they should have a changelog entry.
 - Any change behind a feature flag disabled by default should not have a changelog entry.
 - Any change behind a feature flag that is enabled by default should have a changelog entry.
 - Changing the feature flag itself (flag removal, default-on setting) should have [a changelog entry](../changelog.md).

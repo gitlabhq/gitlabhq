@@ -7,7 +7,7 @@ title: Billable Events Schema
 
 ## Overview
 
-The billable events schema defines the structure and fields for tracking usage events that contribute to customer billing. This schema is used across GitLab.com, Dedicated, and Self-Managed deployments to capture standardized usage data for billing purposes.
+The billable events schema defines the structure and fields for tracking usage events that contribute to customer billing. This schema is used across GitLab.com, Dedicated, and GitLab Self-Managed deployments to capture standardized usage data for billing purposes.
 
 This document serves as the reference for the billable usage event schema based on the [`billable_usage` jsonschema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/billable_usage/jsonschema).
 
@@ -31,7 +31,7 @@ Fields that identify the GitLab deployment environment and instance.
 
 | Field | Description | Snowplow Field | Type |
 |-------|-------------|----------------|------|
-| `realm` | `SaaS`, `Dedicated`, or `SM` (Self-Managed) | `realm` | String (enum) |
+| `realm` | `SaaS`, `Dedicated`, or `SM` (GitLab Self-Managed) | `realm` | String (enum) |
 | `deployment_type` | Deployment type: `.com`, `dedicated`, or `self-managed`. Created to replace `realm` in the future | `deployment_type` | String (enum) |
 | `unique_instance_id` | Unique ID of the GitLab instance where the request originates | `unique_instance_id` | UUID (String) |
 | `instance_id` | Unique ID of the GitLab instance where the request originates (GitLab version < 17.11) | `instance_id` | UUID (String) |

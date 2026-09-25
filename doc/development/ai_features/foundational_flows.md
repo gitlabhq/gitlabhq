@@ -296,7 +296,7 @@ For flows defined directly in GitLab Duo Workflow Service:
 
 ## Architecture design
 
-[Foundational flows](glossary.md#flow-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, Self-Managed, and Dedicated).
+[Foundational flows](glossary.md#flow-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, GitLab Self-Managed, and Dedicated).
 
 The architecture of how foundational flows are made available avoids connecting to AI Catalog to fetch definitions at runtime and allows GitLab engineering teams full control over when they are released.
 

@@ -68718,6 +68718,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="aifeatures-bl_security"></a>`BL_SECURITY` | Bl security feature setting. |
 | <a id="aifeatures-code_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
 | <a id="aifeatures-code_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
 | <a id="aifeatures-duo_agent_platform"></a>`DUO_AGENT_PLATFORM` | Duo agent platform feature setting. |
@@ -68815,6 +68816,7 @@ AI features that can be configured through the Model Selection feature settings.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="aimodelselectionfeatures-bl_security"></a>`BL_SECURITY` | Bl security feature setting. |
 | <a id="aimodelselectionfeatures-code_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
 | <a id="aimodelselectionfeatures-code_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
 | <a id="aimodelselectionfeatures-duo_agent_platform"></a>`DUO_AGENT_PLATFORM` | Duo agent platform feature setting. |

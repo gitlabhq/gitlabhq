@@ -45,7 +45,7 @@ Background migrations can help when:
   in the release post. Discuss with your Project Manager if you're unsure if the migration falls
   into this category.
 - You must add [upgrade notes](../../update/versions/_index.md) for significant migrations
-  to help self-managed and Dedicated customers plan their upgrades, following the [guidelines](#writing-upgrade-notes-for-customers).
+  to help GitLab Self-Managed and Dedicated customers plan their upgrades, following the [guidelines](#writing-upgrade-notes-for-customers).
 - You should use the [generator](#generate-a-batched-background-migration) to create batched background migrations,
   so that required files are created by default.
 
@@ -854,14 +854,14 @@ When working with partitioned tables, you can parallelize migrations to improve 
 > [!warning]
 > The patterns described in this section have so far been used only on GitLab.com,
 > and only for a specific type of partitioned tables (CI sliding list partitions that
-> are manually managed). They are not recommended for self-managed instances because:
+> are manually managed). They are not recommended for GitLab Self-Managed instances because:
 >
 > - The set of queued migrations depends on the data (number and identity of partitions),
->   so different self-managed instances would see different sets of migrations. This can
->   be confusing for self-managed administrators, who already deal with frustration around
+>   so different GitLab Self-Managed instances would see different sets of migrations. This can
+>   be confusing for GitLab Self-Managed administrators, who already deal with frustration around
 >   background migrations.
 > - View-based parallelization requires pre-calculating ID ranges based on production data,
->   which is impractical to do generically for self-managed.
+>   which is impractical to do generically for GitLab Self-Managed.
 >
 > Before using these patterns, consult with the Database team and make sure the trade-offs
 > are acceptable for your use case.
@@ -915,7 +915,7 @@ end
 - New partitions created after queueing are not automatically included
 - Each partition's migration runs independently and can be monitored separately
 - The set of queued migrations depends on which partitions exist at queue time, so it
-  varies between instances. This is a poor fit for self-managed releases.
+  varies between instances. This is a poor fit for GitLab Self-Managed releases.
 - If a partition is detached and dropped (for example, daily or monthly partitions that
   age out) before its migration starts or finishes, the migration fails or never completes.
   Only use this pattern for partitions that are guaranteed to exist for the entire
@@ -933,9 +933,9 @@ Create database views to slice a partition into multiple ranges, then queue sepa
   from production data
 
 > [!warning]
-> This pattern is not suitable for self-managed instances. View boundaries must be
+> This pattern is not suitable for GitLab Self-Managed instances. View boundaries must be
 > calculated in advance from the actual data distribution, which is not possible to do
-> generically across self-managed installations.
+> generically across GitLab Self-Managed installations.
 
 **View creation example**:
 
@@ -1031,7 +1031,7 @@ See [MR !221430](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221430) f
 - Saturates worker slots for one table, which might delay other migrations queued for the
   same database during the same period
 - Requires pre-calculated view boundaries from production data, making it impractical for
-  self-managed deployments
+  GitLab Self-Managed deployments
 
 **Real-world example**: [MR !221430](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221430) - MoveCiBuildsMetadata
 
@@ -1236,7 +1236,7 @@ end
 ## Writing upgrade notes for customers
 
 For significant batched background migrations, you must add upgrade notes to help
-self-managed and Dedicated customers plan their upgrades. These notes should be added
+GitLab Self-Managed and Dedicated customers plan their upgrades. These notes should be added
 to the relevant version's upgrade documentation (for example, [GitLab 18 changes](../../update/versions/gitlab_18_changes.md)).
 
 For an example of well-documented upgrade notes, see

@@ -165,7 +165,7 @@ To prevent system overload and ensure reliable operations, we strongly recommend
 [concurrency limit](worker_attributes.md#concurrency-limit) for all workers. Limiting the number of jobs each worker
 can schedule helps mitigate the risk of overwhelming the system, which could lead to severe incidents.
 
-This guidance applies both to .com and self-managed customers. A single worker scheduling thousands of jobs can easily disrupt the normal functioning of an SM instance.
+This guidance applies both to .com and GitLab Self-Managed customers. A single worker scheduling thousands of jobs can easily disrupt the normal functioning of an SM instance.
 
 > [!note]
 > If Sidekiq only has 20 threads and the limit for a specific job is 200 then it will never be able to hit this 200 concurrency so it will not be limited.
@@ -207,7 +207,7 @@ concurrency_limit -> { ApplicationSetting.current.some_feature_concurrent_sideki
 
 This approach also allows having separate limits for .com and GitLab Self-Managed instances. To achieve this, you can:
 
-1. Create a migration to add the configuration option with a default set to the self-managed limit.
+1. Create a migration to add the configuration option with a default set to the GitLab Self-Managed limit.
 1. In the same MR, ship a migration to update the limit for .com only.
 
 ### How to pick the limit

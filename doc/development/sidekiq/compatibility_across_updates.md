@@ -39,7 +39,7 @@ of the application. Adding or removing an argument may cause problems.
 During any deployment, there's a period of time where some application nodes have been updated while others haven't.
 If an updated node queues a job with new arguments, but an older Sidekiq node processes it, the job will fail due to an argument mismatch.
 
-For GitLab.com, this can occur if there are multiple deployments in the same milestone. Most self-managed deployments update all nodes sequentially in a single deployment cycle each release, so we need to spread the changes across multiple releases.
+For GitLab.com, this can occur if there are multiple deployments in the same milestone. Most GitLab Self-Managed deployments update all nodes sequentially in a single deployment cycle each release, so we need to spread the changes across multiple releases.
 
 ### Deprecate and remove an argument
 

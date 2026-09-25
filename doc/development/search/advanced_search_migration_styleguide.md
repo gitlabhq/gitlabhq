@@ -894,7 +894,7 @@ end
 ### Reverting a migration
 
 If a migration fails or is halted on GitLab.com, we prefer to revert the change that introduced the migration. This
-prevents self-managed customers from receiving a broken migration and reduces the need for backports.
+prevents GitLab Self-Managed customers from receiving a broken migration and reduces the need for backports.
 
 ### Multi-version compatibility
 
@@ -914,7 +914,7 @@ code is reverted after the migration has started or after it is finished.
 
 For this reason we generally defer destructive actions (for example, deletions after
 some data is moved) to a later merge request after the migrations have
-completed successfully. To be safe, for self-managed customers we should also
+completed successfully. To be safe, for GitLab Self-Managed customers we should also
 defer it to another release if there is risk of important data loss.
 
 ## Calculating migration runtime

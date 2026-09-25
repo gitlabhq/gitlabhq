@@ -90,6 +90,13 @@ include:
     - .base-artifacts-with-junit-reports
     - .repo-from-artifacts
   stage: test
+  retry:
+    exit_codes:
+      # Restated from `.default-retry`, because `extends` replaces arrays.
+      - 112  # known flaky test detected, retry the whole job
+      - 201  # low free disk space
+      - 139  # SIGSEGV: Ruby VM crash, no spec results, so the in-job retry can't run.
+             # https://gitlab.com/gitlab-org/quality/analytics/team/-/work_items/753
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728

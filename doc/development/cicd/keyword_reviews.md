@@ -115,7 +115,7 @@ Any usage dimension without a limit will eventually (and often unintentionally) 
 
 Changes that impact CI YAML parsing should be behind a feature flag. The flag has
 to be default-enabled for a full milestone before being removed. This is to ensure
-that Self-Managed and Dedicated users can always revert to the original behavior
+that GitLab Self-Managed and Dedicated users can always revert to the original behavior
 in case of unexpected side effects.
 
 ## Common pitfalls

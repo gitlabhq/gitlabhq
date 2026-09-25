@@ -160,12 +160,12 @@ Custom types can be created in two ways:
 - Model: `WorkItems::TypesFramework::Custom::Type`
 - Table: `work_item_custom_types`
 - Scope:
-  - **Self-Managed:** Organization level (long-term target scope)
+  - **GitLab Self-Managed:** Organization level (long-term target scope)
   - **SaaS (GitLab.com):** Root group level (interim solution until organization-level features are available)
 - Limit: Per parent scope, stored in `WorkItems::TypesFramework::Custom::Type::MAX_TYPE_PER_PARENT`
 
 > [!note]
-> On GitLab.com, custom types are scoped to root groups because all root groups currently belong to the same organization. Once organization-level features are fully available on SaaS, custom types will move to organization scope to match Self-Managed.
+> On GitLab.com, custom types are scoped to root groups because all root groups currently belong to the same organization. Once organization-level features are fully available on SaaS, custom types will move to organization scope to match GitLab Self-Managed.
 
 **Converted types:**
 
@@ -202,7 +202,7 @@ Passing a namespace to the Provider is crucial because it determines which types
 
 - **Without namespace:** Returns only system-defined types (9 global types)
 - **With namespace:** Returns system-defined types plus any custom types (converted or brand new) defined for:
-  - **Self-Managed:** The namespace's organization
+  - **GitLab Self-Managed:** The namespace's organization
   - **SaaS (GitLab.com):** The root group containing the namespace
 
 The Provider caches types in the request store for fast lookups within a single request, avoiding repeated queries for custom types.

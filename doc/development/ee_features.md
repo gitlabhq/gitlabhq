@@ -108,7 +108,7 @@ Key decision points:
 
 Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
 
-In general, features should be provided for [both SaaS and Self-managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
+In general, features should be provided for [both SaaS and GitLab Self-Managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
 However, there are cases when a feature should only be available on SaaS and this guide will help show how that is
 accomplished.
 
@@ -363,7 +363,7 @@ same patterns as other EE features.
 Dedicated-specific code is for features that should only be available on Dedicated instances.
 
 In general, features should be provided
-for [both SaaS and Self-managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
+for [both SaaS and GitLab Self-Managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
 However, there are valid cases for Dedicated-only features.
 
 ### Using `Gitlab::Dedicated` methods

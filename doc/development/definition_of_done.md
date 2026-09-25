@@ -33,7 +33,7 @@ This Definition of Done (DoD) applies to features that are implemented across mu
 - Database migrations are complete, reversible (where needed), and safe for deployment. Background migrations have been scheduled and monitored if applicable.
 - Observability is in place through logs, metrics, and error tracking (e.g., Sentry), and relevant alerts are configured where needed.
 - The feature performs adequately under expected production load.
-- The feature is production-ready for both GitLab.com and self-managed environments (including Dedicated and Dedicated for Government), unless intentionally scoped otherwise.
+- The feature is production-ready for both GitLab.com and GitLab Self-Managed environments (including Dedicated and Dedicated for Government), unless intentionally scoped otherwise.
 
 ## Documentation and communication
 
@@ -50,7 +50,7 @@ These requirements are mandatory for features with a [maturity level](../policy/
 - Usage metrics have been implemented to [track](internal_analytics/_index.md) feature adoption.
 - Monthly Active Users (MAU) metrics have been added for user-facing features where applicable.
 - Metrics are properly attributed to the correct [group and feature category](https://handbook.gitlab.com/handbook/product/categories/lookup/).
-- Instrumentation has been verified across all applicable deployment types: GitLab.com, GitLab Self-managed, and GitLab Dedicated.
+- Instrumentation has been verified across all applicable deployment types: GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 - Metrics data appears in [relevant dashboards](internal_analytics/_index.md#data-discovery) and is accessible for analysis.
 
 ## Rollout and post-release

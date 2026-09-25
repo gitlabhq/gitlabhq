@@ -226,7 +226,7 @@ export default {
         text: __('Cancel'),
       },
       body: s__(
-        'Pipeline Editor|Are you sure you want to reset the file to its last committed version?',
+        'PipelineEditor|Are you sure you want to reset the file to its last committed version?',
       ),
       title: __('Discard changes'),
     },

@@ -39,7 +39,7 @@ When implementing GitLab Duo features:
 
 - Check the appropriate setting based on the instance type.
 - On GitLab.com, check the namespace's `experiment_features_enabled` setting.
-- On Self-Managed and Dedicated instances, check the `instance_level_ai_beta_features_enabled` setting.
+- On GitLab Self-Managed and Dedicated instances, check the `instance_level_ai_beta_features_enabled` setting.
 - Do not mix these settings or check both - each instance type should only use its relevant setting.
 
 For implementation examples, see [`ee/lib/gitlab/llm/stage_check.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/stage_check.rb).

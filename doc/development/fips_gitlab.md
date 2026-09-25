@@ -22,7 +22,7 @@ GitLab is committed to releasing software for our customers who are required to 
 
 FIPS 140 is a requirement to do business within the U.S. public sector, as well as some non-U.S. public sector organizations and certain industries depending
 on the use case (healthcare, banking, etc.). FIPS 140-2 and FIPS 140-3 requirements are applicable to all U.S. Federal agencies, including software they
-purchase whether that be self-managed or cloud. Agencies must use cryptographic-based security systems to provide adequate information security for all
+purchase whether that be GitLab Self-Managed or cloud. Agencies must use cryptographic-based security systems to provide adequate information security for all
 operations and assets as defined in 15 U.S.C. § 278g-3.
 
 Non-validated cryptography is currently viewed as providing no protection to the information or data. In effect, the data would be considered unprotected

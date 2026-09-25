@@ -451,7 +451,7 @@ GitLab can be considered to have two layers from a process perspective:
 - GitLab.com: [Monitoring of GitLab.com](https://runbooks.gitlab.com/ai-gateway/)
 
 GitLab AI Gateway is a standalone-service that will give access to AI features to all users of
-GitLab, no matter which instance they are using: self-managed, dedicated, or GitLab.com.
+GitLab, no matter which instance they are using: GitLab Self-Managed, dedicated, or GitLab.com.
 
 You can read more:
 

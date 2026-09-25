@@ -11,7 +11,7 @@ registration paths. It covers the controllers and services that run between
 an anonymous visitor arriving at a sign-up page and that user landing in a
 project or group.
 
-The SaaS (GitLab.com) registration flow is the primary focus below. Self-managed
+The SaaS (GitLab.com) registration flow is the primary focus below. GitLab Self-Managed
 subscription purchases share some of these services, and the differences are
 called out explicitly where they apply.
 
@@ -59,7 +59,7 @@ calls `store_location_for(:user, request.fullpath)`. After the user
 registers, they return to the subscription checkout page instead of the
 default completion path.
 
-A self-managed subscription purchase follows a separate branch. The query
+A GitLab Self-Managed subscription purchase follows a separate branch. The query
 parameters `deployment_type=self_managed` and `plan_id` trigger the
 `GitlabSubscriptions::SelfManagedPurchaseRedirect` concern, which is included
 in both `EE::RegistrationsController` and
@@ -94,7 +94,7 @@ Two pieces of Devise-adjacent logic run right after account creation:
   JSONB column and sets `onboarding_in_progress = true`. It records
   `registration_type`, `initial_registration_type`, and the `glm_source` and
   `glm_content` marketing attribution parameters. This step is skipped for
-  self-managed subscription registrations.
+  GitLab Self-Managed subscription registrations.
 
 Onboarding as a whole is gated by `Onboarding.enabled?`, which delegates to
 `Gitlab::Saas.feature_available?(:onboarding)`.
@@ -119,7 +119,7 @@ the `REGISTRATION_KLASSES` and `REGISTRATION_TYPE` mappings defined in
 | Automatic trial | `AutomaticTrialRegistration` (subclass of `TrialRegistration`) | `Registrations::TrialWelcomeController` | `Onboarding::TrialNamespaceCreateService` |
 | Invite | `InviteRegistration` | `Registrations::InviteWelcomeController` | `Users::InviteSignupService` |
 | Subscription | `SubscriptionRegistration` | `Registrations::SubscriptionWelcomeController` | `Onboarding::SubscriptionNamespaceCreateService`, then `Onboarding::FinishService` |
-| Subscription, self-managed | `SubscriptionSmRegistration` | None. `Onboarding::StatusCreateService` is skipped for this type. | None |
+| Subscription, GitLab Self-Managed | `SubscriptionSmRegistration` | None. `Onboarding::StatusCreateService` is skipped for this type. | None |
 
 `AutomaticTrialRegistration` covers the free-to-trial conversion. A user
 registers as `free`, but the current `registration_type` becomes `trial`

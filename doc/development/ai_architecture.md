@@ -44,12 +44,12 @@ AIGW -down-> Models : prompts
 @enduml
 ```
 
-- **AI Abstraction layer** - Every GitLab instance (Self-Managed, GitLab.com, ..) contains an [AI Abstraction layer](ai_features/_index.md) which provides a framework for implementing new AI features in the monolith. This layer adds contextual information to the request and does request pre/post processing.
+- **AI Abstraction layer** - Every GitLab instance (GitLab Self-Managed, GitLab.com, ..) contains an [AI Abstraction layer](ai_features/_index.md) which provides a framework for implementing new AI features in the monolith. This layer adds contextual information to the request and does request pre/post processing.
 
 ### Systems
 
 - [GitLab instances](https://gitlab.com/gitlab-org/gitlab) - GitLab monolith that powers all types of GitLab instances
-- [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) - Allows customers to buy and upgrade subscriptions by adding more seats and add/edit payment records. It also manages self-managed licenses.
+- [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) - Allows customers to buy and upgrade subscriptions by adding more seats and add/edit payment records. It also manages GitLab Self-Managed licenses.
 - [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) - System that provides unified interface for invoking models. Deployed in Google Cloud Run (using [Runway](https://gitlab.com/gitlab-com/gl-infra/platform/runway)).
 - Extensions
   - [Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) (powers Code Suggestions in VS Code, Visual Studio 2022 for Windows, and Neovim)
@@ -63,18 +63,18 @@ AIGW -down-> Models : prompts
 - GitLab.com
   - GitLab.com instances self-issue JWT Auth token signed with a private key.
 - Other types of instances
-  - Self-Managed and Dedicated regularly synchronise their licenses and AI Access tokens with CustomersDot.
-  - Self-Managed and Dedicated instances route traffic to appropriate AI Gateway.
+  - GitLab Self-Managed and Dedicated regularly synchronise their licenses and AI Access tokens with CustomersDot.
+  - GitLab Self-Managed and Dedicated instances route traffic to appropriate AI Gateway.
 
 ## SaaS-based AI abstraction layer
 
 GitLab operates a cloud-hosted AI architecture. We will allow access to it for licensed GitLab Self-Managed instances using the AI-gateway. See [the design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) for details.
 
-There are two primary reasons for this: the best AI models are cloud-based as they often depend on specialized hardware designed for this purpose, and operating self-managed infrastructure capable of AI at-scale and with appropriate performance is a significant undertaking. We are actively [tracking self-managed customers interested in AI](https://gitlab.com/gitlab-org/gitlab/-/issues/409183).
+There are two primary reasons for this: the best AI models are cloud-based as they often depend on specialized hardware designed for this purpose, and operating GitLab Self-Managed infrastructure capable of AI at-scale and with appropriate performance is a significant undertaking. We are actively [tracking GitLab Self-Managed customers interested in AI](https://gitlab.com/gitlab-org/gitlab/-/issues/409183).
 
 ## AI Gateway
 
-The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated, or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
+The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: GitLab Self-Managed, dedicated, or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
 
 Calls to the AI-gateway from GitLab-rails can be made using the
 [Abstraction Layer](ai_features/_index.md#feature-development-abstraction-layer).
@@ -110,7 +110,7 @@ The following models have been approved for use:
 
 ## Code Suggestions
 
-Code Suggestions is being integrated as part of the GitLab-Rails repository which will unify the architectures between Code Suggestions and AI features that use the abstraction layer, along with offering [self-managed support](#self-managed-support) for the other AI features.
+Code Suggestions is being integrated as part of the GitLab-Rails repository which will unify the architectures between Code Suggestions and AI features that use the abstraction layer, along with offering [GitLab Self-Managed support](#self-managed-support) for the other AI features.
 
 The following table documents functionality that Code Suggestions offers today, and what those changes will look like as part of the unification:
 

@@ -70,7 +70,7 @@ module Gitlab
           # back to @blob.lines (bails for > 1 MB blobs).
           if unfold_large_blob_enabled?
             next false if @position.old_line > blob_data_line_count
-          elsif @position.old_line > @blob.lines.size
+          elsif @position.old_line > blob_lines_size
             next false
           end
 
@@ -90,6 +90,14 @@ module Gitlab
         strong_memoize(:unfold_large_blob_enabled) do
           Feature.enabled?(:unfold_diff_note_large_blob, @diff_file.repository&.project)
         end
+      end
+
+      # @blob is nil when the recorded old_path no longer resolves to a blob at
+      # base_sha, for example after a rename, so this returns 0 in that case.
+      def blob_lines_size
+        return 0 unless @blob
+
+        @blob.lines.size
       end
 
       # The blob data used for unfolding, capped at the viewable size (see

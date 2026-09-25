@@ -331,7 +331,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
             total_values: 700,
             dropped_values: 200
           },
-          tags: { dropped_bucket: '100-499', truncation_severity: 'normal' }
+          tags: { dropped_bucket: '100-499', truncation_severity: 'normal', jira_endpoint: 'deployments' }
         )
 
         client.send(:truncate_associations_if_needed, deployment_hash)
@@ -367,7 +367,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
         it 'maps dropped count to the expected tags' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
             instance_of(Atlassian::JiraConnect::Client::AssociationsTruncatedError),
-            hash_including(tags: { dropped_bucket: expected_bucket, truncation_severity: expected_severity })
+            hash_including(tags: { dropped_bucket: expected_bucket, truncation_severity: expected_severity, jira_endpoint: 'deployments' })
           )
 
           client.send(:truncate_associations_if_needed, deployment_hash)
@@ -446,6 +446,77 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
     end
   end
 
+  describe '#truncate_issue_keys' do
+    it 'returns the keys unchanged when at or below the limit' do
+      keys = (1..500).map { |i| "JIRA-#{i}" }
+
+      expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+      expect(client.send(:truncate_issue_keys, keys, endpoint: 'builds')).to eq(keys)
+    end
+
+    it 'returns non-array input unchanged' do
+      expect(client.send(:truncate_issue_keys, nil, endpoint: 'builds')).to be_nil
+    end
+
+    context 'when the keys exceed the limit' do
+      let(:keys) { (1..700).map { |i| "JIRA-#{i}" } }
+
+      it 'caps to the limit preserving the first keys' do
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+        expect(client.send(:truncate_issue_keys, keys, endpoint: 'builds')).to eq(keys.first(500))
+      end
+
+      it 'tracks the excess with the endpoint tag and passed context' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(described_class::IssueKeysTruncatedError),
+          extra: { pipeline_id: '9', total_values: 700, dropped_values: 200 },
+          tags: { dropped_bucket: '100-499', truncation_severity: 'normal', jira_endpoint: 'builds' }
+        )
+
+        client.send(:truncate_issue_keys, keys, endpoint: 'builds', pipeline_id: '9')
+      end
+    end
+  end
+
+  describe '#truncate_dev_info_issue_keys' do
+    let(:over_limit) { (1..600).map { |i| "JIRA-#{i}" } }
+
+    it 'caps issueKeys on commits, branches, pull requests, and a branch lastCommit' do
+      allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+      repo_hash = {
+        commits: [{ id: 'c1', issueKeys: over_limit }],
+        branches: [{ id: 'b1', issueKeys: over_limit, lastCommit: { id: 'c2', issueKeys: over_limit } }],
+        pullRequests: [{ id: 'p1', issueKeys: over_limit }]
+      }
+
+      client.send(:truncate_dev_info_issue_keys, repo_hash, project_id: 1)
+
+      expect(repo_hash[:commits].first[:issueKeys].size).to eq(500)
+      expect(repo_hash[:branches].first[:issueKeys].size).to eq(500)
+      expect(repo_hash[:branches].first[:lastCommit][:issueKeys].size).to eq(500)
+      expect(repo_hash[:pullRequests].first[:issueKeys].size).to eq(500)
+    end
+
+    it 'leaves entities at or below the limit untouched and tracks nothing' do
+      under_limit = (1..10).map { |i| "JIRA-#{i}" }
+      repo_hash = { commits: [{ id: 'c1', issueKeys: under_limit }], branches: [], pullRequests: [] }
+
+      expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+      client.send(:truncate_dev_info_issue_keys, repo_hash, project_id: 1)
+
+      expect(repo_hash[:commits].first[:issueKeys]).to eq(under_limit)
+    end
+
+    it 'skips nil entries without raising' do
+      repo_hash = { commits: [nil], branches: nil, pullRequests: [{ id: 'p1', issueKeys: %w[JIRA-1] }] }
+
+      expect { client.send(:truncate_dev_info_issue_keys, repo_hash, project_id: 1) }.not_to raise_error
+    end
+  end
+
   describe '#store_ff_info' do
     let_it_be(:feature_flags, freeze: false) { create_list(:operations_feature_flag, 3, project: project) }
 
@@ -509,6 +580,36 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
         expect(response['errorMessages']).to eq(['a: X', 'a: Y', 'b: Z'])
       end
     end
+
+    context 'when a feature flag has more than 500 issue keys' do
+      let(:issue_keys) { (1..600).map { |i| "JIRA-#{i}" } }
+
+      before do
+        # `issue_keys` is a Grape-exposed attribute (stubbing it breaks Grape
+        # introspection) and a flag description is capped at 255 characters, so
+        # feed the keys through the extractor the real method delegates to.
+        allow(Atlassian::JiraIssueKeyExtractor).to receive(:new).and_return(
+          instance_double(Atlassian::JiraIssueKeyExtractor, issue_keys: issue_keys)
+        )
+        allow(subject).to receive(:post).and_return(
+          double(code: 202, parsed_response: {}, request: double(raw_body: '{}'))
+        )
+      end
+
+      it 'caps the posted issueKeys at the limit and tracks the excess' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(described_class::IssueKeysTruncatedError),
+          extra: hash_including(total_values: 600, dropped_values: 100),
+          tags: hash_including(jira_endpoint: 'feature_flags')
+        )
+
+        subject.send(:store_ff_info, project: project, feature_flags: [feature_flags.first])
+
+        expect(subject).to have_received(:post).once do |_path, payload|
+          expect(payload[:flags].first[:issueKeys].size).to eq(described_class::ISSUE_KEYS_LIMIT)
+        end
+      end
+    end
   end
 
   describe '#store_build_info' do
@@ -570,6 +671,43 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       end
     end
 
+    context 'when a build has more than 500 issue keys' do
+      let(:issue_keys) { (1..600).map { |i| "JIRA-#{i}" } }
+      let(:success_response) do
+        double(code: 202,
+          parsed_response: { 'acceptedBuilds' => [], 'rejectedBuilds' => [], 'unknownIssueKeys' => [] },
+          request: double(raw_body: '{}'))
+      end
+
+      before do
+        # `issue_keys` is a Grape-exposed attribute, so stubbing it directly
+        # breaks Grape's serialization introspection. Stub the private source
+        # instead so the real `issue_keys` method still runs.
+        allow_next_instances_of(Atlassian::JiraConnect::Serializers::BuildEntity, nil) do |entity|
+          allow(entity).to receive(:pipeline_commit_issue_keys).and_return(issue_keys)
+        end
+        allow(subject).to receive(:post).and_return(success_response)
+      end
+
+      it 'caps the posted issueKeys at the limit' do
+        subject.send(:store_build_info, project: project, pipelines: pipelines.take(1))
+
+        expect(subject).to have_received(:post).once do |_path, payload|
+          expect(payload[:builds].first[:issueKeys].size).to eq(described_class::ISSUE_KEYS_LIMIT)
+        end
+      end
+
+      it 'tracks the dropped count with the builds endpoint tag' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(described_class::IssueKeysTruncatedError),
+          extra: hash_including(total_values: 600, dropped_values: 100),
+          tags: hash_including(jira_endpoint: 'builds', dropped_bucket: '100-499')
+        )
+
+        subject.send(:store_build_info, project: project, pipelines: pipelines.take(1))
+      end
+    end
+
     it 'avoids N+1 database queries' do
       pending 'https://gitlab.com/gitlab-org/gitlab/-/issues/292818'
 
@@ -598,6 +736,39 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
     it "calls the API with auth headers" do
       subject.send(:store_dev_info, project: project)
+    end
+
+    context 'when a commit has more than 500 issue keys' do
+      let(:issue_keys) { (1..600).map { |i| "JIRA-#{i}" } }
+
+      before do
+        allow_next_instance_of(Atlassian::JiraConnect::Serializers::RepositoryEntity) do |entity|
+          allow(entity).to receive(:as_json).and_return(
+            'id' => project.id.to_s,
+            'commits' => [{ 'id' => 'sha1', 'issueKeys' => issue_keys }],
+            'branches' => [],
+            'pullRequests' => []
+          )
+        end
+        allow(subject).to receive(:post).and_return(
+          double(code: 202, parsed_response: {}, request: double(raw_body: '{}'))
+        )
+      end
+
+      it 'caps the commit issueKeys at the limit and tracks the excess per entity' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(described_class::IssueKeysTruncatedError),
+          extra: hash_including(total_values: 600, dropped_values: 100, entity_type: :commits),
+          tags: hash_including(jira_endpoint: 'devinfo')
+        )
+
+        subject.send(:store_dev_info, project: project)
+
+        expect(subject).to have_received(:post).once do |_path, payload|
+          expect(payload[:repositories].first[:commits].first[:issueKeys].size)
+            .to eq(described_class::ISSUE_KEYS_LIMIT)
+        end
+      end
     end
 
     context 'when Jira accepts the dev info' do

@@ -85,12 +85,13 @@ module API
           end
 
           params do
-            requires :module_namespace, type: String, desc: "Group's ID or slug", regexp: ::API::NO_SLASH_URL_PART_REGEX
+            requires :module_namespace, type: String, desc: "Group's ID or slug.", regexp: ::API::NO_SLASH_URL_PART_REGEX
             includes :module_name
           end
           params do
-            requires :module_name, type: String, desc: 'The module name'
-            requires :module_system, type: String, desc: 'The module system (provider)'
+            requires :module_name, type: String, desc: 'Name of the module.'
+            requires :module_system, type: String, desc: 'Name of the module system, or ' \
+                                                     '[provider](https://www.terraform.io/registry/providers).'
           end
 
           namespace 'packages/terraform/modules/v1/:module_namespace/:module_name/:module_system',

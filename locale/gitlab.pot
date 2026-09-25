@@ -20611,12 +20611,6 @@ msgstr ""
 msgid "Code Coverage: %{coveragePercentage}%{percentSymbol}"
 msgstr ""
 
-msgid "Code Coverage|Couldn't fetch the code coverage data"
-msgstr ""
-
-msgid "Code Coverage|No code coverage data"
-msgstr ""
-
 msgid "Code Owner"
 msgstr ""
 
@@ -20666,6 +20660,12 @@ msgid "Code snippet"
 msgstr ""
 
 msgid "Code snippet copied. Insert it in the correct location in the YAML file."
+msgstr ""
+
+msgid "CodeCoverage|Couldn't fetch the code coverage data"
+msgstr ""
+
+msgid "CodeCoverage|No code coverage data"
 msgstr ""
 
 msgid "CodeDropdownClients|Add client"
@@ -21569,87 +21569,6 @@ msgstr ""
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr ""
 
-msgid "Compliance Center Export|Example: 2dc6aa3"
-msgstr ""
-
-msgid "Compliance Center Export|Export a list of compliance frameworks for a project as a CSV file."
-msgstr ""
-
-msgid "Compliance Center Export|Export chain of custody report"
-msgstr ""
-
-msgid "Compliance Center Export|Export chain of custody report as a CSV file (limited to 15MB)."
-msgstr ""
-
-msgid "Compliance Center Export|Export chain of custody report of a specific commit as a CSV file (limited to 15MB)."
-msgstr ""
-
-msgid "Compliance Center Export|Export compliance violations as a CSV file."
-msgstr ""
-
-msgid "Compliance Center Export|Export compliance violations report"
-msgstr ""
-
-msgid "Compliance Center Export|Export contents of the compliance frameworks report as a CSV file."
-msgstr ""
-
-msgid "Compliance Center Export|Export contents of the standards adherence report as a CSV file."
-msgstr ""
-
-msgid "Compliance Center Export|Export contents of the status report as a CSV file."
-msgstr ""
-
-msgid "Compliance Center Export|Export custody report"
-msgstr ""
-
-msgid "Compliance Center Export|Export custody report of a specific commit"
-msgstr ""
-
-msgid "Compliance Center Export|Export frameworks report"
-msgstr ""
-
-msgid "Compliance Center Export|Export list of project frameworks"
-msgstr ""
-
-msgid "Compliance Center Export|Export merge request violations as a CSV file."
-msgstr ""
-
-msgid "Compliance Center Export|Export merge request violations report"
-msgstr ""
-
-msgid "Compliance Center Export|Export merge request violations report (legacy)"
-msgstr ""
-
-msgid "Compliance Center Export|Export standards adherence report"
-msgstr ""
-
-msgid "Compliance Center Export|Export status report"
-msgstr ""
-
-msgid "Compliance Center Export|Invalid hash"
-msgstr ""
-
-msgid "Compliance Center Export|Send email of the chosen report as CSV"
-msgstr ""
-
-msgid "Compliance Center Export|You will be emailed after the export is processed."
-msgstr ""
-
-msgid "Compliance Center|Frameworks"
-msgstr ""
-
-msgid "Compliance Center|Overview"
-msgstr ""
-
-msgid "Compliance Center|Report and manage compliance status, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "Compliance Center|Status"
-msgstr ""
-
-msgid "Compliance Center|Violations"
-msgstr ""
-
 msgid "Compliance and security policy group"
 msgstr ""
 
@@ -21662,27 +21581,6 @@ msgstr ""
 msgid "Compliance frameworks"
 msgstr ""
 
-msgid "Compliance report|Actions"
-msgstr ""
-
-msgid "Compliance report|Edit framework"
-msgstr ""
-
-msgid "Compliance report|Framework name"
-msgstr ""
-
-msgid "Compliance report|Policies"
-msgstr ""
-
-msgid "Compliance report|Projects"
-msgstr ""
-
-msgid "Compliance report|Requirements"
-msgstr ""
-
-msgid "Compliance report|Requirements without controls"
-msgstr ""
-
 msgid "Compliance requirement control successfully deleted"
 msgstr ""
 
@@ -21690,6 +21588,87 @@ msgid "Compliance requirement status successfully refreshed."
 msgstr ""
 
 msgid "Compliance requirement successfully deleted"
+msgstr ""
+
+msgid "ComplianceCenterExport|Example: 2dc6aa3"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export a list of compliance frameworks for a project as a CSV file."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export chain of custody report"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export chain of custody report as a CSV file (limited to 15MB)."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export chain of custody report of a specific commit as a CSV file (limited to 15MB)."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export compliance violations as a CSV file."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export compliance violations report"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export contents of the compliance frameworks report as a CSV file."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export contents of the standards adherence report as a CSV file."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export contents of the status report as a CSV file."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export custody report"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export custody report of a specific commit"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export frameworks report"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export list of project frameworks"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export merge request violations as a CSV file."
+msgstr ""
+
+msgid "ComplianceCenterExport|Export merge request violations report"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export merge request violations report (legacy)"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export standards adherence report"
+msgstr ""
+
+msgid "ComplianceCenterExport|Export status report"
+msgstr ""
+
+msgid "ComplianceCenterExport|Invalid hash"
+msgstr ""
+
+msgid "ComplianceCenterExport|Send email of the chosen report as CSV"
+msgstr ""
+
+msgid "ComplianceCenterExport|You will be emailed after the export is processed."
+msgstr ""
+
+msgid "ComplianceCenter|Frameworks"
+msgstr ""
+
+msgid "ComplianceCenter|Overview"
+msgstr ""
+
+msgid "ComplianceCenter|Report and manage compliance status, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "ComplianceCenter|Status"
+msgstr ""
+
+msgid "ComplianceCenter|Violations"
 msgstr ""
 
 msgid "ComplianceChainOfCustody| Chain of custody export"
@@ -22217,6 +22196,9 @@ msgstr ""
 msgid "ComplianceReport|Action"
 msgstr ""
 
+msgid "ComplianceReport|Actions"
+msgstr ""
+
 msgid "ComplianceReport|Activity"
 msgstr ""
 
@@ -22283,6 +22265,9 @@ msgstr ""
 msgid "ComplianceReport|Do you want to refresh the filtered results to include your change?"
 msgstr ""
 
+msgid "ComplianceReport|Edit framework"
+msgstr ""
+
 msgid "ComplianceReport|Edit the framework"
 msgstr ""
 
@@ -22308,6 +22293,9 @@ msgid "ComplianceReport|For more information, see %{linkStart}how to migrate fro
 msgstr ""
 
 msgid "ComplianceReport|Framework"
+msgstr ""
+
+msgid "ComplianceReport|Framework name"
 msgstr ""
 
 msgid "ComplianceReport|Frameworks have been successfully updated."
@@ -22373,16 +22361,25 @@ msgstr ""
 msgid "ComplianceReport|Please remove the compliance pipeline configuration from the compliance framework so that the new pipeline execution policy can take precedence."
 msgstr ""
 
+msgid "ComplianceReport|Policies"
+msgstr ""
+
 msgid "ComplianceReport|Project"
 msgstr ""
 
 msgid "ComplianceReport|Project coverage (%%)"
 msgstr ""
 
+msgid "ComplianceReport|Projects"
+msgstr ""
+
 msgid "ComplianceReport|Remove frameworks from selected projects"
 msgstr ""
 
 msgid "ComplianceReport|Requirements"
+msgstr ""
+
+msgid "ComplianceReport|Requirements without controls"
 msgstr ""
 
 msgid "ComplianceReport|Search target branch"
@@ -25737,9 +25734,6 @@ msgstr ""
 msgid "Corpus Management"
 msgstr ""
 
-msgid "Corpus Management|Are you sure you want to delete the corpus?"
-msgstr ""
-
 msgid "Corpus management"
 msgstr ""
 
@@ -25747,6 +25741,9 @@ msgid "CorpusManagement|A corpus is used by fuzz testing to improve coverage. Co
 msgstr ""
 
 msgid "CorpusManagement|Actions"
+msgstr ""
+
+msgid "CorpusManagement|Are you sure you want to delete the corpus?"
 msgstr ""
 
 msgid "CorpusManagement|Corpus file"
@@ -29877,15 +29874,6 @@ msgstr ""
 msgid "Deployment ID"
 msgstr ""
 
-msgid "Deployment Target|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}"
-msgstr ""
-
-msgid "Deployment Target|Project deployment target (optional)"
-msgstr ""
-
-msgid "Deployment Target|Select the deployment target"
-msgstr ""
-
 msgid "Deployment approvals is not configured for this environment."
 msgstr ""
 
@@ -29931,6 +29919,9 @@ msgstr ""
 msgid "DeploymentApproval|Approval options"
 msgstr ""
 
+msgid "DeploymentTarget|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}"
+msgstr ""
+
 msgid "DeploymentTarget|Edge Computing (e.g. Cloudflare Workers)"
 msgstr ""
 
@@ -29958,7 +29949,13 @@ msgstr ""
 msgid "DeploymentTarget|Other hosting service"
 msgstr ""
 
+msgid "DeploymentTarget|Project deployment target (optional)"
+msgstr ""
+
 msgid "DeploymentTarget|Registry (package or container)"
+msgstr ""
+
+msgid "DeploymentTarget|Select the deployment target"
 msgstr ""
 
 msgid "DeploymentTarget|Self-managed container runtime (Podman, Docker Swarm, Docker Compose)"
@@ -38091,6 +38088,9 @@ msgstr ""
 msgid "FoundationalFlow|Answers questions and takes actions when GitLab Duo is mentioned in Slack."
 msgstr ""
 
+msgid "FoundationalFlow|Business Logic Security Scan"
+msgstr ""
+
 msgid "FoundationalFlow|Classify the risk of a merge request so review effort can be routed to the changes that warrant it."
 msgstr ""
 
@@ -38146,6 +38146,9 @@ msgid "FoundationalFlow|Risk Classification"
 msgstr ""
 
 msgid "FoundationalFlow|SAST False Positive Detection"
+msgstr ""
+
+msgid "FoundationalFlow|Scan the repository for business logic security vulnerabilities."
 msgstr ""
 
 msgid "FoundationalFlow|Score readiness of a work item for handoff based on its specification and plan."
@@ -48888,9 +48891,6 @@ msgstr ""
 msgid "License"
 msgstr ""
 
-msgid "License Compliance| Used by %{dependencies}"
-msgstr ""
-
 msgid "License Scanning for CycloneDX"
 msgstr ""
 
@@ -48913,6 +48913,9 @@ msgid "License key"
 msgstr ""
 
 msgid "License overview"
+msgstr ""
+
+msgid "LicenseCompliance| Used by %{dependencies}"
 msgstr ""
 
 msgid "LicenseCompliance|Acceptable for use in this project"
@@ -60602,9 +60605,6 @@ msgstr ""
 msgid "Pipeline %{label} for \"%{dataTitle}\""
 msgstr ""
 
-msgid "Pipeline Editor|Are you sure you want to reset the file to its last committed version?"
-msgstr ""
-
 msgid "Pipeline ID"
 msgstr ""
 
@@ -60798,6 +60798,9 @@ msgid "PipelineEditorTutorial|Use the Visualize and Lint tabs in the pipeline ed
 msgstr ""
 
 msgid "PipelineEditorTutorial|View %{linkStart}.gitlab-ci.yml syntax reference%{linkEnd}"
+msgstr ""
+
+msgid "PipelineEditor|Are you sure you want to reset the file to its last committed version?"
 msgstr ""
 
 msgid "PipelineEditor|Configuration content has changed. Re-run validation for updated results."
@@ -69055,12 +69058,6 @@ msgstr ""
 msgid "Revert this merge request"
 msgstr ""
 
-msgid "Review App|View app"
-msgstr ""
-
-msgid "Review App|View latest app"
-msgstr ""
-
 msgid "Review and edit media"
 msgstr ""
 
@@ -69104,6 +69101,12 @@ msgid "Review time"
 msgstr ""
 
 msgid "Review time is the amount of time since the first comment in a merge request."
+msgstr ""
+
+msgid "ReviewApp|View app"
+msgstr ""
+
+msgid "ReviewApp|View latest app"
 msgstr ""
 
 msgid "Reviewed"
@@ -90466,12 +90469,6 @@ msgstr ""
 msgid "Virtual registry"
 msgstr ""
 
-msgid "Virtual registry|Registry not found."
-msgstr ""
-
-msgid "Virtual registry|Upstream not found."
-msgstr ""
-
 msgid "VirtualRegistries|API endpoints rate limit"
 msgstr ""
 
@@ -91007,6 +91004,9 @@ msgstr ""
 msgid "VirtualRegistry|Registry cache cleared successfully."
 msgstr ""
 
+msgid "VirtualRegistry|Registry not found."
+msgstr ""
+
 msgid "VirtualRegistry|Registry types"
 msgstr ""
 
@@ -91095,6 +91095,9 @@ msgid "VirtualRegistry|Upstream created successfully."
 msgstr ""
 
 msgid "VirtualRegistry|Upstream has been deleted."
+msgstr ""
+
+msgid "VirtualRegistry|Upstream not found."
 msgstr ""
 
 msgid "VirtualRegistry|Upstream summary"

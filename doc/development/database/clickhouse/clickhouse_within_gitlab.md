@@ -207,7 +207,7 @@ bundle exec rake gitlab:clickhouse:migrate
 
 ## Column Compression Guidelines
 
-When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using `LZ4` on self-managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
+When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using `LZ4` on GitLab Self-Managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
 
 ### Recommended Codecs by Data Type
 

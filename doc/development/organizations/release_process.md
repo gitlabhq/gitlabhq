@@ -183,7 +183,7 @@ Two consequences of the shared stage flags:
 - A percentage of actors buckets each actor by its type. When two organization flags at the same stage are checked with different actor types in one request, the rollout can include one and exclude the other, so pass a consistent actor type for a given organization flag.
 
 The GA stage flag is the only one that ships as `default_enabled: true`. It reaches all deployments while keeping a handbrake.
-The handbrake works on GitLab.com and Self-Managed, but is inert on GitLab Dedicated, where [feature flags cannot be modified](../enabling_features_on_dedicated.md#feature-flags).
+The handbrake works on GitLab.com and GitLab Self-Managed, but is inert on GitLab Dedicated, where [feature flags cannot be modified](../enabling_features_on_dedicated.md#feature-flags).
 
 ## Release status table
 

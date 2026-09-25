@@ -14,18 +14,18 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
 
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
-          requires :name, type: String, desc: 'The name of a Terraform state'
-          requires :serial, type: Integer, desc: 'The version number of the state'
+          requires :name, type: String, desc: 'Name of the Terraform state.'
+          requires :serial, type: Integer, desc: 'Version number of the Terraform state.'
         end
         namespace ':id/terraform/state/:name/versions/:serial' do
           params do
-            requires :name, type: String, desc: 'The name of a Terraform state'
-            requires :serial, type: Integer, desc: 'The version number of the state'
+            requires :name, type: String, desc: 'Name of the Terraform state.'
+            requires :serial, type: Integer, desc: 'Version number of the Terraform state.'
           end
 
           helpers do

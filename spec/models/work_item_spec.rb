@@ -357,6 +357,28 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#has_widget?' do
+    let(:work_item) { build(:work_item) }
+
+    it 'returns true for a widget the type supports' do
+      expect(work_item.has_widget?(:description)).to be(true)
+    end
+
+    it 'returns false for a widget the type does not support' do
+      expect(work_item.has_widget?(:nop)).to be(false)
+    end
+
+    it 'resolves the widget list once for repeated calls' do
+      work_item_type = work_item.work_item_type
+      allow(work_item).to receive(:work_item_type).and_return(work_item_type)
+      expect(work_item_type).to receive(:widgets).once.and_call_original
+
+      work_item.has_widget?(:description)
+      work_item.has_widget?(:labels)
+      work_item.get_widget(:description)
+    end
+  end
+
   describe '#supports_assignee?' do
     WorkItems::TypesFramework::SystemDefined::Type::BASE_TYPES.pluck(:base_type).each do |base_type|
       specify do

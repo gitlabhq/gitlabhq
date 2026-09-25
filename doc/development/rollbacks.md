@@ -26,7 +26,7 @@ files, or cached values), consider using a phased deployment approach:
 
 This approach ensures:
 
-- Older self-managed instances have backward compatibility support
+- Older GitLab Self-Managed instances have backward compatibility support
 - New format data is only created after validation logic is deployed
 - Rollbacks won't create validation failures for newly-issued data
 - Users experience no disruption during format transitions

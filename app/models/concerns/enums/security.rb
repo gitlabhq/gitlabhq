@@ -55,6 +55,9 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       business_logic: 5
     }.freeze
 
+    # Scan types executed as an AI flow, not as injected CI jobs.
+    FLOW_BACKED_SCAN_TYPES = %w[business_logic].freeze
+
     REMEDIATION_SCAN_PROFILE_TYPES = {
       dependency_scanning_post_processing: 20,
       triage_and_remediation: 30

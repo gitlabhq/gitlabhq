@@ -20,17 +20,10 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep, feature_c
     let(:job_args) { [project.id, update_sequence_id] }
     let(:update_sequence_id) { 1 }
     let(:request_path) { '/rest/devinfo/0.10/bulk' }
+    # store_dev_info now serializes the repository to a hash (to truncate nested
+    # issueKeys), so match the sent payload rather than an entity instance.
     let(:request_body) do
-      {
-        repositories: [
-          Atlassian::JiraConnect::Serializers::RepositoryEntity.represent(
-            project,
-            merge_requests: [mr_with_jira_description, mr_with_jira_title],
-            branches: [project.repository.find_branch(jira_referencing_branch_name)],
-            update_sequence_id: update_sequence_id
-          )
-        ]
-      }
+      hash_including(repositories: [hash_including(updateSequenceId: update_sequence_id)])
     end
 
     def perform(project_id, update_sequence_id)

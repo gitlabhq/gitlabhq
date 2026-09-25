@@ -1089,6 +1089,38 @@ instructions:
       - Reference: doc/development/documentation/graphql_styleguide.md
   # <<< end generated: documentation-api
 
+  - name: Release note items
+    fileFilters:
+      - "doc/releases/**/*.md"
+      - "!doc/releases/**/index.md"
+      - "!doc/releases/**/_index.md"
+    instructions: |
+      1. These files are feature release notes written by product managers, not product documentation. The release note process is documented in `doc/development/documentation/release_notes.md`. Do not propose restructuring the file or moving content to another page.
+      2. Flag required frontmatter fields that are missing: `title`, `tier`, `offering`, `documentation_link`, `work_item`, `categories`, `stage`. `level`, `weight`, and `co_create` are optional. Do not flag their absence.
+      3. `tier` must be one or more of `Free`, `Premium`, `Ultimate`, in that order. `offering` must be one or more of `gitlab_com`, `self_managed`, `gitlab_dedicated`, `gitlab_dedicated_for_government`, in that order. Flag values outside these sets, or listed out of order.
+      4. `stage` must match a key in `data/release_post_groupings.yaml` in the `docs-gitlab-com` project. An unrecognized value files the note under the wrong heading with no error, so flag a value you cannot place. A `devops::` label does not always map to a valid stage value.
+      5. `documentation_link` is a relative path with no `.md` extension and no `_index`. If `https://docs.gitlab.com/` is used, add a note for the technical writer to confirm if this documentation is in the `gitlab` repository. Documentation outside the `gitlab` repository, like GitLab Runner or GitLab Orbit documentation, can use an absolute URL.
+      6. `work_item` must be an absolute `https://gitlab.com/` URL. Flag it if it is missing, relative, or does not start with `https://gitlab.com/`.
+      7. Review the note body against these rules:
+         - 125 words or fewer.
+         - Explain the value of the improvement, following the template's pattern: "In previous versions of GitLab, you couldn't... Now you can...".
+         - Present tense, conversational tone. Flag "we".
+         - No implementation details such as syntax, variable names, or API parameters. A brief activation step is fine.
+         - Several distinct capabilities read better as a bulleted list than as one paragraph.
+         - No images or videos.
+         - Links in the body should be relative and include `.md`.
+      8. Check that `documentation_link` points to the documentation for the feature. If any of the following conditions are true, skip step 9 and comment on the `documentation_link` line: "Documentation comparison skipped — see the reason above. If the documentation is still in progress, make this merge request depend on the documentation merge request and re-request a review with `/assign_reviewer @GitLabDuo` once it merges."
+         1. If `documentation_link` is an absolute URL, say you cannot read it.
+         2. If the path does not resolve, say the file was not found. Do not guess at its contents.
+         3. If the page does not yet cover the feature or update, say so in one sentence. Absent documentation is not contradicting documentation, so do not flag the note's capability claims, tier, or offering as unsupported.
+      9. Compare the release note body with the documentation linked in `documentation_link`. The documentation is correct and the release note should match it. Flag the following items. Quote the documentation line you compared against so the author can check it:
+         - Differences in terminology or feature names, including setting, menu, and UI names.
+         - Capability claims the documentation does not support, or that contradict its stated availability, prerequisites, or limitations.
+         - A `tier` or `offering` is inconsistent with the availability details in the documentation.
+         - Different wording for how the feature is used, turned on, or where it lives: a different verb for the same action, a different place for a setting, a different name for a step.
+         Do not flag differences in length, tone, or detail; a release note is deliberately shorter and more promotional.
+      10. Do not repeat style findings the Documentation instructions already cover.
+
   # >>> generated: testing-rspec — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
   # distilled_at_sha: 3477a0d37b5792d9979852b021dc2f157963dc7d
   # source_checksum: 18d4e56345888662

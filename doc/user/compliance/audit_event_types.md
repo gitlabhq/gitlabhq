@@ -175,6 +175,12 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`job_artifact_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129608) | A user downloads a job artifact from a project | {{< no >}} | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/250663) | Project |
 
+### Chat engine
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`web_search_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253643) | In a group, the setting that allows web search in GitLab Duo Chat is changed | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/587234) | Group |
+
 ### Ci variables
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -433,12 +439,6 @@ Audit event types belong to the following product categories.
 | [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< yes >}} | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 | [`duo_cli_session_blocked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242484) | A Duo CLI session was blocked because the administrator disabled Duo CLI | {{< yes >}} | GitLab [19.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/597833) | User |
 | [`lock_duo_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235370) | Added when lock_duo_features_enabled is changed. | {{< yes >}} | GitLab [19.0](https://gitlab.com/gitlab-org/gitlab/-/work_items/598658) | Group |
-
-### Duo chat
-
-| Type name | Event triggered when | Saved to database | Introduced in | Scope |
-|:----------|:---------------------|:------------------|:--------------|:------|
-| [`web_search_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253643) | In a group, the setting that allows web search in GitLab Duo Chat is changed | {{< yes >}} | GitLab [19.4](https://gitlab.com/gitlab-org/gitlab/-/issues/587234) | Group |
 
 ### Dynamic application security testing
 

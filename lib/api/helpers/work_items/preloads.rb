@@ -21,7 +21,7 @@ module API
           description: [:last_edited_by],
           assignees: [:assignees],
           labels: [:labels],
-          milestone: [:milestone],
+          milestone: [{ milestone: [{ group: :route }, { project: { namespace: :route } }] }],
           start_and_due_date: [:dates_source],
           time_tracking: [{ timelogs: :user }],
           error_tracking: [:sentry_issue],
@@ -29,13 +29,9 @@ module API
           notifications: [:issue_assignees]
         }.freeze
 
-        PROJECT_FEATURE_PRELOADS = {
-          milestone: [{ milestone: :project }]
-        }.freeze
+        PROJECT_FEATURE_PRELOADS = {}.freeze
 
-        GROUP_FEATURE_PRELOADS = {
-          milestone: [{ milestone: :group }]
-        }.freeze
+        GROUP_FEATURE_PRELOADS = {}.freeze
 
         FIELD_PRELOADS = {
           author: [:author],

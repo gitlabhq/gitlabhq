@@ -808,7 +808,7 @@ To reuse or extend this harness for your agent, see these merge requests for ref
 
 ## Architecture design
 
-[Foundational Chat Agents](glossary.md#agent-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, Self-Managed, and Dedicated).
+[Foundational Chat Agents](glossary.md#agent-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, GitLab Self-Managed, and Dedicated).
 
 The architecture of how Foundational Agents are made available avoids connecting to AI Catalog to fetch definitions at runtime and allows GitLab engineering teams full control over when they are released.
 
@@ -858,7 +858,7 @@ agent.
 
 The alternative to this would be to ship the YAML definitions themselves as part of GitLab monolith,
 but that comes with
-the downside of not being able to quickly ship fixes to cloud-connected self-managed instances.
+the downside of not being able to quickly ship fixes to cloud-connected GitLab Self-Managed instances.
 
 Eventually, if labels are implemented on AI Catalog,
 teams wouldn't need to add their entries to the Dockerfile. Versions

@@ -226,7 +226,7 @@ in the rollout plan.
 ### Create patch releases and backports for security patches
 
 If the upgrade was a patch release and contains important security fixes, it should be released as a
-GitLab patch release to self-managed customers. Consult our [release managers](https://about.gitlab.com/community/release-managers/)
+GitLab patch release to GitLab Self-Managed customers. Consult our [release managers](https://about.gitlab.com/community/release-managers/)
 for how to proceed.
 
 ## Ruby upgrade tooling

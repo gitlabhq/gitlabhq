@@ -394,6 +394,11 @@ export default {
           }),
         );
     }, STATE_QUERY_POLLING_INTERVAL_DEFAULT),
+    refreshMergeStatus() {
+      // refetch=false: the strategies come from the REST checkStatus payload; the Apollo
+      // state refetch does not carry them, so skip that extra query (#629566).
+      this.checkStatus(undefined, undefined, false);
+    },
     setFaviconHelper() {
       if (this.mr.faviconOverlayPath) {
         return setFaviconOverlay(this.mr.faviconOverlayPath);
@@ -502,6 +507,9 @@ export default {
     },
     bindEventHubListeners() {
       eventHub.$on('mr-widget-update-requested', this.refetchState);
+      // Strategies are only delivered by the REST checkStatus poll (or the subscription),
+      // not by an Apollo state refetch, so approval triggers this to refresh them promptly.
+      eventHub.$on('mr-widget-check-status', this.refreshMergeStatus);
       eventHub.$on('mr-widget-rebase-success', this.checkRebasedStatus);
       eventHub.$on('failed-to-merge', this.setMergeError);
       eventHub.$on('UpdateWidgetData', this.setMrData);
@@ -510,6 +518,7 @@ export default {
     },
     unbindEventListeners() {
       eventHub.$off('mr-widget-update-requested', this.refetchState);
+      eventHub.$off('mr-widget-check-status', this.refreshMergeStatus);
       eventHub.$off('mr-widget-rebase-success', this.checkRebasedStatus);
       eventHub.$off('failed-to-merge', this.setMergeError);
       eventHub.$off('UpdateWidgetData', this.setMrData);

@@ -21675,6 +21675,12 @@
               "description": "Resolve dependency bump feature setting",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "BL_SECURITY",
+              "description": "Bl security feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -25853,6 +25859,12 @@
             {
               "name": "DUO_DEVELOPER",
               "description": "Duo developer feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BL_SECURITY",
+              "description": "Bl security feature setting",
               "isDeprecated": false,
               "deprecationReason": null
             }

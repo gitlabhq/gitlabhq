@@ -12,8 +12,8 @@ module API
 
       namespace 'admin' do
         params do
-          requires :database_name, type: String, desc: 'The database name'
-          requires :table_name, type: String, desc: 'The table name'
+          requires :database_name, type: String, desc: 'Name of the database.'
+          requires :table_name, type: String, desc: 'Name of the table.'
         end
         resources 'databases/:database_name/dictionary/tables/:table_name' do
           desc 'Retrieve dictionary details' do
@@ -29,11 +29,11 @@ module API
             requires :database_name,
               type: String,
               values: %w[main ci],
-              desc: 'The database name'
+              desc: 'Name of the database.'
 
             requires :table_name,
               type: String,
-              desc: 'The table name'
+              desc: 'Name of the table.'
           end
           route_setting :authorization, permissions: :read_database_dictionary, boundary_type: :instance,
             assignable_when: [:admin]

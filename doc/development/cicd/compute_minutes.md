@@ -158,7 +158,7 @@ In 2024, we developed a purpose-specific visualization for dedicated hosted runn
 The existing GitLab visualizations were insufficient because:
 
 1. **Single namespace limitation**: Existing visualizations only show usage for a single root namespace, but Dedicated customers need visibility across all namespaces on their instance
-1. **No runner type distinction**: Admin-managed instance runners can run alongside GitLab Hosted Instance Runners. Since we track all instance runner usage together, existing visualizations would incorrectly include self-managed instance runners in the hosted runner metrics
+1. **No runner type distinction**: Admin-managed instance runners can run alongside GitLab Hosted Instance Runners. Since we track all instance runner usage together, existing visualizations would incorrectly include GitLab Self-Managed instance runners in the hosted runner metrics
 
 ### How It Works
 
@@ -208,7 +208,7 @@ We've had to disable the tracking mechanism for some customers on Dedicated inst
 
 **5. Platform-Specific Design**
 
-The current system was designed specifically for GitLab.com as a platform, where all instance runners are hosted runners. This is how we determine runner hosting status. However, on other platforms, instance runners can be self-managed. To move hosted runners to other platforms, we need a way to distinguish between hosted and self-managed runners.
+The current system was designed specifically for GitLab.com as a platform, where all instance runners are hosted runners. This is how we determine runner hosting status. However, on other platforms, instance runners can be GitLab Self-Managed. To move hosted runners to other platforms, we need a way to distinguish between hosted and self-managed runners.
 
 ## Future Vision for .com
 
@@ -226,16 +226,16 @@ This unified approach will enable us to:
 
 - Sell GitLab hosted instance runners on Dedicated instances
 - Sell GitLab hosted group or project runners on all platforms
-- Sell GitLab hosted runners on self-managed
+- Sell GitLab hosted runners on GitLab Self-Managed
 - Break the current paradigm that a hosted runner must be an instance runner on .com
 
 ### Maintaining Backwards Compatibility
 
-When we migrate .com hosted instance runners to the Customers Portal and runner tracking system, we must maintain the existing instance runner tracking to avoid breaking workflows for self-managed customers. We've received support tickets from self-managed customers who use instance runner tracking to monitor their self-hosted instance runners.
+When we migrate .com hosted instance runners to the Customers Portal and runner tracking system, we must maintain the existing instance runner tracking to avoid breaking workflows for GitLab Self-Managed customers. We've received support tickets from GitLab Self-Managed customers who use instance runner tracking to monitor their self-hosted instance runners.
 
 It's possible we'll need two distinct tracking systems running side-by-side:
 
-1. Self-managed instance runners - usage tracked and enforced in Rails, managed by instance admins
+1. GitLab Self-Managed instance runners - usage tracked and enforced in Rails, managed by instance admins
 1. GitLab Hosted runners - usage tracked and enforced in Customers Portal, managed by GitLab
 
-Once .com is no longer the primary customer for instance runner tracking, we should gather usage data from self-managed instances to understand their needs. This will help us work with product to determine whether instance runner minute tracking and quota enforcement should be maintained for self-managed instances long-term.
+Once .com is no longer the primary customer for instance runner tracking, we should gather usage data from GitLab Self-Managed instances to understand their needs. This will help us work with product to determine whether instance runner minute tracking and quota enforcement should be maintained for GitLab Self-Managed instances long-term.
