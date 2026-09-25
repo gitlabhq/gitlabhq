@@ -1804,6 +1804,39 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#sa_provisioned_for_project?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_project) { create(:project) }
+
+    context 'when user is not a service account' do
+      let_it_be(:user) { create(:user) }
+
+      it { expect(user.sa_provisioned_for_project?(project)).to be(false) }
+    end
+
+    context 'when the project is nil' do
+      let_it_be(:service_account) { create(:user, :service_account, provisioned_by_group: create(:group)) }
+
+      it { expect(service_account.sa_provisioned_for_project?(nil)).to be(false) }
+    end
+
+    context 'when the service account is provisioned for another project' do
+      let_it_be(:service_account) do
+        create(:user, :service_account).tap { |sa| sa.update!(provisioned_by_project: other_project) }
+      end
+
+      it { expect(service_account.sa_provisioned_for_project?(project)).to be(false) }
+    end
+
+    context 'when the service account is provisioned for the project' do
+      let_it_be(:service_account) do
+        create(:user, :service_account).tap { |sa| sa.update!(provisioned_by_project: project) }
+      end
+
+      it { expect(service_account.sa_provisioned_for_project?(project)).to be(true) }
+    end
+  end
+
   describe '#sa_provisioned_by_subgroup?' do
     context 'when user is not a service account' do
       let_it_be(:user) { create(:user) }

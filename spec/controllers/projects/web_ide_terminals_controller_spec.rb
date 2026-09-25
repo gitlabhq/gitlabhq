@@ -239,9 +239,12 @@ RSpec.describe Projects::WebIdeTerminalsController, feature_category: :web_ide d
 
   describe 'POST retry' do
     let(:status) { :failed }
+    let(:rate_limited) { false }
     let(:job) { create(:ci_build, status, pipeline: pipeline, user: user, project: project) }
 
     before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true) if rate_limited
+
       post(:retry, params: {
         namespace_id: project.namespace.to_param,
         project_id: project.to_param,
@@ -265,6 +268,15 @@ RSpec.describe Projects::WebIdeTerminalsController, feature_category: :web_ide d
 
       it 'returns 200' do
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the retry is rate limited' do
+      let(:status) { :canceled }
+      let(:rate_limited) { true }
+
+      it 'returns 429' do
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
 

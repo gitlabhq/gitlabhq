@@ -1188,6 +1188,21 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       call_retry_job
     end
 
+    context 'when the job retry rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      before do
+        stub_application_setting(job_retry_limit_per_user_project: 1)
+      end
+
+      # The outer before block already made one retry call.
+      it 'returns 429 with Retry-After', :aggregate_failures do
+        call_retry_job
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers['Retry-After']).to be_present
+        expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+      end
+    end
+
     shared_examples 'job retry API call handler' do
       context 'authorized user with :retry_job permission' do
         context 'when the job is a build' do
@@ -1461,6 +1476,22 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       before do
         project.add_developer(user)
+      end
+
+      context 'when the job play rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+        before do
+          stub_application_setting(job_play_limit_per_user_project: 1)
+        end
+
+        it 'returns 429 with Retry-After', :aggregate_failures do
+          other_job = create(:ci_build, :manual, project: project, pipeline: pipeline)
+
+          post api("/projects/#{project.id}/jobs/#{other_job.id}/play", api_user), params: params
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to be_present
+          expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+        end
       end
 
       context 'when user is authorized to trigger a manual action' do

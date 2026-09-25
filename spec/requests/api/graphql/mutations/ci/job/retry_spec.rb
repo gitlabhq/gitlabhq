@@ -44,6 +44,20 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
     expect(graphql_errors).not_to be_empty
   end
 
+  context 'when the job retry rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    before do
+      stub_application_setting(job_retry_limit_per_user_project: 1)
+    end
+
+    it 'returns the throttle message in errors', :aggregate_failures do
+      2.times { post_graphql_mutation(mutation, current_user: user) }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['job']).to be_nil
+      expect(mutation_response['errors']).to contain_exactly(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+    end
+  end
+
   context 'when the job is a Ci::Build' do
     it 'retries the build' do
       post_graphql_mutation(mutation, current_user: user)

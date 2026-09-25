@@ -16,7 +16,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/controllers/projects/hooks_controller.rb'
     - 'app/controllers/projects/imports_controller.rb'
     - 'app/controllers/projects/issue_links_controller.rb'
-    - 'app/controllers/projects/labels_controller.rb'
     - 'app/controllers/projects/merge_requests/drafts_controller.rb'
     - 'app/controllers/projects/milestones_controller.rb'
     - 'app/controllers/projects/mirrors_controller.rb'

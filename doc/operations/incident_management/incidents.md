@@ -107,6 +107,10 @@ displays them below the summary.
 
 {{< /details >}}
 
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
 In many cases, incidents are associated with metrics. You can upload screenshots of metric
 charts in the **Metrics** tab:
 

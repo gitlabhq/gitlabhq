@@ -321,9 +321,10 @@
     }
   }
 
-  // Fix border bleed.
+  // Fix border bleed. The GLQL table can wrap `.gl-table-shadow` with its description, so
+  // "load more" may follow the wrapper instead.
   // stylelint-disable-next-line gitlab/no-has -- scoped to gl-table-shadow element
-  .gl-table-shadow:not(:has(+ .glql-load-more)) {
+  .gl-table-shadow:not(:has(+ .glql-load-more), :has(+ .glql-load-more) > *) {
     clip-path: inset(0 round 0 0 1px 1px);
   }
 

@@ -1133,6 +1133,24 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
       let(:factory_options) { { user: user, options: try(:options) }.compact }
     end
 
+    context 'when the stop action is a build' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:job) { create(:ci_build, :success, pipeline: pipeline, user: user) }
+
+      before do
+        create(:deployment, :success, environment: environment, deployable: job, on_stop: 'close_app')
+        create(:ci_build, :manual, pipeline: pipeline, name: 'close_app', user: user)
+        environment.update!(state: :available)
+        project.add_developer(user)
+      end
+
+      it 'plays the stop action without the play rate limit' do
+        expect(Ci::PlayBuildService).to receive(:new).with(hash_including(rate_limit: false)).and_call_original
+
+        subject
+      end
+    end
+
     it_behaves_like 'stop with playing a teardown job' do
       let(:factory_type) { :ci_bridge }
       let(:factory_options) { { user: user, downstream: project, options: try(:options) }.compact }

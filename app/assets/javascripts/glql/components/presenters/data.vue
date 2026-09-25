@@ -109,6 +109,7 @@ export default {
     :comparison-data="comparisonData"
     :fields="fields"
     :loading="loading"
+    :display-config="displayConfig"
     :source="source"
     @error="$emit('error', $event)"
   />

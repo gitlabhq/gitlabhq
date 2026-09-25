@@ -210,6 +210,34 @@ describe('Pipeline header', () => {
     });
   });
 
+  describe('when the pipeline is no longer found', () => {
+    const pipelineNotFound = {
+      data: { project: { ...pipelineHeaderSuccess.data.project, pipeline: null } },
+    };
+    const notFoundAfterLoadHandler = jest
+      .fn()
+      .mockResolvedValueOnce(pipelineHeaderSuccess)
+      .mockResolvedValue(pipelineNotFound);
+
+    beforeEach(async () => {
+      await createComponent({
+        handlers: [
+          [getPipelineDetailsQuery, notFoundAfterLoadHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
+        ],
+      });
+
+      await wrapper.vm.$apollo.queries.pipeline.refetch();
+      await waitForPromises();
+    });
+
+    it('keeps showing the last loaded pipeline', () => {
+      expect(notFoundAfterLoadHandler).toHaveBeenCalledTimes(2);
+      expect(findStatus().exists()).toBe(true);
+      expect(findBadges().props('pipeline')).toEqual(pipelineHeaderSuccess.data.project.pipeline);
+    });
+  });
+
   describe('without pipeline name (from workflow:name)', () => {
     it('shows a pipeline id', async () => {
       await createComponent({

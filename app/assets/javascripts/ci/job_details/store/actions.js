@@ -205,7 +205,12 @@ export const enableScrollTop = ({ commit }) => commit(types.ENABLE_SCROLL_TOP);
 export const requestJobLog = ({ commit }) => commit(types.REQUEST_JOB_LOG);
 
 export const fetchJobLog = ({ commit, dispatch, state }) => {
-  let isScrolledToBottomBeforeReceivingJobLog;
+  // On the first fetch the log hasn't rendered yet, so land the user at the
+  // bottom to follow the newest output. `jobLogState` is only set after a
+  // successful fetch, so a null value marks that first request. A URL hash
+  // deep-links to a specific line, so we don't hijack the scroll in that case.
+  const isFirstFetch = state.jobLogState === null;
+  let shouldScrollToBottom = isFirstFetch && !window.location.hash;
 
   return (
     axios
@@ -213,7 +218,7 @@ export const fetchJobLog = ({ commit, dispatch, state }) => {
         params: { state: state.jobLogState },
       })
       .then(({ data }) => {
-        isScrolledToBottomBeforeReceivingJobLog = isScrolledToBottom();
+        shouldScrollToBottom = shouldScrollToBottom || isScrolledToBottom();
 
         commit(types.RECEIVE_JOB_LOG_SUCCESS, data);
 
@@ -228,7 +233,7 @@ export const fetchJobLog = ({ commit, dispatch, state }) => {
       // to wait on related components to update
       // after the RECEIVE_JOB_LOG_SUCCESS commit
       .then(() => {
-        if (isScrolledToBottomBeforeReceivingJobLog) {
+        if (shouldScrollToBottom) {
           dispatch('scrollBottom');
         }
       })

@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GlqlVisualization from '~/analytics/analytics_dashboards/components/visualizations/glql.vue';
@@ -17,13 +18,16 @@ jest.mock('~/lib/utils/copy_to_clipboard');
 describe('GlqlVisualization', () => {
   let wrapper;
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (props = {}, { glFeatures = {}, attachTo } = {}) => {
     wrapper = shallowMountExtended(GlqlVisualization, {
       propsData: props,
+      provide: { glFeatures },
+      attachTo,
     });
   };
 
   const findResolver = () => wrapper.findComponent(GlqlResolver);
+  const findViewportObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findModal = () => wrapper.findComponent(GlqlViewSourceModal);
   const findPanelState = () => wrapper.findComponent(PanelState);
   const findEmptyState = () => {
@@ -46,6 +50,80 @@ describe('GlqlVisualization', () => {
       scope: null,
       queue: 'glql-queue-dashboard',
       bindings: [],
+    });
+  });
+
+  describe('when the deferOffscreenGlqlDashboardPanels feature flag is enabled', () => {
+    beforeEach(() => {
+      createWrapper(
+        { data: 'type = Issue AND state = opened' },
+        { glFeatures: { deferOffscreenGlqlDashboardPanels: true } },
+      );
+    });
+
+    it('waits for the panel to near the viewport before mounting the resolver', () => {
+      expect(findResolver().exists()).toBe(false);
+      expect(findViewportObserver().props('options')).toEqual({
+        root: null,
+        rootMargin: '100% 0px',
+      });
+    });
+
+    describe('when the dashboard scrolls inside a page panel', () => {
+      let scrollPanel;
+
+      beforeEach(() => {
+        scrollPanel = document.createElement('div');
+        scrollPanel.classList.add('js-static-panel-inner');
+        const mountPoint = document.createElement('div');
+        scrollPanel.appendChild(mountPoint);
+        document.body.appendChild(scrollPanel);
+
+        createWrapper(
+          { data: 'type = Issue AND state = opened' },
+          { glFeatures: { deferOffscreenGlqlDashboardPanels: true }, attachTo: mountPoint },
+        );
+      });
+
+      afterEach(() => {
+        scrollPanel.remove();
+      });
+
+      it('observes the panel against the page panel', () => {
+        expect(findViewportObserver().props('options').root).toBe(scrollPanel);
+      });
+    });
+
+    describe('when the panel nears the viewport', () => {
+      beforeEach(async () => {
+        findViewportObserver().vm.$emit('appear');
+        await nextTick();
+      });
+
+      // The observer is removed with it, so leaving the viewport again never unmounts the resolver.
+      it('mounts the resolver and stops observing', () => {
+        expect(findResolver().exists()).toBe(true);
+        expect(findViewportObserver().exists()).toBe(false);
+      });
+
+      it('waits for the viewport again when the query changes', async () => {
+        wrapper.setProps({ data: 'type = Issue AND state = closed' });
+        await nextTick();
+
+        expect(findResolver().exists()).toBe(false);
+        expect(findViewportObserver().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('when the deferOffscreenGlqlDashboardPanels feature flag is disabled', () => {
+    beforeEach(() => {
+      createWrapper({ data: 'type = Issue AND state = opened' });
+    });
+
+    it('mounts the resolver straight away', () => {
+      expect(findResolver().exists()).toBe(true);
+      expect(findViewportObserver().exists()).toBe(false);
     });
   });
 

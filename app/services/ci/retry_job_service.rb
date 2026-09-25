@@ -4,8 +4,19 @@ module Ci
   class RetryJobService < ::BaseService
     include Gitlab::Utils::StrongMemoize
     include Gitlab::InternalEventsTracking
+    include Ci::JobRateLimitable
+
+    # @rate_limit - false for internal callers (auto-retry, auto-rollback, the play
+    #   fallback) so system-started retries are never throttled or double-counted
+    def initialize(project, user = nil, params = {})
+      super
+      @rate_limit = params.fetch(:rate_limit, true)
+    end
 
     def execute(job, variables: [], inputs: {})
+      throttled_response = rate_limited_response(job)
+      return throttled_response if throttled_response
+
       if job.retryable?
         processed_inputs = process_job_inputs(job, inputs)
         return processed_inputs if processed_inputs.error?
@@ -79,6 +90,18 @@ module Ci
     end
 
     private
+
+    def rate_limit?
+      @rate_limit
+    end
+
+    def rate_limited_response(job)
+      return unless Feature.enabled?(:rate_limit_job_retry, project)
+
+      job_rate_limited_response(
+        job, key: :job_retry, per_project_key: :job_retry_per_project, message: 'Job retry rate limit exceeded'
+      )
+    end
 
     def ensure_project_id!(variables)
       variables.map do |variables|

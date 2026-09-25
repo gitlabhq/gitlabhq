@@ -857,6 +857,9 @@ Retry a single job of a project
 POST /projects/:id/jobs/:job_id/retry
 ```
 
+If you exceed the [job retry rate limits](../administration/cicd/limits.md#job-retry-and-manual-job-run-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code with a `Retry-After` header.
+
 | Attribute    | Type              | Required | Description |
 |--------------|-------------------|----------|-------------|
 | `id`         | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
@@ -993,6 +996,9 @@ For a job in manual status, trigger an action to start the job.
 ```plaintext
 POST /projects/:id/jobs/:job_id/play
 ```
+
+If you exceed the [manual job run rate limits](../administration/cicd/limits.md#job-retry-and-manual-job-run-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code with a `Retry-After` header.
 
 | Attribute                  | Type              | Required | Description |
 |----------------------------|-------------------|----------|-------------|

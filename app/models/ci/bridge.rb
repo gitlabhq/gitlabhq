@@ -189,9 +189,9 @@ module Ci
     # rubocop: disable CodeReuse/ServiceClass
     # We don't need it but we are taking `job_variables_attributes` and `_inputs`
     # parameters to make it consistent with `Ci::Build#play` method.
-    def play(current_user, job_variables_attributes = nil, _inputs = {})
+    def play(current_user, job_variables_attributes = nil, _inputs = {}, rate_limit: true)
       Ci::PlayBridgeService
-        .new(project, current_user)
+        .new(project, current_user, rate_limit: rate_limit)
         .execute(self)
     end
     # rubocop: enable CodeReuse/ServiceClass

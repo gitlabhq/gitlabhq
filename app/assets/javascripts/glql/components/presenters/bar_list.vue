@@ -21,6 +21,8 @@ import { valueFormatterFor } from '../../utils/value_format';
 import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
 import { foldTail } from './bar_list/fold_tail';
 import TwoDimensionsBarList from './bar_list/two_dimensions_bar_list.vue';
+import { listDescriptionError, listDescriptionFor } from './utils/description';
+import { hiddenMetricsError, visibleFieldsOf } from './utils/hidden_metrics';
 import { NO_VALUE, trendPresentationFor } from './utils/stat';
 import { TREND_PREVIOUS_KEY, hasTemporalDimension, withTrendValues } from './utils/table';
 import { formatSignedChange, trendChangeFor } from './utils/trend';
@@ -98,6 +100,20 @@ export default {
         (dimensionsOf(this.fields).length === 0 || this.displayConfig?.metricRows === true)
       );
     },
+    description() {
+      return listDescriptionFor({
+        description: this.displayConfig?.description,
+        fields: this.fields,
+        data: this.data,
+        loading: this.loading,
+      });
+    },
+    visibleFields() {
+      return visibleFieldsOf(this.fields, this.displayConfig?.hiddenMetrics);
+    },
+    barMetrics() {
+      return metricsOf(this.visibleFields);
+    },
     maxRows() {
       const maxRows = Number(this.displayConfig.maxRows);
       return Number.isInteger(maxRows) && maxRows > 0 ? maxRows : DEFAULT_MAX_ROWS;
@@ -118,6 +134,16 @@ export default {
     // An unknown value is a block error, as for the stat presenter's variant, rather than a
     // silent fallback to the default.
     displayConfigError() {
+      const descriptionError = listDescriptionError(this.displayConfig?.description, this.fields);
+      if (descriptionError) return descriptionError;
+
+      const hiddenError = hiddenMetricsError(this.displayConfig?.hiddenMetrics, this.fields);
+      if (hiddenError) return hiddenError;
+
+      if (this.metricRows && !this.barMetrics.length) {
+        return s__('Glql|barList display type requires at least one metric not in `hiddenMetrics`');
+      }
+
       const unknown = Object.entries(DISPLAY_OPTIONS).find(
         ([key, options]) =>
           this.displayConfig?.[key] != null && !options.includes(this.displayConfig[key]),
@@ -224,43 +250,48 @@ export default {
 </script>
 
 <template>
-  <div v-if="metricRows">
-    <gl-skeleton-loader v-if="loading" />
-    <bar-list-chart
-      v-else-if="!displayConfigError"
-      :data="metricRowsFor(queryMetrics)"
-      :value-labels="valueLabels"
-      :color="color"
-      :scale="scale"
-    />
-  </div>
-  <dimension-routed-chart
-    v-else
-    display-type="barList"
-    :fields="fields"
-    :loading="loading"
-    :max-dimensions="2"
-    @error="$emit('error', $event)"
-  >
-    <template #one-dimension="{ dimension, metrics }">
+  <div>
+    <p v-if="description" class="gl-mb-3 gl-text-subtle" data-testid="description">
+      {{ description }}
+    </p>
+    <div v-if="metricRows">
+      <gl-skeleton-loader v-if="loading" />
       <bar-list-chart
-        v-if="!displayConfigError"
-        :data="rowsFor(dimension, metrics[0])"
+        v-else-if="!displayConfigError"
+        :data="metricRowsFor(barMetrics)"
         :value-labels="valueLabels"
         :color="color"
         :scale="scale"
       />
-    </template>
-    <template #two-dimensions="{ dimensions, metric }">
-      <two-dimensions-bar-list
-        v-if="!displayConfigError"
-        :data="data"
-        :primary-dimension="dimensions[0]"
-        :secondary-dimension="dimensions[1]"
-        :metric="metric"
-        :max-rows="maxRows"
-        :max-series="maxSeries"
-      />
-    </template>
-  </dimension-routed-chart>
+    </div>
+    <dimension-routed-chart
+      v-else
+      display-type="barList"
+      :fields="visibleFields"
+      :loading="loading"
+      :max-dimensions="2"
+      @error="$emit('error', $event)"
+    >
+      <template #one-dimension="{ dimension, metrics }">
+        <bar-list-chart
+          v-if="!displayConfigError"
+          :data="rowsFor(dimension, metrics[0])"
+          :value-labels="valueLabels"
+          :color="color"
+          :scale="scale"
+        />
+      </template>
+      <template #two-dimensions="{ dimensions, metric }">
+        <two-dimensions-bar-list
+          v-if="!displayConfigError"
+          :data="data"
+          :primary-dimension="dimensions[0]"
+          :secondary-dimension="dimensions[1]"
+          :metric="metric"
+          :max-rows="maxRows"
+          :max-series="maxSeries"
+        />
+      </template>
+    </dimension-routed-chart>
+  </div>
 </template>

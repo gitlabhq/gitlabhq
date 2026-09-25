@@ -32,4 +32,13 @@ RSpec.describe Gitlab::SlashCommands::Presenters::Deploy, feature_category: :dep
       expect(subject[:text]).to eq "Couldn't find a deployment manual action."
     end
   end
+
+  describe '#action_failed' do
+    subject { described_class.new(nil).action_failed('Too many requests') }
+
+    it 'tells the user why the deployment did not start' do
+      expect(subject[:response_type]).to be(:ephemeral)
+      expect(subject[:text]).to eq "Couldn't start the deployment: Too many requests"
+    end
+  end
 end

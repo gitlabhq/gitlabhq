@@ -1,10 +1,5 @@
 <script>
-import {
-  GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
-  GlTooltipDirective,
-  GlIcon,
-} from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 
@@ -13,7 +8,6 @@ export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
-    GlIcon,
     OpenMrBadge,
   },
   directives: {
@@ -95,12 +89,7 @@ export default {
         :item="item"
         :class="item.wrapperClass"
         v-bind="item.extraAttrs"
-      >
-        <template #list-item>
-          <gl-icon :name="item.icon" class="gl-mr-2" variant="subtle" />
-          {{ item.text }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
     </gl-disclosure-dropdown>
   </div>
 </template>

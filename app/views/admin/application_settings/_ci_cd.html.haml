@@ -78,6 +78,16 @@
         .form-text.gl-text-subtle
           = s_('AdminSettings|The maximum number of pipeline retries allowed per minute for a given project. Set to 0 to disable this limit.')
       .form-group
+        = f.label :job_retry_limit_per_user_project, s_('AdminSettings|Maximum job retries per project'), class: 'label-bold'
+        = f.number_field :job_retry_limit_per_user_project, min: 0, class: 'form-control gl-form-input'
+        .form-text.gl-text-subtle
+          = s_('AdminSettings|The maximum number of job retries allowed per minute for a given project. Set to 0 to disable this limit.')
+      .form-group
+        = f.label :job_play_limit_per_user_project, s_('AdminSettings|Maximum manual job runs per project'), class: 'label-bold'
+        = f.number_field :job_play_limit_per_user_project, min: 0, class: 'form-control gl-form-input'
+        .form-text.gl-text-subtle
+          = s_('AdminSettings|The maximum number of manual job runs allowed per minute for a given project. Set to 0 to disable this limit.')
+      .form-group
         = f.label :git_push_pipeline_limit, s_('AdminSettings|Pipeline limit per Git push'), class: 'label-bold'
         = f.number_field :git_push_pipeline_limit, min: 0, class: 'form-control gl-form-input'
         .form-text.gl-text-subtle

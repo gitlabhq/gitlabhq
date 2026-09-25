@@ -12,7 +12,11 @@ module Ci
       stage.processables.manual.each do |processable|
         next unless processable.playable?
 
-        processable.play(current_user)
+        result = processable.play(current_user)
+
+        if result.error?
+          logger.error(message: 'Unable to play manual action', processable_id: processable.id, error: result.message)
+        end
       rescue Gitlab::Access::AccessDeniedError => e
         logger.error(message: 'Unable to play manual action', processable_id: processable.id, error: e.message)
       end

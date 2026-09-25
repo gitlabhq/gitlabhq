@@ -420,7 +420,7 @@ module Ci
           if build.auto_retry_allowed?
             begin
               # rubocop: disable CodeReuse/ServiceClass -- https://gitlab.com/gitlab-org/gitlab/-/issues/494865
-              Ci::RetryJobService.new(build.project, build.user).execute(build)
+              Ci::RetryJobService.new(build.project, build.user, rate_limit: false).execute(build)
               # rubocop: enable CodeReuse/ServiceClass
             rescue Gitlab::Access::AccessDeniedError => e
               Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
@@ -655,12 +655,13 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    def play(current_user, job_variables_attributes = nil, job_inputs = {})
+    def play(current_user, job_variables_attributes = nil, job_inputs = {}, rate_limit: true)
       Ci::PlayBuildService.new(
         current_user: current_user,
         build: self,
         variables: job_variables_attributes,
-        inputs: job_inputs
+        inputs: job_inputs,
+        rate_limit: rate_limit
       ).execute
     end
     # rubocop: enable CodeReuse/ServiceClass

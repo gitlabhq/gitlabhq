@@ -41,8 +41,13 @@ module Gitlab
         else
           result = action.play(current_user)
 
-          Gitlab::SlashCommands::Presenters::Deploy
-            .new(result.payload[:job]).present(from, to)
+          if result.error?
+            Gitlab::SlashCommands::Presenters::Deploy
+              .new(action).action_failed(result.message)
+          else
+            Gitlab::SlashCommands::Presenters::Deploy
+              .new(result.payload[:job]).present(from, to)
+          end
         end
       end
 

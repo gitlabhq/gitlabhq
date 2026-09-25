@@ -513,6 +513,38 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            job_retry: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_retries_by_user_job',
+              characteristics: %i[user ci_build],
+              limit: 3,
+              period: 1.minute,
+              action: :limit
+            ),
+            job_retry_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_retries_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.job_retry_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
+            job_play: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_plays_by_user_job',
+              characteristics: %i[user ci_build],
+              limit: 3,
+              period: 1.minute,
+              action: :limit
+            ),
+            job_play_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_job_plays_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.job_play_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
             pipelines_create: ::Labkit::RateLimit::Rule.new(
               name: 'limit_pipelines_by_project_user_sha',
               characteristics: %i[project user sha],

@@ -584,7 +584,7 @@ class ProjectPolicy < BasePolicy
     prevent :create_label
     prevent :update_label
     prevent :admin_label
-    prevent :destroy_label
+    prevent :delete_label
     prevent :read_milestone
     prevent :create_milestone
     prevent :update_milestone

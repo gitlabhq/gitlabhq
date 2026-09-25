@@ -1,0 +1,10 @@
+---
+name: defer_offscreen_glql_dashboard_panels
+description: Defers GLQL dashboard panel queries until the panel is near the viewport
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630507
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257486
+rollout_issue_url:
+milestone: '19.5'
+group: group::optimize
+type: gitlab_com_derisk
+default_enabled: false

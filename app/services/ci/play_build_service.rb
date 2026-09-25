@@ -3,16 +3,22 @@
 module Ci
   class PlayBuildService
     include Gitlab::InternalEventsTracking
+    include Ci::JobRateLimitable
 
-    def initialize(current_user:, build:, variables: nil, inputs: {})
+    # @rate_limit - false for internal callers that must never be throttled
+    def initialize(current_user:, build:, variables: nil, inputs: {}, rate_limit: true)
       @current_user = current_user
       @build = build
       @variables = variables
       @inputs = inputs
       @project = build.project
+      @rate_limit = rate_limit
     end
 
     def execute
+      throttled_response = rate_limited_response
+      return throttled_response if throttled_response
+
       check_access!
 
       input_process_result = process_job_inputs(build, inputs)
@@ -39,10 +45,20 @@ module Ci
 
     private
 
-    attr_reader :current_user, :build, :variables, :inputs, :project
+    attr_reader :current_user, :build, :variables, :inputs, :project, :rate_limit
+    alias_method :rate_limit?, :rate_limit
 
+    def rate_limited_response
+      return unless Feature.enabled?(:rate_limit_job_play, project)
+
+      job_rate_limited_response(
+        build, key: :job_play, per_project_key: :job_play_per_project, message: 'Job play rate limit exceeded'
+      )
+    end
+
+    # rate_limit: false because this call was already counted as a play above.
     def retry_build(build)
-      Ci::RetryJobService.new(project, current_user).execute(build)[:job]
+      Ci::RetryJobService.new(project, current_user, rate_limit: false).execute(build)[:job]
     end
 
     def check_access!

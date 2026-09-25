@@ -96,10 +96,15 @@ export default {
         return !this.pipelineIid;
       },
       update(data) {
-        const newFavicon = data?.project?.pipeline?.detailedStatus?.favicon;
-        this.setFavicon(newFavicon);
+        const pipeline = data?.project?.pipeline;
 
-        return data.project.pipeline;
+        if (!pipeline) {
+          return this.pipeline;
+        }
+
+        this.setFavicon(pipeline.detailedStatus?.favicon);
+
+        return pipeline;
       },
       result({ data }) {
         // we use a manual subscribeToMore call due to issues with

@@ -1,0 +1,11 @@
+---
+name: rate_limit_job_play
+description: Rate limits manual job runs (play) per user and job, and per user and
+  project
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627273
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256678
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630119
+milestone: '19.5'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

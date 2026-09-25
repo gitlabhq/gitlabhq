@@ -7,10 +7,10 @@ class Projects::LabelsController < Projects::ApplicationController
   before_action :label, only: [:edit, :update, :destroy, :promote]
   before_action :find_labels, only: [:index, :set_priorities, :remove_priority, :toggle_subscription]
   before_action :authorize_read_label!
-  before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
-    :generate, :destroy, :remove_priority,
-    :set_priorities]
-  before_action :authorize_admin_group_labels!, only: [:promote]
+  before_action :authorize_create_label!, only: [:new, :create, :generate]
+  before_action :authorize_update_label!, only: [:edit, :update, :remove_priority, :set_priorities]
+  before_action :authorize_delete_label!, only: [:destroy]
+  before_action :authorize_promote_label!, only: [:promote]
 
   respond_to :js, :html
 
@@ -202,11 +202,19 @@ class Projects::LabelsController < Projects::ApplicationController
     @sort ||= permitted_params[:sort] || 'name_asc'
   end
 
-  def authorize_admin_labels!
-    render_404 unless can?(current_user, :admin_label, @project)
+  def authorize_create_label!
+    render_404 unless can?(current_user, :create_label, @project)
   end
 
-  def authorize_admin_group_labels!
-    render_404 unless can?(current_user, :admin_label, @project.group)
+  def authorize_update_label!
+    render_404 unless can?(current_user, :update_label, @project)
+  end
+
+  def authorize_delete_label!
+    render_404 unless can?(current_user, :delete_label, @project)
+  end
+
+  def authorize_promote_label!
+    render_404 unless can?(current_user, :promote_label, @project.group)
   end
 end

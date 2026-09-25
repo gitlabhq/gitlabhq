@@ -396,61 +396,43 @@ export default {
           v-if="statusModalData"
           v-gl-modal="$options.SET_STATUS_MODAL_ID"
           :item="statusItem"
+          icon="slight-smile"
           data-testid="status-item"
           @action="openStatusModal"
-        >
-          <template #list-item>
-            <gl-icon name="slight-smile" variant="subtle" class="gl-mr-2" />
-            <span>{{ statusLabel }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
 
-        <gl-disclosure-dropdown-item :item="editProfileItem" data-testid="edit-profile-item">
-          <template #list-item>
-            <gl-icon name="profile" variant="subtle" class="gl-mr-2" />
-            <span>{{ $options.i18n.editProfile }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          :item="editProfileItem"
+          icon="profile"
+          data-testid="edit-profile-item"
+        />
 
-        <gl-disclosure-dropdown-item :item="preferencesItem" data-testid="preferences-item">
-          <template #list-item>
-            <gl-icon name="preferences" variant="subtle" class="gl-mr-2" />
-            <span>{{ $options.i18n.preferences }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          :item="preferencesItem"
+          icon="preferences"
+          data-testid="preferences-item"
+        />
 
         <gl-disclosure-dropdown-item
           v-if="showAdminButton"
           :item="adminLinkItem"
+          icon="admin"
           class="xl:gl-hidden"
           data-testid="admin-link"
-        >
-          <template #list-item>
-            <gl-icon name="admin" variant="subtle" class="gl-mr-2" />
-            <span>{{ $options.i18n.adminArea }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
 
         <gl-disclosure-dropdown-item
           v-if="showEnterAdminModeItem"
           :item="enterAdminModeItem"
+          icon="lock"
           data-testid="enter-admin-mode-item"
-        >
-          <template #list-item>
-            <gl-icon name="lock" variant="subtle" class="gl-mr-2" />
-            <span>{{ $options.i18n.enterAdminMode }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
         <gl-disclosure-dropdown-item
           v-if="showLeaveAdminModeItem"
           :item="leaveAdminModeItem"
+          icon="lock-open"
           data-testid="leave-admin-mode-item"
-        >
-          <template #list-item>
-            <gl-icon name="lock-open" variant="subtle" class="gl-mr-2" />
-            <span>{{ $options.i18n.leaveAdminMode }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
       </gl-disclosure-dropdown-group>
 
       <user-menu-upgrade-subscription v-if="data.upgrade_link" :upgrade-link="data.upgrade_link" />
@@ -471,7 +453,7 @@ export default {
           data-testid="buy-pipeline-minutes-item"
         >
           <template #list-item>
-            <gl-icon name="credit-card" variant="subtle" class="gl-mr-2" />
+            <gl-icon name="credit-card" class="gl-mr-2" />
             <span>{{ buyPipelineMinutesItem.text }}</span>
             <span
               v-if="data.pipeline_minutes.show_with_subtext"
@@ -486,7 +468,7 @@ export default {
         <gl-disclosure-dropdown-item data-testid="gitlab-next-item">
           <template #list-item>
             <span class="gl-flex gl-items-center">
-              <gl-icon name="trigger-source" variant="subtle" class="gl-mr-3" />
+              <gl-icon name="trigger-source" class="gl-mr-3" />
               <span class="gl-grow">{{ $options.GITLAB_NEXT_LABEL }}</span>
               <gl-toggle
                 :value="isOnGitlabNext"
@@ -502,12 +484,7 @@ export default {
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group bordered data-testid="sign-out-group" @action="trackSignOut">
-        <gl-disclosure-dropdown-item :item="signOutItem">
-          <template #list-item>
-            <gl-icon name="power" variant="subtle" class="gl-mr-2" />
-            <span>{{ $options.i18n.signOut }}</span>
-          </template>
-        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item :item="signOutItem" icon="power" />
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
     <set-status-modal

@@ -71,6 +71,7 @@ permissions:
   - create_vulnerability
   - create_vulnerability_feedback
   - create_wiki
+  - delete_label
   - delete_note
   - delete_timelog
   - destroy_approvers
@@ -88,7 +89,6 @@ permissions:
   - destroy_issue_board_list
   - destroy_issue_link
   - destroy_iteration
-  - destroy_label
   - destroy_merge_request
   - destroy_milestone
   - destroy_package

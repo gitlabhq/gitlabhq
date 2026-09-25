@@ -32,12 +32,15 @@ module ActiveContext
         end
 
         def client
-          ::OpenSearch::Client.new(opensearch_config) do |fmid|
+          @client ||= ::OpenSearch::Client.new(opensearch_config) do |fmid|
             next unless options[:aws]
+
+            credentials_provider = aws_credentials
+            raise ::Aws::Sigv4::Errors::MissingCredentialsError unless credentials_provider
 
             fmid.request(
               :aws_sigv4,
-              credentials_provider: aws_credentials,
+              credentials_provider: credentials_provider,
               service: 'es',
               region: options[:aws_region]
             )

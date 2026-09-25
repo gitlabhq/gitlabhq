@@ -1,6 +1,7 @@
 import * as testingLibrary from '@testing-library/dom';
 import * as vtu from '@vue/test-utils';
 import {
+  mount,
   shallowMount,
   Wrapper as VTUWrapper,
   WrapperArray as VTUWrapperArray,
@@ -60,6 +61,25 @@ describe('Vue test utils helpers', () => {
       it('should find the element by test id', () => {
         expect(mockComponent.findByTestId(testId).exists()).toBe(true);
       });
+
+      it('returns an extended wrapper so a chained findByTestId works', () => {
+        const nestedTestId = 'nested-component';
+        mockComponent = extendedWrapper(
+          shallowMount({
+            template: `<div data-testid="${testId}"><span data-testid="${nestedTestId}"></span></div>`,
+          }),
+        );
+
+        expect(mockComponent.findByTestId(testId).findByTestId(nestedTestId).exists()).toBe(true);
+      });
+
+      it('does not throw when the finder itself finds nothing', () => {
+        // VTU (both Vue 2's `ErrorWrapper` and Vue 3's throwing Proxy) only guarantees
+        // `exists()` on a miss; chaining a further finder off it is not something either
+        // library supports, so the contract here is just "extending a miss is safe".
+        expect(() => mockComponent.findByTestId('does-not-exist')).not.toThrow();
+        expect(mockComponent.findByTestId('does-not-exist').exists()).toBe(false);
+      });
     });
 
     describe('findAllByTestId', () => {
@@ -99,6 +119,33 @@ describe('Vue test utils helpers', () => {
 
       it('should find the element by test id', () => {
         expect(mockComponent.findComponentByTestId(testId).exists()).toBe(true);
+      });
+
+      it('returns an extended wrapper so a chained findComponentByTestId works', () => {
+        // `mount`, not `shallowMount`: a shallow render stubs `mockChild` and never renders
+        // its own children, so the nested test id would never appear in the DOM to find.
+        const nestedTestId = 'nested-component';
+        const mockGrandchild = {
+          render(h) {
+            return h('div');
+          },
+        };
+        mockChild = {
+          render(h) {
+            return h('div', {}, [h(mockGrandchild, { attrs: { 'data-testid': nestedTestId } })]);
+          },
+        };
+        mockComponent = extendedWrapper(
+          mount({
+            render(h) {
+              return h('div', {}, [h(mockChild, { attrs: { 'data-testid': testId } })]);
+            },
+          }),
+        );
+
+        expect(
+          mockComponent.findComponentByTestId(testId).findComponentByTestId(nestedTestId).exists(),
+        ).toBe(true);
       });
     });
 
@@ -174,6 +221,15 @@ describe('Vue test utils helpers', () => {
 
           expect(result).toBeInstanceOf(VTUWrapper);
           expect(result.vm).toBeUndefined();
+        });
+
+        it('returns an extended wrapper so a chained finder works', () => {
+          const nestedTestId = 'nested-element';
+          const foundElement = document.createElement('div');
+          foundElement.appendChild(document.createElement('span')).dataset.testid = nestedTestId;
+          jest.spyOn(testingLibrary, expectedQuery).mockImplementation(() => [foundElement]);
+
+          expect(wrapper[findMethod](text, options).findByTestId(nestedTestId).exists()).toBe(true);
         });
       });
 

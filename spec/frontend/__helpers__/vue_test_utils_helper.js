@@ -13,7 +13,7 @@ import { flowRight } from 'lodash-es';
  * Query function type
  * @callback FindFunction
  * @param text
- * @returns {Wrapper}
+ * @returns {ExtendedWrapper}
  */
 
 /**
@@ -28,7 +28,7 @@ import { flowRight } from 'lodash-es';
  * @callback FindWithOptionsFunction
  * @param text
  * @param options
- * @returns {Wrapper}
+ * @returns {ExtendedWrapper}
  */
 
 /**
@@ -86,6 +86,15 @@ export const extendedWrapper = (wrapper) => {
     'ByTitle',
   ];
 
+  // A "not found" result (VTU 1's `ErrorWrapper`, or the Proxy Vue 3's `find`/`findComponent`/
+  // testing-library queries return for no match) only guarantees `exists()`; every other
+  // property access on the Vue 3 variant throws instead of returning undefined. Check that
+  // first and bail before touching `.find`, so a chained finder can pass its miss straight
+  // through without blowing up.
+  if (typeof wrapper?.exists === 'function' && !wrapper.exists()) {
+    return wrapper;
+  }
+
   if (Array.isArray(wrapper) || !wrapper?.find) {
     // eslint-disable-next-line no-console
     console.warn(
@@ -94,11 +103,17 @@ export const extendedWrapper = (wrapper) => {
     return wrapper;
   }
 
+  // Already extended (e.g. chained off another extended finder): defineProperties below is
+  // non-configurable, so redefining it a second time throws. Return as-is instead.
+  if ('findByTestId' in wrapper) {
+    return wrapper;
+  }
+
   return Object.defineProperties(wrapper, {
     findByTestId: {
       /** @this { Wrapper } */
       value(id) {
-        return this.find(`[data-testid="${id}"]`);
+        return extendedWrapper(this.find(`[data-testid="${id}"]`));
       },
     },
     findAllByTestId: {
@@ -114,7 +129,7 @@ export const extendedWrapper = (wrapper) => {
     findComponentByTestId: {
       /** @this { Wrapper } */
       value(id) {
-        return this.findComponent(`[data-testid="${id}"]`);
+        return extendedWrapper(this.findComponent(`[data-testid="${id}"]`));
       },
     },
     /*
@@ -138,9 +153,9 @@ export const extendedWrapper = (wrapper) => {
 
             // Element not found, return an `ErrorWrapper`
             if (!elements.length) {
-              return new ErrorWrapper(query);
+              return extendedWrapper(new ErrorWrapper(query));
             }
-            return createWrapper(elements[0], this.options);
+            return extendedWrapper(createWrapper(elements[0], this.options));
           },
         },
       };

@@ -1,7 +1,6 @@
 <script>
 import {
   GlButton,
-  GlIcon,
   GlDisclosureDropdownItem,
   GlFormGroup,
   GlFormInputGroup,
@@ -23,7 +22,6 @@ export default {
   },
   components: {
     GlButton,
-    GlIcon,
     GlDisclosureDropdownItem,
     GlFormGroup,
     GlFormInputGroup,
@@ -78,12 +76,12 @@ export default {
 
 <template>
   <div v-if="cloneSshUrl || cloneHttpUrl">
-    <gl-disclosure-dropdown-item v-if="showAsDropdownItem" v-gl-modal="modalId" :item="listItem">
-      <template #list-item>
-        <gl-icon name="branch" class="gl-mr-2" variant="subtle" />
-        {{ listItem.text }}
-      </template>
-    </gl-disclosure-dropdown-item>
+    <gl-disclosure-dropdown-item
+      v-if="showAsDropdownItem"
+      v-gl-modal="modalId"
+      :item="listItem"
+      icon="branch"
+    />
     <gl-button
       v-else
       v-gl-modal="modalId"

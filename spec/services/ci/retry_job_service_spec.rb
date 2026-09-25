@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration do
+RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, :clean_gitlab_redis_rate_limiting,
+  feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
@@ -382,6 +383,143 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     let(:new_job) { subject[:job] }
 
     subject { service.execute(job) }
+
+    context 'with rate limiting', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      let(:job) { create(:ci_build, :success, pipeline: pipeline, ci_stage: stage) }
+      let(:other_job) { create(:ci_build, :success, pipeline: pipeline, ci_stage: stage) }
+      let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+      def retry_job(job_to_retry = job, **options)
+        described_class.new(project, user, **options).execute(job_to_retry)
+      end
+
+      it 'does not throttle the first retry' do
+        expect(retry_job).to be_success
+      end
+
+      it 'throttles the fourth retry of the same job in a minute, counting rejected calls' do
+        3.times { retry_job }
+
+        throttled = retry_job
+
+        expect(throttled).to be_error
+        expect(throttled.reason).to eq(:rate_limited)
+        expect(throttled.message).to eq(throttle_message)
+        expect(throttled.payload).to include(job: job, reason: :rate_limited)
+      end
+
+      context 'when the per-project limit is exceeded' do
+        before do
+          stub_application_setting(job_retry_limit_per_user_project: 1)
+        end
+
+        it 'throttles a retry of a different job in the same project' do
+          expect(retry_job).to be_success
+
+          expect(retry_job(other_job).reason).to eq(:rate_limited)
+        end
+      end
+
+      context 'when the per-project limit is disabled with 0' do
+        before do
+          stub_application_setting(job_retry_limit_per_user_project: 0)
+        end
+
+        it 'does not apply the per-project limit but still enforces the per-job limit' do
+          5.times { retry_job(create(:ci_build, :success, pipeline: pipeline, ci_stage: stage)) }
+          expect(retry_job(other_job).reason).not_to eq(:rate_limited)
+
+          3.times { retry_job }
+          expect(retry_job.reason).to eq(:rate_limited)
+        end
+      end
+
+      context 'when the per-job limit is hit repeatedly' do
+        before do
+          # Small enough that blocked calls would exhaust it if they counted.
+          stub_application_setting(job_retry_limit_per_user_project: 4)
+        end
+
+        it 'does not spend the per-project budget on already-blocked per-job calls' do
+          8.times { retry_job }
+          expect(retry_job.reason).to eq(:rate_limited)
+
+          expect(retry_job(other_job).reason).not_to eq(:rate_limited)
+        end
+      end
+
+      context 'with a different user' do
+        let_it_be(:other_user) { create(:user, developer_of: project) }
+
+        before do
+          stub_application_setting(job_retry_limit_per_user_project: 1)
+        end
+
+        it 'keeps separate buckets per user' do
+          expect(retry_job).to be_success
+          expect(retry_job.reason).to eq(:rate_limited)
+
+          expect(described_class.new(project, other_user).execute(other_job)).to be_success
+        end
+      end
+
+      context 'when the user cannot retry the job' do
+        let(:user) { reporter }
+
+        before do
+          stub_application_setting(job_retry_limit_per_user_project: 1)
+        end
+
+        it 'counts the rejected call against the bucket' do
+          expect { retry_job }.to raise_error(Gitlab::Access::AccessDeniedError)
+
+          expect(retry_job.reason).to eq(:rate_limited)
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(rate_limit_job_retry: false)
+          stub_application_setting(job_retry_limit_per_user_project: 1)
+        end
+
+        it 'does not throttle' do
+          2.times { expect(retry_job.reason).not_to eq(:rate_limited) }
+        end
+      end
+
+      context 'when the caller opts out with rate_limit: false' do
+        before do
+          stub_application_setting(job_retry_limit_per_user_project: 1)
+        end
+
+        # Guards the auto-retry, auto-rollback and play-fallback exemptions.
+        it 'never consults the rate limiter' do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:job_retry, anything)
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:job_retry_per_project, anything)
+
+          3.times { retry_job(rate_limit: false) }
+        end
+      end
+
+      it 'logs the throttled call' do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+        stub_application_setting(job_retry_limit_per_user_project: 1)
+
+        2.times { retry_job }
+
+        expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+          a_hash_including(
+            Labkit::Fields::CLASS_NAME => described_class.to_s,
+            message: 'Job retry rate limit exceeded',
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            job_id: job.id,
+            Labkit::Fields::GL_USER_ID => user.id
+          )
+        ).once
+      end
+    end
 
     context 'when the job to be retried is a bridge' do
       context 'and it is not retryable' do

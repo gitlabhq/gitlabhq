@@ -1,5 +1,7 @@
 <script>
+import { debounce, isEqual } from 'lodash-es';
 import { GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import PageHeading from './page_heading.vue';
 
@@ -11,6 +13,7 @@ export default {
     PageHeading,
   },
   mixins: [glSlotsMixin],
+  SCROLL_CONTAINER_SELECTOR: '.panel-content-inner',
   inject: {
     // Provided by an ancestor DynamicPanel. Falls back to the gon default when
     // the layout is rendered outside a panel (for example in work items).
@@ -51,6 +54,10 @@ export default {
   data() {
     return {
       isStuck: false,
+      observerOptions: null,
+      // Bumped whenever observerOptions change, to remount the observer (via :key)
+      // so it re-reads options, which GlIntersectionObserver only reads once.
+      observerKey: 0,
     };
   },
   watch: {
@@ -66,7 +73,62 @@ export default {
       },
     },
   },
+  mounted() {
+    if (this.glSlots()['sticky-header']) {
+      // The sticky header's height (and thus rootMargin) can change after mount from
+      // responsive breakpoints, web font load, or dynamic slot content. A
+      // ResizeObserver on the header catches all of these, unlike a window resize.
+      this.debouncedSyncObserverOptions = debounce(
+        this.syncObserverOptions,
+        DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+      );
+      this.stickyHeaderResizeObserver = new ResizeObserver(this.debouncedSyncObserverOptions);
+      this.observeStickyHeader();
+      this.syncObserverOptions();
+    }
+  },
+  beforeDestroy() {
+    this.stickyHeaderResizeObserver?.disconnect();
+    this.debouncedSyncObserverOptions?.cancel();
+  },
   methods: {
+    syncObserverOptions() {
+      const root = this.$el.closest(this.$options.SCROLL_CONTAINER_SELECTOR);
+      const options = {};
+      // Null root falls back to the viewport, e.g. when not inside a panel.
+      if (root) options.root = root;
+
+      const rootMargin = this.stickyHeaderRootMargin();
+      if (rootMargin) options.rootMargin = rootMargin;
+
+      const nextOptions = Object.keys(options).length ? options : null;
+      if (isEqual(nextOptions, this.observerOptions)) return;
+
+      this.observerOptions = nextOptions;
+      // Remounting the observer via :key recreates the sticky-header element, so
+      // re-point the ResizeObserver at the new one once it has rendered.
+      this.observerKey += 1;
+      this.$nextTick(this.observeStickyHeader);
+    },
+    observeStickyHeader() {
+      const el = this.$refs.stickyHeader;
+      if (!this.stickyHeaderResizeObserver || !el) return;
+      this.stickyHeaderResizeObserver.disconnect();
+      this.stickyHeaderResizeObserver.observe(el);
+    },
+    stickyHeaderRootMargin() {
+      const el = this.$refs.stickyHeader;
+      if (!el) return null;
+
+      // Sticky header height without its bottom padding spacer, so the header sticks
+      // as the heading reaches where the sticky header's content bottom will sit.
+      const { paddingBottom } = window.getComputedStyle(el);
+      const offset = el.offsetHeight - (parseFloat(paddingBottom) || 0);
+      if (offset <= 0) return null;
+
+      // eslint-disable-next-line @gitlab/require-i18n-strings -- CSS rootMargin value, not user-facing
+      return `-${offset}px 0px 0px 0px`;
+    },
     syncStickyHeaderHeight() {
       const el = this.$refs.stickyHeader;
       if (!el) return;
@@ -112,6 +174,8 @@ export default {
 
     <gl-intersection-observer
       v-if="glSlots()['sticky-header']"
+      :key="observerKey"
+      :options="observerOptions"
       @appear="isStuck = false"
       @disappear="isStuck = true"
     >

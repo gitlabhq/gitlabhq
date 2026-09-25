@@ -3019,6 +3019,13 @@ class User < ApplicationRecord
     provisioned_by_project_id.present?
   end
 
+  def sa_provisioned_for_project?(project)
+    return false unless project
+    return false unless service_account?
+
+    provisioned_by_project_id == project.id
+  end
+
   def sa_provisioned_by_subgroup?
     return false unless service_account?
 

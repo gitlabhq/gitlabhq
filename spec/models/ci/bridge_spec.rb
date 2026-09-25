@@ -1076,6 +1076,12 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       downstream_project.add_maintainer(user)
     end
 
+    it 'passes rate_limit through to the play service' do
+      expect(Ci::PlayBridgeService).to receive(:new).with(project, user, rate_limit: false).and_call_original
+
+      bridge.play(user, rate_limit: false)
+    end
+
     it 'enqueues the bridge' do
       subject
 

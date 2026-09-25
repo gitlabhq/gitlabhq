@@ -1,14 +1,13 @@
 <script>
 import {
   GlLoadingIcon,
-  GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
   GlTooltipDirective,
   GlToastMixin,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import api from '~/api';
 import { setCookie } from '~/lib/utils/common_utils';
 import { AI_OVERVIEW_COOKIE_NAME } from '~/merge_requests/constants';
@@ -38,7 +37,6 @@ export default {
   },
   components: {
     GlLoadingIcon,
-    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
@@ -135,6 +133,33 @@ export default {
         href: this.editUrl,
       };
     },
+    copyReferenceItem() {
+      return { text: this.$options.i18n.copyReferenceText, icon: 'copy-to-clipboard' };
+    },
+    reportAbuseItem() {
+      return { text: this.$options.i18n.reportAbuse, icon: 'abuse' };
+    },
+    mergeRequestOpenItem() {
+      return {
+        text: sprintf(this.$options.i18n.reopen, { issuableType: this.$options.i18n.issuableName }),
+        icon: 'merge-request-open',
+      };
+    },
+    mergeRequestLockItem() {
+      return {
+        text: sprintf(this.$options.i18n.lock, { issuableType: this.$options.i18n.issuableName }),
+        icon: 'lock',
+      };
+    },
+    mergeRequestDraftItem() {
+      return { text: this.draftLabel, icon: this.draftIcon };
+    },
+    mergeRequestCloseItem() {
+      return {
+        text: sprintf(this.$options.i18n.close, { issuableType: this.$options.i18n.issuableName }),
+        icon: 'merge-request-close',
+      };
+    },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.mergeRequestActions : '';
     },
@@ -142,6 +167,9 @@ export default {
       return this.aiOverviewEnabled
         ? this.$options.i18n.switchToClassicOverview
         : this.$options.i18n.tryAiOverview;
+    },
+    aiOverviewItem() {
+      return { text: this.aiOverviewLabel, icon: 'tanuki-ai' };
     },
   },
   methods: {
@@ -243,100 +271,74 @@ export default {
           class="@sm/panel:!gl-hidden"
           data-testid="edit-merge-request"
           :item="editItem"
-        >
-          <template #list-item>
-            <gl-icon name="pencil" class="gl-mr-2" variant="subtle" />
-            {{ $options.i18n.edit }}
-          </template>
-        </gl-disclosure-dropdown-item>
+          icon="pencil"
+        />
 
         <gl-disclosure-dropdown-item
           v-if="isOpen && canUpdateMergeRequest"
+          :item="mergeRequestDraftItem"
           data-testid="ready-and-draft-action"
           @action="draftAction"
         >
-          <template #list-item>
-            <gl-loading-icon v-if="isLoadingDraft" inline size="sm" />
-            <gl-icon v-else :name="draftIcon" class="gl-mr-2" variant="subtle" />
+          <template v-if="isLoadingDraft" #list-item>
+            <gl-loading-icon inline size="sm" class="gl-mr-2" />
             {{ draftLabel }}
           </template>
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="isOpen && canUpdateMergeRequest"
+          :item="mergeRequestCloseItem"
           @action="stateAction('close')"
         >
-          <template #list-item>
-            <template v-if="isLoading">
-              <gl-loading-icon inline size="sm" />
-              {{
-                sprintf($options.i18n.closing, {
-                  issuableType: $options.i18n.issuableName,
-                })
-              }}
-            </template>
-            <template v-else>
-              <gl-icon name="merge-request-close" class="gl-mr-2" variant="subtle" />
-              {{ sprintf($options.i18n.close, { issuableType: $options.i18n.issuableName }) }}
-            </template>
+          <template v-if="isLoading" #list-item>
+            <gl-loading-icon inline size="sm" class="gl-mr-2" />
+            {{
+              sprintf($options.i18n.closing, {
+                issuableType: $options.i18n.issuableName,
+              })
+            }}
           </template>
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-else-if="!isMerged && showReopenMergeRequestOption && canUpdateMergeRequest"
+          :item="mergeRequestOpenItem"
           data-testid="reopen-merge-request"
           @action="stateAction('reopen')"
         >
-          <template #list-item>
-            <template v-if="isLoading">
-              <gl-loading-icon inline size="sm" />
-              {{
-                sprintf($options.i18n.reopening, {
-                  issuableType: $options.i18n.issuableName,
-                })
-              }}
-            </template>
-            <template v-else>
-              <gl-icon name="merge-request-open" class="gl-mr-2" variant="subtle" />
-              {{ sprintf($options.i18n.reopen, { issuableType: $options.i18n.issuableName }) }}
-            </template>
+          <template v-if="isLoading" #list-item>
+            <gl-loading-icon inline size="sm" class="gl-mr-2" />
+            {{
+              sprintf($options.i18n.reopening, {
+                issuableType: $options.i18n.issuableName,
+              })
+            }}
           </template>
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="canUpdateMergeRequest"
+          :item="mergeRequestLockItem"
           data-testid="lock-merge-request"
           class="js-sidebar-lock-root"
-        >
-          <template #list-item>
-            <gl-icon name="lock" class="gl-mr-2" variant="subtle" />
-            {{ sprintf($options.i18n.lock, { issuableType: $options.i18n.issuableName }) }}
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
 
         <gl-disclosure-dropdown-item
+          :item="copyReferenceItem"
           class="js-copy-reference"
           :data-clipboard-text="clipboardText"
           data-testid="copy-reference"
           @action="copyClipboardAction"
-        >
-          <template #list-item>
-            <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
-            {{ $options.i18n.copyReferenceText }}
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group v-if="aiOverviewAvailable" bordered>
         <gl-disclosure-dropdown-item
+          :item="aiOverviewItem"
           data-testid="toggle-ai-overview"
           @action="toggleAiOverviewAction"
-        >
-          <template #list-item>
-            <gl-icon name="tanuki-ai" class="gl-mr-2" variant="subtle" />
-            {{ aiOverviewLabel }}
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group
@@ -345,15 +347,11 @@ export default {
         :class="{ '!gl-mt-0 !gl-border-t-0 !gl-pt-0': !canUpdateMergeRequest }"
       >
         <gl-disclosure-dropdown-item
+          :item="reportAbuseItem"
           class="js-report-abuse-dropdown-item"
           data-testid="report-abuse-option"
           @action="reportAbuseAction(true)"
-        >
-          <template #list-item>
-            <gl-icon name="abuse" class="gl-mr-2" variant="subtle" />
-            {{ $options.i18n.reportAbuse }}
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
 

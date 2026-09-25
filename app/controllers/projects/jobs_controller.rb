@@ -99,6 +99,8 @@ class Projects::JobsController < Projects::ApplicationController
       else
         head :ok
       end
+    elsif response.reason == :rate_limited
+      respond_rate_limited(response, :job_retry)
     else
       respond_422
     end
@@ -109,6 +111,8 @@ class Projects::JobsController < Projects::ApplicationController
     return respond_422 unless @build.playable?
 
     result = @build.play(current_user, play_params[:job_variables_attributes])
+    return respond_rate_limited(result, :job_play) if result.error? && result.reason == :rate_limited
+
     job = result.payload[:job]
 
     if job.is_a?(Ci::Bridge)
@@ -207,6 +211,20 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   private
+
+  def respond_rate_limited(result, rate_limit_key)
+    respond_to do |format|
+      format.html do
+        flash[:alert] = result.message
+        redirect_to build_path(@build)
+      end
+
+      format.json do
+        response.set_header('Retry-After', ::Gitlab::ApplicationRateLimiter.period_for(rate_limit_key).to_s)
+        render json: { message: result.message }, status: :too_many_requests
+      end
+    end
+  end
 
   attr_reader :build
 

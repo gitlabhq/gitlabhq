@@ -319,12 +319,9 @@ export default {
           </gl-button>
           <slot
             name="filter-actions"
-            :namespace-name="selectedNamespaceName"
-            :namespace-full-path="selectedNamespaceFullPath"
             :filters="filters"
             :panels="layoutConfig(config).panels"
             :duo-prompts="activeDuoPrompts(config)"
-            :is-project="isProjectScope"
             :is-system-dashboard="isSystemDashboard"
           ></slot>
         </template>

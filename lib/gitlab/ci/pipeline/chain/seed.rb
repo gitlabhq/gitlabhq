@@ -29,6 +29,8 @@ module Gitlab
               pipeline_seed.errors
             end
 
+            log_swallowed_rule_errors(seed_errors)
+
             return error(seed_errors.join("\n"), failure_reason: :config_error) if seed_errors
 
             @command.pipeline_seed = pipeline_seed
@@ -39,6 +41,27 @@ module Gitlab
           end
 
           private
+
+          # Measures https://gitlab.com/gitlab-org/gitlab/-/issues/606330 before changing behaviour:
+          # these errors are currently discarded, so `would_newly_fail` counts the pipelines that
+          # would start failing if we surfaced them.
+          def log_swallowed_rule_errors(seed_errors)
+            return if @command.readonly?
+
+            excluded_errors = pipeline_seed.excluded_stage_errors
+            return unless excluded_errors
+
+            Gitlab::AppJsonLogger.info(
+              class_name: self.class.name,
+              message: 'rule errors dropped with fully excluded stage',
+              project_id: project.id,
+              extra: {
+                pipeline_source: @command.source.to_s,
+                would_newly_fail: seed_errors.nil?,
+                dropped_errors: excluded_errors
+              }
+            )
+          end
 
           def pipeline_seed
             logger.instrument(:pipeline_seed_initialization, once: true) do

@@ -232,4 +232,149 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
       expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
+
+  context 'with rate limiting', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    let_it_be(:project) { create(:project, :small_repo) }
+
+    let(:other_build) { create(:ci_build, :manual, pipeline: pipeline) }
+    let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+    def play(build_to_play = build, **options)
+      described_class.new(current_user: user, build: build_to_play, **options).execute
+    end
+
+    it 'does not throttle the first play' do
+      expect(play).to be_success
+    end
+
+    it 'throttles the fourth play of the same job in a minute' do
+      3.times { play }
+
+      throttled = play
+
+      expect(throttled).to be_error
+      expect(throttled.reason).to eq(:rate_limited)
+      expect(throttled.message).to eq(throttle_message)
+    end
+
+    it 'does not count the retry fallback of a replayed job as a retry' do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+      expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:job_retry, anything)
+      expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:job_retry_per_project, anything)
+
+      # The second play of an already-enqueued job falls back to Ci::RetryJobService.
+      2.times { expect(play).to be_success }
+    end
+
+    context 'when the per-project limit is exceeded' do
+      before do
+        stub_application_setting(job_play_limit_per_user_project: 1)
+      end
+
+      it 'throttles a play of a different job in the same project' do
+        expect(play).to be_success
+
+        expect(play(other_build).reason).to eq(:rate_limited)
+      end
+    end
+
+    context 'when the per-project limit is disabled with 0' do
+      before do
+        stub_application_setting(job_play_limit_per_user_project: 0)
+      end
+
+      it 'does not apply the per-project limit but still enforces the per-job limit' do
+        5.times { play(create(:ci_build, :manual, pipeline: pipeline)) }
+        expect(play(other_build).reason).not_to eq(:rate_limited)
+
+        3.times { play }
+        expect(play.reason).to eq(:rate_limited)
+      end
+    end
+
+    context 'when the per-job limit is hit repeatedly' do
+      before do
+        # Small enough that blocked calls would exhaust it if they counted.
+        stub_application_setting(job_play_limit_per_user_project: 4)
+      end
+
+      it 'does not spend the per-project budget on already-blocked per-job calls' do
+        8.times { play }
+        expect(play.reason).to eq(:rate_limited)
+
+        expect(play(other_build).reason).not_to eq(:rate_limited)
+      end
+    end
+
+    context 'with a different user' do
+      let(:other_user) { create(:user, developer_of: project) }
+
+      before do
+        stub_application_setting(job_play_limit_per_user_project: 1)
+      end
+
+      it 'keeps separate buckets per user' do
+        expect(play).to be_success
+        expect(play.reason).to eq(:rate_limited)
+
+        expect(described_class.new(current_user: other_user, build: other_build).execute).to be_success
+      end
+    end
+
+    context 'when the user cannot play the job' do
+      let(:user) { create(:user) }
+
+      before do
+        stub_application_setting(job_play_limit_per_user_project: 1)
+      end
+
+      it 'counts the rejected call against the bucket' do
+        expect { play }.to raise_error(Gitlab::Access::AccessDeniedError)
+
+        expect(play.reason).to eq(:rate_limited)
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_job_play: false)
+        stub_application_setting(job_play_limit_per_user_project: 1)
+      end
+
+      it 'does not throttle' do
+        2.times { expect(play.reason).not_to eq(:rate_limited) }
+      end
+    end
+
+    context 'when the caller opts out with rate_limit: false' do
+      before do
+        stub_application_setting(job_play_limit_per_user_project: 1)
+      end
+
+      it 'never consults the rate limiter' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:job_play, anything)
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:job_play_per_project, anything)
+
+        3.times { play(rate_limit: false) }
+      end
+    end
+
+    it 'logs the throttled call' do
+      allow(Gitlab::AppJsonLogger).to receive(:info)
+      stub_application_setting(job_play_limit_per_user_project: 1)
+
+      2.times { play }
+
+      expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+        a_hash_including(
+          Labkit::Fields::CLASS_NAME => described_class.to_s,
+          message: 'Job play rate limit exceeded',
+          Labkit::Fields::GL_PROJECT_ID => project.id,
+          job_id: build.id,
+          Labkit::Fields::GL_USER_ID => user.id
+        )
+      ).once
+    end
+  end
 end

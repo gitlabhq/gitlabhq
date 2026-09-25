@@ -3877,6 +3877,7 @@ Fields:
 | <a id="mutation-aicatalogitemconsumercreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aicatalogitemconsumercreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-aicatalogitemconsumercreate-itemconsumer"></a>`itemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | Item configuration created. |
+| <a id="mutation-aicatalogitemconsumercreate-warnings"></a>`warnings` | [`[String!]!`](#string) | Non-fatal problems encountered while configuring the item. The configuration was still created. |
 
 ### `Mutation.aiCatalogItemConsumerDelete`
 

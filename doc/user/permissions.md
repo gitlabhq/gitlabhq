@@ -676,6 +676,7 @@ Project permissions for monitoring including [error tracking](../operations/erro
 | View [escalation policies](../operations/incident_management/escalation_policies.md)                                |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | View [on-call schedules](../operations/incident_management/oncall_schedules.md)                                     |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create [incident](../operations/incident_management/incidents.md)                                                   |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Manage [incident metric images](../operations/incident_management/incidents.md#metrics)                             |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Change [alert status](../operations/incident_management/alerts.md#change-an-alerts-status)                          |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Change [incident severity](../operations/incident_management/manage_incidents.md#change-severity)                   |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Change [incident escalation status](../operations/incident_management/manage_incidents.md#change-status)            |       |         |          |                  |     ✓     |     ✓      |   ✓   |

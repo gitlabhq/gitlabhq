@@ -45,6 +45,12 @@ import MoveWorkItemModal from './move_work_item_modal.vue';
 export default {
   name: 'WorkItemActions',
   CREATION_CONTEXT_RELATED_ITEM,
+  newRelatedItem: { text: s__('WorkItem|New related item') },
+  promoteItem: { text: __('Promote to objective') },
+  changeTypeItem: { text: s__('WorkItem|Change type') },
+  moveItem: { text: __('Move') },
+  copyReferenceItem: { text: __('Copy reference') },
+  reportAbuseItem: { text: __('Report abuse') },
   i18n: {
     enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
     disableConfidentiality: s__('WorkItem|Turn off confidentiality'),
@@ -54,12 +60,9 @@ export default {
     notifications: s__('WorkItem|Notifications'),
     notificationOn: s__('WorkItem|Notifications turned on.'),
     notificationOff: s__('WorkItem|Notifications turned off.'),
-    copyReference: __('Copy reference'),
     referenceCopied: __('Reference copied'),
     emailAddressCopied: __('Email address copied'),
     moreActions: __('More actions'),
-    reportAbuse: __('Report abuse'),
-    changeWorkItemType: s__('WorkItem|Change type'),
   },
   components: {
     GlDisclosureDropdown,
@@ -369,9 +372,6 @@ export default {
     confidentialItemIcon() {
       return this.isConfidential ? 'eye' : 'eye-slash';
     },
-    confidentialItemIconVariant() {
-      return this.isParentConfidential ? 'current' : 'subtle';
-    },
     confidentialTooltip() {
       return this.isParentConfidential ? this.$options.i18n.confidentialParentTooltip : '';
     },
@@ -393,6 +393,12 @@ export default {
     submitAsSpamItem() {
       const href = markAsSpamProjectIssuePath(this.fullPath, { id: this.workItemIid });
       return { text: __('Submit as spam'), href };
+    },
+    copyCreateNoteEmailItem() {
+      return { text: this.i18n.copyCreateNoteEmail };
+    },
+    deleteItem() {
+      return { text: this.i18n.deleteWorkItem };
     },
     isAuthor() {
       return this.workItemAuthorId === window.gon.current_user_id;
@@ -645,7 +651,7 @@ export default {
             >
               <template #label>
                 <span :title="$options.i18n.notifications" class="gl-flex gl-gap-3 gl-pt-1">
-                  <gl-icon name="notifications" variant="subtle" />
+                  <gl-icon name="notifications" />
                   <span class="gl-max-w-[154px] gl-truncate">{{
                     $options.i18n.notifications
                   }}</span>
@@ -673,47 +679,35 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="canCreateRelatedItem && canUpdate"
+        :item="$options.newRelatedItem"
+        icon="plus"
         data-testid="new-related-work-item"
         @action="isCreateWorkItemModalVisible = true"
-      >
-        <template #list-item>
-          <gl-icon name="plus" class="gl-mr-2" variant="subtle" />
-          {{ s__('WorkItem|New related item') }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
 
       <gl-disclosure-dropdown-item
         v-if="canPromoteToObjective"
+        :item="$options.promoteItem"
+        icon="level-up"
         data-testid="promote-action"
         @action="promoteToObjective"
-      >
-        <template #list-item>
-          <gl-icon name="level-up" class="gl-mr-2" variant="subtle" />
-          {{ __('Promote to objective') }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
 
       <gl-disclosure-dropdown-item
         v-if="showChangeType"
+        :item="$options.changeTypeItem"
+        icon="work-item-issue"
         data-testid="change-type-action"
         @action="showChangeTypeModal"
-      >
-        <template #list-item>
-          <gl-icon name="work-item-issue" class="gl-mr-2" variant="subtle" />
-          {{ $options.i18n.changeWorkItemType }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
 
       <gl-disclosure-dropdown-item
         v-if="showMoveButton"
+        :item="$options.moveItem"
+        icon="long-arrow"
         data-testid="move-action"
         @action="isMoveWorkItemModalVisible = true"
-      >
-        <template #list-item>
-          <gl-icon name="long-arrow" class="gl-mr-2" variant="subtle" />
-          {{ __('Move') }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
 
       <gl-disclosure-dropdown-item
         v-if="canUpdateMetadata"
@@ -722,7 +716,7 @@ export default {
       >
         <template #list-item>
           <gl-loading-icon v-if="isLockDiscussionUpdating" class="gl-mr-2" inline />
-          <gl-icon v-else :name="lockDiscussionIcon" class="gl-mr-2" variant="subtle" />
+          <gl-icon v-else :name="lockDiscussionIcon" class="gl-mr-2" />
           {{ lockDiscussionText }}
         </template>
       </gl-disclosure-dropdown-item>
@@ -736,51 +730,37 @@ export default {
       >
         <template #list-item>
           <gl-loading-icon v-if="updateInProgress" class="gl-mr-2" inline />
-          <gl-icon
-            v-else
-            :name="confidentialItemIcon"
-            class="gl-mr-2"
-            :variant="confidentialItemIconVariant"
-          />
+          <gl-icon v-else :name="confidentialItemIcon" class="gl-mr-2" />
           {{ confidentialItemText }}
         </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
+        :item="$options.copyReferenceItem"
+        icon="copy-to-clipboard"
         data-testid="copy-reference-action"
         :data-clipboard-text="workItemReference"
         class="shortcut-copy-reference"
         @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
-      >
-        <template #list-item>
-          <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
-          {{ $options.i18n.copyReference }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
 
       <gl-disclosure-dropdown-item
         v-if="isLoggedIn && workItemCreateNoteEmail"
+        :item="copyCreateNoteEmailItem"
+        icon="copy-to-clipboard"
         data-testid="copy-create-note-email-action"
         :data-clipboard-text="workItemCreateNoteEmail"
         @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
-      >
-        <template #list-item>
-          <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
-          {{ i18n.copyCreateNoteEmail }}
-        </template>
-      </gl-disclosure-dropdown-item>
+      />
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
           v-if="!isAuthor"
+          :item="$options.reportAbuseItem"
+          icon="abuse"
           data-testid="report-abuse-action"
           @action="handleToggleReportAbuseModal"
-        >
-          <template #list-item>
-            <gl-icon name="abuse" class="gl-mr-2" variant="subtle" />
-            {{ $options.i18n.reportAbuse }}
-          </template>
-        </gl-disclosure-dropdown-item>
+        />
 
         <gl-disclosure-dropdown-item
           v-if="canReportSpam"
@@ -790,17 +770,12 @@ export default {
 
         <template v-if="canDelete">
           <gl-disclosure-dropdown-item
+            :item="deleteItem"
+            icon="remove"
             data-testid="delete-action"
             variant="danger"
             @action="handleDelete"
-          >
-            <template #list-item>
-              <span>
-                <gl-icon name="remove" class="gl-mr-2" variant="current" />
-                {{ i18n.deleteWorkItem }}
-              </span>
-            </template>
-          </gl-disclosure-dropdown-item>
+          />
         </template>
       </gl-disclosure-dropdown-group>
 
@@ -831,7 +806,7 @@ export default {
                   :title="s__('WorkItem|Truncate descriptions')"
                   class="gl-flex gl-gap-3 gl-pt-1"
                 >
-                  <gl-icon name="text-description" variant="subtle" />
+                  <gl-icon name="text-description" />
                   <span class="gl-max-w-[154px] gl-truncate">{{
                     s__('WorkItem|Truncate descriptions')
                   }}</span>
@@ -848,7 +823,7 @@ export default {
           <template #list-item>
             <div class="gl-flex gl-items-center gl-justify-between">
               <span>
-                <gl-icon name="sidebar-right" class="gl-mr-2" variant="subtle" />
+                <gl-icon name="sidebar-right" class="gl-mr-2" />
                 {{ toggleSidebarLabel }}
               </span>
               <kbd v-if="toggleSidebarKeys" class="flat">{{ toggleSidebarKeys }}</kbd>

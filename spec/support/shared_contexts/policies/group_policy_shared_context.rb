@@ -64,6 +64,7 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_milestone
         admin_work_item
         destroy_issue
+        promote_label
         read_confidential_issues
         read_crm_contact
         read_crm_organization
@@ -82,6 +83,7 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_label
         admin_milestone
         admin_work_item
+        promote_label
         read_ci_cd_analytics
         read_confidential_issues
         read_container_image

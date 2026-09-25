@@ -30,6 +30,7 @@ project:
   - create_epic
   - create_incident
   - create_iteration
+  - create_label
   - create_merge_request_in
   - create_project_secrets
   - create_requirement
@@ -42,6 +43,7 @@ project:
   - create_timelog
   - create_work_item_saved_view
   - daily_statistics
+  - delete_label
   - delete_project_secrets
   - destroy_design
   - download_code
@@ -101,6 +103,7 @@ project:
   - reopen_issue
   - update_design
   - update_issue
+  - update_label
   - update_project_secrets
   - update_requirement
 group:
@@ -134,6 +137,7 @@ group:
   - download_wiki_code
   - manage_devops_adoption_namespaces
   - mark_note_as_internal
+  - promote_label
   - read_ci_cd_analytics
   - read_confidential_epic
   - read_confidential_issues

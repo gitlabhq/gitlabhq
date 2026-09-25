@@ -58,6 +58,29 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
       expect(OpenSearch::Client).to receive(:new).with(client.send(:opensearch_config))
       client.client
     end
+
+    it 'memoizes the OpenSearch::Client instance' do
+      expect(OpenSearch::Client).to receive(:new).once.and_call_original
+
+      raw_client = client.client
+
+      expect(client.client).to be(raw_client)
+    end
+
+    context 'when AWS credentials cannot be resolved' do
+      let(:options) { { url: 'http://localhost:9200', aws: true } }
+      let(:credentials) { Aws::Credentials.new('access_key', 'secret_key') }
+
+      before do
+        allow(client).to receive(:aws_credentials).and_return(nil, credentials)
+      end
+
+      it 'raises and builds a new client on the next call', :aggregate_failures do
+        expect { client.client }.to raise_error(Aws::Sigv4::Errors::MissingCredentialsError)
+        expect(client.client).to be_a(OpenSearch::Client)
+        expect(client).to have_received(:aws_credentials).twice
+      end
+    end
   end
 
   describe '#opensearch_config' do

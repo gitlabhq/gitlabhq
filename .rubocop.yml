@@ -136,6 +136,12 @@ InternalAffairs/OnSendWithoutOnCSend:
   Include:
     - 'rubocop/cop/**/*.rb'
 
+# Enforcing where methods sit inside a class only generates MRs that move
+# code around without changing behavior. Ordering stays a convention in
+# doc/development/backend/ruby_style_guide.md, not a lint rule.
+Layout/ClassStructure:
+  Enabled: false
+
 Layout/LineLength:
   AllowedPatterns: ['^RSpec\.describe\s.*\sdo']
   Exclude:

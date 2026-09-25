@@ -65,6 +65,14 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
       client.client
     end
 
+    it 'memoizes the Elasticsearch::Client instance' do
+      expect(Elasticsearch::Client).to receive(:new).once.and_call_original
+
+      raw_client = client.client
+
+      expect(client.client).to be(raw_client)
+    end
+
     it 'includes all expected keys with correct values' do
       expect(elasticsearch_config).to include(
         adapter: described_class::DEFAULT_ADAPTER,

@@ -81,10 +81,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_job' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
         'get_mcp_server_version' => { 'readOnlyHint' => true, 'toolset' => 'meta' },
         'get_merge_request' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
-        'get_merge_request_commits' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_merge_request_diffs' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_merge_request_notes' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
-        'get_merge_request_pipelines' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_pipeline' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
         'get_pipeline_jobs' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
         'get_project' => { 'readOnlyHint' => true, 'toolset' => 'core' },
@@ -291,17 +289,17 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
     end
 
     context 'with tools retired from the catalog' do
-      it 'does not advertise retired tools but keeps them callable' do
+      it 'does not advertise retired tools but keeps them callable', :aggregate_failures do
         post_list_tools
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).not_to include('create_issue', 'get_workitem_notes', 'get_issue',
-          'get_merge_request_conflicts')
         manager = ::Mcp::Tools::Manager.new
-        expect(manager.get_tool(name: 'create_issue')).to be_present
-        expect(manager.get_tool(name: 'get_workitem_notes')).to be_present
-        expect(manager.get_tool(name: 'get_issue')).to be_present
-        expect(manager.get_tool(name: 'get_merge_request_conflicts')).to be_present
+
+        %w[create_issue get_workitem_notes get_issue get_merge_request_conflicts
+          get_merge_request_commits get_merge_request_pipelines].each do |tool_name|
+          expect(tool_names).not_to include(tool_name)
+          expect(manager.get_tool(name: tool_name)).to be_present
+        end
       end
     end
 

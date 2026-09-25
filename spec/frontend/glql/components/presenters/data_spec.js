@@ -205,6 +205,14 @@ describe('DataPresenter', () => {
         },
       });
 
+    it('forwards displayConfig to the table presenter', () => {
+      const displayConfig = { description: 'Merged merge requests' };
+
+      const wrapper = createTableWrapper({ displayConfig });
+
+      expect(wrapper.findComponent(TablePresenter).props('displayConfig')).toBe(displayConfig);
+    });
+
     it('forwards the comparison data to the table presenter', () => {
       const comparisonData = { nodes: [{ language: 'ruby', totalCount: 4 }] };
 

@@ -2367,6 +2367,10 @@ describe('FooComponent', () => {
 
 Check an example in [`spec/frontend/alert_management/components/alert_details_spec.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/ac1c9fa4c5b3b45f9566147b1c88fd1339cd7c25/spec/frontend/alert_management/components/alert_details_spec.js#L32).
 
+The single-result finders (`findByTestId`, `findComponentByTestId`, and every `find<Query>` such as `findByRole` or `findByText`) return an extended wrapper, so lookups chain: for example, `wrapper.findByTestId('item-icon').findComponentByTestId('item-cli-icon')`.
+A not-found result is passed through unchanged (`exists()` is `false`, with no further extension).
+The `findAll*` variants still return a plain `WrapperArray`.
+
 ## Testing with older browsers
 
 Some regressions only affect a specific browser version. We can install and test in particular browsers with either Firefox or BrowserStack using the following steps:

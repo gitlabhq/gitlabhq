@@ -233,37 +233,6 @@ export const trendPresentationFor = (source, metric, { value, previousValue }) =
 // can omit the node entirely, so this distinguishes "no data" from a 0.
 export const NO_VALUE = '\u2014';
 
-// A placeholder is usually a plain word, but authors can alias a repeated
-// metric with spaces (e.g. `%{p95 duration}`). Handled here instead of
-// sprintf because sprintf's `\w+` pattern silently ignores those names.
-const PLACEHOLDER_REGEX = /%\{([^}]+)\}/g;
-
-/** The placeholder names a description interpolates, in the order they appear. */
-export const placeholdersIn = (description) =>
-  Array.from(String(description ?? '').matchAll(PLACEHOLDER_REGEX), ([, key]) => key);
-
-/**
- * Fills `%{fieldKey}` placeholders in a description with formatted values from the query's
- * single row, so copy like "%{acceptedCount} of %{shownCount} suggestions" reads off the
- * response instead of being hardcoded. Each value formats by its own metric's unit.
- */
-export const interpolateDescription = (description, fields, row) => {
-  if (!description) return description;
-
-  const values = Object.fromEntries(
-    fields.map((field) => {
-      const value = row?.[field.key];
-      return [field.key, value == null ? NO_VALUE : valueFormatterFor(field)(value)];
-    }),
-  );
-
-  // Values are formatted numbers rendered as text, so escaping them would only turn
-  // separators into entities.
-  return description.replace(PLACEHOLDER_REGEX, (match, key) =>
-    key in values ? values[key] : match,
-  );
-};
-
 /**
  * Resolves the GlSingleStat props for a stat display. `displayConfig` always wins over a
  * derived default, and an empty `description` suppresses the derived copy.

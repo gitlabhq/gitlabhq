@@ -414,7 +414,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/work_items/list/user_manage_saved_views_list_spec.rb'
     - 'spec/features/work_items/list/user_resets_their_incoming_email_token_spec.rb'
     - 'spec/features/work_items/list/user_sorts_work_items_spec.rb'
-    - 'spec/features/work_items/list/user_views_work_items_list_spec.rb'
     - 'spec/features/work_items/new/user_creates_work_item_spec.rb'
     - 'spec/support/helpers/board_helpers.rb'
     - 'spec/support/helpers/cycle_analytics_helpers.rb'

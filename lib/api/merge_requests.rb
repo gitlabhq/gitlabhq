@@ -554,8 +554,11 @@ module API
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
         use :pagination
       end
+      # Unlisted pending removal: superseded by get_merge_request with include: ["commits"]
+      # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
       route_setting :mcp, tool_name: :get_merge_request_commits, toolset: :merge_requests,
-        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request",
+        unlisted: true
       route_setting :authorization, permissions: :read_merge_request_commit, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/commits', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -749,8 +752,11 @@ module API
       params do
         requires :merge_request_iid, type: Integer, desc: 'The internal ID of the merge request.'
       end
+      # Unlisted pending removal: superseded by get_merge_request with include: ["pipelines"]
+      # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
       route_setting :mcp, tool_name: :get_merge_request_pipelines, toolset: :merge_requests,
-        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request",
+        unlisted: true
       route_setting :authorization, permissions: :read_merge_request_pipeline, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/pipelines', urgency: :low, feature_category: :pipeline_composition do
         pipelines = merge_request_pipelines_with_access

@@ -80,6 +80,7 @@ permissions:
   - invite_group_members
   - manage_merge_request_settings
   - modify_security_policy
+  - promote_label
   - push_code
   - push_to_delete_protected_branch
   - register_group_runners

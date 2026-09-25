@@ -463,6 +463,79 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
     end
   end
 
+  describe 'label management authorization' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:label) { create(:label, project: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
+    let_it_be(:planner) { create(:user, planner_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+
+    let(:project_params) { { namespace_id: group.to_param, project_id: project.to_param } }
+
+    def action_params(action)
+      case action
+      when :create then { label: { title: 'New label', color: '#FFFFFF' } }
+      when :update then { id: label.id, label: { title: 'Renamed' } }
+      when :set_priorities then { label_ids: [label.id], format: :json }
+      when :remove_priority then { id: label.id, format: :json }
+      when :edit, :destroy then { id: label.id }
+      else {}
+      end
+    end
+
+    where(:http_method, :action) do
+      :get    | :new
+      :post   | :create
+      :post   | :generate
+      :get    | :edit
+      :put    | :update
+      :post   | :set_priorities
+      :delete | :remove_priority
+      :delete | :destroy
+    end
+
+    with_them do
+      let(:params) { project_params.merge(action_params(action)) }
+
+      it 'returns 404 for a guest' do
+        sign_in(guest)
+
+        send(http_method, action, params: params)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'is allowed for a planner' do
+        sign_in(planner)
+
+        send(http_method, action, params: params)
+
+        expect(response).not_to have_gitlab_http_status(:not_found)
+      end
+
+      it 'is allowed for a reporter' do
+        sign_in(reporter)
+
+        send(http_method, action, params: params)
+
+        expect(response).not_to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    describe 'POST #promote' do
+      let(:params) { project_params.merge(id: label.to_param) }
+
+      it 'returns 404 for a project reporter who is not a group member' do
+        sign_in(reporter)
+
+        post :promote, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   def project_moved_message(redirect_route, project)
     "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end

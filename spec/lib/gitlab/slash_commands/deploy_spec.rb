@@ -50,6 +50,19 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :environment_man
           expect(subject[:text])
             .to start_with('Deployment started from staging to production')
         end
+
+        context 'when the action cannot be played' do
+          before do
+            allow_next_instance_of(Ci::PlayBuildService) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Too many requests'))
+            end
+          end
+
+          it 'tells the user why the deployment did not start' do
+            expect(subject[:response_type]).to be(:ephemeral)
+            expect(subject[:text]).to eq "Couldn't start the deployment: Too many requests"
+          end
+        end
       end
 
       context 'when more than one action has been matched' do

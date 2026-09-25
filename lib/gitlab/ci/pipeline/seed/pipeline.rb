@@ -16,6 +16,12 @@ module Gitlab
             stage_seeds.flat_map(&:errors).compact.presence
           end
 
+          # A rules ParseError excludes the build and records an error at the same time, so a
+          # stage dropped for having no included builds can still be carrying a config error.
+          def excluded_stage_errors
+            all_stage_seeds.reject(&:included?).flat_map(&:errors).compact.presence
+          end
+
           def stages
             stage_seeds.map(&:to_resource)
           end
@@ -38,16 +44,19 @@ module Gitlab
           delegate :logger, to: :@context
 
           def stage_seeds
+            all_stage_seeds.select(&:included?)
+          end
+          strong_memoize_attr :stage_seeds
+
+          def all_stage_seeds
             logger.instrument(:pipeline_seed_stage_seeds) do
-              seeds = @stages_attributes.inject([]) do |previous_stages, attributes|
+              @stages_attributes.inject([]) do |previous_stages, attributes|
                 seed = Gitlab::Ci::Pipeline::Seed::Stage.new(@context, attributes, previous_stages)
                 previous_stages + [seed]
               end
-
-              seeds.select(&:included?)
             end
           end
-          strong_memoize_attr :stage_seeds
+          strong_memoize_attr :all_stage_seeds
         end
       end
     end

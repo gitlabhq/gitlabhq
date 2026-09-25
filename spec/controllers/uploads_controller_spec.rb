@@ -19,6 +19,18 @@ RSpec.shared_examples 'content publicly cached' do
   end
 end
 
+RSpec.shared_examples 'content cached with long-lived immutable header' do
+  it 'ensures content is cached immutably for 7 days' do
+    expect(subject['Cache-Control']).to eq('max-age=604800, public, immutable')
+  end
+end
+
+RSpec.shared_examples 'content cached with long-lived immutable private header' do
+  it 'ensures content is cached privately and immutably for 7 days' do
+    expect(subject['Cache-Control']).to eq('max-age=604800, private, immutable')
+  end
+end
+
 RSpec.describe UploadsController, feature_category: :groups_and_projects do
   include WorkhorseHelpers
 
@@ -263,6 +275,39 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
             end
           end
 
+          it_behaves_like 'content cached with long-lived immutable header' do
+            subject do
+              get :show,
+                params: { model: 'user', mounted_as: 'avatar', id: user.id, filename: 'dk.png',
+                          v: user.updated_at.to_i.to_s }
+
+              response
+            end
+          end
+
+          it_behaves_like 'content publicly cached' do
+            subject do
+              get :show,
+                params: { model: 'user', mounted_as: 'avatar', id: user.id, filename: 'dk.png', v: '1234567890' }
+
+              response
+            end
+          end
+
+          context 'when a non-avatar upload has a forged ?v= parameter' do
+            it_behaves_like 'content not cached' do
+              subject do
+                upload = create(:upload, :personal_snippet_upload, :with_file,
+                  model: create(:personal_snippet, :public))
+                get :show,
+                  params: { model: 'personal_snippet', mounted_as: 'avatar', id: upload.model.id, secret: upload.secret,
+                            filename: File.basename(upload.path), v: '1234567890' }
+
+                response
+              end
+            end
+          end
+
           # Exercises SendFileUpload#send_upload's image-scaling branch through a
           # real controller (the unit spec stubs verify_workhorse_api!; this runs
           # the real WorkhorseAuthenticatable guard and the JWT injection harness).
@@ -343,6 +388,16 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
           it_behaves_like 'content 5 min private cached with revalidation' do
             subject do
               get :show, params: { model: 'project', mounted_as: 'avatar', id: project.id, filename: 'dk.png' }
+
+              response
+            end
+          end
+
+          it_behaves_like 'content cached with long-lived immutable private header' do
+            subject do
+              get :show,
+                params: { model: 'project', mounted_as: 'avatar', id: project.id, filename: 'dk.png',
+                          v: project.updated_at.to_i.to_s }
 
               response
             end

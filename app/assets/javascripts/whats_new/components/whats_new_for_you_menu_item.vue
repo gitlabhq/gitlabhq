@@ -104,7 +104,7 @@ export default {
     <gl-disclosure-dropdown-item :item="item" :data-testid="dataTestId" @action="open">
       <template #list-item>
         <span class="gl-flex gl-w-full gl-items-center gl-gap-3">
-          <gl-icon v-if="icon" :name="icon" variant="subtle" />
+          <gl-icon v-if="icon" :name="icon" />
           <span>{{ $options.i18n.label }}</span>
           <gl-badge
             v-if="unreadCount"

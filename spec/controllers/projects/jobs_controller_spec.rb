@@ -879,6 +879,31 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       sign_in(user)
     end
 
+    context 'when the job retry rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+      before do
+        stub_application_setting(job_retry_limit_per_user_project: 1)
+      end
+
+      it 'redirects back to the job with a flash alert for HTML', :aggregate_failures do
+        2.times { post_retry }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+        expect(flash[:alert]).to eq(throttle_message)
+      end
+
+      it 'returns 429 with Retry-After for JSON', :aggregate_failures do
+        2.times { post_retry(format: :json) }
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers['Retry-After']).to eq(::Gitlab::ApplicationRateLimiter.period_for(:job_retry).to_s)
+        expect(json_response['message']).to eq(throttle_message)
+      end
+    end
+
     context 'when job is not retryable' do
       context 'and the job is a bridge' do
         let(:job) { create(:ci_bridge, :failed, :reached_max_descendant_pipelines_depth, pipeline: pipeline) }
@@ -970,12 +995,12 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
     end
 
-    def post_retry
+    def post_retry(format: nil)
       post :retry, params: {
         namespace_id: project.namespace,
         project_id: project,
         id: job.id
-      }
+      }, format: format
     end
   end
 
@@ -993,6 +1018,33 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     context 'when user has permissions to play job' do
       let(:user) { developer }
+
+      context 'when the job play rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+        let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+        let(:other_job) { create(:ci_build, :playable, pipeline: pipeline) }
+        let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+        before do
+          stub_application_setting(job_play_limit_per_user_project: 1)
+          post_play(job_id: other_job.id)
+        end
+
+        it 'redirects back to the job with a flash alert for HTML', :aggregate_failures do
+          post_play
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+          expect(flash[:alert]).to eq(throttle_message)
+        end
+
+        it 'returns 429 with Retry-After for JSON', :aggregate_failures do
+          post_play(format: :json)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to eq(::Gitlab::ApplicationRateLimiter.period_for(:job_play).to_s)
+          expect(json_response['message']).to eq(throttle_message)
+        end
+      end
 
       context 'when job is playable' do
         let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
@@ -1069,13 +1121,13 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
     end
 
-    def post_play
+    def post_play(format: nil, job_id: job.id)
       post :play, params: {
         namespace_id: project.namespace,
         project_id: project,
-        id: job.id,
+        id: job_id,
         job_variables_attributes: variable_attributes
-      }
+      }, format: format
     end
   end
 

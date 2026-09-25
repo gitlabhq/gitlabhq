@@ -6,14 +6,8 @@ import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { __, sprintf } from '~/locale';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
 import { compactValueFormatterFor, valueFormatterFor } from '../../utils/value_format';
-import {
-  NO_VALUE,
-  TREND_KEYS,
-  interpolateDescription,
-  placeholdersIn,
-  statPresentationFor,
-  trendPresentationFor,
-} from './utils/stat';
+import { interpolateDescription, unknownPlaceholderError } from './utils/description';
+import { NO_VALUE, TREND_KEYS, statPresentationFor, trendPresentationFor } from './utils/stat';
 
 const metricValueIn = (data, metric) => (metric ? data?.nodes?.[0]?.[metric.key] : undefined);
 
@@ -76,9 +70,6 @@ export default {
     description() {
       return interpolateDescription(this.statConfig.description, this.metrics, this.row);
     },
-    descriptionPlaceholders() {
-      return placeholdersIn(this.statConfig.description);
-    },
     // A block that sets any part of the badge owns all of it: its own text under a derived
     // arrow, colour and tooltip would make the badge contradict itself.
     trend() {
@@ -135,15 +126,7 @@ export default {
         return __('stat display type cannot have dimensions');
       }
 
-      const metricKeys = new Set(this.metrics.map(({ key }) => key));
-      const unknownPlaceholder = this.descriptionPlaceholders.find((key) => !metricKeys.has(key));
-      if (unknownPlaceholder) {
-        return sprintf(__('Unknown description placeholder: `%{placeholder}`.'), {
-          placeholder: unknownPlaceholder,
-        });
-      }
-
-      return null;
+      return unknownPlaceholderError(this.statConfig.description, this.metrics);
     },
     metric() {
       return this.metrics[0];

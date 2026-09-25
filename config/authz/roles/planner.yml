@@ -22,6 +22,7 @@ project:
   - create_design
   - create_epic
   - create_iteration
+  - create_label
   - create_requirement
   - create_requirement_test_report
   - create_saved_view
@@ -30,6 +31,7 @@ project:
   - create_timelog
   - create_wiki
   - create_work_item_saved_view
+  - delete_label
   - destroy_design
   - destroy_issue
   - download_code
@@ -48,6 +50,7 @@ project:
   - reopen_issue
   - update_design
   - update_issue
+  - update_label
   - update_requirement
 group:
   permissions: []
@@ -77,6 +80,7 @@ group:
   - destroy_issue
   - download_wiki_code
   - mark_note_as_internal
+  - promote_label
   - read_confidential_epic
   - read_confidential_issues
   - read_crm_contact

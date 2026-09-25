@@ -231,6 +231,16 @@
       "minimum": 0,
       "description": "Maximum number of pipeline retries allowed per minute for a given project. Set to 0 to disable the limit."
     },
+    "job_retry_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of job retries allowed per minute for a given project. Set to 0 to disable the limit."
+    },
+    "job_play_limit_per_user_project": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of manual job runs allowed per minute for a given project. Set to 0 to disable the limit."
+    },
     "users_api_limit_followers": {
       "type": "integer",
       "minimum": 0,

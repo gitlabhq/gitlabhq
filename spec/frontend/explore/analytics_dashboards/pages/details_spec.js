@@ -246,32 +246,32 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     beforeEach(() =>
       createWithFilters(undefined, {
         scopedSlots: {
-          'filter-actions': `<span data-testid="filter-actions-probe">{{ props.namespaceName }}|{{ props.namespaceFullPath }}|{{ props.filters.dateRangeOption }}|{{ props.panels.length }}|{{ props.isProject }}|{{ props.isSystemDashboard }}</span>`,
+          'filter-actions': `<span data-testid="filter-actions-probe">{{ (props.filters.groups || []).join(',') }}|{{ (props.filters.projects || []).join(',') }}|{{ props.filters.dateRangeOption }}|{{ props.panels.length }}|{{ props.isSystemDashboard }}</span>`,
         },
       }),
     );
 
-    it('exposes no namespace before a scope is selected', () => {
-      expect(findSlotProbe().text()).toBe('||30d|0|false|true');
+    it('exposes no scope before one is selected', () => {
+      expect(findSlotProbe().text()).toBe('||30d|0|true');
     });
 
-    it('exposes the selected group name and full path', async () => {
+    it('exposes a selected group in the groups filter', async () => {
       await selectScope(mockGroup);
 
-      expect(findSlotProbe().text()).toBe('GitLab.org|gitlab-org|30d|0|false|true');
+      expect(findSlotProbe().text()).toBe('gitlab-org||30d|0|true');
     });
 
-    it('exposes the selected project name and full path', async () => {
+    it('exposes a selected project in the projects filter', async () => {
       await selectScope(mockProject);
 
-      expect(findSlotProbe().text()).toBe('GitLab|gitlab-org/gitlab|30d|0|true|true');
+      expect(findSlotProbe().text()).toBe('|gitlab-org/gitlab|30d|0|true');
     });
 
-    it('clears the namespace when the scope is cleared', async () => {
+    it('clears the scope when it is cleared', async () => {
       await selectScope(mockGroup);
       await clearScope();
 
-      expect(findSlotProbe().text()).toBe('||30d|0|false|true');
+      expect(findSlotProbe().text()).toBe('||30d|0|true');
     });
   });
 

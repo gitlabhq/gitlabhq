@@ -336,6 +336,144 @@ describe('TablePresenter', () => {
     });
   });
 
+  describe('description', () => {
+    const FIELDS = [
+      { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+      { key: 'totalCount', label: 'Sessions', name: 'totalCount', type: 'metric' },
+    ];
+    const DATA = { nodes: [{ usersCount: 1747, totalCount: 18294 }] };
+
+    const findDescription = () => wrapper.findByTestId('description');
+
+    const createTable = (moreProps) => createWrapper({ data: DATA, fields: FIELDS, ...moreProps });
+
+    it('renders no description when the block sets none', async () => {
+      await createTable();
+
+      expect(findDescription().exists()).toBe(false);
+    });
+
+    it('renders a static description above the table', async () => {
+      await createTable({ displayConfig: { description: 'All of Capsule Corp' } });
+
+      expect(findDescription().text()).toBe('All of Capsule Corp');
+    });
+
+    it('fills each placeholder with its formatted value', async () => {
+      await createTable({
+        displayConfig: {
+          description: 'Shares are of the %{usersCount} users and the %{totalCount} sessions.',
+        },
+      });
+
+      expect(findDescription().text()).toBe(
+        'Shares are of the 1,747 users and the 18,294 sessions.',
+      );
+    });
+
+    describe('when the result has no rows', () => {
+      it('renders a static description', async () => {
+        await createTable({
+          data: { nodes: [] },
+          displayConfig: { description: 'All of Capsule Corp' },
+        });
+
+        expect(findDescription().text()).toBe('All of Capsule Corp');
+      });
+
+      it('renders the no-data placeholder for each quoted metric', async () => {
+        await createTable({
+          data: { nodes: [] },
+          displayConfig: { description: '%{usersCount} users' },
+        });
+
+        expect(findDescription().text()).toBe('— users');
+      });
+    });
+
+    describe('while loading', () => {
+      it('renders a static description', async () => {
+        await createTable({
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: 'All of Capsule Corp' },
+        });
+
+        expect(findDescription().text()).toBe('All of Capsule Corp');
+      });
+
+      it('renders no description that quotes a metric', async () => {
+        await createTable({
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: '%{usersCount} users' },
+        });
+
+        expect(findDescription().exists()).toBe(false);
+      });
+    });
+
+    // A placeholder reads the first row, which with a dimension is only one group.
+    it('emits an error for a placeholder when the query has a dimension', async () => {
+      await createTable({
+        data: MOCK_AGGREGATED_DATA_ONE_DIM,
+        fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+        displayConfig: { description: '%{totalCount} sessions' },
+      });
+
+      expect(wrapper.emitted('error')[0][0].message).toBe(
+        'Description placeholders cannot be used with dimensions.',
+      );
+    });
+
+    it('renders a static description when the query has a dimension', async () => {
+      await createTable({
+        data: MOCK_AGGREGATED_DATA_ONE_DIM,
+        fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
+        displayConfig: { description: 'Sessions by language' },
+      });
+
+      expect(wrapper.emitted('error')).toBeUndefined();
+      expect(findDescription().text()).toBe('Sessions by language');
+    });
+
+    it('emits an error for a placeholder naming a metric the query does not select', async () => {
+      await createTable({ displayConfig: { description: 'Across %{creditsUsedSum} credits' } });
+
+      expect(wrapper.emitted('error')[0][0].message).toBe(
+        'Unknown description placeholder: `creditsUsedSum`.',
+      );
+    });
+
+    describe('hiddenMetrics', () => {
+      const headerCells = () =>
+        wrapper.findAllComponents(ThResizable).wrappers.map((th) => th.text());
+
+      it('keeps a quoted metric as a column when hiddenMetrics does not name it', async () => {
+        await createTable({ displayConfig: { description: '%{usersCount} users' } });
+
+        expect(headerCells()).toEqual(['Users', 'Sessions']);
+      });
+
+      it('leaves a hidden metric out of the columns but still fills its placeholder', async () => {
+        await createTable({
+          displayConfig: { description: '%{usersCount} users', hiddenMetrics: ['usersCount'] },
+        });
+
+        expect(headerCells()).toEqual(['Sessions']);
+        expect(findDescription().text()).toBe('1,747 users');
+      });
+
+      it('emits an error for a metric the query does not select', async () => {
+        await createTable({ displayConfig: { hiddenMetrics: ['creditsUsedSum'] } });
+
+        expect(wrapper.emitted('error')[0][0].message).toBe(
+          'Unknown metric for `hiddenMetrics`: `creditsUsedSum`.',
+        );
+      });
+    });
+  });
+
   describe('trend column', () => {
     const trendProps = {
       data: MOCK_AGGREGATED_DATA_ONE_DIM,

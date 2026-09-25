@@ -42,7 +42,7 @@ RSpec.describe Oauth::DeviceAuthorizationsController, feature_category: :system_
 
     let(:user_code) { 'valid_user_code' }
     let(:application) { build_stubbed(:oauth_application) }
-    let(:device_grant) { instance_double('Doorkeeper::DeviceAuthorizationGrant::DeviceGrant', scopes: 'read write', application: application) }
+    let(:device_grant) { instance_double('Doorkeeper::DeviceAuthorizationGrant::DeviceGrant', scopes: 'read write', application: application, expired?: false) }
     let(:invalid_user_code) { 'invalid_user_code' }
 
     before do
@@ -86,19 +86,30 @@ RSpec.describe Oauth::DeviceAuthorizationsController, feature_category: :system_
           .with(user_code: invalid_user_code).and_return(nil)
       end
 
-      it 'assigns @scopes as an empty string' do
+      it 'redirects to the device authorizations index with an error', :aggregate_failures do
         post :confirm, params: { user_code: invalid_user_code }, format: :html
-        expect(assigns(:scopes)).to eq('')
+        expect(response).to redirect_to(oauth_device_authorizations_index_url)
+        expect(flash[:notice]).to eq(I18n.t('doorkeeper.flash.device_codes.authorize.invalid_user_code'))
       end
 
-      it 'renders the authorize template' do
+      it 'does not render the authorize template' do
         post :confirm, params: { user_code: invalid_user_code }, format: :html
-        expect(response).to render_template('doorkeeper/device_authorization_grant/authorize')
+        expect(response).not_to render_template('doorkeeper/device_authorization_grant/authorize')
       end
 
-      it 'responds with no content for JSON format' do
+      it 'responds with unprocessable entity for JSON format' do
         post :confirm, params: { user_code: invalid_user_code }, format: :json
-        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'with an expired user_code' do
+      let(:device_grant) { instance_double('Doorkeeper::DeviceAuthorizationGrant::DeviceGrant', expired?: true) }
+
+      it 'redirects to the device authorizations index with an error', :aggregate_failures do
+        post :confirm, params: { user_code: user_code }, format: :html
+        expect(response).to redirect_to(oauth_device_authorizations_index_url)
+        expect(flash[:notice]).to eq(I18n.t('doorkeeper.flash.device_codes.authorize.expired_user_code'))
       end
     end
   end

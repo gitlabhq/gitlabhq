@@ -11,6 +11,8 @@ import {
 } from '../../utils/chart_data';
 import ThResizable from '../common/th_resizable.vue';
 import FieldPresenter from './field.vue';
+import { listDescriptionError, listDescriptionFor } from './utils/description';
+import { hiddenMetricsError, visibleFieldsOf } from './utils/hidden_metrics';
 import { trendPresentationFor } from './utils/stat';
 import { formatChange } from './utils/trend';
 import {
@@ -63,6 +65,11 @@ export default {
       type: [Boolean, Number],
       default: false,
     },
+    displayConfig: {
+      required: false,
+      type: Object,
+      default: () => ({}),
+    },
     source: {
       required: false,
       type: String,
@@ -101,7 +108,21 @@ export default {
         ) ?? null
       );
     },
+    description() {
+      return listDescriptionFor({
+        description: this.displayConfig?.description,
+        fields: this.fields,
+        data: this.data,
+        loading: this.loading,
+      });
+    },
     validationError() {
+      const descriptionError = listDescriptionError(this.displayConfig?.description, this.fields);
+      if (descriptionError) return descriptionError;
+
+      const hiddenError = hiddenMetricsError(this.displayConfig?.hiddenMetrics, this.fields);
+      if (hiddenError) return hiddenError;
+
       // Only a panel that asked for a trend can misconfigure one.
       if (!this.comparisonData) return null;
 
@@ -136,7 +157,9 @@ export default {
       }).map((row) => ({ ...row, [TREND_CELL_KEY]: this.trendCellFor(row) }));
     },
     columns() {
-      return this.trendColumn ? [...this.fields, this.trendColumn] : this.fields;
+      const fields = visibleFieldsOf(this.fields, this.displayConfig?.hiddenMetrics);
+
+      return this.trendColumn ? [...fields, this.trendColumn] : fields;
     },
   },
   watch: {
@@ -188,77 +211,82 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-table-shadow" data-print-scale-container>
-    <table class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden" data-print-scale-target>
-      <thead class="!gl-border-b gl-text-sm">
-        <tr>
-          <th-resizable
-            v-for="(field, fieldIndex) in columns"
-            :key="field.key"
-            class="gl-relative !gl-bg-default !gl-p-0 !gl-text-subtle dark:!gl-bg-strong"
-          >
-            <div
-              :data-testid="`column-${fieldIndex}`"
-              class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-bg-default gl-px-5 gl-py-3 hover:gl-bg-subtle"
-              @click="sortBy(field.key)"
+  <div>
+    <p v-if="description" class="gl-mb-3 gl-px-5 gl-pt-3 gl-text-subtle" data-testid="description">
+      {{ description }}
+    </p>
+    <div class="gl-table-shadow" data-print-scale-container>
+      <table class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden" data-print-scale-target>
+        <thead class="!gl-border-b gl-text-sm">
+          <tr>
+            <th-resizable
+              v-for="(field, fieldIndex) in columns"
+              :key="field.key"
+              class="gl-relative !gl-bg-default !gl-p-0 !gl-text-subtle dark:!gl-bg-strong"
             >
-              {{ labelWithParameter(field) }}
-              <gl-icon
-                v-if="sortOptions.fieldName === field.key"
-                :name="sortOptions.ascending ? 'arrow-up' : 'arrow-down'"
-              />
-            </div>
-            <div class="gl-pointer-events-none gl-py-3">&nbsp;</div>
-          </th-resizable>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(item, itemIndex) in items"
-          :key="item.id"
-          :data-testid="`table-row-${itemIndex}`"
-        >
-          <td
-            v-for="field in columns"
-            :key="field.key"
-            class="!gl-border-l-0 !gl-border-r-0 gl-bg-default !gl-px-5 !gl-py-3"
-          >
-            <template v-if="isTrendColumn(field)">
-              <gl-badge
-                v-if="trendCellIn(item)"
-                v-gl-tooltip
-                :title="trendCellIn(item).metaTooltip"
-                :variant="trendCellIn(item).variant"
-                :icon="trendCellIn(item).metaIcon"
-                data-testid="trend-badge"
+              <div
+                :data-testid="`column-${fieldIndex}`"
+                class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-bg-default gl-px-5 gl-py-3 hover:gl-bg-subtle"
+                @click="sortBy(field.key)"
               >
-                {{ trendCellIn(item).text }}
-              </gl-badge>
-              <span v-else class="gl-text-subtle" data-testid="trend-unknown">
-                {{ $options.NO_TREND }}
-              </span>
-            </template>
-            <field-presenter
-              v-else
-              :item="item"
-              :field-key="field.key"
-              :presenter-key="baseFieldKeyOf(field)"
-              :parameters="field.parameters"
-            />
-          </td>
-        </tr>
-        <template v-if="loading">
-          <tr v-for="i in pageSize" :key="i">
+                {{ labelWithParameter(field) }}
+                <gl-icon
+                  v-if="sortOptions.fieldName === field.key"
+                  :name="sortOptions.ascending ? 'arrow-up' : 'arrow-down'"
+                />
+              </div>
+              <div class="gl-pointer-events-none gl-py-3">&nbsp;</div>
+            </th-resizable>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(item, itemIndex) in items"
+            :key="item.id"
+            :data-testid="`table-row-${itemIndex}`"
+          >
             <td
               v-for="field in columns"
               :key="field.key"
-              class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 gl-bg-default !gl-px-5 !gl-py-3"
+              class="!gl-border-l-0 !gl-border-r-0 gl-bg-default !gl-px-5 !gl-py-3"
             >
-              <gl-skeleton-loader :width="60" :lines="1" :equal-width-lines="true" />
+              <template v-if="isTrendColumn(field)">
+                <gl-badge
+                  v-if="trendCellIn(item)"
+                  v-gl-tooltip
+                  :title="trendCellIn(item).metaTooltip"
+                  :variant="trendCellIn(item).variant"
+                  :icon="trendCellIn(item).metaIcon"
+                  data-testid="trend-badge"
+                >
+                  {{ trendCellIn(item).text }}
+                </gl-badge>
+                <span v-else class="gl-text-subtle" data-testid="trend-unknown">
+                  {{ $options.NO_TREND }}
+                </span>
+              </template>
+              <field-presenter
+                v-else
+                :item="item"
+                :field-key="field.key"
+                :presenter-key="baseFieldKeyOf(field)"
+                :parameters="field.parameters"
+              />
             </td>
           </tr>
-        </template>
-      </tbody>
-    </table>
+          <template v-if="loading">
+            <tr v-for="i in pageSize" :key="i">
+              <td
+                v-for="field in columns"
+                :key="field.key"
+                class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 gl-bg-default !gl-px-5 !gl-py-3"
+              >
+                <gl-skeleton-loader :width="60" :lines="1" :equal-width-lines="true" />
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>

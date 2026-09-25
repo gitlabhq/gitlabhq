@@ -3303,6 +3303,9 @@ msgstr ""
 msgid "AICatalog|Project: %{label}"
 msgstr ""
 
+msgid "AICatalog|Projects enabled with warnings:"
+msgstr ""
+
 msgid "AICatalog|Projects using this service account"
 msgstr ""
 
@@ -6859,7 +6862,13 @@ msgstr ""
 msgid "AdminSettings|Maximum includes"
 msgstr ""
 
+msgid "AdminSettings|Maximum job retries per project"
+msgstr ""
+
 msgid "AdminSettings|Maximum lifetime of OAuth access tokens in seconds. Minimum 300 (5 minutes). If blank, defaults to 7200 (2 hours). Does not change the lifetime of any existing tokens."
+msgstr ""
+
+msgid "AdminSettings|Maximum manual job runs per project"
 msgstr ""
 
 msgid "AdminSettings|Maximum number of Instance-level CI/CD variables that can be defined"
@@ -7106,6 +7115,12 @@ msgid "AdminSettings|The maximum number of downstream pipelines that can be trig
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of job retries allowed per minute for a given project. Set to 0 to disable this limit."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of manual job runs allowed per minute for a given project. Set to 0 to disable this limit."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of pipeline cancellations allowed per minute for a given project. Set to 0 to disable this limit."
@@ -30460,9 +30475,6 @@ msgstr ""
 msgid "DeviceAuth|Only authorize if you started this yourself."
 msgstr ""
 
-msgid "DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well."
-msgstr ""
-
 msgid "Devices (optional)"
 msgstr ""
 
@@ -32247,9 +32259,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|API request"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Access required"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Action"
 msgstr ""
 
@@ -32295,6 +32304,15 @@ msgstr ""
 msgid "DuoAgentsPlatform|Are you sure you want to delete this trigger? This action cannot be undone."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Ask a group Owner to start a trial or purchase GitLab Credits to enable GitLab Duo for everyone."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automate tasks with AI agents, from searching projects to creating commits."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automate tasks with AI agents, from searching projects to creating commits. Two ways to start."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Available"
 msgstr ""
 
@@ -32302,6 +32320,15 @@ msgid "DuoAgentsPlatform|Available only when Status changed is the only selected
 msgstr ""
 
 msgid "DuoAgentsPlatform|Before you can use GitLab Duo Agent Platform, we need to verify your account."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Buy GitLab Credits"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Buy credits"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Buy shared %{linkStart}GitLab Credits%{linkEnd} for your group and power AI capabilities, compute minutes, and add-ons."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Cancel session"
@@ -32319,9 +32346,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Chat"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Chat with a specialized agent"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Comment on issue"
 msgstr ""
 
@@ -32332,9 +32356,6 @@ msgid "DuoAgentsPlatform|Comment on work item"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Commit to default branch"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Complete multi-step tasks with flows"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Conditions"
@@ -32353,9 +32374,6 @@ msgid "DuoAgentsPlatform|Configure the schedule."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Confirm action"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Could not load statuses. Refresh the page to try again."
@@ -32377,9 +32395,6 @@ msgid "DuoAgentsPlatform|Create merge request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create trigger"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Data Analyst"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Default model"
@@ -32478,10 +32493,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Get comment"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Get full access to agentic chat, agents, and flows. No credit card required."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Get issue"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Get merge request"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Get things done with GitLab Duo"
 msgstr ""
 
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
@@ -32503,6 +32524,9 @@ msgid "DuoAgentsPlatform|Identity Verification required"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Identity verification is required to use GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Learn more about GitLab Duo"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Linked items"
@@ -32560,9 +32584,6 @@ msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Plan updated"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Planning Agent"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Raw runner output"
@@ -32623,9 +32644,6 @@ msgid "DuoAgentsPlatform|Search for a session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search issues"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Security Agent"
 msgstr ""
 
 msgid "DuoAgentsPlatform|See what’s running"
@@ -32700,10 +32718,10 @@ msgstr ""
 msgid "DuoAgentsPlatform|Specify the path to a YAML file that contains a flow definition."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Start a Free Trial"
+msgid "DuoAgentsPlatform|Start a free %{trialDuration}-day trial"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} now to accelerate your software delivery. Automate tasks with AI agents, from searching projects to creating commits."
+msgid "DuoAgentsPlatform|Start a free trial"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Started %{timeago} by %{user}"
@@ -32817,22 +32835,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|What this trigger runs."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Who can grant you access"
-msgstr ""
-
-msgid "DuoAgentsPlatform|With a trial you can chat with AI agents tailored to your development workflow, such as the following agents:"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Write file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|You do not have permission to cancel this session."
 msgstr ""
 
-msgid "DuoAgentsPlatform|You don't have permission to use GitLab Duo Agent Platform in this %{namespaceType}. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
+msgid "DuoAgentsPlatform|Your agents are grinding away. The moment one of them wants a decision, it lands here."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Your agents are grinding away. The moment one of them wants a decision, it lands here."
+msgid "DuoAgentsPlatform|Your group doesn't have GitLab Duo yet"
 msgstr ""
 
 msgid "DuoAgentsPlatform|minutes past the hour"
@@ -40654,6 +40666,9 @@ msgstr ""
 msgid "Globally-allowed IP ranges"
 msgstr ""
 
+msgid "Glql|Description placeholders cannot be used with dimensions."
+msgstr ""
+
 msgid "Glql|GLQL query must be a string."
 msgstr ""
 
@@ -40670,6 +40685,18 @@ msgid "Glql|Power (100+)"
 msgstr ""
 
 msgid "Glql|Regular (5–24)"
+msgstr ""
+
+msgid "Glql|Unknown description placeholder: `%{placeholder}`."
+msgstr ""
+
+msgid "Glql|Unknown metric for `hiddenMetrics`: `%{metric}`."
+msgstr ""
+
+msgid "Glql|`hiddenMetrics` must be a list of metric names."
+msgstr ""
+
+msgid "Glql|barList display type requires at least one metric not in `hiddenMetrics`"
 msgstr ""
 
 msgid "Glql|vs previous period"
@@ -62700,6 +62727,12 @@ msgstr ""
 msgid "PolicyStore|No building blocks match your search."
 msgstr ""
 
+msgid "PolicyStore|No matching options"
+msgstr ""
+
+msgid "PolicyStore|No options available"
+msgstr ""
+
 msgid "PolicyStore|No policies found"
 msgstr ""
 
@@ -62803,6 +62836,9 @@ msgid "PolicyStore|Scope"
 msgstr ""
 
 msgid "PolicyStore|Scope sets the target projects. This can be adjusted at any time."
+msgstr ""
+
+msgid "PolicyStore|Search options"
 msgstr ""
 
 msgid "PolicyStore|Search templates..."
@@ -72199,6 +72235,9 @@ msgstr ""
 msgid "Scheduled policy"
 msgstr ""
 
+msgid "Scheduled triggers are not supported for group configurations"
+msgstr ""
+
 msgid "ScheduledJob|delayed manual action (%{remainingTime})"
 msgstr ""
 
@@ -78759,6 +78798,9 @@ msgid "Service account must be active"
 msgstr ""
 
 msgid "Service account must be group or project scoped, not instance-wide"
+msgstr ""
+
+msgid "Service account must not have the Owner role"
 msgstr ""
 
 msgid "Service account was successfully updated."
@@ -87555,9 +87597,6 @@ msgstr ""
 msgid "Unknown conflict"
 msgstr ""
 
-msgid "Unknown description placeholder: `%{placeholder}`."
-msgstr ""
-
 msgid "Unknown display type: `%{displayType}`. Supported display types are: %{supportedDisplayTypes}."
 msgstr ""
 
@@ -96134,9 +96173,6 @@ msgid "You are already a member of this %{member_source}."
 msgstr ""
 
 msgid "You are already impersonating another user"
-msgstr ""
-
-msgid "You are an administrator, which means authorizing access to %{strong_start}%{client_name}%{strong_end} will allow it to interact with GitLab as an administrator as well."
 msgstr ""
 
 msgid "You are an administrator. Authorizing %{strong_start}%{client_name}%{strong_end} will let it act as an administrator. Only continue if you trust this application."

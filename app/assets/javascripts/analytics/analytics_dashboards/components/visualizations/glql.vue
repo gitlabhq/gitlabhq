@@ -1,6 +1,10 @@
 <script>
+import { memoize } from 'lodash-es';
+import { GlIntersectionObserver } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { getPanelElement } from '~/lib/utils/panels';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { EXECUTION_QUEUE_DASHBOARD } from '~/glql/constants';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import ViewSourceModal from '~/glql/components/common/view_source_modal.vue';
@@ -26,6 +30,11 @@ import {
   PANEL_STATE_UNAVAILABLE,
 } from '~/analytics/shared/constants';
 
+// The page scrolls inside a panel whose ancestors clip it, and `rootMargin` only grows the
+// root's own box, so the panel is the root. Memoized per root so every dashboard panel shares
+// one observer, loading a viewport ahead so panels usually have data by the time they scroll in.
+const observerOptionsFor = memoize((root) => Object.freeze({ root, rootMargin: '100% 0px' }));
+
 const STATE_VARIANT_BY_ERROR_CATEGORY = {
   [GLQL_ERROR_NO_ACCESS]: PANEL_STATE_NO_ACCESS,
   [GLQL_ERROR_NOT_CONFIGURED]: PANEL_STATE_NOT_CONFIGURED,
@@ -42,10 +51,12 @@ export default {
   EXECUTION_QUEUE_DASHBOARD,
   PANEL_STATE_NO_DATA,
   components: {
+    GlIntersectionObserver,
     GlqlResolver,
     PanelState,
     ViewSourceModal,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     data: {
       type: String,
@@ -81,9 +92,16 @@ export default {
       stateDescription: '',
       retryCount: 0,
       modalVisible: false,
+      nearViewport: false,
+      observerOptions: null,
     };
   },
   computed: {
+    // Panels mount all at once, so without this every panel on the view queues its queries
+    // before the ones on screen can finish.
+    waitingForViewport() {
+      return Boolean(this.glFeatures.deferOffscreenGlqlDashboardPanels) && !this.nearViewport;
+    },
     showEmptyState() {
       return this.resolverResult?.data?.nodes?.length === 0;
     },
@@ -153,11 +171,17 @@ export default {
       if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) this.resetState();
     },
   },
+  mounted() {
+    // The scroll panel is only found from the DOM, so the observer waits for this mount.
+    this.observerOptions = observerOptionsFor(getPanelElement(this.$el));
+  },
   methods: {
     resetState() {
       this.resolverResult = undefined;
       this.stateVariant = null;
       this.stateDescription = '';
+      // Re-defers so a filter change only re-queries the panels still near the viewport.
+      this.nearViewport = false;
     },
     handleResolverChange({ data, config, fields, error }) {
       this.resolverResult = { data, config, fields };
@@ -241,6 +265,14 @@ export default {
       :title="emptyStateTitle"
       :description="emptyStateDescription"
     />
+
+    <template v-else-if="waitingForViewport">
+      <gl-intersection-observer
+        v-if="observerOptions"
+        :options="observerOptions"
+        @appear="nearViewport = true"
+      />
+    </template>
 
     <glql-resolver
       v-else

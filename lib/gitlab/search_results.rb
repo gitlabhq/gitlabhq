@@ -207,6 +207,12 @@ module Gitlab
         results.reorder('upvotes_count ASC')
       when :popularity_desc
         results.reorder('upvotes_count DESC')
+      when :title_asc
+        # Break ties with the ID column so LIMIT/OFFSET pages stay stable, as
+        # Issuable.sort_by_attribute does for the same two sorts.
+        results.order_title_asc.with_order_id_desc
+      when :title_desc
+        results.order_title_desc.with_order_id_desc
       else
         # :created_at_desc is default
         results.reorder('created_at DESC')

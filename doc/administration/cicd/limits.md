@@ -476,6 +476,44 @@ To configure the per user and project limit:
 1. Set a value for **Maximum pipeline retries per project**.
 1. Select **Save changes**.
 
+## Job retry and manual job run rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627273) in GitLab 19.5 [with feature flags](../feature_flags/_index.md) named `rate_limit_job_retry` and `rate_limit_job_play`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by feature flags. For more information, see the history.
+
+Retrying a job or running a manual job creates a new job and re-evaluates the pipeline,
+so repeated requests add up to significant load on your instance. You can limit how often
+jobs can be retried or run to protect against this.
+
+These rate limits apply to job retries and manual job runs made with the
+[retry job](../../api/jobs.md#retry-a-job) and [run job](../../api/jobs.md#run-a-job) REST API endpoints,
+the [`jobRetry`](../../api/graphql/reference/_index.md#mutationjobretry) and
+[`jobPlay`](../../api/graphql/reference/_index.md#mutationjobplay) GraphQL mutations, or the GitLab UI.
+The limits do not apply to automatic retries (for example, `retry:` in the CI/CD configuration) or automatic rollbacks.
+
+GitLab enforces the following limits:
+
+- Job retry, per user and job: Fixed at `3` requests each minute. Not configurable.
+- Job retry, per user and project: Configurable, with a default of `1250` requests each minute. Set to `0` to disable.
+- Manual job run, per user and job: Fixed at `3` requests each minute. Not configurable.
+- Manual job run, per user and project: Configurable, with a default of `750` requests each minute. Set to `0` to disable.
+
+If a limit is exceeded, the request is blocked.
+
+To configure the per user and project limits:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set values for **Maximum job retries per project** and **Maximum manual job runs per project**.
+1. Select **Save changes**.
+
 ## Maximum artifacts size
 
 Set size limits for job artifacts to control storage use.

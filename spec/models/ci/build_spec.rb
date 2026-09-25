@@ -2617,6 +2617,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(result).to be_success
       expect(result.payload[:job]).to be_pending
     end
+
+    it 'passes rate_limit through to the play service' do
+      expect(Ci::PlayBuildService).to receive(:new).with(hash_including(rate_limit: false)).and_call_original
+
+      build.play(user, rate_limit: false)
+    end
   end
 
   describe '#playable?' do

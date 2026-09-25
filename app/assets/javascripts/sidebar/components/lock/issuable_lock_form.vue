@@ -188,7 +188,7 @@ export default {
           <gl-loading-icon inline size="sm" /> {{ lockToggleInProgressText }}
         </template>
         <template v-else>
-          <gl-icon :name="lockToggleIcon" class="gl-mr-2" variant="subtle" />
+          <gl-icon :name="lockToggleIcon" class="gl-mr-2" />
           {{ lockToggleText }}
         </template>
       </span>

@@ -181,7 +181,8 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['ci_jobs']
         end
@@ -204,6 +205,8 @@ module API
 
           if response.success?
             present response[:job], with: Entities::Ci::Job
+          elsif response.reason == :rate_limited
+            too_many_requests!(response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:job_retry))
           elsif response.payload[:reason] == :not_retryable
             forbidden!('Job is not retryable')
           else
@@ -245,7 +248,8 @@ module API
             { code: 400, message: 'Bad request' },
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['ci_jobs']
         end
@@ -272,6 +276,10 @@ module API
           bad_request!("Unplayable Job") unless job.playable?
 
           result = job.play(current_user, params[:job_variables_attributes], params[:job_inputs] || {})
+
+          if result.error? && result.reason == :rate_limited
+            too_many_requests!(result.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:job_play))
+          end
 
           bad_request!(result.message) if result.error?
 

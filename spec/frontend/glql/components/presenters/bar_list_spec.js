@@ -9,6 +9,7 @@ import {
   MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
   MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
   MOCK_AGGREGATED_DATA_ONE_DIM,
+  MOCK_AGGREGATED_DATA_TWO_DIMS,
   MOCK_AGGREGATED_COMPARISON_DATA_ONE_DIM,
 } from '../../mock_data';
 
@@ -56,6 +57,15 @@ const QUANTILE_FIELDS = [
 
 // 9h 24m and 23h, in milliseconds.
 const QUANTILES = { nodes: [{ Median: 33840, p75: 82800 }] };
+
+// The shape the MR cycle time panels use: two quantiles to plot, plus a count for the
+// description.
+const QUANTILE_FIELDS_WITH_COUNT = [
+  ...QUANTILE_FIELDS,
+  { key: 'throughputCount', field: 'throughputCount', label: 'Merged', type: 'metric' },
+];
+
+const QUANTILES_WITH_COUNT = { nodes: [{ Median: 33840, p75: 82800, throughputCount: 2362 }] };
 
 describe('BarListPresenter', () => {
   let wrapper;
@@ -199,6 +209,178 @@ describe('BarListPresenter', () => {
       expect(findEmittedErrorMessage()).toBe(
         'Unknown `color`: `green`. Supported values are: `orange`, `blue`, `gray`.',
       );
+    });
+  });
+
+  describe('description', () => {
+    const findDescription = () => wrapper.findByTestId('description');
+
+    it('renders no description when the block sets none', () => {
+      createComponent();
+
+      expect(findDescription().exists()).toBe(false);
+    });
+
+    it('renders a static description above the chart', () => {
+      createComponent({ displayConfig: { description: 'Share of credits by capability' } });
+
+      expect(findDescription().text()).toBe('Share of credits by capability');
+    });
+
+    describe('when the description quotes a metric', () => {
+      beforeEach(() =>
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: QUANTILES_WITH_COUNT,
+          displayConfig: { description: '%{throughputCount} merged merge requests' },
+        }),
+      );
+
+      it('fills the placeholder with the formatted value', () => {
+        expect(findDescription().text()).toBe('2,362 merged merge requests');
+      });
+
+      it('still draws that metric as a bar', () => {
+        expect(rows().map(({ name }) => name)).toEqual(['Median', 'p75', 'Merged']);
+      });
+    });
+
+    describe('when hiddenMetrics names the quoted metric', () => {
+      beforeEach(() =>
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: QUANTILES_WITH_COUNT,
+          displayConfig: {
+            description: '%{throughputCount} merged merge requests',
+            hiddenMetrics: ['throughputCount'],
+          },
+        }),
+      );
+
+      it('still fills the placeholder', () => {
+        expect(findDescription().text()).toBe('2,362 merged merge requests');
+      });
+
+      it('leaves that metric out of the bars', () => {
+        expect(rows().map(({ name }) => name)).toEqual(['Median', 'p75']);
+      });
+    });
+
+    // A placeholder reads the first row, which with a dimension is only one group.
+    it.each`
+      case                | fields                                        | data
+      ${'one dimension'}  | ${MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC}  | ${MOCK_AGGREGATED_DATA_ONE_DIM}
+      ${'two dimensions'} | ${MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC} | ${MOCK_AGGREGATED_DATA_TWO_DIMS}
+    `('emits an error for a placeholder when the query has $case', ({ fields, data }) => {
+      createComponent({ fields, data, displayConfig: { description: '%{totalCount} sessions' } });
+
+      expect(findEmittedErrorMessage()).toBe(
+        'Description placeholders cannot be used with dimensions.',
+      );
+      expect(findChart().exists()).toBe(false);
+      expect(wrapper.findComponent(TwoDimensionsBarList).exists()).toBe(false);
+    });
+
+    describe('when the result has no rows', () => {
+      it('renders a static description', () => {
+        createComponent({
+          data: { nodes: [] },
+          displayConfig: { description: 'Share of credits by capability' },
+        });
+
+        expect(findDescription().text()).toBe('Share of credits by capability');
+      });
+
+      it('renders the no-data placeholder for each quoted metric', () => {
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: { nodes: [] },
+          displayConfig: { description: '%{throughputCount} merged merge requests' },
+        });
+
+        expect(findDescription().text()).toBe('— merged merge requests');
+      });
+    });
+
+    describe('while loading', () => {
+      it('renders a static description', () => {
+        createComponent({
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: 'Share of credits by capability' },
+        });
+
+        expect(findDescription().text()).toBe('Share of credits by capability');
+      });
+
+      it('renders no description that quotes a metric', () => {
+        createComponent({
+          fields: QUANTILE_FIELDS_WITH_COUNT,
+          data: { nodes: [] },
+          loading: true,
+          displayConfig: { description: '%{throughputCount} merged merge requests' },
+        });
+
+        expect(findDescription().exists()).toBe(false);
+      });
+    });
+
+    it('renders the no-data placeholder for a metric the row leaves null', () => {
+      createComponent({
+        fields: QUANTILE_FIELDS_WITH_COUNT,
+        data: { nodes: [{ Median: 33840, p75: 82800, throughputCount: null }] },
+        displayConfig: { description: '%{throughputCount} merged merge requests' },
+      });
+
+      expect(findDescription().text()).toBe('— merged merge requests');
+    });
+
+    it('emits an error for a placeholder naming a metric the query does not select', () => {
+      createComponent({ displayConfig: { description: 'Across %{usersCount} users' } });
+
+      expect(findEmittedErrorMessage()).toBe('Unknown description placeholder: `usersCount`.');
+      expect(findChart().exists()).toBe(false);
+    });
+  });
+
+  describe('hiddenMetrics', () => {
+    // Listed ahead of totalCount, so the chart would plot it if it were not hidden.
+    it('leaves a hidden metric out of the chart when the query has a dimension', () => {
+      const [dimension, metric] = MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC;
+
+      createComponent({
+        fields: [dimension, { key: 'usersCount', label: 'Users', type: 'metric' }, metric],
+        displayConfig: { hiddenMetrics: ['usersCount'] },
+      });
+
+      expect(findEmittedErrorMessage()).toBeUndefined();
+      expect(rows().map(({ value }) => value)).toEqual([21, 14, 10]);
+    });
+
+    it('matches a metric by its base key as well as its alias', () => {
+      createComponent({
+        fields: QUANTILE_FIELDS_WITH_COUNT,
+        data: QUANTILES_WITH_COUNT,
+        displayConfig: { hiddenMetrics: ['timeToMergeQuantile'] },
+      });
+
+      expect(rows().map(({ name }) => name)).toEqual(['Merged']);
+    });
+
+    it.each`
+      hiddenMetrics        | message
+      ${['Median', 'p75']} | ${'barList display type requires at least one metric not in `hiddenMetrics`'}
+      ${['usersCount']}    | ${'Unknown metric for `hiddenMetrics`: `usersCount`.'}
+      ${'Median'}          | ${'`hiddenMetrics` must be a list of metric names.'}
+    `('emits an error for hiddenMetrics $hiddenMetrics', ({ hiddenMetrics, message }) => {
+      createComponent({
+        fields: QUANTILE_FIELDS,
+        data: QUANTILES,
+        displayConfig: { hiddenMetrics },
+      });
+
+      expect(findEmittedErrorMessage()).toBe(message);
+      expect(findChart().exists()).toBe(false);
     });
   });
 
