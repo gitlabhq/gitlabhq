@@ -438,6 +438,35 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
     end
 
+    describe 'business_logic' do
+      let_it_be(:project) { create(:project, :repository) }
+      let(:feature) { Gitlab::Json.parse(html_data[:features]).find { |scan| scan['type'] == 'business_logic' } }
+
+      it 'includes business_logic' do
+        expect(feature).not_to be_nil
+      end
+
+      context 'when bl_security_analyzer feature flag is disabled' do
+        before do
+          stub_feature_flags(bl_security_analyzer: false)
+        end
+
+        it 'does not include business_logic' do
+          expect(feature).to be_nil
+        end
+      end
+
+      context 'when bl_security_analyzer feature flag is enabled only for the root namespace' do
+        before do
+          stub_feature_flags(bl_security_analyzer: project.root_ancestor)
+        end
+
+        it 'includes business_logic' do
+          expect(feature).not_to be_nil
+        end
+      end
+    end
+
     def licensed_scan_types
       Enums::Security.analyzer_types.keys + ::Security::LicenseComplianceJobsFinder.allowed_job_types - [:cluster_image_scanning]
     end

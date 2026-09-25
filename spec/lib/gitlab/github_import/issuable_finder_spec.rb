@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let(:project) { build(:project, id: 20) }
-  let(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let(:issue) { double(:issue, issuable_type: 'MergeRequest', issuable_id: merge_request.iid) }
   let(:finder) { described_class.new(project, issue) }
 
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_shared_
       expect(Gitlab::Cache::Import::Caching)
         .to receive(:write)
         .with(
-          "github-import/issuable-finder/20/MergeRequest/#{merge_request.iid}",
+          "github-import/issuable-finder/#{project.id}/MergeRequest/#{merge_request.iid}",
           10,
           timeout: Gitlab::Cache::Import::Caching::LONGER_TIMEOUT
         )

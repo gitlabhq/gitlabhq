@@ -21,7 +21,7 @@ jest.mock('vuedraggable', () =>
     : jest.requireActual('vuedraggable'),
 );
 
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import-x/first
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 
 describe('DraggableCompat', () => {

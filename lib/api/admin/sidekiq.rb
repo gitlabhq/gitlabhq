@@ -15,7 +15,7 @@ module API
               tags ['sidekiq']
             end
             params do
-              requires :queue_name, type: String, desc: 'The Sidekiq queue name'
+              requires :queue_name, type: String, desc: 'Name of the queue to delete jobs from.'
 
               Gitlab::SidekiqQueue::ALLOWED_KEYS.each do |key|
                 optional key, type: String, desc: 'Metadata key to match', allow_blank: false

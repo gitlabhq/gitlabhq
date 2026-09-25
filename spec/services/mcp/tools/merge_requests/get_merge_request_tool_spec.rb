@@ -58,11 +58,15 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
       expect(variables[:includeConflicts]).to be(false)
     end
 
-    it 'omits notes pagination parameters when not provided', :aggregate_failures do
+    it 'omits facet pagination parameters when not provided', :aggregate_failures do
       variables = tool.build_variables
 
       expect(variables).not_to have_key(:notesAfter)
       expect(variables).not_to have_key(:notesFirst)
+      expect(variables).not_to have_key(:commitsAfter)
+      expect(variables).not_to have_key(:commitsFirst)
+      expect(variables).not_to have_key(:pipelinesAfter)
+      expect(variables).not_to have_key(:pipelinesFirst)
     end
 
     context 'when a single facet is requested' do
@@ -172,6 +176,28 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         expect(variables[:diffsFirst]).to eq(10)
       end
     end
+
+    context 'when commits pagination parameters are provided' do
+      let(:params) { super().merge(include: ['commits'], commits_after: 'cursor3', commits_first: 30) }
+
+      it 'includes them in the GraphQL variables', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:commitsAfter]).to eq('cursor3')
+        expect(variables[:commitsFirst]).to eq(30)
+      end
+    end
+
+    context 'when pipelines pagination parameters are provided' do
+      let(:params) { super().merge(include: ['pipelines'], pipelines_after: 'cursor4', pipelines_first: 5) }
+
+      it 'includes them in the GraphQL variables', :aggregate_failures do
+        variables = tool.build_variables
+
+        expect(variables[:pipelinesAfter]).to eq('cursor4')
+        expect(variables[:pipelinesFirst]).to eq(5)
+      end
+    end
   end
 
   describe 'integration' do
@@ -277,6 +303,22 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         expect(nodes.first).to have_key('diff')
         expect(nodes.map { |node| node['diff'] }.join).to include('@@')
         expect(result[:structuredContent].dig('diffs', 'pageInfo')).to have_key('hasNextPage')
+      end
+    end
+
+    context 'when pipelines are requested and the merge request has more than 100' do
+      let(:params) { super().merge(include: ['pipelines']) }
+
+      before_all do
+        create_list(:ci_pipeline, 101, :detached_merge_request_pipeline, merge_request: merge_request) # rubocop:disable FactoryBot/ExcessiveCreateList -- need >100 to test the default page size
+      end
+
+      it 'returns the first 100 pipelines and a cursor to the rest', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent].dig('pipelines', 'nodes').size).to eq(100)
+        expect(result[:structuredContent].dig('pipelines', 'pageInfo', 'hasNextPage')).to be(true)
       end
     end
 

@@ -69,7 +69,6 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { cruise } from 'dependency-cruiser';
-// eslint-disable-next-line import/no-unresolved -- This is a valid subpath export
 import extractWebpackResolveConfig from 'dependency-cruiser/config-utl/extract-webpack-resolve-config';
 import babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';

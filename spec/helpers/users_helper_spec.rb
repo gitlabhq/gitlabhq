@@ -724,6 +724,11 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
     subject(:data) { helper.user_activity_calendar_data(user) }
 
+    before do
+      # Helper specs run without a Warden env, so stub the visitor by default.
+      allow(helper).to receive(:current_user).and_return(nil)
+    end
+
     it 'returns the username' do
       expect(data[:username]).to eq(user.username)
     end
@@ -735,6 +740,40 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     it 'falls back to the instance timezone when the user has none' do
       expect(helper.user_activity_calendar_data(build(:user, timezone: nil))[:utc_offset])
         .to eq(Time.zone.now.utc_offset)
+    end
+
+    it 'returns the activity feed paths' do
+      expect(data).to include(
+        calendar_activities_path: user_calendar_activities_path(user, :json),
+        activity_path: user_activity_path(user, :json),
+        view_all_activity_path: user_activity_path(user),
+        new_group_path: new_group_path,
+        explore_groups_path: explore_groups_path
+      )
+    end
+
+    it 'returns the empty state svg path' do
+      expect(data[:empty_state_svg_path]).to match(/empty-activity-md.*\.svg/)
+    end
+
+    context 'when viewing your own profile' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'flags the profile as the current user' do
+        expect(data[:is_current_user_profile]).to eq('true')
+      end
+    end
+
+    context "when viewing another user's profile" do
+      before do
+        allow(helper).to receive(:current_user).and_return(build_stubbed(:user))
+      end
+
+      it 'does not flag the profile as the current user' do
+        expect(data[:is_current_user_profile]).to eq('false')
+      end
     end
   end
 end

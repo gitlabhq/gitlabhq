@@ -93,7 +93,6 @@ import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { program } from 'commander';
 import { cruise } from 'dependency-cruiser';
-// eslint-disable-next-line import/no-unresolved -- This is a valid subpath export
 import extractWebpackResolveConfig from 'dependency-cruiser/config-utl/extract-webpack-resolve-config';
 import { ASSET_ROOT, SHARED_LAYER, group as alternation } from '../../config/frontend_packages.mjs';
 

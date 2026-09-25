@@ -657,6 +657,178 @@ RSpec.describe UsersController, feature_category: :user_management do
       expect(response.body).to include('Jul 31, 2014')
     end
 
+    it 'falls back to today when the date is invalid' do
+      travel_to(Date.parse('2020-01-15')) do
+        get user_calendar_activities_url user.username, date: 'not-a-date'
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('Jan 15, 2020')
+      end
+    end
+
+    it 'renders activities as JSON when requested' do
+      get user_calendar_activities_url(user.username, format: :json), params: { date: '2014-07-31' }
+
+      expect(response.media_type).to eq('application/json')
+      expect(json_response).to be_an(Array)
+    end
+
+    context 'with JSON pagination' do
+      let(:date) { Date.current }
+
+      # Distinct timestamps give the ordering a deterministic tiebreaker so the
+      # pagination assertions below are not flaky.
+      let!(:events) do
+        create_list(:closed_issue, 3, project: project, author: user).each_with_index.map do |issue, index|
+          Event.create!(
+            project: project, author: user, target: issue,
+            action: :closed, created_at: date.middle_of_day - index.minutes
+          )
+        end
+      end
+
+      def get_calendar_activities(params)
+        get user_calendar_activities_url(user.username, format: :json),
+          params: { date: date.iso8601 }.merge(params)
+      end
+
+      # The serializer exposes created_at only for events visible to the viewer,
+      # which holds here since the author is viewing their own events.
+      def response_created_ats
+        json_response.map { |event| event['created_at'] }
+      end
+
+      it 'applies limit and offset so a second page does not duplicate the first' do
+        get_calendar_activities(limit: 2, offset: 0)
+        first_page = response_created_ats
+        expect(first_page.size).to eq(2)
+
+        get_calendar_activities(limit: 2, offset: 2)
+        second_page = response_created_ats
+        expect(second_page.size).to eq(1)
+
+        # Newest first, with no overlap between the two pages.
+        expect(first_page).to eq([events[0], events[1]].map { |e| e.created_at.iso8601(3) })
+        expect(second_page).to eq([events[2].created_at.iso8601(3)])
+        expect(first_page & second_page).to be_empty
+      end
+
+      it 'falls back to the default limit when none is given' do
+        get_calendar_activities({})
+
+        expect(json_response.size).to eq(3)
+      end
+
+      it 'falls back to the default limit for a negative limit' do
+        get_calendar_activities(limit: -5, offset: 0)
+
+        expect(json_response.size).to eq(3)
+      end
+
+      it 'clamps a negative offset to the first page' do
+        get_calendar_activities(limit: 2, offset: -5)
+
+        expect(json_response.size).to eq(2)
+      end
+
+      it 'clamps a limit above the maximum' do
+        stub_const("#{described_class}::MAX_CALENDAR_ACTIVITIES_LIMIT", 2)
+
+        get_calendar_activities(limit: 50, offset: 0)
+
+        expect(json_response.size).to eq(2)
+      end
+
+      it 'returns an empty array when the offset exceeds the event count' do
+        get_calendar_activities(limit: 10, offset: 100)
+
+        expect(json_response).to eq([])
+      end
+    end
+
+    context 'with JSON visibility filtering' do
+      let(:date) { Date.current }
+      # A public project so the calendar returns the events; the visibility
+      # filter (not the cross-project gate) is what drops the hidden event.
+      let(:public_project) { create(:project, :public) }
+      let(:viewer) { create(:user) }
+
+      def get_calendar_activities(target_user)
+        get user_calendar_activities_url(target_user.username, format: :json),
+          params: { date: date.iso8601 }
+      end
+
+      def create_event(target)
+        Event.create!(
+          project: public_project, author: public_user, target: target,
+          action: :created, created_at: date.middle_of_day
+        )
+      end
+
+      it 'omits events that are not visible to the viewer' do
+        create_event(create(:issue, project: public_project))
+        create_event(create(:issue, :confidential, project: public_project))
+
+        sign_in(viewer)
+        get_calendar_activities(public_user)
+
+        # The public issue event is returned, the confidential one is filtered.
+        expect(json_response.size).to eq(1)
+      end
+
+      context 'when the user shows private contributions' do
+        let(:private_contributor) { create(:user, include_private_contributions: true) }
+
+        def create_event_for(author, target)
+          Event.create!(
+            project: public_project, author: author, target: target,
+            action: :created, created_at: date.middle_of_day
+          )
+        end
+
+        it 'keeps hidden events but drops events with a deleted target' do
+          create_event_for(private_contributor, create(:issue, project: public_project))
+
+          # An event whose target has since been deleted (target_id set, target nil).
+          deleted_issue = create(:issue, project: public_project)
+          create_event_for(private_contributor, deleted_issue)
+          deleted_issue.delete
+
+          sign_in(viewer)
+          get_calendar_activities(private_contributor)
+
+          expect(json_response.size).to eq(1)
+        end
+      end
+
+      it 'avoids N+1 queries', :request_store do
+        note = create(:note, noteable: create(:issue, project: public_project), project: public_project)
+        EventCreateService.new.leave_note(note, public_user)
+        EventCreateService.new.push(public_project, public_user,
+          Gitlab::DataBuilder::Push.build_sample(public_project, public_user))
+
+        sign_in(viewer)
+        get_calendar_activities(public_user)
+        control = ActiveRecord::QueryRecorder.new { get_calendar_activities(public_user) }
+
+        other_note = create(:note, noteable: create(:issue, project: public_project), project: public_project)
+        EventCreateService.new.leave_note(other_note, public_user)
+        EventCreateService.new.push(public_project, public_user,
+          Gitlab::DataBuilder::Push.build_sample(public_project, public_user))
+
+        expect { get_calendar_activities(public_user) }.not_to exceed_query_limit(control)
+      end
+
+      it 'returns not found for a blocked user' do
+        public_user.block!
+
+        sign_in(viewer)
+        get_calendar_activities(public_user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'for user' do
       context 'with public profile' do
         let(:issue) { create(:issue, project: project, author: user) }
@@ -703,6 +875,15 @@ RSpec.describe UsersController, feature_category: :user_management do
           EventCreateService.new.push(project, private_user, push_data)
 
           get user_calendar_activities_url private_user.username
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not render calendar_activities as JSON' do
+          push_data = Gitlab::DataBuilder::Push.build_sample(project, private_user)
+          EventCreateService.new.push(project, private_user, push_data)
+
+          get user_calendar_activities_url(private_user.username, format: :json)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

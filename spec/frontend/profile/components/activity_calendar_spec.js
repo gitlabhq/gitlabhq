@@ -1,15 +1,23 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlLink, GlEmptyState, GlButton, GlSprintf } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActivityCalendar from '~/profile/components/activity_calendar.vue';
+import ActivitySkeletonLoader from '~/profile/components/activity_skeleton_loader.vue';
+import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/lib/utils/ajax_cache');
 
+const ACTIVITY_PATH = '/users/root/activity.json';
+const CALENDAR_ACTIVITIES_PATH = '/users/root/calendar_activities';
+
 describe('ActivityCalendar', () => {
   let wrapper;
+  let mock;
 
   // August 5th, 2026 (Wednesday)
   useFakeDate(2026, 7, 5);
@@ -17,6 +25,13 @@ describe('ActivityCalendar', () => {
   const defaultProvide = {
     username: 'root',
     utcOffset: 0,
+    userCalendarActivitiesPath: CALENDAR_ACTIVITIES_PATH,
+    userActivityPath: ACTIVITY_PATH,
+    viewAllActivityPath: '/users/root/activity',
+    isCurrentUserProfile: false,
+    emptyStateSvgPath: '/illustrations/empty-activity.svg',
+    newGroupPath: '/groups/new',
+    exploreGroupsPath: '/explore/groups',
   };
 
   const createComponent = (provide = {}) => {
@@ -65,10 +80,19 @@ describe('ActivityCalendar', () => {
   beforeEach(() => {
     gon.first_day_of_week = 0;
     AjaxCache.retrieve.mockResolvedValue({});
+
+    mock = new MockAdapter(axios);
+    // The general feed auto-loads on mount; the day feed loads on cell click.
+    mock.onGet(ACTIVITY_PATH).reply(200, []);
+    mock.onGet(CALENDAR_ACTIVITIES_PATH).reply(200, []);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Flush the auto-loaded activity feed request before restoring the mock so
+    // synchronous render-only tests do not leak a pending request into teardown.
+    await waitForPromises();
     delete gon.first_day_of_week;
+    mock.restore();
   });
 
   describe('skeleton grid', () => {
@@ -649,6 +673,233 @@ describe('ActivityCalendar', () => {
         const event = dispatchKeydown(0, 2, 'Enter');
 
         expect(event.defaultPrevented).toBe(false);
+      });
+    });
+  });
+
+  describe('activity feed', () => {
+    const findViewAllLink = () => wrapper.findComponent(GlLink);
+    const findActivities = () => wrapper.findByTestId('calendar-activities');
+    const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+    const findSkeleton = () => wrapper.findComponent(ActivitySkeletonLoader);
+    const findEvents = () => wrapper.findComponent(ContributionEvents);
+    const findLoadMore = () => findActivities().findComponent(GlButton);
+    const firstDateCell = () => findDateCells()[0];
+    const findTabbableCell = () =>
+      findCells().wrappers.find((cell) => cell.attributes('tabindex') === '0');
+
+    describe('View all link', () => {
+      it('links to the activity page', async () => {
+        createComponent();
+        await waitForPromises();
+
+        expect(findViewAllLink().attributes('href')).toBe('/users/root/activity');
+        expect(findViewAllLink().text()).toBe('View all');
+      });
+
+      it('is hidden when the user has no activity', async () => {
+        createComponent();
+        await waitForPromises();
+
+        expect(findViewAllLink().classes()).toContain('gl-hidden');
+      });
+
+      it('is shown when the user has activity', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findViewAllLink().classes()).not.toContain('gl-hidden');
+      });
+
+      it('stays visible based on overall activity, not the selected day', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);
+        mock.onGet(CALENDAR_ACTIVITIES_PATH).reply(200, []);
+
+        createComponent();
+        await waitForPromises();
+
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        expect(findViewAllLink().classes()).not.toContain('gl-hidden');
+      });
+    });
+
+    describe('loading state', () => {
+      it('renders the skeleton loader while the feed is loading', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(() => new Promise(() => {}));
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findSkeleton().exists()).toBe(true);
+      });
+    });
+
+    describe('when the general feed returns events', () => {
+      beforeEach(async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }, { id: 2 }]);
+
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('renders the events feed', () => {
+        expect(findEvents().props('events')).toHaveLength(2);
+      });
+
+      it('does not render the empty state', () => {
+        expect(findEmptyState().exists()).toBe(false);
+      });
+    });
+
+    describe('day selection', () => {
+      beforeEach(async () => {
+        mock.onGet(ACTIVITY_PATH).reply(200, [{ id: 1 }]);
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('requests the selected day activities on cell click', async () => {
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        const dayRequest = mock.history.get.find((req) => req.url === CALENDAR_ACTIVITIES_PATH);
+
+        expect(dayRequest.params).toMatchObject({ limit: 50, offset: 0 });
+        expect(dayRequest.params.date).toEqual(expect.any(String));
+      });
+
+      it('renders the selected day heading', async () => {
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        // GlSprintf is a functional stub under shallowMount, so assert on the
+        // message it receives via its attributes.
+        expect(findActivities().findComponent(GlSprintf).attributes('message')).toContain(
+          'Contributions for',
+        );
+      });
+
+      it('marks the clicked cell as active', async () => {
+        const cell = firstDateCell();
+        await cell.trigger('click');
+        await waitForPromises();
+
+        expect(cell.classes()).toContain('is-active');
+      });
+
+      it('moves the roving tab-stop to the active cell so tabbing returns to it', async () => {
+        const cell = firstDateCell();
+        await cell.trigger('click');
+        await waitForPromises();
+
+        // The active cell is the single tabbable cell, so Tab lands on it.
+        expect(cell.attributes('tabindex')).toBe('0');
+        expect(cell.attributes('id')).toBe(findTabbableCell().attributes('id'));
+      });
+
+      it('deselects the day when the active cell is clicked again', async () => {
+        const cell = firstDateCell();
+        await cell.trigger('click');
+        await waitForPromises();
+
+        await cell.trigger('click');
+        await waitForPromises();
+
+        expect(cell.classes()).not.toContain('is-active');
+      });
+
+      it('shows the no contributions message when the day has none', async () => {
+        mock.onGet(CALENDAR_ACTIVITIES_PATH).reply(200, []);
+
+        await firstDateCell().trigger('click');
+        await waitForPromises();
+
+        expect(wrapper.findByText('No contributions were found.').exists()).toBe(true);
+      });
+    });
+
+    describe('load more', () => {
+      beforeEach(async () => {
+        // A full page signals more pages are available.
+        mock.onGet(ACTIVITY_PATH).reply(200, new Array(15).fill({ id: 1 }));
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('renders a load more button when more activities are available', () => {
+        expect(findLoadMore().exists()).toBe(true);
+      });
+
+      it('requests the next page when clicked', async () => {
+        await findLoadMore().vm.$emit('click');
+        await waitForPromises();
+
+        const generalRequests = mock.history.get.filter((req) => req.url === ACTIVITY_PATH);
+
+        expect(generalRequests).toHaveLength(2);
+        expect(generalRequests[1].params).toMatchObject({ offset: 15, limit: 50 });
+      });
+    });
+
+    describe('error state', () => {
+      it('shows a retry alert when the feed request fails', async () => {
+        mock.onGet(ACTIVITY_PATH).reply(500);
+
+        createComponent();
+        await waitForPromises();
+
+        expect(findActivities().findComponent(GlAlert).props('title')).toBe(
+          'There was an error loading activities.',
+        );
+      });
+    });
+
+    describe('empty state', () => {
+      it("renders a call to action on the current user's own profile", async () => {
+        createComponent({ isCurrentUserProfile: true });
+        await waitForPromises();
+
+        expect(findEmptyState().props()).toMatchObject({
+          title: 'No activities found',
+          svgPath: '/illustrations/empty-activity.svg',
+          primaryButtonText: 'New group',
+          primaryButtonLink: '/groups/new',
+          secondaryButtonText: 'Explore groups',
+          secondaryButtonLink: '/explore/groups',
+        });
+      });
+
+      it("omits the call to action on another user's profile", async () => {
+        createComponent({ isCurrentUserProfile: false });
+        await waitForPromises();
+
+        expect(findEmptyState().props('title')).toBe('No activities found');
+        expect(findEmptyState().props('primaryButtonText')).toBe(null);
+        expect(findEmptyState().props('secondaryButtonText')).toBe(null);
+      });
+    });
+
+    describe('when the feed is disabled (no activity path)', () => {
+      beforeEach(async () => {
+        createComponent({ userActivityPath: null });
+        await waitForPromises();
+      });
+
+      it('renders the calendar without the activities section', () => {
+        expect(findCalendar().exists()).toBe(true);
+        expect(findActivities().exists()).toBe(false);
+      });
+
+      it('does not render the View all link', () => {
+        expect(findViewAllLink().exists()).toBe(false);
+      });
+
+      it('does not request the activity feed', () => {
+        expect(mock.history.get.some((req) => req.url === ACTIVITY_PATH)).toBe(false);
       });
     });
   });

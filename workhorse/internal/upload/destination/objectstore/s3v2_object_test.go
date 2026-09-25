@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/stretchr/testify/assert"
@@ -26,6 +28,10 @@ type s3FailedReader struct {
 func (r *s3FailedReader) Read(_ []byte) (int, error) {
 	return 0, fmt.Errorf("entity is too large")
 }
+
+type s3ReaderFunc func([]byte) (int, error)
+
+func (f s3ReaderFunc) Read(p []byte) (int, error) { return f(p) }
 
 func TestS3v2ObjectUpload(t *testing.T) {
 	testCases := []struct {
@@ -62,6 +68,28 @@ func TestS3v2ObjectUpload(t *testing.T) {
 			require.Eventually(t, func() bool {
 				return (test.S3ObjectDoesNotExist(ctx, t, client, config, objectName))
 			}, 5*time.Second, time.Millisecond, "file is still present")
+		})
+	}
+}
+
+func TestS3v2ObjectUploadMultipartBoundary(t *testing.T) {
+	t.Setenv("AWS_REQUEST_CHECKSUM_CALCULATION", "")
+	const multipartThreshold = 16 * 1024 * 1024
+
+	for _, size := range []int{multipartThreshold - 1, multipartThreshold, multipartThreshold + 1} {
+		t.Run(fmt.Sprintf("size=%d", size), func(t *testing.T) {
+			creds, config, client, ts := test.SetupS3(t, "")
+			defer ts.Close()
+
+			object, err := NewS3v2Object("s3-boundary-test", creds, config)
+			require.NoError(t, err)
+
+			content := strings.Repeat("0123456789", (size+9)/10)[:size]
+			n, err := object.ConsumeWithoutDelete(t.Context(), strings.NewReader(content), time.Now().Add(testTimeout))
+			require.NoError(t, err)
+			require.Equal(t, int64(size), n)
+
+			test.S3ObjectExists(t.Context(), t, client, config, object.Name(), content)
 		})
 	}
 }
@@ -115,6 +143,32 @@ func TestConcurrentS3v2ObjectUpload(t *testing.T) {
 	wg.Wait()
 }
 
+func TestS3v2ObjectUploadMultipartCancel(t *testing.T) {
+	t.Setenv("AWS_REQUEST_CHECKSUM_CALCULATION", "")
+	creds, cfg, client, ts := test.SetupS3(t, "")
+	defer ts.Close()
+
+	object, err := NewS3v2Object("s3-multipart-cancel-test", creds, cfg)
+	require.NoError(t, err)
+	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
+	reader := io.MultiReader(strings.NewReader(strings.Repeat("a", 16*1024*1024)), s3ReaderFunc(func([]byte) (int, error) {
+		cancel()
+		return 0, ctx.Err()
+	}))
+
+	_, err = object.ConsumeWithoutDelete(ctx, reader, time.Now().Add(testTimeout))
+	require.ErrorIs(t, err, context.Canceled)
+	var multipartError transfermanager.MultipartUploadError
+	require.ErrorAs(t, err, &multipartError)
+	require.NotEmpty(t, multipartError.UploadID())
+	require.False(t, object.uploaded)
+
+	uploads, err := client.ListMultipartUploads(t.Context(), &s3.ListMultipartUploadsInput{Bucket: aws.String(cfg.Bucket)})
+	require.NoError(t, err)
+	require.Empty(t, uploads.Uploads)
+}
+
 func TestS3v2ObjectUploadCancel(t *testing.T) {
 	creds, config, _, ts := test.SetupS3(t, "")
 	defer ts.Close()
@@ -134,9 +188,15 @@ func TestS3v2ObjectUploadCancel(t *testing.T) {
 	// we handle this gracefully.
 	cancel()
 
-	_, err = object.Consume(ctx, strings.NewReader(test.ObjectContent), deadline)
-	require.Error(t, err)
-	require.Equal(t, "read upload data failed: context canceled", err.Error())
+	readCalled := false
+	reader := s3ReaderFunc(func([]byte) (int, error) {
+		readCalled = true
+		return 0, io.EOF
+	})
+
+	_, err = object.Consume(ctx, reader, deadline)
+	require.ErrorIs(t, err, context.Canceled)
+	require.False(t, readCalled, "an already-canceled upload must not read its input")
 }
 
 func TestS3v2ObjectUploadLimitReached(t *testing.T) {

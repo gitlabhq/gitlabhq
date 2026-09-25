@@ -271,7 +271,7 @@
     "yjs": "^13.6.30"
   },
   "devDependencies": {
-    "@gitlab/eslint-plugin": "^22.0.0",
+    "@gitlab/eslint-plugin": "^23.0.0",
     "@gitlab/jest-metrics-exporter": "^0.2.0",
     "@gitlab/noop": "^1.0.1",
     "@gitlab/stylelint-config": "6.3.0",
@@ -301,7 +301,7 @@
     "eslint-formatter-gitlab": "^7.2.0",
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.11",
-    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-import-x": "^4.17.1",
     "eslint-plugin-no-jquery": "6.0.0",
     "eslint-plugin-no-unsanitized": "^4.1.5",
     "fake-indexeddb": "^4.0.1",

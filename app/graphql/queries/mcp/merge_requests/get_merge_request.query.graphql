@@ -15,6 +15,10 @@ query getMergeRequest(
   $notesFirst: Int
   $diffsAfter: String
   $diffsFirst: Int
+  $commitsAfter: String
+  $commitsFirst: Int = 100
+  $pipelinesAfter: String
+  $pipelinesFirst: Int = 100
 ) {
   project(fullPath: $fullPath) {
     id
@@ -84,7 +88,7 @@ query getMergeRequest(
           endCursor
         }
       }
-      commits(first: 100) @include(if: $includeCommits) {
+      commits(first: $commitsFirst, after: $commitsAfter) @include(if: $includeCommits) {
         pageInfo {
           hasNextPage
           endCursor
@@ -99,7 +103,7 @@ query getMergeRequest(
           webUrl
         }
       }
-      pipelines(first: 100) @include(if: $includePipelines) {
+      pipelines(first: $pipelinesFirst, after: $pipelinesAfter) @include(if: $includePipelines) {
         pageInfo {
           hasNextPage
           endCursor

@@ -36051,6 +36051,12 @@
               "deprecationReason": null
             },
             {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SECRET_DETECTION_PIPELINE_BASED",
               "description": "Secret detection analyzer.",
               "isDeprecated": false,
@@ -36148,6 +36154,12 @@
             {
               "name": "CLUSTER_IMAGE_SCANNING",
               "description": "Cluster image scanning analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic analyzer.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -153458,6 +153470,18 @@
               "deprecationReason": null
             },
             {
+              "name": "model",
+              "description": "Model used by the flow, resolved to catalog metadata",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflowsModelMetadata",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "modelUsed",
               "description": "Model used by the flow",
               "args": [],
@@ -153844,6 +153868,92 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "DuoWorkflowsAggregationResponseConnection",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DuoWorkflowsModelHosting",
+          "description": "Where a model used by GitLab Duo Agent Platform flows is hosted.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "GITLAB",
+              "description": "Model served through GitLab-managed infrastructure.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SELF_HOSTED",
+              "description": "Model configured as a self-hosted model on the instance.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowsModelMetadata",
+          "description": "Catalog metadata for a model used by GitLab Duo Agent Platform flows",
+          "fields": [
+            {
+              "name": "hosting",
+              "description": "Where the model is hosted. `null` for flows with no model attribution.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoWorkflowsModelHosting",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isDefault",
+              "description": "Whether the model is a configured default for GitLab Duo Agent Platform features.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Display name from the model catalog, or the raw value when not in the catalog. `null` for flows with no model attribution.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "provider",
+              "description": "Model provider when the catalog identifies it unambiguously.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -225045,6 +225155,12 @@
             {
               "name": "AUTO_ROLLBACK",
               "description": "Auto rollback feature.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic feature.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -392746,6 +392862,12 @@
               "description": "CLUSTER IMAGE SCANNING scan report",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "BUSINESS LOGIC scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -394204,6 +394326,12 @@
               "description": "Triage and remediation. Introduced in GitLab 19.4: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic. Introduced in GitLab 19.5: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "possibleTypes": null
@@ -394491,6 +394619,12 @@
             {
               "name": "CLUSTER_IMAGE_SCANNING",
               "description": "Cluster image scanning scanner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic scanner",
               "isDeprecated": false,
               "deprecationReason": null
             }

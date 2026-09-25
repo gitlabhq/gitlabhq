@@ -1,4 +1,4 @@
-/* eslint-disable no-console, import/no-commonjs */
+/* eslint-disable no-console, import-x/no-commonjs */
 const fs = require('fs');
 const glob = require('glob');
 

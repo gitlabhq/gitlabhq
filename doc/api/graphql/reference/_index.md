@@ -44782,6 +44782,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowsaggregationresponsedimensions-model"></a>`model` | [`DuoWorkflowsModelMetadata`](#duoworkflowsmodelmetadata) | Model used by the flow, resolved to catalog metadata. |
 | <a id="duoworkflowsaggregationresponsedimensions-modelused"></a>`modelUsed` | [`String`](#string) | Model used by the flow. |
 | <a id="duoworkflowsaggregationresponsedimensions-project"></a>`project` | [`Project`](#project) | Project the flow ran in. Returns `null` for flows not scoped to a project. |
 | <a id="duoworkflowsaggregationresponsedimensions-status"></a>`status` | [`String`](#string) | Flow status. |
@@ -44902,6 +44903,19 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsaggregationscope-aggregated-orderby"></a>`orderBy` | [`[AggregationOrder!]`](#aggregationorder) | Sorting order list for the aggregated data. |
+
+### `DuoWorkflowsModelMetadata`
+
+Catalog metadata for a model used by GitLab Duo Agent Platform flows.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowsmodelmetadata-hosting"></a>`hosting` | [`DuoWorkflowsModelHosting`](#duoworkflowsmodelhosting) | Where the model is hosted. `null` for flows with no model attribution. |
+| <a id="duoworkflowsmodelmetadata-isdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Whether the model is a configured default for GitLab Duo Agent Platform features. |
+| <a id="duoworkflowsmodelmetadata-name"></a>`name` | [`String`](#string) | Display name from the model catalog, or the raw value when not in the catalog. `null` for flows with no model attribution. |
+| <a id="duoworkflowsmodelmetadata-provider"></a>`provider` | [`String`](#string) | Model provider when the catalog identifies it unambiguously. |
 
 ### `EgressNode`
 
@@ -69204,6 +69218,7 @@ Enum for types of analyzers.
 | Value | Description |
 | ----- | ----------- |
 | <a id="analyzertypeenum-api_fuzzing"></a>`API_FUZZING` | Api fuzzing analyzer. |
+| <a id="analyzertypeenum-business_logic"></a>`BUSINESS_LOGIC` | Business logic analyzer. |
 | <a id="analyzertypeenum-cluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster image scanning analyzer. |
 | <a id="analyzertypeenum-container_scanning"></a>`CONTAINER_SCANNING` | Any kind of container scanning. |
 | <a id="analyzertypeenum-container_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Container scanning for registry. Managed via project security settings. |
@@ -69225,6 +69240,7 @@ Analyzer types that can appear in project and group analyzer statuses.
 | Value | Description |
 | ----- | ----------- |
 | <a id="analyzertypeforstatus-api_fuzzing"></a>`API_FUZZING` | Api fuzzing analyzer. |
+| <a id="analyzertypeforstatus-business_logic"></a>`BUSINESS_LOGIC` | Business logic analyzer. |
 | <a id="analyzertypeforstatus-cluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster image scanning analyzer. |
 | <a id="analyzertypeforstatus-container_scanning"></a>`CONTAINER_SCANNING` | Any kind of container scanning. |
 | <a id="analyzertypeforstatus-container_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Container scanning for registry. Managed via project security settings. |
@@ -70961,6 +70977,15 @@ Type of link between a GitLab Duo Agent Platform session and a work item.
 | <a id="duoworkflowworkitemlinktype-created"></a>`CREATED` | Link of type `created` between a session and a work item. |
 | <a id="duoworkflowworkitemlinktype-source"></a>`SOURCE` | Link of type `source` between a session and a work item. |
 
+### `DuoWorkflowsModelHosting`
+
+Where a model used by GitLab Duo Agent Platform flows is hosted.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowsmodelhosting-gitlab"></a>`GITLAB` | Model served through GitLab-managed infrastructure. |
+| <a id="duoworkflowsmodelhosting-self_hosted"></a>`SELF_HOSTED` | Model configured as a self-hosted model on the instance. |
+
 ### `DuoWorkflowsWorkflowSort`
 
 Values for sorting Duo Workflows.
@@ -71740,6 +71765,7 @@ Licensed features that can be checked for availability on a namespace or project
 | <a id="licensedfeature-board_status_lists"></a>`BOARD_STATUS_LISTS` | Board status lists feature. |
 | <a id="licensedfeature-branch_rule_squash_options"></a>`BRANCH_RULE_SQUASH_OPTIONS` | Branch rule squash options feature. |
 | <a id="licensedfeature-built_in_project_templates_enabled"></a>`BUILT_IN_PROJECT_TEMPLATES_ENABLED` | Built in project templates enabled feature. |
+| <a id="licensedfeature-business_logic"></a>`BUSINESS_LOGIC` | Business logic feature. |
 | <a id="licensedfeature-ci_cd_catalog_publish_restriction"></a>`CI_CD_CATALOG_PUBLISH_RESTRICTION` | Ci cd catalog publish restriction feature. |
 | <a id="licensedfeature-ci_cd_projects"></a>`CI_CD_PROJECTS` | Ci cd projects feature. |
 | <a id="licensedfeature-ci_component_usages_in_projects"></a>`CI_COMPONENT_USAGES_IN_PROJECTS` | Ci component usages in projects feature. |
@@ -73520,6 +73546,7 @@ Template type for predefined security categories.
 | Value | Description |
 | ----- | ----------- |
 | <a id="securityreporttypeenum-api_fuzzing"></a>`API_FUZZING` | API FUZZING scan report. |
+| <a id="securityreporttypeenum-business_logic"></a>`BUSINESS_LOGIC` | BUSINESS LOGIC scan report. |
 | <a id="securityreporttypeenum-cluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | CLUSTER IMAGE SCANNING scan report. |
 | <a id="securityreporttypeenum-container_scanning"></a>`CONTAINER_SCANNING` | CONTAINER SCANNING scan report. |
 | <a id="securityreporttypeenum-coverage_fuzzing"></a>`COVERAGE_FUZZING` | COVERAGE FUZZING scan report. |
@@ -73572,6 +73599,7 @@ Scan profile type.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="securityscanprofiletype-business_logic"></a>`BUSINESS_LOGIC` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Business logic. |
 | <a id="securityscanprofiletype-container_scanning"></a>`CONTAINER_SCANNING` | Container scanning. |
 | <a id="securityscanprofiletype-dependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency scanning. |
 | <a id="securityscanprofiletype-dependency_scanning_post_processing"></a>`DEPENDENCY_SCANNING_POST_PROCESSING` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Dependency scanning post processing. |
@@ -73596,6 +73624,7 @@ The type of the security scanner.
 | Value | Description |
 | ----- | ----------- |
 | <a id="securityscannertype-api_fuzzing"></a>`API_FUZZING` | API fuzzing scanner. |
+| <a id="securityscannertype-business_logic"></a>`BUSINESS_LOGIC` | Business logic scanner. |
 | <a id="securityscannertype-cluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster image scanning scanner. |
 | <a id="securityscannertype-container_scanning"></a>`CONTAINER_SCANNING` | Container scanning scanner. |
 | <a id="securityscannertype-coverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage fuzzing scanner. |

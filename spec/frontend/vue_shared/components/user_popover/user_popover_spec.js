@@ -688,4 +688,20 @@ describe('User Popover Component', () => {
       expect(findRecommendationReason().exists()).toBe(false);
     });
   });
+
+  describe('when the target has a recommendation created at date', () => {
+    const target = document.createElement('a');
+    target.classList.add('js-user-link');
+
+    it('renders the recommendation created at date', () => {
+      target.dataset.recommendationReason = 'Owns the changed files.';
+      target.dataset.recommendationCreatedAt = '2026-09-20T10:00:00Z';
+
+      createWrapper({}, target);
+
+      expect(wrapper.find('[data-testid="user-popover-recommendation-created-at"]').exists()).toBe(
+        true,
+      );
+    });
+  });
 });

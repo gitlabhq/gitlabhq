@@ -105,7 +105,7 @@ module Noteable
   # This does not consider OutOfContextDiscussions in MRs
   # where notes from commits are overridden so that they have
   # the same discussion_id
-  def discussion_root_note_ids(notes_filter:, sort: :created_asc)
+  def discussion_root_note_ids(notes_filter:, sort: :created_asc, include_synthetic_notes: true)
     sort = :created_asc if sort.nil?
     relations = []
 
@@ -117,7 +117,7 @@ module Noteable
     ).with_notes_filter(notes_filter)
      .group(:discussion_id)
 
-    if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
+    if include_synthetic_notes && notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
       relations += synthetic_note_ids_relations
     end
 

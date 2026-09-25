@@ -8,13 +8,15 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"gitlab.com/gitlab-org/labkit/v2/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
+
+const s3UploadFailTimeout = 60 * time.Second
 
 // S3v2Object represents an object stored in Amazon S3.
 type S3v2Object struct {
@@ -63,12 +65,12 @@ func NewS3v2Object(objectName string, s3Credentials config.S3Credentials, s3Conf
 	return o, nil
 }
 
-func setS3EncryptionOptions(input *s3.PutObjectInput, s3Config config.S3Config) {
+func setS3EncryptionOptions(input *transfermanager.UploadObjectInput, s3Config config.S3Config) {
 	if s3Config.ServerSideEncryption != "" {
 		input.ServerSideEncryption = types.ServerSideEncryption(s3Config.ServerSideEncryption)
 
 		if s3Config.ServerSideEncryption == string(types.ServerSideEncryptionAwsKms) && s3Config.SSEKMSKeyID != "" {
-			input.SSEKMSKeyId = aws.String(s3Config.SSEKMSKeyID)
+			input.SSEKMSKeyID = aws.String(s3Config.SSEKMSKeyID)
 		}
 	}
 }
@@ -81,11 +83,12 @@ func (s *S3v2Object) Upload(ctx context.Context, r io.Reader) error {
 		return err
 	}
 
-	uploader := manager.NewUploader(client, func(u *manager.Uploader) {
-		u.RequestChecksumCalculation = getRequestChecksumCalculation()
+	uploader := transfermanager.New(client, func(o *transfermanager.Options) {
+		o.RequestChecksumCalculation = getRequestChecksumCalculation()
+		o.FailTimeout = s3UploadFailTimeout
 	})
 
-	input := &s3.PutObjectInput{
+	input := &transfermanager.UploadObjectInput{
 		Bucket: aws.String(s.config.Bucket),
 		Key:    aws.String(s.Name()),
 		Body:   r,
@@ -93,7 +96,11 @@ func (s *S3v2Object) Upload(ctx context.Context, r io.Reader) error {
 
 	setS3EncryptionOptions(input, s.config)
 
-	_, err = uploader.Upload(ctx, input)
+	if err = ctx.Err(); err != nil {
+		return err
+	}
+
+	_, err = uploader.UploadObject(ctx, input)
 	if err != nil {
 		slog.Error("error uploading S3 session", log.Error(err))
 		return err

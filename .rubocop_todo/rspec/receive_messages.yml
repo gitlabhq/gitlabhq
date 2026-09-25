@@ -3,13 +3,6 @@
 RSpec/ReceiveMessages:
   Exclude:
     - 'ee/spec/graphql/types/project_type_spec.rb'
-    - 'ee/spec/models/group_wiki_spec.rb'
-    - 'ee/spec/models/namespace_setting_spec.rb'
-    - 'ee/spec/models/security/scan_result_policy_read_spec.rb'
-    - 'ee/spec/policies/issue_policy_spec.rb'
-    - 'ee/spec/presenters/ci/minutes/usage_presenter_spec.rb'
-    - 'ee/spec/presenters/merge_request_approver_presenter_spec.rb'
-    - 'ee/spec/replicators/geo/container_repository_replicator_spec.rb'
     - 'ee/spec/requests/api/code_suggestions_spec.rb'
     - 'ee/spec/requests/api/graphql/audit_events/streaming/instance_headers/destroy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/audit_events/amazon_s3_configurations/create_spec.rb'

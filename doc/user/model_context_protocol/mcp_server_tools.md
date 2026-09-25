@@ -238,9 +238,17 @@ Only the base merge request is returned unless you request associated data with 
 | `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, `discussions`, or `conflicts`. Limited to one facet per call. |
 | `notes_after`       | string  | No       | Cursor for forward pagination of notes. Applies only when `include` is `["notes"]`. |
 | `notes_first`       | integer | No       | Number of notes to return after the cursor, up to 100. Applies only when `include` is `["notes"]`. |
+| `commits_after`     | string  | No       | Cursor for forward pagination of commits. Applies only when `include` is `["commits"]`. |
+| `commits_first`     | integer | No       | Number of commits to return after the cursor, up to 100. Applies only when `include` is `["commits"]`. |
+| `pipelines_after`   | string  | No       | Cursor for forward pagination of pipelines. Applies only when `include` is `["pipelines"]`. |
+| `pipelines_first`   | integer | No       | Number of pipelines to return after the cursor, up to 100. Applies only when `include` is `["pipelines"]`. |
 
 The `diffs` facet returns change statistics only: overall totals and per-file additions and
 deletions. To get patch text, use `get_merge_request_diffs`.
+
+The `commits` and `pipelines` facets return up to 100 entries per call. Each response carries
+`pageInfo.hasNextPage` and `pageInfo.endCursor`. Pass that cursor back as `commits_after` or
+`pipelines_after` to read the next page.
 
 The `conflicts` facet returns raw conflict file content, including Git conflict markers. It is
 available only when the merge request cannot be merged and you can push to the source branch, and

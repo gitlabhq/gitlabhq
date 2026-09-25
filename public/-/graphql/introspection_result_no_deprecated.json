@@ -8708,6 +8708,12 @@
               "deprecationReason": null
             },
             {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SECRET_DETECTION_PIPELINE_BASED",
               "description": "Secret detection analyzer.",
               "isDeprecated": false,
@@ -8805,6 +8811,12 @@
             {
               "name": "CLUSTER_IMAGE_SCANNING",
               "description": "Cluster image scanning analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic analyzer.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -196862,6 +196874,12 @@
               "description": "CLUSTER IMAGE SCANNING scan report",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "BUSINESS LOGIC scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -197074,6 +197092,12 @@
             {
               "name": "CLUSTER_IMAGE_SCANNING",
               "description": "Cluster image scanning scanner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BUSINESS_LOGIC",
+              "description": "Business logic scanner",
               "isDeprecated": false,
               "deprecationReason": null
             }

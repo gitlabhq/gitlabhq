@@ -1,4 +1,4 @@
-/* eslint-disable import/no-default-export, import/no-unresolved */
+/* eslint-disable import-x/no-default-export */
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({

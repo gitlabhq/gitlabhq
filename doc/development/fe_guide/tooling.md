@@ -146,11 +146,11 @@ When declaring multiple globals, always use one `/* global [name] */` line per v
 /* global jQuery */
 ```
 
-### Deprecating functions with `import/no-deprecated`
+### Deprecating functions with `import-x/no-deprecated`
 
-Our `@gitlab/eslint-plugin` Node module contains the [`eslint-plugin-import`](https://gitlab.com/gitlab-org/frontend/eslint-plugin) package.
+Our [`@gitlab/eslint-plugin`](https://gitlab.com/gitlab-org/frontend/eslint-plugin) Node module contains the [`eslint-plugin-import-x`](https://github.com/un-ts/eslint-plugin-import-x) package.
 
-We can use the [`import/no-deprecated`](https://github.com/benmosher/eslint-plugin-import/blob/HEAD/docs/rules/no-deprecated.md) rule to deprecate functions using a JSDoc block with a `@deprecated` tag:
+We can use the [`import-x/no-deprecated`](https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/no-deprecated.md) rule to deprecate functions using a JSDoc block with a `@deprecated` tag:
 
 ```javascript
 /**

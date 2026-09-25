@@ -10,6 +10,7 @@ class UsersController < ApplicationController
   include SafeFormatHelper
 
   FOLLOWERS_FOLLOWING_USERS_PER_PAGE = 21
+  MAX_CALENDAR_ACTIVITIES_LIMIT = 100
 
   requires_cross_project_access show: false,
     groups: false,
@@ -193,10 +194,36 @@ class UsersController < ApplicationController
       Date.today
     end
 
-    @events = contributions_calendar.events_by_date(@calendar_date).map(&:present)
-    Events::RenderService.new(current_user).execute(@events)
+    events = contributions_calendar.events_by_date(@calendar_date)
 
-    render 'calendar_activities', layout: false
+    # Branch on the requested format explicitly rather than via respond_to:
+    # the legacy calendar requests this path without a .json extension but
+    # axios sends an Accept header that prefers JSON, so content negotiation
+    # would otherwise hand it the Vue feed's JSON instead of the HTML partial.
+    if permitted_params[:format] == 'json'
+      # The Vue feed pages through a day's events, so honor limit/offset here
+      # (events_by_date otherwise returns every event for the date).
+      @events = events.paginate_by_created_at(calendar_activities_limit, calendar_activities_offset)
+                      .map(&:present)
+
+      # Drop events the viewer cannot see, mirroring the #activity action, so
+      # the feed does not render empty rows for hidden events.
+      @events = if user.include_private_contributions?
+                  @events.reject(&:target_deleted?)
+                else
+                  @events.select { |event| event.visible_to_user?(current_user) }
+                end
+
+      Events::RenderService.new(current_user).execute(@events)
+
+      render json: ::Profile::EventSerializer.new(current_user: current_user, target_user: user)
+                                             .represent(@events)
+    else
+      @events = events.map(&:present)
+      Events::RenderService.new(current_user).execute(@events)
+
+      render 'calendar_activities', layout: false
+    end
   end
 
   def exists
@@ -237,9 +264,22 @@ class UsersController < ApplicationController
 
   def permitted_params
     @permitted_params ||= params.permit(
-      :card_mode, :compact_mode, :date, :event_filter, :is_personal_homepage,
+      :card_mode, :compact_mode, :date, :event_filter, :format, :is_personal_homepage,
       :limit, :offset, :page, :scope, :skip_namespace, :skip_pagination, :type, :username
     )
+  end
+
+  def calendar_activities_limit
+    limit = permitted_params[:limit]
+    # Match UserRecentEventsFinder: fall back to the default when the param is
+    # blank or negative, otherwise cap at the maximum.
+    return UserRecentEventsFinder::DEFAULT_LIMIT unless limit.present? && limit.to_i >= 0
+
+    [limit.to_i, MAX_CALENDAR_ACTIVITIES_LIMIT].min
+  end
+
+  def calendar_activities_offset
+    [permitted_params[:offset].to_i, 0].max
   end
 
   def user

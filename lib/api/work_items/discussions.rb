@@ -60,7 +60,9 @@ module API
             notes_filter: UserPreference::NOTES_FILTERS[params[:activity_filter].to_sym],
             sort: SORT_TO_DISCUSSIONS_SORT[params[:sort]],
             cursor: params[:cursor],
-            per_page: params[:per_page]
+            per_page: params[:per_page],
+            # Synthetic notes have no real discussion IDs, so they can't be fetched via the single-discussion endpoint
+            include_synthetic_notes: false
           }
         end
 

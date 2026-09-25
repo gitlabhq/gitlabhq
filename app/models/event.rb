@@ -181,6 +181,12 @@ class Event < ApplicationRecord
       recent.limit(limit).offset(offset)
     end
 
+    # Paginate newest-first with an id tiebreaker so pages stay deterministic
+    # when events share a created_at.
+    def paginate_by_created_at(limit, offset)
+      reorder(created_at: :desc, id: :desc).limit(limit).offset(offset)
+    end
+
     def target_types
       TARGET_TYPES.keys
     end

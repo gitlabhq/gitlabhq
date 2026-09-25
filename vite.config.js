@@ -3,7 +3,6 @@ import path from 'node:path';
 
 import { defineConfig } from 'vite';
 import vue2 from '@vitejs/plugin-vue2';
-// eslint-disable-next-line import/no-unresolved -- False positive: eslint doesn't read `exports` and reports `unresolved`. See https://github.com/import-js/eslint-plugin-import/issues/1810
 import vue3 from '@vitejs/plugin-vue';
 import graphql from '@rollup/plugin-graphql';
 import webpackConfig from './config/webpack.config';

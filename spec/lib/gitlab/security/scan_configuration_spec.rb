@@ -100,6 +100,15 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
           type: "sast",
           required_permission_to_configure: :configure_security_scanner
         },
+        business_logic: {
+          name: 'Business Logic Security Analyzer',
+          short_name: 'Business Logic',
+          description: 'Detect business-logic vulnerabilities (BOLA/IDOR, missing authorization, mass assignment) ' \
+            'with the agentic Business Logic Security Analyzer.',
+          help_path: '/help/user/application_security/_index.md',
+          type: 'business_logic',
+          required_permission_to_configure: :configure_security_scanner
+        },
         sast_advanced: {
           name: 'GitLab Advanced SAST',
           short_name: 'Advanced SAST',

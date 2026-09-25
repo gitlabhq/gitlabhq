@@ -28,7 +28,7 @@ abuse_reports: supported
 admin_roles: no_work_needed
 agent_organization_authorizations: supported
 ai_catalog_item_stars: supported
-ai_catalog_item_version_dependencies: https://gitlab.com/gitlab-org/gitlab/-/work_items/616251
+ai_catalog_item_version_dependencies: supported
 ai_catalog_item_versions: supported
 ai_catalog_items: supported
 ai_catalog_mcp_servers: supported

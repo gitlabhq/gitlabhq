@@ -1,7 +1,7 @@
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 const crypto = require('./helpers/patched_crypto');
 
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 const vueVersion = require('./vue3migration/version');
 
 const { VUE_VERSION, USE_VUE3, USE_VUE3_COMPILER, VUE_LOADER_MODULE, logVueVersion } = vueVersion;
@@ -16,9 +16,9 @@ const BABEL_VERSION = require('@babel/core/package.json').version;
 const BABEL_LOADER_VERSION = require('babel-loader/package.json').version;
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-// eslint-disable-next-line import/no-dynamic-require
+// eslint-disable-next-line import-x/no-dynamic-require
 const { VueLoaderPlugin } = require(VUE_LOADER_MODULE);
-// eslint-disable-next-line import/no-dynamic-require
+// eslint-disable-next-line import-x/no-dynamic-require
 const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
 const EXACT_VUE_VERSION = require('vue/package.json').version;
 

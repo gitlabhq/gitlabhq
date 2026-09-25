@@ -12,7 +12,7 @@ const DUMMY_IMAGE_BLOB_PATH = 'SpongeBlob.png';
 // NOTE: module.exports is needed so that this file can be used
 // by environment.js
 //
-// eslint-disable-next-line import/no-commonjs
+// eslint-disable-next-line import-x/no-commonjs
 module.exports = {
   FIXTURES_PATH,
   TEST_HOST,

@@ -1,5 +1,5 @@
 // This spec inspects the console calls it collects, so it must not throw on the first one.
-/* eslint-disable import/no-deprecated */
+/* eslint-disable import-x/no-deprecated */
 import { shallowMount } from '@vue/test-utils';
 import {
   forgetConsoleCalls,

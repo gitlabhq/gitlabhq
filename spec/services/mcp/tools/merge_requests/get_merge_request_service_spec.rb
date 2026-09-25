@@ -62,7 +62,8 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
               'stats and a per-file breakdown by default; set detail=full_patch for raw per-file patch ' \
               'text or detail=none for summary counts only. conflicts returns raw conflict file content ' \
               '(Git conflict markers), only when the merge request cannot be merged and the caller can ' \
-              'push to the source branch. notes supports pagination (notes_after/notes_first). ' \
+              'push to the source branch. diffs, notes, commits, and pipelines support pagination ' \
+              '(diffs_*, notes_*, commits_*, pipelines_*). ' \
               'approvals returns approved and approvedBy on every tier. approvalsRequired, approvalsLeft, and ' \
               'the rule breakdown in approvalState need GitLab Premium or Ultimate; otherwise ' \
               'these keys are present but zeroed or empty, not omitted.',
@@ -101,6 +102,30 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
             type: 'integer',
             description: 'Number of notes to return after the cursor (forward pagination). Max 100. ' \
               'Applies only when notes is in include.',
+            minimum: 1,
+            maximum: 100
+          },
+          commits_after: {
+            type: 'string',
+            description: 'Cursor for forward pagination of commits. ' \
+              'Use pageInfo.endCursor from a previous response. Applies only when commits is in include.'
+          },
+          commits_first: {
+            type: 'integer',
+            description: 'Number of commits to return after the cursor (forward pagination). Max 100. ' \
+              'Applies only when commits is in include.',
+            minimum: 1,
+            maximum: 100
+          },
+          pipelines_after: {
+            type: 'string',
+            description: 'Cursor for forward pagination of pipelines. ' \
+              'Use pageInfo.endCursor from a previous response. Applies only when pipelines is in include.'
+          },
+          pipelines_first: {
+            type: 'integer',
+            description: 'Number of pipelines to return after the cursor (forward pagination). Max 100. ' \
+              'Applies only when pipelines is in include.',
             minimum: 1,
             maximum: 100
           }

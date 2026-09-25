@@ -135,6 +135,18 @@ RSpec.shared_examples 'listing issuable discussions' do |user_role:, internal_di
         expect(discussions.count { |disc| !disc.notes.any?(&:system) }).to be > 0
       end
     end
+
+    context 'without synthetic notes' do
+      let(:finder_params_for_issuable) { { include_synthetic_notes: false, per_page: 100 } }
+
+      it 'returns comments and system notes but no synthetic notes', :aggregate_failures do
+        notes = discussions_service.execute.flat_map(&:notes)
+
+        expect(notes).to include(an_object_having_attributes(system: true))
+        expect(notes).to include(an_object_having_attributes(system: false))
+        expect(notes).not_to include(an_instance_of(SyntheticNote))
+      end
+    end
   end
 end
 

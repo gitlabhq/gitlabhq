@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs */
+/* eslint-disable import-x/no-commonjs */
 
 /**
  * Jest transformer for static asset imports (svg/gif/png/mp4).

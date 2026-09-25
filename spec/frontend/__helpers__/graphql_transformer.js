@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs */
+/* eslint-disable import-x/no-commonjs */
 const loader = require('graphql-tag/loader');
 
 module.exports = {

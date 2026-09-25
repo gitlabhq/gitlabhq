@@ -24,6 +24,28 @@ RSpec.shared_examples 'a work item discussions endpoint' do
     expect(note_ids).to contain_exactly(comment.id, system_note.id)
   end
 
+  context 'with a synthetic note from a resource event' do
+    before do
+      create(:resource_state_event, issue: work_item, user: user, state: :closed)
+    end
+
+    it 'returns real discussions but excludes synthetic ones', :aggregate_failures do
+      get api(api_request_path, user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      note_ids = json_response.flat_map { |discussion| discussion['notes'].pluck('id') }
+      expect(note_ids).to contain_exactly(comment.id, system_note.id)
+    end
+
+    it 'excludes synthetic discussions when activity_filter=only_activity', :aggregate_failures do
+      get api(api_request_path, user), params: { activity_filter: 'only_activity' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      note_ids = json_response.flat_map { |discussion| discussion['notes'].pluck('id') }
+      expect(note_ids).to contain_exactly(system_note.id)
+    end
+  end
+
   it 'groups notes that belong to the same discussion thread', :aggregate_failures do
     root = create(:discussion_note_on_work_item, noteable: work_item, author: user, **note_params)
     reply = create(:discussion_note_on_work_item, noteable: work_item, author: user, in_reply_to: root, **note_params)

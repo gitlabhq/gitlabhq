@@ -35,8 +35,10 @@
 .contrib-calendar button.user-contribution-graph-cell {
   cursor: pointer;
 
+  // is-active keeps the selected day highlighted after focus moves to the feed.
   &:hover,
-  &:focus {
+  &:focus,
+  &.is-active {
     z-index: 1;
     border: 2px solid var(--gl-background-color-default);
     outline: 2px solid var(--gl-action-selected-border-color-default) !important;

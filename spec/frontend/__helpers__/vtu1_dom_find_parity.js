@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs */
+/* eslint-disable import-x/no-commonjs */
 const VTU = require('@vue/test-utils');
 
 // @vue/test-utils v1's find()/findAll() silently return component-capable

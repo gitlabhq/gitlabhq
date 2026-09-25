@@ -5,7 +5,6 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { RsdoctorRspackPlugin } from '@rsdoctor/rspack-plugin';
-// eslint-disable-next-line import/no-unresolved -- resolver doesn't read @rspack/core's exports field
 import rspack from '@rspack/core';
 import gqlTag from 'graphql-tag';
 
@@ -117,7 +116,7 @@ const output = (() => {
   };
 })();
 
-// eslint-disable-next-line import/no-default-export -- Rspack's config loader reads the default export
+// eslint-disable-next-line import-x/no-default-export -- Rspack's config loader reads the default export
 export default {
   bail: !IS_DEV_SERVER,
   mode: IS_PRODUCTION ? 'production' : 'development',

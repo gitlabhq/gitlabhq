@@ -252,6 +252,13 @@ module UsersHelper
   def user_activity_calendar_data(user)
     {
       username: user.username,
+      calendar_activities_path: user_calendar_activities_path(user, :json),
+      activity_path: user_activity_path(user, :json),
+      view_all_activity_path: user_activity_path(user),
+      is_current_user_profile: (current_user.present? && current_user.id == user.id).to_s,
+      empty_state_svg_path: image_path('illustrations/empty-state/empty-activity-md.svg'),
+      new_group_path: new_group_path,
+      explore_groups_path: explore_groups_path,
       utc_offset: local_timezone_instance(user.timezone).now.utc_offset
     }
   end

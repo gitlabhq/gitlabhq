@@ -25,10 +25,10 @@ const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
 const VUE_LOADER_MODULE = USE_VUE3_COMPILER ? 'vue-loader-vue3' : 'vue-loader';
 
 const VueLoaderPlugin = USE_VUE3_COMPILER
-  ? // eslint-disable-next-line import/no-dynamic-require
+  ? // eslint-disable-next-line import-x/no-dynamic-require
     require(VUE_LOADER_MODULE).VueLoaderPlugin
   : require('./vue_loader_plugin');
-// eslint-disable-next-line import/no-dynamic-require
+// eslint-disable-next-line import-x/no-dynamic-require
 const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
 
 function buildVueLoaderOptions() {

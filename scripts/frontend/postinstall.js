@@ -1,4 +1,4 @@
-/* eslint-disable global-require, import/no-dynamic-require */
+/* eslint-disable global-require, import-x/no-dynamic-require */
 const { spawnSync } = require('child_process');
 const { join, resolve } = require('path');
 const { existsSync, readdirSync } = require('fs');

@@ -159,11 +159,15 @@ RSpec.describe Event, feature_category: :user_profile do
         expect(event.errors[:author_id]).to include("can't be blank")
       end
 
-      it 'does not invalidate existing records that already have more than one sharding key' do
+      it 'still saves an existing record that has more than one sharding key', :aggregate_failures do
         event = create(:event, project: project, group: nil, author: author)
         event.update_column(:personal_namespace_id, author.namespace_id)
+        event.reload
 
-        expect(event.reload).to be_valid
+        expect(event.update(action: :updated)).to be(true)
+        expect(event.reload.action).to eq('updated')
+        expect(event.personal_namespace_id).to eq(author.namespace_id)
+        expect(event.project_id).to eq(project.id)
       end
 
       it 'keeps a single sharding key when the project is not saved yet', :aggregate_failures do
@@ -1220,6 +1224,32 @@ RSpec.describe Event, feature_category: :user_profile do
       subject { described_class.limit_recent(1) }
 
       it { is_expected.to eq([event2]) }
+    end
+  end
+
+  describe '.paginate_by_created_at' do
+    let_it_be(:older, freeze: false) { create(:closed_issue_event, created_at: 2.days.ago) }
+    let_it_be(:newer, freeze: false) { create(:closed_issue_event, created_at: 1.day.ago) }
+
+    it 'orders by created_at descending' do
+      expect(described_class.paginate_by_created_at(10, 0)).to eq([newer, older])
+    end
+
+    it 'applies limit and offset without overlap' do
+      expect(described_class.paginate_by_created_at(1, 0)).to eq([newer])
+      expect(described_class.paginate_by_created_at(1, 1)).to eq([older])
+    end
+
+    context 'when events share a created_at' do
+      let_it_be(:same_time) { 1.day.ago }
+      let_it_be(:first, freeze: false) { create(:closed_issue_event, created_at: same_time) }
+      let_it_be(:second, freeze: false) { create(:closed_issue_event, created_at: same_time) }
+
+      it 'breaks ties by id descending so pages are deterministic' do
+        page = described_class.where(created_at: same_time).paginate_by_created_at(10, 0)
+
+        expect(page).to eq([second, first])
+      end
     end
   end
 

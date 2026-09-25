@@ -1,4 +1,4 @@
-/* eslint-disable import/no-commonjs */
+/* eslint-disable import-x/no-commonjs */
 const { createTransformer } = require('babel-jest');
 
 // This Jest will transform the code of a WebWorker module into a FakeWebWorker subclass.

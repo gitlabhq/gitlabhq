@@ -36,7 +36,11 @@ module Mcp
             notesAfter: params[:notes_after],
             notesFirst: params[:notes_first],
             diffsAfter: params[:diffs_after],
-            diffsFirst: params[:diffs_first]
+            diffsFirst: params[:diffs_first],
+            commitsAfter: params[:commits_after],
+            commitsFirst: params[:commits_first],
+            pipelinesAfter: params[:pipelines_after],
+            pipelinesFirst: params[:pipelines_first]
           }.compact
         end
 

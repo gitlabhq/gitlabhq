@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     async loadPDFJS() {
-      // eslint-disable-next-line import/extensions
+      // eslint-disable-next-line import-x/extensions
       pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
       ({ getDocument, GlobalWorkerOptions } = pdfjs);
       /* eslint-disable @gitlab/no-hardcoded-urls -- webpack public asset path configuration, not a navigable URL */

@@ -2996,7 +2996,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_80c272d831b7"
+              "$ref": "#/components/schemas/RequestBody_127fab987046"
       x-gitlab-lifecycle: experiment
   "/api/v4/projects/{id}/ai_agent/audit_events":
     post:
@@ -3782,7 +3782,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ef2061658f9e"
+              "$ref": "#/components/schemas/RequestBody_5ea5039a429e"
   "/api/v4/groups/{id}/enterprise_users":
     get:
       operationId: getApiV4GroupsIdEnterpriseUsers
@@ -4801,7 +4801,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the occurrence
+        description: ID of the occurrence.
         schema:
           type: string
           nullable: true
@@ -5600,7 +5600,7 @@ paths:
       parameters:
       - name: group_path
         required: true
-        description: Group path
+        description: Group path.
         schema:
           type: string
           nullable: true
@@ -5625,7 +5625,7 @@ paths:
       parameters:
       - name: group_path
         required: true
-        description: Group path
+        description: Group path.
         schema:
           type: string
           nullable: true
@@ -5649,7 +5649,7 @@ paths:
       parameters:
       - name: group_path
         required: true
-        description: Group path
+        description: Group path.
         schema:
           type: string
           nullable: true
@@ -14257,7 +14257,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c608fe7206af"
+              "$ref": "#/components/schemas/RequestBody_1290d9f73168"
   "/api/v4/admin/knowledge_graph/namespaces":
     get:
       operationId: getApiV4AdminKnowledgeGraphNamespaces
@@ -21626,7 +21626,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -24285,7 +24285,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -27357,7 +27357,7 @@ paths:
       parameters:
       - name: queue_name
         required: true
-        description: The Sidekiq queue name
+        description: Name of the queue to delete jobs from.
         schema:
           type: string
         in: path
@@ -30287,7 +30287,8 @@ paths:
         example: 20
       - name: repository_storage
         required: false
-        description: Filter by repository storage used by the snippet
+        description: Filter by repository storage used by the snippet. Administrators
+          only.
         schema:
           type: string
           nullable: true
@@ -32497,7 +32498,8 @@ paths:
         in: query
       - name: unidiff
         required: false
-        description: A diff in a Unified diff format
+        description: If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)
+          format.
         schema:
           type: boolean
           default: false
@@ -33927,7 +33929,7 @@ paths:
       parameters:
       - name: tag_name
         required: true
-        description: The Git tag the release is associated with
+        description: Git tag the release is associated with.
         schema:
           type: string
         in: path
@@ -44220,7 +44222,8 @@ paths:
         in: path
       - name: unidiff
         required: false
-        description: A diff in a Unified diff format
+        description: If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)
+          format.
         schema:
           type: boolean
           default: false
@@ -44343,7 +44346,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_91027c1c0327"
+              "$ref": "#/components/schemas/RequestBody_ddbbd88abf6d"
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/unapprove":
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidUnapprove
@@ -46656,7 +46659,8 @@ paths:
         in: path
       - name: unidiff
         required: false
-        description: A diff in a Unified diff format
+        description: If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)
+          format.
         schema:
           type: boolean
           default: false
@@ -46720,7 +46724,8 @@ paths:
         example: 20
       - name: unidiff
         required: false
-        description: A diff in a Unified diff format
+        description: If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)
+          format.
         schema:
           type: boolean
           default: false
@@ -52408,7 +52413,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_dab5b408c1fd"
+              "$ref": "#/components/schemas/RequestBody_e1387efe65cb"
     get:
       operationId: getApiV4GroupsIdInvitations
       summary: List all pending invitations for a group
@@ -52495,7 +52500,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_769d8373d726"
+              "$ref": "#/components/schemas/RequestBody_4a0786fcd7ca"
     delete:
       operationId: deleteApiV4GroupsIdInvitationsEmail
       summary: Delete an invitation to a group
@@ -52558,7 +52563,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_dab5b408c1fd"
+              "$ref": "#/components/schemas/RequestBody_e1387efe65cb"
     get:
       operationId: getApiV4ProjectsIdInvitations
       summary: List all pending invitations for a project
@@ -52645,7 +52650,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_769d8373d726"
+              "$ref": "#/components/schemas/RequestBody_4a0786fcd7ca"
     delete:
       operationId: deleteApiV4ProjectsIdInvitationsEmail
       summary: Delete an invitation to a project
@@ -59899,7 +59904,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -59919,7 +59924,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -59948,7 +59953,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -60338,7 +60343,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60374,7 +60379,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60509,7 +60514,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60547,7 +60552,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60587,7 +60592,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60705,7 +60710,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60742,8 +60747,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group accessible by the authenticated
-          user
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60968,7 +60972,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -65295,8 +65299,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -67764,7 +67767,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67789,7 +67792,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67812,7 +67815,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67856,7 +67859,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67907,7 +67910,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67938,7 +67941,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68003,7 +68006,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68056,7 +68059,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68114,7 +68117,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68179,7 +68182,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68238,7 +68241,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68303,7 +68306,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68362,7 +68365,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68428,7 +68431,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68482,7 +68485,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68559,7 +68562,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68642,7 +68645,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68718,7 +68721,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68809,7 +68812,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68906,7 +68909,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -70679,7 +70682,8 @@ paths:
         example: 20
       - name: unidiff
         required: false
-        description: A diff in a Unified diff format
+        description: If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html)
+          format.
         schema:
           type: boolean
           default: false
@@ -71620,7 +71624,8 @@ paths:
       parameters:
       - name: group_id
         required: true
-        description: The group ID to find all certificate-based clusters in the hierarchy
+        description: ID of the group to find all certificate-based clusters in the
+          hierarchy.
         schema:
           type: integer
           nullable: true
@@ -101652,7 +101657,7 @@ components:
           maxLength: 64
       required:
       - status
-    RequestBody_80c272d831b7:
+    RequestBody_127fab987046:
       type: object
       properties:
         agent_type:
@@ -101660,7 +101665,7 @@ components:
           enum:
           - claude-code
           - opencode
-          description: The type of agent being registered.
+          description: Type of agent being registered.
           minLength: 1
         machine_fingerprint:
           type: string
@@ -102343,12 +102348,12 @@ components:
           maxLength: 2000
       required:
       - human_approval
-    RequestBody_ef2061658f9e:
+    RequestBody_5ea5039a429e:
       type: object
       properties:
         prompt:
           type: string
-          description: Prompt used to generate the Git commands
+          description: Prompt used to generate the Git commands.
           nullable: true
       required:
       - prompt
@@ -105774,13 +105779,14 @@ components:
           - disabled
           description: The checksum status of the records to filter by
           nullable: true
-    RequestBody_c608fe7206af:
+    RequestBody_1290d9f73168:
       type: object
       properties:
         csp_namespace_id:
           type: integer
           description: ID of the group designated to centrally manage security policies
-            and compliance frameworks.
+            and compliance frameworks. Must be a top-level group. Set to `null` to
+            clear the setting.
           nullable: true
       required:
       - csp_namespace_id
@@ -117573,7 +117579,7 @@ components:
           nullable: true
       required:
       - approvals_required
-    RequestBody_91027c1c0327:
+    RequestBody_ddbbd88abf6d:
       type: object
       properties:
         sha:
@@ -117586,8 +117592,10 @@ components:
           nullable: true
         approval_password:
           type: string
-          description: Current user's password if project is set to require explicit
-            auth on approval
+          description: Current user's password, needed if [user re-authentication
+            to approve](https://docs.gitlab.com/user/project/merge_requests/approvals/settings/#require-user-re-authentication-to-approve)
+            is enabled in the project settings. Always fails if the group or GitLab
+            Self-Managed instance is configured to force SAML authentication.
           example: secret
           nullable: true
     RequestBody_4d4e7bbf5cb5:
@@ -118337,7 +118345,7 @@ components:
       required:
       - target_project_id
       - target_issue_iid
-    RequestBody_dab5b408c1fd:
+    RequestBody_e1387efe65cb:
       type: object
       properties:
         access_level:
@@ -118377,11 +118385,12 @@ components:
           default: invitations-api
         member_role_id:
           type: integer
-          description: The ID of a member role for the invited user
+          description: ID of a member role to assign to the invited user. Ultimate
+            only.
           nullable: true
       required:
       - access_level
-    RequestBody_769d8373d726:
+    RequestBody_4a0786fcd7ca:
       type: object
       properties:
         access_level:
@@ -118403,7 +118412,8 @@ components:
           nullable: true
         member_role_id:
           type: integer
-          description: The ID of a member role for the invited user
+          description: ID of a member role to assign to the invited user. Ultimate
+            only.
           nullable: true
     RequestBody_cbeedcc1e5c4:
       type: object

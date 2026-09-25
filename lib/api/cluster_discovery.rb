@@ -19,7 +19,8 @@ module API
       tags %w[clusters]
     end
     params do
-      requires :group_id, type: Integer, desc: 'The group ID to find all certificate-based clusters in the hierarchy'
+      requires :group_id, type: Integer, desc: 'ID of the group to find all certificate-based clusters in the ' \
+                                           'hierarchy.'
     end
     route_setting :authorization, permissions: :read_cluster, boundary_type: :group
     get '/discover-cert-based-clusters' do

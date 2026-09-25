@@ -762,6 +762,11 @@ msgstr ""
 msgid "%{count} %{scope} for term '%{term}'"
 msgstr ""
 
+msgid "%{count} Contribution for %{label}"
+msgid_plural "%{count} Contributions for %{label}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} LOC/commit"
 msgstr ""
 
@@ -12546,6 +12551,11 @@ msgstr ""
 msgid "ArtifactRegistry|%{count} of %{cap}"
 msgstr ""
 
+msgid "ArtifactRegistry|%{count} repository"
+msgid_plural "ArtifactRegistry|%{count} repositories"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ArtifactRegistry|%{count} repository selected. The list will hold %{total} of %{cap}."
 msgid_plural "ArtifactRegistry|%{count} repositories selected. The list will hold %{total} of %{cap}."
 msgstr[0] ""
@@ -13462,6 +13472,9 @@ msgid "ArtifactRegistry|Sorts alphabetically, not by version order. Ascending pu
 msgstr ""
 
 msgid "ArtifactRegistry|Source"
+msgstr ""
+
+msgid "ArtifactRegistry|Storage used"
 msgstr ""
 
 msgid "ArtifactRegistry|Storage used: %{size}"
@@ -17284,6 +17297,12 @@ msgid "Burnup chart"
 msgstr ""
 
 msgid "Burnup chart could not be generated due to too many events"
+msgstr ""
+
+msgid "Business Logic"
+msgstr ""
+
+msgid "Business Logic Security Analyzer"
 msgstr ""
 
 msgid "Busy"
@@ -30374,6 +30393,9 @@ msgid "Details of violation-%{violationId}"
 msgstr ""
 
 msgid "Detect and resolve database issues."
+msgstr ""
+
+msgid "Detect business-logic vulnerabilities (BOLA/IDOR, missing authorization, mass assignment) with the agentic Business Logic Security Analyzer."
 msgstr ""
 
 msgid "Detect host keys"
@@ -54186,6 +54208,9 @@ msgid "No contributions"
 msgstr ""
 
 msgid "No contributions were found"
+msgstr ""
+
+msgid "No contributions were found."
 msgstr ""
 
 msgid "No corrupted indexes detected."
@@ -83947,6 +83972,9 @@ msgid "There was an error generating commit message."
 msgstr ""
 
 msgid "There was an error importing the Jira project."
+msgstr ""
+
+msgid "There was an error loading activities."
 msgstr ""
 
 msgid "There was an error loading more labels"

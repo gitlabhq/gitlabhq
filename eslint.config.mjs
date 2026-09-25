@@ -1,6 +1,7 @@
-/* eslint-disable import/no-default-export */
+/* eslint-disable import-x/no-default-export */
 import path from 'node:path';
 import { existsSync } from 'node:fs';
+import { createNodeResolver } from 'eslint-plugin-import-x';
 import gitlabPlugin from '@gitlab/eslint-plugin';
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import noUnsanitizedPlugin from 'eslint-plugin-no-unsanitized';
@@ -65,7 +66,7 @@ const { dirname } = import.meta;
 let jhConfigs = [];
 if (existsSync(path.resolve(dirname, 'jh'))) {
   const pathToJhConfig = path.resolve(dirname, 'jh/eslint.config.js');
-  // eslint-disable-next-line import/no-dynamic-require, no-unsanitized/method
+  // eslint-disable-next-line import-x/no-dynamic-require, no-unsanitized/method
   jhConfigs = (await import(pathToJhConfig)).default;
 }
 
@@ -73,10 +74,10 @@ const jestConfig = {
   files: ['{,ee/}spec/frontend/**/*.js'],
 
   settings: {
-    // We have to teach eslint-plugin-import what node modules we use
+    // We have to teach eslint-plugin-import-x what node modules we use
     // otherwise there is an error when it tries to resolve them
-    'import/core-modules': ['events', 'fs', 'path'],
-    'import/resolver': {
+    'import-x/core-modules': ['events', 'fs', 'path'],
+    'import-x/resolver': {
       jest: {
         jestConfigFile: 'jest.config.js',
       },
@@ -93,7 +94,7 @@ const jestConfig = {
       },
     ],
     '@gitlab/no-global-event-off': 'off',
-    'import/no-unresolved': [
+    'import-x/no-unresolved': [
       'error',
       // The test fixtures and graphql schema are dynamically generated in CI
       // during the `frontend-fixtures` and `graphql-schema-dump` jobs.
@@ -102,7 +103,7 @@ const jestConfig = {
         ignore: ['^test_fixtures/', 'tmp/tests/graphql/gitlab_schema.graphql'],
       },
     ],
-    // Catches the FOSS-only `import/no-duplicates` failure described in
+    // Catches the FOSS-only `import-x/no-duplicates` failure described in
     // gitlab-org/gitlab!230984: in EE, `jest/X` and `ee_else_ce_jest/X`
     // resolve to different files, but in FOSS the latter falls back to
     // the former, collapsing both imports onto the same path.
@@ -334,7 +335,7 @@ export default [
     },
 
     settings: {
-      'import/resolver': {
+      'import-x/resolver': {
         webpack: {
           config: './config/webpack.config.js',
         },
@@ -343,11 +344,11 @@ export default [
 
     rules: {
       // Import rules
-      'import/no-commonjs': 'error',
-      'import/no-default-export': 'off',
+      'import-x/no-commonjs': 'error',
+      'import-x/no-default-export': 'off',
       // Dependency rules are enfoced by `config/dependency_cruiser.mjs`
       // It is more accurate and faster than the ESLint rule.
-      'import/no-cycle': 'off',
+      'import-x/no-cycle': 'off',
 
       'no-underscore-dangle': [
         'error',
@@ -356,7 +357,7 @@ export default [
         },
       ],
 
-      'import/no-unresolved': [
+      'import-x/no-unresolved': [
         'error',
         {
           ignore: ['^(ee|jh)_component/', '^jh_else_ee/', '^fe_islands/'],
@@ -411,7 +412,7 @@ export default [
         },
       ],
 
-      'import/order': [
+      'import-x/order': [
         'error',
         {
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
@@ -778,8 +779,8 @@ export default [
       '@gitlab/no-max-width-media-queries': 'off',
       '@gitlab/vue-tailwind-no-max-width-media-queries': 'off',
       'require-await': 'error',
-      'import/no-extraneous-dependencies': 'off',
-      'import/no-dynamic-require': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
+      'import-x/no-dynamic-require': 'off',
       'no-import-assign': 'off',
 
       'no-restricted-syntax': [
@@ -818,7 +819,7 @@ export default [
     rules: {
       ...relaxedUrlAndI18nRules,
       'filenames/match-regex': 'off',
-      'import/no-unresolved': [
+      'import-x/no-unresolved': [
         'error',
         // The test fixtures are dynamically generated in CI during
         // the `frontend-fixtures` job. They may not be present during linting.
@@ -880,6 +881,7 @@ export default [
       'scripts/**/*',
       '**/*.config.js',
       '**/*.config.*.js',
+      '**/*.config.mjs',
       '{,spec/}tooling/**/*',
       'jest_resolver.js',
       'eslint.config.mjs',
@@ -887,27 +889,19 @@ export default [
       'doc-locale/.markdownlint/**',
     ],
 
+    settings: {
+      // Node-side files: webpack 4's resolver can't read `exports`-only packages.
+      'import-x/resolver-next': [createNodeResolver()],
+    },
+
     rules: {
       ...relaxedUrlAndI18nRules,
-      'import/extensions': 'off',
-      'import/no-nodejs-modules': 'off',
+      'import-x/extensions': 'off',
+      'import-x/no-nodejs-modules': 'off',
       'filenames/match-regex': 'off',
       'no-console': 'off',
-      'import/no-commonjs': 'off',
-      'import/no-extraneous-dependencies': 'off',
-      'import/no-unresolved': [
-        'error',
-        {
-          ignore: [
-            // False positive: eslint-plugin-import doesn't read `exports` field.
-            // See https://github.com/import-js/eslint-plugin-import/issues/1810
-            '^vite$',
-            '^lightningcss$',
-            '^vite-plugin-ruby$',
-            '@graphql-eslint/eslint-plugin',
-          ],
-        },
-      ],
+      'import-x/no-commonjs': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
     },
   },
 
@@ -917,12 +911,12 @@ export default [
 
     rules: {
       ...relaxedUrlAndI18nRules,
-      'import/no-extraneous-dependencies': 'off',
-      'import/no-commonjs': 'off',
-      'import/no-nodejs-modules': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
+      'import-x/no-commonjs': 'off',
+      'import-x/no-nodejs-modules': 'off',
       'filenames/match-regex': 'off',
       'no-console': 'off',
-      'import/no-unresolved': 'off',
+      'import-x/no-unresolved': 'off',
     },
   },
 
@@ -1083,7 +1077,7 @@ export default [
     files: ['{,ee/}spec/contracts/consumer/**/*.js'],
 
     settings: {
-      'import/core-modules': ['@pact-foundation/pact', 'jest-pact'],
+      'import-x/core-modules': ['@pact-foundation/pact', 'jest-pact'],
     },
 
     rules: {
@@ -1106,14 +1100,14 @@ export default [
     },
 
     settings: {
-      'import/ignore': ['k6', 'k6/', 'https://jslib.k6.io'],
+      'import-x/ignore': ['k6', 'k6/', 'https://jslib.k6.io'],
     },
 
     rules: {
       // k6 modules are not resolvable by standard import resolver
-      'import/no-unresolved': 'off',
+      'import-x/no-unresolved': 'off',
       // k6 allows .js extensions in URLs
-      'import/extensions': 'off',
+      'import-x/extensions': 'off',
       ...relaxedUrlAndI18nRules,
       // Console logging is expected in k6 tests
       'no-console': 'off',

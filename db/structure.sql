@@ -31433,6 +31433,7 @@ CREATE TABLE security_inventory_filters (
     has_scanners boolean DEFAULT false NOT NULL,
     has_failed_or_warning boolean DEFAULT false NOT NULL,
     has_stale boolean DEFAULT false NOT NULL,
+    business_logic smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_aeacee81ba CHECK ((char_length(project_name) <= 255))
 );
 

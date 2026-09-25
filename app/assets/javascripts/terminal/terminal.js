@@ -2,7 +2,7 @@ import { throttle } from 'lodash-es';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks';
-// eslint-disable-next-line import/no-deprecated
+// eslint-disable-next-line import-x/no-deprecated
 import { canScrollUp, canScrollDown } from '~/lib/utils/dom_utils';
 import { __ } from '~/locale';
 
@@ -82,9 +82,9 @@ export default class GLTerminal {
     const viewport = this.container.querySelector('.xterm-viewport');
     const listener = throttle(() => {
       onScrollLimit({
-        // eslint-disable-next-line import/no-deprecated
+        // eslint-disable-next-line import-x/no-deprecated
         canScrollUp: canScrollUp(viewport, SCROLL_MARGIN),
-        // eslint-disable-next-line import/no-deprecated
+        // eslint-disable-next-line import-x/no-deprecated
         canScrollDown: canScrollDown(viewport, SCROLL_MARGIN),
       });
     });
