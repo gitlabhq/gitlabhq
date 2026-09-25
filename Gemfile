@@ -368,7 +368,7 @@ gem 'kubeclient', '~> 4.12.0', feature_category: :shared # rubocop:todo Gemfile/
 gem 'circuitbox', '2.0.0', feature_category: :ai_abstraction_layer
 
 # Sanitize user input
-gem 'sanitize', '~> 6.0.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'sanitize', '~> 7.0.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'babosa', '~> 2.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Sanitizes SVG input

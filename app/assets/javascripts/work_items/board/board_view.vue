@@ -886,7 +886,7 @@ export default {
     isDropAllowed({ item, value }) {
       return this.strategy?.isDropAllowed?.({ item, value, gateData: this.gateData }) ?? true;
     },
-    async onCardMove({ from, to, item, oldIndex, newIndex }) {
+    onCardMove({ from, to, item, oldIndex, newIndex }) {
       this.invalidValueIds = [];
       const fromValueId = from?.dataset?.columnValueId;
       const toValueId = to?.dataset?.columnValueId;
@@ -902,7 +902,26 @@ export default {
         return;
       }
 
-      const valueChanged = fromValueId !== toValueId;
+      this.moveCard({ fromValue, toValue, workItemId, oldIndex, newIndex, source: 'drag' });
+    },
+    // A menu move is always a same-column reorder, so fromValue and toValue are
+    // the same column — moveCard already handles that case for drag reorders.
+    onCardMoveToPosition(value, { workItemId, oldIndex, newIndex }) {
+      if (!workItemId) {
+        return;
+      }
+
+      this.moveCard({
+        fromValue: value,
+        toValue: value,
+        workItemId,
+        oldIndex,
+        newIndex,
+        source: 'menu',
+      });
+    },
+    async moveCard({ fromValue, toValue, workItemId, oldIndex, newIndex, source }) {
+      const valueChanged = fromValue.id !== toValue.id;
 
       const { cache } = this.$apollo.getClient();
       const query = this.columnQuery;
@@ -1000,7 +1019,7 @@ export default {
           throw new Error(data.workItemUpdate.errors.join(', '));
         }
 
-        this.trackEvent('move_card_on_work_item_board', { label: moveKind });
+        this.trackEvent('move_card_on_work_item_board', { label: moveKind, property: source });
 
         if (valueChanged) {
           this.$toast.show(
@@ -1008,7 +1027,7 @@ export default {
           );
         }
       } catch (error) {
-        this.trackEvent('fail_card_move_on_work_item_board', { label: moveKind });
+        this.trackEvent('fail_card_move_on_work_item_board', { label: moveKind, property: source });
         this.$toast.show(I18N_MOVE_ERROR);
         Sentry.captureException(error);
       } finally {
@@ -1088,8 +1107,10 @@ export default {
         :hidden-metadata-keys="hiddenMetadataKeys"
         :active-item="activeItem"
         :detail-panel-enabled="detailPanelEnabled"
+        :can-reorder-cards="isManualSort && !moveInProgress"
         @drag-start="onDragStart"
         @card-move="onCardMove"
+        @card-move-to-position="onCardMoveToPosition(value, $event)"
         @move-column="onColumnShift({ value, delta: $event })"
         @hide-column="onColumnHide(value)"
         @set-active-item="$emit('set-active-item', $event)"

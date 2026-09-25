@@ -4,6 +4,8 @@ export const hasAccessibilityReport = (mr) => Boolean(mr?.accessibilityReportPat
 
 export const hasTestSummaryReport = (mr) => Boolean(mr?.testResultsPath);
 
+export const hasTerraformReport = (mr) => Boolean(mr?.terraformReportsPath);
+
 export const hasLicenseComplianceReport = () => false;
 
 export const hasBrowserPerformanceReport = () => false;

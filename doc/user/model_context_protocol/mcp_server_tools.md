@@ -536,8 +536,14 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221941) in GitLab 18.10.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_merge_request`](#get_merge_request) with `include: ["conflicts"]`.
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["conflicts"]`, which
+returns the same conflicts as structured `conflictFiles` entries with separate `ourPath` and
+`theirPath` fields, instead of the plain text below. This tool no longer appears in
+`tools/list` but remains callable while callers migrate.
 
 Retrieves the merge conflict content for a merge request that cannot be merged.
 Returns the raw Git conflict markers (`<<<<<<<`, `=======`, and `>>>>>>>`) exactly as they

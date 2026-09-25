@@ -24,6 +24,7 @@ import GreetingHeader from './greeting_header.vue';
 import UserItemsCountWidget from './user_items_count_widget.vue';
 import ActivityWidget from './activity_widget.vue';
 import QuickAccessWidget from './quick_access_widget.vue';
+import MergeRequestsWidget from './merge_requests_widget.vue';
 import PipelinesWidget from './pipelines_widget.vue';
 import TodosWidget from './todos_widget.vue';
 import PickUpWidget from './pick_up_widget.vue';
@@ -37,6 +38,7 @@ export default {
     ActivityWidget,
     TodosWidget,
     QuickAccessWidget,
+    MergeRequestsWidget,
     PipelinesWidget,
     PickUpWidget,
     UserItemsCountWidget,
@@ -251,6 +253,7 @@ export default {
         <activity-widget :activity-path="activityPath" />
       </section>
       <aside class="gl-flex gl-flex-col gl-gap-6">
+        <merge-requests-widget v-if="glFeatures.homepageMergeRequestsWidget" />
         <quick-access-widget />
         <pipelines-widget v-if="glFeatures.homepagePipelinesWidget" />
       </aside>

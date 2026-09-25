@@ -1,14 +1,23 @@
 <script>
-import { __, n__, s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
+import {
+  TERRAFORM_ROUTE,
+  CLICK_VIEW_REPORT_ON_MERGE_REQUEST_WIDGET,
+  TRACKING_LABEL_BY_ROUTE,
+} from '~/merge_requests/reports/constants';
+import { InternalEvents } from '~/tracking';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { EXTENSION_ICONS } from '../../constants';
+import { terraformInvalidCount, terraformRows, terraformSummary } from './utils';
 
 export default {
   name: 'WidgetTerraform',
   components: {
     MrWidget,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     mr: {
       type: Object,
@@ -18,65 +27,45 @@ export default {
   emits: ['loaded'],
   data() {
     return {
-      terraformData: {
-        collapsed: null,
-        expanded: null,
-      },
+      collapsedData: null,
     };
   },
   i18n: {
     loading: s__('Terraform|Loading Terraform reports…'),
     error: s__('Terraform|Failed to load Terraform reports'),
-    reportGenerated: s__('Terraform|A Terraform report was generated in your pipelines.'),
-    namedReportGenerated: s__(
-      'Terraform|The job %{strong_start}%{name}%{strong_end} generated a report.',
-    ),
-    reportChanges: s__(
-      'Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete',
-    ),
-    reportFailed: s__('Terraform|A Terraform report failed to generate.'),
-    namedReportFailed: s__(
-      'Terraform|The job %{strong_start}%{name}%{strong_end} failed to generate a report.',
-    ),
-    reportErrored: s__('Terraform|Generating the report caused an error.'),
-    fullLog: __('Full log'),
   },
   computed: {
     terraformReportsPath() {
       return this.mr.terraformReportsPath;
     },
-
+    content() {
+      return terraformRows(this.collapsedData);
+    },
     summary() {
-      const { valid = [], invalid = [] } = this.terraformData.collapsed || {};
+      return terraformSummary(this.collapsedData);
+    },
+    hasReportsTab() {
+      return Boolean(this.mr.reportsTabPath);
+    },
+    actionButtons() {
+      if (!this.hasReportsTab) {
+        return [];
+      }
 
-      const validText = sprintf(
-        n__(
-          'Terraform|%{strong_start}%{number}%{strong_end} Terraform report was generated in your pipelines',
-          'Terraform|%{strong_start}%{number}%{strong_end} Terraform reports were generated in your pipelines',
-          valid.length,
-        ),
+      return [
         {
-          number: valid.length,
+          text: s__('MrReports|View report'),
+          href: joinPaths(this.mr.reportsTabPath, TERRAFORM_ROUTE),
+          onClick: (action, e) => {
+            e.preventDefault();
+            this.trackEvent(CLICK_VIEW_REPORT_ON_MERGE_REQUEST_WIDGET, {
+              label: TRACKING_LABEL_BY_ROUTE[TERRAFORM_ROUTE],
+            });
+            window.history.pushState(null, null, action.href);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          },
         },
-        false,
-      );
-
-      const invalidText = sprintf(
-        n__(
-          'Terraform|%{strong_start}%{number}%{strong_end} Terraform report failed to generate',
-          'Terraform|%{strong_start}%{number}%{strong_end} Terraform reports failed to generate',
-          invalid.length,
-        ),
-        {
-          number: invalid.length,
-        },
-        false,
-      );
-
-      return {
-        title: valid.length ? validText : invalidText,
-        subtitle: valid.length && invalid.length ? invalidText : undefined,
-      };
+      ];
     },
   },
   methods: {
@@ -84,113 +73,16 @@ export default {
       return axios
         .get(this.terraformReportsPath)
         .then((res) => {
-          const reports = Object.keys(res.data).map((key) => {
-            const report = res.data[key];
+          this.collapsedData = res.data;
+          this.$emit('loaded', terraformInvalidCount(res.data));
 
-            const isValid =
-              report.create + report.update + report.delete >= 0 && !report.tf_report_error;
-            const sortIndex = Number(report.create) + Number(report.update) + Number(report.delete);
-
-            return {
-              ...report,
-              isValid,
-              sortIndex,
-            };
-          });
-
-          // Higher "sortIndex" means earlier in the list, therefore
-          // higher in the UI
-          reports.sort((a, b) => b.sortIndex - a.sortIndex);
-
-          const formattedData = this.prepareReports(reports);
-
-          const { valid, invalid } = formattedData;
-          this.terraformData.collapsed = formattedData;
-          this.terraformData.expanded = [...valid, ...invalid];
-
-          this.$emit('loaded', this.terraformData.collapsed.invalid.length);
-
-          return {
-            ...res,
-            data: formattedData,
-          };
+          return res;
         })
         .catch(() => {
-          const formattedData = this.prepareReports([{ tf_report_error: 'api_error' }]);
-          this.terraformData.collapsed = formattedData;
-          return { data: formattedData };
+          this.collapsedData = { api_error: { tf_report_error: 'api_error' } };
+
+          return { data: this.collapsedData };
         });
-    },
-    createReportRow(report, iconName) {
-      const actions = [];
-
-      let title;
-      let subtitle;
-
-      if (report.job_path) {
-        const action = {
-          href: report.job_path,
-          text: this.$options.i18n.fullLog,
-          target: '_blank',
-          trackFullReportClicked: true,
-        };
-        actions.push(action);
-      }
-
-      if (report.isValid) {
-        if (report.job_name) {
-          title = sprintf(
-            this.$options.i18n.namedReportGenerated,
-            {
-              name: report.job_name,
-            },
-            false,
-          );
-        } else {
-          title = this.$options.i18n.reportGenerated;
-        }
-
-        subtitle = sprintf(`%{small_start}${this.$options.i18n.reportChanges}%{small_end}`, {
-          addNum: report.create,
-          changeNum: report.update,
-          deleteNum: report.delete,
-        });
-      } else {
-        if (report.job_name) {
-          title = sprintf(
-            this.$options.i18n.namedReportFailed,
-            {
-              name: report.job_name,
-            },
-            false,
-          );
-        } else {
-          title = this.$options.i18n.reportFailed;
-        }
-
-        subtitle = sprintf(`%{small_start}${this.$options.i18n.reportErrored}%{small_end}`);
-      }
-
-      return {
-        text: title,
-        supportingText: subtitle,
-        icon: { name: iconName },
-        actions,
-      };
-    },
-    prepareReports(reports) {
-      const valid = [];
-      const invalid = [];
-
-      reports.forEach((report) => {
-        if (report.isValid) {
-          valid.push(this.createReportRow(report, EXTENSION_ICONS.success));
-        } else {
-          invalid.push(this.createReportRow(report, EXTENSION_ICONS.error));
-        }
-      });
-
-      return { valid, invalid };
     },
   },
 
@@ -200,15 +92,16 @@ export default {
 
 <template>
   <mr-widget
+    :action-buttons="actionButtons"
     :error-text="$options.i18n.error"
     :status-icon-name="$options.WARNING_ICON"
     :loading-text="$options.i18n.loading"
     :widget-name="$options.name"
-    :is-collapsible="Boolean(terraformData.collapsed)"
+    :is-collapsible="hasReportsTab ? false : Boolean(collapsedData)"
     :expand-button-label="s__('Terraform|Expand Terraform report details')"
     :collapse-button-label="s__('Terraform|Collapse Terraform report details')"
     :summary="summary"
-    :content="terraformData.expanded"
+    :content="content"
     :fetch-collapsed-data="fetchCollapsedData"
   />
 </template>

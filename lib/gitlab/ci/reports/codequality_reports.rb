@@ -38,7 +38,7 @@ module Gitlab
         end
 
         def valid_degradation?(degradation)
-          JSONSchemer.schema(Pathname.new(CODECLIMATE_SCHEMA_PATH)).valid?(degradation)
+          codeclimate_schema.valid?(degradation)
         rescue StandardError => _
           false
         end
@@ -53,6 +53,12 @@ module Gitlab
           end
           summary['count'] = summary.values.sum
           summary
+        end
+
+        private
+
+        def codeclimate_schema
+          Thread.current[:codeclimate_schema] ||= JSONSchemer.schema(Pathname.new(CODECLIMATE_SCHEMA_PATH))
         end
       end
     end

@@ -18,7 +18,6 @@ import {
   TIMEOUTS,
 } from '~/observability/constants';
 import iframeNavigator from '~/observability/iframe_navigator';
-import * as cryptoModule from '~/observability/utils/nonce';
 import { AuthManager } from '~/observability/utils/auth_manager';
 
 jest.mock('~/observability/constants', () => ({
@@ -52,13 +51,6 @@ jest.mock('~/observability/iframe_navigator', () => ({
 }));
 
 jest.mock('~/observability/utils/nonce', () => ({
-  encryptPayload: jest.fn().mockResolvedValue({
-    encrypted: [1, 2, 3, 4],
-    salt: [5, 6, 7, 8],
-    iv: [9, 10, 11, 12],
-    algorithm: 'AES-GCM',
-    timestamp: Date.now(),
-  }),
   generateNonce: jest.fn(() => 'test-nonce-12345678901234567890123456'),
 }));
 
@@ -123,14 +115,6 @@ describe('Observability App Component', () => {
   beforeEach(() => {
     jest.useFakeTimers({ legacyFakeTimers: true });
     jest.clearAllMocks();
-
-    cryptoModule.encryptPayload.mockResolvedValue({
-      encrypted: [1, 2, 3, 4],
-      salt: [5, 6, 7, 8],
-      iv: [9, 10, 11, 12],
-      algorithm: 'AES-GCM',
-      timestamp: Date.now(),
-    });
 
     global.crypto = {
       getRandomValues: jest.fn((array) => array.fill(1)),

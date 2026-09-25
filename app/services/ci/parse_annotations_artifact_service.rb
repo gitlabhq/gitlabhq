@@ -26,6 +26,7 @@ module Ci
 
     def parse!(artifact)
       annotations = []
+      names = Set.new
 
       artifact.each_blob do |blob|
         # Windows powershell may output UTF-16LE files, so convert the whole file
@@ -36,6 +37,9 @@ module Ci
         raise ParserError, 'Annotations files must be a JSON object' unless blob_json.is_a?(Hash)
 
         blob_json.each do |key, value|
+          # Each name maps to one row, so the same name in two files would make the bulk upsert fail.
+          raise ParserError, "Duplicate annotation list name '#{key}' across annotations files" unless names.add?(key)
+
           annotations.push(Ci::JobAnnotation.new(job: artifact.job, name: key, data: value,
             project_id: project.id))
 

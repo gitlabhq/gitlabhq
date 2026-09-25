@@ -11,6 +11,7 @@ import {
   hasLoadPerformanceReport,
   hasMetricsReport,
   hasTestSummaryReport,
+  hasTerraformReport,
 } from 'ee_else_ce/merge_requests/reports/configured_reports';
 
 export const PIPELINE_STATE = {
@@ -113,6 +114,9 @@ export default {
     },
     hasTestSummaryReports() {
       return hasTestSummaryReport(state.mr);
+    },
+    hasTerraformReports() {
+      return hasTerraformReport(state.mr);
     },
     pipelineState() {
       return pipelineStateOf(state.mr);

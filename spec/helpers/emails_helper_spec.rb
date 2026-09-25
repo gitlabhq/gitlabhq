@@ -7,21 +7,21 @@ RSpec.describe EmailsHelper, feature_category: :shared do
   include NotifyHelper
 
   describe 'closure_reason_text' do
-    let(:issue) { create(:issue) }
+    let(:issue) { build_stubbed(:issue) }
 
     before do
       instance_variable_set(:@issue, issue)
     end
 
     context 'when given a MergeRequest' do
-      let(:merge_request) { create(:merge_request) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project, developers: user) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
       let(:merge_request_presenter) { merge_request.present }
 
       context 'when user can read merge request' do
-        let(:user) { create(:user) }
-
         before do
-          merge_request.project.add_developer(user)
           instance_variable_set(:@recipient, user)
           instance_variable_set(:@project, merge_request.project)
         end
@@ -191,7 +191,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
   end
 
   describe '#say_hi' do
-    let(:user) { create(:user, name: 'John') }
+    let(:user) { build_stubbed(:user, name: 'John') }
 
     it 'returns the greeting message for the given user' do
       expect(say_hi(user)).to eq('Hi John!')

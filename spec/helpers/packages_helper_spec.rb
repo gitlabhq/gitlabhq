@@ -8,6 +8,7 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
 
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:base_url) { "#{Gitlab.config.gitlab.url}/api/v4/" }
 
   describe '#package_registry_instance_url' do
@@ -91,8 +92,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#track_package_event' do
-    let_it_be(:project) { create(:project) }
-
     let(:action) { 'push_package' }
     let(:scope) { :terraform_module }
     let(:category) { described_class.name }
@@ -127,7 +126,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#show_cleanup_policy_link' do
-    let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:container_repository) { create(:container_repository) }
 
     subject { helper.show_cleanup_policy_link(project.reload) }
@@ -199,9 +197,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#show_container_registry_settings' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
-
     before do
       allow(helper).to receive(:current_user) { user }
     end
@@ -254,8 +249,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#show_group_package_registry_settings' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create(:admin) }
 
     before do
@@ -322,9 +315,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#group_packages_template_data' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:user) { create(:user) }
-
     before do
       allow(helper).to receive(:current_user) { user }
       stub_config(packages: { enabled: true })
@@ -368,8 +358,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#project_packages_template_data' do
-    let_it_be(:user) { create(:user) }
-
     subject { helper.project_packages_template_data(project) }
 
     before do
@@ -456,9 +444,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#can_delete_packages?' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user) }
-
     before do
       allow(helper).to receive(:current_user) { user }
     end
@@ -511,9 +496,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#can_delete_group_packages?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:user) { create(:user) }
-
     before do
       allow(helper).to receive(:current_user) { user }
     end
@@ -566,7 +548,7 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#terraform_module_presenter' do
-    let_it_be(:package) { create(:terraform_module_package) }
+    let(:package) { build_stubbed(:terraform_module_package) }
 
     subject(:presenter) { helper.terraform_module_presenter(package) }
 
@@ -580,8 +562,6 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   end
 
   describe '#packages_and_registries_group_settings_template_data' do
-    let_it_be(:user) { create(:user) }
-
     before do
       helper.instance_variable_set(:@group, group)
       allow(helper).to receive(:current_user).and_return(user)

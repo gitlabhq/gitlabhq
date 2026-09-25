@@ -55,9 +55,6 @@ module Gitlab
           'GET /api/:version/projects/:id/dependency_proxy/packages/npm/*package_name/-/*file_name' => TRACKING_URL,
           'GET /api/:version/virtual_registries/packages/maven/:id/*path' => TRACKING_URL,
 
-          'Projects::BoardsController#show' => TRACKING_URL,
-          'Groups::BoardsController#show' => TRACKING_URL,
-
           'Projects::Settings::RepositoryController#show' => TRACKING_URL,
           'Groups::Settings::RepositoryController#show' => TRACKING_URL,
 

@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
+import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import terraformExtension from '~/vue_merge_request_widget/widgets/terraform/index.vue';
 import {
   plans,
@@ -23,7 +24,9 @@ describe('Terraform extension', () => {
   let mock;
 
   const endpoint = '/path/to/terraform/report.json';
+  const reportsTabPath = '/path/to/merge_request/reports';
 
+  const findWidget = () => wrapper.findComponent(Widget);
   const findListItem = (at) => wrapper.findAllByTestId('extension-list-item').at(at);
   const findActionButton = (at) => wrapper.findAllByTestId('extension-actions-button').at(at);
 
@@ -31,11 +34,12 @@ describe('Terraform extension', () => {
     mock.onGet(endpoint).reply(response, body, header);
   };
 
-  const createComponent = () => {
+  const createComponent = ({ mrProps = {} } = {}) => {
     wrapper = mountExtended(terraformExtension, {
       propsData: {
         mr: {
           terraformReportsPath: endpoint,
+          ...mrProps,
         },
       },
     });
@@ -81,8 +85,14 @@ describe('Terraform extension', () => {
         await axios.waitForAll();
       });
 
-      it('should show the error text', () => {
+      it('shows the error text, and keeps a synthetic failed report to expand', async () => {
         expect(wrapper.text()).toContain('Failed to load Terraform reports');
+        expect(findWidget().props('isCollapsible')).toBe(true);
+
+        wrapper.findByTestId('toggle-button').trigger('click');
+        await waitForPromises();
+
+        expect(findListItem(0).text()).toContain('A Terraform report failed to generate.');
       });
     });
 
@@ -156,6 +166,56 @@ describe('Terraform extension', () => {
       expect(trackEventSpy).toHaveBeenCalledWith('click_full_report_on_merge_request_widget', {
         label: 'terraform',
       });
+    });
+
+    it('keeps the small subtle styling on the supporting text', () => {
+      expect(findListItem(0).find('.gl-text-sm.gl-text-subtle').text()).toBe(
+        `Reported Resource Changes: ${validPlanWithName.create} to add, ${validPlanWithName.update} to change, ${validPlanWithName.delete} to delete`,
+      );
+    });
+  });
+
+  describe('"View report" button', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      mockPollingApi(HTTP_STATUS_OK, plans, {});
+      createComponent({ mrProps: { reportsTabPath } });
+      await axios.waitForAll();
+    });
+
+    it('replaces the collapse toggle with a link to the terraform report', () => {
+      expect(findWidget().props('actionButtons')).toMatchObject([
+        { text: 'View report', href: `${reportsTabPath}/terraform` },
+      ]);
+      expect(findWidget().props('isCollapsible')).toBe(false);
+    });
+
+    it('navigates to the report without a page reload, and tracks the click', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const pushStateSpy = jest.spyOn(window.history, 'pushState');
+      const dispatchEventSpy = jest.spyOn(window, 'dispatchEvent');
+      const [button] = findWidget().props('actionButtons');
+      const event = { preventDefault: jest.fn() };
+
+      button.onClick(button, event);
+
+      expect(event.preventDefault).toHaveBeenCalled();
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_view_report_on_merge_request_widget',
+        { label: 'terraform' },
+        undefined,
+      );
+      expect(pushStateSpy).toHaveBeenCalledWith(null, null, `${reportsTabPath}/terraform`);
+      expect(dispatchEventSpy).toHaveBeenCalledWith(expect.any(PopStateEvent));
+    });
+
+    it('is absent, and the widget stays collapsible, without a reports tab', async () => {
+      createComponent();
+      await axios.waitForAll();
+
+      expect(findWidget().props('actionButtons')).toHaveLength(0);
+      expect(findWidget().props('isCollapsible')).toBe(true);
     });
   });
 

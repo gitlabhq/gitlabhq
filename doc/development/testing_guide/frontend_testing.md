@@ -1637,7 +1637,10 @@ Build variants with three transform helpers from `fixture_utils.js`.
 Each helper deep-clones its input and returns a new fixture, so you never clone or mutate the import.
 `setFixtureData(fixture, lookupKey, value)` sets the first matching key found in a depth-first walk of `data`.
 `setFixtureErrors(fixture, ['message'])` sets `errors` and clears `data`.
-`setFixtureItemsCount({ fixture, lookupKey, itemCount })` resizes a connection's `nodes` array under `lookupKey`, which is the connection key rather than `nodes`.
+`setFixtureItemsCount({ fixture, lookupKey, itemCount })` resizes a connection's `nodes` or `edges` array under `lookupKey`, which is the connection key rather than `nodes` or `edges`.
+When the connection has a `pageInfo`, the helper also sets `hasNextPage` and `hasPreviousPage` to `false`, so the resized list does not offer another page.
+When `itemCount` is `0`, it also sets `startCursor` and `endCursor` to `null`.
+It only changes keys the fixture already has.
 
 ```javascript
 import base from 'test_fixtures/graphql/work_items/integration/get_work_items_full.query.graphql.json';
@@ -1720,6 +1723,59 @@ setQueryVariant(restWorkItemsListVariants).statusUnlicensed();
 
 Keep REST variants separate from GraphQL variants.
 Do not derive a REST response from which GraphQL variant is active. Activate each one in the spec.
+
+#### Paginated responses
+
+To test pagination without recording each page, declare the total with `setFixtureItemsCount` in a variant, for example `MANY_PAGES` with `itemCount: 51`.
+Then let the handler serve one page per request.
+
+`createFixturePaginator({ lookupKey, variableNames, pageSize, countKey })` from `fixture_utils.js` returns a function `(fixture, variables) => fixture` that serves one page of the connection.
+It treats every node or edge in the fixture as the full result set, and works with both `nodes` and `edges` connections.
+Create it once per connection, at module level in the handler.
+It holds no state, so operations that share variable names can share one paginator.
+Call it on every request with the served fixture and the request variables.
+
+`variableNames` maps `after`, `before`, `first`, and `last` to the operation's variable names.
+It defaults to those same names.
+`pageSize` (default `20`) is used when the request sends no `first` or `last`.
+`countKey` (default `count`) is kept at the total.
+
+The paginator synthesizes its own cursors and sets `pageInfo` (`hasNextPage`, `hasPreviousPage`, `startCursor`, `endCursor`) for the served page.
+A cursor it did not issue, such as one recorded by Rails, is reported as a missing operation and throws.
+Every page of a paginated connection must go through the paginator.
+
+Prefer recorded page fixtures when the test depends on what Rails returns for a specific page.
+The `cd` and `commits` specs do this.
+Use the paginator when only the shape of pagination matters.
+
+If the UI reads the total from a separate count query, add a matching variant for that query too.
+
+```javascript
+import { createFixturePaginator } from 'ee_jest/integration/core/fixture_utils';
+
+const paginateWorkItems = createFixturePaginator({
+  lookupKey: 'workItems',
+  variableNames: {
+    after: 'afterCursor',
+    before: 'beforeCursor',
+    first: 'firstPageSize',
+    last: 'lastPageSize',
+  },
+});
+
+const OPERATION_HANDLERS = {
+  getWorkItemsFullEE: ({ variables }) =>
+    paginateWorkItems(getActiveVariant('getWorkItemsFullEE') ?? fixtures.getWorkItemsFull, variables),
+};
+```
+
+Declare the total in a variant the same way as any other item count:
+
+```javascript
+MANY_PAGES: setFixtureItemsCount({ fixture: base, lookupKey: 'workItems', itemCount: 51 }),
+```
+
+See `ee/spec/frontend/integration/work_items/list/pagination_spec.js` for an example spec.
 
 #### How the variant registry works
 

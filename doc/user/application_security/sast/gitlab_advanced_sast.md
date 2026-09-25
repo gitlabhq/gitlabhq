@@ -158,12 +158,12 @@ Code flow information is available for vulnerabilities that are detected by trac
 - Cross-site scripting (XSS)
 - Path traversal
 
-The code flow information is shown in the **Data flow** tab and includes:
+The code flow information is shown in the **Data flow** section of the vulnerability details page and includes:
 
 - The steps from source to sink.
 - The relevant files, including code snippets.
 
-![The data flow of a SQL injection, from the request parameter that supplies the search term to the database query that executes it](img/code_flow_view_v19_3.png)
+![The Data flow section of a vulnerability, showing the steps of a SQL injection from the user name argument to the database query that runs it](img/code_flow_view_v19_4.png)
 
 ## Supported languages
 
@@ -654,7 +654,7 @@ Unverified findings are clearly distinguished from fully verified vulnerabilitie
 
 - In the pipeline **Security** tab, the vulnerability description begins with an **(Unverified)** prefix.
 - In the **Vulnerability report**, unverified findings are similarly prefixed.
-- In the **Data flow** tab, unverified vulnerabilities have no source node. The first node in the
+- In the **Data flow** section of the vulnerability details page, unverified vulnerabilities have no source node. The first node in the
   flow is a **Trace Entry Point**, indicating where the partial trace begins.
 
 #### Turn on unverified vulnerability reporting

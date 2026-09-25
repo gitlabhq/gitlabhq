@@ -43,6 +43,7 @@ module Organizations
           end
         end
 
+        schedule_sync_worker
         groups.each { |group| log_transfer_success(group) }
 
         publish_transferred_events(original_organizations_by_group_id)
@@ -75,6 +76,12 @@ module Organizations
         # back, so defer to the outermost commit instead.
         ActiveRecord.after_all_transactions_commit do
           Gitlab::EventStore.publish_group(events)
+        end
+      end
+
+      def schedule_sync_worker
+        ActiveRecord.after_all_transactions_commit do
+          ::Namespaces::SyncEvent.enqueue_worker
         end
       end
 

@@ -82,7 +82,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_mcp_server_version' => { 'readOnlyHint' => true, 'toolset' => 'meta' },
         'get_merge_request' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_merge_request_commits' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
-        'get_merge_request_conflicts' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_merge_request_diffs' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_merge_request_notes' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_merge_request_pipelines' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
@@ -296,11 +295,13 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         post_list_tools
 
         tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).not_to include('create_issue', 'get_workitem_notes', 'get_issue')
+        expect(tool_names).not_to include('create_issue', 'get_workitem_notes', 'get_issue',
+          'get_merge_request_conflicts')
         manager = ::Mcp::Tools::Manager.new
         expect(manager.get_tool(name: 'create_issue')).to be_present
         expect(manager.get_tool(name: 'get_workitem_notes')).to be_present
         expect(manager.get_tool(name: 'get_issue')).to be_present
+        expect(manager.get_tool(name: 'get_merge_request_conflicts')).to be_present
       end
     end
 

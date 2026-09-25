@@ -1,10 +1,11 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import { uniqueId } from 'lodash-es';
-import { GlLabel, GlTruncate } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlLabel, GlTruncate } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 import { METADATA_KEYS } from '~/work_items/constants';
 import {
   findAssigneesWidget,
@@ -25,10 +26,18 @@ import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
+import { BOARD_CARD_NO_DRAG_CLASS } from '../constants';
 
 export default {
   name: 'WorkItemCard',
+  noDragClass: BOARD_CARD_NO_DRAG_CLASS,
+  i18n: {
+    actions: s__('WorkItemBoard|Card actions'),
+    moveToStart: s__('WorkItemBoard|Move to start of list'),
+    moveToEnd: s__('WorkItemBoard|Move to end of list'),
+  },
   components: {
+    GlDisclosureDropdown,
     GlLabel,
     GlTruncate,
     IssuableAssignees,
@@ -75,8 +84,23 @@ export default {
       type: Boolean,
       default: true,
     },
+    canReorder: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    isFirst: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    isLast: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['set-active-item'],
+  emits: ['set-active-item', 'move-to-start', 'move-to-end'],
   computed: {
     reference() {
       // An item in the board's own namespace just shows as `#iid`. An item from
@@ -170,6 +194,25 @@ export default {
         this.showAssignees || this.showHealthStatus || this.showRelationshipIcons || this.showStatus
       );
     },
+    showActionsMenu() {
+      return this.canReorder && (!this.isFirst || !this.isLast);
+    },
+    actionItems() {
+      return [
+        {
+          text: this.$options.i18n.moveToStart,
+          icon: 'arrow-up',
+          action: () => this.$emit('move-to-start'),
+          extraAttrs: { disabled: this.isFirst },
+        },
+        {
+          text: this.$options.i18n.moveToEnd,
+          icon: 'arrow-down',
+          action: () => this.$emit('move-to-end'),
+          extraAttrs: { disabled: this.isLast },
+        },
+      ];
+    },
   },
   methods: {
     isMetadataHidden(key) {
@@ -200,7 +243,7 @@ export default {
     :class="{
       '!gl-border-feedback-info !gl-bg-feedback-info hover:!gl-bg-feedback-info': isActive,
     }"
-    class="js-board-card gl-border gl-rounded-lg gl-border-section gl-bg-section hover:gl-bg-subtle"
+    class="js-board-card gl-group gl-border gl-relative gl-rounded-lg gl-border-section gl-bg-section hover:gl-bg-subtle"
   >
     <a
       :href="item.webPath"
@@ -208,7 +251,10 @@ export default {
       class="gl-flex gl-min-w-0 gl-flex-col gl-gap-2 gl-p-3 gl-text-default hover:gl-text-default hover:gl-no-underline"
       @click="handleCardClick"
     >
-      <div class="gl-flex gl-min-w-0 gl-items-center gl-gap-2">
+      <div
+        class="gl-flex gl-min-w-0 gl-items-center gl-gap-2"
+        :class="{ 'gl-pr-6': showActionsMenu }"
+      >
         <work-item-type-icon
           v-if="item.workItemType"
           :work-item-type="item.workItemType.name"
@@ -296,5 +342,21 @@ export default {
         <work-item-status-badge v-if="showStatus" :item="status" />
       </div>
     </a>
+    <gl-disclosure-dropdown
+      v-if="showActionsMenu"
+      :items="actionItems"
+      :toggle-text="$options.i18n.actions"
+      :class="[
+        $options.noDragClass,
+        'gl-invisible gl-absolute gl-right-3 gl-top-3 group-focus-within:gl-visible group-hover:gl-visible',
+      ]"
+      icon="ellipsis_v"
+      category="tertiary"
+      size="small"
+      placement="bottom-end"
+      no-caret
+      text-sr-only
+      data-testid="card-actions-menu"
+    />
   </li>
 </template>

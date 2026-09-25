@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe AppearancesHelper, feature_category: :navigation do
   let_it_be(:gitlab_logo) { ActionController::Base.helpers.image_path('logo.svg') }
-  let_it_be(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -57,7 +57,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
 
   describe '#appearance_apple_touch_icon' do
     it 'returns the default icon' do
-      create(:appearance)
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance))
 
       expect(helper.appearance_apple_touch_icon).to match(
         "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
@@ -83,13 +83,13 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
 
   describe '#appearance_pwa_name' do
     it 'returns the default value' do
-      create(:appearance)
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance))
 
       expect(helper.appearance_pwa_name).to match('GitLab')
     end
 
     it 'returns the customized value' do
-      create(:appearance, pwa_name: 'GitLab as PWA')
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance, pwa_name: 'GitLab as PWA'))
 
       expect(helper.appearance_pwa_name).to match('GitLab as PWA')
     end
@@ -97,13 +97,13 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
 
   describe '#appearance_pwa_short_name' do
     it 'returns the default value' do
-      create(:appearance)
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance))
 
       expect(helper.appearance_pwa_short_name).to match('GitLab')
     end
 
     it 'returns the customized value' do
-      create(:appearance, pwa_short_name: 'Short')
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance, pwa_short_name: 'Short'))
 
       expect(helper.appearance_pwa_short_name).to match('Short')
     end
@@ -111,13 +111,14 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
 
   describe '#appearance_pwa_description' do
     it 'returns the default value' do
-      create(:appearance)
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance))
 
       expect(helper.appearance_pwa_description).to include('The complete DevOps platform.')
     end
 
     it 'returns the customized value' do
-      create(:appearance, pwa_description: 'This is a description')
+      allow(Appearance).to receive(:current)
+        .and_return(build_stubbed(:appearance, pwa_description: 'This is a description'))
 
       expect(helper.appearance_pwa_description).to match('This is a description')
     end
@@ -141,7 +142,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
 
   describe '#header_message' do
     it 'returns nil when header message field is not set' do
-      create(:appearance)
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance))
 
       expect(helper.header_message).to be_nil
     end
@@ -158,7 +159,7 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
 
   describe '#footer_message' do
     it 'returns nil when footer message field is not set' do
-      create(:appearance)
+      allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance))
 
       expect(helper.footer_message).to be_nil
     end
@@ -201,7 +202,9 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
     end
 
     context 'when there is a title' do
-      let_it_be(:appearance) { create(:appearance, title: 'My title') }
+      before do
+        allow(Appearance).to receive(:current).and_return(build_stubbed(:appearance, title: 'My title'))
+      end
 
       it 'returns the title' do
         expect(helper.brand_image).to match(%r{img alt="My title"})
@@ -287,7 +290,8 @@ RSpec.describe AppearancesHelper, feature_category: :navigation do
     end
 
     it 'returns the title if current_appearance is present' do
-      appearance = create(:appearance, title: 'Gitlab.com')
+      appearance = build_stubbed(:appearance, title: 'Gitlab.com')
+      allow(Appearance).to receive(:current).and_return(appearance)
 
       expect(helper.brand_title).to eq(appearance.title)
     end

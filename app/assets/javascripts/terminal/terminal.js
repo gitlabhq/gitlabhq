@@ -1,12 +1,7 @@
-import { throttle } from 'lodash-es';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks';
-// eslint-disable-next-line import-x/no-deprecated
-import { canScrollUp, canScrollDown } from '~/lib/utils/dom_utils';
 import { __ } from '~/locale';
-
-const SCROLL_MARGIN = 5;
 
 Terminal.applyAddon(fit);
 Terminal.applyAddon(webLinks);
@@ -76,24 +71,6 @@ export default class GLTerminal {
   handleSocketFailure() {
     this.terminal.write('\r\n');
     this.terminal.write(__('Connection failure'));
-  }
-
-  addScrollListener(onScrollLimit) {
-    const viewport = this.container.querySelector('.xterm-viewport');
-    const listener = throttle(() => {
-      onScrollLimit({
-        // eslint-disable-next-line import-x/no-deprecated
-        canScrollUp: canScrollUp(viewport, SCROLL_MARGIN),
-        // eslint-disable-next-line import-x/no-deprecated
-        canScrollDown: canScrollDown(viewport, SCROLL_MARGIN),
-      });
-    });
-
-    this.onDispose.push(() => viewport.removeEventListener('scroll', listener));
-    viewport.addEventListener('scroll', listener);
-
-    // don't forget to initialize value before scroll!
-    listener({ target: viewport });
   }
 
   disable() {

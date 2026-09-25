@@ -25,12 +25,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is a standard user' do
-      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-      # subject, or an in-memory mutation that survives reload/refind). Do not
-      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-      # (see gitlab-org/gitlab#602925).
-      let_it_be(:user, freeze: false) { create(:user) }
+      let(:user) { build_stubbed(:user) }
 
       it do
         is_expected.to contain_exactly(
@@ -46,7 +41,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is an admin user' do
-      let_it_be(:user, freeze: false) { create(:user, :admin) }
+      let(:user) { build_stubbed(:user, :admin) }
 
       it do
         is_expected.to contain_exactly(
@@ -62,25 +57,25 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is blocked by LDAP' do
-      let_it_be(:user, freeze: false) { create(:omniauth_user, :ldap_blocked) }
+      let(:user) { build_stubbed(:omniauth_user, state: 'ldap_blocked') }
 
       it { is_expected.to contain_exactly("edit", "ldap", "delete", "delete_with_contributions") }
     end
 
     context 'the user is blocked pending approval' do
-      let_it_be(:user, freeze: false) { create(:user, :blocked_pending_approval) }
+      let(:user) { build_stubbed(:user, state: 'blocked_pending_approval') }
 
       it { is_expected.to contain_exactly("edit", "approve", "reject") }
     end
 
     context 'the user is blocked' do
-      let_it_be(:user, freeze: false) { create(:user, :blocked) }
+      let(:user) { build_stubbed(:user, state: 'blocked') }
 
       it { is_expected.to contain_exactly("edit", "unblock", "delete", "delete_with_contributions") }
     end
 
     context 'the user is deactivated' do
-      let_it_be(:user, freeze: false) { create(:user, :deactivated) }
+      let(:user) { build_stubbed(:user, state: 'deactivated') }
 
       it do
         is_expected.to contain_exactly(
@@ -95,11 +90,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is locked' do
-      let_it_be(:user, freeze: false) { create(:user) }
-
-      before do
-        user.lock_access!
-      end
+      let(:user) { build_stubbed(:user, locked_at: Time.current) }
 
       it do
         is_expected.to contain_exactly(
@@ -116,13 +107,13 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is banned' do
-      let_it_be(:user, freeze: false) { create(:user, :banned) }
+      let(:user) { build_stubbed(:user, state: 'banned') }
 
       it { is_expected.to contain_exactly("edit", "unban", "delete", "delete_with_contributions") }
     end
 
     context 'the user is trusted' do
-      let_it_be(:user, freeze: false) { create(:user, :trusted) }
+      let_it_be_with_reload(:user) { create(:user, :trusted) }
 
       it do
         is_expected.to contain_exactly("edit",
@@ -148,18 +139,14 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the user is a sole owner of a group' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:user, freeze: false) { create(:user) }
-
-      before_all do
-        group.add_owner(user)
-      end
+      let_it_be_with_reload(:user) { create(:user) }
+      let_it_be(:group) { create(:group, owners: user) }
 
       it { is_expected.to contain_exactly("edit", "block", "ban", "deactivate", "delete_with_contributions", "trust") }
     end
 
     context 'the user is a bot' do
-      let_it_be(:user, freeze: false) { create(:user, :bot) }
+      let(:user) { build_stubbed(:user, :bot) }
 
       it { is_expected.to match_array([]) }
     end
@@ -167,7 +154,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     context 'for the remove_from_organization action' do
       let_it_be(:organization) { create(:organization) }
 
-      let_it_be(:user, freeze: false) do
+      let_it_be_with_reload(:user) do
         create(:user, organization: create(:organization), organizations: [organization])
       end
 
@@ -228,7 +215,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
         end
 
         context 'when the user does not belong to the organization' do
-          let_it_be(:user, freeze: false) { create(:user) }
+          let(:user) { build_stubbed(:user) }
 
           it { is_expected.not_to include('remove_from_organization') }
         end
@@ -248,7 +235,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
           end
 
           context 'when the current user is not an organization owner' do
-            let_it_be(:current_user) { create(:user) }
+            let(:current_user) { build_stubbed(:user) }
 
             it { is_expected.not_to include('remove_from_organization') }
           end
@@ -283,7 +270,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
       end
 
       context 'when the user does not belong to the organization' do
-        let_it_be(:user) { create(:user) }
+        let(:user) { build_stubbed(:user) }
 
         it { is_expected.to be_nil }
       end

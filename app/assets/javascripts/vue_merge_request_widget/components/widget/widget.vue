@@ -352,11 +352,13 @@ export default {
 <template>
   <section class="media-section" data-testid="widget-extension">
     <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4">
-      <status-icon
-        :name="widgetName"
-        :is-loading="shouldShowLoadingIcon"
-        :icon-name="summaryStatusIcon"
-      />
+      <slot name="status-icon">
+        <status-icon
+          :name="widgetName"
+          :is-loading="shouldShowLoadingIcon"
+          :icon-name="summaryStatusIcon"
+        />
+      </slot>
       <div
         class="media-body gl-flex !gl-flex-row gl-self-center"
         data-testid="widget-extension-top-level"

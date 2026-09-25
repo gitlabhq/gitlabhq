@@ -102,6 +102,8 @@ RSpec.describe Projects::BoardsController, feature_category: :planning_views do
   describe 'GET show' do
     let_it_be(:board) { create(:board, project: project) }
 
+    it_behaves_like 'recent board visit allowed on GET'
+
     context 'when format is HTML' do
       it 'renders template' do
         expect { read_board board: board }.to change { BoardProjectRecentVisit.count }.by(1)

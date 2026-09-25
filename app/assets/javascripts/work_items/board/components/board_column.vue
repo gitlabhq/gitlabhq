@@ -11,7 +11,12 @@ import { DEFAULT_PAGE_SIZE_BOARD_COLUMN_SUBSEQUENT } from '~/work_items/constant
 import { getWorkItemsConnection } from '~/work_items/utils';
 
 import { boardColumnQuery, boardColumnQueryVariables } from '../utils';
-import { BOARD_DND_GROUP, BOARD_CARD_CLASS, BOARD_CARD_DROP_INDICATOR_CLASS } from '../constants';
+import {
+  BOARD_DND_GROUP,
+  BOARD_CARD_CLASS,
+  BOARD_CARD_DROP_INDICATOR_CLASS,
+  BOARD_CARD_NO_DRAG_CLASS,
+} from '../constants';
 import ColumnHeader from './column_header.vue';
 import WorkItemCard from './work_item_card.vue';
 import WorkItemCardSkeleton from './work_item_card_skeleton.vue';
@@ -23,6 +28,8 @@ export default {
     ...defaultSortableOptions,
     draggable: `.${BOARD_CARD_CLASS}`,
     ghostClass: BOARD_CARD_DROP_INDICATOR_CLASS,
+    filter: `.${BOARD_CARD_NO_DRAG_CLASS}`,
+    preventOnFilter: false,
     delay: DRAG_DELAY,
     delayOnTouchOnly: true,
   },
@@ -125,9 +132,15 @@ export default {
       required: false,
       default: false,
     },
+    canReorderCards: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: [
     'card-move',
+    'card-move-to-position',
     'set-active-item',
     'toggle-collapse',
     'drag-start',
@@ -246,6 +259,13 @@ export default {
       sortableEnd();
       this.$emit('card-move', evt);
     },
+    moveCardToPosition(oldIndex, newIndex) {
+      this.$emit('card-move-to-position', {
+        workItemId: this.workItems[oldIndex]?.id,
+        oldIndex,
+        newIndex,
+      });
+    },
     fetchNextPage() {
       if (!this.hasNextPage || this.fetchNextPageInProgress) {
         return;
@@ -360,14 +380,19 @@ export default {
           <work-item-card-skeleton v-if="insertingCard" />
         </template>
         <work-item-card
-          v-for="workItem in workItems"
+          v-for="(workItem, index) in workItems"
           :key="workItem.id"
           :item="workItem"
           :hidden-metadata-keys="hiddenMetadataKeys"
           :root-page-full-path="rootPageFullPath"
           :active-item="activeItem"
           :detail-panel-enabled="detailPanelEnabled"
+          :can-reorder="canReorderCards"
+          :is-first="index === 0"
+          :is-last="index === workItems.length - 1"
           @set-active-item="$emit('set-active-item', $event)"
+          @move-to-start="moveCardToPosition(index, 0)"
+          @move-to-end="moveCardToPosition(index, workItems.length - 1)"
         />
         <template #footer>
           <work-item-card-skeleton

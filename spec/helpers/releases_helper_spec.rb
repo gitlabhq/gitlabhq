@@ -10,9 +10,10 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
   end
 
   context 'url helpers' do
-    let(:project) { build(:project, namespace: create(:group)) }
-    let(:release) { create(:release, project: project) }
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
+
+    let(:project) { build_stubbed(:project, namespace: build_stubbed(:group)) }
+    let(:release) { build_stubbed(:release, project: project) }
     let(:can_user_create_release) { false }
     let(:common_keys) { [:project_id, :project_path, :illustration_path, :documentation_path, :atom_feed_path] }
 
@@ -95,17 +96,11 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
 
     describe '#data_for_show_page' do
       let_it_be(:user) { create(:user) }
-      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-      # subject, or an in-memory mutation that survives reload/refind). Do not
-      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-      # (see gitlab-org/gitlab#602925).
-      let_it_be(:project, freeze: false) { create(:project, :repository) }
-      let_it_be(:commit, freeze: false) do
-        create(:commit, project: project, id: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:release) do
+        create(:release, project: project, tag: 'v1.0.0', sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
       end
 
-      let_it_be(:release, freeze: false) { create(:release, project: project, tag: 'v1.0.0', sha: commit.id) }
       let_it_be(:environment) { create(:environment, project: project) }
       let_it_be(:deployable) { create(:ci_build, user: user, project: project) }
       let_it_be(:deployment) do
@@ -116,6 +111,8 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
           ref: release.tag,
           sha: release.sha)
       end
+
+      let(:commit) { build(:commit, project: project, id: release.sha) }
 
       # rubocop: disable CodeReuse/ActiveRecord -- mock for can? is incorrectly flagged
       before do
@@ -224,7 +221,7 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
     end
 
     describe '#index_page_startup_query_variables' do
-      let_it_be(:project, freeze: false) { build(:project, namespace: create(:group)) }
+      let(:project) { build_stubbed(:project, namespace: build_stubbed(:group)) }
 
       before do
         helper.instance_variable_set(:@project, project)

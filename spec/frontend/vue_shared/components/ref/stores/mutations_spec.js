@@ -183,7 +183,7 @@ describe('Ref selector Vuex store mutations', () => {
     });
   });
 
-  describe(`${types.RECEIVE_REQUEST_TAGS_SUCCESS}`, () => {
+  describe(`${types.RECEIVE_TAGS_SUCCESS}`, () => {
     it('updates state.matches.tags based on the provided API response', () => {
       const response = {
         data: [

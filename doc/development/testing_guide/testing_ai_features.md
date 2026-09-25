@@ -38,22 +38,18 @@ Use [frontend feature tests](testing_levels.md#frontend-feature-tests) to valida
 
 ## DAP feature tests in core feature pages
 
-To test that DAP features are functional in a core feature page and core features are functional with DAP components,
-use the following shared context and examples in a feature spec:
+To load DAP components in a feature page by default, include the shared context
+`include_context 'with duo features enabled and agentic chat available for group on SaaS'` in a feature spec.
 
-- Include the shared context `include_context 'with duo features enabled and agentic chat available for group on SaaS'`
-  to load DAP components in a feature page by default.
-- Include the shared examples `it_behaves_like 'user can use agentic chat'` to test DAP features in a feature page.
+### Duo agentic chat feature specs
 
-For instance, `ee/spec/features/epic_boards/epic_boards_spec.rb` asserts the following scenario:
+Agentic chat feature-spec coverage is consolidated in `ee/spec/features/duo_chat/agentic_chat_smoke_spec.rb`. We strongly
+suggest to prefer the `MSW` integration suite at `ee/spec/frontend/integration/ai_duo_panel/duo_agentic_chat/` over adding
+a new feature spec to test Agentic Chat.
 
-- Epic board is functional on a page that loads DAP components in the sidebar.
-- DAP feature is functional in a page where the epic board is rendered.
-  1. User visits a core feature page and opens GitLab Duo Agentic Chat from the sidebar.
-  1. User asks a question in the chat.
-  1. Frontend JS/Vue initiates websocket connection with Workhorse (This Workhorse instance runs locally in the test environment).
-  1. Frontend JS/Vue sends a gRPC request to DWS through Workhorse (This DWS instance runs locally in the test environment).
-     LLM responses are mocked for explicit assertions therefore test failures are reproducible.
+Implement a feature spec when you want to test an interaction between agentic chat and other features. For example, the
+`agentic_chat_smoke_spec.rb` test suite exercises opening agentic chat using Call-to-Action buttons in the Work Item, Pipeline,
+and Merge Request pages.
 
 ### Run DAP feature tests when making a change in AI Gateway
 
@@ -76,7 +72,7 @@ These feature tests also run when we make a change to the AI Gateway repository,
      This allows the feature tests to request to your local DWS instance. Make sure the following configuration is set to your local DWS and it's running:
      - Set `true` to `AIGW_MOCK_MODEL_RESPONSES`
      - Set `true` to `AIGW_USE_AGENTIC_MOCK`
-1. Run a feature spec e.g. `bundle exec rspec ee/spec/features/epic_boards/epic_boards_spec.rb`.
+1. Run a feature spec, for example `bundle exec rspec ee/spec/features/duo_chat/agentic_chat_smoke_spec.rb`.
 
 ### See logs of a test case
 
@@ -87,7 +83,7 @@ Here are the couple of pointers:
 - GitLab-Rails REST API ... `log/api_json.log`
 - GitLab-Rails GraphQL API ... `log/graphql_json.log`
 - GitLab-Workhorse ... `log/workhorse-test.log`
-- DWS ... Either stdout or `DUO_WORKFLOW_LOGGING__TO_FILE` in `gitlab-ai-gateway` repo.
+- DWS ... `log/duo-workflow-service.log`. CI collects this file as a job artifact, and on a failing example tagged `:duo_workflow_service`, the last 60 lines print automatically in the RSpec output.
 - You can also examine the state of VueJS app by having JS console log output:
 
   ```ruby

@@ -63,6 +63,10 @@ An annotations report is a JSON file with annotation sections. Each annotation
 section can have any desired name and can have any number of annotations of the
 same or differing types.
 
+If the report path matches more than one file, each section name must be unique
+across all matched files. If two files contain a section with the same name,
+the artifact upload fails.
+
 Each annotation is a single key (the annotation type), containing the subkeys with
 the data for that annotation.
 

@@ -17,6 +17,10 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
     it 'returns available versions in order' do
       expect(described_class.available_versions).to eq(['0.1.0'])
     end
+
+    it 'is unlisted while it awaits removal' do
+      expect(described_class.new(name: service_name).unlisted?).to be(true)
+    end
   end
 
   describe 'version metadata' do

@@ -322,7 +322,7 @@ A vulnerability's code flow is the path the data takes from the user input (sour
 For details on how to view a vulnerability's code flow, see
 [Vulnerability code flow](../sast/gitlab_advanced_sast.md#code-flow).
 
-![The data flow of a SQL injection, from the request parameter that supplies the search term to the database query that executes it](img/code_flow_view_v19_3.png)
+![The Data flow section of a vulnerability, showing the steps of a SQL injection from the user name argument to the database query that runs it](img/code_flow_view_v19_4.png)
 
 ## Vulnerability status values
 

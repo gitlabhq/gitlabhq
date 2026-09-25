@@ -56,6 +56,9 @@ describe('WorkItemCard', () => {
   const stubFrom = (name, props = []) => ({ name, props, template: '<div />' });
 
   const findCard = () => wrapper.findByTestId('work-item-board-card');
+  const findActionsMenu = () => wrapper.findComponentByTestId('card-actions-menu');
+  const findActionItems = () => findActionsMenu().props('items');
+  const findActionItem = (text) => findActionItems().find((item) => item.text === text);
 
   const createComponent = ({
     item = buildItem(),
@@ -63,9 +66,21 @@ describe('WorkItemCard', () => {
     rootPageFullPath = '',
     activeItem = null,
     detailPanelEnabled = true,
+    canReorder = false,
+    isFirst = false,
+    isLast = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemCard, {
-      propsData: { item, hiddenMetadataKeys, rootPageFullPath, activeItem, detailPanelEnabled },
+      propsData: {
+        item,
+        hiddenMetadataKeys,
+        rootPageFullPath,
+        activeItem,
+        detailPanelEnabled,
+        canReorder,
+        isFirst,
+        isLast,
+      },
       stubs: {
         WorkItemStatusBadge: stubFrom('WorkItemStatusBadge', ['item']),
         IssueWeight: stubFrom('IssueWeight'),
@@ -495,6 +510,52 @@ describe('WorkItemCard', () => {
       });
 
       expect(findFooter().exists()).toBe(false);
+    });
+  });
+
+  describe('actions menu', () => {
+    it('is not rendered when canReorder is false', () => {
+      createComponent({ canReorder: false });
+
+      expect(findActionsMenu().exists()).toBe(false);
+    });
+
+    it('is not rendered when the card is both first and last in the column', () => {
+      createComponent({ canReorder: true, isFirst: true, isLast: true });
+
+      expect(findActionsMenu().exists()).toBe(false);
+    });
+
+    it('renders both move actions in order, each with a direction icon', () => {
+      createComponent({ canReorder: true });
+
+      expect(findActionItems().map((item) => [item.text, item.icon])).toEqual([
+        ['Move to start of list', 'arrow-up'],
+        ['Move to end of list', 'arrow-down'],
+      ]);
+    });
+
+    it('disables "Move to start of list" on the first card and "Move to end of list" on the last', () => {
+      createComponent({ canReorder: true, isFirst: true, isLast: false });
+
+      expect(findActionItem('Move to start of list').extraAttrs.disabled).toBe(true);
+      expect(findActionItem('Move to end of list').extraAttrs.disabled).toBe(false);
+    });
+
+    it('emits move-to-start when "Move to start of list" is actioned', () => {
+      createComponent({ canReorder: true });
+
+      findActionItem('Move to start of list').action();
+
+      expect(wrapper.emitted('move-to-start')).toEqual([[]]);
+    });
+
+    it('emits move-to-end when "Move to end of list" is actioned', () => {
+      createComponent({ canReorder: true });
+
+      findActionItem('Move to end of list').action();
+
+      expect(wrapper.emitted('move-to-end')).toEqual([[]]);
     });
   });
 });

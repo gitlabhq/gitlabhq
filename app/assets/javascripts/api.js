@@ -62,8 +62,6 @@ const Api = {
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
   projectTemplatesPath: '/api/:version/projects/:id/templates/:type',
   userCountsPath: '/api/:version/user_counts',
-  usersPath: '/api/:version/users.json',
-  userPath: '/api/:version/users/:id',
   userStatusPath: '/api/:version/users/:id/status',
   userProjectsPath: '/api/:version/users/:id/projects',
   userPostStatusPath: '/api/:version/user/status',
@@ -645,32 +643,6 @@ const Api = {
       .replace(':type', type)
       .replace(':project_path', projectPath)
       .replace(':namespace_path', namespacePath);
-  },
-
-  /**
-   * @deprecated This method will be removed soon. Use the
-   * `getUsers` method in `~/rest_api` instead.
-   */
-  users(query, options) {
-    const url = Api.buildUrl(this.usersPath);
-    return axios.get(url, {
-      params: {
-        search: query,
-        per_page: DEFAULT_PER_PAGE,
-        ...options,
-      },
-    });
-  },
-
-  /**
-   * @deprecated This method will be removed soon. Use the
-   * `getUser` method in `~/rest_api` instead.
-   */
-  user(id, options) {
-    const url = Api.buildUrl(this.userPath).replace(':id', encodeURIComponent(id));
-    return axios.get(url, {
-      params: options,
-    });
   },
 
   /**

@@ -54,7 +54,9 @@ module Mcp
               description: {
                 type: 'string',
                 description: 'Description in GitLab Flavored Markdown ' \
-                  "(max #{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters).",
+                  "(max #{Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH} characters). Lines " \
+                  'beginning with "/" are rejected to avoid triggering quick actions. Use add_labels, ' \
+                  'assignee_ids, and the other fields instead.',
                 maxLength: Concerns::Constants::MARKDOWN_TEXT_MAX_LENGTH
               },
               assignee_ids: {

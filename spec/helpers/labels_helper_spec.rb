@@ -11,13 +11,13 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
         subject { show_label_issuables_link?(label.present(issuable_subject: nil), issuables_type) }
 
         context "when #{issuables_type} are enabled for the project" do
-          let(:project) { create(:project, "#{issuables_type}_access_level": ProjectFeature::ENABLED) }
+          let(:project) { build(:project, "#{issuables_type}_access_level": ProjectFeature::ENABLED) }
 
           it { is_expected.to be(when_enabled) }
         end
 
         context "when #{issuables_type} are disabled for the project" do
-          let(:project) { create(:project, :public, "#{issuables_type}_access_level": ProjectFeature::DISABLED) }
+          let(:project) { build(:project, :public, "#{issuables_type}_access_level": ProjectFeature::DISABLED) }
 
           it { is_expected.to be(when_disabled) }
         end
@@ -25,7 +25,7 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
     end
 
     context 'with a project label' do
-      let(:label) { create(:label, project: project, title: 'bug') }
+      let(:label) { build_stubbed(:label, project: project, title: 'bug') }
 
       context 'when asking for an issue link' do
         it_behaves_like 'a valid response to show_label_issuables_link?', :issues
@@ -37,9 +37,8 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
     end
 
     context 'with a group label' do
-      let_it_be(:group) { create(:group) }
-
-      let(:label) { create(:group_label, group: group, title: 'bug') }
+      let(:group) { build_stubbed(:group) }
+      let(:label) { build_stubbed(:group_label, group: group, title: 'bug') }
 
       context 'when asking for an issue link' do
         it_behaves_like 'a valid response to show_label_issuables_link?', :issues, true, true
@@ -52,8 +51,8 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
   end
 
   describe 'link_to_label' do
-    let(:project) { create(:project) }
-    let(:label) { create(:label, project: project) }
+    let(:project) { build_stubbed(:project) }
+    let(:label) { build_stubbed(:label, project: project) }
     let(:subject) { nil }
     let(:label_presenter) { label.present(issuable_subject: subject) }
 
@@ -146,7 +145,7 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
   end
 
   describe 'create_label_title' do
-    let_it_be(:group) { create(:group) }
+    let(:group) { build_stubbed(:group) }
 
     context 'with a group as subject' do
       it 'returns "Create group label"' do
@@ -155,7 +154,7 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
     end
 
     context 'with a project as subject' do
-      let_it_be(:project) { create(:project, namespace: group) }
+      let(:project) { build_stubbed(:project, namespace: group) }
 
       it 'returns "Create project label"' do
         expect(create_label_title(project)).to eq _('Create project label')
@@ -170,7 +169,7 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
   end
 
   describe 'view_labels_title' do
-    let_it_be(:group) { create(:group) }
+    let(:group) { build_stubbed(:group) }
 
     context 'with a group as subject' do
       it 'returns "View group labels"' do
@@ -179,7 +178,7 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
     end
 
     context 'with a project as subject' do
-      let_it_be(:project) { create(:project, namespace: group) }
+      let(:project) { build_stubbed(:project, namespace: group) }
 
       it 'returns "View project labels"' do
         expect(view_labels_title(project)).to eq _('View project labels')
@@ -194,8 +193,8 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
   end
 
   describe 'labels_filter_path' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project) }
+    let(:group) { build_stubbed(:group) }
+    let(:project) { build_stubbed(:project) }
 
     it 'links to the dashboard labels page' do
       expect(labels_filter_path).to eq(dashboard_labels_path)
@@ -245,13 +244,13 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
     subject { label_status_tooltip(label.present(issuable_subject: nil), status) }
 
     context 'with a project label' do
-      let(:label) { create(:label, title: 'bug') }
+      let(:label) { build_stubbed(:label, title: 'bug') }
 
       it { is_expected.to eq('Subscribe at project level') }
     end
 
     context 'with a group label' do
-      let(:label) { create(:group_label, title: 'bug') }
+      let(:label) { build_stubbed(:group_label, title: 'bug') }
 
       it { is_expected.to eq('Subscribe at group level') }
     end
@@ -259,7 +258,7 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
 
   describe '#label_tooltip_title' do
     let(:html) { '<img src="example.png">This is an image</img>' }
-    let(:label_with_html_content) { create(:label, title: 'test', description: html) }
+    let(:label_with_html_content) { build_stubbed(:label, title: 'test', description: html) }
 
     context 'tooltip shows description' do
       it 'leaves HTML untouched' do
@@ -319,9 +318,9 @@ RSpec.describe LabelsHelper, feature_category: :team_planning do
   end
 
   describe '#show_labels_full_path?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let(:group) { build_stubbed(:group) }
+    let(:subgroup) { build_stubbed(:group, parent: group) }
+    let(:project) { build_stubbed(:project, group: group) }
 
     context 'within a project' do
       it 'returns truthy' do

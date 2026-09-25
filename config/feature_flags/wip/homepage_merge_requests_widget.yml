@@ -1,0 +1,10 @@
+---
+name: homepage_merge_requests_widget
+description: Merge requests widget on the personal homepage
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/627724
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256604
+rollout_issue_url:
+milestone: '19.5'
+group: group::activation
+type: wip
+default_enabled: false

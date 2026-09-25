@@ -543,8 +543,6 @@ methods:
   ee/app/models/geo_node_status.rb:
   - attribute_timestamp
   - attribute_timestamp=
-  ee/app/models/gitlab_subscriptions/add_on_purchase.rb:
-  - self.uniq_add_on_names
   ee/app/models/gitlab_subscriptions/duo_core.rb:
   - self.any_add_on_purchase_for_namespace?
   ee/app/models/gitlab_subscriptions/duo_enterprise.rb:

@@ -53,6 +53,22 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
         expect(group).to be_valid
       end
 
+      it 'enqueues the namespace sync event worker' do
+        expect(Namespaces::SyncEvent).to receive(:enqueue_worker)
+
+        service.execute
+      end
+
+      it 'does not enqueue the namespace sync event worker when a wrapping transaction rolls back' do
+        expect(Namespaces::SyncEvent).not_to receive(:enqueue_worker)
+
+        ApplicationRecord.transaction do
+          expect(service.execute).to be_success
+
+          raise ActiveRecord::Rollback
+        end
+      end
+
       context 'with subgroups and projects' do
         let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
         let_it_be_with_refind(:project) { create(:project, namespace: group, organization: old_organization) }

@@ -31,6 +31,7 @@ describe('Merge request reports App component', () => {
   const findAccessibilityNavItem = () => wrapper.findComponent({ name: 'AccessibilityNavItem' });
   const findTestSummaryProvider = () => wrapper.findComponent({ name: 'TestSummaryProvider' });
   const findTestSummaryNavItem = () => wrapper.findComponent({ name: 'TestSummaryNavItem' });
+  const findTerraformNavItem = () => wrapper.findComponent({ name: 'TerraformNavItem' });
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findKeepAlive = () => wrapper.findByTestId('keep-alive');
   const findRouterView = () => wrapper.findComponent({ name: 'RouterView' });
@@ -74,6 +75,7 @@ describe('Merge request reports App component', () => {
   };
 
   const codeQualityConfigured = { codequality_reports_path: 'codequality_reports.json' };
+  const terraformConfigured = { terraform_reports_path: 'terraform_reports.json' };
   const accessibilityConfigured = { accessibility_report_path: 'accessibility_report.json' };
   const testSummaryConfigured = { test_reports_path: 'test_reports.json' };
 
@@ -148,6 +150,14 @@ describe('Merge request reports App component', () => {
         },
         MetricsNavItem: {
           name: 'MetricsNavItem',
+          template: '<div></div>',
+        },
+        TerraformProvider: {
+          name: 'TerraformProvider',
+          template: '<div><slot /></div>',
+        },
+        TerraformNavItem: {
+          name: 'TerraformNavItem',
           template: '<div></div>',
         },
       },
@@ -318,6 +328,16 @@ describe('Merge request reports App component', () => {
 
       expect(wrapper.vm.$route.path).toBe('/');
       expect(findEmptyState().props('type')).toBe('no-reports');
+    });
+
+    it('shows the terraform nav item and navigates to it when only terraform is configured', async () => {
+      mockPipeline(false, terraformConfigured);
+      createComponent();
+      await waitForPromises();
+      await emitSecurityScansChange(false);
+
+      expect(findTerraformNavItem().exists()).toBe(true);
+      expect(wrapper.vm.$route.name).toBe('terraform');
     });
 
     it('shows the sidebar when a report is configured', async () => {

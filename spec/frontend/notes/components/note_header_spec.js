@@ -50,10 +50,11 @@ describe('NoteHeader component', () => {
     status_tooltip_html: statusHtml,
   };
 
-  const createComponent = (props) => {
+  const createComponent = (props, slots = {}) => {
     wrapper = shallowMountExtended(NoteHeader, {
       pinia,
       propsData: { ...props },
+      slots,
     });
   };
 
@@ -165,7 +166,38 @@ describe('NoteHeader component', () => {
     });
   });
 
+  describe('when hideUsername is true', () => {
+    beforeEach(() => {
+      createComponent({ author, hideUsername: true });
+    });
+
+    it('does not render the username link', () => {
+      expect(authorUsernameLink().exists()).toBe(false);
+    });
+
+    it('still renders the author name link', () => {
+      expect(findAuthorNameLink().exists()).toBe(true);
+      expect(findAuthorName().text()).toBe('Root');
+    });
+
+    it('drops the note-header-info slot, which sits inside the username link', () => {
+      const slots = { 'note-header-info': '<span>extra</span>' };
+
+      createComponent({ author }, slots);
+      expect(wrapper.text()).toContain('extra');
+
+      createComponent({ author, hideUsername: true }, slots);
+      expect(wrapper.text()).not.toContain('extra');
+    });
+  });
+
   describe('author username link', () => {
+    it('renders by default', () => {
+      createComponent({ author });
+
+      expect(authorUsernameLink().exists()).toBe(true);
+    });
+
     it('proxies `mouseenter` event to author name link', () => {
       createComponent({ author });
 

@@ -70,6 +70,8 @@ RSpec.describe Groups::BoardsController, feature_category: :planning_views do
   describe 'GET show' do
     let_it_be(:board) { create(:board, group: group) }
 
+    it_behaves_like 'recent board visit allowed on GET'
+
     context 'when format is HTML' do
       it 'renders template' do
         expect { read_board board: board }.to change { BoardGroupRecentVisit.count }.by(1)

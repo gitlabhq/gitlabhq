@@ -10,6 +10,8 @@ identifiers:
 additional_properties:
   label:
     description: 'Indicates the kind of move: column when the card moved to a different column and its grouping value changed, or position when the card was reordered within the same column. Unlike other work_item_* events, where label carries the work item type, here it carries the kind of move instead.'
+  property:
+    description: 'How the move was triggered: drag when dragged with the mouse, or menu when triggered from the card actions menu (move to start/end of list).'
 product_group: planning_views
 product_categories:
   - planning_views

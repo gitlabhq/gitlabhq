@@ -309,6 +309,56 @@ describe.each([
     });
   });
 
+  describe('card reordering', () => {
+    const nodes = [buildWorkItemNode(1), buildWorkItemNode(2), buildWorkItemNode(3)];
+
+    beforeEach(async () => {
+      queryHandler.mockResolvedValue(buildResponse(nodes));
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('does not let cards reorder by default', () => {
+      expect(findWorkItemCards().at(1).props('canReorder')).toBe(false);
+    });
+
+    it('marks only the first and last card as such when canReorderCards is true', async () => {
+      createComponent({ props: { canReorderCards: true } });
+      await waitForPromises();
+
+      const cards = findWorkItemCards();
+      expect(cards.at(0).props()).toMatchObject({ canReorder: true, isFirst: true, isLast: false });
+      expect(cards.at(1).props()).toMatchObject({
+        canReorder: true,
+        isFirst: false,
+        isLast: false,
+      });
+      expect(cards.at(2).props()).toMatchObject({ canReorder: true, isFirst: false, isLast: true });
+    });
+
+    it('emits card-move-to-position with newIndex 0 when a card moves to the start', async () => {
+      createComponent({ props: { canReorderCards: true } });
+      await waitForPromises();
+
+      findWorkItemCards().at(1).vm.$emit('move-to-start');
+
+      expect(wrapper.emitted('card-move-to-position')).toEqual([
+        [{ workItemId: nodes[1].id, oldIndex: 1, newIndex: 0 }],
+      ]);
+    });
+
+    it('emits card-move-to-position with the last index when a card moves to the end', async () => {
+      createComponent({ props: { canReorderCards: true } });
+      await waitForPromises();
+
+      findWorkItemCards().at(0).vm.$emit('move-to-end');
+
+      expect(wrapper.emitted('card-move-to-position')).toEqual([
+        [{ workItemId: nodes[0].id, oldIndex: 0, newIndex: 2 }],
+      ]);
+    });
+  });
+
   describe('drag and drop', () => {
     const nodes = [buildWorkItemNode(1), buildWorkItemNode(2)];
 
@@ -335,6 +385,11 @@ describe.each([
 
     it('gives the drop indicator its own ghost class', () => {
       expect(findDraggable().vm.$attrs.ghostClass).toBe('board-card-drop-indicator');
+    });
+
+    it('filters out the card actions menu so opening it does not start a drag', () => {
+      expect(findDraggable().vm.$attrs.filter).toBe('.js-board-card-no-drag');
+      expect(findDraggable().vm.$attrs.preventOnFilter).toBe(false);
     });
 
     it('marks the document body as dragging when a card drag starts', () => {

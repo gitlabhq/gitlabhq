@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe CommitsHelper do
   include ProjectForksHelper
 
+  let_it_be(:project) { create(:project, :repository) }
+
   describe '#commit_list_app_data' do
-    let_it_be(:project) { create(:project, :repository) }
     let(:ref) { 'feature-branch' }
     let(:ref_type) { 'heads' }
     let(:id) { 'commit-id' }
@@ -105,8 +106,7 @@ RSpec.describe CommitsHelper do
   end
 
   describe '#view_on_environment_button' do
-    let(:project) { create(:project) }
-    let(:environment) { create(:environment, external_url: 'http://example.com') }
+    let(:environment) { build_stubbed(:environment, external_url: 'http://example.com') }
     let(:path) { 'source/file.html' }
     let(:sha) { RepoHelpers.sample_commit.id }
 
@@ -149,7 +149,6 @@ RSpec.describe CommitsHelper do
   end
 
   describe '#commit_to_html' do
-    let(:project) { create(:project, :repository) }
     let(:ref) { 'master' }
     let(:commit) { project.commit(ref) }
 
@@ -163,8 +162,7 @@ RSpec.describe CommitsHelper do
 
   describe 'commit_path' do
     it 'returns a persisted merge request commit path' do
-      project = create(:project, :repository)
-      persisted_merge_request = create(:merge_request, source_project: project, target_project: project)
+      persisted_merge_request = build_stubbed(:merge_request, source_project: project, target_project: project)
       commit = project.repository.commit
 
       expect(helper.commit_path(persisted_merge_request.project, commit, merge_request: persisted_merge_request))
@@ -172,17 +170,15 @@ RSpec.describe CommitsHelper do
     end
 
     it 'returns a non-persisted merge request commit path which commits still reside in the source project' do
-      source_project = create(:project, :repository)
-      target_project = create(:project, :repository)
-      non_persisted_merge_request = build(:merge_request, source_project: source_project, target_project: target_project)
-      commit = source_project.repository.commit
+      target_project = build_stubbed(:project)
+      non_persisted_merge_request = build(:merge_request, source_project: project, target_project: target_project)
+      commit = project.repository.commit
 
       expect(helper.commit_path(non_persisted_merge_request.project, commit, merge_request: non_persisted_merge_request))
-        .to eq(project_commit_path(source_project, commit))
+        .to eq(project_commit_path(project, commit))
     end
 
     it 'returns a project commit path' do
-      project = create(:project, :repository)
       commit = project.repository.commit
 
       expect(helper.commit_path(project, commit)).to eq(project_commit_path(project, commit))
@@ -190,8 +186,6 @@ RSpec.describe CommitsHelper do
   end
 
   describe "#conditionally_paginate_diff_files" do
-    let_it_be(:project) { create(:project, :repository) }
-
     let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: decorated_diff_files, project: project) }
     let(:decorated_diff_files) do
       diffs.map do |diff|
@@ -255,9 +249,9 @@ RSpec.describe CommitsHelper do
   end
 
   describe '#cherry_pick_projects_data' do
-    let(:project) { create(:project, :repository) }
-    let(:user) { create(:user, maintainer_of: project) }
-    let!(:forked_project) { fork_project(project, user, { namespace: user.namespace, repository: true }) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:user) { create(:user, maintainer_of: project) }
+    let_it_be_with_reload(:forked_project) { fork_project(project, user, { namespace: user.namespace, repository: true }) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -274,7 +268,7 @@ RSpec.describe CommitsHelper do
     end
 
     context 'when user lacks push permissions to the original project' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 
@@ -287,7 +281,7 @@ RSpec.describe CommitsHelper do
     end
 
     context 'when user lacks push permissions to both projects' do
-      let(:other_user) { create(:user) }
+      let_it_be(:other_user) { create(:user) }
 
       before do
         allow(helper).to receive(:current_user).and_return(other_user)
@@ -375,12 +369,12 @@ RSpec.describe CommitsHelper do
   describe "#commit_partial_cache_key" do
     subject(:cache_key) { helper.commit_partial_cache_key(commit, ref: ref, merge_request: merge_request, request: request) }
 
-    let(:commit) { create(:commit).present(current_user: user) }
+    let(:commit) { build(:commit).present(current_user: user) }
     let(:commit_status) { Gitlab::Ci::Status::Running.new(pipeline, user) }
-    let(:pipeline) { create(:ci_pipeline, :running) }
-    let(:user) { create(:user) }
+    let(:pipeline) { build_stubbed(:ci_pipeline, :running) }
+    let(:user) { build_stubbed(:user) }
     let(:ref) { "master" }
-    let(:merge_request) { create(:merge_request) }
+    let(:merge_request) { build_stubbed(:merge_request) }
     let(:request) { double(xhr?: true) }
     let(:current_path) { "test" }
 
@@ -465,7 +459,6 @@ RSpec.describe CommitsHelper do
   end
 
   describe '#path_to_browse_file_or_directory' do
-    let_it_be(:project) { create(:project, :repository) }
     let(:ref) { 'my-branch' }
 
     before do

@@ -23,6 +23,10 @@ export const BOARD_COLUMN_DRAG_HANDLE_CLASS = 'js-board-column-drag-handle';
 // handle but shouldn't trigger a column drag when clicked.
 export const BOARD_COLUMN_NO_DRAG_CLASS = 'js-board-column-no-drag';
 
+// The card's actions menu lives inside the draggable card itself, so it needs
+// its own filter to keep opening it from starting a card drag.
+export const BOARD_CARD_NO_DRAG_CLASS = 'js-board-card-no-drag';
+
 export const I18N_MOVE_ERROR = s__(
   'WorkItemBoard|Something went wrong while updating the work item. Please try again.',
 );

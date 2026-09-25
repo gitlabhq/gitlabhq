@@ -84,7 +84,7 @@ describe('Milestones combobox Vuex store mutations', () => {
     });
   });
 
-  describe(`${types.ADD_SELECTED_MILESTONES}`, () => {
+  describe(`${types.ADD_SELECTED_MILESTONE}`, () => {
     it('adds the selected milestones', () => {
       const selectedMilestone = 'v1.2.3';
       mutations[types.ADD_SELECTED_MILESTONE](state, selectedMilestone);
@@ -93,7 +93,7 @@ describe('Milestones combobox Vuex store mutations', () => {
     });
   });
 
-  describe(`${types.REMOVE_SELECTED_MILESTONES}`, () => {
+  describe(`${types.REMOVE_SELECTED_MILESTONE}`, () => {
     it('removes the selected milestones', () => {
       const selectedMilestone = 'v1.2.3';
 

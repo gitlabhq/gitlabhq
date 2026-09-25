@@ -44,7 +44,7 @@ provenance, see [SLSA provenance specification](../ci/pipeline_security/slsa/lev
 Lists all attestations for a specified project and SHA-256 hash.
 
 ```plaintext
-GET /:id/attestations/:subject_digest
+GET /projects/:id/attestations/:subject_digest
 ```
 
 Supported attributes:
@@ -95,7 +95,7 @@ The bundle itself is returned in the response body. For more information
 on this file format, see the relevant [Sigstore documentation](https://docs.sigstore.dev/about/bundle/).
 
 ```plaintext
-GET /:id/attestations/:attestation_iid/download
+GET /projects/:id/attestations/:attestation_iid/download
 ```
 
 Supported attributes:
@@ -109,7 +109,7 @@ Example request:
 
 ```shell
 curl --request GET \
-  --url "https://gitlab.example.com/api/v4/projects/72356192/attestations/1/download
+  --url "https://gitlab.example.com/api/v4/projects/72356192/attestations/1/download"
 ```
 
 Example response:

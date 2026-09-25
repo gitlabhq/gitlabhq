@@ -581,8 +581,6 @@ describe('Global Search Store Actions', () => {
         return `http://test.host/search/count?search=${params.search || '*'}`;
       });
 
-      storeUtils.skipBlobESCount = jest.fn().mockReturnValue(true);
-
       mock.onGet().reply(HTTP_STATUS_OK, MOCK_ENDPOINT_RESPONSE);
     });
 

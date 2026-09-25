@@ -81,7 +81,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       end
 
       context "with a group in the context" do
-        let_it_be(:project_in_group) { create(:project, group: group) }
+        let(:project_in_group) { build_stubbed(:project, group: group) }
 
         before do
           helper.instance_variable_set(:@group, group)
@@ -218,7 +218,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
   end
 
   describe '#atom_markdown_field' do
-    let(:issuable) { create(:issue, project: project, description: "See #{merge_request.to_reference}") }
+    let(:issuable) { build(:issue, project: project, description: "See #{merge_request.to_reference}") }
 
     it 'resolves references to absolute URLs' do
       expect(gfm_link_href(helper.atom_markdown_field(issuable, :description)))
@@ -234,8 +234,9 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
   end
 
   describe '#link_to_markdown_field' do
-    let(:link)    { '/commits/0a1b2c3d' }
-    let(:issues)  { create_list(:issue, 2, project: project) }
+    let_it_be(:issues) { create_list(:issue, 2, project: project) }
+
+    let(:link) { '/commits/0a1b2c3d' }
 
     # Clean the cache to make sure the title is re-rendered from the stubbed one
     it 'handles references nested in links with all the text', :clean_gitlab_redis_cache do
@@ -289,8 +290,9 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
   end
 
   describe '#link_to_markdown' do
-    let(:link)    { '/commits/0a1b2c3d' }
-    let(:issues)  { create_list(:issue, 2, project: project) }
+    let_it_be(:issues) { create_list(:issue, 2, project: project) }
+
+    let(:link) { '/commits/0a1b2c3d' }
 
     it 'handles references nested in links with all the text' do
       actual = helper.link_to_markdown("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", link)
@@ -354,7 +356,6 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
   describe '#link_to_html' do
     it 'wraps the rendered content in a link' do
       link = '/commits/0a1b2c3d'
-      issue = create(:issue, project: project)
 
       rendered = helper.markdown("This should finally fix #{issue.to_reference} for real", pipeline: :single_line)
       doc = Nokogiri::HTML.parse(rendered)
@@ -530,6 +531,15 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
   end
 
   describe '#first_line_in_markdown' do
+    let_it_be(:emoji_group) { create(:group) }
+    let_it_be(:emoji_project) { create(:project, :small_repo, group: emoji_group) }
+    let_it_be(:custom_emoji) { create(:custom_emoji, group: emoji_group) }
+    let_it_be(:public_label_project) { create(:project, :public) }
+    let_it_be(:private_label_project) { create(:project, :private) }
+    let_it_be(:public_label) { create(:label, title: 'label_1', project: public_label_project) }
+    let_it_be(:private_label) { create(:label, title: 'label_1', project: private_label_project) }
+    let_it_be(:another_user) { create(:user) }
+
     shared_examples_for 'common markdown examples' do
       let(:project_base) { build(:project, :small_repo) }
 
@@ -581,14 +591,10 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
       context 'custom emoji' do
         it 'includes fallback-src data attribute' do
-          group = create(:group)
-          project = create(:project, :small_repo, group: group)
-          custom_emoji = create(:custom_emoji, group: group)
-
-          object = create_object(":#{custom_emoji.name}:", project: project)
+          object = create_object(":#{custom_emoji.name}:", project: emoji_project)
           expected = "<p><gl-emoji title=\"#{custom_emoji.name}\" data-name=\"#{custom_emoji.name}\" data-fallback-src=\"#{custom_emoji.url}\" data-unicode-version=\"custom\"></gl-emoji></p>"
 
-          expect(helper.first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)
+          expect(helper.first_line_in_markdown(object, attribute, 150, project: emoji_project)).to eq(expected)
         end
       end
 
@@ -596,23 +602,20 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
         let(:label_title) { 'this should be ~label_1' }
 
         def create_and_format_label(project)
-          create(:label, title: 'label_1', project: project)
           object = create_object(label_title, project: project)
 
           helper.first_line_in_markdown(object, attribute, 150, project: project)
         end
 
         it 'preserves style attribute for a label that can be accessed by current_user' do
-          project = create(:project, :public)
-          label = create_and_format_label(project)
+          label = create_and_format_label(public_label_project)
 
           expect(label).to match(/span class=.*style=.*/)
           expect(label).to include('data-html="true"')
         end
 
         it 'does not style a label that can not be accessed by current_user' do
-          project = create(:project, :private)
-          label = create_and_format_label(project)
+          label = create_and_format_label(private_label_project)
 
           expect(label).to include("~label_1")
           expect(label).not_to match(/span class=.*style=.*/)
@@ -654,7 +657,6 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       end
 
       it 'styles the current user link', :aggregate_failures do
-        another_user = create(:user)
         html = "Please have a look, @#{user.username} @#{another_user.username}!"
 
         object = create_object(html)
@@ -671,7 +673,6 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
         end
 
         it 'renders the link with no styling when current_user is nil' do
-          another_user = create(:user)
           html = "Please have a look, @#{user.username} @#{another_user.username}!"
 
           object = create_object(html)

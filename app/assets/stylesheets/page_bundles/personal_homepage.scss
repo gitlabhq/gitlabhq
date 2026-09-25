@@ -6,3 +6,14 @@
 .event-item > .system-note-image > svg {
   @apply gl-fill-icon-subtle #{!important};
 }
+
+.homepage-merge-requests-widget {
+  container-type: inline-size;
+  container-name: homepage-merge-requests-widget;
+}
+
+@container homepage-merge-requests-widget (width < 18rem) {
+  .homepage-merge-requests-widget-tab-count {
+    @apply gl-hidden;
+  }
+}

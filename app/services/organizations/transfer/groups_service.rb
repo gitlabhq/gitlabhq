@@ -44,6 +44,7 @@ module Organizations
           perform_transfer
         end
 
+        schedule_sync_workers
         log_transfer_success
         ServiceResponse.success
       rescue StandardError => e
@@ -366,6 +367,13 @@ module Organizations
         # transaction. Defer to the outermost commit so a rollback enqueues nothing.
         ActiveRecord.after_all_transactions_commit do
           ::Organizations::TransferUserAgentDetailsWorker.perform_async(group_id, old_org_id, new_org_id)
+        end
+      end
+
+      def schedule_sync_workers
+        ActiveRecord.after_all_transactions_commit do
+          ::Namespaces::SyncEvent.enqueue_worker
+          ::Projects::SyncEvent.enqueue_worker
         end
       end
 

@@ -18,17 +18,6 @@ export const addClassIfElementExists = (element, className) => {
 
 export const isInVueNoteablePage = () => isInIssuePage() || isInEpicPage() || isInMRPage();
 
-/**
- * @deprecated Use `isScrolledToBottom` from `~/lib/utils/scroll_utils.js`
- */
-export const canScrollUp = ({ scrollTop }, margin = 0) => scrollTop > margin;
-
-/**
- * @deprecated Use `isScrolledToTop` from `~/lib/utils/scroll_utils.js`
- */
-export const canScrollDown = ({ scrollTop, offsetHeight, scrollHeight }, margin = 0) =>
-  scrollTop + offsetHeight < scrollHeight - margin;
-
 export const toggleContainerClasses = (containerEl, classList) => {
   if (containerEl) {
     // eslint-disable-next-line array-callback-return

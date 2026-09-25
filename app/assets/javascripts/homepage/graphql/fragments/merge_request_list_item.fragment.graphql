@@ -1,0 +1,26 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "ee_else_ce/merge_request_dashboard/queries/merge_request_approval.fragment.graphql"
+
+fragment HomepageMergeRequestListItem on MergeRequest {
+  id
+  title
+  webPath
+  updatedAt
+  resolvedDiscussionsCount
+  resolvableDiscussionsCount
+  project {
+    id
+    name
+    namespace {
+      id
+      name
+    }
+  }
+  headPipeline {
+    id
+    detailedStatus {
+      ...CiIcon
+    }
+  }
+  ...MergeRequestApprovalFragment
+}

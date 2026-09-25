@@ -223,7 +223,7 @@ export const expectDocumentAfterTransaction = ({ tiptapEditor, number, expectedD
 };
 
 export const createTiptapEditor = (extensions = []) => {
-  const { Document, Text, Paragraph, Sourcemap, ...otherExtensions } = builtInExtensions;
+  const { Document, Text, Paragraph, ...otherExtensions } = builtInExtensions;
   return createTestEditor({
     extensions: [...flatMap(otherExtensions), ...extensions],
   });

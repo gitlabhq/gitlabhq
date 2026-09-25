@@ -36,6 +36,10 @@ class DashboardController < Dashboard::ApplicationController
     push_frontend_feature_flag(:global_time_tracking_report)
   end
 
+  before_action only: [:home] do
+    push_frontend_feature_flag(:homepage_merge_requests_widget, current_user)
+  end
+
   respond_to :html
 
   feature_category :notifications, [:home]

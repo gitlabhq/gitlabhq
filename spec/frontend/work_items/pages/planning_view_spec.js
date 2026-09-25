@@ -87,6 +87,7 @@ import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_save
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import namespaceWorkItemChangesSubscription from '~/work_items/list/graphql/namespace_work_item_changes.subscription.graphql';
+import workItemSavedViewUpdatedSubscription from '~/work_items/list/graphql/work_item_saved_view_updated.subscription.graphql';
 import workItemIdFragment from '~/work_items/graphql/work_item_id.fragment.graphql';
 import {
   markRealtimeRefetch,
@@ -4583,6 +4584,230 @@ describe('planning-view', () => {
         await waitForPromises();
 
         expect(evictSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('realtime saved view changes', () => {
+    const savedViewId = 'gid://gitlab/WorkItems::SavedViews::SavedView/3';
+    const groupOrder = [
+      'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2',
+      'status:gid://gitlab/WorkItems::Statuses::Custom::Status/1',
+    ];
+    const boardSavedView = {
+      ...singleSavedView[0],
+      displaySettings: { viewMode: VIEW_MODE_BOARD },
+    };
+    const savedViewRoute = { name: 'savedView', params: { type: 'work_items', view_id: '3' } };
+    const allItemsRoute = { name: 'planningView', params: { type: 'work_items' } };
+
+    let subscriptionHandler;
+    let savedViewHandler;
+
+    // The synchronous `debounce` mock would let the reconnect spec pass without the debounce running.
+    beforeEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 500;
+    });
+
+    afterEach(() => {
+      global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+    });
+
+    // Every subscribe call gets its own mock subscription, so a re-subscribe can be told apart
+    // from the original one.
+    const currentSubscription = () => subscriptionHandler.mock.results.at(-1).value;
+
+    const savedViewResponse = (savedView) => savedViewResponseFactory({ savedViews: [savedView] });
+
+    // The default counts mock identifies the namespace as Group:gid://gitlab/Group/3 while every
+    // other handler here uses Namespace:namespace. Mixed identities leave the saved view unreadable
+    // from the cache after a broadcast, so Apollo would refetch it for reasons unrelated to this.
+    const countsOnlyHandler = jest.fn().mockResolvedValue({
+      data: {
+        namespace: {
+          ...workItemCountsOnlyResponse.data.namespace,
+          __typename: 'Namespace',
+          id: 'namespace',
+        },
+      },
+    });
+
+    // Apollo tears down the subscription's websocket inside a setTimeout, so
+    // fake timers must run before we can assert the subscription is closed.
+    const flushUnsubscribe = () => jest.runOnlyPendingTimers();
+
+    const mountWithSavedViewSubscription = async ({ provide = {}, ...options } = {}) => {
+      subscriptionHandler = jest.fn(() => createMockSubscription());
+      savedViewHandler = jest.fn().mockResolvedValue(savedViewResponse(boardSavedView));
+
+      await mountComponent({
+        route: savedViewRoute,
+        ...options,
+        provide: {
+          ...provide,
+          glFeatures: {
+            planningViewBoards: true,
+            workItemsRealtime: true,
+            ...provide.glFeatures,
+          },
+        },
+        savedViewHandler,
+        countsOnlyHandler,
+        additionalHandlers: [
+          [workItemSavedViewUpdatedSubscription, subscriptionHandler],
+          [namespaceWorkItemChangesSubscription, jest.fn(() => createMockSubscription())],
+        ],
+        stubs: { BoardView: boardViewStub },
+      });
+    };
+
+    const emitSavedViewUpdate = async (savedView) => {
+      currentSubscription().next({ data: { workItemSavedViewUpdated: savedView } });
+      await waitForPromises();
+    };
+
+    it('subscribes to updates of the loaded saved view', async () => {
+      await mountWithSavedViewSubscription();
+
+      expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+      expect(subscriptionHandler).toHaveBeenCalledWith({ savedViewId });
+    });
+
+    describe('when another viewer reorders the board columns', () => {
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        await emitSavedViewUpdate({
+          ...boardSavedView,
+          displaySettings: { viewMode: VIEW_MODE_BOARD, groupOrder },
+        });
+      });
+
+      it('re-renders the board with the new column order', () => {
+        expect(findBoardView().props('groupOrder')).toEqual(groupOrder);
+      });
+
+      it('does not refetch the saved view', () => {
+        expect(savedViewHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it('keeps the one subscription open instead of subscribing again', () => {
+        expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+        expect(currentSubscription().closed).toBe(false);
+      });
+
+      it('treats the pushed configuration as the saved state, so there is nothing to save', () => {
+        expect(findUpdateViewButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when a push arrives while the viewer has unsaved changes', () => {
+      const localOrder = [...groupOrder].reverse();
+
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        findBoardView().vm.$emit('reorder-groups', localOrder);
+        await nextTick();
+        await emitSavedViewUpdate({
+          ...boardSavedView,
+          displaySettings: { viewMode: VIEW_MODE_BOARD, groupOrder },
+        });
+      });
+
+      it('keeps the local column order', () => {
+        expect(findBoardView().props('groupOrder')).toEqual(localOrder);
+      });
+
+      it('still offers to save the local changes', () => {
+        expect(findUpdateViewButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when another viewer switches the view from board to list', () => {
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        await emitSavedViewUpdate({
+          ...boardSavedView,
+          displaySettings: { viewMode: VIEW_MODE_LIST },
+        });
+      });
+
+      it('renders the list view instead of the board', () => {
+        expect(findBoardView().exists()).toBe(false);
+        expect(findListView().exists()).toBe(true);
+      });
+    });
+
+    describe('when navigating to another saved view', () => {
+      const otherSavedViewId = 'gid://gitlab/WorkItems::SavedViews::SavedView/4';
+      let firstSubscription;
+
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        firstSubscription = currentSubscription();
+        savedViewHandler.mockResolvedValue(
+          savedViewResponse({ ...boardSavedView, id: otherSavedViewId }),
+        );
+
+        await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
+        await waitForPromises();
+        flushUnsubscribe();
+      });
+
+      it('closes the previous subscription and subscribes to the new view', () => {
+        expect(firstSubscription.closed).toBe(true);
+        expect(subscriptionHandler).toHaveBeenCalledTimes(2);
+        expect(subscriptionHandler).toHaveBeenLastCalledWith({ savedViewId: otherSavedViewId });
+      });
+    });
+
+    describe('when the websocket reconnects', () => {
+      beforeEach(async () => {
+        await mountWithSavedViewSubscription();
+        document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+        jest.advanceTimersByTime(500);
+        await waitForPromises();
+      });
+
+      it('refetches the saved view, since missed payloads are not replayed', () => {
+        expect(savedViewHandler).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('when the component is destroyed', () => {
+      it('closes the subscription', async () => {
+        await mountWithSavedViewSubscription();
+        const subscription = currentSubscription();
+
+        wrapper.destroy();
+        flushUnsubscribe();
+
+        expect(subscription.closed).toBe(true);
+      });
+    });
+
+    describe('when the workItemsRealtime feature flag is off', () => {
+      it('does not subscribe to saved view updates', async () => {
+        await mountWithSavedViewSubscription({
+          provide: { glFeatures: { workItemsRealtime: false } },
+        });
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the user is not logged in', () => {
+      it('does not subscribe to saved view updates', async () => {
+        await mountWithSavedViewSubscription({ isLoggedInValue: false });
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when not on a saved view', () => {
+      it('does not subscribe to saved view updates', async () => {
+        await mountWithSavedViewSubscription({ route: allItemsRoute });
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
       });
     });
   });

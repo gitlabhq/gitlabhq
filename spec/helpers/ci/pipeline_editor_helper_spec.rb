@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let(:project) { build_stubbed(:project) }
+  let(:user) { build_stubbed(:user) }
 
   describe 'can_view_pipeline_editor?' do
     subject { helper.can_view_pipeline_editor?(project) }
@@ -94,7 +94,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     context 'with a remote CI config' do
       before do
-        create(:commit, project: project)
+        build(:commit, project: project)
         project.ci_config_path = 'http://example.com/path/to/ci/config.yml'
       end
 
@@ -105,7 +105,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     context 'with a CI config from an external project' do
       before do
-        create(:commit, project: project)
+        build(:commit, project: project)
         project.ci_config_path = '.gitlab-ci.yml@group/project'
       end
 

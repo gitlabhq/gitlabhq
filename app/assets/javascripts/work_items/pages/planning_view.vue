@@ -148,6 +148,7 @@ import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import namespaceWorkItemChangesSubscription from '../list/graphql/namespace_work_item_changes.subscription.graphql';
+import workItemSavedViewUpdatedSubscription from '../list/graphql/work_item_saved_view_updated.subscription.graphql';
 import {
   dropMatchCacheEntries,
   evictNamespaceWorkItems,
@@ -437,6 +438,7 @@ export default {
 
           this.trackSavedViewVisit();
           this.applySavedViewState(savedView);
+          this.subscribeToSavedViewChanges(savedView.id);
         } catch (error) {
           Sentry.captureException(error);
         }
@@ -1286,6 +1288,7 @@ export default {
     document.removeEventListener('actioncable:reconnected', this.debouncedRefetchAfterReconnect);
     this.debouncedRefetchAfterReconnect.cancel();
     this.workItemChangesSubscription?.unsubscribe();
+    this.unsubscribeFromSavedViewChanges();
   },
 
   created() {
@@ -1320,6 +1323,7 @@ export default {
     }
     this.pendingWorkItemChanges = new Map();
     this.workItemChangesSubscription = null;
+    this.savedViewChangesSubscription = null;
     this.debouncedProcessWorkItemChanges = debounce(
       this.processWorkItemChanges,
       REALTIME_DEBOUNCE_MS,
@@ -2113,6 +2117,31 @@ export default {
           error: (error) => Sentry.captureException(error),
         });
     },
+    // No next handler needed: Apollo caches the payload by __typename/id,
+    // so the savedView query re-emits and its result hook re-applies the config.
+    subscribeToSavedViewChanges(savedViewId) {
+      if (!this.glFeatures.workItemsRealtime || !this.isLoggedIn) {
+        return;
+      }
+      if (this.savedViewChangesSubscription?.savedViewId === savedViewId) {
+        return;
+      }
+
+      this.unsubscribeFromSavedViewChanges();
+      const subscription = this.$apollo
+        .subscribe({
+          query: workItemSavedViewUpdatedSubscription,
+          variables: { savedViewId },
+        })
+        .subscribe({
+          error: (error) => Sentry.captureException(error),
+        });
+      this.savedViewChangesSubscription = { savedViewId, subscription };
+    },
+    unsubscribeFromSavedViewChanges() {
+      this.savedViewChangesSubscription?.subscription.unsubscribe();
+      this.savedViewChangesSubscription = null;
+    },
     // A reconnect doesn't replay what was missed while disconnected, so the list can look live
     // but be stale. Reload everything rather than working out what changed.
     refetchAfterReconnect() {
@@ -2121,6 +2150,9 @@ export default {
       }
 
       this.refetchItems({ refetchCounts: true, cause: 'reconnect' });
+      if (this.isSavedView) {
+        this.$apollo.queries.savedView.refetch();
+      }
     },
     // Events arrive for every work item in the namespace and its descendants, so a bulk edit can
     // fire many changes at once — buffer them and process together instead of one at a time.

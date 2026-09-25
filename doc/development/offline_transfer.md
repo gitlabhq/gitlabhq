@@ -129,7 +129,7 @@ and use the offline-specific stage lists described in [How it differs from direc
 
 Offline transfer has no GraphQL API and doesn't call the source instance's API at all. It's driven entirely through
 [`API::OfflineTransfers`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/offline_transfers.rb), documented
-in the [generated REST API reference](https://api.gitlab.com/rest/#tag/offline-transfers):
+in the [generated REST API reference](https://api.gitlab.com/rest/#gitlab/tag/offline-transfers):
 
 | Endpoint | Purpose |
 |----------|---------|

@@ -39,6 +39,9 @@ export default {
     NoteSessionBar: defineAsyncComponent(
       () => import('ee_component/ai/shared/widgets/note_session_bar.vue'),
     ),
+    NoteAgentActorLine: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/note_agent_actor_line.vue'),
+    ),
     GlAvatar,
     GlAvatarLink,
     WorkItemCommentForm,
@@ -166,6 +169,7 @@ export default {
   ],
   data() {
     return {
+      actorLineOverflows: false,
       isEditing: false,
       isUpdating: false,
       updateError: null,
@@ -261,7 +265,15 @@ export default {
       return this.workItem.confidential;
     },
     duoCreatedSessionId() {
+      if (this.agentPresence) return null;
+
       return getIdFromGraphQLId(this.note.duoCreatedSession?.id);
+    },
+    agentPresence() {
+      if (!this.glFeatures.agentPresenceConsolidation) return null;
+
+      const presence = this.note.agentPresence;
+      return presence?.agentName && presence?.sessionId ? presence : null;
     },
     hasSession() {
       const session = this.note.duoTriggeredSession;
@@ -478,7 +490,28 @@ export default {
             :is-internal-note="note.internal"
             :is-imported="note.imported"
             :email-participant="externalAuthor"
-          />
+            :hide-username="Boolean(agentPresence)"
+            :single-line="Boolean(agentPresence) && !actorLineOverflows"
+          >
+            <template v-if="agentPresence">
+              <span
+                v-if="!actorLineOverflows"
+                aria-hidden="true"
+                class="gl-text-subtle"
+                data-testid="actor-line-separator"
+                >&middot;</span
+              >
+              <note-agent-actor-line
+                :agent-name="agentPresence.agentName"
+                :agent-catalog-path="agentPresence.agentCatalogWebPath"
+                :session-id="agentPresence.sessionId"
+                :initiator-type="agentPresence.initiatorType"
+                :initiator="agentPresence.initiator"
+                :can-view-session="Boolean(agentPresence.userPermissions?.readDuoWorkflow)"
+                @overflow="actorLineOverflows = $event"
+              />
+            </template>
+          </note-header>
           <div class="gl-inline-flex">
             <note-actions
               v-if="!isEditing"

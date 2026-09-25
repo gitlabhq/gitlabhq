@@ -1,0 +1,19 @@
+#import "../fragments/merge_request_list_item.fragment.graphql"
+# @feature_category: code_review_workflow
+
+query HomepageMergeRequestsWidget {
+  currentUser {
+    id
+    assignedMergeRequests: authoredMergeRequests(
+      first: 8
+      sort: UPDATED_DESC
+      state: opened
+      includeAssigned: true
+    ) {
+      count
+      nodes {
+        ...HomepageMergeRequestListItem
+      }
+    }
+  }
+}

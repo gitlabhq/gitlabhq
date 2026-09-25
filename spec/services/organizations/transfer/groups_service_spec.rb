@@ -1007,6 +1007,35 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end
       end
 
+      context 'for CI mirror sync events' do
+        it 'enqueues the namespace and project sync event workers' do
+          expect(Namespaces::SyncEvent).to receive(:enqueue_worker)
+          expect(Projects::SyncEvent).to receive(:enqueue_worker)
+
+          service.execute
+        end
+
+        it 'does not enqueue the workers when the transfer fails' do
+          allow(service).to receive(:publish_event).and_raise(StandardError, 'Transfer failed')
+
+          expect(Namespaces::SyncEvent).not_to receive(:enqueue_worker)
+          expect(Projects::SyncEvent).not_to receive(:enqueue_worker)
+
+          expect(service.execute).to be_error
+        end
+
+        it 'does not enqueue the workers when a wrapping transaction rolls back' do
+          expect(Namespaces::SyncEvent).not_to receive(:enqueue_worker)
+          expect(Projects::SyncEvent).not_to receive(:enqueue_worker)
+
+          ApplicationRecord.transaction do
+            expect(service.execute).to be_success
+
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+
       context 'for user agent details' do
         it 'enqueues TransferUserAgentDetailsWorker with correct arguments' do
           expect(Organizations::TransferUserAgentDetailsWorker).to receive(:perform_async).with(

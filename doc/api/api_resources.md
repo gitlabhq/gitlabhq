@@ -42,7 +42,7 @@ The following API resources are available in the project context:
 | [Access tokens](project_access_tokens.md)                                      | `/projects/:id/access_tokens` (also available for groups) |
 | [Agents](cluster_agents.md)                                                    | `/projects/:id/cluster_agents` |
 | [Alert management alerts](alert_management_alerts.md)                          | `/projects/:id/alert_management_alerts/:alert_iid/metric_images` |
-| [Attestations](attestations.md)                                                | `/:id/attestations/:subject_digest` |
+| [Attestations](attestations.md)                                                | `/projects/:id/attestations/:subject_digest` |
 | [Branches](branches.md)                                                        | `/projects/:id/repository/branches/`, `/projects/:id/repository/merged_branches` |
 | [Commits](commits.md)                                                          | `/projects/:id/repository/commits`, `/projects/:id/statuses` |
 | [Container registry](container_registry.md)                                    | `/projects/:id/registry/repositories` |

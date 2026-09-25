@@ -11,6 +11,7 @@ import {
   ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
   TEST_SUMMARY_ROUTE,
+  TERRAFORM_ROUTE,
   ROOT_ROUTE,
   EMPTY_STATE_NO_PIPELINE,
   EMPTY_STATE_PIPELINE_RUNNING,
@@ -27,6 +28,7 @@ const REPORT_ROUTES = [
   ACCESSIBILITY_ROUTE,
   METRICS_ROUTE,
   TEST_SUMMARY_ROUTE,
+  TERRAFORM_ROUTE,
 ];
 const OWNED_ROUTES = [ROOT_ROUTE, ...REPORT_ROUTES];
 
@@ -90,6 +92,12 @@ export default {
     TestSummaryNavItem: defineAsyncComponent(
       () => import('~/merge_requests/reports/test_summary/test_summary_nav_item.vue'),
     ),
+    TerraformProvider: defineAsyncComponent(
+      () => import('~/merge_requests/reports/terraform/terraform_provider.vue'),
+    ),
+    TerraformNavItem: defineAsyncComponent(
+      () => import('~/merge_requests/reports/terraform/terraform_nav_item.vue'),
+    ),
   },
   mixins: [mergeRequestData],
   inject: {
@@ -111,6 +119,7 @@ export default {
         [ACCESSIBILITY_ROUTE]: this.hasAccessibilityReports,
         [METRICS_ROUTE]: this.hasMetricsReports,
         [TEST_SUMMARY_ROUTE]: this.hasTestSummaryReports,
+        [TERRAFORM_ROUTE]: this.hasTerraformReports,
       };
 
       return REPORT_ROUTES.filter((route) => isConfigured[route]);
@@ -207,6 +216,9 @@ export default {
           <test-summary-provider v-if="hasTestSummaryReports" :mr="mr">
             <test-summary-nav-item />
           </test-summary-provider>
+          <terraform-provider v-if="hasTerraformReports" :mr="mr">
+            <terraform-nav-item />
+          </terraform-provider>
         </template>
       </nav>
     </aside>

@@ -10259,6 +10259,9 @@ msgstr ""
 msgid "All merge request dependencies have been merged"
 msgstr ""
 
+msgid "All merge requests"
+msgstr ""
+
 msgid "All merge requests that block this one must be merged."
 msgstr ""
 
@@ -31317,6 +31320,24 @@ msgid_plural "DuoAgentPlatform|%{count} sessions %{title}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd}"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName}"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} on behalf of %{initiatorName}"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} triggered by %{initiatorName}"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} on behalf of %{initiatorName}"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} triggered by %{initiatorName}"
+msgstr ""
+
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
@@ -31517,6 +31538,9 @@ msgid "DuoAgentPlatform|Get the extension"
 msgstr ""
 
 msgid "DuoAgentPlatform|GitLab CLI (glab)"
+msgstr ""
+
+msgid "DuoAgentPlatform|GitLab Duo Agent Platform is not available."
 msgstr ""
 
 msgid "DuoAgentPlatform|GitLab Duo Agent session"
@@ -31738,6 +31762,9 @@ msgstr ""
 msgid "DuoAgentPlatform|View session"
 msgstr ""
 
+msgid "DuoAgentPlatform|You do not have access to this session."
+msgstr ""
+
 msgid "DuoAgenticChat|%{count} character over limit."
 msgid_plural "DuoAgenticChat|%{count} characters over limit."
 msgstr[0] ""
@@ -31745,6 +31772,11 @@ msgstr[1] ""
 
 msgid "DuoAgenticChat|%{count} character remaining."
 msgid_plural "DuoAgenticChat|%{count} characters remaining."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "DuoAgenticChat|%{count} suggestion for %{category}"
+msgid_plural "DuoAgenticChat|%{count} suggestions for %{category}"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -31857,6 +31889,9 @@ msgid "DuoAgenticChat|GitLab Duo Agent Platform is turned off"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo Chat"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo couldn't complete this response. Recent messages might be missing or incomplete. Try sending your message again."
@@ -32024,6 +32059,9 @@ msgstr ""
 msgid "DuoAgenticChat|Select a group to continue"
 msgstr ""
 
+msgid "DuoAgenticChat|Select category"
+msgstr ""
+
 msgid "DuoAgenticChat|Send chat message."
 msgstr ""
 
@@ -32037,6 +32075,12 @@ msgid "DuoAgenticChat|Starting the session. Please wait"
 msgstr ""
 
 msgid "DuoAgenticChat|Steps to turn on GitLab Duo"
+msgstr ""
+
+msgid "DuoAgenticChat|Suggestions"
+msgstr ""
+
+msgid "DuoAgenticChat|Suggestions for %{category}"
 msgstr ""
 
 msgid "DuoAgenticChat|Summarize and compact this conversation"
@@ -32118,6 +32162,9 @@ msgid "DuoAgenticChat|Usage billing not available"
 msgstr ""
 
 msgid "DuoAgenticChat|Web search"
+msgstr ""
+
+msgid "DuoAgenticChat|What's next?"
 msgstr ""
 
 msgid "DuoAgenticChat|Work items"
@@ -42950,7 +42997,13 @@ msgstr ""
 msgid "HomePageMergeRequestsWidget|Assigned to you"
 msgstr ""
 
+msgid "HomePageMergeRequestsWidget|Could not load your merge requests. Refresh the page to try again."
+msgstr ""
+
 msgid "HomePageMergeRequestsWidget|Merge requests"
+msgstr ""
+
+msgid "HomePageMergeRequestsWidget|No merge requests assigned to you."
 msgstr ""
 
 msgid "HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard."
@@ -53221,6 +53274,9 @@ msgid "MrReports|Security scan"
 msgstr ""
 
 msgid "MrReports|Start a pipeline to generate reports."
+msgstr ""
+
+msgid "MrReports|Terraform"
 msgstr ""
 
 msgid "MrReports|Test summary"
@@ -69159,7 +69215,85 @@ msgstr ""
 msgid "RightSidebar|Issue email"
 msgstr ""
 
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with low confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with medium confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Critical with very high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Evaluating…"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with low confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with medium confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} High with very high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with low confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with medium confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Low with very high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with low confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with medium confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Medium with very high confidence"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Not available"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Pending"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Queued"
+msgstr ""
+
+msgid "RiskClassification|%{boldStart}Risk assessment:%{boldEnd} Unavailable"
+msgstr ""
+
 msgid "RiskClassification|Agent-authored commits"
+msgstr ""
+
+msgid "RiskClassification|Assessing risk"
 msgstr ""
 
 msgid "RiskClassification|Authentication, session handling, or identity verification"
@@ -69219,19 +69353,10 @@ msgstr ""
 msgid "RiskClassification|Feature flag rollout"
 msgstr ""
 
-msgid "RiskClassification|High confidence"
-msgstr ""
-
 msgid "RiskClassification|High risk"
 msgstr ""
 
 msgid "RiskClassification|How new the author is to this project"
-msgstr ""
-
-msgid "RiskClassification|Loading the risk assessment"
-msgstr ""
-
-msgid "RiskClassification|Low confidence"
 msgstr ""
 
 msgid "RiskClassification|Low risk"
@@ -69240,16 +69365,10 @@ msgstr ""
 msgid "RiskClassification|Manifest file changed directly"
 msgstr ""
 
-msgid "RiskClassification|Medium confidence"
-msgstr ""
-
 msgid "RiskClassification|Medium risk"
 msgstr ""
 
 msgid "RiskClassification|New commits were pushed after this assessment. It reflects an earlier version of the changes."
-msgstr ""
-
-msgid "RiskClassification|New risk assessment queued"
 msgstr ""
 
 msgid "RiskClassification|Number of dependency ecosystems touched"
@@ -69279,19 +69398,13 @@ msgstr ""
 msgid "RiskClassification|Reverts a previously merged change"
 msgstr ""
 
-msgid "RiskClassification|Risk assessment"
-msgstr ""
-
 msgid "RiskClassification|Risk assessment cannot be refreshed while %{status}."
 msgstr ""
 
-msgid "RiskClassification|Risk assessment failed"
+msgid "RiskClassification|Risk level not available"
 msgstr ""
 
-msgid "RiskClassification|Risk assessment pending"
-msgstr ""
-
-msgid "RiskClassification|Risk assessment updating"
+msgid "RiskClassification|Risk level: %{level}"
 msgstr ""
 
 msgid "RiskClassification|Size of change"
@@ -69312,7 +69425,7 @@ msgstr ""
 msgid "RiskClassification|Uncovered changed lines"
 msgstr ""
 
-msgid "RiskClassification|Very high confidence"
+msgid "RiskClassification|Updating…"
 msgstr ""
 
 msgid "RiskClassification|What contributed to this score"
@@ -74169,6 +74282,9 @@ msgid "SecurityInventory|GitLab Advanced SAST"
 msgstr ""
 
 msgid "SecurityInventory|Group vulnerabilities"
+msgstr ""
+
+msgid "SecurityInventory|Has scanners enabled"
 msgstr ""
 
 msgid "SecurityInventory|Has stale scans"
@@ -79329,6 +79445,27 @@ msgstr ""
 msgid "Severity updated to %{severity}."
 msgstr ""
 
+msgid "SeverityMeter|Assessing severity"
+msgstr ""
+
+msgid "SeverityMeter|Critical"
+msgstr ""
+
+msgid "SeverityMeter|High"
+msgstr ""
+
+msgid "SeverityMeter|Low"
+msgstr ""
+
+msgid "SeverityMeter|Medium"
+msgstr ""
+
+msgid "SeverityMeter|Severity not available"
+msgstr ""
+
+msgid "SeverityMeter|Severity: %{level}"
+msgstr ""
+
 msgid "SeverityWidget|Severity"
 msgstr ""
 
@@ -82649,6 +82786,9 @@ msgid "Terraform|Support for periods (`.`) in Terraform state names might break 
 msgstr ""
 
 msgid "Terraform|Terraform init"
+msgstr ""
+
+msgid "Terraform|Terraform reports are not available"
 msgstr ""
 
 msgid "Terraform|Terraform states"
@@ -87691,6 +87831,9 @@ msgstr ""
 msgid "Updated"
 msgstr ""
 
+msgid "Updated %{date}"
+msgstr ""
+
 msgid "Updated %{timeAgo}"
 msgstr ""
 
@@ -91855,9 +91998,6 @@ msgstr ""
 msgid "Vulnerability|Description"
 msgstr ""
 
-msgid "Vulnerability|Detail"
-msgstr ""
-
 msgid "Vulnerability|Details"
 msgstr ""
 
@@ -93492,6 +93632,9 @@ msgstr ""
 msgid "WorkItemBoard|Boards show up to %{maxGroups} groups at a time, choose groups to build your board."
 msgstr ""
 
+msgid "WorkItemBoard|Card actions"
+msgstr ""
+
 msgid "WorkItemBoard|Choose groups"
 msgstr ""
 
@@ -93508,6 +93651,12 @@ msgid "WorkItemBoard|Move left"
 msgstr ""
 
 msgid "WorkItemBoard|Move right"
+msgstr ""
+
+msgid "WorkItemBoard|Move to end of list"
+msgstr ""
+
+msgid "WorkItemBoard|Move to start of list"
 msgstr ""
 
 msgid "WorkItemBoard|Moved %{reference} to %{targetGroup}"

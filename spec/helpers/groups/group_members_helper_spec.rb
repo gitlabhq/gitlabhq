@@ -5,16 +5,21 @@ require "spec_helper"
 RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_projects do
   include MembersPresentation
 
-  let_it_be(:group) { create(:group) }
+  let(:group) { build_stubbed(:group) }
 
   describe '#group_members_app_data' do
     include_context 'group_group_link'
 
     let_it_be(:current_user) { create(:user) }
+    let_it_be_with_reload(:members) { create_list(:group_member, 2, source: shared_group, created_by: current_user) }
+    let_it_be_with_reload(:invited) do
+      create_list(:group_member, 2, :invited, source: shared_group, created_by: current_user)
+    end
 
-    let(:members) { create_list(:group_member, 2, group: shared_group, created_by: current_user) }
-    let(:invited) { create_list(:group_member, 2, :invited, group: shared_group, created_by: current_user) }
-    let!(:access_requests) { create_list(:group_member, 2, :access_request, group: shared_group, created_by: current_user) }
+    let_it_be_with_reload(:access_requests) do
+      create_list(:group_member, 2, :access_request, source: shared_group, created_by: current_user)
+    end
+
     let(:available_roles) do
       Gitlab::Access.options_with_owner.map { |name, access_level| { title: name, value: "static-#{access_level}" } }
     end
@@ -77,9 +82,10 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
       it_behaves_like 'members.json', 'user'
 
       context 'with user status set' do
-        let(:user) { create(:user) }
-        let!(:status) { create(:user_status, user: user) }
-        let(:members) { [create(:group_member, group: shared_group, user: user, created_by: current_user)] }
+        let_it_be(:user) { create(:user) }
+        let_it_be(:status) { create(:user_status, user: user) }
+
+        let(:members) { [create(:group_member, source: shared_group, user: user, created_by: current_user)] }
 
         it_behaves_like 'members.json', 'user'
       end
@@ -240,7 +246,7 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
   end
 
   describe '#group_member_header_subtext' do
-    let(:current_user) { create(:user) }
+    let(:current_user) { build_stubbed(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(current_user)

@@ -24,5 +24,12 @@
       }
     },
     "env": false
-  }
+  },
+  "skip_processes": [
+    "chromedriver"
+  ],
+  "skip_sip": [
+    "git",
+    "Google Chrome"
+  ]
 }

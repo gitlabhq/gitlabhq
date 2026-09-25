@@ -470,10 +470,11 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
   describe '#autocomplete_data_sources' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:group) { create(:group) }
     let_it_be(:noteable_type) { Issue }
     let_it_be(:group_sources) { [:members, :issues, :mergeRequests, :labels, :milestones, :commands] }
     let_it_be(:project_sources) { [:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets, :contacts, :wikis] }
+
+    let(:group) { build_stubbed(:group) }
 
     def expect_autocomplete_data_sources_to_be(object, noteable_type, source_keys)
       sources = helper.autocomplete_data_sources(object, noteable_type)
@@ -505,7 +506,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
   end
 
   describe '#external_storage_url_or_path' do
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     context 'when external storage is disabled' do
       it 'returns the passed path' do
@@ -515,7 +516,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
     context 'when @snippet is set' do
       it 'returns the passed path' do
-        snippet = create(:project_snippet)
+        snippet = build_stubbed(:project_snippet)
         assign(:snippet, snippet)
 
         expect(helper.external_storage_url_or_path('/foo/bar', project)).to eq('/foo/bar')
@@ -523,7 +524,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     context 'when external storage is enabled' do
-      let(:user) { create(:user) }
+      let_it_be_with_reload(:user) { create(:user) }
 
       before do
         stub_application_setting(static_objects_external_storage_url: 'https://cdn.gitlab.com')
@@ -541,7 +542,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :public) }
+        let(:project) { build_stubbed(:project, :public) }
 
         it 'returns does not append a token parameter' do
           expect(helper.external_storage_url_or_path('/foo/bar', project)).to eq('https://cdn.gitlab.com/foo/bar')
@@ -573,7 +574,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
       context 'when @group is set' do
         it 'sets group in the body data elements' do
-          group = create(:group)
+          group = build_stubbed(:group)
 
           assign(:group, group)
 
@@ -590,8 +591,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     context 'when @project is set' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:user) { create(:user) }
+      let(:project) { build_stubbed(:project) }
 
       before do
         assign(:project, project)
@@ -614,7 +614,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       context 'when @project is owned by a group' do
-        let_it_be(:project) { create(:project, group: create(:group)) }
+        let(:project) { build_stubbed(:project, group: build_stubbed(:group)) }
 
         it 'includes all possible body data elements and associates the project elements with project' do
           expect(helper.body_data).to eq(
@@ -639,7 +639,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
 
         context 'when params[:id] is present and the issue exsits and action_name is show' do
           it 'sets all project and id elements correctly related to the issue' do
-            issue = create(:issue, project: project)
+            issue = build_stubbed(:issue, project: project)
             stub_controller_method(:action_name, 'show')
             stub_controller_method(:params, { id: issue.id })
 

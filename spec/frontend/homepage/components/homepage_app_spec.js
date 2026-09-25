@@ -8,6 +8,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import HomepageApp from '~/homepage/components/homepage_app.vue';
 import PickUpWidget from '~/homepage/components/pick_up_widget.vue';
 import PipelinesWidget from '~/homepage/components/pipelines_widget.vue';
+import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
 import BaseWidget from '~/homepage/components/base_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
@@ -63,8 +64,12 @@ describe('HomepageApp', () => {
   const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findPickUpWidget = () => wrapper.findComponent(PickUpWidget);
   const findPipelinesWidget = () => wrapper.findComponent(PipelinesWidget);
+  const findMergeRequestsWidget = () => wrapper.findComponent(MergeRequestsWidget);
 
-  function createWrapper(props = {}, { glFeatures = { homepagePipelinesWidget: true } } = {}) {
+  function createWrapper(
+    props = {},
+    { glFeatures = { homepagePipelinesWidget: true, homepageMergeRequestsWidget: true } } = {},
+  ) {
     wrapper = shallowMountExtended(HomepageApp, {
       provide: {
         duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME,
@@ -395,6 +400,18 @@ describe('HomepageApp', () => {
       createWrapper({}, { glFeatures: { homepagePipelinesWidget: false } });
 
       expect(findPipelinesWidget().exists()).toBe(false);
+    });
+  });
+
+  it('renders the MergeRequestsWidget component when the homepage_merge_requests_widget flag is enabled', () => {
+    expect(findMergeRequestsWidget().exists()).toBe(true);
+  });
+
+  describe('when the homepage_merge_requests_widget flag is disabled', () => {
+    it('does not render the MergeRequestsWidget component', () => {
+      createWrapper({}, { glFeatures: { homepageMergeRequestsWidget: false } });
+
+      expect(findMergeRequestsWidget().exists()).toBe(false);
     });
   });
 

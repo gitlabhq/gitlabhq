@@ -28,7 +28,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
 
   describe '#email_provider_label' do
     it "returns nil for users without external email" do
-      user = create(:user)
+      user = build_stubbed(:user)
       allow(helper).to receive(:current_user).and_return(user)
 
       expect(helper.attribute_provider_label(:email)).to be_nil
@@ -38,8 +38,17 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
       stub_omniauth_setting(sync_profile_from_provider: [example_omniauth_provider])
       stub_omniauth_setting(sync_profile_attributes: true)
       stub_auth0_omniauth_provider
-      auth0_user = create(:omniauth_user, provider: example_omniauth_provider)
-      auth0_user.create_user_synced_attributes_metadata(provider: example_omniauth_provider, name_synced: true, email_synced: true, location_synced: true, organization_synced: true, job_title_synced: true)
+      metadata = UserSyncedAttributesMetadata.new(
+        provider: example_omniauth_provider,
+        name_synced: true,
+        email_synced: true,
+        location_synced: true,
+        organization_synced: true,
+        job_title_synced: true
+      )
+      auth0_user = build_stubbed(
+        :omniauth_user, provider: example_omniauth_provider, user_synced_attributes_metadata: metadata
+      )
       allow(helper).to receive(:current_user).and_return(auth0_user)
 
       expect(helper.attribute_provider_label(:email)).to eq(example_omniauth_provider_label)
@@ -53,8 +62,17 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
       stub_omniauth_setting(sync_profile_from_provider: [example_omniauth_provider])
       stub_omniauth_setting(sync_profile_attributes: true)
       stub_auth0_omniauth_provider
-      auth0_user = create(:omniauth_user, provider: example_omniauth_provider)
-      auth0_user.create_user_synced_attributes_metadata(provider: example_omniauth_provider, name_synced: false, email_synced: true, location_synced: false, organization_synced: false, job_title_synced: false)
+      metadata = UserSyncedAttributesMetadata.new(
+        provider: example_omniauth_provider,
+        name_synced: false,
+        email_synced: true,
+        location_synced: false,
+        organization_synced: false,
+        job_title_synced: false
+      )
+      auth0_user = build_stubbed(
+        :omniauth_user, provider: example_omniauth_provider, user_synced_attributes_metadata: metadata
+      )
       allow(helper).to receive(:current_user).and_return(auth0_user)
 
       expect(helper.attribute_provider_label(:name)).to be_nil
@@ -65,8 +83,8 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     end
 
     it "returns 'LDAP' for users with external email but no email provider" do
-      ldap_user = create(:omniauth_user)
-      ldap_user.create_user_synced_attributes_metadata(email_synced: true)
+      metadata = UserSyncedAttributesMetadata.new(email_synced: true)
+      ldap_user = build_stubbed(:omniauth_user, user_synced_attributes_metadata: metadata)
       allow(helper).to receive(:current_user).and_return(ldap_user)
 
       expect(helper.attribute_provider_label(:email)).to eq('LDAP')
@@ -89,14 +107,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     end
 
     with_them do
-      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-      # subject, or an in-memory mutation that survives reload/refind). Do not
-      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-      # (see gitlab-org/gitlab#602925).
-      let_it_be(:key, freeze: false) do
-        build(:personal_key)
-      end
+      let(:key) { build(:personal_key) }
 
       it do
         key.expires_at = expired ? 2.days.ago : 2.days.from_now
@@ -205,7 +216,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
   end
 
   describe '#email_otp_enrollment_restriction_readable_reason' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:email_otp_required_after) { nil }
 
     before do
@@ -306,7 +317,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
   end
 
   describe '#email_otp_enrollment_restriction_confirm_data' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:can_modify_email_otp_enrollment) { nil }
     let(:email_otp_required_as_boolean) { nil }
     let(:email_otp_required_after) { nil }

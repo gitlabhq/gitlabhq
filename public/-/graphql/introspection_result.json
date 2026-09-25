@@ -402948,6 +402948,35 @@
               "deprecationReason": null
             },
             {
+              "name": "mergeRequestAiSuggestedReviewersUpdated",
+              "description": "Triggered when the AI-recommended reviewers of a merge request are updated. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "issuableId",
+                  "description": "ID of the issuable.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "IssuableID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "UNION",
+                "name": "Issuable",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "mergeRequestApprovalStateUpdated",
               "description": "Triggered when approval state of a merge request is updated.",
               "args": [

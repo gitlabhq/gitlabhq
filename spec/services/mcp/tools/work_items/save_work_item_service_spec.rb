@@ -79,7 +79,9 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
             },
             description: {
               type: 'string',
-              description: 'Description in GitLab Flavored Markdown (max 1048576 characters).',
+              description: 'Description in GitLab Flavored Markdown (max 1048576 characters). Lines ' \
+                'beginning with "/" are rejected to avoid triggering quick actions. Use add_labels, ' \
+                'assignee_ids, and the other fields instead.',
               maxLength: 1_048_576
             },
             assignee_ids: {
