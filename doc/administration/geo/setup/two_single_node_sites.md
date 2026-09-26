@@ -378,6 +378,8 @@ Prerequisites:
    ```
 
    Be sure to replace the IP addresses with addresses appropriate to your network configuration.
+   For more information about why the secondary site must listen on a network address, see
+   [Configure the secondary server](database.md#step-2-configure-the-secondary-server).
 
 1. Copy the configuration example from [Complete secondary site](#complete-secondary-site).
 1. To apply the changes, save the file and reconfigure GitLab:

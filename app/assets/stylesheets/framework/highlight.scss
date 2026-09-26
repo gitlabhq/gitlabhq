@@ -276,3 +276,18 @@ pre .hll {
     background-color: var(--code-line-number-hover-color, #{$gl-color-neutral-600});
   }
 }
+
+// Lives outside the grid and its wrapper: both are as tall as the file, so a
+// sticky child of either pins to the file's bottom edge, not the viewport's.
+.source-viewer-scrollbar {
+  height: $gl-spacing-scale-5;
+}
+
+// Avoids a second scrollbar stacked at the file's bottom edge.
+.source-viewer-file-content {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

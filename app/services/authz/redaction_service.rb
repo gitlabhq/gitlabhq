@@ -84,14 +84,16 @@ module Authz
       loaded_resources_by_type = load_all_resources
       preseed_authorization_caches(loaded_resources_by_type)
 
-      results = DeclarativePolicy.user_scope do
-        resources_by_type.each_with_object({}) do |(type, config), authorization_results|
-          type_sym = type.to_sym
-          config_sym = config.symbolize_keys
-          ids = config_sym[:ids]
-          ability = config_sym[:ability]
-          authorization_results[type] =
-            authorize_resources_of_type(type_sym, ids, ability, loaded_resources_by_type[type_sym] || {})
+      results = ::Authz::RedactionPolicyClassMaps.memoize do
+        DeclarativePolicy.user_scope do
+          resources_by_type.each_with_object({}) do |(type, config), authorization_results|
+            type_sym = type.to_sym
+            config_sym = config.symbolize_keys
+            ids = config_sym[:ids]
+            ability = config_sym[:ability]
+            authorization_results[type] =
+              authorize_resources_of_type(type_sym, ids, ability, loaded_resources_by_type[type_sym] || {})
+          end
         end
       end
 

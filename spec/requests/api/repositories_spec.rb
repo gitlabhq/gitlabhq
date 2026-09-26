@@ -2048,6 +2048,24 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
     end
 
+    context 'when authenticated using a token with ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'returns contents of multiple files' do
+        post api(route, oauth_access_token: oauth_token), params: { files: [{ path: 'README.md' }] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.first['path']).to eq('README.md')
+      end
+
+      it 'still refuses other POST routes in this API' do
+        post api("/projects/#{project.id}/repository/changelog", oauth_access_token: oauth_token),
+          params: { version: '1.0.0' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
         let(:request) { post api(route), params: { files: [{ path: 'README.md' }] } }

@@ -90,6 +90,15 @@ describe('ProfilePreferences component', () => {
     return input;
   }
 
+  function createLayoutInput(layout = 'fixed') {
+    const input = document.createElement('input');
+    input.setAttribute('name', 'user[layout]');
+    input.setAttribute('type', 'radio');
+    input.setAttribute('value', layout);
+    input.setAttribute('checked', 'checked');
+    return input;
+  }
+
   function createForm(inputs = [createModeInput(), createThemeInput()]) {
     const form = document.createElement('form');
     form.setAttribute('url', expectedUrl);
@@ -193,6 +202,33 @@ describe('ProfilePreferences component', () => {
       form.dispatchEvent(errorEvent);
 
       expect(createAlert).toHaveBeenCalledWith({ message, variant: VARIANT_DANGER });
+    });
+  });
+
+  describe('layout changes', () => {
+    const findContainer = () => document.querySelector('.content-wrapper .container-fluid');
+
+    beforeEach(() => {
+      setupBody();
+    });
+
+    afterEach(() => {
+      document.body.innerHTML = '';
+      document.body.className = '';
+    });
+
+    it.each`
+      layout     | limited
+      ${'fluid'} | ${false}
+      ${'fixed'} | ${true}
+    `('applies the $layout layout without reloading on success', ({ layout, limited }) => {
+      const form = createForm([createModeInput(), createThemeInput(), createLayoutInput(layout)]);
+      wrapper = createComponent({ provide: { formEl: form }, attachTo: document.body });
+
+      form.dispatchEvent(new CustomEvent('ajax:success'));
+
+      expect(window.location.reload).not.toHaveBeenCalled();
+      expect(findContainer().classList.contains('container-limited')).toBe(limited);
     });
   });
 

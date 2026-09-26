@@ -37495,6 +37495,9 @@ msgstr ""
 msgid "File changed."
 msgstr ""
 
+msgid "File contents"
+msgstr ""
+
 msgid "File deleted"
 msgstr ""
 

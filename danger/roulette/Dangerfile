@@ -55,7 +55,8 @@ NOT_AVAILABLE_TEMPLATES = {
   default: 'No %{role} available',
   analytics_instrumentation: group_not_available_template('#g_analyze_analytics_instrumentation', '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),
   remote_development_be: group_not_available_template('#f_remote_development', '@gitlab-org/maintainers/remote-development/backend'),
-  project_management: group_not_available_template('#g_project-management', '@gitlab-org/plan-stage/project-management-group')
+  project_management: group_not_available_template('#g_project-management', '@gitlab-org/plan-stage/project-management-group'),
+  advanced_search_migration: group_not_available_template('#g_global_search', '@gitlab-org/search-team/maintainers/advanced-migrations')
 }.freeze
 
 def note_for_spin_role(spin, role, category)

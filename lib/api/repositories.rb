@@ -16,7 +16,15 @@ module API
     helpers ::API::Helpers::HeadersHelpers
     helpers ::API::Helpers::BlobHelpers
 
-    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
+    # blobs/batch is a read that takes its file list in a POST body, so admit it by path
+    # rather than opening every POST route to the scope.
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || batch_blobs_read?(request)
+    end
+
+    def self.batch_blobs_read?(request)
+      request.post? && request.path.match?(%r{/api/v\d+/projects/[^/]+/repository/blobs/batch$})
+    end
 
     helpers do
       params :release_params do

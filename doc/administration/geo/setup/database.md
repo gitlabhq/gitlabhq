@@ -452,10 +452,22 @@ The following guide assumes that:
    roles(['geo_secondary_role'])
    ```
 
-1. Configure PostgreSQL:
+1. Configure PostgreSQL on the secondary site so it can replicate from the primary site
+   and serve the local Rails and Sidekiq processes. You must complete this step even if
+   you use a single node.
 
-   This step is similar to how you configured the primary instance.
-   You must enable this, even if using a single node.
+   The network listener (`listen_address`) is not required for streaming replication
+   itself, but you must still set it, because:
+
+   - After a failover, the new primary site must accept replication connections from
+     other secondary sites. The steps to
+     [prepare the new primary site to serve secondary sites](../disaster_recovery/_index.md#step-1-prepare-the-new-primary-site-to-serve-one-or-more-secondary-sites)
+     assume the listener is already configured.
+   - Rails and Sidekiq connect over the network when they run on nodes separate from the database.
+
+   When you set `listen_address`, the Linux package configures Rails to connect over TCP
+   to that address instead of the UNIX socket, so `md5_auth_cidr_addresses` must include
+   the secondary site's own address.
 
    > [!warning]
    > Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.

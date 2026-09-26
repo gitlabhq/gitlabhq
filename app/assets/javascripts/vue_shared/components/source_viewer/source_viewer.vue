@@ -1,5 +1,6 @@
 <script>
 import { defineAsyncComponent } from 'vue';
+import { GlResizeObserverDirective } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import Tracking from '~/tracking';
@@ -28,6 +29,9 @@ export default {
     CodeownersValidation: defineAsyncComponent(
       () => import('ee_component/blob/components/codeowners_validation.vue'),
     ),
+  },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [Tracking.mixin()],
   i18n: {
@@ -69,6 +73,8 @@ export default {
       renderedChunks: [],
       loadingChunks: [], // Which chunks are currently fetching blame data (e.g., [0, 1, 2])
       blameColumnWidth: BLAME_COLUMN_DEFAULT_WIDTH,
+      contentScrollWidth: 0,
+      contentClientWidth: 0,
     };
   },
   computed: {
@@ -100,6 +106,12 @@ export default {
         '--blame-column-width': blameColumn,
       };
     },
+    hasHorizontalOverflow() {
+      return this.contentScrollWidth > this.contentClientWidth;
+    },
+    scrollbarTrackStyling() {
+      return { width: `${this.contentScrollWidth}px` };
+    },
   },
   watch: {
     shouldPreloadBlame: {
@@ -125,11 +137,20 @@ export default {
     chunks: {
       handler() {
         this.selectLine();
+        this.measureContent();
+      },
+    },
+    // Fires when blame is toggled or the gutter is resized; both change the
+    // total track width the scrollbar has to represent.
+    blameGridStyling: {
+      handler() {
+        this.debouncedMeasureContent();
       },
     },
   },
   mounted() {
     this.selectLine();
+    this.measureContent();
   },
   created() {
     this.pendingChunks = new Set();
@@ -138,12 +159,14 @@ export default {
       this.pendingChunks.forEach((index) => this.handleChunkAppear(index));
       this.pendingChunks.clear();
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    this.debouncedMeasureContent = debounce(this.measureContent, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     this.track(EVENT_ACTION, { label: EVENT_LABEL_VIEWER, property: this.blob.language });
     addBlobLinksTracking();
   },
   beforeDestroy() {
     this.pendingChunks.clear();
     this.processPendingChunks.cancel?.();
+    this.debouncedMeasureContent.cancel?.();
   },
   methods: {
     requestBlameInfoForRenderedChunks() {
@@ -215,6 +238,22 @@ export default {
       // Prevent chunk from processing if it's not visible in the DOM
       this.pendingChunks.delete(chunkIndex);
     },
+    async measureContent() {
+      await this.$nextTick();
+      const content = this.$refs.scrollContainer;
+      if (!content) return;
+
+      this.contentScrollWidth = content.scrollWidth;
+      this.contentClientWidth = content.clientWidth;
+    },
+    syncScrollbarToContent({ target }) {
+      const { horizontalScrollbar } = this.$refs;
+      if (horizontalScrollbar) horizontalScrollbar.scrollLeft = target.scrollLeft;
+    },
+    syncContentToScrollbar({ target }) {
+      const content = this.$refs.scrollContainer;
+      if (content) content.scrollLeft = target.scrollLeft;
+    },
   },
 };
 </script>
@@ -236,11 +275,17 @@ export default {
       </div>
 
       <div
-        class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-grid gl-w-full gl-overflow-auto"
+        ref="scrollContainer"
+        v-gl-resize-observer="debouncedMeasureContent"
+        class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer source-viewer-file-content gl-grid gl-w-full gl-overflow-auto focus-visible:gl-focus-inset"
+        role="region"
+        :aria-label="__('File contents')"
+        tabindex="0"
         data-type="simple"
         :data-path="blob.path"
         data-testid="blob-viewer-file-content"
         :style="blameGridStyling"
+        @scroll="syncScrollbarToContent"
       >
         <codeowners-validation
           v-if="isCodeownersFile"
@@ -266,6 +311,18 @@ export default {
           @disappear="() => handleDisappear(index)"
         />
       </div>
+    </div>
+
+    <div
+      v-if="hasHorizontalOverflow"
+      ref="horizontalScrollbar"
+      class="source-viewer-scrollbar gl-sticky gl-bottom-0 gl-overflow-x-auto gl-overflow-y-hidden"
+      aria-hidden="true"
+      tabindex="-1"
+      data-testid="horizontal-scrollbar"
+      @scroll="syncContentToScrollbar"
+    >
+      <div :style="scrollbarTrackStyling" data-testid="horizontal-scrollbar-track"></div>
     </div>
   </div>
 </template>

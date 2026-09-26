@@ -403,6 +403,129 @@ describe('Source Viewer component', () => {
     });
   });
 
+  describe('horizontal scrollbar', () => {
+    const findScrollbar = () => wrapper.findByTestId('horizontal-scrollbar');
+    const findScrollbarTrack = () => wrapper.findByTestId('horizontal-scrollbar-track');
+
+    const setContentDimensions = ({ scrollWidth, clientWidth }) => {
+      const { element } = findFileContent();
+      Object.defineProperty(element, 'scrollWidth', { value: scrollWidth, configurable: true });
+      Object.defineProperty(element, 'clientWidth', { value: clientWidth, configurable: true });
+    };
+
+    // jsdom has no layout, so an own writable property is needed to shadow the
+    // prototype accessor and let an assignment stick.
+    const stubScrollLeft = (element, value = 0) =>
+      Object.defineProperty(element, 'scrollLeft', { value, writable: true, configurable: true });
+
+    // The chunk list is replaced once the whole file is chunked, which is when
+    // the widest line, and so the scrollable width, can change.
+    const replaceChunks = async (chunks) => {
+      await wrapper.setProps({ chunks });
+      await waitForPromises();
+    };
+
+    it('makes the content keyboard focusable with an accessible name', () => {
+      expect(findFileContent().attributes()).toMatchObject({
+        role: 'region',
+        'aria-label': 'File contents',
+        tabindex: '0',
+      });
+    });
+
+    it('is not rendered when the content fits', () => {
+      expect(findScrollbar().exists()).toBe(false);
+    });
+
+    describe('when the content is wider than the viewport', () => {
+      beforeEach(async () => {
+        setContentDimensions({ scrollWidth: 2000, clientWidth: 800 });
+        await replaceChunks([CHUNK_1, CHUNK_2, CHUNK_3]);
+      });
+
+      it('renders the scrollbar', () => {
+        expect(findScrollbar().exists()).toBe(true);
+      });
+
+      it('keeps the scrollbar out of the tab order and accessibility tree', () => {
+        expect(findScrollbar().attributes()).toMatchObject({
+          'aria-hidden': 'true',
+          tabindex: '-1',
+        });
+      });
+
+      it('sizes the track to the scrollable width', () => {
+        expect(findScrollbarTrack().attributes('style')).toBe('width: 2000px;');
+      });
+
+      it('scrolls the content when the scrollbar is scrolled', () => {
+        const { element } = findFileContent();
+        stubScrollLeft(element);
+        stubScrollLeft(findScrollbar().element, 350);
+
+        findScrollbar().trigger('scroll');
+
+        expect(element.scrollLeft).toBe(350);
+      });
+
+      it('follows the content when the content is scrolled', () => {
+        const scrollbar = findScrollbar().element;
+        stubScrollLeft(scrollbar);
+        stubScrollLeft(findFileContent().element, 420);
+
+        findFileContent().trigger('scroll');
+
+        expect(scrollbar.scrollLeft).toBe(420);
+      });
+
+      it('re-measures when the blame column is resized', async () => {
+        setContentDimensions({ scrollWidth: 2400, clientWidth: 800 });
+        findColumnResizer().vm.$emit('input', 520);
+        await waitForPromises();
+
+        expect(findScrollbarTrack().attributes('style')).toBe('width: 2400px;');
+      });
+
+      it('re-measures when blame is toggled off', async () => {
+        setContentDimensions({ scrollWidth: 800, clientWidth: 800 });
+        await wrapper.setProps({ showBlame: false });
+        await waitForPromises();
+
+        expect(findScrollbar().exists()).toBe(false);
+      });
+
+      describe('while the blame column is being dragged', () => {
+        beforeEach(() => {
+          global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
+        });
+
+        afterEach(() => {
+          global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+        });
+
+        it('waits for the drag to settle before re-measuring', async () => {
+          setContentDimensions({ scrollWidth: 2400, clientWidth: 800 });
+          [450, 500, 520].forEach((width) => findColumnResizer().vm.$emit('input', width));
+          await waitForPromises();
+
+          expect(findScrollbarTrack().attributes('style')).toBe('width: 2000px;');
+
+          jest.runAllTimers();
+          await waitForPromises();
+
+          expect(findScrollbarTrack().attributes('style')).toBe('width: 2400px;');
+        });
+      });
+
+      it('stops rendering once the content fits again', async () => {
+        setContentDimensions({ scrollWidth: 800, clientWidth: 800 });
+        await replaceChunks([CHUNK_1]);
+
+        expect(findScrollbar().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('Codeowners validation', () => {
     const findCodeownersValidation = () => wrapper.findComponent(CodeownersValidation);
 

@@ -32,3 +32,4 @@ DeclarativePolicy.configure do
 end
 
 DeclarativePolicy.prepend(ClassForClassCache)
+DeclarativePolicy::Base.singleton_class.prepend(Authz::RedactionPolicyClassMaps)

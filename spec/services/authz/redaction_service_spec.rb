@@ -704,6 +704,12 @@ RSpec.describe Authz::RedactionService, feature_category: :permissions do
       service.execute
     end
 
+    it 'builds each policy class map once per batch', :request_store do
+      expect(IssuePolicy).to receive(:own_conditions).once.and_call_original
+
+      service.execute
+    end
+
     it 'batch loads resources to prevent N+1 queries', :request_store do
       service.execute
 

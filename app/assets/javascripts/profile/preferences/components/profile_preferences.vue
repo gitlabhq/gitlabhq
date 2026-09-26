@@ -102,6 +102,9 @@ export default {
     getSelectedDarkScheme() {
       return new FormData(this.formEl).get('user[dark_color_scheme_id]');
     },
+    getSelectedLayout() {
+      return new FormData(this.formEl).get('user[layout]');
+    },
     handleLoading() {
       this.isSubmitEnabled = false;
     },
@@ -116,7 +119,7 @@ export default {
         window.location.reload();
         return;
       }
-      updateClasses(this.bodyClasses, this.getSelectedTheme().css_class, this.selectedLayout);
+      updateClasses(this.bodyClasses, this.getSelectedTheme().css_class, this.getSelectedLayout());
       const message = customEvent?.detail?.[0]?.message || this.$options.i18n.defaultSuccess || '';
       this.$toast.show(message);
       this.isSubmitEnabled = true;
