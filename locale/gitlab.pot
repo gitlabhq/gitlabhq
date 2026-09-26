@@ -33895,7 +33895,13 @@ msgstr ""
 msgid "DuoSlack|Approve and continue"
 msgstr ""
 
+msgid "DuoSlack|Approved. GitLab Duo is continuing."
+msgstr ""
+
 msgid "DuoSlack|Cancel"
+msgstr ""
+
+msgid "DuoSlack|Choose whether to approve or deny."
 msgstr ""
 
 msgid "DuoSlack|Close"
@@ -33905,6 +33911,9 @@ msgid "DuoSlack|Could not set up the service account for the Duo Developer flow.
 msgstr ""
 
 msgid "DuoSlack|Could not set up the workspace project. Check that you have access to the namespace and permission to create projects."
+msgstr ""
+
+msgid "DuoSlack|Denied. GitLab Duo is continuing without running these actions."
 msgstr ""
 
 msgid "DuoSlack|Deny and continue without running these actions"
@@ -34000,6 +34009,9 @@ msgid "DuoSlack|This approval request has already been answered."
 msgstr ""
 
 msgid "DuoSlack|This feedback helps us improve Duo. We'll share your feedback and the related session with GitLab."
+msgstr ""
+
+msgid "DuoSlack|This request can no longer be answered."
 msgstr ""
 
 msgid "DuoSlack|View your session in GitLab (only visible to you)"
