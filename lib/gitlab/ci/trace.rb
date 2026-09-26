@@ -12,9 +12,6 @@ module Gitlab
       LOCK_SLEEP = 0.001.seconds
       WATCH_FLAG_TTL = 10.seconds
 
-      UPDATE_FREQUENCY_DEFAULT = 60.seconds
-      UPDATE_FREQUENCY_WHEN_BEING_WATCHED = 3.seconds
-
       LOAD_BALANCING_STICKING_NAMESPACE = 'ci/build/trace'
 
       ArchiveError = Class.new(StandardError)
@@ -132,9 +129,9 @@ module Gitlab
 
       def update_interval
         if being_watched?
-          UPDATE_FREQUENCY_WHEN_BEING_WATCHED
+          Gitlab::CurrentSettings.ci_job_trace_update_interval_when_being_watched.seconds
         else
-          UPDATE_FREQUENCY_DEFAULT
+          Gitlab::CurrentSettings.ci_job_trace_update_interval.seconds
         end
       end
 

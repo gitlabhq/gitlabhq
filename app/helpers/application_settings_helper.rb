@@ -302,6 +302,8 @@ module ApplicationSettingsHelper
       :allow_bypass_placeholder_confirmation,
       :ci_delete_pipelines_in_seconds_limit_human_readable,
       :ci_job_live_trace_enabled,
+      :ci_job_trace_update_interval,
+      :ci_job_trace_update_interval_when_being_watched,
       :ci_partitions_in_seconds_limit_human_readable,
       :code_dropdown_custom_clients,
       :concurrent_github_import_jobs_limit,

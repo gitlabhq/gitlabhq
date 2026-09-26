@@ -1,7 +1,31 @@
 = gitlab_ui_form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-job-logs-settings'), html: { class: 'fieldset-form' } do |f|
-  = form_errors(@application_setting, custom_message: [:ci_job_live_trace_enabled])
+  - job_log_error_fields = [:ci_job_live_trace_enabled]
+  - watched_trace_update_interval_max = [@application_setting.ci_job_trace_update_interval, ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_MAX].compact.min
+  = form_errors(@application_setting, custom_message: job_log_error_fields)
 
   %fieldset
+    .form-group
+      %h5
+        = s_('CICD|Frequency of job log updates')
+      %p.form-text.gl-mb-3.gl-mt-0
+        = s_('CICD|Configure how often job log updates are sent while a job is running. Lower intervals make job logs appear sooner, but increase trace update requests.')
+      .row
+        .col-md-6
+          = f.label :ci_job_trace_update_interval, s_('CICD|Job log update interval'), class: 'label-bold'
+          = f.number_field :ci_job_trace_update_interval, class: 'form-control gl-form-input',
+            min: ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_MIN,
+            max: ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_MAX
+          .form-text.gl-mb-3
+            = s_('CICD|Interval, in seconds, for job log updates when the job log is not open.')
+        .col-md-6
+          = f.label :ci_job_trace_update_interval_when_being_watched,
+            s_('CICD|Job log update interval when open'), class: 'label-bold'
+          = f.number_field :ci_job_trace_update_interval_when_being_watched, class: 'form-control gl-form-input',
+            min: ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_MIN,
+            max: watched_trace_update_interval_max
+          .form-text.gl-mb-3
+            = s_('CICD|Interval, in seconds, for job log updates when the job log is open. Must be less than or equal to the job log update interval.')
+
     .form-group.gl-mb-0
       %h5
         = s_('CICD| Incremental logging configuration')

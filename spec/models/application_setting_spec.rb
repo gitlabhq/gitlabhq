@@ -53,6 +53,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         can_create_organization: true,
         ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year'),
         ci_job_live_trace_enabled: false,
+        ci_job_trace_update_interval: described_class::CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT,
+        ci_job_trace_update_interval_when_being_watched:
+          described_class::CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT,
         ci_max_caches_per_job: 4,
         ci_max_includes: 150,
         ci_max_total_yaml_size_bytes: 314572800,
@@ -2022,6 +2025,60 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           end
 
           it { is_expected.not_to allow_value(true).for(:ci_job_live_trace_enabled) }
+        end
+      end
+
+      describe 'ci_job_trace_update_interval default values' do
+        it 'has correct defaults for trace update intervals' do
+          expect(setting.ci_job_trace_update_interval).to eq(60)
+          expect(setting.ci_job_trace_update_interval_when_being_watched)
+            .to eq(described_class::CI_JOB_TRACE_UPDATE_INTERVAL_MIN)
+        end
+      end
+
+      describe '#ci_job_trace_update_interval validations' do
+        it { is_expected.to allow_value(3).for(:ci_job_trace_update_interval) }
+        it { is_expected.to allow_value(10).for(:ci_job_trace_update_interval) }
+        it { is_expected.to allow_value(3600).for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value(2).for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value(3601).for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value('').for(:ci_job_trace_update_interval) }
+        it { is_expected.not_to allow_value(nil).for(:ci_job_trace_update_interval) }
+      end
+
+      describe '#ci_job_trace_update_interval_when_being_watched validations' do
+        it { is_expected.to allow_value(3).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.to allow_value(10).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value(2).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value(3601).for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value('').for(:ci_job_trace_update_interval_when_being_watched) }
+        it { is_expected.not_to allow_value(nil).for(:ci_job_trace_update_interval_when_being_watched) }
+
+        context 'when the default trace update interval allows the maximum value' do
+          before do
+            setting.ci_job_trace_update_interval = 3600
+          end
+
+          it { is_expected.to allow_value(3600).for(:ci_job_trace_update_interval_when_being_watched) }
+        end
+
+        context 'when the watched interval is greater than the default interval' do
+          before do
+            setting.ci_job_trace_update_interval = 10
+          end
+
+          it { is_expected.to allow_value(10).for(:ci_job_trace_update_interval_when_being_watched) }
+          it { is_expected.not_to allow_value(11).for(:ci_job_trace_update_interval_when_being_watched) }
+        end
+
+        it 'does not add a cross-field error when the default interval is invalid', :aggregate_failures do
+          setting.ci_job_trace_update_interval = 2
+          setting.ci_job_trace_update_interval_when_being_watched = 3
+
+          setting.validate
+
+          expect(setting.errors[:ci_job_trace_update_interval]).to include('must be greater than or equal to 3')
+          expect(setting.errors[:ci_job_trace_update_interval_when_being_watched]).to be_empty
         end
       end
 

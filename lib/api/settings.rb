@@ -264,6 +264,8 @@ module API
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
       optional :ci_max_caches_per_job, type: Integer, desc: 'Maximum number of caches that can be defined in a single CI/CD job'
       optional :ci_job_live_trace_enabled, type: Boolean, desc: 'Turn on incremental logging for job logs.'
+      optional :ci_job_trace_update_interval, type: Integer, desc: 'Job log update interval when the job log is not open, in seconds.'
+      optional :ci_job_trace_update_interval_when_being_watched, type: Integer, desc: 'Job log update interval when the job log is open, in seconds.'
       optional :git_push_pipeline_limit, type: Integer, desc: 'Set the limit for pipelines and branches that can be triggered when creating a Git push. Set to 0 to disable the limit'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'
       optional :slack_app_enabled, type: Grape::API::Boolean, desc: 'Enable the GitLab for Slack app'

@@ -69,6 +69,11 @@ class ApplicationSetting < ApplicationRecord
 
   SEARCH_SCOPE_SYSTEM_DEFAULT = 'system default'
 
+  CI_JOB_TRACE_UPDATE_INTERVAL_MIN = 3
+  CI_JOB_TRACE_UPDATE_INTERVAL_MAX = 1.hour.to_i
+  CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT = 60
+  CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT = CI_JOB_TRACE_UPDATE_INTERVAL_MIN
+
   # OAuth Time (seconds)
   DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 7200 # 2hrs
   MIN_OAUTH_ACCESS_TOKEN_EXPIRES_IN = 300 # 5 mins
@@ -600,6 +605,9 @@ class ApplicationSetting < ApplicationRecord
     {
       pipeline_variables_default_allowed: [:boolean, { default: true }],
       ci_job_live_trace_enabled: [:boolean, { default: false }],
+      ci_job_trace_update_interval: [:integer, { default: CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT }],
+      ci_job_trace_update_interval_when_being_watched: [:integer,
+        { default: CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT }],
       ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }],
@@ -614,6 +622,17 @@ class ApplicationSetting < ApplicationRecord
   chronic_duration_attr :ci_partitions_in_seconds_limit_human_readable, :ci_partitions_in_seconds_limit
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
+  validates :ci_job_trace_update_interval,
+    :ci_job_trace_update_interval_when_being_watched,
+    presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: CI_JOB_TRACE_UPDATE_INTERVAL_MIN,
+      less_than_or_equal_to: CI_JOB_TRACE_UPDATE_INTERVAL_MAX
+    }
+  validates :ci_job_trace_update_interval_when_being_watched,
+    numericality: { less_than_or_equal_to: :ci_job_trace_update_interval },
+    if: ->(setting) { setting.errors[:ci_job_trace_update_interval].blank? }
   validates :ci_partitions_in_seconds_limit, presence: true,
     numericality: {
       only_integer: true,

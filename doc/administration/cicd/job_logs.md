@@ -223,6 +223,18 @@ the Rake task that checks the
 For more information, see how to
 [delete references to missing artifacts](../raketasks/check.md#delete-references-to-missing-artifacts).
 
+## Frequency of job log updates
+
+While a job is running, the `X-GitLab-Trace-Update-Interval` header specifies how often GitLab
+Runner sends job log updates.
+
+By default:
+
+- If a job's log is not open, updates are sent every 60 seconds.
+- If a job's log is open, updates are sent every 3 seconds.
+
+To configure job log update intervals, use the setting in the [Admin area](../settings/continuous_integration.md#configure-the-frequency-of-job-log-updates) or the [Settings API](../../api/settings.md).
+
 ## Incremental logging
 
 Incremental logging changes how job logs are processed and stored, improving performance in scaled-out deployments.

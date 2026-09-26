@@ -54,6 +54,9 @@ module ApplicationSettingImplementation
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
         ci_job_live_trace_enabled: false,
+        ci_job_trace_update_interval: ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_DEFAULT,
+        ci_job_trace_update_interval_when_being_watched:
+          ApplicationSetting::CI_JOB_TRACE_UPDATE_INTERVAL_WHEN_BEING_WATCHED_DEFAULT,
         ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
         ci_delete_pipelines_in_seconds_limit_human_readable: '1 year',
         ci_partitions_in_seconds_limit_human_readable: '1 month',

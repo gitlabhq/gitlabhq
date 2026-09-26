@@ -17559,6 +17559,9 @@ msgstr ""
 msgid "CICD|Configure CI/CD job token settings for all projects."
 msgstr ""
 
+msgid "CICD|Configure how often job log updates are sent while a job is running. Lower intervals make job logs appear sooner, but increase trace update requests."
+msgstr ""
+
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
@@ -17589,10 +17592,25 @@ msgstr ""
 msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr ""
 
+msgid "CICD|Frequency of job log updates"
+msgstr ""
+
 msgid "CICD|Grant additional access permissions to this project's CI/CD job tokens."
 msgstr ""
 
 msgid "CICD|Group or project"
+msgstr ""
+
+msgid "CICD|Interval, in seconds, for job log updates when the job log is not open."
+msgstr ""
+
+msgid "CICD|Interval, in seconds, for job log updates when the job log is open. Must be less than or equal to the job log update interval."
+msgstr ""
+
+msgid "CICD|Job log update interval"
+msgstr ""
+
+msgid "CICD|Job log update interval when open"
 msgstr ""
 
 msgid "CICD|Job logs"

@@ -78,6 +78,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['runner_token_expiration_interval']).to be_nil
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
+      expect(json_response['ci_job_trace_update_interval']).to eq(60)
+      expect(json_response['ci_job_trace_update_interval_when_being_watched']).to eq(3)
       expect(json_response['max_export_size']).to eq(0)
       expect(json_response['max_decompressed_archive_size']).to eq(25600)
       expect(json_response['max_terraform_state_size_bytes']).to eq(0)
@@ -197,6 +199,56 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       let(:user) { admin }
       let(:request) do
         put api('/application/settings', personal_access_token: pat), params: { default_projects_limit: 42 }
+      end
+    end
+
+    context 'job log trace update interval settings' do
+      it 'updates trace update intervals' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 10,
+          ci_job_trace_update_interval_when_being_watched: 5
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['ci_job_trace_update_interval']).to eq(10)
+        expect(json_response['ci_job_trace_update_interval_when_being_watched']).to eq(5)
+        expect(ApplicationSetting.current.ci_job_trace_update_interval).to eq(10)
+        expect(ApplicationSetting.current.ci_job_trace_update_interval_when_being_watched).to eq(5)
+      end
+
+      it 'rejects invalid trace update intervals' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 2,
+          ci_job_trace_update_interval_when_being_watched: 3601
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_job_trace_update_interval'])
+          .to include('must be greater than or equal to 3')
+        expect(json_response['message']['ci_job_trace_update_interval_when_being_watched'])
+          .to include('must be less than or equal to 3600')
+      end
+
+      it 'does not reject the watched interval when only the default interval is invalid' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 2
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_job_trace_update_interval'])
+          .to include('must be greater than or equal to 3')
+        expect(json_response['message']).not_to have_key('ci_job_trace_update_interval_when_being_watched')
+      end
+
+      it 'rejects watched trace update intervals greater than default trace update intervals' do
+        put api('/application/settings', admin), params: {
+          ci_job_trace_update_interval: 10,
+          ci_job_trace_update_interval_when_being_watched: 11
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_job_trace_update_interval_when_being_watched'])
+          .to include('must be less than or equal to 10')
       end
     end
 

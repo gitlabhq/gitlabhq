@@ -30,4 +30,16 @@ RSpec.describe 'admin/application_settings/ci_cd.html.haml' do
       expect(rendered).to have_content("Members of the group can create runners")
     end
   end
+
+  describe 'Job logs', feature_category: :continuous_integration do
+    it 'renders trace update interval settings', :aggregate_failures do
+      render
+
+      expect(rendered).to have_field('Job log update interval', type: 'number', with: '60')
+      expect(rendered).to have_field('Job log update interval when open', type: 'number', with: '3')
+      expect(rendered).to have_selector(
+        'input[name="application_setting[ci_job_trace_update_interval_when_being_watched]"][max="60"]'
+      )
+    end
+  end
 end

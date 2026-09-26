@@ -266,6 +266,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
               expect(response).to have_gitlab_http_status(:accepted)
               expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('3')
             end
+
+            context 'with a configured trace update interval' do
+              before do
+                stub_application_setting(ci_job_trace_update_interval_when_being_watched: 5)
+              end
+
+              it 'returns the configured interval in X-GitLab-Trace-Update-Interval' do
+                patch_the_trace
+
+                expect(response).to have_gitlab_http_status(:accepted)
+                expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('5')
+              end
+            end
           end
 
           context 'when build trace is not being watched' do
@@ -274,6 +287,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
 
               expect(response).to have_gitlab_http_status(:accepted)
               expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('60')
+            end
+
+            context 'with a configured trace update interval' do
+              before do
+                stub_application_setting(ci_job_trace_update_interval: 10)
+              end
+
+              it 'returns the configured interval in X-GitLab-Trace-Update-Interval' do
+                patch_the_trace
+
+                expect(response).to have_gitlab_http_status(:accepted)
+                expect(response.header['X-GitLab-Trace-Update-Interval']).to eq('10')
+              end
             end
           end
         end

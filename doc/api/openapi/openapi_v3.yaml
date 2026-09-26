@@ -20005,7 +20005,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_38a2f286b76a"
+              "$ref": "#/components/schemas/RequestBody_89f350c1ba64"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -91243,6 +91243,10 @@ components:
           type: string
         ci_job_live_trace_enabled:
           type: string
+        ci_job_trace_update_interval:
+          type: integer
+        ci_job_trace_update_interval_when_being_watched:
+          type: integer
         ci_partitions_in_seconds_limit_human_readable:
           type: string
         code_dropdown_custom_clients:
@@ -107164,7 +107168,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_38a2f286b76a:
+    RequestBody_89f350c1ba64:
       type: object
       properties:
         admin_mode:
@@ -108023,6 +108027,14 @@ components:
         ci_job_live_trace_enabled:
           type: boolean
           description: Turn on incremental logging for job logs.
+          nullable: true
+        ci_job_trace_update_interval:
+          type: integer
+          description: Job log update interval when the job log is not open, in seconds.
+          nullable: true
+        ci_job_trace_update_interval_when_being_watched:
+          type: integer
+          description: Job log update interval when the job log is open, in seconds.
           nullable: true
         git_push_pipeline_limit:
           type: integer

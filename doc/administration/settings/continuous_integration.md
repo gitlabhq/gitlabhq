@@ -461,13 +461,32 @@ When enabled, tokens fail to generate in CI/CD jobs with this error:
 
 ## Access job log settings
 
-Control how CI/CD job logs are stored and processed.
+Control how CI/CD job logs are stored, processed, and updated.
 
 To access these settings:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Job logs**.
+
+### Configure the frequency of job log updates
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/565373) in GitLab 19.5.
+
+{{< /history >}}
+
+Configure how often job log updates are sent while a job is running.
+Lower intervals make job logs appear sooner, but increase the number of trace update requests.
+The interval used when the job log is open must be less than or equal to the interval used when the
+job log is not open.
+
+To configure job log update intervals:
+
+1. In **Job log update interval**, enter a value.
+1. In **Job log update interval when open**, enter a value.
+1. Select **Save changes**.
 
 ### Configure incremental logging
 

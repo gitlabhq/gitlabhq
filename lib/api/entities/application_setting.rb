@@ -47,6 +47,8 @@ module API
       expose :iframe_rendering_allowlist_raw
       expose :email_otp_enabled
 
+      expose :ci_job_trace_update_interval, documentation: { type: Integer }
+      expose :ci_job_trace_update_interval_when_being_watched, documentation: { type: Integer }
       expose :logging_field_schema_version, documentation: { type: Integer }
       expose :logging_field_dual_emit_target, documentation: { type: Integer }
 
