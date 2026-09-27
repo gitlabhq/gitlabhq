@@ -141,10 +141,10 @@ project_type_ci_runners: supported
 projects: supported
 queries_service_pings: no_work_needed
 raw_usage_data: no_work_needed
-sbom_component_versions: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
-sbom_components: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
-sbom_source_packages: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
-sbom_sources: https://gitlab.com/gitlab-org/gitlab/-/issues/611966
+sbom_component_versions: supported
+sbom_components: supported
+sbom_source_packages: supported
+sbom_sources: supported
 scim_oauth_access_tokens: supported
 security_policy_settings: https://gitlab.com/gitlab-org/gitlab/-/issues/621726
 slack_api_scopes: supported

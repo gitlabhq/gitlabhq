@@ -887,6 +887,8 @@
   - 1
 - - organizations_root_group_organization_backfill
   - 1
+- - organizations_transfer_sbom
+  - 1
 - - organizations_transfer_security_exports
   - 1
 - - organizations_transfer_topic_avatar
