@@ -147,7 +147,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/support/protected_tags/access_control_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/gitlab_duo_administration_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/insights_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/features/iteration_report_group_by_label_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/protected_branches_access_control_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/sidebar_shared_examples.rb'
     - 'ee/spec/support/shared_examples/features/ultimate_trial_callout_shared_examples.rb'
