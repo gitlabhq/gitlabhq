@@ -1,0 +1,71 @@
+## Connections and pagination
+
+Some fields return a _connection_: a paginated list of items that follows the
+[Relay cursor connections specification](https://relay.dev/graphql/connections.htm).
+Because every connection shares the same pagination fields and arguments, they are
+documented here once rather than repeated for every connection field.
+
+### Standard connection fields
+
+Every connection type has the following fields:
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `nodes` | `[Item]` | The items in the current page. The item type depends on the connection. |
+| `edges` | `[Edge]` | The edges. Each edge wraps a `node` and a `cursor`. |
+| `pageInfo` | [`PageInfo!`](objects.md#pageinfo) | Pagination information. |
+
+Every edge type has the following fields:
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `node` | `Item` | The item at the end of the edge. The item type depends on the connection. |
+| `cursor` | [`String!`](scalars.md#string) | A cursor for use in pagination. |
+
+Some connections and edges have additional fields specific to their type.
+These are documented individually in each connection or edge section above.
+
+### Pagination arguments
+
+All connection fields accept the following optional pagination arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `after` | [`String`](scalars.md#string) | Returns the items that come after the specified cursor. |
+| `before` | [`String`](scalars.md#string) | Returns the items that come before the specified cursor. |
+| `first` | [`Int`](scalars.md#int) | Returns the first _n_ items from the list. |
+| `last` | [`Int`](scalars.md#int) | Returns the last _n_ items from the list. |
+
+### Querying a connection
+
+The following example queries the `projects` field, which returns a
+[`ProjectConnection`](objects.md#projectconnection). It shows the pagination arguments in use
+and annotates each part of the response with its type:
+
+```graphql
+{
+  projects(
+    first: 10        # optional - return at most 10 items
+    after: "abc123"  # optional - start after this cursor (from a previous endCursor)
+  ) {                # ProjectConnection
+    pageInfo {       # PageInfo
+      hasNextPage    # Boolean - true if more pages follow
+      endCursor      # String - pass as `after:` to fetch the next page
+    }
+    nodes {          # [Project] - the items on this page
+      id
+      name
+    }
+    edges {          # [ProjectEdge] - the same items, each with a cursor
+      cursor         # String - cursor for this specific item
+      node {         # Project
+        id
+        name
+      }
+    }
+  }
+}
+```
+
+To fetch the next page, pass the `endCursor` value from `pageInfo` as the `after` argument.
+Use `last` and `before` to paginate in reverse.

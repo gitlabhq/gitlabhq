@@ -43,6 +43,49 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       argument :directive_arg, GraphQL::Types::String, required: false, description: 'A directive argument.'
     end
 
+    spec_interface = Module.new do
+      include ::Types::BaseInterface
+      graphql_name 'ExampleInterface'
+      description 'An interface.'
+
+      field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+    end
+
+    spec_object = Class.new(::Types::BaseObject) do
+      graphql_name 'Object'
+      description 'An object.'
+
+      implements spec_interface
+
+      field :scalar_field, GraphQL::Types::String, null: true, description: 'A scalar field.' do
+        argument :filter, GraphQL::Types::String, required: false, description: 'A filter argument.'
+      end
+      field :deprecated_field, GraphQL::Types::String, null: true,
+        description: 'A deprecated field.',
+        deprecated: { milestone: '1.0', reason: 'Use scalarField instead' }
+      field :experimental_field, GraphQL::Types::String, null: true,
+        description: 'An experimental field.',
+        experiment: { milestone: '2.0' }
+    end
+
+    spec_connection_with_extra = Class.new(spec_object.connection_type) do
+      graphql_name 'ObjectWithExtraConnection'
+
+      field :total, GraphQL::Types::Int, null: true, description: 'Total count.'
+    end
+
+    spec_object_without_description = Class.new(::Types::BaseObject) do
+      graphql_name 'ObjectWithoutDescription'
+
+      field :scalar_field, GraphQL::Types::String, null: true, description: 'A scalar field.'
+    end
+
+    # Add a connection field to the object so field descriptions render the
+    # connection note. Defined after the connection type exists.
+    spec_object.field :related, spec_object.connection_type, null: true, description: 'Related objects.' do
+      argument :search, GraphQL::Types::String, required: false, description: 'A search argument.'
+    end
+
     Class.new(GraphQL::Schema) do
       directive(spec_directive)
 
@@ -51,6 +94,13 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
         field :scalar_field, spec_scalar
         field :enum_field, spec_enum
+        field :object_field, spec_object
+        field :object_without_description, spec_object_without_description
+        field :objects, spec_object.connection_type, null: true, description: 'A connection.'
+        field :objects_with_extra, spec_connection_with_extra, null: true,
+          description: 'A connection with an extra field.'
+        field :interfaces, spec_interface.connection_type, null: true,
+          description: 'A connection over an interface node.'
         field :input_field, spec_scalar do
           argument :input, spec_input_object, required: false, description: 'An input.'
         end
@@ -62,6 +112,106 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
   def page(filename)
     pages.find { |compiled_doc| compiled_doc.filename.to_s.end_with?(filename) }
+  end
+
+  describe 'the objects page' do
+    subject(:doc) { page('objects.md').doc }
+
+    it 'renders the object with its fields, type links, and deprecation/experiment status' do
+      expect(doc).to include(
+        <<~MD
+          ## `Object`
+
+          An object.
+
+          **Implements:** `ExampleInterface`
+
+          ### Fields {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `deprecatedField` | [`String`](scalars.md#string) | Deprecated in GitLab 1.0. Use scalarField instead. |
+          | `experimentalField` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental field. |
+          | `id` | [`ID`](scalars.md#id) | ID. |
+        MD
+      )
+    end
+
+    it 'appends the connection note and non-pagination arguments to a connection field description' do
+      expect(doc).to include(
+        '| `related` | [`ObjectConnection`](#objectconnection) | Related objects. ' \
+          'This field is a [connection](#connections-and-pagination) and accepts the ' \
+          'four standard pagination arguments: `before`, `after`, `first`, `last`. ' \
+          '<br><br> <strong>Arguments for `related`:</strong> ' \
+          '<dl><dt>`search` ([`String`](scalars.md#string))</dt><dd>A search argument.</dd></dl> |'
+      )
+    end
+
+    it 'omits the pagination arguments from a connection field arguments block' do
+      related_row = doc[/^\| `related` \|.*$/]
+
+      expect(related_row).to include('Arguments for `related`')
+      expect(related_row).not_to match(/<dt>`(before|after|first|last)`/)
+    end
+
+    it 'renders a scalar field with its arguments' do
+      expect(doc).to include(
+        '| `scalarField` | [`String`](scalars.md#string) | A scalar field. ' \
+          '<br><br> <strong>Arguments for `scalarField`:</strong> ' \
+          '<dl><dt>`filter` ([`String`](scalars.md#string))</dt><dd>A filter argument.</dd></dl> |'
+      )
+    end
+
+    it 'lists fields in alphabetical order' do
+      section = doc[/## `Object`.*?(?=\n## )/m]
+
+      expect(section.scan(/^\| `(\w+)` \|/).flatten).to eq(%w[deprecatedField experimentalField id related scalarField])
+    end
+
+    it 'renders a connection object with a summary linking to its node type' do
+      expect(doc).to include(
+        <<~MD
+          ## `ObjectConnection`
+
+          Paginated collection of [`Object`](#object). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+        MD
+      )
+    end
+
+    it 'renders a connection with extra fields beyond the standard set' do
+      section = doc[/## `ObjectWithExtraConnection`.*?(?=\n## )/m]
+
+      expect(section).to include('### Extra fields {.no_toc}')
+      expect(section).to include('| `total` | [`Int`](scalars.md#int) | Total count. |')
+    end
+
+    it 'renders an object without a description' do
+      expect(doc).to include(
+        <<~MD
+          ## `ObjectWithoutDescription`
+
+          ### Fields {.no_toc}
+        MD
+      )
+    end
+
+    it 'renders a connection over an interface node with the node unlinked' do
+      expect(doc).to include(
+        <<~MD
+          ## `ExampleInterfaceConnection`
+
+          Paginated collection of `ExampleInterface`. See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+        MD
+      )
+    end
+
+    it 'does not include introspection types' do
+      expect(doc).not_to include('__')
+    end
+
+    it 'includes the connections section' do
+      expect(doc).to include('## Connections and pagination')
+    end
   end
 
   describe 'the scalars page' do

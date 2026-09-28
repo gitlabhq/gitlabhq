@@ -5,6 +5,7 @@ require 'spec_helper'
 require Rails.root.join('tooling/graphql/docs/schema/item')
 require Rails.root.join('tooling/graphql/docs/schema/enum')
 require Rails.root.join('tooling/graphql/docs/schema/input_object')
+require Rails.root.join('tooling/graphql/docs/schema/object')
 require Rails.root.join('tooling/graphql/docs/schema/scalar')
 require Rails.root.join('tooling/graphql/docs/schema/temp_undocumented')
 require Rails.root.join('tooling/graphql/docs/schema/concerns/typeable')
@@ -65,7 +66,7 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api 
       end
     end
 
-    context 'with a type that has no docs page yet' do
+    context 'with an object type' do
       let(:object_type) do
         Class.new(Types::BaseObject) do
           graphql_name 'Object'
@@ -75,9 +76,43 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api 
 
       subject(:typeable) { typeable_for(object_type) }
 
+      it 'identifies an Object without loading its fields', :aggregate_failures do
+        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::Object)
+        expect(typeable.type.fields).to be_nil
+        expect(typeable.type_signature).to eq('Object')
+      end
+    end
+
+    context 'with a wrapped object type' do
+      let(:object_type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'Object'
+          field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+        end
+      end
+
+      subject(:typeable) { typeable_for(object_type.to_non_null_type) }
+
+      it 'unwraps to identify an Object', :aggregate_failures do
+        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::Object)
+        expect(typeable.type_signature).to eq('Object!')
+      end
+    end
+
+    context 'with a type that has no docs page yet' do
+      let(:interface_type) do
+        Module.new do
+          include Types::BaseInterface
+          graphql_name 'Interface'
+          field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+        end
+      end
+
+      subject(:typeable) { typeable_for(interface_type) }
+
       it 'falls back to TempUndocumented', :aggregate_failures do
         expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::TempUndocumented)
-        expect(typeable.type_signature).to eq('Object')
+        expect(typeable.type_signature).to eq('Interface')
       end
     end
   end

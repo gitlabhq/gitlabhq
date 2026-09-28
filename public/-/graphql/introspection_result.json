@@ -189895,7 +189895,7 @@
             },
             {
               "name": "projectStatistics",
-              "description": "Statistics of the projects in the group. Only available from [Query.groups](#querygroups). Introduced in GitLab 18.2: Status: Experiment.",
+              "description": "Statistics of the projects in the group. Only available from `Query.groups`. Introduced in GitLab 18.2: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",

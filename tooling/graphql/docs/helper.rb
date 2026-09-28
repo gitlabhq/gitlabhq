@@ -7,6 +7,11 @@ module Tooling
         DEPRECATED_ICON = '{{< icon name="warning" >}}'
         EXPERIMENT_ICON = '{{< icon name="work-item-test-case" >}}'
 
+        # The fields present on every connection object. Excluded from the
+        # per-connection fields tables because they are documented once in the
+        # connections section.
+        STANDARD_CONNECTION_FIELDS = %w[edges nodes pageInfo].freeze
+
         def sorted_by_name(collection)
           collection.sort_by(&:name)
         end
@@ -40,6 +45,52 @@ module Tooling
           "`#{argument.default_value}`"
         end
 
+        def connection_note
+          'This field is a [connection](#connections-and-pagination) and accepts the ' \
+            'four standard pagination arguments: `before`, `after`, `first`, `last`.'
+        end
+
+        # Renders the full body for an object section (below the ## heading).
+        # Handles connection and ordinary object layouts.
+        def render_object_body(type)
+          parts = type.connection? ? connection_body_parts(type) : object_body_parts(type)
+          "#{parts.join("\n\n")}\n"
+        end
+
+        # Summary for a connection object, linking to the node type and the
+        # standard connection fields section.
+        def connection_summary(object)
+          node = object.node_type
+          node_link = if node.nil? || node.is_a?(Schema::TempUndocumented)
+                        "`#{node&.name}`"
+                      else
+                        "[`#{node.name}`](#{docs_link(node)})"
+                      end
+
+          "Paginated collection of #{node_link}. " \
+            "See [Standard connection fields](#standard-connection-fields) " \
+            "for the fields available on every connection."
+        end
+
+        # Fields on a connection object that go beyond the standard set
+        # (edges, nodes, pageInfo).
+        def extra_connection_fields(object)
+          object.fields.reject { |f| STANDARD_CONNECTION_FIELDS.include?(f.name) }
+        end
+
+        def field_description(field)
+          description = description(field)
+          return description unless field.connection?
+
+          [description, connection_note].reject(&:empty?).join(' ')
+        end
+
+        # Whether a field has documentable arguments, excluding the standard
+        # pagination arguments that are documented in the connections section.
+        def documented_arguments?(field)
+          field.arguments_without_pagination.present?
+        end
+
         def docs_render(partial, **args)
           template = "shared/#{partial}"
           Renderer.new(template: template, locals: args.merge(page: current_page)).execute
@@ -49,6 +100,39 @@ module Tooling
 
         def current_page
           @page
+        end
+
+        def connection_body_parts(type)
+          parts = [connection_summary(type)]
+          extra = extra_connection_fields(type)
+
+          if extra.present?
+            parts << "### Extra fields {.no_toc}\n\n" \
+              "This connection has additional fields beyond the " \
+              "[standard connection fields](#standard-connection-fields).\n\n" \
+              "#{docs_render('fields_table', fields: extra)}"
+          end
+
+          parts
+        end
+
+        def object_body_parts(type)
+          parts = []
+          desc = description(type)
+          parts << desc if desc.present?
+
+          interfaces = type.implemented_interfaces
+
+          if interfaces.present?
+            # TODO: Link to abstract_types.md when that page ships. For now the
+            # implemented interfaces are rendered unlinked.
+            # See https://gitlab.com/gitlab-org/gitlab/-/issues/593121.
+            links = interfaces.map { |iface| "`#{iface}`" }.join(', ')
+            parts << "**Implements:** #{links}"
+          end
+
+          parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: type.fields)}"
+          parts
         end
 
         def docs_link(item)

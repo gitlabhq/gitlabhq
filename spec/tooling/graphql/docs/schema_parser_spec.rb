@@ -23,15 +23,41 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
       argument :my_arg, GraphQL::Types::String, required: false
     end
 
+    object_type = Class.new(::Types::BaseObject) do
+      graphql_name 'GraphQLObject'
+
+      field :object_field, GraphQL::Types::Boolean
+    end
+
+    mutation_type = Class.new(::Mutations::BaseMutation) do
+      graphql_name 'GraphQLMutation'
+
+      field :result, GraphQL::Types::String, null: true, description: 'A result.'
+    end
+
     Class.new(GraphQL::Schema) do
       query(Class.new(::Types::BaseObject) do
         graphql_name 'Query'
 
         field :enum_field, enum_type
         field :scalar_field, scalar_type
+        field :object_field, object_type
+        field :objects, object_type.connection_type, null: true, description: 'A connection.'
         field :input_field, scalar_type do
           argument :input, input_object_type, required: false
         end
+      end)
+
+      mutation(Class.new(::Types::BaseObject) do
+        graphql_name 'Mutation'
+
+        field :graphql_mutation, mutation: mutation_type
+      end)
+
+      subscription(Class.new(::Types::BaseObject) do
+        graphql_name 'Subscription'
+
+        field :object_updated, object_type, null: true, description: 'An update.'
       end)
     end
   end
@@ -60,6 +86,34 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
 
       it 'contains all enum types in the schema' do
         expect(enums.map(&:name)).to contain_exactly('GraphQLEnum')
+      end
+    end
+
+    describe '@objects' do
+      subject(:objects) { result.objects }
+
+      it 'contains an array of object types' do
+        expect(objects).to all(be_a(Tooling::Graphql::Docs::Schema::Object))
+      end
+
+      it 'contains the object type in the schema' do
+        expect(objects.map(&:name)).to include('GraphQLObject')
+      end
+
+      it 'excludes the root query, mutation, and subscription types' do
+        expect(objects.map(&:name)).not_to include('Query', 'Mutation', 'Subscription')
+      end
+
+      it 'excludes mutation payload types' do
+        expect(objects.map(&:name)).not_to include('GraphQLMutationPayload')
+      end
+
+      it 'excludes standard edge types' do
+        expect(objects.map(&:name)).not_to include('GraphQLObjectEdge')
+      end
+
+      it 'includes connection types' do
+        expect(objects.map(&:name)).to include('GraphQLObjectConnection')
       end
     end
 

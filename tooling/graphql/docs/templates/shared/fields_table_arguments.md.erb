@@ -1,0 +1,1 @@
+ <br><br> <strong>Arguments for <%= name(@field) %>:</strong> <dl><% sorted_by_name(@field.arguments_without_pagination).each do |argument| %><dt><%= name(argument) %> (<%= type(argument) %>)</dt><dd><%= description(argument).squish %></dd><% end %></dl>
