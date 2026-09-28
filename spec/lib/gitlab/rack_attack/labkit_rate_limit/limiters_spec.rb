@@ -353,22 +353,63 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_git_http' => {
-        path: paths[:git], web_or_frontend: true, setting_unauthenticated_git_http: true,
-        setting_unauthenticated_web: true
+        path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+        setting_unauthenticated_git_http: true, setting_unauthenticated_web: true
       },
       'authenticated_git_http' => {
-        path: paths[:git], web_or_frontend: true, setting_authenticated_git_http: true,
-        setting_authenticated_web: true, requester_type: 'user', requester_id: '1'
+        path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+        setting_authenticated_git_http: true, setting_authenticated_web: true,
+        requester_type: 'user', requester_id: '1'
       },
       'authenticated_git_lfs' => {
-        path: paths[:git_lfs], web_or_frontend: true, setting_authenticated_git_lfs: true,
-        setting_authenticated_web: true, requester_type: 'user', requester_id: '1'
+        path: paths[:git_lfs], web_or_frontend: true, git_http: true, git_http_non_lfs: false,
+        setting_authenticated_git_lfs: true, setting_authenticated_web: true,
+        requester_type: 'user', requester_id: '1'
       }
     }
 
     general_cases.each do |throttle, request_facts|
       it "selects #{throttle} for its representative request" do
         expect(selected_in(general, **request_facts)).to eq(throttle)
+      end
+    end
+
+    # Rack::Attack's git exclusions are unconditional, so turning the claiming git
+    # throttle off must not push the request into a wider throttle. Each row is the
+    # facts, the setting gating the claiming throttle, that throttle, and where the
+    # request lands once the setting is off. Every row names the wider throttle's own
+    # setting, so the fall-through it asserts is reachable.
+    git_exclusion_cases = {
+      'unauthenticated web excludes every git path' => [
+        { path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+          setting_unauthenticated_web: true },
+        :setting_unauthenticated_git_http, 'unauthenticated_git_http', nil
+      ],
+      'authenticated web excludes non-LFS git' => [
+        { path: paths[:git], web_or_frontend: true, git_http: true, git_http_non_lfs: true,
+          setting_authenticated_web: true, requester_type: 'user', requester_id: '1' },
+        :setting_authenticated_git_http, 'authenticated_git_http', nil
+      ],
+      # Rack::Attack counts authenticated LFS as web traffic, so this one falls
+      # through rather than going uncounted. setting_authenticated_git_http stays on
+      # to assert the git http rule still does not claim an LFS path.
+      'authenticated git http excludes LFS' => [
+        { path: paths[:git_lfs], web_or_frontend: true, git_http: true, git_http_non_lfs: false,
+          setting_authenticated_web: true, setting_authenticated_git_http: true,
+          requester_type: 'user', requester_id: '1' },
+        :setting_authenticated_git_lfs, 'authenticated_git_lfs', 'authenticated_web'
+      ]
+    }
+
+    git_exclusion_cases.each do |name, (request_facts, claiming_setting, claiming_throttle, fall_through)|
+      context "when #{name}" do
+        it 'selects the claiming throttle while its setting is on' do
+          expect(selected_in(general, **request_facts, claiming_setting => true)).to eq(claiming_throttle)
+        end
+
+        it 'selects the fall-through throttle once its setting is off' do
+          expect(selected_in(general, **request_facts, claiming_setting => false)).to eq(fall_through)
+        end
       end
     end
 

@@ -285,7 +285,7 @@ module Gitlab
               },
               'throttle_authenticated_git_http' => {
                 limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 3, claims: true,
-                match: { setting_authenticated_git_http: true, requester_id: /./, path: git }
+                match: { setting_authenticated_git_http: true, requester_id: /./, git_http_non_lfs: true }
               },
               'throttle_unauthenticated_git_http' => {
                 limiter: GENERAL, characteristics: [:ip], cohort: 3, claims: true,
@@ -296,16 +296,22 @@ module Gitlab
               # web_or_frontend fact, so it keeps the one Redis counter (keyed by rule
               # name) Rack::Attack keeps; two rules would split the counter and an IP
               # mixing web pages with frontend API calls would trip the limit late.
-              # The predicates' git exclusions are the claiming git rules above.
+              # The git exclusions are stated here, not inherited from the claiming
+              # git rules: those claims carry their own setting_*_git_http fact, so
+              # they stop excluding when that throttle is off. The predicates do not.
               'throttle_unauthenticated_web' => {
                 limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
                 match: {
-                  web_or_frontend: true, requester_id: nil, runner_id: nil, setting_unauthenticated_web: true
+                  web_or_frontend: true, requester_id: nil, runner_id: nil, git_http: false,
+                  setting_unauthenticated_web: true
                 }
               },
               'throttle_authenticated_web' => {
                 limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2, claims: true,
-                match: { web_or_frontend: true, setting_authenticated_web: true, requester_id: /./ }
+                match: {
+                  web_or_frontend: true, requester_id: /./, git_http_non_lfs: false,
+                  setting_authenticated_web: true
+                }
               },
 
               # Cohort 2: general API. frontend: false is the predicates'
