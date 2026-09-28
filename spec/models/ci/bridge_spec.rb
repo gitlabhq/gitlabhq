@@ -993,6 +993,26 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
       it { is_expected.to be_nil }
     end
+
+    # `trigger:include` is passed to the downstream pipeline verbatim, so any variable in an
+    # include path is expanded by the downstream pipeline rather than by the trigger job. The
+    # consequences of that are covered in create_downstream_pipeline_service_spec.rb.
+    context 'when the include path contains a variable' do
+      let(:options) do
+        { trigger: { include: 'path/to/$BRIDGE.yml' } }
+      end
+
+      let(:yaml) do
+        <<~YAML
+          ---
+          include: path/to/$BRIDGE.yml
+        YAML
+      end
+
+      it 'leaves the variable to be expanded by the downstream pipeline' do
+        is_expected.to eq yaml
+      end
+    end
   end
 
   describe '#downstream_project=' do

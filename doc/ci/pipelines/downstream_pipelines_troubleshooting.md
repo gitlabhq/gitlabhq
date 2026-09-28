@@ -43,6 +43,28 @@ a variable in the UI, or use the [`variables:expand` keyword](../yaml/_index.md#
 set a variable value to not be expanded. This variable can then be passed to the downstream pipeline
 without the `$` being interpreted as a variable reference.
 
+## Variable in a `trigger:include` path is empty or has an unexpected value
+
+CI/CD variables in a [`trigger:include`](../yaml/_index.md#triggerinclude) path
+do not expand in the trigger job. The path is passed as a string with the unexpanded variable
+to the process that generates the child pipeline. Then the expansion happens in the context
+of the child pipeline.
+
+As a result:
+
+- Variables from the pipeline configuration can only be used in the `trigger:include` path
+  when they are forwarded to the child pipeline. This includes default `variables` and the trigger job's
+  own `variables`. If the trigger job uses [`trigger:forward`](../yaml/_index.md#triggerforward)
+  with `yaml_variables: false`, any variables in the path cannot expand and evaluate to an empty string.
+  Project, group, and instance CI/CD variables are not affected, as they are available in both contexts.
+- Predefined variables hold the values of the child pipeline. For example, `$CI_PIPELINE_SOURCE` is
+  `parent_pipeline` from the child pipeline, not the pipeline source for the parent pipeline.
+- Variables scoped to an [environment](../environments/_index.md) resolve to their unscoped value,
+  because the child pipeline has no environment.
+
+To avoid this behavior, use [inputs](../inputs/_index.md) with `$[[ inputs.name ]]` interpolation
+instead of a CI/CD variable. Interpolation is resolved before the configuration is processed.
+
 ## `Ref is ambiguous`
 
 You cannot trigger a multi-project pipeline with a tag when a branch exists with the same

@@ -78,7 +78,8 @@ instance setting is used.
 To prevent artifacts from expiring, you can select **Keep** from the job details page.
 The option is not available when an artifact has no expiry set.
 
-By default, artifacts are always kept for the most recent successful pipeline on each ref.
+By default, artifacts from the most recently completed pipeline and the most recent
+successful pipeline on each ref are kept regardless of `expire_in`.
 
 ### With an explicitly defined artifact name
 
@@ -420,18 +421,24 @@ With this configuration, the **View exposed artifact** section displays a link t
 
 ## Keep artifacts from most recent successful jobs
 
-By default, artifacts are always kept for the most recent successful pipeline on each ref.
-Any `expire_in` configuration does not apply to the most recent artifacts.
+By default, for each Git ref (branch or tag), GitLab preserves artifacts from the following:
 
-When a new pipeline on the same ref completes successfully, the previous pipeline's artifacts
-are deleted according to the `expire_in` configuration. The artifacts of the new pipeline
-are kept automatically.
+- The latest pipeline for the ref, even if it failed or is blocked by a manual job.
+- The most recent successful pipeline, if it's different from the latest pipeline.
 
-A pipeline's artifacts are only deleted according to the `expire_in` configuration if a
-new pipeline runs for the same ref and:
+Any `expire_in` configuration does not apply to these artifacts.
+
+The artifacts of other, older pipelines on the same ref start expiring when a newer
+pipeline on that ref does one of the following:
 
 - Succeeds.
-- Stops running due to being blocked by a manual job.
+- Fails.
+- Is canceled.
+- Is skipped.
+- Is blocked by a manual job.
+
+For example, if the latest pipeline on a branch fails, GitLab keeps its artifacts along
+with those of the last successful pipeline.
 
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in

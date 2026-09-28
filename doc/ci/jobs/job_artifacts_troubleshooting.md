@@ -69,8 +69,8 @@ If some job artifacts are not expiring as expected, check if the
 [**Keep artifacts from most recent successful jobs**](job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
 setting is enabled.
 
-When this setting is enabled, job artifacts from the latest successful pipeline
-of each ref do not expire and are not deleted.
+When this setting is enabled, job artifacts from the latest completed pipeline and
+the latest successful pipeline (if different) on each ref do not expire.
 
 ## Error message `This job could not start because it could not retrieve the needed artifacts.`
 

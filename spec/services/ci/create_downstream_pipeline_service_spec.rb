@@ -548,6 +548,152 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           end
         end
 
+        # Variables in a `trigger:include` path are expanded by the downstream pipeline, not by the
+        # trigger job. The specs below document what follows from that, because the resolution
+        # context is not the one the include path is written in. See
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/613105
+        context 'when the include path references a variable' do
+          context 'when the variable is a YAML variable of the trigger job' do
+            let(:yaml_variables) do
+              [{ key: 'PIPELINE_MODE', value: 'child', public: true }]
+            end
+
+            let(:trigger) do
+              { trigger: { include: '$PIPELINE_MODE-pipeline.yml' } }
+            end
+
+            it_behaves_like 'creates a child pipeline'
+
+            # The trigger job's YAML variables only reach the expansion because they are forwarded
+            # to the downstream pipeline. Opting out of forwarding them therefore also removes them
+            # from the expansion, and the path resolves to an empty string.
+            context 'when yaml variables are not forwarded' do
+              let(:trigger) do
+                {
+                  trigger: {
+                    include: '$PIPELINE_MODE-pipeline.yml',
+                    forward: { yaml_variables: false }
+                  }
+                }
+              end
+
+              it 'does not resolve the include path' do
+                expect(subject).to be_error
+                expect(subject.message)
+                  .to include('Local file `-pipeline.yml` does not exist!')
+              end
+            end
+          end
+
+          context 'when the variable is a project CI/CD variable' do
+            let(:trigger) do
+              { trigger: { include: '$PIPELINE_MODE-pipeline.yml' } }
+            end
+
+            before do
+              create(:ci_variable, project: upstream_project, key: 'PIPELINE_MODE', value: 'child')
+            end
+
+            it_behaves_like 'creates a child pipeline'
+
+            context 'when yaml variables are not forwarded' do
+              let(:trigger) do
+                {
+                  trigger: {
+                    include: '$PIPELINE_MODE-pipeline.yml',
+                    forward: { yaml_variables: false }
+                  }
+                }
+              end
+
+              it_behaves_like 'creates a child pipeline'
+            end
+          end
+
+          context 'when the variable is predefined' do
+            let(:trigger) do
+              { trigger: { include: 'ci/$CI_PIPELINE_SOURCE.yml' } }
+            end
+
+            before do
+              upstream_project.repository.create_file(
+                user, 'ci/push.yml', YAML.dump(from_push: { script: 'echo "from push"' }),
+                message: 'message', branch_name: 'master')
+              upstream_project.repository.create_file(
+                user, 'ci/parent_pipeline.yml', YAML.dump(from_parent: { script: 'echo "from parent"' }),
+                message: 'message', branch_name: 'master')
+
+              upstream_pipeline.update!(sha: upstream_project.commit.id)
+            end
+
+            it 'resolves to the source of the downstream pipeline, not the upstream one' do
+              expect(subject).to be_success
+              expect(pipeline.builds.map(&:name)).to contain_exactly('from_parent')
+            end
+          end
+
+          context 'when a forwarded YAML variable shadows a project variable of the same name' do
+            let(:yaml_variables) do
+              [{ key: 'COMPONENT', value: 'from-yaml', public: true }]
+            end
+
+            let(:trigger) do
+              { trigger: { include: 'ci/$COMPONENT.yml' } }
+            end
+
+            before do
+              create(:ci_variable, project: upstream_project, key: 'COMPONENT', value: 'from-project')
+
+              upstream_project.repository.create_file(
+                user, 'ci/from-yaml.yml', YAML.dump(yaml_variable_won: { script: 'echo yaml' }),
+                message: 'message', branch_name: 'master')
+              upstream_project.repository.create_file(
+                user, 'ci/from-project.yml', YAML.dump(project_variable_won: { script: 'echo project' }),
+                message: 'message', branch_name: 'master')
+
+              upstream_pipeline.update!(sha: upstream_project.commit.id)
+            end
+
+            it 'resolves the forwarded pipeline variable, which overrides project variables' do
+              expect(subject).to be_success
+              expect(pipeline.builds.map(&:name)).to contain_exactly('yaml_variable_won')
+            end
+          end
+
+          context 'when the variable is scoped to the environment of the trigger job' do
+            let(:trigger) do
+              { trigger: { include: 'ci/$DEPLOY_CONFIG.yml' } }
+            end
+
+            let(:bridge) do
+              create(:ci_bridge, status: :pending, user: user, options: trigger,
+                pipeline: upstream_pipeline, environment: 'production')
+            end
+
+            before do
+              create(:ci_variable, project: upstream_project, key: 'DEPLOY_CONFIG',
+                value: 'default-config', environment_scope: '*')
+              create(:ci_variable, project: upstream_project, key: 'DEPLOY_CONFIG',
+                value: 'production-config', environment_scope: 'production')
+
+              upstream_project.repository.create_file(
+                user, 'ci/default-config.yml', YAML.dump(default_config: { script: 'echo default' }),
+                message: 'message', branch_name: 'master')
+              upstream_project.repository.create_file(
+                user, 'ci/production-config.yml', YAML.dump(production_config: { script: 'echo prod' }),
+                message: 'message', branch_name: 'master')
+
+              upstream_pipeline.update!(sha: upstream_project.commit.id)
+            end
+
+            it 'resolves the unscoped variable, ignoring the environment of the trigger job', :aggregate_failures do
+              expect(subject).to be_success
+              expect(pipeline.builds.map(&:name)).to contain_exactly('default_config')
+              expect(bridge.scoped_variables.to_hash['DEPLOY_CONFIG']).to eq('production-config')
+            end
+          end
+        end
+
         context 'when the parent is a merge request pipeline' do
           let(:merge_request) { create(:merge_request, source_project: bridge.project, target_project: bridge.project) }
           let(:file_content) do

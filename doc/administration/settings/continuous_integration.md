@@ -122,16 +122,19 @@ To set the default expiration time for job artifacts:
 
 #### Keep artifacts from latest successful pipelines
 
-Preserve artifacts from the most recent successful pipeline
-for each Git ref (branch or tag), regardless of their expiration time.
+For each Git ref (branch or tag), GitLab preserves artifacts from the following:
 
-By default, this setting is turned on.
+- The latest pipeline for the ref, even if it failed or is blocked by a manual job.
+- The most recent successful pipeline, if it's different from the latest pipeline.
+
+By default, these artifacts are preserved regardless of their expiration time.
 
 This setting takes precedence over [project settings](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 If turned off for an instance, it cannot be turned on for individual projects.
 
 When this feature is turned off, existing preserved artifacts don't immediately expire.
-A new successful pipeline must run on a branch before its artifacts can expire.
+A newer pipeline on the branch must complete, or become blocked by a manual job,
+before those artifacts can expire.
 
 > [!note]
 > All application settings have a [customizable cache expiry interval](../application_settings_cache.md),

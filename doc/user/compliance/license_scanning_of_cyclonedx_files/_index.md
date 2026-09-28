@@ -210,7 +210,7 @@ license names.
 | NuGet           | <https://api.nuget.org/v3/catalog0/index.json>                   |
 | Packagist       | <https://packagist.org/packages/list.json>                       |
 | pub             | <https://pub.dev/>                                               |
-| PyPI            | <https://warehouse.pypa.io/api-reference/bigquery-datasets.html> |
+| PyPI            | <https://docs.pypi.org/api/bigquery/>                            |
 | RubyGems        | <https://rubygems.org/versions>                                  |
 
 ## License expressions

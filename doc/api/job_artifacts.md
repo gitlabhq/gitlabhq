@@ -446,8 +446,10 @@ curl --request DELETE \
 
 Delete all job artifacts eligible for deletion in a project. Artifacts cannot be recovered after they are deleted.
 
-By default, artifacts from [the most recent successful pipeline of each ref](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
-are not deleted.
+By default, GitLab keeps artifacts from the most recently completed pipeline
+and the most recent successful pipeline for each ref, regardless of expiration.
+For more information, see
+[keep artifacts from most recent successful jobs](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
 
 Requests to this endpoint set the expiry of all job artifacts that
 can be deleted to the current time. The files are then deleted from the system as part

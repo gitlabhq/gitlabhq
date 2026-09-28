@@ -6861,6 +6861,9 @@ Use `trigger:include` to declare that a job is a "trigger job" which starts a
 
 - The path to the child pipeline's configuration file.
 
+Support for CI/CD variables in the path is limited, see
+[Variable in a `trigger:include` path is empty or has an unexpected value](../pipelines/downstream_pipelines_troubleshooting.md#variable-in-a-triggerinclude-path-is-empty-or-has-an-unexpected-value). Consider using [inputs](../inputs/_index.md) instead.
+
 **Example of `trigger:include`**:
 
 ```yaml
@@ -7093,6 +7096,9 @@ child3:
 - CI/CD variables forwarded to downstream pipelines with `trigger:forward` are [pipeline variables](../variables/_index.md#cicd-variable-precedence),
   which have high precedence. If a variable with the same name is defined in the downstream pipeline,
   that variable is usually overwritten by the forwarded variable.
+- `forward:yaml_variables` also affects CI/CD variables in a [`trigger:include`](#triggerinclude) path.
+  For more information, see
+  [Variable in a `trigger:include` path is empty or has an unexpected value](../pipelines/downstream_pipelines_troubleshooting.md#variable-in-a-triggerinclude-path-is-empty-or-has-an-unexpected-value).
 
 ---
 

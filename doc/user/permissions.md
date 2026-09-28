@@ -727,7 +727,8 @@ Project permissions for [issues](project/issues/_index.md):
 | Create issues                                                                     |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | View [confidential issues](project/issues/confidential_issues.md)                 |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) confidential issues and comments[^project-planning-users-planner-role]          |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| Edit issues, including metadata, item locking, and resolving threads[^metadata-includes-labels] |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Edit issues, including metadata and item locking[^metadata-includes-labels] |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Resolve threads on issues[^project-planning-resolve-threads] |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 | Add internal notes                                                                |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Close and reopen issues[^guest-users-close]                                              |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Manage [design management](project/issues/design_management.md) files             |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
@@ -756,6 +757,7 @@ Project permissions for [issues](project/issues/_index.md):
 [^project-planning-users-who-don]: Users who don't have the Planner or Owner role can only delete the issues they authored.
 [^project-planning-users-planner-role]: Users with the Planner role can not use advanced search for comments on confidential issues.
     For more information, see [epic 17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
+[^project-planning-resolve-threads]: Users can resolve threads they started and threads on issues they authored.
 
 Project permissions for [tasks](tasks.md):
 
@@ -764,7 +766,8 @@ Project permissions for [tasks](tasks.md):
 | View tasks                                                                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) tasks                                                 |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create tasks                                                                     |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| Edit tasks, including metadata, item locking, and resolving threads[^project-planning-guest-authored-items] |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Edit tasks, including metadata and item locking[^project-planning-guest-authored-items] |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Resolve threads on tasks[^project-planning-resolve-threads-tasks] |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 | Add a linked item                                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Convert to another item type                                                     |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Remove from issue                                                                |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
@@ -773,6 +776,7 @@ Project permissions for [tasks](tasks.md):
 
 [^project-planning-guest-authored-items]: Guest users can modify the title and description that they authored or are assigned to.
 [^project-planning-users-who-don-2]: Users who don't have the Planner or Owner role can only delete the tasks they authored.
+[^project-planning-resolve-threads-tasks]: Users can resolve threads they started and threads on tasks they authored.
 
 Project permissions for [OKRs](okrs.md):
 
@@ -781,13 +785,16 @@ Project permissions for [OKRs](okrs.md):
 | View OKRs                                                          |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) OKRs                                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create OKRs                                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| Edit OKRs, including metadata, item locking, and resolving threads |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Edit OKRs, including metadata and item locking                     |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| Resolve threads on OKRs[^project-planning-resolve-threads-okrs] |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 | Add a child OKR                                                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Add a linked item                                                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Convert to another item type                                       |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Edit OKRs                                                          |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Change confidentiality in OKR                                      |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Add internal note                                                  |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+
+[^project-planning-resolve-threads-okrs]: Users can resolve threads they started and threads on OKRs they authored.
 
 Project permissions for [wikis](project/wiki/_index.md):
 

@@ -1355,6 +1355,10 @@
   - 1
 - - security_sync_tracked_context_traversal_ids
   - 1
+- - security_triage_coverage_schedule_update
+  - 1
+- - security_triage_coverage_update
+  - 1
 - - security_unassign_policy_configurations_for_expired_namespace
   - 1
 - - security_unassign_redundant_policy_configurations
