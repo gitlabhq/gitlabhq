@@ -31,7 +31,7 @@ To test the feature locally, you must:
   ```
 
 - A [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)
-  set on your user, with the [Developer Flow](../../user/duo_agent_platform/flows/foundational_flows/developer.md)
+  set on your user, with the [Developer Flow](../../user/project/merge_requests/developer.md)
   turned on for that top-level group.
 
 ## Use a Slack developer sandbox

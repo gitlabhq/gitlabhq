@@ -67,6 +67,7 @@ GitLab skips auto-assignment when:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236211) in GitLab 19.0 as a project setting [with a feature flag](../../../../administration/feature_flags/_index.md) named `dap_powered_recommend_reviewers`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4 to use a flow trigger instead of a project setting. Feature flag `dap_powered_recommend_reviewers` removed.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257534) in GitLab 19.5 to create a trigger that runs when a merge request is created.
 
 {{< /history >}}
 
@@ -91,7 +92,16 @@ Prerequisites:
 
 ### Use the flow
 
-To use the Recommend Reviewers flow, create a trigger:
+When you turn on the Recommend Reviewers flow for the top-level group, GitLab creates a flow
+trigger in each project. This trigger runs the flow when a merge request is created, including
+merge requests created as drafts and merge requests created in a ready state. For a draft merge
+request, the flow recommends reviewers when the merge request is created, not when it is marked
+as ready.
+
+This trigger appears on the **AI** > **Triggers** page of the project, where you can turn it off.
+
+To run the flow when a draft merge request is marked as ready instead, turn off this trigger,
+then create a trigger:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **AI** > **Triggers**.
@@ -112,11 +122,9 @@ For more information about creating and editing triggers, see
 
 ### Exceptions
 
-- Reviewers are assigned only when a draft merge request is marked as ready.
-  The flow does not assign reviewers when a merge request is opened directly in a ready state.
-  For more information, see [issue 592452](https://gitlab.com/gitlab-org/gitlab/-/issues/592452).
-- The person who marks the merge request as ready must have at least the Developer role for the
-  project. The flow does not assign reviewers when the person has a lower role.
+- The person who creates the merge request, or marks it as ready, must have at least the
+  Developer role for the project. The flow does not assign reviewers when the person has a
+  lower role.
 
 ### Reviewer selection
 
@@ -143,7 +151,7 @@ candidates, so a project without direct members gets no recommendation for this 
 
 The recommendation runs in the background, so the reviewers might take a moment to appear.
 The flow attributes the reviewer assignments and the note to the [service account](../../../duo_agent_platform/flows/foundational_flows/_index.md#service-accounts) that is set up when you turn the flow on for the top-level group.
-They are not attributed to the person who marked the merge request as ready.
+They are not attributed to the person who created the merge request or marked it as ready.
 
 ## Related topics
 

@@ -13,12 +13,13 @@ describe('MergeRequestsWidgetList', () => {
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findDashboardLink = () => wrapper.find('a');
 
-  const createComponent = ({ mergeRequests = buildMergeRequests(2) } = {}) => {
+  const createComponent = ({ mergeRequests = buildMergeRequests(2), showAuthor = false } = {}) => {
     wrapper = shallowMountExtended(MergeRequestsWidgetList, {
       propsData: {
         mergeRequests,
         emptyText: 'No merge requests assigned to you.',
         trackingProperty: 'Assigned to you',
+        showAuthor,
       },
     });
   };
@@ -108,6 +109,16 @@ describe('MergeRequestsWidgetList', () => {
           expect(findItems()).toHaveLength(4);
         });
       });
+    });
+  });
+
+  describe('when showAuthor is true', () => {
+    beforeEach(() => {
+      createComponent({ showAuthor: true });
+    });
+
+    it('passes showAuthor down to each item', () => {
+      expect(findItems().at(0).props('showAuthor')).toBe(true);
     });
   });
 

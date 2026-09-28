@@ -206,7 +206,7 @@ SA created here is the recommended end state.
 
 ## Reviewing auto-generated MRs
 
-Sync MRs are labelled `ai-agent` and `documentation`. They are not
+Sync MRs are labeled `ai-agent` and `documentation`. They are not
 auto-merged — a human must verify that the distilled changes faithfully
 reflect the source-doc updates before merging.
 

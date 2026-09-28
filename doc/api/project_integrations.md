@@ -542,8 +542,8 @@ Parameters:
 | `api_key`              | string  | yes     | [API key](https://docs.datadoghq.com/account_management/api-app-keys/) used for authentication with Datadog. |
 | `datadog_ci_visibility`| boolean | yes     | Enables collection of pipeline and job events in Datadog to display pipeline execution traces. |
 | `api_url`              | string  | no    | Full URL of your Datadog site. |
-| `datadog_env`          | string  | no    | For self-managed deployments, `env%` tag for all the data sent to Datadog. |
-| `datadog_service`      | string  | no    | GitLab instance to tag all data from in Datadog. Can be used when managing several self-managed deployments. |
+| `datadog_env`          | string  | no    | For GitLab Self-Managed deployments, `env%` tag for all the data sent to Datadog. |
+| `datadog_service`      | string  | no    | GitLab instance to tag all data from in Datadog. Can be used when managing several GitLab Self-Managed deployments. |
 | `datadog_site`         | string  | no    | Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`. |
 | `datadog_tags`         | string  | no    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`. |
 | `archive_trace_events` | boolean | no    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces. |

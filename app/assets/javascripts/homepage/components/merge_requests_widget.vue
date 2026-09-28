@@ -1,8 +1,11 @@
 <script>
 import { GlBadge, GlSkeletonLoader, GlTab, GlTabs } from '@gitlab/ui';
-import { n__, s__ } from '~/locale';
+import { __, n__, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { TRACKING_PROPERTY_ASSIGNED_TO_YOU } from '../tracking_constants';
+import {
+  TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+  TRACKING_PROPERTY_REVIEW_REQUESTED,
+} from '../tracking_constants';
 import mergeRequestsWidgetQuery from '../graphql/queries/merge_requests_widget.query.graphql';
 import BaseWidget from './base_widget.vue';
 import MergeRequestsWidgetList from './merge_requests_widget_list.vue';
@@ -31,6 +34,7 @@ export default {
       update({ currentUser }) {
         return {
           assigned: currentUser?.assignedMergeRequests ?? { count: 0, nodes: [] },
+          reviewRequested: currentUser?.reviewRequestedMergeRequests ?? { count: 0, nodes: [] },
         };
       },
       error(error) {
@@ -46,6 +50,9 @@ export default {
     assigned() {
       return this.mergeRequests?.assigned ?? { count: 0, nodes: [] };
     },
+    reviewRequested() {
+      return this.mergeRequests?.reviewRequested ?? { count: 0, nodes: [] };
+    },
   },
   methods: {
     reload() {
@@ -59,12 +66,15 @@ export default {
   i18n: {
     title: s__('HomePageMergeRequestsWidget|Merge requests'),
     assignedTabTitle: s__('HomePageMergeRequestsWidget|Assigned to you'),
+    reviewRequestedTabTitle: __('Review requested'),
     assignedEmptyText: s__('HomePageMergeRequestsWidget|No merge requests assigned to you.'),
+    reviewRequestedEmptyText: s__('HomePageMergeRequestsWidget|No merge requests to review.'),
     errorText: s__(
       'HomePageMergeRequestsWidget|Could not load your merge requests. Refresh the page to try again.',
     ),
   },
   trackingPropertyAssignedToYou: TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+  trackingPropertyReviewRequested: TRACKING_PROPERTY_REVIEW_REQUESTED,
   N_SKELETON_ROWS,
 };
 </script>
@@ -108,6 +118,27 @@ export default {
           :empty-text="$options.i18n.assignedEmptyText"
           :tracking-property="$options.trackingPropertyAssignedToYou"
           data-testid="assigned-list"
+        />
+      </gl-tab>
+
+      <gl-tab>
+        <template #title>
+          {{ $options.i18n.reviewRequestedTabTitle }}
+          <gl-badge
+            class="homepage-merge-requests-widget-tab-count gl-ml-2"
+            variant="neutral"
+            aria-hidden="true"
+            data-testid="tab-count"
+            >{{ reviewRequested.count }}</gl-badge
+          >
+          <span class="gl-sr-only">{{ countSrText(reviewRequested.count) }}</span>
+        </template>
+        <merge-requests-widget-list
+          :merge-requests="reviewRequested.nodes"
+          :empty-text="$options.i18n.reviewRequestedEmptyText"
+          :tracking-property="$options.trackingPropertyReviewRequested"
+          show-author
+          data-testid="review-requested-list"
         />
       </gl-tab>
     </gl-tabs>

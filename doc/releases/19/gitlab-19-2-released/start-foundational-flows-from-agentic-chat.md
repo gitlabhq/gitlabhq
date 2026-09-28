@@ -17,7 +17,7 @@ in the GitLab UI as part of your conversation.
 
 When your request matches a specialist workflow, Agentic Chat hands off to one of these flows:
 
-- [Developer Flow](../../../user/duo_agent_platform/flows/foundational_flows/developer.md):
+- [Developer Flow](../../../user/project/merge_requests/developer.md):
   Implements changes or opens a merge request
 - [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md):
   Reviews a merge request

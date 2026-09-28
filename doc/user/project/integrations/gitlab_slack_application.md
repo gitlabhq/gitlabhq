@@ -161,7 +161,7 @@ After users interact with GitLab Duo, it creates an agent session that is visibl
   If your accounts are not linked, GitLab sends you a message
   with a link to authorize the connection on first mention.
 - [Set a default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
-- Turn on the [Developer Flow](../../duo_agent_platform/flows/foundational_flows/developer.md) for the top-level group.
+- Turn on the [Developer Flow](../merge_requests/developer.md) for the top-level group.
 - Add the GitLab bot to the Slack channel where you want to use it.
 - For existing installations, [reinstall the GitLab for Slack app](#reinstall-the-gitlab-for-slack-app)
   to grant the additional permissions required for GitLab Duo.
@@ -199,7 +199,7 @@ is automatically created in your default GitLab Duo namespace. This project serv
 execution environment for any flows triggered from Slack.
 
 You can customize the agent behavior in the workspace project.
-For more information, see [Developer Flow](../../duo_agent_platform/flows/foundational_flows/developer.md).
+For more information, see [Developer Flow](../merge_requests/developer.md).
 
 ### GitLab for Slack app permissions
 

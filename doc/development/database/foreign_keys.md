@@ -551,13 +551,16 @@ only use this suffix for associations between two tables. If you want to
 reference an ID on a third-party platform, the `_xid` suffix is recommended.
 
 The spec `spec/db/schema_spec.rb` tests if all columns with the `_id` suffix
-have a foreign key constraint. If that spec fails, add the column to
-`ignored_fk_columns_map` if the column fits any of the following criteria:
+have a foreign key constraint.
+The spec already accounts for [Loose Foreign Keys](loose_foreign_keys.md)
+defined in `config/gitlab_loose_foreign_keys.yml`, so a column with a loose foreign key
+satisfies the spec automatically and must not be added to `ignored_fk_columns_map`.
+If that spec fails, add the column to `ignored_fk_columns_map` if the column fits any of
+the following criteria:
 
 1. The column references another table, such as when the two tables belong to
    [GitLab schemas](multiple_databases.md#gitlab-schema) that don't
    allow foreign keys between them.
-1. The foreign key is replaced by a [Loose Foreign Key](loose_foreign_keys.md) for performance reasons.
 1. The column represents a [polymorphic relationship](polymorphic_associations.md). Note that polymorphic associations should not be used.
 1. The column is not meant to reference another table. For example, it's common to have `partition_id`
    for partitioned tables.

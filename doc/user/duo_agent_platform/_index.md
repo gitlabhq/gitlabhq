@@ -77,7 +77,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [External agents](agents/external.md) <br /> Securely connect third-party integrations and tools to extend Agent Platform capabilities. | {{< no >}} |  {{< yes >}}  | {{< yes >}} |
 | [Planner Agent](agents/foundational_agents/planner.md) <br /> Plan, prioritize, and track work. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Data Analyst Agent](agents/foundational_agents/data_analyst.md) <br /> Analyze data and generate insights from your development metrics and project data. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
-| [Developer Flow](flows/foundational_flows/developer.md) <br /> Convert issues into merge requests. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Developer Flow](../project/merge_requests/developer.md) <br /> Convert issues into merge requests. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Code Review Flow](flows/foundational_flows/code_review/_index.md) <br /> Automate code review tasks and enforce coding standards across your team. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Convert to GitLab CI/CD Flow](flows/foundational_flows/convert_to_gitlab_ci.md) <br /> Convert legacy CI/CD pipelines to the GitLab CI/CD format. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Fix CI/CD Pipeline Flow](flows/foundational_flows/fix_pipeline.md) <br /> Diagnose and automatically fix failing CI/CD pipelines. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |

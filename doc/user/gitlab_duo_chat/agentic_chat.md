@@ -131,7 +131,7 @@ most recent conversation, and that conversation is still active in the Chat draw
 
 Where appropriate, the following foundational flows can be triggered from an Agentic Chat conversation to answer a question or accomplish a goal.
 
-- [Developer Flow](../duo_agent_platform/flows/foundational_flows/developer.md#use-the-flow-in-agentic-chat)
+- [Developer Flow](../project/merge_requests/developer.md#use-the-flow-in-agentic-chat)
 - [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review/_index.md#use-the-flow)
 - [Fix CI/CD Pipeline Flow](../duo_agent_platform/flows/foundational_flows/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
 
@@ -164,7 +164,7 @@ Prerequisites:
 
 To trigger a flow from Chat:
 
-1. In the Chat message box, enter `/` at the start of your message. 
+1. In the Chat message box, enter `/` at the start of your message.
 1. In the **Flows** section, select a flow. The command is the flow name in slug format, with a `/flow:` prefix. For example, a flow named `Security scanner` becomes `/flow:security-scanner`. If two flows in a project have names that produce the same command, a numeric ID is appended to the second command.
 1. Optional. After the command, enter the goal for the flow. For example, `/flow:security-scanner check the auth module`.
 1. Press <kbd>Enter</kbd> or select **Send**.

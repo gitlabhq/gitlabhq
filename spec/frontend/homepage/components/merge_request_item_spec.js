@@ -17,9 +17,9 @@ describe('MergeRequestItem', () => {
   const findApprovalCount = () => wrapper.findComponent(ApprovalCount);
   const findDiscussionsBadge = () => wrapper.findComponent(DiscussionsBadge);
 
-  const createComponent = ({ mergeRequest = buildMergeRequest(1) } = {}) => {
+  const createComponent = ({ mergeRequest = buildMergeRequest(1), showAuthor = false } = {}) => {
     wrapper = shallowMountExtended(MergeRequestItem, {
-      propsData: { mergeRequest },
+      propsData: { mergeRequest, showAuthor },
     });
   };
 
@@ -53,6 +53,10 @@ describe('MergeRequestItem', () => {
       expect(findTime().attributes('title')).toContain('Updated');
     });
 
+    it('does not render the author', () => {
+      expect(wrapper.text()).not.toContain('Priya Raman');
+    });
+
     it('emits click when the row is clicked', () => {
       findLink().element.addEventListener('click', (e) => e.preventDefault(), { once: true });
 
@@ -82,6 +86,26 @@ describe('MergeRequestItem', () => {
 
     it('renders only the direct parent, not the full hierarchy', () => {
       expect(wrapper.text()).toContain('subgroup / project');
+    });
+  });
+
+  describe('when showAuthor is true', () => {
+    beforeEach(() => {
+      createComponent({ showAuthor: true });
+    });
+
+    it('renders the author name', () => {
+      expect(wrapper.text()).toContain('Priya Raman');
+    });
+
+    it('renders no author and no separator when the merge request has no author', () => {
+      createComponent({
+        mergeRequest: buildMergeRequest(1, { author: null }),
+        showAuthor: true,
+      });
+
+      expect(wrapper.text()).not.toContain('\u00b7');
+      expect(wrapper.text()).toContain('Acme Corp / Web App');
     });
   });
 

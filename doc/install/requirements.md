@@ -70,7 +70,7 @@ platforms and high availability requirements.
 
 ### Supported infrastructure
 
-GitLab runs on cloud providers and self-managed infrastructure, provided the underlying
+GitLab runs on cloud providers and on your own infrastructure, provided the underlying
 environment meets the hardware and component requirements described in this guide.
 Commonly used cloud providers include AWS, GCP, and Azure.
 [GitLab Support](https://support.gitlab.com/hc/en-us/articles/11625911285404-Statement-of-Support) covers GitLab itself; issues with the underlying infrastructure or platform are outside its scope.
@@ -85,7 +85,7 @@ HA deployments have specific network requirements:
 
 - Latency between nodes must be lower than 5 ms to support synchronous replication.
 - Deploying across availability zones is recommended for resilience. Use an odd number of zones to satisfy quorum requirements.
-- Deploying across multiple self-managed data centers requires synchronous-capable latency, redundant network links, and an odd number of centers in the same geographic region.
+- Deploying across multiple data centers requires synchronous-capable latency, redundant network links, and an odd number of centers in the same geographic region.
 
 > [!warning]
 > A single GitLab instance must not span multiple geographic regions. For multi-region
@@ -103,7 +103,7 @@ HA deployments have specific network requirements:
 - As an external service, such as:
   - A [managed cloud provider service](cloud-services.md#use-managed-cloud-postgresql).
   - The [CloudNativePG operator](https://cloudnative-pg.io/).
-  - A [self-managed instance](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
+  - A [non-packaged PostgreSQL server](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
 For external instances, see:
 

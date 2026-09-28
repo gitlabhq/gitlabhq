@@ -48,6 +48,10 @@ The supported ClickHouse version differs depending on your GitLab version:
 - GitLab 18.8 and later supports ClickHouse 23.x, 24.x, 25.x, and the Replicated database engine.
   - Older clusters will require an additional permission (`dictGet`), see the [snippet](#database-dictionary-read-support).
 - GitLab 19.0 and later supports ClickHouse 25.x and 26.x up to and including 26.6. Support for ClickHouse 23.x and 24.x has been removed.
+  - In GitLab 19.3 and 19.4, migrations can fail on some ClickHouse 25.x releases, such as 25.3,
+    with a `BAD_TTL_EXPRESSION` error.
+    Upgrade to GitLab 19.5 or later.
+    For a new installation, you can use a supported ClickHouse 26.x release instead.
 - ClickHouse 26.7 and later is not supported. For a temporary workaround, see [ClickHouse 26.7 and later](#clickhouse-267-and-later).
 
 ClickHouse Cloud is always compatible with the latest stable GitLab release.
@@ -277,13 +281,13 @@ To provide GitLab with ClickHouse credentials:
 1. Save the ClickHouse password as a Kubernetes Secret:
 
    ```shell
-   kubectl create secret generic gitlab-clickhouse-password --from-literal="main_password=PASSWORD_HERE"
+   kubectl create secret generic gitlab-clickhouse-password --namespace <namespace> --from-literal="main_password=PASSWORD_HERE"
    ```
 
 1. Export the Helm values:
 
    ```shell
-   helm get values gitlab > gitlab_values.yaml
+   helm get values gitlab --namespace <namespace> > gitlab_values.yaml
    ```
 
 1. Edit `gitlab_values.yaml`:
@@ -306,11 +310,38 @@ To provide GitLab with ClickHouse credentials:
    - For ClickHouse for GitLab Self-Managed single node: `https://your-clickhouse-host:8443`
    - For ClickHouse for GitLab Self-Managed HA with load balancer: `https://your-load-balancer:8080` (or your load balancer URL)
 
+1. Optional. If your ClickHouse certificate is signed by a private certificate authority (CA), you must add the CA.
+   If you don't add the CA, Helm reports the upgrade as complete, but the new pods don't start.
+   The `gitlab-migrations` job and the `dependencies` init containers report
+   `certificate verify failed (unable to get local issuer certificate)`.
+
+   1. Store the CA certificate in a Kubernetes Secret:
+
+      ```shell
+      kubectl create secret generic clickhouse-ca --namespace <namespace> --from-file=clickhouse-ca.crt=<path_to_ca_certificate>
+      ```
+
+   1. Add the Secret to `gitlab_values.yaml`:
+
+      ```yaml
+      global:
+        certificates:
+          customCAs:
+            - secret: clickhouse-ca
+      ```
+
+   For more information, see [custom certificate authorities](https://docs.gitlab.com/charts/charts/globals/#custom-certificate-authorities).
+
 1. Save the file and apply the new values:
 
    ```shell
-   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab --namespace <namespace> --version <chart_version>
    ```
+
+   Replace `<chart_version>` with the version of the deployed chart.
+   For example, if the `CHART` column of `helm list --namespace <namespace>` shows `gitlab-10.4.1`,
+   use `10.4.1`.
+   Without `--version`, Helm uses the latest chart version, which can also upgrade GitLab.
 
 {{< /tab >}}
 
@@ -385,8 +416,8 @@ To enable ClickHouse for Analytics:
 
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **ClickHouse**.
-1. Select **Enable ClickHouse for Analytics**.
+1. Expand **Analytics**.
+1. Select the **Enable ClickHouse** checkbox.
 1. Select **Save changes**.
 
 ### Disable ClickHouse for Analytics
@@ -401,8 +432,8 @@ To disable:
 
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
-1. Expand **ClickHouse**.
-1. Clear the **Enable ClickHouse for Analytics** checkbox.
+1. Expand **Analytics**.
+1. Clear the **Enable ClickHouse** checkbox.
 1. Select **Save changes**.
 
 > [!note]
@@ -450,27 +481,6 @@ For detailed upgrade procedures, see the [ClickHouse documentation on updates](h
 
 ## Operations
 
-### Check migration status
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-To check the status of ClickHouse migrations:
-
-1. In the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **ClickHouse**.
-1. Review the **Migration status** section if available.
-
-Alternatively, check for pending migrations using the Rails console:
-
-```ruby
-# Sign in to Rails console
-# Run this to check migrations
-ClickHouse::MigrationSupport::Migrator.new(:main).pending_migrations
-```
-
 ### Retry failed migrations
 
 If a ClickHouse migration fails:
@@ -509,20 +519,6 @@ The following Rake tasks are available:
 > For self-compiled installations, use `bundle exec rake` instead of `sudo gitlab-rake` and add `RAILS_ENV=production` to the end of the command.
 
 ### Common task examples
-
-#### Verify ClickHouse connection and schema
-
-To verify your ClickHouse connection is working:
-
-```shell
-# For installations that use the Linux package
-sudo gitlab-rake gitlab:clickhouse:info
-
-# For self-compiled installations
-bundle exec rake gitlab:clickhouse:info RAILS_ENV=production
-```
-
-This task outputs debugging information about the ClickHouse connection and configuration.
 
 #### Re-run all migrations
 
@@ -668,7 +664,7 @@ You can access these logs by querying the `system.query_log` table.
 
 #### ClickHouse for GitLab Self-Managed
 
-For self-managed instances, ensure the `query_log` configuration parameter is enabled in your server configuration:
+For GitLab Self-Managed instances, ensure the `query_log` configuration parameter is enabled in your server configuration:
 
 1. Verify that the `query_log` section exists in your `config.xml` or `users.xml`:
 
@@ -802,7 +798,7 @@ Recommendations for ClickHouse for GitLab Self-Managed deployment:
 
 ### 50K Users
 
-Recommendation: ClickHouse for GitLab Self-Managed HA or ClickHouse Cloud Scale. The self-managed option is slightly more cost-effective at this scale.
+Recommendation: ClickHouse for GitLab Self-Managed HA or ClickHouse Cloud Scale. Running your own ClickHouse instance is slightly more cost-effective at this scale.
 
 Recommendations for ClickHouse for GitLab Self-Managed deployment:
 

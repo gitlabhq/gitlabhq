@@ -20,6 +20,11 @@ export default {
       type: Object,
       required: true,
     },
+    showAuthor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['click'],
   computed: {
@@ -51,6 +56,10 @@ export default {
       >
         {{ projectPath }}
       </tooltip-on-truncate>
+      <template v-if="showAuthor && mergeRequest.author">
+        <span aria-hidden="true">&middot;</span>
+        <span class="gl-shrink-0">{{ mergeRequest.author.name }}</span>
+      </template>
     </span>
 
     <a

@@ -487,6 +487,34 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         end
       end
 
+      context 'when marking one merge request as merged fails' do
+        before do
+          allow_next_instances_of(MergeRequests::PostMergeService, 2) do |post_merge_service|
+            allow(post_merge_service).to receive(:execute).and_call_original
+            allow(post_merge_service).to receive(:execute)
+              .with(@merge_request, anything)
+              .and_raise(ActiveRecord::QueryCanceled)
+          end
+        end
+
+        it 'marks the remaining merge requests as merged, then re-raises so the worker retries the failed one' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(ActiveRecord::QueryCanceled),
+            { merge_request_id: @merge_request.id, project_id: @project.id },
+            { merged_manually_detection: 'post_merge_batch' }
+          )
+
+          expect do
+            service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          end.to raise_error(ActiveRecord::QueryCanceled)
+
+          reload_mrs
+
+          expect(@merge_request).to be_open
+          expect(@fork_merge_request).to be_merged
+        end
+      end
+
       context 'when an MR to be closed was empty already' do
         let!(:empty_fork_merge_request) do
           create(

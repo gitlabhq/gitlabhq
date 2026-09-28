@@ -43063,6 +43063,9 @@ msgstr ""
 msgid "HomePageMergeRequestsWidget|No merge requests assigned to you."
 msgstr ""
 
+msgid "HomePageMergeRequestsWidget|No merge requests to review."
+msgstr ""
+
 msgid "HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard."
 msgstr ""
 

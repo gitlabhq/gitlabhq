@@ -5,6 +5,11 @@ const buildMergeRequest = (id, overrides = {}) => ({
   updatedAt: '2025-06-12T15:13:25Z',
   resolvedDiscussionsCount: 1,
   resolvableDiscussionsCount: 2,
+  author: {
+    id: 'gid://gitlab/User/2',
+    name: 'Priya Raman',
+    __typename: 'MergeRequestAuthor',
+  },
   project: {
     id: `gid://gitlab/Project/${id}`,
     name: 'Web App',
@@ -43,6 +48,8 @@ export const buildMergeRequests = (count, startAt = 1) =>
 export const buildResponse = ({
   assignedCount = 2,
   assignedNodes = buildMergeRequests(2),
+  reviewRequestedCount = 2,
+  reviewRequestedNodes = buildMergeRequests(2, 100),
 } = {}) => ({
   data: {
     currentUser: {
@@ -50,6 +57,11 @@ export const buildResponse = ({
       assignedMergeRequests: {
         count: assignedCount,
         nodes: assignedNodes,
+        __typename: 'MergeRequestConnection',
+      },
+      reviewRequestedMergeRequests: {
+        count: reviewRequestedCount,
+        nodes: reviewRequestedNodes,
         __typename: 'MergeRequestConnection',
       },
       __typename: 'CurrentUser',
@@ -62,6 +74,8 @@ export const mergeRequestsResponse = buildResponse();
 export const emptyMergeRequestsResponse = buildResponse({
   assignedCount: 0,
   assignedNodes: [],
+  reviewRequestedCount: 0,
+  reviewRequestedNodes: [],
 });
 
 // 9 assigned MRs: the query caps nodes at 8, so the widget shows 4 then reveals 8.

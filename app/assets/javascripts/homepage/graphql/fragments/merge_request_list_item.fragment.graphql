@@ -8,6 +8,10 @@ fragment HomepageMergeRequestListItem on MergeRequest {
   updatedAt
   resolvedDiscussionsCount
   resolvableDiscussionsCount
+  author {
+    id
+    name
+  }
   project {
     id
     name

@@ -109,10 +109,13 @@ Grants the ability to create, delete, read, and update policies in the policy st
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `GovernPolicyCreate` |
 | Create | Instance | Mutation | `GovernPolicyCreate` |
+| Delete | Group | Mutation | `GovernPolicyDelete` |
 | Delete | Instance | Mutation | `GovernPolicyDelete` |
 | Read | Instance | Type | `GovernPolicy` |
 | Read | Instance | Type | `GovernPolicyEvaluation` |
+| Update | Group | Mutation | `GovernPolicyUpdate` |
 | Update | Instance | Mutation | `GovernPolicyUpdate` |
 
 #### Secret

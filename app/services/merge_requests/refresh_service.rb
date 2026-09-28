@@ -120,6 +120,8 @@ module MergeRequests
       merge_commit_shas = merge_commit_sha_by_diff_head_sha.values.compact.uniq
       commits_by_sha = @project.repository.commits_by(oids: merge_commit_shas).index_by(&:id)
 
+      first_error = nil
+
       merge_requests.each do |merge_request|
         sha = merge_commit_sha_by_diff_head_sha[merge_request.diff_head_sha]
         merge_request.merge_commit_sha = sha
@@ -143,7 +145,19 @@ module MergeRequests
         MergeRequests::PostMergeService
           .new(project: merge_request.target_project, current_user: @current_user)
           .execute(merge_request, source)
+      rescue StandardError => e
+        # One failing merge request must not leave the rest of the batch
+        # unprocessed. Re-raised after the loop so the worker retries the ones
+        # still open; an MR that failed after mark_as_merged is not retried.
+        Gitlab::ErrorTracking.track_exception(
+          e,
+          { merge_request_id: merge_request.id, project_id: @project.id },
+          { merged_manually_detection: 'post_merge_batch' }
+        )
+        first_error ||= e
       end
+
+      raise first_error if first_error
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

@@ -34,6 +34,8 @@ describe('MergeRequestsWidget', () => {
   const findLists = () => wrapper.findAllComponents(MergeRequestsWidgetList);
   const findAssignedList = () =>
     wrapper.findComponentByTestId('assigned-list', MergeRequestsWidgetList);
+  const findReviewRequestedList = () =>
+    wrapper.findComponentByTestId('review-requested-list', MergeRequestsWidgetList);
   const findError = () => wrapper.findByTestId('error-message');
   const findLoadingState = () => wrapper.findByTestId('loading-state');
   const findSkeletons = () => wrapper.findAllComponents(GlSkeletonLoader);
@@ -64,7 +66,7 @@ describe('MergeRequestsWidget', () => {
       expect(findSkeletons()).toHaveLength(4);
     });
 
-    it('does not render the tab', () => {
+    it('does not render the tabs', () => {
       expect(findTabs()).toHaveLength(0);
     });
   });
@@ -79,8 +81,8 @@ describe('MergeRequestsWidget', () => {
       expect(findLoadingState().exists()).toBe(false);
     });
 
-    it('renders the assigned tab', () => {
-      expect(findTabs()).toHaveLength(1);
+    it('renders both tabs', () => {
+      expect(findTabs()).toHaveLength(2);
     });
 
     // The card is narrow, and the two labels plus their count badges overflow it at
@@ -98,12 +100,14 @@ describe('MergeRequestsWidget', () => {
       );
     });
 
-    it('renders the tab title', () => {
+    it('renders both tab titles', () => {
       expect(wrapper.text()).toContain('Assigned to you');
+      expect(wrapper.text()).toContain('Review requested');
     });
 
-    it('renders the total count on the tab', () => {
+    it('renders the total count on each tab', () => {
       expect(findTabCounts().at(0).text()).toBe('2');
+      expect(findTabCounts().at(1).text()).toBe('2');
     });
 
     // The count is hidden by page_bundles/personal_homepage.scss once the card is too
@@ -112,13 +116,23 @@ describe('MergeRequestsWidget', () => {
       expect(findTabCounts().at(0).classes()).toContain('homepage-merge-requests-widget-tab-count');
     });
 
-    it('renders a list for the tab', () => {
-      expect(findLists()).toHaveLength(1);
+    it('renders a list per tab', () => {
+      expect(findLists()).toHaveLength(2);
     });
 
     it('passes the assigned merge requests to the first list', () => {
       expect(findAssignedList().props('mergeRequests')).toHaveLength(2);
       expect(findAssignedList().props('trackingProperty')).toBe('Assigned to you');
+      expect(findAssignedList().props('showAuthor')).toBe(false);
+    });
+
+    it('passes the review requested merge requests to the second list', () => {
+      expect(findReviewRequestedList().props('mergeRequests')).toHaveLength(2);
+      expect(findReviewRequestedList().props('trackingProperty')).toBe('Review requested');
+    });
+
+    it('shows the author on the review requested tab only', () => {
+      expect(findReviewRequestedList().props('showAuthor')).toBe(true);
     });
 
     it('does not render an error', () => {
@@ -132,13 +146,17 @@ describe('MergeRequestsWidget', () => {
       await waitForPromises();
     });
 
-    it('still renders the tab with a zero count', () => {
-      expect(findTabs()).toHaveLength(1);
+    it('still renders both tabs with a zero count', () => {
+      expect(findTabs()).toHaveLength(2);
       expect(findTabCounts().at(0).text()).toBe('0');
     });
 
     it('passes the assigned empty text down', () => {
       expect(findAssignedList().props('emptyText')).toBe('No merge requests assigned to you.');
+    });
+
+    it('passes the review requested empty text down', () => {
+      expect(findReviewRequestedList().props('emptyText')).toBe('No merge requests to review.');
     });
   });
 
@@ -171,7 +189,7 @@ describe('MergeRequestsWidget', () => {
       );
     });
 
-    it('does not render the tab', () => {
+    it('does not render the tabs', () => {
       expect(findTabs()).toHaveLength(0);
     });
 
@@ -214,7 +232,7 @@ describe('MergeRequestsWidget', () => {
       await waitForPromises();
 
       expect(findLoadingState().exists()).toBe(false);
-      expect(findTabs()).toHaveLength(1);
+      expect(findTabs()).toHaveLength(2);
     });
   });
 });

@@ -67,7 +67,7 @@ the security of NGINX itself:
 ## Consul
 
 Consul can be integrated into a GitLab environment, and is intended for larger
-deployments. In general for self-managed and standalone deployments with less than
+deployments. In general for GitLab Self-Managed and standalone deployments with less than
 1000 users, Consul may not be needed. If it is needed, first review the
 [documentation on Consul](../administration/consul.md), but
 more importantly ensure that encryption is used during communications. For more
@@ -80,9 +80,9 @@ works, and review the information on
 
 You can customize multiple
 [environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables/)
-on self-managed systems. The main environment variable to
+on GitLab Self-Managed systems. The main environment variable to
 take advantage of from a security perspective is `GITLAB_ROOT_PASSWORD` during the
-installation process. If you are installing the self-managed system with a
+installation process. If you are installing the GitLab Self-Managed system with a
 public-facing IP address exposed to the Internet, make sure the password is set to
 something strong. Historically, setting up any type of public-facing service - whether
 it is GitLab or some other application - has shown that opportunistic attacks occur

@@ -179255,15 +179255,23 @@
             },
             {
               "name": "organizationId",
-              "description": "Global ID of the organization to create the policy in.",
+              "description": "Global ID of the organization whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "OrganizationsOrganizationID",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "OrganizationsOrganizationID",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "groupPath",
+              "description": "Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
               },
               "defaultValue": null,
               "isDeprecated": false,
@@ -179409,15 +179417,23 @@
             },
             {
               "name": "organizationId",
-              "description": "Global ID of the organization the policy belongs to.",
+              "description": "Global ID of the organization whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "OrganizationsOrganizationID",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "OrganizationsOrganizationID",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "groupPath",
+              "description": "Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
               },
               "defaultValue": null,
               "isDeprecated": false,
@@ -180033,15 +180049,23 @@
             },
             {
               "name": "organizationId",
-              "description": "Global ID of the organization the policy belongs to.",
+              "description": "Global ID of the organization whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "OrganizationsOrganizationID",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "OrganizationsOrganizationID",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "groupPath",
+              "description": "Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
               },
               "defaultValue": null,
               "isDeprecated": false,
@@ -274747,7 +274771,7 @@
             },
             {
               "name": "governPolicyCreate",
-              "description": "Creates a policy in the policy store for an organization. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Creates a policy in the policy store for an organization or group. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -274776,7 +274800,7 @@
             },
             {
               "name": "governPolicyDelete",
-              "description": "Deletes a policy from the policy store for an organization. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Deletes a policy from the policy store for an organization or group. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -274805,7 +274829,7 @@
             },
             {
               "name": "governPolicyUpdate",
-              "description": "Updates a policy in the policy store for an organization. Only the supplied fields are changed; omitted fields keep their current values, while an explicit null clears a nullable field. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Updates a policy in the policy store for an organization or group. Only the supplied fields are changed; omitted fields keep their current values, while an explicit null clears a nullable field. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "input",

@@ -15,5 +15,16 @@ query HomepageMergeRequestsWidget {
         ...HomepageMergeRequestListItem
       }
     }
+    reviewRequestedMergeRequests(
+      first: 8
+      sort: UPDATED_DESC
+      state: opened
+      reviewStates: [UNAPPROVED, UNREVIEWED, REVIEW_STARTED]
+    ) {
+      count
+      nodes {
+        ...HomepageMergeRequestListItem
+      }
+    }
   }
 }

@@ -7,11 +7,12 @@ RSpec.describe EnvironmentHelper, feature_category: :environment_management do
     subject { helper.environments_detail_data_json(user, project, environment) }
 
     let_it_be(:auto_stop_at) { Time.now.utc }
-    let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:project) { create(:project) }
     let_it_be(:environment) do
       create(:environment, project: project, auto_stop_at: auto_stop_at, description: '_description_')
     end
+
+    let(:user) { build_stubbed(:user) }
 
     before do
       allow(helper).to receive_messages(current_user: user, can?: true)

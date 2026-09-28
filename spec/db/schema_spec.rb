@@ -11,13 +11,12 @@ RSpec.describe 'Database schema',
   feature_category: :database do
   prepend_mod_with('DB::SchemaSupport')
 
-  let(:tables) { connection.tables }
-  let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
+  let_it_be(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
   # In the subsequent table removal MR, remove the entries.
   # See: https://docs.gitlab.com/development/migration_style_guide/#dropping-a-database-table
-  let(:removed_fks_map) do
+  let_it_be(:removed_fks_map) do
     {
       # example_table: %w[example_column]
       search_namespace_index_assignments: [%w[search_index_id index_type]],
@@ -29,7 +28,7 @@ RSpec.describe 'Database schema',
   # List of columns, ending with `_id` but missing a FK
   # See: https://docs.gitlab.com/ee/development/database/foreign_keys.html#naming-foreign-keys
   # TODO: Automate this to reduce the list of exceptions: https://gitlab.com/gitlab-org/gitlab/-/issues/544795
-  let(:ignored_fk_columns_map) do
+  let_it_be(:ignored_fk_columns_map) do
     {
       abuse_reports: %w[user_id],
       conversational_development_index_metrics: %w[usage_data_id],
@@ -40,11 +39,6 @@ RSpec.describe 'Database schema',
       ai_governance_sessions: %w[project_id user_id workflow_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
-      ascp_component_dependencies: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
-      ascp_components: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
-      ascp_scans: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
-      ascp_security_contexts: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
-      ascp_security_guidelines: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
       approvals: %w[user_id],
       approver_groups: %w[target_id],
       approvers: %w[target_id user_id],
@@ -94,18 +88,16 @@ RSpec.describe 'Database schema',
       ci_test_balancing_assignments: %w[project_id pipeline_id test_split_id job_group_id], # No FKs needed as rows are dropped after retention period
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
-      p_ci_pipelines: %w[partition_id trigger_id],
+      p_ci_pipelines: %w[partition_id],
       p_ci_job_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
-      p_ci_runner_machine_builds: %w[project_id],
-      ci_pending_builds: %w[runner_machine_id], # runner_machine_id has no FK: ci_runner_machines is gitlab_ci_cell_local, a different schema from gitlab_ci; cross-schema FKs are disallowed
-      ci_runner_taggings: %w[runner_id organization_id], # The organization_id value is meant to populate the partitioned table, no other usage.
+      ci_runner_taggings: %w[runner_id],
       ci_runner_taggings_instance_type: %w[tag_id organization_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings.
       ci_runner_taggings_group_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings.
       ci_runner_taggings_project_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings.
       instance_type_ci_runners: %w[creator_id organization_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       group_type_ci_runners: %w[creator_id organization_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       project_type_ci_runners: %w[creator_id organization_id], # No need for LFKs on partition, already handled on ci_runners routing table.
-      ci_runner_machines: %w[runner_id organization_id], # The organization_id field is only used in the partitions, and have the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
+      ci_runner_machines: %w[runner_id], # The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
       instance_type_ci_runner_machines: %w[organization_id], # This field is always NULL in this partition.
       group_type_ci_runner_machines: %w[organization_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
       project_type_ci_runner_machines: %w[organization_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
@@ -114,19 +106,13 @@ RSpec.describe 'Database schema',
       cluster_providers_gcp: %w[gcp_project_id operation_id],
       compliance_management_frameworks: %w[source_id template_id],
       commit_user_mentions: %w[commit_id],
-      dast_site_profiles_builds: %w[project_id],
       dast_scanner_profiles_builds: %w[project_id],
       dast_profiles_pipelines: %w[project_id],
-      dast_pre_scan_verification_steps: %w[project_id],
       dependency_list_export_parts: %w[start_id end_id],
       dep_ci_build_trace_sections: %w[build_id],
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       draft_notes: %w[discussion_id commit_id],
-      # workflow_id references duo_workflows_workflows, but this table is
-      # gitlab_main_cell_setting and the workflow is gitlab_main_org, so the
-      # reference is a loose foreign key rather than a DB-level FK.
-      duo_agent_platform_functional_verification_runs: %w[workflow_id],
       # No FK to preserve attribution when the trigger/schedule is deleted
       duo_workflows_workflows: %w[trigger_flow_trigger_id trigger_flow_schedule_id],
       epics: %w[updated_by_id last_edited_by_id state_id],
@@ -156,9 +142,8 @@ RSpec.describe 'Database schema',
       # file_template_project_id and custom_project_templates_group_id will be removed from namespaces
       # as part of https://gitlab.com/gitlab-org/gitlab/-/work_items/592091
       namespaces: %w[owner_id file_template_project_id custom_project_templates_group_id],
-      namespaces_consents: %w[user_id], # Uses loose FK for async nullify (config/gitlab_loose_foreign_keys.yml)
       namespace_descendants: %w[namespace_id],
-      notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
+      notes: %w[author_id commit_id updated_by_id resolved_by_id discussion_id],
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
@@ -178,21 +163,18 @@ RSpec.describe 'Database schema',
       # the parent pending_destruction, CleanupStaleMetadataCacheWorker destroys it, and this
       # child row is removed via the ON DELETE CASCADE on packages_helm_metadata_cache_id.
       packages_helm_metadata_cache_states: %w[project_id],
-      p_ci_build_needs: %w[project_id],
       p_ci_builds: %w[erased_by_id scoped_user_id],
       p_ci_build_trace_metadata: %w[project_id],
       p_batched_git_ref_updates_deletions: %w[project_id partition_id],
       p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
       p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
       p_ci_finished_build_ch_sync_events: %w[build_id],
-      p_ci_finished_pipeline_ch_sync_events: %w[pipeline_id project_namespace_id],
+      p_ci_finished_pipeline_ch_sync_events: %w[pipeline_id],
       p_ci_job_annotations: %w[project_id],
-      p_ci_job_artifacts: %w[project_id],
       p_ci_job_definitions: %w[partition_id],
-      p_ci_pipeline_artifact_states: %w[partition_id pipeline_artifact_id],
+      p_ci_pipeline_artifact_states: %w[partition_id],
       p_ci_pipeline_variables: %w[project_id],
       p_ci_pipelines_config: %w[partition_id project_id],
-      p_ci_stages: %w[project_id],
       p_duo_workflows_checkpoint_blobs: %w[project_id namespace_id],
       p_duo_workflows_checkpoint_headers: %w[project_id namespace_id],
       p_duo_workflows_checkpoints: %w[project_id namespace_id],
@@ -210,7 +192,7 @@ RSpec.describe 'Database schema',
       repository_languages: %w[programming_language_id language_id],
       routes: %w[source_id],
       security_findings: %w[project_id],
-      security_finding_enrichments: %w[project_id cve_enrichment_id],
+      security_finding_enrichments: %w[cve_enrichment_id],
       sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id namespace_id], # namespace_id FK will be added to partitioned table
       p_sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
       slack_integrations: %w[team_id user_id bot_user_id], # these are external Slack IDs
@@ -262,24 +244,20 @@ RSpec.describe 'Database schema',
       users_star_projects: %w[user_id],
       vulnerabilities: %w[partition_id],
       vulnerability_finding_links: %w[project_id],
-      vulnerability_flags: %w[project_id workflow_id],
       vulnerability_historical_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_identifiers: %w[external_id partition_id],
       vulnerability_occurrences: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
       vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
-      vulnerability_finding_ascp_component_links: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
-      vulnerability_external_issue_links: %w[project_id],
       vulnerability_issue_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_merge_request_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
-      vulnerability_severity_overrides: %w[vulnerability_occurrence_id security_policy_id], # vulnerability_occurrence_id: foreign key will be added at a later date, security_policy_id: cross-database (gitlab_sec vs gitlab_main_org)
+      vulnerability_severity_overrides: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       sbom_occurrences_vulnerabilities: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_representation_information: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_user_mentions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_state_transitions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
-      security_scans: %w[pipeline_id project_id scanner_external_id], # pipeline_id/project_id: ci_pipeline table moving to different db; scanner_external_id: denormalized text identifier, no FK target
-      dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
+      security_scans: %w[pipeline_id scanner_external_id], # pipeline_id: ci_pipeline table moving to different db; scanner_external_id: denormalized text identifier, no FK target
       vulnerability_archived_records: %w[archive_id], # having a FK on this table prevents partitions from being detached. See: https://gitlab.com/gitlab-org/gitlab/-/issues/547116
       backup_finding_evidences: %w[finding_id], # having a FK on this table prevents partitions from being detached
       backup_finding_flags: %w[finding_id], # having a FK on this table prevents partitions from being detached
@@ -310,15 +288,13 @@ RSpec.describe 'Database schema',
       group_secrets_manager_maintenance_tasks: %w[user_id group_id root_namespace_id organization_id], # plain ID columns for task service path resolution, no FK needed
       project_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed. Sharding key FK is on project_id
       group_secrets_managers: %w[organization_id root_namespace_id], # denormalized ids for the trigger-based deprovision flow, no FK needed. Sharding key FK is on group_id
-      # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
-      approval_merge_request_rules: %w[approval_policy_rule_id],
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
       namespace_settings: %w[early_access_program_joined_by_id], # isn't used inside product itself. Only through Snowflake
       workspaces_agent_config_versions: %w[item_id], # polymorphic associations
       work_item_types: %w[correct_id old_id], # temporary columns that are not foreign keys
       instance_integrations: %w[project_id group_id inherit_from_id], # these columns are not used in instance integrations
       secret_detection_token_statuses: %w[project_id],
-      security_finding_token_statuses: %w[security_finding_id project_id],
+      security_finding_token_statuses: %w[security_finding_id],
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
       virtual_registries_packages_maven_cache_entries: %w[group_id], # We can't use a foreign key due to object storage references
       virtual_registries_packages_maven_local_upstreams: %w[local_group_id local_project_id], # local upstreams need asynchronous deletion
@@ -335,12 +311,7 @@ RSpec.describe 'Database schema',
       security_trainings: %w[training_provider_id provider_id], # training_provider_id is a fixed items model reference.
       background_operation_jobs_cell_local: %w[worker_id], # background operation workers partitions have to dropped independently.
       background_operation_jobs: %w[worker_id], # background operation workers partitions have to dropped independently.
-      sbom_occurrence_refs: %w[pipeline_id project_id],
       sbom_occurrences: %w[partition_id],
-      work_item_custom_status_mappings: %w[work_item_type_id], # Referential integrity will be handled by application code
-      work_item_type_custom_fields: %w[work_item_type_id], # Referential integrity will be handled by application code
-      work_item_type_custom_lifecycles: %w[work_item_type_id], # Referential integrity will be handled by application code
-      work_item_type_user_preferences: %w[work_item_type_id], # Referential integrity will be handled by application code
       work_item_type_visibilities: %w[work_item_type_id], # work_item_type_id spans system-defined (in-memory) and custom (DB) types; integrity enforced by validate_work_item_type_id_is_valid trigger
       work_item_type_visibility_defaults: %w[work_item_type_id], # work_item_type_id spans system-defined (in-memory) and custom (DB) types; integrity enforced by validate_work_item_type_id_is_valid trigger
       lfs_objects_projects: %w[lfs_object_id], # Referential integrity will be handled by application code
@@ -356,7 +327,7 @@ RSpec.describe 'Database schema',
     }.with_indifferent_access.freeze
   end
 
-  let(:ignored_tables_with_too_many_indexes) do
+  let_it_be(:ignored_tables_with_too_many_indexes) do
     {
       deployments: 18,
       epics: 19,
@@ -405,15 +376,16 @@ RSpec.describe 'Database schema',
         next unless schemas_for_connection.include?(table_schema)
 
         describe table do
-          let(:indexes) { connection.indexes(table) << primary_key_index(table, connection) }
-          let(:columns) { connection.columns(table) }
-          let(:foreign_keys) { to_foreign_keys(Gitlab::Database::PostgresForeignKey.by_constrained_table_name(table)) }
-          let(:loose_foreign_keys) do
-            Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table).fetch(table, [])
+          let_it_be(:indexes) { connection.indexes(table) + [primary_key_index(table, connection)] }
+          let_it_be(:columns) { connection.columns(table) }
+          let_it_be(:foreign_keys) do
+            to_foreign_keys(Gitlab::Database::PostgresForeignKey.by_constrained_table_name(table))
           end
 
-          let(:all_foreign_keys) { foreign_keys + loose_foreign_keys }
-          let(:composite_primary_key) { Array.wrap(connection.primary_key(table)) }
+          let_it_be(:loose_foreign_keys) { loose_foreign_keys_by_from_table.fetch(table, []) }
+
+          let_it_be(:all_foreign_keys) { foreign_keys + loose_foreign_keys }
+          let_it_be(:composite_primary_key) { Array.wrap(connection.primary_key(table)) }
 
           context 'with all foreign keys' do
             # for index to be effective, the FK constraint has to be at first place
@@ -448,21 +420,15 @@ RSpec.describe 'Database schema',
           end
 
           context 'with columns ending with _id' do
-            let(:column_names) { columns.map(&:name) }
-            let(:all_foreign_keys_columns) do
+            let_it_be(:column_names) { columns.map(&:name) }
+            let_it_be(:all_foreign_keys_columns) do
               to_columns(
                 exclude_id_conversion_columns(all_foreign_keys)
               )
             end
 
-            let(:foreign_keys_columns) do # NOTE: excluding loose foreign keys
-              to_columns(
-                exclude_id_conversion_columns(foreign_keys)
-              )
-            end
-
-            let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
-            let(:ignored_columns) { ignored_fk_columns(table) }
+            let_it_be(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
+            let_it_be(:ignored_columns) { ignored_fk_columns(table) }
 
             def exclude_id_conversion_columns(columns)
               columns
@@ -483,7 +449,7 @@ RSpec.describe 'Database schema',
             end
 
             it 'ensures foreign key columns are not ignored' do
-              overlapping_columns = ignored_columns & foreign_keys_columns.flatten
+              overlapping_columns = ignored_columns & all_foreign_keys_columns.flatten
               expect(overlapping_columns).to be_empty,
                 "Found ignored columns that are foreign keys: #{overlapping_columns}"
             end
@@ -547,7 +513,7 @@ RSpec.describe 'Database schema',
         next if partition_fks.empty?
 
         describe partition.identifier do
-          let(:partition_indexes) do
+          let_it_be(:partition_indexes) do
             schema, table_name = partition.identifier.split('.')
             # A partial index is not suitable for a foreign key column, unless
             # the only condition is for the presence of the first column itself.
@@ -571,7 +537,7 @@ RSpec.describe 'Database schema',
             SQL
           end
 
-          let(:foreign_keys) { to_foreign_keys(partition_fks) }
+          let_it_be(:foreign_keys) { to_foreign_keys(partition_fks) }
 
           it 'has indexes for all foreign keys', :aggregate_failures do
             required_fks = foreign_keys.reject { |fk| ci_partitioned_foreign_key?(fk) }
@@ -587,7 +553,7 @@ RSpec.describe 'Database schema',
 
   context 'for enums', :eager_load do
     # These pre-existing enums have limits > 2 bytes
-    let(:ignored_limit_enums_map) do
+    let_it_be(:ignored_limit_enums_map) do
       {
         'Ai::UsageEvent' => %w[event],
         'Analytics::CycleAnalytics::Stage' => %w[start_event_identifier end_event_identifier],
@@ -632,7 +598,7 @@ RSpec.describe 'Database schema',
   # We are skipping GEO models for now as it adds up complexity
   describe 'for jsonb columns' do
     # These pre-existing columns does not use a schema validation yet
-    let(:ignored_jsonb_columns_map) do
+    let_it_be(:ignored_jsonb_columns_map) do
       {
         "Ai::Conversation::Message" => %w[extras error_details],
         "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
@@ -788,17 +754,18 @@ RSpec.describe 'Database schema',
     end
 
     context 'when exceeding the authorized limit' do
-      let(:max) { Gitlab::Database::MAX_INDEXES_ALLOWED_PER_TABLE }
-      let!(:known_offences) { ignored_tables_with_too_many_indexes }
-      let!(:corrected_offences) { known_offences.keys.to_set - actual_offences.keys.to_set }
-      let!(:new_offences) { actual_offences.keys.to_set - known_offences.keys.to_set }
-      let!(:actual_offences) do
+      let_it_be(:max) { Gitlab::Database::MAX_INDEXES_ALLOWED_PER_TABLE }
+      let_it_be(:known_offences) { ignored_tables_with_too_many_indexes }
+      let_it_be(:actual_offences) do
         Gitlab::Database::PostgresIndex
           .where(schema: 'public')
           .group(:tablename)
           .having("COUNT(*) > #{max}")
           .count
       end
+
+      let_it_be(:corrected_offences) { known_offences.keys.to_set - actual_offences.keys.to_set }
+      let_it_be(:new_offences) { actual_offences.keys.to_set - known_offences.keys.to_set }
 
       it 'checks for corrected_offences' do
         expect(corrected_offences).to validate_index_limit(:corrected)
@@ -862,6 +829,10 @@ RSpec.describe 'Database schema',
 
   def models_by_table_name
     @models_by_table_name ||= ApplicationRecord.descendants.reject(&:abstract_class).group_by(&:table_name)
+  end
+
+  def loose_foreign_keys_by_from_table
+    @loose_foreign_keys_by_from_table ||= Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table)
   end
 
   def ignored_fk_columns(table)

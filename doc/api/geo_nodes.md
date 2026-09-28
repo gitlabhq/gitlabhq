@@ -98,7 +98,7 @@ GET /geo_nodes
 ```
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes"
 ```
@@ -167,7 +167,7 @@ Example response:
 Retrieves a specified Geo node.
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes/1"
 ```
@@ -317,7 +317,7 @@ GET /geo_nodes/status
 ```
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes/status"
 ```
@@ -1423,7 +1423,7 @@ Example response:
 Retrieves a specified Geo node status.
 
 ```shell
-curl \
+curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://primary.example.com/api/v4/geo_nodes/2/status"
 ```

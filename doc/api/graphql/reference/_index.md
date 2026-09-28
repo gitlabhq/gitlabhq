@@ -11110,7 +11110,7 @@ Fields:
 
 {{< /details >}}
 
-Creates a policy in the policy store for an organization.
+Creates a policy in the policy store for an organization or group.
 
 Input type: `GovernPolicyCreateInput`
 
@@ -11121,10 +11121,11 @@ Arguments:
 | <a id="mutation-governpolicycreate-actions"></a>`actions` | [`[JSON!]`](#json) | Actions the policy takes. No more than 1000 actions. |
 | <a id="mutation-governpolicycreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-governpolicycreate-description"></a>`description` | [`String`](#string) | Description of the policy. |
+| <a id="mutation-governpolicycreate-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicycreate-lifecyclestate"></a>`lifecycleState` | [`String`](#string) | Lifecycle state of the policy. |
 | <a id="mutation-governpolicycreate-mode"></a>`mode` | [`String`](#string) | Enforcement mode of the policy. |
 | <a id="mutation-governpolicycreate-name"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="mutation-governpolicycreate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Global ID of the organization to create the policy in. |
+| <a id="mutation-governpolicycreate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID`](#organizationsorganizationid) | Global ID of the organization whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicycreate-policyscope"></a>`policyScope` | [`JSON`](#json) | Authored scope of the policy. Mutually exclusive with scopeRego. |
 | <a id="mutation-governpolicycreate-rules"></a>`rules` | [`[JSON!]!`](#json) | Rules of the policy, at least one. No more than 1000 rules. |
 | <a id="mutation-governpolicycreate-scoperego"></a>`scopeRego` | [`String`](#string) | Rego expression scoping the policy. Mutually exclusive with policyScope. |
@@ -11147,7 +11148,7 @@ Fields:
 
 {{< /details >}}
 
-Deletes a policy from the policy store for an organization.
+Deletes a policy from the policy store for an organization or group.
 
 Input type: `GovernPolicyDeleteInput`
 
@@ -11156,8 +11157,9 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-governpolicydelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-governpolicydelete-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicydelete-id"></a>`id` | [`Int!`](#int) | ID of the policy to delete. |
-| <a id="mutation-governpolicydelete-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Global ID of the organization the policy belongs to. |
+| <a id="mutation-governpolicydelete-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID`](#organizationsorganizationid) | Global ID of the organization whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 
 Fields:
 
@@ -11175,7 +11177,7 @@ Fields:
 
 {{< /details >}}
 
-Updates a policy in the policy store for an organization. Only the supplied fields are changed; omitted fields keep their current values, while an explicit null clears a nullable field.
+Updates a policy in the policy store for an organization or group. Only the supplied fields are changed; omitted fields keep their current values, while an explicit null clears a nullable field.
 
 Input type: `GovernPolicyUpdateInput`
 
@@ -11186,10 +11188,11 @@ Arguments:
 | <a id="mutation-governpolicyupdate-actions"></a>`actions` | [`[JSON!]`](#json) | Actions the policy takes. No more than 1000 actions. |
 | <a id="mutation-governpolicyupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-governpolicyupdate-description"></a>`description` | [`String`](#string) | Description of the policy. |
+| <a id="mutation-governpolicyupdate-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicyupdate-lifecyclestate"></a>`lifecycleState` | [`String`](#string) | Lifecycle state of the policy. |
 | <a id="mutation-governpolicyupdate-mode"></a>`mode` | [`String`](#string) | Enforcement mode of the policy. |
 | <a id="mutation-governpolicyupdate-name"></a>`name` | [`String`](#string) | Name of the policy. |
-| <a id="mutation-governpolicyupdate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Global ID of the organization the policy belongs to. |
+| <a id="mutation-governpolicyupdate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID`](#organizationsorganizationid) | Global ID of the organization whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicyupdate-policyid"></a>`policyId` | [`Int!`](#int) | ID of the policy. |
 | <a id="mutation-governpolicyupdate-policyscope"></a>`policyScope` | [`JSON`](#json) | Authored scope of the policy. Mutually exclusive with scopeRego. |
 | <a id="mutation-governpolicyupdate-rules"></a>`rules` | [`[JSON!]`](#json) | Rules of the policy, at least one when supplied. No more than 1000 rules. |

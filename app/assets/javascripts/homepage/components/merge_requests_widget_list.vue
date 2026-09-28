@@ -32,6 +32,11 @@ export default {
       type: String,
       required: true,
     },
+    showAuthor: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -76,6 +81,7 @@ export default {
       <li v-for="mergeRequest in visibleMergeRequests" :key="mergeRequest.id">
         <merge-request-item
           :merge-request="mergeRequest"
+          :show-author="showAuthor"
           @click="trackLinkClick(trackingProperty)"
         />
       </li>

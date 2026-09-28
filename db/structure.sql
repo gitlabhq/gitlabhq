@@ -31814,7 +31814,8 @@ CREATE TABLE security_scan_profiles_projects (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     project_id bigint NOT NULL,
-    security_scan_profile_id bigint NOT NULL
+    security_scan_profile_id bigint NOT NULL,
+    archived boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE security_scan_profiles_projects_id_seq
@@ -46661,6 +46662,8 @@ CREATE INDEX idx_sbom_occurrence_refs_on_sec_prj_trck_cnxt_id ON sbom_occurrence
 
 CREATE INDEX idx_sbom_occurrences_on_project_id_and_source_id ON sbom_occurrences USING btree (project_id, source_id);
 
+CREATE INDEX idx_scan_profiles_projects_on_profile_id_and_archived ON security_scan_profiles_projects USING btree (security_scan_profile_id, archived);
+
 CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, id, updated_at);
 
 CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_result_policy_violations USING btree (scan_result_policy_id, id);
@@ -46700,8 +46703,6 @@ CREATE INDEX idx_security_scan_profile_proj_statuses_on_build_id ON security_sca
 CREATE INDEX idx_security_scan_profile_proj_statuses_on_profile_id ON security_scan_profile_project_statuses USING btree (security_scan_profile_id);
 
 CREATE UNIQUE INDEX idx_security_scan_profile_proj_statuses_on_project_and_profile ON security_scan_profile_project_statuses USING btree (project_id, security_scan_profile_id);
-
-CREATE INDEX idx_security_scan_profiles_projects_on_security_scan_profile_id ON security_scan_profiles_projects USING btree (security_scan_profile_id);
 
 CREATE UNIQUE INDEX idx_security_scans_on_build_scan_type_and_scanner ON security_scans USING btree (build_id, scan_type, scanner_external_id) NULLS NOT DISTINCT;
 

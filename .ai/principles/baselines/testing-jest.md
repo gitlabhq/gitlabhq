@@ -2,7 +2,7 @@
 
 ### Test structure
 
-Follow BDD (Behaviour-Driven Development) conventions: use `describe` blocks to define the context or state the system is in, `it` blocks to declare the specific behaviour being verified, and `beforeEach` to set up shared state. Group related tests together under a shared `describe` block.
+Follow BDD (Behavior-Driven Development) conventions: use `describe` blocks to define the context or state the system is in, `it` blocks to declare the specific behavior being verified, and `beforeEach` to set up shared state. Group related tests together under a shared `describe` block.
 
 ```js
 // Bad

@@ -66,7 +66,7 @@ for the directory layout and conventions.
 
 ### Personal overrides
 
-To customise a shared skill for yourself without touching the team's
+To customize a shared skill for yourself without touching the team's
 version, create a **personal-level** copy at the same skill name under
 your home directory:
 
