@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
   feature_category: :value_stream_management do
   include GraphqlHelpers
   include ClickHouseHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -184,6 +185,37 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
       it 'does not load rows into memory' do
         expect(nodes).not_to receive(:load_data)
         connection.count
+      end
+    end
+  end
+
+  describe '#max_page_size' do
+    let(:ctx) do
+      GraphQL::Query::Context.new(query: query_double(schema: GitlabSchema), values: { current_user: user1 })
+    end
+
+    subject(:connection) { described_class.new([], context: ctx, max_page_size: 250, **arguments) }
+
+    before do
+      stub_feature_flags(larger_clickhouse_aggregation_pages: flag_enabled ? user1 : user2)
+    end
+
+    where(:flag_enabled, :arguments, :expected_cap, :expected_first, :expected_last) do
+      true  | { first: 200 } | 250 | 200 | nil
+      false | { first: 200 } | 100 | 100 | nil
+      true  | {}             | 250 | 250 | nil
+      false | {}             | 100 | 100 | nil
+      true  | { first: 500 } | 250 | 250 | nil
+      false | { first: 500 } | 100 | 100 | nil
+      true  | { last: 500 }  | 250 | nil | 250
+      false | { last: 500 }  | 100 | nil | 100
+    end
+
+    with_them do
+      it 'applies the effective cap for the current user', :aggregate_failures do
+        expect(connection.max_page_size).to eq(expected_cap)
+        expect(connection.first).to eq(expected_first)
+        expect(connection.last).to eq(expected_last)
       end
     end
   end

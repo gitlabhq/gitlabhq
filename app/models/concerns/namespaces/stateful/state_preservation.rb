@@ -55,6 +55,12 @@ module Namespaces
         schedule_transfer: [:complete_transfer, :cancel_transfer]
       }.freeze
 
+      # start_deletion fires from any state, but reschedule_deletion only restores these three;
+      # preserving anything else writes a value that is never read and fails schema validation.
+      RESTORABLE_FROM_STATES = {
+        start_deletion: %i[ancestor_inherited archived deletion_scheduled]
+      }.freeze
+
       private
 
       # Main entry point called during state transitions.
@@ -68,11 +74,24 @@ module Namespaces
           # This is a restore event (e.g., :cancel_deletion)
           # Clean up the preserved state since restoration is complete
           clear_preserved_state(preserve_event)
-        elsif preserve_previous_state?(transition.event)
+        elsif preserve_previous_state?(transition.event) &&
+            restorable_from_state?(transition.event, transition.from_name)
           # This is a preserve event (e.g., :schedule_deletion)
           # Save the current state so we can restore it later
           save_preserved_state(transition.event, transition.from_name)
         end
+      end
+
+      # Checks if a preserve event's from-state can be restored later.
+      #
+      # @param event [Symbol] the preserve event
+      # @param from_name [Symbol] the state being transitioned from
+      # @return [Boolean] true if the from-state may be preserved
+      def restorable_from_state?(event, from_name)
+        restorable = RESTORABLE_FROM_STATES[event]
+        return true unless restorable
+
+        restorable.include?(from_name)
       end
 
       # Checks if the given event should trigger state preservation.

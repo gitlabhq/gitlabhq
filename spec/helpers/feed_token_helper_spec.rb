@@ -8,8 +8,10 @@ RSpec.describe FeedTokenHelper, feature_category: :system_access do
   shared_examples 'returning a valid feed token' do
     context 'with type :atom' do
       it "returns the current_user's atom feed_token" do
-        allow(helper).to receive(:current_user).and_return(current_user)
-        allow(helper).to receive(:current_request).and_return(instance_double(ActionDispatch::Request, path: 'url'))
+        allow(helper).to receive_messages(
+          current_user: current_user,
+          current_request: instance_double(ActionDispatch::Request, path: 'url')
+        )
 
         # The middle part is the output of OpenSSL::HMAC.hexdigest("SHA256", 'KNOWN VALUE', 'url.atom')
         expect(helper.generate_feed_token(:atom)).to eq(

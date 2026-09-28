@@ -251,7 +251,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   end
 
   describe '#allow_admin_mode_password_authentication_for_web?' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     subject { helper.allow_admin_mode_password_authentication_for_web? }
 
@@ -278,16 +278,14 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
 
     context 'when user got password automatically set' do
-      before do
-        user.update_attribute(:password_automatically_set, true)
-      end
+      let(:user) { build_stubbed(:user, password_automatically_set: true) }
 
       it { is_expected.to be(false) }
     end
   end
 
   describe '#auth_active?' do
-    let(:user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
 
     def auth_active?
       helper.auth_active?(provider)
@@ -337,7 +335,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
 
     context 'when owner is a user' do
-      let_it_be(:application) { create(:oauth_application) }
+      let(:application) { build_stubbed(:oauth_application) }
 
       let(:path_to_owner) { user_path(application.owner) }
 
@@ -353,10 +351,10 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
 
     context 'when the user is missing' do
-      let_it_be(:application) { create(:oauth_application, :without_owner) }
+      let(:application) { build_stubbed(:oauth_application, :without_owner) }
 
       context 'when the application is dynamically created' do
-        let_it_be(:application) { create(:oauth_application, :dynamic) }
+        let(:application) { build_stubbed(:oauth_application, :dynamic) }
 
         it 'returns a warning' do
           expect(helper.auth_app_owner_text(application))
@@ -906,7 +904,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   end
 
   describe '#current_password_required?' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user, password_automatically_set: password_automatically_set) }
 
     subject(:current_password_required) { helper.current_password_required? }
 
@@ -925,7 +923,6 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     with_them do
       it "returns the correct expectation" do
-        user.update_attribute(:password_automatically_set, password_automatically_set)
         stub_application_setting(password_authentication_enabled_for_web: allow_password_authentication_for_web)
 
         expect(current_password_required).to eq(expectation)

@@ -48,8 +48,7 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache, f
     let_it_be(:project) { build(:project) }
 
     before do
-      allow(helper).to receive(:ref_project).and_return(project)
-      allow(helper).to receive(:issuable_templates).and_return(templates)
+      allow(helper).to receive_messages(ref_project: project, issuable_templates: templates)
     end
 
     context 'with project templates' do
@@ -172,8 +171,7 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache, f
     end
 
     before do
-      allow(helper).to receive(:ref_project).and_return(project)
-      allow(helper).to receive(:issuable_templates).and_return(templates)
+      allow(helper).to receive_messages(ref_project: project, issuable_templates: templates)
     end
 
     it 'returns unique list of template names' do

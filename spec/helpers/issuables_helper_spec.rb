@@ -119,8 +119,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         let_it_be(:group) { create(:group) }
 
         before do
-          allow(helper).to receive(:issuables_count_for_state).and_return(1100)
-          allow(helper).to receive(:parent).and_return(group)
+          allow(helper).to receive_messages(issuables_count_for_state: 1100, parent: group)
           stub_const("Gitlab::IssuablesCountForState::THRESHOLD", 1000)
         end
 
@@ -192,8 +191,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     let(:user) { create(:user) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(current_user: user, can?: true)
       stub_commonmark_sourcepos_disabled
     end
 
@@ -439,8 +437,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
       context 'when issue is duplicated' do
         before do
-          allow(issue).to receive(:duplicated?).and_return(true)
-          allow(issue).to receive(:duplicated_to).and_return(issue)
+          allow(issue).to receive_messages(duplicated?: true, duplicated_to: issue)
         end
 
         it 'returns url' do
@@ -468,8 +465,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
       context 'when issue is moved' do
         before do
-          allow(issue).to receive(:moved?).and_return(true)
-          allow(issue).to receive(:moved_to).and_return(issue)
+          allow(issue).to receive_messages(moved?: true, moved_to: issue)
         end
 
         it 'returns url' do

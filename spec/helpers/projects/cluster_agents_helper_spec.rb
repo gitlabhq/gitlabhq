@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Projects::ClusterAgentsHelper, feature_category: :deployment_management do
   describe '#js_cluster_agent_details_data' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:current_user) { create(:user) }
+    let(:project) { build_stubbed(:project) }
+    let(:current_user) { build_stubbed(:user) }
 
     let(:user_can_admin_vulerability) { true }
     let(:user_can_admin_cluster) { false }

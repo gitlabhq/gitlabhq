@@ -92382,6 +92382,9 @@ msgstr ""
 msgid "Vulnerability|The unmodified response is the original response that had no mutations done to the request"
 msgstr ""
 
+msgid "Vulnerability|This secret is no longer detected in the code. The file contents are hidden to avoid exposing it."
+msgstr ""
+
 msgid "Vulnerability|This vulnerability has been identified as malware"
 msgstr ""
 

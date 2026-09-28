@@ -22,9 +22,11 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
     let(:query) { base_query }
 
     before do
-      allow(request_context).to receive(:header).and_return(value)
-      allow(request_context).to receive(:params).and_return(query)
-      allow(request_context).to receive(:request).and_return(double(url: "#{incoming_api_projects_url}?#{query.to_query}"))
+      allow(request_context).to receive_messages(
+        header: value,
+        params: query,
+        request: double(url: "#{incoming_api_projects_url}?#{query.to_query}")
+      )
     end
 
     context 'when resource can be paginated' do

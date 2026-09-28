@@ -1060,7 +1060,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/form_helper_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
     - 'spec/helpers/gitlab_script_tag_helper_spec.rb'
-    - 'spec/helpers/graph_helper_spec.rb'
     - 'spec/helpers/icons_helper_spec.rb'
     - 'spec/helpers/instance_configuration_helper_spec.rb'
     - 'spec/helpers/invite_members_helper_spec.rb'

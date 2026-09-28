@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe VersionCheckHelper do
   include StubVersion
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   describe '#show_version_check?' do
     describe 'return conditions' do

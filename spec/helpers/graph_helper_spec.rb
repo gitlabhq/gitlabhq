@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GraphHelper do
+RSpec.describe GraphHelper, feature_category: :source_code_management do
   describe '#get_refs' do
     let(:project) { create(:project, :small_repo) }
     let(:commit)  { project.commit("master") }
@@ -17,7 +17,7 @@ RSpec.describe GraphHelper do
   end
 
   describe '#should_render_quality_summary' do
-    let(:project) { create(:project, :private) }
+    let(:project) { build_stubbed(:project, :private) }
 
     before do
       instance_variable_set(:@project, project)

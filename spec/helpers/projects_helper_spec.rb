@@ -285,8 +285,10 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'user requires a personal access token for Git' do
       it 'returns true' do
-        allow(user).to receive(:require_password_creation_for_git?).and_return(false)
-        allow(user).to receive(:require_personal_access_token_creation_for_git_auth?).and_return(true)
+        allow(user).to receive_messages(
+          require_password_creation_for_git?: false,
+          require_personal_access_token_creation_for_git_auth?: true
+        )
 
         expect(helper.show_no_password_message?).to be_truthy
       end
@@ -1136,10 +1138,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     with_them do
       before do
-        allow(helper).to receive(:project_more_action_data).and_return({})
-        allow(helper).to receive(:fork_button_data_attributes).and_return(nil)
-        allow(helper).to receive(:notification_data_attributes).and_return(nil)
-        allow(helper).to receive(:star_count_data_attributes).and_return({})
+        allow(helper).to receive_messages(
+          project_more_action_data: {},
+          fork_button_data_attributes: nil,
+          notification_data_attributes: nil,
+          star_count_data_attributes: {}
+        )
         allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
         allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
         allow(user).to receive(:can_admin_all_resources?).and_return(is_admin)
@@ -1684,16 +1688,11 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let(:group) { double('Group') }
 
       before do
-        allow(project)
-          .to receive(:clusters)
-          .and_return(project_clusters_exist ? clusters : [])
         allow(helper)
           .to receive(:can?).with(user, :admin_cluster, project)
           .and_return(user_can_admin_project_clusters)
 
-        allow(project)
-          .to receive(:group)
-          .and_return(group)
+        allow(project).to receive_messages(clusters: project_clusters_exist ? clusters : [], group: group)
         allow(group)
           .to receive(:clusters)
           .and_return(group_clusters_exist ? clusters : [])
@@ -1718,8 +1717,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       let(:description) { 'Fake visib desc' }
 
       before do
-        allow(helper).to receive(:visibility_icon_description).and_return(description)
-        allow(helper).to receive(:visibility_level_icon).and_return(icon)
+        allow(helper).to receive_messages(visibility_icon_description: description, visibility_level_icon: icon)
       end
 
       it 'returns visibility level content_tag' do

@@ -17,7 +17,7 @@ title: GitLab Duo add-ons
 
 - Changed to include GitLab Duo Core add-on in GitLab 18.0.
 - GitLab Duo Non-Agentic Chat in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
-- [Added ability to disable seat assignment emails on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/557290)
+- [Added ability to disable seat assignment emails on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/557290)
   in GitLab 18.4.
 
 {{< /history >}}

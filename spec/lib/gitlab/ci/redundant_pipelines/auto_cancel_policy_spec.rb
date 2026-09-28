@@ -122,7 +122,7 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::AutoCancelPolicy, feature_categor
       end
     end
 
-    context 'when it may not be cancelled' do
+    context 'when it may not be canceled' do
       let(:auto_cancel_on_new_commit) { 'none' }
 
       it { is_expected.not_to be_cancelable_by_newer_pipeline }
@@ -143,12 +143,12 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::AutoCancelPolicy, feature_categor
     context 'when the pipeline only cancels interruptible jobs' do
       let(:auto_cancel_on_new_commit) { 'interruptible' }
 
-      it 'stays cancellable however far its jobs get' do
+      it 'stays cancelable however far its jobs get' do
         expect(policy).not_to be_protected_after_non_interruptible_job_starts
       end
     end
 
-    context 'when the pipeline is configured to never be auto-cancelled' do
+    context 'when the pipeline is configured to never be auto-canceled' do
       let(:auto_cancel_on_new_commit) { 'none' }
 
       it { is_expected.not_to be_protected_after_non_interruptible_job_starts }
@@ -165,7 +165,7 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::AutoCancelPolicy, feature_categor
 
       it { is_expected.to be_protected_after_non_interruptible_job_starts }
 
-      context 'when it is configured to never be auto-cancelled' do
+      context 'when it is configured to never be auto-canceled' do
         let(:auto_cancel_on_new_commit) { 'none' }
 
         it { is_expected.not_to be_protected_after_non_interruptible_job_starts }

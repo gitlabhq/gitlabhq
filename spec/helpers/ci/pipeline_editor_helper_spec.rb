@@ -46,17 +46,14 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     before do
       allow(helper)
-        .to receive(:namespace_project_new_merge_request_path)
-        .and_return('/mock/project/-/merge_requests/new')
-
-      allow(helper)
         .to receive(:can?)
         .with(user, :create_pipeline, project)
         .and_return(true)
 
-      allow(helper)
-        .to receive(:current_user)
-        .and_return(user)
+      allow(helper).to receive_messages(
+        namespace_project_new_merge_request_path: '/mock/project/-/merge_requests/new',
+        current_user: user
+      )
     end
 
     subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }

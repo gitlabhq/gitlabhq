@@ -207,7 +207,7 @@ You cannot turn off restricted access when your subscription does not allow over
 {{< /history >}}
 
 When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
-This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and Self-Managed Ultimate.
+This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and GitLab Self-Managed Ultimate.
 
 Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../user/permissions.md#users-with-minimal-access).
 When seats become available, they can be promoted to their intended access level.

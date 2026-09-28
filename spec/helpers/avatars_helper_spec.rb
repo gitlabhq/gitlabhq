@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   include UploadHelpers
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   describe '#avatar_icon_for' do
     let_it_be(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
@@ -91,11 +91,11 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   end
 
   describe '#avatar_icon_for_user' do
-    let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
+    let_it_be_with_reload(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
 
     shared_examples 'blocked or unconfirmed user with avatar' do
       context 'when the viewer is not an admin' do
-        let_it_be(:viewing_user) { create(:user) }
+        let(:viewing_user) { build_stubbed(:user) }
 
         it 'returns the default avatar' do
           expect(helper.avatar_icon_for_user(user, current_user: viewing_user).to_s)
@@ -104,7 +104,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       end
 
       context 'when the viewer is an admin', :enable_admin_mode do
-        let_it_be(:viewing_user) { create(:user, :admin) }
+        let(:viewing_user) { build_stubbed(:user, :admin) }
 
         it 'returns the default avatar when the user is not passed' do
           expect(helper.avatar_icon_for_user(user).to_s)
@@ -407,6 +407,8 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     subject { helper.avatar_without_link(resource, options) }
 
     context 'with users' do
+      let_it_be(:user) { create(:user) }
+
       let(:resource) { user.namespace }
 
       it 'displays user avatar' do
@@ -443,8 +445,6 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   end
 
   describe "#author_avatar", :clean_gitlab_redis_cache do
-    let_it_be(:user) { create(:user) }
-
     let(:commit_or_event) do
       # This argument is an unverified type, so we need to match
       # against a generic double to validate it.

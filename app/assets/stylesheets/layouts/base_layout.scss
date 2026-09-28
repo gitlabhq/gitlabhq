@@ -16,6 +16,12 @@
               transform $gl-transition-duration-medium $gl-easing-out-cubic;
 }
 
+// Opt out of the appear/disappear animation (via the animateStickyHeader prop),
+// e.g. when the header content changes size and the transition looks janky.
+.gl-base-layout-sticky-header-no-animation {
+  transition-duration: 0s;
+}
+
 .gl-base-layout-sticky-header-inner {
   @apply gl-px-[--container-padding-x];
 }

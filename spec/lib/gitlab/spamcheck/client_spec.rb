@@ -55,8 +55,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   shared_examples 'check for spam' do
     before do
       allow_next_instance_of(::Spamcheck::SpamcheckService::Stub) do |instance|
-        allow(instance).to receive(:check_for_spam_issue).and_return(response)
-        allow(instance).to receive(:check_for_spam_snippet).and_return(response)
+        allow(instance).to receive_messages(check_for_spam_issue: response, check_for_spam_snippet: response)
       end
     end
 

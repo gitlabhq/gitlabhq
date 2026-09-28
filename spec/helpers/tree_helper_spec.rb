@@ -52,12 +52,14 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, ref)
-      allow(helper).to receive(:selected_branch).and_return(ref)
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(false)
-      allow(helper).to receive(:user_access).and_return(instance_double(Gitlab::UserAccess, can_push_to_branch?: false))
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(false)
-      allow(helper).to receive(:can_edit_tree?).and_return(false)
+      allow(helper).to receive_messages(
+        selected_branch: ref,
+        current_user: user,
+        can?: false,
+        user_access: instance_double(Gitlab::UserAccess, can_push_to_branch?: false),
+        can_collaborate_with_project?: false,
+        can_edit_tree?: false
+      )
     end
 
     it 'returns a list of breadcrumb attributes' do
@@ -105,13 +107,15 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, sha)
-      allow(helper).to receive(:can?).and_return(false)
-      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
-      allow(helper).to receive(:user_access).and_return(instance_double(Gitlab::UserAccess, can_push_to_branch?: false))
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:ssh_enabled?).and_return(true)
-      allow(helper).to receive(:http_enabled?).and_return(true)
-      allow(helper).to receive(:show_xcode_link?).and_return(false)
+      allow(helper).to receive_messages(
+        can?: false,
+        can_collaborate_with_project?: true,
+        user_access: instance_double(Gitlab::UserAccess, can_push_to_branch?: false),
+        current_user: user,
+        ssh_enabled?: true,
+        http_enabled?: true,
+        show_xcode_link?: false
+      )
     end
 
     subject { helper.vue_tree_header_app_data(project, repository, sha, pipeline, 'heads') }
@@ -228,11 +232,13 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, sha)
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:show_web_ide_button?).and_return(true)
-      allow(helper).to receive(:show_gitpod_button?).and_return(false)
-      allow(helper).to receive(:web_ide_url).and_return("/-/ide/project/#{project.full_path}/edit/#{sha}")
-      allow(helper).to receive(:gitpod_url).and_return('')
+      allow(helper).to receive_messages(
+        current_user: user,
+        show_web_ide_button?: true,
+        show_gitpod_button?: false,
+        web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}",
+        gitpod_url: ''
+      )
     end
 
     subject { helper.code_dropdown_ide_data }
@@ -319,18 +325,19 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, ref)
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:ssh_enabled?).and_return(true)
-      allow(helper).to receive(:http_enabled?).and_return(true)
-      allow(helper).to receive(:show_xcode_link?).and_return(false)
-      allow(helper).to receive(:code_dropdown_ide_data)
-                         .and_return({
-                           gitpod_enabled: false,
-                           show_web_ide_button: true,
-                           show_gitpod_button: false,
-                           web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{ref}",
-                           gitpod_url: ''
-                         })
+      allow(helper).to receive_messages(
+        current_user: user,
+        ssh_enabled?: true,
+        http_enabled?: true,
+        show_xcode_link?: false,
+        code_dropdown_ide_data: {
+          gitpod_enabled: false,
+          show_web_ide_button: true,
+          show_gitpod_button: false,
+          web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{ref}",
+          gitpod_url: ''
+        }
+      )
     end
 
     subject { helper.compact_code_dropdown_data(project, ref, 'heads') }

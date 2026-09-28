@@ -2,6 +2,8 @@
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import BaseLayout from './base_layout.vue';
 
+const SCROLL_CONTAINER_SELECTOR = '.panel-content-inner';
+
 export default {
   name: 'DetailLayout',
   components: { BaseLayout },
@@ -14,6 +16,53 @@ export default {
       default: true,
     },
   },
+  watch: {
+    loading() {
+      // The sidebar only renders once loading is done, so (re-)wire against it then.
+      this.$nextTick(this.setupSidebarSync);
+    },
+  },
+  mounted() {
+    this.$nextTick(this.setupSidebarSync);
+    window.addEventListener('resize', this.scheduleSyncSidebarSpace);
+  },
+  beforeDestroy() {
+    cancelAnimationFrame(this.syncFrame);
+    this.scrollContainer?.removeEventListener('scroll', this.scheduleSyncSidebarSpace);
+    window.removeEventListener('resize', this.scheduleSyncSidebarSpace);
+  },
+  methods: {
+    setupSidebarSync() {
+      const scrollContainer = this.$refs.sidebar?.closest(SCROLL_CONTAINER_SELECTOR);
+      if (!scrollContainer || scrollContainer === this.scrollContainer) return;
+
+      // Detach from a previously resolved container so it can't leak a listener.
+      this.scrollContainer?.removeEventListener('scroll', this.scheduleSyncSidebarSpace);
+      this.scrollContainer = scrollContainer;
+      this.scrollContainer.addEventListener('scroll', this.scheduleSyncSidebarSpace, {
+        passive: true,
+      });
+      this.syncSidebarSpace();
+    },
+    scheduleSyncSidebarSpace() {
+      // Coalesce bursts of scroll/resize events into one measurement per frame.
+      cancelAnimationFrame(this.syncFrame);
+      this.syncFrame = requestAnimationFrame(this.syncSidebarSpace);
+    },
+    syncSidebarSpace() {
+      const { sidebar } = this.$refs;
+      if (!sidebar || !this.scrollContainer) return;
+
+      // Live distance from the scroll container's viewport top to the sidebar's
+      // current top edge: the page heading when unscrolled, the sticky header once
+      // stuck, and the correct in-between value while scrolling. Subtracting it from
+      // the container height keeps the sidebar bottom at the viewport edge in every
+      // scroll state, so its own scrollbar can always reach the last item.
+      const space =
+        sidebar.getBoundingClientRect().top - this.scrollContainer.getBoundingClientRect().top;
+      sidebar.style.setProperty('--detail-layout-sidebar-space', `${Math.max(space, 0)}px`);
+    },
+  },
 };
 </script>
 
@@ -24,6 +73,7 @@ export default {
     :description="description"
     :page-heading-sr-only="pageHeadingSrOnly"
     :loading="loading"
+    :animate-sticky-header="animateStickyHeader"
   >
     <template v-for="(_, name) in glSlots()" #[name]="slotProps">
       <slot :name="name" v-bind="slotProps || {}"></slot>
@@ -39,6 +89,7 @@ export default {
         </div>
         <div
           v-if="glSlots().sidebar"
+          ref="sidebar"
           class="gl-detail-layout-sidebar"
           :class="{ 'gl-contents': !showSidebar }"
           data-testid="detail-layout-sidebar"

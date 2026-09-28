@@ -184,9 +184,11 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     let(:issuable_sidebar_issue) { serialize_issuable_sidebar(current_user, project, merge_request) }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).and_return(true)
-      allow(helper).to receive(:issuable_sidebar).and_return(issuable_sidebar_issue)
+      allow(helper).to receive_messages(
+        current_user: current_user,
+        can?: true,
+        issuable_sidebar: issuable_sidebar_issue
+      )
     end
 
     it 'returns expected result' do
@@ -216,9 +218,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     let(:current_user) { double.as_null_object }
 
     it 'returns expected result' do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:image_path).and_return('#')
-      allow(helper).to receive(:url_for).and_return('#')
+      allow(helper).to receive_messages(current_user: current_user, image_path: '#', url_for: '#')
 
       expected = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,

@@ -23,7 +23,7 @@ title: Check migrations before upgrade
 {{< /history >}}
 
 GitLab provides a set of Rake tasks to manage background migrations from the command line.
-These tasks are particularly useful for self-managed administrators who need to manage background
+These tasks are particularly useful for GitLab Self-Managed administrators who need to manage background
 migrations when the Admin UI is not available, such as during downtime upgrades or maintenance windows.
 
 All Rake tasks work across all databases (main and ci) and use a unified migration ID format: `{database}_{id}`.

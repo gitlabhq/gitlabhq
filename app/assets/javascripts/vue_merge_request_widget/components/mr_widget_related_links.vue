@@ -16,7 +16,6 @@ export default {
     relatedLinks: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
     state: {
       type: String,

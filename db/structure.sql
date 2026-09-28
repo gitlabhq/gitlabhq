@@ -374,6 +374,11 @@ AND NOT EXISTS (
   SELECT 1
   FROM personal_access_token_granular_scopes
   WHERE granular_scope_id = OLD.granular_scope_id
+)
+AND NOT EXISTS (
+  SELECT 1
+  FROM oauth_consent_grant_granular_scopes
+  WHERE granular_scope_id = OLD.granular_scope_id
 );
 RETURN OLD;
 
@@ -26026,6 +26031,42 @@ CREATE SEQUENCE oauth_applications_id_seq
 
 ALTER SEQUENCE oauth_applications_id_seq OWNED BY oauth_applications.id;
 
+CREATE TABLE oauth_consent_grant_granular_scopes (
+    id bigint NOT NULL,
+    oauth_consent_grant_id bigint NOT NULL,
+    granular_scope_id bigint NOT NULL,
+    organization_id bigint NOT NULL
+);
+
+CREATE SEQUENCE oauth_consent_grant_granular_scopes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE oauth_consent_grant_granular_scopes_id_seq OWNED BY oauth_consent_grant_granular_scopes.id;
+
+CREATE TABLE oauth_consent_grants (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    application_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    source smallint NOT NULL
+);
+
+CREATE SEQUENCE oauth_consent_grants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE oauth_consent_grants_id_seq OWNED BY oauth_consent_grants.id;
+
 CREATE TABLE oauth_consents (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -37946,6 +37987,10 @@ ALTER TABLE ONLY oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('oauth_
 
 ALTER TABLE ONLY oauth_applications ALTER COLUMN id SET DEFAULT nextval('oauth_applications_id_seq'::regclass);
 
+ALTER TABLE ONLY oauth_consent_grant_granular_scopes ALTER COLUMN id SET DEFAULT nextval('oauth_consent_grant_granular_scopes_id_seq'::regclass);
+
+ALTER TABLE ONLY oauth_consent_grants ALTER COLUMN id SET DEFAULT nextval('oauth_consent_grants_id_seq'::regclass);
+
 ALTER TABLE ONLY oauth_consents ALTER COLUMN id SET DEFAULT nextval('oauth_consents_id_seq'::regclass);
 
 ALTER TABLE ONLY oauth_device_grants ALTER COLUMN id SET DEFAULT nextval('oauth_device_grants_id_seq'::regclass);
@@ -41772,6 +41817,12 @@ ALTER TABLE ONLY oauth_access_tokens
 
 ALTER TABLE ONLY oauth_applications
     ADD CONSTRAINT oauth_applications_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY oauth_consent_grant_granular_scopes
+    ADD CONSTRAINT oauth_consent_grant_granular_scopes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY oauth_consent_grants
+    ADD CONSTRAINT oauth_consent_grants_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY oauth_consents
     ADD CONSTRAINT oauth_consents_pkey PRIMARY KEY (id);
@@ -46314,6 +46365,10 @@ CREATE INDEX idx_oauth_applications_dynamic_and_id ON oauth_applications USING b
 
 CREATE INDEX idx_oauth_applications_organization_id ON oauth_applications USING btree (organization_id);
 
+CREATE UNIQUE INDEX idx_oauth_consent_grant_granular_scopes_on_grant_id_scope_id ON oauth_consent_grant_granular_scopes USING btree (oauth_consent_grant_id, granular_scope_id);
+
+CREATE UNIQUE INDEX idx_oauth_consent_grants_on_user_id_and_application_id_active ON oauth_consent_grants USING btree (user_id, application_id) WHERE ((status = 0) AND (source <> 3));
+
 CREATE INDEX idx_oauth_device_grants_on_organization_id ON oauth_device_grants USING btree (organization_id);
 
 CREATE INDEX idx_oauth_openid_requests_on_organization_id ON oauth_openid_requests USING btree (organization_id);
@@ -50123,6 +50178,16 @@ CREATE INDEX index_oauth_applications_on_owner_id_and_owner_type ON oauth_applic
 CREATE INDEX index_oauth_applications_on_secret ON oauth_applications USING btree (secret);
 
 CREATE UNIQUE INDEX index_oauth_applications_on_uid ON oauth_applications USING btree (uid);
+
+CREATE INDEX index_oauth_consent_grant_granular_scopes_on_granular_scope_id ON oauth_consent_grant_granular_scopes USING btree (granular_scope_id);
+
+CREATE INDEX index_oauth_consent_grant_granular_scopes_on_organization_id ON oauth_consent_grant_granular_scopes USING btree (organization_id);
+
+CREATE INDEX index_oauth_consent_grants_on_application_id ON oauth_consent_grants USING btree (application_id);
+
+CREATE INDEX index_oauth_consent_grants_on_organization_id ON oauth_consent_grants USING btree (organization_id);
+
+CREATE INDEX index_oauth_consent_grants_on_user_id ON oauth_consent_grants USING btree (user_id);
 
 CREATE INDEX index_oauth_consents_on_client_id ON oauth_consents USING btree (client_id);
 
@@ -57314,6 +57379,8 @@ CREATE TRIGGER trigger_decac6b7c511 BEFORE INSERT OR UPDATE ON snippet_repositor
 
 CREATE TRIGGER trigger_delete_orphaned_granular_scopes AFTER DELETE ON personal_access_token_granular_scopes FOR EACH ROW EXECUTE FUNCTION delete_orphaned_granular_scopes();
 
+CREATE TRIGGER trigger_delete_orphaned_granular_scopes_for_oauth_grants AFTER DELETE ON oauth_consent_grant_granular_scopes FOR EACH ROW EXECUTE FUNCTION delete_orphaned_granular_scopes();
+
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_dfad97659d5f BEFORE INSERT OR UPDATE ON issuable_severities FOR EACH ROW EXECUTE FUNCTION trigger_dfad97659d5f();
@@ -58656,6 +58723,9 @@ ALTER TABLE ONLY merge_requests_approval_rules_approver_users
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_587217e733 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY oauth_consent_grant_granular_scopes
+    ADD CONSTRAINT fk_587ca14c9c FOREIGN KEY (granular_scope_id) REFERENCES granular_scopes(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deploy_keys_projects
     ADD CONSTRAINT fk_58a901ca7e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -58938,6 +59008,9 @@ ALTER TABLE ONLY ascp_security_contexts
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_6fd290f6a3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE RESTRICT;
 
+ALTER TABLE ONLY oauth_consent_grant_granular_scopes
+    ADD CONSTRAINT fk_702c5b20a3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issuable_metric_image_upload_states
     ADD CONSTRAINT fk_70533d871e FOREIGN KEY (issuable_metric_image_upload_id) REFERENCES issuable_metric_image_uploads(id) ON DELETE CASCADE;
 
@@ -59189,6 +59262,9 @@ ALTER TABLE ONLY resource_iteration_events
 
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_consent_grant_granular_scopes
+    ADD CONSTRAINT fk_7df61fcaa3 FOREIGN KEY (oauth_consent_grant_id) REFERENCES oauth_consent_grants(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_export_uploads
     ADD CONSTRAINT fk_7e03e410b4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -59910,6 +59986,9 @@ ALTER TABLE ONLY compliance_management_frameworks
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_b764e76c6c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY oauth_consent_grants
+    ADD CONSTRAINT fk_b7affd7ecf FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY slack_integrations_scopes
     ADD CONSTRAINT fk_b7bd6dc444 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -60206,6 +60285,9 @@ ALTER TABLE ONLY work_item_type_custom_fields
 
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_cfd2073177 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_consent_grants
+    ADD CONSTRAINT fk_cfd903d87d FOREIGN KEY (application_id) REFERENCES oauth_applications(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY duo_workflows_workflow_notes
     ADD CONSTRAINT fk_cffdf714a4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -60575,6 +60657,9 @@ ALTER TABLE ONLY duo_workflows_workflows
 
 ALTER TABLE ONLY issue_emails
     ADD CONSTRAINT fk_ed0f4c4b51 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_consent_grants
+    ADD CONSTRAINT fk_ed104bb27a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_firewall_policy_rules
     ADD CONSTRAINT fk_ed43da2c1c FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;

@@ -31,7 +31,6 @@ export default {
     timezoneData: {
       type: Array,
       required: true,
-      default: () => [],
     },
     additionalClass: {
       type: Array,

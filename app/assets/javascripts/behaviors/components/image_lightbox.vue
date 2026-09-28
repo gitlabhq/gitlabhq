@@ -20,9 +20,6 @@ export default {
     images: {
       type: Array,
       required: true,
-      default() {
-        return [];
-      },
     },
     startingImage: {
       type: Number,

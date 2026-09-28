@@ -7,6 +7,15 @@ module Gitlab
         class AggregationConnection < GraphQL::Pagination::Connection
           delegate :count, to: :items
 
+          # Without the flag, every engine keeps the schema default, whatever cap its field sets.
+          def self.effective_max_page_size(configured_max_page_size, context:)
+            if Feature.enabled?(:larger_clickhouse_aggregation_pages, context[:current_user])
+              return configured_max_page_size
+            end
+
+            context.schema.default_max_page_size
+          end
+
           # rubocop: disable Naming/PredicatePrefix -- these methods are part of the GraphQL pagination API
           def has_next_page
             load_nodes
@@ -31,6 +40,10 @@ module Gitlab
 
           def nodes
             load_nodes
+          end
+
+          def max_page_size
+            self.class.effective_max_page_size(super, context: context)
           end
 
           private

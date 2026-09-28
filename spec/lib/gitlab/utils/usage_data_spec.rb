@@ -664,15 +664,13 @@ RSpec.describe Gitlab::Utils::UsageData do
     let(:model) { double(:relation) }
 
     it 'returns min from the model' do
-      allow(model).to receive(:minimum).and_return(2)
-      allow(model).to receive(:name).and_return('sample_min_model')
+      allow(model).to receive_messages(minimum: 2, name: 'sample_min_model')
 
       expect(described_class.minimum_id(model)).to eq(2)
     end
 
     it 'returns max from the model' do
-      allow(model).to receive(:maximum).and_return(100)
-      allow(model).to receive(:name).and_return('sample_max_model')
+      allow(model).to receive_messages(maximum: 100, name: 'sample_max_model')
 
       expect(described_class.maximum_id(model)).to eq(100)
     end

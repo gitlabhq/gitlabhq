@@ -8,7 +8,7 @@ module Namespaces
       FORBIDDEN_ANCESTOR_STATES = {
         archive: %i[archived deletion_in_progress deletion_scheduled],
         unarchive: %i[deletion_in_progress deletion_scheduled],
-        schedule_deletion: %i[deletion_in_progress deletion_scheduled]
+        schedule_deletion: %i[deletion_in_progress deletion_scheduled transfer_in_progress]
       }.freeze
 
       private
@@ -28,7 +28,7 @@ module Namespaces
         return true if forbidden_states.blank?
         return true unless forbidden_states.include?(parent.state_name)
 
-        add_forbidden_state_error(parent)
+        add_forbidden_ancestor_state_error(parent)
 
         false
       end
@@ -43,12 +43,12 @@ module Namespaces
         ancestor_in_forbidden_state = ancestors.where(state: state_values).first
         return true unless ancestor_in_forbidden_state
 
-        add_forbidden_state_error(ancestor_in_forbidden_state)
+        add_forbidden_ancestor_state_error(ancestor_in_forbidden_state)
 
         false
       end
 
-      def add_forbidden_state_error(namespace)
+      def add_forbidden_ancestor_state_error(namespace)
         errors.add(
           :state,
           format(

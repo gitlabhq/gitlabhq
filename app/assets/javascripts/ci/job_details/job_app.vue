@@ -412,6 +412,7 @@ export default {
     <detail-layout
       :show-sidebar="isSidebarOpen"
       :loading="!shouldRenderContent"
+      :animate-sticky-header="false"
       data-testid="job-content"
       class="build-page"
     >

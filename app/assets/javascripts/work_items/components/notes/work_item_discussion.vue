@@ -40,7 +40,6 @@ export default {
     discussion: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
     sortOrder: {
       type: String,

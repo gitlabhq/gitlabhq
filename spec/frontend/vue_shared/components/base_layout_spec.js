@@ -167,6 +167,23 @@ describe('BaseLayout', () => {
       });
     });
 
+    describe('animateStickyHeader', () => {
+      it('animates the sticky header by default', () => {
+        createComponent({ heading: 'Test Heading' }, { 'sticky-header': '<span>Sticky</span>' });
+        expect(findStickyHeader().classes()).not.toContain(
+          'gl-base-layout-sticky-header-no-animation',
+        );
+      });
+
+      it('disables the animation when animateStickyHeader is false', () => {
+        createComponent(
+          { heading: 'Test Heading', animateStickyHeader: false },
+          { 'sticky-header': '<span>Sticky</span>' },
+        );
+        expect(findStickyHeader().classes()).toContain('gl-base-layout-sticky-header-no-animation');
+      });
+    });
+
     describe('intersection observer options', () => {
       const STICKY_HEIGHT = 48;
       const PADDING_BOTTOM = 12;
@@ -236,10 +253,9 @@ describe('BaseLayout', () => {
       });
     });
 
-    describe('header height CSS variables', () => {
+    describe('header height CSS variable', () => {
       const HEIGHT = 64;
       const LIVE_VAR = '--layout-sticky-header-height';
-      const RESERVED_VAR = '--layout-sticky-header-reserved-height';
       const getVar = (name) => document.documentElement.style.getPropertyValue(name).trim();
 
       const mountWithStickyHeader = async () => {
@@ -251,20 +267,18 @@ describe('BaseLayout', () => {
 
       afterEach(() => {
         document.documentElement.style.removeProperty(LIVE_VAR);
-        document.documentElement.style.removeProperty(RESERVED_VAR);
       });
 
-      it('sets the live and reserved header height when the header sticks', async () => {
+      it('sets the live header height when the header sticks', async () => {
         await mountWithStickyHeader();
 
         findIntersectionObserver().vm.$emit('disappear');
         await waitForPromises();
 
         expect(getVar(LIVE_VAR)).toBe(`${HEIGHT}px`);
-        expect(getVar(RESERVED_VAR)).toBe(`${HEIGHT}px`);
       });
 
-      it('removes the live var but keeps the reserved var when the header hides', async () => {
+      it('removes the live var when the header hides', async () => {
         await mountWithStickyHeader();
 
         findIntersectionObserver().vm.$emit('disappear');
@@ -273,7 +287,6 @@ describe('BaseLayout', () => {
         await waitForPromises();
 
         expect(getVar(LIVE_VAR)).toBe('');
-        expect(getVar(RESERVED_VAR)).toBe(`${HEIGHT}px`);
       });
     });
   });

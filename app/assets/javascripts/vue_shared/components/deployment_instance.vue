@@ -32,7 +32,6 @@ export default {
     status: {
       type: String,
       required: true,
-      default: 'succeeded',
     },
 
     tooltipText: {

@@ -36,6 +36,7 @@ module Organizations
             "AntiAbuse::Event",
             "Authz::AdminRole",
             "Authz::GranularScope",
+            "Authz::OauthConsentGrantGranularScope",
             "Authz::PersonalAccessTokenGranularScope",
             # BulkImports::Export is scoped to a project or group, so it must not follow the user
             # to a new organization, otherwise it would diverge from its project/group. The model
@@ -146,6 +147,7 @@ module Organizations
           update_todos(user_ids)
           update_import_failures(user_ids)
           update_granular_scopes(user_ids)
+          update_oauth_consent_grant_granular_scopes(user_ids)
           update_associated_organization_ids(user_ids)
           update_personal_snippet_notes(user_ids)
           update_user_agent_details(user_ids)
@@ -266,13 +268,22 @@ module Organizations
       # rubocop:disable CodeReuse/ActiveRecord -- Query specific to this service
       def update_granular_scopes(user_ids)
         token_ids = PersonalAccessToken.where(user_id: user_ids, organization_id: old_organization.id).select(:id)
-        join_table_scope = Authz::PersonalAccessTokenGranularScope.where(personal_access_token_id: token_ids)
 
-        update_organization_id_for(Authz::PersonalAccessTokenGranularScope) do |relation|
-          relation.where(personal_access_token_id: token_ids)
+        update_granular_scopes_through(Authz::PersonalAccessTokenGranularScope, personal_access_token_id: token_ids)
+      end
+
+      def update_oauth_consent_grant_granular_scopes(user_ids)
+        grant_ids = Authz::OauthConsentGrant.where(user_id: user_ids, organization_id: old_organization.id).select(:id)
+
+        update_granular_scopes_through(Authz::OauthConsentGrantGranularScope, oauth_consent_grant_id: grant_ids)
+      end
+
+      def update_granular_scopes_through(join_model, owner_condition)
+        update_organization_id_for(join_model) do |relation|
+          relation.where(owner_condition)
         end
 
-        granular_scope_ids = join_table_scope.select(:granular_scope_id)
+        granular_scope_ids = join_model.where(owner_condition).select(:granular_scope_id)
 
         update_organization_id_for(Authz::GranularScope) do |relation|
           relation.where(id: granular_scope_ids)

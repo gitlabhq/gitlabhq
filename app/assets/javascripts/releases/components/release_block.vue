@@ -35,7 +35,6 @@ export default {
     release: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
     sort: {
       type: String,

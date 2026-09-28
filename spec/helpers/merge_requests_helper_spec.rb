@@ -352,15 +352,17 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     subject { helper.project_merge_requests_list_data(project, current_user) }
 
     before do
-      allow(helper).to receive(:project).and_return(project)
-      allow(helper).to receive(:current_user).and_return(current_user)
       allow(helper).to receive(:can?).with(current_user, :create_merge_request_in, project).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :admin_merge_request, project).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :create_merge_request_from, project).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :create_merge_request_in, project).and_return(true)
-      allow(helper).to receive(:issuables_count_for_state).and_return(5)
-      allow(helper).to receive(:url_for).and_return("/rss-url")
-      allow(helper).to receive(:export_csv_project_merge_requests_path).and_return('/csv-url')
+      allow(helper).to receive_messages(
+        project: project,
+        current_user: current_user,
+        issuables_count_for_state: 5,
+        url_for: "/rss-url",
+        export_csv_project_merge_requests_path: '/csv-url'
+      )
     end
 
     it 'returns the correct data' do
@@ -430,10 +432,12 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     before do
       helper.instance_variable_set(:@projects, [])
 
-      allow(helper).to receive(:project).and_return(group)
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:issuables_count_for_state).and_return(5)
-      allow(helper).to receive(:url_for).and_return("/rss-url")
+      allow(helper).to receive_messages(
+        project: group,
+        current_user: current_user,
+        issuables_count_for_state: 5,
+        url_for: "/rss-url"
+      )
     end
 
     it 'returns the correct data' do
@@ -515,8 +519,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     subject(:data) { helper.merge_request_dashboard_search_data }
 
     before do
-      allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:default_merge_request_sort).and_return(nil)
+      allow(helper).to receive_messages(current_user: current_user, default_merge_request_sort: nil)
     end
 
     it 'returns the paths and flags the search list needs' do

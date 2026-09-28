@@ -50,6 +50,11 @@ export default {
       required: false,
       default: false,
     },
+    animateStickyHeader: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -132,15 +137,10 @@ export default {
     syncStickyHeaderHeight() {
       const el = this.$refs.stickyHeader;
       if (!el) return;
-      const heightPx = `${el.offsetHeight}px`;
       // Offsets content while the header is showing; removed when it hides.
-      document.documentElement.style.setProperty('--layout-sticky-header-height', heightPx);
-      // Set once and never removed, so consumers can reserve a stable header
-      // height (e.g. detail-layout's sticky sidebar) without the value toggling
-      // on scroll, which would resize the sidebar and stutter the UI.
       document.documentElement.style.setProperty(
-        '--layout-sticky-header-reserved-height',
-        heightPx,
+        '--layout-sticky-header-height',
+        `${el.offsetHeight}px`,
       );
     },
   },
@@ -182,6 +182,7 @@ export default {
       <div
         ref="stickyHeader"
         class="gl-base-layout-sticky-header"
+        :class="{ 'gl-base-layout-sticky-header-no-animation': !animateStickyHeader }"
         data-testid="base-layout-sticky-header"
       >
         <div

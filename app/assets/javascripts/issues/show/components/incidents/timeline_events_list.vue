@@ -21,7 +21,6 @@ export default {
     timelineEvents: {
       type: Array,
       required: true,
-      default: () => [],
     },
   },
   emits: ['hide-new-incident-timeline-event-form'],

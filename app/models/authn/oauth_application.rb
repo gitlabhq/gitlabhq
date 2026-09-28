@@ -11,6 +11,9 @@ module Authn
 
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
 
+    has_many :oauth_consent_grants, class_name: 'Authz::OauthConsentGrant', foreign_key: :application_id,
+      inverse_of: :application
+
     scope :dynamic, -> { where(dynamic: true) }
     scope :with_token_digests, ->(hashed_tokens) do
       return none if hashed_tokens.blank?

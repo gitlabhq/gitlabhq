@@ -11,6 +11,8 @@ module Resolvers
             klass.class_eval do
               type response_type.connection_type, null: true
 
+              max_page_size engine.max_page_size if engine.max_page_size
+
               adapter.each_filter_argument(engine.filters.select(&:metric?)) do |name, type, kwargs|
                 argument(name, type, **kwargs) # rubocop:disable Graphql/Descriptions -- defined in adapter
               end

@@ -118,8 +118,10 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
 
       before do
         allow(app).to receive(:call).and_raise(StandardError)
-        allow(described_class).to receive(:http_request_duration_seconds).and_return(http_request_duration_seconds)
-        allow(described_class).to receive(:http_requests_total).and_return(http_requests_total)
+        allow(described_class).to receive_messages(
+          http_request_duration_seconds: http_request_duration_seconds,
+          http_requests_total: http_requests_total
+        )
       end
 
       it 'tracks the correct metrics' do

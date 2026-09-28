@@ -107,8 +107,10 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
       end
 
       before do
-        allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return(redirect_url)
-        allow(helper).to receive(:current_user).and_return(build(:user))
+        allow(helper).to receive_messages(
+          slack_auth_project_settings_slack_url: redirect_url,
+          current_user: build(:user)
+        )
       end
 
       it { is_expected.to include(*fields, *slack_app_fields) }
@@ -244,8 +246,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     let(:query) { Rack::Utils.parse_query(URI.parse(slack_link).query) }
 
     before do
-      allow(helper).to receive(:form_authenticity_token).and_return('a token')
-      allow(helper).to receive(:current_user).and_return(build(:user))
+      allow(helper).to receive_messages(form_authenticity_token: 'a token', current_user: build(:user))
     end
 
     it 'returns the endpoint URL with all needed params' do
@@ -325,8 +326,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
 
     before do
-      allow(helper).to receive(:current_user).and_return(build(:user))
-      allow(helper).to receive(:new_session_path).and_return('http://session-path')
+      allow(helper).to receive_messages(current_user: build(:user), new_session_path: 'http://session-path')
     end
 
     it 'includes the required keys' do

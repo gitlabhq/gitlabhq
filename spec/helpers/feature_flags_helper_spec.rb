@@ -10,8 +10,7 @@ RSpec.describe FeatureFlagsHelper do
   let_it_be(:user) { create(:user) }
 
   before do
-    allow(helper).to receive(:can?).and_return(true)
-    allow(helper).to receive(:current_user).and_return(user)
+    allow(helper).to receive_messages(can?: true, current_user: user)
 
     instance_variable_set(:@project, project)
     instance_variable_set(:@feature_flag, feature_flag)

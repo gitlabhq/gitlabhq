@@ -1,0 +1,9 @@
+---
+name: graphql_subscription_primary_fallback_on_load
+description: Decide the GraphQL subscription primary fallback before the broadcast payload is loaded, instead of after
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257630
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/630752
+milestone: '19.5'
+group: group::work items
+type: gitlab_com_derisk
+default_enabled: false

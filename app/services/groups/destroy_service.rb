@@ -60,18 +60,7 @@ module Groups
 
       group
     rescue Exception => e # rubocop:disable Lint/RescueException -- Namespace.transaction can raise Exception
-      log_payload = {
-        group_id: group.id,
-        current_user: current_user&.id,
-        error_class: e.class,
-        error_message: e.message,
-        error_backtrace: e.backtrace
-      }
-
-      reschedule_deletion
-      Gitlab::AppLogger.error(log_payload.merge(message: "Rescheduling group deletion"))
-
-      raise e
+      handle_destroy_failure(e)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -87,6 +76,30 @@ module Groups
       Group.transaction do
         group.start_deletion!(transition_user: current_user) unless group.deletion_in_progress?
       end
+    end
+
+    def handle_destroy_failure(error)
+      log_payload = {
+        group_id: group.id,
+        current_user: current_user&.id,
+        error_class: error.class,
+        error_message: error.message,
+        error_backtrace: error.backtrace
+      }
+
+      begin
+        reschedule_deletion
+        Gitlab::AppLogger.error(log_payload.merge(message: "Rescheduling group deletion"))
+      rescue StandardError => reschedule_error
+        Gitlab::AppLogger.error(log_payload.merge(
+          message: "Rescheduling group deletion failed",
+          reschedule_error_class: reschedule_error.class,
+          reschedule_error_message: reschedule_error.message
+        ))
+        Gitlab::ErrorTracking.track_exception(reschedule_error, group_id: group.id)
+      end
+
+      raise error
     end
 
     def reschedule_deletion

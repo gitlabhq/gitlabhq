@@ -63,21 +63,24 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     before do
       allow(Time).to receive(:now).and_return(Time.utc(2021, 1, 1))
       allow(helper).to receive(:current_user) { user }
-      allow(helper).to receive(:can?).and_return(true)
-      allow(helper).to receive(:session).and_return(session)
-      allow(helper).to receive(:header_search_context).and_return({ some: "search data" })
-      allow(helper).to receive(:current_user_mode).and_return(current_user_mode)
-      allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
-      allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
+      allow(helper).to receive_messages(
+        can?: true,
+        session: session,
+        header_search_context: { some: "search data" },
+        current_user_mode: current_user_mode
+      )
+      allow(panel).to receive_messages(super_sidebar_menu_items: nil, super_sidebar_context_header: nil)
 
       if user
-        allow(user).to receive(:assigned_open_issues_count).and_return(1)
-        allow(user).to receive(:assigned_open_merge_requests_count).and_return(4)
-        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(0)
-        allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
-        allow(user).to receive(:todos_pending_count).and_return(3)
         allow(helper).to receive(:show_feature_library_shimmer?).and_return(true)
-        allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
+        allow(user).to receive_messages(
+          assigned_open_issues_count: 1,
+          assigned_open_merge_requests_count: 4,
+          returned_to_you_merge_requests_count: 0,
+          review_requested_open_merge_requests_count: 0,
+          todos_pending_count: 3,
+          pinned_nav_items: { panel_type => %w[foo bar], 'another_panel' => %w[baz] }
+        )
       end
     end
 
@@ -593,9 +596,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         show_get_started_menu: false
       }
 
-      allow(helper).to receive(:project_sidebar_context_data).and_return(project_context_data)
-      allow(helper).to receive(:group_sidebar_context_data).and_return(
-        { current_user: nil, container: group, show_discover_group_security: false })
+      allow(helper).to receive_messages(
+        project_sidebar_context_data: project_context_data,
+        group_sidebar_context_data: { current_user: nil, container: group, show_discover_group_security: false }
+      )
 
       allow(group).to receive(:to_global_id).and_return(5)
     end

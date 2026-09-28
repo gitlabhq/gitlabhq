@@ -481,7 +481,7 @@ For more information, see [issue 595139](https://gitlab.com/gitlab-org/gitlab/-/
 - Affects: All installation methods
 - Affected versions: 18.9.0, 18.9.1
 
-When upgrading a self-managed GitLab instance to GitLab 18.9.0 or 18.9.1, the upgrade fails during database migrations with:
+When upgrading a GitLab Self-Managed instance to GitLab 18.9.0 or 18.9.1, the upgrade fails during database migrations with:
 
 ```plaintext
 PG::CheckViolation: ERROR: check constraint "check_xxxxxxxx" of relation "tablename" is violated by some row
@@ -489,7 +489,7 @@ PG::CheckViolation: ERROR: check constraint "check_xxxxxxxx" of relation "tablen
 
 This issue was caused by a bug fixed in GitLab 18.10 (see [merge request 224446](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224446)). The fix was also backported and should be included in the next GitLab 18.9 patch release (see [merge request 225026](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225026)).
 
-However, the bug can cause batched background migrations to be skipped silently due to the single-record bug. When upgrading to v18.8,batched background migrations targeting tables with a single record were incorrectly marked as `finished` without ever executing. This left data unbackfilled, causing upgrade failures on self-managed instances.
+However, the bug can cause batched background migrations to be skipped silently due to the single-record bug. When upgrading to v18.8, batched background migrations targeting tables with a single record were incorrectly marked as `finished` without ever executing. This left data not backfilled, causing upgrade failures on GitLab Self-Managed instances.
 
 A proposed fix (see [merge request 225461](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225461)) resets affected batched background migrations from `finished`/`finalized` back to `paused` so the scheduler re-executes them. It scopes to migrations with `queued_migration_version` between 18.5 and 18.8 where `min_value = max_value` or `min_cursor = max_cursor`.
 

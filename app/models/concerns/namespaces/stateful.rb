@@ -69,7 +69,9 @@ module Namespaces
         end
 
         event :start_deletion do
-          transition %i[ancestor_inherited archived deletion_scheduled] => :deletion_in_progress
+          # Descendant states are not propagated yet, so a descendant stuck in a
+          # transient state must not block deletion of its ancestors.
+          transition any => :deletion_in_progress
         end
 
         event :reschedule_deletion do

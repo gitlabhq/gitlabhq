@@ -95,10 +95,10 @@
 }
 
 .build-sidebar-item {
-  @apply gl-pt-4;
   @apply gl-mb-4;
 
   &:not(:first-child) {
+    @apply gl-pt-4;
     @apply gl-border-t;
     @apply gl-border-subtle;
   }

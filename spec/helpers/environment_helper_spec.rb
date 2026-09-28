@@ -14,8 +14,7 @@ RSpec.describe EnvironmentHelper, feature_category: :environment_management do
     end
 
     before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive_messages(current_user: user, can?: true)
     end
 
     it 'returns the correct data' do

@@ -62,7 +62,6 @@ export default {
     restJob: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
   },
   emits: ['update-variables'],

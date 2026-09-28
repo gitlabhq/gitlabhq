@@ -116,6 +116,8 @@ notes: supported
 oauth_access_grants: supported
 oauth_access_tokens: supported
 oauth_applications: supported
+oauth_consent_grant_granular_scopes: supported
+oauth_consent_grants: supported
 oauth_device_grants: https://gitlab.com/gitlab-org/gitlab/-/issues/611962
 oauth_openid_requests: https://gitlab.com/gitlab-org/gitlab/-/issues/611962
 organization_cluster_agent_mappings: supported

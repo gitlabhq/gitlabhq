@@ -12,8 +12,7 @@ RSpec.describe Gitlab::Pages::Settings do
 
     context 'when running under a web server outside of test mode' do
       before do
-        allow(::Gitlab::Runtime).to receive(:test_suite?).and_return(false)
-        allow(::Gitlab::Runtime).to receive(:puma?).and_return(true)
+        allow(::Gitlab::Runtime).to receive_messages(test_suite?: false, puma?: true)
       end
 
       it 'logs a DiskAccessDenied error' do

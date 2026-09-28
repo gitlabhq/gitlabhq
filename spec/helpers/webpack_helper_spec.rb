@@ -102,8 +102,7 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
     before do
       stub_rails_env('development')
 
-      allow(helper).to receive(:vite_javascript_tag).and_return('vite')
-      allow(helper).to receive(:vite_enabled?).and_return(true)
+      allow(helper).to receive_messages(vite_javascript_tag: 'vite', vite_enabled?: true)
     end
 
     describe '#webpack_bundle_tag' do

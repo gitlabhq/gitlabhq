@@ -553,12 +553,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '#global_search_settings_checkboxes', feature_category: :global_search do
-    # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-    # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-    # subject, or an in-memory mutation that survives reload/refind). Do not
-    # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-    # (see gitlab-org/gitlab#602925).
-    let_it_be(:application_setting, freeze: false) { build(:application_setting) }
+    let(:application_setting) { build(:application_setting) }
 
     before do
       application_setting.global_search_work_items_enabled = true
@@ -585,7 +580,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '#restricted_level_checkboxes' do
-    let_it_be(:application_setting, freeze: false) { build_stubbed(:application_setting) }
+    let(:application_setting) { build_stubbed(:application_setting) }
 
     before do
       allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
@@ -633,7 +628,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
   end
 
   describe '.deletion_protection_data' do
-    let_it_be(:application_setting, freeze: false) { build(:application_setting) }
+    let(:application_setting) { build(:application_setting) }
 
     before do
       application_setting.deletion_adjourned_period = 1

@@ -36,8 +36,7 @@ RSpec.describe GitlabEdition do
     subject { described_class.path_glob(path) }
 
     before do
-      allow(described_class).to receive(:jh?).and_return(jh)
-      allow(described_class).to receive(:ee?).and_return(ee)
+      allow(described_class).to receive_messages(jh?: jh, ee?: ee)
     end
 
     where(:ee, :jh, :path, :expected) do
@@ -62,8 +61,7 @@ RSpec.describe GitlabEdition do
     subject { described_class.extension_path_prefixes }
 
     before do
-      allow(described_class).to receive(:jh?).and_return(jh)
-      allow(described_class).to receive(:ee?).and_return(ee)
+      allow(described_class).to receive_messages(jh?: jh, ee?: ee)
     end
 
     where(:ee, :jh, :expected) do
@@ -91,8 +89,7 @@ RSpec.describe GitlabEdition do
 
     context 'when .ee? is true' do
       before do
-        allow(described_class).to receive(:jh?).and_return(false)
-        allow(described_class).to receive(:ee?).and_return(true)
+        allow(described_class).to receive_messages(jh?: false, ee?: true)
       end
 
       it 'returns %w[ee]' do
@@ -102,8 +99,7 @@ RSpec.describe GitlabEdition do
 
     context 'when neither .jh? and .ee? are true' do
       before do
-        allow(described_class).to receive(:jh?).and_return(false)
-        allow(described_class).to receive(:ee?).and_return(false)
+        allow(described_class).to receive_messages(jh?: false, ee?: false)
       end
 
       it 'returns the extensions according to the current edition' do

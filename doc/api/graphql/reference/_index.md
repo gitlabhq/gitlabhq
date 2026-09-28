@@ -44321,6 +44321,7 @@ Fields:
 | <a id="duoworkflow-aicatalogitemversionid"></a>`aiCatalogItemVersionId` {{< icon name="warning-solid" >}} | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Introduced in GitLab 18.4. Status: Experiment. ID of the AI catalog item version that triggered the workflow. |
 | <a id="duoworkflow-allexecutorlogsurls"></a>`allExecutorLogsUrls` | [`[String!]`](#string) | List of all the executor logs for the workflow. |
 | <a id="duoworkflow-allowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | Allow the agent to request user input. |
+| <a id="duoworkflow-allowclientinjectedmcptools"></a>`allowClientInjectedMcpTools` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates MCP tools supplied by the client skip the tool call approval gate. Toggled by the `dap_allow_client_injected_mcp_tools` feature flag; returns `false` when it is disabled. |
 | <a id="duoworkflow-archived"></a>`archived` | [`Boolean`](#boolean) | Archived due to retention policy. |
 | <a id="duoworkflow-auditevents"></a>`auditEvents` {{< icon name="warning-solid" >}} | [`AiAuditEventConnection`](#aiauditeventconnection) | Introduced in GitLab 19.0. Status: Experiment. Audit events recorded for the session. Requires `read_agent_artifacts` on the workflow's project or namespace. Returns no events when the `agent_artifacts_page` feature flag is disabled. |
 | <a id="duoworkflow-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |

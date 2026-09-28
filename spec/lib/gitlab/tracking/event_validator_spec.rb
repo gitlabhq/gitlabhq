@@ -11,10 +11,11 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
   subject(:validate) { described_class.new(event_name, additional_properties, kwargs).validate! }
 
   before do
-    allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).and_return(true)
-    allow(Gitlab::Tracking::EventDefinition).to receive(:find).and_return(event_definition)
-    allow(event_definition).to receive(:additional_properties).and_return({ lang: { description: 'Language' } })
-    allow(event_definition).to receive(:extra_trackers).and_return({})
+    allow(Gitlab::Tracking::EventDefinition).to receive_messages(internal_event_exists?: true, find: event_definition)
+    allow(event_definition).to receive_messages(
+      additional_properties: { lang: { description: 'Language' } },
+      extra_trackers: {}
+    )
   end
 
   describe '#validate!' do

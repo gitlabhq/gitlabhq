@@ -61,7 +61,6 @@ export default {
     user: {
       type: Object,
       required: true,
-      default: null,
     },
     placement: {
       type: String,

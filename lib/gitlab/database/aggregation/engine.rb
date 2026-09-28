@@ -25,6 +25,10 @@ module Gitlab
             raise NoMethodError
           end
 
+          def max_page_size
+            # Implicit nil keeps the GraphQL schema's default cap on `first`.
+          end
+
           def build(&block)
             Class.new(self).tap { |klass| klass.class_eval(&block) }
           end

@@ -15,9 +15,11 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
   end
 
   before do
-    allow(helper).to receive(:current_user).and_return(user)
-    allow(helper).to receive(:content_security_policy_nonce).and_return('test-csp-nonce')
-    allow(helper).to receive(:new_session_path).and_return('test-sign-in-path')
+    allow(helper).to receive_messages(
+      current_user: user,
+      content_security_policy_nonce: 'test-csp-nonce',
+      new_session_path: 'test-sign-in-path'
+    )
   end
 
   describe '#ide_data' do

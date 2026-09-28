@@ -44,22 +44,26 @@ $detail-layout-gap: 2rem;
       position: sticky;
       top: var(--detail-layout-sidebar-top, var(--layout-sticky-header-height, 0));
       align-self: start;
-      // Reserve the sticky header height so the sidebar can never scroll under it.
-      // The reserved var is stable (set once); the live --layout-sticky-header-height
-      // toggles on scroll and would resize the sidebar, stuttering the UI.
+      // Fit the sidebar to the visible area. --detail-layout-sidebar-space is
+      // measured live in JS (on scroll and resize) as the distance from the scroll
+      // container's viewport top to the sidebar's current top edge: the page heading
+      // when unscrolled, the sticky header once stuck, and the correct value while
+      // scrolling in between. Subtracting it keeps the sidebar bottom at the viewport
+      // edge in every scroll state, so its own scrollbar can always reach the last item.
       height: var(
         --detail-layout-sidebar-height,
         calc(
           var(--panel-content-inner-height, #{$calc-application-viewport-height}) -
-            var(--layout-sticky-header-reserved-height, 0px)
+            var(--detail-layout-sidebar-space, 0px)
         )
       );
       overflow-y: auto;
       overflow-x: hidden;
+      overscroll-behavior: contain;
       outline: none;
-      // Matches the transition of the sticky header appearing/disappearing,
-      // which shifts the top value
-      transition: top $gl-transition-duration-medium $gl-easing-out-cubic;
+      // Adding top spacing and aligning it back to the baseline with the negative margin
+      @apply gl-pt-4;
+      @apply -gl-mt-4;
     }
 
     > .gl-detail-layout-widgets {

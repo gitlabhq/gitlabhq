@@ -428,8 +428,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     with_them do
       it 'ellipcizes different variants' do
         project = double("project")
-        allow(project).to receive(:full_path).and_return(full_path)
-        allow(project).to receive(:id).and_return(12345)
+        allow(project).to receive_messages(full_path: full_path, id: 12345)
         # Set a max length that gives only 5 chars for the project full path
         max_length = "12345..#{Gitlab.config.gitlab.host}".length + 5
         list_id = create_list_id_string(project, max_length)
@@ -473,8 +472,7 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     with_them do
       it 'produces the right List-Id' do
         project = double("project")
-        allow(project).to receive(:full_path).and_return(full_path)
-        allow(project).to receive(:id).and_return(12345)
+        allow(project).to receive_messages(full_path: full_path, id: 12345)
         list_id = create_list_id_string(project)
 
         expect(list_id).to eq("12345.#{list_id_path}.#{Gitlab.config.gitlab.host}")

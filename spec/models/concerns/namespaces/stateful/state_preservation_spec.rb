@@ -154,6 +154,24 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
         end
       end
 
+      describe 'does not preserve start_deletion from-states reschedule_deletion cannot restore' do
+        subject { namespace.namespace_details.state_metadata['preserved_states'] }
+
+        where(:initial_state) do
+          %i[creation_in_progress transfer_in_progress transfer_scheduled maintenance]
+        end
+
+        with_them do
+          before do
+            namespace.state = initial_state
+            namespace.start_deletion!(transition_user: user)
+            namespace.namespace_details.reload
+          end
+
+          it { is_expected.to be_nil }
+        end
+      end
+
       describe 'restores state on transition' do
         subject { namespace.state_name }
 

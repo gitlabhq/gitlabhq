@@ -40,7 +40,6 @@ export default {
     listQueryVariables: {
       type: Object,
       required: true,
-      default: () => ({}),
     },
     lists: {
       type: Object,

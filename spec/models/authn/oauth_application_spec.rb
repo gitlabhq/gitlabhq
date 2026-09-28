@@ -8,6 +8,11 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
   describe 'associations' do
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization').required }
 
+    it 'has many consent grants' do
+      is_expected.to have_many(:oauth_consent_grants).class_name('Authz::OauthConsentGrant')
+        .with_foreign_key(:application_id).inverse_of(:application)
+    end
+
     it 'is invalid without an organization' do
       expect(build(:oauth_application, organization: nil)).not_to be_valid
     end

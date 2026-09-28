@@ -21,7 +21,6 @@ export default {
     tags: {
       type: Array,
       required: true,
-      default: () => [],
     },
     hideLabel: {
       type: Boolean,

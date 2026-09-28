@@ -141,8 +141,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
       context 'when Rails environment is production' do
         before do
-          allow(Rails.env).to receive(:development?).and_return(false)
-          allow(Rails.env).to receive(:test?).and_return(false)
+          allow(Rails.env).to receive_messages(development?: false, test?: false)
         end
 
         it 'reports only UnknownEvent exception' do

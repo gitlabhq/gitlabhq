@@ -704,6 +704,9 @@ oauth_applications:
 - application_settings.o11y_oauth_application_id
 - application_settings.web_ide_oauth_application_id
 - application_settings.workspaces_oauth_application_id
+# Cascade-only delete is intended: applications are also destroyed outside their
+# destroy service, and the granular scope cleanup trigger fires on cascaded deletes
+- oauth_consent_grants.application_id
 - oauth_device_grants.application_id
 operations_feature_flags:
 - operations_feature_flags_issues.feature_flag_id
@@ -792,6 +795,9 @@ organizations:
 - oauth_access_grants.organization_id
 - oauth_access_tokens.organization_id
 - oauth_applications.organization_id
+# Sharding keys: hard-deleting an organization removes all of its data through the cascade
+- oauth_consent_grant_granular_scopes.organization_id
+- oauth_consent_grants.organization_id
 - oauth_device_grants.organization_id
 - oauth_openid_requests.organization_id
 - organization_cluster_agent_mappings.organization_id

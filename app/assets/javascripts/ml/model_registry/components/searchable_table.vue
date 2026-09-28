@@ -20,7 +20,6 @@ export default {
     table: {
       type: Object,
       required: true,
-      default: null,
     },
     items: {
       type: Array,

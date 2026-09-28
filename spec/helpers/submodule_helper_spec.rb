@@ -22,7 +22,9 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
 
       it 'detects ssh on standard port' do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(22) # set this just to be sure
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix) do
+          Settings.send(:build_gitlab_shell_ssh_path_prefix)
+        end
         stub_url([config.ssh_user, '@', config.host, ':gitlab-org/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
@@ -32,9 +34,10 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
       end
 
       it 'detects ssh on standard port without a username' do
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(22) # set this just to be sure
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_user).and_return('')
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        allow(Gitlab.config.gitlab_shell).to receive_messages(ssh_port: 22, ssh_user: '')
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix) do
+          Settings.send(:build_gitlab_shell_ssh_path_prefix)
+        end
         stub_url([config.host, ':gitlab-org/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
@@ -45,7 +48,9 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
 
       it 'detects ssh on non-standard port' do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(2222)
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix) do
+          Settings.send(:build_gitlab_shell_ssh_path_prefix)
+        end
         stub_url(['ssh://', config.ssh_user, '@', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
@@ -55,9 +60,10 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
       end
 
       it 'detects ssh on non-standard port without a username' do
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(2222)
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_user).and_return('')
-        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
+        allow(Gitlab.config.gitlab_shell).to receive_messages(ssh_port: 2222, ssh_user: '')
+        allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix) do
+          Settings.send(:build_gitlab_shell_ssh_path_prefix)
+        end
         stub_url(['ssh://', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
@@ -68,7 +74,7 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
 
       it 'detects http on standard port' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(80)
-        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
+        allow(Gitlab.config.gitlab).to receive(:url) { Settings.send(:build_gitlab_url) }
         stub_url(['http://', config.host, '/gitlab-org/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
@@ -79,7 +85,7 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
 
       it 'detects http on non-standard port' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(3000)
-        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
+        allow(Gitlab.config.gitlab).to receive(:url) { Settings.send(:build_gitlab_url) }
         stub_url(['http://', config.host, ':3000/gitlab-org/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
@@ -89,9 +95,8 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
       end
 
       it 'works with relative_url_root' do
-        allow(Gitlab.config.gitlab).to receive(:port).and_return(80) # set this just to be sure
-        allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
-        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
+        allow(Gitlab.config.gitlab).to receive_messages(port: 80, relative_url_root: '/gitlab/root')
+        allow(Gitlab.config.gitlab).to receive(:url) { Settings.send(:build_gitlab_url) }
         stub_url(['http://', config.host, '/gitlab/root/gitlab-org/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org', 'gitlab-foss'))
@@ -101,9 +106,8 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
       end
 
       it 'works with subgroups' do
-        allow(Gitlab.config.gitlab).to receive(:port).and_return(80) # set this just to be sure
-        allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
-        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
+        allow(Gitlab.config.gitlab).to receive_messages(port: 80, relative_url_root: '/gitlab/root')
+        allow(Gitlab.config.gitlab).to receive(:url) { Settings.send(:build_gitlab_url) }
         stub_url(['http://', config.host, '/gitlab/root/gitlab-org/sub/gitlab-foss.git'].join(''))
         aggregate_failures do
           expect(subject.web).to eq(namespace_project_path('gitlab-org/sub', 'gitlab-foss'))
@@ -208,8 +212,8 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
     end
 
     context 'in-repository submodule' do
-      let(:group) { create(:group, name: "Master Project", path: "master-project") }
-      let(:project) { create(:project, group: group) }
+      let(:group) { build_stubbed(:group, name: "Master Project", path: "master-project") }
+      let(:project) { build_stubbed(:project, group: group) }
 
       it 'in-repository' do
         allow(repo).to receive(:project).and_return(project)
@@ -335,8 +339,8 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
     end
 
     context 'submodules with relative links' do
-      let(:group) { create(:group, name: "top group", path: "top-group") }
-      let(:project) { create(:project, group: group) }
+      let(:group) { build_stubbed(:group, name: "top group", path: "top-group") }
+      let(:project) { build_stubbed(:project, group: group) }
       let(:repo) { double(:repo, project: project) }
 
       def expect_relative_link_to_resolve_to(relative_path, expected_path)
@@ -383,8 +387,8 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
       end
 
       context 'subgroup' do
-        let(:sub_group) { create(:group, parent: group, name: "sub group", path: "sub-group") }
-        let(:sub_project) { create(:project, group: sub_group) }
+        let(:sub_group) { build_stubbed(:group, parent: group, name: "sub group", path: "sub-group") }
+        let(:sub_project) { build_stubbed(:project, group: sub_group) }
 
         context 'project in sub group' do
           let(:project) { sub_project }
@@ -404,8 +408,8 @@ RSpec.describe SubmoduleHelper, feature_category: :source_code_management do
       end
 
       context 'personal project' do
-        let(:user) { create(:user) }
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:user) { build_stubbed(:user, :with_namespace) }
+        let(:project) { build_stubbed(:project, namespace: user.namespace) }
 
         it 'handles referencing another personal project' do
           expect_relative_link_to_resolve_to('../test.git', "/#{user.username}/test")

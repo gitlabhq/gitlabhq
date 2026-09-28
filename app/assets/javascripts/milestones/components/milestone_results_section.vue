@@ -33,7 +33,6 @@ export default {
     selectedMilestones: {
       type: Array,
       required: true,
-      default: () => [],
     },
     error: {
       type: Error,

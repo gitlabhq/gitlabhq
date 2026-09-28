@@ -17,7 +17,6 @@ export default {
     containerRegistrySize: {
       type: Number,
       required: true,
-      default: 0,
     },
     containerRegistrySizeIsEstimated: {
       type: Boolean,

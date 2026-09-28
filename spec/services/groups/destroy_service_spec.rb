@@ -270,6 +270,79 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
           end
         end
       end
+
+      context 'when a descendant is in a transient transfer state during deletion' do
+        # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/608541
+        where(:nested_group_state) do
+          [[:transfer_in_progress], [:transfer_scheduled]]
+        end
+
+        with_them do
+          before do
+            nested_group.update!(state: nested_group_state)
+          end
+
+          it 'destroys the group and its descendant', :aggregate_failures do
+            destroy_group(group, user, false)
+
+            expect(Group.unscoped.all).not_to include(group)
+            expect(Group.unscoped.all).not_to include(nested_group)
+          end
+        end
+      end
+
+      context 'when reschedule_deletion! itself raises during the rescue block' do
+        # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/608541
+        #
+        # If reschedule_deletion! raises (e.g. due to an unexpected state), the
+        # original exception must still be re-raised so callers and logs see the
+        # real root cause rather than a secondary StateMachines::InvalidTransition.
+        before do
+          group.update!(state: :deletion_scheduled)
+          allow(group).to receive(:destroy).and_raise(StandardError, 'original error')
+          allow(group).to receive(:reschedule_deletion!).and_raise(RuntimeError, 'reschedule failed')
+        end
+
+        it 're-raises the original exception, not the reschedule error' do
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError, 'original error')
+        end
+
+        it 'logs the reschedule failure alongside the original error' do
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(
+              message: "Rescheduling group deletion failed",
+              reschedule_error_class: RuntimeError,
+              reschedule_error_message: 'reschedule failed'
+            )
+          )
+
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError, 'original error')
+        end
+
+        it 'tracks the reschedule exception on Sentry' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(RuntimeError).and(having_attributes(message: 'reschedule failed')),
+            group_id: group.id
+          )
+
+          expect { destroy_group(group, user, false) }.to raise_error(StandardError, 'original error')
+        end
+      end
+
+      context 'when deletion fails without a current_user' do
+        before do
+          allow(group).to receive(:start_deletion!).and_raise(StandardError, 'original error')
+        end
+
+        it 'logs the failure with a nil user and re-raises' do
+          allow(Gitlab::AppLogger).to receive(:error)
+          expect(Gitlab::AppLogger).to receive(:error).with(
+            hash_including(group_id: group.id, current_user: nil, error_message: 'original error')
+          )
+
+          expect { described_class.new(group, nil).unsafe_execute }.to raise_error(StandardError, 'original error')
+        end
+      end
     end
   end
 

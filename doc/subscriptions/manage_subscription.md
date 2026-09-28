@@ -70,7 +70,7 @@ To subscribe to GitLab.com:
 
 To subscribe to GitLab for a GitLab Self-Managed instance:
 
-- Go to the [Pricing page](https://about.gitlab.com/pricing/) and select a self-managed plan.
+- Go to the [Pricing page](https://about.gitlab.com/pricing/) and select a GitLab Self-Managed plan.
   You are redirected to the [Customers Portal](https://customers.gitlab.com/) to complete your purchase.
 
 > [!note]

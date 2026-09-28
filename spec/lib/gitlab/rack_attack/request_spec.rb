@@ -28,9 +28,11 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
 
     with_them do
       it 'returns true if any condition is true' do
-        allow(request).to receive(:api_internal_request?).and_return(api_internal_request)
-        allow(request).to receive(:health_check_request?).and_return(health_check_request)
-        allow(request).to receive(:container_registry_event?).and_return(container_registry_event)
+        allow(request).to receive_messages(
+          api_internal_request?: api_internal_request,
+          health_check_request?: health_check_request,
+          container_registry_event?: container_registry_event
+        )
 
         expect(request.should_be_skipped?).to be(api_internal_request || health_check_request || container_registry_event)
       end

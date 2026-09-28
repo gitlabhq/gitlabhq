@@ -252,6 +252,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:second_factor_webauthn_registrations) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:oauth_consents).class_name('Authn::OauthConsent').inverse_of(:user) }
+    it { is_expected.to have_many(:oauth_consent_grants).class_name('Authz::OauthConsentGrant').dependent(:delete_all) }
     it { is_expected.to have_many(:todos) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds) }

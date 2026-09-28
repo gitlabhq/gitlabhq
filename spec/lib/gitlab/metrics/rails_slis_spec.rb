@@ -112,9 +112,7 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
 
       with_them do
         it 'initializes only with the expected labels', :aggregate_failures do
-          allow(Gitlab::Metrics::Environment).to receive(:git?).and_return(git)
-          allow(Gitlab::Metrics::Environment).to receive(:api?).and_return(api)
-          allow(Gitlab::Metrics::Environment).to receive(:web?).and_return(web)
+          allow(Gitlab::Metrics::Environment).to receive_messages(git?: git, api?: api, web?: web)
           allow(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli)
           allow(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli)
 

@@ -53,6 +53,12 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :value_s
     expect(described_class.new(context: {})).to require_method_definition(:execute_query_plan, nil)
   end
 
+  describe '.max_page_size' do
+    it 'returns nil so the schema default page size applies' do
+      expect(engine_klass.max_page_size).to be_nil
+    end
+  end
+
   describe '.transient' do
     it 'stores transient expressions' do
       klass = described_class.build do

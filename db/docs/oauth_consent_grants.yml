@@ -1,0 +1,15 @@
+---
+table_name: oauth_consent_grants
+classes:
+- Authz::OauthConsentGrant
+feature_categories:
+- permissions
+description: Stores what a user allows an OAuth application to do. At most one authorized
+  grant exists per user and application, except that each Duo workflow session gets its
+  own grant. Revoked rows are kept as consent history. Sharded by the user's organization.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255384
+milestone: '19.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

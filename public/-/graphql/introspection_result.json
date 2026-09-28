@@ -149683,6 +149683,18 @@
               "deprecationReason": null
             },
             {
+              "name": "allowClientInjectedMcpTools",
+              "description": "Indicates MCP tools supplied by the client skip the tool call approval gate. Toggled by the `dap_allow_client_injected_mcp_tools` feature flag; returns `false` when it is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "archived",
               "description": "Archived due to retention policy.",
               "args": [],

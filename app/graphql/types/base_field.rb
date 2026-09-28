@@ -185,10 +185,14 @@ module Types
       # Resolvers may add extra complexity depending on number of items being loaded.
       return 0 if !connection? && !calculate_ext_conn_complexity
 
-      page_size   = max_page_size || ctx.schema.default_max_page_size
+      page_size   = connection_max_page_size(ctx)
       limit_value = [args[:first], args[:last], page_size].compact.min
       multiplier  = resolver&.try(:complexity_multiplier, args).to_f
       limit_value * multiplier
+    end
+
+    def connection_max_page_size(ctx)
+      max_page_size || ctx.schema.default_max_page_size
     end
   end
 end

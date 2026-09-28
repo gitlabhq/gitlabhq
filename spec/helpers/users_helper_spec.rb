@@ -682,8 +682,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     subject { helper.user_profile_actions_data(user_1) }
 
     before do
-      allow(helper).to receive(:user_path).and_return(user_path)
-      allow(helper).to receive(:user_url).and_return(user_path)
+      allow(helper).to receive_messages(user_path: user_path, user_url: user_path)
     end
 
     shared_examples 'user cannot report' do

@@ -15,13 +15,13 @@ RSpec.describe Ci::BuildsHelper, feature_category: :continuous_integration do
   end
 
   def assign_project
-    build(:project).tap do |project|
+    build_stubbed(:project).tap do |project|
       assign(:project, project)
     end
   end
 
   def assign_build
-    create(:ci_build).tap do |ci_build|
+    build_stubbed(:ci_build).tap do |ci_build|
       assign(:build, ci_build)
     end
   end

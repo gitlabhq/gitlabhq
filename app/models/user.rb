@@ -260,6 +260,7 @@ class User < ApplicationRecord
   has_many :authorized_projects, through: :project_authorizations, source: :project
   has_many :project_authorization_reverifications, class_name: 'Authz::ProjectAuthorizationReverification',
     dependent: :delete_all
+  has_many :oauth_consent_grants, class_name: 'Authz::OauthConsentGrant', dependent: :delete_all
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id

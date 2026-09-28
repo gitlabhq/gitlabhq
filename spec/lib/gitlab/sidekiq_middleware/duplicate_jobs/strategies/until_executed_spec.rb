@@ -12,11 +12,13 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
       let(:proc) { -> {} }
 
       before do
-        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return({})
         allow(fake_duplicate_job).to receive(:scheduled?) { false }
         allow(fake_duplicate_job).to receive(:options) { {} }
-        allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
-        allow(fake_duplicate_job).to receive(:reschedulable?).and_return(false)
+        allow(fake_duplicate_job).to receive_messages(
+          latest_wal_locations: {},
+          idempotency_key: 'abc123',
+          reschedulable?: false
+        )
       end
 
       it 'deletes the lock after executing' do
@@ -46,8 +48,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
 
       context 'when job is reschedulable' do
         before do
-          allow(fake_duplicate_job).to receive(:reschedulable?).and_return(true)
-          allow(fake_duplicate_job).to receive(:check_and_del_reschedule_signal).and_return(true)
+          allow(fake_duplicate_job).to receive_messages(reschedulable?: true, check_and_del_reschedule_signal: true)
         end
 
         it 'reschedules the job if deduplication happened' do

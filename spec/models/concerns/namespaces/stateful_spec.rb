@@ -150,6 +150,10 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
       it { is_expected.to handle_events :start_deletion, when: :ancestor_inherited }
       it { is_expected.to handle_events :start_deletion, when: :archived }
       it { is_expected.to handle_events :start_deletion, when: :deletion_scheduled }
+      it { is_expected.to handle_events :start_deletion, when: :creation_in_progress }
+      it { is_expected.to handle_events :start_deletion, when: :transfer_in_progress }
+      it { is_expected.to handle_events :start_deletion, when: :transfer_scheduled }
+      it { is_expected.to handle_events :start_deletion, when: :maintenance }
       it { is_expected.to handle_events :reschedule_deletion, when: :deletion_in_progress }
       it { is_expected.to handle_events :reschedule_deletion, when: :ancestor_inherited }
       it { is_expected.to handle_events :cancel_deletion, when: :deletion_scheduled }
@@ -176,6 +180,10 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         :start_deletion      | :ancestor_inherited   | :deletion_in_progress
         :start_deletion      | :archived             | :deletion_in_progress
         :start_deletion      | :deletion_scheduled   | :deletion_in_progress
+        :start_deletion      | :creation_in_progress | :deletion_in_progress
+        :start_deletion      | :transfer_in_progress | :deletion_in_progress
+        :start_deletion      | :transfer_scheduled   | :deletion_in_progress
+        :start_deletion      | :maintenance          | :deletion_in_progress
         :reschedule_deletion | :deletion_in_progress | :deletion_scheduled
         :reschedule_deletion | :ancestor_inherited   | :deletion_scheduled
         :schedule_transfer   | :ancestor_inherited   | :transfer_scheduled
@@ -365,11 +373,6 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
         :schedule_deletion   | :transfer_in_progress
         :schedule_deletion   | :transfer_scheduled
         :schedule_deletion   | :maintenance
-        :start_deletion      | :deletion_in_progress
-        :start_deletion      | :creation_in_progress
-        :start_deletion      | :transfer_in_progress
-        :start_deletion      | :transfer_scheduled
-        :start_deletion      | :maintenance
         :reschedule_deletion | :archived
         :reschedule_deletion | :deletion_scheduled
         :reschedule_deletion | :creation_in_progress

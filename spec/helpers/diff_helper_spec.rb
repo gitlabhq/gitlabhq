@@ -369,8 +369,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     let(:line_type) { 'line_type' }
 
     before do
-      allow(line).to receive(:rich_text).and_return('line_text')
-      allow(line).to receive(:type).and_return(line_type)
+      allow(line).to receive_messages(rich_text: 'line_text', type: line_type)
     end
 
     it 'generates only single line num' do
@@ -420,12 +419,14 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when no limits are hit' do
       before do
-        allow(diff_files).to receive(:overflow_max_bytes?).and_return(false)
-        allow(diff_files).to receive(:overflow_max_files?).and_return(false)
-        allow(diff_files).to receive(:overflow_max_lines?).and_return(false)
-        allow(diff_files).to receive(:collapsed_safe_bytes?).and_return(false)
-        allow(diff_files).to receive(:collapsed_safe_files?).and_return(false)
-        allow(diff_files).to receive(:collapsed_safe_lines?).and_return(false)
+        allow(diff_files).to receive_messages(
+          overflow_max_bytes?: false,
+          overflow_max_files?: false,
+          overflow_max_lines?: false,
+          collapsed_safe_bytes?: false,
+          collapsed_safe_files?: false,
+          collapsed_safe_lines?: false
+        )
       end
 
       it 'returns false and does not log any overflow events' do

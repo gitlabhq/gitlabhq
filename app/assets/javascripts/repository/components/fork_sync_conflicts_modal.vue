@@ -46,7 +46,6 @@ export default {
     selectedBranch: {
       type: String,
       required: true,
-      default: '',
     },
   },
   computed: {
