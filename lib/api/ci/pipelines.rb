@@ -193,8 +193,11 @@ module API
           use :pagination
         end
 
+        # Unlisted pending removal: superseded by get_pipeline with include: ["jobs"]
+        # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
         route_setting :mcp, tool_name: :get_pipeline_jobs, toolset: :ci,
-          params: [:id, :pipeline_id, :per_page, :page], resource_name: "pipeline"
+          params: [:id, :pipeline_id, :per_page, :page], resource_name: "pipeline",
+          unlisted: true
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
           allow_public_access_for_enabled_project_features: [:repository, :builds],

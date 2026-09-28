@@ -904,13 +904,6 @@ class Group < Namespace
       .where(source_id: self_and_descendants.without_order.select(:id))
   end
 
-  # Returns all members that are part of the group, it's subgroups, and ancestor groups
-  def hierarchy_members
-    GroupMember
-      .active_without_invites_and_requests
-      .where(source_id: self_and_hierarchy.without_order.select(:id))
-  end
-
   def hierarchy_members_with_inactive
     GroupMember
       .non_request
@@ -1227,10 +1220,6 @@ class Group < Namespace
 
   def dependency_proxy_for_containers_policy_subject
     ::Packages::Policies::DependencyProxy::Group.new(self)
-  end
-
-  def update_two_factor_requirement_for_members
-    hierarchy_members.find_each(&:update_two_factor_requirement)
   end
 
   def readme_project

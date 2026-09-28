@@ -447,6 +447,107 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           it_behaves_like 'creates a child pipeline'
         end
 
+        context 'when a child job uses needs:pipeline:job with optional: true' do
+          let(:yaml_variables) do
+            [{ key: 'PARENT_PIPELINE_ID', value: upstream_pipeline.id.to_s, public: true }]
+          end
+
+          let(:file_content) do
+            YAML.dump(
+              'use-artifact': {
+                script: 'cat artifact.txt',
+                needs: [
+                  { pipeline: '$PARENT_PIPELINE_ID', job: 'create-artifact', optional: true }
+                ]
+              }
+            )
+          end
+
+          it 'creates the child pipeline and persists the optional cross-pipeline need' do
+            expect { subject }.to change { Ci::Pipeline.count }.by(1)
+            expect(subject).to be_success
+
+            build = pipeline.builds.find_by(name: 'use-artifact')
+            expect(build.options[:cross_dependencies]).to eq(
+              [{ pipeline: '$PARENT_PIPELINE_ID', job: 'create-artifact', artifacts: true, optional: true }]
+            )
+          end
+
+          context 'when the needed job exists in the parent pipeline' do
+            let!(:upstream_job) do
+              create(:ci_build, :success, pipeline: upstream_pipeline, name: 'create-artifact')
+            end
+
+            it 'resolves the cross-pipeline dependency and is valid' do
+              subject
+
+              build = pipeline.builds.find_by(name: 'use-artifact')
+              expect(Ci::BuildDependencies.new(build).all).to contain_exactly(upstream_job)
+              expect(build).to have_valid_build_dependencies
+            end
+          end
+
+          context 'when the needed job does not exist in the parent pipeline' do
+            it 'has no cross-pipeline dependency but is still valid because it is optional' do
+              subject
+
+              build = pipeline.builds.find_by(name: 'use-artifact')
+              expect(Ci::BuildDependencies.new(build).all).to be_empty
+              expect(build).to have_valid_build_dependencies
+            end
+          end
+
+          context 'when the need is not optional and the job does not exist in the parent pipeline' do
+            let(:file_content) do
+              YAML.dump(
+                'use-artifact': {
+                  script: 'cat artifact.txt',
+                  needs: [
+                    { pipeline: '$PARENT_PIPELINE_ID', job: 'create-artifact' }
+                  ]
+                }
+              )
+            end
+
+            it 'creates the build but its dependencies are invalid' do
+              subject
+
+              build = pipeline.builds.find_by(name: 'use-artifact')
+              expect(build).not_to have_valid_build_dependencies
+            end
+          end
+
+          context 'when the FF ci_optional_needs_for_cross_pipeline is disabled' do
+            before do
+              stub_feature_flags(ci_optional_needs_for_cross_pipeline: false)
+            end
+
+            context 'when the needed job exists in the parent pipeline' do
+              let!(:upstream_job) do
+                create(:ci_build, :success, pipeline: upstream_pipeline, name: 'create-artifact')
+              end
+
+              it 'resolves the cross-pipeline dependency and is valid' do
+                subject
+
+                build = pipeline.builds.find_by(name: 'use-artifact')
+                expect(Ci::BuildDependencies.new(build).all).to contain_exactly(upstream_job)
+                expect(build).to have_valid_build_dependencies
+              end
+            end
+
+            context 'when the needed job does not exist in the parent pipeline' do
+              it 'has no cross-pipeline dependency and is invalid because optional is ignored' do
+                subject
+
+                build = pipeline.builds.find_by(name: 'use-artifact')
+                expect(Ci::BuildDependencies.new(build).all).to be_empty
+                expect(build).not_to have_valid_build_dependencies
+              end
+            end
+          end
+        end
+
         context 'when the parent is a merge request pipeline' do
           let(:merge_request) { create(:merge_request, source_project: bridge.project, target_project: bridge.project) }
           let(:file_content) do

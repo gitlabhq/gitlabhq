@@ -1287,6 +1287,33 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         end
       end
 
+      context 'with string keys, as Sidekiq delivers them to CreatePipelineWorker' do
+        let(:variables_attributes) do
+          [{ 'key' => 'first', 'value' => 'world' },
+            { 'key' => 'first', 'value' => 'second_world' }]
+        end
+
+        it 'reads the entries the same way as symbol keys and still detects duplicates' do
+          expect(pipeline).to be_failed
+          expect(pipeline.errors[:base]).to eq(['Duplicate variable name: first'])
+        end
+      end
+
+      # Projects::PipelinesController permits the entries, so each one arrives as
+      # ActionController::Parameters rather than a Hash. Those already read
+      # indifferently, so they are passed through untouched.
+      context 'with permitted params, as the pipelines controller passes them' do
+        let(:variables_attributes) do
+          [ActionController::Parameters.new(key: 'first', value: 'world').permit!,
+            ActionController::Parameters.new(key: 'first', value: 'second_world').permit!]
+        end
+
+        it 'reads the entries the same way as symbol keys and still detects duplicates' do
+          expect(pipeline).to be_failed
+          expect(pipeline.errors[:base]).to eq(['Duplicate variable name: first'])
+        end
+      end
+
       context 'with more than one duplicate pipeline variable' do
         let(:variables_attributes) do
           [{ key: 'hello', value: 'world' },

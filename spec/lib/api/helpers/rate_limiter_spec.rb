@@ -22,6 +22,10 @@ RSpec.describe API::Helpers::RateLimiter do
       end
 
       def too_many_requests!(message, retry_after:); end
+
+      def header
+        @header ||= {}
+      end
     end
   end
 
@@ -50,6 +54,15 @@ RSpec.describe API::Helpers::RateLimiter do
       )
 
       rate_limit
+    end
+
+    it 'names the throttle that tripped in the RateLimit-Name header' do
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:period_for).with(key).and_return(5.minutes)
+
+      rate_limit
+
+      expect(rate_limiter.header['RateLimit-Name']).to eq(key.to_s)
     end
 
     context 'when the bypass header is set' do

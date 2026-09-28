@@ -149,6 +149,65 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
     end
   end
 
+  describe '.rate_limited_error' do
+    context 'with a retry delay and a throttle name' do
+      it 'names the throttle and the delay in both the text and the structured error' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: 60, limit: 'search_rate_limit')
+
+        expect(result).to eq({
+          content: [{ type: 'text', text: 'Rate limited by search_rate_limit. Retry after 60 seconds.' }],
+          structuredContent: {
+            error: {
+              type: 'rate_limited',
+              retry_after_seconds: 60,
+              limit: 'search_rate_limit',
+              message: 'Too many requests'
+            }
+          },
+          isError: true
+        })
+      end
+    end
+
+    context 'with a retry delay of one second' do
+      it 'uses the singular form' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: 1, limit: 'search_rate_limit')
+
+        expect(result[:content].first[:text]).to eq('Rate limited by search_rate_limit. Retry after 1 second.')
+      end
+    end
+
+    context 'with a string retry delay, as read from a header' do
+      it 'coerces it to an integer' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: '60', limit: nil)
+
+        expect(result[:structuredContent][:error][:retry_after_seconds]).to eq(60)
+      end
+    end
+
+    context 'without a throttle name' do
+      it 'omits the limit rather than naming an unknown one' do
+        result = described_class.rate_limited_error('Too many requests', retry_after: 60)
+
+        expect(result[:content].first[:text]).to eq('Rate limited. Retry after 60 seconds.')
+        expect(result[:structuredContent][:error]).not_to have_key(:limit)
+      end
+    end
+
+    context 'without a retry delay' do
+      it 'omits the delay rather than inventing one' do
+        result = described_class.rate_limited_error('Too many requests', limit: 'search_rate_limit')
+
+        expect(result[:content].first[:text]).to eq('Rate limited by search_rate_limit.')
+        expect(result[:structuredContent][:error]).not_to have_key(:retry_after_seconds)
+      end
+    end
+
+    it 'is recognised as an error result' do
+      expect(described_class.error?(described_class.rate_limited_error('Too many requests'))).to be(true)
+    end
+  end
+
   describe '.error?' do
     it 'returns true for an error response' do
       result = described_class.error('Something went wrong')

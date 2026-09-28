@@ -420,6 +420,59 @@ RSpec.describe Ci::CreatePipelineService, '#execute',
     end
   end
 
+  describe 'needs:pipeline:job with optional' do
+    let(:child_config) do
+      <<~YAML
+      use-artifact:
+        script: cat artifact.txt
+        needs:
+          - pipeline: $PARENT_PIPELINE_ID
+            job: optional-artifact-job
+            optional: true
+      YAML
+    end
+
+    let(:config) do
+      <<~YAML
+      stages:
+        - test
+
+      child-pipeline:
+        stage: test
+        variables:
+          PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+        trigger:
+          include: path/to/child.yml
+          strategy: depend
+      YAML
+    end
+
+    before do
+      project.repository.create_file(user, '.gitlab-ci.yml', config, branch_name: 'master', message: 'ok')
+      project.repository.create_file(user, 'path/to/child.yml', child_config, branch_name: 'master', message: 'ok')
+    end
+
+    it 'creates a valid child build even though the optional need does not exist' do
+      pipeline = create_pipeline!
+      bridge = pipeline.statuses.find_by(name: 'child-pipeline')
+      bridge.update_column(:status, 'pending')
+
+      child_pipeline = Ci::CreateDownstreamPipelineService.new(project, user).execute(bridge).payload
+      build = child_pipeline.builds.find_by(name: 'use-artifact')
+
+      expect(build.options[:cross_dependencies]).to eq(
+        [{ pipeline: '$PARENT_PIPELINE_ID', job: 'optional-artifact-job', artifacts: true, optional: true }]
+      )
+      expect(Ci::BuildDependencies.new(build).all).to be_empty
+      expect(build).to have_valid_build_dependencies
+
+      stub_feature_flags(ci_optional_needs_for_cross_pipeline: false)
+
+      expect(Ci::BuildDependencies.new(build).all).to be_empty
+      expect(build).not_to have_valid_build_dependencies
+    end
+  end
+
   def create_pipeline!
     service.execute(:push).payload
   end

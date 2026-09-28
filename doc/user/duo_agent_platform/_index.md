@@ -109,7 +109,7 @@ These features are in beta and their usage consumes GitLab Credits.
 These features are either beta or experimental and do not consume GitLab Credits.
 
 For [users on the Free](../../subscriptions/gitlab_credits.md#for-the-free-tier) tier, these beta and experimental features do not consume credits,
-but you require credits in your Monthly Commitment Pool to access them.
+but you require credits in your monthly commitment pool to access them.
 
 > [!warning]
 > When a feature becomes generally available, usage of the feature starts to consume GitLab Credits on all GitLab versions and on all offerings.

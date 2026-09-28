@@ -221,6 +221,18 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
             it { expect(cross_pipeline_deps).to contain_exactly(upstream_job) }
             it { is_expected.to be_valid }
           end
+
+          context 'when an additional optional need does not exist' do
+            let(:dependencies) do
+              [
+                { pipeline: parent_pipeline.id.to_s, job: upstream_job.name, artifacts: true },
+                { pipeline: parent_pipeline.id.to_s, job: 'non-existent', artifacts: true, optional: true }
+              ]
+            end
+
+            it { expect(cross_pipeline_deps).to contain_exactly(upstream_job) }
+            it { is_expected.to be_valid }
+          end
         end
 
         context 'when same job names exist in other pipelines in the hierarchy' do
@@ -274,6 +286,37 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
           it { expect(cross_pipeline_deps).to be_empty }
           it { is_expected.not_to be_valid }
+
+          context 'when the need is optional' do
+            let(:dependencies) do
+              [{ pipeline: parent_pipeline.id.to_s, job: 'non-existent', artifacts: true, optional: true }]
+            end
+
+            it { expect(cross_pipeline_deps).to be_empty }
+            it { is_expected.to be_valid }
+          end
+        end
+
+        context 'when job exists but did not succeed' do
+          let_it_be(:upstream_job) { create(:ci_build, :failed, pipeline: parent_pipeline) }
+
+          let(:dependencies) do
+            [{ pipeline: parent_pipeline.id.to_s, job: upstream_job.name, artifacts: true }]
+          end
+
+          it { expect(cross_pipeline_deps).to be_empty }
+          it { is_expected.not_to be_valid }
+
+          context 'when the need is optional' do
+            let(:dependencies) do
+              [{ pipeline: parent_pipeline.id.to_s, job: upstream_job.name, artifacts: true, optional: true }]
+            end
+
+            it 'is still invalid, unlike a need on a job that does not exist at all' do
+              expect(cross_pipeline_deps).to be_empty
+              is_expected.not_to be_valid
+            end
+          end
         end
       end
 
@@ -284,6 +327,14 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
 
         it { expect(cross_pipeline_deps).to be_empty }
         it { is_expected.not_to be_valid }
+
+        context 'when the need is optional' do
+          let(:dependencies) do
+            [{ pipeline: '123', job: 'non-existent', artifacts: true, optional: true }]
+          end
+
+          it { is_expected.not_to be_valid }
+        end
       end
 
       context 'when jobs exist in different pipelines in the hierarchy' do
@@ -336,6 +387,14 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
         end
 
         it { is_expected.not_to be_valid }
+
+        context 'when the need is optional' do
+          let(:dependencies) do
+            [{ pipeline: another_pipeline.id.to_s, job: dependency.name, artifacts: true, optional: true }]
+          end
+
+          it { is_expected.not_to be_valid }
+        end
       end
 
       context 'when current pipeline is specified' do
@@ -351,6 +410,24 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
         end
 
         it { is_expected.not_to be_valid }
+
+        context 'when optional cross-pipeline needs are disabled' do
+          before do
+            stub_feature_flags(ci_optional_needs_for_cross_pipeline: false)
+          end
+
+          it 'ignores jobs from the current pipeline' do
+            expect(cross_pipeline_deps).to be_empty
+          end
+        end
+
+        context 'when the need is optional' do
+          let(:dependencies) do
+            [{ pipeline: pipeline.id.to_s, job: dependency.name, artifacts: true, optional: true }]
+          end
+
+          it { is_expected.not_to be_valid }
+        end
       end
     end
 

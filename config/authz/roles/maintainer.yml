@@ -8,6 +8,7 @@ project:
   permissions: []
   raw_permissions:
   - _cancel_restricted_ci
+  - _read_custom_branch_rule
   - _read_maintainer_job_artifact
   - _read_protected_branch_rule
   - add_cluster

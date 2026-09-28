@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_import_direct_transfer
+description: Enables Vue 3 in compatibility mode for the direct transfer group import pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/613597
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257619
+rollout_issue_url:
+milestone: '19.5'
+group: group::import
+type: beta
+default_enabled: false

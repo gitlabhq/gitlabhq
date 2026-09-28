@@ -2677,6 +2677,9 @@
                   "artifacts": {
                     "type": "boolean"
                   },
+                  "optional": {
+                    "type": "boolean"
+                  },
                   "parallel": {
                     "$ref": "#/definitions/parallel_matrix"
                   }

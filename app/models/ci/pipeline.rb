@@ -564,6 +564,9 @@ module Ci
       with_api_entity_associations
         .preload(merge_request: [:author, { target_project: PROJECT_ROUTE_AND_NAMESPACE_ROUTE[:project] }])
     }
+    scope :with_auto_cancel_policy_associations, -> {
+      preload(:project, :pipeline_metadata, :pipeline_processing_data)
+    }
     scope :unlocked, -> { where(locked: :unlocked) }
 
     scope :outside_pipeline_family, ->(pipeline) do

@@ -186,10 +186,10 @@ class Member < ApplicationRecord
   end
 
   # Like active, but without invites. For when a User is required.
-  scope :active_without_invites_and_requests, -> do
+  scope :active_without_invites_and_requests, ->(minimal_access: false) do
     left_join_users
       .where(users: { state: 'active' })
-      .without_invites_and_requests
+      .without_invites_and_requests(minimal_access: minimal_access)
       .reorder(nil)
   end
 

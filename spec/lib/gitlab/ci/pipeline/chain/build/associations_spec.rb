@@ -365,17 +365,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
       end
     end
 
-    context 'with string keys, as passed by git push options' do
-      let(:variables_attributes) { [{ 'key' => 'first', 'value' => 'world' }] }
-
-      it 'observes the value bytesize' do
-        expect(observations).to include(
-          'pipeline_variables_count' => 1,
-          'pipeline_variables_max_value_bytesize' => 5
-        )
-      end
-    end
-
     context 'when variables_attributes is nil' do
       let(:variables_attributes) { nil }
 

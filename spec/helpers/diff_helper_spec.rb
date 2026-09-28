@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
+  let(:user) { build(:user) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.raw_diffs }
@@ -14,7 +16,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
   before do
-    allow(helper).to receive(:current_user).and_return(project.owner)
+    allow(helper).to receive(:current_user).and_return(user)
   end
 
   describe 'diff_view' do
@@ -773,9 +775,10 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
   describe '#conflicts_with_types', :use_clean_rails_redis_caching do
     let(:merge_request) do
-      create(
+      build_stubbed(
         :merge_request,
         :conflict,
+        source_project: project,
         merge_status: 'cannot_be_merged'
       )
     end
@@ -820,7 +823,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     end
 
     context 'when merge request can be merged' do
-      let(:merge_request) { create(:merge_request, merge_status: 'can_be_merged') }
+      let(:merge_request) { build_stubbed(:merge_request, source_project: project, merge_status: 'can_be_merged') }
 
       it 'returns nil' do
         expect(helper.conflicts_with_types).to be_nil
@@ -829,8 +832,9 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when source branch does not exist' do
       let(:merge_request) do
-        create(
+        build_stubbed(
           :merge_request,
+          source_project: project,
           source_branch: 'i-do-no-exist',
           merge_status: 'cannot_be_merged'
         )
@@ -843,8 +847,9 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     context 'when target branch does not exist' do
       let(:merge_request) do
-        create(
+        build_stubbed(
           :merge_request,
+          source_project: project,
           target_branch: 'i-do-no-exist',
           merge_status: 'cannot_be_merged'
         )

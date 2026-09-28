@@ -62,10 +62,12 @@ To select a model for a feature:
 1. Under **Model selection**, select **Manage models**. If **Model selection** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
 1. For the feature you want to configure, select a model from the dropdown list
    to set as the default model.
-1. Optional. To apply the model to all features in the section, select **Apply to all**.
+1. Optional. To apply a model to multiple features in a section, from the **Bulk update** dropdown list, select a model.
+   The model applies only to the features it is compatible with.
+1. Optional. To switch all features in a section back to their default models, select **Reset to default**.
 
    > [!note]
-   > If you select **Default** for all features, each feature uses its own GitLab
+   > When you reset to default, each feature uses its own GitLab
    > default model, which might vary between features.
 
 ### Select a model for Agentic Chat

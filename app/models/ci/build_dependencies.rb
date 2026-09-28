@@ -52,50 +52,31 @@ module Ci
     end
 
     # Dependencies from the same parent-pipeline hierarchy excluding
-    # the current job's pipeline
+    # the current job's pipeline. Only successful jobs can provide artifacts,
+    # so we filter the (any-status) hierarchy jobs down to successful ones.
     def cross_pipeline
-      strong_memoize(:cross_pipeline) do
-        fetch_dependencies_in_hierarchy
+      if ::Feature.enabled?(:ci_optional_needs_for_cross_pipeline, project)
+        existing_cross_pipeline_dependencies.select(&:success?)
+      else
+        legacy_fetch_dependencies_in_hierarchy
       end
     end
+    strong_memoize_attr :cross_pipeline
 
     # Dependencies that are defined by project and ref
     def cross_project
       []
     end
 
-    def fetch_dependencies_in_hierarchy
+    def legacy_fetch_dependencies_in_hierarchy
       deps_specifications = specified_cross_pipeline_dependencies
       return [] if deps_specifications.empty?
 
-      deps_specifications = expand_variables_and_validate(deps_specifications)
-      jobs_in_pipeline_hierarchy(deps_specifications)
+      deps_specifications = legacy_expand_variables_and_validate(deps_specifications)
+      legacy_jobs_in_pipeline_hierarchy(deps_specifications)
     end
 
-    def jobs_in_pipeline_hierarchy(deps_specifications)
-      all_pipeline_ids = []
-      all_job_names = []
-
-      deps_specifications.each do |spec|
-        all_pipeline_ids << spec[:pipeline]
-        all_job_names << spec[:job]
-      end
-
-      model_class.latest.success
-        .in_pipelines(processable.pipeline.same_family_pipeline_ids)
-        .in_pipelines(all_pipeline_ids.uniq)
-        .by_name(all_job_names.uniq)
-        .select do |dependency|
-          # the query may not return exact matches pipeline-job, so we filter
-          # them separately.
-          deps_specifications.find do |spec|
-            spec[:pipeline] == dependency.pipeline_id &&
-              spec[:job] == dependency.name
-          end
-        end
-    end
-
-    def expand_variables_and_validate(specifications)
+    def legacy_expand_variables_and_validate(specifications)
       specifications.filter_map do |spec|
         pipeline = ExpandVariables.expand(spec[:pipeline].to_s, processable_variables).to_i
         # current pipeline is not allowed because local dependencies
@@ -108,8 +89,109 @@ module Ci
       end
     end
 
+    def legacy_jobs_in_pipeline_hierarchy(deps_specifications)
+      all_pipeline_ids = []
+      all_job_names = []
+
+      deps_specifications.each do |spec|
+        all_pipeline_ids << spec[:pipeline]
+        all_job_names << spec[:job]
+      end
+
+      model_class.latest.success
+        .in_pipelines(same_family_pipeline_ids)
+        .in_pipelines(all_pipeline_ids.uniq)
+        .by_name(all_job_names.uniq)
+        .select do |dependency|
+          # the query may not return exact matches pipeline-job, so we filter
+          # them separately.
+          deps_specifications.find do |spec|
+            spec[:pipeline] == dependency.pipeline_id &&
+              spec[:job] == dependency.name
+          end
+        end
+    end
+
+    # All jobs (any status) in the pipeline hierarchy matching the specified cross-pipeline dependencies.
+    def existing_cross_pipeline_dependencies
+      return [] if expanded_cross_pipeline_dependencies.empty?
+
+      jobs_in_pipeline_hierarchy(expanded_cross_pipeline_dependencies, model_class.latest)
+    end
+    strong_memoize_attr :existing_cross_pipeline_dependencies
+
+    def jobs_in_pipeline_hierarchy(deps_specifications, scope)
+      all_pipeline_ids = []
+      all_job_names = []
+
+      deps_specifications.each do |spec|
+        all_pipeline_ids << spec[:pipeline]
+        all_job_names << spec[:job]
+      end
+
+      scope
+        .in_pipelines(same_family_pipeline_ids)
+        .in_pipelines(all_pipeline_ids.uniq)
+        .by_name(all_job_names.uniq)
+        .select do |dependency|
+          # the query may not return exact matches pipeline-job, so we filter
+          # them separately.
+          deps_specifications.find do |spec|
+            spec[:pipeline] == dependency.pipeline_id &&
+              spec[:job] == dependency.name
+          end
+        end
+    end
+
+    def same_family_pipeline_ids
+      processable.pipeline.same_family_pipeline_ids
+    end
+    strong_memoize_attr :same_family_pipeline_ids
+
+    def expanded_cross_pipeline_dependencies
+      specified_cross_pipeline_dependencies.filter_map do |spec|
+        pipeline = ExpandVariables.expand(spec[:pipeline].to_s, processable_variables).to_i
+        # current pipeline is not allowed because local dependencies
+        # should be used instead.
+        next if pipeline == processable.pipeline_id
+
+        job = ExpandVariables.expand(spec[:job], processable_variables)
+
+        { job: job, pipeline: pipeline, optional: !!spec[:optional] }
+      end
+    end
+    strong_memoize_attr :expanded_cross_pipeline_dependencies
+
     def valid_cross_pipeline?
-      cross_pipeline.size == specified_cross_pipeline_dependencies.size
+      return cross_pipeline.size == specified_cross_pipeline_dependencies.size unless
+        ::Feature.enabled?(:ci_optional_needs_for_cross_pipeline, project)
+
+      valid_cross_pipeline_with_optional?
+    end
+
+    # Required jobs must succeed. Optional jobs may be absent but must target
+    # a valid pipeline, and any existing job must still succeed.
+    def valid_cross_pipeline_with_optional?
+      # Current-pipeline dependencies are omitted during expansion but remain invalid here.
+      return false unless expanded_cross_pipeline_dependencies.size == specified_cross_pipeline_dependencies.size
+
+      missing_dependencies = expanded_cross_pipeline_dependencies.reject do |spec|
+        existing_cross_pipeline_dependencies.any? do |dependency|
+          dependency.success? && spec[:pipeline] == dependency.pipeline_id && spec[:job] == dependency.name
+        end
+      end
+
+      # Missing required dependencies invalidates the build.
+      return false if missing_dependencies.any? { |spec| !spec[:optional] }
+      return true if missing_dependencies.empty?
+
+      # Missing optional dependencies must still target the same pipeline hierarchy.
+      pipeline_ids = missing_dependencies.map { |spec| spec.fetch(:pipeline) }.uniq
+      pipelines_in_hierarchy = same_family_pipeline_ids.where(id: pipeline_ids)
+      return false unless pipelines_in_hierarchy.count == pipeline_ids.size
+
+      # Optionality permits absent jobs, not existing jobs that failed.
+      existing_cross_pipeline_dependencies.all?(&:success?)
     end
 
     def valid_local?

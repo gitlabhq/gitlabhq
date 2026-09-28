@@ -706,9 +706,12 @@ module API
         use :pagination
         use :with_unidiff
       end
+      # Unlisted pending removal: superseded by get_merge_request with include: ["diffs"]
+      # (https://gitlab.com/gitlab-org/gitlab/-/work_items/622712).
       route_setting :mcp, tool_name: :get_merge_request_diffs, toolset: :merge_requests,
         tool_aliases: [:list_merge_request_diffs],
-        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request"
+        params: [:id, :merge_request_iid, :per_page, :page], resource_name: "merge request",
+        unlisted: true
       route_setting :authorization, permissions: :read_merge_request_diff, boundary_type: :project
       get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])

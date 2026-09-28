@@ -27,6 +27,9 @@ module Oauth
       )
     end
 
+    # scopes_supported and related claims are hard-coded in IAM service:
+    # https://gitlab.com/gitlab-org/auth/iam/-/blob/main/auth/oauth/server/discovery/metadata.go
+    # ensure IAM service is updated when changing these.
     def resource_metadata_for(path, scope)
       {
         resource: Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path),

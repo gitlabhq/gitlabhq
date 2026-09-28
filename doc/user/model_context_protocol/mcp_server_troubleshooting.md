@@ -51,6 +51,46 @@ does not support the GitLab MCP server protocol specification.
 To resolve this issue, ask the AI tool provider
 to update their client implementation.
 
+## Error: `rate_limited` tool result
+
+You might get a tool result with `isError: true`, even though the MCP server itself returned `200 OK`.
+This happens when a tool call hits a rate limit on the underlying GitLab API endpoint it calls, for
+example the search rate limit when a search tool runs.
+
+The MCP server does not return `429 Too Many Requests` for this case. Instead, it follows the Model
+Context Protocol specification, which classifies API failures as tool execution errors reported in
+the result so a client or language model can read them and self-correct.
+
+The `content` field contains a human-readable message, for example:
+
+```plaintext
+Rate limited by search_rate_limit. Retry after 60 seconds.
+```
+
+The `structuredContent` field contains machine-readable retry detail:
+
+```json
+{
+  "error": {
+    "type": "rate_limited",
+    "retry_after_seconds": 60,
+    "limit": "search_rate_limit",
+    "message": "This endpoint has been requested too many times. Try again later."
+  }
+}
+```
+
+To resolve this issue, wait and retry the tool call. When you build an MCP client, check
+`error.type == "rate_limited"` rather than match on the message text, because the wording can change.
+Use `limit` to identify which rate limit was hit, as a single tool call can consume more than one.
+Treat `retry_after_seconds` as a safe upper bound rather than an exact wait time, because it is the
+full rate limit period rather than the time remaining in the current window.
+
+> [!note]
+> `retry_after_seconds` and `limit` are present only when the endpoint that GitLab called provided
+> them. Always handle a response where these fields are absent. Administrators can change rate limits
+> for individual endpoints, so actual values vary by instance.
+
 ## Troubleshoot the GitLab MCP Server in Cursor
 
 1. In Cursor, to open the Output view, do one of the following:

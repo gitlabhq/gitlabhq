@@ -3086,12 +3086,12 @@ module Gitlab
             YAML
           end
 
-          it 'returns a valid configuration and sets artifacts: true by default' do
+          it 'returns a valid configuration and sets artifacts: true and optional: false by default' do
             expect(subject).to be_valid
 
             rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
             expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
-              [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true }]
+              [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true, optional: false }]
             )
           end
 
@@ -3107,12 +3107,35 @@ module Gitlab
               YAML
             end
 
-            it 'returns a valid configuration and sets artifacts: true by default' do
+            it 'returns a valid configuration and sets artifacts: true and optional: false by default' do
               expect(subject).to be_valid
 
               rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
               expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
-                [{ pipeline: '123', job: 'dependency-job', artifacts: true }]
+                [{ pipeline: '123', job: 'dependency-job', artifacts: true, optional: false }]
+              )
+            end
+          end
+
+          context 'when optional: true is set' do
+            let(:config) do
+              <<~YAML
+              rspec:
+                stage: test
+                script: rspec
+                needs:
+                  - pipeline: $THE_PIPELINE_ID
+                    job: dependency-job
+                    optional: true
+              YAML
+            end
+
+            it 'returns a valid configuration and sets optional: true' do
+              expect(subject).to be_valid
+
+              rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
+              expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
+                [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true, optional: true }]
               )
             end
           end

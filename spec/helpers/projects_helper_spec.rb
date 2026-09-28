@@ -78,10 +78,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe "can_change_visibility_level?" do
-    let_it_be(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
-
-    let(:forked_project) { fork_project(project, user) }
-
     it "returns false if there are no appropriate permissions" do
       allow(helper).to receive(:can?) { false }
 
@@ -96,8 +92,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#can_disable_emails?' do
-    let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
-
     it 'returns true for the project owner' do
       allow(helper).to receive(:can?).with(project.owner, :set_emails_disabled, project) { true }
 
@@ -111,7 +105,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it 'returns false if group emails disabled' do
-      project = create(:project, group: create(:group))
+      project = build_stubbed(:project, group: build_stubbed(:group))
       allow(project.group).to receive(:emails_disabled?).and_return(true)
 
       expect(helper.can_disable_emails?(project, project.owner)).to be_falsey
@@ -119,7 +113,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#can_set_diff_preview_in_email?' do
-    let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
+    before_all { project.add_maintainer(user) }
 
     it 'returns true for the project owner' do
       expect(helper.can_set_diff_preview_in_email?(project, project.owner)).to be_truthy
@@ -132,8 +126,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     context 'respects the settings of a parent group' do
       context 'when a parent group has disabled diff previews' do
         it 'returns false for all users' do
-          new_project = create(:project, group: create(:group))
-          new_project.group.update_attribute(:show_diff_preview_in_email, false)
+          new_project = build_stubbed(:project, group: build_stubbed(:group))
+          allow(new_project.group).to receive(:show_diff_preview_in_email?).and_return(false)
 
           expect(helper.can_set_diff_preview_in_email?(new_project, new_project.owner)).to be_falsey
           expect(helper.can_set_diff_preview_in_email?(new_project, user)).to be_falsey
@@ -153,10 +147,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#load_catalog_resources' do
-    before_all do
-      create_list(:project, 2)
-    end
-
     let_it_be(:projects) { Project.all.to_a }
 
     it 'does not execute a database query when project.catalog_resource is accessed' do
@@ -296,7 +286,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#no_password_message' do
-    let(:user) { create(:user, password_automatically_set: true) }
+    let(:user) { build_stubbed(:user, password_automatically_set: true) }
 
     context 'password authentication is enabled for Git' do
       it 'returns message prompting user to set password or set up a PAT' do
@@ -316,8 +306,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#link_to_project' do
-    let(:group)   { create(:group, name: 'group name with space') }
-    let(:project) { create(:project, group: group, name: 'project name with space') }
+    let(:group)   { build_stubbed(:group, name: 'group name with space') }
+    let(:project) { build_stubbed(:project, group: group, name: 'project name with space') }
 
     subject { link_to_project(project) }
 
@@ -715,7 +705,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'when the project contains an lfs_object' do
       context 'which belongs to the project repository' do
-        before do
+        before_all do
           create(:lfs_objects_project, :project_repository_type, project: project)
         end
 
@@ -803,8 +793,8 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it 'does not escape special characters such as ampersands in the project name' do
-      project_with_special_chars = create(:project)
-      project_with_special_chars.update_column(:name, 'R & D')
+      project_with_special_chars = build_stubbed(:project)
+      project_with_special_chars.name = 'R & D'
 
       allow(helper).to receive(:push_to_schema_breadcrumb)
 
@@ -827,7 +817,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#transfer_project_message' do
-    let_it_be(:project) { create(:project, name: 'My Test  Project') }
+    let(:project) { build_stubbed(:project, name: 'My Test  Project') }
 
     it 'includes the project full path' do
       result = helper.transfer_project_message(project)
@@ -1165,7 +1155,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     describe 'dropdown attributes' do
-      let_it_be(:user) { create(:user) }
       let_it_be_with_reload(:project) { create(:project, :public) }
 
       before do
@@ -1370,7 +1359,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     context 'when project has a cluster' do
       let_it_be(:namespace) { project }
 
-      before do
+      before_all do
         create(:cluster, projects: [namespace])
       end
 
@@ -1390,7 +1379,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     context 'when project has a group cluster' do
       let_it_be(:namespace) { create(:group) }
 
-      before do
+      before_all do
         project.update!(namespace: namespace)
         create(:cluster, :group, groups: [namespace])
       end
@@ -1754,38 +1743,36 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it { is_expected.to be_falsey }
     end
 
-    context 'when a GPG key failed external validation and one GPC key is externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
-
-      before do
-        allow(project).to receive(:beyond_identity_integration).and_return(integration)
-        create(:gpg_key, externally_verified: true, user: user)
-        create(:another_gpg_key, externally_verified: false, user: user)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when there are no GPG keys externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
-
-      before do
-        allow(project).to receive(:beyond_identity_integration).and_return(integration)
-        create(:gpg_key, externally_verified: false, user: user)
-        create(:another_gpg_key, externally_verified: false, user: user)
-      end
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when GPG keys are missing' do
+    context 'when beyond identity is enabled for a project' do
       let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
       end
 
-      it { is_expected.to be_truthy }
+      context 'with GPG keys' do
+        let_it_be_with_reload(:gpg_key) { create(:gpg_key, externally_verified: false, user: user) }
+
+        before_all do
+          create(:another_gpg_key, externally_verified: false, user: user)
+        end
+
+        context 'when a GPG key failed external validation and one GPC key is externally validated' do
+          before do
+            gpg_key.update_column(:externally_verified, true)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when there are no GPG keys externally validated' do
+          it { is_expected.to be_truthy }
+        end
+      end
+
+      context 'when GPG keys are missing' do
+        it { is_expected.to be_truthy }
+      end
     end
   end
 
@@ -1871,8 +1858,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#project_archive_settings_app_data' do
-    let_it_be_with_reload(:project) { create(:project) }
-
     subject { helper.project_archive_settings_app_data(project) }
 
     it 'returns correct data' do
@@ -1929,65 +1914,64 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#project_unarchive_settings_app_data' do
+  context 'with a project in a group' do
     let_it_be_with_reload(:ancestor) { create(:group) }
-    let_it_be(:project) { create(:project, group: ancestor) }
+    let_it_be_with_reload(:project) { create(:project, group: ancestor) }
 
-    subject { helper.project_unarchive_settings_app_data(project) }
+    describe '#project_unarchive_settings_app_data' do
+      subject { helper.project_unarchive_settings_app_data(project) }
 
-    context 'when ancestor is not archived' do
-      it 'returns correct data' do
-        is_expected.to match({
-          resource_type: 'project',
-          resource_id: project.id,
-          resource_path: including(project.full_path),
-          ancestors_archived: 'false',
-          help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
-        })
+      context 'when ancestor is not archived' do
+        it 'returns correct data' do
+          is_expected.to match({
+            resource_type: 'project',
+            resource_id: project.id,
+            resource_path: including(project.full_path),
+            ancestors_archived: 'false',
+            help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
+          })
+        end
+      end
+
+      context 'when ancestor is archived' do
+        before do
+          ancestor.namespace_settings.update!(archived: true)
+        end
+
+        it 'returns correct data' do
+          is_expected.to match({
+            resource_type: 'project',
+            resource_id: project.id,
+            resource_path: including(project.full_path),
+            ancestors_archived: 'true',
+            help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
+          })
+        end
       end
     end
 
-    context 'when ancestor is archived' do
-      before do
-        ancestor.namespace_settings.update!(archived: true)
+    describe '#show_archived_badge?' do
+      subject { helper.show_archived_badge?(project) }
+
+      context 'when project is archived' do
+        before do
+          project.update!(archived: true)
+        end
+
+        it { is_expected.to be(true) }
       end
 
-      it 'returns correct data' do
-        is_expected.to match({
-          resource_type: 'project',
-          resource_id: project.id,
-          resource_path: including(project.full_path),
-          ancestors_archived: 'true',
-          help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
-        })
-      end
-    end
-  end
+      context 'when ancestor is archived' do
+        before do
+          ancestor.namespace_settings.update!(archived: true)
+        end
 
-  describe '#show_archived_badge?' do
-    let_it_be_with_reload(:group) { create(:group) }
-    let_it_be_with_reload(:project) { create(:project, group: group) }
-
-    subject { helper.show_archived_badge?(project) }
-
-    context 'when project is archived' do
-      before do
-        project.update!(archived: true)
+        it { is_expected.to be(true) }
       end
 
-      it { is_expected.to be(true) }
-    end
-
-    context 'when ancestor is archived' do
-      before do
-        group.namespace_settings.update!(archived: true)
+      context 'when project and ancestor is not archived' do
+        it { is_expected.to be(false) }
       end
-
-      it { is_expected.to be(true) }
-    end
-
-    context 'when project and ancestor is not archived' do
-      it { is_expected.to be(false) }
     end
   end
 

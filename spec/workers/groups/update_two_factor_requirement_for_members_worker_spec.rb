@@ -8,9 +8,10 @@ RSpec.describe Groups::UpdateTwoFactorRequirementForMembersWorker, feature_categ
   let(:worker) { described_class.new }
 
   describe '#perform' do
-    it 'calls #update_two_factor_requirement_for_members' do
-      allow(Group).to receive(:find_by_id).with(group.id).and_return(group)
-      expect(group).to receive(:update_two_factor_requirement_for_members)
+    it 'executes Authn::Groups::UpdateTwoFactorRequirementService for the group' do
+      expect_next_instance_of(Authn::Groups::UpdateTwoFactorRequirementService, group: group) do |service|
+        expect(service).to receive(:execute)
+      end
 
       worker.perform(group.id)
     end

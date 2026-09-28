@@ -303,8 +303,10 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Need, feature_category: :pipeline_co
 
         it { is_expected.to be_valid }
 
-        it 'sets artifacts:true by default' do
-          expect(need.value).to eq(job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: true)
+        it 'sets artifacts:true and optional:false by default' do
+          expect(need.value).to eq(
+            job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: true, optional: false
+          )
         end
 
         it 'sets the type as cross_dependency' do
@@ -318,7 +320,21 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Need, feature_category: :pipeline_co
         it { is_expected.to be_valid }
 
         it 'returns the correct value' do
-          expect(need.value).to eq(job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: false)
+          expect(need.value).to eq(
+            job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: false, optional: false
+          )
+        end
+      end
+
+      context 'when optional is provided' do
+        let(:config) { { job: 'job_name', pipeline: '$THE_PIPELINE_ID', optional: true } }
+
+        it { is_expected.to be_valid }
+
+        it 'returns the correct value' do
+          expect(need.value).to eq(
+            job: 'job_name', pipeline: '$THE_PIPELINE_ID', artifacts: true, optional: true
+          )
         end
       end
     end

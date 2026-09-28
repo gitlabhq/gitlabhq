@@ -18,6 +18,8 @@ module API
         interval_value = options[:interval] || Gitlab::ApplicationRateLimiter.period_for(key)
         error_message = message || ::Gitlab::ApplicationRateLimiter.throttled_error_message
 
+        header['RateLimit-Name'] = key.to_s
+
         too_many_requests!({ error: error_message }, retry_after: interval_value)
       end
 

@@ -19755,7 +19755,7 @@
           "fields": [
             {
               "name": "contextual",
-              "description": "Whether the questions are about the resource on the current page. At most one category is contextual, and it is returned first.",
+              "description": "Indicates whether the questions are about the resource on the current page. At most one category is contextual, and the agent category, when present, is returned before it.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -19771,7 +19771,7 @@
             },
             {
               "name": "key",
-              "description": "Stable identifier of the category. The type of the current page for contextual categories, for example `merge_request` or `blob`, and the topic for static ones, for example `security`.",
+              "description": "Stable identifier of the category. `agent` for the agent category, the current page type for contextual categories, for example `merge_request` or `blob`, and the topic for static ones, for example `security`.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -19811,7 +19811,7 @@
             },
             {
               "name": "title",
-              "description": "Display title of the category, for example the reference of the current resource.",
+              "description": "Display title of the category, for example the name of the selected agent or the reference of the current resource.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -44749,6 +44749,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "userPermissions",
+              "description": "Permissions Artifact Registry grants the current user on the upstream repository. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. `upstreamRepositories` returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ArtifactRegistryRepositoryPermissions",
                   "ofType": null
                 }
               },

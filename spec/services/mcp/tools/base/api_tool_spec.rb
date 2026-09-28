@@ -310,6 +310,104 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       end
     end
 
+    context 'with a throttled response' do
+      let(:throttle_body) { ['{"error": "This endpoint has been requested too many times. Try again later."}'] }
+
+      before do
+        allow(app).to receive(:call).with(request_env).and_return(
+          [429, { 'Retry-After' => '60', 'RateLimit-Name' => 'search_rate_limit' }, throttle_body]
+        )
+      end
+
+      it 'reports the delay and the throttle name instead of flattening to prose' do
+        result = api_tool.execute(request: request, params: params)
+
+        expect(result).to eq(
+          Mcp::Tools::Base::Response.rate_limited_error(
+            'This endpoint has been requested too many times. Try again later.',
+            retry_after: '60',
+            limit: 'search_rate_limit'
+          )
+        )
+        expect(result[:structuredContent][:error]).to include(
+          type: 'rate_limited', retry_after_seconds: 60, limit: 'search_rate_limit'
+        )
+      end
+
+      context 'when the headers use a different casing' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return(
+            [429, { 'retry-after' => '60', 'ratelimit-name' => 'search_rate_limit' }, throttle_body]
+          )
+        end
+
+        it 'still reads them' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(
+            retry_after_seconds: 60, limit: 'search_rate_limit'
+          )
+        end
+      end
+
+      context 'when the endpoint sets no rate limit headers' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return([429, {}, throttle_body])
+        end
+
+        it 'still marks the result as a throttle' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to eq(
+            type: 'rate_limited',
+            message: 'This endpoint has been requested too many times. Try again later.'
+          )
+        end
+      end
+
+      context 'when the body is shaped as check_rate_limit! renders it' do
+        let(:throttle_body) do
+          [{ message: { error: 'This endpoint has been requested too many times. Try again later.' } }.to_json]
+        end
+
+        it 'reports the sentence rather than the nested hash' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(
+            message: 'This endpoint has been requested too many times. Try again later.'
+          )
+        end
+      end
+
+      context 'when the response carries no body' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return(
+            [429, { 'Retry-After' => '60' }, []]
+          )
+        end
+
+        it 'falls back to the status, since there is no message to read' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(type: 'rate_limited', message: 'HTTP 429')
+        end
+      end
+
+      context 'when the body is not JSON' do
+        before do
+          allow(app).to receive(:call).with(request_env).and_return(
+            [429, { 'Retry-After' => '60' }, ['<html>Too Many Requests</html>']]
+          )
+        end
+
+        it 'falls back to the status rather than raising' do
+          result = api_tool.execute(request: request, params: params)
+
+          expect(result[:structuredContent][:error]).to include(type: 'rate_limited', message: 'HTTP 429')
+        end
+      end
+    end
+
     context 'with error response containing message field' do
       before do
         allow(app).to receive(:call).with(request_env).and_return([422, {}, ['{"message": "Validation failed"}']])

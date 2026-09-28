@@ -236,6 +236,9 @@ Only the base merge request is returned unless you request associated data with 
 | `project_id`        | string  | No       | ID or full path of the project. Required if `url` is missing. |
 | `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
 | `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, `discussions`, or `conflicts`. Limited to one facet per call. |
+| `detail`            | string  | No       | Level of diff detail. One of `none` for summary counts only, `stats` for per-file additions and deletions, or `full_patch` for per-file patch text plus the per-file stats. Default is `stats`. Applies only when `include` is `["diffs"]`. |
+| `diffs_after`       | string  | No       | Cursor for forward pagination of files. Applies only when `include` is `["diffs"]` and `detail` is `full_patch`. |
+| `diffs_first`       | integer | No       | Number of files to return after the cursor, up to 100. Applies only when `include` is `["diffs"]` and `detail` is `full_patch`. |
 | `notes_after`       | string  | No       | Cursor for forward pagination of notes. Applies only when `include` is `["notes"]`. |
 | `notes_first`       | integer | No       | Number of notes to return after the cursor, up to 100. Applies only when `include` is `["notes"]`. |
 | `commits_after`     | string  | No       | Cursor for forward pagination of commits. Applies only when `include` is `["commits"]`. |
@@ -243,8 +246,8 @@ Only the base merge request is returned unless you request associated data with 
 | `pipelines_after`   | string  | No       | Cursor for forward pagination of pipelines. Applies only when `include` is `["pipelines"]`. |
 | `pipelines_first`   | integer | No       | Number of pipelines to return after the cursor, up to 100. Applies only when `include` is `["pipelines"]`. |
 
-The `diffs` facet returns change statistics only: overall totals and per-file additions and
-deletions. To get patch text, use `get_merge_request_diffs`.
+The `diffs` facet returns change statistics by default: overall totals and per-file additions and
+deletions. To get patch text, set `detail` to `full_patch`.
 
 The `commits` and `pipelines` facets return up to 100 entries per call. Each response carries
 `pageInfo.hasNextPage` and `pageInfo.endCursor`. Pass that cursor back as `commits_after` or
@@ -497,8 +500,13 @@ Show me all commits in merge request 42 from project 123
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_merge_request`](#get_merge_request) with `include: ["diffs"]`.
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["diffs"]`. For raw patch text,
+also pass `detail: full_patch`. This tool no longer appears in `tools/list` but remains callable
+while callers migrate.
 
 Retrieves the diffs for a specific GitLab merge request.
 
@@ -1137,11 +1145,16 @@ Examples:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) in GitLab 18.4.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by [`get_pipeline`](#get_pipeline) with `include: ["jobs"]`.
 
 {{< /history >}}
 
-Retrieves the jobs for a specific GitLab CI/CD pipeline. To get jobs alongside the rest of the
-pipeline's data in a single call, use the `get_pipeline` tool with `include: jobs` instead.
+Superseded by [`get_pipeline`](#get_pipeline) with `include: ["jobs"]`, which returns jobs alongside
+the rest of the pipeline's data in a single call. The `jobs` facet returns fewer fields per job:
+it does not include `failure_reason`, `duration`, `queued_duration`, or timestamps. This tool no
+longer appears in `tools/list` but remains callable while callers migrate.
+
+Retrieves the jobs for a specific GitLab CI/CD pipeline.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|

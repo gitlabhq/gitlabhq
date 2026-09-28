@@ -5,6 +5,7 @@ module Mcp
     module Base
       class ApiTool
         include Mcp::Tools::Concerns::GovernanceNamespaceResolver
+        include Mcp::Tools::Base::RateLimitedResponse
 
         attr_reader :name, :route, :settings, :version
 
@@ -84,11 +85,11 @@ module Mcp
 
           original_format = request.env['api.format']
           begin
-            status, _, body = route.app.call(request.env)
+            status, headers, body = route.app.call(request.env)
           ensure
             request.env['api.format'] = original_format
           end
-          process_response(status, Array(body)[0])
+          process_response(status, Array(body)[0], headers)
         end
 
         def tool_aliases
@@ -154,7 +155,9 @@ module Mcp
           nil
         end
 
-        def process_response(status, body)
+        def process_response(status, body, headers = nil)
+          return rate_limited_response(body, headers) if status == TOO_MANY_REQUESTS
+
           parsed_response = Gitlab::Json.safe_parse(body)
           if status >= 400
             message =

@@ -368,6 +368,26 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
       end
     end
 
+    context 'when the sub-tool was throttled' do
+      let(:response) do
+        Mcp::Tools::Base::Response.rate_limited_error(
+          'This endpoint has been requested too many times. Try again later.',
+          retry_after: 60,
+          limit: 'search_rate_limit'
+        )
+      end
+
+      it 'passes the retry detail through instead of overwriting it with operation metadata' do
+        result = service.send(:enhance_response_with_operation, response, operation: :create, tool_name: :create_item)
+
+        expect(result).to eq(response)
+        expect(result[:structuredContent][:error]).to include(
+          type: 'rate_limited', retry_after_seconds: 60, limit: 'search_rate_limit'
+        )
+        expect(result[:structuredContent]).not_to have_key(:_meta)
+      end
+    end
+
     context 'when response has structuredContent' do
       let(:response) do
         {

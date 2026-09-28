@@ -4089,6 +4089,12 @@ build_job:
 
 #### `needs:pipeline:job`
 
+{{< history >}}
+
+- `optional` option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349538) in GitLab 19.5.
+
+{{< /history >}}
+
 A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a
 successfully finished job. The job can be in its parent pipeline or another child pipeline in the same hierarchy.
 
@@ -4098,6 +4104,8 @@ successfully finished job. The job can be in its parent pipeline or another chil
 
 - `needs:pipeline`: A pipeline ID. Must be a pipeline present in the same parent-child pipeline hierarchy.
 - `job`: The job to download artifacts from.
+- `optional`: Use with [`needs:optional`](#needsoptional) to need a job that sometimes
+  does not exist in the parent pipeline.
 
 **Example of `needs:pipeline:job`**:
 
@@ -4157,6 +4165,8 @@ the `use-artifact` job only executes when `create-artifact` has successfully fin
 
 To need a job that sometimes does not exist in the pipeline, add `optional: true`
 to the `needs` configuration. If not defined, `optional: false` is the default.
+You can use `optional: true` with [`needs:pipeline:job`](#needspipelinejob) to need
+a job that sometimes does not exist in a parent or another child pipeline.
 
 Jobs that use [`rules`](#rules), [`only`, or `except`](deprecated_keywords.md#only--except) and that are added with [`include`](#include)
 might not always be added to a pipeline. GitLab checks the `needs` relationships before starting a pipeline:

@@ -139,7 +139,9 @@ To select a model for a feature:
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Under **Model selection**, select **Manage models**.
 1. Find the feature you want to configure and select a model from the dropdown list.
-1. Optional. To apply the model to all features in a section, select **Apply to all**.
+1. Optional. To apply a model to multiple features in a section, from the **Bulk update** dropdown list, select a model.
+   The model applies only to the features it is compatible with.
+1. Optional. To switch all features in a section back to their default models, select **Reset to default**.
 
 ### Selecting the right model
 

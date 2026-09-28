@@ -42,7 +42,7 @@ Group-level and personal credit usage views are available on GitLab.com only.
 The GitLab Credits dashboard in the Customers Portal provides the most detailed view of your usage and costs.
 
 On the dashboard, used credits represent deductions from available credits.
-For overages (On-Demand credits), used credits represent on-demand usage that will be paid later,
+For overages (on-demand credits), used credits represent on-demand usage that will be paid later,
 if you have agreed to the usage billing terms.
 
 The dashboard displays summary cards of key metrics:
@@ -52,7 +52,7 @@ The dashboard displays summary cards of key metrics:
 - Committed credits: Credits from your Monthly Committed Pool (if applicable)
 - Monthly waivers: Remaining credits from waivers (if applicable)
 - On-Demand usage: Credits consumed beyond your included and committed amounts.
-  If you have enough waiver credits to offset all On-Demand credits, the GitLab Credits Dashboard hides
+  If you have enough waiver credits to offset all on-demand credits, the GitLab Credits Dashboard hides
   the **On-Demand** card and displays the **Monthly Waiver** card instead.
 - Usage control status: Whether individual users have been blocked from
   Agent Platform access due to reaching their per-user credit cap.

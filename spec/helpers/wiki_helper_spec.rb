@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe WikiHelper, feature_category: :wiki do
+  let_it_be_with_reload(:project) { create(:project) }
+
   describe '#wiki_page_title' do
-    let_it_be_with_reload(:page) { create(:wiki_page) }
+    let(:page) { build_stubbed(:wiki_page) }
 
     it 'sets the title for the show action' do
       expect(helper).to receive(:breadcrumb_title).with(page.human_title)
@@ -105,7 +107,7 @@ RSpec.describe WikiHelper, feature_category: :wiki do
   end
 
   describe '#wiki_attachment_upload_url' do
-    let_it_be_with_reload(:wiki) { build_stubbed(:project_wiki) }
+    let(:wiki) { build_stubbed(:project_wiki) }
 
     before do
       @wiki = wiki
@@ -125,7 +127,7 @@ RSpec.describe WikiHelper, feature_category: :wiki do
   end
 
   describe '#wiki_sort_controls' do
-    let(:wiki) { create(:project_wiki) }
+    let(:wiki) { build_stubbed(:project_wiki) }
 
     before do
       allow(Pajamas::ButtonComponent).to receive(:new).and_call_original
@@ -167,7 +169,9 @@ RSpec.describe WikiHelper, feature_category: :wiki do
   end
 
   describe '#wiki_page_tracking_context' do
-    let_it_be_with_reload(:page) { create(:wiki_page, title: 'path/to/page 💩', content: '💩', format: :markdown) }
+    let_it_be_with_reload(:page) do
+      create(:wiki_page, project: project, title: 'path/to/page 💩', content: '💩', format: :markdown)
+    end
 
     subject { helper.wiki_page_tracking_context(page) }
 
@@ -188,17 +192,17 @@ RSpec.describe WikiHelper, feature_category: :wiki do
   end
 
   it_behaves_like 'wiki endpoint helpers' do
-    let_it_be_with_reload(:page) { create(:wiki_page) }
+    let_it_be_with_reload(:page) { create(:wiki_page, project: project) }
   end
 
   context 'for wiki subpages' do
     it_behaves_like 'wiki endpoint helpers' do
-      let_it_be_with_reload(:page) { create(:wiki_page, title: 'foo/bar') }
+      let_it_be_with_reload(:page) { create(:wiki_page, project: project, title: 'foo/bar') }
     end
   end
 
   describe '#wiki_sidebar_toggle_button' do
-    let_it_be_with_reload(:wiki) { build(:project_wiki) }
+    let(:wiki) { build_stubbed(:project_wiki) }
 
     subject { helper.wiki_sidebar_toggle_button }
 

@@ -81,10 +81,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_job' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
         'get_mcp_server_version' => { 'readOnlyHint' => true, 'toolset' => 'meta' },
         'get_merge_request' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
-        'get_merge_request_diffs' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_merge_request_notes' => { 'readOnlyHint' => true, 'toolset' => 'merge_requests' },
         'get_pipeline' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
-        'get_pipeline_jobs' => { 'readOnlyHint' => true, 'toolset' => 'ci' },
         'get_project' => { 'readOnlyHint' => true, 'toolset' => 'core' },
         'get_repository_file' => { 'readOnlyHint' => true, 'toolset' => 'repository' },
         'get_saved_view_work_items' => { 'readOnlyHint' => true, 'toolset' => 'work_items' },
@@ -296,7 +294,8 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         manager = ::Mcp::Tools::Manager.new
 
         %w[create_issue get_workitem_notes get_issue get_merge_request_conflicts
-          get_merge_request_commits get_merge_request_pipelines].each do |tool_name|
+          get_merge_request_commits get_merge_request_pipelines
+          get_merge_request_diffs get_pipeline_jobs].each do |tool_name|
           expect(tool_names).not_to include(tool_name)
           expect(manager.get_tool(name: tool_name)).to be_present
         end

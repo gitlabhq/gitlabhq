@@ -262,7 +262,7 @@ Credits, see the [hosted runners for GitLab Dedicated SLA definition](https://ha
 ## Usage and monitoring
 
 > [!note]
-> Hosted runners for GitLab Dedicated keep running jobs after you deplete your Monthly Commitment Pool of GitLab
+> Hosted runners for GitLab Dedicated keep running jobs after you deplete your monthly commitment pool of GitLab
 > Credits, so your CI/CD pipelines are not interrupted.
 
 If you're at risk of overage, monitor your usage on the GitLab Credits dashboard and do one of the following:
@@ -278,7 +278,7 @@ For compute usage, see [compute usage for GitLab-hosted runners on GitLab Dedica
 ### Usage cap exemptions
 
 Hosted runners for GitLab Dedicated are exempt from usage caps because interrupting them would break a critical part of your workflow.
-A subscription or per-user cap does not stop CI/CD jobs from running. Jobs continue after the Monthly Commitment Pool is depleted, drawing On-Demand credits in the usual order.
+A subscription or per-user cap does not stop CI/CD jobs from running. Jobs continue after the monthly commitment pool is depleted, drawing on-demand credits in the usual order.
 Because caps do not apply, you can't use cap-based controls to limit this spend. Monitor consumption in the GitLab Credits dashboard instead.
 
 ## Pricing

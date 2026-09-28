@@ -28,8 +28,8 @@ based on two meters:
 
 ## GitLab Credits consumption
 
-GitLab Credits used for GitLab Secrets Manager are drawn from the [Monthly Commitment Pool](../../../subscriptions/gitlab_credits.md#monthly-commitment-pool)
-and [On-Demand credits](../../../subscriptions/gitlab_credits.md#on-demand-credits)
+GitLab Credits used for GitLab Secrets Manager are drawn from the [monthly commitment pool](../../../subscriptions/gitlab_credits.md#monthly-commitment-pool)
+and [on-demand credits](../../../subscriptions/gitlab_credits.md#on-demand-credits)
 available in the top-level group's (namespace's) subscription. Secrets Manager usage
 across the group's projects and subgroups consumes the top-level group's credits.
 

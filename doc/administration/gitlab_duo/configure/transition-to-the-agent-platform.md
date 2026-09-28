@@ -103,7 +103,7 @@ When you first transition your instance to the Agent Platform, you might encount
 | `SSL certificate OpenSSL verify result: unable to get local issuer certificate (20)` | On GitLab Self-Managed with a custom or self-signed CA, sandbox hardening blocks the runner's CA injection during `git clone`. | [Error: SSL certificate OpenSSL verify result](../../../user/duo_agent_platform/troubleshooting.md#error-ssl-certificate-openssl-verify-result-unable-to-get-local-issuer-certificate-20) |
 | All GitLab Duo features fail for all users immediately after transition | Silent Mode is turned on, which prevents GitLab from reaching the AI gateway. | [Turn off Silent Mode](../../silent_mode/_index.md#turn-off-silent-mode) |
 | Health check network test fails, or GitLab Duo features are unavailable after transition | Outbound HTTPS to `cloud.gitlab.com`, `customers.gitlab.com`, or `duo-workflow-svc.runway.gitlab.net` is blocked by a firewall or proxy. | [Allow outbound connections from the GitLab instance to GitLab Duo](_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) |
-| Agent Platform features unavailable for all users right after conversion | Usage billing terms have not been accepted, or there are no credits available in the pool. | [On-Demand credits](../../../subscriptions/gitlab_credits.md#on-demand-credits) |
+| Agent Platform features unavailable for all users right after conversion | Usage billing terms have not been accepted, or there are no credits available in the pool. | [On-demand credits](../../../subscriptions/gitlab_credits.md#on-demand-credits) |
 
 ## Related topics
 

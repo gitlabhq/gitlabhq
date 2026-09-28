@@ -5,6 +5,7 @@ module Mcp
     module Base
       class ApiService < BaseService
         extend Gitlab::Utils::Override
+        include Mcp::Tools::Base::RateLimitedResponse
 
         override :set_cred
         def set_cred(current_user: nil, access_token: nil)
@@ -61,6 +62,8 @@ module Mcp
         end
 
         def handle_response(response)
+          return rate_limited_response(response.body, response.headers) if response.code == TOO_MANY_REQUESTS
+
           parsed_response = Gitlab::Json.safe_parse(response.body)
 
           if response.success?

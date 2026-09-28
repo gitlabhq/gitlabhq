@@ -5950,9 +5950,6 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|An error occurred while updating the available models. Please try again."
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Apply to all sub-features"
-msgstr ""
-
 msgid "AdminAIPoweredFeatures|Assists developers by generating and completing code in real-time. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -6019,10 +6016,10 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Select all models"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Successfully updated available models for %{title}"
+msgid "AdminAIPoweredFeatures|This is the currently selected model for Agentic Chat, which is always available to users. To remove it from the list, select a different model."
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|This is the currently selected model for Agentic Chat, which is always available to users. To remove it from the list, select a different model."
+msgid "AdminAIPoweredFeatures|Updated available models for %{title}"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|When turned on, users can only use the models selected below, which always includes the currently selected default model. When turned off, users can use all available %{linkStart}GitLab-managed models%{linkEnd} (including those added in the future), unless a non-GitLab default model is set as the model for Agentic Chat, in which case users can only use that model."
@@ -6310,15 +6307,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|An error occurred while updating the self-hosted model, please try again."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Apply to all %{mainFeature} sub-features"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Assign a model to %{subFeature} before applying to all"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Assign a model to enable this feature"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Configure and assign GitLab-managed models to AI-native features."
 msgstr ""
 
@@ -6439,12 +6427,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Successfully connected to the self-hosted model"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Successfully updated all %{mainFeature} features"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Test connection"
 msgstr ""
 
@@ -6463,9 +6445,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|This feature is using a self-hosted model, deployed on your own infrastructure."
 msgstr ""
 
-msgid "AdminSelfHostedModels|This model cannot be applied to all %{mainFeature} sub-features"
-msgstr ""
-
 msgid "AdminSelfHostedModels|This self-hosted model cannot be deleted"
 msgstr ""
 
@@ -6476,6 +6455,9 @@ msgid "AdminSelfHostedModels|To fully set up Google Cloud credentials for this m
 msgstr ""
 
 msgid "AdminSelfHostedModels|To remove %{boldStart}%{modelName}%{boldEnd}, you must first remove it from the following AI Feature(s):"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Updated model for %{title}"
 msgstr ""
 
 msgid "AdminSelfHostedModels|View AI-native features"
@@ -12027,9 +12009,6 @@ msgstr ""
 msgid "Apply this approval rule to all branches or a specific protected branch."
 msgstr ""
 
-msgid "Apply to all"
-msgstr ""
-
 msgid "Applying"
 msgstr ""
 
@@ -12866,9 +12845,6 @@ msgstr ""
 msgid "ArtifactRegistry|Create repository"
 msgstr ""
 
-msgid "ArtifactRegistry|Create your first repository"
-msgstr ""
-
 msgid "ArtifactRegistry|Create your first repository to start publishing and pulling artifacts."
 msgstr ""
 
@@ -13224,6 +13200,9 @@ msgstr ""
 msgid "ArtifactRegistry|No repositories match your search."
 msgstr ""
 
+msgid "ArtifactRegistry|No repositories yet"
+msgstr ""
+
 msgid "ArtifactRegistry|No versions found for %{name}."
 msgstr ""
 
@@ -13498,9 +13477,6 @@ msgstr ""
 msgid "ArtifactRegistry|Storage used: %{size}"
 msgstr ""
 
-msgid "ArtifactRegistry|Store and manage packages and container images by creating a hosted or remote repository."
-msgstr ""
-
 msgid "ArtifactRegistry|Subject digest: %{digest}"
 msgstr ""
 
@@ -13597,6 +13573,9 @@ msgstr ""
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts."
 msgstr ""
 
+msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
+msgstr ""
+
 msgid "ArtifactRegistry|This action permanently deletes version %{name} and all of its files. This action cannot be undone."
 msgstr ""
 
@@ -13648,6 +13627,9 @@ msgstr ""
 msgid "ArtifactRegistry|Upstream responded with %{status}"
 msgstr ""
 
+msgid "ArtifactRegistry|Use repositories to store and distribute artifacts for your organization."
+msgstr ""
+
 msgid "ArtifactRegistry|Use the arrow buttons to reorder repositories. Artifacts are resolved from top to bottom."
 msgstr ""
 
@@ -13676,6 +13658,9 @@ msgid "ArtifactRegistry|View pull command"
 msgstr ""
 
 msgid "ArtifactRegistry|Virtual"
+msgstr ""
+
+msgid "ArtifactRegistry|Virtual repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Visibility level"
@@ -53033,6 +53018,12 @@ msgstr ""
 msgid "ModelRegistry|versions"
 msgstr ""
 
+msgid "ModelSelection|%{count} of %{total} %{mainFeature} features updated"
+msgstr ""
+
+msgid "ModelSelection|All %{mainFeature} features updated"
+msgstr ""
+
 msgid "ModelSelection|Alternatively, you can select a specific model to use."
 msgstr ""
 
@@ -53045,10 +53036,16 @@ msgstr ""
 msgid "ModelSelection|Auto"
 msgstr ""
 
+msgid "ModelSelection|Bulk update"
+msgstr ""
+
 msgid "ModelSelection|By selecting %{selectedGitlabManagedModel}, you consent to using a GitLab-managed model and sending data to the GitLab AI Gateway."
 msgstr ""
 
 msgid "ModelSelection|GitLab automatic routing"
+msgstr ""
+
+msgid "ModelSelection|GitLab default"
 msgstr ""
 
 msgid "ModelSelection|GitLab default model"
@@ -53066,19 +53063,22 @@ msgstr ""
 msgid "ModelSelection|Model has been pinned by an administrator."
 msgstr ""
 
+msgid "ModelSelection|No models are available for this section"
+msgstr ""
+
+msgid "ModelSelection|Reset to default"
+msgstr ""
+
 msgid "ModelSelection|Select a model"
 msgstr ""
 
 msgid "ModelSelection|Select default namespace for GitLab Duo"
 msgstr ""
 
-msgid "ModelSelection|Successfully updated %{mainFeature} / %{title}"
-msgstr ""
-
-msgid "ModelSelection|Successfully updated all %{mainFeature} features"
-msgstr ""
-
 msgid "ModelSelection|Update profile preferences"
+msgstr ""
+
+msgid "ModelSelection|Updated model for %{title}"
 msgstr ""
 
 msgid "ModelSelection|When you select %{boldStart}Auto%{boldEnd}, GitLab routes each request to the most suitable model based on the task at hand."
@@ -67315,6 +67315,12 @@ msgstr ""
 msgid "Rate limit period (in seconds)"
 msgstr ""
 
+msgid "Rate limited by %{limit}."
+msgstr ""
+
+msgid "Rate limited."
+msgstr ""
+
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr ""
 
@@ -69137,6 +69143,11 @@ msgstr ""
 
 msgid "Retry"
 msgstr ""
+
+msgid "Retry after %d second."
+msgid_plural "Retry after %d seconds."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Retry all failed or cancelled jobs"
 msgstr ""
