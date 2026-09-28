@@ -1,4 +1,5 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlKeysetPagination, GlSkeletonLoader } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BarListPresenter from '~/glql/components/presenters/bar_list.vue';
 import TwoDimensionsBarList from '~/glql/components/presenters/bar_list/two_dimensions_bar_list.vue';
@@ -85,6 +86,7 @@ describe('BarListPresenter', () => {
 
   const findChart = () => wrapper.findComponent(BarListChart);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findEmittedErrorMessage = () => wrapper.emitted('error')?.[0]?.[0]?.message;
   const rows = () => findChart().props('data');
 
@@ -357,6 +359,21 @@ describe('BarListPresenter', () => {
       expect(rows().map(({ value }) => value)).toEqual([21, 14, 10]);
     });
 
+    // The pager reads the same visible fields the chart does, so hiding every
+    // metric leaves neither a chart nor controls.
+    it('renders no page controls when every metric is hidden', () => {
+      const [dimension, metric] = MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC;
+
+      createComponent({
+        data: eightRows(),
+        fields: [dimension, metric],
+        displayConfig: { hiddenMetrics: [metric.key] },
+      });
+
+      expect(findChart().exists()).toBe(false);
+      expect(findPagination().exists()).toBe(false);
+    });
+
     it('matches a metric by its base key as well as its alias', () => {
       createComponent({
         fields: QUANTILE_FIELDS_WITH_COUNT,
@@ -423,33 +440,10 @@ describe('BarListPresenter', () => {
     });
   });
 
-  describe('when the query returns more rows than the default maximum', () => {
+  describe('when the query returns more rows than fit one page', () => {
     beforeEach(() => createComponent({ data: eightRows() }));
 
-    it('keeps six rows and rolls the tail into one', () => {
-      expect(rows()).toHaveLength(7);
-      expect(
-        rows()
-          .slice(0, 6)
-          .map(({ name }) => name),
-      ).toEqual(['lang-0', 'lang-1', 'lang-2', 'lang-3', 'lang-4', 'lang-5']);
-    });
-
-    it('names the rolled-up row with the number of rows it covers', () => {
-      expect(rows().at(-1)).toEqual({ name: 'Other (2)', value: 6, share: 6 });
-    });
-
-    it('still makes the shares sum to 100', () => {
-      const total = rows().reduce((sum, { share }) => sum + share, 0);
-
-      expect(total).toBeCloseTo(100);
-    });
-  });
-
-  describe('when the query returns exactly one row more than the maximum', () => {
-    beforeEach(() => createComponent({ data: sevenRows() }));
-
-    it('keeps the row rather than naming it Other (1)', () => {
+    it('shows the first page of rows', () => {
       expect(rows().map(({ name }) => name)).toEqual([
         'lang-0',
         'lang-1',
@@ -457,42 +451,105 @@ describe('BarListPresenter', () => {
         'lang-3',
         'lang-4',
         'lang-5',
-        'lang-6',
       ]);
+    });
+
+    it('keeps shares relative to the grand total across pages', () => {
+      expect(rows().at(0).share).toBeCloseTo(30);
+    });
+
+    it('shows the remaining rows on the next page', async () => {
+      findPagination().vm.$emit('next');
+      await nextTick();
+
+      expect(rows().map(({ name }) => name)).toEqual(['lang-6', 'lang-7']);
+      expect(findPagination().props('hasNextPage')).toBe(false);
+      expect(findPagination().props('hasPreviousPage')).toBe(true);
+    });
+
+    it('returns to the first page on Previous', async () => {
+      findPagination().vm.$emit('next');
+      await nextTick();
+      findPagination().vm.$emit('prev');
+      await nextTick();
+
+      expect(rows().at(0).name).toBe('lang-0');
+      expect(findPagination().props('hasPreviousPage')).toBe(false);
+    });
+  });
+
+  describe('when every row fits one page', () => {
+    beforeEach(() => createComponent({ data: sevenRows(), displayConfig: { maxRows: 7 } }));
+
+    it('renders no page controls', () => {
+      expect(findPagination().exists()).toBe(false);
+    });
+  });
+
+  describe('when the page count shrinks past the current page', () => {
+    it('returns to the first page', async () => {
+      createComponent({ data: eightRows() });
+      findPagination().vm.$emit('next');
+      await nextTick();
+
+      await wrapper.setProps({ displayConfig: { maxRows: 8 } });
+
+      expect(rows().at(0).name).toBe('lang-0');
+      expect(findPagination().exists()).toBe(false);
+    });
+  });
+
+  describe('when the data changes', () => {
+    it('returns to the first page', async () => {
+      createComponent({ data: eightRows() });
+      findPagination().vm.$emit('next');
+      await nextTick();
+
+      await wrapper.setProps({ data: eightRows() });
+
+      expect(rows().at(0).name).toBe('lang-0');
+    });
+  });
+
+  describe('when a single row is past the page size', () => {
+    beforeEach(() => createComponent({ data: sevenRows() }));
+
+    it('widens the page rather than paging one row on its own', () => {
+      expect(rows()).toHaveLength(7);
+      expect(findPagination().exists()).toBe(false);
     });
   });
 
   describe('with maxRows in the display config', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: 4 } }));
 
-    it('caps the rows at the configured number instead of the default', () => {
-      expect(rows()).toHaveLength(5);
-      expect(rows().at(-1)).toEqual({ name: 'Other (4)', value: 20, share: 20 });
+    it('sizes the page at the configured number', () => {
+      expect(rows()).toHaveLength(4);
+      expect(rows().at(-1).name).toBe('lang-3');
     });
   });
 
   describe('when maxRows arrives as a YAML string', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: '4' } }));
 
-    it('caps the rows all the same', () => {
-      expect(rows()).toHaveLength(5);
-      expect(rows().at(-1).name).toBe('Other (4)');
+    it('sizes the page all the same', () => {
+      expect(rows()).toHaveLength(4);
     });
   });
 
   describe('when maxRows is not a positive whole number', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: 0 } }));
 
-    it('falls back to the default maximum', () => {
-      expect(rows()).toHaveLength(7);
-      expect(rows().at(-1).name).toBe('Other (2)');
+    it('falls back to the default page size', () => {
+      expect(rows()).toHaveLength(6);
+      expect(rows().at(-1).name).toBe('lang-5');
     });
   });
 
   describe('when maxRows is larger than the default maximum', () => {
     beforeEach(() => createComponent({ data: eightRows(), displayConfig: { maxRows: 10 } }));
 
-    it('widens the cap rather than clamping it back to the default', () => {
+    it('widens the page rather than clamping it back to the default', () => {
       expect(rows()).toHaveLength(8);
       expect(rows().at(-1).name).toBe('lang-7');
     });
@@ -649,8 +706,7 @@ describe('BarListPresenter', () => {
       });
     });
 
-    describe('when the rows roll up into Other', () => {
-      // The two folded rows moved from 2 + 1 to 4 + 2.
+    describe('when trended rows continue on the next page', () => {
       const previous = (values) => ({
         nodes: values.map((totalCount, i) => ({ language: `lang-${i}`, totalCount })),
       });
@@ -663,27 +719,14 @@ describe('BarListPresenter', () => {
         }),
       );
 
-      it('compares the roll-up against the sum of its rows in the previous period', () => {
-        expect(rows().at(-1)).toEqual({
-          name: 'Other (2)',
-          value: 6,
-          share: 6,
+      it('keeps each row paired with its own previous value across pages', async () => {
+        findPagination().vm.$emit('next');
+        await nextTick();
+
+        expect(rows().at(0)).toMatchObject({
+          name: 'lang-6',
+          value: 4,
           trend: { text: '+100%', variant: 'success' },
-        });
-      });
-
-      describe('and one folded row has no previous value', () => {
-        beforeEach(() =>
-          createComponent({
-            ...trendProps,
-            data: eightRows(),
-            comparisonData: previous([30, 25, 15, 10, 8, 6, 2]),
-          }),
-        );
-
-        it('leaves the roll-up without a trend, since its previous total is unknown', () => {
-          expect(rows().at(-1)).toEqual({ name: 'Other (2)', value: 6, share: 6 });
-          expect(trendOf('lang-0')).toEqual({ text: '0%', variant: 'neutral' });
         });
       });
     });
@@ -776,9 +819,23 @@ describe('BarListPresenter', () => {
         primaryDimension: expect.objectContaining({ key: 'user' }),
         secondaryDimension: expect.objectContaining({ key: 'language' }),
         metric: expect.objectContaining({ key: 'totalCount' }),
-        maxRows: 2,
+        pageSize: 2,
         maxSeries: 1,
       });
+    });
+
+    // Rows are the distinct first-dimension values, not the nodes behind them.
+    it('counts pages from the grouped rows rather than the nodes', () => {
+      createComponent({
+        data: {
+          nodes: ['alice', 'bob', 'carol'].flatMap((user) =>
+            ['ruby', 'go', 'python'].map((language) => ({ user, language, totalCount: 10 })),
+          ),
+        },
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+      });
+
+      expect(findPagination().exists()).toBe(false);
     });
 
     it('renders no two-dimension list when a display option is invalid', () => {
@@ -791,8 +848,17 @@ describe('BarListPresenter', () => {
       expect(findTwoDimensions().exists()).toBe(false);
     });
 
+    // The pager must not outlive the chart: a rejected query renders neither.
     it('rejects a third dimension', () => {
       createComponent({
+        data: {
+          nodes: Array.from({ length: 9 }, (_, i) => ({
+            user: `u-${i}`,
+            language: 'ruby',
+            ideName: 'vs',
+            totalCount: 10,
+          })),
+        },
         fields: [
           { key: 'user', label: 'User', name: 'user', type: 'dimension' },
           { key: 'language', label: 'Language', name: 'language', type: 'dimension' },
@@ -802,6 +868,7 @@ describe('BarListPresenter', () => {
       });
 
       expect(findChart().exists()).toBe(false);
+      expect(findPagination().exists()).toBe(false);
       expect(findEmittedErrorMessage()).toBe('barList supports a maximum of 2 dimensions');
     });
   });

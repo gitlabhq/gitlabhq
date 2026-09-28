@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlKeysetPagination, GlSkeletonLoader } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import {
@@ -11,15 +11,17 @@ import {
   VALUE_LABELS_OPTIONS,
 } from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart_options';
 import {
+  buildStackedByDimension,
   dimensionValue,
   dimensionLabelFormatter,
   dimensionsOf,
   labelWithParameter,
   metricsOf,
 } from '../../utils/chart_data';
+import { dimensionMetricValidationError } from '../../utils/chart_validation';
 import { valueFormatterFor } from '../../utils/value_format';
 import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
-import { foldTail } from './bar_list/fold_tail';
+import { pageOf, pageSizeFor } from './bar_list/fold_tail';
 import TwoDimensionsBarList from './bar_list/two_dimensions_bar_list.vue';
 import { listDescriptionError, listDescriptionFor } from './utils/description';
 import { hiddenMetricsError, visibleFieldsOf } from './utils/hidden_metrics';
@@ -27,9 +29,11 @@ import { NO_VALUE, trendPresentationFor } from './utils/stat';
 import { TREND_PREVIOUS_KEY, hasTemporalDimension, withTrendValues } from './utils/table';
 import { formatSignedChange, trendChangeFor } from './utils/trend';
 
-// Six rows plus a rolled-up Other row, which is the shape of the design this
-// display type was built for. A query returning fewer rows is unaffected.
+// A query returning fewer rows shows no paging controls.
 const DEFAULT_MAX_ROWS = 6;
+
+// A second dimension becomes stacked segments; a third has nowhere to go.
+const MAX_DIMENSIONS = 2;
 
 // How many secondary-dimension values keep their own stacked segment before
 // the rest roll up into an Other segment, keeping the legend legible.
@@ -46,10 +50,12 @@ const DISPLAY_OPTIONS = {
 
 export default {
   name: 'BarListPresenter',
+  MAX_DIMENSIONS,
   components: {
     BarListChart,
     DimensionRoutedChart,
     TwoDimensionsBarList,
+    GlKeysetPagination,
     GlSkeletonLoader,
   },
   props: {
@@ -88,6 +94,13 @@ export default {
     },
   },
   emits: { error: null },
+  data() {
+    return {
+      // Display-side: the rows are already fetched, so a page turn makes no
+      // request. GlKeysetPagination is here only for its Prev and Next controls.
+      page: 0,
+    };
+  },
   computed: {
     queryMetrics() {
       return metricsOf(this.fields);
@@ -121,6 +134,42 @@ export default {
     maxSeries() {
       const maxSeries = Number(this.displayConfig.maxSeries);
       return Number.isInteger(maxSeries) && maxSeries > 0 ? maxSeries : DEFAULT_MAX_SERIES;
+    },
+    // Shares the routed chart's validator and its grouping helper, so the pager
+    // can't outlive the chart or drift from the rows it renders.
+    totalRows() {
+      const dimensions = dimensionsOf(this.visibleFields);
+      if (this.metricRows) return 0;
+
+      const routingError = dimensionMetricValidationError({
+        displayType: 'barList',
+        dimensions,
+        metrics: this.barMetrics,
+        maxDimensions: MAX_DIMENSIONS,
+      });
+      if (routingError) return 0;
+
+      const nodes = this.data?.nodes ?? [];
+      if (dimensions.length === 1) return nodes.length;
+
+      return buildStackedByDimension({
+        nodes,
+        primaryDim: dimensions[0],
+        secondaryDim: dimensions[1],
+        metric: this.barMetrics[0],
+      }).groups.length;
+    },
+    pageSize() {
+      return pageSizeFor(this.totalRows, this.maxRows);
+    },
+    pageCount() {
+      return Math.ceil(this.totalRows / this.pageSize);
+    },
+    hasPreviousPage() {
+      return this.page > 0;
+    },
+    hasNextPage() {
+      return this.page + 1 < this.pageCount;
     },
     valueLabels() {
       return this.displayConfig?.valueLabels ?? VALUE_LABELS_DEFAULT;
@@ -163,6 +212,15 @@ export default {
     },
   },
   watch: {
+    // A new result set invalidates the current page, so paging restarts.
+    data() {
+      this.page = 0;
+    },
+    // Anything that shrinks the row count can strand the page past the last
+    // one, where the controls are gone and there is no way back.
+    pageCount(count) {
+      if (this.page >= count) this.page = 0;
+    },
     displayConfigError: {
       immediate: true,
       handler(message) {
@@ -234,16 +292,7 @@ export default {
       };
       const descending = rows.sort((a, b) => b.value - a.value);
 
-      return foldTail(descending, this.maxRows, (remainder) => {
-        // One row with no previous value leaves the roll-up's previous total unknown too.
-        const remainderKnown = remainder.every(({ previousValue }) => previousValue != null);
-
-        return {
-          name: sprintf(s__('Glql|Other (%{count})'), { count: remainder.length }),
-          value: sumOf(remainder, 'value'),
-          previousValue: remainderKnown ? sumOf(remainder, 'previousValue') : null,
-        };
-      }).map(toRow);
+      return pageOf(descending, this.page, this.pageSize).map(toRow);
     },
   },
 };
@@ -269,7 +318,7 @@ export default {
       display-type="barList"
       :fields="visibleFields"
       :loading="loading"
-      :max-dimensions="2"
+      :max-dimensions="$options.MAX_DIMENSIONS"
       @error="$emit('error', $event)"
     >
       <template #one-dimension="{ dimension, metrics }">
@@ -288,10 +337,19 @@ export default {
           :primary-dimension="dimensions[0]"
           :secondary-dimension="dimensions[1]"
           :metric="metric"
-          :max-rows="maxRows"
+          :page="page"
+          :page-size="pageSize"
           :max-series="maxSeries"
         />
       </template>
     </dimension-routed-chart>
+    <gl-keyset-pagination
+      v-if="pageCount > 1 && !loading && !displayConfigError"
+      :has-previous-page="hasPreviousPage"
+      :has-next-page="hasNextPage"
+      class="gl-mt-3"
+      @prev="page -= 1"
+      @next="page += 1"
+    />
   </div>
 </template>

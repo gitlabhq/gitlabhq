@@ -360,11 +360,14 @@ previous one, such as `returningUsersCount`, requires the date dimension. To get
 metric from a query that has one, set `metricRows: true` under `displayConfig`. Values come
 from the first row of the response, so sort the query to put the row you want first.
 
-With dimensions, the `maxRows` option under `displayConfig` sets how many rows show before the
-rest fold into a single row named `Other (N)`, where `N` is the number of rows folded in and the
-value is their combined total. The default is six. A single row past the limit stays as-is,
-because an `Other (1)` row would hide its name without making the list shorter. A `maxRows` value
-that is not a whole number greater than zero falls back to the default.
+With dimensions, the `maxRows` option under `displayConfig` sets how many rows each page shows.
+The default is six, and rows are ranked by value, highest first.
+When the query returns more rows, **Previous** and **Next** controls page through rows already
+[fetched automatically](#pagination-support), so turning a page fetches nothing new.
+That fetch stops at 1,000 rows, so paging covers at most the first 1,000 rows.
+A single row past the page size stays on the first page rather than starting a page of its own.
+Shares stay relative to the total across all pages.
+A `maxRows` value that is not a whole number greater than zero falls back to the default.
 
 A share of the total is meaningful only when the metric is a count or a sum. For a metric such as
 an average or a median, the total behind the shares has no meaning.
@@ -401,11 +404,6 @@ the total, whatever `scale` is.
 
 Any other value for `valueLabels`, `color`, or `scale` causes a validation error in the view.
 
-In a dashboard panel that shows each row's change against the previous period, the `Other` row
-compares its folded rows against those same rows in the previous period, not against every row
-outside the kept rows in that period. The `Other` row shows no change when any of its folded rows
-has no previous value.
-
 ### Two dimensions
 
 Each row is a value of the first dimension, and its bar splits into stacked segments, one per
@@ -413,11 +411,10 @@ value of the second dimension, with a legend below the chart. Rows are labeled w
 total.
 
 The `maxSeries` option under `displayConfig` limits how many second dimension values get their
-own segment; the rest combine into an `Other (N)` segment, following the same single-item rule
-and fallback as `maxRows`. The default is six.
+own segment; the rest combine into an `Other (N)` segment. A single segment past the limit stays
+as-is. The default is six.
 
-The rows past `maxRows` fold into an `Other (N)` row whose segments are the folded rows'
-combined values, so bars always sum to 100% of the total.
+Rows page with the same `maxRows` and controls as one dimension, each row keeping its segments.
 
 Selecting a legend entry hides that segment and rescales the remaining bars and labels to the
 visible total.

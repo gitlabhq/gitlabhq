@@ -69,23 +69,25 @@ for details on managing SSL certificates and configuring NGINX.
 
 ### Basic ports
 
-| LB Port | Backend Port | Protocol                 |
-| ------- | ------------ | ------------------------ |
-| 80      | 80           | HTTP (*1*)               |
-| 443     | 443          | TCP or HTTPS (*1*) (*2*) |
-| 22      | 22           | TCP                      |
+| LB Port | Backend Port | Protocol |
+|---------|--------------|----------|
+| 80      | 80           | HTTP[^websocket-support] |
+| 443     | 443          | TCP or HTTPS[^websocket-support], [^ssl-certificate] |
+| 22      | 22           | TCP      |
 
-- (*1*): Your load balancer must support WebSocket connections for features
-  like [GitLab Duo Non-Agentic Chat](../user/gitlab_duo_chat/_index.md), real-time label
-  updates in issues and merge requests, and [web terminals](../ci/environments/_index.md#web-terminals-deprecated).
-  Load balancers that do not support WebSockets (for example, AWS Classic Load
-  Balancers) are not compatible with GitLab for these features. When using HTTP
-  or HTTPS proxying, your load balancer must be configured to forward the
-  `Connection` and `Upgrade` hop-by-hop headers to the backend servers. This
-  refers to HTTP header forwarding, not Direct Server Return (DSR) mode.
-- (*2*): When using HTTPS protocol for port 443, you must add an SSL
-  certificate to the load balancers. If you wish to terminate SSL at the
-  GitLab application server instead, use TCP protocol.
+[^websocket-support]: Your load balancer must support WebSocket connections for features
+    like [GitLab Duo Non-Agentic Chat](../user/gitlab_duo_chat/_index.md), real-time label
+    updates in issues and merge requests, and [web terminals](../ci/environments/_index.md#web-terminals-deprecated).
+
+    Load balancers that do not support WebSockets (for example, AWS Classic Load
+    Balancers) are not compatible with GitLab for these features.
+
+    When using HTTP or HTTPS proxying, your load balancer must be configured to forward the
+    `Connection` and `Upgrade` hop-by-hop headers to the backend servers. This
+    refers to HTTP header forwarding, not Direct Server Return (DSR) mode.
+[^ssl-certificate]: When using HTTPS protocol for port 443, you must add an SSL
+    certificate to the load balancers. If you wish to terminate SSL at the
+    GitLab application server instead, use TCP protocol.
 
 ### GitLab Pages Ports
 
@@ -95,17 +97,17 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
 [GitLab Pages documentation](pages/_index.md) for more information.
 
-| LB Port | Backend Port  | Protocol  |
-| ------- | ------------- | --------- |
-| 80      | Varies (*1*)  | HTTP      |
-| 443     | Varies (*1*)  | TCP (*2*) |
+| LB Port | Backend Port          | Protocol |
+|---------|-----------------------|----------|
+| 80      | Varies[^backend-port] | HTTP     |
+| 443     | Varies[^backend-port] | TCP[^tcp-protocol] |
 
-- (*1*): The backend port for GitLab Pages depends on the
-  `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
-  setting. See [GitLab Pages documentation](pages/_index.md) for more details.
-- (*2*): Port 443 for GitLab Pages should always use the TCP protocol. Users can
-  configure custom domains with custom SSL, which would not be possible
-  if SSL was terminated at the load balancer.
+[^backend-port]: The backend port for GitLab Pages depends on the
+    `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
+    setting. See [GitLab Pages documentation](pages/_index.md) for more details.
+[^tcp-protocol]: Port 443 for GitLab Pages should always use the TCP protocol. Users can
+    configure custom domains with custom SSL, which would not be possible
+    if SSL was terminated at the load balancer.
 
 ### Alternate SSH Port
 

@@ -13841,6 +13841,12 @@ msgstr ""
 msgid "Assertion consumer service URL"
 msgstr ""
 
+msgid "Assessment could not be completed."
+msgstr ""
+
+msgid "Assessment has completed."
+msgstr ""
+
 msgid "Assets"
 msgstr ""
 
@@ -19310,12 +19316,6 @@ msgid "CiVariable|Variable %{key} has been updated."
 msgstr ""
 
 msgid "Classification Label (optional)"
-msgstr ""
-
-msgid "Classification could not be completed."
-msgstr ""
-
-msgid "Classification has completed."
 msgstr ""
 
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
@@ -38168,10 +38168,10 @@ msgstr ""
 msgid "FoundationalFlow|Answers questions and takes actions when GitLab Duo is mentioned in Slack."
 msgstr ""
 
-msgid "FoundationalFlow|Business Logic Security Scan"
+msgid "FoundationalFlow|Assess the risk of a merge request so review effort can be routed to the changes that warrant it."
 msgstr ""
 
-msgid "FoundationalFlow|Classify the risk of a merge request so review effort can be routed to the changes that warrant it."
+msgid "FoundationalFlow|Business Logic Security Scan"
 msgstr ""
 
 msgid "FoundationalFlow|Code Review"
@@ -38222,7 +38222,7 @@ msgstr ""
 msgid "FoundationalFlow|Review merge request code changes for business logic security vulnerabilities."
 msgstr ""
 
-msgid "FoundationalFlow|Risk Classification"
+msgid "FoundationalFlow|Risk Assessment"
 msgstr ""
 
 msgid "FoundationalFlow|SAST False Positive Detection"
@@ -67137,7 +67137,7 @@ msgstr ""
 msgid "Queued"
 msgstr ""
 
-msgid "Queued for (re)classification."
+msgid "Queued for (re)assessment."
 msgstr ""
 
 msgid "Quick access"
@@ -69367,22 +69367,79 @@ msgstr ""
 msgid "RiskAssessment|%{boldStart}Risk assessment:%{boldEnd} Unavailable"
 msgstr ""
 
+msgid "RiskAssessment|Agent-authored commits"
+msgstr ""
+
 msgid "RiskAssessment|Assessing risk"
+msgstr ""
+
+msgid "RiskAssessment|Authentication, session handling, or identity verification"
+msgstr ""
+
+msgid "RiskAssessment|Author does not own the changed code"
+msgstr ""
+
+msgid "RiskAssessment|Author experience"
+msgstr ""
+
+msgid "RiskAssessment|Authorization, access control, or tenant isolation"
 msgstr ""
 
 msgid "RiskAssessment|Based on a partial picture: %{missing} could not be measured."
 msgstr ""
 
+msgid "RiskAssessment|Change shape"
+msgstr ""
+
+msgid "RiskAssessment|Change ships behind a feature flag"
+msgstr ""
+
+msgid "RiskAssessment|Changed paths with no declared owner"
+msgstr ""
+
+msgid "RiskAssessment|Code ownership"
+msgstr ""
+
+msgid "RiskAssessment|Commit authorship"
+msgstr ""
+
+msgid "RiskAssessment|Concentration of the change across files"
+msgstr ""
+
 msgid "RiskAssessment|Critical risk"
+msgstr ""
+
+msgid "RiskAssessment|Cryptography, key management, or credential handling"
+msgstr ""
+
+msgid "RiskAssessment|Database schema, data migration, or database layer"
+msgstr ""
+
+msgid "RiskAssessment|Dependency changes"
+msgstr ""
+
+msgid "RiskAssessment|Dependency files changed"
+msgstr ""
+
+msgid "RiskAssessment|Destructive database migration"
 msgstr ""
 
 msgid "RiskAssessment|Failed to load the risk assessment"
 msgstr ""
 
+msgid "RiskAssessment|Feature flag rollout"
+msgstr ""
+
 msgid "RiskAssessment|High risk"
 msgstr ""
 
+msgid "RiskAssessment|How new the author is to this project"
+msgstr ""
+
 msgid "RiskAssessment|Low risk"
+msgstr ""
+
+msgid "RiskAssessment|Manifest file changed directly"
 msgstr ""
 
 msgid "RiskAssessment|Medium risk"
@@ -69391,7 +69448,34 @@ msgstr ""
 msgid "RiskAssessment|New commits were pushed after this assessment. It reflects an earlier version of the changes."
 msgstr ""
 
+msgid "RiskAssessment|Number of dependency ecosystems touched"
+msgstr ""
+
+msgid "RiskAssessment|Number of distinct owners"
+msgstr ""
+
+msgid "RiskAssessment|Number of files changed"
+msgstr ""
+
+msgid "RiskAssessment|Proportion of added to removed lines"
+msgstr ""
+
+msgid "RiskAssessment|Public API contract, REST or GraphQL"
+msgstr ""
+
 msgid "RiskAssessment|Rationale"
+msgstr ""
+
+msgid "RiskAssessment|Reversibility"
+msgstr ""
+
+msgid "RiskAssessment|Revert"
+msgstr ""
+
+msgid "RiskAssessment|Reverts a previously merged change"
+msgstr ""
+
+msgid "RiskAssessment|Risk assessment cannot be refreshed while %{status}."
 msgstr ""
 
 msgid "RiskAssessment|Risk level not available"
@@ -69400,121 +69484,37 @@ msgstr ""
 msgid "RiskAssessment|Risk level: %{level}"
 msgstr ""
 
+msgid "RiskAssessment|Size of change"
+msgstr ""
+
+msgid "RiskAssessment|Source changes without a matching test"
+msgstr ""
+
+msgid "RiskAssessment|Spread across subsystems"
+msgstr ""
+
+msgid "RiskAssessment|Test coverage"
+msgstr ""
+
+msgid "RiskAssessment|Test evidence"
+msgstr ""
+
+msgid "RiskAssessment|Uncovered changed lines"
+msgstr ""
+
 msgid "RiskAssessment|Updating…"
 msgstr ""
 
 msgid "RiskAssessment|What contributed to this score"
 msgstr ""
 
-msgid "RiskClassification|Agent-authored commits"
+msgid "RiskAssessment|diff_sha %{diff_sha} does not match any known revision of this merge request."
 msgstr ""
 
-msgid "RiskClassification|Authentication, session handling, or identity verification"
+msgid "RiskAssessment|diff_sha %{diff_sha} is older than the assessment's current diff_sha %{current_diff_sha}."
 msgstr ""
 
-msgid "RiskClassification|Author does not own the changed code"
-msgstr ""
-
-msgid "RiskClassification|Author experience"
-msgstr ""
-
-msgid "RiskClassification|Authorization, access control, or tenant isolation"
-msgstr ""
-
-msgid "RiskClassification|Change shape"
-msgstr ""
-
-msgid "RiskClassification|Change ships behind a feature flag"
-msgstr ""
-
-msgid "RiskClassification|Changed paths with no declared owner"
-msgstr ""
-
-msgid "RiskClassification|Code ownership"
-msgstr ""
-
-msgid "RiskClassification|Commit authorship"
-msgstr ""
-
-msgid "RiskClassification|Concentration of the change across files"
-msgstr ""
-
-msgid "RiskClassification|Cryptography, key management, or credential handling"
-msgstr ""
-
-msgid "RiskClassification|Database schema, data migration, or database layer"
-msgstr ""
-
-msgid "RiskClassification|Dependency changes"
-msgstr ""
-
-msgid "RiskClassification|Dependency files changed"
-msgstr ""
-
-msgid "RiskClassification|Destructive database migration"
-msgstr ""
-
-msgid "RiskClassification|Feature flag rollout"
-msgstr ""
-
-msgid "RiskClassification|How new the author is to this project"
-msgstr ""
-
-msgid "RiskClassification|Manifest file changed directly"
-msgstr ""
-
-msgid "RiskClassification|Number of dependency ecosystems touched"
-msgstr ""
-
-msgid "RiskClassification|Number of distinct owners"
-msgstr ""
-
-msgid "RiskClassification|Number of files changed"
-msgstr ""
-
-msgid "RiskClassification|Proportion of added to removed lines"
-msgstr ""
-
-msgid "RiskClassification|Public API contract, REST or GraphQL"
-msgstr ""
-
-msgid "RiskClassification|Reversibility"
-msgstr ""
-
-msgid "RiskClassification|Revert"
-msgstr ""
-
-msgid "RiskClassification|Reverts a previously merged change"
-msgstr ""
-
-msgid "RiskClassification|Risk assessment cannot be refreshed while %{status}."
-msgstr ""
-
-msgid "RiskClassification|Size of change"
-msgstr ""
-
-msgid "RiskClassification|Source changes without a matching test"
-msgstr ""
-
-msgid "RiskClassification|Spread across subsystems"
-msgstr ""
-
-msgid "RiskClassification|Test coverage"
-msgstr ""
-
-msgid "RiskClassification|Test evidence"
-msgstr ""
-
-msgid "RiskClassification|Uncovered changed lines"
-msgstr ""
-
-msgid "RiskClassification|diff_sha %{diff_sha} does not match any known revision of this merge request."
-msgstr ""
-
-msgid "RiskClassification|diff_sha %{diff_sha} is older than the assessment's current diff_sha %{current_diff_sha}."
-msgstr ""
-
-msgid "RiskClassification|workflow_id %{workflow_id} is not a classification session for this merge request."
+msgid "RiskAssessment|workflow_id %{workflow_id} is not a risk assessment session for this merge request."
 msgstr ""
 
 msgid "Roadmap"
@@ -92507,7 +92507,7 @@ msgstr ""
 msgid "Waiting for merge (open and assigned)"
 msgstr ""
 
-msgid "Waiting to be classified."
+msgid "Waiting to be assessed."
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
@@ -93847,9 +93847,6 @@ msgstr ""
 msgid "WorkItemDecisionLog|Context"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Context (required)"
-msgstr ""
-
 msgid "WorkItemDecisionLog|Continue editing"
 msgstr ""
 
@@ -93859,10 +93856,10 @@ msgstr ""
 msgid "WorkItemDecisionLog|Create decision"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Decided by (required)"
+msgid "WorkItemDecisionLog|Decided by"
 msgstr ""
 
-msgid "WorkItemDecisionLog|Decision (required)"
+msgid "WorkItemDecisionLog|Decision"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Decision actions"

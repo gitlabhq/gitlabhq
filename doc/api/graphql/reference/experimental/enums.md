@@ -3948,14 +3948,14 @@ State of a review of a GitLab merge request.
 
 ## `MergeRequestRiskAssessmentStatus`
 
-Status of a merge request risk classification.
+Status of a merge request risk assessment.
 
 | Value | Description |
 | ----- | ----------- |
-| `COMPLETE` | Classification has completed. |
-| `FAILED` | Classification could not be completed. |
-| `PENDING` | Waiting to be classified. |
-| `QUEUED` | Queued for (re)classification. |
+| `COMPLETE` | Assessment has completed. |
+| `FAILED` | Assessment could not be completed. |
+| `PENDING` | Waiting to be assessed. |
+| `QUEUED` | Queued for (re)assessment. |
 
 ## `MergeRequestRiskConfidenceTier`
 

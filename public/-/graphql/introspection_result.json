@@ -235759,7 +235759,7 @@
             },
             {
               "name": "riskAssessment",
-              "description": "Risk classification for the merge request. Ultimate only. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Risk assessment for the merge request. Ultimate only. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -257306,11 +257306,11 @@
         {
           "kind": "OBJECT",
           "name": "MergeRequestRiskAssessment",
-          "description": "Risk classification for a merge request.",
+          "description": "Risk assessment for a merge request.",
           "fields": [
             {
               "name": "assessedAt",
-              "description": "When the classification completed.",
+              "description": "When the assessment completed.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -257394,7 +257394,7 @@
             },
             {
               "name": "duoWorkflowId",
-              "description": "ID of the Duo workflow session that produced the classification.",
+              "description": "ID of the Duo workflow session that produced the assessment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -257466,7 +257466,7 @@
             },
             {
               "name": "stale",
-              "description": "Whether the merge request has changed since it was classified. Classification runs once, so this is a notice rather than a trigger to re-run.",
+              "description": "Whether the merge request has changed since it was assessed. Assessment runs once, so this is a notice rather than a trigger to re-run.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -257482,7 +257482,7 @@
             },
             {
               "name": "status",
-              "description": "Status of the classification.",
+              "description": "Status of the assessment.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -257505,32 +257505,32 @@
         {
           "kind": "ENUM",
           "name": "MergeRequestRiskAssessmentStatus",
-          "description": "Status of a merge request risk classification.",
+          "description": "Status of a merge request risk assessment.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
             {
               "name": "PENDING",
-              "description": "Waiting to be classified.",
+              "description": "Waiting to be assessed.",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "QUEUED",
-              "description": "Queued for (re)classification.",
+              "description": "Queued for (re)assessment.",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "COMPLETE",
-              "description": "Classification has completed.",
+              "description": "Assessment has completed.",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "FAILED",
-              "description": "Classification could not be completed.",
+              "description": "Assessment could not be completed.",
               "isDeprecated": false,
               "deprecationReason": null
             }

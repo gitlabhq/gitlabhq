@@ -46,10 +46,11 @@ For a full list of reference architectures, see
 
 [^machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#how-specifications-are-derived) for more information.
 [^external-database]: Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
-[^external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+[^external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions.
 
-    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
+    Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
 
+    For more information, see [provide your own Redis instances](#provide-your-own-redis-instances) and [infrastructure and services](_index.md#infrastructure-and-services).
 [^external-load-balancer]: Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
     The sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
 [^external-object-storage]: Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
@@ -279,14 +280,14 @@ The basic ports to be used are shown in the table below.
 | 22      | 22           | TCP      |
 
 [^web-terminal-support]: [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires
-  your load balancer to correctly handle WebSocket connections. When using
-  HTTP or HTTPS proxying, this means your load balancer must be configured
-  to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
-  [web terminal](../integration/terminal.md) integration guide for
-  more details.
+    your load balancer to correctly handle WebSocket connections. When using
+    HTTP or HTTPS proxying, this means your load balancer must be configured
+    to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
+    [web terminal](../integration/terminal.md) integration guide for
+    more details.
 [^ssl-certificate]: When using HTTPS protocol for port 443, you must add an SSL
-  certificate to the load balancers. If you wish to terminate SSL at the
-  GitLab application server instead, use TCP protocol.
+    certificate to the load balancers. If you wish to terminate SSL at the
+    GitLab application server instead, use TCP protocol.
 
 If you're using GitLab Pages with custom domain support you will need some
 additional port configurations.
@@ -300,11 +301,11 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 | 443     | Varies[^backend-port] | TCP[^tcp-protocol] |
 
 [^backend-port]: The backend port for GitLab Pages depends on the
-  `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
-  setting. See [GitLab Pages documentation](../pages/_index.md) for more details.
+    `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
+    setting. See [GitLab Pages documentation](../pages/_index.md) for more details.
 [^tcp-protocol]: Port 443 for GitLab Pages should always use the TCP protocol. Users can
-  configure custom domains with custom SSL, which would not be possible
-  if SSL was terminated at the load balancer.
+    configure custom domains with custom SSL, which would not be possible
+    if SSL was terminated at the load balancer.
 
 #### Alternate SSH Port
 
@@ -2324,10 +2325,11 @@ services where applicable):
 
 [^cluster-topology-machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 [^cluster-topology-external-database]: Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
-[^cluster-topology-external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) and [Infrastructure and services](_index.md#infrastructure-and-services) for more information.
+[^cluster-topology-external-cache]: Can be optionally run on reputable third-party external PaaS Redis solutions.
 
     Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
 
+    For more information, see [provide your own Redis instances](#provide-your-own-redis-instances) and [infrastructure and services](_index.md#infrastructure-and-services).
 [^cluster-topology-external-load-balancer]: Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
     Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth.
 [^cluster-topology-external-object-storage]: Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.

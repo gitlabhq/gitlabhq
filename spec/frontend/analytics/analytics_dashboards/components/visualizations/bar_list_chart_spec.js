@@ -352,8 +352,10 @@ describe('BarListChart', () => {
       expect(chartOptions().yAxis.axisTick).toEqual({ show: false });
     });
 
-    it('right-aligns the category labels outside the plot area', () => {
-      expect(chartOptions().yAxis.axisLabel.align).toBe('right');
+    it('left-aligns the category labels at the label column edge', () => {
+      // The margin is what puts the label at the column's edge; align alone
+      // would anchor it against the axis line.
+      expect(chartOptions().yAxis.axisLabel).toMatchObject({ align: 'left', margin: 152 });
     });
 
     it('draws each bar against a track', () => {

@@ -33,7 +33,7 @@ describe('TwoDimensionsBarList', () => {
         primaryDimension: USER,
         secondaryDimension: LANGUAGE,
         metric: METRIC,
-        maxRows: 6,
+        pageSize: 6,
         maxSeries: 6,
         ...props,
       },
@@ -116,7 +116,7 @@ describe('TwoDimensionsBarList', () => {
     ]);
   });
 
-  describe('row folding', () => {
+  describe('row paging', () => {
     const fourUsers = {
       nodes: [
         { user: 'alice', language: 'ruby', totalCount: 50 },
@@ -126,32 +126,28 @@ describe('TwoDimensionsBarList', () => {
       ],
     };
 
-    beforeEach(() => createComponent({ data: fourUsers, maxRows: 2 }));
+    beforeEach(() => createComponent({ data: fourUsers, pageSize: 2 }));
 
-    it('folds the rows past maxRows into an Other row with summed segments', () => {
-      expect(rows().map(({ name }) => name)).toEqual(['alice', 'bob', 'Other (2)']);
-      expect(rows()[2]).toEqual({
-        name: 'Other (2)',
-        value: 20,
-        share: 20,
-        segments: [
-          { name: 'ruby', value: 15, share: 15 },
-          { name: 'go', value: 5, share: 5 },
-        ],
+    it('windows the ranked rows to the current page', () => {
+      expect(rows().map(({ name }) => name)).toEqual(['alice', 'bob']);
+    });
+
+    it('shows the following rows on the next page with their own segments', async () => {
+      await wrapper.setProps({ page: 1 });
+
+      expect(rows().map(({ name }) => name)).toEqual(['carol', 'dana']);
+      expect(rows()[1].segments.find(({ name }) => name === 'go')).toMatchObject({
+        value: 5,
+        share: 5,
       });
     });
 
-    it('keeps a lone row past the limit rather than folding it', async () => {
-      await wrapper.setProps({ maxRows: 3 });
-
-      expect(rows().map(({ name }) => name)).toEqual(['alice', 'bob', 'carol', 'dana']);
-    });
-
-    it('keeps bars summing to the grand total with the fold in place', () => {
-      const total = rows().reduce((acc, { share }) => acc + share, 0);
-
-      expect(total).toBe(100);
+    it('keeps shares relative to the grand total on every page', async () => {
       expect(rows()[0].share).toBe(50);
+
+      await wrapper.setProps({ page: 1 });
+
+      expect(rows()[0].share).toBe(15);
     });
   });
 });

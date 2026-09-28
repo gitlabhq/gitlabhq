@@ -272,7 +272,8 @@ export default {
           data: this.categories,
           axisTick: { show: false },
           axisLabel: {
-            align: 'right',
+            align: 'left',
+            margin: LABEL_COLUMN_WIDTH - LABEL_GAP,
             fontSize: CATEGORY_LABEL_SIZE,
             width: LABEL_COLUMN_WIDTH - LABEL_GAP * 2,
             overflow: 'truncate',

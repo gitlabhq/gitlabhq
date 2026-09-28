@@ -103,6 +103,11 @@ RSpec.describe Types::GlobalIDType do
 
     context 'with a deprecation' do
       around do |example|
+        # Build the schema before resetting the memoized types below. Otherwise a
+        # lazily-loaded schema registers fresh `*ID` classes next to the ones
+        # already referenced and raises `GraphQL::Schema::DuplicateNamesError`.
+        GitlabSchema.types
+
         # Unset all previously memoized GlobalIDTypes to allow us to define one
         # that will use the constants stubbed in the `before` block.
         previous_id_types = described_class.instance_variable_get(:@id_types)

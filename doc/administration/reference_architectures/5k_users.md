@@ -263,18 +263,19 @@ The basic ports to be used are shown in the table below.
 | LB Port | Backend Port | Protocol                 |
 | ------- | ------------ | ------------------------ |
 | 80      | 80           | HTTP[^web-terminal-support]               |
-| 443     | 443          | TCP or HTTPS[^web-terminal-support], [^add-ssl-certificate] |
+| 443     | 443          | TCP or HTTPS[^web-terminal-support], [^ssl-certificate] |
 | 22      | 22           | TCP                      |
 
 [^web-terminal-support]: [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires
-  your load balancer to correctly handle WebSocket connections. When using
-  HTTP or HTTPS proxying, this means your load balancer must be configured
-  to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
-  [web terminal](../integration/terminal.md) integration guide for
-  more details.
-[^add-ssl-certificate]: When using HTTPS protocol for port 443, you must add an SSL
-  certificate to the load balancers. If you wish to terminate SSL at the
-  GitLab application server instead, use TCP protocol.
+    your load balancer to correctly handle WebSocket connections.
+
+    When using HTTP or HTTPS proxying, this means your load balancer must be configured
+    to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
+    [web terminal](../integration/terminal.md) integration guide for
+    more details.
+[^ssl-certificate]: When using HTTPS protocol for port 443, you must add an SSL
+    certificate to the load balancers. If you wish to terminate SSL at the
+    GitLab application server instead, use TCP protocol.
 
 If you're using GitLab Pages with custom domain support you will need some
 additional port configurations.
@@ -288,11 +289,11 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 | 443     | Varies[^backend-port]  | TCP[^tcp-protocol] |
 
 [^backend-port]: The backend port for GitLab Pages depends on the
-  `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
-  setting. See [GitLab Pages documentation](../pages/_index.md) for more details.
+    `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
+    setting. See [GitLab Pages documentation](../pages/_index.md) for more details.
 [^tcp-protocol]: Port 443 for GitLab Pages should always use the TCP protocol. Users can
-  configure custom domains with custom SSL, which would not be possible
-  if SSL was terminated at the load balancer.
+    configure custom domains with custom SSL, which would not be possible
+    if SSL was terminated at the load balancer.
 
 #### Alternate SSH Port
 
@@ -2195,17 +2196,17 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
 
-| Service                                   | Nodes | Configuration         | GCP example[^cluster-topology-machine-types] | AWS example[^cluster-topology-machine-types] |
-|-------------------------------------------|-------|-----------------------|-----------------|--------------|
-| Consul[^cluster-topology-external-database]                        | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| PostgreSQL[^cluster-topology-external-database]                    | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
-| PgBouncer[^cluster-topology-external-database]                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Internal load balancer[^cluster-topology-external-load-balancer]        | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5n.xlarge` |
-| Redis/Sentinel[^cluster-topology-external-cache]                | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
-| Gitaly[^cluster-topology-storage-cluster], [^cluster-topology-storage-specs]            | 3     | 8 vCPU, 30 GB memory  | `n1-standard-8` | `m5.2xlarge` |
-| Praefect[^cluster-topology-storage-cluster]                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Praefect PostgreSQL[^cluster-topology-external-database]           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Object storage[^cluster-topology-external-object-storage]                | -     | -                     | -               | -            |
+| Service                                                                      | Nodes | Configuration         | GCP example[^cluster-topology-machine-types] | AWS example[^cluster-topology-machine-types] |
+|------------------------------------------------------------------------------|-------|-----------------------|----------------------------------------------|----------------------------------------------|
+| Consul[^cluster-topology-external-database]                                  | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`                               | `c5.large`                                   |
+| PostgreSQL[^cluster-topology-external-database]                              | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`                              | `m5.xlarge`                                  |
+| PgBouncer[^cluster-topology-external-database]                               | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`                               | `c5.large`                                   |
+| Internal load balancer[^cluster-topology-external-load-balancer]             | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`                               | `c5n.xlarge`                                 |
+| Redis/Sentinel[^cluster-topology-external-cache]                             | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2`                              | `m5.large`                                   |
+| Gitaly[^cluster-topology-storage-cluster], [^cluster-topology-storage-specs] | 3     | 8 vCPU, 30 GB memory  | `n1-standard-8`                              | `m5.2xlarge`                                 |
+| Praefect[^cluster-topology-storage-cluster]                                  | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`                               | `c5.large`                                   |
+| Praefect PostgreSQL[^cluster-topology-external-database]                     | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`                               | `c5.large`                                   |
+| Object storage[^cluster-topology-external-object-storage]                    | -     | -                     | -                                            | -                                            |
 
 [^cluster-topology-machine-types]: Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#how-specifications-are-derived) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#how-specifications-are-derived) for more information.
 [^cluster-topology-external-database]: Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.

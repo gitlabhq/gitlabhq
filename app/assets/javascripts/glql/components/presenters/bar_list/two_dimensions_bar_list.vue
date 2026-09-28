@@ -2,7 +2,7 @@
 import { s__, sprintf } from '~/locale';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import { buildStackedByDimension, dimensionLabelFormatter } from '../../../utils/chart_data';
-import { foldTail } from './fold_tail';
+import { foldTail, pageOf } from './fold_tail';
 
 const sum = (values) => values.reduce((total, value) => total + value, 0);
 
@@ -28,9 +28,14 @@ export default {
       required: true,
       type: Object,
     },
-    maxRows: {
+    pageSize: {
       required: true,
       type: Number,
+    },
+    page: {
+      required: false,
+      type: Number,
+      default: 0,
     },
     maxSeries: {
       required: true,
@@ -75,23 +80,9 @@ export default {
         })
         .sort((a, b) => b.value - a.value);
     },
-    // Rows past maxRows fold into one Other row, mirroring the one-dimension
-    // path, so bars always sum to 100% of the grand total.
+    // Shares stay relative to the grand total across pages.
     rows() {
-      return foldTail(this.allRows, this.maxRows, (folded) => {
-        const segments = this.series.map((bar, index) => {
-          const value = sum(folded.map((row) => row.segments[index]?.value ?? 0));
-          return { name: bar.name, value, share: this.shareOf(value) };
-        });
-        const value = sum(segments.map((segment) => segment.value));
-
-        return {
-          name: sprintf(s__('Glql|Other (%{count})'), { count: folded.length }),
-          value,
-          share: this.shareOf(value),
-          segments,
-        };
-      });
+      return pageOf(this.allRows, this.page, this.pageSize);
     },
   },
   methods: {

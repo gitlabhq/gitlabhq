@@ -51834,7 +51834,7 @@ Fields:
 | <a id="mergerequest-resourcelabelevents"></a>`resourceLabelEvents` | [`MergeRequestResourceLabelEventConnection`](#mergerequestresourcelabeleventconnection) | Label events of the merge request. (see [Connections](#connections)) |
 | <a id="mergerequest-retargeted"></a>`retargeted` | [`Boolean`](#boolean) | Indicates if merge request was retargeted. |
 | <a id="mergerequest-reviewers"></a>`reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. (see [Connections](#connections)) |
-| <a id="mergerequest-riskassessment"></a>`riskAssessment` {{< icon name="warning-solid" >}} | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Introduced in GitLab 19.4. Status: Experiment. Risk classification for the merge request. Ultimate only. |
+| <a id="mergerequest-riskassessment"></a>`riskAssessment` {{< icon name="warning-solid" >}} | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Introduced in GitLab 19.4. Status: Experiment. Risk assessment for the merge request. Ultimate only. |
 | <a id="mergerequest-securityautofix"></a>`securityAutoFix` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Deprecated in GitLab 16.11. Security Auto Fix experiment feature was removed. It was always hidden behind `security_auto_fix` feature flag. |
 | <a id="mergerequest-securityreportsuptodateontargetbranch"></a>`securityReportsUpToDateOnTargetBranch` | [`Boolean!`](#boolean) | Indicates if the target branch security reports are out of date. |
 | <a id="mergerequest-shouldberebased"></a>`shouldBeRebased` | [`Boolean!`](#boolean) | Indicates if the merge request will be rebased. |
@@ -54132,24 +54132,24 @@ Arguments:
 
 ### `MergeRequestRiskAssessment`
 
-Risk classification for a merge request.
+Risk assessment for a merge request.
 
 Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestriskassessment-assessedat"></a>`assessedAt` | [`Time`](#time) | When the classification completed. |
+| <a id="mergerequestriskassessment-assessedat"></a>`assessedAt` | [`Time`](#time) | When the assessment completed. |
 | <a id="mergerequestriskassessment-confidence"></a>`confidence` | [`Int`](#int) | Confidence in the score, from 0 to 100. Derived from how much of the change could be measured and whether the signals agreed. |
 | <a id="mergerequestriskassessment-confidencetier"></a>`confidenceTier` | [`MergeRequestRiskConfidenceTier`](#mergerequestriskconfidencetier) | Tier derived from the confidence score. |
 | <a id="mergerequestriskassessment-contributingsignals"></a>`contributingSignals` | [`[MergeRequestRiskContributingSignal!]!`](#mergerequestriskcontributingsignal) | What each signal contributed to the score. |
 | <a id="mergerequestriskassessment-domaintags"></a>`domainTags` | [`[String!]!`](#string) | Risk domains the change touches, used to route specialist review. |
-| <a id="mergerequestriskassessment-duoworkflowid"></a>`duoWorkflowId` | [`Int`](#int) | ID of the Duo workflow session that produced the classification. |
+| <a id="mergerequestriskassessment-duoworkflowid"></a>`duoWorkflowId` | [`Int`](#int) | ID of the Duo workflow session that produced the assessment. |
 | <a id="mergerequestriskassessment-missingsignals"></a>`missingSignals` | [`[MergeRequestRiskMissingSignal!]!`](#mergerequestriskmissingsignal) | Signals that could not be measured, which is why confidence may be low. |
 | <a id="mergerequestriskassessment-rationale"></a>`rationale` | [`String`](#string) | Plain-language explanation of the assessment. |
 | <a id="mergerequestriskassessment-risk"></a>`risk` | [`Int`](#int) | Risk score from 0 to 100. |
 | <a id="mergerequestriskassessment-risktier"></a>`riskTier` | [`MergeRequestRiskTier`](#mergerequestrisktier) | Tier derived from the risk score. |
-| <a id="mergerequestriskassessment-stale"></a>`stale` | [`Boolean!`](#boolean) | Whether the merge request has changed since it was classified. Classification runs once, so this is a notice rather than a trigger to re-run. |
-| <a id="mergerequestriskassessment-status"></a>`status` | [`MergeRequestRiskAssessmentStatus!`](#mergerequestriskassessmentstatus) | Status of the classification. |
+| <a id="mergerequestriskassessment-stale"></a>`stale` | [`Boolean!`](#boolean) | Whether the merge request has changed since it was assessed. Assessment runs once, so this is a notice rather than a trigger to re-run. |
+| <a id="mergerequestriskassessment-status"></a>`status` | [`MergeRequestRiskAssessmentStatus!`](#mergerequestriskassessmentstatus) | Status of the assessment. |
 
 ### `MergeRequestRiskContributingSignal`
 
@@ -72285,14 +72285,14 @@ State of a review of a GitLab merge request.
 
 ### `MergeRequestRiskAssessmentStatus`
 
-Status of a merge request risk classification.
+Status of a merge request risk assessment.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergerequestriskassessmentstatus-complete"></a>`COMPLETE` | Classification has completed. |
-| <a id="mergerequestriskassessmentstatus-failed"></a>`FAILED` | Classification could not be completed. |
-| <a id="mergerequestriskassessmentstatus-pending"></a>`PENDING` | Waiting to be classified. |
-| <a id="mergerequestriskassessmentstatus-queued"></a>`QUEUED` | Queued for (re)classification. |
+| <a id="mergerequestriskassessmentstatus-complete"></a>`COMPLETE` | Assessment has completed. |
+| <a id="mergerequestriskassessmentstatus-failed"></a>`FAILED` | Assessment could not be completed. |
+| <a id="mergerequestriskassessmentstatus-pending"></a>`PENDING` | Waiting to be assessed. |
+| <a id="mergerequestriskassessmentstatus-queued"></a>`QUEUED` | Queued for (re)assessment. |
 
 ### `MergeRequestRiskConfidenceTier`
 
