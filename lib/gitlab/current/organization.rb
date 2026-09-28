@@ -51,6 +51,7 @@ module Gitlab
 
         ::Organizations::Organization.find_by_id_with_isolation_record(header_organization_id)
       end
+      strong_memoize_attr :from_headers
 
       # The Organization owning the repository named by the URL on git-over-HTTP
       # routes (/group/sub/project.git/...): resolved via the top-level namespace

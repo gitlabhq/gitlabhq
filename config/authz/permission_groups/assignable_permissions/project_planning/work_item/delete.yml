@@ -10,6 +10,7 @@ permissions:
   - delete_work_item
   - delete_epic
   - delete_epic_award_emoji
+  - delete_epic_board
   - delete_epic_issue
   - delete_epic_link
   - delete_epic_note

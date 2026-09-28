@@ -34,6 +34,7 @@ import {
   DUO_CHAT,
 } from './keybindings';
 import { keyboardShortcutsDisabled } from './shortcuts_disabled';
+import { markShortcutExtensionReady } from './shortcuts_ready_marker';
 
 /**
  * The key used to save and fetch the local Mousetrap instance
@@ -190,6 +191,9 @@ export default class Shortcuts {
 
       instance = new Extension(this, ...args);
       this.extensions.set(Extension, instance);
+      // Runs for dependencies too, via the recursive call above, since each
+      // one goes through this same `if (!instance)` branch.
+      markShortcutExtensionReady(Extension.name);
     }
 
     extensionsCurrentlyLoading.delete(Extension);

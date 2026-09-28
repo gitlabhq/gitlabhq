@@ -24,4 +24,29 @@ RSpec.describe Mutations::Boards::Create, feature_category: :planning_views do
   end
 
   it_behaves_like 'boards create mutation'
+
+  describe 'granular PAT authorization' do
+    include GraphqlHelpers
+
+    context 'for a project board' do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :create_issue_board do
+        let_it_be(:user) { create(:user, maintainer_of: parent) }
+
+        let(:boundary_object) { parent }
+        let(:mutation) { graphql_mutation(:create_board, { project_path: parent.full_path, name: name }, 'errors') }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+
+    context 'for a group board' do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :create_issue_board do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:user) { create(:user, maintainer_of: group) }
+
+        let(:boundary_object) { group }
+        let(:mutation) { graphql_mutation(:create_board, { group_path: group.full_path, name: name }, 'errors') }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+  end
 end

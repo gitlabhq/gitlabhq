@@ -712,7 +712,6 @@ organizations:
 - abuse_events.organization_id
 - abuse_report_events.organization_id
 - abuse_report_upload_states.organization_id
-- abuse_report_user_mentions.organization_id
 - abuse_reports.organization_id
 - admin_roles.organization_id
 - agent_organization_authorizations.organization_id

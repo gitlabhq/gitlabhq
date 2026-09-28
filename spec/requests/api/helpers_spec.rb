@@ -540,6 +540,14 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
         expect(Current.organization).to eq(header_organization)
       end
+
+      it 'stores the resolver so URL helpers can scope paths by the header' do
+        request.env["HTTP_X_GITLAB_ORGANIZATION_ID"] = header_organization.id.to_s
+
+        set_current_organization(user: user)
+
+        expect(Current.organization_resolver.from_headers).to eq(header_organization)
+      end
     end
   end
 

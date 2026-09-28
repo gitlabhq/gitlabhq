@@ -12,7 +12,6 @@ export const DEFAULT_PIN_CONTEXT = {
   panelType: '',
 };
 
-export const JS_TOGGLE_COLLAPSE_CLASS = 'js-super-sidebar-toggle-collapse';
 export const JS_TOGGLE_EXPAND_CLASS = 'js-super-sidebar-toggle-expand';
 
 export const TRACKING_UNKNOWN_ID = 'item_without_id';

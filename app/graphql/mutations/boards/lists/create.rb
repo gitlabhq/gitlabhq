@@ -20,6 +20,11 @@ module Mutations
           description: 'Issue list in the issue board.'
 
         authorize :admin_issue_board_list
+        authorize_granular_token permissions: :create_issue_board_list,
+          boundaries: [
+            { boundary_argument: :board_id, boundary: :resource_parent, boundary_type: :project },
+            { boundary_argument: :board_id, boundary: :resource_parent, boundary_type: :group }
+          ]
 
         private
 

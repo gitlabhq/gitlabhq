@@ -192,11 +192,16 @@ describe('WorkItemNotes component', () => {
   };
 
   beforeEach(() => {
+    delete document.body.dataset.shortcutsReady;
     createComponent();
   });
 
   afterEach(() => {
     resetHTMLFixture();
+  });
+
+  it('does not mark ShortcutsWorkItemNotes ready when the user cannot create a note', () => {
+    expect(document.body.dataset.shortcutsReady).toBeUndefined();
   });
 
   it('has the work item note activity header', () => {
@@ -682,6 +687,7 @@ describe('WorkItemNotes component', () => {
     };
 
     beforeEach(async () => {
+      delete document.body.dataset.shortcutsReady;
       window.gon.current_user_id = 1;
       createComponent({
         defaultWorkItemNotesQueryHandler: jest
@@ -694,6 +700,10 @@ describe('WorkItemNotes component', () => {
       jest.spyOn(wrapper.vm, 'appendText').mockImplementation(() => {});
 
       await waitForPromises();
+    });
+
+    it('marks ShortcutsWorkItemNotes ready in the shortcuts-ready marker', () => {
+      expect(document.body.dataset.shortcutsReady).toBe('ShortcutsWorkItemNotes');
     });
 
     it('emits `quote-reply` event on $root when reply quotes an existing discussion', async () => {

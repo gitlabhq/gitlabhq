@@ -246,6 +246,43 @@ describe('Shortcuts', () => {
   });
 
   describe('addExtension', () => {
+    beforeEach(() => {
+      delete document.body.dataset.shortcutsReady;
+    });
+
+    it('records the extension name in the shortcuts-ready marker', () => {
+      const MockExtension = jest.fn();
+      Object.defineProperty(MockExtension, 'name', { value: 'MockExtension' });
+
+      shortcuts.addExtension(MockExtension);
+
+      expect(document.body.dataset.shortcutsReady).toBe('MockExtension');
+    });
+
+    it('records a dependency in the marker too, even though it is bound internally', () => {
+      const MockDependency = jest.fn();
+      Object.defineProperty(MockDependency, 'name', { value: 'MockDependency' });
+      const MockExtension = jest.fn();
+      Object.defineProperty(MockExtension, 'name', { value: 'MockExtension' });
+      MockExtension.dependencies = [MockDependency];
+
+      shortcuts.addExtension(MockExtension);
+
+      expect(document.body.dataset.shortcutsReady.split(' ')).toEqual(
+        expect.arrayContaining(['MockDependency', 'MockExtension']),
+      );
+    });
+
+    it('does not add the same name twice when an extension is added more than once', () => {
+      const MockExtension = jest.fn();
+      Object.defineProperty(MockExtension, 'name', { value: 'MockExtension' });
+
+      shortcuts.addExtension(MockExtension);
+      shortcuts.addExtension(MockExtension);
+
+      expect(document.body.dataset.shortcutsReady).toBe('MockExtension');
+    });
+
     it('instantiates the given extension', () => {
       const MockExtension = jest.fn();
 

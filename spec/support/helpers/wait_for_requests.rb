@@ -45,6 +45,21 @@ module WaitForRequests
     end
   end
 
+  # Keyboard shortcut handlers are bound from an async bundle that
+  # `wait_for_requests` cannot see, so a keystroke sent before the bundle
+  # resolves is silently dropped. Call this before sending shortcut keys,
+  # passing the name(s) (e.g. 'ShortcutsWorkItem') of the handler(s) the
+  # spec is about to exercise. A page can bind more than one handler, so
+  # pass every name the spec depends on.
+  def wait_for_keyboard_shortcuts(*extensions)
+    return true unless javascript_test?
+    raise ArgumentError, 'wait_for_keyboard_shortcuts requires at least one extension name' if extensions.blank?
+
+    selector = extensions.map { |extension| "[data-shortcuts-ready~='#{extension}']" }.join
+
+    expect(page).to have_css("body#{selector}", visible: :all)
+  end
+
   # Wait for active Rack requests and client-side AJAX requests
   def wait_for_all_requests
     wait_for('pending requests complete') do

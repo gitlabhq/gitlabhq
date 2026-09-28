@@ -1016,6 +1016,7 @@ Sobelow
 Solargraph
 Solarized
 Sourcegraph
+Sourcetree
 Spamcheck
 spammable
 sparkline

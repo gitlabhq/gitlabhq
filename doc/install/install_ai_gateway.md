@@ -471,17 +471,33 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    kubectl create namespace ai-gateway
    ```
 
-1. Generate the certificate for the domain where you plan to expose the AI Gateway.
+1. Generate the certificate for the domains where you plan to expose the AI Gateway
+   and the GitLab Duo Agent Platform service.
 1. Create the TLS secret in the previously created namespace:
 
    ```shell
    kubectl -n ai-gateway create secret tls ai-gateway-tls --cert="<path_to_cert>" --key="<path_to_cert_key>"
    ```
 
+1. Generate the JWT signing keys and store them in a secret in the same namespace:
+
+   ```shell
+   openssl genrsa -out aigw_signing.key 2048
+   openssl genrsa -out aigw_validation.key 2048
+   openssl genrsa -out duo_workflow_jwt.key 2048
+   openssl genrsa -out duo_workflow_validation.key 2048
+
+   kubectl -n ai-gateway create secret generic ai-gateway-jwt \
+     --from-file=aigw_signing.key \
+     --from-file=aigw_validation.key \
+     --from-file=duo_workflow_jwt.key \
+     --from-file=duo_workflow_validation.key
+   ```
+
 1. Get the version number of the latest package in the [chart's Package Registry](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages).
 1. For the AI Gateway to access the API, it must know where the GitLab instance
-   is located. To do this, set the `gitlab.url` and `gitlab.apiUrl` together with
-   the `ingress.hosts` and `ingress.tls` values as follows:
+   is located. Set `gitlab.url` and `gitlab.apiUrl` together with
+   the Ingress, gRPC Ingress, and JWT key values as follows:
 
    ```shell
    helm repo add ai-gateway \
@@ -502,18 +518,47 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
      --set "ingress.tls[0].secretName=ai-gateway-tls" \
      --set "ingress.tls[0].hosts[0]=<your_gateway_domain>" \
      --set="ingress.className=nginx" \
-     --set "extraEnvironmentVariables[0].name=AIGW_SELF_SIGNED_JWT__SIGNING_KEY" \
-     --set "extraEnvironmentVariables[0].value=$(cat aigw_signing.key)" \
-     --set "extraEnvironmentVariables[1].name=AIGW_SELF_SIGNED_JWT__VALIDATION_KEY" \
-     --set "extraEnvironmentVariables[1].value=$(cat aigw_validation.key)" \
-     --set "extraEnvironmentVariables[2].name=DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY" \
-     --set "extraEnvironmentVariables[2].value=$(cat duo_workflow_jwt.key)" \
-     --set "extraEnvironmentVariables[3].name=DUO_WORKFLOW_SELF_SIGNED_JWT__VALIDATION_KEY" \
-     --set "extraEnvironmentVariables[3].value=$(cat duo_workflow_validation.key)" \
-     --set "extraEnvironmentVariables[4].name=DUO_WORKFLOW_AUTH__ENABLED" \
-     --set "extraEnvironmentVariables[4].value={{ true | quote }}" \
+     --set "ingress.gitlabIngressEnabled=false" \
+     --set "grpcIngress.hosts[0].host=<your_gateway_grpc_domain>" \
+     --set "grpcIngress.hosts[0].paths[0].path=/" \
+     --set "grpcIngress.hosts[0].paths[0].pathType=Prefix" \
+     --set "grpcIngress.tls[0].secretName=ai-gateway-tls" \
+     --set "grpcIngress.tls[0].hosts[0]=<your_gateway_grpc_domain>" \
+     --set "grpc-tls-proxy.enabled=true" \
+     --set "grpc-tls-proxy.tlsSecretName=ai-gateway-tls" \
+     --set "grpc-tls-proxy.upstream.host=ai-gateway" \
+     --set "aigwSigningKey.secret=ai-gateway-jwt" \
+     --set "aigwSigningKey.key=aigw_signing.key" \
+     --set "aigwValidationKey.secret=ai-gateway-jwt" \
+     --set "aigwValidationKey.key=aigw_validation.key" \
+     --set "duoWorkflowSigningKey.secret=ai-gateway-jwt" \
+     --set "duoWorkflowSigningKey.key=duo_workflow_jwt.key" \
+     --set "duoWorkflowValidationKey.secret=ai-gateway-jwt" \
+     --set "duoWorkflowValidationKey.key=duo_workflow_validation.key" \
      --timeout=300s --wait --wait-for-jobs
    ```
+
+   The chart renders an Ingress only when `ingress.gitlabIngressEnabled` is `false`.
+   The gRPC Ingress serves the GitLab Duo Agent Platform service through the chart's TLS proxy.
+   `grpc-tls-proxy.upstream.host` must be the name of the AI Gateway service,
+   which is `ai-gateway` for the release name in this command.
+
+   For an offline environment with an offline license and no internet access,
+   before `--timeout=300s`, also add the following values to the command:
+
+   ```shell
+     --set "extraEnvironmentVariables[0].name=AIGW_CUSTOMER_PORTAL_URL" \
+     --set "extraEnvironmentVariables[0].value=https://<your_gitlab_domain>" \
+     --set "extraEnvironmentVariables[1].name=LITELLM_LOCAL_MODEL_COST_MAP" \
+     --set-string "extraEnvironmentVariables[1].value=True" \
+   ```
+
+   The chart already sets `DUO_WORKFLOW_AUTH__OIDC_CUSTOMER_PORTAL_URL` to `gitlab.url`.
+   Without internet access, `LITELLM_LOCAL_MODEL_COST_MAP` must be `true`.
+   Otherwise, LiteLLM retries a download from `raw.githubusercontent.com` at startup,
+   and the liveness probe restarts the pod before the AI Gateway accepts connections.
+
+   In an offline environment, mirror the TLS proxy's `nginx:alpine` image to your internal registry.
 
 You can find the list of AI Gateway versions that can be used as `image.tag` in the [container registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&search%5B%5D=self-hosted).
 

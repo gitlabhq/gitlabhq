@@ -70,4 +70,28 @@ RSpec.describe Mutations::Boards::Destroy, feature_category: :planning_views do
       end
     end
   end
+
+  describe 'granular PAT authorization' do
+    context 'for a project board' do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_issue_board do
+        let_it_be(:user) { create(:user, maintainer_of: project) }
+
+        let(:boundary_object) { project }
+        let(:mutation) { graphql_mutation(:destroy_board, { id: board.to_global_id.to_s }, 'errors') }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+
+    context 'for a group board' do
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_issue_board do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:group_board) { create(:board, group: group) }
+        let_it_be(:user) { create(:user, maintainer_of: group) }
+
+        let(:boundary_object) { group }
+        let(:mutation) { graphql_mutation(:destroy_board, { id: group_board.to_global_id.to_s }, 'errors') }
+        let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+      end
+    end
+  end
 end

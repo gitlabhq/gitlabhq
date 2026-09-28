@@ -108,13 +108,17 @@ module API
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def set_current_organization(user: current_user)
-      return if ::Current.organization_assigned
-
-      ::Current.organization = Gitlab::Current::Organization.new(
+      # Resolved even when #organization is already assigned, so URL helpers
+      # can consult the resolver (e.g. the Organization header) for scoping.
+      ::Current.organization_resolver ||= Gitlab::Current::Organization.new(
         params: {},
         user: user,
         rack_env: request.env
-      ).organization
+      )
+
+      return if ::Current.organization_assigned
+
+      ::Current.organization = ::Current.organization_resolver.organization
 
       check_organization_maintenance_mode!
     end

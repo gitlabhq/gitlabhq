@@ -12,6 +12,8 @@ permissions:
   - create_custom_field
   - create_epic
   - create_epic_award_emoji
+  - create_epic_board
+  - create_epic_board_list
   - create_epic_discussion
   - create_epic_discussion_note
   - create_epic_issue

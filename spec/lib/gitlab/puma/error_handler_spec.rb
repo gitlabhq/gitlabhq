@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Puma::ErrorHandler, feature_category: :shared do
 
       expect(status).to eq(500)
       expect(headers).to eq({})
-      expect(message).to eq(described_class::PROD_ERROR_MESSAGE)
+      expect(message).to eq([described_class::PROD_ERROR_MESSAGE])
     end
 
     context 'when not in production' do
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Puma::ErrorHandler, feature_category: :shared do
 
         expect(status).to eq(500)
         expect(headers).to eq({})
-        expect(message).to eq(described_class::DEV_ERROR_MESSAGE)
+        expect(message).to eq([described_class::DEV_ERROR_MESSAGE])
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Puma::ErrorHandler, feature_category: :shared do
 
         expect(status).to eq(500)
         expect(headers).to eq({})
-        expect(message).to eq(described_class::PROD_ERROR_MESSAGE)
+        expect(message).to eq([described_class::PROD_ERROR_MESSAGE])
       end
     end
 
@@ -57,8 +57,14 @@ RSpec.describe Gitlab::Puma::ErrorHandler, feature_category: :shared do
 
         expect(status).to eq(404)
         expect(headers).to eq({})
-        expect(message).to eq(described_class::PROD_ERROR_MESSAGE)
+        expect(message).to eq([described_class::PROD_ERROR_MESSAGE])
       end
+    end
+
+    it 'returns a Rack-compliant body that responds to :each' do
+      _status, _headers, body = subject.execute(ex, env, status_code)
+
+      expect(body).to respond_to(:each)
     end
   end
 end

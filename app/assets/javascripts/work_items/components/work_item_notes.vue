@@ -11,6 +11,7 @@ import {
   TYPENAME_USER,
 } from '~/graphql_shared/constants';
 import { Mousetrap, suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
+import { markShortcutExtensionReady } from '~/behaviors/shortcuts';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -290,6 +291,9 @@ export default {
     }
     if (this.canCreateNote) {
       Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), (e) => this.quoteReply(e));
+      // Not a class-based Shortcuts extension, just a name feature specs can
+      // wait on via `wait_for_keyboard_shortcuts('ShortcutsWorkItemNotes')`.
+      markShortcutExtensionReady('ShortcutsWorkItemNotes');
       gfmEventHub.$on('edit-current-user-last-note', this.editCurrentUserLastNote);
     }
   },

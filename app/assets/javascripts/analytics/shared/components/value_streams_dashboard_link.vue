@@ -13,8 +13,7 @@ export default {
   },
   i18n: {
     title: __('Related'),
-    // eslint-disable-next-line @gitlab/require-valid-i18n-helpers
-    linkText: __('Value Streams Dashboard | DORA'),
+    linkText: __('Value Streams Dashboard (DORA)'),
   },
 };
 </script>

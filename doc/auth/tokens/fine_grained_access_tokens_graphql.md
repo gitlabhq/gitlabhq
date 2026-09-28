@@ -1563,6 +1563,14 @@ Grants the ability to create, delete, and update designs.
 | Update | Project | Mutation | `DesignManagementMove` |
 | Update | Project | Mutation | `DesignManagementUpdate` |
 
+#### Issue
+
+Grants the ability to subscribe issues.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Subscribe | Project | Mutation | `IssueSetSubscription` |
+
 #### Label
 
 Grants the ability to create, delete, promote, read, subscribe, and update labels.
@@ -1593,7 +1601,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `BoardListCreate` |
 | Create <sup>1</sup> | Project | Mutation | `CreateAlertIssue` |
+| Create | Project | Mutation | `CreateBoard` |
 | Create | Project | Mutation | `CreateDiffNote` |
 | Create | Project | Mutation | `CreateDiscussion` |
 | Create | Project | Mutation | `CreateImageDiffNote` |
@@ -1607,20 +1617,30 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Project | Field | `EpicIssue.createNoteEmail` |
 | Create | Project | Field | `Issue.createNoteEmail` |
 | Create | Project | Field | `WorkItem.createNoteEmail` |
+| Create | Group | Mutation | `BoardEpicCreate` |
+| Create | Group | Mutation | `BoardListCreate` |
+| Create | Group | Mutation | `CreateBoard` |
 | Create | Group | Mutation | `CreateDiffNote` |
 | Create | Group | Mutation | `CreateDiscussion` |
+| Create | Group | Mutation | `CreateEpic` |
 | Create | Group | Mutation | `CreateImageDiffNote` |
 | Create | Group | Mutation | `CreateIteration` |
 | Create | Group | Mutation | `CreateLatestDiffNote` |
 | Create | Group | Mutation | `CreateNote` |
 | Create | Group | Mutation | `CustomFieldCreate` |
+| Create | Group | Mutation | `EpicAddIssue` |
+| Create | Group | Mutation | `EpicBoardCreate` |
+| Create | Group | Mutation | `EpicBoardListCreate` |
 | Create | Group | Mutation | `IterationCadenceCreate` |
 | Create | Group | Mutation | `LifecycleCreate` |
 | Create | Group | Mutation | `WorkItemCreate` |
 | Create | Group | Mutation | `WorkItemTypeCreate` |
 | Create | Group | Mutation | `iterationCreate` |
+| Delete | Project | Mutation | `DestroyBoard` |
 | Delete | Project | Mutation | `DestroyNote` |
 | Delete | Project | Mutation | `WorkItemDelete` |
+| Delete | Group | Mutation | `DestroyBoard` |
+| Delete | Group | Mutation | `DestroyEpicBoard` |
 | Delete | Group | Mutation | `DestroyNote` |
 | Delete | Group | Mutation | `IterationCadenceDestroy` |
 | Delete | Group | Mutation | `IterationDelete` |
@@ -1633,6 +1653,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Project | Type | `Note` |
 | Read | Project | Type | `WorkItem` |
 | Read | Project | Mutation | `ExportRequirements` |
+| Read | Project | Mutation | `UpdateBoardEpicUserPreferences` |
 | Read | Project | Mutation | `WorkItemExport` |
 | Read | Project | Mutation | `WorkItemsCsvExport` |
 | Read | Group | Type | `Board` |
@@ -1643,8 +1664,11 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Group | Type | `Milestone` |
 | Read | Group | Type | `Note` |
 | Read | Group | Type | `WorkItemMoveTarget` |
+| Read | Group | Mutation | `UpdateBoardEpicUserPreferences` |
 | Subscribe | Project | Mutation | `WorkItemSubscribe` |
+| Subscribe | Group | Mutation | `EpicSetSubscription` |
 | Subscribe | Group | Mutation | `WorkItemSubscribe` |
+| Update | Project | Mutation | `BoardListUpdateLimitMetrics` |
 | Update | Project | Mutation | `DiscussionToggleResolve` |
 | Update | Project | Mutation | `IssueLinkAlerts` |
 | Update | Project | Mutation | `IssueMove` |
@@ -1661,7 +1685,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | Mutation | `IssueSetWeight` |
 | Update | Project | Mutation | `IssueUnlinkAlert` |
 | Update | Project | Mutation | `NoteConvertToThread` |
+| Update | Project | Mutation | `PromoteToEpic` |
 | Update | Project | Mutation | `RepositionImageDiffNote` |
+| Update | Project | Mutation | `UpdateBoard` |
 | Update | Project | Mutation | `UpdateImageDiffNote` |
 | Update | Project | Mutation | `UpdateIssue` |
 | Update | Project | Mutation | `UpdateNote` |
@@ -1687,10 +1713,16 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | Mutation | `WorkItemUserPreferenceUpdate` |
 | Update | Project | Mutation | `workItemsHierarchyReorder` |
 | Update | Project | Mutation | `workItemsReorder` |
+| Update | Group | Mutation | `BoardListUpdateLimitMetrics` |
 | Update | Group | Mutation | `CustomFieldUpdate` |
+| Update | Group | Mutation | `EpicBoardUpdate` |
+| Update | Group | Mutation | `EpicMoveList` |
+| Update | Group | Mutation | `EpicTreeReorder` |
 | Update | Group | Mutation | `IterationCadenceUpdate` |
 | Update | Group | Mutation | `LifecycleAttachWorkItemType` |
 | Update | Group | Mutation | `LifecycleUpdate` |
+| Update | Group | Mutation | `UpdateBoard` |
+| Update | Group | Mutation | `UpdateEpic` |
 | Update | Group | Mutation | `UpdateImageDiffNote` |
 | Update | Group | Mutation | `UpdateIteration` |
 | Update | Group | Mutation | `UpdateNote` |

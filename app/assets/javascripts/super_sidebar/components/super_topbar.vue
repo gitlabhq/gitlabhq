@@ -52,7 +52,6 @@ export default {
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
     analyticsDashboardsBtnText: s__('AnalyticsDashboards|View analytics dashboards'),
-    menuLabel: __('Open navigation menu'),
   },
   inject: ['isSaas'],
   provide() {
@@ -137,13 +136,7 @@ export default {
     <div class="gl-flex gl-items-center gl-gap-3">
       <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 
-      <super-sidebar-toggle
-        v-if="sidebarData.current_menu_items.length"
-        icon="hamburger"
-        type="expand"
-        class="xl:gl-hidden"
-        :aria-label="$options.i18n.menuLabel"
-      />
+      <super-sidebar-toggle v-if="sidebarData.current_menu_items.length" class="xl:gl-hidden" />
 
       <promo-menu
         v-if="!isLoggedIn"

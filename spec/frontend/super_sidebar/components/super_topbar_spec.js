@@ -75,10 +75,6 @@ describe('SuperTopbar', () => {
     });
 
     describe('Mobile sidebar toggle', () => {
-      it('has the correct class', () => {
-        expect(findSidebarToggle().props('icon')).toBe('hamburger');
-      });
-
       it('is not shown on large screens', () => {
         expect(findSidebarToggle().classes()).toContain('xl:gl-hidden');
       });

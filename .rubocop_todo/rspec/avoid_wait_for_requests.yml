@@ -392,7 +392,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/whats_new_spec.rb'
     - 'spec/features/work_item_rebalancing_spec.rb'
     - 'spec/features/work_items/detail/change_type_action_spec.rb'
-    - 'spec/features/work_items/detail/shortcuts_work_item_spec.rb'
     - 'spec/features/work_items/detail/work_item_children_spec.rb'
     - 'spec/features/work_items/detail/work_item_detail_spec.rb'
     - 'spec/features/work_items/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'

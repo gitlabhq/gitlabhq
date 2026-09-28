@@ -20,6 +20,7 @@ permissions:
   - reset_merge_request_time_estimate
   - update_custom_field
   - update_epic
+  - update_epic_board
   - update_epic_issue
   - update_epic_link
   - update_epic_note

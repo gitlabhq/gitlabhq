@@ -42348,6 +42348,26 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "upstreamRepositoryIds",
+              "description": "Upstream repositories of a virtual repository, as Artifact Registry repository IDs in resolution order. On update, replaces the whole upstream list, and an empty list removes every upstream. Rejected on any other kind. Maximum is 1000 IDs per request. Artifact Registry sets a lower limit on how many upstreams a repository can have. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "name",
               "description": "Name of the repository, unique within the organization.",
               "type": {
@@ -42460,6 +42480,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "refusedUpstreamRepositoryId",
+              "description": "Artifact Registry ID of the first upstream list entry that Artifact Registry refused. Null unless an entry was refused. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "repository",
@@ -43564,6 +43596,26 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "upstreamRepositoryIds",
+              "description": "Upstream repositories of a virtual repository, as Artifact Registry repository IDs in resolution order. On update, replaces the whole upstream list, and an empty list removes every upstream. Rejected on any other kind. Maximum is 1000 IDs per request. Artifact Registry sets a lower limit on how many upstreams a repository can have. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "name",
               "description": "Name of the repository to update, unique within the organization. Cannot be changed.",
               "type": {
@@ -43648,6 +43700,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "refusedUpstreamRepositoryId",
+              "description": "Artifact Registry ID of the first upstream list entry that Artifact Registry refused. Null unless an entry was refused. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "repository",

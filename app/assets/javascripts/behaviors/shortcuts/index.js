@@ -7,6 +7,8 @@ const shortcutsPromise = import(/* webpackChunkName: 'shortcutsBundle' */ './sho
 export const addShortcutsExtension = (ShortcutExtension, ...args) =>
   shortcutsPromise.then((shortcuts) => shortcuts.addExtension(ShortcutExtension, args));
 
+export { markShortcutExtensionReady } from './shortcuts_ready_marker';
+
 export const resetShortcutsForTests = async () => {
   if (process.env.NODE_ENV === 'test') {
     const { Mousetrap, clearStopCallbacksForTests } = await import('~/lib/mousetrap');
@@ -14,5 +16,6 @@ export const resetShortcutsForTests = async () => {
     Mousetrap.reset();
     const shortcuts = await shortcutsPromise;
     shortcuts.extensions.clear();
+    delete document.body.dataset.shortcutsReady;
   }
 };
