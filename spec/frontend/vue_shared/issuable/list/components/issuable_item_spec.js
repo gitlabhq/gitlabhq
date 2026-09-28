@@ -599,6 +599,23 @@ describe('IssuableItem', () => {
       });
     });
 
+    it('passes an empty footer to non-archived labels', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.findAllComponents(GlLabel).at(0).props('footer')).toBe('');
+    });
+
+    it('passes the "Archived" footer to archived labels', () => {
+      wrapper = createComponent({
+        issuable: {
+          ...mockIssuable,
+          labels: { nodes: [{ ...mockLabels[0], archived: true }] },
+        },
+      });
+
+      expect(wrapper.findAllComponents(GlLabel).at(0).props('footer')).toBe('Archived');
+    });
+
     describe('status', () => {
       it('renders issuable status via slot', () => {
         wrapper = createComponent({

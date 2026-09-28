@@ -23,10 +23,6 @@ title: Code Suggestions
 
 {{< history >}}
 
-- [Introduced support for Gemini Enterprise Agent Platform Codey APIs](https://gitlab.com/groups/gitlab-org/-/work_items/10562) in GitLab 16.1.
-- [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/work_items/10752) in GitLab 16.2.
-- [Introduced support for code generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
 - [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
 - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/work_items/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
@@ -150,17 +146,6 @@ To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo/use_cases.md).
 
-## Available language models
-
-Different language models can be the source for Code Suggestions.
-
-- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI Gateway.
-- On GitLab Self-Managed, two options exist:
-  - GitLab can [host the models and connects to them through the cloud-based AI Gateway](set_up.md).
-  - Your organization can use [self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
-    which means you host the AI Gateway and language models. You can use GitLab-managed models,
-    other supported language models, or bring your own compatible model.
-
 ## Performance
 
 Learn about the default response times for Code Suggestions, and options for streaming, prompt
@@ -178,9 +163,9 @@ This API connection securely transmits a context window from your IDE/editor to 
 
 ### Streaming
 
-Streaming of code generation responses is supported in JetBrains and Visual Studio, leading to
-perceived faster response times.
-Other supported IDEs will return the generated code in a single block.
+Code generation responses stream in VS Code, JetBrains IDEs, Visual Studio, and Eclipse,
+so generated code appears sooner.
+In Neovim, streaming requires the experimental [ghost text feature](../../../../editor_extensions/neovim/setup.md#configure-the-extension).
 
 Streaming is not enabled for code completion.
 
@@ -292,7 +277,3 @@ However, Code Suggestions might generate suggestions that are:
 - Offensive or insensitive.
 
 When using Code Suggestions, code review best practices still apply.
-
-## Feedback
-
-Provide feedback about your Code Suggestions experience in [issue 435783](https://gitlab.com/gitlab-org/gitlab/-/issues/435783).

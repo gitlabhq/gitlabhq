@@ -58,6 +58,7 @@ export const issuesQueryResponse = {
                 color: '#333',
                 title: 'Label title',
                 description: 'Label description',
+                archived: false,
               },
             ],
           },

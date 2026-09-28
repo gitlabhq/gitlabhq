@@ -104,8 +104,8 @@ RSpec.describe 'Project', feature_category: :source_code_management do
   end
 
   describe 'description' do
-    let(:project) { create(:project, :repository) }
-    let(:path)    { project_path(project) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let(:path) { project_path(project) }
 
     before do
       sign_in(project.first_owner)
@@ -155,8 +155,8 @@ RSpec.describe 'Project', feature_category: :source_code_management do
   end
 
   describe 'project topics' do
-    let(:project) { create(:project, :repository) }
-    let(:path)    { project_path(project) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let(:path) { project_path(project) }
 
     before do
       sign_in(project.first_owner)
@@ -185,8 +185,8 @@ RSpec.describe 'Project', feature_category: :source_code_management do
   end
 
   describe 'copy clone URL to clipboard', :js do
-    let(:project) { create(:project, :repository) }
-    let(:path)    { project_path(project) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:path) { project_path(project) }
 
     before do
       sign_in(project.first_owner)
@@ -406,10 +406,10 @@ RSpec.describe 'Project', feature_category: :source_code_management do
 
   describe 'activity view' do
     let(:user) { create(:user, project_view: 'activity') }
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     before do
-      project.add_maintainer(user)
+      project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let
       sign_in user
       visit project_path(project)
     end
@@ -421,7 +421,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
 
   context 'content is not cached after signing out', :js do
     let(:user) { create(:user, project_view: 'activity') }
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     it 'does not load activity', :js do
       project.add_maintainer(user)
@@ -484,11 +484,11 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     let(:badges) { project.badges }
 
     context 'has no badges' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       before do
         sign_in(user)
-        project.add_maintainer(user)
+        project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let
         visit project_path(project)
       end
 
@@ -498,14 +498,14 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     end
 
     context 'only has group badges' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, :repository, namespace: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :repository, namespace: group) }
 
       before do
         create(:group_badge, group: project.group)
 
         sign_in(user)
-        project.add_maintainer(user)
+        project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let
         visit project_path(project)
       end
 
@@ -513,13 +513,13 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     end
 
     context 'only has project badges' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       before do
         create(:project_badge, project: project)
 
         sign_in(user)
-        project.add_maintainer(user)
+        project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let
         visit project_path(project)
       end
 
@@ -527,15 +527,15 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     end
 
     context 'has both group and project badges' do
-      let(:group) { create(:group) }
-      let(:project) { create(:project, :repository, namespace: group) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :repository, namespace: group) }
 
       before do
         create(:project_badge, project: project)
         create(:group_badge, group: project.group)
 
         sign_in(user)
-        project.add_maintainer(user)
+        project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is a per-example let
         visit project_path(project)
       end
 

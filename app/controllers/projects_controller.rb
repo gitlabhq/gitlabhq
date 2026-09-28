@@ -50,7 +50,6 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_create_rate_limit!, only: [:create]
 
   before_action do
-    push_frontend_feature_flag(:inline_blame, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)

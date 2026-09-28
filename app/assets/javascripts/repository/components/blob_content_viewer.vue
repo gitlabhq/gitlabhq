@@ -14,7 +14,6 @@ import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { ERROR_POLICY_NONE } from '~/lib/graphql';
 import { __, s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { visitUrl, getLocationHash, refreshCurrentPage } from '~/lib/utils/url_utility';
 import { projectPath } from '~/lib/utils/path_helpers/project';
@@ -57,7 +56,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [getRefMixin, highlightMixin, glAbilitiesMixin(), glFeatureFlagMixin(), trackingMixin],
+  mixins: [getRefMixin, highlightMixin, glAbilitiesMixin(), trackingMixin],
   inject: {
     originalBranch: {
       default: '',
@@ -283,7 +282,7 @@ export default {
       );
     },
     isBlameAvailable() {
-      return this.glFeatures.inlineBlame && !this.isBinaryFileType && this.showBlame;
+      return !this.isBinaryFileType && this.showBlame;
     },
     isOrbitCodeIntelligenceAvailable() {
       return this.glAbilities.readCodeNavigation && this.isOnDefaultBranch;
@@ -324,7 +323,6 @@ export default {
       },
     },
     $route({ query }) {
-      if (!this.glFeatures.inlineBlame) return;
       if (query?.blame === '1') this.setShowBlame(true);
       else this.setShowBlame(false); // Always hide blame panel by default
     },
@@ -494,7 +492,7 @@ export default {
           :override-copy="true"
           :show-fork-suggestion="showSingleFileEditorForkSuggestion"
           :show-web-ide-fork-suggestion="showWebIdeForkSuggestion"
-          :show-blame-toggle="glFeatures.inlineBlame"
+          show-blame-toggle
           :show-blame-info="isBlameAvailable"
           :project-path="projectPath"
           :project-id="projectId"
@@ -530,7 +528,7 @@ export default {
           :is-raw-content="true"
           :active-viewer="viewer"
           :should-preload-blame="shouldPreloadBlame"
-          :show-blame="showBlame && glFeatures.inlineBlame"
+          :show-blame="showBlame"
           :current-ref="currentRef"
           :loading="isLoadingLegacyViewer"
           :project-path="projectPath"
@@ -542,7 +540,7 @@ export default {
           ref="blobViewerComponent"
           :blob="blobInfo"
           :chunks="chunks"
-          :show-blame="showBlame && glFeatures.inlineBlame"
+          :show-blame="showBlame"
           :project-path="projectPath"
           :current-ref="currentRef"
           :should-preload-blame="shouldPreloadBlame"

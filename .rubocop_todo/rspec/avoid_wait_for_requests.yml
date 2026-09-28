@@ -274,7 +274,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/projects/artifacts/file_spec.rb'
     - 'spec/features/projects/artifacts/user_views_project_artifacts_page_spec.rb'
     - 'spec/features/projects/badges/list_spec.rb'
-    - 'spec/features/projects/blobs/blame_spec.rb'
     - 'spec/features/projects/blobs/blob_show_spec.rb'
     - 'spec/features/projects/blobs/edit_spec.rb'
     - 'spec/features/projects/branches/new_branch_ref_dropdown_spec.rb'

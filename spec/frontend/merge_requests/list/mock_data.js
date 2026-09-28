@@ -70,6 +70,7 @@ export const getQueryResponse = {
                   color: '#333',
                   title: 'Label title',
                   description: 'Label description',
+                  archived: false,
                 },
               ],
             },

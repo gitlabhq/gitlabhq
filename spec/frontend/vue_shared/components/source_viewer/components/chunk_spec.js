@@ -17,7 +17,7 @@ describe('Chunk component', () => {
   let wrapper;
   let mockBlameActions;
 
-  const createComponent = (props = {}, state = {}, featureFlags = {}) => {
+  const createComponent = (props = {}, state = {}) => {
     const store = new Vuex.Store({ state, mutations: {} });
     wrapper = shallowMountExtended(Chunk, {
       store,
@@ -30,10 +30,6 @@ describe('Chunk component', () => {
       },
       provide: {
         blameActions: mockBlameActions,
-        glFeatures: {
-          inlineBlame: false,
-          ...featureFlags,
-        },
       },
     });
   };
@@ -206,41 +202,26 @@ describe('Chunk component', () => {
   });
 
   describe('Chunk blame functionality', () => {
-    describe('with feature flag enabled', () => {
-      it('prevents default and activates inline blame when blame link is clicked', () => {
-        createComponent({ isBlameActive: false }, {}, { inlineBlame: true });
+    it('prevents default and activates inline blame when blame link is clicked', () => {
+      createComponent({ isBlameActive: false });
 
-        const mockEvent = { preventDefault: jest.fn() };
+      const mockEvent = { preventDefault: jest.fn() };
 
-        wrapper.vm.handleBlameClick(mockEvent, 0);
+      wrapper.vm.handleBlameClick(mockEvent, 0);
 
-        expect(mockEvent.preventDefault).toHaveBeenCalled();
-        expect(mockBlameActions.activateInlineBlame).toHaveBeenCalledWith(1);
-      });
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
+      expect(mockBlameActions.activateInlineBlame).toHaveBeenCalledWith(1);
     });
 
-    describe('with feature flag disabled', () => {
-      it('allows default navigation when blame link is clicked', () => {
-        createComponent({ isBlameActive: false }, {}, { inlineBlame: false });
-
-        const mockEvent = { preventDefault: jest.fn() };
-
-        wrapper.vm.handleBlameClick(mockEvent, 0);
-
-        expect(mockEvent.preventDefault).not.toHaveBeenCalled();
-        expect(mockBlameActions.activateInlineBlame).not.toHaveBeenCalled();
+    it('renders blame link with correct href attribute', () => {
+      const blamePath = '/project/blame/main/index.js';
+      createComponent({
+        isBlameActive: false,
+        blamePath,
       });
 
-      it('renders blame link with correct href attribute', () => {
-        const blamePath = '/project/blame/main/index.js';
-        createComponent({
-          isBlameActive: false,
-          blamePath,
-        });
-
-        const actualHref = findBlameLink(1).attributes('href');
-        expect(actualHref).toBe(`${blamePath}${wrapper.vm.pageSearchString}#L1`);
-      });
+      const actualHref = findBlameLink(1).attributes('href');
+      expect(actualHref).toBe(`${blamePath}${wrapper.vm.pageSearchString}#L1`);
     });
   });
 

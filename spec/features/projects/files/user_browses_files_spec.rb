@@ -281,8 +281,6 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
 
   context "when browsing a file content", :js do
     before do
-      # Disable inline_blame so the legacy blame page renders (not the blob redirect)
-      stub_feature_flags(inline_blame: false)
       visit(tree_path_root_ref)
       wait_for_requests
 
@@ -294,20 +292,19 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
     end
 
     it "is possible to blame" do
-      click_link("Blame")
+      click_button("Blame")
+      wait_for_requests
 
       expect(page).to have_content("*.rb")
-                 .and have_content("Dmitriy Zaporozhets")
                  .and have_content("Initial commit")
                  .and have_content("Ignore DS files")
 
-      previous_commit_link = find('.tr', text: "Ignore DS files").find("[aria-label='View blame prior to this change']")
+      previous_commit_link = find_by_testid('blame-commit-info', text: "Ignore DS files")
+        .find("[aria-label='View blame prior to this change']")
       previous_commit_link.click
+      wait_for_requests
 
-      expect(page).to have_content("*.rb")
-                 .and have_content("Dmitriy Zaporozhets")
-                 .and have_content("Initial commit")
-
+      expect(page).to have_content("*.rb").and have_content("Initial commit")
       expect(page).not_to have_content("Ignore DS files")
     end
   end

@@ -39,9 +39,6 @@ export default {
   },
   emits: { error: null },
   computed: {
-    stacked() {
-      return this.displayConfig?.stacked === true;
-    },
     shareLabels() {
       return this.displayConfig?.categoryLabels === CATEGORY_LABELS_VALUE_AND_SHARE;
     },
@@ -61,9 +58,10 @@ export default {
     display-type="barChart"
     :fields="fields"
     :loading="loading"
+    :display-config="displayConfig"
     @error="$emit('error', $event)"
   >
-    <template #one-dimension="{ dimension, metrics }">
+    <template #one-dimension="{ dimension, metrics, stacked }">
       <single-dimension-bar-chart
         :data="data"
         :dimension="dimension"

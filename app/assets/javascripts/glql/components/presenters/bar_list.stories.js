@@ -39,11 +39,11 @@ Default.args = {
   displayConfig: {},
 };
 
-// Six rows is the default cap, so a rollup needs either more rows or a lower cap.
+// A tail of one row is left alone, so three rows need a cap of one to roll up.
 export const WithOtherRow = Template.bind({});
 WithOtherRow.args = {
   ...Default.args,
-  displayConfig: { maxRows: 2 },
+  displayConfig: { maxRows: 1 },
 };
 
 // Shares divide by the grand total, so an all-zero result renders rows at zero length

@@ -5,170 +5,41 @@ require 'spec_helper'
 RSpec.describe 'File blame', :js, feature_category: :source_code_management do
   include TreeHelper
 
-  # Disable inline_blame so all tests in this file exercise the legacy blame page.
-  # The redirect behaviour with inline_blame enabled is tested in blame_controller_spec.rb.
-  before do
-    stub_feature_flags(inline_blame: false)
-  end
-
   let_it_be(:project) { create(:project, :public, :repository) }
 
   let(:path) { 'CHANGELOG' }
+  let(:blame_path) { project_blame_path(project, tree_join('master', path)) }
 
-  def visit_blob_blame(path)
-    visit project_blame_path(project, tree_join('master', path))
-    wait_for_all_requests
+  it 'redirects to the blob viewer with blame enabled' do
+    visit blame_path
+
+    expect(page).to have_current_path(
+      project_blob_path(project, tree_join('master', path), blame: 1, ref_type: 'heads')
+    )
   end
 
-  context 'as a developer' do
-    let(:user) { create(:user) }
-    let(:role) { :developer }
+  it 'preserves the line fragment through the redirect' do
+    visit "#{blame_path}#L2"
 
-    before do
-      project.add_role(user, role)
-      sign_in(user)
-    end
-
-    it 'does not display lock, replace and delete buttons' do
-      visit_blob_blame(path)
-
-      expect(page).not_to have_button("Lock")
-      expect(page).not_to have_button("Replace")
-      expect(page).not_to have_button("Delete")
-    end
+    expect(page).to have_current_path(
+      %r{/-/blob/master/CHANGELOG\?blame=1&ref_type=heads#L2\z}, url: true
+    )
   end
 
-  it 'displays a find file button that opens the global search modal' do
-    visit_blob_blame(path)
+  it 'renders blame information for the file' do
+    visit blame_path
 
-    within_testid 'blob-content-holder' do
-      expect(page).to have_button _('Find file')
-
-      click_button 'Find file'
-    end
-
-    expect(page).to have_css('.global-search-modal')
+    expect(page).to have_testid('blame-commit-info')
   end
 
-  it 'displays the blame page without pagination' do
-    visit_blob_blame(path)
+  context 'with a binary file' do
+    let(:path) { 'files/images/logo-black.png' }
 
-    within_testid 'blob-content-holder' do
-      expect(page).to have_css('.blame-commit')
-      expect(page).not_to have_css('.gl-pagination')
-      expect(page).not_to have_link _('Show full blame')
-    end
-  end
+    it 'redirects to the blob viewer without blame' do
+      visit blame_path
 
-  context 'when blob length is over the blame range limit' do
-    before do
-      stub_const('Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE', 2)
-    end
-
-    it 'displays two first lines of the file with pagination' do
-      visit_blob_blame(path)
-
-      within_testid 'blob-content-holder' do
-        expect(page).to have_css('.blame-commit')
-        expect(page).to have_css('.gl-pagination')
-        expect(page).to have_link _('Show full blame')
-
-        expect(page).to have_css('#L1')
-        expect(page).not_to have_css('#L3')
-        expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('1')
-      end
-    end
-
-    context 'when user clicks on the next button' do
-      before do
-        visit_blob_blame(path)
-
-        find_by_testid('kaminari-pagination-next').click
-      end
-
-      it 'displays next two lines of the file with pagination' do
-        within_testid 'blob-content-holder' do
-          expect(page).not_to have_css('#L1')
-          expect(page).to have_css('#L3')
-          expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('2')
-        end
-      end
-
-      it 'correctly redirects to the prior blame page' do
-        within_testid 'blob-content-holder' do
-          find('.version-link').click
-
-          expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('2')
-        end
-      end
-    end
-
-    shared_examples 'a full blame page' do
-      context 'when user clicks on Show full blame button' do
-        before do
-          visit_blob_blame(path)
-          click_link _('Show full blame')
-        end
-
-        it 'displays the blame page without pagination' do
-          within_testid 'blob-content-holder' do
-            expect(page).to have_css('#L1')
-            expect(page).to have_css('#L667')
-            expect(page).not_to have_css('.gl-pagination')
-          end
-        end
-      end
-    end
-
-    context 'when streaming is enabled' do
-      before do
-        stub_const('Gitlab::Git::BlamePagination::STREAMING_PER_PAGE', 50)
-      end
-
-      it_behaves_like 'a full blame page'
-
-      it 'shows loading text', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9488' do
-        visit_blob_blame(path)
-        click_link _('Show full blame')
-        expect(page).to have_text('Loading full blame…')
-      end
-    end
-  end
-
-  context 'when blob length is over global max page limit' do
-    before do
-      stub_const('Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE', 200)
-    end
-
-    let(:path) { 'files/markdown/ruby-style-guide.md' }
-
-    it 'displays two hundred lines of the file with pagination' do
-      visit_blob_blame(path)
-
-      within_testid 'blob-content-holder' do
-        expect(page).to have_css('.blame-commit')
-        expect(page).to have_css('.gl-pagination')
-
-        expect(page).to have_css('#L1')
-        expect(page).not_to have_css('#L201')
-        expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('1')
-      end
-    end
-
-    context 'when user clicks on the next button' do
-      before do
-        visit_blob_blame(path)
-      end
-
-      it 'displays next two hundred lines of the file with pagination' do
-        within_testid 'blob-content-holder' do
-          find_by_testid('kaminari-pagination-next').click
-
-          expect(page).not_to have_css('#L1')
-          expect(page).to have_css('#L201')
-          expect(find('[data-testid="kaminari-pagination-item"].active')).to have_text('2')
-        end
-      end
+      expect(page).to have_current_path(project_blob_path(project, tree_join('master', path)))
+      expect(page).to have_content('Blame for binary files is not supported.')
     end
   end
 end

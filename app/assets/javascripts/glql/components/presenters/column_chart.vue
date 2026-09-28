@@ -33,11 +33,6 @@ export default {
     },
   },
   emits: { error: null },
-  computed: {
-    stacked() {
-      return this.displayConfig?.stacked === true;
-    },
-  },
 };
 </script>
 
@@ -46,9 +41,10 @@ export default {
     display-type="columnChart"
     :fields="fields"
     :loading="loading"
+    :display-config="displayConfig"
     @error="$emit('error', $event)"
   >
-    <template #one-dimension="{ dimension, metrics }">
+    <template #one-dimension="{ dimension, metrics, stacked }">
       <single-dimension-column-chart
         :data="data"
         :dimension="dimension"

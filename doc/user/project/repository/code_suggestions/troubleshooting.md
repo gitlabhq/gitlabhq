@@ -77,8 +77,8 @@ For all other GitLab for VS Code troubleshooting, see [troubleshooting the GitLa
 If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
 1. In your IDE, open the Settings editor:
-   - For macOS, select **Code** > **Preferences** > **Settings**.
-   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. Go to the **GitLab Duo** settings:
    - In VS Code, select **Extensions** > **GitLab** > **GitLab Duo**.
    - In GitLab Web IDE, select **Extensions** > **GitLab Workflow** > **GitLab Duo**.
@@ -89,8 +89,8 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 If Code Suggestions is enabled for the IDE, but suggestions are still not displayed:
 
 1. In your IDE, open the Settings editor:
-   - For macOS, select **Code** > **Preferences** > **Settings**.
-   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. Go to the **Other** settings:
    - In VS Code, select **Extensions** > **GitLab** > **Other**.
    - In GitLab Web IDE, select **Extensions** > **GitLab Workflow** > **Other**.
@@ -113,8 +113,8 @@ Disabling streaming means that code generation requests might be perceived
 as taking longer to resolve. To disable streaming:
 
 1. In VS Code, open the Settings editor:
-   - For macOS, select **Code** > **Preferences** > **Settings**.
-   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
+   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
 
    ![The icons in the upper-right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)
@@ -228,7 +228,7 @@ To fix this problem, install the IntelliCode component:
 
 ### Suggestions not displayed in Microsoft Visual Studio
 
-1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension#setup).
+1. Ensure you have properly [set up the extension](../../../../editor_extensions/visual_studio/setup.md).
 1. From the **Tools** > **Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.
 1. In **View** > **Output**, open the extension log. Change the dropdown list to **GitLab Extension** as the log filter.
 1. Verify that the debug log contains similar output:
@@ -277,7 +277,7 @@ For non-Code Suggestions troubleshooting for Neovim, see [Neovim troubleshooting
 
 If you are assigned a seat in a project that has a specific model selected for code completion:
 
-- Your IDE extension disables the [direct connection to the AI Gateway](../../../../administration/gitlab_duo/gateway.md#region-support)
+- Your IDE extension disables the [direct connection to the AI Gateway](_index.md#direct-and-indirect-connections)
 - Code completion requests go through the GitLab monolith, which then selects the specified model to respond to these requests.
 
 This might cause increased latency with code completion requests.

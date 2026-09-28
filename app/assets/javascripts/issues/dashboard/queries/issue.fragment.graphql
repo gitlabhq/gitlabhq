@@ -46,6 +46,7 @@ fragment IssueFragment on Issue {
       color
       title
       description
+      archived
     }
   }
   milestone {

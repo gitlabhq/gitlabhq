@@ -17,15 +17,6 @@ class Projects::BlameController < Projects::ApplicationController
 
   def show
     @ref_type = ref_type
-
-    return if Feature.enabled?(:inline_blame, @project)
-
-    load_environment
-    load_blame
-  rescue Gitlab::Git::Blame::IgnoreRevsFormatError
-    redirect_show_with_flash(_('Malformed .git-blame-ignore-revs'))
-  rescue Gitlab::Git::Blame::IgnoreRevsFileError
-    redirect_show_with_flash(_('.git-blame-ignore-revs is not a file'))
   end
 
   def streaming
@@ -94,11 +85,6 @@ class Projects::BlameController < Projects::ApplicationController
 
   def blame_params
     params.permit(*blame_attributes)
-  end
-
-  def redirect_show_with_flash(message)
-    flash[:notice] = message
-    redirect_to project_blame_path(@project, @id, ref_type: ref_type)
   end
 
   # Override because #streaming and #page don't have their own templates.

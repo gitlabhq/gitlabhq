@@ -31,7 +31,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  inject: ['blameActions', 'glFeatures'],
+  inject: ['blameActions'],
   props: {
     isHighlighted: {
       type: Boolean,
@@ -227,10 +227,8 @@ export default {
       this.hoveredGutter = gutter;
     },
     handleBlameClick(event, index) {
-      if (this.glFeatures.inlineBlame) {
-        event.preventDefault();
-        this.blameActions.activateInlineBlame(this.calculateLineNumber(index));
-      }
+      event.preventDefault();
+      this.blameActions.activateInlineBlame(this.calculateLineNumber(index));
     },
     async addCodeNavigationClasses() {
       await this.$nextTick();

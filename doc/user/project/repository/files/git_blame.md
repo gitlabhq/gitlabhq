@@ -23,6 +23,7 @@ commit hash.
 
 - Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with a feature flag](../../../../administration/feature_flags/_index.md) named `inline_blame`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/501539) in GitLab 19.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/602273) in GitLab 19.5. Feature flag `inline_blame` removed.
 
 {{< /history >}}
 

@@ -2041,9 +2041,6 @@ msgstr ""
 msgid "."
 msgstr ""
 
-msgid ".git-blame-ignore-revs is not a file"
-msgstr ""
-
 msgid "/"
 msgstr ""
 
@@ -49414,9 +49411,6 @@ msgstr ""
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 
-msgid "Loading full blame…"
-msgstr ""
-
 msgid "Loading groups"
 msgstr ""
 
@@ -49679,9 +49673,6 @@ msgid "Makes this %{type} confidential."
 msgstr ""
 
 msgid "Makes this comment an internal note. This action cannot be undone."
-msgstr ""
-
-msgid "Malformed .git-blame-ignore-revs"
 msgstr ""
 
 msgid "Manage"
@@ -79743,9 +79734,6 @@ msgid "Show file contents"
 msgstr ""
 
 msgid "Show file tree browser"
-msgstr ""
-
-msgid "Show full blame"
 msgstr ""
 
 msgid "Show group milestones"

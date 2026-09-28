@@ -34,6 +34,7 @@ fragment MergeRequestFragment on MergeRequest {
       color
       title
       description
+      archived
     }
   }
   milestone {

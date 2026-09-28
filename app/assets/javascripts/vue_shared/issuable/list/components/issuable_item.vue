@@ -317,6 +317,9 @@ export default {
     labelTitle(label) {
       return label.title || label.name;
     },
+    labelFooter(label) {
+      return label.archived ? __('Archived') : '';
+    },
     labelTarget(label) {
       const value = encodeURIComponent(this.labelTitle(label));
       return `?${this.labelFilterParam}[]=${value}`;
@@ -563,6 +566,7 @@ export default {
             :title="labelTitle(label)"
             :description="label.description"
             :scoped="scopedLabel(label)"
+            :footer="labelFooter(label)"
             :target="labelTarget(label)"
             @click.stop
           />

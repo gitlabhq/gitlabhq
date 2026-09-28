@@ -22,7 +22,7 @@ To use Code Suggestions, use one of these editor extensions:
 | Neovim                                                          | [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim) |
 | Eclipse                                                          | [GitLab for Eclipse](../../../../editor_extensions/eclipse/setup.md) |
 
-A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) is used in VS Code, Visual Studio, Eclipse, and Neovim. The Language Server supports faster iteration across more platforms. You can also configure it to support Code Suggestions in IDEs where GitLab doesn't provide official support.
+A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) is used in VS Code, JetBrains IDEs, Visual Studio, Eclipse, and Neovim. The Language Server supports faster iteration across more platforms. You can also configure it to support Code Suggestions in IDEs where GitLab doesn't provide official support.
 
 You can express interest in other IDE extension support [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
 
@@ -111,7 +111,7 @@ Prerequisites:
 
 - You have installed and enabled the
   [GitLab for VS Code extension](../../../../editor_extensions/visual_studio_code/_index.md).
-- You have completed the [VS Code extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
+- You have completed the [VS Code extension setup](../../../../editor_extensions/visual_studio_code/setup.md)
   instructions, and authorized the extension to access your GitLab account.
 
 To do this:
@@ -136,7 +136,7 @@ Prerequisites:
 
 - You have installed and enabled the
   [GitLab Duo plugin for JetBrains IDEs](../../../../editor_extensions/jetbrains_ide/_index.md).
-- You have completed the [Jetbrains extension setup](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin#setup)
+- You have completed the [JetBrains extension setup](../../../../editor_extensions/jetbrains_ide/setup.md)
   instructions, and authorized the extension to access your GitLab account.
 
 To do this:

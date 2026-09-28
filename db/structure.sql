@@ -47077,7 +47077,7 @@ CREATE INDEX index_ai_active_context_tasks_on_depends_on_id ON ai_active_context
 
 CREATE INDEX index_ai_catalog_item_consumers_on_ai_catalog_item_id ON ai_catalog_item_consumers USING btree (ai_catalog_item_id);
 
-CREATE INDEX index_ai_catalog_item_consumers_on_group_id ON ai_catalog_item_consumers USING btree (group_id);
+CREATE INDEX index_ai_catalog_item_consumers_on_group_id_kind_sa ON ai_catalog_item_consumers USING btree (group_id, kind, service_account_id);
 
 CREATE INDEX index_ai_catalog_item_consumers_on_organization_id ON ai_catalog_item_consumers USING btree (organization_id);
 

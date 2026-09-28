@@ -71,13 +71,14 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         end
 
         it 'finds code and links to blame' do
-          # Disable inline_blame so the legacy blame URL is not redirected
-          stub_feature_flags(inline_blame: false)
-
           expect(page).to have_selector('.results', text: expected_result)
 
           find("#blame-L3").click
-          expect(current_url).to match(%r{blame/master/.gitignore#L3})
+
+          # /-/blame/* renders a client-side redirect to the blob viewer with blame open.
+          expect(page).to have_current_path(
+            %r{blob/master/\.gitignore\?blame=1&ref_type=heads#L3}, url: true
+          )
         end
 
         it_behaves_like 'code highlight' do
