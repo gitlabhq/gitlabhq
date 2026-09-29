@@ -354,6 +354,75 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
           expect(result[:status]).to eq(:success), result[:message]
           expect(target_user.organization_users.first.reload.access_level).to eq('default')
         end
+
+        context 'when the membership being updated is the last owner of its organization' do
+          let_it_be(:sole_owner_organization) { create(:organization, organization_users: []) }
+          let_it_be_with_reload(:target_user) { current_user }
+          let_it_be(:sole_ownership) do
+            create(:organization_owner, organization: sole_owner_organization, user: current_user)
+          end
+
+          let(:organization_users_attributes) do
+            [{ id: sole_ownership.id, organization_id: sole_owner_organization.id, access_level: 'default' }]
+          end
+
+          subject(:execute) do
+            described_class.new(current_user, {
+              user: target_user,
+              organization_users_attributes: organization_users_attributes
+            }).execute
+          end
+
+          it_behaves_like 'organization user update fails', _('Insufficient permission to modify user organizations')
+
+          it 'keeps the owner access level' do
+            expect { execute }.not_to change { sole_ownership.reload.access_level }.from('owner')
+          end
+        end
+
+        context 'when the target user is not a member of the organization' do
+          let_it_be(:target_user) { create(:user) }
+          let_it_be(:organization_users_attributes) do
+            [{ organization_id: organization.id, access_level: 'default' }]
+          end
+
+          it_behaves_like 'organization user update fails', _('Insufficient permission to modify user organizations')
+
+          it 'does not add the user to the organization' do
+            expect { execute }.not_to change { organization.user?(target_user) }.from(false)
+          end
+        end
+
+        # Two organizations are asked for but only one membership exists, which is the
+        # size mismatch the guard rejects. The existing membership must not be applied
+        # on its own, or a partial update would slip through.
+        context 'when the target user belongs to only some of the organizations' do
+          let_it_be(:other_organization) { create(:organization, organization_users: []) }
+          let_it_be_with_reload(:target_membership) { organization.organization_users.last }
+          let_it_be(:organization_users_attributes) do
+            [
+              { id: target_membership.id, organization_id: organization.id, access_level: 'default' },
+              { organization_id: other_organization.id, access_level: 'default' }
+            ]
+          end
+
+          subject(:execute) do
+            described_class.new(current_user, {
+              user: target_user,
+              organization_users_attributes: organization_users_attributes
+            }).execute
+          end
+
+          it_behaves_like 'organization user update fails', _('Insufficient permission to modify user organizations')
+
+          it 'does not apply the change to the organization the user does belong to' do
+            expect { execute }.not_to change { target_membership.reload.access_level }.from('owner')
+          end
+
+          it 'does not add the user to the organization they are missing from' do
+            expect { execute }.not_to change { other_organization.user?(target_user) }.from(false)
+          end
+        end
       end
 
       context 'when user is neither an admin nor an organization owner' do

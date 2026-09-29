@@ -1695,5 +1695,49 @@ describe('Create work item component', () => {
         expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:other-namespace/path');
       });
     });
+
+    describe('when a last used work item type is stored', () => {
+      beforeEach(() => {
+        localStorage.setItem('freq-wi-type:full-path', 'gid://gitlab/WorkItems::Type/1');
+      });
+
+      describe('when there is no preselected work item type', () => {
+        beforeEach(async () => {
+          createComponent({ props: { preselectedWorkItemType: null } });
+          await resolveAll();
+        });
+
+        it('selects the last used work item type', () => {
+          expect(updateDraftWorkItemType).toHaveBeenCalledWith(
+            expect.objectContaining({
+              workItemType: expect.objectContaining({
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+              }),
+            }),
+          );
+          expect(findFormTitle().text()).toBe('New issue');
+        });
+      });
+
+      describe('when there is a preselected work item type', () => {
+        beforeEach(async () => {
+          createComponent({ props: { preselectedWorkItemType: 'Epic' } });
+          await resolveAll();
+        });
+
+        it('selects the preselected work item type over the last used one', () => {
+          expect(updateDraftWorkItemType).toHaveBeenCalledWith(
+            expect.objectContaining({
+              workItemType: expect.objectContaining({
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+              }),
+            }),
+          );
+          expect(findFormTitle().text()).toBe('New epic');
+        });
+      });
+    });
   });
 });

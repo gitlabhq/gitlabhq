@@ -3676,6 +3676,8 @@
   rules:
     - <<: *if-dot-com-gitlab-org-and-subgroups-merge-train
       when: never
+    - <<: *if-default-branch-schedule-housekeeping
+      when: never
     - if: '$CI_FETCH_REPO_GIT_STRATEGY == "none"'
 
 .setup:rules:gitlab_git_test:

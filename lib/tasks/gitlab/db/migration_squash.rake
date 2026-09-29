@@ -9,6 +9,7 @@ namespace :gitlab do
     task :squash, [:version] => :environment do |_t, args|
       require 'git'
       git = ::Git.open(Dir.pwd)
+      delete_batch_size = 500
 
       squasher = Gitlab::Database::Migrations::Squasher.new(
         `git ls-tree --name-only -r #{args[:version]} -- db/migrate db/post_migrate`
@@ -17,7 +18,11 @@ namespace :gitlab do
       # Delete relevant migrations and specs
       files_to_delete = squasher.files_to_delete.filter { |f| File.exist?(f) }
       puts "\tDeleting #{files_to_delete.length} files."
-      git.remove files_to_delete unless files_to_delete.empty?
+
+      files_to_delete.each_slice(delete_batch_size).with_index(1) do |batch, batch_number|
+        puts "\tDeleting batch #{batch_number}, #{batch.length} files."
+        git.remove(batch)
+      end
 
       # Update db/init_structure.sql
       new_init_structure_sql = git.show(args[:version], 'db/structure.sql')

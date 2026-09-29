@@ -1640,6 +1640,19 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         expect { update_merge_request(target_branch: 'master') }
           .not_to trigger_internal_events('retarget_merge_request_on_target_branch_merge')
       end
+
+      context 'when merge request has been merged' do
+        before do
+          merge_request.mark_as_merged!
+        end
+
+        it 'does not change the target branch', :aggregate_failures do
+          expect(SystemNoteService).not_to receive(:change_branch)
+
+          expect { update_merge_request(target_branch: 'master') }
+            .not_to change { merge_request.reload.target_branch }.from('mr-a')
+        end
+      end
     end
 
     it_behaves_like 'issuable record that supports quick actions' do

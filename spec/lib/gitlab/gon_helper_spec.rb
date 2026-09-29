@@ -15,8 +15,7 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
     let(:https) { true }
 
     before do
-      allow(helper).to receive(:current_user).and_return(nil)
-      allow(helper).to receive(:gon).and_return(gon)
+      allow(helper).to receive_messages(current_user: nil, gon: gon)
       stub_config_setting(https: https)
     end
 
@@ -229,13 +228,15 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
         before do
           organization = build_stubbed(:organization, path: 'acme')
-          allow(Current).to receive(:organization_resolver)
-            .and_return(instance_double(Gitlab::Current::Organization,
-              from_organization_params: organization))
 
-          allow(Current).to receive(:data_context).and_return(
-            Gitlab::Current::DataContext.new(organization: build_stubbed(:organization, :isolated,
-              path: 'acme'))
+          allow(Current).to receive_messages(
+            organization_resolver: instance_double(
+              Gitlab::Current::Organization,
+              from_organization_params: organization
+            ),
+            data_context: Gitlab::Current::DataContext.new(
+              organization: build_stubbed(:organization, :isolated, path: 'acme')
+            )
           )
         end
 

@@ -327,7 +327,7 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            'SshCertificates|Are you sure you want to delete %{title}? Trust in this certificate authority is revoked immediately, and any certificates it signed stop working at once. This action cannot be undone.',
+            'SshCertificates|Deleting %{title} immediately revokes trust in this certificate authority, and any certificates it signed stop working. This action cannot be undone.',
           )
         "
       >

@@ -12528,6 +12528,12 @@
     "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/blocks/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/cancel_auto_merge",
+    "example": "/api/v4/projects/foo/merge_requests/foo/cancel_auto_merge",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/merge_requests/john.doe/cancel_auto_merge"
+  },
+  {
     "template": "/api/:version/projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds",
     "example": "/api/v4/projects/foo/merge_requests/foo/cancel_merge_when_pipeline_succeeds",
     "acceptsFormat": true,

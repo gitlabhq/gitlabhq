@@ -13,10 +13,12 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
   describe '#to_json' do
     context 'when the deployment does not belong to any Jira issue' do
       before do
-        allow(subject).to receive(:issue_keys).and_return([])
-        allow(subject).to receive(:commits_since_last_deploy).and_return([])
-        allow(subject).to receive(:service_ids_from_integration_configuration).and_return([])
-        allow(subject).to receive(:generate_deployment_commands).and_return(nil)
+        allow(subject).to receive_messages(
+          issue_keys: [],
+          commits_since_last_deploy: [],
+          service_ids_from_integration_configuration: [],
+          generate_deployment_commands: nil
+        )
       end
 
       it 'can encode the object' do
@@ -30,8 +32,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
 
     context 'when the deployment belongs to Jira issue' do
       before do
-        allow(subject).to receive(:issue_keys).and_return(['JIRA-1'])
-        allow(subject).to receive(:service_ids_from_integration_configuration).and_return([])
+        allow(subject).to receive_messages(issue_keys: ['JIRA-1'], service_ids_from_integration_configuration: [])
       end
 
       it 'is valid according to the deployment info schema' do
@@ -190,15 +191,17 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
 
     context 'when the deployment belongs to Jira issue and Service IDs' do
       before do
-        allow(subject).to receive(:issue_keys).and_return(['JIRA-1'])
-        allow(subject).to receive(:service_ids_from_integration_configuration).and_return([
-          { associationType: 'serviceIdOrKeys', values: [
-            'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzIwM2asdkMWE0LTE0MmEtNDE0Yy1hYjY4LTA1
+        allow(subject).to receive_messages(
+          issue_keys: ['JIRA-1'],
+          service_ids_from_integration_configuration: [
+            { associationType: 'serviceIdOrKeys', values: [
+              'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzIwM2asdkMWE0LTE0MmEtNDE0Yy1hYjY4LTA1
           OGMzMDBkODAxMS8yMDdlZDkwZS1lNWMxLTExZWUtODFiNS0xMjhiNDsfa4MTk0MjQ=',
-            'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzIwM2asdkMWE0LTEgasdtNDE0Yy1hYjY4LTA1
+              'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzIwM2asdkMWE0LTEgasdtNDE0Yy1hYjY4LTA1
           OGMzMDBkODAxMS8yMDdlZDkwZS1lNWMxLTExZWUtODFiNS0xMjhiNDsfa4MTk0MjQ='
-          ] }
-        ])
+            ] }
+          ]
+        )
       end
 
       it 'is valid according to the deployment info schema' do
@@ -375,10 +378,12 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
     let(:merge_request) { instance_double(DeploymentMergeRequest, merge_request_id: 42) }
 
     before do
-      allow(entity).to receive(:issue_keys).and_return(['JIRA-1'])
-      allow(entity).to receive(:commits_since_last_deploy).and_return([commit])
       allow(deployment).to receive(:deployment_merge_requests).and_return([merge_request])
-      allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
+      allow(entity).to receive_messages(
+        issue_keys: ['JIRA-1'],
+        commits_since_last_deploy: [commit],
+        service_ids_from_integration_configuration: []
+      )
       allow(project).to receive(:id).and_return(1)
     end
 

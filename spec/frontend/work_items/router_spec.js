@@ -3,7 +3,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import {
   currentUserResponse,
   workItemByIidResponseFactory,
@@ -99,13 +98,8 @@ describe('Work items router', () => {
     });
   };
 
-  beforeEach(() => {
-    setHTMLFixture(`<div class="params-issue-type">issue</div>`);
-  });
-
   afterEach(() => {
     window.location.hash = '';
-    resetHTMLFixture();
     localStorage.clear();
   });
 
@@ -131,20 +125,6 @@ describe('Work items router', () => {
     const basePath = router.options.history?.base || router.options.base;
 
     expect(basePath).toBe('/full-path/-/issues');
-  });
-
-  it(`renders create work item page on /issues/new route with 'type' param set to 'ISSUE'`, async () => {
-    await createComponent(`/issues/new?type=ISSUE`);
-
-    expect(findCreateWorkItem().exists()).toBe(true);
-    expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('ISSUE');
-  });
-
-  it(`renders create work item page on /issues/new route with 'issue[issue_type]' param set to 'ISSUE'`, async () => {
-    await createComponent(`/issues/new?issue[issue_type]=ISSUE`);
-
-    expect(findCreateWorkItem().exists()).toBe(true);
-    expect(findCreateWorkItem().props('workItemTypeEnum')).toBe('ISSUE');
   });
 
   it('renders create work item page on /work_items/new route', async () => {

@@ -47060,6 +47060,45 @@ paths:
         schema:
           type: integer
         in: path
+  "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/cancel_auto_merge":
+    post:
+      operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidCancelAutoMerge
+      summary: Cancel auto merge
+      description: Cancels an automatic merge for a merge request that has been set
+        to merge automatically. Use this endpoint instead of `cancel_merge_when_pipeline_succeeds`,
+        which returns a status hash rather than the merge request.
+      tags:
+      - Merge requests
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesMergeRequest"
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '400':
+          description: Bad Request
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project.
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: merge_request_iid
+        required: true
+        description: The IID of a merge request
+        schema:
+          type: integer
+        in: path
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/rebase":
     put:
       operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidRebase

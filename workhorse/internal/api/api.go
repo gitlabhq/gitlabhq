@@ -237,6 +237,9 @@ type Response struct {
 	UploadHashFunctions []string
 	// NeedAudit indicates whether git events should be audited to rails.
 	NeedAudit bool `json:"NeedAudit"`
+	// BundleURIDedicatedRPC routes protocol v2 `command=bundle-uri` requests to Gitaly's
+	// AdvertiseBundleURI RPC instead of PostUploadPackWithSidechannel.
+	BundleURIDedicatedRPC bool
 	// Gob contains settings for the GitLab Observability Backend (GOB).
 	Gob GOBSettings `json:"gob"`
 

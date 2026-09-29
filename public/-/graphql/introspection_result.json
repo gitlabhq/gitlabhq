@@ -26508,6 +26508,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "requiresPaidCredits",
+              "description": "Whether GitLab Credits must be purchased before the current user can use this model. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,
@@ -324205,7 +324217,7 @@
             },
             {
               "name": "policies",
-              "description": "Policies stored in the policy store for the organization or group, paginated forward only. Page with `pageInfo.endCursor` and keep `first` the same between requests; the `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Policies stored in the policy store for the organization or group. Only `first` and `after` are supported; page with `pageInfo.endCursor`. Cursor offsets are capped at 100000, so policies past that window cannot be paged. The `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "triggerType",
@@ -324274,7 +324286,7 @@
             },
             {
               "name": "policyEvaluations",
-              "description": "Recorded evaluations of the policies stored in the policy store for the organization, newest first. Returns `null` for groups and when the current user cannot read the policies of the organization. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Recorded evaluations of the policies stored in the policy store for the organization or group, newest first. For a group, only evaluations of the group's own policies are returned. Returns `null` when the current user cannot read the policies of the container. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "policyId",

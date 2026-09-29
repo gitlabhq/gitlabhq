@@ -72,3 +72,5 @@ columns:
   default_kind: DEFAULT
   default_expression: now64(6, 'UTC')
   compression_codec: CODEC(ZSTD(1))
+- name: agent_identity_id
+  type: Nullable(Int64)

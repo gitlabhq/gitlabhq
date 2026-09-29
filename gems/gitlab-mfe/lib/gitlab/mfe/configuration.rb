@@ -11,7 +11,7 @@ module Gitlab
       attr_writer :enabled, :registry_url, :vendor_file_path
 
       def enabled?
-        resolve(@enabled, false)
+        !!resolve(@enabled, false)
       end
 
       def registry_url

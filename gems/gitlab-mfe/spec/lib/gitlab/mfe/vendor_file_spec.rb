@@ -265,6 +265,33 @@ RSpec.describe Gitlab::Mfe::VendorFile, feature_category: :compliance_management
       end
     end
 
+    context 'when the vendor file path hook returns a blank value' do
+      where(path: [nil, '', '  '])
+
+      with_them do
+        before do
+          Gitlab::Mfe.configure { |config| config.vendor_file_path = -> { path } }
+        end
+
+        it 'fails loudly with a configuration error' do
+          expect { described_class.entries }
+            .to raise_error(described_class::InvalidEntryError, /vendor_file_path is not configured/)
+        end
+      end
+    end
+
+    context 'when the vendor file path is a Pathname to an empty file' do
+      before do
+        path = Pathname(tmpdir).join('mfe.yml')
+        FileUtils.touch(path)
+        Gitlab::Mfe.configure { |config| config.vendor_file_path = -> { path } }
+      end
+
+      it 'reads it as a file with no pins, not as a missing configuration' do
+        expect(described_class.entries).to eq([])
+      end
+    end
+
     context 'with the committed vendor fixture (no stubs)' do
       before do
         fixture = File.expand_path('../../../fixtures/mfe.yml', __dir__)

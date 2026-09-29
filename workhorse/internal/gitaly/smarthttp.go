@@ -108,9 +108,10 @@ func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.R
 	return nil
 }
 
-// UploadPack performs an upload pack operation with a sidechannel.
-func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
-	ctx, waiter := client.sidechannelRegistry.Register(ctx, func(conn gitalyclient.SidechannelConn) error {
+// copyOverSidechannel streams the client's request to git-upload-pack(1) and its response back
+// over the sidechannel. Shared by every upload-pack RPC, which differ only in the method invoked.
+func copyOverSidechannel(clientRequest io.Reader, clientResponse io.Writer) func(gitalyclient.SidechannelConn) error {
+	return func(conn gitalyclient.SidechannelConn) error {
 		if _, err := io.Copy(conn, clientRequest); err != nil {
 			return fmt.Errorf("copy request body: %w", err)
 		}
@@ -124,23 +125,58 @@ func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Re
 		}
 
 		return nil
-	})
+	}
+}
+
+// uploadPackOverSidechannel registers the sidechannel, invokes call over it, and waits for the
+// copy to finish. The upload-pack RPCs differ only in the method they call, so they share this.
+func uploadPackOverSidechannel[Resp any](
+	ctx context.Context,
+	client *SmartHTTPClient,
+	clientRequest io.Reader,
+	clientResponse io.Writer,
+	rpcName string,
+	call func(context.Context) (Resp, error),
+) (Resp, error) {
+	var zero Resp
+
+	ctx, waiter := client.sidechannelRegistry.Register(ctx, copyOverSidechannel(clientRequest, clientResponse))
 	defer waiter.Close() //nolint:errcheck
 
-	rpcRequest := &gitalypb.PostUploadPackWithSidechannelRequest{
-		Repository:       repo,
-		GitConfigOptions: gitConfigOptions,
-		GitProtocol:      gitProtocol,
-	}
-
-	resp, err := client.PostUploadPackWithSidechannel(ctx, rpcRequest)
+	resp, err := call(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("PostUploadPackWithSidechannel: %w", err)
+		return zero, fmt.Errorf("%s: %w", rpcName, err)
 	}
 
 	if err = waiter.Close(); err != nil {
-		return nil, fmt.Errorf("close sidechannel waiter: %w", err)
+		return zero, fmt.Errorf("close sidechannel waiter: %w", err)
 	}
 
 	return resp, nil
+}
+
+// UploadPack performs an upload pack operation with a sidechannel.
+func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
+	return uploadPackOverSidechannel(ctx, client, clientRequest, clientResponse, "PostUploadPackWithSidechannel",
+		func(ctx context.Context) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
+			return client.PostUploadPackWithSidechannel(ctx, &gitalypb.PostUploadPackWithSidechannelRequest{
+				Repository:       repo,
+				GitConfigOptions: gitConfigOptions,
+				GitProtocol:      gitProtocol,
+			})
+		})
+}
+
+// BundleURI serves the Git protocol v2 `command=bundle-uri` request. It is identical to UploadPack
+// apart from the RPC it invokes: the dedicated method name gives this cheap command its own
+// concurrency-limiting cost class on Gitaly, so it cannot queue behind clones.
+func (client *SmartHTTPClient) BundleURI(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) (*gitalypb.AdvertiseBundleURIResponse, error) {
+	return uploadPackOverSidechannel(ctx, client, clientRequest, clientResponse, "AdvertiseBundleURI",
+		func(ctx context.Context) (*gitalypb.AdvertiseBundleURIResponse, error) {
+			return client.AdvertiseBundleURI(ctx, &gitalypb.AdvertiseBundleURIRequest{
+				Repository:       repo,
+				GitConfigOptions: gitConfigOptions,
+				GitProtocol:      gitProtocol,
+			})
+		})
 }

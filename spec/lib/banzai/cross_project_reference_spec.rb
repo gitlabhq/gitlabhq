@@ -7,9 +7,8 @@ RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
   let(:reference_cache) { Banzai::Filter::References::ReferenceCache.new(including_class, {}) }
 
   before do
-    allow(including_class).to receive(:context).and_return({})
     allow(including_class).to receive(:parent_from_ref).and_call_original
-    allow(including_class).to receive(:reference_cache).and_return(reference_cache)
+    allow(including_class).to receive_messages(context: {}, reference_cache: reference_cache)
   end
 
   describe '#parent_from_ref' do
@@ -64,8 +63,10 @@ RSpec.describe Banzai::CrossProjectReference, feature_category: :markdown do
       let(:project2) { double('referenced project') }
 
       before do
-        allow(reference_cache).to receive(:cache_loaded?).and_return(true)
-        allow(reference_cache).to receive(:parent_per_reference).and_return({ 'cross/reference' => project2 })
+        allow(reference_cache).to receive_messages(
+          cache_loaded?: true,
+          parent_per_reference: { 'cross/reference' => project2 }
+        )
       end
 
       it 'pulls from the reference cache' do

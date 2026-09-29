@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tmpdir'
+require 'fileutils'
 
 RSpec.describe Gitlab::Mfe, feature_category: :compliance_management do
   using RSpec::Parameterized::TableSyntax
@@ -32,6 +34,22 @@ RSpec.describe Gitlab::Mfe, feature_category: :compliance_management do
       end
 
       it { is_expected.to be(true) }
+    end
+
+    context 'when the enabled hook returns a truthy non-boolean' do
+      before do
+        described_class.configure { |config| config.enabled = -> { 'yes' } }
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the enabled hook returns nil' do
+      before do
+        described_class.configure { |config| config.enabled = -> {} }
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 
@@ -80,6 +98,41 @@ RSpec.describe Gitlab::Mfe, feature_category: :compliance_management do
           expect(registry_url).to eq(described_class::DEFAULT_REGISTRY_URL)
         end
       end
+    end
+  end
+
+  describe 'vendor file memoization' do
+    let(:tmpdir) { Dir.mktmpdir }
+
+    before do
+      path = write_pin('first.yml', 'first_app')
+      described_class.configure { |config| config.vendor_file_path = path }
+      described_class::VendorFile.entries
+    end
+
+    after do
+      FileUtils.remove_entry(tmpdir)
+    end
+
+    def write_pin(file_name, app_name)
+      File.join(tmpdir, file_name).tap do |path|
+        File.write(path, "apps:\n  - name: #{app_name}\n    version: 0.4.0\n    sha: #{'a' * 64}\n")
+      end
+    end
+
+    it 'reloads the pin file when the vendor file path is reconfigured' do
+      path = write_pin('second.yml', 'second_app')
+
+      described_class.configure { |config| config.vendor_file_path = path }
+
+      expect(described_class::VendorFile.entries.map(&:name)).to eq(['second_app'])
+    end
+
+    it 'drops the loaded pins on reset_configuration!' do
+      described_class.reset_configuration!
+
+      expect { described_class::VendorFile.entries }
+        .to raise_error(described_class::VendorFile::InvalidEntryError, /vendor_file_path is not configured/)
     end
   end
 end

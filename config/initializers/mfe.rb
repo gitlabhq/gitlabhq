@@ -2,9 +2,6 @@
 
 require 'gitlab/mfe'
 
-# Wires the runtime hooks the gitlab-mfe gem needs but cannot reach on its own:
-# whether delivery is enabled, the registry URL, and the path to the committed
-# pin file. See gems/gitlab-mfe and ADR-004.
 Gitlab::Mfe.configure do |config|
   config.enabled = -> do
     !!Gitlab.config.mfe.enabled && Feature.enabled?(:mfe_enabled, :instance)

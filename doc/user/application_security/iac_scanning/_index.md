@@ -164,6 +164,23 @@ Supported configuration formats:
 - OpenAPI
 - Terraform
 
+  KICS reports findings only for resource types it has queries for.
+  KICS has Terraform queries for these providers:
+
+  - Alibaba Cloud
+  - AWS
+  - Azure
+  - Databricks
+  - GitHub
+  - Google Cloud
+  - Kubernetes
+  - NIFCLOUD
+  - Tencent Cloud
+
+  KICS also has provider-independent checks.
+  For other providers, these checks are the only ones that apply.
+  For more information, see [KICS platforms](https://docs.kics.io/latest/platforms/).
+
   > [!note]
   > Terraform modules in a custom registry are not scanned for vulnerabilities.
   > For more information about the proposed feature, see [issue 357004](https://gitlab.com/gitlab-org/gitlab/-/issues/357004).
@@ -182,6 +199,9 @@ You can optimize IaC scanning to reduce noise and focus on relevant findings:
 - Disable specific rules by using a `sast-ruleset.toml` file.
 - Override rule attributes (like severity) by using a `sast-ruleset.toml` file.
 - Disable scanning of specific files by using KICS annotations in those files.
+
+IaC scanning does not support adding or replacing rules. For the options each analyzer
+supports, see [rule customization options](../sast/customize_rulesets.md#rule-customization-options).
 
 Use a `sast-ruleset.toml` file to disable rules or override rule attributes. This approach provides the following:
 

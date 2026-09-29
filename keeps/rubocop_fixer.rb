@@ -10,17 +10,6 @@ module Keeps
     LIMIT_FIXES = 20
     RUBOCOP_TODO_DIR_PATTERN = ".rubocop_todo/**/*.yml"
 
-    def initialize(
-      logger: nil,
-      filter_identifiers: nil,
-      limit_fixes: LIMIT_FIXES
-    )
-      super(logger: logger, filter_identifiers: filter_identifiers)
-      @limit_fixes = limit_fixes
-      @config_helper = ::Keeps::Helpers::RubocopFixer::ConfigHelper.new
-      @file_helper = ::Keeps::Helpers::RubocopFixer::FileHelper.new
-    end
-
     def recreate_when_closed?
       true
     end
@@ -29,13 +18,13 @@ module Keeps
       each_allowed_rubocop_rule do |rule, rule_file_path, violating_files|
         logger.puts "RubopCop rule #{rule}"
 
-        limited_violating_files = if violating_files.count > limit_fixes
-                                    violating_files.first(limit_fixes)
+        limited_violating_files = if violating_files.count > LIMIT_FIXES
+                                    violating_files.first(LIMIT_FIXES)
                                   else
                                     violating_files
                                   end
 
-        remove_allow_rule = violating_files.count <= limit_fixes
+        remove_allow_rule = violating_files.count <= LIMIT_FIXES
 
         change = ::Gitlab::Housekeeper::Change.new
         change.identifiers = [self.class.name, rule]
@@ -90,7 +79,13 @@ module Keeps
 
     private
 
-    attr_reader :config_helper, :file_helper, :limit_fixes
+    def config_helper
+      @config_helper ||= ::Keeps::Helpers::RubocopFixer::ConfigHelper.new
+    end
+
+    def file_helper
+      @file_helper ||= ::Keeps::Helpers::RubocopFixer::FileHelper.new
+    end
 
     def each_allowed_rubocop_rule
       Dir.glob(RUBOCOP_TODO_DIR_PATTERN).each do |file|

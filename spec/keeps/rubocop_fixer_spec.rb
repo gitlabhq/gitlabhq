@@ -7,7 +7,7 @@ require './keeps/rubocop_fixer'
 
 RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
   let(:todo_dir) { Dir.mktmpdir }
-  let(:rubocop_fixer) { described_class.new(limit_fixes: 5) }
+  let(:rubocop_fixer) { described_class.new }
   let(:rule1_violating_files) do
     %w[
       rule1_violation1.rb
@@ -38,6 +38,7 @@ RSpec.describe Keeps::RubocopFixer, feature_category: :tooling do
 
   before do
     stub_const("#{described_class}::RUBOCOP_TODO_DIR_PATTERN", todo_dir_pattern)
+    stub_const("#{described_class}::LIMIT_FIXES", 5)
     Pathname.new(todo_dir)
     FileUtils.cp('spec/fixtures/keeps/rubocop_todo1.yml', rule1_file)
     FileUtils.cp('spec/fixtures/keeps/rubocop_todo2.yml', rule2_file)

@@ -44,3 +44,5 @@ module Database
     end
   end
 end
+
+Database::BatchedBackgroundMigration::SingleDatabaseWorker.prepend_mod

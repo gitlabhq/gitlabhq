@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration do
-  let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:project) { build_stubbed(:project) }
+  let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
+  let(:build) { build_stubbed(:ci_build, pipeline: pipeline) }
 
   subject(:presenter) do
     described_class.new(build)
@@ -51,6 +51,10 @@ RSpec.describe CommitStatusPresenter, feature_category: :continuous_integration 
     end
 
     context 'when custom error message is available' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be_with_reload(:build) { create(:ci_build, pipeline: pipeline) }
+
       let(:failure_reason) { :job_router_failure }
 
       before do

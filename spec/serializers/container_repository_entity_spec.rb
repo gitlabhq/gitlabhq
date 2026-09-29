@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ContainerRepositoryEntity do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:repository) { create(:container_repository, project: project) }
 
+  let(:repository) { build_stubbed(:container_repository, project: project) }
   let(:entity) { described_class.new(repository, request: request) }
   let(:request) { double('request') }
 

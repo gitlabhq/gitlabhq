@@ -7,7 +7,7 @@ RSpec.describe 'OAuth Login', :with_current_organization, :allow_forgery_protect
 
   def enter_code(code)
     fill_in 'user_otp_attempt', with: code
-    click_button 'Verify code'
+    click_button s_('TwoFactorAuth|Verify code')
   end
 
   def stub_omniauth_config(provider)

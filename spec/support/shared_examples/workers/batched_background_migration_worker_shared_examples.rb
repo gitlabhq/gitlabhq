@@ -136,9 +136,12 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
           context 'when database config is shared' do
             it 'does nothing' do
-              expect(Gitlab::Database).to receive(:db_config_share_with)
+              allow(Gitlab::Database).to receive(:db_config_share_with).and_call_original
+              allow(Gitlab::Database).to receive(:db_config_share_with)
                 .with(base_model.connection_db_config).and_return('main')
 
+              expect(Gitlab::Database::BackgroundMigration::BatchedMigration)
+                .not_to receive(:active_migrations_distinct_on_table)
               expect(worker).not_to receive(:queue_migrations_for_execution)
 
               worker.perform

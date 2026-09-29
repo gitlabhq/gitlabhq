@@ -490,5 +490,5 @@ Example response:
 ## Remove a merge request from a merge train
 
 To remove a merge request from a merge train, use the
-[Cancel merge when pipeline succeeds](merge_requests.md#cancel-merge-when-pipeline-succeeds)
+[Cancel auto merge](merge_requests.md#cancel-auto-merge)
 endpoint in the merge requests API.

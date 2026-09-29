@@ -3254,7 +3254,6 @@
 - './spec/frontend/fixtures/tabs.rb'
 - './spec/frontend/fixtures/tags.rb'
 - './spec/frontend/fixtures/timezones.rb'
-- './spec/frontend/fixtures/webauthn.rb'
 - './spec/graphql/features/authorization_spec.rb'
 - './spec/graphql/gitlab_schema_spec.rb'
 - './spec/graphql/graphql_triggers_spec.rb'

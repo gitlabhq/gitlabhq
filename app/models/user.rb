@@ -165,6 +165,14 @@ class User < ApplicationRecord
         end
       end
     end
+
+    # Within the hour the throttle skips the write, which would leave the
+    # tracked attributes marked as changed. Rails refuses to lock a record
+    # with unpersisted changes, so a later `with_lock` on the same user in
+    # this request would raise. Clear the dirty state rather than restoring
+    # the row values: KnownSignIn reads this sign-in's values from
+    # current_user after this hook, and a later save must not write them.
+    clear_attribute_changes(Devise::Models::Trackable.required_fields(self.class))
   end
   # rubocop: enable CodeReuse/ServiceClass
 

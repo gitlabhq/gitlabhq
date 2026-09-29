@@ -13,6 +13,8 @@ module MergeRequests
   class MergeToRefService < MergeRequests::MergeBaseService
     extend ::Gitlab::Utils::Override
 
+    MergeCommitNotFoundError = Class.new(StandardError)
+
     def execute(merge_request)
       @merge_request = merge_request
 
@@ -22,6 +24,11 @@ module MergeRequests
       raise_error('Conflicts detected during merge') unless commit_id
 
       commit = project.commit(commit_id)
+
+      # Gitaly just wrote this commit, so nil means a failed lookup, not a conflict.
+      # Raise rather than return an error, which would mark the MR as unmergeable.
+      raise MergeCommitNotFoundError, "Merge commit #{commit_id} could not be found" unless commit
+
       target_id, source_id = commit.parent_ids
 
       success(commit_id: commit.id, target_id: target_id, source_id: source_id)

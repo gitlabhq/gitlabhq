@@ -353,13 +353,36 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
       end
     end
 
+    context 'with non-string params in a JSON body' do
+      it 'creates a branch with an integer name', :aggregate_failures do
+        create_branch name: 551, ref: 'master'
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['name']).to eq('551')
+      end
+
+      it 'creates a branch from an integer ref' do
+        project.repository.add_branch(developer, '551', 'master')
+
+        create_branch name: 'my-branch', ref: 551
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns an unprocessable entity for a nil branch name' do
+        create_branch name: nil, ref: 'master'
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
     def create_branch(name:, ref:)
-      post :create, format: :json, params: {
+      post :create, params: {
         namespace_id: project.namespace.to_param,
         project_id: project.to_param,
         branch_name: name,
         ref: ref
-      }
+      }, as: :json
     end
   end
 

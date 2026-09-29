@@ -113,6 +113,7 @@ Grants the ability to create, delete, read, and update policies in the policy st
 | Create | Instance | Mutation | `GovernPolicyCreate` |
 | Delete | Group | Mutation | `GovernPolicyDelete` |
 | Delete | Instance | Mutation | `GovernPolicyDelete` |
+| Read | Group | Type | `GovernPolicyEvaluation` |
 | Read | Instance | Type | `GovernPolicy` |
 | Read | Instance | Type | `GovernPolicyEvaluation` |
 | Update | Group | Mutation | `GovernPolicyUpdate` |

@@ -1065,14 +1065,14 @@ You can find generated fixtures in `tmp/tests/frontend/fixtures-ee`.
 To generate a single fixture for a _spec.js file identify the import from `test_fixtures/` directory:
 
 ```javascript
-// spec/frontend/authentication/webauthn/authenticate_spec.js
+// spec/frontend/new_branch_spec.js
 
-import htmlWebauthnAuthenticate from 'test_fixtures/webauthn/authenticate.html';
+import htmlBranchesNewBranch from 'test_fixtures/branches/new_branch.html';
 ```
 
-The corresponding fixture file is `spec/frontend/fixtures/webauthn.rb`
+The corresponding fixture file is `spec/frontend/fixtures/branches.rb`
 
-To generate the single fixture from the command line run `bin/rspec spec/frontend/fixtures/webauthn.rb`
+To generate the single fixture from the command line run `bin/rspec spec/frontend/fixtures/branches.rb`
 
 ### Download fixtures
 

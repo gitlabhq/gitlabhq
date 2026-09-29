@@ -19,7 +19,7 @@
 
   - c.with_body do
     - if show_group_access_tokens_premium_offer?(@group)
-      = render_if_exists 'groups/settings/access_tokens/premium_offer', group: @group
+      = render_if_exists 'shared/access_tokens/premium_offer', resource: @group
     #js-new-access-token-app{ data: { access_token_type: type } }
 
     = render ::Layouts::CrudComponent.new(_('Active group access tokens'),

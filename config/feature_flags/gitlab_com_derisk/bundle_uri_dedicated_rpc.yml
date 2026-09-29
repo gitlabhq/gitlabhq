@@ -1,0 +1,11 @@
+---
+name: bundle_uri_dedicated_rpc
+description: Route Git protocol v2 command=bundle-uri requests to Gitaly's dedicated
+  AdvertiseBundleURI RPC
+feature_issue_url: https://gitlab.com/gitlab-org/gitaly/-/work_items/7426
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255744
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629576
+milestone: '19.5'
+group: group::gitaly
+type: gitlab_com_derisk
+default_enabled: false

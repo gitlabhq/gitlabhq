@@ -2729,6 +2729,7 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:merge_request_iid/blocks/:block_id` |
 | Delete | Project | `DELETE` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id` |
+| Merge | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/cancel_auto_merge` |
 | Merge | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds` |
 | Merge | Project | `PUT` | `/projects/:id/merge_requests/:merge_request_iid/merge` |
 | Read | Project | `GET` | `/projects/:id/merge_requests` |

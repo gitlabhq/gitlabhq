@@ -15846,9 +15846,6 @@ msgstr ""
 msgid "Blame"
 msgstr ""
 
-msgid "Blame could not be loaded as a single page."
-msgstr ""
-
 msgid "Blame for binary files is not supported."
 msgstr ""
 
@@ -31829,6 +31826,9 @@ msgstr ""
 msgid "DuoAgenticChat|%{linkStart}Use non-agentic Chat%{linkEnd} (answers questions only)"
 msgstr ""
 
+msgid "DuoAgenticChat|%{modelName} isn't included in your trial"
+msgstr ""
+
 msgid "DuoAgenticChat|AGENTS.md"
 msgstr ""
 
@@ -32045,6 +32045,9 @@ msgstr ""
 msgid "DuoAgenticChat|Purchase credits or turn off the Agentic toggle to start a new conversation."
 msgstr ""
 
+msgid "DuoAgenticChat|Purchase credits to use %{modelName}"
+msgstr ""
+
 msgid "DuoAgenticChat|Purchase more credits"
 msgstr ""
 
@@ -32091,6 +32094,9 @@ msgid "DuoAgenticChat|Select a group"
 msgstr ""
 
 msgid "DuoAgenticChat|Select a group to continue"
+msgstr ""
+
+msgid "DuoAgenticChat|Select another model, or contact your administrator to purchase monthly credits."
 msgstr ""
 
 msgid "DuoAgenticChat|Select category"
@@ -32142,6 +32148,15 @@ msgid "DuoAgenticChat|This file"
 msgstr ""
 
 msgid "DuoAgenticChat|This job"
+msgstr ""
+
+msgid "DuoAgenticChat|This model isn't included in your trial. Buy credits or pick another."
+msgstr ""
+
+msgid "DuoAgenticChat|This model isn't included in your trial. Purchase monthly credits to continue or select another model."
+msgstr ""
+
+msgid "DuoAgenticChat|This model isn't included in your trial. Select another model, or contact your administrator."
 msgstr ""
 
 msgid "DuoAgenticChat|This page"
@@ -33967,7 +33982,10 @@ msgstr ""
 msgid "DuoSlack|Other"
 msgstr ""
 
-msgid "DuoSlack|Plan"
+msgid "DuoSlack|Plan (%{done}/%{total} done)"
+msgstr ""
+
+msgid "DuoSlack|Plan complete"
 msgstr ""
 
 msgid "DuoSlack|Review"
@@ -34018,10 +34036,22 @@ msgstr ""
 msgid "DuoSlack|View your session in GitLab (only visible to you)"
 msgstr ""
 
+msgid "DuoSlack|Waiting for approval"
+msgstr ""
+
+msgid "DuoSlack|Waiting for approval (%{done}/%{total} done)"
+msgstr ""
+
 msgid "DuoSlack|What did you expect to happen?"
 msgstr ""
 
 msgid "DuoSlack|What went wrong?"
+msgstr ""
+
+msgid "DuoSlack|Working on your request…"
+msgstr ""
+
+msgid "DuoSlack|Working on your request… (%{done}/%{total} done)"
 msgstr ""
 
 msgid "DuoSlack|You don't have access to Duo in this namespace, or it has run out of GitLab Duo credits. Ask a group owner to check the Duo Agent Platform settings."
@@ -35022,13 +35052,7 @@ msgstr ""
 msgid "Enter one or more user ID separated by commas"
 msgstr ""
 
-msgid "Enter recovery code"
-msgstr ""
-
 msgid "Enter text"
-msgstr ""
-
-msgid "Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes."
 msgstr ""
 
 msgid "Enter the following to confirm:"
@@ -37010,9 +37034,6 @@ msgid "Failed to save timelog"
 msgstr ""
 
 msgid "Failed to schedule organization deletion"
-msgstr ""
-
-msgid "Failed to send email OTP. Please try again. If the problem persists, refresh your page or sign in again."
 msgstr ""
 
 msgid "Failed to set a reaction. Please try again."
@@ -42789,9 +42810,6 @@ msgid "Hashed repository storage paths"
 msgstr ""
 
 msgid "Hashed storage can't be disabled anymore for new projects"
-msgstr ""
-
-msgid "Having trouble signing in? %{recoveryCodeLinkStart}Enter recovery code%{recoveryCodeLinkEnd} or %{sendCodeLinkStart}send code to email address%{sendCodeLinkEnd}."
 msgstr ""
 
 msgid "Header logo"
@@ -53088,6 +53106,9 @@ msgstr ""
 msgid "ModelSelection|No models are available for this section"
 msgstr ""
 
+msgid "ModelSelection|Requires paid credits"
+msgstr ""
+
 msgid "ModelSelection|Reset to default"
 msgstr ""
 
@@ -62438,9 +62459,6 @@ msgid "Please use an email address or domain you control."
 msgstr ""
 
 msgid "Please use this form to report to the administrator users who create spam issues, comments or behave inappropriately. A member of the abuse team will review your report as soon as possible."
-msgstr ""
-
-msgid "Please wait a few moments while we load the file history for this line."
 msgstr ""
 
 msgid "Please wait a moment, this page will automatically refresh when ready."
@@ -79921,9 +79939,6 @@ msgstr ""
 msgid "Sign in using smart card"
 msgstr ""
 
-msgid "Sign in via 2FA code"
-msgstr ""
-
 msgid "Sign in with single sign-on"
 msgstr ""
 
@@ -81034,9 +81049,6 @@ msgstr ""
 msgid "SshCertificates|An error occurred while fetching the SSH certificate authorities. Please try again."
 msgstr ""
 
-msgid "SshCertificates|Are you sure you want to delete %{title}? Trust in this certificate authority is revoked immediately, and any certificates it signed stop working at once. This action cannot be undone."
-msgstr ""
-
 msgid "SshCertificates|Certificate authorities"
 msgstr ""
 
@@ -81053,6 +81065,9 @@ msgid "SshCertificates|Delete certificate authority"
 msgstr ""
 
 msgid "SshCertificates|Delete certificate authority?"
+msgstr ""
+
+msgid "SshCertificates|Deleting %{title} immediately revokes trust in this certificate authority, and any certificates it signed stop working. This action cannot be undone."
 msgstr ""
 
 msgid "SshCertificates|Discard changes"
@@ -81079,10 +81094,10 @@ msgstr ""
 msgid "SshCertificates|This instance doesn't have any SSH certificate authorities."
 msgstr ""
 
-msgid "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide."
+msgid "SshCertificates|This is the certificate authority's public key, not an individual user's key. Certificates it signs are trusted instance-wide."
 msgstr ""
 
-msgid "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide. Certificate authorities (CAs) can't be edited. To change this key, delete it and add a certificate authority."
+msgid "SshCertificates|This is the certificate authority's public key, not an individual user's key. Certificates it signs are trusted instance-wide. You can't edit a certificate authority. To change its key, delete it and add a new one."
 msgstr ""
 
 msgid "SshCertificates|This matches what appears in your server logs and audit events."
@@ -87100,9 +87115,6 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
-msgid "Try again?"
-msgstr ""
-
 msgid "Try grouping with different labels"
 msgstr ""
 
@@ -90442,9 +90454,6 @@ msgstr ""
 msgid "Verify SAML Configuration"
 msgstr ""
 
-msgid "Verify code"
-msgstr ""
-
 msgid "Verify that GPG keys are authorized by Beyond Identity Authenticator."
 msgstr ""
 
@@ -90544,9 +90553,6 @@ msgid "View all personal projects"
 msgstr ""
 
 msgid "View blame"
-msgstr ""
-
-msgid "View blame as separate pages"
 msgstr ""
 
 msgid "View blame prior to this change"
@@ -92585,9 +92591,6 @@ msgid "We found your token in a public project and have automatically revoked it
 msgstr ""
 
 msgid "We have detected that your message might be composed against %{linkStart}our guidelines%{linkEnd}. Please review our findings below:"
-msgstr ""
-
-msgid "We heard back from your device. You have been authenticated."
 msgstr ""
 
 msgid "We recommend a work email address."

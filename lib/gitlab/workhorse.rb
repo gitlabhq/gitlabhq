@@ -51,6 +51,7 @@ module Gitlab
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           NeedAudit: need_audit,
+          BundleURIDedicatedRPC: Feature.enabled?(:bundle_uri_dedicated_rpc, repository.project),
           Repository: repository.gitaly_repository.to_h,
           GitConfigOptions: [],
           GitalyServer: {

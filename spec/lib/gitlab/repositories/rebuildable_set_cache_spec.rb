@@ -1470,6 +1470,60 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
 
         expect(results).to contain_exactly('feat-1', 'feat-2')
       end
+
+      it 'returns an Enumerator' do
+        expect(cache.search(:branch_names, '*') { %w[main] }).to be_an(Enumerator)
+      end
+
+      it 'matches across slashes and leading dots' do
+        results = cache.search(:branch_names, '*') { %w[feature/foo .hidden] }.to_a
+
+        expect(results).to contain_exactly('feature/foo', '.hidden')
+      end
+
+      it 'returns no results for a pattern containing a NUL byte' do
+        expect(cache.search(:branch_names, "main\0") { %w[main] }.to_a).to be_empty
+      end
+
+      it 'includes ref changes reconciled during the rebuild' do
+        drain_call_count = 0
+        allow(cache).to receive(:drain_pending_events).and_wrap_original do |method, *args|
+          drain_call_count += 1
+          # The second drain follows the write, simulating a ref change racing the rebuild.
+          cache.handle_ref_change(:branch_names, 'refs/heads/feat-late', false) if drain_call_count == 2
+
+          method.call(*args)
+        end
+
+        results = cache.search(:branch_names, 'feat*') { %w[feat-1 other] }.to_a
+
+        expect(results).to contain_exactly('feat-1', 'feat-late')
+      end
+    end
+
+    context 'when another rebuild holds the lock' do
+      before do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), '1', ex: 60)
+        end
+      end
+
+      it 'matches the source values when the cache does not exist', :aggregate_failures do
+        results = cache.search(:branch_names, 'feat*') { %w[feat-1 feat-2 other] }.to_a
+
+        expect(results).to contain_exactly('feat-1', 'feat-2')
+        expect(cache.trusted?(:branch_names)).to be(false)
+      end
+
+      it 'matches the source values instead of a stale cache' do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.sadd(cache.cache_key(:branch_names), %w[stale/branch])
+        end
+
+        results = cache.search(:branch_names, '*') { %w[main] }.to_a
+
+        expect(results).to contain_exactly('main')
+      end
     end
 
     context 'when cache was written with empty values' do

@@ -43,9 +43,11 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     Singleton.__init__(Keeps::Helpers::Groups)
     Singleton.__init__(Keeps::Helpers::ReviewerRoulette)
 
-    allow(keep).to receive(:all_feature_flag_files).and_return([feature_flag_file])
-    allow(keep).to receive(:milestones_helper).and_return(milestones_helper)
-    allow(keep).to receive(:can_remove_ff?).and_return(true)
+    allow(keep).to receive_messages(
+      all_feature_flag_files: [feature_flag_file],
+      milestones_helper: milestones_helper,
+      can_remove_ff?: true
+    )
 
     reviewer_roulette = instance_double(Keeps::Helpers::ReviewerRoulette, reviewer_available?: true)
     allow(Keeps::Helpers::ReviewerRoulette).to receive(:instance).and_return(reviewer_roulette)
@@ -83,10 +85,12 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
     before do
       allow(keep).to receive(:can_remove_ff?).and_call_original
-      allow(keep).to receive(:logger).and_return(double.as_null_object)
-      allow(keep).to receive(:matches_filter_identifiers?).and_return(true)
-      allow(keep).to receive(:feature_flag_rollout_issue_url).and_return(feature_flag.rollout_issue_url)
-      allow(keep).to receive(:get_latest_feature_flag_status).and_return(:enabled)
+      allow(keep).to receive_messages(
+        logger: double.as_null_object,
+        matches_filter_identifiers?: true,
+        feature_flag_rollout_issue_url: feature_flag.rollout_issue_url,
+        get_latest_feature_flag_status: :enabled
+      )
     end
 
     context 'when milestone is nil' do
@@ -366,10 +370,10 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         api_url = format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
         stub_request(:get, api_url)
           .to_return(status: 200, body: { labels: ['type::feature', 'feature flag state::enabled'] }.to_json)
-        allow(keep).to receive(:ai_helper).and_return(ai_helper)
-        allow(keep).to receive(:files_mentioning_feature_flag).and_return(['app/controllers/feature_controller.rb'])
-        allow(keep).to receive(:remove_feature_flag_prompts).and_return(
-          instance_double(Keeps::Prompts::RemoveFeatureFlags, fetch: 'user message')
+        allow(keep).to receive_messages(
+          ai_helper: ai_helper,
+          files_mentioning_feature_flag: ['app/controllers/feature_controller.rb'],
+          remove_feature_flag_prompts: instance_double(Keeps::Prompts::RemoveFeatureFlags, fetch: 'user message')
         )
         allow(ai_helper).to receive(:ask_for_and_apply_patch).and_return(true)
         allow(Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect).and_return(true)
@@ -421,10 +425,12 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         api_url = format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
         stub_request(:get, api_url)
           .to_return(status: 200, body: { labels: ['type::maintenance', 'feature flag state::disabled'] }.to_json)
-        allow(keep).to receive(:all_feature_flag_files).and_return([disabled_feature_flag_file])
-        allow(keep).to receive(:ai_helper).and_return(ai_helper)
-        allow(keep).to receive(:files_mentioning_feature_flag).and_return([])
-        allow(keep).to receive(:can_remove_ff?).and_return(true)
+        allow(keep).to receive_messages(
+          all_feature_flag_files: [disabled_feature_flag_file],
+          ai_helper: ai_helper,
+          files_mentioning_feature_flag: [],
+          can_remove_ff?: true
+        )
       end
 
       it 'sets changelog_type to "other" and title reflects removal for disabled non-default flags' do
@@ -462,10 +468,12 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         api_url = format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '124')
         stub_request(:get, api_url)
           .to_return(status: 200, body: { labels: ['type::feature', 'feature flag state::disabled'] }.to_json)
-        allow(keep).to receive(:all_feature_flag_files).and_return([default_enabled_flag_file])
-        allow(keep).to receive(:ai_helper).and_return(ai_helper)
-        allow(keep).to receive(:files_mentioning_feature_flag).and_return([])
-        allow(keep).to receive(:can_remove_ff?).and_return(true)
+        allow(keep).to receive_messages(
+          all_feature_flag_files: [default_enabled_flag_file],
+          ai_helper: ai_helper,
+          files_mentioning_feature_flag: [],
+          can_remove_ff?: true
+        )
       end
 
       it 'sets changelog_type to "removed" for disabled default_enabled flags' do
@@ -798,10 +806,10 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     before do
       keep.instance_variable_set(:@logger, logger)
       allow(logger).to receive(:puts)
-      allow(keep).to receive(:ai_helper).and_return(ai_helper)
-      allow(keep).to receive(:get_latest_feature_flag_status).and_return(:enabled)
-      allow(keep).to receive(:remove_feature_flag_prompts).and_return(
-        instance_double(Keeps::Prompts::RemoveFeatureFlags, fetch: 'user message')
+      allow(keep).to receive_messages(
+        ai_helper: ai_helper,
+        get_latest_feature_flag_status: :enabled,
+        remove_feature_flag_prompts: instance_double(Keeps::Prompts::RemoveFeatureFlags, fetch: 'user message')
       )
     end
 

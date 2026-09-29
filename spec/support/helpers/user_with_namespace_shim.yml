@@ -600,7 +600,6 @@
 - spec/frontend/fixtures/pipeline_details.rb
 - spec/frontend/fixtures/snippet.rb
 - spec/frontend/fixtures/users.rb
-- spec/frontend/fixtures/webauthn.rb
 - spec/graphql/mutations/users/set_namespace_commit_email_spec.rb
 - spec/graphql/resolvers/board_list_issues_resolver_spec.rb
 - spec/graphql/resolvers/board_lists_resolver_spec.rb

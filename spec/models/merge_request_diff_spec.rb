@@ -1102,7 +1102,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       let(:repository) { diff_with_commits.project.repository }
 
       it 'calls diffs_by_changed_paths with given offset' do
-        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0) do |_, &block|
+        expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, 0, sorted: true) do |_, &block|
           expect(block).to be(expected_block)
         end
 
@@ -1113,7 +1113,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         let(:offset) { 5 }
 
         it 'calls diffs_by_changed_paths with given offset' do
-          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset) do |_, &block|
+          expect(repository).to receive(:diffs_by_changed_paths).with(diff_refs, offset, sorted: true) do |_, &block|
             expect(block).to be(expected_block)
           end
 

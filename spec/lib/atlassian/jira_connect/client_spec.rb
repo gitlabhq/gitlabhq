@@ -131,8 +131,10 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
     it 'calls the API if no issue keys are found, but there are service IDs' do
       allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
-        allow(entity).to receive(:issue_keys).and_return([])
-        allow(entity).to receive(:service_ids_from_integration_configuration).and_return([{ associationType: 'serviceIdOrKeys', values: ['foo'] }])
+        allow(entity).to receive_messages(
+          issue_keys: [],
+          service_ids_from_integration_configuration: [{ associationType: 'serviceIdOrKeys', values: ['foo'] }]
+        )
       end
 
       expect(subject).to receive(:post).with(
@@ -144,8 +146,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
     it 'does not call the API if no issue keys or service IDs are found' do
       allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
-        allow(entity).to receive(:issue_keys).and_return([])
-        allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
+        allow(entity).to receive_messages(issue_keys: [], service_ids_from_integration_configuration: [])
       end
 
       expect(subject).not_to receive(:post)
@@ -175,8 +176,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
       before do
         allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
-          allow(entity).to receive(:issue_keys).and_return(issue_keys)
-          allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
+          allow(entity).to receive_messages(issue_keys: issue_keys, service_ids_from_integration_configuration: [])
         end
 
         allow(subject).to receive(:post).and_return(success_response)
@@ -198,8 +198,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
       before do
         allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
-          allow(entity).to receive(:issue_keys).and_return(issue_keys)
-          allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
+          allow(entity).to receive_messages(issue_keys: issue_keys, service_ids_from_integration_configuration: [])
         end
       end
 

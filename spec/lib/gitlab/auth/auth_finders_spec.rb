@@ -887,6 +887,43 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  describe '#resolve_access_token' do
+    context 'when namespace_inheritable authentication is registered but empty' do
+      let(:inheritable_setting) { Struct.new(:namespace_inheritable).new({ authentication: {} }) }
+
+      before do
+        allow(self).to receive(:inheritable_setting).and_return(inheritable_setting)
+      end
+
+      # access_token_from_namespace_inheritable only exists on real Grape
+      # endpoints (API::Helpers::Authentication), not on AuthFinders alone, so
+      # this can only assert delegation, not the full downstream outcome.
+      it 'delegates to the namespace-inheritable lookup instead of falling back to the generic OAuth/PAT lookup' do
+        expect(self).to receive(:access_token_from_namespace_inheritable)
+
+        resolve_access_token
+      end
+    end
+  end
+
+  describe '#revoke_token_family' do
+    context 'when the token is not a PersonalAccessToken' do
+      # Any duck-typed access token with a non-integer `id` (e.g. a JWT's
+      # `jti`) would raise a DB type error if it reached the query below.
+      let(:token) { double('token', id: 'a-jwt-jti') }
+
+      before do
+        set_header('SCRIPT_NAME', "/personal_access_tokens/self/rotate")
+      end
+
+      it 'does not attempt to revoke a token family' do
+        expect(PersonalAccessTokens::RevokeTokenFamilyService).not_to receive(:new)
+
+        revoke_token_family(token)
+      end
+    end
+  end
+
   describe '#find_personal_access_token' do
     before do
       set_header('SCRIPT_NAME', 'url.atom')

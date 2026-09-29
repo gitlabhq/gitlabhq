@@ -117,46 +117,6 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
     end
   end
 
-  describe '#render_email_otp_fallback_for_totp?' do
-    let(:user) { build_stubbed(:user) }
-
-    context 'when fallback_to_email_otp is not permitted' do
-      before do
-        allow(helper).to receive(:fallback_to_email_otp_permitted?).with(user).and_return(false)
-      end
-
-      it 'returns false' do
-        expect(helper.render_email_otp_fallback_for_totp?(user)).to be false
-      end
-    end
-
-    context 'when fallback_to_email_otp is permitted' do
-      before do
-        allow(helper).to receive(:fallback_to_email_otp_permitted?).with(user).and_return(true)
-      end
-
-      context 'when user has webauthn enabled' do
-        before do
-          allow(user).to receive(:two_factor_webauthn_enabled?).and_return(true)
-        end
-
-        it 'returns false' do
-          expect(helper.render_email_otp_fallback_for_totp?(user)).to be false
-        end
-      end
-
-      context 'when user does not have webauthn enabled' do
-        before do
-          allow(user).to receive(:two_factor_webauthn_enabled?).and_return(false)
-        end
-
-        it 'returns true' do
-          expect(helper.render_email_otp_fallback_for_totp?(user)).to be true
-        end
-      end
-    end
-  end
-
   describe '#fallback_to_email_otp_permitted?' do
     let_it_be_with_reload(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- we need to create it
 
@@ -263,56 +223,85 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
     end
   end
 
-  describe '#webauthn_authentication_data' do
+  describe '#two_factor_authentication_app_data' do
     let(:user) { build_stubbed(:user) }
     let(:params) { { user: { remember_me: 1 } } }
     let(:remember_me_enabled) { true }
 
     before do
-      allow(helper).to receive(:remember_me_enabled?).and_return(remember_me_enabled)
+      allow(helper).to receive_messages(
+        remember_me_enabled?: remember_me_enabled,
+        fallback_to_email_otp_permitted?: false
+      )
     end
 
     context 'when admin_mode is false' do
-      it 'returns correct target_path' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+      it 'returns the user session path' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
-        expect(data[:target_path]).to eq(user_session_path)
+        expect(data[:path]).to eq(user_session_path)
       end
 
-      it 'returns render_remember_me as true when remember_me is enabled' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+      it 'returns remember_me_enabled as true when remember_me is enabled' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
-        expect(data[:render_remember_me]).to eq('true')
+        expect(data[:remember_me_enabled]).to eq('true')
       end
 
       it 'returns remember_me value from params' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
         expect(data[:remember_me]).to eq(1)
       end
     end
 
-    context 'when admin_mode is true' do
-      it 'returns admin session path as target_path' do
-        data = helper.webauthn_authentication_data(user: user, params: params, admin_mode: true)
+    describe 'active_method' do
+      it 'reflects the submitted two_factor_method hint' do
+        data = helper.two_factor_authentication_app_data(user: user, params: { two_factor_method: 'webauthn' })
 
-        expect(data[:target_path]).to eq(admin_session_path)
+        expect(data[:active_method]).to eq('webauthn')
       end
 
-      it 'returns render_remember_me as false' do
-        data = helper.webauthn_authentication_data(user: user, params: params, admin_mode: true)
+      it 'reflects a recovery two_factor_method hint' do
+        data = helper.two_factor_authentication_app_data(user: user, params: { two_factor_method: 'recovery' })
 
-        expect(data[:render_remember_me]).to eq('false')
+        expect(data[:active_method]).to eq('recovery')
+      end
+
+      it 'is nil when nothing was submitted' do
+        data = helper.two_factor_authentication_app_data(user: user, params: {})
+
+        expect(data[:active_method]).to be_nil
+      end
+    end
+
+    context 'when admin_mode is true' do
+      it 'returns the admin session path' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params, admin_mode: true)
+
+        expect(data[:path]).to eq(admin_session_path)
+      end
+
+      it 'flags admin_mode as true' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params, admin_mode: true)
+
+        expect(data[:admin_mode]).to eq('true')
+      end
+
+      it 'returns remember_me_enabled as false' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params, admin_mode: true)
+
+        expect(data[:remember_me_enabled]).to eq('false')
       end
     end
 
     context 'when remember_me is disabled' do
       let(:remember_me_enabled) { false }
 
-      it 'returns render_remember_me as false' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+      it 'returns remember_me_enabled as false' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
-        expect(data[:render_remember_me]).to eq('false')
+        expect(data[:remember_me_enabled]).to eq('false')
       end
     end
 
@@ -320,10 +309,33 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       let(:params) { {} }
 
       it 'returns default remember_me value of 0' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
         expect(data[:remember_me]).to eq(0)
       end
+    end
+
+    it 'includes the enabled second-factor methods' do
+      allow(user).to receive_messages(two_factor_otp_enabled?: true,
+        can_use_existing_webauthn_authenticator_for_2fa?: false)
+
+      data = helper.two_factor_authentication_app_data(user: user, params: params)
+
+      expect(data[:totp_enabled]).to eq('true')
+      expect(data[:webauthn_enabled]).to eq('false')
+      expect(data[:email_enabled]).to eq('false')
+      expect(data[:admin_mode]).to eq('false')
+    end
+
+    it 'treats a passkey usable for 2FA as webauthn_enabled, even without a second-factor device' do
+      # webauthn_enabled mirrors can_use_existing_webauthn_authenticator_for_2fa? (passkey-inclusive),
+      # matching the controller's challenge setup, not the narrower two_factor_webauthn_enabled?.
+      allow(user).to receive_messages(two_factor_webauthn_enabled?: false,
+        can_use_existing_webauthn_authenticator_for_2fa?: true)
+
+      data = helper.two_factor_authentication_app_data(user: user, params: params)
+
+      expect(data[:webauthn_enabled]).to eq('true')
     end
 
     context 'when fallback_to_email_otp is permitted' do
@@ -338,47 +350,41 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         })
       end
 
+      it 'sets email_enabled to true' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
+
+        expect(data[:email_enabled]).to eq('true')
+      end
+
       it 'includes send_email_otp_path' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
         expect(data[:send_email_otp_path]).to eq(users_fallback_to_email_otp_path)
       end
 
-      it 'includes username' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
-
-        expect(data[:username]).to eq(user.username)
-      end
-
-      it 'includes email_verification_data as JSON' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+      it 'includes email_verification_data as JSON with only the fields the Vue screen reads' do
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
         expect(data[:email_verification_data]).to be_present
         parsed_data = Gitlab::Json.parse(data[:email_verification_data])
-        expect(parsed_data['username']).to eq(user.username)
+        expect(parsed_data.keys)
+          .to contain_exactly('obfuscated_email', 'verify_path', 'resend_path', 'username')
         expect(parsed_data['obfuscated_email']).to eq('u***@example.com')
+      end
+
+      context 'and admin_mode is true' do
+        it 'disables email OTP (unsupported for admin re-authentication)' do
+          data = helper.two_factor_authentication_app_data(user: user, params: params, admin_mode: true)
+
+          expect(data[:email_enabled]).to eq('false')
+          expect(data.key?(:email_verification_data)).to be false
+        end
       end
     end
 
     context 'when fallback_to_email_otp is not permitted' do
-      before do
-        allow(helper).to receive(:fallback_to_email_otp_permitted?).and_return(false)
-      end
-
-      it 'does not include send_email_otp_path' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
-
-        expect(data[:send_email_otp_path]).to be_nil
-      end
-
-      it 'includes username' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
-
-        expect(data[:username]).to eq(user.username)
-      end
-
       it 'does not include email_verification_data' do
-        data = helper.webauthn_authentication_data(user: user, params: params)
+        data = helper.two_factor_authentication_app_data(user: user, params: params)
 
         expect(data.key?(:email_verification_data)).to be false
       end

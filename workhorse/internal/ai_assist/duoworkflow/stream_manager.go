@@ -133,7 +133,14 @@ func (sm *streamManager) Close() error {
 		cloudServiceErrs = errors.Join(cloudServiceErrs, sm.cloudServiceClient.Close())
 	}
 
-	return errors.Join(sm.wf.CloseSend(), sm.client.Close(), cloudServiceErrs)
+	var workflowErr error
+	// Skip the half-close once the caller is gone: grpc-go is already resetting
+	// the stream, and an END_STREAM that wins that race shows DWS a clean EOF.
+	if sm.originalReq.Context().Err() == nil {
+		workflowErr = sm.wf.CloseSend()
+	}
+
+	return errors.Join(workflowErr, sm.client.Close(), cloudServiceErrs)
 }
 
 // handleCloudServiceTracking sends tracking data to cloud service for self-hosted deployments

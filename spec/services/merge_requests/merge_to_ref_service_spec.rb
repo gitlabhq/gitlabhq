@@ -103,6 +103,17 @@ RSpec.describe MergeRequests::MergeToRefService, feature_category: :code_review_
       expect(result[:message]).to eq('Failed to create merge commit')
     end
 
+    context 'when the merge commit cannot be found after the merge' do
+      let(:commit_id) { 'a' * 40 }
+
+      it 'raises MergeCommitNotFoundError instead of returning an error' do
+        allow(project.repository).to receive(:merge_to_ref).and_return(commit_id)
+
+        expect { service.execute(merge_request) }
+          .to raise_error(described_class::MergeCommitNotFoundError, "Merge commit #{commit_id} could not be found")
+      end
+    end
+
     context 'commit history comparison with regular MergeService' do
       before do
         # The merge service needs an authorized user while merge-to-ref

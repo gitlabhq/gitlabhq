@@ -30,8 +30,7 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
 
     context 'when an item has a rendered field' do
       before do
-        allow(merge_request).to receive(:field).and_return('This is the field')
-        allow(merge_request).to receive(:field_html).and_return('This is the field')
+        allow(merge_request).to receive_messages(field: 'This is the field', field_html: 'This is the field')
       end
 
       it 'does not touch redis if the field is in the cache' do

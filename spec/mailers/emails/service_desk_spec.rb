@@ -507,8 +507,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
           before do
             allow_next_instance_of(FileUploader) do |instance|
-              allow(instance).to receive(:size).and_return(10.megabytes)
-              allow(instance).to receive(:read).and_return('')
+              allow(instance).to receive_messages(size: 10.megabytes, read: '')
             end
           end
 
@@ -541,8 +540,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           context 'when all uploads processed correct' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Avoid duplication with heavy use of helpers
             before do
               allow_next_instance_of(FileUploader) do |instance|
-                allow(instance).to receive(:size).and_return(5.megabytes)
-                allow(instance).to receive(:read).and_return('')
+                allow(instance).to receive_messages(size: 5.megabytes, read: '')
               end
             end
 

@@ -29,7 +29,6 @@ module Gitlab
         end
         strong_memoize_attr :entries
 
-        # Test-only.
         def reset!
           clear_memoization(:entries)
           nil
@@ -70,7 +69,10 @@ module Gitlab
         end
 
         def config_file_path
-          Mfe.configuration.vendor_file_path
+          path = Mfe.configuration.vendor_file_path
+          raise InvalidEntryError, 'could not read vendor file: vendor_file_path is not configured' if path.to_s.blank?
+
+          path
         end
 
         # A missing pin file is a broken checkout, not a no-op.

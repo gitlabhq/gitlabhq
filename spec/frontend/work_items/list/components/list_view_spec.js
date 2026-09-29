@@ -142,10 +142,7 @@ const mountComponent = ({
 
   router = new VueRouter({
     mode: 'history',
-    routes: [
-      { name: 'base', path: '/', component: ListView },
-      ...routes({ fullPath: '/work_item' }),
-    ],
+    routes: [{ name: 'base', path: '/', component: ListView }, ...routes],
   });
 
   isLoggedIn.mockReturnValue(isLoggedInValue);

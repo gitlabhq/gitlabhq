@@ -22,10 +22,6 @@ module SessionsHelper
     Gitlab::CurrentSettings.allow_user_remember_me?
   end
 
-  def render_email_otp_fallback_for_totp?(user)
-    fallback_to_email_otp_permitted?(user) && !user.two_factor_webauthn_enabled?
-  end
-
   def verification_data(user)
     permitted_to_skip = permitted_to_skip_email_otp_in_warning_period?(user)
 
@@ -50,24 +46,32 @@ module SessionsHelper
     }
   end
 
-  def webauthn_authentication_data(user:, params:, admin_mode: false)
+  def two_factor_authentication_app_data(user:, params:, admin_mode: false)
     target_path = admin_mode ? admin_session_path : user_session_path
     render_remember_me = admin_mode ? false : remember_me_enabled?
     user_params = params[:user].presence || params
-    remember_me_value = user_params.fetch(:remember_me, 0)
-
-    send_email_otp_path = fallback_to_email_otp_permitted?(user) ? users_fallback_to_email_otp_path : nil
+    # Email OTP is a sign-in fallback that is not offered during admin-mode re-authentication.
+    email_otp_available = !admin_mode && fallback_to_email_otp_permitted?(user)
 
     data = {
-      target_path: target_path,
-      render_remember_me: render_remember_me.to_s,
-      remember_me: remember_me_value,
-      send_email_otp_path: send_email_otp_path,
-      username: user.username
+      path: target_path,
+      admin_mode: admin_mode.to_s,
+      active_method: params[:two_factor_method].presence,
+      remember_me: user_params.fetch(:remember_me, 0),
+      remember_me_enabled: render_remember_me.to_s,
+      totp_enabled: user.two_factor_otp_enabled?.to_s,
+      webauthn_enabled: user.can_use_existing_webauthn_authenticator_for_2fa?.to_s,
+      email_enabled: email_otp_available.to_s
     }
 
-    # This is additional data needed to complete the email verification workflow
-    data[:email_verification_data] = verification_data(user).to_json if send_email_otp_path
+    if email_otp_available
+      data[:send_email_otp_path] = users_fallback_to_email_otp_path
+      # email_code.vue reads only these four; skip_path / show_resend_after are unused on the
+      # 2FA screen, and verification_data stays whole for the identity-verification flow that
+      # renders email_verification.vue.
+      data[:email_verification_data] =
+        verification_data(user).slice(:obfuscated_email, :verify_path, :resend_path, :username).to_json
+    end
 
     data
   end

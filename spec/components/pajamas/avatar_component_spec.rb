@@ -3,11 +3,11 @@
 require "spec_helper"
 
 RSpec.describe Pajamas::AvatarComponent, feature_category: :design_system do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:group) { create(:group) }
   let_it_be(:email) { Pajamas::AvatarEmail.new('kitty@cat.com') }
 
+  let(:user) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project) }
+  let(:group) { build_stubbed(:group) }
   let(:options) { {} }
 
   before do

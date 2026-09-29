@@ -239,7 +239,9 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
 
         context 'when kubernetes terminal is available' do
           context 'when user configured kubernetes from CI/CD > Clusters' do
-            let(:cluster) { create(:cluster, :provided_by_gcp, projects: [create(:project, :repository)]) }
+            let_it_be_with_reload(:terminal_project) { create(:project, :repository) }
+
+            let(:cluster) { create(:cluster, :provided_by_gcp, projects: [terminal_project]) }
             let(:project) { cluster.project }
 
             context 'for project maintainer' do

@@ -161,8 +161,10 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         allow(metadata).to receive(:load_from_file).and_return(backup_information)
       end
 
-      allow(terraform_state).to receive(:pre_restore_warning).and_return(pre_restore_warning)
-      allow(terraform_state).to receive(:post_restore_warning).and_return(post_restore_warning)
+      allow(terraform_state).to receive_messages(
+        pre_restore_warning: pre_restore_warning,
+        post_restore_warning: post_restore_warning
+      )
     end
 
     it 'runs the provided task' do

@@ -337,7 +337,7 @@ describe('SshCertificatesTable', () => {
       expect(findDeleteModal().exists()).toBe(false);
     });
 
-    it('opens the delete modal naming the certificate and stating that trust is revoked immediately', async () => {
+    it('opens the delete modal naming the certificate and stating that deleting it revokes trust immediately', async () => {
       selectRowAction(0, 1);
       await nextTick();
 
@@ -349,7 +349,7 @@ describe('SshCertificatesTable', () => {
       });
       expect(findDeleteModal().find('strong').text()).toBe(certificates[0].title);
       expect(findDeleteModal().text()).toContain(
-        'Trust in this certificate authority is revoked immediately, and any certificates it signed stop working at once. This action cannot be undone.',
+        'immediately revokes trust in this certificate authority, and any certificates it signed stop working. This action cannot be undone.',
       );
     });
 

@@ -96,5 +96,11 @@ export default function createComponent({
     },
   });
 
-  return { wrapper: component, resolveQuery, rejectQuery, resolveMutation };
+  return {
+    wrapper: component,
+    apolloProvider: fakeApollo,
+    resolveQuery,
+    rejectQuery,
+    resolveMutation,
+  };
 }

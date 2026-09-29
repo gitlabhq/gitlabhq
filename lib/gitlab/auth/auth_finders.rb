@@ -369,29 +369,43 @@ module Gitlab
       def access_token
         strong_memoize(:access_token) do
           # Kubernetes API OAuth header is not OauthAccessToken or PersonalAccessToken
-          # and should be ignored by this method. When the kubernetes API uses a different
-          # header, we can remove this guard
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/406582
+          # and should be ignored by this method (including by EE's stateless-token
+          # resolution). When the kubernetes API uses a different header, we can
+          # remove this guard. https://gitlab.com/gitlab-org/gitlab/-/issues/406582
           next if current_request.path.starts_with? "/api/v4/internal/kubernetes/"
 
-          if try(:inheritable_setting)&.namespace_inheritable&.[](:authentication)
-            access_token_from_namespace_inheritable
-          elsif pat_prefix_token?
-            # If the token has a PAT prefix (glpat-), skip OAuth lookup entirely.
-            # This avoids the expensive PBKDF2 hashing in OauthAccessToken.by_token
-            # for tokens that are clearly Personal Access Tokens.
-            find_personal_access_token
-          else
-            # The token can be a PAT or an OAuth (doorkeeper or IAM JWT) token
-            begin
-              find_oauth_access_token
-            rescue UnauthorizedError
-              # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
-              # (e.g. NPM client registry auth). In that case, we rescue UnauthorizedError
-              # and try to find a personal access token.
-            end || find_personal_access_token
-          end
+          resolve_access_token
         end
+      end
+
+      # Split out so EE can override just the resolution logic; access_token
+      # itself must stay unprepended since specs stub it via `allow_any_instance_of`,
+      # which rspec-mocks refuses for methods defined on a prepended module.
+      def resolve_access_token
+        if namespace_inheritable_authentication?
+          access_token_from_namespace_inheritable
+        elsif pat_prefix_token?
+          # If the token has a PAT prefix (glpat-), skip OAuth lookup entirely.
+          # This avoids the expensive PBKDF2 hashing in OauthAccessToken.by_token
+          # for tokens that are clearly Personal Access Tokens.
+          find_personal_access_token
+        else
+          # The token can be a PAT or an OAuth (doorkeeper or IAM JWT) token
+          begin
+            find_oauth_access_token
+          rescue UnauthorizedError
+            # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
+            # (e.g. NPM client registry auth). In that case, we rescue UnauthorizedError
+            # and try to find a personal access token.
+          end || find_personal_access_token
+        end
+      end
+
+      def namespace_inheritable_authentication?
+        # `!!` coerces to a real boolean while preserving truthiness semantics:
+        # an empty (but present) strategies hash from `authenticate_with` still
+        # counts as registered, so this must not become `.present?`.
+        !!try(:inheritable_setting)&.namespace_inheritable&.[](:authentication)
       end
 
       def pat_prefix_token?
@@ -616,6 +630,10 @@ module Gitlab
 
       def revoke_token_family(token)
         return unless access_token_rotation_request?
+        # Only PersonalAccessToken has a family to revoke. Other duck-typed
+        # access tokens (e.g. a StatelessAccessToken JWT) have a non-integer
+        # `id`, which would raise a DB type error against the bigint FK below.
+        return unless token.is_a?(PersonalAccessToken)
 
         PersonalAccessTokens::RevokeTokenFamilyService.new(token).execute
       end

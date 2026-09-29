@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillSelfHostedDuoAgentPlatformServiceSecureOnAiSettings, migration: :gitlab_main, feature_category: :duo_setting do
+RSpec.describe BackfillSelfHostedDuoAgentPlatformServiceSecureOnAiSettings, migration: :gitlab_main, feature_category: :duo_service_infra do
   let(:ai_settings) { table(:ai_settings) }
   let!(:ai_setting) { ai_settings.create!(self_hosted_duo_agent_platform_service_secure: initial_value) }
 

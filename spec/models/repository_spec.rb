@@ -4576,16 +4576,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
       )
     end
 
-    it 'delegates diffs retrieval to BlobPairsService and verifies the returned diff files' do
-      expected_diff_files = [
+    let(:expected_diff_files) do
+      [
         instance_double(Gitlab::Diff::File, new_path: 'a.md'),
         instance_double(Gitlab::Diff::File, new_path: 'b.md')
       ]
+    end
 
+    it 'delegates diffs retrieval to BlobPairsService and verifies the returned diff files' do
       allow_next_instance_of(Gitlab::Git::BlobPairsDiffs) do |svc|
         allow(svc)
           .to receive(:diffs_by_changed_paths)
-          .with(diff_refs, 0, 10)
+          .with(diff_refs, 0, 10, sorted: false)
           .and_yield(expected_diff_files)
       end
 
@@ -4596,6 +4598,25 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       expect(retrieved_diff_files).to eq(expected_diff_files)
+    end
+
+    context 'when sorted is true' do
+      it 'delegates diffs retrieval to BlobPairsService with sorted' do
+        allow_next_instance_of(Gitlab::Git::BlobPairsDiffs) do |svc|
+          allow(svc)
+            .to receive(:diffs_by_changed_paths)
+            .with(diff_refs, 0, 10, sorted: true)
+            .and_yield(expected_diff_files)
+        end
+
+        retrieved_diff_files = []
+
+        repository.diffs_by_changed_paths(diff_refs, 0, 10, sorted: true) do |diff_files|
+          retrieved_diff_files.concat(diff_files)
+        end
+
+        expect(retrieved_diff_files).to eq(expected_diff_files)
+      end
     end
   end
 

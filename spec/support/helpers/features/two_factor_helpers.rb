@@ -34,8 +34,6 @@ module Features
     end
 
     # Add OTP for authentication via UI
-    # The data-testid is shared by the legacy and two_factor_vue screens, so this
-    # works regardless of the flag state.
     def use_otp_fallback
       find_by_testid('authenticator-app-button').click
     end
@@ -43,7 +41,7 @@ module Features
     def sign_in_with_otp(user)
       use_otp_fallback
       fill_in 'user_otp_attempt', with: user.current_otp
-      click_button _('Verify code')
+      click_button s_('TwoFactorAuth|Verify code')
     end
 
     ## WebAuthn (second_factor_authenticators)
@@ -114,10 +112,8 @@ module Features
     end
 
     def assert_fallback_ui(page)
-      expect(page).to have_button('Verify code')
+      expect(page).to have_button(s_('TwoFactorAuth|Verify code'))
       expect(page).to have_css('#user_otp_attempt')
-      expect(page).not_to have_link('Sign in via 2FA code')
-      expect(page).not_to have_css("#js-authenticate-token-2fa")
     end
 
     ## Passkeys
@@ -209,72 +205,17 @@ module Features
       )
     end
 
-    # Asserts the email-OTP fallback affordances the flag renders on the current 2FA screen.
-    # The Vue screen shows a "Recover your account" link and an "Email code" button; the
-    # legacy HAML screen shows an "Enter recovery code" link and a "send code to email
-    # address" footer button.
-    def expect_email_otp_fallback_available(user)
-      if Feature.enabled?(:two_factor_vue, user)
-        expect(page).to have_testid('recovery-button')
-        expect(page).to have_button(s_('TwoFactorAuth|Email code'))
-      else
-        expect(page).to have_link('Enter recovery code')
-        expect(page).to have_button('send code to email address')
-      end
-    end
-
-    # Asserts the email-OTP fallback is not offered on the current 2FA screen.
-    def expect_email_otp_fallback_absent(user)
-      if Feature.enabled?(:two_factor_vue, user)
-        expect(page).not_to have_button(s_('TwoFactorAuth|Email code'))
-      else
-        expect(page).not_to have_button('send code to email address')
-      end
-    end
-
-    # Retries the WebAuthn prompt and asserts the flag's retry affordances. click_button
-    # matches both the Vue "Try again" and legacy "Try again?" labels (Capybara substring).
-    def expect_webauthn_retry_prompt(user)
-      click_button _('Try again')
-
-      expect(page).to have_content('Trying to communicate with your device')
-
-      if Feature.enabled?(:two_factor_vue, user)
-        expect(page).to have_testid('recovery-button')
-      else
-        expect(page).to have_button(_('Sign in via 2FA code'))
-      end
-    end
-
-    # Drives the email-OTP fallback after the user has reached the 2FA challenge screen: on
-    # the Vue screen it switches to the email step via the "Email code" button (which auto-
-    # sends the code on mount); on the legacy screen it clicks the "send code to email
-    # address" footer. It then reads the code from the delivered mail, submits it, and
+    # Drives the email-OTP fallback once the user is on `Authenticate with your email`: the code is
+    # sent automatically when the screen appears, so this reads it from the delivered mail, submits it, and
     # asserts the post-login content. Requires `include EmailHelpers` in the spec.
     def verify_email_otp_fallback_workflow(user)
-      vue = Feature.enabled?(:two_factor_vue, user)
-
-      click_button s_('TwoFactorAuth|Email code') if vue
-
       perform_enqueued_jobs do
-        # The legacy HAML screen hides the verification-code field behind the "send code to
-        # email address" footer button, so click it first there.
-        unless vue
-          click_button 'send code to email address'
-
-          # WebAuthn UI should be hidden
-          expect(page).not_to have_content('Trying to communicate with your device')
-
-          # TOTP form should be hidden
-          expect(page).not_to have_content('Enter verification code')
-        end
-
         expect(page).to have_field(s_('IdentityVerification|Verification code'))
 
         mail = wait_for('mail found for user') do
-          # The Vue screen auto-sends on mount, enqueuing the mailer job during page render
-          # (before this block). Drain any already-enqueued jobs while polling for the mail.
-          flush_enqueued_jobs if vue
+          # The code is auto-sent on load, enqueuing the mailer job during render (before this
+          # block), so drain any already-enqueued jobs while polling for the mail.
+          flush_enqueued_jobs
           find_email_for(user)
         end
         expect(mail.to).to match_array([user.email])

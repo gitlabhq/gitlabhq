@@ -73,7 +73,7 @@ RSpec.describe Keeps::SquashMigrations, feature_category: :database do
 
     before do
       allow(Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', 'fetch', 'origin', anything, '--filter=tree:0')
+        .with('git', 'fetch', 'origin', anything, '--depth=1', '--filter=tree:0')
         .and_return(true)
       allow(Gitlab::Housekeeper::Shell).to receive(:execute)
         .with('bundle', 'exec', 'rake', anything)
@@ -106,7 +106,7 @@ RSpec.describe Keeps::SquashMigrations, feature_category: :database do
         keep.make_change!(change)
 
         expect(Gitlab::Housekeeper::Shell).to have_received(:execute)
-          .with('git', 'fetch', 'origin', target_branch, '--filter=tree:0')
+          .with('git', 'fetch', 'origin', target_branch, '--depth=1', '--filter=tree:0')
       end
 
       it 'runs the squash rake task with correct branch' do

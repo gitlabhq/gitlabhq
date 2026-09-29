@@ -211,7 +211,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
           visit new_project_issue_path(project)
 
           # Update to omit Incident when https://gitlab.com/gitlab-org/gitlab/-/issues/543718 is complete
-          expect(page).to have_select 'Type', options: %w[Incident Issue Task]
+          expect(page).to have_select 'Type', options: ['Select type', 'Incident', 'Issue', 'Task']
         end
       end
 
@@ -227,7 +227,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
         it 'shows incidents, issues and tasks' do
           visit new_project_issue_path(project)
 
-          expect(page).to have_select 'Type', options: %w[Incident Issue Task]
+          expect(page).to have_select 'Type', options: ['Select type', 'Incident', 'Issue', 'Task']
         end
       end
     end

@@ -26,6 +26,7 @@ import {
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import {
   addItemToList,
+  evictWorkItemForIssue,
   removeItemFromList,
   updateEpicsCount,
   updateIssueCountAndWeight,
@@ -615,6 +616,8 @@ export default {
       });
 
       this.updateCountAndWeight({ fromListId, toListId, issuable, cache });
+
+      evictWorkItemForIssue({ cache, issueId: issuable.id });
     },
     updateCountAndWeight({ fromListId, toListId, issuable, isAddingItem, cache }) {
       if (!this.isEpicBoard) {

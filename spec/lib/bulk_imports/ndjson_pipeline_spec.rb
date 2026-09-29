@@ -276,8 +276,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
     let(:config) { double(relation_excluded_keys: nil, top_relation_tree: []) }
 
     before do
-      allow(subject).to receive(:import_export_config).and_return(config)
-      allow(subject).to receive(:context).and_return(context)
+      allow(subject).to receive_messages(import_export_config: config, context: context)
     end
 
     it 'calls relation factory with SourceUsersMapper and rewrites mentions' do
@@ -411,8 +410,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
 
           allow_next_instance_of(Gitlab::ImportExport::Base::RelationObjectSaver) do |saver|
             allow(saver).to receive(:execute)
-            allow(saver).to receive(:invalid_subrelations).and_return([])
-            allow(saver).to receive(:failed_subrelations).and_return([failed_record])
+            allow(saver).to receive_messages(invalid_subrelations: [], failed_subrelations: [failed_record])
           end
 
           subject.load(context, [label])

@@ -114,8 +114,14 @@ module Users
       return true if current_user.can_admin_all_resources?
       return false if organization_ids_invalid?
 
-      Organizations::Organization.id_in(organization_ids).all? do |organization|
-        current_user.can?(:update_organization, organization)
+      # Non-admins can only change memberships that already exist. Fewer memberships
+      # than organizations means the user is not a member of at least one of them.
+      organization_users = user.organization_users.in_organization(organization_ids).to_a
+      return false unless organization_users.size == organization_ids.size
+
+      # The membership is the policy subject so it can refuse to demote the last owner.
+      organization_users.all? do |organization_user|
+        current_user.can?(:update_organization_user, organization_user)
       end
     end
 

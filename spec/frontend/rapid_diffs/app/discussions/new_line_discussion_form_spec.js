@@ -81,8 +81,14 @@ describe('NewLineDiscussionForm', () => {
       noteBody: useDiffDiscussions().discussionForms[0].noteBody,
       saveNote: expect.any(Function),
       saveButtonTitle: 'Comment',
-      restoreFromAutosave: true,
+      restoreFromAutosave: false,
     });
+  });
+
+  it('retires its draft when removed', () => {
+    createComponent();
+    wrapper.destroy();
+    expect(clearDraft).toHaveBeenCalledWith('/-file.txt--10');
   });
 
   it('stops autofocus after first mount', () => {

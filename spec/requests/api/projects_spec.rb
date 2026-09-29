@@ -793,6 +793,54 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           let(:current_user) { user }
           let(:projects) { [project, project2, project3] }
         end
+
+        context 'when sorting by a column with a (column, id) index' do
+          let(:membership_projects) { [project, project2, project3] }
+
+          def request_sql(params)
+            ActiveRecord::QueryRecorder.new { get api(path, user), params: params }.log.join("\n")
+          end
+
+          it 'sorts without the index and returns projects in order', :aggregate_failures do
+            sql = request_sql(membership: true, order_by: 'name', sort: 'asc')
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.map { |p| p['id'] }).to eq(membership_projects.sort_by { |p| [p.name, p.id] }.map(&:id))
+            expect(sql).to include("ORDER BY ('' || projects.name) ASC")
+          end
+
+          it 'sorts without the index in descending order', :aggregate_failures do
+            sql = request_sql(membership: true, order_by: 'path', sort: 'desc')
+
+            expect(json_response.map { |p| p['id'] }).to eq(membership_projects.sort_by { |p| [p.path, p.id] }.reverse.map(&:id))
+            expect(sql).to include("ORDER BY ('' || projects.path) DESC")
+          end
+
+          it 'sorts without the index when filtering by min_access_level', :aggregate_failures do
+            sql = request_sql(min_access_level: Gitlab::Access::GUEST, order_by: 'name', sort: 'asc')
+
+            expect(json_response.map { |p| p['id'] }).to eq(membership_projects.sort_by { |p| [p.name, p.id] }.map(&:id))
+            expect(sql).to include("ORDER BY ('' || projects.name) ASC")
+          end
+
+          it 'sorts by the column when ordering by id' do
+            expect(request_sql(membership: true, order_by: 'id', sort: 'asc')).not_to include("('' ||")
+          end
+
+          it 'sorts by the column without membership' do
+            expect(request_sql(order_by: 'name', sort: 'asc')).not_to include("('' ||")
+          end
+
+          context 'when sort_membership_projects_without_index is disabled' do
+            before do
+              stub_feature_flags(sort_membership_projects_without_index: false)
+            end
+
+            it 'sorts by the column' do
+              expect(request_sql(membership: true, order_by: 'name', sort: 'asc')).not_to include("('' ||")
+            end
+          end
+        end
       end
 
       context 'and using the visibility filter' do

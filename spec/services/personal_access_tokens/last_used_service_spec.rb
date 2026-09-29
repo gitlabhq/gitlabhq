@@ -440,5 +440,13 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         expect { service_execution }.not_to change { personal_access_token.last_used_at }
       end
     end
+
+    context 'when the token is not an ActiveRecord model (e.g. a stateless JWT)' do
+      let(:personal_access_token) { instance_double(Authn::Tokens::IamOauthToken) }
+
+      it 'does not raise' do
+        expect { service_execution }.not_to raise_error
+      end
+    end
   end
 end

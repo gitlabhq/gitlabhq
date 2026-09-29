@@ -6801,6 +6801,45 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.sort_without_index' do
+    let_it_be(:project_b) { create(:project, name: 'B', path: 'b', updated_at: 1.day.ago, last_activity_at: 3.days.ago) }
+    let_it_be(:project_a) { create(:project, name: 'A', path: 'a', updated_at: 2.days.ago, last_activity_at: 1.day.ago) }
+    let_it_be(:project_c) { create(:project, name: 'C', path: 'c', updated_at: 3.days.ago, last_activity_at: 2.days.ago) }
+
+    let(:projects) { described_class.id_in([project_a, project_b, project_c]) }
+
+    where(:column, :direction, :expected_expression) do
+      'name'             | 'asc'  | "('' || projects.name) ASC"
+      'path'             | 'desc' | "('' || projects.path) DESC"
+      'updated_at'       | 'asc'  | "(projects.updated_at + interval '0') ASC"
+      'last_activity_at' | 'desc' | "(projects.last_activity_at + interval '0') DESC"
+    end
+
+    with_them do
+      subject(:sorted) { projects.sort_without_index(column, direction) }
+
+      it 'sorts by the expression and returns the same order as sorting by the column' do
+        expect(sorted.to_sql).to include("ORDER BY #{expected_expression}")
+        expect(sorted.to_a).to eq(projects.reorder(column => direction, id: direction).to_a)
+      end
+    end
+
+    it 'replaces any existing order' do
+      expect(projects.order(:id).sort_without_index('name', 'asc').to_a).to eq([project_a, project_b, project_c])
+    end
+
+    it 'breaks ties by id in the sort direction' do
+      project_a2 = create(:project, name: 'A', namespace: create(:namespace))
+      projects = described_class.id_in([project_a, project_a2, project_b])
+
+      expect(projects.sort_without_index('name', 'desc').to_a).to eq([project_b, project_a2, project_a])
+    end
+
+    it 'raises for a column without an expression' do
+      expect { projects.sort_without_index('star_count', 'asc') }.to raise_error(KeyError)
+    end
+  end
+
   describe '#remove_private_deploy_keys' do
     let!(:project) { create(:project) }
 

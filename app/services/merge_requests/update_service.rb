@@ -125,6 +125,9 @@ module MergeRequests
       params.delete(:target_project_id)
       params.delete(:source_branch)
 
+      # Retargeting a merged MR would misreport which branch it was merged into
+      params.delete(:target_branch) if merge_request.merged?
+
       if merge_request.closed_or_merged_without_fork?
         params.delete(:target_branch)
         params.delete(:force_remove_source_branch)

@@ -74,8 +74,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def create
-    branch_name = strip_tags(sanitize(permitted_params[:branch_name]))
-    branch_name = safe_unescape(branch_name)
+    branch_name = sanitize_ref_name(permitted_params[:branch_name])
 
     redirect_to_autodeploy = project.empty_repo? && project.deployment_platform.present?
 
@@ -187,11 +186,14 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def ref
     if permitted_params[:ref]
-      ref_escaped = strip_tags(sanitize(permitted_params[:ref]))
-      safe_unescape(ref_escaped)
+      sanitize_ref_name(permitted_params[:ref])
     else
       @project.default_branch_or_main
     end
+  end
+
+  def sanitize_ref_name(value)
+    safe_unescape(strip_tags(sanitize(value.to_s)))
   end
 
   # Safely unescape URI-encoded branch names.

@@ -81,11 +81,42 @@ CREATE TABLE ai_audit_events
     `workflow_id` UInt64 DEFAULT 0 CODEC(DoubleDelta, ZSTD(1)),
     `details` String DEFAULT '{}' CODEC(ZSTD(3)),
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', group_id, '0/'), '0/') CODEC(ZSTD(3)),
-    PROJECTION by_workflow_id
+    `ai_governance_session_id` UInt64 DEFAULT 0 CODEC(DoubleDelta, ZSTD(1)),
+    PROJECTION by_workflow_id_v2
     (
-        SELECT *
+        SELECT
+            id,
+            event_name,
+            created_at,
+            author_id,
+            project_id,
+            group_id,
+            ip_address,
+            workflow_id,
+            details,
+            traversal_path,
+            ai_governance_session_id
         ORDER BY
             workflow_id,
+            created_at,
+            id
+    ),
+    PROJECTION by_ai_governance_session_id
+    (
+        SELECT
+            id,
+            event_name,
+            created_at,
+            author_id,
+            project_id,
+            group_id,
+            ip_address,
+            workflow_id,
+            details,
+            traversal_path,
+            ai_governance_session_id
+        ORDER BY
+            ai_governance_session_id,
             created_at,
             id
     )
@@ -938,6 +969,7 @@ CREATE TABLE siphon_ai_governance_sessions
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
     `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `agent_identity_id` Nullable(Int64),
     INDEX idx_siphon_watermark_minmax _siphon_watermark TYPE minmax GRANULARITY 1
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)

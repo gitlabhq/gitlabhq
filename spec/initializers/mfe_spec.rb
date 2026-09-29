@@ -56,8 +56,9 @@ RSpec.describe 'MFE gem wiring', feature_category: :compliance_management do
 
   describe 'Gitlab::Mfe::VendorFile.entries' do
     it 'reads the committed pin file at the repository root' do
-      expect(Gitlab::Mfe::VendorFile.entries)
-        .to all(have_attributes(name: be_present, version: be_present, sha: be_present))
+      committed_names = Array(YAML.safe_load_file(Rails.root.join('vendor/mfe.yml'))['apps']).pluck('name')
+
+      expect(Gitlab::Mfe::VendorFile.entries.map(&:name)).to eq(committed_names)
     end
   end
 end

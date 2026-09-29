@@ -24,8 +24,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
 
   describe '#serialize_for_super_sidebar' do
     before do
-      allow(menu).to receive(:title).and_return('Title')
-      allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
+      allow(menu).to receive_messages(title: 'Title', active_routes: { path: 'foo' })
     end
 
     it 'returns a tree-like structure of itself and all menu items' do
@@ -79,8 +78,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
     end
 
     it 'returns pill data if defined' do
-      allow(menu).to receive(:has_pill?).and_return(true)
-      allow(menu).to receive(:pill_count).and_return('foo')
+      allow(menu).to receive_messages(has_pill?: true, pill_count: 'foo')
       expect(menu.serialize_for_super_sidebar).to eq(
         {
           title: "Title",
@@ -94,8 +92,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
     end
 
     it 'returns pill_count_field if defined' do
-      allow(menu).to receive(:has_pill?).and_return(true)
-      allow(menu).to receive(:pill_count_field).and_return('foo')
+      allow(menu).to receive_messages(has_pill?: true, pill_count_field: 'foo')
       expect(menu.serialize_for_super_sidebar).to eq(
         {
           title: "Title",
@@ -111,10 +108,12 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
 
   describe '#serialize_as_menu_item_args' do
     it 'returns hash of title, link, active_routes, container_html_options' do
-      allow(menu).to receive(:title).and_return('Title')
-      allow(menu).to receive(:active_routes).and_return({ path: 'foo' })
-      allow(menu).to receive(:container_html_options).and_return({ class: 'foo' })
-      allow(menu).to receive(:link).and_return('/link')
+      allow(menu).to receive_messages(
+        title: 'Title',
+        active_routes: { path: 'foo' },
+        container_html_options: { class: 'foo' },
+        link: '/link'
+      )
 
       expect(menu.serialize_as_menu_item_args).to eq({
         title: 'Title',

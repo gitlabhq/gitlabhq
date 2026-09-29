@@ -15,7 +15,9 @@ module PersonalAccessTokens
     end
 
     def execute
-      # Needed to avoid calling service on Oauth tokens
+      # Needed to avoid calling service on non-ActiveRecord tokens
+      # (IamOauthToken, StatelessAccessToken), which lack has_attribute?.
+      return unless @personal_access_token.respond_to?(:has_attribute?)
       return unless @personal_access_token.has_attribute?(:last_used_at)
 
       # We _only_ want to update last_used_at and not also updated_at (which

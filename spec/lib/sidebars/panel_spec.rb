@@ -27,14 +27,11 @@ RSpec.describe Sidebars::Panel, feature_category: :navigation do
       panel.add_menu(menu2)
       panel.add_menu(menu3)
 
-      allow(menu1).to receive(:render?).and_return(true)
-      allow(menu1).to receive(:serialize_for_super_sidebar).and_return("foo")
+      allow(menu1).to receive_messages(render?: true, serialize_for_super_sidebar: "foo")
 
-      allow(menu2).to receive(:render?).and_return(false)
-      allow(menu2).to receive(:serialize_for_super_sidebar).and_return("i-should-not-appear-in-results")
+      allow(menu2).to receive_messages(render?: false, serialize_for_super_sidebar: "i-should-not-appear-in-results")
 
-      allow(menu3).to receive(:render?).and_return(true)
-      allow(menu3).to receive(:serialize_for_super_sidebar).and_return(%w[bar baz])
+      allow(menu3).to receive_messages(render?: true, serialize_for_super_sidebar: %w[bar baz])
 
       expect(panel.super_sidebar_menu_items).to eq(%w[foo bar baz])
     end

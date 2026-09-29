@@ -1,5 +1,11 @@
+import { InMemoryCache } from '@apollo/client/core';
+import gql from 'graphql-tag';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { setError, updateIssueCountAndWeight } from '~/boards/graphql/cache_updates';
+import {
+  evictWorkItemForIssue,
+  setError,
+  updateIssueCountAndWeight,
+} from '~/boards/graphql/cache_updates';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import setErrorMutation from '~/boards/graphql/client/set_error.mutation.graphql';
 
@@ -40,6 +46,67 @@ describe('updateIssueCountAndWeight', () => {
       updateIssueCountAndWeight({ fromListId: 'from', toListId: 'to', issuable: issue, cache }),
     ).not.toThrow();
     expect(cache.written).toEqual([]);
+  });
+});
+
+describe('evictWorkItemForIssue', () => {
+  const workItemQuery = gql`
+    query workItem {
+      workItem {
+        id
+        state
+      }
+    }
+  `;
+
+  const seedCache = (id) => {
+    const cache = new InMemoryCache();
+    cache.writeQuery({
+      query: workItemQuery,
+      data: { workItem: { __typename: 'WorkItem', id, state: 'OPEN' } },
+    });
+    return cache;
+  };
+
+  it('evicts the work item that shares the issue id', () => {
+    const cache = seedCache('gid://gitlab/WorkItem/436');
+
+    evictWorkItemForIssue({ cache, issueId: 'gid://gitlab/Issue/436' });
+
+    expect(cache.extract()['WorkItem:gid://gitlab/WorkItem/436']).toBeUndefined();
+  });
+
+  it('does nothing when the issuable has no id, as in an optimistic response', () => {
+    const cache = seedCache('gid://gitlab/WorkItem/436');
+
+    evictWorkItemForIssue({ cache, issueId: undefined });
+
+    expect(cache.extract()['WorkItem:gid://gitlab/WorkItem/436']).toMatchObject({
+      id: 'gid://gitlab/WorkItem/436',
+      state: 'OPEN',
+    });
+  });
+
+  it('does nothing for an epic id, which names a different record', () => {
+    const cache = seedCache('gid://gitlab/WorkItem/436');
+
+    evictWorkItemForIssue({ cache, issueId: 'gid://gitlab/Epic/436' });
+
+    expect(cache.extract()['WorkItem:gid://gitlab/WorkItem/436']).toMatchObject({
+      id: 'gid://gitlab/WorkItem/436',
+      state: 'OPEN',
+    });
+  });
+
+  it('leaves work items with a different id in the cache', () => {
+    const cache = seedCache('gid://gitlab/WorkItem/437');
+
+    evictWorkItemForIssue({ cache, issueId: 'gid://gitlab/Issue/436' });
+
+    expect(cache.extract()['WorkItem:gid://gitlab/WorkItem/437']).toMatchObject({
+      id: 'gid://gitlab/WorkItem/437',
+      state: 'OPEN',
+    });
   });
 });
 

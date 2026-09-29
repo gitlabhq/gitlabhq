@@ -9,6 +9,14 @@ RSpec.shared_examples 'with diffs_blobs param' do
         expect(response).to have_gitlab_http_status(:success)
         expect(response.body).to include(*diff_files.to_a.map(&:file_hash))
       end
+
+      it 'streams diffs in the same order as the diff files' do
+        go(diff_blobs: true)
+
+        streamed_file_hashes = Nokogiri::HTML(response.body).css('diff-file').pluck('id')
+
+        expect(streamed_file_hashes).to eq(diff_files.to_a.map(&:file_hash))
+      end
     end
 
     context 'when offset is given' do

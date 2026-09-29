@@ -514,6 +514,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_cl
             allow_next_instance_of(migration_class) do |migration|
               allow(migration).to receive(:transaction_open?).and_return(false)
             end
+
+            # Examples that abort the test transaction in :up must not hit PG again from the EE
+            # logical replication check in :down; that check is covered by the EE spec.
+            allow(Gitlab::Geo::LogicalReplication).to receive(:subscription_names).and_return([]) if Gitlab.ee?
           end
 
           %i[no_gitlab_schema gitlab_schema_gitlab_main gitlab_schema_gitlab_shared].each do |restrict_gitlab_migration|

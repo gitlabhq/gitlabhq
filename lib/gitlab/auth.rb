@@ -130,18 +130,7 @@ module Gitlab
 
         raise IpBlocked if !skip_rate_limit?(login: login) && rate_limiter.banned?
 
-        # `user_with_password_for_git` should be the last check
-        # because it's the most expensive, especially when LDAP
-        # is enabled.
-        result =
-          service_request_check(login, password, project) ||
-          build_access_token_check(login, password) ||
-          lfs_token_check(login, password, project, request) ||
-          oauth_access_token_check(password) ||
-          personal_access_token_check(password, project) ||
-          deploy_token_check(login, password, project) ||
-          user_with_password_for_git(login, password) ||
-          Gitlab::Auth::Result::EMPTY
+        result = git_client_checks(login, password, project, request)
 
         rate_limit!(rate_limiter, success: result.success?, login: login, request: request)
         look_to_limit_user(result.actor)
@@ -151,6 +140,23 @@ module Gitlab
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
         raise Gitlab::Auth::MissingPersonalAccessTokenError
+      end
+
+      # Split out from find_for_git_client so EE can override just the
+      # credential checks without duplicating the rate-limiting wrapper
+      # around them.
+      def git_client_checks(login, password, project, request)
+        # `user_with_password_for_git` should be the last check
+        # because it's the most expensive, especially when LDAP
+        # is enabled.
+        service_request_check(login, password, project) ||
+          build_access_token_check(login, password) ||
+          lfs_token_check(login, password, project, request) ||
+          oauth_access_token_check(password) ||
+          personal_access_token_check(password, project) ||
+          deploy_token_check(login, password, project) ||
+          user_with_password_for_git(login, password) ||
+          Gitlab::Auth::Result::EMPTY
       end
 
       # Find and return a user if the provided password is valid for various

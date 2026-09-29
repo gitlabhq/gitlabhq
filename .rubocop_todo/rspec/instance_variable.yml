@@ -49,7 +49,6 @@ RSpec/InstanceVariable:
     - 'spec/frontend/fixtures/sessions.rb'
     - 'spec/frontend/fixtures/tabs.rb'
     - 'spec/frontend/fixtures/timezones.rb'
-    - 'spec/frontend/fixtures/webauthn.rb'
     - 'spec/helpers/application_helper_spec.rb'
     - 'spec/helpers/award_emoji_helper_spec.rb'
     - 'spec/helpers/issuables_description_templates_helper_spec.rb'

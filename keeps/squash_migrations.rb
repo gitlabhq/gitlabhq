@@ -50,7 +50,9 @@ module Keeps
     end
 
     def fetch_squash_branch
-      Gitlab::Housekeeper::Shell.execute('git', 'fetch', 'origin', squash_local_branch, '--filter=tree:0')
+      Gitlab::Housekeeper::Shell.execute(
+        'git', 'fetch', 'origin', squash_local_branch, '--depth=1', '--filter=tree:0'
+      )
     end
 
     def run_squash_task

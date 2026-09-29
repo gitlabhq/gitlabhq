@@ -12,7 +12,7 @@ export function createRouter({ fullPath, defaultBranch, routerPath }) {
   }
 
   return new VueRouter({
-    routes: routes(fullPath),
+    routes,
     mode: 'history',
     base: routerPath.replace(/\/work_items$/, ''),
   });

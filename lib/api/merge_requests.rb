@@ -956,6 +956,33 @@ module API
         AutoMergeService.new(merge_request.target_project, current_user).cancel(merge_request)
       end
 
+      desc 'Cancel auto merge' do
+        detail 'Cancels an automatic merge for a merge request that has been set to merge automatically. ' \
+          'Use this endpoint instead of `cancel_merge_when_pipeline_succeeds`, which returns a status hash ' \
+          'rather than the merge request.'
+        success code: 201, model: Entities::MergeRequest
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' },
+          { code: 409, message: 'Conflict' }
+        ]
+        tags %w[merge_requests]
+      end
+      route_setting :authorization, permissions: :cancel_merge_merge_request, boundary_type: :project
+      post ':id/merge_requests/:merge_request_iid/cancel_auto_merge',
+        feature_category: :code_review_workflow, urgency: :low do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
+
+        forbidden! unless merge_request.can_cancel_auto_merge?(current_user)
+
+        result = AutoMergeService.new(merge_request.target_project, current_user).cancel(merge_request)
+
+        conflict!(result[:message]) unless result[:status] == :success
+
+        status 201
+        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+      end
+
       desc 'Rebase a merge request' do
         detail 'Rebases a merge request. Automatically rebases the `source_branch` of the merge request against its ' \
           '`target_branch`.'

@@ -6,6 +6,12 @@ import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.grap
 import { listsDeferredQuery } from 'ee_else_ce/boards/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import {
+  convertToGraphQLId,
+  getIdFromGraphQLId,
+  getTypeFromGraphQLId,
+} from '~/graphql_shared/utils';
 
 import setErrorMutation from './client/set_error.mutation.graphql';
 
@@ -144,6 +150,23 @@ export function updateEpicsCount({
         },
       },
   );
+}
+
+/**
+ * A board card is an `Issue`, but the detail drawer reads the same record as a `WorkItem`,
+ * so writing the mutation result leaves the drawer's copy stale. Evicting it forces a refetch.
+ */
+export function evictWorkItemForIssue({ cache, issueId }) {
+  if (getTypeFromGraphQLId(issueId) !== TYPENAME_ISSUE) {
+    return;
+  }
+
+  cache.evict({
+    id: cache.identify({
+      __typename: TYPENAME_WORK_ITEM,
+      id: convertToGraphQLId(TYPENAME_WORK_ITEM, getIdFromGraphQLId(issueId)),
+    }),
+  });
 }
 
 export function setError({ message, error, captureError = true }) {

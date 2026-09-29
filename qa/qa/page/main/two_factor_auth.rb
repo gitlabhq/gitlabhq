@@ -4,7 +4,7 @@ module QA
   module Page
     module Main
       class TwoFactorAuth < Page::Base
-        view 'app/views/devise/shared/_totp_recovery_code_or_webauthn.html.haml' do
+        view 'app/assets/javascripts/authentication/sessions/components/totp_code.vue' do
           element 'verify-code-button'
           element 'two-fa-code-field'
         end

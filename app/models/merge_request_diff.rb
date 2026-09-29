@@ -612,7 +612,8 @@ class MergeRequestDiff < ApplicationRecord
 
   def diffs_for_streaming_by_changed_paths(diff_options = {}, &)
     offset = diff_options[:offset_index].to_i || 0
-    repository.diffs_by_changed_paths(diff_refs, offset, &)
+    # Match the order of the file tree and first diffs slice, which use sorted MR diff files
+    repository.diffs_by_changed_paths(diff_refs, offset, sorted: true, &)
   end
 
   def diffs_in_batch(batch_page, batch_size, diff_options:)

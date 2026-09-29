@@ -224,10 +224,25 @@ module API
         present project, **options
       end
 
+      def sort_projects(projects)
+        return projects.sort_without_index(params[:order_by], params[:sort]) if sort_membership_projects_without_index?
+
+        reorder_projects(projects)
+      end
+
+      # A user's own projects are few compared to all projects, so sorting them directly is cheaper than
+      # letting PostgreSQL walk a (column, id) index. See https://gitlab.com/gitlab-org/gitlab/-/work_items/605822
+      def sort_membership_projects_without_index?
+        current_user.present? &&
+          (params[:membership].present? || params[:min_access_level].present?) &&
+          Project::SORT_WITHOUT_INDEX_EXPRESSIONS.key?(params[:order_by]) &&
+          Feature.enabled?(:sort_membership_projects_without_index, current_user)
+      end
+
       def present_projects(projects, options = {})
         verify_statistics_order_by_projects!
 
-        projects = reorder_projects(projects) unless order_by_similarity?(allow_unauthorized: false)
+        projects = sort_projects(projects) unless order_by_similarity?(allow_unauthorized: false)
         projects = apply_filters(projects)
 
         records, options = paginate_with_strategies(projects, options[:request_scope], use_cursor: false) do |projects|

@@ -3027,6 +3027,40 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end.not_to change { user.reload.current_sign_in_at }
     end
 
+    context 'when the throttle skips the write' do
+      before do
+        user.update_tracked_fields!(request)
+      end
+
+      it 'leaves no unsaved trackable attribute on the record' do
+        user.update_tracked_fields!(request)
+
+        expect(user.changed).to be_empty
+      end
+
+      it 'leaves the record lockable' do
+        user.update_tracked_fields!(request)
+
+        expect { user.with_lock { nil } }.not_to raise_error
+      end
+
+      it 'keeps the values of this sign-in on the record without writing them' do
+        user.update_tracked_fields!(instance_double(ActionDispatch::Request, remote_ip: '10.0.0.2'))
+
+        expect(user.current_sign_in_ip).to eq('10.0.0.2')
+        expect(user.last_sign_in_ip).to eq('127.0.0.1')
+        expect(user.reload.current_sign_in_ip).to eq('127.0.0.1')
+      end
+
+      it 'keeps unsaved changes to other attributes' do
+        user.name = 'Renamed'
+
+        user.update_tracked_fields!(request)
+
+        expect(user.changed).to contain_exactly('name')
+      end
+    end
+
     it 'writes trackable attributes for a different user' do
       user2 = create(:user)
 

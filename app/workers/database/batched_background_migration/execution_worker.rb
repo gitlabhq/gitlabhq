@@ -109,3 +109,5 @@ module Database
     end
   end
 end
+
+Database::BatchedBackgroundMigration::ExecutionWorker.prepend_mod

@@ -349,10 +349,7 @@ const mountComponent = async ({
 
   router = new VueRouter({
     mode: 'history',
-    routes: [
-      { name: 'base', path: '/', component: PlanningView },
-      ...routes({ fullPath: '/work_item' }),
-    ],
+    routes: [{ name: 'base', path: '/', component: PlanningView }, ...routes],
   });
 
   isLoggedIn.mockReturnValue(isLoggedInValue);

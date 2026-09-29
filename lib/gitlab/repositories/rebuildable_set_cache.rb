@@ -240,10 +240,9 @@ module Gitlab
         raise
       end
 
-      # Searches the cache set using SSCAN with the MATCH option. The MATCH
-      # parameter is the pattern argument.
-      # See https://redis.io/commands/scan#the-match-option for more information.
-      # Returns an Enumerator that enumerates all SSCAN hits.
+      # Returns an Enumerator of values matching the glob pattern: SSCAN MATCH on a trusted hit.
+      # On a miss, matches the rebuilt values in memory, since the Redis set may be absent
+      # or stale while another request holds the rebuild lock.
       def search(key, pattern)
         full_key = cache_key(key)
 
@@ -253,14 +252,12 @@ module Gitlab
             multi.exists?(trust_key(key)) # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
           end
 
-          status = if is_trusted
-                     'hit'
-                   else
-                     result = write(key, yield)
-                     miss_status(exists, result)
-                   end
-
-          [redis.sscan_each(full_key, match: pattern), status]
+          if is_trusted
+            [redis.sscan_each(full_key, match: pattern), 'hit']
+          else
+            result = write(key, yield)
+            [match_in_memory(result, pattern), miss_status(exists, result)]
+          end
         end
 
         metrics.increment_operation(key: key, operation: 'search', status: status)
@@ -300,6 +297,14 @@ module Gitlab
       end
 
       private
+
+      # Approximates Redis MATCH; bracket expressions and multibyte `?` can differ.
+      def match_in_memory(values, pattern)
+        # File.fnmatch? raises on NUL, and branch names cannot contain it.
+        return [].each if pattern.include?("\0")
+
+        values.select { |value| File.fnmatch?(pattern, value, File::FNM_DOTMATCH) }.each
+      end
 
       def miss_status(exists, rebuilt_result = nil)
         # Redis cannot persist empty sets, so an empty rebuilt cache looks absent.

@@ -81,7 +81,6 @@ import {
   WIDGET_TYPE_STATUS,
   WORK_ITEM_CREATE_SOURCES,
   WORK_ITEM_TYPE_NAME_TICKET,
-  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   CREATION_CONTEXT_NEW_ROUTE,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
@@ -903,17 +902,9 @@ export default {
       }
 
       const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
-
-      /**
-       * Override to use the preselected work item type when using creation context description checklist
-       * https://gitlab.com/gitlab-org/gitlab/-/work_items/585444
-       * We do not want the last work item type/ draft work item type overriding the valid
-       * child work item item in the task list
-       */
       const selectedWorkItemType =
-        persistedTypeId && this.creationContext !== CREATION_CONTEXT_DESCRIPTION_CHECKLIST
-          ? this.findCreatableWorkItemTypeById(persistedTypeId)
-          : this.findCreatableWorkItemType(this.preselectedWorkItemType);
+        this.findCreatableWorkItemType(this.preselectedWorkItemType) ||
+        this.findCreatableWorkItemTypeById(persistedTypeId);
 
       if (selectedWorkItemType) {
         updateDraftWorkItemType({

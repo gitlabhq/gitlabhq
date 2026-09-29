@@ -43,10 +43,10 @@ export default {
     keyDescription() {
       return this.isReadonly
         ? s__(
-            "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide. Certificate authorities (CAs) can't be edited. To change this key, delete it and add a certificate authority.",
+            "SshCertificates|This is the certificate authority's public key, not an individual user's key. Certificates it signs are trusted instance-wide. You can't edit a certificate authority. To change its key, delete it and add a new one.",
           )
         : s__(
-            "SshCertificates|This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide.",
+            "SshCertificates|This is the certificate authority's public key, not an individual user's key. Certificates it signs are trusted instance-wide.",
           );
     },
     titleError() {
@@ -78,6 +78,8 @@ export default {
     fieldState(error) {
       return this.submitted && error ? false : null;
     },
+    // Called from table.vue via this.$refs.form to confirm discarding unsaved input
+    // before switching to view mode. ESLint can't see cross-component usage.
     // eslint-disable-next-line vue/no-unused-properties
     hasUnsavedChanges() {
       return !this.isReadonly && Boolean(this.title.trim() || this.key.trim());

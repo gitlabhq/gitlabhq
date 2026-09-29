@@ -81,7 +81,7 @@ describe('CertificateAuthorityForm', () => {
       expect(findKeyGroup().props()).toMatchObject({
         label: 'Public key',
         description:
-          "This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide.",
+          "This is the certificate authority's public key, not an individual user's key. Certificates it signs are trusted instance-wide.",
         state: null,
       });
       expect(findFingerprintGroup()).toBeUndefined();
@@ -243,7 +243,7 @@ describe('CertificateAuthorityForm', () => {
         description: 'This matches what appears in your server logs and audit events.',
       });
       expect(findKeyGroup().props('description')).toBe(
-        "This is the CA's public key, not an individual user's key. Certificates it signs are trusted instance-wide. Certificate authorities (CAs) can't be edited. To change this key, delete it and add a certificate authority.",
+        "This is the certificate authority's public key, not an individual user's key. Certificates it signs are trusted instance-wide. You can't edit a certificate authority. To change its key, delete it and add a new one.",
       );
     });
 

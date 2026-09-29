@@ -129,8 +129,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
 
     shared_examples 'workhorse authorize' do
       before do
-        allow(helper).to receive(:request).and_return(request)
-        allow(helper).to receive(:env).and_return(env)
+        allow(helper).to receive_messages(request: request, env: env)
       end
 
       it 'authorizes workhorse' do
@@ -215,10 +214,12 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
     before do
       helper.clear_memoization(:user_project_with_read_package)
 
-      allow(helper).to receive(:params).and_return(id: params_id)
-      allow(helper).to receive(:route_authentication_setting).and_return({ authenticate_non_public: true })
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:initial_current_user).and_return(user)
+      allow(helper).to receive_messages(
+        params: { id: params_id },
+        route_authentication_setting: { authenticate_non_public: true },
+        current_user: user,
+        initial_current_user: user
+      )
     end
 
     subject { helper.user_project_with_read_package }
@@ -414,8 +415,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
     end
 
     before do
-      allow(helper).to receive(:user_project).and_return(project)
-      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive_messages(user_project: project, current_user: current_user)
     end
 
     subject { helper.protect_package!(package_name, package_type) }

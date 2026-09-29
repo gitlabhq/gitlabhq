@@ -1085,7 +1085,6 @@ RSpec/ContextWording:
     - 'spec/finders/user_recent_events_finder_spec.rb'
     - 'spec/frontend/fixtures/merge_requests.rb'
     - 'spec/frontend/fixtures/search.rb'
-    - 'spec/frontend/fixtures/webauthn.rb'
     - 'spec/graphql/mutations/alert_management/create_alert_issue_spec.rb'
     - 'spec/graphql/mutations/alert_management/http_integration/create_spec.rb'
     - 'spec/graphql/mutations/alert_management/http_integration/destroy_spec.rb'

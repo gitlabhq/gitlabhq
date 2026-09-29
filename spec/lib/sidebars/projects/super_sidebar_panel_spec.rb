@@ -27,8 +27,10 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
 
   before do
     # Enable integrations with menu items
-    allow(project).to receive(:external_wiki).and_return(build(:external_wiki_integration, project: project))
-    allow(project).to receive(:external_issue_tracker).and_return(build(:bugzilla_integration, project: project))
+    allow(project).to receive_messages(
+      external_wiki: build(:external_wiki_integration, project: project),
+      external_issue_tracker: build(:bugzilla_integration, project: project)
+    )
   end
 
   it 'implements #super_sidebar_context_header' do

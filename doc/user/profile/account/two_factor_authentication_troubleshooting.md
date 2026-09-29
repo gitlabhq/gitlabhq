@@ -113,15 +113,13 @@ Allow a minute for the email to arrive, then check your spam folder.
 On GitLab.com, emails are sent from `gitlab@mg.gitlab.com` and can be
 [verified as genuine](https://handbook.gitlab.com/handbook/security/corporate/systems/google/mail/verification/#verify-an-email-from-gitlabcom-is-genuine).
 
-If the code doesn't arrive or has expired, select **Resend code** from
-the sign-in page. Each resend generates a new code and invalidates
-the previous one, so wait for each email before requesting another.
+If the code doesn't arrive or has expired, select **Resend code** from the sign-in screen. Each resend generates a new code and
+invalidates the previous one, so wait for each email before requesting another.
 
 ### Cannot access your email address
 
-If you cannot access your primary email address,
-use another email address associated with your account.
-From the sign-in page, select **Send a code to another address associated with this account**.
+If you cannot access your primary email address, you can send the code to
+another address associated with your account.
 
 If you cannot access any associated email address:
 
@@ -158,7 +156,8 @@ You can use these codes to sign in to your account.
 To use a recovery code:
 
 1. On the GitLab sign-in page, enter your username or email, and password.
-1. When prompted for a two-factor code, enter a recovery code.
+1. On the two-factor verification screen, select **Recover your account**.
+1. On the **Enter account recovery code** screen, enter a recovery code, then select **Verify code**.
 
 After you use a recovery code, you cannot use the same code again.
 Your other recovery codes remain valid.
@@ -227,7 +226,8 @@ To regenerate recovery codes with SSH:
 1. On the confirmation message, enter `yes`.
 1. Save the recovery codes that GitLab generates. Your previous recovery codes are no longer valid.
 1. On the sign-in page, enter your username or email, and password.
-1. When prompted for a two-factor code, enter one of your new recovery codes.
+1. On the two-factor verification screen, select **Recover your account**.
+1. On the **Enter account recovery code** screen, enter a recovery code, then select **Verify code**.
 
 After signing in, immediately set up 2FA with a new device.
 

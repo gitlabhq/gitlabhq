@@ -61,9 +61,8 @@ class FakeWebauthnDevice
       };
     JS
 
-    # Each retry affordance renders a "Try again" button (the legacy 2FA screen labels it
-    # "Try again?", which Capybara substring-matches). click_button auto-waits, so this drives
-    # whichever screen rendered (Vue 2FA, legacy 2FA, or passkey sign-in) without a racy probe.
+    # Each retry affordance renders a "Try again" button. click_button auto-waits, so this drives
+    # whichever screen rendered (2FA or passkey sign-in) without a racy probe.
     @page.click_button(_('Try again'))
   end
 

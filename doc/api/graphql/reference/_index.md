@@ -35931,6 +35931,7 @@ Fields:
 | <a id="aimodelselectionofferedmodel-modelprovider"></a>`modelProvider` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.6. Status: Experiment. Provider for the model, e.g "OpenAI". |
 | <a id="aimodelselectionofferedmodel-name"></a>`name` | [`String!`](#string) | Humanized name for the offered model, e.g "Chat GPT 4o". |
 | <a id="aimodelselectionofferedmodel-ref"></a>`ref` | [`String!`](#string) | Identifier for the offered model. |
+| <a id="aimodelselectionofferedmodel-requirespaidcredits"></a>`requiresPaidCredits` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether GitLab Credits must be purchased before the current user can use this model. |
 
 ### `AiNamespaceSettings`
 
@@ -57752,7 +57753,7 @@ Fields:
 
 {{< /details >}}
 
-Policies stored in the policy store for the organization or group, paginated forward only. Page with `pageInfo.endCursor` and keep `first` the same between requests; the `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container.
+Policies stored in the policy store for the organization or group. Only `first` and `after` are supported; page with `pageInfo.endCursor`. Cursor offsets are capped at 100000, so policies past that window cannot be paged. The `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container.
 
 Returns [`GovernPolicyConnection`](#governpolicyconnection).
 
@@ -57776,7 +57777,7 @@ Arguments:
 
 {{< /details >}}
 
-Recorded evaluations of the policies stored in the policy store for the organization, newest first. Returns `null` for groups and when the current user cannot read the policies of the organization.
+Recorded evaluations of the policies stored in the policy store for the organization or group, newest first. For a group, only evaluations of the group's own policies are returned. Returns `null` when the current user cannot read the policies of the container.
 
 Returns [`GovernPolicyEvaluationConnection`](#governpolicyevaluationconnection).
 

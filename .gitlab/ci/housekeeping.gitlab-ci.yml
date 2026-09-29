@@ -12,11 +12,11 @@
 #                                 gitlab-housekeeper CLI fails the job when it
 #                                 is missing.
 #
-# The jobs reuse the standard Rails + DB CI setup (.rails-job-base runs
-# scripts/prepare_build.sh; .use-pg17 provides the postgres and redis services),
-# so no GDK image is required. The gitlab-housekeeper CLI loads every keep in
-# keeps/, some of which boot the full Rails application, so a database is always
-# required even for the RuboCop keeps.
+# The jobs reuse the standard Rails + DB CI setup: .rails-job-base runs
+# scripts/prepare_build.sh, and .use-pg17 provides the postgres and redis
+# services. The gitlab-housekeeper CLI loads every keep in keeps/, some of which
+# boot the full Rails application, so a database is always required even for the
+# RuboCop keeps.
 
 .housekeeping-keep:
   extends:
@@ -25,9 +25,13 @@
   stage: prepare
   needs: []
   variables:
+    # Not "test": gitlab-http wires Gitlab::HTTP_V2 onto WebMock in that
+    # environment, which blocks the reviewer roulette lookup.
+    RAILS_ENV: "development"
+    BUNDLE_WITHOUT: ""
     GIT_USER_NAME: "GitLab Housekeeping Bot"
     GIT_USER_EMAIL: "gitlab-housekeeping-bot@gitlab.com"
-    HOUSEKEEPER_TARGET_PROJECT_ID: "278964"
+    HOUSEKEEPER_TARGET_PROJECT_ID: "$CI_PROJECT_ID"
   script:
     - scripts/run-gitlab-housekeeper.sh
 

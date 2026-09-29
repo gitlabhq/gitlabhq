@@ -1477,10 +1477,10 @@ class Repository
     blob_at("refs/heads/#{project.default_branch}", Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)
   end
 
-  def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30)
+  def diffs_by_changed_paths(diff_refs, offset = 0, batch_size = 30, sorted: false)
     Gitlab::Git::BlobPairsDiffs
       .new(self)
-      .diffs_by_changed_paths(diff_refs, offset, batch_size) do |diff_files|
+      .diffs_by_changed_paths(diff_refs, offset, batch_size, sorted: sorted) do |diff_files|
         yield diff_files
       end
   end

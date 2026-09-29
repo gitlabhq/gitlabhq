@@ -74,6 +74,12 @@ class Project < ApplicationRecord
   EPOCH_CACHE_EXPIRATION = 30.days
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
+  SORT_WITHOUT_INDEX_EXPRESSIONS = {
+    'name' => "('' || projects.name)",
+    'path' => "('' || projects.path)",
+    'updated_at' => "(projects.updated_at + interval '0')",
+    'last_activity_at' => "(projects.last_activity_at + interval '0')"
+  }.freeze
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
   # nil: legacy
   # 1: repository
@@ -1240,6 +1246,16 @@ class Project < ApplicationRecord
   def self.wrap_with_cte(collection)
     cte = Gitlab::SQL::CTE.new(:projects_cte, collection)
     Project.with(cte.to_arel).from(cte.alias_to(Project.arel_table))
+  end
+
+  # Sorts by an expression equal to the column, so PostgreSQL cannot walk a (column, id) index and
+  # probe each project until it finds a page of matches. For a user's own projects that walk can scan
+  # most of the table; sorting the user's projects instead is cheap. See https://gitlab.com/gitlab-org/gitlab/-/work_items/605822
+  def self.sort_without_index(column, direction)
+    expression = SORT_WITHOUT_INDEX_EXPRESSIONS.fetch(column.to_s)
+    direction = direction.to_s == 'desc' ? :desc : :asc
+
+    reorder(Arel.sql("#{expression} #{direction.upcase}"), id: direction)
   end
 
   def self.dormant

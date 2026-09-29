@@ -78,6 +78,9 @@ export default {
   mounted() {
     this.store.setNewLineDiscussionFormAutofocus(this.discussion, false);
   },
+  beforeDestroy() {
+    clearDraft(this.autosaveKey);
+  },
   methods: {
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm() {
       if (this.discussion.noteBody) {
@@ -143,7 +146,6 @@ export default {
       :code-suggestions-config="codeSuggestionsConfig"
       :save-draft="store.createDraftLineDiscussion ? saveDraft : null"
       :has-drafts="Boolean(store.hasDrafts)"
-      restore-from-autosave
       @input="store.setDiscussionFormText(discussion, $event)"
       @cancel="cancelReplyForm"
     />

@@ -411,6 +411,21 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
       end
     end
 
+    context 'when the merge-ref commit cannot be found' do
+      before do
+        expect_next_instance_of(MergeRequests::MergeToRefService) do |merge_to_ref|
+          expect(merge_to_ref).to receive(:execute)
+            .and_raise(MergeRequests::MergeToRefService::MergeCommitNotFoundError)
+        end
+      end
+
+      it 'propagates the error without marking the merge request as unmergeable' do
+        expect { subject }.to raise_error(MergeRequests::MergeToRefService::MergeCommitNotFoundError)
+
+        expect(MergeRequest.find(merge_request.id).merge_status).not_to eq('cannot_be_merged')
+      end
+    end
+
     context 'recheck enforced' do
       subject { described_class.new(merge_request).execute(recheck: true) }
 

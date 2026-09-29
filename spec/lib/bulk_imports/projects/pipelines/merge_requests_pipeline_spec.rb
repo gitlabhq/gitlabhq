@@ -95,8 +95,7 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [[mr, 0]]))
       end
 
-      allow(project.repository).to receive(:fetch_source_branch!).and_return(true)
-      allow(project.repository).to receive(:branch_exists?).and_return(false)
+      allow(project.repository).to receive_messages(fetch_source_branch!: true, branch_exists?: false)
       allow(project.repository).to receive(:create_branch)
 
       allow(::Projects::ImportExport::AfterImportMergeRequestsWorker).to receive(:perform_async)

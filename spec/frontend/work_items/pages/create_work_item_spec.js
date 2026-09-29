@@ -11,15 +11,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
-import {
-  CREATION_CONTEXT_NEW_ROUTE,
-  ROUTES,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-} from '~/work_items/constants';
+import { CREATION_CONTEXT_NEW_ROUTE, ROUTES } from '~/work_items/constants';
+import { getDraftWorkItemType } from '~/work_items/utils';
 
 Vue.use(VueApollo);
 
@@ -36,6 +29,11 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 jest.mock('~/work_items/graphql/cache_utils', () => ({
   setNewWorkItemCache: jest.fn(),
+}));
+
+jest.mock('~/work_items/utils', () => ({
+  ...jest.requireActual('~/work_items/utils'),
+  getDraftWorkItemType: jest.fn(),
 }));
 
 const mockRelatedItem = {
@@ -60,7 +58,6 @@ describe('Create work item page component', () => {
   const createComponent = ({ props = {}, provide = {}, $router = undefined } = {}) => {
     wrapper = shallowMount(CreateWorkItemPage, {
       propsData: {
-        workItemTypeEnum: WORK_ITEM_TYPE_ENUM_ISSUE,
         rootPageFullPath: 'gitlab-org',
         ...props,
       },
@@ -90,7 +87,61 @@ describe('Create work item page component', () => {
     expect(findCreateWorkItem().props()).toMatchObject({
       creationContext: CREATION_CONTEXT_NEW_ROUTE,
       isGroup: false,
-      preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      preselectedWorkItemType: '',
+    });
+  });
+
+  describe('preselected work item type', () => {
+    describe.each`
+      type            | expected
+      ${'ISSUE'}      | ${'Issue'}
+      ${'INCIDENT'}   | ${'Incident'}
+      ${'KEY_RESULT'} | ${'Key Result'}
+      ${'test_case'}  | ${'Test Case'}
+    `('when the `type` query param is $type', ({ type, expected }) => {
+      beforeEach(() => {
+        setWindowLocation(`?type=${type}`);
+        createComponent();
+      });
+
+      it(`passes "${expected}" to CreateWorkItem`, () => {
+        expect(findCreateWorkItem().props('preselectedWorkItemType')).toBe(expected);
+      });
+    });
+
+    describe('when the `issue[issue_type]` query param is present', () => {
+      beforeEach(() => {
+        setHTMLFixture(`<div class="params-issue-type">incident</div>`);
+        setWindowLocation('?issue[issue_type]=incident');
+        createComponent();
+      });
+
+      it('passes the type set by the backend to CreateWorkItem', () => {
+        expect(findCreateWorkItem().props('preselectedWorkItemType')).toBe('Incident');
+      });
+    });
+
+    describe('when there is a draft work item type', () => {
+      beforeEach(() => {
+        getDraftWorkItemType.mockReturnValue({ name: 'Task' });
+      });
+
+      describe('when there are no type query params', () => {
+        beforeEach(() => {
+          createComponent();
+        });
+
+        it('reads the draft for the new route context', () => {
+          expect(getDraftWorkItemType).toHaveBeenCalledWith({
+            fullPath: 'gitlab-org',
+            context: 'new-route',
+          });
+        });
+
+        it('passes the draft type to CreateWorkItem', () => {
+          expect(findCreateWorkItem().props('preselectedWorkItemType')).toBe('Task');
+        });
+      });
     });
   });
 
@@ -145,22 +196,22 @@ describe('Create work item page component', () => {
 
   describe('project selector', () => {
     it.each`
-      workItemTypeEnum                | isGroup  | showProjectSelector
-      ${WORK_ITEM_TYPE_ENUM_ISSUE}    | ${true}  | ${true}
-      ${WORK_ITEM_TYPE_ENUM_INCIDENT} | ${true}  | ${true}
-      ${WORK_ITEM_TYPE_ENUM_TASK}     | ${true}  | ${true}
-      ${WORK_ITEM_TYPE_ENUM_EPIC}     | ${true}  | ${false}
-      ${WORK_ITEM_TYPE_ENUM_ISSUE}    | ${false} | ${false}
-      ${WORK_ITEM_TYPE_ENUM_INCIDENT} | ${false} | ${false}
-      ${WORK_ITEM_TYPE_ENUM_TASK}     | ${false} | ${false}
-      ${WORK_ITEM_TYPE_ENUM_EPIC}     | ${false} | ${false}
+      workItemType  | isGroup  | showProjectSelector
+      ${'Issue'}    | ${true}  | ${true}
+      ${'Incident'} | ${true}  | ${true}
+      ${'Task'}     | ${true}  | ${true}
+      ${'Epic'}     | ${true}  | ${false}
+      ${'Issue'}    | ${false} | ${false}
+      ${'Incident'} | ${false} | ${false}
+      ${'Task'}     | ${false} | ${false}
+      ${'Epic'}     | ${false} | ${false}
     `(
       'only renders when group and non-epic',
-      ({ workItemTypeEnum, isGroup, showProjectSelector }) => {
-        createComponent({
-          props: { workItemTypeEnum },
-          provide: { isGroup },
-        });
+      async ({ workItemType, isGroup, showProjectSelector }) => {
+        createComponent({ provide: { isGroup } });
+
+        findCreateWorkItem().vm.$emit('update-type', workItemType);
+        await nextTick();
 
         expect(findCreateWorkItem().props('showProjectSelector')).toBe(showProjectSelector);
       },
@@ -236,8 +287,20 @@ describe('Create work item page component', () => {
   });
 
   describe('CreateWorkItemCancelConfirmationModal', () => {
-    it('modal is rendered but not visible initially', () => {
+    const setWorkItemType = async (type = 'Issue') => {
+      findCreateWorkItem().vm.$emit('update-type', type);
+      await nextTick();
+    };
+
+    it('modal is not rendered before the work item type is known', () => {
       createComponent();
+
+      expect(findCancelConfirmationModal().exists()).toBe(false);
+    });
+
+    it('modal is rendered but not visible initially', async () => {
+      createComponent();
+      await setWorkItemType();
 
       expect(findCancelConfirmationModal().exists()).toBe(true);
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
@@ -245,6 +308,7 @@ describe('Create work item page component', () => {
 
     it('modal is displayed when user clicks cancel on the form', async () => {
       createComponent();
+      await setWorkItemType();
 
       findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
@@ -254,6 +318,7 @@ describe('Create work item page component', () => {
 
     it('confirmation modal closes when user clicks "Continue Editing"', async () => {
       createComponent();
+      await setWorkItemType();
 
       findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
@@ -286,6 +351,7 @@ describe('Create work item page component', () => {
       it('closes the confirmation modal and redirects to the index page', async () => {
         setWindowLocation('/work_items/new');
         createComponent({ $router: { push: pushMock, go: goMock } });
+        await setWorkItemType();
 
         await discardDraft();
 
@@ -296,10 +362,8 @@ describe('Create work item page component', () => {
       describe('when the type query param is INCIDENT', () => {
         it('closes the confirmation modal and returns to the previous page', async () => {
           setWindowLocation('/work_items/new?type=INCIDENT');
-          createComponent({
-            props: { workItemTypeEnum: WORK_ITEM_TYPE_ENUM_INCIDENT },
-            $router: { push: pushMock, go: goMock },
-          });
+          createComponent({ $router: { push: pushMock, go: goMock } });
+          await setWorkItemType('Incident');
 
           await discardDraft();
 

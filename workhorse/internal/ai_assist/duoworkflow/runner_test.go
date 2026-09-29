@@ -138,13 +138,14 @@ func (m *mockWebSocketConn) getPongHandler() func(string) error {
 }
 
 type mockWorkflowStream struct {
-	sendEvents  []*pb.ClientEvent
-	sendMu      sync.Mutex
-	recvActions []*pb.Action
-	recvIndex   int
-	sendError   error
-	recvError   error
-	blockCh     chan bool
+	sendEvents     []*pb.ClientEvent
+	sendMu         sync.Mutex
+	closeSendCalls int
+	recvActions    []*pb.Action
+	recvIndex      int
+	sendError      error
+	recvError      error
+	blockCh        chan bool
 }
 
 func (m *mockWorkflowStream) getSendEvents() []*pb.ClientEvent {
@@ -182,6 +183,7 @@ func (m *mockWorkflowStream) Recv() (*pb.Action, error) {
 }
 
 func (m *mockWorkflowStream) CloseSend() error {
+	m.closeSendCalls++
 	return nil
 }
 
@@ -1289,6 +1291,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 				client:             mainClient,
 				cloudServiceStream: mockCloudStream,
 				cloudServiceClient: cloudClient,
+				originalReq:        httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 		}
@@ -1317,6 +1320,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 				client:             mainClient,
 				cloudServiceStream: nil,
 				cloudServiceClient: nil,
+				originalReq:        httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 		}
@@ -1346,6 +1350,7 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 				client:             mainClient,
 				cloudServiceStream: mockCloudStream,
 				cloudServiceClient: nil,
+				originalReq:        httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 		}
@@ -1949,8 +1954,9 @@ func TestRunner_Close_waitsForAgentDone(t *testing.T) {
 		r := &runner{
 			client: newWsManager(&mockWebSocketConn{}),
 			streamManager: &streamManager{
-				wf:     &mockWorkflowStream{},
-				client: mainClient,
+				wf:          &mockWorkflowStream{},
+				client:      mainClient,
+				originalReq: httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 			stop: stopCoordinator{
@@ -2028,8 +2034,9 @@ func TestRunner_Close_shutdownCoordination(t *testing.T) {
 		return &runner{
 			client: newWsManager(&mockWebSocketConn{}),
 			streamManager: &streamManager{
-				wf:     &mockWorkflowStream{},
-				client: mainClient,
+				wf:          &mockWorkflowStream{},
+				client:      mainClient,
+				originalReq: httptest.NewRequest(http.MethodGet, "/", nil),
 			},
 			mcpManager: &mockMcpManager{},
 			stop: stopCoordinator{
@@ -2302,6 +2309,31 @@ func TestRunner_isUsageQuotaExceededError(t *testing.T) {
 			sm := &streamManager{}
 			result := sm.isUsageQuotaExceededError(tt.err)
 			require.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestStreamManager_Close(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	tests := []struct {
+		name               string
+		ctx                context.Context
+		wantCloseSendCalls int
+	}{
+		{name: "active context", ctx: context.Background(), wantCloseSendCalls: 1},
+		{name: "canceled context", ctx: ctx},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			wf := &mockWorkflowStream{}
+			sm := newTestStreamManager(t, wf)
+			sm.originalReq = sm.originalReq.WithContext(tt.ctx)
+
+			require.NoError(t, sm.Close())
+			require.Equal(t, tt.wantCloseSendCalls, wf.closeSendCalls)
 		})
 	}
 }
