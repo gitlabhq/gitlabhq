@@ -221,7 +221,7 @@ gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
 ## Intermittent 502 errors or after a few days
 
 If you run Pages on a system that uses `systemd` and
-[`tmpfiles.d`](https://www.freedesktop.org/software/systemd/man/tmpfiles.d.html),
+[`tmpfiles.d`](https://www.freedesktop.org/software/systemd/man/latest/tmpfiles.d.html),
 you may encounter intermittent 502 errors trying to serve Pages with an error similar to:
 
 ```plaintext

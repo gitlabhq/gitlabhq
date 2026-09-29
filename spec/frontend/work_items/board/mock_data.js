@@ -279,7 +279,7 @@ export const buildWorkItemTypesResponse = (types = []) => ({
   },
 });
 
-export const buildNamespaceStatusesResponse = (statuses = []) => ({
+export const buildNamespaceStatusesResponse = (statuses = [], workItemTypes = []) => ({
   data: {
     namespace: {
       __typename: 'Group',
@@ -291,6 +291,10 @@ export const buildNamespaceStatusesResponse = (statuses = []) => ({
           __typename: 'WorkItemStatusConnection',
           nodes: statuses,
         },
+      },
+      workItemTypes: {
+        __typename: 'WorkItemTypeConnection',
+        nodes: workItemTypes,
       },
     },
   },

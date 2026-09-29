@@ -46,7 +46,7 @@ RSpec.describe Ci::Catalog::BundledResources::Version, feature_category: :pipeli
       fresh = described_class.find(create(:ci_catalog_bundled_resource_version).id)
 
       expect(fresh.readme).to be_nil
-      expect(fresh.readme_html).to eq('')
+      expect(fresh.readme_html).to be_nil
     end
 
     it 'clears a stored readme when it is set to nil', :aggregate_failures do
@@ -55,7 +55,7 @@ RSpec.describe Ci::Catalog::BundledResources::Version, feature_category: :pipeli
 
       cleared = described_class.find(version.id)
       expect(cleared.readme).to be_nil
-      expect(cleared.readme_html).to eq('')
+      expect(cleared.readme_html).to be_nil
     end
 
     it 'caches the rendered readme_html in object storage' do

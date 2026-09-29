@@ -34,3 +34,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::VisitorLocation.prepend_mod

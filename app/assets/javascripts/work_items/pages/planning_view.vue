@@ -192,6 +192,7 @@ import {
   DISPLAY_SETTINGS_PAGE_ROOT,
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
 } from '../constants';
+import { GROUP_SORT } from '../board/grouping/ordering';
 
 const ListView = () => import('ee_else_ce/work_items/list/list_view.vue');
 const BoardView = () => import('~/work_items/board/board_view.vue');
@@ -1060,6 +1061,9 @@ export default {
     groupOrder() {
       return this.namespacePreferences.groupOrder ?? [];
     },
+    groupSort() {
+      return this.namespacePreferences.groupSort;
+    },
     visibleGroups() {
       return this.namespacePreferences.visibleGroups ?? null;
     },
@@ -1899,8 +1903,14 @@ export default {
 
       this.persistNamespaceDisplaySettings(newSettings);
     },
+    // A drag or Move left/right only means anything under Manual sort, so switch to it —
+    // otherwise the very next Ascending/Descending render would undo the reorder.
     handleReorderGroups(groupOrder) {
-      const newSettings = { ...this.namespacePreferences, groupOrder };
+      const newSettings = {
+        ...this.namespacePreferences,
+        groupOrder,
+        groupSort: GROUP_SORT.MANUAL,
+      };
 
       if (this.isSavedView) {
         this.handleLocalDisplayPreferencesUpdate(newSettings);
@@ -2648,6 +2658,7 @@ export default {
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
       :group-order="groupOrder"
+      :group-sort="groupSort"
       :visible-groups="visibleGroups"
       :visible-groups-loaded="preferencesLoaded"
       :can-manage-columns="isLoggedIn"

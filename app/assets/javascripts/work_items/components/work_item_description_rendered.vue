@@ -113,9 +113,6 @@ export default {
       return this.workItemDescription?.description;
     },
     descriptionHtml() {
-      if (this.withoutHeadingAnchors) {
-        return this.stripHeadingAnchors(this.workItemDescription?.descriptionHtml);
-      }
       return this.workItemDescription?.descriptionHtml;
     },
     isDescriptionEmpty() {
@@ -408,10 +405,6 @@ export default {
         label: this.workItemType,
       });
     },
-    stripHeadingAnchors(htmlString) {
-      const regex = /(<a[^>]+?aria-hidden="true" class="anchor)(")/g;
-      return htmlString?.replace(regex, '$1 after:!gl-hidden$2');
-    },
   },
 };
 </script>
@@ -429,7 +422,11 @@ export default {
         ref="gfm-content"
         v-safe-html="descriptionHtml"
         data-testid="work-item-description"
-        :class="{ truncated: isTruncated, 'has-task-list-item-actions': hasTaskListItemActions }"
+        :class="{
+          truncated: isTruncated,
+          'has-task-list-item-actions': hasTaskListItemActions,
+          '[&_a.anchor]:gl-hidden': withoutHeadingAnchors,
+        }"
         @change="toggleCheckboxes"
       ></div>
       <div v-if="isTruncated" class="description-more gl-z-1 -gl-ml-6 gl-block gl-w-full gl-pl-6">

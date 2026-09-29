@@ -118,6 +118,10 @@ func (w *nullResponseWriter) WriteHeader(status int) {
 	}
 }
 
+// Flush is a no-op because the body is buffered. Handlers such as sendurl
+// stop writing when http.ResponseController.Flush returns an error.
+func (w *nullResponseWriter) Flush() {}
+
 // serveHTTPSafe calls h.ServeHTTP and recovers from http.ErrAbortHandler panics.
 // httputil.ReverseProxy panics with http.ErrAbortHandler when the client disconnects
 // or the request context is canceled. This is normally caught by net/http's own

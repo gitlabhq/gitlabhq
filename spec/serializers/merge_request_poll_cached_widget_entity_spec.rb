@@ -9,7 +9,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
   let_it_be_with_refind(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let_it_be(:user) { create(:user) }
 
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+  let(:pipeline) { build_stubbed(:ci_empty_pipeline, project: project) }
 
   let(:request) { double('request', current_user: user, project: project) }
 

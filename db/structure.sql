@@ -19972,6 +19972,7 @@ CREATE TABLE dependency_management_remediations (
     input_file_path text DEFAULT ''::text NOT NULL,
     current_version text NOT NULL,
     target_version text NOT NULL,
+    dismissed_at timestamp with time zone,
     CONSTRAINT check_36c467f56d CHECK ((char_length(current_version) <= 255)),
     CONSTRAINT check_4c7e31aeee CHECK ((char_length(package_name) <= 255)),
     CONSTRAINT check_6f97a871af CHECK ((char_length(target_version) <= 255)),

@@ -327,6 +327,41 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		require.NotNil(t, result)
 		require.Equal(t, int32(200), result.GetActionResponse().GetHttpResponse().StatusCode)
 	})
+
+	t.Run("backend that flushes after each write", func(t *testing.T) {
+		chunk := "chunk-"
+
+		action := &pb.Action{
+			RequestID: "req-flush",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{
+					Method: "GET",
+					Path:   "/api/v4/projects/1/jobs/1/trace",
+				},
+			},
+		}
+
+		handler := &runHTTPActionHandler{
+			// Streams like sendurl: flush after every write, stop when a flush fails
+			backend: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				for range 3 {
+					fmt.Fprint(w, chunk)
+					if err := http.NewResponseController(w).Flush(); err != nil {
+						return
+					}
+				}
+			}),
+			token:       "test-token",
+			originalReq: &http.Request{},
+		}
+
+		result, err := handler.Execute(context.Background(), action)
+
+		require.NoError(t, err)
+		require.Equal(t, int32(200), result.GetActionResponse().GetHttpResponse().StatusCode)
+		require.Equal(t, "chunk-chunk-chunk-", result.GetActionResponse().GetHttpResponse().Body)
+	})
 }
 
 func TestRunHttpActionHandler_applyRelativeURLRoot(t *testing.T) {

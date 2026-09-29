@@ -1,6 +1,6 @@
 ---
 key_path: counts.count_distinct_user_id_from_configure_columns_on_work_item_board
-description: Count of unique users who configured board columns on the work item planning board, counted once per user regardless of how many times they did so or which of the five configuration actions (show_group, hide_group, hide_all_groups, reorder_drag, reorder_menu) they used.
+description: Count of unique users who configured board columns on the work item planning board, counted once per user regardless of how many times they did so or which of the configuration actions (show_group, hide_group, hide_all_groups, reorder_drag, reorder_menu, sort_groups_asc, sort_groups_desc) they used.
 product_group: planning_views
 product_categories:
   - planning_views

@@ -406,17 +406,41 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
-    it 'raises ValidationError when an action entry has a non-string blockMessage' do
-      malformed = [{ 'type' => 'block', 'value' => { 'blockMessage' => 42 } }]
+    %w[message blockMessage].each do |key|
+      it "raises ValidationError when an action entry has a non-string #{key}" do
+        malformed = [{ 'type' => 'block', 'value' => { key => 42 } }]
+
+        expect { repository.create(attributes.merge(actions: malformed)) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
+      end
+
+      it "allows an action entry with a string #{key}" do
+        valid = [{ 'type' => 'block', 'value' => { key => 'Needs approval' } }]
+
+        expect { repository.create(attributes.merge(actions: valid)) }.not_to raise_error
+      end
+    end
+
+    it 'allows an action entry with a string under both message keys' do
+      valid = [{ 'type' => 'block', 'value' => { 'message' => 'Blocked', 'blockMessage' => 'Blocked' } }]
+
+      expect { repository.create(attributes.merge(actions: valid)) }.not_to raise_error
+    end
+
+    # A valid message under one key does not excuse a non-string under the other: the engine
+    # refuses to serve the policy either way.
+    it 'raises ValidationError when a non-string blockMessage sits alongside a string message' do
+      malformed = [{ 'type' => 'block', 'value' => { 'message' => 'Blocked', 'blockMessage' => 42 } }]
 
       expect { repository.create(attributes.merge(actions: malformed)) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
-    it 'allows an action entry with a string blockMessage' do
-      valid = [{ 'type' => 'block', 'value' => { 'blockMessage' => 'Needs approval' } }]
+    it 'raises ValidationError when a non-string message sits alongside a string blockMessage' do
+      malformed = [{ 'type' => 'block', 'value' => { 'message' => 42, 'blockMessage' => 'Blocked' } }]
 
-      expect { repository.create(attributes.merge(actions: valid)) }.not_to raise_error
+      expect { repository.create(attributes.merge(actions: malformed)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
     it 'raises ValidationError when actions is not an array' do
@@ -749,9 +773,9 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)
     end
 
-    it 'raises ValidationError when an update sets an action entry with a non-string blockMessage' do
+    it 'raises ValidationError when an update sets an action entry with a non-string message' do
       created = repository.create(attributes)
-      malformed = [{ 'type' => 'block', 'value' => { 'blockMessage' => 42 } }]
+      malformed = [{ 'type' => 'block', 'value' => { 'message' => 42 } }]
 
       expect { repository.update(created.id, actions: malformed) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /actions has a malformed entry at 0/)

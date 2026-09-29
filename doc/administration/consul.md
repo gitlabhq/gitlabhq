@@ -14,7 +14,7 @@ description: Configure a Consul cluster.
 {{< /details >}}
 
 A Consul cluster consists of both
-[server and client agents](https://developer.hashicorp.com/consul/docs/agent).
+[server and client agents](https://developer.hashicorp.com/consul/docs/fundamentals/agent).
 The servers run on their own nodes and the clients run on other nodes that in
 turn communicate with the servers.
 
@@ -365,7 +365,7 @@ Consul nodes communicate using the raft protocol. If the current leader goes
 offline, there must be a leader election. A leader node must exist to facilitate
 synchronization across the cluster. If too many nodes go offline at the same time,
 the cluster loses quorum and doesn't elect a leader due to
-[broken consensus](https://developer.hashicorp.com/consul/docs/architecture/consensus).
+[broken consensus](https://developer.hashicorp.com/consul/docs/concept/consensus).
 
 Consult the [troubleshooting section](#troubleshooting-consul) if the cluster is not
 able to recover after the upgrade. The [outage recovery](#outage-recovery) may
@@ -414,7 +414,7 @@ you follow the Consul [outage recovery](#outage-recovery) process.
 To be safe, it's recommended that you only restart Consul in one node at a time to
 ensure the cluster remains intact. For larger clusters, it is possible to restart
 multiple nodes at a time. See the
-[Consul consensus document](https://developer.hashicorp.com/consul/docs/architecture/consensus#deployment-table)
+[Consul consensus document](https://developer.hashicorp.com/consul/docs/concept/consensus#quorum)
 for the number of failures it can tolerate. This is the number of simultaneous
 restarts it can sustain.
 

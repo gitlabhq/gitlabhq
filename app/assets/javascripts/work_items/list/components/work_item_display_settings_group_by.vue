@@ -23,6 +23,11 @@ import {
   isGroupVisible as computeGroupVisible,
   toggleGroupVisibility as computeToggleGroupVisibility,
 } from '~/work_items/board/grouping/visibility';
+import {
+  GROUP_SORT,
+  effectiveGroupSort,
+  applyGroupSort,
+} from '~/work_items/board/grouping/ordering';
 import { persistMetadataPreference, alertPreferenceError } from '../display_settings_preferences';
 
 export default {
@@ -39,6 +44,8 @@ export default {
     groupBy: s__('WorkItems|Group by'),
     sort: s__('WorkItems|Sort'),
     ascending: __('Ascending'),
+    descending: __('Descending'),
+    manual: s__('WorkItems|Manual'),
     groups: s__('WorkItems|Groups'),
     searchPlaceholder: s__('WorkItems|Search groups'),
     shown: s__('WorkItems|Shown'),
@@ -115,16 +122,42 @@ export default {
     groupByOptions() {
       return [{ text: this.strategy.label, value: this.strategy.property }];
     },
+    groupSort() {
+      return effectiveGroupSort({
+        groupSort: this.namespacePreferences.groupSort,
+        groupOrder: this.namespacePreferences.groupOrder,
+      });
+    },
     sortByOptions() {
-      return [{ text: this.$options.i18n.ascending, value: 'asc' }];
+      const options = [
+        { text: this.$options.i18n.ascending, value: GROUP_SORT.ASC },
+        { text: this.$options.i18n.descending, value: GROUP_SORT.DESC },
+      ];
+      // Offered only while it's the current sort (a pre-existing dragged order reads as
+      // manual, see effectiveGroupSort) — picking it isn't a real option yet.
+      if (this.groupSort === GROUP_SORT.MANUAL) {
+        options.push({ text: this.$options.i18n.manual, value: GROUP_SORT.MANUAL });
+      }
+      return options;
+    },
+    sortToggleText() {
+      return this.sortByOptions.find((option) => option.value === this.groupSort).text;
     },
     isSearching() {
       return Boolean(this.searchQuery.trim());
     },
+    sortedGroupByValues() {
+      return applyGroupSort({
+        values: this.groupByValues,
+        groupSort: this.groupSort,
+        groupOrder: this.namespacePreferences.groupOrder,
+        groupBy: this.groupBy,
+      });
+    },
     filteredGroupByValues() {
       const query = this.searchQuery.trim().toLowerCase();
-      if (!query) return this.groupByValues;
-      return this.groupByValues.filter((value) => value.name.toLowerCase().includes(query));
+      if (!query) return this.sortedGroupByValues;
+      return this.sortedGroupByValues.filter((value) => value.name.toLowerCase().includes(query));
     },
     decoratedGroupByValues() {
       return this.filteredGroupByValues.map((value) => {
@@ -183,14 +216,25 @@ export default {
       this.trackEvent('configure_columns_on_work_item_board', {
         label: wasVisible ? 'hide_group' : 'show_group',
       });
-      this.persist(next);
+      this.persist({ visibleGroups: next });
     },
     hideAll() {
       this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_all_groups' });
-      this.persist([]);
+      this.persist({ visibleGroups: [] });
     },
-    async persist(visibleGroups) {
-      const input = { ...this.namespacePreferences, visibleGroups };
+    // Manual only means anything for a groupOrder the user built by dragging, so any other
+    // sort choice starts that over rather than keeping a stale order around unused.
+    handleSortSelect(groupSort) {
+      if (groupSort === this.groupSort) {
+        return;
+      }
+      this.trackEvent('configure_columns_on_work_item_board', {
+        label: `sort_groups_${groupSort}`,
+      });
+      this.persist({ groupSort, groupOrder: [] });
+    },
+    async persist(partialSettings) {
+      const input = { ...this.namespacePreferences, ...partialSettings };
 
       if (this.isSavedView) {
         this.$emit('update-settings', input);
@@ -235,13 +279,13 @@ export default {
         $options.i18n.sort
       }}</label>
       <gl-collapsible-listbox
-        disabled
         size="small"
-        :toggle-text="$options.i18n.ascending"
+        :toggle-text="sortToggleText"
         :items="sortByOptions"
-        selected="asc"
+        :selected="groupSort"
         :toggle-aria-labelled-by="$options.SORT_LABEL_ID"
         data-testid="sort-listbox"
+        @select="handleSortSelect"
       />
     </div>
     <div class="gl-border-t gl-pt-4">

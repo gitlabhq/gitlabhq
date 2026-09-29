@@ -16,6 +16,7 @@
     ],
     "skipProxy": true,
     "publicOutputDir": "assets/vite",
+    "devServerConnectionCheck": true,
     "devServerConnectTimeout": 3
   }
 }

@@ -74,7 +74,7 @@ more importantly ensure that encryption is used during communications. For more
 detailed information on Consul visit the
 [HashiCorp website](https://developer.hashicorp.com/consul/docs) to understand how it
 works, and review the information on
-[encryption security](https://developer.hashicorp.com/consul/docs/security/encryption).
+[encryption security](https://developer.hashicorp.com/consul/docs/secure/encryption).
 
 ## Environment Variables
 

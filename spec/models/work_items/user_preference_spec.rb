@@ -365,6 +365,24 @@ RSpec.describe WorkItems::UserPreference, feature_category: :team_planning do
           end
         end
       end
+
+      context 'with groupSort property' do
+        it 'is valid with each supported sort direction' do
+          %w[asc desc manual].each do |sort_direction|
+            preferences = described_class.new(namespace: namespace,
+              display_settings: { 'groupSort' => sort_direction })
+
+            expect(preferences).to be_valid
+          end
+        end
+
+        it 'is invalid with an unsupported value' do
+          preferences = described_class.new(namespace: namespace, display_settings: { 'groupSort' => 'random' })
+
+          expect(preferences).not_to be_valid
+          expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
+        end
+      end
     end
   end
 end

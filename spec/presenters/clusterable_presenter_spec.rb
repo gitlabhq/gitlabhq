@@ -6,6 +6,8 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
 
   describe '.fabricate' do
     subject { described_class.fabricate(project) }
@@ -34,8 +36,6 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   end
 
   describe '#can_create_cluster?' do
-    let(:user) { create(:user) }
-
     subject { described_class.new(clusterable).can_create_cluster? }
 
     before do
@@ -43,7 +43,7 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a group' do
-      let(:clusterable) { create(:group) }
+      let(:clusterable) { group }
 
       it_behaves_like 'appropriate member permissions'
     end
@@ -56,8 +56,6 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   end
 
   describe '#can_add_cluster?' do
-    let(:user) { create(:user) }
-
     subject { described_class.new(clusterable).can_add_cluster? }
 
     before do
@@ -67,7 +65,7 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a group' do
-      let(:clusterable) { create(:group) }
+      let(:clusterable) { group }
 
       it_behaves_like 'appropriate member permissions'
     end
@@ -80,8 +78,6 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   end
 
   describe '#can_admin_cluster?' do
-    let(:user) { create(:user) }
-
     subject { described_class.new(clusterable).can_admin_cluster? }
 
     before do
@@ -91,7 +87,7 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a group' do
-      let(:clusterable) { create(:group) }
+      let(:clusterable) { group }
 
       it_behaves_like 'appropriate member permissions'
     end
@@ -106,8 +102,8 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   describe '#environments_cluster_path' do
     subject { described_class.new(clusterable).environments_cluster_path(cluster) }
 
-    let(:clusterable) { create(:group) }
-    let(:cluster) { create(:cluster_for_group, groups: [clusterable]) }
+    let(:clusterable) { group }
+    let(:cluster) { build_stubbed(:cluster_for_group, groups: [clusterable]) }
 
     it { is_expected.to be_nil }
   end
@@ -129,7 +125,7 @@ RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   end
 
   describe '#index_path' do
-    let(:clusterable) { create(:group) }
+    let(:clusterable) { group }
 
     context 'without options' do
       subject { described_class.new(clusterable).index_path }

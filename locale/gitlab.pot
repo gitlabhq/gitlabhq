@@ -30172,6 +30172,9 @@ msgstr ""
 msgid "Deprioritize label"
 msgstr ""
 
+msgid "Descending"
+msgstr ""
+
 msgid "Describe the goal of the changes and what reviewers should be aware of."
 msgstr ""
 
@@ -94056,6 +94059,9 @@ msgid "WorkItems|Hide all"
 msgstr ""
 
 msgid "WorkItems|How do I use statuses?"
+msgstr ""
+
+msgid "WorkItems|Manual"
 msgstr ""
 
 msgid "WorkItems|No fields match your search."

@@ -91,9 +91,9 @@ The following installation methods are provided as-is by the wider GitLab
 community and are not supported by GitLab:
 
 - [Debian native package](https://wiki.debian.org/gitlab/) (by Pirate Praveen)
-- [FreeBSD package](http://www.freshports.org/www/gitlab-ce) (by Torsten Zühlsdorff)
+- [FreeBSD package](https://www.freshports.org/www/gitlab-ce) (by Torsten Zühlsdorff)
 - [Arch Linux package](https://archlinux.org/packages/extra/x86_64/gitlab/) (by the Arch Linux community)
-- [Puppet module](https://forge.puppet.com/puppet/gitlab) (by Vox Pupuli)
+- [Puppet module](https://forge.puppet.com/modules/puppet/gitlab) (by Vox Pupuli)
 - [Ansible playbook](https://github.com/geerlingguy/ansible-role-gitlab) (by Jeff Geerling)
 - [GitLab virtual appliance (KVM)](https://marketplace.opennebula.io/appliance/6b54a412-03a5-11e9-8652-f0def1753696) (by OpenNebula)
 - [GitLab on Cloudron](https://cloudron.io/store/com.gitlab.cloudronapp.html) (via Cloudron App Library)
@@ -128,11 +128,11 @@ You can find the list of deprecated operating systems and the final GitLab relea
 | Raspbian Jessie  | [May 2017](https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/)  | GitLab CE 11.7 |
 | Raspbian Stretch | [June 2020](https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/) | GitLab CE 13.3 |
 | Raspberry Pi OS Buster | [June 2024](https://www.debian.org/News/2024/20240615)                        | GitLab CE 17.7 |
-| Ubuntu 12.04     | [April 2017](https://ubuntu.com/info/release-end-of-life)                           | GitLab CE / GitLab EE 9.1 |
-| Ubuntu 14.04     | [April 2019](https://ubuntu.com/info/release-end-of-life)                           | GitLab CE / GitLab EE 11.10 |
-| Ubuntu 16.04     | [April 2021](https://ubuntu.com/info/release-end-of-life)                           | GitLab CE / GitLab EE 13.12 |
-| Ubuntu 18.04     | [June 2023](https://ubuntu.com/info/release-end-of-life)                            | GitLab CE / GitLab EE 16.11 |
-| Ubuntu 20.04     | [May 2025](https://ubuntu.com/info/release-end-of-life)                            | GitLab CE / GitLab EE 18.11 |
+| Ubuntu 12.04     | [April 2017](https://ubuntu.com/about/release-cycle)                           | GitLab CE / GitLab EE 9.1 |
+| Ubuntu 14.04     | [April 2019](https://ubuntu.com/about/release-cycle)                           | GitLab CE / GitLab EE 11.10 |
+| Ubuntu 16.04     | [April 2021](https://ubuntu.com/about/release-cycle)                           | GitLab CE / GitLab EE 13.12 |
+| Ubuntu 18.04     | [June 2023](https://ubuntu.com/about/release-cycle)                            | GitLab CE / GitLab EE 16.11 |
+| Ubuntu 20.04     | [May 2025](https://ubuntu.com/about/release-cycle)                            | GitLab CE / GitLab EE 18.11 |
 
 ### Raspberry Pi OS (32-bit - Raspbian)
 

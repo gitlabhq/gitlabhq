@@ -49,6 +49,7 @@ describe('BlobRepositoryActionsGroup', () => {
     expect(findDropdownGroup().exists()).toBe(true);
     expect(findFindFileDropdownItem().exists()).toBe(true);
     expect(findBlameDropdownItem().props()).toStrictEqual({
+      disabled: false,
       icon: null,
       item: {
         extraAttrs: {

@@ -26,7 +26,7 @@ GitLab uses ClickHouse as a secondary data store to enable advanced analytics fe
 
 You should use [ClickHouse Cloud](https://clickhouse.com/cloud) to connect ClickHouse to GitLab.
 
-Alternatively, you can [bring your own ClickHouse](https://clickhouse.com/docs/en/install). For more information, see [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/guides/sizing-and-hardware-recommendations).
+Alternatively, you can [bring your own ClickHouse](https://clickhouse.com/docs/get-started/setup/install). For more information, see [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/guides/oss/best-practices/sizing-and-hardware-recommendations).
 
 ## Analytics available with ClickHouse
 
@@ -111,8 +111,8 @@ After you create your ClickHouse Cloud service, you then [create the GitLab data
 Prerequisites:
 
 - Have a ClickHouse instance installed and running. If ClickHouse is not installed, see:
-  - [ClickHouse official installation guide](https://clickhouse.com/docs/en/install).
-  - [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/guides/sizing-and-hardware-recommendations).
+  - [ClickHouse official installation guide](https://clickhouse.com/docs/get-started/setup/install).
+  - [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/guides/oss/best-practices/sizing-and-hardware-recommendations).
 - Have a [supported ClickHouse version](#supported-clickhouse-versions).
 - Enable network connectivity from your GitLab instance to ClickHouse.
 - Be an Administrator for both ClickHouse and your GitLab instance.
@@ -135,7 +135,7 @@ Prerequisites:
 
 When configuring the database for HA, you must run the statements with the `ON CLUSTER` clause.
 
-For more information, see [ClickHouse Replicated database engine documentation](https://clickhouse.com/docs/en/engines/database-engines/replicated).
+For more information, see [ClickHouse Replicated database engine documentation](https://clickhouse.com/docs/reference/engines/database-engines/replicated).
 
 #### Configure Load balancer
 
@@ -448,7 +448,7 @@ ClickHouse Cloud automatically handles version upgrades and security patches. No
 For information about upgrade scheduling and maintenance windows, see [ClickHouse Cloud upgrades](https://clickhouse.com/docs/manage/updates).
 
 > [!note]
-> ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/whats-new/cloud) to stay informed about new features and changes.
+> ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/resources/changelogs/cloud) to stay informed about new features and changes.
 
 ### ClickHouse for GitLab Self-Managed (BYOC)
 

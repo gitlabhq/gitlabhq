@@ -2004,6 +2004,26 @@ mirrors the feature area. Each file should:
    them through native DOM APIs (`.click()`, `.dispatchEvent()`).
 1. Assert on the DOM, not on Vue component state.
 
+#### Enable feature flags
+
+The integration test harness installs the same Vue plugins as a real GitLab page.
+Components read feature flags through the `glFeatures` inject.
+The inject comes from `window.gon.features`.
+
+Use `setFeatureFlags` before you mount a component:
+
+```javascript
+import { setFeatureFlags } from 'ee_jest/integration/helpers/setup_utils';
+
+setFeatureFlags({ workItemFeaturesField: true });
+
+fullMount(...);
+```
+
+Do not pass `glFeatures` through `provide`. Nested components do not receive it.
+
+The harness resets `window.gon` before each test. You do not need to remove the flags after the test.
+
 #### Prefer DOM assertions over Vue Test Utils wrappers
 
 Use `fullMount` from `test_helpers.js` only to create the component. After mount,

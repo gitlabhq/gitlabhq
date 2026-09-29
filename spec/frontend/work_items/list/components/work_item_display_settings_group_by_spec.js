@@ -103,11 +103,15 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       });
     });
 
-    it('renders a disabled Sort dropdown showing Ascending', () => {
+    it('renders an enabled Sort dropdown with Ascending selected by default', () => {
       expect(findSortListbox().props()).toMatchObject({
-        disabled: true,
+        disabled: false,
         toggleText: 'Ascending',
         selected: 'asc',
+        items: [
+          { text: 'Ascending', value: 'asc' },
+          { text: 'Descending', value: 'desc' },
+        ],
       });
     });
 
@@ -208,6 +212,125 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
 
       expect(findShownToggles().at(0).props('label')).toBe('Triage');
       expect(findHiddenToggles().at(0).props('label')).toBe('To do');
+    });
+  });
+
+  describe('sorting groups', () => {
+    it('selects Descending when it is the persisted groupSort', async () => {
+      createComponent({ props: { namespacePreferences: { groupSort: 'desc' } } });
+      await waitForPromises();
+
+      expect(findSortListbox().props()).toMatchObject({
+        toggleText: 'Descending',
+        selected: 'desc',
+      });
+    });
+
+    it('reverses the group order when groupSort is desc', async () => {
+      createComponent({ props: { namespacePreferences: { groupSort: 'desc' } } });
+      await waitForPromises();
+
+      expect(findShownToggles().wrappers.map((toggle) => toggle.props('label'))).toEqual([
+        'To do',
+        'Triage',
+      ]);
+    });
+
+    it('includes Manual as an option only while it is the current sort (a pre-existing drag)', async () => {
+      createComponent({ props: { namespacePreferences: { groupOrder: [groupId(statuses[1])] } } });
+      await waitForPromises();
+
+      expect(findSortListbox().props()).toMatchObject({ toggleText: 'Manual', selected: 'manual' });
+      expect(findSortListbox().props('items')).toContainEqual({ text: 'Manual', value: 'manual' });
+    });
+
+    it('omits Manual when Ascending or Descending is the current sort', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findSortListbox().props('items')).not.toContainEqual(
+        expect.objectContaining({ value: 'manual' }),
+      );
+    });
+
+    it('does nothing when the already-active sort is re-selected', async () => {
+      const groupOrder = [groupId(statuses[1])];
+      createComponent({ props: { namespacePreferences: { groupOrder } } });
+      await waitForPromises();
+
+      findSortListbox().vm.$emit('select', 'manual');
+      await waitForPromises();
+
+      expect(persistMetadataPreference).not.toHaveBeenCalled();
+    });
+
+    describe('selecting a sort direction', () => {
+      beforeEach(async () => {
+        createComponent({ props: { namespacePreferences: { hiddenMetadataKeys: ['labels'] } } });
+        await waitForPromises();
+
+        findSortListbox().vm.$emit('select', 'desc');
+        await waitForPromises();
+      });
+
+      it('persists the sort direction, merged with existing display settings, and resets groupOrder', () => {
+        expect(persistMetadataPreference).toHaveBeenCalledWith(
+          expect.objectContaining({
+            namespace: 'group/full/path',
+            displaySettings: { hiddenMetadataKeys: ['labels'], groupSort: 'desc', groupOrder: [] },
+          }),
+        );
+      });
+    });
+
+    describe('tracking', () => {
+      const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+      it('tracks the sort direction chosen', async () => {
+        createComponent();
+        await waitForPromises();
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findSortListbox().vm.$emit('select', 'desc');
+        await waitForPromises();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'configure_columns_on_work_item_board',
+          { label: 'sort_groups_desc' },
+          undefined,
+        );
+      });
+
+      it('does not track when the already-active sort is re-selected', async () => {
+        createComponent();
+        await waitForPromises();
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findSortListbox().vm.$emit('select', 'asc');
+        await waitForPromises();
+
+        expect(trackEventSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('on a saved view', () => {
+      it('emits update-settings with the sort direction, resetting groupOrder', async () => {
+        createComponent({
+          props: {
+            isSavedView: true,
+            namespacePreferences: { hiddenMetadataKeys: ['labels'] },
+          },
+        });
+        await waitForPromises();
+
+        findSortListbox().vm.$emit('select', 'desc');
+        await waitForPromises();
+
+        expect(wrapper.emitted('update-settings')).toEqual([
+          [{ hiddenMetadataKeys: ['labels'], groupSort: 'desc', groupOrder: [] }],
+        ]);
+        expect(persistMetadataPreference).not.toHaveBeenCalled();
+      });
     });
   });
 

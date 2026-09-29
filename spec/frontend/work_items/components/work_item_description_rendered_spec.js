@@ -172,37 +172,40 @@ describe('WorkItemDescriptionRendered', () => {
     });
   });
 
-  describe('`disableHeadingAnchors` prop', () => {
-    const baseAnchorHtml =
-      '<a href="#this-is-an-anchor" aria-hidden="true" class="anchor" id="user-content-this-is-an-anchor"></a>';
-    const uninteractiveAnchorHtml =
-      '<a href="#this-is-an-anchor" aria-hidden="true" class="anchor after:!gl-hidden" id="user-content-this-is-an-anchor"></a>';
-    const baseHtml =
-      '<h1 data-sourcepos="1:1-1:19" dir="auto">&#x000A;<a href="#this-is-an-anchor" aria-hidden="true" class="anchor" id="user-content-this-is-an-anchor"></a>This is an anchor</h1>';
-    it('renders anchor links as normal when prop is `false`', () => {
+  describe('`withoutHeadingAnchors` prop', () => {
+    const hiddenAnchorsClass = '[&_a.anchor]:gl-hidden';
+    // Matches the heading markup our Markdown pipeline emits today.
+    const headingAnchorHtml =
+      '<a href="#this-is-an-anchor" aria-label="Link to heading \'This is an anchor\'" data-heading-content="This is an anchor" class="anchor"></a>';
+    const headingHtml = `<h1 id="user-content-this-is-an-anchor" data-sourcepos="1:1-1:19" dir="auto">This is an anchor${headingAnchorHtml}</h1>`;
+
+    const createAnchorComponent = (withoutHeadingAnchors) =>
       createComponent({
-        withoutHeadingAnchors: false,
+        withoutHeadingAnchors,
         workItemDescription: {
           description: 'This is an anchor',
-          descriptionHtml: baseHtml,
+          descriptionHtml: headingHtml,
         },
       });
 
-      const renderedHtml = findDescription().html();
-      expect(renderedHtml).toContain(baseAnchorHtml);
+    describe('when `false`', () => {
+      beforeEach(() => createAnchorComponent(false));
+
+      it('does not hide the heading anchors', () => {
+        expect(findDescription().classes()).not.toContain(hiddenAnchorsClass);
+      });
     });
 
-    it('makes anchor links uninteractive when prop is `true`', () => {
-      createComponent({
-        withoutHeadingAnchors: true,
-        workItemDescription: {
-          description: 'This is an anchor',
-          descriptionHtml: baseHtml,
-        },
+    describe('when `true`', () => {
+      beforeEach(() => createAnchorComponent(true));
+
+      it('hides the heading anchors', () => {
+        expect(findDescription().classes()).toContain(hiddenAnchorsClass);
       });
 
-      const renderedHtml = findDescription().html();
-      expect(renderedHtml).toContain(uninteractiveAnchorHtml);
+      it('renders the description HTML unchanged', () => {
+        expect(findDescription().html()).toContain(headingAnchorHtml);
+      });
     });
   });
 

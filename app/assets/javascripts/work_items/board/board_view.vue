@@ -34,7 +34,7 @@ import {
   exceedsGroupLimit,
   toggleGroupVisibility,
 } from './grouping/visibility';
-import { orderGroups, reorderGroupIds } from './grouping/ordering';
+import { applyGroupSort, reorderGroupIds } from './grouping/ordering';
 import {
   boardColumnQuery,
   boardColumnQueryVariables,
@@ -112,6 +112,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    groupSort: {
+      type: String,
+      required: false,
+      default: undefined,
     },
     visibleGroups: {
       type: Array,
@@ -253,10 +258,11 @@ export default {
       return this.queryVariables.sort === RELATIVE_POSITION_ASC;
     },
     // Already scoped to the selected groups server-side, so just apply the
-    // persisted column order (grouping/ordering.js sends new groups to the end
-    // and drops stale ids).
+    // persisted sort (grouping/ordering.js sends new groups to the end and
+    // drops stale ids under manual sort).
     orderedGroupValues() {
-      return orderGroups({
+      return applyGroupSort({
+        groupSort: this.groupSort,
         groupOrder: this.groupOrder,
         groupBy: this.groupBy,
         values: this.groupValues,

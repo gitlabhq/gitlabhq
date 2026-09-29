@@ -3957,6 +3957,7 @@ describe('planning-view', () => {
           const mutationHandler = userPrefUpdateHandlerWith({
             hiddenMetadataKeys: ['labels'],
             groupOrder,
+            groupSort: 'manual',
           });
           await mountAllItemsBoard({
             mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
@@ -3968,7 +3969,7 @@ describe('planning-view', () => {
 
           expect(mutationHandler).toHaveBeenCalledWith({
             namespace: 'full/path',
-            displaySettings: { hiddenMetadataKeys: ['labels'], groupOrder },
+            displaySettings: { hiddenMetadataKeys: ['labels'], groupOrder, groupSort: 'manual' },
           });
         });
 
@@ -3979,6 +3980,25 @@ describe('planning-view', () => {
           await waitForPromises();
 
           expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+        });
+
+        it('switches groupSort to manual, since a drag or move only means something there', async () => {
+          // Echoes groupSort: 'desc' back after the view-mode-toggle mutation that
+          // mountAllItemsBoard triggers, so the reorder mutation below starts from a real
+          // (non-manual) baseline instead of one the test already hardcoded as the answer.
+          const mutationHandler = userPrefUpdateHandlerWith({ groupSort: 'desc' });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ groupSort: 'desc' }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { groupSort: 'manual', groupOrder },
+          });
         });
 
         it('shows an alert when persisting the reorder fails', async () => {

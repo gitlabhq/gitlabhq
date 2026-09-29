@@ -196,5 +196,23 @@ describe('view change detection', () => {
         }),
       ).toBe(false);
     });
+
+    it('returns true when groupSort differs', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: { groupSort: 'desc' },
+          baselinePreferences: { groupSort: 'asc' },
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when groupSort matches', () => {
+      expect(
+        preferencesChanged({
+          currentPreferences: { groupSort: 'desc' },
+          baselinePreferences: { groupSort: 'desc' },
+        }),
+      ).toBe(false);
+    });
   });
 });

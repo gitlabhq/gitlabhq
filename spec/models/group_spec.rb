@@ -1389,25 +1389,25 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     describe '#pending_delete?' do
       context 'when group has no deletion schedule' do
-        let(:group) { create(:group) }
+        let(:group) { build_stubbed(:group) }
 
         specify { expect(group.pending_delete?).to be(false) }
       end
 
       context 'when group is marked for deletion in the future' do
-        let(:group) { create(:group, deletion_scheduled_at: 1.day.from_now) }
+        let(:group) { build_stubbed(:group, deletion_scheduled_at: 1.day.from_now) }
 
         specify { expect(group.pending_delete?).to be(true) }
       end
 
       context 'when group is marked for deletion in the past' do
-        let(:group) { create(:group, deletion_scheduled_at: 1.day.ago) }
+        let(:group) { build_stubbed(:group, deletion_scheduled_at: 1.day.ago) }
 
         specify { expect(group.pending_delete?).to be(false) }
       end
 
       context 'when group is marked for deletion today' do
-        let(:group) { create(:group, deletion_scheduled_at: Time.zone.today) }
+        let(:group) { build_stubbed(:group, deletion_scheduled_at: Time.zone.today) }
 
         specify { expect(group.pending_delete?).to be(false) }
       end
@@ -1825,7 +1825,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     with_them do
-      let(:user) { admin_user? ? create(:admin) : create(:user) }
+      let(:user) { admin_user? ? build_stubbed(:admin) : build_stubbed(:user) }
 
       before do
         stub_application_setting(default_project_creation: default_project_creation)
@@ -1858,7 +1858,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     with_them do
-      let(:user) { admin_user? ? create(:admin) : create(:user) }
+      let(:user) { admin_user? ? build_stubbed(:admin) : build_stubbed(:user) }
 
       before do
         enable_admin_mode!(user) if admin_mode
@@ -2089,14 +2089,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
 
       it 'returns false when user does not match the owner' do
-        other_user = create(:user)
+        other_user = build_stubbed(:user)
         expect(group.last_owner_in_list?(other_user, [owner_member])).to be false
       end
     end
 
     context 'with multiple owners in the list' do
       let(:owner_member) { build_stubbed(:group_member, user_id: user.id) }
-      let(:another_owner) { build_stubbed(:group_member, user_id: create(:user).id) }
+      let(:another_owner) { build_stubbed(:group_member, user_id: build_stubbed(:user).id) }
 
       it 'returns false even if user is one of the owners' do
         expect(group.last_owner_in_list?(user, [owner_member, another_owner])).to be false
@@ -3365,13 +3365,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject { group.auto_devops_enabled? }
 
     context 'when auto devops is explicitly enabled on group' do
-      let(:group) { create(:group, :auto_devops_enabled) }
+      let(:group) { build_stubbed(:group, :auto_devops_enabled) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when auto devops is explicitly disabled on group' do
-      let(:group) { create(:group, :auto_devops_disabled) }
+      let(:group) { build_stubbed(:group, :auto_devops_disabled) }
 
       it { is_expected.to be_falsy }
     end
@@ -3410,7 +3410,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe 'project_creation_level' do
     it 'outputs the default one if it is nil' do
-      group = create(:group, project_creation_level: nil)
+      group = build_stubbed(:group, project_creation_level: nil)
 
       expect(group.project_creation_level).to eq(Gitlab::CurrentSettings.default_project_creation)
     end
@@ -4658,7 +4658,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe '#mcp_server_setting_available?', feature_category: :mcp_server do
     it 'returns false in FOSS' do
-      expect(create(:group).mcp_server_setting_available?).to be(false)
+      expect(build_stubbed(:group).mcp_server_setting_available?).to be(false)
     end
   end
 

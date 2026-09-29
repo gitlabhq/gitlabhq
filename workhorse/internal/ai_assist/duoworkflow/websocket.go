@@ -117,6 +117,7 @@ const (
 	capabilityWebSearch            capability = "web_search"
 	capabilityToolCallStreaming    capability = "tool_call_streaming"
 	capabilityScheduleNotification capability = "schedule_notification"
+	capabilityGrepFixedStrings     capability = "grep_fixed_strings"
 
 	// Server capabilities
 	capabilityAdvancedSearch          capability = "advanced_search"
@@ -145,6 +146,7 @@ var ClientCapabilities = []capability{
 	capabilityWebSearch,
 	capabilityToolCallStreaming,
 	capabilityScheduleNotification,
+	capabilityGrepFixedStrings,
 }
 
 // ServerCapabilities defines the list of allowed server capabilities that
