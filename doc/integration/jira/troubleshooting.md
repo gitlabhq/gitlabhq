@@ -133,6 +133,16 @@ For more information, see [issue 341571](https://gitlab.com/gitlab-org/gitlab/-/
 
 To resolve this issue, turn the integration off and then on again.
 
+## Not all Jira issues appear in the development panel
+
+If a commit, branch, merge request, build, deployment, or feature flag references many Jira issues, some of the referenced issues might be missing from the Jira development panel.
+
+Jira accepts at most 500 Jira issue keys for a single commit, branch, merge request, build, deployment, or feature flag.
+When GitLab extracts more than 500 distinct Jira issue keys from one of these entities, it sends only the first 500 to Jira.
+This is a Jira platform limit, not a GitLab defect.
+
+To resolve this issue, reduce the number of distinct Jira issue keys referenced in a single commit, branch, merge request, build, deployment, or feature flag.
+
 ## Error: `certificate verify failed`
 
 When you test the Jira issues integration settings, you might get the following error:

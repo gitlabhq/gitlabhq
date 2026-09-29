@@ -8,7 +8,14 @@ module Atlassian
     # The payload serializers stay under Atlassian::JiraConnect: both
     # transports send the same Jira dev-info payload.
     class DevInfoClient
+      # Jira caps the total association values per deployment, summed across
+      # all associationTypes.
       ASSOCIATION_VALUES_LIMIT = 500
+
+      # Jira caps issueKeys per entity on the builds, devinfo, and feature-flag
+      # bulk endpoints. Same value as ASSOCIATION_VALUES_LIMIT today, but a
+      # distinct Jira limit that could drift.
+      ISSUE_KEYS_LIMIT = 500
 
       # Cap the request body attached to error logs so a project that
       # persistently fails does not flood integrations_json.log with
@@ -16,6 +23,7 @@ module Atlassian
       REQUEST_BODY_LOG_LIMIT = 10_000
 
       AssociationsTruncatedError = Class.new(StandardError)
+      IssueKeysTruncatedError = Class.new(StandardError)
 
       def self.generate_update_sequence_id
         (Time.now.utc.to_f * 1000).round
@@ -71,13 +79,21 @@ module Atlassian
       end
 
       def store_ff_info(project:, feature_flags:, **opts)
-        items = feature_flags.map { |flag| ::Atlassian::JiraConnect::Serializers::FeatureFlagEntity.represent(flag, opts) }
-        items.reject! { |item| item.issue_keys.empty? }
+        flags = feature_flags.filter_map do |flag|
+          entity = ::Atlassian::JiraConnect::Serializers::FeatureFlagEntity.represent(flag, opts)
+          next if entity.issue_keys.empty?
 
-        return if items.empty?
+          flag_hash = entity.as_json.deep_symbolize_keys
+          flag_hash[:issueKeys] = truncate_issue_keys(
+            flag_hash[:issueKeys], endpoint: 'feature_flags', flag_id: flag_hash[:id]
+          )
+          flag_hash
+        end
+
+        return if flags.empty?
 
         r = post('/rest/featureflags/0.1/bulk', {
-          flags: items,
+          flags: flags,
           properties: { projectId: "project-#{project.id}" }
         })
 
@@ -115,7 +131,11 @@ module Atlassian
           )
           next if build.issue_keys.empty?
 
-          build
+          build_hash = build.as_json.deep_symbolize_keys
+          build_hash[:issueKeys] = truncate_issue_keys(
+            build_hash[:issueKeys], endpoint: 'builds', pipeline_id: build_hash[:pipelineId]
+          )
+          build_hash
         end
         return if builds.empty?
 
@@ -133,7 +153,10 @@ module Atlassian
           update_sequence_id: update_sequence_id
         )
 
-        r = post('/rest/devinfo/0.10/bulk', { repositories: [repo] })
+        repo_hash = repo.as_json.deep_symbolize_keys
+        truncate_dev_info_issue_keys(repo_hash, project_id: project.id)
+
+        r = post('/rest/devinfo/0.10/bulk', { repositories: [repo_hash] })
         handle_response(r, 'dev_info') { |data| dev_info_errors(data, r) }
       end
 
@@ -284,6 +307,53 @@ module Atlassian
         end
       end
 
+      # Jira caps issueKeys at ISSUE_KEYS_LIMIT per entity on the builds,
+      # devinfo, and feature-flag bulk endpoints, rejecting the whole entity
+      # when exceeded (builds: "'issueKeys' can have a maximum of 500
+      # elements", devinfo: "Too many issue keys in entity"). Keys are
+      # deduplicated upstream and Jira does not accumulate them across
+      # requests, so the excess is genuine and cannot be recovered by batching.
+      # We cap to the limit and track the dropped count to monitor customer
+      # impact.
+      def truncate_issue_keys(issue_keys, endpoint:, **context)
+        return issue_keys unless issue_keys.is_a?(Array) && issue_keys.size > ISSUE_KEYS_LIMIT
+
+        dropped_values = issue_keys.size - ISSUE_KEYS_LIMIT
+
+        track_truncation(
+          IssueKeysTruncatedError.new(
+            "Jira issue keys truncated for #{endpoint}: #{issue_keys.size} -> #{ISSUE_KEYS_LIMIT}"
+          ),
+          endpoint: endpoint,
+          dropped_values: dropped_values,
+          extra: context.merge(total_values: issue_keys.size, dropped_values: dropped_values)
+        )
+
+        issue_keys.first(ISSUE_KEYS_LIMIT)
+      end
+
+      # Cap issueKeys on each commit, branch, and pull request in the
+      # repository payload. Jira validates each entity separately, so a branch's
+      # embedded lastCommit is capped on its own too.
+      def truncate_dev_info_issue_keys(repo_hash, project_id:)
+        %i[commits branches pullRequests].each do |type|
+          Array(repo_hash[type]).each do |entity|
+            next unless entity.is_a?(Hash)
+
+            truncate_entity_issue_keys(entity, endpoint: 'devinfo', project_id: project_id, entity_type: type)
+            truncate_entity_issue_keys(
+              entity[:lastCommit], endpoint: 'devinfo', project_id: project_id, entity_type: :lastCommit
+            )
+          end
+        end
+      end
+
+      def truncate_entity_issue_keys(entity, **context)
+        return unless entity.is_a?(Hash) && entity[:issueKeys].present?
+
+        entity[:issueKeys] = truncate_issue_keys(entity[:issueKeys], **context)
+      end
+
       # Jira caps total association values per deployment at
       # ASSOCIATION_VALUES_LIMIT across all associationTypes combined.
       # Splitting a deployment into multiple POSTs does not accumulate
@@ -301,17 +371,18 @@ module Atlassian
 
         dropped_values = total_values - ASSOCIATION_VALUES_LIMIT
 
-        Gitlab::ErrorTracking.track_exception(
+        track_truncation(
           AssociationsTruncatedError.new(
             "Deployment associations truncated: #{total_values} -> #{ASSOCIATION_VALUES_LIMIT}"
           ),
+          endpoint: 'deployments',
+          dropped_values: dropped_values,
           extra: {
             deployment_sequence_number: deployment_hash[:deploymentSequenceNumber],
             pipeline_id: deployment_hash.dig(:pipeline, :id),
             total_values: total_values,
             dropped_values: dropped_values
-          },
-          tags: truncation_tags(dropped_values)
+          }
         )
 
         # Prioritise issueKeys in the truncated payload: those are the primary
@@ -337,6 +408,17 @@ module Atlassian
         end
 
         deployment_hash.merge(associations: truncated)
+      end
+
+      # Shared Sentry reporting for every truncation path (deployments,
+      # builds, devinfo, feature flags), tagged by `jira_endpoint` so the
+      # buckets aggregate per endpoint in Discover.
+      def track_truncation(error, endpoint:, dropped_values:, extra:)
+        Gitlab::ErrorTracking.track_exception(
+          error,
+          extra: extra,
+          tags: truncation_tags(dropped_values).merge(jira_endpoint: endpoint)
+        )
       end
 
       # Coarse, low-cardinality tags so Sentry can aggregate the truncation
