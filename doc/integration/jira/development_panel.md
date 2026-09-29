@@ -74,6 +74,14 @@ For the [GitLab for Jira Cloud app](connect-app.md), the following information i
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a feature flag](../../administration/feature_flags/_index.md) named `jira_deployment_issue_keys`. Enabled by default.
 1. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415025) in GitLab 16.3. Feature flag `jira_deployment_issue_keys` removed.
 
+## Jira issue key limit
+
+Jira accepts at most 500 Jira issue keys for a single commit, branch, merge request, build, deployment, or feature flag.
+If GitLab extracts more than 500 distinct Jira issue keys from one of these entities, it sends only the first 500 to Jira.
+The remaining issue keys are not linked in the development panel.
+For deployments, GitLab prioritizes issue keys over commit and merge request associations when it truncates the list.
+This limit is set by Jira, not by GitLab.
+
 ## Jira Smart Commits
 
 Prerequisites:
