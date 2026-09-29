@@ -547,7 +547,7 @@ describe('parseQuery', () => {
     const config = { fields: MOCK_FIELDS, limit: 100 };
 
     await expect(parseQuery(query, config)).rejects.toThrow(
-      'Error: Unexpected `query syntax`, expected operator (one of IN, =, !=, >, or <)',
+      'Error: Unexpected `query syntax`, expected operator (one of in, not in, =, !=, >, >=, <, or <=)',
     );
   });
 

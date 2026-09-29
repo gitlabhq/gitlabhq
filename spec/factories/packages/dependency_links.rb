@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :packages_dependency_link, class: 'Packages::DependencyLink' do
     package { association(:nuget_package) }
-    dependency { association(:packages_dependency) }
+    dependency { association(:packages_dependency, project: package.project) }
     dependency_type { :dependencies }
 
     trait :with_nuget_metadatum do

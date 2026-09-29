@@ -6,19 +6,15 @@ RSpec.describe DeploymentClusterEntity do
   describe '#as_json' do
     subject { described_class.new(deployment, request: request).as_json }
 
-    let(:maintainer) { create(:user) }
-    let(:reporter) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:reporter) { create(:user) }
+    let_it_be(:project) { create(:project, maintainers: maintainer, reporters: reporter) }
+    let_it_be(:cluster) { create(:cluster, name: 'the-cluster', projects: [project]) }
+
     let(:current_user) { maintainer }
     let(:request) { double(:request, current_user: current_user) }
-    let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, name: 'the-cluster', projects: [project]) }
-    let(:deployment) { create(:deployment) }
-    let!(:deployment_cluster) { create(:deployment_cluster, cluster: cluster, deployment: deployment) }
-
-    before do
-      project.add_maintainer(maintainer)
-      project.add_reporter(reporter)
-    end
+    let(:deployment_cluster) { build_stubbed(:deployment_cluster, cluster: cluster) }
+    let(:deployment) { build_stubbed(:deployment, deployment_cluster: deployment_cluster) }
 
     it 'matches deployment_cluster entity schema' do
       expect(subject.as_json).to match_schema('deployment_cluster')

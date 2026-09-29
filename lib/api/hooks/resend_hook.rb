@@ -17,8 +17,8 @@ module API
         tags ['hooks']
       end
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the hook'
-        requires :hook_log_id, type: Integer, desc: 'The ID of the hook log entry'
+        requires :hook_id, type: Integer, desc: 'ID of the hook.'
+        requires :hook_log_id, type: Integer, desc: 'ID of the hook log entry.'
       end
       route_setting :authorization, permissions: :resend_webhook_event, boundary_type: configuration[:boundary_type]
       post ":hook_id/events/:hook_log_id/resend" do

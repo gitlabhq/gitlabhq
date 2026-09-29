@@ -1895,12 +1895,8 @@ RSpec.shared_examples 'a container registry auth service' do
           organization.confirm_maintenance
         end
 
-        it 'allows pull but denies push' do
-          is_expected.to include(:token)
-          expect(payload['access']).to contain_exactly(
-            include('actions' => ['pull'])
-          )
-        end
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'logs an auth warning', %w[push pull]
 
         context 'when requesting push only' do
           let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
@@ -1929,8 +1925,9 @@ RSpec.shared_examples 'a container registry auth service' do
         context 'when requesting pull only' do
           let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
 
-          it_behaves_like 'a pullable'
+          it_behaves_like 'an inaccessible'
           it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['pull']
         end
       end
 
@@ -1939,12 +1936,8 @@ RSpec.shared_examples 'a container registry auth service' do
           organization.reload.start_maintenance(maintenance_reason: 'migration')
         end
 
-        it 'allows pull but denies push' do
-          is_expected.to include(:token)
-          expect(payload['access']).to contain_exactly(
-            include('actions' => ['pull'])
-          )
-        end
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'logs an auth warning', %w[push pull]
 
         context 'when requesting push only' do
           let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
@@ -1973,8 +1966,9 @@ RSpec.shared_examples 'a container registry auth service' do
         context 'when requesting pull only' do
           let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
 
-          it_behaves_like 'a pullable'
+          it_behaves_like 'an inaccessible'
           it_behaves_like 'not a container repository factory'
+          it_behaves_like 'logs an auth warning', ['pull']
         end
       end
 
@@ -1992,68 +1986,6 @@ RSpec.shared_examples 'a container registry auth service' do
             include('actions' => contain_exactly('pull', 'push'))
           )
         end
-      end
-
-      context 'when the project has no organization' do
-        before do
-          allow_next_found_instance_of(Project) do |found_project|
-            allow(found_project).to receive(:organization).and_return(nil)
-          end
-        end
-
-        it 'allows pull but denies push (fails closed on unresolvable organization)' do
-          is_expected.to include(:token)
-          expect(payload['access']).to contain_exactly(
-            include('actions' => ['pull'])
-          )
-        end
-
-        context 'when requesting push only' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:push"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['push']
-        end
-
-        context 'when requesting delete' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:delete"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['delete']
-        end
-
-        context 'when requesting wildcard (*)' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:*"] } }
-
-          it_behaves_like 'an inaccessible'
-          it_behaves_like 'not a container repository factory'
-          it_behaves_like 'logs an auth warning', ['*']
-        end
-
-        context 'when requesting pull only' do
-          let(:current_params) { { scopes: ["repository:#{project.full_path}:pull"] } }
-
-          it_behaves_like 'a pullable'
-          it_behaves_like 'not a container repository factory'
-        end
-      end
-    end
-
-    context 'when the project has no organization and the feature flag is disabled' do
-      before do
-        stub_feature_flags(organization_maintenance_enforcement: false)
-        allow_next_found_instance_of(Project) do |found_project|
-          allow(found_project).to receive(:organization).and_return(nil)
-        end
-      end
-
-      it 'allows both pull and push (enforcement is a no-op)' do
-        is_expected.to include(:token)
-        expect(payload['access']).to contain_exactly(
-          include('actions' => contain_exactly('pull', 'push'))
-        )
       end
     end
   end

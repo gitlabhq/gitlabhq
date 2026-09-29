@@ -323,7 +323,7 @@ The checkbox does not appear for groups without an active GitLab Duo add-on subs
 
 {{< tab title="GitLab Self-Managed" >}}
 
-To configure Self-Managed:
+To configure GitLab Self-Managed:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
 1. Ensure your configuration includes `groups_attribute` and `duo_add_on_groups`. Any users who are a member of one or more of the `duo_add_on_groups` will have a GitLab Duo seat assigned, if a seat is available. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:

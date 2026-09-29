@@ -1,10 +1,11 @@
 import { openTag, closeTag } from '../serialization_helpers';
+import { recordDelimiter } from '../emphasis_delimiters';
 
 const generateItalicTag = (wrapTagName = openTag) => {
-  return (_, mark) => {
+  return (state, mark) => {
     if (mark.attrs.htmlTag) return wrapTagName(mark.attrs.htmlTag);
 
-    return '_';
+    return recordDelimiter(state, mark, '_');
   };
 };
 

@@ -348,7 +348,9 @@ RSpec.shared_examples 'work items invite members' do
   end
 end
 
-RSpec.shared_examples 'work items milestone' do
+# Adding and removing a milestone is covered by
+# ee/spec/frontend/integration/work_items/drawer_shared_test_helpers.js.
+RSpec.shared_examples 'work items milestone accessibility' do
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone"]' }
 
   it 'passes axe automated accessibility testing in closed state' do
@@ -361,22 +363,6 @@ RSpec.shared_examples 'work items milestone' do
       click_button _('Edit')
 
       expect(page).to be_axe_clean.within(work_item_milestone_selector)
-    end
-  end
-
-  it 'adds and removes milestone', :aggregate_failures do
-    within_testid 'work-item-milestone' do
-      click_button 'Edit'
-      send_keys "\"#{milestones[2].title}\""
-      select_listbox_item(milestones[2].title)
-
-      expect(page).to have_link(milestones[2].title)
-
-      click_button 'Edit'
-      click_button 'Clear'
-
-      expect(page).to have_text('None')
-      expect(page).not_to have_link(milestones[2].title)
     end
   end
 end
@@ -623,80 +609,6 @@ RSpec.shared_examples 'work items iteration' do
       wait_for_requests
 
       expect(page).to be_axe_clean.within(work_item_iteration_selector)
-    end
-  end
-end
-
-RSpec.shared_examples 'work items due dates' do
-  let(:due_dates_selector) { '[data-testid="work-item-due-dates"]' }
-  let(:start_date_picker) { '[data-testid="start-date-picker"]' }
-  let(:due_date_picker) { '[data-testid="due-date-picker"]' }
-
-  it 'displays the default state with no dates' do
-    within(due_dates_selector) do
-      expect(page).to have_text('Start: None')
-      expect(page).to have_text('Due: None')
-    end
-  end
-
-  it 'reveals both date pickers when editing dates' do
-    find_and_click_edit due_dates_selector
-
-    expect(page).to have_selector(start_date_picker)
-    expect(page).to have_selector(due_date_picker)
-  end
-
-  it 'displays selected dates in the user’s preferred format' do
-    find_and_click_edit due_dates_selector
-
-    fill_in 'Start', with: '2020-12-01'
-    fill_in 'Due', with: '2020-12-02'
-
-    within(due_dates_selector) do
-      click_button 'Apply'
-    end
-
-    wait_for_all_requests
-
-    within(due_dates_selector) do
-      expect(page).to have_text('Start: Dec 1, 2020')
-      expect(page).to have_text('Due: Dec 2, 2020')
-    end
-  end
-
-  it 'fallbacks to start date when due date < start date' do
-    find_and_click_edit due_dates_selector
-
-    fill_in 'Start', with: '2020-12-03'
-    fill_in 'Due', with: '2020-12-01'
-
-    within(due_dates_selector) do
-      click_button 'Apply'
-    end
-
-    wait_for_all_requests
-
-    within(due_dates_selector) do
-      expect(page).to have_text('Start: Dec 3, 2020')
-      expect(page).to have_text('Due: Dec 3, 2020')
-    end
-  end
-
-  it 'fallbacks to due date when start date > due date' do
-    find_and_click_edit due_dates_selector
-
-    fill_in 'Due', with: '2020-11-01'
-    fill_in 'Start', with: '2020-11-03'
-
-    within(due_dates_selector) do
-      click_button 'Apply'
-    end
-
-    wait_for_all_requests
-
-    within(due_dates_selector) do
-      expect(page).to have_text('Start: None')
-      expect(page).to have_text('Due: None')
     end
   end
 end

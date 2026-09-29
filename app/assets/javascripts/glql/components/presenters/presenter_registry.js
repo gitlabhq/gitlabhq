@@ -64,6 +64,7 @@ export const presentersByObjectType = {
   CiJob: CiItemPresenter,
   CiStage: NamedTextPresenter,
   Group: LinkPresenter,
+  DuoWorkflowsModelMetadata: NamedTextPresenter,
 };
 
 // Maps field keys to presenters. Values can be:

@@ -16,6 +16,7 @@ title: Contributions
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.2.
 - Configurable `granularity` parameter [introduced](https://gitlab.com/gitlab-org/glql/-/issues/130) in GitLab 19.3.
+- `!=` and `not in` operators on the `user` filter [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -44,7 +45,7 @@ Use these fields in the `query` parameter to filter your results.
 | Field                      | Name      | Operators                 |
 | -------------------------- | --------- | ------------------------- |
 | [Created at](#created-at)  | `created` | `=`, `>`, `<`, `>=`, `<=` |
-| [User](#user)              | `user`    | `=`, `in`                 |
+| [User](#user)              | `user`    | `=`, `!=`, `in`, `not in` |
 
 ### Created at {#created-at}
 
@@ -67,7 +68,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `Number` (user ID)
-- `List` (use `in` operator for multiple user IDs)
+- `List` (use `in` or `not in` operator for multiple user IDs)
 
 > [!note]
 > Support for username filtering is being tracked in [GLQL issue 143](https://gitlab.com/gitlab-org/glql/-/work_items/143).

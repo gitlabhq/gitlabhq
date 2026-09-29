@@ -17,8 +17,7 @@ module API
       default_format :json
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the
-        authenticated user'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
 
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -45,7 +44,7 @@ module API
           failure [{ code: 404, message: '404 Not found' }]
         end
         params do
-          requires :secure_file_id, type: Integer, desc: 'The ID of a secure file'
+          requires :secure_file_id, type: Integer, desc: 'ID of the secure file.'
         end
 
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
@@ -64,7 +63,7 @@ module API
           tags %w[secure_files]
         end
         params do
-          requires :secure_file_id, type: Integer, desc: 'The ID of a secure file'
+          requires :secure_file_id, type: Integer, desc: 'ID of the secure file.'
         end
 
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true

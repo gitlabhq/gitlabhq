@@ -27,7 +27,7 @@ module API
             optional :database,
               type: String,
               values: Gitlab::Database.all_database_names,
-              desc: 'The name of the database',
+              desc: 'Database name to query.',
               default: 'main'
           end
           route_setting :authorization, permissions: :read_database_migration, boundary_type: :instance,
@@ -49,7 +49,7 @@ module API
         end
 
         params do
-          requires :timestamp, type: Integer, desc: 'The migration version timestamp'
+          requires :timestamp, type: Integer, desc: 'Version timestamp of the migration.'
         end
         resources 'migrations/:timestamp/mark' do
           desc 'Update status of a migration' do
@@ -71,11 +71,11 @@ module API
             optional :database,
               type: String,
               values: Gitlab::Database.all_database_names,
-              desc: 'The name of the database',
+              desc: 'Database name for which the migration is skipped.',
               default: 'main'
             requires :timestamp,
               type: Integer,
-              desc: 'The migration version timestamp'
+              desc: 'Version timestamp of the migration.'
           end
           route_setting :authorization, permissions: :mark_database_migration, boundary_type: :instance,
             assignable_when: [:admin]

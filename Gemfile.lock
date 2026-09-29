@@ -994,15 +994,15 @@ GEM
       rspec-parameterized (>= 1.0, < 3.0)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_query_language (0.40.0)
+    gitlab_query_language (0.41.0)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.40.0-aarch64-linux-gnu)
+    gitlab_query_language (0.41.0-aarch64-linux-gnu)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.40.0-arm64-darwin)
+    gitlab_query_language (0.41.0-arm64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.40.0-x86_64-darwin)
+    gitlab_query_language (0.41.0-x86_64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.40.0-x86_64-linux-gnu)
+    gitlab_query_language (0.41.0-x86_64-linux-gnu)
       rb_sys (~> 0.9.91)
     globalid (1.1.0)
       activesupport (>= 5.0)
@@ -2579,7 +2579,7 @@ DEPENDENCIES
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.3.0)
   gitlab_quality-test_tooling (~> 3.22.0)
-  gitlab_query_language (~> 0.40.0)
+  gitlab_query_language (~> 0.41.0)
   gon (~> 6.6.0)
   google-apis-androidpublisher_v3 (~> 0.107.0)
   google-apis-cloudbilling_v1 (~> 0.41.0)
@@ -3102,11 +3102,11 @@ CHECKSUMS
   gitlab_chronic_duration (0.12.0) sha256=0d766944d415b5c831f176871ee8625783fc0c5bfbef2d79a3a616f207ffc16d
   gitlab_omniauth-ldap (2.3.0) sha256=167036fe37c2711f2e1d2047260766e4c9b31ac37dfc873b101bcd4ea2a3a3b4
   gitlab_quality-test_tooling (3.22.0) sha256=f29fb32ea3910c9fe35292c1e28929d37758a664c0adfd817465139e693ef1df
-  gitlab_query_language (0.40.0) sha256=2cd69613251bb5ff4d2bdeb5affe8509a5d311455251741cfcd584fd5d068482
-  gitlab_query_language (0.40.0-aarch64-linux-gnu) sha256=f0c54db591fbf4d6c47a22177c18f28317024f971056916c172fde1c3e8128ef
-  gitlab_query_language (0.40.0-arm64-darwin) sha256=81f0e7ff9bcc7a284186178b7dd7c5ac5617d07958a42267d51bdc98bf976f00
-  gitlab_query_language (0.40.0-x86_64-darwin) sha256=e44a4dd46e0397e4ba0be419051c639ed4a7edca4b36076442c024200bf6e7ef
-  gitlab_query_language (0.40.0-x86_64-linux-gnu) sha256=47afac816c60a8aac430c81cd4249d875223dfc83cc3a503a5c9faa3b02bf4f5
+  gitlab_query_language (0.41.0) sha256=294fb98ab1dc9305b9779683c2d911901f85ce3d933c5b23564d317d56bb4d3b
+  gitlab_query_language (0.41.0-aarch64-linux-gnu) sha256=c084b8ada473652505b51706f7e3c38b3415d4b04bcf34edface7a472afcf824
+  gitlab_query_language (0.41.0-arm64-darwin) sha256=ea320b694745e9c4f71d9e81baf043226b0a032147d3302a534a2ef48596dc17
+  gitlab_query_language (0.41.0-x86_64-darwin) sha256=d3d043826165e0fa371493d04831fc450fec37ed154fbb3dde64e24b08b64a6a
+  gitlab_query_language (0.41.0-x86_64-linux-gnu) sha256=968ab88e5a82dde4522779f52df43e97451f4f3aa71c9caeb4f6f096c826842c
   globalid (1.1.0) sha256=b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f
   gon (6.6.0) sha256=4c0be4e4f05fc8eb5db5ac2f7d47ae28ee04826f2b153338f7fb03c0e8f6ecd1
   google-apis-androidpublisher_v3 (0.107.0) sha256=b8207eecc89e6a9f7ea11aa88a07bccdcae5ca90121330079db4ef4696a2f3ff

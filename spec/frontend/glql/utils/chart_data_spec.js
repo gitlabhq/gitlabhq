@@ -282,6 +282,22 @@ describe('dimensionValue', () => {
     ).toBe('gitlab-org/quality');
   });
 
+  it('formats DuoWorkflowsModelMetadata values via their catalog name', () => {
+    const model = {
+      __typename: 'DuoWorkflowsModelMetadata',
+      name: 'Claude Sonnet 4.6',
+      provider: null,
+      hosting: 'GITLAB',
+      isDefault: true,
+    };
+    expect(dimensionValue({ language: model }, LANGUAGE)).toBe('Claude Sonnet 4.6');
+  });
+
+  it('returns an empty label when the model metadata has no name', () => {
+    const model = { __typename: 'DuoWorkflowsModelMetadata', name: null, hosting: null };
+    expect(dimensionValue({ language: model }, LANGUAGE)).toBe('');
+  });
+
   it('returns an empty label for object shapes without a registered formatter', () => {
     const value = { __typename: 'SomeUnregisteredType', title: 'whatever' };
     expect(dimensionValue({ language: value }, LANGUAGE)).toBe('');

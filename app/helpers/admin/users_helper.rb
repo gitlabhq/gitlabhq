@@ -34,7 +34,7 @@ module Admin
       {
         organization_gid: organization.to_global_id,
         organization_name: organization.name,
-        search_url: autocomplete_users_path(format: :json)
+        search_url: invite_search_organization_admin_users_path(organization, format: :json)
       }.to_json
     end
 

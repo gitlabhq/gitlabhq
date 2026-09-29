@@ -1,6 +1,5 @@
 import { getAbsolutePermalinkPath } from '~/repository/components/header_area/utils';
 import * as urlUtility from '~/lib/utils/url_utility';
-import * as blobUtils from '~/blob/utils';
 
 describe('getAbsolutePermalinkPath', () => {
   const permalinkPath = '/project/repo/-/blob/main/file.js';
@@ -10,8 +9,6 @@ describe('getAbsolutePermalinkPath', () => {
   beforeEach(() => {
     jest.spyOn(urlUtility, 'getBaseURL').mockReturnValue(baseUrl);
     jest.spyOn(urlUtility, 'relativePathToAbsolute').mockReturnValue(absolutePath);
-    jest.spyOn(blobUtils, 'getPageParamValue').mockReturnValue(null);
-    jest.spyOn(blobUtils, 'getPageSearchString').mockReturnValue('');
   });
 
   describe('when hash is not provided', () => {
@@ -52,38 +49,10 @@ describe('getAbsolutePermalinkPath', () => {
     });
   });
 
-  describe('when page parameters are present', () => {
-    beforeEach(() => {
-      blobUtils.getPageParamValue.mockReturnValue('2');
-      blobUtils.getPageSearchString.mockReturnValue('?page=2');
-    });
-
-    it.each([
-      ['with # prefix', '#L6', '#L6'],
-      ['without # prefix', 'L20', '#L20'],
-      ['with empty hash', '', ''],
-      ['with null hash', null, ''],
-      ['with undefined hash', undefined, ''],
-    ])('includes search string when hash is %s', (_, hash, expectedHash) => {
-      expect(getAbsolutePermalinkPath(permalinkPath, hash)).toBe(
-        `${absolutePath}?page=2${expectedHash}`,
-      );
-    });
-  });
-
   describe('when additional query params are provided', () => {
     it('includes blame=1 in the permalink URL', () => {
       expect(getAbsolutePermalinkPath(permalinkPath, '#L6', { blame: '1' })).toBe(
         `${absolutePath}?blame=1#L6`,
-      );
-    });
-
-    it('includes blame=1 alongside page parameter', () => {
-      blobUtils.getPageParamValue.mockReturnValue('2');
-      blobUtils.getPageSearchString.mockReturnValue('?page=2');
-
-      expect(getAbsolutePermalinkPath(permalinkPath, '#L50', { blame: '1' })).toBe(
-        `${absolutePath}?blame=1&page=2#L50`,
       );
     });
 

@@ -157,9 +157,15 @@ module Users
     end
 
     def username_with_organization_suffix(username)
-      return username if organization.nil? || organization == first_organization
+      return username unless organization_suffix_required?
 
-      [username, organization.path].join('_')
+      [username, user_organization.path].join('_')
+    end
+
+    def email_organization_suffix
+      return '' unless organization_suffix_required?
+
+      "-#{user_organization.path}"
     end
 
     def display_name_with_organization_suffix(display_name)
@@ -172,6 +178,19 @@ module Users
       Organizations::Organization.first
     end
     strong_memoize_attr :first_organization
+
+    def user_organization
+      organization || first_organization
+    end
+
+    # Usernames and emails are cluster-wide claims. In a multi-cell cluster only the
+    # default organization may use the plain values, because the first organization
+    # on a non-legacy cell is a per-cell admin organization that collides otherwise.
+    def organization_suffix_required?
+      return !user_organization.default? if ::Gitlab.config.cell.enabled
+
+      user_organization != first_organization
+    end
 
     def create_unique_internal(scope, username, email_pattern, &creation_block)
       # Since we only want a single one of these in an instance, we use an
@@ -203,7 +222,7 @@ module Users
       global_username = username_with_organization_suffix(username)
       global_username = uniquify.string(global_username) { |s| Namespace.by_path(s) }
 
-      email = uniquify.string(->(n) { Kernel.sprintf(email_pattern, n) }) do |s|
+      email = uniquify.string(->(n) { Kernel.sprintf(email_pattern, "#{email_organization_suffix}#{n}") }) do |s|
         User.find_by_email(s)
       end
 
@@ -212,8 +231,6 @@ module Users
         email: email,
         &creation_block
       )
-
-      user_organization = organization || first_organization
 
       user.assign_personal_namespace(user_organization)
       user.organizations << user_organization

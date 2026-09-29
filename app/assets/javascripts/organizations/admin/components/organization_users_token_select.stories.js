@@ -4,7 +4,7 @@ export default {
   component: OrganizationUsersTokenSelect,
   title: 'organizations/admin/components/organization_users_token_select',
   provide: {
-    searchUrl: '/-/autocomplete/users.json',
+    searchUrl: '/o/my-org/admin/users/invite_search.json',
   },
 };
 

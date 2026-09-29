@@ -32,8 +32,9 @@ module WorkItems
           return filter_response unless filter_response.success?
 
           params[:filter_data] = filter_response.payload
-          params.delete(:filters)
         end
+
+        params.delete(:filters)
 
         # Check before the update, since updating could change the view to private before we check this
         changing_to_private = changing_to_private?

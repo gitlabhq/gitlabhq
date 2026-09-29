@@ -198,7 +198,8 @@ module WikiHelper
       help_path: help_page_path('user/project/wiki/_index.md'),
       markdown_help_path: help_page_path('user/markdown.md'),
       markdown_preview_path: wiki_page_path(page.wiki, page, action: :preview_markdown),
-      create_path: wiki_path(page.wiki, action: :create)
+      create_path: wiki_path(page.wiki, action: :create),
+      container_full_path: page.wiki.container.full_path
     }
   end
 

@@ -761,8 +761,8 @@ If the effective values are lower than you requested:
 1. Confirm the runner's actual CPU and memory. The analyzer applies your override as set and does
    not cap it to the runner's capacity. A value above the real capacity causes resource
    contention rather than a faster scan. For GitLab-hosted runners, see the
-   [hosted runner specifications](../../../ci/runners/hosted_runners/linux.md). On self-managed
-   runners, check `nproc` and the cgroup limits on the runner host.
+   [hosted runner specifications](../../../ci/runners/hosted_runners/linux.md). On self-managed runners,
+   check `nproc` and the cgroup limits on the runner host.
 1. Confirm the variable is set at the
    [correct scope](../../../ci/variables/_index.md#cicd-variable-precedence) and that nothing else
    overrides it.

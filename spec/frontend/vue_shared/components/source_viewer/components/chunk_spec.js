@@ -24,7 +24,6 @@ describe('Chunk component', () => {
       propsData: {
         blobPath: 'index.js',
         blamePath: '/project/blame/main/index.js',
-        pageSearchString: '?ref=main',
         ...CHUNK_1,
         ...props,
       },
@@ -221,7 +220,7 @@ describe('Chunk component', () => {
       });
 
       const actualHref = findBlameLink(1).attributes('href');
-      expect(actualHref).toBe(`${blamePath}${wrapper.vm.pageSearchString}#L1`);
+      expect(actualHref).toBe(`${blamePath}#L1`);
     });
   });
 

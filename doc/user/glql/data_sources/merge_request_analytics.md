@@ -18,6 +18,7 @@ title: Merge request analytics
 - `timeToMergeQuantile` [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/501) to report seconds in GitLab 19.5.
 - `timeToMergeMin`, `timeToMergeMax`, `timeToMergeMean`, and `timeToMergeSum` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/507) in GitLab 19.5.
 - `createdByDuo` filter and dimension, and `acceptanceRate` metric [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/518) in GitLab 19.5.
+- `!=` and `not in` operators on the `state` and `targetBranch` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -45,8 +46,8 @@ Use these fields in the `query` parameter to filter your results.
 | [Created at](#created-at)          | `created`      | `=`, `>`, `<`, `>=`, `<=` |
 | [Created by Duo](#created-by-duo)  | `createdByDuo` | `=`, `!=`                 |
 | [Merged at](#merged-at)            | `merged`       | `=`, `>`, `<`, `>=`, `<=` |
-| [State](#state)                    | `state`        | `=`, `in`                 |
-| [Target branch](#target-branch)    | `targetBranch` | `=`, `in`                 |
+| [State](#state)                    | `state`        | `=`, `!=`, `in`, `not in` |
+| [Target branch](#target-branch)    | `targetBranch` | `=`, `!=`, `in`, `not in` |
 
 ### Created at {#created-at}
 
@@ -91,7 +92,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `Enum`, one of `opened`, `closed`, `merged`, or `locked`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 **Notes**:
 
@@ -104,7 +105,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ## Dimensions
 

@@ -7,6 +7,10 @@ module Admin
 
       include Admin::UsersActions
 
+      INVITE_SEARCH_PER_PAGE = 20
+
+      before_action :check_autocomplete_users_rate_limit!, only: [:invite_search]
+
       def index
         super
 
@@ -29,7 +33,27 @@ module Admin
         end
       end
 
+      def invite_search
+        users = ::Organizations::InviteUsersFinder.new(
+          organization: ::Current.organization,
+          current_user: current_user,
+          search: invite_search_params[:search]
+        ).execute.page(1).per(INVITE_SEARCH_PER_PAGE)
+
+        render json: UserSerializer.new(current_user: current_user).represent(users)
+      end
+
       private
+
+      def invite_search_params
+        params.permit(:search)
+      end
+
+      # Shares the budget of the shared users autocomplete endpoint this search replaced,
+      # so an admin-tuned autocomplete_users_limit keeps covering the invite modal.
+      def check_autocomplete_users_rate_limit!
+        check_rate_limit!(:autocomplete_users, scope: current_user)
+      end
 
       def user_params
         params.require(:user).permit(

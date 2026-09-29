@@ -3,14 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRepositoriesSerializer do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:resource) { create(:container_repository, name: 'image', project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, developers: user) }
+
+  let(:resource) { build_stubbed(:container_repository, name: 'image', project: project) }
   let(:params) { { current_user: user, project: project } }
 
   before do
-    project.add_developer(user)
-
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: /image/, tags: %w[rootA latest])
   end

@@ -269,31 +269,7 @@ non-manual jobs, the option is not displayed.
 
 ### Skip a pipeline
 
-{{< history >}}
-
-- Merge request title support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256546) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ci_skip_pipeline_from_mr_title`. Enabled by default.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
-To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
-capitalization, to your commit message.
-
-To skip merge request pipelines, add `[ci skip]` or `[skip ci]`, using any capitalization,
-to the merge request title.
-This skips basic merge request pipelines, merged results pipelines, and merge train pipelines.
-The directive also applies when the merge request has conflicts.
-If you add the directive while a merge request is on a merge train, GitLab removes the merge request
-from the train because the skipped pipeline is not successful.
-Merge request pipelines remain skipped until you remove the directive from the title.
-With merged results pipelines, pipelines can remain skipped after you remove the directive until the
-next push regenerates the virtual commit.
-
-Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../topics/git/commit.md#push-options-for-gitlab-cicd).
-The `ci.skip` push option does not skip merge request pipelines.
+You can skip a pipeline when you don't want to run CI/CD for a push or a merge request.
 
 When you skip a pipeline:
 
@@ -302,11 +278,48 @@ When you skip a pipeline:
 - The pipeline status is **Skipped** in the UI, and `skipped` in the API.
 
 > [!note]
-> Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.
-> For more information, see:
+> Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]`
+> directive. For more information, see:
 >
-> - The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type) in pipeline execution policies.
-> - The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type) in scan execution policies.
+> - The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type)
+>   in pipeline execution policies.
+> - The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type)
+>   in scan execution policies.
+
+#### For a push
+
+To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
+capitalization, to your commit message.
+
+Alternatively, with Git 2.10 or later, use the `ci.skip`
+[Git push option](../../topics/git/commit.md#push-options-for-gitlab-cicd).
+
+> [!note]
+> The `ci.skip` push option does not skip merge request pipelines.
+
+#### For merge requests
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256546) in GitLab 19.5
+  [with a feature flag](../../administration/feature_flags/_index.md) named `ci_skip_pipeline_from_mr_title`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+To skip merge request pipelines, add `[ci skip]` or `[skip ci]`, using any capitalization, to the
+merge request title. This skips basic merge request pipelines, merged results pipelines, and merge
+train pipelines. The directive also applies when the merge request has conflicts.
+
+If you add the directive while a merge request is on a merge train, GitLab removes the merge
+request from the train because the skipped pipeline is not successful.
+
+Merge request pipelines remain skipped until you remove the directive from the title. With merged
+results pipelines, pipelines can remain skipped after you remove the directive until the next push
+regenerates the virtual commit.
 
 ### Delete a pipeline
 

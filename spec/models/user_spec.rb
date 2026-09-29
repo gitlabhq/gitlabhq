@@ -2607,6 +2607,33 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         expect(described_class.member_of_organization(other_organization)).to contain_exactly(user)
       end
     end
+
+    describe '.not_member_of_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:member) { create(:user, organization: organization) }
+      let_it_be(:other_organization_member) { create(:user, organization: other_organization) }
+
+      subject(:non_members) { described_class.not_member_of_organization(organization) }
+
+      it 'excludes members of the organization' do
+        expect(non_members).not_to include(member)
+      end
+
+      it 'includes users who are only members of another organization' do
+        expect(non_members).to include(other_organization_member)
+      end
+
+      context 'when the user is a member of both organizations' do
+        before do
+          create(:organization_user, organization: organization, user: other_organization_member)
+        end
+
+        it 'excludes the user' do
+          expect(non_members).not_to include(other_organization_member)
+        end
+      end
+    end
   end
 
   describe '.member_of_organization?' do

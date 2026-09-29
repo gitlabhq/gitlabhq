@@ -482,6 +482,7 @@ Example response:
 - `List` parameters and the `required` attribute [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/521) in GitLab 19.5.
 - `Granularity` parameter kind [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/528) in GitLab 19.5.
 - `Timestamp` parameter kind and the `optional` and `requires` attributes [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/529) in GitLab 19.5.
+- `String` items in `List` parameters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/541) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -568,7 +569,7 @@ Response attributes for `sources[].modes[].parameterized_fields[].parameters[]`:
 | Attribute             | Type                      | Description |
 |-----------------------|---------------------------|-------------|
 | `default`             | string, number, or array | Value used when the argument is omitted. Absent when the parameter is `required` or `optional`. |
-| `items`               | object array              | `List` only. The value types accepted inside the list, each with a `kind` and, for `Number`, `min` and `max`, or for `Enum`, `values`. |
+| `items`               | object array              | `List` only. The value types accepted inside the list, each with a `kind` and, for `Number`, `min` and `max`, or for `Enum`, `values`. `String` items carry no further attributes. |
 | `kind`                | string                    | One of `Enum`, `Number`, `List`, `Granularity`, or `Timestamp`. |
 | `max`                 | number                    | `Number` only. Largest accepted value. |
 | `max_days`            | number                    | `Granularity` only. Largest fixed-day value, spelled `<max_days>d`. |
@@ -650,7 +651,7 @@ Example response, truncated:
   "functions": [
     { "name": "today", "kind": "value", "description": "Today's date at 00:00 UTC.", "args": [], "returns": "Date" }
   ],
-  "version": "0.40.0"
+  "version": "0.41.0"
 }
 ```
 

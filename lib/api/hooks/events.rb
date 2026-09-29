@@ -21,9 +21,10 @@ module API
           type: Array[String],
           coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
           values: Rack::Utils::HTTP_STATUS_CODES.keys.map(&:to_s) + %w[successful client_failure server_failure],
-          desc: 'HTTP status code of the event'
+          desc: 'Response status code of the events, for example `200` or `500`. You can search by status category: ' \
+            '`successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599).'
         optional :per_page, type: Integer, default: 20,
-          desc: 'Number of items per page', documentation: { example: 20 },
+          desc: 'Number of items to list per page.', documentation: { example: 20 },
           values: 1..20
         use :pagination
       end

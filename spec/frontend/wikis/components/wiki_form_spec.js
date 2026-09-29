@@ -20,6 +20,9 @@ import WikiForm from '~/wikis/components/wiki_form.vue';
 import WikiTemplate from '~/wikis/components/wiki_template.vue';
 import DeleteWikiModal from '~/wikis/components/delete_wiki_modal.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import ActionCableProvider from '~/collaborative_editing/action_cable_provider';
+import CollaboratorsIndicator from '~/collaborative_editing/components/collaborators_indicator.vue';
+import { EDITING_MODE_KEY, EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
 import { WIKI_FORMAT_LABEL, WIKI_FORMAT_UPDATED_ACTION } from '~/wikis/constants';
 import getAutoCommitMessagePreference from '~/wikis/graphql/auto_commit_message_preference.query.graphql';
 import { DRAWIO_ORIGIN } from 'spec/test_constants';
@@ -84,6 +87,7 @@ describe('WikiForm', () => {
     content: '  My page content  ',
     format: 'markdown',
     path: '/project/path/-/wikis/home',
+    containerFullPath: 'group/project',
   };
 
   const pageInfoEditSidebar = {
@@ -126,6 +130,7 @@ describe('WikiForm', () => {
     provide = {},
     templates = [],
     autoCommitMessageQueryHandler,
+    stubs = {},
   } = {}) {
     const apolloProvider = createMockApollo([
       [
@@ -161,6 +166,7 @@ describe('WikiForm', () => {
         GlFormGroup,
         GlForm,
         GlModal,
+        ...stubs,
       },
     });
   }
@@ -1310,6 +1316,213 @@ describe('WikiForm', () => {
       await nextTick();
 
       expect(submitSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('collaborative editing', () => {
+    const findCollaboratorsIndicator = () => wrapper.findComponent(CollaboratorsIndicator);
+    const findCollaborationProvider = () => findMarkdownEditor().props('collaborationProvider');
+
+    const createCollaborativeWrapper = ({ pageInfo = {}, glFeatures = {}, ...options } = {}) =>
+      createWrapper({
+        persisted: true,
+        pageInfo,
+        provide: { glFeatures: { wikiCollaborativeEditing: true, ...glFeatures } },
+        ...options,
+      });
+
+    const activateRichTextEditor = async () => {
+      findMarkdownEditor().vm.$emit('content-editor');
+      await nextTick();
+    };
+
+    beforeEach(() => {
+      jest.spyOn(ActionCableProvider.prototype, 'connect').mockImplementation(() => {});
+      jest.spyOn(ActionCableProvider.prototype, 'destroy').mockImplementation(() => {});
+    });
+
+    it('connects a provider and passes it to the editor', async () => {
+      createCollaborativeWrapper();
+      await activateRichTextEditor();
+
+      expect(ActionCableProvider.prototype.connect).toHaveBeenCalled();
+      expect(findCollaborationProvider()).not.toBeNull();
+    });
+
+    it('subscribes to the wiki page channel for this page', async () => {
+      createCollaborativeWrapper();
+      await activateRichTextEditor();
+
+      expect(findCollaborationProvider().channel).toBe('CollaborativeEditing::WikiPageChannel');
+      expect(findCollaborationProvider().channelParams).toEqual({
+        container_full_path: 'group/project',
+        slug: 'My-page',
+      });
+    });
+
+    // ContentEditor captures the provider in its own created(). Once the async chunk is
+    // cached, that runs before MarkdownEditor mounts and emits the editing-mode event,
+    // so the session has to be live before the first render or the editor never joins.
+    describe('when the editor opens in rich text mode', () => {
+      const expectSessionLiveBeforeFirstRender = () => {
+        // Deliberately not awaited: a provider here proves created() started the
+        // session, rather than a child event doing it later.
+        expect(ActionCableProvider.prototype.connect).toHaveBeenCalledTimes(1);
+        expect(findCollaborationProvider()).not.toBeNull();
+      };
+
+      it('starts a session for a rich text editor preference', () => {
+        window.gon = { ...window.gon, text_editor: 'rich_text_editor' };
+
+        createCollaborativeWrapper();
+
+        expectSessionLiveBeforeFirstRender();
+      });
+
+      it('starts a session for a stored rich text mode', () => {
+        localStorage.setItem(EDITING_MODE_KEY, EDITING_MODE_CONTENT_EDITOR);
+
+        createCollaborativeWrapper();
+
+        expectSessionLiveBeforeFirstRender();
+      });
+
+      it('still passes the provider once the content editor has mounted', async () => {
+        window.gon = { ...window.gon, text_editor: 'rich_text_editor' };
+
+        createCollaborativeWrapper({ mountFn: mountExtended, stubs: { ContentEditor: true } });
+        await waitForPromises();
+
+        expect(ActionCableProvider.prototype.connect).toHaveBeenCalledTimes(1);
+        expect(findCollaborationProvider()).not.toBeNull();
+      });
+
+      it('does not start a session for a plain text editor preference', () => {
+        window.gon = { ...window.gon, text_editor: 'plain_text_editor' };
+
+        createCollaborativeWrapper();
+
+        expect(ActionCableProvider.prototype.connect).not.toHaveBeenCalled();
+        expect(findCollaborationProvider()).toBeNull();
+      });
+    });
+
+    it('shows the collaborators indicator', async () => {
+      createCollaborativeWrapper();
+      await activateRichTextEditor();
+
+      expect(findCollaboratorsIndicator().exists()).toBe(true);
+    });
+
+    describe('before the rich text editor is active', () => {
+      it('does not open a connection', async () => {
+        createCollaborativeWrapper();
+        await nextTick();
+
+        expect(ActionCableProvider.prototype.connect).not.toHaveBeenCalled();
+        expect(findCollaborationProvider()).toBeNull();
+      });
+
+      it('does not show the collaborators indicator', async () => {
+        createCollaborativeWrapper();
+        await nextTick();
+
+        expect(findCollaboratorsIndicator().exists()).toBe(false);
+      });
+    });
+
+    it('tears the provider down when the form is destroyed', async () => {
+      createCollaborativeWrapper();
+      await activateRichTextEditor();
+
+      wrapper.destroy();
+
+      expect(ActionCableProvider.prototype.destroy).toHaveBeenCalled();
+    });
+
+    describe('switching editing mode', () => {
+      it('leaves the session when switching to plain text', async () => {
+        createCollaborativeWrapper();
+        await activateRichTextEditor();
+
+        findMarkdownEditor().vm.$emit('markdown-field');
+        await nextTick();
+
+        expect(ActionCableProvider.prototype.destroy).toHaveBeenCalled();
+        expect(findCollaborationProvider()).toBeNull();
+      });
+
+      it('rejoins with a live provider when switching back to rich text', async () => {
+        createCollaborativeWrapper();
+        await activateRichTextEditor();
+
+        findMarkdownEditor().vm.$emit('markdown-field');
+        await nextTick();
+        await activateRichTextEditor();
+
+        expect(ActionCableProvider.prototype.connect).toHaveBeenCalledTimes(2);
+        expect(findCollaborationProvider()).not.toBeNull();
+      });
+
+      it('does not open a second connection while already collaborating', async () => {
+        createCollaborativeWrapper();
+        await activateRichTextEditor();
+        await activateRichTextEditor();
+
+        expect(ActionCableProvider.prototype.connect).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    // ContentEditor ignores markdown-prop updates while collaborating, so applying a
+    // template would desync the visible document from the submitted content.
+    describe('applying a template', () => {
+      it('is disabled while collaborating', async () => {
+        createCollaborativeWrapper({ mountFn: mountExtended, stubs: { ContentEditor: true } });
+        await activateRichTextEditor();
+
+        expect(findTemplatesDropdown().props('disabled')).toBe(true);
+      });
+
+      it('is enabled again after leaving the session', async () => {
+        createCollaborativeWrapper({ mountFn: mountExtended, stubs: { ContentEditor: true } });
+        await activateRichTextEditor();
+
+        findMarkdownEditor().vm.$emit('markdown-field');
+        await nextTick();
+
+        expect(findTemplatesDropdown().props('disabled')).toBe(false);
+      });
+
+      it('drops a confirmation left pending from plain text mode', async () => {
+        createCollaborativeWrapper({ mountFn: mountExtended, stubs: { ContentEditor: true } });
+        await nextTick();
+
+        findTemplatesDropdown().vm.$emit('input', 'Template content');
+        await nextTick();
+
+        expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
+
+        await activateRichTextEditor();
+
+        expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+        expect(findMarkdownEditor().props('value')).toBe(pageInfoPersisted.content);
+      });
+    });
+
+    describe('when it should not start a session', () => {
+      it.each`
+        scenario                        | options
+        ${'the feature flag is off'}    | ${{ glFeatures: { wikiCollaborativeEditing: false } }}
+        ${'the page is not persisted'}  | ${{ pageInfo: { persisted: false } }}
+        ${'the format is not markdown'} | ${{ pageInfo: { format: 'asciidoc' } }}
+      `('does not connect when $scenario', async ({ options }) => {
+        createCollaborativeWrapper(options);
+        await activateRichTextEditor();
+
+        expect(ActionCableProvider.prototype.connect).not.toHaveBeenCalled();
+        expect(findCollaborationProvider()).toBeNull();
+        expect(findCollaboratorsIndicator().exists()).toBe(false);
+      });
     });
   });
 });

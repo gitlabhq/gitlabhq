@@ -1491,10 +1491,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
-"@gitlab/query-language-rust@0.40.0":
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.40.0.tgz#f164938291dc23b9b3c6d1451d3fb05c2d5482ec"
-  integrity sha512-xBf1h+9bmbZmZtx9lsEf7AhLYOc1zu+u0ratNngA4CAxGxPfvxH/lmhNAVyqqbmBRFLKN8lS6p07pTMp/5yylQ==
+"@gitlab/query-language-rust@0.41.0":
+  version "0.41.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.41.0.tgz#2647c2506cced07f46ab50645f2a98e0d534e00a"
+  integrity sha512-cZ6h2MAbYNwX8ygsZQyN3sG21jUgR6gJmXgbi4Hji/S9RBZJYyDrNMG8hSKBiQ087a7knfNQC5GHHmO4xHxRLw==
   dependencies:
     format-graphql "^1.5.0"
 

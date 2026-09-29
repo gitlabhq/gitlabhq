@@ -79,11 +79,9 @@ The CodeClimate engine runs:
 - Basic maintainability checks for a [set of supported languages](https://docs.codeclimate.com/docs/supported-languages-for-maintainability).
 - A configurable set of [plugins](https://docs.codeclimate.com/docs/list-of-engines), which wrap open source scanners, to analyze your source code.
 
-For more details, see [Configure CodeClimate-based Code Quality scanning](code_quality_codeclimate_scanning.md).
-
 #### Migrate from CodeClimate-based scanning
 
-The CodeClimate engine uses a customizable set of [analysis plugins](code_quality_codeclimate_scanning.md#configure-codeclimate-analysis-plugins).
+The CodeClimate engine uses a customizable set of analysis plugins.
 Some are on by default; others must be explicitly enabled.
 The following integrations are available to replace the built-in plugins:
 

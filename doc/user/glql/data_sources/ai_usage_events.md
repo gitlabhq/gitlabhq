@@ -17,6 +17,8 @@ title: AI usage events
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21216) in GitLab 19.3.
 - Selecting `returningUsersCount` or `previousPeriodUsersCount` without the `timestamp` dimension [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/485) to return an error in GitLab 19.5.
 - `group` dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/530) in GitLab 19.5.
+- `!=` and `not in` operators on the `event`, `feature`, and `user` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
+- `event` parameter on `totalCount` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/541) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -43,11 +45,11 @@ Use these fields in the `query` parameter to filter your results.
 
 | Field                                | Name            | Operators                 |
 | ------------------------------------ | --------------- | ------------------------- |
-| [Event](#event)                      | `event`         | `=`, `in`                 |
-| [Feature](#feature)                  | `feature`       | `=`, `in`                 |
+| [Event](#event)                      | `event`         | `=`, `!=`, `in`, `not in` |
+| [Feature](#feature)                  | `feature`       | `=`, `!=`, `in`, `not in` |
 | [Features count](#features-count)    | `featuresCount` | `>`, `<`, `>=`, `<=`      |
 | [Timestamp](#timestamp)              | `timestamp`     | `=`, `>`, `<`, `>=`, `<=` |
-| [User](#user)                        | `user`          | `=`, `in`                 |
+| [User](#user)                        | `user`          | `=`, `!=`, `in`, `not in` |
 
 ### Event {#event}
 
@@ -56,7 +58,12 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
+
+**Notes**:
+
+- Excluding an event identifier that GitLab does not recognize excludes nothing.
+  Validation of event identifiers is proposed in [issue 629846](https://gitlab.com/gitlab-org/gitlab/-/issues/629846).
 
 ### Feature {#feature}
 
@@ -66,7 +73,12 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
+
+**Notes**:
+
+- `!=` and `not in` return only events whose feature is known. Events that GitLab could not
+  map to a feature are left out, so `feature != "chat"` is not the same as every event except chat.
 
 ### Features count {#features-count}
 
@@ -97,7 +109,7 @@ Use range operators to define a time window.
 **Allowed value types**:
 
 - `Number` (user ID)
-- `List` (use `in` operator for multiple user IDs)
+- `List` (use `in` or `not in` operator for multiple user IDs)
 
 > [!note]
 > Support for username filtering is being tracked in [issue 599750](https://gitlab.com/gitlab-org/gitlab/-/work_items/599750).
@@ -119,7 +131,7 @@ Use range operators to define a time window.
 | Features count              | `featuresCount`           | Number of unique features used.                         |
 | Previous period users count | `previousPeriodUsersCount` | Number of unique users in the previous period.         |
 | Returning users count       | `returningUsersCount`     | Number of users active in both the current and previous period. |
-| Total count                 | `totalCount`              | Total number of events.                                 |
+| Total count                 | `totalCount`              | Total number of events, optionally filtered by event. Accepts an optional `event` parameter with one or more event identifiers (the same values as the `event` filter), for example `totalCount(event="publish_duo_code_review_comments")` or `totalCount(event=["request_review_duo_code_review_on_mr_by_author", "request_review_duo_code_review_on_mr_by_non_author"])`. Without the parameter, or with `event=[]`, all events are counted. An event identifier that GitLab does not recognize returns an error. |
 | Users count                 | `usersCount`              | Number of unique users.                                 |
 
 **Notes**:
@@ -159,6 +171,20 @@ information, see [analytics mode sorting](../_index.md#sorting).
   query: type = AiUsageEvent and group = "gitlab-org" and timestamp > -30d
   dimensions: timestamp(weekly) as "Week"
   metrics: usersCount as "Users", returningUsersCount as "Returning users", previousPeriodUsersCount as "Previous period users"
+  sort: timestamp desc
+  ```
+  ````
+
+- Weekly GitLab Duo Code Review counts, one per event group:
+
+  ````yaml
+  ```glql
+  title: "Weekly GitLab Duo Code Review requests and reviews"
+  display: table
+  mode: analytics
+  query: type = AiUsageEvent and group = "gitlab-org" and timestamp > -30d
+  dimensions: timestamp(weekly) as "Week"
+  metrics: totalCount(event=["request_review_duo_code_review_on_mr_by_author", "request_review_duo_code_review_on_mr_by_non_author"]) as "Requested", totalCount(event="publish_duo_code_review_comments") as "With comments", totalCount(event="find_no_issues_duo_code_review_after_review") as "Without comments"
   sort: timestamp desc
   ```
   ````

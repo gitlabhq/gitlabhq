@@ -8,6 +8,20 @@ import { __jsr } from '~/lib/utils/path_helpers/core';
 /**
  * Generates the Rails route:
  *
+ * - href: `/o/:organization_path/admin/users/invite_search(.:format)`
+ * - Path helper: `invite_search_organization_admin_users_path`
+ * - URL helper: `invite_search_organization_admin_users_url`
+ * - controller#action: `admin/organizations/users#invite_search`
+ *
+ * @param {any} organizationPath
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const inviteSearchOrganizationAdminUsersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"users"],[2,[7,"/"],[2,[6,"invite_search"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/o/:organization_path/admin/settings/general(.:format)`
  * - Path helper: `general_organization_admin_settings_path`
  * - URL helper: `general_organization_admin_settings_url`

@@ -31,14 +31,11 @@ const sortFieldsByType = {
   Pipeline: 'name',
   CiJob: 'name',
   CiStage: 'name',
+  DuoWorkflowsModelMetadata: 'name',
 };
 
 // Shared collator; 'base' sensitivity treats accented and cased variants as equal.
 const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
-
-function valueByType(field, type) {
-  return field[sortFieldsByType[type]];
-}
 
 function valueByFieldName(fieldValue, fieldName) {
   switch (fieldName) {
@@ -64,9 +61,13 @@ function valueByFieldName(fieldValue, fieldName) {
 function value(fieldValue, fieldName = null) {
   if (fieldValue === null || typeof fieldValue === 'undefined') return null;
 
-  const val =
-    // eslint-disable-next-line no-underscore-dangle
-    valueByType(fieldValue, fieldValue.__typename) || valueByFieldName(fieldValue, fieldName);
+  // eslint-disable-next-line no-underscore-dangle
+  const typeField = sortFieldsByType[fieldValue.__typename];
+  // An empty sort field (a model with no name) must sort as null: `undefined`
+  // compares equal to everything and leaves the list unsorted.
+  if (typeField) return fieldValue[typeField] || null;
+
+  const val = valueByFieldName(fieldValue, fieldName);
   if (val) return val;
 
   if (typeof fieldValue === 'boolean' || typeof fieldValue === 'number') return fieldValue;

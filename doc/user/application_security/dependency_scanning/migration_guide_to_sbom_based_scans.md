@@ -45,7 +45,7 @@ determine which projects are affected.
 
 The [Dependency Scanning migration evaluator](https://dependency-scanning-migration-evaluator-cb84d1.gitlab.io/)
 generates a tailored migration checklist based on how dependency scanning is configured in your projects.
-It asks about your enablement path, language ecosystems, CI/CD customizations, and (for self-managed instances)
+It asks about your enablement path, language ecosystems, CI/CD customizations, and (for GitLab Self-Managed instances)
 Package Metadata Database sync status. The evaluator produces:
 
 - An effort estimate (minimal, moderate, significant, or complex).

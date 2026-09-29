@@ -29,6 +29,10 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
   },
   emits: ['input'],
   data() {
@@ -105,6 +109,7 @@ export default {
   <gl-collapsible-listbox
     v-model="selectedTemplatePath"
     :items="templatesList"
+    :disabled="disabled"
     searchable
     block
     :toggle-text="toggleText"

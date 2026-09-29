@@ -100,9 +100,9 @@ describe('Copy Code Button', () => {
           </div>
         `);
 
-        const spy = jest.spyOn(document, 'querySelectorAll');
-
         initCopyCodeButton();
+
+        const spy = jest.spyOn(document, 'querySelectorAll');
 
         observerCallback();
         observerCallback();

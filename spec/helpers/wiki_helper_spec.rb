@@ -168,6 +168,16 @@ RSpec.describe WikiHelper, feature_category: :wiki do
     end
   end
 
+  describe '#wiki_page_info' do
+    let_it_be_with_reload(:page) { create(:wiki_page) }
+
+    it 'includes the container full path the collaborative editing channel is keyed on' do
+      expect(helper.send(:wiki_page_info, page)).to include(
+        container_full_path: page.wiki.container.full_path
+      )
+    end
+  end
+
   describe '#wiki_page_tracking_context' do
     let_it_be_with_reload(:page) do
       create(:wiki_page, project: project, title: 'path/to/page 💩', content: '💩', format: :markdown)

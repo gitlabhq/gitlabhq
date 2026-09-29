@@ -8,8 +8,8 @@ RSpec.describe DiscussionEntity do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be_with_refind(:note) { create(:discussion_note_on_merge_request, project: project) }
 
-  let(:note) { create(:discussion_note_on_merge_request, project: project) }
   let(:discussion) { note.discussion }
   let(:request) { double('request', note_entity: ProjectNoteEntity) }
   let(:controller) { double('controller') }

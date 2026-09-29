@@ -16,6 +16,7 @@ title: Code suggestions
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
 - `daily`, `weekly`, and fixed-day `granularity` values for `timestamp` [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/528) in GitLab 19.5.
+- `!=` and `not in` operators on the `ideName`, `language`, and `user` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -43,10 +44,10 @@ Use these fields in the `query` parameter to filter your results.
 
 | Field                                      | Name (and alias) | Operators                 |
 | ------------------------------------------ | ---------------- | ------------------------- |
-| [IDE name](#cs-ide-name)                   | `ideName`        | `=`, `in`                 |
-| [Language](#cs-language)                    | `language`       | `=`, `in`                 |
+| [IDE name](#cs-ide-name)                   | `ideName`        | `=`, `!=`, `in`, `not in` |
+| [Language](#cs-language)                    | `language`       | `=`, `!=`, `in`, `not in` |
 | [Timestamp](#cs-timestamp)                 | `timestamp`      | `=`, `>`, `<`, `>=`, `<=` |
-| [User](#cs-user)                           | `user`           | `=`, `in`                 |
+| [User](#cs-user)                           | `user`           | `=`, `!=`, `in`, `not in` |
 
 ### IDE name {#cs-ide-name}
 
@@ -55,7 +56,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ### Language {#cs-language}
 
@@ -64,7 +65,7 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ### Timestamp {#cs-timestamp}
 
@@ -84,7 +85,7 @@ Use range operators to define a time window.
 **Allowed value types**:
 
 - `Number` (user ID)
-- `List` (use `in` operator for multiple user IDs)
+- `List` (use `in` or `not in` operator for multiple user IDs)
 
 > [!note]
 > Support for username filtering is being tracked in [issue 599750](https://gitlab.com/gitlab-org/gitlab/-/work_items/599750).

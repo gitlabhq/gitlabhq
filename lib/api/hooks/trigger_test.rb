@@ -25,10 +25,10 @@ module API
         tags ['hooks']
       end
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the hook'
+        requires :hook_id, type: Integer, desc: 'ID of the hook.'
         requires :trigger,
           type: String,
-          desc: 'The type of trigger hook',
+          desc: 'Type of webhook event to test.',
           values: ProjectHook.triggers.values.map(&:to_s)
       end
       route_setting :authorization, permissions: :test_webhook, boundary_type: configuration[:boundary_type]

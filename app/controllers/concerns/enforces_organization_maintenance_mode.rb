@@ -9,7 +9,7 @@
 # predicate, which is wrapped in the `organization_maintenance_enforcement`
 # feature flag, so it ships dark and is a complete no-op when the flag is disabled.
 #
-# See https://gitlab.com/gitlab-org/gitlab/-/issues/603377.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/618032.
 module EnforcesOrganizationMaintenanceMode
   extend ActiveSupport::Concern
 

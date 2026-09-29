@@ -823,6 +823,13 @@ class User < ApplicationRecord
   scope :member_of_organization, ->(organization) do
     joins(:organization_users).where(organization_users: { organization: organization })
   end
+  scope :not_member_of_organization, ->(organization) do
+    where_not_exists(
+      Organizations::OrganizationUser
+        .in_organization(organization)
+        .where(Organizations::OrganizationUser.arel_table[:user_id].eq(arel_table[:id]))
+    )
+  end
   scope :with_provisioning_group, ->(group) do
     joins(:user_detail).where(user_detail: { provisioned_by_group: group })
   end

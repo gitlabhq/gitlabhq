@@ -46,7 +46,7 @@ describe('statPresentationFor', () => {
     it.each`
       source               | expected
       ${'CodeSuggestions'} | ${'Total number of suggestions.'}
-      ${'AiUsageEvents'}   | ${'Total number of events.'}
+      ${'AiUsageEvents'}   | ${'Total number of events, optionally filtered by event.'}
       ${'Pipelines'}       | ${'Total number of pipelines, including in-progress ones.'}
       ${'MergeRequests'}   | ${'Total number of merge requests.'}
       ${'Contributions'}   | ${'Total number of contributions.'}

@@ -5,18 +5,14 @@ require 'spec_helper'
 RSpec.describe DeployKeys::BasicDeployKeyEntity, feature_category: :continuous_delivery do
   include RequestAwareEntity
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :internal) }
-  let(:project_private) { create(:project, :private) }
-  let(:deploy_key) { create(:deploy_key) }
+  let_it_be_with_refind(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :internal) }
+  let_it_be(:project_private) { create(:project, :private) }
+  let_it_be_with_refind(:deploy_key) { create(:deploy_key, readonly_access_to: [project, project_private]) }
+
   let(:options) { { user: user } }
 
   let(:entity) { described_class.new(deploy_key, options) }
-
-  before do
-    project.deploy_keys << deploy_key
-    project_private.deploy_keys << deploy_key
-  end
 
   describe 'returns deploy keys' do
     let(:expected_result) do
@@ -39,7 +35,7 @@ RSpec.describe DeployKeys::BasicDeployKeyEntity, feature_category: :continuous_d
   end
 
   context 'user is an admin' do
-    let(:user) { create(:user, :admin) }
+    let_it_be_with_refind(:user) { create(:user, :admin) }
 
     context 'when admin mode is enabled', :enable_admin_mode do
       it { expect(entity.as_json).to include(can_edit: true) }
@@ -51,7 +47,7 @@ RSpec.describe DeployKeys::BasicDeployKeyEntity, feature_category: :continuous_d
   end
 
   context 'user is a project maintainer' do
-    before do
+    before_all do
       project.add_maintainer(user)
     end
 
@@ -71,12 +67,9 @@ RSpec.describe DeployKeys::BasicDeployKeyEntity, feature_category: :continuous_d
     end
 
     context 'public deploy key' do
-      let(:deploy_key_public) { create(:deploy_key, public: true) }
-      let(:entity_public) { described_class.new(deploy_key_public, { user: user, project: project }) }
+      let_it_be(:deploy_key_public) { create(:deploy_key, public: true, readonly_access_to: project) }
 
-      before do
-        project.deploy_keys << deploy_key_public
-      end
+      let(:entity_public) { described_class.new(deploy_key_public, { user: user, project: project }) }
 
       it { expect(entity_public.as_json).to include(can_edit: true) }
     end

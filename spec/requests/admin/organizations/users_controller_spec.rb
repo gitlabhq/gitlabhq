@@ -206,6 +206,127 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
     end
   end
 
+  describe 'GET #invite_search' do
+    let_it_be(:existing_member) do
+      create(:user, organization: organization, name: 'Zed Member', username: 'zed-member')
+    end
+
+    let_it_be(:invitable_user) do
+      create(:user, organization: other_organization, name: 'Zed Candidate', username: 'zed-candidate')
+    end
+
+    subject(:request) do
+      get invite_search_organization_admin_users_path(organization, format: :json), params: { search: 'Zed' }
+    end
+
+    context 'when user is an organization owner' do
+      before do
+        sign_in(organization_owner)
+      end
+
+      it 'returns matching users who are not already members', :aggregate_failures do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to contain_exactly(invitable_user.id)
+      end
+
+      it 'serializes the fields the invite modal renders' do
+        request
+
+        expect(json_response.first.keys).to include('id', 'name', 'username', 'avatar_url')
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :autocomplete_users, use_second_scope: false do
+        let(:current_user) { organization_owner }
+
+        def request
+          get invite_search_organization_admin_users_path(organization, format: :json), params: { search: 'Zed' }
+        end
+      end
+
+      context 'when more users match than the page size' do
+        let_it_be(:more_invitable_users) { create_list(:user, 2, organization: other_organization) }
+
+        before do
+          stub_const("#{described_class}::INVITE_SEARCH_PER_PAGE", 2)
+        end
+
+        it 'caps the number of returned users regardless of the requested per_page' do
+          get invite_search_organization_admin_users_path(organization, format: :json), params: { per_page: 100 }
+
+          expect(json_response.size).to eq(2)
+        end
+      end
+
+      context 'when the org_admin_area flag is disabled' do
+        before do
+          stub_organization_release(org_admin_area: false)
+        end
+
+        it 'denies access' do
+          request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when searching another organization admin path' do
+        it 'denies access' do
+          get invite_search_organization_admin_users_path(other_organization, format: :json)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when user is an instance admin', :enable_admin_mode do
+      before do
+        sign_in(admin)
+      end
+
+      it 'returns matching users who are not already members', :aggregate_failures do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to contain_exactly(invitable_user.id)
+      end
+
+      it 'excludes users in forbidden states even for admins', :aggregate_failures do
+        banned_user = create(:user, :banned, organization: other_organization, name: 'Zed Banned')
+        blocked_user = create(:user, :blocked, organization: other_organization, name: 'Zed Blocked')
+        ldap_blocked_user = create(:user, :ldap_blocked, organization: other_organization, name: 'Zed Ldap')
+
+        request
+
+        returned_ids = json_response.pluck('id')
+        expect(returned_ids).not_to include(banned_user.id)
+        expect(returned_ids).not_to include(blocked_user.id)
+        expect(returned_ids).not_to include(ldap_blocked_user.id)
+      end
+    end
+
+    context 'when user is a regular user' do
+      before do
+        sign_in(regular_user)
+      end
+
+      it 'denies access' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when user is not authenticated' do
+      it 'denies access' do
+        request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'unavailable actions' do
     it 'only defines index, show, edit and update' do
       %i[

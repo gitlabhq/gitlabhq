@@ -18,6 +18,7 @@ title: Pipeline analytics
 - [Changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/416) to cover pipelines in all states, including in-progress pipelines, in GitLab 19.2.
 - Configurable `granularity` and `quantile` parameters [introduced](https://gitlab.com/gitlab-org/glql/-/issues/130) in GitLab 19.3.
 - `durationMin`, `durationMax`, `durationMean`, and `durationSum` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/507) in GitLab 19.5.
+- `!=` and `not in` operators on the `ref`, `source`, and `status` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -43,10 +44,10 @@ Use these fields in the `query` parameter to filter your results.
 | Field                                  | Name       | Operators                 |
 | -------------------------------------- | ---------- | ------------------------- |
 | [Finished at](#finished-at)         | `finished` | `=`, `>`, `<`, `>=`, `<=` |
-| [Ref](#ref)                         | `ref`      | `=`, `in`                 |
-| [Source](#source)                   | `source`   | `=`, `in`                 |
+| [Ref](#ref)                         | `ref`      | `=`, `!=`, `in`, `not in` |
+| [Source](#source)                   | `source`   | `=`, `!=`, `in`, `not in` |
 | [Started at](#started-at)           | `started`  | `=`, `>`, `<`, `>=`, `<=` |
-| [Status](#status)                   | `status`   | `=`, `in`                 |
+| [Status](#status)                   | `status`   | `=`, `!=`, `in`, `not in` |
 
 ### Finished at {#finished-at}
 
@@ -69,7 +70,12 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
+
+**Notes**:
+
+- `!=` and `not in` return only pipelines that have a ref. Pipelines without one are left out,
+  so `ref != "main"` is not the same as every pipeline except those on `main`.
 
 ### Source {#source}
 
@@ -78,7 +84,13 @@ Use these fields in the `query` parameter to filter your results.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
+
+**Notes**:
+
+- `!=` and `not in` return only pipelines that have a source. Pipelines without one are left out.
+- Excluding a source that GitLab does not recognize excludes nothing.
+  Validation of source values is proposed in [issue 629846](https://gitlab.com/gitlab-org/gitlab/-/issues/629846).
 
 ### Started at {#started-at}
 
@@ -103,7 +115,7 @@ Use these fields in the `query` parameter to filter your results.
 - `Enum`, one of `canceled`, `canceling`, `created`, `failed`, `manual`, `pending`,
   `preparing`, `running`, `scheduled`, `skipped`, `success`, `waiting_for_callback`,
   or `waiting_for_resource`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ## Dimensions
 
@@ -151,6 +163,21 @@ information, see [analytics mode sorting](../_index.md#sorting).
   dimensions: ref as "Ref"
   metrics: totalCount as "Total", successRate as "Success rate", failureRate as "Failure rate"
   sort: totalCount desc
+  ```
+  ````
+
+- Pipelines with any status other than `success`, off the default branches, for the last 30 days:
+
+  ````yaml
+  ```glql
+  title: "Pipelines not successful, off the default branches (last 30 days)"
+  display: table
+  mode: analytics
+  query: type = Pipeline and project = "gitlab-org/gitlab" and finished >= -30d and status != success and ref not in ("main", "master")
+  dimensions: ref as "Ref"
+  metrics: totalCount as "Pipelines", failureRate as "Failure rate"
+  sort: totalCount desc
+  limit: 10
   ```
   ````
 

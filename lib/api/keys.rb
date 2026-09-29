@@ -14,7 +14,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :id, types: [String, Integer], desc: 'The ID of an SSH key', documentation: { example: '2' }
+        requires :id, types: [String, Integer], desc: 'ID of the SSH key.', documentation: { example: '2' }
       end
       route_setting :authorization, permissions: :read_ssh_key, boundary_type: :instance, assignable_when: [:admin]
       get ":id" do
@@ -31,7 +31,7 @@ module API
         tags ['keys']
       end
       params do
-        requires :fingerprint, type: String, desc: 'The fingerprint of an SSH key',
+        requires :fingerprint, type: String, desc: 'Fingerprint of an SSH key.',
           documentation: { example: 'ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1' }
       end
       route_setting :authorization, permissions: :read_ssh_key, boundary_type: :instance

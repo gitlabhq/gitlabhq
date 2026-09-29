@@ -8,10 +8,13 @@ module API
       included do
         helpers do
           params :with_custom_attributes do
-            optional :with_custom_attributes, type: ::Grape::API::Boolean, default: false, desc: 'Include custom attributes in the response'
+            optional :with_custom_attributes, type: ::Grape::API::Boolean, default: false,
+              desc: 'If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/) ' \
+                'in the response. Administrators only.'
 
             optional :custom_attributes, type: Hash,
-              desc: 'Filter with custom attributes'
+              desc: 'Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/) that match ' \
+                'all of the specified key and value pairs. Administrators only.'
           end
 
           # rubocop: disable CodeReuse/ActiveRecord

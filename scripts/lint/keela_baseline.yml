@@ -333,8 +333,6 @@ methods:
   - self.latest_failed_for_ref
   - self.latest_successful_ids_per_project
   - parent?
-  app/models/ci/runner.rb:
-  - fallback_owner_project
   app/models/clusters/cluster.rb:
   - self.has_one_cluster_application
   app/models/clusters/concerns/application_data.rb:
@@ -663,8 +661,6 @@ scopes:
   - including_dependency_links
   app/models/packages/package_file.rb:
   - with_format
-  app/models/pages_domain.rb:
-  - instance_serverless
   app/models/pool_repository.rb:
   - by_source_project
   app/models/project.rb:

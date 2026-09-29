@@ -25,8 +25,8 @@ module API
                 tags %w[jira_connect_subscriptions]
               end
               params do
-                requires :jwt, type: String, desc: 'JWT token for authorization with the Jira Connect installation'
-                requires :namespace_path, type: String, desc: 'Path for the namespace that should be subscribed'
+                requires :jwt, type: String, desc: 'JWT token for authorization with the Jira Connect installation.'
+                requires :namespace_path, type: String, desc: 'Path for the namespace that should be subscribed.'
               end
               route_setting :authorization,
                 permissions: :create_jira_connect_subscription, boundary_type: :group, boundary_param: :namespace_path

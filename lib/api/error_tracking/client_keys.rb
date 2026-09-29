@@ -10,7 +10,7 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-        desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+        desc: 'ID or URL-encoded path of the project.'
     end
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -56,7 +56,7 @@ module API
           tags ERROR_TRACKING_CLIENT_KEYS_TAGS
         end
         params do
-          requires :key_id, type: Integer, desc: 'The ID of the client key'
+          requires :key_id, type: Integer, desc: 'ID of the client key.'
         end
         route_setting :authorization, permissions: :delete_error_tracking_client_key, boundary_type: :project
         delete '/client_keys/:key_id' do

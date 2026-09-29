@@ -38,6 +38,10 @@ module WikiActions
       push_force_frontend_feature_flag(:glql_load_on_click, !!container&.glql_load_on_click_feature_flag_enabled?)
     end
 
+    before_action only: [:show] do
+      push_frontend_feature_flag(:wiki_collaborative_editing, container.root_ancestor)
+    end
+
     before_action only: [:show, :edit, :update] do
       @valid_encoding = valid_encoding?
     end

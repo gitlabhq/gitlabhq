@@ -29,7 +29,7 @@ module API
               end
               params do
                 requires :namespace_path, type: String, limit: 255,
-                  desc: 'Path of the namespace to subscribe'
+                  desc: 'Path of the namespace to subscribe.'
               end
               route_setting :lifecycle, :experiment
               route_setting :authorization, skip_granular_token_authorization: :jira_forge_app_auth
@@ -83,7 +83,7 @@ module API
                 tags %w[jira_forge_subscriptions]
               end
               params do
-                requires :id, type: Integer, desc: 'ID of the subscription to delete'
+                requires :id, type: Integer, desc: 'ID of the subscription.'
               end
               route_setting :lifecycle, :experiment
               route_setting :authorization, skip_granular_token_authorization: :jira_forge_app_auth

@@ -21069,6 +21069,16 @@ msgstr ""
 msgid "Collaborate on code changes with built-in review tools"
 msgstr ""
 
+msgid "CollaborativeEditing|%{count} more person editing"
+msgid_plural "CollaborativeEditing|%{count} more people editing"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "CollaborativeEditing|%{count} other person editing"
+msgid_plural "CollaborativeEditing|%{count} other people editing"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Collapse"
 msgstr ""
 
@@ -86436,7 +86446,7 @@ msgstr ""
 msgid "Total number of contributions."
 msgstr ""
 
-msgid "Total number of events."
+msgid "Total number of events, optionally filtered by event."
 msgstr ""
 
 msgid "Total number of flows, optionally filtered by status."
@@ -93519,6 +93529,9 @@ msgid "WikiPage|Save template"
 msgstr ""
 
 msgid "WikiPage|Template title"
+msgstr ""
+
+msgid "WikiPage|Templates cannot be applied while others are editing this page."
 msgstr ""
 
 msgid "WikiPage|The path where your page is located. Use \"/\" to create nested pages."

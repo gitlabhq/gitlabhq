@@ -164,8 +164,8 @@ reachable from the runner.
 
 #### Administrator network policy controls
 
-When a top-level group owner on GitLab.com or instance administrator on GitLab
-Self-Managed configures network access controls, those settings define the
+When a top-level group owner on GitLab.com or instance administrator on
+GitLab Self-Managed configures network access controls, those settings define the
 baseline policy for all flows. The **Allow projects to extend network sandbox
 settings** checkbox determines which settings are applied when project owners
 configure them in `agent-config.yml`.

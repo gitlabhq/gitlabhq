@@ -70,7 +70,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
       is_expected.to eq({
         'organization_gid' => organization.to_global_id.to_s,
         'organization_name' => organization.name,
-        'search_url' => helper.autocomplete_users_path(format: :json)
+        'search_url' => helper.invite_search_organization_admin_users_path(organization, format: :json)
       })
     end
   end

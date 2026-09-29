@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe 'User edits a merge request', :js, feature_category: :code_review_workflow do
   include ListboxHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
 
   before do
-    project.add_maintainer(user)
+    project.add_maintainer(user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- user is per-example and overridden in nested contexts
     sign_in(user)
   end
 

@@ -13,7 +13,7 @@ jest.mock('~/invite_members/utils/member_utils', () => ({
 describe('OrganizationUsersTokenSelect', () => {
   let wrapper;
 
-  const searchUrl = '/-/autocomplete/users.json';
+  const searchUrl = '/o/my-org/admin/users/invite_search.json';
 
   const createComponent = (propsData = {}) => {
     wrapper = shallowMountExtended(OrganizationUsersTokenSelect, {

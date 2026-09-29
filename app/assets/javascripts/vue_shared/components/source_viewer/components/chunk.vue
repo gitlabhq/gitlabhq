@@ -4,7 +4,6 @@ import { mapState } from 'vuex';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, sprintf } from '~/locale';
-import { getPageParamValue, getPageSearchString } from '~/blob/utils';
 import { addInteractionClass } from '~/code_navigation/utils';
 import { findOverlayElementFromPoint } from '../utils';
 import { BLAME_AGE_COLORS } from '../constants';
@@ -82,7 +81,6 @@ export default {
   emits: ['appear', 'disappear'],
   data() {
     return {
-      number: undefined,
       hasAppeared: false,
     };
   },
@@ -90,10 +88,6 @@ export default {
     ...mapState(['data', 'blobs']),
     shouldHighlight() {
       return Boolean(this.highlightedContent) && (this.hasAppeared || this.isHighlighted);
-    },
-    pageSearchString() {
-      const page = getPageParamValue(this.number);
-      return getPageSearchString(this.blamePath, page);
     },
     // Pin the raw `<code>` to `totalLines` × line-height so the in-flow layer
     // matches the overlay and the overlay's trailing box can't overhang
@@ -318,7 +312,7 @@ export default {
           v-if="!isBlameActive"
           class="file-line-blame gl-select-none !gl-shadow-none"
           data-event-tracking="click_chunk_blame_on_blob_page"
-          :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
+          :href="`${blamePath}#L${calculateLineNumber(index)}`"
           :aria-label="`View blame for line ${calculateLineNumber(index)}`"
           :data-testid="`blame-link-${calculateLineNumber(index)}`"
           @click="handleBlameClick($event, index)"

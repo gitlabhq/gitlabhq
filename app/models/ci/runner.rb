@@ -664,14 +664,6 @@ module Ci
       joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))
     end
 
-    def fallback_owner_project
-      # NOTE: when a project is deleted, the respective ci_runner_projects records are not immediately
-      # deleted by the LFK, so we might find join records that point to a still-existing project
-      project_ids = runner_projects.order(:id).pluck(:project_id)
-      projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
-      Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
-    end
-
     def compute_token_expiration_instance
       return unless expiration_interval = Gitlab::CurrentSettings.runner_token_expiration_interval
 

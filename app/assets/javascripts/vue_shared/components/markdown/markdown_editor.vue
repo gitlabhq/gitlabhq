@@ -15,6 +15,7 @@ import {
   EDITING_MODE_EVENTS,
   CLEAR_AUTOSAVE_ENTRY_EVENT,
 } from '../../constants';
+import { getInitialEditingMode } from './utils';
 import MarkdownField from './field.vue';
 import eventHub from './eventhub';
 
@@ -187,18 +188,7 @@ export default {
     'markdown-field',
   ],
   data() {
-    let editingMode;
-    switch (window.gon?.text_editor) {
-      case 'rich_text_editor':
-        editingMode = EDITING_MODE_CONTENT_EDITOR;
-        break;
-      case 'plain_text_editor':
-        editingMode = EDITING_MODE_MARKDOWN_FIELD;
-        break;
-      default:
-        editingMode =
-          localStorage.getItem(this.$options.EDITING_MODE_KEY) || EDITING_MODE_MARKDOWN_FIELD;
-    }
+    const editingMode = getInitialEditingMode();
 
     const autosaveValue = this.autosaveKey ? getDraft(this.autosaveKey) : '';
     const initialValue = this.restoreFromAutosave ? autosaveValue : this.value;
@@ -229,6 +219,9 @@ export default {
   },
   watch: {
     value: 'updateValue',
+    collaborationProvider(provider) {
+      if (provider) this.alert = null;
+    },
   },
   mounted() {
     this.autofocusTextarea();

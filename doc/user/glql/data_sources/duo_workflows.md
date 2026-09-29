@@ -23,6 +23,8 @@ title: Duo workflows
 - `group` dimension [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/530) in GitLab 19.5.
 - `openMrCount` metrics [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/534) in GitLab 19.5.
 - `creditsPerMergedMrRatio` metric [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/533) in GitLab 19.5.
+- `!=` and `not in` operators on the `flowType`, `status`, and `user` filters [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5.
+- `model` dimension [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/539) to display the model catalog name in GitLab 19.5.
 
 {{< /history >}}
 
@@ -57,10 +59,10 @@ Use these fields in the `query` parameter to filter your results.
 | ----------------------------------- | --------------------------------------------- | ------------------------- |
 | [Active days](#active-days)         | `activeDays`                                  | `=`, `>`, `<`, `>=`, `<=` |
 | [Created](#created)                 | `created` (`opened`, `openedAt`, `createdAt`) | `=`, `>`, `<`, `>=`, `<=` |
-| [Flow type](#flow-type)             | `flowType`                                    | `=`, `in`                 |
+| [Flow type](#flow-type)             | `flowType`                                    | `=`, `!=`, `in`, `not in` |
 | [Flow types used](#flow-types-used) | `flowTypesUsed`                               | `=`, `>`, `<`, `>=`, `<=` |
-| [Status](#status)                   | `status`                                      | `=`, `in`                 |
-| [User](#user)                       | `user`                                        | `=`, `in`                 |
+| [Status](#status)                   | `status`                                      | `=`, `!=`, `in`, `not in` |
+| [User](#user)                       | `user`                                        | `=`, `!=`, `in`, `not in` |
 
 ### Active days
 
@@ -98,7 +100,7 @@ For example, `software_development` or `code_review/v1`.
 **Allowed value types**:
 
 - `String`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 ### Flow types used
 
@@ -121,7 +123,7 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 
 - `Enum`, one of `created`, `running`, `paused`, `finished`, `failed`, `stopped`,
   `input_required`, `plan_approval_required`, or `tool_call_approval_required`
-- `List` (use `in` operator for multiple values)
+- `List` (use `in` or `not in` operator for multiple values)
 
 **Notes**:
 
@@ -135,7 +137,7 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 **Allowed value types**:
 
 - `Number` (user ID)
-- `List` (use `in` operator for multiple user IDs)
+- `List` (use `in` or `not in` operator for multiple user IDs)
 
 > [!note]
 > Support for username filtering is being tracked in [issue 599750](https://gitlab.com/gitlab-org/gitlab/-/work_items/599750).
@@ -147,7 +149,7 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 | Created   | `created`  | Group by date. Accepts a [`granularity` parameter](../_index.md#field-parameters) of `daily`, `weekly`, `monthly`, or a number of days such as `30d` (default: `monthly`), and an optional `origin`. For example, `created(weekly)` or `created(granularity=30d, origin=2026-07-16)`. |
 | Flow type | `flowType` | Group by flow type. |
 | Group     | `group`    | Group by group. Accepts a `depth` parameter counted from the top-level group, from `1` to `99` (default: `1`), so `group` returns top-level groups and `group(depth=2)` their subgroups. Flows above that depth, or in a project at that depth rather than in a subgroup (for example, a project directly under the top-level group when `depth=2`), have no group, and the result can contain more than one row with no group. |
-| Model     | `model`    | Group by the model the flow used. |
+| Model     | `model`    | Group by the model the flow used (displays the model catalog name). Models that are not in the catalog display their raw identifier. Flows with no model attribution have no name. Rows are grouped by the model identifier the flow reported, so one catalog name can appear in more than one row or chart bar. |
 | Project   | `project`  | Group by project. Flows that are not scoped to a project are grouped into a single row with no project. |
 | Status    | `status`   | Group by flow status. Rows are sorted in lifecycle order, not alphabetically. |
 | User      | `user`     | Group by user (displays avatar, name, and username). |
@@ -189,7 +191,7 @@ selected period. `flowTypesUsed >= 2` matches users who used two or more flow ty
 | Previous period users count | `previousPeriodUsersCount` | Number of unique users in the previous period. |
 | Projects count              | `projectsCount`            | Number of unique projects. Flows that are not scoped to a project are not counted, so the row for those flows shows `0`. |
 | Returning users count       | `returningUsersCount`      | Number of unique users who also ran a flow in the previous period. |
-| Total count                 | `totalCount`               | Total number of flows. Accepts an optional `status` parameter with one or more flow statuses (the same values as the `status` filter), for example `totalCount(status="finished")` or `totalCount(status=["paused", "input_required"])`. Without the parameter, or with `status=[]`, all flows are counted. |
+| Total count                 | `totalCount`               | Total number of flows, optionally filtered by status. Accepts an optional `status` parameter with one or more flow statuses (the same values as the `status` filter), for example `totalCount(status="finished")` or `totalCount(status=["paused", "input_required"])`. Without the parameter, or with `status=[]`, all flows are counted. |
 | Users count                 | `usersCount`               | Number of unique users. |
 
 > [!note]
@@ -238,6 +240,34 @@ information, see [analytics mode sorting](../_index.md#sorting).
   dimensions: created(monthly) as "Month"
   metrics: creditsUsedSum as "Credits used"
   sort: created asc
+  ```
+  ````
+
+- Monthly credit usage excluding chat flows:
+
+  ````yaml
+  ```glql
+  title: "Monthly Duo workflow credits, excluding chat"
+  display: columnChart
+  mode: analytics
+  query: type = DuoWorkflow and group = "gitlab-org" and created > -90d and flowType not in ("chat", "agentic_chat/v1")
+  dimensions: created(monthly) as "Month", flowType as "Flow"
+  metrics: creditsUsedSum as "Credits used"
+  sort: created asc
+  ```
+  ````
+
+- Credits by model for the last 30 days:
+
+  ````yaml
+  ```glql
+  title: "Duo workflow credits by model (last 30 days)"
+  display: barChart
+  mode: analytics
+  query: type = DuoWorkflow and group = "gitlab-org" and created > -30d
+  dimensions: model as "Model"
+  metrics: creditsUsedSum as "Credits used"
+  sort: creditsUsedSum desc
   ```
   ````
 

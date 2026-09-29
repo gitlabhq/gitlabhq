@@ -2103,7 +2103,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -2111,7 +2111,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -2972,7 +2972,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -2980,7 +2980,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -3953,7 +3953,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -3961,7 +3961,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -4277,7 +4277,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -4285,7 +4285,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -4461,7 +4461,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -4469,7 +4469,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -4546,7 +4546,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -4554,7 +4554,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -4736,7 +4736,7 @@ paths:
         example: '2023-02-28T21:22:12Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -4744,7 +4744,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -4860,7 +4860,7 @@ paths:
         example: '2023-02-28T21:22:12Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -4868,7 +4868,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -5077,7 +5077,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -5085,7 +5085,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -5169,7 +5169,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -5177,7 +5177,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -5254,7 +5254,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -5262,7 +5262,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -5439,7 +5439,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -5447,7 +5447,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -5789,7 +5789,7 @@ paths:
         example: '1.6'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -5797,7 +5797,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -5899,7 +5899,7 @@ paths:
         explode: false
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -5907,7 +5907,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -5936,7 +5936,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -5944,7 +5944,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -6061,7 +6061,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -6069,7 +6069,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -6660,7 +6660,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -6668,7 +6668,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -6890,7 +6890,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -6898,7 +6898,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -7109,7 +7109,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -7117,7 +7117,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -7383,7 +7383,7 @@ paths:
         example: created_at_desc
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -7391,7 +7391,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -7578,7 +7578,7 @@ paths:
         example: created_at_desc
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -7586,7 +7586,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -7733,7 +7733,7 @@ paths:
         example: '2021-01-01T00:00:00Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -7741,7 +7741,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -7812,7 +7812,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -7820,7 +7820,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -7965,7 +7965,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -7973,7 +7973,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -8130,7 +8130,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -8138,7 +8138,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -8303,7 +8303,9 @@ paths:
       parameters:
       - name: status
         required: false
-        description: HTTP status code of the event
+        description: 'Response status code of the events, for example `200` or `500`.
+          You can search by status category: `successful` (200-299), `client_failure`
+          (400-499), and `server_failure` (500-599).'
         schema:
           type: array
           items:
@@ -8381,7 +8383,7 @@ paths:
         explode: false
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           minimum: 1
@@ -8391,7 +8393,7 @@ paths:
         example: 20
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -8587,13 +8589,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: trigger
         required: true
-        description: The type of trigger hook
+        description: Type of webhook event to test.
         schema:
           type: string
           enum:
@@ -8649,13 +8651,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: hook_log_id
         required: true
-        description: The ID of the hook log entry
+        description: ID of the hook log entry.
         schema:
           type: integer
         in: path
@@ -9121,7 +9123,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -9129,7 +9131,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -9197,7 +9199,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -9205,7 +9207,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -10099,7 +10101,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -10107,7 +10109,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -10136,7 +10138,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -10144,7 +10146,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -10352,7 +10354,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -10360,7 +10362,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -10389,7 +10391,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -10397,7 +10399,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -10837,7 +10839,7 @@ paths:
         example: '2016-01-19T09:05:50.355Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -10845,7 +10847,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -11097,7 +11099,7 @@ paths:
         example: '1'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -11105,7 +11107,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -11189,7 +11191,7 @@ paths:
         example: 1
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -11197,7 +11199,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -11425,7 +11427,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -11433,7 +11435,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -11654,7 +11656,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -11662,7 +11664,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -12153,7 +12155,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ff0f7b57a745"
+              "$ref": "#/components/schemas/RequestBody_0fda7ff78caa"
     post:
       operationId: postApiV4GroupsIdDashEpicsEpicIidIssuesIssueId
       summary: Add an issue to an epic
@@ -12303,7 +12305,7 @@ paths:
         example: 5
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -12311,7 +12313,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -12363,7 +12365,7 @@ paths:
         example: 5
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -12371,7 +12373,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -12735,7 +12737,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -12743,7 +12745,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -12961,7 +12963,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -12969,7 +12971,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -13159,7 +13161,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -13167,7 +13169,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -13491,7 +13493,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -13499,7 +13501,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -13804,7 +13806,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -13812,7 +13814,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -13989,7 +13991,7 @@ paths:
         example: '2016-01-19T09:05:50.355Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -13997,7 +13999,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -14195,7 +14197,7 @@ paths:
         example: uploads
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -14203,7 +14205,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -14464,7 +14466,7 @@ paths:
       parameters:
       - name: migration_id
         required: true
-        description: The version or name of the search migration
+        description: Version or name of the search migration.
         schema:
           oneOf:
           - type: integer
@@ -14949,7 +14951,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -14957,7 +14959,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -16985,7 +16987,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -16993,7 +16995,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -17001,14 +17003,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -17075,14 +17079,16 @@ paths:
         in: path
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -17251,7 +17257,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -17259,7 +17265,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -17292,7 +17298,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -17300,7 +17306,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -17391,7 +17397,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -17399,7 +17405,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -17462,7 +17468,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -17470,7 +17476,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -17597,7 +17603,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -17605,7 +17611,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -17757,7 +17763,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -17765,7 +17771,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -18014,7 +18020,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -18022,7 +18028,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -18082,7 +18088,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -18090,7 +18096,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -18269,7 +18275,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -18277,7 +18283,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -18372,7 +18378,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -18380,7 +18386,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -18492,7 +18498,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -18500,7 +18506,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -18711,7 +18717,7 @@ paths:
         example: '2024-08-14T17:26:19.883Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -18719,7 +18725,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -19042,7 +19048,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -19050,7 +19056,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -19235,7 +19241,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -19243,7 +19249,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -19308,7 +19314,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -19316,7 +19322,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -19366,7 +19372,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -19374,7 +19380,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -19424,7 +19430,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -19432,7 +19438,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -19742,7 +19748,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -19750,7 +19756,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -19829,7 +19835,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -19837,7 +19843,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20055,7 +20061,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20063,7 +20069,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20157,7 +20163,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20165,7 +20171,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20241,7 +20247,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20249,7 +20255,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20325,7 +20331,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20333,7 +20339,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20411,7 +20417,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20419,7 +20425,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20499,7 +20505,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20507,7 +20513,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20587,7 +20593,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20595,7 +20601,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20710,7 +20716,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20718,7 +20724,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -20987,7 +20993,7 @@ paths:
         example: created_at_desc
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -20995,7 +21001,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -21155,7 +21161,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -21163,7 +21169,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -21241,7 +21247,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -21249,7 +21255,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -21419,7 +21425,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -21427,7 +21433,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -21600,7 +21606,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -21608,7 +21614,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -21649,7 +21655,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -21657,7 +21663,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -21944,7 +21950,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -21952,7 +21958,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -22173,7 +22179,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -22181,7 +22187,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -22402,7 +22408,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -22410,7 +22416,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -22631,7 +22637,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -22639,7 +22645,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -22860,7 +22866,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -22868,7 +22874,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -23089,7 +23095,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -23097,7 +23103,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -23318,7 +23324,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -23326,7 +23332,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -23592,7 +23598,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -23600,7 +23606,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -23869,7 +23875,7 @@ paths:
         example: created_at_desc
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -23877,7 +23883,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -24115,7 +24121,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -24123,7 +24129,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -24292,7 +24298,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -24300,7 +24306,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -24339,7 +24345,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -24347,7 +24353,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -24439,7 +24445,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -24447,7 +24453,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -24813,7 +24819,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -24821,7 +24827,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -25075,7 +25081,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -25083,7 +25089,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -25275,7 +25281,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -25283,7 +25289,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -25651,7 +25657,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -25659,7 +25665,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -25985,7 +25991,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -25993,7 +25999,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -26361,7 +26367,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -26369,7 +26375,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -26695,7 +26701,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -26703,7 +26709,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -27067,7 +27073,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -27075,7 +27081,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -27252,7 +27258,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -27260,7 +27266,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -28466,7 +28472,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -28474,7 +28480,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -29580,7 +29586,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -29588,7 +29594,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -29869,7 +29875,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -29877,7 +29883,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -30226,7 +30232,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -30234,7 +30240,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -30303,7 +30309,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -30311,7 +30317,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -30356,7 +30362,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -30364,7 +30370,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -30729,7 +30735,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -30737,7 +30743,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -30942,7 +30948,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -30950,7 +30956,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -31146,7 +31152,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -31154,7 +31160,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -31549,7 +31555,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -31557,7 +31563,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -31641,7 +31647,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -31649,7 +31655,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -32342,7 +32348,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -32350,7 +32356,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -32656,7 +32662,7 @@ paths:
         example: 1
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -32664,7 +32670,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -32845,7 +32851,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -32853,7 +32859,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -32976,7 +32982,7 @@ paths:
         example: feature
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -32984,7 +32990,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -33142,7 +33148,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -33150,7 +33156,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -33189,7 +33195,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_8a2ef188fa5b"
+              "$ref": "#/components/schemas/RequestBody_3d5249853ded"
   "/api/v4/projects/{id}/remote_mirrors/{mirror_id}":
     get:
       operationId: getApiV4ProjectsIdRemoteMirrorsMirrorId
@@ -33265,7 +33271,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_72485f6a9aeb"
+              "$ref": "#/components/schemas/RequestBody_3f3be0ae34e7"
     delete:
       operationId: deleteApiV4ProjectsIdRemoteMirrorsMirrorId
       summary: Delete a remote mirror from a project
@@ -33396,7 +33402,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -33404,7 +33410,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -33627,7 +33633,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -33635,7 +33641,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -33670,7 +33676,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -33678,7 +33684,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -34150,7 +34156,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34192,7 +34198,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34233,7 +34239,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34260,7 +34266,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34296,7 +34302,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34329,7 +34335,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34366,7 +34372,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -34374,7 +34380,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -34518,7 +34524,7 @@ paths:
         example: gitlab-org/gitlab
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -34526,7 +34532,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -34972,7 +34978,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -34980,7 +34986,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -35002,14 +35008,16 @@ paths:
         in: query
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -35074,7 +35082,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -35082,7 +35090,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -35373,7 +35381,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -35381,7 +35389,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -35830,7 +35838,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -35838,7 +35846,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -35860,14 +35868,16 @@ paths:
         in: query
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -36004,14 +36014,16 @@ paths:
         in: query
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -36425,7 +36437,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -36433,7 +36445,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -36448,14 +36460,16 @@ paths:
         in: query
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -36645,7 +36659,7 @@ paths:
         example: user
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -36653,7 +36667,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -36872,7 +36886,7 @@ paths:
         explode: false
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -36880,7 +36894,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -36965,7 +36979,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -36973,7 +36987,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -37048,7 +37062,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -37056,7 +37070,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -37064,14 +37078,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -37212,7 +37228,7 @@ paths:
         example: search
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -37220,7 +37236,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -37294,7 +37310,7 @@ paths:
         example: '2016-01-19T09:05:50.355Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -37302,7 +37318,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -37398,7 +37414,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -37406,7 +37422,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -37549,7 +37565,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -37557,7 +37573,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -37839,7 +37855,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -37847,7 +37863,8 @@ paths:
         in: path
       - name: wiki
         required: false
-        description: Set to true to receive the wiki repository
+        description: If `true`, downloads the wiki repository instead of the project
+          repository.
         schema:
           type: boolean
           nullable: true
@@ -38032,7 +38049,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -38040,7 +38057,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -38228,7 +38245,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -38356,7 +38373,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -38364,7 +38381,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -38442,7 +38459,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -38450,7 +38467,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -39008,7 +39025,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -39016,7 +39033,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -39180,7 +39197,9 @@ paths:
       parameters:
       - name: status
         required: false
-        description: HTTP status code of the event
+        description: 'Response status code of the events, for example `200` or `500`.
+          You can search by status category: `successful` (200-299), `client_failure`
+          (400-499), and `server_failure` (500-599).'
         schema:
           type: array
           items:
@@ -39258,7 +39277,7 @@ paths:
         explode: false
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           minimum: 1
@@ -39268,7 +39287,7 @@ paths:
         example: 20
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -39315,13 +39334,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: trigger
         required: true
-        description: The type of trigger hook
+        description: Type of webhook event to test.
         schema:
           type: string
           enum:
@@ -39378,13 +39397,13 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the hook
+        description: ID of the hook.
         schema:
           type: integer
         in: path
       - name: hook_log_id
         required: true
-        description: The ID of the hook log entry
+        description: ID of the hook log entry.
         schema:
           type: integer
         in: path
@@ -39721,7 +39740,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -39729,7 +39748,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -39804,7 +39823,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -39812,7 +39831,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -40473,7 +40492,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -40481,7 +40500,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -40573,7 +40592,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -40581,7 +40600,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -40763,7 +40782,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -40771,7 +40790,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -41050,7 +41069,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -41058,7 +41077,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -41184,7 +41203,7 @@ paths:
         example: created_at_desc
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -41192,7 +41211,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -41308,7 +41327,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -41316,7 +41335,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -41353,7 +41372,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -41361,7 +41380,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -41656,7 +41675,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -41664,7 +41683,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -41868,7 +41887,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -41876,7 +41895,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -42929,7 +42948,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -42962,7 +42981,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -43000,7 +43019,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -43041,7 +43060,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -43070,7 +43089,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -43095,7 +43114,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -43103,7 +43122,7 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
@@ -43135,7 +43154,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -43143,7 +43162,7 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
@@ -43179,7 +43198,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -43715,7 +43734,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -43723,7 +43742,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -43782,7 +43801,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -43790,7 +43809,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -44252,7 +44271,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -44260,7 +44279,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -45063,7 +45082,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -45071,7 +45090,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -45582,7 +45601,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -45590,7 +45609,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -46293,7 +46312,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -46301,7 +46320,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -46587,7 +46606,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -46595,7 +46614,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -46793,7 +46812,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -46801,7 +46820,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -47112,7 +47131,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -47120,7 +47139,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -47159,7 +47178,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -47167,7 +47186,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -47250,7 +47269,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -47258,7 +47277,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -47361,7 +47380,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -47369,7 +47388,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -47590,7 +47609,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -47598,7 +47617,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -47701,7 +47720,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -47709,7 +47728,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -47997,7 +48016,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -48005,7 +48024,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -48040,7 +48059,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -48048,7 +48067,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -48147,7 +48166,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -48155,7 +48174,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -48195,7 +48214,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -48203,7 +48222,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -48536,7 +48555,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -48544,7 +48563,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -48787,7 +48806,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -48795,7 +48814,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -49106,7 +49125,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of an SSH key
+        description: ID of the SSH key.
         schema:
           oneOf:
           - type: string
@@ -49132,7 +49151,7 @@ paths:
       parameters:
       - name: fingerprint
         required: true
-        description: The fingerprint of an SSH key
+        description: Fingerprint of an SSH key.
         schema:
           type: string
           nullable: true
@@ -49892,7 +49911,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -49900,7 +49919,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -50372,7 +50391,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -50380,7 +50399,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -51354,7 +51373,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -51362,7 +51381,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -52528,7 +52547,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -52536,7 +52555,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -52678,7 +52697,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -52686,7 +52705,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -52798,7 +52817,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_cbeedcc1e5c4"
+              "$ref": "#/components/schemas/RequestBody_d04a359fad5a"
       x-gitlab-lifecycle: experiment
     get:
       operationId: getApiV4IntegrationsJiraForgeSubscriptions
@@ -52843,7 +52862,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the subscription to delete
+        description: ID of the subscription.
         schema:
           type: integer
         in: path
@@ -52929,7 +52948,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_93c93c9a4a46"
+              "$ref": "#/components/schemas/RequestBody_2b3e5a1a1354"
   "/api/v4/integrations/slack/options":
     post:
       operationId: postApiV4IntegrationsSlackOptions
@@ -59770,7 +59789,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c81863da3e12"
+              "$ref": "#/components/schemas/RequestBody_c6b68b22b69c"
   "/api/v4/glql/schema":
     get:
       operationId: getApiV4GlqlSchema
@@ -59815,7 +59834,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -59823,7 +59842,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -60083,7 +60102,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -60091,7 +60110,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -60472,7 +60491,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -60480,7 +60499,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -60840,7 +60859,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -60848,7 +60867,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -60883,7 +60902,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -60891,7 +60910,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -61806,7 +61825,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -61814,7 +61833,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -62466,7 +62485,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -62474,7 +62493,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -62669,7 +62688,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -62677,7 +62696,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -62922,7 +62941,7 @@ paths:
       parameters:
       - name: scope
         required: false
-        description: Include all events across a user’s projects
+        description: Include all events across the user's projects.
         schema:
           type: string
           nullable: true
@@ -62930,7 +62949,7 @@ paths:
         example: all
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -62938,7 +62957,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -63017,13 +63036,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or username of the user
+        description: ID or username of the user.
         schema:
           type: string
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -63031,7 +63050,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -63209,8 +63228,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -63237,8 +63255,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -63268,8 +63285,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -63277,7 +63293,7 @@ paths:
         in: path
       - name: key_id
         required: true
-        description: The ID of the client key
+        description: ID of the client key.
         schema:
           type: integer
         in: path
@@ -63313,7 +63329,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -63321,7 +63337,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -63934,7 +63950,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -63942,7 +63958,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -64211,7 +64227,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -64219,7 +64235,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -64726,7 +64742,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -64734,7 +64750,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -64781,7 +64797,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -64789,7 +64805,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -64938,7 +64954,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -64946,7 +64962,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -65085,7 +65101,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -65093,7 +65109,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -65164,7 +65180,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -65172,7 +65188,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -66456,7 +66472,7 @@ paths:
       parameters:
       - name: database_name
         required: true
-        description: The database name
+        description: Name of the database.
         schema:
           type: string
           enum:
@@ -66469,7 +66485,7 @@ paths:
         in: path
       - name: table_size
         required: false
-        description: Filter by table size classification
+        description: Filter by table size classification.
         schema:
           type: string
           enum:
@@ -70427,7 +70443,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -70435,7 +70451,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -70615,7 +70631,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -70623,7 +70639,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -70758,7 +70774,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -70766,7 +70782,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -70809,7 +70825,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -70817,7 +70833,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -71036,7 +71052,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -71044,7 +71060,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -71095,7 +71111,7 @@ paths:
         example: merged
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -71103,7 +71119,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -71419,7 +71435,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -71427,7 +71443,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -71565,7 +71581,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -71573,7 +71589,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -71754,7 +71770,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -71762,7 +71778,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -72065,7 +72081,7 @@ paths:
         example: 18
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -72073,7 +72089,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -72377,7 +72393,7 @@ paths:
         example: 18
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -72385,7 +72401,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -72593,7 +72609,7 @@ paths:
         example: 18
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -72601,7 +72617,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -72996,7 +73012,7 @@ paths:
         example: '11'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -73004,7 +73020,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -73400,7 +73416,7 @@ paths:
         - running
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -73408,7 +73424,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -73483,7 +73499,7 @@ paths:
         - running
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -73491,7 +73507,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -73565,7 +73581,7 @@ paths:
         - running
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -73573,7 +73589,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -73834,9 +73850,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID or URL-encoded path of the project owned by the
-                  authenticated user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73844,7 +73858,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -73852,7 +73866,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -73878,9 +73892,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID or URL-encoded path of the project owned by the
-                  authenticated user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73913,9 +73925,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID or URL-encoded path of the project owned by the
-                  authenticated user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73923,7 +73933,7 @@ paths:
         in: path
       - name: secure_file_id
         required: true
-        description: The ID of a secure file
+        description: ID of the secure file.
         schema:
           type: integer
         in: path
@@ -73943,9 +73953,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID or URL-encoded path of the project owned by the
-                  authenticated user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73953,7 +73961,7 @@ paths:
         in: path
       - name: secure_file_id
         required: true
-        description: The ID of a secure file
+        description: ID of the secure file.
         schema:
           type: integer
         in: path
@@ -73979,9 +73987,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID or URL-encoded path of the project owned by the
-                  authenticated user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73989,7 +73995,7 @@ paths:
         in: path
       - name: secure_file_id
         required: true
-        description: The ID of a secure file
+        description: ID of the secure file.
         schema:
           type: integer
         in: path
@@ -74091,7 +74097,7 @@ paths:
         example: 15.1.
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -74099,7 +74105,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -74249,7 +74255,7 @@ paths:
         example: 15.1.
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -74257,7 +74263,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -74426,7 +74432,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -74434,7 +74440,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -74529,7 +74535,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -74537,7 +74543,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -74682,7 +74688,7 @@ paths:
         example: 15.1.
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -74690,7 +74696,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -74861,7 +74867,7 @@ paths:
         example: 15.1.
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -74869,7 +74875,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -75357,7 +75363,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -75365,7 +75371,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -75524,7 +75530,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -75532,7 +75538,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -75606,7 +75612,7 @@ paths:
         example: feature-branch
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -75614,7 +75620,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -76211,7 +76217,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -76219,7 +76225,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -76227,14 +76233,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -76319,14 +76327,16 @@ paths:
         in: path
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -76531,7 +76541,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -76539,7 +76549,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -76547,14 +76557,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -76622,7 +76634,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -76630,7 +76642,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -76638,14 +76650,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -76808,7 +76822,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -76816,7 +76830,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -76824,14 +76838,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -76964,7 +76980,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -76972,7 +76988,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -76980,14 +76996,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -77144,7 +77162,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -77152,7 +77170,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -77160,14 +77178,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -77324,7 +77344,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -77332,7 +77352,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -77340,14 +77360,16 @@ paths:
         example: 20
       - name: with_custom_attributes
         required: false
-        description: Include custom attributes in the response
+        description: If `true`, includes [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          in the response. Administrators only.
         schema:
           type: boolean
           default: false
         in: query
       - name: custom_attributes
         required: false
-        description: Filter with custom attributes
+        description: Filter by [custom attributes](https://docs.gitlab.com/api/custom_attributes/)
+          that match all of the specified key and value pairs. Administrators only.
         schema:
           type: object
           nullable: true
@@ -77419,7 +77441,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -77427,7 +77449,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -77650,7 +77672,7 @@ paths:
         example: '2016-01-19T09:05:50.355Z'
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -77658,7 +77680,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -77772,7 +77794,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -77780,7 +77802,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -77859,7 +77881,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -77867,7 +77889,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -77906,7 +77928,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -77914,7 +77936,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -78326,7 +78348,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -78334,7 +78356,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -78549,7 +78571,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -78557,7 +78579,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -78613,7 +78635,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -78621,7 +78643,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -78726,7 +78748,7 @@ paths:
         in: query
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -78734,7 +78756,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -78875,7 +78897,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -78883,7 +78905,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -79163,7 +79185,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -79171,7 +79193,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -79380,7 +79402,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -79388,7 +79410,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -79606,7 +79628,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -79614,7 +79636,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -79767,7 +79789,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -79775,7 +79797,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -79970,7 +79992,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -79978,7 +80000,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -80132,7 +80154,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -80140,7 +80162,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -80335,7 +80357,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -80343,7 +80365,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -80496,7 +80518,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -80504,7 +80526,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -80699,7 +80721,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -80707,7 +80729,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -80860,7 +80882,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -80868,7 +80890,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -81044,14 +81066,15 @@ paths:
       parameters:
       - name: email
         required: true
-        description: Public email address of the user
+        description: Public email address of the user.
         schema:
           type: string
           nullable: true
         in: query
       - name: size
         required: false
-        description: Single pixel dimension for Gravatar images
+        description: Single pixel dimension for the avatar image. Only used for avatar
+          lookups at Gravatar or a configured Libravatar server.
         schema:
           type: integer
           nullable: true
@@ -81501,7 +81524,7 @@ paths:
       parameters:
       - name: database
         required: false
-        description: The name of the database
+        description: Database name to query.
         schema:
           type: string
           enum:
@@ -81537,7 +81560,7 @@ paths:
       parameters:
       - name: timestamp
         required: true
-        description: The migration version timestamp
+        description: Version timestamp of the migration.
         schema:
           type: integer
         in: path
@@ -81546,7 +81569,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_791e3065f97e"
+              "$ref": "#/components/schemas/RequestBody_4801c5dbffa6"
   "/api/v4/admin/clusters":
     get:
       operationId: getApiV4AdminClusters
@@ -81733,7 +81756,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -81741,7 +81764,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -81867,7 +81890,7 @@ paths:
       parameters:
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -81875,7 +81898,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -82320,7 +82343,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -82328,7 +82351,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -82467,7 +82490,7 @@ paths:
         in: path
       - name: page
         required: false
-        description: Current page number
+        description: Page number of results to retrieve.
         schema:
           type: integer
           default: 1
@@ -82475,7 +82498,7 @@ paths:
         example: 1
       - name: per_page
         required: false
-        description: Number of items per page
+        description: Number of items to list per page.
         schema:
           type: integer
           default: 20
@@ -105449,7 +105472,7 @@ components:
             epic
           example: 1
           nullable: true
-    RequestBody_ff0f7b57a745:
+    RequestBody_0fda7ff78caa:
       type: object
       properties:
         move_before_id:
@@ -105470,12 +105493,12 @@ components:
             after the actual issue
         page:
           type: integer
-          description: Current page number
+          description: Page number of results to retrieve.
           example: 1
           default: 1
         per_page:
           type: integer
-          description: Number of items per page
+          description: Number of items to list per page.
           example: 20
           default: 20
     RequestBody_93a9da6434e3:
@@ -112083,7 +112106,7 @@ components:
           description: The commit message to use when committing the changelog
           example: Initial commit
           nullable: true
-    RequestBody_8a2ef188fa5b:
+    RequestBody_3d5249853ded:
       type: object
       properties:
         url:
@@ -112108,8 +112131,8 @@ components:
           nullable: true
         only_protected_branches:
           type: boolean
-          description: Determines if only protected branches are mirrored. Mutually
-            exclusive with `mirror_branch_regex`.
+          description: If `true`, only protected branches are mirrored. Mutually exclusive
+            with `mirror_branch_regex`.
           nullable: true
         mirror_branch_regex:
           type: string
@@ -112120,13 +112143,13 @@ components:
           type: array
           items:
             type: string
-          description: SSH host keys in bare format (ssh-ed25519 AAAA...) or full
-            known_hosts format (hostname ssh-ed25519 AAAA...). Bare keys use the hostname
-            from the mirror URL.
+          description: SSH host keys in bare format, such as `ssh-ed25519 AAAA...`,
+            or full `known_hosts` format, such as `hostname ssh-ed25519 AAAA...`.
+            Bare keys use the hostname from the mirror URL.
           nullable: true
       required:
       - url
-    RequestBody_72485f6a9aeb:
+    RequestBody_3f3be0ae34e7:
       type: object
       properties:
         enabled:
@@ -112144,8 +112167,8 @@ components:
           nullable: true
         only_protected_branches:
           type: boolean
-          description: Determines if only protected branches are mirrored. Mutually
-            exclusive with `mirror_branch_regex`.
+          description: If `true`, only protected branches are mirrored. Mutually exclusive
+            with `mirror_branch_regex`.
           nullable: true
         mirror_branch_regex:
           type: string
@@ -112156,9 +112179,9 @@ components:
           type: array
           items:
             type: string
-          description: SSH host keys in bare format (ssh-ed25519 AAAA...) or full
-            known_hosts format (hostname ssh-ed25519 AAAA...). Bare keys use the hostname
-            from the mirror URL.
+          description: SSH host keys in bare format, such as `ssh-ed25519 AAAA...`,
+            or full `known_hosts` format, such as `hostname ssh-ed25519 AAAA...`.
+            Bare keys use the hostname from the mirror URL.
           nullable: true
     RequestBody_946a7ef3d069:
       type: object
@@ -118630,12 +118653,12 @@ components:
           description: ID of a member role to assign to the invited user. Ultimate
             only.
           nullable: true
-    RequestBody_cbeedcc1e5c4:
+    RequestBody_d04a359fad5a:
       type: object
       properties:
         namespace_path:
           type: string
-          description: Path of the namespace to subscribe
+          description: Path of the namespace to subscribe.
           nullable: true
           maxLength: 255
       required:
@@ -118648,16 +118671,16 @@ components:
           description: Base URL of the self-managed GitLab instance; null for GitLab.com
           nullable: true
           maxLength: 1024
-    RequestBody_93c93c9a4a46:
+    RequestBody_2b3e5a1a1354:
       type: object
       properties:
         jwt:
           type: string
-          description: JWT token for authorization with the Jira Connect installation
+          description: JWT token for authorization with the Jira Connect installation.
           nullable: true
         namespace_path:
           type: string
-          description: Path for the namespace that should be subscribed
+          description: Path for the namespace that should be subscribed.
           nullable: true
       required:
       - jwt
@@ -121112,18 +121135,19 @@ components:
           nullable: true
       required:
       - chart
-    RequestBody_c81863da3e12:
+    RequestBody_c6b68b22b69c:
       type: object
       properties:
         glql_yaml:
           type: string
-          description: The full GLQL code block containing YAML configuration and
-            query
+          description: GLQL query that may include YAML configuration. Maximum size
+            is 10,000 bytes. See [query formats](https://docs.gitlab.com/api/glql/#query-formats)
+            for details.
           nullable: true
         after:
           type: string
-          description: Cursor for forward pagination. Use the `endCursor` from previous
-            response to fetch the next page
+          description: Cursor for pagination. Use the `data.pageInfo.endCursor` value
+            from a previous query to fetch the next page of results.
           nullable: true
       required:
       - glql_yaml
@@ -125534,7 +125558,7 @@ components:
           nullable: true
       required:
       - plan_name
-    RequestBody_791e3065f97e:
+    RequestBody_4801c5dbffa6:
       type: object
       properties:
         database:
@@ -125545,7 +125569,7 @@ components:
           - sec
           - embedding
           - geo
-          description: The name of the database
+          description: Database name for which the migration is skipped.
           default: main
     RequestBody_a3a7751c8893:
       type: object
@@ -125805,6 +125829,19 @@ components:
           - light
           description: The theme for the message
           nullable: true
+    RequestBody_791e3065f97e:
+      type: object
+      properties:
+        database:
+          type: string
+          enum:
+          - main
+          - ci
+          - sec
+          - embedding
+          - geo
+          description: The name of the database
+          default: main
     RequestBody_cef2d2db563e:
       type: object
       properties:

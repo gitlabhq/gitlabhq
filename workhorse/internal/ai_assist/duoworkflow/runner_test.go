@@ -1442,6 +1442,11 @@ func Test_intersectClientCapabilities(t *testing.T) {
 			fromClient: []string{"web_search_unknown"},
 			expected:   []string{},
 		},
+		{
+			name:       "read_file_image capability passes through",
+			fromClient: []string{"read_file_chunked", "read_file_image"},
+			expected:   []string{"read_file_chunked", "read_file_image"},
+		},
 	}
 
 	for _, tt := range tests {

@@ -143,11 +143,10 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items assignees real-time'
     it_behaves_like 'work items labels', 'project'
 
-    it_behaves_like 'work items milestone'
+    it_behaves_like 'work items milestone accessibility'
 
     it_behaves_like 'work items time tracking'
 
-    it_behaves_like 'work items due dates'
     it_behaves_like 'work items crm contacts'
   end
 

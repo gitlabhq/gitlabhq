@@ -39,6 +39,7 @@ import {
   MOCK_CI_STAGE,
   MOCK_DIMENSIONS,
   MOCK_DUO_USAGE_EVENTS_DIMENSIONS,
+  MOCK_DUO_MODEL,
   MOCK_EPIC,
   MOCK_GROUP,
   MOCK_ISSUE,
@@ -92,6 +93,7 @@ describe('presenter_registry', () => {
         ${'stage'}     | ${MOCK_CI_STAGE}        | ${NamedTextPresenter}
         ${'project'}   | ${MOCK_PROJECT}         | ${ProjectPresenter}
         ${'group'}     | ${MOCK_GROUP}           | ${LinkPresenter}
+        ${'model'}     | ${MOCK_DUO_MODEL}       | ${NamedTextPresenter}
       `('resolves $dataType to the matching presenter', ({ field, presenter }) => {
         expect(presenterFor({ key: field }, 'key')).toBe(presenter);
       });

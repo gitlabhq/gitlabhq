@@ -33,7 +33,7 @@ const METRIC_PRESENTATION = {
     returningUsersCount: {
       description: __('Number of users active in both the current and previous period.'),
     },
-    totalCount: { description: __('Total number of events.') },
+    totalCount: { description: __('Total number of events, optionally filtered by event.') },
     usersCount: { description: __('Number of unique users.') },
   },
   Pipelines: {

@@ -52,6 +52,7 @@ const labelByObjectType = {
   UserCore: (value) => value.name ?? value.username,
   Project: (value) => value.nameWithNamespace ?? value.fullPath ?? value.name,
   Group: (value) => value.fullName ?? value.fullPath,
+  DuoWorkflowsModelMetadata: (value) => value.name,
 };
 
 export const dimensionValue = (node, dimension) => {

@@ -1,0 +1,10 @@
+---
+name: duo_code_review_decisions
+description: Allow GitLab Duo to approve a merge request, or request changes on it, based on what its code review finds.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21939
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254981
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631086
+milestone: '19.5'
+group: group::code review
+type: wip
+default_enabled: false

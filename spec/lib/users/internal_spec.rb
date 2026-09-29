@@ -146,6 +146,44 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
         expect(bot_user.name).not_to include(organization.name)
       end
     end
+
+    context 'when cells are enabled' do
+      before do
+        stub_config_cell(enabled: true, id: 9)
+        # Keep the save-time claim callbacks from reaching Topology Service.
+        allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
+      end
+
+      context 'when the organization is not the default organization' do
+        it 'derives the username and email from the organization path', :aggregate_failures do
+          expect(bot_user.username).to eq("#{username}_#{organization.path}")
+          expect(bot_user.email).to match(/-#{Regexp.escape(organization.path)}@/)
+          expect(bot_user.organization_user_details.first.username).to eq(username)
+        end
+      end
+
+      context 'when the organization is the default organization' do
+        # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- required to exercise default organization behavior
+        let_it_be(:default_organization) { create(:organization, :default) }
+        # rubocop:enable Gitlab/RSpec/AvoidCreateDefaultOrganization
+
+        subject(:bot_user) { described_class.in_organization(default_organization).public_send(bot_type) }
+
+        it 'keeps the plain username and email', :aggregate_failures do
+          expect(bot_user.username).to eq(username)
+          expect(bot_user.email).not_to include(default_organization.path)
+        end
+      end
+
+      context 'when no organization is passed' do
+        subject(:bot_user) { described_class.public_send(bot_type) }
+
+        it 'derives the suffix from the first organization', :aggregate_failures do
+          expect(bot_user.username).to eq("#{username}_#{first_organization.path}")
+          expect(bot_user.email).to match(/-#{Regexp.escape(first_organization.path)}@/)
+        end
+      end
+    end
   end
 
   it_behaves_like 'bot users', :alert_bot, 'alert-bot', 'alert@example.com', 'alert-bot.png'

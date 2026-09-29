@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe ProjectAccessTokenEntity do
-  let_it_be(:project) { create(:project) }
   let_it_be(:bot) { create(:user, :project_bot) }
-  let_it_be(:token) { create(:personal_access_token, user: bot) }
+  let_it_be(:project) { create(:project, developers: bot) }
+
+  let(:token) { build_stubbed(:personal_access_token, user: bot) }
 
   let(:expected_revoke_path) do
     Gitlab::Routing.url_helpers
@@ -26,10 +27,6 @@ RSpec.describe ProjectAccessTokenEntity do
   subject(:json) {  described_class.new(token, project: project).as_json }
 
   context 'when bot is a member of the project' do
-    before_all do
-      project.add_developer(bot)
-    end
-
     it 'has the correct attributes' do
       expect(json).to(
         include(

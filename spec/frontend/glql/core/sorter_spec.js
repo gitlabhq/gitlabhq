@@ -176,18 +176,19 @@ describe('sorterFor', () => {
   });
 
   it.each`
-    __typename                | field         | sortField
-    ${'Epic'}                 | ${'epic'}     | ${'title'}
-    ${'Label'}                | ${'label'}    | ${'title'}
-    ${'Project'}              | ${'project'}  | ${'nameWithNamespace'}
-    ${'Group'}                | ${'group'}    | ${'fullName'}
-    ${'UserCore'}             | ${'author'}   | ${'username'}
-    ${'MergeRequestAuthor'}   | ${'author'}   | ${'username'}
-    ${'MergeRequestReviewer'} | ${'reviewer'} | ${'username'}
-    ${'MergeRequestAssignee'} | ${'assignee'} | ${'username'}
-    ${'Pipeline'}             | ${'pipeline'} | ${'name'}
-    ${'CiJob'}                | ${'job'}      | ${'name'}
-    ${'CiStage'}              | ${'stage'}    | ${'name'}
+    __typename                     | field         | sortField
+    ${'Epic'}                      | ${'epic'}     | ${'title'}
+    ${'Label'}                     | ${'label'}    | ${'title'}
+    ${'Project'}                   | ${'project'}  | ${'nameWithNamespace'}
+    ${'Group'}                     | ${'group'}    | ${'fullName'}
+    ${'UserCore'}                  | ${'author'}   | ${'username'}
+    ${'MergeRequestAuthor'}        | ${'author'}   | ${'username'}
+    ${'MergeRequestReviewer'}      | ${'reviewer'} | ${'username'}
+    ${'MergeRequestAssignee'}      | ${'assignee'} | ${'username'}
+    ${'Pipeline'}                  | ${'pipeline'} | ${'name'}
+    ${'CiJob'}                     | ${'job'}      | ${'name'}
+    ${'CiStage'}                   | ${'stage'}    | ${'name'}
+    ${'DuoWorkflowsModelMetadata'} | ${'model'}    | ${'name'}
   `('sorts by $sortField for $__typename', ({ __typename, field, sortField }) => {
     const items = [
       { [field]: { __typename, [sortField]: 'foo' } },
@@ -205,6 +206,23 @@ describe('sorterFor', () => {
       { [field]: { __typename, [sortField]: 'foo' } },
       { [field]: { __typename, [sortField]: 'baz' } },
       { [field]: { __typename, [sortField]: 'bar' } },
+    ]);
+  });
+
+  it('sorts typed objects with an empty sort field to the end, like nulls', () => {
+    const model = (name) => ({ __typename: 'DuoWorkflowsModelMetadata', name });
+    const items = [{ model: model('foo') }, { model: model(null) }, { model: model('bar') }];
+
+    expect(items.sort(sorterFor('model'))).toEqual([
+      { model: model('bar') },
+      { model: model('foo') },
+      { model: model(null) },
+    ]);
+
+    expect(items.sort(sorterFor('model', false))).toEqual([
+      { model: model('foo') },
+      { model: model('bar') },
+      { model: model(null) },
     ]);
   });
 

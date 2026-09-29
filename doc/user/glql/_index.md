@@ -54,6 +54,7 @@ see [GLQL fields](fields.md).
 {{< history >}}
 
 - Combining `=` with another comparison on the same date or range field [changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/516) to return an error in GitLab 19.5. Previously only one of the two conditions was applied.
+- `not in` operator [introduced](https://gitlab.com/gitlab-org/glql/-/merge_requests/537) in GitLab 19.5 for list filters on analytics data sources.
 
 {{< /history >}}
 
@@ -64,6 +65,7 @@ see [GLQL fields](fields.md).
 | `=`           | Equals / Includes all in list           | `is` (equal to)        |
 | `!=`          | Doesn't equal / Isn't contained in list | `is not` (equal to)    |
 | `in`          | Contained in list                       | `or` / `is one of`     |
+| `not in`      | Not contained in list                   | `is not one of`        |
 | `>`           | Greater than                            | {{< no >}} |
 | `<`           | Less than                               | {{< no >}} |
 | `>=`          | Greater than or equal to                | {{< no >}} |
@@ -71,6 +73,11 @@ see [GLQL fields](fields.md).
 
 **Logical operators**: Only `and` is supported.
 `or` is indirectly supported for some fields by using the `in` comparison operator.
+
+The `not in` operator excludes every value in a list, for example
+`flowType not in ("chat", "agentic_chat/v1")`. It is available on the analytics
+data source fields that list it, and the list must contain at least one value.
+Use `!=` to exclude a single value.
 
 > [!note]
 > On fields where `=` selects a range, such as a single day on date fields or an exact count on
@@ -326,7 +333,8 @@ sort: finished desc
 
 Some parameters take a list. Write it in square brackets, for example `name(key=[v1, v2])` or
 `name([v1, v2])`. `[]` is the empty list. Numbers can be negative. A single value passed to a
-list parameter is read as a one-item list, so `userTier(8)` equals `userTier(thresholds=[8])`.
+list parameter is read as a one-item list, so `userTier(8)` equals `userTier(thresholds=[8])`
+and `totalCount(event="request_duo_chat_response")` equals `totalCount(event=["request_duo_chat_response"])`.
 
 Square brackets are for field parameters only. Filter lists in `query` still use parentheses,
 for example `status in (paused, failed)`.

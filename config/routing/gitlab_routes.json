@@ -24793,6 +24793,12 @@
     "dottedExample": "/o/john.doe/admin/users/john.doe/edit"
   },
   {
+    "template": "/o/:organization_path/admin/users/invite_search",
+    "example": "/o/foo/admin/users/invite_search",
+    "acceptsFormat": true,
+    "dottedExample": "/o/john.doe/admin/users/invite_search"
+  },
+  {
     "template": "/o/:organization_path/api/v4/geo/graphql",
     "example": "/o/foo/api/v4/geo/graphql",
     "acceptsFormat": true,

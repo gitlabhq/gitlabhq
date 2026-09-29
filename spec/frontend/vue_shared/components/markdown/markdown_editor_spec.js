@@ -704,6 +704,23 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(findTextarea().element.value).toBe('Test template');
     });
 
+    it('dismisses a pending confirmation when a collaboration provider arrives', async () => {
+      buildWrapper({
+        propsData: { value: 'some value' },
+        stubs: { ContentEditor: ContentEditorStub },
+      });
+
+      wrapper.vm.setTemplate('Test template');
+      await nextTick();
+
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
+
+      await wrapper.setProps({ collaborationProvider: {} });
+
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+      expect(findTextarea().element.value).toBe('some value');
+    });
+
     it('shows a warning alert when markdown is not empty', async () => {
       buildWrapper({
         propsData: { value: 'some value' },

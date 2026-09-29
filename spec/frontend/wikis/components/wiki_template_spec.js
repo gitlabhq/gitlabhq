@@ -115,6 +115,20 @@ describe('WikiTemplate', () => {
     });
   });
 
+  describe('disabled prop', () => {
+    it('leaves the listbox enabled by default', () => {
+      createComponent();
+
+      expect(findListbox().props('disabled')).toBe(false);
+    });
+
+    it('disables the listbox when set', () => {
+      createComponent({ disabled: true });
+
+      expect(findListbox().props('disabled')).toBe(true);
+    });
+  });
+
   it('renders a GlCollapsibleListbox with templates as items', () => {
     createComponent();
 

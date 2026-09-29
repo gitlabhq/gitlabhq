@@ -258,6 +258,14 @@ export const MOCK_CI_STAGE = {
   name: 'test',
 };
 
+export const MOCK_DUO_MODEL = {
+  __typename: 'DuoWorkflowsModelMetadata',
+  name: 'Claude Sonnet 4.6',
+  provider: null,
+  hosting: 'GITLAB',
+  isDefault: true,
+};
+
 export const MOCK_LINK = { title: 'title', webUrl: 'url' };
 
 // Aggregated rows split across pages; `count` is the total auto-pagination walks towards.

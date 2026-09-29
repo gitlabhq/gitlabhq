@@ -135,11 +135,15 @@ module API
         tags %w[glql]
       end
       params do
-        requires :glql_yaml, type: String, desc: 'The full GLQL code block containing YAML configuration and query',
+        requires :glql_yaml, type: String, desc: 'GLQL query that may include YAML configuration. Maximum size is ' \
+                                             '10,000 bytes. See [query ' \
+                                             'formats](https://docs.gitlab.com/api/glql/#query-formats) for ' \
+                                             'details.',
           allow_blank: false
 
         optional :after, type: String,
-          desc: 'Cursor for forward pagination. Use the `endCursor` from previous response to fetch the next page'
+          desc: 'Cursor for pagination. Use the `data.pageInfo.endCursor` value from a previous query to fetch the ' \
+            'next page of results.'
       end
       route_setting :authorization, permissions: :read_glql, boundary_type: :user
       post urgency: :low do

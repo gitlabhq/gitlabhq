@@ -229,6 +229,11 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(assigns(:page).title).to eq(wiki_title)
       end
 
+      it_behaves_like 'pushes frontend feature flag', :wiki_collaborative_editing do
+        let(:feature_args) { [container.root_ancestor] }
+        let(:make_request) { request }
+      end
+
       context 'page view tracking' do
         it_behaves_like 'internal event tracking' do
           let(:event) { 'view_wiki_page' }
