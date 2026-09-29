@@ -70,7 +70,7 @@ Status: Experiment
 
 {{</* history */>}}
 
-- [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/development_stages_support.md).
+- [Introduced](https://work-item-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/development_stages_support.md).
 
 {{</* /history */>}}
 

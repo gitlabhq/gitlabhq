@@ -103,18 +103,18 @@ class IssuableFinder
     end
   end
 
+  def initialize(current_user, params = {})
+    @current_user = current_user
+    @original_params = params
+    @params = params_class.new(params, current_user, klass)
+  end
+
   def params_class
     IssuableFinder::Params
   end
 
   def klass
     raise NotImplementedError
-  end
-
-  def initialize(current_user, params = {})
-    @current_user = current_user
-    @original_params = params
-    @params = params_class.new(params, current_user, klass)
   end
 
   def execute

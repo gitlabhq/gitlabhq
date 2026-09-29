@@ -3,21 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe StageEntity, feature_category: :continuous_integration do
-  let(:pipeline) { create(:ci_pipeline) }
+  let_it_be(:pipeline) { create(:ci_pipeline) }
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_refind(:stage) do
+    create(:ci_stage, pipeline: pipeline, status: :success)
+  end
+
   let(:request) { double('request') }
-  let(:user) { create(:user) }
 
   let(:entity) do
     described_class.new(stage, request: request)
   end
 
-  let(:stage) do
-    create(:ci_stage, pipeline: pipeline, status: :success)
+  before_all do
+    create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id)
   end
 
   before do
     allow(request).to receive(:current_user).and_return(user)
-    create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id)
   end
 
   describe '#as_json' do
@@ -78,7 +81,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
     end
 
     context 'with a skipped stage ' do
-      let(:stage) { create(:ci_stage, status: 'skipped') }
+      let(:stage) { create(:ci_stage, pipeline: pipeline, name: 'skipped', status: 'skipped') }
 
       it 'contains play_all_manual' do
         expect(subject[:status][:action]).to be_present
@@ -86,7 +89,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
     end
 
     context 'with a scheduled stage ' do
-      let(:stage) { create(:ci_stage, status: 'scheduled') }
+      let(:stage) { create(:ci_stage, pipeline: pipeline, name: 'scheduled', status: 'scheduled') }
 
       it 'contains play_all_manual' do
         expect(subject[:status][:action]).to be_present
@@ -94,7 +97,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
     end
 
     context 'with a manual stage ' do
-      let(:stage) { create(:ci_stage, status: 'manual') }
+      let(:stage) { create(:ci_stage, pipeline: pipeline, name: 'manual', status: 'manual') }
 
       it 'contains play_all_manual' do
         expect(subject[:status][:action]).to be_present
@@ -134,11 +137,9 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
     end
 
     context 'when details: true and retried: true' do
-      let(:pipeline) { create(:ci_pipeline) }
-      let(:stage) { create(:ci_stage, pipeline: pipeline, status: :success) }
       let(:entity) { described_class.new(stage, request: request, details: true, retried: true) }
 
-      before do
+      before_all do
         create(:ci_build, :success, pipeline: pipeline, stage_id: stage.id, name: 'latest_job')
         create(:ci_build, :retried, pipeline: pipeline, stage_id: stage.id, name: 'retried_job')
         create(:ci_build, :failed, pipeline: pipeline, stage_id: stage.id, name: 'failed_job')

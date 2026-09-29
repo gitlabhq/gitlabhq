@@ -898,7 +898,7 @@ module Ci
     def ci_pipeline_statuses_rate_limited?
       Gitlab::ApplicationRateLimiter.throttled?(
         :ci_pipeline_statuses_subscription,
-        scope: project
+        scope: { project: project }
       )
     end
 

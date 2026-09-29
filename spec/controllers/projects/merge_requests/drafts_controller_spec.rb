@@ -369,6 +369,11 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect { post :publish, params: params }
           .not_to complete_user_experience(:submit_and_notify_mr_review_ui)
       end
+
+      it 'does not start the submit_and_notify_mr_review_ui experience when deferring notifications' do
+        expect { post :publish, params: params.merge(defer_notifications: 'true') }
+          .not_to start_user_experience(:submit_and_notify_mr_review_ui)
+      end
     end
 
     context 'without draft notes to publish' do
@@ -545,6 +550,19 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         .and change { DraftNote.count }.by(-1)
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'publishes batches of draft notes into one review' do
+      draft1, draft2 = create_list(:draft_note, 2, merge_request: merge_request, author: user)
+
+      allow(Gitlab::EventStore).to receive(:publish).and_call_original
+      expect(Gitlab::EventStore).to receive(:publish)
+        .with(an_instance_of(MergeRequests::DraftNotePublishedEvent)).once
+
+      post :publish, params: params.merge(ids: [draft1.id], defer_notifications: 'true')
+      post :publish, params: params.merge(ids: [draft2.id], review_id: json_response['review_id'])
+
+      expect(merge_request.reviews.sole.notes.count).to eq(2)
     end
 
     it 'can publish just a single draft note' do

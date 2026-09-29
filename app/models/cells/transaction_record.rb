@@ -35,6 +35,9 @@ module Cells
     end
 
     TIMEOUT_IN_SECONDS = 0.3
+    # Rake, runner and console hold no request latency budget, and the first claim of a
+    # fresh process pays a Topology Service warm-up tail measured at 250 to 420 ms.
+    NON_SERVING_TIMEOUT_IN_SECONDS = 2
     GRPC_RETRIABLE_ERRORS = [GRPC::DeadlineExceeded, GRPC::Unavailable].freeze
     GRPC_MAX_TRIES = 2
     GRPC_RETRY_BASE_INTERVAL = 0.1
@@ -106,15 +109,13 @@ module Cells
       raise Error, 'Already created lease' if outstanding_lease
       raise Error, 'Attributes can now only be claimed on main DB' if Cells::OutstandingLease.connection != @connection
 
-      @outstanding_lease = Retriable.retriable(
-        on: GRPC_RETRIABLE_ERRORS, tries: GRPC_MAX_TRIES, base_interval: GRPC_RETRY_BASE_INTERVAL
-      ) do
-        Cells::OutstandingLease.create_from_request!(
-          create_records: self.class.sanitize_records_for_grpc(create_records),
-          destroy_records: self.class.sanitize_records_for_grpc(destroy_records),
-          deadline: deadline
-        )
-      end
+      # No retry: BeginUpdate is not idempotent. A retry after a timed-out attempt that
+      # succeeded server-side returns ALREADY_EXISTS against this cell's own pending lease.
+      @outstanding_lease = Cells::OutstandingLease.create_from_request!(
+        create_records: self.class.sanitize_records_for_grpc(create_records),
+        destroy_records: self.class.sanitize_records_for_grpc(destroy_records),
+        deadline: deadline
+      )
     rescue GRPC::BadStatus => e
       raise_committing_error!(e)
 
@@ -170,7 +171,17 @@ module Cells
     attr_reader :create_records, :destroy_records, :done, :outstanding_lease
 
     def deadline
-      GRPC::Core::TimeConsts.from_relative_time(TIMEOUT_IN_SECONDS)
+      GRPC::Core::TimeConsts.from_relative_time(timeout_in_seconds)
+    end
+
+    def timeout_in_seconds
+      return NON_SERVING_TIMEOUT_IN_SECONDS if non_serving_runtime?
+
+      TIMEOUT_IN_SECONDS
+    end
+
+    def non_serving_runtime?
+      Gitlab::Runtime.rake? || Gitlab::Runtime.rails_runner? || Gitlab::Runtime.console?
     end
 
     def raise_committing_error!(error)

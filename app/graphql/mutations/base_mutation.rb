@@ -17,6 +17,28 @@ module Mutations
       description: 'Errors encountered during the mutation.',
       scopes: [:api, :read_api, :ai_workflows]
 
+    def self.authorizes_object?
+      true
+    end
+
+    def self.authorized?(object, context)
+      auth = ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(:execute_graphql_mutation, authorization_scopes)
+      return true if auth.ok?(:global, context[:current_user],
+        scope_validator: context[:scope_validator])
+
+      # in our mutations we raise, rather than returning a null value.
+      raise_resource_not_available_error!
+    end
+
+    def self.authorization_scopes
+      [:api]
+    end
+
+    # See: AuthorizeResource#authorized_resource?
+    def self.authorization
+      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(authorize, authorization_scopes)
+    end
+
     def current_user
       context[:current_user]
     end
@@ -60,28 +82,6 @@ module Mutations
 
     def granular_scope_authorization
       ::Gitlab::Graphql::Authz::GranularScopeAuthorization.new(self.class.directives)
-    end
-
-    def self.authorizes_object?
-      true
-    end
-
-    def self.authorized?(object, context)
-      auth = ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(:execute_graphql_mutation, authorization_scopes)
-      return true if auth.ok?(:global, context[:current_user],
-        scope_validator: context[:scope_validator])
-
-      # in our mutations we raise, rather than returning a null value.
-      raise_resource_not_available_error!
-    end
-
-    def self.authorization_scopes
-      [:api]
-    end
-
-    # See: AuthorizeResource#authorized_resource?
-    def self.authorization
-      @authorization ||= ::Gitlab::Graphql::Authorize::ObjectAuthorization.new(authorize, authorization_scopes)
     end
   end
 end

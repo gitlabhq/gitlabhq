@@ -90,7 +90,7 @@ module Mutations
       end
 
       def rate_limit_throttled?
-        ::Gitlab::ApplicationRateLimiter.throttled?(:snippets_create, scope: [current_user])
+        ::Gitlab::ApplicationRateLimiter.throttled?(:snippets_create, scope: { user: current_user })
       end
 
       # process_args_for_params!(args)    -> nil

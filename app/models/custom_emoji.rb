@@ -61,7 +61,7 @@ class CustomEmoji < ApplicationRecord
 
   def valid_emoji_name
     if TanukiEmoji.find_by_alpha_code(name)
-      errors.add(:name, _('%{name} is already being used for another emoji') % { name: self.name })
+      errors.add(:name, _('%{name} is already being used for another emoji') % { name: name })
     end
   end
 end

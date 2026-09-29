@@ -309,6 +309,12 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
     specify { expect(subject.description).to be_present }
   end
 
+  describe '#avatar_url' do
+    it 'returns the Slack logo' do
+      expect(subject.avatar_url).to eq(ActionController::Base.helpers.image_path('illustrations/slack_logo.svg'))
+    end
+  end
+
   describe '#upgrade_needed?' do
     context 'with all_features_supported' do
       subject(:integration) { create(:gitlab_slack_application_integration, :all_features_supported) }

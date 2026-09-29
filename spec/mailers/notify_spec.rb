@@ -2560,13 +2560,13 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     before do
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
         :notification_emails,
-        scope: contain_exactly(issue.project, recipient),
+        scope: { project: issue.project, user: recipient },
         peek: true
       ).and_return(false, false, true)
 
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
         :notification_emails,
-        scope: contain_exactly(issue.project, recipient),
+        scope: { project: issue.project, user: recipient },
         peek: false
       ).and_return(false, true, true)
     end

@@ -572,7 +572,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
     context 'when the rate limit has been reached' do
       it 'returns status 429 Too Many Requests', :aggregate_failures do
         ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_sign_up, scope: ip).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_sign_up, scope: { ip: ip }).and_return(true)
 
         controller.request.env['REMOTE_ADDR'] = ip
         post(:create, params: user_params, session: session_params)

@@ -47,7 +47,7 @@ class Email < ApplicationRecord
   end
 
   def unique_email
-    self.errors.add(:email, 'has already been taken') if primary_email_of_another_user?
+    errors.add(:email, 'has already been taken') if primary_email_of_another_user?
   end
 
   # once email is confirmed, update the gpg signatures

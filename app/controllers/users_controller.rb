@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     :calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following
   ]
   before_action only: [:exists] do
-    check_rate_limit!(:username_exists, scope: request.ip)
+    check_rate_limit!(:username_exists, scope: { ip: request.ip })
   end
 
   feature_category :user_profile, [:show, :activity, :groups, :projects, :contributed, :starred,

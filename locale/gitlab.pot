@@ -2504,6 +2504,30 @@ msgstr ""
 msgid "AI-generated summary"
 msgstr ""
 
+msgid "AICatalogSkillValidation|SKILL.md must start with YAML front matter between --- lines."
+msgstr ""
+
+msgid "AICatalogSkillValidation|The YAML front matter is nested too deeply."
+msgstr ""
+
+msgid "AICatalogSkillValidation|The YAML front matter must be %{size} or smaller."
+msgstr ""
+
+msgid "AICatalogSkillValidation|The file is not UTF-8 text."
+msgstr ""
+
+msgid "AICatalogSkillValidation|The file is stored in Git LFS, which the AI Catalog cannot read."
+msgstr ""
+
+msgid "AICatalogSkillValidation|The file is too large to read."
+msgstr ""
+
+msgid "AICatalogSkillValidation|name must contain only lowercase letters, numbers, and hyphens. It cannot start or end with a hyphen, or contain two hyphens in a row."
+msgstr ""
+
+msgid "AICatalogSkillValidation|name must match the parent directory name, %{directory}."
+msgstr ""
+
 msgid "AICatalog|%d agent"
 msgid_plural "AICatalog|%d agents"
 msgstr[0] ""
@@ -31264,9 +31288,6 @@ msgstr ""
 msgid "Drop or %{linkStart}upload%{linkEnd} files to attach"
 msgstr ""
 
-msgid "Drop or upload file to attach"
-msgstr ""
-
 msgid "Drop your files to start your upload."
 msgstr ""
 
@@ -37613,9 +37634,6 @@ msgstr ""
 msgid "File upload error."
 msgstr ""
 
-msgid "FileUpload|Drop your file here or %{linkStart}click to upload%{linkEnd}."
-msgstr ""
-
 msgid "Filename"
 msgstr ""
 
@@ -38391,6 +38409,36 @@ msgid "From line %{line1} to %{line2}"
 msgstr ""
 
 msgid "From merge request merge until deploy to production"
+msgstr ""
+
+msgid "FrontMatterValidation|%{field} is not valid."
+msgstr ""
+
+msgid "FrontMatterValidation|%{field} is required."
+msgstr ""
+
+msgid "FrontMatterValidation|%{field} must be %{max} characters or fewer."
+msgstr ""
+
+msgid "FrontMatterValidation|%{field} must be a mapping."
+msgstr ""
+
+msgid "FrontMatterValidation|%{field} must be at least %{min} characters."
+msgstr ""
+
+msgid "FrontMatterValidation|%{field} must be text."
+msgstr ""
+
+msgid "FrontMatterValidation|%{field} must not be empty."
+msgstr ""
+
+msgid "FrontMatterValidation|The YAML front matter could not be parsed."
+msgstr ""
+
+msgid "FrontMatterValidation|The YAML front matter is not valid."
+msgstr ""
+
+msgid "FrontMatterValidation|The YAML front matter must be a mapping of fields."
 msgstr ""
 
 msgid "Full"
@@ -40108,15 +40156,6 @@ msgstr ""
 msgid "Gitea import"
 msgstr ""
 
-msgid "GithubImporter|%{codeStart}read:org%{codeEnd} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files."
-msgstr ""
-
-msgid "GithubImporter|%{codeStart}repo%{codeEnd}: Used to display a list of your public and private repositories that are available to connect to."
-msgstr ""
-
-msgid "GithubImporter|%{codeStart}repo%{codeEnd}: Used to display a list of your public and private repositories that are available to import from."
-msgstr ""
-
 msgid "GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories, or if your project has Git LFS files."
 msgstr ""
 
@@ -40207,22 +40246,13 @@ msgstr ""
 msgid "GithubImport|\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
-msgid "GithubImport|%{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "GithubImport|%{link_start}Learn more%{link_end}."
-msgstr ""
-
-msgid "GithubImport|Create and provide your GitHub %{linkStart}personal access token%{linkEnd}."
 msgstr ""
 
 msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}."
 msgstr ""
 
 msgid "GithubImport|Import failed because of a GitHub error: %{original} (HTTP %{code})"
-msgstr ""
-
-msgid "GithubImport|Learn more about %{linkStart}Gitea personal access tokens%{linkEnd}."
 msgstr ""
 
 msgid "GithubImport|Namespace or group to import repository into does not exist."
@@ -49839,15 +49869,6 @@ msgid "Manifest import"
 msgstr ""
 
 msgid "ManifestImport|Import manifest files cannot exceed %{size} MB"
-msgstr ""
-
-msgid "ManifestImport|Manifest file import"
-msgstr ""
-
-msgid "ManifestImport|Please upload a manifest file."
-msgstr ""
-
-msgid "ManifestImport|Unable to upload the file. Please upload a valid XML file."
 msgstr ""
 
 msgid "ManifestImport|You don't have enough permissions to import projects in the selected group"
@@ -65907,19 +65928,7 @@ msgstr ""
 msgid "ProjectsNew|Analyze your source code for known security vulnerabilities."
 msgstr ""
 
-msgid "ProjectsNew|Authenticate through GitHub"
-msgstr ""
-
-msgid "ProjectsNew|Authenticate with GitHub"
-msgstr ""
-
-msgid "ProjectsNew|Bitbucket Server URL"
-msgstr ""
-
 msgid "ProjectsNew|Both project name and project path are already taken. Please choose different values for both."
-msgstr ""
-
-msgid "ProjectsNew|Choose a group"
 msgstr ""
 
 msgid "ProjectsNew|Choose a group or namespace"
@@ -65961,16 +65970,7 @@ msgstr ""
 msgid "ProjectsNew|Experimental settings"
 msgstr ""
 
-msgid "ProjectsNew|FogBugz URL"
-msgstr ""
-
 msgid "ProjectsNew|Get started with one of our popular project templates."
-msgstr ""
-
-msgid "ProjectsNew|GitLab project export"
-msgstr ""
-
-msgid "ProjectsNew|Gitea host URL"
 msgstr ""
 
 msgid "ProjectsNew|Group name"
@@ -65980,15 +65980,6 @@ msgid "ProjectsNew|Import"
 msgstr ""
 
 msgid "ProjectsNew|Import project"
-msgstr ""
-
-msgid "ProjectsNew|Import projects from FogBugz"
-msgstr ""
-
-msgid "ProjectsNew|Import projects from Gitea"
-msgstr ""
-
-msgid "ProjectsNew|Import repositories from Bitbucket Server"
 msgstr ""
 
 msgid "ProjectsNew|Include a Getting Started README"
@@ -66015,37 +66006,10 @@ msgstr ""
 msgid "ProjectsNew|No import options available"
 msgstr ""
 
-msgid "ProjectsNew|Password/Personal access token"
-msgstr ""
-
-msgid "ProjectsNew|Please enter a valid Bitbucket Server URL."
-msgstr ""
-
-msgid "ProjectsNew|Please enter a valid Gitea host URL."
-msgstr ""
-
-msgid "ProjectsNew|Please enter a valid personal access token."
-msgstr ""
-
-msgid "ProjectsNew|Please enter a valid project name."
-msgstr ""
-
-msgid "ProjectsNew|Please enter a valid project slug."
-msgstr ""
-
-msgid "ProjectsNew|Please enter a valid token."
-msgstr ""
-
-msgid "ProjectsNew|Please enter a valid username."
-msgstr ""
-
 msgid "ProjectsNew|Please enter project name."
 msgstr ""
 
 msgid "ProjectsNew|Please enter project slug."
-msgstr ""
-
-msgid "ProjectsNew|Please upload a valid GitLab project export file."
 msgstr ""
 
 msgid "ProjectsNew|Project Configuration"
@@ -66117,9 +66081,6 @@ msgstr ""
 msgid "ProjectsNew|Start with a letter, digit, emoji, or underscore."
 msgstr ""
 
-msgid "ProjectsNew|To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
-msgstr ""
-
 msgid "ProjectsNew|To view group-level project templates, select a group that has %{linkStart}custom project templates configured%{linkEnd}."
 msgstr ""
 
@@ -66142,9 +66103,6 @@ msgid "ProjectsNew|You do not have permission to create projects."
 msgstr ""
 
 msgid "ProjectsNew|Your project will be created at:"
-msgstr ""
-
-msgid "ProjectsNew|https://mycompany.fogbugz.com"
 msgstr ""
 
 msgid "ProjectsNew|my-awesome-project"
@@ -82731,9 +82689,6 @@ msgstr ""
 msgid "Telephone number"
 msgstr ""
 
-msgid "Tell us about your company"
-msgstr ""
-
 msgid "Template"
 msgstr ""
 
@@ -86953,12 +86908,6 @@ msgstr ""
 msgid "Trial|Company name"
 msgstr ""
 
-msgid "Trial|Continue"
-msgstr ""
-
-msgid "Trial|Continue with trial"
-msgstr ""
-
 msgid "Trial|Cookie Policy."
 msgstr ""
 
@@ -87016,13 +86965,7 @@ msgstr ""
 msgid "Trial|This email address was already registered for a trial. Please enter a different email address."
 msgstr ""
 
-msgid "Trial|Try GitLab Ultimate and automate tasks with GitLab Duo Agent Platform free for %{duration} days. After that, continue with free features or upgrade to a paid plan."
-msgstr ""
-
 msgid "Trial|We need a few more details from you to activate your trial for your GitLab instance."
-msgstr ""
-
-msgid "Trial|We need a few more details from you to activate your trial."
 msgstr ""
 
 msgid "Trial|Welcome to GitLab"
@@ -89229,9 +89172,6 @@ msgstr ""
 msgid "Use one line per URI"
 msgstr ""
 
-msgid "Use personal access token"
-msgstr ""
-
 msgid "Use primary email (%{email})"
 msgstr ""
 
@@ -89565,7 +89505,7 @@ msgstr ""
 msgid "UserMapping|After you select \"Reassign\", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue."
 msgstr ""
 
-msgid "UserMapping|Allow reassigning placeholder users to non-enterprise members"
+msgid "UserMapping|Allow reassigning placeholder users to all group members"
 msgstr ""
 
 msgid "UserMapping|Approve reassignment"
@@ -89575,6 +89515,9 @@ msgid "UserMapping|Approve reassignments only from users you trust. After you ap
 msgstr ""
 
 msgid "UserMapping|Awaiting reassignment"
+msgstr ""
+
+msgid "UserMapping|By default, placeholder users can be reassigned only to enterprise users. All group members includes members of this group, its subgroups, projects, and invited groups. Other GitLab.com users are never included."
 msgstr ""
 
 msgid "UserMapping|Confirm reassignment"
@@ -89646,9 +89589,6 @@ msgstr ""
 msgid "UserMapping|No matching user for provided information."
 msgstr ""
 
-msgid "UserMapping|Non-enterprise placeholder reassignment"
-msgstr ""
-
 msgid "UserMapping|Notification email could not be sent again."
 msgstr ""
 
@@ -89689,6 +89629,9 @@ msgid "UserMapping|Placeholder user limit"
 msgstr ""
 
 msgid "UserMapping|Placeholder user made permanent."
+msgstr ""
+
+msgid "UserMapping|Placeholder user reassignment"
 msgstr ""
 
 msgid "UserMapping|Placeholder users awaiting reassignment"
@@ -89739,7 +89682,7 @@ msgstr ""
 msgid "UserMapping|Reassigning"
 msgstr ""
 
-msgid "UserMapping|Reassigning contributions to the wrong person cannot be undone. Only enable this setting if you're comfortable with contributions being reassigned to any member of this group, its subgroups, or its projects -- not just verified enterprise users."
+msgid "UserMapping|Reassigning contributions to the wrong person cannot be undone."
 msgstr ""
 
 msgid "UserMapping|Reassigning placeholder user could not be canceled."
@@ -89875,9 +89818,6 @@ msgid "UserMapping|Use a CSV file to reassign contributions from placeholder use
 msgstr ""
 
 msgid "UserMapping|User ID"
-msgstr ""
-
-msgid "UserMapping|When importing, contributions are usually reassigned only to enterprise users in this group. Enabling this setting also allows reassigning to any other existing member of this group, its subgroups, or its projects. It never exposes other GitLab.com users."
 msgstr ""
 
 msgid "UserMapping|When to restore user confirmation"
@@ -97340,9 +97280,6 @@ msgid "Your device is not compatible with GitLab. Please try another device"
 msgstr ""
 
 msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
-msgstr ""
-
-msgid "Your email"
 msgstr ""
 
 msgid "Your file must contain a column named %{codeStart}title%{codeEnd}. A %{codeStart}description%{codeEnd} column is optional. The maximum file size allowed is 10 MB."

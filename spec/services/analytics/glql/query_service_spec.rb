@@ -244,7 +244,7 @@ RSpec.describe Analytics::Glql::QueryService, feature_category: :custom_dashboar
         expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(false)
         expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
           :glql,
-          hash_including(scope: service.send(:query_sha))
+          hash_including(scope: { query_sha: service.send(:query_sha) })
         )
 
         result = service.execute(query: query, variables: variables, context: context)

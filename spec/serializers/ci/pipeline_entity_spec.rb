@@ -7,7 +7,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline) { create(:ci_empty_pipeline, name: 'Build pipeline') }
+  let_it_be(:pipeline) { create(:ci_empty_pipeline, name: 'Build pipeline', project: project) }
 
   let(:request) { double('request', current_user: user) }
   let(:options) { {} }
@@ -60,7 +60,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
           create(:ci_pipeline, status: :success, project: project)
         end
 
-        before do
+        before_all do
           create(:ci_build, :failed, pipeline: pipeline)
         end
 
@@ -92,7 +92,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
           create(:ci_pipeline, status: :running, project: project)
         end
 
-        before do
+        before_all do
           create(:ci_build, :pending, pipeline: pipeline)
         end
 
@@ -140,7 +140,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline ref is empty' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
       before do
         allow(pipeline).to receive(:ref).and_return(nil)
@@ -152,7 +152,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline has a failure reason set' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
       before do
         pipeline.drop!(:config_error)
@@ -251,7 +251,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
       let_it_be(:failed_2) { create(:ci_build, :failed, pipeline: pipeline) }
 
       context 'when the user can retry the pipeline' do
-        before do
+        before_all do
           project.add_maintainer(user)
         end
 

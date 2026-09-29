@@ -139,7 +139,7 @@ module CollaborativeEditing
     def rate_limited?
       Gitlab::ApplicationRateLimiter.throttled?(
         :collaborative_editing_update,
-        scope: [current_user, @stream_key]
+        scope: { user: current_user, document_key: @stream_key }
       )
     end
 

@@ -50,7 +50,7 @@ module Mutations
       end
 
       def rate_limit_throttled?(project)
-        Gitlab::ApplicationRateLimiter.throttled?(:project_fork_sync, scope: [project, current_user])
+        Gitlab::ApplicationRateLimiter.throttled?(:project_fork_sync, scope: { project: project, user: current_user })
       end
 
       def respond(details, errors)

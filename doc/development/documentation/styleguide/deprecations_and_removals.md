@@ -48,7 +48,7 @@ To deprecate a page or topic:
    {{</* /details */>}}
 
    > [!warning]
-   > This feature was [deprecated](https://issue-link) in GitLab 14.8
+   > This feature was [deprecated](https://work-item-link) in GitLab 14.8
    > and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
    ```
 
@@ -78,7 +78,7 @@ To deprecate a page or topic:
    {{</* /details */>}}
 
    > [!warning]
-   > This feature was [deprecated](https://issue-link) in GitLab 14.8
+   > This feature was [deprecated](https://work-item-link) in GitLab 14.8
    > and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
 
    <!--- end_remove -->
@@ -118,8 +118,8 @@ To remove a page:
 
    {{</* /details */>}}
 
-   This feature was [deprecated](https://issue-link) in GitLab X.Y
-   and [removed](https://issue-link) in X.Y.
+   This feature was [deprecated](https://work-item-link) in GitLab X.Y
+   and [removed](https://work-item-link) in X.Y.
    Use [feature X](link-to-docs.md) instead.
    ```
 
@@ -165,8 +165,8 @@ To remove a topic:
 
    {{</* /details */>}}
 
-   This feature was [deprecated](https://issue-link) in GitLab X.Y
-   and [removed](https://issue-link) in X.Y.
+   This feature was [deprecated](https://work-item-link) in GitLab X.Y
+   and [removed](https://work-item-link) in X.Y.
    Use [feature X](link-to-docs.md) instead.
 
    <!--- end_remove -->

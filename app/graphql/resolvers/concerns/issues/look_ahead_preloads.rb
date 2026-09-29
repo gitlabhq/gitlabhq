@@ -28,7 +28,8 @@ module Issues
         participants: Issue.participant_includes,
         timelogs: [:timelogs],
         customer_relations_contacts: { customer_relations_contacts: [:group] },
-        escalation_status: [:incident_management_issuable_escalation_status]
+        escalation_status: [:incident_management_issuable_escalation_status],
+        relative_position: [:work_item_position]
       }
     end
   end

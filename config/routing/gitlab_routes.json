@@ -28246,18 +28246,6 @@
     "dottedExample": "/o/john.doe/users/sign_up"
   },
   {
-    "template": "/o/:organization_path/users/sign_up/company",
-    "example": "/o/foo/users/sign_up/company",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/users/sign_up/company"
-  },
-  {
-    "template": "/o/:organization_path/users/sign_up/company/new",
-    "example": "/o/foo/users/sign_up/company/new",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/users/sign_up/company/new"
-  },
-  {
     "template": "/o/:organization_path/users/sign_up/customers_portal_redirect",
     "example": "/o/foo/users/sign_up/customers_portal_redirect",
     "acceptsFormat": true,
@@ -29049,16 +29037,6 @@
   {
     "template": "/users/sign_up",
     "example": "/users/sign_up",
-    "acceptsFormat": true
-  },
-  {
-    "template": "/users/sign_up/company",
-    "example": "/users/sign_up/company",
-    "acceptsFormat": true
-  },
-  {
-    "template": "/users/sign_up/company/new",
-    "example": "/users/sign_up/company/new",
     "acceptsFormat": true
   },
   {

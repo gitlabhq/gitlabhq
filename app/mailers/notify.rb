@@ -324,7 +324,7 @@ class Notify < ApplicationMailer
   def throttled?(peek: false)
     ::Gitlab::ApplicationRateLimiter.throttled?(
       :notification_emails,
-      scope: [rate_limit_scope, @recipient].flatten,
+      scope: ::Gitlab::ApplicationRateLimiter.parent_scope(rate_limit_scope).merge(user: @recipient),
       peek: peek
     )
   end

@@ -29,7 +29,7 @@ module API
       route_setting :authorization, permissions: :create_service_account, boundary_type: :instance,
         assignable_when: [:admin]
       post feature_category: :user_management do
-        check_rate_limit!(:service_account_creation, scope: current_user)
+        check_rate_limit!(:service_account_creation, scope: { user: current_user })
 
         response = ::Users::ServiceAccounts::CreateService.new(
           current_user, declared_params.merge(organization_id: Current.organization.id)

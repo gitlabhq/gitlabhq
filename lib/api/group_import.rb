@@ -72,7 +72,7 @@ module API
       post 'import' do
         authorize_create_group!
         require_gitlab_workhorse!
-        check_rate_limit! :group_import, scope: current_user
+        check_rate_limit! :group_import, scope: { user: current_user }
         validate_file!
 
         group_params = {

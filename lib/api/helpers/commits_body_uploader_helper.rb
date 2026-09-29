@@ -67,7 +67,7 @@ module API
         file_size_bytes = file_size_bytes&.to_i
 
         if file_size_bytes.blank? || file_size_bytes > ::Repositories::CommitsUploader::MAX_RATE_LIMITED_REQUEST_SIZE
-          check_rate_limit!(:user_large_commit_request, scope: current_user)
+          check_rate_limit!(:user_large_commit_request, scope: { user: current_user })
         end
       end
 

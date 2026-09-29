@@ -1,0 +1,28 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+# @feature_category: importers
+
+query groupNonEnterpriseMembers(
+  $groupId: GroupID!
+  $search: String
+  $first: Int
+  $after: String
+  $active: Boolean
+  $humans: Boolean
+) {
+  users(
+    groupId: $groupId
+    search: $search
+    first: $first
+    after: $after
+    active: $active
+    humans: $humans
+  ) {
+    nodes {
+      ...User
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

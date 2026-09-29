@@ -853,7 +853,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     before do
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-        .with(:users_get_by_id, scope: user, users_allowlist: []).and_return(false)
+        .with(:users_get_by_id, scope: { user: user }, users_allowlist: []).and_return(false)
     end
 
     it "returns a user by id" do
@@ -972,7 +972,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     context 'when the rate limit is not exceeded' do
       it 'returns a success status' do
         expect(Gitlab::ApplicationRateLimiter)
-          .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: [])
+          .to receive(:throttled?).with(:users_get_by_id, scope: { user: user }, users_allowlist: [])
           .and_return(false)
 
         get api(path, user)
@@ -985,7 +985,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       context 'when feature flag is enabled' do
         it 'returns "too many requests" status' do
           expect(Gitlab::ApplicationRateLimiter)
-            .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: [])
+            .to receive(:throttled?).with(:users_get_by_id, scope: { user: user }, users_allowlist: [])
             .and_return(true)
 
           get api(path, user)
@@ -1015,7 +1015,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           allow(current_settings).to receive(:users_get_by_id_limit_allowlist).and_return(allowlist)
 
           expect(Gitlab::ApplicationRateLimiter)
-            .to receive(:throttled?).with(:users_get_by_id, scope: user, users_allowlist: allowlist)
+            .to receive(:throttled?).with(:users_get_by_id, scope: { user: user }, users_allowlist: allowlist)
             .and_call_original
 
           get api(path, user)
@@ -2954,7 +2954,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     context 'when the rate limit has been reached' do
       it 'returns status 429 Too Many Requests', :aggregate_failures do
         ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_ssh_keys, scope: ip).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_ssh_keys, scope: { ip: ip }).and_return(true)
 
         get api(path), env: { REMOTE_ADDR: ip }
 

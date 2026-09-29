@@ -85,10 +85,10 @@ describe('WorkItemStickyHeader', () => {
       expect(findWorkItemStateBadge().exists()).toBe(true);
     });
 
-    it('does not render when work item is open', () => {
+    it('renders when work item is open', () => {
       createComponent({ workItemState: STATE_OPEN });
 
-      expect(findWorkItemStateBadge().exists()).toBe(false);
+      expect(findWorkItemStateBadge().exists()).toBe(true);
     });
 
     it('passes URL props correctly when they exist and work item is closed', async () => {
@@ -174,11 +174,11 @@ describe('WorkItemStickyHeader', () => {
   describe('archived and status badge', () => {
     describe.each`
       archived | workItemState   | archivedBadgeExists | stateBadgeExists | description
-      ${false} | ${undefined}    | ${false}            | ${false}         | ${'when not archived'}
+      ${false} | ${undefined}    | ${false}            | ${true}          | ${'when not archived'}
       ${true}  | ${undefined}    | ${true}             | ${false}         | ${'when archived'}
       ${true}  | ${STATE_OPEN}   | ${true}             | ${false}         | ${'when archived and work item is open'}
       ${true}  | ${STATE_CLOSED} | ${true}             | ${false}         | ${'when archived and work item is closed'}
-      ${false} | ${STATE_OPEN}   | ${false}            | ${false}         | ${'when not archived and work item is open'}
+      ${false} | ${STATE_OPEN}   | ${false}            | ${true}          | ${'when not archived and work item is open'}
       ${false} | ${STATE_CLOSED} | ${false}            | ${true}          | ${'when not archived and work item is closed'}
     `('$description', ({ archived, workItemState, archivedBadgeExists, stateBadgeExists }) => {
       beforeEach(() => {

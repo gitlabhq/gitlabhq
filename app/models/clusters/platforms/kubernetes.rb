@@ -290,12 +290,12 @@ module Clusters
       end
 
       def enforce_namespace_to_lower_case
-        self.namespace = self.namespace&.downcase
+        self.namespace = namespace&.downcase
       end
 
       def enforce_ca_whitespace_trimming
-        self.ca_pem = self.ca_pem&.strip
-        self.token = self.token&.strip
+        self.ca_pem = ca_pem&.strip
+        self.token = token&.strip
       end
 
       def no_namespace
@@ -353,7 +353,7 @@ module Clusters
             message: error.message
           },
           status_code: error.try(:error_code),
-          namespace: self.namespace,
+          namespace: namespace,
           class_name: self.class.name,
           event: :kube_connection_error
         })

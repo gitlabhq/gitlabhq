@@ -1071,6 +1071,7 @@ RSpec.describe GraphqlController, feature_category: :api do
         {
           operation_name: 'getProject_1',
           complexity: 3,
+          Labkit::Fields::GRAPHQL_COMPLEXITY_RAW => 3.0,
           depth: 2,
           used_deprecated_arguments: [],
           used_deprecated_fields: [],
@@ -1080,6 +1081,7 @@ RSpec.describe GraphqlController, feature_category: :api do
         {
           operation_name: 'getProject_2',
           complexity: 2,
+          Labkit::Fields::GRAPHQL_COMPLEXITY_RAW => 2.0,
           depth: 2,
           used_deprecated_arguments: [],
           used_deprecated_fields: [],

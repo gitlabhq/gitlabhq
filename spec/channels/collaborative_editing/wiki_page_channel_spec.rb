@@ -568,7 +568,7 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
       before do
         allow(Gitlab::ApplicationRateLimiter)
           .to receive(:throttled?)
-          .with(:collaborative_editing_update, scope: [developer, document_key])
+          .with(:collaborative_editing_update, scope: { user: developer, document_key: document_key })
           .and_return(true)
       end
 
@@ -588,7 +588,7 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
       :clean_gitlab_redis_rate_limiting do
       expect(Gitlab::ApplicationRateLimiter)
         .to receive(:throttled?)
-        .with(:collaborative_editing_update, scope: [developer, document_key])
+        .with(:collaborative_editing_update, scope: { user: developer, document_key: document_key })
         .twice
         .and_call_original
 

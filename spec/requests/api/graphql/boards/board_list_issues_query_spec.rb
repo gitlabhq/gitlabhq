@@ -101,7 +101,7 @@ RSpec.describe 'get board lists', feature_category: :planning_views do
         subject
 
         expect(issue_id).not_to include(issue6.id)
-        expect(issue3.relative_position).to be_nil
+        expect(issue6.relative_position).to be_nil
       end
 
       context 'when filtering by confidential' do

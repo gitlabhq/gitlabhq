@@ -29,7 +29,7 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
 
         expect(project.issues.order_by_relative_position)
           .to eq([issue_e, issue_b, issue_a, issue, issue_c, issue_f, issue_d])
-        expect(project.issues.where(relative_position: nil)).not_to exist
+        expect(project.issues.with_null_relative_position).not_to exist
       end
 
       it 'schedules rebalancing if needed' do
@@ -56,21 +56,21 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
 
           run_worker
 
-          expect(project.issues.where(relative_position: nil)).to exist
+          expect(project.issues.with_null_relative_position).to exist
         end
 
         it 'is eventually correct' do
-          prefix = project.issues.where.not(relative_position: nil).order(:relative_position).to_a
+          prefix = project.issues.with_non_null_relative_position.order_by_relative_position.to_a
           moved = project.issues.where.not(id: prefix.map(&:id))
 
           run_worker
 
-          expect(project.issues.where(relative_position: nil)).to exist
+          expect(project.issues.with_null_relative_position).to exist
 
           run_worker
 
-          expect(project.issues.where(relative_position: nil)).not_to exist
-          expect(project.issues.order(:relative_position)).to eq(prefix + moved.order(:created_at, :id))
+          expect(project.issues.with_null_relative_position).not_to exist
+          expect(project.issues.order_by_relative_position).to eq(prefix + moved.order(:created_at, :id))
         end
       end
 
@@ -149,7 +149,7 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
         it 'places issues in the personal namespace project' do
           run_worker
 
-          expect(personal_project.issues.where(relative_position: nil)).not_to exist
+          expect(personal_project.issues.with_null_relative_position).not_to exist
           expect(personal_project.issues.order_by_relative_position)
             .to eq([personal_issue_a, personal_issue, personal_issue_b])
         end

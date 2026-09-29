@@ -88,7 +88,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   def check_play_rate_limit!
     return unless current_user
 
-    check_rate_limit!(:play_pipeline_schedule, scope: [current_user, schedule]) do
+    check_rate_limit!(:play_pipeline_schedule, scope: { user: current_user, ci_pipeline_schedule: schedule }) do
       flash[:alert] = _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
       redirect_to pipeline_schedules_path(@project)
     end

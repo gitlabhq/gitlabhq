@@ -230,7 +230,7 @@ module API
 
         route_setting :authorization, skip_granular_token_authorization: :runner_token_auth
         post '/request', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:runner_jobs_request_api, scope: [Gitlab::CryptoHelper.sha256(params[:token])], user: nil)
+          check_rate_limit!(:runner_jobs_request_api, scope: { runner_token_sha: Gitlab::CryptoHelper.sha256(params[:token]) }, user: nil)
 
           authenticate_runner!(creation_state: :finished)
 
@@ -267,7 +267,7 @@ module API
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         put '/:id', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: { job_token_sha: Gitlab::CryptoHelper.sha256(job_token) }, user: nil)
 
           job = authenticate_job!(heartbeat_runner: true, fail_on_expired_token: true)
 
@@ -299,7 +299,7 @@ module API
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         get '/:id/runtime_environment_key', urgency: :low, feature_category: :runner_core do
-          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: { job_token_sha: Gitlab::CryptoHelper.sha256(job_token) }, user: nil)
 
           job = authenticate_job!
 
@@ -327,7 +327,7 @@ module API
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         patch '/:id/trace', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:runner_jobs_patch_trace_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_patch_trace_api, scope: { job_token_sha: Gitlab::CryptoHelper.sha256(job_token) }, user: nil)
 
           job = authenticate_job!(heartbeat_runner: true, fail_on_expired_token: true)
 
@@ -379,7 +379,7 @@ module API
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         post '/:id/artifacts/authorize', feature_category: :job_artifacts, urgency: :low do
-          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: { job_token_sha: Gitlab::CryptoHelper.sha256(job_token) }, user: nil)
 
           not_allowed! unless Gitlab.config.artifacts.enabled
           require_gitlab_workhorse!
@@ -421,7 +421,7 @@ module API
         end
         route_setting :authorization, skip_granular_token_authorization: :job_token_auth
         post '/:id/artifacts', feature_category: :job_artifacts, urgency: :low do
-          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: { job_token_sha: Gitlab::CryptoHelper.sha256(job_token) }, user: nil)
 
           not_allowed! unless Gitlab.config.artifacts.enabled
           require_gitlab_workhorse!
@@ -469,7 +469,7 @@ module API
           allow_public_access_for_enabled_project_features: [:repository, :builds],
           skip_granular_token_authorization: :job_token_auth
         get '/:id/artifacts', feature_category: :job_artifacts do
-          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: { job_token_sha: Gitlab::CryptoHelper.sha256(job_token) }, user: nil)
 
           authenticate_job_via_dependent_job!
           authorize_job_token_policies!(current_job.project)

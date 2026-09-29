@@ -770,7 +770,7 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
 
         it 'still checks (and increments) the rate limit counter' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-            .with(:ci_lint, scope: [api_user])
+            .with(:ci_lint, scope: { user: api_user })
             .and_call_original
 
           get api("/projects/#{project.id}/ci/lint", api_user)
@@ -1168,7 +1168,7 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
 
         it 'still checks (and increments) the rate limit counter' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-            .with(:ci_lint, scope: [api_user])
+            .with(:ci_lint, scope: { user: api_user })
             .and_call_original
 
           post api("/projects/#{project.id}/ci/lint", api_user), params: { content: yaml_content }

@@ -143,7 +143,7 @@ module API
         post ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
           allowlist =
             Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
-          check_rate_limit! :notes_create, scope: current_user, users_allowlist: allowlist
+          check_rate_limit! :notes_create, scope: { user: current_user }, users_allowlist: allowlist
           noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
           validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
           opts = {

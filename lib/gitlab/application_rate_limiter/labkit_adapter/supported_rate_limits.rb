@@ -8,13 +8,12 @@ module Gitlab
       # supported_rate_limits.rb (EE additions, prepended via prepend_mod).
       #
       # Per-rule conventions:
-      #   characteristics: ordered list of identifier slots; AR-typed
-      #                    names (see LabkitAdapter#ar_characteristic_types)
-      #                    are populated by class-routing, primitives fill
-      #                    the remainder positionally. Polymorphic
-      #                    positions list every accepted slot; labkit's
-      #                    '_unknown_' sentinel fills slots not in scope,
-      #                    keeping Redis keys disjoint per real type.
+      #   characteristics: ordered slots of the labkit Redis key. Callers
+      #                    pass `scope:` as a hash keyed by these names,
+      #                    e.g. { project: project, user: current_user }.
+      #                    Polymorphic rules list every accepted slot;
+      #                    labkit's '_unknown_' sentinel fills slots not in
+      #                    scope, keeping Redis keys disjoint per real type.
       #   limit:           static threshold (Integer) or a zero-arity callable
       #                    resolved per check against application settings.
       #                    Omitted for entries whose threshold arrives per call

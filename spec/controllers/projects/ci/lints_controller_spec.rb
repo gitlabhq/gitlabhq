@@ -260,7 +260,7 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
 
         it 'still checks (and increments) the rate limit counter' do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-            .with(:ci_lint, scope: [user])
+            .with(:ci_lint, scope: { user: user })
             .and_call_original
 
           post :create, params: params

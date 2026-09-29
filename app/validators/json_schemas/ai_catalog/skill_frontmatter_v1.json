@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$comment": "The Agent Skills specification frontmatter, vendored from https://agentskills.io/specification (retrieved 2026-09-22). The specification publishes no version identifier, so the _v1 suffix is ours and a future revision should land as a visible diff here. Only specification rules belong in this file: GitLab's own limits live in Skills::Validator. One specification rule is absent because draft-07 cannot express it: `name` must equal the parent directory name, which compares the instance against its file path. Skills::Validator checks that in Ruby.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Skill name. Lowercase alphanumerics and single hyphens, no leading or trailing hyphen. Must also equal the parent directory name.",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "description": {
+      "type": "string",
+      "description": "What the skill does and when to use it. Loaded at agent startup alongside the name, so it is the text a runtime matches against.",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "license": {
+      "type": "string",
+      "description": "License name, or a reference to a license file bundled in the skill directory."
+    },
+    "compatibility": {
+      "type": "string",
+      "description": "Environment requirements, such as the intended product or required system packages. Most skills omit this.",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Free-form string map for properties the specification does not define.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "allowed-tools": {
+      "type": "string",
+      "description": "Space-separated list of tools the skill may run without further approval. Experimental in the specification; support varies between agents."
+    }
+  },
+  "required": [
+    "name",
+    "description"
+  ],
+  "$comment-additional-properties": "Unknown top-level keys are permitted even though the specification designates `metadata` as its extension point. A skill authored for another agent may carry keys we do not know about, and rejecting the whole file for one unrecognised key would make a catalog item go stale for no benefit to the reader.",
+  "additionalProperties": true
+}

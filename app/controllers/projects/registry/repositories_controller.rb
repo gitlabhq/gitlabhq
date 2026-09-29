@@ -33,7 +33,11 @@ module Projects
       private
 
       def image
-        @image ||= project.container_repositories.find(params[:id])
+        @image ||= project.container_repositories.find(permitted_params[:id])
+      end
+
+      def permitted_params
+        params.permit(:id)
       end
 
       ##

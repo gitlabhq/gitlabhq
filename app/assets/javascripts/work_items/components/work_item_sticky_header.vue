@@ -9,7 +9,6 @@ import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import { STATE_CLOSED } from '~/work_items/constants';
 import { findNotesWidget } from '../utils';
 import WorkItemStateBadge from './work_item_state_badge.vue';
 
@@ -59,17 +58,16 @@ export default {
     },
   },
   NAMESPACE_PROJECT,
-  STATE_CLOSED,
   TITLE_CLASS: 'gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong',
   titleInLinkSafeHtmlConfig,
 };
 </script>
 
 <template>
-  <div class="gl-flex gl-items-center gl-gap-3">
+  <div class="gl-flex gl-items-center gl-gap-2">
     <archived-badge v-if="archived" :issuable-type="workItemType" />
     <work-item-state-badge
-      v-else-if="workItemState === $options.STATE_CLOSED"
+      v-else-if="workItemState"
       :work-item-state="workItemState"
       :promoted-to-epic-url="workItem.promotedToEpicUrl"
       :duplicated-to-work-item-url="workItem.duplicatedToWorkItemUrl"

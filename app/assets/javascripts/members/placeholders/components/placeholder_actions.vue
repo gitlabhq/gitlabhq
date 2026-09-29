@@ -10,6 +10,8 @@ import {
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { fetchGroupEnterpriseUsers } from 'ee_else_ce/api/groups_api';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import {
@@ -17,6 +19,7 @@ import {
   PLACEHOLDER_STATUS_REASSIGNING,
 } from '~/import_entities/import_groups/constants';
 import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
+import groupNonEnterpriseMembersQuery from '../graphql/queries/group_non_enterprise_members.query.graphql';
 import importSourceUserReassignMutation from '../graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '../graphql/mutations/keep_as_placeholder.mutation.graphql';
 import importSourceUseResendNotificationMutation from '../graphql/mutations/resend_notification.mutation.graphql';
@@ -46,6 +49,9 @@ export default {
       default: {},
     },
     restrictReassignmentToEnterprise: {
+      default: false,
+    },
+    allowNonEnterprisePlaceholderReassignment: {
       default: false,
     },
     allowInactivePlaceholderReassignment: {
@@ -80,6 +86,7 @@ export default {
       },
       enterpriseUsersIsLoadingInitial: false,
       enterpriseUsersIsLoadingMore: false,
+      hasShownListbox: false,
     };
   },
 
@@ -102,9 +109,51 @@ export default {
         this.onError();
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+    nonEnterpriseMembers: {
+      query: groupNonEnterpriseMembersQuery,
+      variables() {
+        return { ...this.nonEnterpriseMembersQueryVariables };
+      },
+      update(data) {
+        return data.users;
+      },
+      result() {
+        this.apolloIsLoadingInitial = false;
+      },
+      skip() {
+        return !this.isNonEnterpriseMembersMode || !this.hasShownListbox;
+      },
+      error() {
+        this.apolloIsLoadingInitial = false;
+        this.onError();
+      },
+    },
   },
 
   computed: {
+    isNonEnterpriseMembersMode() {
+      return (
+        this.restrictReassignmentToEnterprise && this.allowNonEnterprisePlaceholderReassignment
+      );
+    },
+
+    isEnterpriseRestMode() {
+      return (
+        this.restrictReassignmentToEnterprise && !this.allowNonEnterprisePlaceholderReassignment
+      );
+    },
+
+    nonEnterpriseMembersQueryVariables() {
+      return {
+        groupId: convertToGraphQLId(TYPENAME_GROUP, this.group.id),
+        search: this.search,
+        first: USERS_PER_PAGE,
+        humans: true,
+        ...(this.allowInactivePlaceholderReassignment ? {} : { active: true }),
+      };
+    },
+
     queryVariables() {
       const query = {
         first: USERS_PER_PAGE,
@@ -117,7 +166,14 @@ export default {
     },
 
     hasNextPage() {
-      if (this.restrictReassignmentToEnterprise) {
+      if (this.isNonEnterpriseMembersMode) {
+        return (
+          Boolean(this.enterpriseUsersPageInfo.nextPage) ||
+          Boolean(this.nonEnterpriseMembers?.pageInfo?.hasNextPage)
+        );
+      }
+
+      if (this.isEnterpriseRestMode) {
         return Boolean(this.enterpriseUsersPageInfo.nextPage);
       }
 
@@ -125,7 +181,16 @@ export default {
     },
 
     isLoading() {
-      if (this.restrictReassignmentToEnterprise) {
+      if (this.isNonEnterpriseMembersMode) {
+        return (
+          (this.$apollo.queries.nonEnterpriseMembers.loading ||
+            this.enterpriseUsersIsLoadingInitial) &&
+          !this.apolloIsLoadingMore &&
+          !this.enterpriseUsersIsLoadingMore
+        );
+      }
+
+      if (this.isEnterpriseRestMode) {
         return this.enterpriseUsersIsLoadingInitial;
       }
 
@@ -133,7 +198,11 @@ export default {
     },
 
     isLoadingMore() {
-      if (this.restrictReassignmentToEnterprise) {
+      if (this.isNonEnterpriseMembersMode) {
+        return this.apolloIsLoadingMore || this.enterpriseUsersIsLoadingMore;
+      }
+
+      if (this.isEnterpriseRestMode) {
         return this.enterpriseUsersIsLoadingMore;
       }
 
@@ -141,7 +210,14 @@ export default {
     },
 
     isLoadingInitial() {
-      if (this.restrictReassignmentToEnterprise) {
+      if (this.isNonEnterpriseMembersMode) {
+        return (
+          (this.hasShownListbox && this.apolloIsLoadingInitial) ||
+          this.enterpriseUsersIsLoadingInitial
+        );
+      }
+
+      if (this.isEnterpriseRestMode) {
         return this.enterpriseUsersIsLoadingInitial;
       }
 
@@ -153,11 +229,36 @@ export default {
     },
 
     userItems() {
-      if (this.restrictReassignmentToEnterprise) {
+      if (this.isNonEnterpriseMembersMode) {
+        return this.mergedNonEnterpriseItems;
+      }
+
+      if (this.isEnterpriseRestMode) {
         return this.enterpriseUsers?.map((user) => this.createUserObjectFromEnterprise(user));
       }
 
       return this.users?.nodes?.map((user) => createUserObject(user));
+    },
+
+    // Enterprise users are not necessarily members of this group, and members of this group are
+    // not necessarily enterprise users, so both sources are searched independently and merged
+    // (deduped by user) when the "also allow non-enterprise members" setting is on.
+    mergedNonEnterpriseItems() {
+      const enterpriseItems = this.enterpriseUsers.map((user) =>
+        this.createUserObjectFromEnterprise(user),
+      );
+      const nonEnterpriseItems =
+        this.nonEnterpriseMembers?.nodes?.map((node) => createUserObject(node)) || [];
+      const seenValues = new Set();
+
+      return [...enterpriseItems, ...nonEnterpriseItems].filter((item) => {
+        if (seenValues.has(item.value)) {
+          return false;
+        }
+
+        seenValues.add(item.value);
+        return true;
+      });
     },
 
     dontReassignSelected() {
@@ -225,16 +326,55 @@ export default {
       this.enterpriseUsersIsLoadingInitial = false;
     },
 
+    onListboxShown() {
+      this.loadInitialEnterpriseUsers();
+      this.hasShownListbox = true;
+    },
+
     async loadMoreEnterpriseUsers() {
       this.enterpriseUsersIsLoadingMore = true;
       await this.fetchEnterpriseUsers(this.enterpriseUsersPageInfo.nextPage);
       this.enterpriseUsersIsLoadingMore = false;
     },
 
+    async loadMoreNonEnterpriseMembers() {
+      this.apolloIsLoadingMore = true;
+
+      try {
+        await this.$apollo.queries.nonEnterpriseMembers.fetchMore({
+          variables: {
+            ...this.nonEnterpriseMembersQueryVariables,
+            after: this.nonEnterpriseMembers.pageInfo?.endCursor,
+          },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            return produce(fetchMoreResult, (draftData) => {
+              draftData.users.nodes = [...previousResult.users.nodes, ...draftData.users.nodes];
+            });
+          },
+        });
+      } catch (error) {
+        this.onError();
+      } finally {
+        this.apolloIsLoadingMore = false;
+      }
+    },
+
     async loadMoreUsers() {
       if (!this.hasNextPage) return;
 
-      if (this.restrictReassignmentToEnterprise) {
+      if (this.isNonEnterpriseMembersMode) {
+        if (this.enterpriseUsersPageInfo.nextPage) {
+          this.loadMoreEnterpriseUsers();
+        }
+
+        if (this.nonEnterpriseMembers?.pageInfo?.hasNextPage) {
+          this.loadMoreNonEnterpriseMembers();
+        }
+
+        return;
+      }
+
+      if (this.isEnterpriseRestMode) {
         this.loadMoreEnterpriseUsers();
         return;
       }
@@ -440,7 +580,7 @@ export default {
         :searching="isLoading"
         infinite-scroll
         :infinite-scroll-loading="isLoadingMore"
-        @shown="loadInitialEnterpriseUsers"
+        @shown="onListboxShown"
         @search="debouncedSetSearch"
         @select="onSelect"
         @bottom-reached="loadMoreUsers"

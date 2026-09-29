@@ -531,7 +531,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'with rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_processed_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: { project: build.project })
                                                      .and_return(true)
         end
 
@@ -549,7 +549,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'without rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_processed_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: { project: build.project })
                                                      .and_return(false)
         end
 

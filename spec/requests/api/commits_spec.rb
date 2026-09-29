@@ -2115,7 +2115,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
           it 'applies rate limiting' do
             allow_next_instance_of(described_class) do |controller|
-              expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: user)
+              expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: { user: user })
             end
 
             workhorse_body_upload(url, valid_c_params)
@@ -2530,7 +2530,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           stub_const('Repositories::CommitsUploader::MAX_RATE_LIMITED_REQUEST_SIZE', body.bytesize - 1)
 
           allow_next_instance_of(described_class) do |controller|
-            expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: user)
+            expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: { user: user })
           end
 
           perform_workhorse_json_body_upload(url, body, params: { 'file.size': 1 })

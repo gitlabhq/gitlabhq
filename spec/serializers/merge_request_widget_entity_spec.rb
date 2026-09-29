@@ -6,10 +6,9 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
   include ProjectForksHelper
   include Gitlab::Routing.url_helpers
 
-  let(:project) { create :project, :repository }
-  let(:resource) { create(:merge_request, source_project: project, target_project: project) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create :project, :repository }
+  let_it_be_with_refind(:resource) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be(:user) { create(:user) }
 
   let(:request) { double('request', current_user: user, project: project) }
 
@@ -34,7 +33,7 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
 
   describe 'can_create_pipeline_in_target_project' do
     context 'when user has permission' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -44,7 +43,7 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
     end
 
     context 'when user does not have permission' do
-      before do
+      before_all do
         project.add_guest(user)
       end
 

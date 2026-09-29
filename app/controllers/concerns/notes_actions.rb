@@ -20,7 +20,7 @@ module NotesActions
     before_action :note_project, only: [:create]
     before_action -> {
       check_rate_limit!(:notes_create,
-        scope: current_user,
+        scope: { user: current_user },
         users_allowlist: Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist)
     }, only: [:create]
   end

@@ -87,7 +87,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       before do
         allow(::Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:raw_blob, scope: [project, path_without_ref]).and_return(true)
+          receive(:throttled?).with(:raw_blob, scope: { project: project, path: path_without_ref }).and_return(true)
         )
       end
 
@@ -125,10 +125,10 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       before do
         allow(::Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:raw_blob, scope: [project, path_without_ref]).and_return(false)
+          receive(:throttled?).with(:raw_blob, scope: { project: project, path: path_without_ref }).and_return(false)
         )
         allow(::Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:raw_blob_unauthenticated, scope: project).and_return(true)
+          receive(:throttled?).with(:raw_blob_unauthenticated, scope: { project: project }).and_return(true)
         )
       end
 
@@ -149,7 +149,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
         it 'does not apply the unauthenticated rate limit' do
           expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:raw_blob_unauthenticated,
-            scope: project)
+            scope: { project: project })
 
           get_show
         end

@@ -42,9 +42,14 @@ module Gitlab
           analyze: true,
           owner_db_only: Rails.env.production?
         )
-          return if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+          blocking_flag = blocking_feature_flag
 
-          return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
+          if blocking_flag
+            Gitlab::AppLogger.warn(
+              message: 'Skipping sync of dynamic postgres partitions', feature_flag: blocking_flag
+            )
+            return blocking_flag
+          end
 
           Gitlab::AppLogger.info(message: 'Syncing dynamic postgres partitions')
 
@@ -78,9 +83,14 @@ module Gitlab
         end
 
         def drop_detached_partitions
-          return if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+          blocking_flag = blocking_feature_flag
 
-          return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
+          if blocking_flag
+            Gitlab::AppLogger.warn(
+              message: 'Skipping drop of detached postgres partitions', feature_flag: blocking_flag
+            )
+            return blocking_flag
+          end
 
           Gitlab::AppLogger.info(message: 'Dropping detached postgres partitions')
 
@@ -114,6 +124,14 @@ module Gitlab
             klass.table_name = table_name
             klass.partitioned_by(partitioned_column, strategy: strategy, **strategy_args)
             klass.limit_connection_names = limit_connection_names
+          end
+        end
+
+        def blocking_feature_flag
+          if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+            :disallow_database_ddl_feature_flags
+          elsif Feature.disabled?(:partition_manager_sync_partitions, type: :ops)
+            :partition_manager_sync_partitions
           end
         end
       end

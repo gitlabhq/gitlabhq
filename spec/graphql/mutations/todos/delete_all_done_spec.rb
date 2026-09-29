@@ -31,7 +31,7 @@ RSpec.describe Mutations::Todos::DeleteAllDone, feature_category: :notifications
     context 'when the action is called too many times' do
       it 'raises error' do
         expect(Gitlab::ApplicationRateLimiter).to(
-          receive(:throttled?).with(:delete_all_todos, scope: [current_user]).and_return(true)
+          receive(:throttled?).with(:delete_all_todos, scope: { user: current_user }).and_return(true)
         )
 
         expect do

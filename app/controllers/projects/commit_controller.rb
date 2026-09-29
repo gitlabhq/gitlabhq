@@ -422,7 +422,7 @@ class Projects::CommitController < Projects::ApplicationController
   def rate_limit_for_expanded_diff_files
     return unless diffs_expanded?
 
-    check_rate_limit!(:expanded_diff_files, scope: current_user || request.ip)
+    check_rate_limit!(:expanded_diff_files, scope: current_user ? { user: current_user } : { ip: request.ip })
   end
 
   def complete_diff_path

@@ -42,7 +42,7 @@ class Projects::RawController < Projects::ApplicationController
   end
 
   def check_show_blob_path_rate_limit!
-    check_rate_limit!(:raw_blob, scope: [@project, @path]) do
+    check_rate_limit!(:raw_blob, scope: { project: @project, path: @path }) do
       render plain: _('You cannot access the raw file. Please wait a minute.'), status: :too_many_requests
     end
   end
@@ -50,7 +50,7 @@ class Projects::RawController < Projects::ApplicationController
   def check_show_unauthenticated_rate_limit!
     return if current_user
 
-    check_rate_limit!(:raw_blob_unauthenticated, scope: @project) do
+    check_rate_limit!(:raw_blob_unauthenticated, scope: { project: @project }) do
       message = _('You cannot access the raw file. Please wait a minute or authenticate and try again.')
       render plain: message, status: :too_many_requests
     end

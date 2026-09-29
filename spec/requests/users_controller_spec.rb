@@ -1167,7 +1167,7 @@ RSpec.describe UsersController, feature_category: :user_management do
     context 'when the rate limit has been reached' do
       it 'returns status 429 Too Many Requests', :aggregate_failures do
         ip = '1.2.3.4'
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:username_exists, scope: ip).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:username_exists, scope: { ip: ip }).and_return(true)
 
         get user_exists_url(user.username), env: { REMOTE_ADDR: ip }
 

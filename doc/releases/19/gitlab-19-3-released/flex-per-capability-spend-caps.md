@@ -3,7 +3,7 @@ title: Per-capability spend caps for GitLab Flex
 tier: [ Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 stage: fulfillment
-documentation_link: "../../../subscriptions/gitlab_flex/#spend-caps"
+documentation_link: "../../../subscriptions/gitlab_flex_dashboard/#spend-controls"
 work_item: https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/18656
 categories: [ Consumables Cost Management ]
 level: secondary

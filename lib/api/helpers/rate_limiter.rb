@@ -24,7 +24,7 @@ module API
       end
 
       def check_rate_limit_by_user_or_ip!(key, **options)
-        check_rate_limit!(key, scope: current_user || ip_address, **options)
+        check_rate_limit!(key, scope: current_user ? { user: current_user } : { ip: ip_address }, **options)
       end
 
       def mark_throttle!(key, scope:)

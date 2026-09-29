@@ -500,7 +500,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'with rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: { project: pipeline.project })
                                                     .and_return(true)
         end
 
@@ -514,7 +514,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'with rate limiting disabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                    .with(:ci_pipeline_statuses_subscription, scope: pipeline.project)
+                                                    .with(:ci_pipeline_statuses_subscription, scope: { project: pipeline.project })
                                                     .and_return(false)
         end
 

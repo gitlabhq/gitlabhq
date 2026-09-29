@@ -54,14 +54,15 @@ RSpec.describe Projects::ImportExport::ProjectExportPresenter do
   end
 
   describe '#project_members' do
-    let(:user2) { create(:user, email: 'group@member.com') }
+    let_it_be(:user2) { create(:user, email: 'group@member.com') }
+
     let(:member_emails) do
       subject.project_members.map do |pm|
         pm.user.email
       end
     end
 
-    before do
+    before_all do
       group.add_developer(user2)
     end
 
@@ -84,7 +85,7 @@ RSpec.describe Projects::ImportExport::ProjectExportPresenter do
     end
 
     context 'as admin' do
-      let(:user) { create(:admin) }
+      let_it_be(:user) { create(:admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'exports group members as admin' do

@@ -348,8 +348,13 @@ After the AI Gateway and vLLM are running, configure GitLab to use them:
    enter `<ai-gateway-host>:50052`.
 1. Turn on **GitLab Duo Agent Platform**.
    After you turn it on, the **Flow execution** section expands.
-1. Under **Image registry**, enter your internal registry URL
-   (for example, `registry.internal.example.com/duo`).
+1. Under **Image registry**, enter the full reference of the executor image
+   you loaded along with its tag
+   (for example, `registry.internal.example.com/duo/workflow-generic-image:<executor_version>`).
+   GitLab uses a full image reference as is.
+   If you enter only a registry hostname, a flow that does not set its own image pulls
+   `<hostname>/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image`
+   with the tag your GitLab version requests.
 1. Select **Save changes**.
 
 ## Add the self-hosted model
@@ -370,8 +375,13 @@ Add the self-hosted model deployment to your GitLab instance:
 
 ## Configure offline flow execution
 
-For offline flow execution, use a custom executor image with
-`duo-cli` pre-installed.
+Executor images `v0.0.11` and later include `duo-cli` in `/usr/local/bin/duo`.
+When `duo` is already in the image, the flow's CI/CD job skips the download
+and does not contact `gitlab.com` for `duo-cli`.
+
+Executor images earlier than `v0.0.11` do not include `duo-cli`.
+If your GitLab version requests one of those tags, or if you need a different
+`duo-cli` version, build a custom executor image:
 
 1. On a connected machine, download the `duo-cli` binary:
 
@@ -388,8 +398,8 @@ For offline flow execution, use a custom executor image with
 
    ```dockerfile
    FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.14
-   COPY duo-linux-x64 /usr/bin/duo
-   RUN chmod +x /usr/bin/duo
+   COPY duo-linux-x64 /usr/local/bin/duo
+   RUN chmod +x /usr/local/bin/duo
    ```
 
    Replace `v0.0.14` with the tag your GitLab version requests.

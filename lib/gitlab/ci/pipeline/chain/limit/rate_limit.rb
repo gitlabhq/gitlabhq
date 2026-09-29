@@ -10,8 +10,11 @@ module Gitlab
             include ::Gitlab::Utils::StrongMemoize
 
             RATE_LIMITS = [
-              { key: :pipelines_create, scope: ->(chain) { [chain.project, chain.current_user, chain.command.sha] } },
-              { key: :pipelines_created_per_user, scope: ->(chain) { chain.current_user } }
+              {
+                key: :pipelines_create,
+                scope: ->(chain) { { project: chain.project, user: chain.current_user, sha: chain.command.sha } }
+              },
+              { key: :pipelines_created_per_user, scope: ->(chain) { { user: chain.current_user } } }
             ].freeze
 
             EXCLUDED_WORKFLOW_DEFINITIONS = [

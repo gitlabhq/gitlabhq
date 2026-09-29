@@ -247,6 +247,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def throttled_request?
-    ::Gitlab::ApplicationRateLimiter.throttled_request?(request, current_user, :bulk_import, scope: current_user)
+    ::Gitlab::ApplicationRateLimiter.throttled_request?(request, current_user, :bulk_import,
+      scope: { user: current_user })
   end
 end

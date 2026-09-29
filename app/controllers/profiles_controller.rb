@@ -8,7 +8,7 @@ class ProfilesController < Profiles::ApplicationController
   before_action :user
   before_action :authorize_change_username!, only: :update_username
   before_action only: :update_username do
-    check_rate_limit!(:profile_update_username, scope: current_user)
+    check_rate_limit!(:profile_update_username, scope: { user: current_user })
   end
 
   feature_category :user_profile, [:reset_incoming_email_token, :reset_feed_token,

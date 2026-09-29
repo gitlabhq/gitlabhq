@@ -391,13 +391,13 @@ class GroupsController < Groups::ApplicationController
 
     scope = action_name == 'download_export' ? @group : nil
 
-    check_rate_limit!(prefixed_action, scope: [current_user, scope].compact)
+    check_rate_limit!(prefixed_action, scope: { user: current_user, group: scope }.compact)
   end
 
   def check_create_rate_limit!
     return unless Feature.enabled?(:namespace_create_rate_limit, current_user)
 
-    check_rate_limit!(:groups_create, scope: [current_user])
+    check_rate_limit!(:groups_create, scope: { user: current_user })
   end
 
   private

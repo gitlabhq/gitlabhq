@@ -16,9 +16,10 @@ module Groups
         respond_to do |format|
           format.html
           format.json do
-            @images = ContainerRepositoriesFinder.new(user: current_user, subject: group, params: params.slice(:name))
-                                                 .execute
-                                                 .with_api_entity_associations
+            @images = ContainerRepositoriesFinder
+                        .new(user: current_user, subject: group, params: permitted_params)
+                        .execute
+                        .with_api_entity_associations
 
             track_package_event(:list_repositories, :container, user: current_user, namespace: group)
 
@@ -37,6 +38,10 @@ module Groups
       end
 
       private
+
+      def permitted_params
+        params.permit(:name)
+      end
 
       def verify_container_registry_enabled!
         render_404 unless Gitlab.config.registry.enabled

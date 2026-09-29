@@ -1242,7 +1242,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
     end
 
     it 'does not break when the limiter is scoped to a nil user' do
-      expect { Gitlab::ApplicationRateLimiter.throttled?(:ci_lint, scope: [nil]) }
+      expect { Gitlab::ApplicationRateLimiter.throttled?(:ci_lint, scope: { user: nil }) }
         .not_to raise_error
     end
 
@@ -1251,7 +1251,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-            .with(:ci_lint, scope: [user]).and_return(true)
+            .with(:ci_lint, scope: { user: user }).and_return(true)
         end
 
         context 'when ci_enforce_ci_lint_rate_limit is enabled' do
@@ -1318,7 +1318,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
 
         it 'checks the rate limit scoped to a nil user and does not raise', :aggregate_failures do
           expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-            .with(:ci_lint, scope: [nil]).and_call_original
+            .with(:ci_lint, scope: { user: nil }).and_call_original
 
           expect { subject }.not_to raise_error
         end
@@ -1327,7 +1327,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
           before do
             allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
             allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:ci_lint, scope: [nil]).and_return(true)
+              .with(:ci_lint, scope: { user: nil }).and_return(true)
           end
 
           it 'logs a nil user id and raises without a NoMethodError', :aggregate_failures do

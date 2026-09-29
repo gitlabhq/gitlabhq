@@ -1490,6 +1490,25 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
         it { expect { push_access_check }.not_to raise_error }
 
+        context 'with a wildcard restriction and exact deploy key access' do
+          before do
+            project.add_developer(user)
+            create(:protected_branch, :no_one_can_push, project: project, name: '*')
+            exact = create(:protected_branch, project: project, name: 'feature')
+            create(:protected_branch_push_access_level, protected_branch: exact, deploy_key: key)
+          end
+
+          it 'allows the exact branch and denies wildcard-protected changes', :aggregate_failures do
+            expect { push_changes('6f6d7e7ed 570e7b2ab refs/heads/feature') }.not_to raise_error
+            expect { push_changes('6f6d7e7ed 570e7b2ab refs/heads/master') }
+              .to raise_forbidden(Gitlab::Checks::BranchCheck::ERROR_MESSAGES[:push_protected_branch])
+            expect { push_changes("#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2ab refs/heads/new_branch") }
+              .to raise_forbidden(Gitlab::Checks::BranchCheck::ERROR_MESSAGES[:create_protected_branch])
+            expect { push_changes("#{TestEnv::BRANCH_SHA['markdown']} #{Gitlab::Git::SHA1_BLANK_SHA} refs/heads/markdown") }
+              .to raise_forbidden(Gitlab::Checks::BranchCheck::ERROR_MESSAGES[:non_master_delete_protected_branch])
+          end
+        end
+
         context 'when project is archived' do
           before do
             project.update!(archived: true)

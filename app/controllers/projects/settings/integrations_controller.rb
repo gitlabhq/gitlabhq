@@ -160,7 +160,7 @@ module Projects
       end
 
       def check_test_rate_limit!
-        check_rate_limit!(:project_testing_integration, scope: [@project, current_user]) do
+        check_rate_limit!(:project_testing_integration, scope: { project: @project, user: current_user }) do
           render json: {
             error: true,
             message: Gitlab::ApplicationRateLimiter.throttled_error_message

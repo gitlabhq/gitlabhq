@@ -1531,6 +1531,47 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
     end
 
+    context 'when partitions are synced' do
+      it 'prints nothing' do
+        expect(Gitlab::Database::Partitioning).to receive(:sync_partitions).and_return(true)
+
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions') }.not_to output.to_stdout
+      end
+    end
+
+    context 'when partition_manager_sync_partitions is disabled' do
+      let(:note) { /partition_manager_sync_partitions feature is currently disabled/ }
+
+      before do
+        stub_feature_flags(partition_manager_sync_partitions: false)
+      end
+
+      it 'prints a note naming the flag' do
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions') }.to output(note).to_stdout
+      end
+
+      context 'when running a single-database variant' do
+        before do
+          skip_if_shared_database(:ci)
+        end
+
+        it 'prints a note naming the flag' do
+          expect { run_rake_task('gitlab:db:create_dynamic_partitions:main') }.to output(note).to_stdout
+        end
+      end
+    end
+
+    context 'when disallow_database_ddl_feature_flags is enabled' do
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+      end
+
+      it 'prints a note naming the flag' do
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions') }
+          .to output(/disallow_database_ddl_feature_flags feature is currently enabled/).to_stdout
+      end
+    end
+
     context 'with geo configured' do
       before do
         skip_unless_geo_configured

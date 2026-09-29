@@ -127,7 +127,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :pipeline_compos
         project.add_developer(user)
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:ci_lint, scope: [user])
+          .with(:ci_lint, scope: { user: user })
           .and_return(true)
       end
 

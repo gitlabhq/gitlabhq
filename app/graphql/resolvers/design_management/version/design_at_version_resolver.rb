@@ -5,10 +5,10 @@ module Resolvers
     module Version
       # Resolver for a DesignAtVersion object given an implicit version context
       class DesignAtVersionResolver < BaseResolver
+        include Gitlab::Graphql::Authorize::AuthorizeResource
+
         DesignAtVersionID = ::Types::GlobalIDType[::DesignManagement::DesignAtVersion]
         DesignID = ::Types::GlobalIDType[::DesignManagement::Design]
-
-        include Gitlab::Graphql::Authorize::AuthorizeResource
 
         type Types::DesignManagement::DesignAtVersionType, null: true
 

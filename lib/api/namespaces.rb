@@ -96,7 +96,7 @@ module API
       end
       route_setting :authorization, permissions: :read_namespace, boundary_type: :user
       get ':id/exists', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :groups_and_projects, urgency: :low do
-        check_rate_limit!(:namespace_exists, scope: current_user)
+        check_rate_limit!(:namespace_exists, scope: { user: current_user })
 
         namespace_path = params[:id]
         existing_namespaces_within_the_parent = Namespace.without_project_namespaces.by_parent(params[:parent_id])

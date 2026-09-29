@@ -81,6 +81,17 @@ RSpec.describe Gitlab::HookData::IssueBuilder, feature_category: :webhooks do
       end
     end
 
+    context 'when positions have cut over to work_item_positions' do
+      it 'emits the position from work_item_positions, not the stale issues column' do
+        cut_over_issue = create(:issue, project: project, relative_position: 300) # legacy column (goes stale)
+        WorkItems::Position.where(work_item_id: cut_over_issue.id).update_all(relative_position: 150) # source of truth
+        cut_over_issue.reset
+
+        expect(described_class.new(cut_over_issue).build[:relative_position]).to eq(150)
+        expect(Issue.where(id: cut_over_issue.id).pick(Arel.sql('issues.relative_position'))).to eq(300)
+      end
+    end
+
     context 'for work items' do
       let_it_be(:work_item) { create(:work_item) }
 

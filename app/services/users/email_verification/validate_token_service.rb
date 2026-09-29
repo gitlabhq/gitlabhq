@@ -37,7 +37,7 @@ module Users
       attr_reader :user
 
       def verification_rate_limited?
-        Gitlab::ApplicationRateLimiter.throttled?(:email_verification, scope: attr_value || :global)
+        Gitlab::ApplicationRateLimiter.throttled?(:email_verification, scope: { subject: attr_value || :global })
       end
 
       def valid?

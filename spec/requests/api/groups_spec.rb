@@ -1207,11 +1207,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     it 'increments the update_namespace_name rate limit' do
       put api("/groups/#{group1.id}", user1), params: { name: "#{new_group_name}_1" }
 
-      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: group1)).to be_falsey
+      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: { namespace: group1 })).to be_falsey
 
       put api("/groups/#{group1.id}", user1), params: { name: "#{new_group_name}_2" }
 
-      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: group1)).to be_truthy
+      expect(::Gitlab::ApplicationRateLimiter.peek(:update_namespace_name, scope: { namespace: group1 })).to be_truthy
       expect(response).to have_gitlab_http_status(:ok)
       expect(group1.reload.name).to eq("#{new_group_name}_2")
     end

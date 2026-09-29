@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe CheckRateLimit do
+RSpec.describe CheckRateLimit, feature_category: :rate_limiting do
   let(:key) { :some_key }
-  let(:scope) { [:some, :scope] }
   let(:request) { instance_double('Rack::Request') }
   let(:user) { build_stubbed(:user) }
+  let(:scope) { { user: user } }
 
   let(:controller_class) do
     Class.new do

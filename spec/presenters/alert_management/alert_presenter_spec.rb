@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe AlertManagement::AlertPresenter do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:payload) do
+  let(:project) { build_stubbed(:project) }
+  let(:payload) do
     {
       'title' => 'Alert title',
       'start_time' => '2020-04-27T10:10:22.265949279Z',
@@ -19,15 +19,13 @@ RSpec.describe AlertManagement::AlertPresenter do
     }
   end
 
-  let_it_be_with_reload(:alert) { create(:alert_management_alert, project: project, payload: payload) }
-
+  let(:alert) { build_stubbed(:alert_management_alert, project: project, payload: payload, iid: 1) }
   let(:alert_url) { "http://localhost/#{project.full_path}/-/alert_management/#{alert.iid}/details" }
 
   subject(:presenter) { described_class.new(alert) }
 
   describe '#issue_description' do
-    let_it_be_with_reload(:alert) { create(:alert_management_alert, project: project, payload: {}) }
-
+    let(:alert) { build_stubbed(:alert_management_alert, project: project, payload: {}, iid: 1) }
     let(:markdown_line_break) { '  ' }
 
     subject { presenter.issue_description }
@@ -46,8 +44,11 @@ RSpec.describe AlertManagement::AlertPresenter do
     end
 
     context 'with optional alert attributes' do
-      let_it_be_with_reload(:alert) do
-        create(:alert_management_alert, :with_description, :with_host, :with_service, :with_monitoring_tool, project: project, payload: payload)
+      let(:alert) do
+        build_stubbed(
+          :alert_management_alert, :with_description, :with_host, :with_service, :with_monitoring_tool,
+          project: project, payload: payload, iid: 1
+        )
       end
 
       before do

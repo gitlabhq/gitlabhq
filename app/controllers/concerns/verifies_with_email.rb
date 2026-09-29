@@ -29,7 +29,7 @@ module VerifiesWithEmail
     elsif require_email_verification_enabled?(user)
       # Limit the amount of password guesses, since we now display the email verification page
       # when the password is correct, which could be a giveaway when brute-forced.
-      return render_sign_in_rate_limited if check_rate_limit!(:user_sign_in, scope: user) { true }
+      return render_sign_in_rate_limited if check_rate_limit!(:user_sign_in, scope: { user: user }) { true }
 
       # Verify the email if the user has logged in successfully.
       verify_email(user) if user.valid_password?(user_params[:password])
@@ -304,7 +304,7 @@ module VerifiesWithEmail
   end
 
   def send_rate_limited?(user)
-    Gitlab::ApplicationRateLimiter.throttled?(:email_verification_code_send, scope: user)
+    Gitlab::ApplicationRateLimiter.throttled?(:email_verification_code_send, scope: { user: user })
   end
 
   def handle_verification_failure(user, reason, message)

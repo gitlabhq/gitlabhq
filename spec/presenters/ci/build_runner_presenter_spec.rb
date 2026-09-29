@@ -18,7 +18,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   end
 
   describe '#set_queue_metrics' do
-    let(:build) { create(:ci_build) }
+    let(:build) { build_stubbed(:ci_build) }
     let(:size) { 10 }
     let(:depth) { 2 }
 
@@ -45,7 +45,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
   describe '#artifacts' do
     context "when option contains archive-type artifacts" do
-      let(:build) { create(:ci_build, options: { artifacts: archive }) }
+      let(:build) { build_stubbed(:ci_build, options: { artifacts: archive }) }
 
       it 'presents correct hash' do
         expect(presenter.artifacts.first).to include(archive_expectation)
@@ -69,7 +69,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
       context 'when artifacts exclude is defined' do
         let(:build) do
-          create(:ci_build, options: { artifacts: { paths: %w[abc], exclude: %w[cde] } })
+          build_stubbed(:ci_build, options: { artifacts: { paths: %w[abc], exclude: %w[cde] } })
         end
 
         it 'includes the list of excluded paths' do
@@ -84,7 +84,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
       context 'when artifacts exclude is not defined' do
         let(:build) do
-          create(:ci_build, options: { artifacts: { paths: %w[abc] } })
+          build_stubbed(:ci_build, options: { artifacts: { paths: %w[abc] } })
         end
 
         it 'does not include an empty list of excluded paths' do
@@ -97,7 +97,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       Enums::Ci::JobArtifact.default_file_names.each do |file_type, filename|
         context file_type.to_s do
           let(:report) { { "#{file_type}": [filename] } }
-          let(:build) { create(:ci_build, options: { artifacts: { reports: report } }) }
+          let(:build) { build_stubbed(:ci_build, options: { artifacts: { reports: report } }) }
 
           let(:report_expectation) do
             {
@@ -121,7 +121,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       let(:filename) { 'cobertura-coverage.xml' }
       let(:coverage_report) { { path: filename, coverage_format: coverage_format } }
       let(:report) { { coverage_report: coverage_report } }
-      let(:build) { create(:ci_build, options: { artifacts: { reports: report } }) }
+      let(:build) { build_stubbed(:ci_build, options: { artifacts: { reports: report } }) }
 
       let(:expected_coverage_report) do
         {
@@ -145,7 +145,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       let(:ds_filename) { 'gl-dependency-scanning-report.json' }
 
       let(:report) { { coverage_report: coverage_report, dependency_scanning: [ds_filename] } }
-      let(:build) { create(:ci_build, options: { artifacts: { reports: report } }) }
+      let(:build) { build_stubbed(:ci_build, options: { artifacts: { reports: report } }) }
 
       let(:expected_coverage_report) do
         {
@@ -174,7 +174,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
     context "when option has both archive and reports specification" do
       let(:report) { { junit: ['junit.xml'] } }
-      let(:build) { create(:ci_build, options: { script: 'echo', artifacts: { **archive, reports: report } }) }
+      let(:build) { build_stubbed(:ci_build, options: { script: 'echo', artifacts: { **archive, reports: report } }) }
 
       let(:report_expectation) do
         {
@@ -202,7 +202,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context "when option has no artifact keywords" do
-      let(:build) { create(:ci_build, :no_options) }
+      let(:build) { build_stubbed(:ci_build, :no_options) }
 
       it 'does not present hash' do
         expect(presenter.artifacts).to be_nil
@@ -213,7 +213,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   describe '#ref_type' do
     subject { presenter.ref_type }
 
-    let(:build) { create(:ci_build, tag: tag) }
+    let(:build) { build_stubbed(:ci_build, tag: tag) }
     let(:tag) { true }
 
     it 'returns the correct ref type' do
@@ -262,7 +262,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   end
 
   describe '#repo_object_format' do
-    let(:build) { create(:ci_build) }
+    let(:build) { build_stubbed(:ci_build) }
 
     subject { presenter.repo_object_format }
 
@@ -357,7 +357,9 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   end
 
   describe '#runner_inputs' do
-    let(:build) { create(:ci_build, options: { inputs: inputs_spec }) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    let(:build) { create(:ci_build, pipeline: pipeline, options: { inputs: inputs_spec }) }
 
     let(:inputs_spec) do
       {
@@ -394,7 +396,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when the job has no inputs defined' do
-      let(:build) { create(:ci_build, options: nil) }
+      let(:build) { create(:ci_build, pipeline: pipeline, options: nil) }
 
       it 'returns an empty array' do
         expect(presenter.runner_inputs).to eq([])

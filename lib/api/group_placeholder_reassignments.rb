@@ -78,7 +78,7 @@ module API
       post ':id/placeholder_reassignments' do
         authorize! :create_placeholder_reassignment, user_group
 
-        check_rate_limit!(:placeholder_reassignment, scope: current_user)
+        check_rate_limit!(:placeholder_reassignment, scope: { user: current_user })
 
         require_gitlab_workhorse!
 

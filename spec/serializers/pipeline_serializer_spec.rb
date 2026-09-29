@@ -54,7 +54,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
 
         context 'when resource is not paginatable' do
           context 'when a single pipeline object is being serialized' do
-            let(:resource) { create(:ci_empty_pipeline) }
+            let(:resource) { build_stubbed(:ci_empty_pipeline, project: project) }
             let(:query) { { page: 1, per_page: 1 } }
 
             it 'raises error' do
@@ -99,9 +99,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
       end
 
       context 'when there are pipelines for merge requests' do
-        let(:resource) { Ci::Pipeline.all }
-
-        let!(:merge_request_1) do
+        let_it_be(:merge_request_1) do
           create(
             :merge_request,
             :with_detached_merge_request_pipeline,
@@ -112,7 +110,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
           )
         end
 
-        let!(:merge_request_2) do
+        let_it_be(:merge_request_2) do
           create(
             :merge_request,
             :with_detached_merge_request_pipeline,
@@ -122,6 +120,8 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
             source_branch: '2-mb-file'
           )
         end
+
+        let(:resource) { Ci::Pipeline.all }
 
         before_all do
           project.add_developer(user)
@@ -143,9 +143,10 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
       describe 'number of queries when preloaded' do
         subject { serializer.represent(resource, preload: true) }
 
-        let(:resource) { Ci::Pipeline.all }
         let_it_be(:production) { create(:environment, :production, project: project) }
         let_it_be(:staging) { create(:environment, :staging, project: project) }
+
+        let(:resource) { Ci::Pipeline.all }
 
         # Create pipelines only once and change their attributes if needed.
         before_all do

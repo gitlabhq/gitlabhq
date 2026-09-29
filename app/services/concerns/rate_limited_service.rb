@@ -37,9 +37,9 @@ module RateLimitedService
     def rate_limit!(service)
       evaluated_scope = evaluated_scope_for(service)
 
-      if rate_limiter.throttled?(key, **opts.merge(scope: evaluated_scope.values, users_allowlist: users_allowlist))
-        raise RateLimitedError.new(key: key, rate_limiter: rate_limiter), Gitlab::ApplicationRateLimiter.throttled_error_message
-      end
+      return unless rate_limiter.throttled?(key, **opts.merge(scope: evaluated_scope, users_allowlist: users_allowlist))
+
+      raise RateLimitedError.new(key: key, rate_limiter: rate_limiter), Gitlab::ApplicationRateLimiter.throttled_error_message
     end
 
     private
@@ -48,9 +48,11 @@ module RateLimitedService
       @users_allowlist ||= opts[:users_allowlist] ? opts[:users_allowlist].call : []
     end
 
+    # opts[:scope] maps rule characteristics to service methods, e.g.
+    # { project: :project, user: :current_user }.
     def evaluated_scope_for(service)
-      opts[:scope].index_with do |var|
-        service.public_send(var) # rubocop: disable GitlabSecurity/PublicSend
+      opts[:scope].transform_values do |method_name|
+        service.public_send(method_name) # rubocop: disable GitlabSecurity/PublicSend -- Maps rule characteristics to service methods.
       end
     end
   end

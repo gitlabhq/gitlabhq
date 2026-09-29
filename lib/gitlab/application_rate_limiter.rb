@@ -23,9 +23,11 @@ module Gitlab
       # be throttled.
       #
       # @param key [Symbol] Key attribute registered in the labkit rate-limit registry
-      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models, Strings
-      #     or Symbols to scope throttling to a specific request (e.g. per user
-      #     per project)
+      # @param scope [Hash{Symbol => ActiveRecord, String, Symbol}] Hash keyed
+      #     by the rule's characteristic names, e.g.
+      #     { project: project, user: current_user }. AR values contribute
+      #     their primary key, primitives their string form; nil values are
+      #     dropped (labkit fills the slot with its '_unknown_' sentinel).
       # @param resource [ActiveRecord] An ActiveRecord model to count an action
       #     for (e.g. limit unique project (resource) downloads (action) to five
       #     per user (scope))
@@ -70,9 +72,11 @@ module Gitlab
       # be throttled.
       #
       # @param key [Symbol] Key attribute registered in the labkit rate-limit registry
-      # @param scope [<ActiveRecord>] Array of ActiveRecord models, Strings
-      #     or Symbols to scope throttling to a specific request (e.g. per user
-      #     per project)
+      # @param scope [Hash{Symbol => ActiveRecord, String, Symbol}] Hash keyed
+      #     by the rule's characteristic names, e.g.
+      #     { project: project, user: current_user }. AR values contribute
+      #     their primary key, primitives their string form; nil values are
+      #     dropped (labkit fills the slot with its '_unknown_' sentinel).
       # @param resource_key [Symbol] Key attribute in SafeRequestStore
       # @param threshold [Integer] Threshold value to override default
       #     one registered in the labkit rate-limit registry
@@ -101,9 +105,11 @@ module Gitlab
       # @param request [Http::Request] - Web request used to check the header and log
       # @param current_user [User] Current user of the request, it can be nil
       # @param key [Symbol] Key attribute registered in the labkit rate-limit registry
-      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models, Strings
-      #     or Symbols to scope throttling to a specific request (e.g. per user
-      #     per project)
+      # @param scope [Hash{Symbol => ActiveRecord, String, Symbol}] Hash keyed
+      #     by the rule's characteristic names, e.g.
+      #     { project: project, user: current_user }. AR values contribute
+      #     their primary key, primitives their string form; nil values are
+      #     dropped (labkit fills the slot with its '_unknown_' sentinel).
       # @param resource [ActiveRecord] An ActiveRecord model to count an action
       #     for (e.g. limit unique project (resource) downloads (action) to five
       #     per user (scope))
@@ -137,7 +143,7 @@ module Gitlab
       # Returns the current rate limited state without incrementing the count.
       #
       # @param key [Symbol] Key attribute registered in the labkit rate-limit registry
-      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
+      # @param scope [Hash{Symbol => ActiveRecord, String, Symbol}] Hash keyed by the rule's characteristic names, e.g. { project: project, user: current_user }
       # @param threshold [Integer] Optional threshold value to override default one registered in the labkit rate-limit registry
       # @param interval [Integer] Optional interval value to override default one registered in the labkit rate-limit registry
       # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit, merged with the users named by GITLAB_THROTTLE_USER_ALLOWLIST. This param will only be functional if Scope includes a current user.
@@ -156,6 +162,21 @@ module Gitlab
       # @return [Integer] The interval value in seconds
       def period_for(key)
         LabkitAdapter.period_for(key)
+      end
+
+      # Builds the scope for a polymorphic project-or-group parent, filling
+      # only the parent's own characteristic so project and group Redis key
+      # shapes stay disjoint. A nil parent (e.g. system hooks) fills neither.
+      #
+      # @param parent [Project, Group, nil]
+      # @return [Hash{Symbol => Project, Group}]
+      def parent_scope(parent)
+        case parent
+        when nil then {}
+        when ::Project then { project: parent }
+        when ::Group then { group: parent }
+        else raise InvalidScopeError, "unsupported rate limit parent: #{parent.class}"
+        end
       end
 
       # Logs request using provided logger
@@ -234,9 +255,7 @@ module Gitlab
         allowlist = Array(users_allowlist) + gitlab_throttle_user_allowlist
         return if allowlist.empty?
 
-        # The positional branch is deleted once all call sites pass
-        # characteristic-keyed hashes.
-        scoped_user = scope.is_a?(Hash) ? scope[:user] : [scope].flatten.find { |s| s.is_a?(User) }
+        scoped_user = scope[:user]
         return unless scoped_user.is_a?(User)
 
         username = scoped_user.username.downcase
@@ -277,18 +296,20 @@ module Gitlab
       strong_memoize_attr :initialize_filtered_params
 
       def validate_scope!(key, scope, logger = Gitlab::AuthLogger)
-        unless scope
+        unless scope.is_a?(Hash) && scope.present?
           logger.warn(
-            message: 'Application_Rate_Limiter_Request_Without_Scope',
+            message: 'Application_Rate_Limiter_Request_With_Invalid_Scope',
             env: :"#{key}_request_limit"
           )
 
-          raise InvalidScopeError,
-            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
-              '(or { scope: :global } for global rate limits).'
-        end
+          # "got Hash" reads as a contradiction for {}, so name the empty case.
+          problem = scope.is_a?(Hash) ? 'got an empty Hash' : "got #{scope.class}"
 
-        return scope unless scope.is_a?(Hash)
+          raise InvalidScopeError,
+            'scope must be a non-empty characteristic-keyed hash, e.g. { user: current_user } ' \
+              "(or { scope: :global } for global rate limits); #{problem}. " \
+              "The rule's characteristics are registered in LabkitAdapter::SupportedRateLimits."
+        end
 
         scope = ::Labkit::RateLimit::Identifier.new(scope).attributes
         validate_scope_keys!(key, scope)

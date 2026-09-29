@@ -9,7 +9,7 @@ class Import::BitbucketServerController < Import::BaseController
   before_action :verify_bitbucket_server_import_enabled
   before_action :bitbucket_auth, except: [:new, :configure]
   before_action :normalize_import_params, only: [:create]
-  before_action -> { check_rate_limit!(:bitbucket_server_import, scope: current_user) },
+  before_action -> { check_rate_limit!(:bitbucket_server_import, scope: { user: current_user }) },
     only: :status, if: -> { request.format.json? }
 
   rescue_from BitbucketServer::Connection::ConnectionError, with: :bitbucket_connection_error

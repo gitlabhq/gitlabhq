@@ -3,7 +3,7 @@ title: Email notifications for GitLab Flex usage
 tier: [ Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 stage: fulfillment
-documentation_link: "../../../subscriptions/gitlab_flex/#usage-notifications"
+documentation_link: "../../../subscriptions/gitlab_flex_dashboard/#usage-notifications"
 work_item: https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/18657
 categories: [ Consumables Cost Management ]
 level: secondary

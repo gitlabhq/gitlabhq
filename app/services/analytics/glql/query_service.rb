@@ -112,7 +112,7 @@ module Analytics
         :graphql_context, :operation_name
 
       def check_rate_limit
-        return unless Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)
+        return unless Gitlab::ApplicationRateLimiter.peek(:glql, scope: { query_sha: query_sha })
 
         raise GlqlQueryLockedError,
           'Query temporarily blocked due to repeated timeouts. Please try again later or narrow your search scope.'
@@ -163,7 +163,7 @@ module Analytics
       strong_memoize_attr :query_sha
 
       def increment_rate_limit_counter
-        Gitlab::ApplicationRateLimiter.throttled?(:glql, scope: query_sha)
+        Gitlab::ApplicationRateLimiter.throttled?(:glql, scope: { query_sha: query_sha })
       end
 
       def increment_glql_sli(duration_s:, error_type:)

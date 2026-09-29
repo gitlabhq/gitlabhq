@@ -252,7 +252,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab_subscriptions/upcoming_reconciliation_entity_spec.rb'
     - 'ee/spec/lib/merge_requests/merge_request_before_destroy_auditor_spec.rb'
     - 'ee/spec/lib/omni_auth/strategies/kerberos_spec.rb'
-    - 'ee/spec/lib/product_analytics/settings_spec.rb'
     - 'ee/spec/lib/projects/project_changes_auditor_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/epics_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/work_item_epics_menu_spec.rb'

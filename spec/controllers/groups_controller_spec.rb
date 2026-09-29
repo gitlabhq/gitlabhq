@@ -160,7 +160,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         sign_in(admin)
 
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:group_download_export, scope: [admin, group]).and_return(true)
+          .with(:group_download_export, scope: { user: admin, group: group }).and_return(true)
       end
 
       it 'throttles the endpoint' do

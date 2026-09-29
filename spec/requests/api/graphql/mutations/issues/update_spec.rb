@@ -136,6 +136,9 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
         let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.id, label2.id] }) }
 
         it 'resets labels' do
+          # 106 -> 112: extra work_item_positions reads from the position write-cutover (MR !254713).
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(112)
+
           post_graphql_mutation(mutation, current_user: current_user)
 
           expect(response).to have_gitlab_http_status(:success)
@@ -171,6 +174,9 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
           let(:input_params) { input.merge(extra_params).merge({ labelIds: [label1.to_global_id.to_s, label2.to_global_id.to_s] }) }
 
           it 'resets labels' do
+            # 106 -> 107: extra work_item_positions read from the position write-cutover (MR !254713).
+            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(107)
+
             post_graphql_mutation(mutation, current_user: current_user)
 
             expect(response).to have_gitlab_http_status(:success)

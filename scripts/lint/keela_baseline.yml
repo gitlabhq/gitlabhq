@@ -556,8 +556,6 @@ methods:
   - customizable_permissions_exempt_from_consuming_seat
   ee/app/models/namespaces/storage/root_size.rb:
   - remaining_storage_size
-  ee/app/models/product_analytics/funnel.rb:
-  - self.names_within_project_repository
   ee/app/models/project_security_setting.rb:
   - set_validity_checks!
   ee/app/models/search/zoekt.rb:

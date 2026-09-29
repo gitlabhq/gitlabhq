@@ -146,6 +146,8 @@ module Issues
       changes = issue.previous_changes.keys + updated_widget_keys
       changes << 'labels' if issue.labels != old_associations[:labels]
       changes << 'assignees' if issue.assignees != old_associations[:assignees]
+      # The write cutover clears the position change, so it is absent from previous_changes here.
+      changes << 'relative_position' if @repositioned
       changes
     end
 
@@ -154,11 +156,14 @@ module Issues
     end
 
     def publish_event(work_item, old_associations)
+      updated_attributes = work_item.previous_changes.keys.map(&:to_s)
+      updated_attributes << 'relative_position' if @repositioned
+
       event = WorkItems::WorkItemUpdatedEvent.new(data: {
         id: work_item.id,
         namespace_id: work_item.namespace_id,
         previous_work_item_parent_id: old_associations[:work_item_parent_id],
-        updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
+        updated_attributes: updated_attributes,
         updated_widgets: updated_widget_keys
       }.tap(&:compact_blank!))
 

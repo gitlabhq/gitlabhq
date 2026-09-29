@@ -7,7 +7,7 @@ module Issues
     include ::Services::ReturnServiceResponses
 
     rate_limit key: :issues_create,
-      opts: { scope: [:project, :current_user, :external_author] }
+      opts: { scope: { project: :project, user: :current_user, external_author: :external_author } }
 
     def initialize(container:, current_user: nil, params: {}, build_service: nil, perform_spam_check: true)
       @extra_params = params.delete(:extra_params) || {}

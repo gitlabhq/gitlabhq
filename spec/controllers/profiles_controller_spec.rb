@@ -64,7 +64,7 @@ RSpec.describe ProfilesController, :request_store do
 
     context 'when the rate limit is reached' do
       it 'does not update the username and returns status 429 Too Many Requests' do
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:profile_update_username, scope: user).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:profile_update_username, scope: { user: user }).and_return(true)
 
         expect do
           put :update_username,

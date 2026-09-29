@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting, feature_category: :system_access do
+RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting, feature_category: :rate_limiting do
   include StubRequests
 
   let_it_be(:user) { create(:user) }
@@ -87,7 +87,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
 
       it 'returns false' do
-        expect(subject.throttled?(:test_action, scope: [user])).to be(false)
+        expect(subject.throttled?(:test_action, scope: { user: user })).to be(false)
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           it 'raises an InvalidKeyError exception' do
             key = :key_not_in_labkit_registry
 
-            expect { subject.throttled?(key, scope: [user]) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+            expect { subject.throttled?(key, scope: { user: user }) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
           end
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           it 'raises an InvalidKeyError exception' do
             key = labkit_registry.keys[0].to_s
 
-            expect { subject.throttled?(key, scope: [user]) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+            expect { subject.throttled?(key, scope: { user: user }) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
           end
         end
 
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           it 'raises an InvalidKeyError exception' do
             key = 'key_not_in_labkit_registry'
 
-            expect { subject.throttled?(key, scope: [user]) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+            expect { subject.throttled?(key, scope: { user: user }) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
           end
         end
       end
@@ -126,14 +126,29 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect { subject.throttled?(:test_action, scope: nil) }
           .to raise_error(
             Gitlab::ApplicationRateLimiter::InvalidScopeError,
-            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
-              '(or { scope: :global } for global rate limits).'
+            /scope must be a non-empty characteristic-keyed hash.*got NilClass/
           )
       end
 
-      it 'logs a warning when scope is nil' do
+      it 'raises an InvalidScopeError exception when scope is not a Hash' do
+        expect { subject.throttled?(:test_action, scope: [user]) }
+          .to raise_error(
+            Gitlab::ApplicationRateLimiter::InvalidScopeError,
+            /scope must be a non-empty characteristic-keyed hash.*got Array/
+          )
+      end
+
+      it 'names the empty case rather than reporting the Hash class' do
+        expect { subject.throttled?(:test_action, scope: {}) }
+          .to raise_error(
+            Gitlab::ApplicationRateLimiter::InvalidScopeError,
+            /scope must be a non-empty characteristic-keyed hash.*got an empty Hash/
+          )
+      end
+
+      it 'logs a warning when scope is invalid' do
         expect(Gitlab::AuthLogger).to receive(:warn).with(
-          message: 'Application_Rate_Limiter_Request_Without_Scope',
+          message: 'Application_Rate_Limiter_Request_With_Invalid_Scope',
           env: :test_action_request_limit
         )
 
@@ -142,9 +157,32 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
+    context 'when the scope is a characteristic-keyed hash' do
+      it 'keys the counter by the characteristics it fills' do
+        subject.throttled?(:test_action, scope: { user: user, project: project })
+
+        expected_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:#{project.id}}"
+
+        expect(Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }.to_i).to eq(1)
+      end
+
+      # A nil value is dropped rather than rejected, so polymorphic callers can
+      # pass { project: project, group: nil } without branching on which one is
+      # set. labkit fills the empty slot with its '_unknown_' sentinel, so an
+      # explicit nil and an omitted key share one counter.
+      it 'treats a nil characteristic value as an omitted key' do
+        subject.throttled?(:test_action, scope: { user: user, project: nil })
+        subject.throttled?(:test_action, scope: { user: user })
+
+        expected_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:_unknown_}"
+
+        expect(Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }.to_i).to eq(2)
+      end
+    end
+
     context 'when the key is valid' do
       it 'records the checked key in request storage', :request_store do
-        subject.throttled?(:test_action, scope: [user])
+        subject.throttled?(:test_action, scope: { user: user })
 
         expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
           .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action])
@@ -157,7 +195,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     # (built only from a rule's own characteristics) must stay exactly as it
     # was before this key existed.
     it "does not let the always-present :bypass_header key affect the real rule's Redis key" do
-      subject.throttled?(:test_action, scope: [user, project])
+      subject.throttled?(:test_action, scope: { user: user, project: project })
 
       expected_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:#{project.id}}"
       count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
@@ -192,7 +230,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(
             subject.throttled?(
-              :test_action, scope: [user], threshold: threshold, interval: interval
+              :test_action, scope: { user: user }, threshold: threshold, interval: interval
             )
           ).to be(false)
         end
@@ -233,14 +271,14 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
-    context 'when using ActiveRecord models as scope' do
-      let(:scope) { [user, project] }
+    context 'when using ActiveRecord models as scope values' do
+      let(:scope) { { user: user, project: project } }
 
       it_behaves_like 'throttles based on key and scope'
     end
 
     context 'when using a user allow list' do
-      let(:scope) { user }
+      let(:scope) { { user: user } }
       let(:start_time) { Time.current.beginning_of_hour }
 
       before do
@@ -286,7 +324,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
 
       context 'when the user is in the allow list' do
-        let(:scope) { allowlisted_user }
+        let(:scope) { { user: allowlisted_user } }
 
         it 'is not throttled' do
           travel_to(start_time + 1.minute) do
@@ -296,7 +334,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
 
       context 'when the user is not in the allow list' do
-        let(:scope) { user }
+        let(:scope) { { user: user } }
 
         it 'is throttled' do
           travel_to(start_time + 1.minute) do
@@ -311,20 +349,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       before do
         # Hit the rate limit before running examples
-        travel_to(start_time) { subject.throttled?(:test_action, scope: [user]) }
+        travel_to(start_time) { subject.throttled?(:test_action, scope: { user: user }) }
       end
 
       it "is never throttled once bypass_header is '1', even though the key is already over its limit",
         :aggregate_failures do
         travel_to(start_time + 1.minute) do
-          expect(subject.throttled?(:test_action, scope: [user])).to be(true)
-          expect(subject.throttled?(:test_action, scope: [user], bypass_header: '1')).to be(false)
+          expect(subject.throttled?(:test_action, scope: { user: user })).to be(true)
+          expect(subject.throttled?(:test_action, scope: { user: user }, bypass_header: '1')).to be(false)
         end
       end
     end
 
-    context 'when using ActiveRecord models and strings as scope' do
-      let(:scope) { [project, 'app/controllers/groups_controller.rb'] }
+    context 'when scoping by a subset of the rule characteristics' do
+      let(:scope) { { project: project } }
 
       it_behaves_like 'throttles based on key and scope'
     end
@@ -333,18 +371,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       let(:scope) { { user: user, project: project } }
 
       it_behaves_like 'throttles based on key and scope'
-
-      it 'shares its counter with the equivalent positional scope' do
-        start_time = Time.current.beginning_of_hour
-
-        travel_to(start_time) do
-          expect(subject.throttled?(:test_action, scope: [user, project])).to be(false)
-        end
-
-        travel_to(start_time + 1.minute) do
-          expect(subject.throttled?(:test_action, scope: scope)).to be(true)
-        end
-      end
 
       it 'shares its counter with string characteristic keys' do
         start_time = Time.current.beginning_of_hour
@@ -409,7 +435,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
 
     context 'when threshold and interval are overridden by arguments' do
-      let(:scope) { [user, project] }
+      let(:scope) { { user: user, project: project } }
 
       it_behaves_like 'throttles based on key and scope' do
         let(:threshold) { 1 }
@@ -418,7 +444,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
 
     context 'when an override cannot be consumed by the registered rule' do
-      let(:scope) { [user, project] }
+      let(:scope) { { user: user, project: project } }
 
       let(:labkit_registry) do
         labkit_rules.to_h do |key, rule|
@@ -521,14 +547,13 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect { subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval) }
           .to raise_error(
             Gitlab::ApplicationRateLimiter::InvalidScopeError,
-            'scope cannot be nil. Pass a characteristic-keyed hash, e.g. { user: current_user } ' \
-              '(or { scope: :global } for global rate limits).'
+            /scope must be a non-empty characteristic-keyed hash.*got NilClass/
           )
       end
 
       it 'logs a warning when scope is nil' do
         expect(Gitlab::AuthLogger).to receive(:warn).with(
-          message: 'Application_Rate_Limiter_Request_Without_Scope',
+          message: 'Application_Rate_Limiter_Request_With_Invalid_Scope',
           env: :test_action_request_limit
         )
 
@@ -538,19 +563,19 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
 
     it 'records the checked key in request storage' do
-      subject.resource_usage_throttled?(:test_action, scope: [user], resource_key: resource_key, threshold: threshold, interval: interval)
+      subject.resource_usage_throttled?(:test_action, scope: { user: user }, resource_key: resource_key, threshold: threshold, interval: interval)
 
       expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
         .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action])
 
-      subject.resource_usage_throttled?(:another_action, scope: [user], resource_key: resource_key, threshold: threshold, interval: interval)
+      subject.resource_usage_throttled?(:another_action, scope: { user: user }, resource_key: resource_key, threshold: threshold, interval: interval)
 
       expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
         .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action, :another_action])
     end
 
     describe 'incrementing resource usage once per unique resource' do
-      let(:scope) { [user, project] }
+      let(:scope) { { user: user, project: project } }
 
       let(:start_time) { Time.current.beginning_of_hour }
       let_it_be(:project2) { create(:project) }
@@ -587,7 +612,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         travel_to(start_time + 1.minute) do
           expect(
             described_class.resource_usage_throttled?(
-              :test_action, scope: [user, project2], resource_key: resource_key, threshold: threshold, interval: interval
+              :test_action, scope: { user: user, project: project2 }, resource_key: resource_key, threshold: threshold, interval: interval
             )
           ).to be(false)
         end
@@ -598,7 +623,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
 
     context 'with peek' do
-      let(:scope) { [user, project] }
+      let(:scope) { { user: user, project: project } }
       let(:start_time) { Time.current.beginning_of_hour }
       let(:kwargs) { { scope: scope, resource_key: resource_key, threshold: threshold, interval: interval } }
 
@@ -643,7 +668,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(
             subject.resource_usage_throttled?(
-              :test_action, scope: [user], resource_key: resource_key, threshold: threshold, interval: interval
+              :test_action, scope: { user: user }, resource_key: resource_key, threshold: threshold, interval: interval
             )
           ).to be(false)
         end
@@ -653,14 +678,14 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       # Redis-side TTL that travel_to cannot move); see labkit's own specs.
     end
 
-    context 'when using ActiveRecord models as scope' do
-      let(:scope) { [user, project] }
+    context 'when using ActiveRecord models as scope values' do
+      let(:scope) { { user: user, project: project } }
 
       it_behaves_like 'throttles resource usage based on key and scope'
     end
 
-    context 'when using ActiveRecord models and strings as scope' do
-      let(:scope) { [project, 'app/controllers/groups_controller.rb'] }
+    context 'when scoping by a subset of the rule characteristics' do
+      let(:scope) { { project: project } }
 
       it_behaves_like 'throttles resource usage based on key and scope'
     end
@@ -671,9 +696,9 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
     context 'the arguments forwarded to #throttled?' do
       it 'omits :bypass_header when there is no header to report' do
-        expect(subject).to receive(:throttled?).with(:test_action, scope: [user]).and_return(false)
+        expect(subject).to receive(:throttled?).with(:test_action, scope: { user: user }).and_return(false)
 
-        subject.throttled_request?(request, user, :test_action, scope: [user])
+        subject.throttled_request?(request, user, :test_action, scope: { user: user })
       end
 
       context 'when the bypass header is set' do
@@ -684,9 +709,9 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
         it 'forwards the raw header value as :bypass_header' do
           expect(subject).to receive(:throttled?)
-            .with(:test_action, scope: [user], bypass_header: '1').and_return(false)
+            .with(:test_action, scope: { user: user }, bypass_header: '1').and_return(false)
 
-          subject.throttled_request?(request, user, :test_action, scope: [user])
+          subject.throttled_request?(request, user, :test_action, scope: { user: user })
         end
       end
     end
@@ -695,19 +720,19 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it 'returns false and does not log the request' do
         expect(subject).not_to receive(:log_request)
 
-        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(false)
+        expect(subject.throttled_request?(request, user, :test_action, scope: { user: user })).to be(false)
       end
     end
 
     context 'when request is over the limit' do
       before do
-        subject.throttled?(:test_action, scope: [user])
+        subject.throttled?(:test_action, scope: { user: user })
       end
 
       it 'returns true and logs the request' do
         expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
 
-        expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(true)
+        expect(subject.throttled_request?(request, user, :test_action, scope: { user: user })).to be(true)
       end
 
       context 'when the bypass header is set' do
@@ -720,7 +745,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(subject).not_to receive(:log_request)
 
-          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(false)
+          expect(subject.throttled_request?(request, user, :test_action, scope: { user: user })).to be(false)
         end
 
         it 'does not skip rate limit if set to something else than "1"' do
@@ -728,7 +753,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
 
-          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(true)
+          expect(subject.throttled_request?(request, user, :test_action, scope: { user: user })).to be(true)
         end
 
         it 'does not skip rate limit for a truthy-looking value other than "1"', :aggregate_failures do
@@ -736,7 +761,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
           expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
 
-          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to be(true)
+          expect(subject.throttled_request?(request, user, :test_action, scope: { user: user })).to be(true)
         end
 
         it 'does not increment the real rate-limit counter when bypassed' do
@@ -745,7 +770,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           redis_key = "labkit:rl:{applimiter_test_action:limit_test_action:user:#{user.id}:project:_unknown_}"
           count_before = Gitlab::Redis::RateLimiting.with { |r| r.get(redis_key) }
 
-          subject.throttled_request?(request, user, :test_action, scope: [user])
+          subject.throttled_request?(request, user, :test_action, scope: { user: user })
 
           count_after = Gitlab::Redis::RateLimiting.with { |r| r.get(redis_key) }
 
@@ -758,13 +783,13 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   describe '.peek' do
     it 'peeks at the current state without changing its value' do
       freeze_time do
-        expect(subject.peek(:test_action, scope: [user])).to be(false)
-        expect(subject.throttled?(:test_action, scope: [user])).to be(false)
+        expect(subject.peek(:test_action, scope: { user: user })).to be(false)
+        expect(subject.throttled?(:test_action, scope: { user: user })).to be(false)
         2.times do
-          expect(subject.peek(:test_action, scope: [user])).to be(false)
+          expect(subject.peek(:test_action, scope: { user: user })).to be(false)
         end
-        expect(subject.throttled?(:test_action, scope: [user])).to be(true)
-        expect(subject.peek(:test_action, scope: [user])).to be(true)
+        expect(subject.throttled?(:test_action, scope: { user: user })).to be(true)
+        expect(subject.peek(:test_action, scope: { user: user })).to be(true)
       end
     end
   end
@@ -774,6 +799,29 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       expect(described_class::LabkitAdapter).to receive(:period_for).with(:test_action).and_call_original
 
       expect(described_class.period_for(:test_action)).to eq(2.minutes)
+    end
+  end
+
+  describe '.parent_scope' do
+    it 'fills only :project for a project' do
+      project = build_stubbed(:project)
+
+      expect(described_class.parent_scope(project)).to eq(project: project)
+    end
+
+    it 'fills only :group for a group' do
+      group = build_stubbed(:group)
+
+      expect(described_class.parent_scope(group)).to eq(group: group)
+    end
+
+    it 'fills nothing for a nil parent' do
+      expect(described_class.parent_scope(nil)).to eq({})
+    end
+
+    it 'raises for an unsupported parent' do
+      expect { described_class.parent_scope(build_stubbed(:user)) }
+        .to raise_error(described_class::InvalidScopeError, /unsupported rate limit parent: User/)
     end
   end
 
@@ -838,7 +886,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   end
 
   context 'when interval is 0' do
-    let(:scope) { user }
+    let(:scope) { { user: user } }
     let(:start_time) { Time.current.beginning_of_hour }
 
     it 'returns false' do
@@ -853,7 +901,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   end
 
   context 'when threshold is 0' do
-    let(:scope) { user }
+    let(:scope) { { user: user } }
     let(:start_time) { Time.current.beginning_of_hour }
 
     it 'returns false' do
@@ -907,7 +955,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
     end
 
     it 'returns a Boolean from throttled?' do
-      result = described_class.throttled?(:users_get_by_id, scope: user)
+      result = described_class.throttled?(:users_get_by_id, scope: { user: user })
       expect(result).to be(true).or be(false)
     end
 
@@ -915,7 +963,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it 'does not dispatch when a resource is provided for an INCR-mode key' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
 
-        expect(described_class.throttled?(:users_get_by_id, scope: user, resource: user)).to be(false)
+        expect(described_class.throttled?(:users_get_by_id, scope: { user: user }, resource: user)).to be(false)
       end
     end
 
@@ -942,11 +990,11 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       it 'dispatches to the labkit adapter and forwards the resource id and overrides' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!)
-          .with(:users_get_by_id, scope: user,
+          .with(:users_get_by_id, scope: { user: user },
             context: { resource_id: project.id, threshold: 5, interval: 60, bypass_header: nil },
             cost: nil).and_return(false)
 
-        described_class.throttled?(:users_get_by_id, scope: user, resource: project,
+        described_class.throttled?(:users_get_by_id, scope: { user: user }, resource: project,
           threshold: 5, interval: 60)
       end
     end
@@ -961,11 +1009,11 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       it 'dispatches to the adapter forwarding the resolved threshold, interval and cost' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!)
-          .with(:main_db_duration_limit_per_worker, scope: 'SomeWorker',
+          .with(:main_db_duration_limit_per_worker, scope: { worker_name: 'SomeWorker' },
             context: hash_including(threshold: 1234, interval: 77), cost: 5.0).and_return(false)
 
         described_class.resource_usage_throttled?(:main_db_duration_limit_per_worker,
-          scope: 'SomeWorker', resource_key: resource_key, threshold: 1234, interval: 77)
+          scope: { worker_name: 'SomeWorker' }, resource_key: resource_key, threshold: 1234, interval: 77)
       end
     end
 
@@ -979,21 +1027,21 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       it 'dispatches peek checks to the labkit adapter without incrementing' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run_peek!)
-          .with(:update_namespace_name, scope: namespace,
+          .with(:update_namespace_name, scope: { namespace: namespace },
             context: { resource_id: nil, threshold: nil, interval: nil, bypass_header: nil })
           .and_return(false)
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
 
-        expect(described_class.peek(:update_namespace_name, scope: namespace)).to be(false)
+        expect(described_class.peek(:update_namespace_name, scope: { namespace: namespace })).to be(false)
       end
 
       it 'returns the labkit peek decision' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run_peek!)
-          .with(:update_namespace_name, scope: namespace,
+          .with(:update_namespace_name, scope: { namespace: namespace },
             context: { resource_id: nil, threshold: nil, interval: nil, bypass_header: nil })
           .and_return(true)
 
-        expect(described_class.peek(:update_namespace_name, scope: namespace)).to be(true)
+        expect(described_class.peek(:update_namespace_name, scope: { namespace: namespace })).to be(true)
       end
     end
   end

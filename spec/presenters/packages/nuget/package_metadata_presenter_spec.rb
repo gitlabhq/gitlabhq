@@ -68,7 +68,8 @@ RSpec.describe Packages::Nuget::PackageMetadataPresenter, feature_category: :pac
     it 'avoids N+1 queries' do
       control = ActiveRecord::QueryRecorder.new { described_class.new(package.reset).catalog_entry }
 
-      create(:packages_dependency_link, :with_nuget_metadatum, package:)
+      dependency = create(:packages_dependency, project: package.project)
+      create(:packages_dependency_link, :with_nuget_metadatum, package:, dependency:)
 
       expect { described_class.new(package.reset).catalog_entry }.not_to exceed_query_limit(control)
     end

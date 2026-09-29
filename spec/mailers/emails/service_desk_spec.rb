@@ -98,49 +98,48 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   end
 
   shared_examples 'read template from repository' do
-    let(:template_content) { 'custom text' }
+    let_it_be(:template_content) { 'custom text' }
+
     let(:item) { create(:issue, project: project) }
 
     context 'when a template is in the repository' do
-      let(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/#{template_key}.md" => template_content }) }
+      let_it_be(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/#{template_key}.md" => template_content }) }
 
       it 'uses the text template from the template' do
         is_expected.to have_body_text(template_content)
       end
-    end
 
-    context 'when custom templates are restricted for the namespace' do
-      let(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/#{template_key}.md" => template_content }) }
-
-      before do
-        allow_next_instance_of(::ServiceDesk::CustomTemplates) do |templates|
-          allow(templates).to receive(:enabled?).and_return(false)
+      context 'when custom templates are restricted for the namespace' do
+        before do
+          allow_next_instance_of(::ServiceDesk::CustomTemplates) do |templates|
+            allow(templates).to receive(:enabled?).and_return(false)
+          end
         end
-      end
 
-      it 'falls back to the default template' do
-        expect(subject.text_part.to_s).not_to include(template_content)
-        expect(subject.text_part.to_s).to include(expected_text)
-      end
+        it 'falls back to the default template' do
+          expect(subject.text_part.to_s).not_to include(template_content)
+          expect(subject.text_part.to_s).to include(expected_text)
+        end
 
-      it 'logs the suppression once the template was found' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          Labkit::Fields::LOG_MESSAGE => 'Service Desk custom email template suppressed',
-          # The suite exercises these emails through a stubbed mailer class, so
-          # assert the class that actually sends rather than hardcoding Notify.
-          Labkit::Fields::CLASS_NAME => ServiceEmailClass.name,
-          Labkit::Fields::GL_NAMESPACE_ID => project.namespace_id,
-          Labkit::Fields::GL_ROOT_NAMESPACE_ID => project.root_namespace.id,
-          Labkit::Fields::GL_PROJECT_ID => project.id,
-          Labkit::Fields::ADDITIONAL_DETAILS => "email_type: '#{template_key}'"
-        )
+        it 'logs the suppression once the template was found' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            Labkit::Fields::LOG_MESSAGE => 'Service Desk custom email template suppressed',
+            # The suite exercises these emails through a stubbed mailer class, so
+            # assert the class that actually sends rather than hardcoding Notify.
+            Labkit::Fields::CLASS_NAME => ServiceEmailClass.name,
+            Labkit::Fields::GL_NAMESPACE_ID => project.namespace_id,
+            Labkit::Fields::GL_ROOT_NAMESPACE_ID => project.root_namespace.id,
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            Labkit::Fields::ADDITIONAL_DETAILS => "email_type: '#{template_key}'"
+          )
 
-        subject.text_part
+          subject.text_part
+        end
       end
     end
 
     context 'when the service_desk_templates directory does not contain correct template' do
-      let(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/another_file.md" => template_content }) }
+      let_it_be(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/another_file.md" => template_content }) }
 
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)
@@ -155,7 +154,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     context 'when the service_desk_templates directory does not exist' do
-      let(:project) { create(:project, :custom_repo, files: { "other_directory/another_file.md" => template_content }) }
+      let_it_be(:project) { create(:project, :custom_repo, files: { "other_directory/another_file.md" => template_content }) }
 
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)
@@ -164,7 +163,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     context 'when the project does not have a repo' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)
@@ -368,7 +367,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   end
 
   describe '.service_desk_thank_you_email' do
-    let(:template_key) { 'thank_you' }
+    let_it_be(:template_key) { 'thank_you' }
 
     let_it_be(:reply_in_subject) { true }
     let_it_be(:expected_text) do
@@ -423,7 +422,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   end
 
   describe '.service_desk_new_note_email' do
-    let(:template_key) { 'new_note' }
+    let_it_be(:template_key) { 'new_note' }
 
     let_it_be(:reply_in_subject) { false }
     let_it_be(:expected_text) { 'My **note**' }
@@ -620,7 +619,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   end
 
   describe '.service_desk_new_participant_email' do
-    let(:template_key) { 'new_participant' }
+    let_it_be(:template_key) { 'new_participant' }
 
     let_it_be(:reply_in_subject) { true }
     let_it_be(:expected_text) { "You have been added to ticket #{item.to_reference}" }

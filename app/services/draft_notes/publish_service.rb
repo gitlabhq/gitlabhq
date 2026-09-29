@@ -6,6 +6,7 @@ module DraftNotes
       executing_user ||= current_user
 
       return error('Not allowed to create notes') unless can?(executing_user, :create_note, merge_request)
+      return error('Review not found') if params[:review_id].present? && existing_review.nil?
 
       review = nil
       if draft
@@ -13,22 +14,31 @@ module DraftNotes
       else
         review = create_review(executing_user)
         merge_request_activity_counter.track_publish_review_action(user: current_user) if review
+        review ||= existing_review
       end
 
-      handle_notifications(current_user, merge_request, review) if draft || review
-      success
+      handle_notifications(current_user, merge_request, review) if (draft || review) && !params[:defer_notifications]
+      success(review_id: review&.id)
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(', ')} "
       error(message)
     end
 
-    # Whether there are draft notes for #execute to publish. Only then does it
-    # publish MergeRequests::DraftNotePublishedEvent.
+    # Whether there are draft notes for #execute to publish, or an existing review to
+    # notify about. Only then does it publish MergeRequests::DraftNotePublishedEvent.
     def publishes_draft_notes?(draft: nil)
-      draft.present? || draft_notes.present?
+      draft.present? || draft_notes.present? || existing_review.present?
     end
 
     private
+
+    def existing_review
+      return if params[:review_id].blank?
+
+      review = merge_request.reviews.find_by_id(params[:review_id])
+      review if review&.author_id == current_user.id
+    end
+    strong_memoize_attr :existing_review
 
     def publish_draft_note(draft, executing_user)
       create_note_from_draft(draft, executing_user)
@@ -38,7 +48,7 @@ module DraftNotes
     def create_review(executing_user)
       return if draft_notes.blank?
 
-      review = Review.create!(author: current_user, merge_request: merge_request, project: project)
+      review = existing_review || Review.create!(author: current_user, merge_request: merge_request, project: project)
 
       created_notes = draft_notes.filter_map do |draft_note|
         next unless draft_note.note.present?

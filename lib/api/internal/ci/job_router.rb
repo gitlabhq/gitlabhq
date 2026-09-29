@@ -81,7 +81,7 @@ module API
                 route_setting :authorization, skip_granular_token_authorization: :kas_jwt_auth
                 post 'request' do
                   check_rate_limit!(:runner_jobs_request_api,
-                    scope: [::Gitlab::CryptoHelper.sha256(params[:token])], user: nil)
+                    scope: { runner_token_sha: ::Gitlab::CryptoHelper.sha256(params[:token]) }, user: nil)
 
                   authenticate_runner!(creation_state: :finished)
 

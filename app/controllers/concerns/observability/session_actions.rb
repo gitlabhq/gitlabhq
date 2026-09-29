@@ -44,7 +44,7 @@ module Observability
     # HTTP call (the SigNoz BFF exchange) on every request, so it is
     # rate-limited per-user in addition to the authorization checks above.
     def check_bff_session_rate_limit!
-      check_rate_limit!(:observability_bff_session, scope: current_user)
+      check_rate_limit!(:observability_bff_session, scope: { user: current_user })
     end
 
     # Subclasses must define:

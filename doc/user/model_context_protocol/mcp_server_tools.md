@@ -227,7 +227,8 @@ Update merge request 42 in project gitlab-org/gitlab to add the "bug" label and 
 
 {{< /history >}}
 
-Retrieves a merge request and, optionally, its diffs, commits, notes, pipelines, discussions, or conflicts.
+Retrieves a merge request and, optionally, its diffs, commits, notes, pipelines, discussions, approvals, or
+conflicts.
 Only the base merge request is returned unless you request associated data with the `include` parameter.
 
 | Parameter           | Type    | Required | Description |
@@ -235,7 +236,7 @@ Only the base merge request is returned unless you request associated data with 
 | `url`               | string  | No       | GitLab URL of the merge request. Provide this, or `project_id` and `merge_request_iid`. |
 | `project_id`        | string  | No       | ID or full path of the project. Required if `url` is missing. |
 | `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
-| `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, `discussions`, or `conflicts`. Limited to one facet per call. |
+| `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, `discussions`, `approvals`, or `conflicts`. Limited to one facet per call. |
 | `detail`            | string  | No       | Level of diff detail. One of `none` for summary counts only, `stats` for per-file additions and deletions, or `full_patch` for per-file patch text plus the per-file stats. Default is `stats`. Applies only when `include` is `["diffs"]`. |
 | `diffs_after`       | string  | No       | Cursor for forward pagination of files. Applies only when `include` is `["diffs"]` and `detail` is `full_patch`. |
 | `diffs_first`       | integer | No       | Number of files to return after the cursor, up to 100. Applies only when `include` is `["diffs"]` and `detail` is `full_patch`. |
@@ -458,9 +459,9 @@ A group result also includes the owning project path of each merge request, for 
 | `first`             | integer | No       | Number of merge requests to return for forward pagination. Default is 20, maximum is 100. |
 
 To retrieve a single merge request in full detail, use `get_merge_request`. To get its commits, use
-`get_merge_request` with `include: ["commits"]`. Its diffs and notes are available from
-`get_merge_request_diffs` and `get_merge_request_notes`. For full-text search across resource
-types, use `search`.
+`get_merge_request` with `include: ["commits"]`. For diffs or notes, use `include: ["diffs"]`
+or `include: ["notes"]`. To get patch text, also set `detail` to `full_patch`. To paginate notes
+backward, use `get_merge_request_notes`. For full-text search across resource types, use `search`.
 
 Example:
 

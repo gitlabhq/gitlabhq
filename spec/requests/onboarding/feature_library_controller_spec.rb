@@ -40,7 +40,7 @@ RSpec.describe Onboarding::FeatureLibraryController, feature_category: :onboardi
         before do
           allow(Gitlab::ApplicationRateLimiter)
             .to receive(:throttled_request?)
-            .with(anything, anything, :feature_library_search, scope: user)
+            .with(anything, anything, :feature_library_search, scope: { user: user })
             .and_return(true)
         end
 

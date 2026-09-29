@@ -7,7 +7,7 @@ module Groups
     PERMITTED_FILE_EXTENSIONS = %w[csv].freeze
 
     before_action :authenticate_user!
-    before_action -> { check_rate_limit!(:placeholder_reassignment, scope: current_user) }, only: :create
+    before_action -> { check_rate_limit!(:placeholder_reassignment, scope: { user: current_user }) }, only: :create
 
     feature_category :importers
 

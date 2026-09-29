@@ -73,17 +73,34 @@ module API
           not_found!("User ID #{scoped_user_id} not found") unless identity
         end
 
+        # Fills the characteristic slot matching the shell operation's actor.
+        # A DeployToken has no characteristic of its own: it lands in :ip via
+        # its default #to_s, which is unique per object, so deploy-token
+        # actors are effectively never throttled here. That preserves the
+        # pre-hash-scope behaviour; a real deploy-token characteristic is
+        # tracked in https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/29597.
+        def shell_operation_actor_scope(actor)
+          case actor.key_or_user
+          when nil then {}
+          when ::User then { user: actor.key_or_user }
+          when ::Key then { key: actor.key_or_user }
+          else { ip: actor.key_or_user.to_s }
+          end
+        end
+
         # rubocop: disable Metrics/AbcSize
         def check_allowed(params)
           # This is a separate method so that EE can alter its behaviour more
           # easily.
 
-          check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], actor.key_or_user])
+          check_rate_limit!(:gitlab_shell_operation,
+            scope: { action: params[:action], repo_path: params[:project], **shell_operation_actor_scope(actor) })
 
           rate_limiter = Gitlab::Auth::IpRateLimiter.new(request.ip)
 
           unless rate_limiter.trusted_ip?
-            check_rate_limit!(:gitlab_shell_operation, scope: [params[:action], params[:project], rate_limiter.ip])
+            check_rate_limit!(:gitlab_shell_operation,
+              scope: { action: params[:action], repo_path: params[:project], ip: rate_limiter.ip })
           end
 
           # Stores some Git-specific env thread-safely

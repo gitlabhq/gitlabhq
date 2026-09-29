@@ -197,7 +197,10 @@ module API
           source = find_source(source_type, params[:id])
           member = source_members(source).find_by!(user_id: params[:user_id])
 
-          check_rate_limit!(:members_delete, scope: [source, current_user])
+          check_rate_limit!(
+            :members_delete,
+            scope: ::Gitlab::ApplicationRateLimiter.parent_scope(source).merge(user: current_user)
+          )
 
           destroy_conditionally!(member) do
             ::Members::DestroyService.new(member, current_user: current_user,

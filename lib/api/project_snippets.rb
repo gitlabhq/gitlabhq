@@ -97,7 +97,7 @@ module API
 
         authorize! :create_snippet, user_project
 
-        check_rate_limit!(:snippets_create, scope: current_user)
+        check_rate_limit!(:snippets_create, scope: { user: current_user })
 
         snippet_params = process_create_params(declared_params(include_missing: false))
         service_response = ::Snippets::CreateService.new(project: user_project, current_user: current_user, params: snippet_params).execute

@@ -85,7 +85,7 @@ module Notifications
       end
 
       def rate_limited?(user)
-        ::Gitlab::ApplicationRateLimiter.throttled?(RATE_LIMIT_KEY, scope: [user])
+        ::Gitlab::ApplicationRateLimiter.throttled?(RATE_LIMIT_KEY, scope: { user: user })
       end
 
       # The rate-limited todo alert itself is always suppressed (and counted).

@@ -28,39 +28,40 @@ You can express interest in other IDE extension support [in this issue](https://
 
 ## Supported languages by IDE
 
-The following table provides more information on the languages Code Suggestions supports by default, and the IDEs.
+In VS Code, Code Suggestions works with all languages that the IDE supports, except plain text.
+For some languages, like Kotlin, Scala, or Terraform, you must install a third-party extension to
+add support for the language to VS Code.
+You can [turn off Code Suggestions for specific languages](#manage-languages-for-code-suggestions).
 
+For the other IDEs, the following table lists the languages Code Suggestions supports by default.
 Code Suggestions also works with other languages, but you must [manually add support](#add-support-for-more-languages).
 
-| Language                            | Web IDE     | VS Code                  | JetBrains IDEs | Visual Studio 2022 for Windows | Neovim                   | Eclipse |
-|-------------------------------------|-------------|--------------------------|----------------|--------------------------------|--------------------------|---------|
-| C                                   | {{< yes >}} | {{< yes >}}              | {{< no >}}     | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| C++                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| C#                                  | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| CSS                                 | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
-| Go                                  | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Google SQL                          | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< no >}} |
-| HAML                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| HTML                                | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
-| Java                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| JavaScript                          | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Kotlin                              | {{< no >}}  | {{< yes >}}[^code-requires-third] | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Markdown                            | {{< yes >}} | {{< no >}}               | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
-| PHP                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Python                              | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Ruby                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Rust                                | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Scala                               | {{< no >}}  | {{< yes >}}[^supported-languages-code-requires-third] | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Shell scripts (`bash` only)         | {{< yes >}} | {{< no >}}               | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Svelte                              | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Swift                               | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| TypeScript (`.ts` and `.tsx` files) | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
-| Terraform                           | {{< no >}}  | {{< yes >}}[^supported-languages-code-requires-third-2] | {{< yes >}}    | {{< no >}}                     | {{< yes >}}[^requires-third-party] | {{< yes >}} |
-| Vue                                 | {{< yes >}} | {{< yes >}}              | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Language                            | Web IDE     | JetBrains IDEs | Visual Studio 2022 for Windows | Neovim                   | Eclipse |
+|-------------------------------------|-------------|----------------|--------------------------------|--------------------------|---------|
+| C                                   | {{< yes >}} | {{< no >}}     | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| C++                                 | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| C#                                  | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| CSS                                 | {{< yes >}} | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
+| Go                                  | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Google SQL                          | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< no >}} |
+| HAML                                | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| HTML                                | {{< yes >}} | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
+| Java                                | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| JavaScript                          | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Kotlin                              | {{< no >}}  | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Markdown                            | {{< yes >}} | {{< no >}}     | {{< no >}}                     | {{< no >}}               | {{< no >}} |
+| PHP                                 | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Python                              | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Ruby                                | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Rust                                | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Scala                               | {{< no >}}  | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Shell scripts (`bash` only)         | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Svelte                              | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Swift                               | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| TypeScript (`.ts` and `.tsx` files) | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
+| Terraform                           | {{< no >}}  | {{< yes >}}    | {{< no >}}                     | {{< yes >}}[^requires-third-party] | {{< yes >}} |
+| Vue                                 | {{< yes >}} | {{< yes >}}    | {{< yes >}}                    | {{< yes >}}              | {{< yes >}} |
 
-[^code-requires-third]: VS Code requires a third-party extension that provides Kotlin support.
-[^supported-languages-code-requires-third]: VS Code requires a third-party extension that provides Scala support.
-[^supported-languages-code-requires-third-2]: VS Code requires a third-party extension that provides Terraform support.
 [^requires-third-party]: Neovim requires a third-party extension that provides the `terraform` file type.
 
 > [!note]
@@ -80,55 +81,52 @@ Code Suggestions works with infrastructure-as-code interfaces, including:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CHANGELOG.md#4210-2024-07-16) in GitLab for VS Code 4.21.0
+- Suggestions for all languages [turned on](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.92.0) by default in GitLab for VS Code 6.92.0 during the GitLab 19.5 release.
 
 {{< /history >}}
 
-You can customize your coding experience in VS Code by enabling or disabling Code Suggestions for specific supported languages.
-You can do this by editing your `settings.json` file directly, or from the VS Code user interface:
+In VS Code, Code Suggestions is turned on for all languages by default.
+You can turn it off for specific languages.
+
+To turn Code Suggestions off or on for the language of the current file:
+
+1. In VS Code, open a file in the language.
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Select **GitLab: Toggle Code Suggestions for current language**.
+
+You can also select the GitLab Duo icon in the status bar, and then select the option
+to turn Code Suggestions off or on for the current language.
+
+To turn off Code Suggestions for more than one language:
 
 1. In VS Code, open the Settings editor:
    - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
    - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. Select **Extensions** > **GitLab** > **GitLab Duo**.
-1. Find the **GitLab › Duo Code Suggestions: Enabled Supported Languages** section.
-1. Select the languages you want to suggest or generate code for.
-1. Your changes save automatically and take effect immediately.
+1. Under **GitLab › Duo Code Suggestions: Disabled Languages**, select **Add Item**.
+1. Enter the [language identifier](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers),
+   like `python` or `markdown`.
+1. Select **OK**.
+
+Your changes save automatically and take effect immediately.
 
 When you turn off Code Suggestions for a language, the GitLab Duo icon changes to show that suggestions are not available
 for this language.
 
+If you turned off languages in the **Enabled Supported Languages** setting of an earlier version
+of the extension, it adds them to **Disabled Languages** when you update.
+
 ## Add support for more languages
 
-If your desired language doesn't have Code Suggestions available by default,
+In VS Code, you do not need to add languages. Code Suggestions works with all languages except plain text.
+
+In other IDEs, if your desired language doesn't have Code Suggestions available by default,
 you can add support for your language locally.
 However, Code Suggestions might not function as expected.
 
 {{< tabs >}}
-
-{{< tab title="Visual Studio Code" >}}
-
-Prerequisites:
-
-- You have installed and enabled the
-  [GitLab for VS Code extension](../../../../editor_extensions/visual_studio_code/_index.md).
-- You have completed the [VS Code extension setup](../../../../editor_extensions/visual_studio_code/setup.md)
-  instructions, and authorized the extension to access your GitLab account.
-
-To do this:
-
-1. Find your desired language in the list of
-   [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
-   You need the **Identifier** for your languages in a later step.
-1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
-1. Select **Extensions** > **GitLab** > **GitLab Duo**.
-1. Under **GitLab › Duo Code Suggestions: Additional Languages**, select **Add Item**.
-1. Enter the identifier for each language you want to support. Identifiers should be
-   lowercase, like `html` or `powershell`. Don't add leading periods from file suffixes to each identifier.
-1. Select **OK**.
-
-{{< /tab >}}
 
 {{< tab title="JetBrains IDEs" >}}
 

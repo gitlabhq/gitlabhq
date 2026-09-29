@@ -236,7 +236,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
       it 'applies rate limiting' do
         allow_next_instance_of(described_class) do |controller|
-          expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: user)
+          expect(controller).to receive(:check_rate_limit!).with(:user_large_commit_request, scope: { user: user })
         end
 
         workhorse_body_upload(url, params)

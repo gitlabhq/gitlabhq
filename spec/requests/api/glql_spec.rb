@@ -214,7 +214,8 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
     it 'returns 429 when rate limited' do
       yaml = "query: group = \"test-group\" AND state = opened"
       query_sha = Digest::SHA256.hexdigest(yaml)
-      allow(Gitlab::ApplicationRateLimiter).to receive(:peek).with(:glql, scope: query_sha).and_return(true)
+      allow(Gitlab::ApplicationRateLimiter).to receive(:peek).with(:glql,
+        scope: { query_sha: query_sha }).and_return(true)
 
       post api(endpoint, user), params: { glql_yaml: yaml }
 

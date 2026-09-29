@@ -28,7 +28,7 @@ module Mutations
       private
 
       def verify_rate_limit!
-        return unless Gitlab::ApplicationRateLimiter.throttled?(:delete_all_todos, scope: [current_user])
+        return unless Gitlab::ApplicationRateLimiter.throttled?(:delete_all_todos, scope: { user: current_user })
 
         raise_resource_not_available_error!(Gitlab::ApplicationRateLimiter.throttled_error_message)
       end

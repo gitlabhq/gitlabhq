@@ -54,7 +54,6 @@ RSpec/RailsControllerTesting:
     - 'ee/spec/controllers/projects/security/vulnerabilities_controller_spec.rb'
     - 'ee/spec/controllers/projects/security/vulnerability_report_controller_spec.rb'
     - 'ee/spec/controllers/projects/settings/integrations_controller_spec.rb'
-    - 'ee/spec/controllers/registrations/company_controller_spec.rb'
     - 'ee/spec/controllers/registrations/groups_controller_spec.rb'
     - 'ee/spec/controllers/security/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/security/vulnerabilities_controller_spec.rb'

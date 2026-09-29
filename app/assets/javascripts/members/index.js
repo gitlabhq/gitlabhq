@@ -40,6 +40,7 @@ export const initMembersApp = (el, context, options) => {
     availableRoles,
     reassignmentCsvPath,
     restrictReassignmentToEnterprise,
+    allowNonEnterprisePlaceholderReassignment,
     allowInactivePlaceholderReassignment,
     allowBypassPlaceholderConfirmation,
     ...vuexStoreAttributes
@@ -88,6 +89,9 @@ export const initMembersApp = (el, context, options) => {
       context,
       reassignmentCsvPath,
       restrictReassignmentToEnterprise: parseBoolean(restrictReassignmentToEnterprise),
+      allowNonEnterprisePlaceholderReassignment: parseBoolean(
+        allowNonEnterprisePlaceholderReassignment,
+      ),
       allowInactivePlaceholderReassignment: parseBoolean(allowInactivePlaceholderReassignment),
       allowBypassPlaceholderConfirmation,
       group: {

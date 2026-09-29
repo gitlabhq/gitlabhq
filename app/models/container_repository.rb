@@ -130,7 +130,7 @@ class ContainerRepository < ApplicationRecord
   def tag_details(name:)
     return unless gitlab_api_client.supports_gitlab_api?
 
-    tag_details = gitlab_api_client.tag_details(self.path, name)
+    tag_details = gitlab_api_client.tag_details(path, name)
     transform_tag_details(tag_details)
   end
 
@@ -171,7 +171,7 @@ class ContainerRepository < ApplicationRecord
 
     while next_page_uri && page_count < MAX_TAGS_PAGES
       last = Rack::Utils.parse_nested_query(next_page_uri.query)['last']
-      current_page = gitlab_api_client.tags(self.path, page_size: page_size, last: last)
+      current_page = gitlab_api_client.tags(path, page_size: page_size, last: last)
 
       if current_page&.key?(:response_body)
         yield transform_tags_page(current_page[:response_body])
@@ -191,7 +191,7 @@ class ContainerRepository < ApplicationRecord
     raise ArgumentError, _('GitLab container registry API not supported') unless gitlab_api_client.supports_gitlab_api?
 
     page = gitlab_api_client.tags(
-      self.path,
+      path,
       page_size: page_size,
       before: before,
       last: last,
@@ -236,7 +236,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def delete_tag(name_or_digest)
-    client.delete_repository_tag_by_digest(self.path, name_or_digest)
+    client.delete_repository_tag_by_digest(path, name_or_digest)
   end
 
   def start_expiration_policy!
@@ -295,7 +295,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.build_from_path(path)
-    self.new(project: path.repository_project, name: path.repository_name)
+    new(project: path.repository_project, name: path.repository_name)
   end
 
   def self.find_or_create_from_path!(path)
@@ -308,15 +308,15 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.build_root_repository(project)
-    self.new(project: project, name: '')
+    new(project: project, name: '')
   end
 
   def self.find_by_path!(path)
-    self.find_by!(project: path.repository_project, name: path.repository_name)
+    find_by!(project: path.repository_project, name: path.repository_name)
   end
 
   def self.find_by_path(path)
-    self.find_by(project: path.repository_project, name: path.repository_name)
+    find_by(project: path.repository_project, name: path.repository_name)
   end
 
   def protected_from_delete_by_tag_rules?(user)
@@ -376,7 +376,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def gitlab_api_client_repository_details
-    gitlab_api_client.repository_details(self.path, sizing: :self)
+    gitlab_api_client.repository_details(path, sizing: :self)
   end
   strong_memoize_attr :gitlab_api_client_repository_details
 

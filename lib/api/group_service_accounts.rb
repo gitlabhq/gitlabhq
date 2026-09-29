@@ -49,7 +49,7 @@ module API
 
         route_setting :authorization, permissions: :create_service_account, boundary_type: :group
         post do
-          check_rate_limit!(:service_account_creation, scope: current_user)
+          check_rate_limit!(:service_account_creation, scope: { user: current_user })
 
           organization_id = user_group.organization_id
           service_params = declared_params.merge({ organization_id: organization_id, namespace_id: user_group.id })

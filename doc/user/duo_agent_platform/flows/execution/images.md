@@ -164,8 +164,11 @@ To configure flows for an offline environment:
    1. In the upper-right corner, select **Admin**.
    1. In the left sidebar, select **GitLab Duo**.
    1. Select **Change configuration**.
-   1. In the **Image registry** text box, enter your internal registry URL
-      (for example, `registry.internal.example.com`).
+   1. In the **Image registry** text box, enter the full reference of your custom image
+      (for example, `registry.internal.example.com/duo-executor:latest`).
+      If you enter only a registry hostname, a flow that does not set its own image pulls
+      `<hostname>/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image`
+      with the tag your GitLab version requests.
 1. In the top bar, select **Search or go to** and find your project.
 1. To use the custom image, update the `agent-config.yml` file:
 

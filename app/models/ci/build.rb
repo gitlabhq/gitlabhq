@@ -526,7 +526,7 @@ module Ci
     def ci_job_processed_rate_limited?
       Gitlab::ApplicationRateLimiter.throttled?(
         :ci_job_processed_subscription,
-        scope: project
+        scope: { project: project }
       )
     end
 

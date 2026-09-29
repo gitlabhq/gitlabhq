@@ -126,7 +126,7 @@ class CommitStatus < Ci::ApplicationRecord
     # we mark `processed` as always changed:
     # another process might change its value and our object
     # will not be refreshed to pick the change
-    self.processed_will_change!
+    processed_will_change!
 
     if latest?
       self.processed = false # force refresh of all dependent ones

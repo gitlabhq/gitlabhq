@@ -27,7 +27,7 @@ module API
 
       check_rate_limit!(
         :search_rate_limit,
-        scope: [current_user],
+        scope: { user: current_user },
         users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist
       )
     end

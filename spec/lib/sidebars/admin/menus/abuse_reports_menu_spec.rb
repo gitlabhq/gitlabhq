@@ -38,15 +38,17 @@ RSpec.describe Sidebars::Admin::Menus::AbuseReportsMenu, feature_category: :navi
     end
 
     context 'when there are abuse reports' do
+      let_it_be(:reporter) { create(:user) }
+
       it 'returns only the number of open abuse reports' do
-        create_list(:abuse_report, 2, status: :open)
-        create_list(:abuse_report, 3, status: :closed)
+        create_list(:abuse_report, 2, status: :open, reporter: reporter)
+        create_list(:abuse_report, 3, status: :closed, reporter: reporter)
 
         expect(subject.pill_count).to eq 2
       end
 
       it 'returns zero when all abuse reports are closed' do
-        create_list(:abuse_report, 2, status: :closed)
+        create_list(:abuse_report, 2, status: :closed, reporter: reporter)
 
         expect(subject.pill_count).to eq 0
       end

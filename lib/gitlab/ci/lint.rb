@@ -72,7 +72,7 @@ module Gitlab
       # as rate limited (so callers can reject it) when the ci_enforce_ci_lint_rate_limit flag
       # is enabled. This keeps lint rate limiting in log-only mode until the flag is turned on.
       def ci_lint_rate_limited?
-        return false unless ::Gitlab::ApplicationRateLimiter.throttled?(:ci_lint, scope: [current_user])
+        return false unless ::Gitlab::ApplicationRateLimiter.throttled?(:ci_lint, scope: { user: current_user })
 
         enforce = ::Feature.enabled?(:ci_enforce_ci_lint_rate_limit, project, type: :gitlab_com_derisk)
 

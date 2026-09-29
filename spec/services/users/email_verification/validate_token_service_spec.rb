@@ -16,7 +16,7 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
     shared_examples 'common token validation failures' do
       it 'returns failure when rate limited' do
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:email_verification, scope: encrypted_token).and_return(true)
+          .with(:email_verification, scope: { subject: encrypted_token }).and_return(true)
 
         result = service.execute
 

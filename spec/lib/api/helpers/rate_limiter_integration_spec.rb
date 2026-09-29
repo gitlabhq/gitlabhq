@@ -16,12 +16,12 @@ RSpec.describe API::Helpers::RateLimiter, 'Retry-After header integration', feat
       format :json
 
       get 'test_rate_limit' do
-        check_rate_limit!(:test_endpoint, scope: [current_user])
+        check_rate_limit!(:test_endpoint, scope: { user: current_user })
         { message: 'success' }
       end
 
       get 'test_rate_limit_with_custom_interval' do
-        check_rate_limit!(:projects_api, scope: [current_user])
+        check_rate_limit!(:projects_api, scope: { user: current_user })
         { message: 'success' }
       end
     end

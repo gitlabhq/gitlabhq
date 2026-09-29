@@ -203,9 +203,6 @@ were removed once the feature flags they supported were cleaned up.
   `Onboarding::SubscriptionNamespaceCreateService`, then
   `Onboarding::FinishService`, then redirects to
   `users_sign_up_customers_portal_redirect_path`.
-- `Registrations::CompanyController` (`/users/sign_up/company`, `new` and
-  `create`) calls `Onboarding::StatusStepUpdateService` and
-  `GitlabSubscriptions::CreateCompanyLeadService`.
 - `Registrations::GroupsController` (`create` and `import`) calls
   `Onboarding::FinishService`.
 - `Registrations::CustomersPortalRedirectController#show` is the final leg

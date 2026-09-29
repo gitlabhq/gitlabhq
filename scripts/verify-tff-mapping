@@ -643,26 +643,6 @@ tests = [
   },
 
   {
-    explanation: 'Spec for onboarding changes to company form items',
-    changed_file: 'ee/app/controllers/registrations/company_controller.rb',
-    expected: %w[
-      ee/spec/features/registrations/saas/invite_flow_spec.rb
-      ee/spec/features/registrations/saas/subscription_flow_company_paid_plan_spec.rb
-      ee/spec/features/registrations/saas/subscription_flow_just_me_paid_plan_spec.rb
-      ee/spec/features/registrations/saas/subscription_flow_spec.rb
-      ee/spec/features/registrations/saas/subscription_sm_flow_spec.rb
-      ee/spec/features/registrations/saas/trial_flow_spec.rb
-      ee/spec/features/registrations/saas/unified_free_flow_spec.rb
-      ee/spec/features/registrations/saas/unified_free_to_trial_flow_spec.rb
-      ee/spec/controllers/registrations/company_controller_spec.rb
-      ee/spec/requests/ee/registrations_controller_spec.rb
-      ee/spec/requests/trial_registrations_controller_spec.rb
-      ee/spec/features/registrations/email_opt_in_registration_spec.rb
-      ee/spec/features/registrations/one_trust_spec.rb
-    ]
-  },
-
-  {
     explanation: 'Spec for in-app ultimate trials',
     changed_file: 'ee/app/controllers/gitlab_subscriptions/trials_controller.rb',
     expected: %w[

@@ -2046,7 +2046,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           it 'applies throttle per project' do
             expect(Gitlab::ApplicationRateLimiter)
               .to receive(:throttled?)
-              .with(:project_download_export, scope: [user, project])
+              .with(:project_download_export, scope: { user: user, project: project })
 
             get action, params: { namespace_id: project.namespace, id: project }
           end

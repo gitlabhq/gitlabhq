@@ -201,6 +201,58 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       end
     end
 
+    context 'when deferring notifications' do
+      let(:params) { { defer_notifications: true } }
+
+      it 'does not publish a DraftNotePublishedEvent' do
+        allow(::Gitlab::EventStore).to receive(:publish).and_call_original
+        expect(::Gitlab::EventStore).not_to receive(:publish).with(an_instance_of(MergeRequests::DraftNotePublishedEvent))
+
+        publish
+      end
+    end
+
+    context 'when passing a review id' do
+      let(:review) { create(:review, merge_request: merge_request, project: project, author: user) }
+      let(:params) { { review_id: review.id } }
+
+      it 'publishes the draft notes into the existing review' do
+        expect { publish }.not_to change { Review.count }
+        expect(review.notes.count).to eq(2)
+      end
+
+      context 'when the review belongs to another user' do
+        let(:review) { create(:review, merge_request: merge_request, project: project) }
+
+        it 'returns an error without publishing' do
+          result = nil
+
+          expect { result = publish }.not_to change { Note.count }
+          expect(result[:message]).to eq('Review not found')
+        end
+      end
+
+      context 'when the review belongs to another merge request' do
+        let(:review) { create(:review, author: user) }
+
+        it 'returns an error' do
+          expect(publish[:message]).to eq('Review not found')
+        end
+      end
+
+      context 'when no draft notes are left to publish' do
+        let(:params) { { review_id: review.id, ids: [non_existing_record_id] } }
+
+        it 'returns the review and publishes the event for it' do
+          result = nil
+
+          expect { result = publish }.to publish_event(MergeRequests::DraftNotePublishedEvent)
+            .with(current_user_id: user.id, merge_request_id: merge_request.id, review_id: review.id)
+          expect(result[:review_id]).to eq(review.id)
+        end
+      end
+    end
+
     context 'capturing diff notes positions and keeping around commits' do
       before do
         # Need to execute this to ensure that we'll be able to test creation of

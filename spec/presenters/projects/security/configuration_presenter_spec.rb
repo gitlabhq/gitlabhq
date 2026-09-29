@@ -30,9 +30,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         )
       end
 
-      let!(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline) }
-      let!(:build_dast) { create(:ci_build, :dast, pipeline: pipeline) }
-      let!(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
+      let_it_be(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline) }
+      let_it_be(:build_dast) { create(:ci_build, :dast, pipeline: pipeline) }
+      let_it_be(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
 
       it 'includes links to auto devops and secure product docs' do
         expect(html_data[:auto_devops_help_page_path]).to eq(help_page_path('topics/autodevops/_index.md'))
@@ -248,6 +248,10 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
             sha: project.commit.sha
           )
         end
+
+        let_it_be(:build_sast) { create(:ci_build, :sast, name: 'semgrep-sast', pipeline: pipeline) }
+        let_it_be(:build_dast) { create(:ci_build, :dast, pipeline: pipeline) }
+        let_it_be(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
 
         let(:features) { Gitlab::Json.parse(html_data[:features]) }
         let(:artifacts) do

@@ -3,10 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe MemberUserEntity do
-  let_it_be(:user) { create(:user, last_activity_on: Date.today) }
-  let_it_be(:emoji) { 'slight_smile' }
-  let_it_be(:user_status) { create(:user_status, user: user, emoji: emoji) }
-
+  let(:emoji) { 'slight_smile' }
+  let(:user) { build_stubbed(:user, last_activity_on: Date.today, status: build_stubbed(:user_status, emoji: emoji)) }
   let(:entity) { described_class.new(user) }
   let(:entity_hash) { entity.as_json }
 
@@ -50,7 +48,10 @@ RSpec.describe MemberUserEntity do
   end
 
   context 'when options includes a source' do
-    let(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project) }
+
     let(:options) { { current_user: current_user, source: source } }
     let(:entity) { described_class.new(user, options) }
 
@@ -97,14 +98,14 @@ RSpec.describe MemberUserEntity do
     end
 
     context 'when the source is a group' do
-      let(:source) { create(:group) }
+      let(:source) { group }
       let(:minimum_manage_member_role) { Gitlab::Access::OWNER }
 
       it_behaves_like 'correctly exposes user two_factor_enabled'
     end
 
     context 'when the source is a project' do
-      let(:source) { create(:project) }
+      let(:source) { project }
       let(:minimum_manage_member_role) { Gitlab::Access::MAINTAINER }
 
       it_behaves_like 'correctly exposes user two_factor_enabled'

@@ -6,7 +6,9 @@ class Import::FogbugzController < Import::BaseController
   include SafeFormatHelper
 
   before_action :verify_fogbugz_import_enabled
-  before_action -> { check_rate_limit!(:fogbugz_import, scope: current_user, redirect_back: true) }, only: :callback
+  before_action -> {
+    check_rate_limit!(:fogbugz_import, scope: { user: current_user }, redirect_back: true)
+  }, only: :callback
 
   before_action :user_map, only: [:new_user_map, :create_user_map]
   before_action :verify_blocked_uri, only: :callback

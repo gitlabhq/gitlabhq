@@ -20,7 +20,7 @@ module API
         return unless blob
         return unless blob.size > Helpers::BlobHelpers::MAX_BLOB_SIZE
 
-        check_rate_limit!(:large_blob_download, scope: [user_project], message: error_msg(endpoint))
+        check_rate_limit!(:large_blob_download, scope: { project: user_project }, message: error_msg(endpoint))
       end
 
       private

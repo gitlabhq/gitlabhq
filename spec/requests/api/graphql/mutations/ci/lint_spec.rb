@@ -222,7 +222,7 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
       # Detection lives in Gitlab::Ci::Lint, which the mutation routes through.
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-        .with(:ci_lint, scope: [user]).and_return(true)
+        .with(:ci_lint, scope: { user: user }).and_return(true)
     end
 
     context 'when ci_enforce_ci_lint_rate_limit is enabled' do

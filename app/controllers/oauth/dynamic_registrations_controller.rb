@@ -109,10 +109,10 @@ module Oauth
       return if Rails.env.test? || Rails.env.development?
 
       unless Feature.enabled?(:oauth_dynamic_registration_json_rate_limit_error, :instance)
-        return check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
+        return check_rate_limit!(:oauth_dynamic_registration, scope: { ip: request.ip })
       end
 
-      check_rate_limit!(:oauth_dynamic_registration, scope: request.ip) do
+      check_rate_limit!(:oauth_dynamic_registration, scope: { ip: request.ip }) do
         # RFC 6749 section 5.2 / RFC 7591 section 3.2.2 define a JSON
         # error-response shape for OAuth endpoints; standards-compliant
         # clients (including the MCP SDK) fail to parse the default

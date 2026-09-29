@@ -5,23 +5,18 @@ require 'spec_helper'
 RSpec.describe ReleasePresenter, feature_category: :release_orchestration do
   include Gitlab::Routing.url_helpers
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, developers: developer, guests: guest) }
 
-  let(:developer) { create(:user) }
-  let(:guest) { create(:user) }
   let(:user) { developer }
-  let(:release) { create(:release, project: project) }
+  let(:release) { build_stubbed(:release, project: project) }
   let(:presenter) { described_class.new(release, current_user: user) }
 
   let(:base_url_params) { { scope: 'all', release_tag: release.tag } }
   let(:opened_url_params) { { state: 'opened', **base_url_params } }
   let(:merged_url_params) { { state: 'merged', **base_url_params } }
   let(:closed_url_params) { { state: 'closed', **base_url_params } }
-
-  before do
-    project.add_developer(developer)
-    project.add_guest(guest)
-  end
 
   describe '#commit_path' do
     subject { presenter.commit_path }

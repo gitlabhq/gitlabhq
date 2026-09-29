@@ -14,7 +14,7 @@ RSpec.describe WebHooks::WebHooksHelper, :clean_gitlab_redis_shared_state, featu
   end
 
   shared_context 'user is logged in' do
-    let(:current_user) { create(:user) }
+    let_it_be(:current_user) { create(:user) }
   end
 
   shared_context 'the user has permission' do
@@ -28,7 +28,7 @@ RSpec.describe WebHooks::WebHooksHelper, :clean_gitlab_redis_shared_state, featu
   end
 
   shared_context 'a hook has failed' do
-    before do
+    before_all do
       create(:project_hook, :permanently_disabled, project: project)
     end
   end

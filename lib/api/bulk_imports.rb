@@ -97,7 +97,7 @@ module API
       end
       route_setting :authorization, permissions: :create_bulk_import, boundary_type: :instance
       post do
-        check_rate_limit!(:bulk_import, scope: current_user)
+        check_rate_limit!(:bulk_import, scope: { user: current_user })
 
         params[:entities].each do |entity|
           if entity[:destination_name]

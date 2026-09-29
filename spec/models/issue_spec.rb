@@ -1692,6 +1692,10 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     describe 'sibling-shift query with the read flag on' do
+      before do
+        stub_feature_flags(write_relative_positions_to_work_item_positions: false)
+      end
+
       it 'filters the range on work_item_positions.relative_position, not issues' do
         left = create(:issue, project: project, relative_position: 99)
         right = create(:issue, project: project, relative_position: 100)
@@ -1708,6 +1712,216 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(shift).to be_present
         expect(shift).to match(/"work_item_positions"\."relative_position" (=|BETWEEN)/)
         expect(shift).not_to match(/AND "issues"\."relative_position" (=|BETWEEN)/)
+      end
+    end
+
+    describe 'sibling-shift write with the write flag on' do
+      it 'shifts the siblings on work_item_positions, not issues' do
+        left = create(:issue, project: project, relative_position: 99)
+        right = create(:issue, project: project, relative_position: 100)
+        create(:issue, project: project, relative_position: 100)
+        middle = create(:issue, project: project, relative_position: nil)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          middle.move_between(left, right)
+          middle.save!
+        end
+
+        shift = recorder.log.find { |q| q.start_with?('UPDATE "work_item_positions" SET "relative_position"') }
+
+        expect(shift).to be_present
+        expect(shift).to match(/"work_item_id" IN \(SELECT/)
+      end
+    end
+
+    describe 'single-item move write with the write flag on' do
+      it 'persists the moved position to work_item_positions and leaves issues untouched' do
+        left = create(:issue, project: project, relative_position: 100)
+        right = create(:issue, project: project, relative_position: 200)
+        moved = create(:issue, project: project, relative_position: nil)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          moved.move_between(left, right)
+          moved.save!
+        end
+
+        wip_write = recorder.log.find { |q| q.match?(/INSERT INTO "work_item_positions".*ON CONFLICT/m) }
+        expect(wip_write).to be_present
+        expect(recorder.log).not_to include(a_string_matching(/UPDATE "issues" SET.*"relative_position"/m))
+
+        expect(moved.work_item_position.reload.relative_position).to eq(moved.relative_position)
+        expect(described_class.where(id: moved.id).pick(Arel.sql('issues.relative_position'))).to be_nil
+      end
+    end
+
+    describe 'move_nulls write with the write flag on' do
+      it 'bulk-writes positions to work_item_positions and leaves issues untouched' do
+        a = create(:issue, project: project, relative_position: nil)
+        b = create(:issue, project: project, relative_position: nil)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          described_class.move_nulls_to_end([a, b])
+        end
+
+        wip_write = recorder.log.find { |q| q.match?(/INSERT INTO "work_item_positions".*ON CONFLICT/m) }
+        expect(wip_write).to be_present
+        expect(recorder.log).not_to include(a_string_matching(/UPDATE "issues" SET.*"relative_position"/m))
+
+        expect(WorkItems::Position.where(work_item_id: [a.id, b.id]).pluck(:relative_position)).to all(be_present)
+        expect(described_class.where(id: [a.id, b.id]).pluck(Arel.sql('issues.relative_position'))).to all(be_nil)
+      end
+    end
+
+    describe '.write_relative_positions_to_work_item_positions?' do
+      it 'is true when both the read and write flags are enabled' do
+        stub_feature_flags(
+          read_relative_positions_from_work_item_positions: true,
+          write_relative_positions_to_work_item_positions: true
+        )
+
+        expect(described_class.write_relative_positions_to_work_item_positions?(group)).to be(true)
+      end
+
+      it 'evaluates the flags with a nil namespace' do
+        stub_feature_flags(
+          read_relative_positions_from_work_item_positions: true,
+          write_relative_positions_to_work_item_positions: true
+        )
+
+        expect(described_class.write_relative_positions_to_work_item_positions?(nil)).to be(true)
+      end
+
+      it 'returns false when the read flag is disabled' do
+        stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+
+        expect(described_class.write_relative_positions_to_work_item_positions?(group)).to be(false)
+      end
+    end
+
+    describe '.assign_relative_positions' do
+      before do
+        stub_feature_flags(
+          read_relative_positions_from_work_item_positions: true,
+          write_relative_positions_to_work_item_positions: true
+        )
+      end
+
+      it 'is a no-op for an empty mapping' do
+        expect(WorkItems::Position).not_to receive(:upsert_all)
+
+        expect { described_class.send(:assign_relative_positions, {}) }.not_to raise_error
+      end
+
+      it 'falls back to super when the write flag is off' do
+        stub_feature_flags(write_relative_positions_to_work_item_positions: false)
+        issue = create(:issue, project: project, relative_position: nil)
+
+        described_class.send(:assign_relative_positions, { issue => { relative_position: 120 } })
+
+        expect(described_class.where(id: issue.id).pick(Arel.sql('issues.relative_position'))).to eq(120)
+      end
+
+      it 'updates a loaded association in memory' do
+        issue = create(:issue, project: project, relative_position: nil)
+        issue.work_item_position
+
+        described_class.send(:assign_relative_positions, { issue => { relative_position: 130 } })
+
+        expect(issue.association(:work_item_position)).to be_loaded
+        expect(issue.work_item_position.relative_position).to eq(130)
+      end
+
+      it 'skips the in-memory update when the association is not loaded' do
+        issue = create(:issue, project: project, relative_position: nil)
+        issue.association(:work_item_position).reset
+
+        described_class.send(:assign_relative_positions, { issue => { relative_position: 140 } })
+
+        expect(issue.association(:work_item_position)).not_to be_loaded
+        expect(WorkItems::Position.where(work_item_id: issue.id).pick(:relative_position)).to eq(140)
+      end
+    end
+
+    describe '.preload_positioning_associations' do
+      it 'returns early when there are no objects' do
+        expect(ActiveRecord::Associations::Preloader).not_to receive(:new)
+
+        described_class.send(:preload_positioning_associations, [])
+      end
+
+      it 'does not preload when the read flag is disabled' do
+        stub_feature_flags(read_relative_positions_from_work_item_positions: false)
+        issue = create(:issue, project: project)
+
+        expect(ActiveRecord::Associations::Preloader).not_to receive(:new)
+
+        described_class.send(:preload_positioning_associations, [issue])
+      end
+
+      it 'preloads work_item_position when the write flag is enabled' do
+        stub_feature_flags(
+          read_relative_positions_from_work_item_positions: true,
+          write_relative_positions_to_work_item_positions: true
+        )
+        issue = create(:issue, project: project)
+
+        described_class.send(:preload_positioning_associations, [issue])
+
+        expect(issue.association(:work_item_position)).to be_loaded
+      end
+    end
+
+    describe 'persisting a position update to work_item_positions' do
+      it 'writes to work_item_positions on an update when the write flag is on' do
+        stub_feature_flags(
+          read_relative_positions_from_work_item_positions: true,
+          write_relative_positions_to_work_item_positions: true
+        )
+        issue = create(:issue, project: project, relative_position: 10)
+
+        issue.update!(relative_position: 20)
+
+        expect(WorkItems::Position.where(work_item_id: issue.id).pick(:relative_position)).to eq(20)
+      end
+    end
+
+    describe '#relative_position getter' do
+      it 'serves the stored position from work_item_positions when the write flag is on' do
+        stub_feature_flags(
+          read_relative_positions_from_work_item_positions: true,
+          write_relative_positions_to_work_item_positions: true
+        )
+        issue = create(:issue, project: project, relative_position: 500)
+        issue.work_item_position.update!(relative_position: 777)
+        issue.association(:work_item_position).reset
+
+        expect(issue.relative_position).to eq(777)
+      end
+
+      it 'returns the pending in-memory change before it is saved' do
+        stub_feature_flags(
+          read_relative_positions_from_work_item_positions: true,
+          write_relative_positions_to_work_item_positions: true
+        )
+        issue = create(:issue, project: project, relative_position: 500)
+        issue.relative_position = 999
+
+        expect(issue.relative_position).to eq(999)
+      end
+
+      it 'falls back to the issues column when the write flag is off' do
+        stub_feature_flags(write_relative_positions_to_work_item_positions: false)
+        issue = create(:issue, project: project, relative_position: 500)
+
+        expect(issue.relative_position).to eq(500)
+      end
+
+      it 'does not serve from work_item_positions when namespace_id is nil' do
+        issue = build(:issue, project: project, relative_position: 500)
+        issue.namespace_id = nil
+
+        expect(issue.send(:serve_relative_position_from_work_item_positions?)).to be(false)
+        expect(issue.relative_position).to eq(500)
       end
     end
 

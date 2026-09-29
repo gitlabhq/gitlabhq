@@ -23,7 +23,10 @@ module API
       route_setting :authorization, permissions: :resend_webhook_event, boundary_type: configuration[:boundary_type]
       post ":hook_id/events/:hook_log_id/resend" do
         hook = find_hook
-        check_rate_limit!(:web_hook_event_resend, scope: [hook.parent, current_user])
+        check_rate_limit!(
+          :web_hook_event_resend,
+          scope: ::Gitlab::ApplicationRateLimiter.parent_scope(hook.parent).merge(user: current_user)
+        )
 
         web_hook_log = hook.web_hook_logs.find(params[:hook_log_id])
         result = WebHooks::Events::ResendService.new(web_hook_log, current_user: current_user).execute

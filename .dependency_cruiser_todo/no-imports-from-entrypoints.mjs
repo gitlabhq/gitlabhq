@@ -15,6 +15,5 @@ export default {
     'app/assets/javascripts/repository/index.js',
     'ee/app/assets/javascripts/ai/settings/components/duo_flow_settings.vue',
     'ee/app/assets/javascripts/groups/settings/permissions/index.js',
-    'ee/app/assets/javascripts/registrations/components/company_form.vue',
   ],
 };

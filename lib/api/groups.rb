@@ -324,7 +324,7 @@ module API
       route_setting :authorization, permissions: :create_group, boundary_type: :user
       post feature_category: :groups_and_projects, urgency: :low do
         if Feature.enabled?(:namespace_create_rate_limit, current_user)
-          check_rate_limit!(:groups_create, scope: [current_user])
+          check_rate_limit!(:groups_create, scope: { user: current_user })
         end
 
         organization = find_organization!(params[:organization_id]) if params[:organization_id].present?
@@ -373,7 +373,7 @@ module API
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
-        mark_throttle! :update_namespace_name, scope: group if params.key?(:name) && params[:name].present?
+        mark_throttle! :update_namespace_name, scope: { namespace: group } if params.key?(:name) && params[:name].present?
         authorize_any! [:admin_group, :admin_runners], group
 
         group.remove_avatar! if params.key?(:avatar) && params[:avatar].nil?

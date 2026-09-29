@@ -139,7 +139,7 @@ module API
       end
 
       def validate_projects_api_rate_limit_for_unauthenticated_users!
-        check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
+        check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: { ip: ip_address })
       end
 
       def validate_projects_api_rate_limit!
@@ -487,7 +487,7 @@ module API
       route_setting :authorization, permissions: :create_project, boundary_type: :user
       post urgency: :low do
         if Feature.enabled?(:namespace_create_rate_limit, current_user)
-          check_rate_limit!(:projects_create, scope: [current_user])
+          check_rate_limit!(:projects_create, scope: { user: current_user })
         end
 
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')

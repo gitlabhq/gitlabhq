@@ -7,6 +7,13 @@ RSpec.describe Emails::Pipelines do
   include EmailSpec::Matchers
 
   let_it_be(:project) { create(:project, :small_repo) }
+  let_it_be_with_reload(:pipeline) do
+    create(:ci_pipeline, project: project, ref: 'master', sha: project.commit('master').sha)
+  end
+
+  let(:recipient) { pipeline.user.try(:email) }
+  let(:ref) { 'master' }
+  let(:sha) { project.commit(ref).sha }
 
   shared_examples_for 'correct pipeline information' do
     let(:expected_email_subject) do
@@ -92,11 +99,6 @@ RSpec.describe Emails::Pipelines do
   describe '#pipeline_success_email' do
     subject { Notify.pipeline_success_email(pipeline, recipient) }
 
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: sha) }
-    let(:recipient) { pipeline.user.try(:email) }
-    let(:ref) { 'master' }
-    let(:sha) { project.commit(ref).sha }
-
     it_behaves_like 'correct pipeline information' do
       let(:status) { 'Successful' }
       let(:status_text) { "Pipeline ##{pipeline.id} has passed!" }
@@ -119,11 +121,6 @@ RSpec.describe Emails::Pipelines do
   describe '#pipeline_failed_email' do
     subject { Notify.pipeline_failed_email(pipeline, recipient) }
 
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: sha) }
-    let(:recipient) { pipeline.user.try(:email) }
-    let(:ref) { 'master' }
-    let(:sha) { project.commit(ref).sha }
-
     it_behaves_like 'correct pipeline information' do
       let(:status) { 'Failed' }
       let(:status_text) { "Pipeline ##{pipeline.id} has failed!" }
@@ -134,11 +131,6 @@ RSpec.describe Emails::Pipelines do
 
   describe '#pipeline_fixed_email' do
     subject { Notify.pipeline_fixed_email(pipeline, pipeline.user.try(:email)) }
-
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: sha) }
-    let(:recipient) { pipeline.user.try(:email) }
-    let(:ref) { 'master' }
-    let(:sha) { project.commit(ref).sha }
 
     it_behaves_like 'correct pipeline information' do
       let(:status) { 'Fixed' }

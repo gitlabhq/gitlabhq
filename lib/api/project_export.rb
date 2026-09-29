@@ -51,7 +51,7 @@ module API
         end
         route_setting :authorization, permissions: :download_project_export, boundary_type: :project
         get ':id/export/download' do
-          check_rate_limit! :project_download_export, scope: [current_user, user_project]
+          check_rate_limit! :project_download_export, scope: { user: current_user, project: user_project }
 
           if user_project.export_file_exists?(current_user)
             if user_project.export_archive_exists?(current_user)
@@ -95,7 +95,7 @@ module API
         end
         route_setting :authorization, permissions: :create_project_export, boundary_type: :project
         post ':id/export' do
-          check_rate_limit! :project_export, scope: current_user
+          check_rate_limit! :project_export, scope: { user: current_user }
 
           if params[:excluded_relations].present?
             invalid = params[:excluded_relations] - VALID_EXPORT_RELATIONS

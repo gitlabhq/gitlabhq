@@ -126,7 +126,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     context 'when rate limited by login attempts' do
       before do
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_sign_in,
-          hash_including(scope: user)).and_return(true)
+          hash_including(scope: { user: user })).and_return(true)
         sign_in
       end
 
@@ -212,7 +212,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       context 'when rate limited by code entry and a verification_token param exists' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification,
-            hash_including(scope: user.unlock_token)).and_return(true)
+            hash_including(scope: { subject: user.unlock_token })).and_return(true)
 
           post(user_session_path(user: { verification_token: 'token' }))
         end
@@ -447,7 +447,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       context 'when rate limited by code entry and a verification_token param exists' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification,
-            hash_including(scope: user.email_otp)).and_return(true)
+            hash_including(scope: { subject: user.email_otp })).and_return(true)
 
           post(user_session_path(user: { verification_token: 'token' }))
         end
@@ -967,7 +967,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     context 'when exceeding the code send rate limit' do
       before do
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification_code_send,
-          hash_including(scope: user)).and_return(true)
+          hash_including(scope: { user: user })).and_return(true)
 
         stub_session(session_data: { verifies_with_email_user_id: user.id })
 

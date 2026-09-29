@@ -13,6 +13,10 @@ module Resolvers
         required: true,
         description: 'Global ID of the design at the version.'
 
+      def self.single
+        self
+      end
+
       def resolve(id:)
         authorized_find!(id: id)
       end
@@ -22,10 +26,6 @@ module Resolvers
         return unless consistent?(dav)
 
         dav
-      end
-
-      def self.single
-        self
       end
 
       private

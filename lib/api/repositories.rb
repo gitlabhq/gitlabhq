@@ -355,7 +355,7 @@ module API
 
         generate = params[:generate] || false
         if generate
-          check_rate_limit!(:project_repositories_health, scope: [user_project]) do
+          check_rate_limit!(:project_repositories_health, scope: { project: user_project }) do
             render_api_error!({ error: 'Repository health has been requested too many times. Try again later.' }, 429)
           end
         end
@@ -452,7 +452,7 @@ module API
         post ':id/repository/blobs/batch', urgency: :low do
           not_found! unless Feature.enabled?(:repository_blobs_batch_api, user_project)
 
-          check_rate_limit!(:project_repositories_blobs_batch, scope: [user_project, current_user])
+          check_rate_limit!(:project_repositories_blobs_batch, scope: { project: user_project, user: current_user })
 
           default_ref = user_project.default_branch
 
@@ -501,7 +501,7 @@ module API
         get ':id/repository/changed_paths', urgency: :low do
           not_found! unless Feature.enabled?(:repository_changed_paths_api, user_project)
 
-          check_rate_limit!(:project_repositories_changed_paths, scope: [current_user, user_project])
+          check_rate_limit!(:project_repositories_changed_paths, scope: { user: current_user, project: user_project })
 
           diff_tree = Gitlab::Git::DiffTree.new(params[:from], params[:to])
 
@@ -535,7 +535,7 @@ module API
         get ':id/repository/diverging_commits', urgency: :low do
           not_found! unless Feature.enabled?(:repository_diverging_commits_api, user_project)
 
-          check_rate_limit!(:project_repositories_diverging_commits, scope: [current_user, user_project])
+          check_rate_limit!(:project_repositories_diverging_commits, scope: { user: current_user, project: user_project })
 
           service = ::Branches::DivergingCommitCountsService.new(user_project.repository)
           counts = service.diverging_counts(params[:from], params[:to], max_count: params[:max_count])
@@ -566,7 +566,7 @@ module API
         get ':id/repository/diff_stats', urgency: :low do
           not_found! unless Feature.enabled?(:repository_diff_stats_api, user_project)
 
-          check_rate_limit!(:project_repositories_diff_stats, scope: [current_user, user_project])
+          check_rate_limit!(:project_repositories_diff_stats, scope: { user: current_user, project: user_project })
 
           from_commit = user_project.repository.commit(params[:from])
           to_commit = user_project.repository.commit(params[:to])
@@ -595,7 +595,7 @@ module API
       route_setting :authorization, permissions: :read_repository_changelog, boundary_type: :project, job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/changelog', requirements: { format: /txt/ } do
-        check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
+        check_rate_limit!(:project_repositories_changelog, scope: { user: current_user, project: user_project }) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)
         end
 
@@ -642,7 +642,7 @@ module API
       end
       route_setting :authorization, permissions: :create_repository_changelog, boundary_type: :project
       post ':id/repository/changelog' do
-        check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
+        check_rate_limit!(:project_repositories_changelog, scope: { user: current_user, project: user_project }) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)
         end
 

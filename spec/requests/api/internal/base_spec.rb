@@ -503,11 +503,18 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     shared_examples 'rate limited request' do
       let(:action) { 'git-upload-pack' }
       let(:actor) { key }
+      let(:actor_scope) { actor.is_a?(User) ? { user: actor } : { key: actor } }
       let(:rate_limiter) { double(:rate_limiter, ip: "127.0.0.1", trusted_ip?: false) }
 
       it 'is throttled by rate limiter' do
-        allow(::Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(false, true)
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:gitlab_shell_operation, scope: [action, project.full_path, actor]).twice.and_call_original
+        allow(::Gitlab::Auth::IpRateLimiter).to receive(:new).and_return(rate_limiter)
+        allow(::Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!).and_return(false, false, true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:gitlab_shell_operation, scope: { action: action, repo_path: project.full_path, **actor_scope })
+          .twice.and_call_original
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:gitlab_shell_operation, scope: { action: action, repo_path: project.full_path, ip: rate_limiter.ip })
+          .once.and_call_original
 
         request
 
@@ -1184,6 +1191,40 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response["status"]).to be_falsey
         end
+      end
+    end
+
+    context "deploy token" do
+      let_it_be(:deploy_token) { create(:deploy_token, :project, projects: [project]) }
+
+      # A deploy token matches neither the User nor the Key characteristic, so
+      # it falls back to :ip carrying its object-unique #to_s. Pinned here so
+      # the fallback cannot silently move onto a shared characteristic, which
+      # would collapse every deploy token into one bucket.
+      it 'fills the ip characteristic with the deploy token itself' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(
+          :gitlab_shell_operation,
+          scope: {
+            action: 'git-upload-pack',
+            repo_path: project.full_path,
+            ip: a_string_starting_with('#<DeployToken')
+          }
+        ).and_call_original
+
+        post(
+          api("/internal/allowed"),
+          params: {
+            identifier: "deploy-token-#{deploy_token.id}",
+            project: full_path_for(project),
+            gl_repository: gl_repository_for(project),
+            action: 'git-upload-pack',
+            protocol: 'http'
+          },
+          headers: gitlab_shell_internal_api_request_header
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

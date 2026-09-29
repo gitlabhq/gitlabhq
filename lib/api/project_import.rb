@@ -122,7 +122,7 @@ module API
 
         require_gitlab_workhorse!
 
-        check_rate_limit! :project_import, scope: [current_user, :project_import]
+        check_rate_limit! :project_import, scope: { user: current_user, action: :project_import }
 
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
 
@@ -246,7 +246,7 @@ module API
       post 'remote-import' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
-        check_rate_limit! :project_import, scope: [current_user, :project_import]
+        check_rate_limit! :project_import, scope: { user: current_user, action: :project_import }
 
         response = ::Import::GitlabProjects::CreateProjectService.new(
           current_user,
@@ -330,7 +330,7 @@ module API
 
         require_gitlab_workhorse!
 
-        check_rate_limit! :project_import, scope: [current_user, :project_import]
+        check_rate_limit! :project_import, scope: { user: current_user, action: :project_import }
 
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21041')
 
@@ -417,7 +417,7 @@ module API
       post 'remote-import-s3' do
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
-        check_rate_limit! :project_import, scope: [current_user, :project_import]
+        check_rate_limit! :project_import, scope: { user: current_user, action: :project_import }
 
         response = ::Import::GitlabProjects::CreateProjectService.new(
           current_user,

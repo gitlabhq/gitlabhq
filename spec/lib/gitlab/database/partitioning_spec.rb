@@ -333,6 +333,15 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
         described_class.sync_partitions(models)
       end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping sync of dynamic postgres partitions',
+          feature_flag: :partition_manager_sync_partitions
+        )
+
+        expect(described_class.sync_partitions(models)).to eq(:partition_manager_sync_partitions)
+      end
     end
 
     context 'when disallow_database_ddl_feature_flags feature flag is enabled' do
@@ -346,6 +355,15 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         expect(described_class).to receive(:sync_partitions).and_call_original
 
         described_class.sync_partitions(models)
+      end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping sync of dynamic postgres partitions',
+          feature_flag: :disallow_database_ddl_feature_flags
+        )
+
+        expect(described_class.sync_partitions(models)).to eq(:disallow_database_ddl_feature_flags)
       end
     end
   end
@@ -419,6 +437,15 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
         described_class.drop_detached_partitions
       end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping drop of detached postgres partitions',
+          feature_flag: :partition_manager_sync_partitions
+        )
+
+        expect(described_class.drop_detached_partitions).to eq(:partition_manager_sync_partitions)
+      end
     end
 
     context 'when the feature disallow DDL feature flags is enabled' do
@@ -430,6 +457,15 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         expect(Gitlab::Database::Partitioning::DetachedPartitionDropper).not_to receive(:new)
 
         described_class.drop_detached_partitions
+      end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping drop of detached postgres partitions',
+          feature_flag: :disallow_database_ddl_feature_flags
+        )
+
+        expect(described_class.drop_detached_partitions).to eq(:disallow_database_ddl_feature_flags)
       end
     end
 

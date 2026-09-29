@@ -2,11 +2,6 @@
 # Cop supports --autocorrect.
 Style/RedundantSelf:
   Exclude:
-    - 'app/models/clusters/platforms/kubernetes.rb'
-    - 'app/models/commit.rb'
-    - 'app/models/commit_range.rb'
-    - 'app/models/commit_status.rb'
-    - 'app/models/compare.rb'
     - 'app/models/concerns/after_commit_queue.rb'
     - 'app/models/concerns/atomic_internal_id.rb'
     - 'app/models/concerns/avatarable.rb'
@@ -40,16 +35,6 @@ Style/RedundantSelf:
     - 'app/models/concerns/timebox.rb'
     - 'app/models/concerns/ttl_expirable.rb'
     - 'app/models/concerns/valid_attribute.rb'
-    - 'app/models/container_expiration_policy.rb'
-    - 'app/models/container_repository.rb'
-    - 'app/models/custom_emoji.rb'
-    - 'app/models/customer_relations/contact.rb'
-    - 'app/models/customer_relations/organization.rb'
-    - 'app/models/deploy_key.rb'
-    - 'app/models/deploy_keys_project.rb'
-    - 'app/models/diff_note.rb'
-    - 'app/models/discussion.rb'
-    - 'app/models/email.rb'
     - 'app/models/environment.rb'
     - 'app/models/gpg_key.rb'
     - 'app/models/group.rb'

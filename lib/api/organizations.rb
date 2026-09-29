@@ -36,7 +36,7 @@ module API
         assignable_when: [:saas]
       post do
         forbidden! unless ::Organizations::Release.enabled?(:org_creation, current_user)
-        check_rate_limit!(:create_organization_api, scope: current_user)
+        check_rate_limit!(:create_organization_api, scope: { user: current_user })
         authorize_organization_creation!
 
         response = ::Organizations::CreateService

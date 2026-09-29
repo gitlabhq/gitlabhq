@@ -47,9 +47,8 @@ To verify that Code Suggestions is turned on in VS Code:
    - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
 1. Select **Extensions** > **GitLab** > **GitLab Duo**.
 1. Ensure that the checkbox under **GitLab › Duo Code Suggestions: Enabled** is selected.
-1. Optional. Under **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
-   select the languages you want to suggest or generate code for.
-1. Optional. Under **GitLab › Duo Code Suggestions: Additional Languages**, add other languages you'd like to use.
+1. Optional. To turn off Code Suggestions for specific languages, see
+   [manage languages for Code Suggestions](supported_extensions.md#manage-languages-for-code-suggestions).
 
 ### Visual Studio
 

@@ -35,7 +35,10 @@ module API
       post ":hook_id/test/:trigger" do
         hook = find_hook
 
-        check_rate_limit!(:web_hook_test, scope: [hook.parent, current_user])
+        check_rate_limit!(
+          :web_hook_test,
+          scope: ::Gitlab::ApplicationRateLimiter.parent_scope(hook.parent).merge(user: current_user)
+        )
 
         service = hook_test_service(hook, configuration[:entity])
         result = service.execute

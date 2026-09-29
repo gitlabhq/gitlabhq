@@ -285,7 +285,7 @@ module API
 
         unless current_user.can_read_all_resources?
           check_rate_limit!(:users_get_by_id,
-            scope: current_user,
+            scope: { user: current_user },
             users_allowlist: Gitlab::CurrentSettings.current_application_settings.users_get_by_id_limit_allowlist
           )
         end

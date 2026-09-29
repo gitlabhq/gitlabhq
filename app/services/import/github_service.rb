@@ -35,7 +35,7 @@ module Import
     end
 
     def rate_limited?
-      Gitlab::ApplicationRateLimiter.throttled?(:github_import, scope: current_user)
+      Gitlab::ApplicationRateLimiter.throttled?(:github_import, scope: { user: current_user })
     end
 
     def create_project(access_params, provider)

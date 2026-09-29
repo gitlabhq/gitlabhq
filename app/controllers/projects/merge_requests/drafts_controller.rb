@@ -76,7 +76,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     if result[:status] == :success
       submit_experience.complete
 
-      head :ok
+      render json: { review_id: result[:review_id] }
     else
       submit_experience.error!(result[:message]).complete
       submit_and_notify_experience.error!(result[:message]).complete if submit_and_notify_experience
@@ -120,12 +120,13 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def publish_service
     strong_memoize(:publish_service) do
-      DraftNotes::PublishService.new(merge_request, current_user, draft_note_ids_param)
+      DraftNotes::PublishService.new(merge_request, current_user, publish_params)
     end
   end
 
   # Completed by ProcessDraftNotePublishedWorker, which only runs when draft notes are published.
   def start_submit_and_notify_experience
+    return if publish_params[:defer_notifications]
     return unless publish_service.publishes_draft_notes?(draft: draft_note(allow_nil: true))
 
     Labkit::UserExperienceSli.start(:submit_and_notify_mr_review_ui)
@@ -165,9 +166,10 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     end
   end
 
-  def draft_note_ids_param
-    params.permit(ids: []).tap do |ids_params|
-      ids_params[:ids] = ids_params[:ids]&.map(&:to_i) if ids_params[:ids].present?
+  def publish_params
+    params.permit(:review_id, :defer_notifications, ids: []).tap do |permitted|
+      permitted[:ids] = permitted[:ids]&.map(&:to_i) if permitted[:ids].present?
+      permitted[:defer_notifications] = Gitlab::Utils.to_boolean(permitted[:defer_notifications])
     end
   end
 

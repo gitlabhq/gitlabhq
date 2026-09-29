@@ -5,7 +5,10 @@ require 'email_spec'
 
 RSpec.describe Emails::Profile, feature_category: :user_profile do
   include EmailSpec::Matchers
-  include_context 'gitlab email notification'
+
+  let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
+  let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
+  let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
 
   shared_examples 'a new user email' do
     it 'is sent to the new user with the correct subject and body' do
@@ -154,8 +157,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been created' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:token) { create(:personal_access_token, user: user) }
+    let(:user) { build_stubbed(:user) }
+    let(:token) { build_stubbed(:personal_access_token, user: user, organization: build_stubbed(:organization)) }
 
     context 'when valid' do
       subject { Notify.access_token_created_email(user, token.name) }
@@ -189,7 +192,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'personal access token is about to expire' do
-    let_it_be_with_reload(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     subject { Notify.access_token_about_to_expire_email(user, ['example token']) }
 
@@ -343,8 +346,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has expired' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:pat) { create(:personal_access_token, user: user) }
+    let(:user) { build_stubbed(:user) }
+    let(:pat) { build_stubbed(:personal_access_token, user: user, organization: build_stubbed(:organization)) }
 
     context 'when valid' do
       subject { Notify.access_token_expired_email(user, [pat.name]) }
@@ -385,9 +388,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when user is not active' do
-        before do
-          user.block!
-        end
+        let(:user) { build_stubbed(:user, state: 'blocked') }
 
         it do
           expect { Notify.access_token_expired_email(user) }.not_to change { ActionMailer::Base.deliveries.count }
@@ -397,8 +398,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been revoked' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:token) { create(:personal_access_token, user: user) }
+    let(:user) { build_stubbed(:user) }
+    let(:token) { build_stubbed(:personal_access_token, user: user, organization: build_stubbed(:organization)) }
 
     context 'when valid' do
       subject { Notify.access_token_revoked_email(user, token.name) }
@@ -460,8 +461,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user personal access token has been rotated' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:token) { create(:personal_access_token, user: user) }
+    let(:user) { build_stubbed(:user) }
+    let(:token) { build_stubbed(:personal_access_token, user: user, organization: build_stubbed(:organization)) }
 
     context 'when valid' do
       subject { Notify.access_token_rotated_email(user, token.name) }
@@ -501,9 +502,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       end
 
       context 'when user is not active' do
-        before do
-          user.block!
-        end
+        let(:user) { build_stubbed(:user, state: 'blocked') }
 
         it do
           expect { Notify.access_token_rotated_email(user, token.name) }.not_to change { ActionMailer::Base.deliveries.count }
@@ -513,8 +512,9 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'SSH key notification' do
-    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:fingerprints) { ["aa:bb:cc:dd:ee:zz"] }
+
+    let(:user) { build_stubbed(:user) }
 
     shared_examples 'is sent to the user' do
       it { is_expected.to deliver_to user.email }
@@ -555,9 +555,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     shared_context 'block user' do
-      before do
-        user.block!
-      end
+      let(:user) { build_stubbed(:user, state: 'blocked') }
     end
 
     context 'notification email for expired ssh key' do
@@ -622,7 +620,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         .at_css('.footer span:contains("Notification message regarding")').text.strip
     end
 
-    let_it_be(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:email) { Notify.ssh_key_expiring_soon_email(user, ['aa:bb:cc:dd:ee:zz']) }
     let(:marker_prefix) { "Notification message regarding #{user_settings_ssh_keys_url} at " }
 
@@ -652,7 +650,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'user unknown sign in email' do
-    let_it_be_with_reload(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:ip) { '169.0.0.1' }
     let(:current_time) { Time.current }
     let(:country) { 'Germany' }
@@ -755,7 +753,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'enabled two-factor authentication emails' do
-    let_it_be_with_reload(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     describe 'Passkey' do
       subject { Notify.enabled_two_factor_webauthn_email(user, 'MacBook Touch ID', :passkey) }
@@ -823,7 +821,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'disabled two-factor authentication emails' do
-    let_it_be_with_reload(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     describe 'Two Factor' do
       subject { Notify.disabled_two_factor_email(user) }
@@ -915,8 +913,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
   end
 
   describe 'added a new email address' do
-    let_it_be_with_reload(:user) { create(:user) }
-    let_it_be(:email) { create(:email, user: user) }
+    let(:user) { build_stubbed(:user) }
+    let(:email) { build_stubbed(:email, user: user) }
 
     subject { Notify.new_email_address_added_email(user, email) }
 

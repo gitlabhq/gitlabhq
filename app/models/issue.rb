@@ -328,7 +328,15 @@ class Issue < ApplicationRecord
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type, :ensure_namespace_traversal_ids
+  before_update :persist_relative_position_to_work_item_positions,
+    if: -> {
+      will_save_change_to_relative_position? &&
+        self.class.write_relative_positions_to_work_item_positions?(namespace.root_ancestor)
+    }
+
   after_save :ensure_metrics!, unless: :skip_metrics?
+  after_save :reset_work_item_position_association,
+    if: -> { saved_change_to_relative_position? && serve_relative_position_from_work_item_positions? }
   after_commit :expire_etag_cache, unless: :importing?
   after_create_commit :record_create_action, unless: :importing?
 
@@ -560,12 +568,54 @@ class Issue < ApplicationRecord
     Feature.enabled?(:read_relative_positions_from_work_item_positions, root_namespace&.root_ancestor)
   end
 
-  # Write positions to `work_item_positions` (the source of truth) instead of
-  # `issues.relative_position` when the flag is on. Gated per positioning root; must trail
-  # the read flag for a given root, or readers on the legacy column see stale data.
+  # Writes positions to `work_item_positions` instead of `issues.relative_position`.
+  # Requires the read flag too. Otherwise readers on the legacy column would see
+  # stale positions. Write-without-read is treated as misconfigured and falls back
+  # to legacy.
   def self.write_relative_positions_to_work_item_positions?(root_namespace = nil)
-    Feature.enabled?(:write_relative_positions_to_work_item_positions, root_namespace&.root_ancestor)
+    read_relative_positions_from_work_item_positions?(root_namespace) &&
+      Feature.enabled?(:write_relative_positions_to_work_item_positions, root_namespace&.root_ancestor)
   end
+
+  # Bulk-write positions (e.g. move_nulls) to work_item_positions when the write flag is on;
+  # otherwise the concern's default BulkUpdate. Sets each object's position in memory to match.
+  def self.assign_relative_positions(mapping)
+    return if mapping.empty?
+    return super unless write_relative_positions_to_work_item_positions?(mapping.each_key.first.namespace.root_ancestor)
+
+    now = Time.current
+    rows = mapping.map do |issue, attrs|
+      {
+        work_item_id: issue.id,
+        namespace_id: issue.namespace_id,
+        relative_positioning_namespace_id: issue.namespace.work_item_positioning_root.id,
+        relative_position: attrs[:relative_position],
+        created_at: now,
+        updated_at: now
+      }
+    end
+
+    WorkItems::Position.upsert_all(rows, unique_by: :work_item_id)
+
+    # Reflect the new value on any already-loaded association so the getter serves it without a
+    # per-row query and without leaving the object dirty.
+    mapping.each do |issue, attrs|
+      next unless issue.association(:work_item_position).loaded?
+
+      (issue.work_item_position || issue.build_work_item_position).relative_position = attrs[:relative_position]
+    end
+  end
+  private_class_method :assign_relative_positions
+
+  # Preload work_item_positions so a batch read (e.g. move_nulls) doesn't N+1 via #relative_position.
+  def self.preload_positioning_associations(objects)
+    objects = objects.to_a
+    return if objects.empty?
+    return unless write_relative_positions_to_work_item_positions?(objects.first.namespace.root_ancestor)
+
+    ActiveRecord::Associations::Preloader.new(records: objects, associations: :work_item_position).call
+  end
+  private_class_method :preload_positioning_associations
 
   # Order by `work_item_positions.relative_position` when the flag is on, else the legacy
   # `issues.relative_position`. LEFT JOIN keeps unpositioned issues last (NULLS LAST).
@@ -671,6 +721,24 @@ class Issue < ApplicationRecord
 
   def blocked_for_repositioning?
     namespace.root_ancestor&.issue_repositioning_disabled?
+  end
+
+  # Redirect the sibling-shift bulk write to work_item_positions when the write flag is on.
+  def update_relative_siblings(relation, range, delta)
+    return super unless self.class.write_relative_positions_to_work_item_positions?(namespace.root_ancestor)
+
+    ids = relation.where(self.class.relative_positioning_column(self).between(range)).select(:id)
+    WorkItems::Position.where(work_item_id: ids)
+      .update_all(relative_position: WorkItems::Position.arel_table[:relative_position] + delta)
+  end
+
+  # Serve the position from work_item_positions only when writes target it (the column is then
+  # frozen); otherwise the column is the source of truth. A pending in-memory change still wins.
+  def relative_position
+    return super unless serve_relative_position_from_work_item_positions?
+    return super if will_save_change_to_relative_position?
+
+    work_item_position&.relative_position
   end
 
   # `from` argument can be a Namespace or Project.
@@ -1013,6 +1081,41 @@ class Issue < ApplicationRecord
   alias_method :eql?, :==
 
   private
+
+  def persist_relative_position_to_work_item_positions
+    now = Time.current
+    WorkItems::Position.upsert(
+      {
+        work_item_id: id,
+        namespace_id: namespace_id,
+        relative_positioning_namespace_id: namespace.work_item_positioning_root.id,
+        relative_position: read_attribute(:relative_position),
+        created_at: now,
+        updated_at: now
+      },
+      unique_by: :work_item_id
+    )
+
+    clear_attribute_changes([:relative_position])
+    association(:work_item_position).reset # upsert bypassed the cache
+    work_item_position # load the fresh row so the getter serves it
+  end
+
+  # On create the position is written by the INSERT and the row is created by the trigger, so the
+  # association cached during move_between (before the row existed) is stale. Reset it so the getter
+  # reloads the fresh row.
+  def reset_work_item_position_association
+    association(:work_item_position).reset
+  end
+
+  # Memoized per namespace so serializing a page of issues resolves the flag once, not per row.
+  def serve_relative_position_from_work_item_positions?
+    return false unless namespace_id
+
+    Gitlab::SafeRequestStore.fetch([:serve_relative_position_from_wip, namespace_id]) do
+      self.class.write_relative_positions_to_work_item_positions?(namespace.root_ancestor)
+    end
+  end
 
   # Neighbour lookup reading positions from the joined `work_item_positions` table.
   def next_sibling_from_work_item_positions(order:)

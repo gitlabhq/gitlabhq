@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:merge_request) do
+    create(:merge_request_with_diffs, target_project: project, source_project: project)
+  end
 
   let(:request) { EntityRequest.new(project: project) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.first }
   let(:full_path) { project.full_path }

@@ -70,18 +70,18 @@ RSpec.describe SearchController, feature_category: :global_search do
         it 'uses current_user and search scope' do
           %w[blobs merge_requests projects users work_items].each do |scope|
             expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit,
-              scope: [user, scope], users_allowlist: [])
+              scope: { user: user, search_scope: scope }, users_allowlist: [])
             get action, params: base_params.merge(scope: scope)
           end
         end
 
-        it 'uses just current_user when search scope is abusive' do
+        it 'leaves the search scope unfilled when it is abusive' do
           expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit,
-            scope: [user], users_allowlist: [])
+            scope: { user: user, search_scope: nil }, users_allowlist: [])
           get action, params: base_params.merge(scope: 'hack-the-mainframe')
 
           expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit,
-            scope: [user], users_allowlist: [])
+            scope: { user: user, search_scope: nil }, users_allowlist: [])
           get action, params: base_params.merge(scope: 'blobs' * 1000)
         end
       end
@@ -291,9 +291,9 @@ RSpec.describe SearchController, feature_category: :global_search do
 
       it_behaves_like 'rate limit scope handling', :show, { search: 'hello' }
 
-      it 'uses just current_user when no search scope is used' do
+      it 'leaves the search scope unfilled when no search scope is used' do
         expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:search_rate_limit,
-          scope: [user], users_allowlist: [])
+          scope: { user: user, search_scope: nil }, users_allowlist: [])
         get :show, params: { search: 'hello' }
       end
 
@@ -1257,7 +1257,7 @@ RSpec.describe SearchController, feature_category: :global_search do
 
         it 'uses request IP as rate limiting scope' do
           expect(::Gitlab::ApplicationRateLimiter)
-            .to receive(:throttled?).with(:search_rate_limit_unauthenticated, scope: [request.ip])
+            .to receive(:throttled?).with(:search_rate_limit_unauthenticated, scope: { ip: request.ip })
           get endpoint, params: params.merge(project_id: project.id)
         end
       end

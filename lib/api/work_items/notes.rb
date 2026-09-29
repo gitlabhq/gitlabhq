@@ -62,7 +62,7 @@ module API
           authorize! :create_note, parent_work_item
 
           allowlist = Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
-          check_rate_limit! :notes_create, scope: current_user, users_allowlist: allowlist
+          check_rate_limit! :notes_create, scope: { user: current_user }, users_allowlist: allowlist
 
           opts = {
             noteable: parent_work_item,

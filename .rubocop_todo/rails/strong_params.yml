@@ -1,7 +1,0 @@
----
-# Cop supports --autocorrect.
-Rails/StrongParams:
-  Exclude:
-    - 'app/controllers/groups/registry/repositories_controller.rb'
-    - 'app/controllers/projects/registry/repositories_controller.rb'
-    - 'app/controllers/projects/registry/tags_controller.rb'

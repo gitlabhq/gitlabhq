@@ -37,7 +37,7 @@ module Mutations
 
         def verify_rate_limit!(import_source_user)
           return unless Gitlab::ApplicationRateLimiter.throttled?(
-            :import_source_user_notification, scope: [import_source_user]
+            :import_source_user_notification, scope: { import_source_user: import_source_user }
           )
 
           raise_resource_not_available_error! Gitlab::ApplicationRateLimiter.throttled_error_message

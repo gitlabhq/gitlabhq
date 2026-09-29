@@ -133,12 +133,12 @@ class CustomerRelations::Contact < ApplicationRecord
   def validate_email_format
     return unless email
 
-    self.errors.add(:email, I18n.t(:invalid, scope: 'valid_email.validations.email')) unless ValidateEmail.valid?(self.email)
+    errors.add(:email, I18n.t(:invalid, scope: 'valid_email.validations.email')) unless ValidateEmail.valid?(email)
   end
 
   def validate_crm_group
     return if group&.crm_group?
 
-    self.errors.add(:base, _('contacts can only be added to root groups and groups configured as CRM targets'))
+    errors.add(:base, _('contacts can only be added to root groups and groups configured as CRM targets'))
   end
 end

@@ -81,14 +81,22 @@ module WorkItems
       # Budgeted per delivered namespace, not per hierarchy: a storm in one project (e.g. a CSV import) exhausts only
       # its own chain, so sibling namespaces keep broadcasting. Shared ancestors still share their budget.
       def rate_limited?(namespace)
-        Gitlab::ApplicationRateLimiter.throttled?(:namespace_work_item_changes_broadcast, scope: namespace)
+        Gitlab::ApplicationRateLimiter.throttled?(:namespace_work_item_changes_broadcast,
+          scope: namespace_scope(namespace))
+      end
+
+      # Only the namespace's own characteristic may be filled so the Redis key shape stays disjoint between groups and
+      # the other namespace types the hierarchy yields.
+      def namespace_scope(namespace)
+        namespace.is_a?(::Group) ? { group: namespace } : { namespace: namespace }
       end
 
       # A storm is where the readability queries below hurt most, so bail before them once nothing can be delivered.
       # .peek leaves the budget untouched, keeping it a budget of deliveries rather than of attempts.
       def rate_limit_exhausted?
         target_namespaces.all? do |namespace|
-          Gitlab::ApplicationRateLimiter.peek(:namespace_work_item_changes_broadcast, scope: namespace)
+          Gitlab::ApplicationRateLimiter.peek(:namespace_work_item_changes_broadcast,
+            scope: namespace_scope(namespace))
         end
       end
 

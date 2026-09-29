@@ -147,7 +147,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/services/ee/members/create_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/post_merge_service_spec.rb'
     - 'ee/spec/services/ee/personal_access_tokens/revoke_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/create_company_lead_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/members/activity_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
     - 'ee/spec/services/groups/compliance_report_csv_service_spec.rb'

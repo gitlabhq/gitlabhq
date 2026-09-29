@@ -180,11 +180,11 @@ RSpec.describe WorkItems::NamespaceChanges::BroadcastService, :clean_gitlab_redi
       allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
       allow(Gitlab::ApplicationRateLimiter).to receive(:peek)
-        .with(:namespace_work_item_changes_broadcast, scope: group).and_return(true)
+        .with(:namespace_work_item_changes_broadcast, scope: { group: group }).and_return(true)
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
         .with(:namespace_work_item_changes_broadcast, scope: anything).and_return(false)
       allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-        .with(:namespace_work_item_changes_broadcast, scope: group).and_return(true)
+        .with(:namespace_work_item_changes_broadcast, scope: { group: group }).and_return(true)
     end
 
     it 'skips only the rate limited namespace' do

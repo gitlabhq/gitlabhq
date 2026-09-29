@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimits,
-  :clean_gitlab_redis_rate_limiting, feature_category: :system_access do
+  :clean_gitlab_redis_rate_limiting, feature_category: :rate_limiting do
   let(:cost_mode_keys) do
     %i[
       main_db_duration_limit_per_worker

@@ -7,7 +7,8 @@ module Gitlab
 
       threshold = current_user ? nil : 100
 
-      check_rate_limit!(:project_repositories_archive, scope: [project, current_user], threshold: threshold, &block)
+      check_rate_limit!(:project_repositories_archive,
+        scope: { project: project, user: current_user }, threshold: threshold, &block)
     end
   end
 end

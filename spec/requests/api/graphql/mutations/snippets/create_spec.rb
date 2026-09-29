@@ -225,7 +225,7 @@ RSpec.describe 'Creating a Snippet', :with_current_organization, feature_categor
     context 'when the rate limit is exceeded' do
       before do
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-          .with(:snippets_create, scope: [user]).and_return(true)
+          .with(:snippets_create, scope: { user: user }).and_return(true)
       end
 
       it_behaves_like 'a mutation that returns top-level errors',

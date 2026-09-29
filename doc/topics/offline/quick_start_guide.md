@@ -333,13 +333,16 @@ This section describes how to download v2 data.
    rsync rsync://example_username@gitlab.example.com/package_metadata/$DATA_DIR "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/$DATA_DIR"
    ```
 
-1. For CVE enrichment only, move the downloaded files up one directory level.
+1. For CVE enrichment in GitLab 19.4 and earlier, move the downloaded files up one directory level.
+   In GitLab 19.5 and later, skip this step. For more information, see
+   [merge request 253401](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253401).
 
    The license and advisory buckets hold one directory for each package registry under `v2/`, and GitLab
    reads a copy of them as they are.
    CVE enrichment has no package registry, and its bucket holds a single `cve_enrichment` directory
    in that position instead.
-   GitLab reads CVE enrichment from `cve_enrichment/v2/<sequence>/<chunk>.ndjson`, at that exact
+   In GitLab 19.4 and earlier, GitLab reads CVE enrichment only
+   from `cve_enrichment/v2/<sequence>/<chunk>.ndjson`, at that exact
    depth. A copy made as it is leaves the files one directory level too deep.
    GitLab then imports nothing and logs nothing.
 
@@ -1033,7 +1036,8 @@ For v2 dependency scanning:
 */30 * * * * gsutil -m rsync -r -d -y "^(v1|v3)\/" gs://prod-export-advisory-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories
 ```
 
-For CVE enrichment, omit `-d` and chain the move step from the download procedure:
+For CVE enrichment in GitLab 19.4 and earlier, omit `-d`
+and chain the move step from the download procedure:
 
 ```plaintext
 */30 * * * * gsutil -m rsync -r gs://prod-export-cve-enrichment-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment && cd $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment/v2 && cp -a cve_enrichment/. . && rm -r cve_enrichment
@@ -1043,9 +1047,16 @@ After the move step the local layout no longer matches the bucket, so `-d` would
 files. The move also removes the directory `gsutil rsync` compares against, so every run
 re-downloads the whole export whether or not `-d` is present.
 
+In GitLab 19.5 and later, run the download without the move step.
+If you upgrade from an earlier version, replace your existing CVE enrichment line with the following:
+
+```plaintext
+*/30 * * * * gsutil -m rsync -r -d gs://prod-export-cve-enrichment-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment
+```
+
 > [!warning]
-> The `-d` flag in the license and advisory examples deletes local files that are no longer in the
-> bucket, and that can discard an import in progress.
+> The `-d` flag in the license and advisory examples, and in the CVE enrichment example in GitLab 19.5 and later, deletes
+> local files that are no longer in the bucket, and that can discard an import in progress.
 > GitLab records the last file it imported for each data type and package registry, and resumes from
 > the file after it.
 > If a prune removes the sequence directory that record points to, GitLab cannot find the record.
@@ -1211,12 +1222,17 @@ The file structure in `vendor/package_metadata` must coincide with the package r
 - For licenses on v3 (GitLab 19.4 and later):`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/maven/full_dataset/*`. See [v3 license data format version](#v3-license-data-format-version).
 - For advisories on v2:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories/v2/maven/**/*.ndjson`.
 
-CVE enrichment is not divided by package registry type, and its files must be exactly two directory
-levels below the version directory:
+CVE enrichment is not divided by package registry type.
+In GitLab 19.5 and later, GitLab reads a copy of the bucket made as it is,
+from `$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment/v2/cve_enrichment/*/*.ndjson`.
+When that `cve_enrichment` directory exists, GitLab reads only that directory.
+In GitLab 19.4 and earlier, or when that directory does not exist,
+CVE enrichment files must be exactly two directory levels below the version directory:
 
 - For CVE enrichment: `$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/cve_enrichment/v2/*/*.ndjson`.
 
-A copy of the CVE enrichment bucket made as it is puts the files one level deeper than this and
+In GitLab 19.4 and earlier, a copy of the CVE enrichment bucket made as it is
+puts the files one level deeper than required, and
 GitLab reads none of them.
 To correct it, see [the CVE enrichment step in the download procedure](#v2-using-the-gsutil-tool-to-download-the-package-metadata-exports).
 

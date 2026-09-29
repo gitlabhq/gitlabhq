@@ -1351,7 +1351,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/gitlab/status_page/storage/s3_multipart_upload.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/license_metric.rb'
     - 'ee/lib/gitlab/vulnerability_scanning/advisory.rb'
-    - 'ee/lib/product_analytics/settings.rb'
     - 'ee/lib/quality/seeders/vulnerabilities.rb'
     - 'ee/lib/search/elastic/elasticsearch_enabled_cache.rb'
     - 'ee/lib/tasks/geo.rake'

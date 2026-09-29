@@ -56,7 +56,7 @@ class Commit
         if commit.is_a?(Commit)
           commit
         else
-          self.new(commit, container)
+          new(commit, container)
         end
       end
     end
@@ -326,16 +326,16 @@ class Commit
 
   def parent
     strong_memoize(:parent) do
-      container.commit_by(oid: self.parent_id) if self.parent_id
+      container.commit_by(oid: parent_id) if parent_id
     end
   end
 
   def notes
-    container.notes.for_commit_id(self.id)
+    container.notes.for_commit_id(id)
   end
 
   def user_mentions
-    user_mention_class.where(commit_id: self.id)
+    user_mention_class.where(commit_id: id)
   end
 
   def discussion_notes
@@ -360,8 +360,8 @@ class Commit
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha: self.parent_id || container.repository.blank_ref,
-      head_sha: self.sha
+      base_sha: parent_id || container.repository.blank_ref,
+      head_sha: sha
     )
   end
 

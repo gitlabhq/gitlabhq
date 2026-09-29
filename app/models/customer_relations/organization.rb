@@ -74,6 +74,6 @@ class CustomerRelations::Organization < ApplicationRecord
   def validate_crm_group
     return if group&.crm_group?
 
-    self.errors.add(:base, _('organizations can only be added to root groups and groups configured as CRM targets'))
+    errors.add(:base, _('organizations can only be added to root groups and groups configured as CRM targets'))
   end
 end

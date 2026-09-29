@@ -160,7 +160,7 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
       end
 
       context 'when multiple environment objects are serialized' do
-        before do
+        before_all do
           create_list(:environment, 3, project: project)
         end
 
@@ -185,7 +185,7 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
             .within_folders
         end
 
-        before do
+        before_all do
           create(:environment, project: project, name: 'staging/review-1')
           create(:environment, project: project, name: 'staging/review-2')
           create(:environment, project: project, name: 'production/deploy-3')
@@ -215,7 +215,7 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
   context 'batching loading' do
     let(:resource) { Environment.all }
 
-    before do
+    before_all do
       create(:environment, project: project, name: 'staging/review-1')
       create_environment_with_associations(project)
     end

@@ -266,7 +266,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
           it 'prevents requesting project export' do
             expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:project_download_export, scope: [user, project]).and_return(true)
+              .with(:project_download_export, scope: { user: user, project: project }).and_return(true)
 
             request
 
@@ -455,7 +455,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         context 'when export is already in progress' do
           before do
             allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:project_export, scope: user).and_return(false)
+              .with(:project_export, scope: { user: user }).and_return(false)
           end
 
           it '400 response if export already queued' do
@@ -516,7 +516,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
           before do
             allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-              .with(:project_export, scope: user).and_return(false)
+              .with(:project_export, scope: { user: user }).and_return(false)
           end
 
           it 'passes excluded_relations to add_export_job' do
