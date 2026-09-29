@@ -13,7 +13,7 @@ RSpec.describe Integrations::EventEntity, feature_category: :integrations do
 
   describe '#as_json' do
     context 'with integration without fields' do
-      let(:integration) { create(:emails_on_push_integration, push_events: true) }
+      let(:integration) { build_stubbed(:emails_on_push_integration, push_events: true) }
       let(:event) { 'push' }
 
       it 'exposes correct attributes' do
@@ -25,7 +25,7 @@ RSpec.describe Integrations::EventEntity, feature_category: :integrations do
     end
 
     context 'with integration with fields' do
-      let(:integration) { create(:integrations_slack, note_events: false, note_channel: 'note-channel') }
+      let(:integration) { build_stubbed(:integrations_slack, note_events: false, note_channel: 'note-channel') }
       let(:event) { 'note' }
 
       it 'exposes correct attributes' do
@@ -40,7 +40,7 @@ RSpec.describe Integrations::EventEntity, feature_category: :integrations do
     end
 
     context 'with integration with fields when channels are masked' do
-      let(:integration) { create(:integrations_slack, note_events: false, note_channel: 'note-channel') }
+      let(:integration) { build_stubbed(:integrations_slack, note_events: false, note_channel: 'note-channel') }
       let(:event) { 'note' }
 
       before do

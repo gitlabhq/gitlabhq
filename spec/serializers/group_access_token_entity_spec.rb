@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupAccessTokenEntity do
   let_it_be(:group) { create(:group) }
   let_it_be(:bot) { create(:user, :project_bot) }
-  let_it_be(:token) { create(:personal_access_token, user: bot) }
+  let(:token) { build_stubbed(:personal_access_token, user: bot) }
 
   let(:expected_revoke_path) do
     Gitlab::Routing.url_helpers

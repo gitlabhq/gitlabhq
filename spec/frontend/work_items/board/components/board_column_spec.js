@@ -199,7 +199,9 @@ describe.each([
 
       expect(findColumnHeader().props('collapsed')).toBe(true);
       expect(findDraggable().exists()).toBe(false);
-      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-w-8', 'gl-self-start']));
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['gl-w-[2.75rem]', 'gl-self-start']),
+      );
       expect(wrapper.classes()).not.toContain('gl-h-full');
     });
 

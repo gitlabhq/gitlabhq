@@ -1,6 +1,6 @@
 ---
-source_checksum: f04d2025bf3b6e5f
-distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
+source_checksum: e3e53382843c3e42
+distilled_at_sha: cfde84d2d8cccf0a72137513e15e84cb9b1fe234
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -49,8 +49,7 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 - Use `boundary_type: :project | :group | :user | :instance` for single-boundary endpoints; use the `boundaries` array for endpoints that support multiple boundary types.
 - Use the `boundary` option (a callable returning the boundary object) only when the boundary cannot be determined through standard parameter lookup.
 - Use `boundary_param` when the request parameter containing the boundary identifier is not the default `:id`.
-- When using `boundaries` array, include a `boundary_type` key in each entry and optionally a `boundary_param`; the system evaluates boundaries in priority order `project` > `group` > `user` > `instance` and uses the first resolvable boundary.
-- Use `additional_scopes` when an endpoint acts on a second container (e.g., a move-issue endpoint that writes to a target project): declare each additional container's `permissions` and `boundary_type`, plus `boundary_param` or a callable `boundary`; every entry must authorize successfully or the request is denied with `404 Not Found`. A `:project` or `:group` entry without `boundary_param` or `boundary` is rejected by `gitlab:permissions:validate`.
+- When using the `boundaries` array, include a `boundary_type` key in each entry and optionally a `boundary_param`; every resolvable boundary is evaluated in priority order (`project` > `group` > `user` > `instance`) and access is granted when the token's scopes satisfy all required permissions on any one of them.
 - Use `assignable_when: [:admin]` (or other conditions) on the `route_setting :authorization` decorator when the endpoint restricts access beyond membership (e.g., `authenticated_as_admin!`); update the corresponding assignable permission YAML in the same merge request.
 - Use `skip_granular_token_authorization: :<reason>` (a symbol naming the reason, e.g., `:public_endpoint`) only for endpoints that are publicly accessible, authenticate by means other than PATs, or where authentication is optional; DO NOT use it to bypass permission checks on authenticated endpoints, and DO NOT pass `true` — the reason must be a key defined in `lib/tasks/gitlab/permissions/routes/skip_reasons.rb` (add a new key with a human-readable label if no existing reason fits).
 - Use `todo: '<issue-link-or-reason>'` (a non-empty string) to defer granular token authorization when you have not yet decided how it should work for an endpoint; granular PATs receive `403 Forbidden` while legacy PATs are unaffected. Replace `todo` with `permissions` + `boundary_type` (or `skip_granular_token_authorization`) once the decision is made. DO NOT leave `todo` blank — the validation task fails on a blank value.
@@ -60,11 +59,10 @@ distilled_at_sha: da75f7373628b035becb13fb3f0d21b4b3d3690f
 
 - Add the `'authorizing granular token permissions'` shared example for every endpoint, providing `boundary_object`, `user`, and `request` let-bindings.
 - Set `boundary_object` to match the `boundary_type`: `project` → `project`, `group` → `group`, `:user` → `:user`, `:instance` → `:instance`.
-- Ensure the `user` is a member of the namespace (project or group) when the boundary object is a project or group.
+- Ensure the `user` has access to the namespace (project or group) when the boundary object is a project or group.
 - Pass `expected_success_status:` as a keyword argument to the shared example when the success response is not `:success` (e.g., `:created`, `:accepted`, `:no_content`, `:redirect`).
 - Pass `legacy_token_scopes:` as a keyword argument when the endpoint requires legacy token scopes other than the default `%w[api]`.
 - Ensure the `request` block supplies valid `params` and that any resource the request path references exists, so the "granting access" assertion receives a real success response.
-- For endpoints declaring `additional_scopes`, pass `additional_scope_permissions:` to the shared example and define `additional_scope_requirements` let-bindings; the shared example adds an assertion that a token holding only the primary boundary's scope is denied.
 
 ### Documentation and Validation
 

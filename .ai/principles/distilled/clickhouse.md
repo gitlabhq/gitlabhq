@@ -1,6 +1,6 @@
 ---
-source_checksum: a316a1181ecc5182
-distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
+source_checksum: abba1d95f0c6487b
+distilled_at_sha: cfde84d2d8cccf0a72137513e15e84cb9b1fe234
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -117,6 +117,9 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 ### Testing
 
 - Tag RSpec tests that require a running ClickHouse server with `:click_house` to ensure the database schema is set up before the test case.
+- When a query or migration needs a privilege that production does not grant, add it to the grant block in `doc/integration/clickhouse.md` and plan the change for GitLab Self-Managed, GitLab.com, and GitLab Dedicated — CI/CD runs `:main` as the least-privilege `gitlab` user, so the code fails there with `ACCESS_DENIED` even though it passes locally, where GDK uses the `default` administrator.
+- DO NOT reference `:main_admin` directly in tests — it does not exist locally; use the `click_house_admin_database` helper from `ClickHouseHelpers` (available in any `:click_house`-tagged test), which returns `:main_admin` in CI/CD and falls back to `:main` locally.
+- Use the `click_house_admin_database` helper only for test scaffolding statements that require elevated privileges (e.g., `SYSTEM RELOAD DICTIONARY`), not for the behavior under test.
 
 ### Verify Before Flagging
 

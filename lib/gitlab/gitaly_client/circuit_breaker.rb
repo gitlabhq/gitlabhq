@@ -18,6 +18,18 @@ module Gitlab
         RESOURCE_EXHAUSTED = 'resource_exhausted'
       end
 
+      # Circuitbox matches configured exceptions with `===`. An excluded error
+      # propagates without contributing to either success or failure accounting.
+      module CircuitBreakingResourceExhausted
+        MESSAGE_SIZE_LIMIT_PHRASE = 'message larger than max'
+
+        def self.===(error)
+          error.is_a?(GRPC::ResourceExhausted) &&
+            error.details.to_s.downcase.exclude?(MESSAGE_SIZE_LIMIT_PHRASE)
+        end
+      end
+      private_constant :CircuitBreakingResourceExhausted
+
       def initialize(service:, rpc:, storage:)
         @service = service
         @rpc = rpc
@@ -93,7 +105,7 @@ module Gitlab
 
       def circuit_options
         {
-          exceptions: [GRPC::ResourceExhausted],
+          exceptions: [CircuitBreakingResourceExhausted],
           volume_threshold: 5,
           error_threshold: 50,
           sleep_window: 60,

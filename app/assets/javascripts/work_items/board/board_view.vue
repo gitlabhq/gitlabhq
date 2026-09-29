@@ -52,6 +52,9 @@ import {
 import {
   I18N_MOVE_ERROR,
   I18N_MOVE_SUCCESS,
+  I18N_GROUP_MOVED,
+  I18N_GROUP_MOVED_LEFT,
+  I18N_GROUP_MOVED_RIGHT,
   MOVE_IN_PROGRESS_INDICATOR_DELAY,
   BOARD_COLUMN_DND_GROUP,
   BOARD_COLUMN_CLASS,
@@ -838,6 +841,8 @@ export default {
         .filter((value) => !this.isDropAllowed({ item: workItem, value }))
         .map((value) => value.id);
     },
+    // Returns the moved column on success, or null when there was nothing to move
+    // (dropped in place, or past the first/last position).
     moveColumn(oldIndex, newIndex, reorderLabel) {
       if (
         oldIndex == null ||
@@ -846,7 +851,7 @@ export default {
         newIndex < 0 ||
         newIndex >= this.renderedColumns.length
       ) {
-        return;
+        return null;
       }
 
       this.trackEvent('configure_columns_on_work_item_board', { label: reorderLabel });
@@ -864,9 +869,14 @@ export default {
           currentOrder: this.groupOrder,
         }),
       );
+
+      return moved;
     },
     onColumnMove({ oldIndex, newIndex }) {
-      this.moveColumn(oldIndex, newIndex, 'reorder_drag');
+      const moved = this.moveColumn(oldIndex, newIndex, 'reorder_drag');
+      if (moved) {
+        this.$toast.show(sprintf(I18N_GROUP_MOVED, { groupName: moved.name }, false));
+      }
     },
     // `delta` is how many positions to shift by: -1 for left, +1 for right.
     // moveColumn ignores an out-of-range target, so this is safe on edge columns.
@@ -875,7 +885,11 @@ export default {
       if (oldIndex === -1) {
         return;
       }
-      this.moveColumn(oldIndex, oldIndex + delta, 'reorder_menu');
+      const moved = this.moveColumn(oldIndex, oldIndex + delta, 'reorder_menu');
+      if (moved) {
+        const message = delta < 0 ? I18N_GROUP_MOVED_LEFT : I18N_GROUP_MOVED_RIGHT;
+        this.$toast.show(sprintf(message, { groupName: moved.name }, false));
+      }
     },
     onColumnHide(value) {
       const visibleGroups = toggleGroupVisibility({
@@ -1029,7 +1043,11 @@ export default {
 
         if (valueChanged) {
           this.$toast.show(
-            sprintf(I18N_MOVE_SUCCESS, { reference: node.reference, targetGroup: toValue.name }),
+            sprintf(
+              I18N_MOVE_SUCCESS,
+              { reference: node.reference, targetGroup: toValue.name },
+              false,
+            ),
           );
         }
       } catch (error) {

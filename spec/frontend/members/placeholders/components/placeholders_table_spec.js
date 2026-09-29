@@ -246,6 +246,13 @@ describe('PlaceholdersTable', () => {
       expect(reassignedItemRow.text()).toContain('Placeholder deleted');
     });
 
+    it('renders "Placeholder deleted" text when item status is REVOKED', async () => {
+      await waitForPromises();
+
+      const revokedItemRow = findTableRows().at(7);
+      expect(revokedItemRow.text()).toContain('Placeholder deleted');
+    });
+
     it('table actions emit "confirm" event with item', () => {
       const actions = findTableRows().at(2).findComponent(PlaceholderActions);
 

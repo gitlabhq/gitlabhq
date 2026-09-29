@@ -2,8 +2,6 @@
 
 module ServicePing
   class SubmitService
-    PRODUCTION_BASE_URL = 'https://version.gitlab.com'
-    STAGING_BASE_URL = 'https://gitlab-org-gitlab-services-version-gitlab-com-staging.version-staging.gitlab.org'
     USAGE_DATA_PATH = 'usage_data'
     ERROR_PATH = 'usage_ping_errors'
     METADATA_PATH = 'usage_ping_metadata'
@@ -107,9 +105,8 @@ module ServicePing
       # rubocop: enable CodeReuse/ActiveRecord
     end
 
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/233615 for details
     def base_url
-      Rails.env.production? ? PRODUCTION_BASE_URL : STAGING_BASE_URL
+      Gitlab::TelemetryEndpoint.service_ping_url
     end
   end
 end

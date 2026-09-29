@@ -199,7 +199,7 @@ export default {
     },
     columnClasses() {
       return [
-        this.collapsed ? 'gl-w-8 gl-self-start' : 'gl-h-full gl-w-48',
+        this.collapsed ? 'gl-w-[2.75rem] gl-self-start' : 'gl-h-full gl-w-48',
         {
           'gl-opacity-5': this.dropDisabled || this.showBusyIndicator,
           'gl-cursor-not-allowed': this.dropDisabled,

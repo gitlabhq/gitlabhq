@@ -423,7 +423,7 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
       end
     end
 
-    describe 'circuit breaker integration' do
+    describe 'circuit breaker integration', :freeze_time do
       let(:exhausted_exception) { GRPC::ResourceExhausted.new("Gitaly exhausted") }
 
       before do
@@ -447,6 +447,37 @@ RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, fe
       end
 
       context 'with streaming enumerator responses' do
+        it 'does not open the circuit for message-size ResourceExhausted errors' do
+          unique_rpc = :"find_branch_#{SecureRandom.hex(4)}"
+          message_size_error = GRPC::ResourceExhausted.new(
+            'grpc: Received message larger than max (5691745 vs. 4194304)'
+          )
+          failures_remaining = 5
+
+          allow(Gitlab::GitalyClient).to receive(:execute) do
+            response = if failures_remaining.positive?
+                         failures_remaining -= 1
+                         Enumerator.new { raise message_size_error }
+                       else
+                         Enumerator.new { |yielder| yielder << 'success' }
+                       end
+
+            instance_double(GRPC::ActiveCall::Operation, execute: response, trailing_metadata: {})
+          end
+
+          gitaly_call = described_class.new(storage, service, unique_rpc, request, nil, 10)
+
+          5.times do
+            response = gitaly_call.call
+
+            expect { response.to_a }.to raise_error do |error|
+              expect(error).to equal(message_size_error)
+            end
+          end
+
+          expect(gitaly_call.call.to_a).to eq(['success'])
+        end
+
         it 'opens circuit when enumerator consumption fails with ResourceExhausted' do
           unique_rpc = :"find_branch_#{SecureRandom.hex(4)}"
           allow(Gitlab::GitalyClient).to receive(:execute) do

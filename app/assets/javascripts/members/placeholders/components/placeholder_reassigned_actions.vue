@@ -6,6 +6,7 @@ import { createAlert } from '~/alert';
 import {
   PLACEHOLDER_STATUS_COMPLETED,
   PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
+  PLACEHOLDER_STATUS_REVOKED,
 } from '~/import_entities/import_groups/constants';
 import importSourceUserUndoKeepAsPlaceholderMutation from '../graphql/mutations/undo_keep_as_placeholder.mutation.graphql';
 
@@ -40,7 +41,10 @@ export default {
       if (this.sourceUser.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER) {
         return this.sourceUser.placeholderUser;
       }
-      if (this.sourceUser.status === PLACEHOLDER_STATUS_COMPLETED) {
+      if (
+        this.sourceUser.status === PLACEHOLDER_STATUS_COMPLETED ||
+        this.sourceUser.status === PLACEHOLDER_STATUS_REVOKED
+      ) {
         return this.sourceUser.reassignToUser;
       }
 

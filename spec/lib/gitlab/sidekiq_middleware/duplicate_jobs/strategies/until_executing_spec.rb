@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../../support/shared_examples/lib/gitlab/sidekiq_middleware/strategy_shared_examples'
 
 RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting do
   it_behaves_like 'deduplicating jobs when scheduling', :until_executing do

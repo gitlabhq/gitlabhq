@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe RunnerEntity do
-  let(:project) { create(:project) }
-  let(:runner) { create(:ci_runner, :project, projects: [project]) }
+  let(:owner) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project, namespace: build_stubbed(:namespace, owner: owner)) }
+  let(:runner) do
+    build_stubbed(:ci_runner, :project, projects: [project]).tap do |stubbed_runner|
+      stubbed_runner.set_token('abcdefghij1234567890')
+    end
+  end
+
   let(:entity) { described_class.new(runner, request: request, current_user: user) }
   let(:request) { double('request') }
   let(:user) { project.first_owner }
@@ -33,7 +39,7 @@ RSpec.describe RunnerEntity do
     end
 
     context 'with admin permissions', :enable_admin_mode do
-      let_it_be(:user) { create(:user, :admin) }
+      let(:user) { build_stubbed(:user, :admin) }
 
       it 'contains admin_path field' do
         expect(subject).to include(:admin_path)

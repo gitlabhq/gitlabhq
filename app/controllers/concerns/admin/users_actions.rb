@@ -47,7 +47,11 @@ module Admin
     end
 
     def users_from_search_query(users)
-      users.search(safe_params[:search_query], with_private_emails: true, partial_email_search: partial_email_search?)
+      users.search(
+        safe_params[:search_query],
+        with_private_emails: current_user.can?(:read_admin_users, :global),
+        partial_email_search: partial_email_search?
+      )
     end
 
     # Overridden in EE

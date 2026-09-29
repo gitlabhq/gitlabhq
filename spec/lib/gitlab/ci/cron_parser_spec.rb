@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'fugit'
 
 RSpec.describe Gitlab::Ci::CronParser, feature_category: :continuous_integration do
   shared_examples_for "returns time in the future" do

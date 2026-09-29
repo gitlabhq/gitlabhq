@@ -52,7 +52,7 @@ module Admin
       # Shares the budget of the shared users autocomplete endpoint this search replaced,
       # so an admin-tuned autocomplete_users_limit keeps covering the invite modal.
       def check_autocomplete_users_rate_limit!
-        check_rate_limit!(:autocomplete_users, scope: current_user)
+        check_rate_limit!(:autocomplete_users, scope: { user: current_user })
       end
 
       def user_params

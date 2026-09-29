@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'html/pipeline'
+require 're2'
 
 RSpec.describe Banzai::Pipeline::PreProcessPipeline, feature_category: :markdown do
   it 'pre-processes the source text' do

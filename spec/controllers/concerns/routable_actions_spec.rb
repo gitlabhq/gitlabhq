@@ -186,4 +186,27 @@ RSpec.describe RoutableActions do
       expect(response.body).to eq('first')
     end
   end
+
+  describe '#routable_moved_notice' do
+    where(:factory, :type_prefix) do
+      [
+        [:project, 'Project '],
+        [:group, 'Group '],
+        [:user, 'User '],
+        [:namespace, ''] # falls through to the generic message
+      ]
+    end
+
+    with_them do
+      it 'builds the message for the routable type' do
+        routable = build(factory)
+        notice = controller.send(:routable_moved_notice, routable, 'old/path', 'new/path')
+
+        expect(notice).to eq(
+          "#{type_prefix}'old/path' was moved to 'new/path'. " \
+            'Please update any links and bookmarks that may still have the old path.'
+        )
+      end
+    end
+  end
 end

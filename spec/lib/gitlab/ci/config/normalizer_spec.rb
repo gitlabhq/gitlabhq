@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Normalizer, feature_category: :pipeline_composition do
   let(:job_name) { :rspec }

@@ -33,6 +33,12 @@ export const I18N_MOVE_ERROR = s__(
 
 export const I18N_MOVE_SUCCESS = s__('WorkItemBoard|Moved %{reference} to %{targetGroup}');
 
+export const I18N_GROUP_MOVED = s__('WorkItemBoard|Moved %{groupName}');
+
+export const I18N_GROUP_MOVED_LEFT = s__('WorkItemBoard|Moved %{groupName} left');
+
+export const I18N_GROUP_MOVED_RIGHT = s__('WorkItemBoard|Moved %{groupName} right');
+
 // How long the drag lock must be held before we show a busy indicator for it,
 // so brief moves don't cause a flash of greyed-out columns.
 export const MOVE_IN_PROGRESS_INDICATOR_DELAY = 1000;

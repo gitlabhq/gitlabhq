@@ -1776,6 +1776,9 @@ msgstr ""
 msgid "'%{name}' is already taken."
 msgstr ""
 
+msgid "'%{old_path}' was moved to '%{new_path}'. Please update any links and bookmarks that may still have the old path."
+msgstr ""
+
 msgid "'%{source}' is not a import source"
 msgstr ""
 
@@ -41407,6 +41410,9 @@ msgstr ""
 msgid "Group '%{group_name}' was successfully updated."
 msgstr ""
 
+msgid "Group '%{old_path}' was moved to '%{new_path}'. Please update any links and bookmarks that may still have the old path."
+msgstr ""
+
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -64483,6 +64489,9 @@ msgstr ""
 msgid "Project & Group can not be assigned at the same time"
 msgstr ""
 
+msgid "Project '%{old_path}' was moved to '%{new_path}'. Please update any links and bookmarks that may still have the old path."
+msgstr ""
+
 msgid "Project '%{project_name}' has been successfully archived."
 msgstr ""
 
@@ -71484,6 +71493,9 @@ msgid "ScanProfiles|Merge Request Pipelines"
 msgstr ""
 
 msgid "ScanProfiles|New vulnerabilities only"
+msgstr ""
+
+msgid "ScanProfiles|No advanced configuration is set for this profile."
 msgstr ""
 
 msgid "ScanProfiles|No profiles match your search."
@@ -89261,6 +89273,9 @@ msgstr ""
 msgid "User %{user} was removed from %{group}."
 msgstr ""
 
+msgid "User '%{old_path}' was moved to '%{new_path}'. Please update any links and bookmarks that may still have the old path."
+msgstr ""
+
 msgid "User API token. The user must have access to the task. All comments are attributed to this user."
 msgstr ""
 
@@ -89688,6 +89703,9 @@ msgstr ""
 msgid "UserMapping|Reassigning placeholder user could not be canceled."
 msgstr ""
 
+msgid "UserMapping|Reassignment approval revoked by user."
+msgstr ""
+
 msgid "UserMapping|Reassignment approved"
 msgstr ""
 
@@ -89749,6 +89767,9 @@ msgid "UserMapping|Review and complete the CSV file."
 msgstr ""
 
 msgid "UserMapping|Review reassignment details"
+msgstr ""
+
+msgid "UserMapping|Revoked"
 msgstr ""
 
 msgid "UserMapping|Search placeholder users"
@@ -93736,6 +93757,15 @@ msgid "WorkItemBoard|Move to end of list"
 msgstr ""
 
 msgid "WorkItemBoard|Move to start of list"
+msgstr ""
+
+msgid "WorkItemBoard|Moved %{groupName}"
+msgstr ""
+
+msgid "WorkItemBoard|Moved %{groupName} left"
+msgstr ""
+
+msgid "WorkItemBoard|Moved %{groupName} right"
 msgstr ""
 
 msgid "WorkItemBoard|Moved %{reference} to %{targetGroup}"

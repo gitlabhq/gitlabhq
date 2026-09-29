@@ -21,6 +21,8 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 
 import {
   PLACEHOLDER_STATUS_FAILED,
+  PLACEHOLDER_STATUS_REVOKED,
+  PLACEHOLDER_STATUS_COMPLETED,
   PLACEHOLDER_STATUS_REASSIGNING,
   PLACEHOLDER_USER_STATUS,
   PLACEHOLDER_SORT_STATUS_ASC,
@@ -325,7 +327,11 @@ describe('PlaceholdersTabApp', () => {
       const placeholdersTable = findReassignedTable();
       expect(placeholdersTable.props()).toMatchObject({
         reassigned: true,
-        queryStatuses: PLACEHOLDER_USER_STATUS.REASSIGNED,
+        queryStatuses: [
+          PLACEHOLDER_STATUS_COMPLETED,
+          PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
+          PLACEHOLDER_STATUS_REVOKED,
+        ],
       });
     });
   });
@@ -381,13 +387,13 @@ describe('PlaceholdersTabApp', () => {
 
     it('updates tab counts', () => {
       expect(findTabAt(0).text()).toBe(
-        `Awaiting reassignment ${pagination.awaitingReassignmentItems - 7}`,
+        `Awaiting reassignment ${pagination.awaitingReassignmentItems - 8}`,
       );
-      expect(findTabAt(1).text()).toBe(`Reassigned ${pagination.reassignedItems + 7}`);
+      expect(findTabAt(1).text()).toBe(`Reassigned ${pagination.reassignedItems + 8}`);
     });
 
     it('shows toast', () => {
-      expect($toast.show).toHaveBeenCalledWith('7 placeholder users were kept as placeholders.');
+      expect($toast.show).toHaveBeenCalledWith('8 placeholder users were kept as placeholders.');
     });
   });
 });

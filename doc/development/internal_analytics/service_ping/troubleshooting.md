@@ -18,9 +18,32 @@ To set up Service Ping locally, you must:
 1. Clone and start [GitLab](https://gitlab.com/gitlab-org/gitlab-development-kit).
 1. Clone and start [Versions Application](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com).
    Make sure you run `docker-compose up` to start a PostgreSQL and Redis instance.
-1. Point GitLab to the Versions Application endpoint instead of the default endpoint:
-   1. Open [service_ping/submit_service.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/service_ping/submit_service.rb#L5) locally and modify `STAGING_BASE_URL`.
-   1. Set it to the local Versions Application URL: `http://localhost:3000`.
+1. Point Service Ping at the local Versions Application with the `GITLAB_SERVICE_PING_URL`
+   environment variable.
+   Set it before you start GDK, for example in the GDK `env.runit` file:
+
+   ```shell
+   export GITLAB_SERVICE_PING_URL=http://localhost:3000
+   ```
+
+   The value must be a bare origin: a scheme, a host, and an optional port.
+   Do not include a path, query, or fragment, because Service Ping appends its own path.
+   A trailing slash is removed.
+   GitLab ignores an invalid value, logs an error at startup, and uses the default destination.
+   The default is `https://version.gitlab.com` when `Rails.env` is `production`, and the staging
+   Versions Application in every other environment.
+
+> [!note]
+> `GITLAB_SERVICE_PING_URL` applies in every environment, including production and Kubernetes
+> deployments.
+> Every GitLab process logs a warning in `application_json.log` at startup that names the
+> destination.
+>
+> In production only, GitLab ignores the variable when the license requires Service Ping, which is
+> when `ServicePing::ServicePingSettings.license_operational_metric_enabled?` returns `true`.
+> Development and test instances always honor the variable, whatever the license, because their
+> default destination is the staging Versions Application, which does not satisfy that requirement
+> either.
 
 ### Test local setup
 

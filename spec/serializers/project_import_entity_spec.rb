@@ -11,7 +11,7 @@ RSpec.describe ProjectImportEntity, feature_category: :importers do
   let(:client) { nil }
   let(:entity) { described_class.represent(project, provider_url: provider_url, client: client) }
 
-  before do
+  before_all do
     create(:import_failure, project: project)
   end
 

@@ -214,7 +214,7 @@ export default {
         class="gl-float-right gl-mr-2 !gl-text-subtle"
         size="small"
         icon="redo"
-        variant="link"
+        category="tertiary"
         data-testid="re-request-button"
         @click="reRequestReview(user.id)"
       />
@@ -244,7 +244,7 @@ export default {
           class="gl-float-right gl-ml-2 !gl-text-subtle"
           size="small"
           icon="close"
-          variant="link"
+          category="tertiary"
           data-testid="remove-request-button"
           @click="removeReviewer(user.id)"
         />

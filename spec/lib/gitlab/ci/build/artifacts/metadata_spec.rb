@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'ffaker'
+require_relative '../../../../../support/helpers/ci_artifact_metadata_generator'
 
 RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata, feature_category: :job_artifacts do
   def metadata(path = '', **opts)

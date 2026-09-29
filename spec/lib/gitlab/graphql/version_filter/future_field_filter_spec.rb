@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require 'fast_spec_helper'
+require 'graphql'
+require_relative '../../../../support/helpers/version_milestone_helpers'
 
 RSpec.describe Gitlab::Graphql::VersionFilter::FutureFieldFilter, feature_category: :shared do
   include VersionMilestoneHelpers

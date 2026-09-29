@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'gitlab/safe_request_store'
 
-RSpec.describe Gitlab::Metrics::GlqlSlis, :prometheus, feature_category: :markdown do
+RSpec.describe Gitlab::Metrics::GlqlSlis, feature_category: :markdown do
   describe '.initialize_slis!' do
     let(:endpoint_id) { 'Glql::BaseController#execute' }
     let(:possible_glql_labels) do

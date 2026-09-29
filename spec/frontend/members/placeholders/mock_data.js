@@ -71,6 +71,11 @@ export const mockSourceUsers = [
     reassignToUser: true,
     sourceUserExists: false,
   }),
+  createMockSourceUser(8, {
+    status: 'REVOKED',
+    placeholderUser: false,
+    reassignToUser: true,
+  }),
 ];
 
 export const mockSourceUsersQueryResponse = ({ nodes = mockSourceUsers, pageInfo = {} } = {}) => ({
