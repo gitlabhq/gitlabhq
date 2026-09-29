@@ -193,7 +193,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
       Dir.glob('public/assets/vite/.vite/**/*') +
       Dir.glob('changelogs/*') +
       Dir.glob('**/node_modules/**/*', File::FNM_DOTMATCH) +
-      Dir.glob('patches/*') +
       Dir.glob('public/assets/**/.*') +
       Dir.glob('qa/{,**/}.*') +
       Dir.glob('qa/.{,**/}*') +

@@ -99,7 +99,7 @@ module Ci
       return unless Feature.enabled?(:rate_limit_job_retry, project)
 
       job_rate_limited_response(
-        job, key: :job_retry, per_project_key: :job_retry_per_project, message: 'Job retry rate limit exceeded'
+        job, key: :job_retry, per_project_key: :job_retry_per_project, log_message: 'Job retry rate limit exceeded'
       )
     end
 

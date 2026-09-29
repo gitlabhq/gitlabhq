@@ -3865,6 +3865,7 @@ Arguments:
 | <a id="mutation-aicatalogitemconsumercreate-itemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Item to configure. |
 | <a id="mutation-aicatalogitemconsumercreate-parentitemconsumerid"></a>`parentItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | Parent item consumer belonging to the top-level group. |
 | <a id="mutation-aicatalogitemconsumercreate-pinnedversion"></a>`pinnedVersion` | [`AiCatalogPinnedVersion`](#aicatalogpinnedversion) | Version to pin the item to, in the format `n.n.n`. Must be a released version. Defaults to the latest released version. Ignored when enabling within the item's managing project, which always tracks the latest released version. |
+| <a id="mutation-aicatalogitemconsumercreate-replaceexistingdirectconfigurations"></a>`replaceExistingDirectConfigurations` | [`Boolean`](#boolean) | Confirm replacement of a group configuration, and any project configurations, for this item when inheritance is turned on. Required when the item is already configured for the group. |
 | <a id="mutation-aicatalogitemconsumercreate-target"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target project or top-level group in which the catalog item is configured. |
 | <a id="mutation-aicatalogitemconsumercreate-triggerconditions"></a>`triggerConditions` {{< icon name="warning-solid" >}} | [`AiCatalogTriggerConditionsInput`](#aicatalogtriggerconditionsinput) | Introduced in GitLab 19.3. Status: Experiment. Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |
 | <a id="mutation-aicatalogitemconsumercreate-triggerfilter"></a>`triggerFilter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Deprecated in GitLab 19.3. Use `triggerConditions`. |
@@ -44605,6 +44606,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="duoworkflowpermissions-deleteduoworkflow"></a>`deleteDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_duo_workflow` on this resource. |
 | <a id="duoworkflowpermissions-readduoworkflow"></a>`readDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_duo_workflow` on this resource. |
+| <a id="duoworkflowpermissions-restartduoworkflow"></a>`restartDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `restart_duo_workflow` on this resource. |
 | <a id="duoworkflowpermissions-resumeduoworkflow"></a>`resumeDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `resume_duo_workflow` on this resource. |
 | <a id="duoworkflowpermissions-updateduoworkflow"></a>`updateDuoWorkflow` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_duo_workflow` on this resource. |
 
@@ -79741,6 +79743,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="negatedboardissueinput-assigneeusername"></a>`assigneeUsername` | [`[String]`](#string) | Filter by assignee username. |
 | <a id="negatedboardissueinput-authorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
+| <a id="negatedboardissueinput-authorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filter by author usernames (maximum is 100 usernames). |
 | <a id="negatedboardissueinput-customfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced in GitLab 18.4. Status: Experiment. Filter by negated custom fields. |
 | <a id="negatedboardissueinput-epicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | Deprecated in GitLab 17.5. This will be replaced by WorkItem hierarchyWidget. |
 | <a id="negatedboardissueinput-healthstatusfilter"></a>`healthStatusFilter` | [`HealthStatus`](#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
@@ -79773,6 +79776,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="negatedepicboardissueinput-authorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
+| <a id="negatedepicboardissueinput-authorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filter by author usernames (maximum is 100 usernames). |
 | <a id="negatedepicboardissueinput-customfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced in GitLab 18.4. Status: Experiment. Filter by negated custom fields. |
 | <a id="negatedepicboardissueinput-labelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="negatedepicboardissueinput-myreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |

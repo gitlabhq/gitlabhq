@@ -343,7 +343,6 @@ export default {
       }
 
       this.bindEventHubListeners();
-      eventHub.$on('mr.discussion.updated', this.refetchState);
     },
     getServiceEndpoints(store) {
       return {
@@ -524,7 +523,6 @@ export default {
       eventHub.$off('UpdateWidgetData', this.setMrData);
       eventHub.$off('fetch-actions-content', this.fetchActionsContent);
       eventHub.$off('fetch-deployments', this.onFetchDeployments);
-      eventHub.$off('mr.discussion.updated', this.refetchState);
     },
     apolloStateQueryMaxPollingInterval() {
       return (

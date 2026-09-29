@@ -557,7 +557,7 @@ module API
 
       desc 'List all groups available to invite to a project' do
         detail 'Lists all groups that can be invited to a project.'
-        success Entities::Group
+        success Entities::PublicGroupDetails
         tags %w[projects groups]
       end
       params do
@@ -1119,7 +1119,7 @@ module API
           'groups. Limited to 60 requests a minute per user account for authenticated requires and per ' \
           'IP address for unauthenticated requests. Supports offset-based pagination (up to 50,000 projects) and ' \
           'keyset-based pagination (greater than 50,000 projects).'
-        success Entities::Group
+        success Entities::PublicGroupDetails
         is_array true
         tags %w[projects]
       end

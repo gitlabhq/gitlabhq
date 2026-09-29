@@ -78,10 +78,10 @@ Use the message text to identify the cause and apply the fix.
 | `"This feature requires experiment and beta GitLab Duo features to be turned on"` | Experiment and beta GitLab Duo features are turned off. | Turn on [beta and experimental features](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features). On GitLab.com, this setting is for the top-level group. On GitLab Self-Managed and GitLab Dedicated, it is for the instance. |
 | `"This feature requires GitLab Duo Agent Platform"` | Your account does not have a GitLab Duo Agent Platform license. | Check your GitLab Duo entitlement with your administrator. |
 | `"Set your default Duo namespace in your preferences"` | Your GitLab account has no default GitLab Duo namespace configured. | Set a default GitLab Duo namespace in your GitLab preferences. On GitLab.com, you must have an active GitLab Duo add-on seat in the namespace. |
-| `"The Duo Developer flow is not enabled for your namespace"` | The foundational GitLab Duo flow is not turned on for your namespace. | Ask a group owner to turn on the flow in GitLab Duo Agent Platform settings. |
+| `"The <flow_name> flow is not turned on for your namespace"` | The foundational GitLab Duo flow that GitLab Duo in Slack uses is not turned on for your namespace. | Ask a group owner to turn on the flow named in the message in GitLab Duo Agent Platform settings. |
 | `"Could not set up the service account…"` | The service account for your namespace could not be provisioned. | Check your namespace GitLab Duo configuration and service account provisioning. |
 | `"Could not set up the workspace project…"` | GitLab could not find or create the `duo-workspace` project in your namespace. | Verify that you can create projects in the namespace. Your role and the namespace `project_creation_level` setting must allow project creation. |
-| `"Failed to start the Duo Developer workflow"` or `"Something went wrong…"` | The GitLab Duo flow trigger or execution failed. | Check the CI job logs and GitLab integration logs for details. |
+| `"Failed to start the GitLab Duo session"` or `"Something went wrong…"` | The GitLab Duo flow trigger or execution failed. | Check the CI job logs and GitLab integration logs for details. |
 
 ### Debugging tips for GitLab Duo `@mention`
 

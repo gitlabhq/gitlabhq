@@ -355,6 +355,12 @@
   - GITLAB_PAGES_VERSION
   - GITALY_SERVER_VERSION
 
+# patch-package patches rewrite vendored frontend runtime code (e.g. the Vue runtime)
+# that every rendered page loads, and the predictive rspec mapping cannot see that.
+# Treated like workhorse-patterns: a change runs the full system spec suite.
+.frontend-patch-patterns: &frontend-patch-patterns
+  - "patches/**/*"
+
 .workhorse-patterns: &workhorse-patterns
   - ".gitlab/ci/version.yml"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
@@ -518,6 +524,7 @@
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "config/webpack.config.js"
   - "config/helpers/*.js"
   - "config/vue3migration/**/*"
@@ -526,6 +533,7 @@
 
 .frontend-build-patterns: &frontend-build-patterns
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - ".browserslistrc"
   - "babel.config.js"
   - "vite.config.js"
@@ -546,6 +554,7 @@
 # This list should match the list in Tasks::Gitlab::Assets.assets_impacting_compilation
 .assets-compilation-patterns: &assets-compilation-patterns
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "{Gemfile,Gemfile.lock}"
   - "{Gemfile.next,Gemfile.next.lock}"
   - ".browserslistrc"
@@ -783,6 +792,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "lib/gitlab/redis/*"
   - "babel.config.js"
@@ -821,6 +831,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -867,6 +878,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -912,6 +924,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -951,6 +964,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -999,6 +1013,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
+  - "patches/**/*"
   - "*_VERSION"
   - "babel.config.js"
   - "vite.config.js"
@@ -1044,7 +1059,8 @@
 #       result in docs-only pipelines having failures of jobs which use `setup-test-env-patterns`
 #       in their rules and thus require `setup-test-env`, which isn't present in docs-only pipelines.
 .setup-test-env-patterns: &setup-test-env-patterns
-  - "{package.json,yarn.lock}"
+  # folded: rules:changes allows at most 50 entries and this anchor is at the limit
+  - "{package.json,yarn.lock,patches/**/*}"
   - ".browserslistrc"
   - "babel.config.js"
   - "vite.config.js"
@@ -1156,6 +1172,7 @@
   - Gemfile.lock
   - Gemfile.next.lock
   - yarn.lock
+  - patches/**/*
   - scripts/frontend/postinstall.js
   - workhorse/**/*
   - vendor/gems/**/*
@@ -1328,6 +1345,8 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request
       changes: *workhorse-patterns
+    - <<: *if-merge-request
+      changes: *frontend-patch-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
@@ -1384,6 +1403,9 @@
       when: never
     - <<: *if-merge-request
       changes: *workhorse-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patch-patterns
       when: never
     - <<: *if-merge-request
       changes: *ci-patterns
@@ -2984,6 +3006,8 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request-tier-2
       changes: *workhorse-patterns
+    - <<: *if-merge-request-tier-2
+      changes: *frontend-patch-patterns
     - <<: *if-security-merge-request  # security fork: no full system pipeline available, run normally
     - <<: *if-merge-request-tier-2
       when: never
@@ -4106,6 +4130,9 @@
       when: never
     - <<: *if-merge-request
       changes: *workhorse-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patch-patterns
       when: never
 
 .prevent-run-all-rspec:

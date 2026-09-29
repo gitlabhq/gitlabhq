@@ -7,6 +7,9 @@ import { __ } from '~/locale';
 import {
   FILTER_ANY,
   FILTERED_SEARCH_TERM,
+  OPERATOR_IS,
+  OPERATOR_NOT,
+  OPERATOR_OR,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -27,6 +30,14 @@ import { convertOldTypeTokenEnumToGid } from '~/work_items/list/utils';
 import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
 
 const customFieldRegex = /custom-field\[([0-9]+)\]/g;
+
+// Negated multi-value params arrive as arrays. Return the array only when there
+// is more than one value so multi-select tokens keep every value; a single value
+// stays a scalar, which non-multi-select tokens (e.g. the epic board's) require.
+const negatedTokenData = (value) => {
+  const values = [].concat(value);
+  return values.length > 1 ? values : values[0];
+};
 
 export default {
   name: 'BoardFilteredSearch',
@@ -97,7 +108,6 @@ export default {
         milestoneTitle,
         iterationId,
         iterationCadenceId,
-        types,
         weight,
         epicId,
         myReactionEmoji,
@@ -107,6 +117,10 @@ export default {
         status,
         ...otherValues
       } = this.filterParams;
+
+      // `type[]` is the current param; `types` is read as a fallback so legacy
+      // bookmarked board URLs keep applying the type filter.
+      const type = this.filterParams.type ?? this.filterParams.types;
 
       const filteredSearchValue = [];
 
@@ -142,10 +156,15 @@ export default {
         });
       }
 
-      if (types) {
+      if (Array.isArray(type) && type.length > 1) {
         filteredSearchValue.push({
           type: TOKEN_TYPE_TYPE,
-          value: { data: types, operator: '=' },
+          value: { data: type, operator: OPERATOR_OR },
+        });
+      } else if (type) {
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_TYPE,
+          value: { data: Array.isArray(type) ? type[0] : type, operator: OPERATOR_IS },
         });
       }
 
@@ -231,10 +250,15 @@ export default {
         });
       }
 
-      if (this.filterParams['not[authorUsername]']) {
+      // `not[authorUsernames]` is the multi-value negation param; the singular
+      // `not[authorUsername]` is read as a fallback so legacy bookmarked URLs
+      // keep working.
+      const notAuthors =
+        this.filterParams['not[authorUsernames]'] ?? this.filterParams['not[authorUsername]'];
+      if (notAuthors) {
         filteredSearchValue.push({
           type: TOKEN_TYPE_AUTHOR,
-          value: { data: this.filterParams['not[authorUsername]'], operator: '!=' },
+          value: { data: negatedTokenData(notAuthors), operator: OPERATOR_NOT },
         });
       }
 
@@ -262,23 +286,28 @@ export default {
       if (this.filterParams['not[assigneeUsername]']) {
         filteredSearchValue.push({
           type: TOKEN_TYPE_ASSIGNEE,
-          value: { data: this.filterParams['not[assigneeUsername]'], operator: '!=' },
+          value: {
+            data: negatedTokenData(this.filterParams['not[assigneeUsername]']),
+            operator: OPERATOR_NOT,
+          },
         });
       }
 
       if (this.filterParams['not[labelName]']) {
-        filteredSearchValue.push(
-          ...this.filterParams['not[labelName]'].map((label) => ({
-            type: TOKEN_TYPE_LABEL,
-            value: { data: label, operator: '!=' },
-          })),
-        );
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_LABEL,
+          value: {
+            data: negatedTokenData(this.filterParams['not[labelName]']),
+            operator: OPERATOR_NOT,
+          },
+        });
       }
 
-      if (this.filterParams['not[types]']) {
+      const notType = this.filterParams['not[type]'] ?? this.filterParams['not[types]'];
+      if (notType) {
         filteredSearchValue.push({
           type: TOKEN_TYPE_TYPE,
-          value: { data: this.filterParams['not[types]'], operator: '!=' },
+          value: { data: negatedTokenData(notType), operator: OPERATOR_NOT },
         });
       }
 
@@ -310,6 +339,27 @@ export default {
         });
       }
 
+      if (this.filterParams['or[authorUsername]']) {
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_AUTHOR,
+          value: { data: this.filterParams['or[authorUsername]'], operator: OPERATOR_OR },
+        });
+      }
+
+      if (this.filterParams['or[assigneeUsername]']) {
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_ASSIGNEE,
+          value: { data: this.filterParams['or[assigneeUsername]'], operator: OPERATOR_OR },
+        });
+      }
+
+      if (this.filterParams['or[labelName]']) {
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_LABEL,
+          value: { data: this.filterParams['or[labelName]'], operator: OPERATOR_OR },
+        });
+      }
+
       if (search) {
         filteredSearchValue.push(search);
       }
@@ -324,7 +374,7 @@ export default {
         assigneeId,
         search,
         milestoneTitle,
-        types,
+        type,
         weight,
         epicId,
         myReactionEmoji,
@@ -340,6 +390,7 @@ export default {
       let iteration = iterationId;
       let cadence = iterationCadenceId;
       let notParams = {};
+      let orParams = {};
       const customFieldParams = {};
 
       if (this.hasCustomFieldsFeature) {
@@ -354,9 +405,13 @@ export default {
         notParams = pickBy(
           {
             'not[label_name][]': this.filterParams.not.labelName,
-            'not[author_username]': this.filterParams.not.authorUsername,
-            'not[assignee_username]': this.filterParams.not.assigneeUsername,
-            'not[types]': this.filterParams.not.types,
+            // Author and assignee negation are multi-value (multiSelect), so use
+            // array-notation keys that round-trip through queryToObject. Author
+            // uses the additive plural `author_usernames` param so it maps to the
+            // new list argument without breaking the single-value `authorUsername`.
+            'not[author_usernames][]': this.filterParams.not.authorUsername,
+            'not[assignee_username][]': this.filterParams.not.assigneeUsername,
+            'not[type][]': this.filterParams.not.type,
             'not[milestone_title]': this.filterParams.not.milestoneTitle,
             'not[weight]': this.filterParams.not.weight,
             'not[epic_id]': this.filterParams.not.epicId,
@@ -369,14 +424,38 @@ export default {
         );
       }
 
+      if (Object.prototype.hasOwnProperty.call(this.filterParams, 'or')) {
+        // The `or[field][]` param naming follows the work items list. The keys
+        // are pre-encoded so the bracket characters survive the whole-query-string
+        // decodeURIComponent pass in handleFilter and stay as `or%5B...%5D%5B%5D`
+        // (unlike the work items list, which keeps literal brackets on the wire).
+        orParams = pickBy(
+          {
+            [encodeURIComponent('or[label_name][]')]: this.filterParams.or.labelName,
+            [encodeURIComponent('or[author_username][]')]: this.filterParams.or.authorUsername,
+            [encodeURIComponent('or[assignee_username][]')]: this.filterParams.or.assigneeUsername,
+          },
+          undefined,
+        );
+      }
+
       if (iterationId?.includes('&')) {
         [iteration, cadence] = iterationId.split('&');
       }
+
+      // Type serializes as the array param `type[]` (param naming follows the
+      // work items list) for both a single "is" type and a multi "is one of"
+      // selection. The key is pre-encoded so the bracket characters survive the
+      // whole-query-string decodeURIComponent pass in handleFilter and stay as
+      // `type%5B%5D` (unlike the work items list, which keeps literal brackets).
+      const typeParams = type === undefined ? {} : { [encodeURIComponent('type[]')]: type };
 
       return mapValues(
         {
           ...customFieldParams,
           ...notParams,
+          ...orParams,
+          ...typeParams,
           author_username: authorUsername,
           'label_name[]': labelName,
           assignee_username: assigneeUsername,
@@ -385,7 +464,6 @@ export default {
           iteration_id: iteration,
           iteration_cadence_id: cadence,
           search,
-          types,
           weight,
           status,
           epic_id: isGid(epicId) ? getIdFromGraphQLId(epicId) : epicId,
@@ -453,12 +531,28 @@ export default {
       this.$emit('set-filters', this.formattedFilterParams());
     },
     getFilterParams(filters = []) {
-      const notFilters = filters.filter((item) => item.value.operator === '!=');
-      const equalsFilters = filters.filter(
-        (item) => item?.value?.operator === '=' || item.type === FILTERED_SEARCH_TERM,
+      // A "type is one of" (OR) selection maps to workItemTypeIds, a list on
+      // BoardIssueInput where multiple IDs are already treated as OR by the
+      // backend. There is no or[type] union field, so route it as a normal (IS)
+      // multi-value filter rather than an OR-bucket filter.
+      const normalizedFilters = filters.map((filter) => {
+        if (filter.type === TOKEN_TYPE_TYPE && filter.value.operator === OPERATOR_OR) {
+          return { ...filter, value: { ...filter.value, operator: OPERATOR_IS } };
+        }
+        return filter;
+      });
+
+      const notFilters = normalizedFilters.filter((item) => item.value.operator === OPERATOR_NOT);
+      const orFilters = normalizedFilters.filter((item) => item.value.operator === OPERATOR_OR);
+      const equalsFilters = normalizedFilters.filter(
+        (item) => item?.value?.operator === OPERATOR_IS || item.type === FILTERED_SEARCH_TERM,
       );
 
-      return { ...this.generateParams(equalsFilters), not: { ...this.generateParams(notFilters) } };
+      return {
+        ...this.generateParams(equalsFilters),
+        not: { ...this.generateParams(notFilters) },
+        or: { ...this.generateParams(orFilters) },
+      };
     },
     generateParams(filters = []) {
       const filterParams = {};
@@ -477,10 +571,16 @@ export default {
             }
             break;
           case TOKEN_TYPE_TYPE:
-            filterParams.types = filter.value.data;
+            filterParams.type = Array.isArray(filter.value.data)
+              ? filter.value.data
+              : [filter.value.data];
             break;
           case TOKEN_TYPE_LABEL:
-            labels.push(filter.value.data);
+            if (Array.isArray(filter.value.data)) {
+              labels.push(...filter.value.data);
+            } else {
+              labels.push(filter.value.data);
+            }
             break;
           case TOKEN_TYPE_MILESTONE:
             filterParams.milestoneTitle = filter.value.data;
@@ -538,6 +638,7 @@ export default {
     class="gl-w-full"
     namespace=""
     terms-as-tokens
+    show-friendly-text
     :tokens="tokens"
     :search-input-placeholder="$options.i18n.search"
     :initial-filter-value="getFilteredSearchValue"

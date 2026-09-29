@@ -58,6 +58,20 @@ RSpec.describe Resolvers::BoardListIssuesResolver, feature_category: :planning_v
         expect(result).to contain_exactly(incident)
       end
 
+      it 'filters issues by negated author usernames' do
+        author1 = create(:user)
+        author2 = create(:user)
+        create(:issue, project: project, labels: [label], author: author1)
+        create(:issue, project: project, labels: [label], author: author2)
+
+        result = resolve_board_list_issues(
+          args: { filters: { not: { author_usernames: [author1.username, author2.username] } } }
+        )
+
+        # The pre-existing issues (issue1..issue4) are authored by other users and remain.
+        expect(result).to contain_exactly(issue1, issue3, issue2, issue4)
+      end
+
       it 'filters issues by work item type ids' do
         incident = create(:incident, project: project, labels: [label], relative_position: 15)
         incident_type_id = incident.work_item_type.to_global_id.model_id

@@ -50,7 +50,11 @@ export default {
       return this.commitRef?.tag || this.pipeline?.type === 'tag';
     },
     commitUrl() {
-      return this.pipeline?.commit?.commit_path || this.pipeline?.commit?.webPath;
+      return (
+        this.pipeline?.commit?.commit_path ||
+        this.pipeline?.commit?.webPath ||
+        this.pipeline?.commitPath
+      );
     },
     commitShortSha() {
       return this.pipeline?.commit?.short_id || this.pipeline?.commit?.shortId;
@@ -65,39 +69,36 @@ export default {
       return this.mergeRequestRef?.title || this.commitRef?.name || this.pipeline?.ref;
     },
     commitAuthor() {
-      let commitAuthorInformation;
       const pipelineCommit = this.pipeline?.commit;
       const pipelineCommitAuthor = pipelineCommit?.author;
 
-      if (!pipelineCommit) {
+      // 1. The author is a GitLab user with an avatar
+      if (pipelineCommitAuthor?.avatar_url || pipelineCommitAuthor?.avatarUrl) {
+        return pipelineCommitAuthor;
+      }
+
+      // 2. The author is a GitLab user without an avatar; REST provides a Gravatar for the commit email
+      if (pipelineCommitAuthor) {
+        if (!pipelineCommit.author_gravatar_url) {
+          return null;
+        }
+
+        return { ...pipelineCommitAuthor, avatar_url: pipelineCommit.author_gravatar_url };
+      }
+
+      // 3. The author is not a GitLab user, or `commit` is not readable: use the commit's author fields
+      const name = pipelineCommit?.author_name || this.pipeline?.commitAuthorName;
+
+      if (!name) {
         return null;
       }
 
-      // 1. person who is an author of a commit might be a GitLab user
-      if (pipelineCommitAuthor) {
-        // 2. if person who is an author of a commit is a GitLab user
-        // they can have a GitLab avatar
-
-        if (pipelineCommitAuthor?.avatar_url || pipelineCommitAuthor?.avatarUrl) {
-          commitAuthorInformation = pipelineCommitAuthor;
-
-          // 3. If GitLab user does not have avatar, they might have a Gravatar
-        } else if (pipelineCommit?.author_gravatar_url || pipelineCommitAuthor?.avatarUrl) {
-          commitAuthorInformation = {
-            ...pipelineCommitAuthor,
-            avatar_url: pipelineCommit?.author_gravatar_url || pipelineCommitAuthor?.avatarUrl,
-          };
-        }
-        // 4. If committer is not a GitLab User, they can have a Gravatar
-      } else {
-        commitAuthorInformation = {
-          avatar_url: pipelineCommit?.author_gravatar_url || pipelineCommitAuthor?.avatarUrl,
-          path: `mailto:${pipelineCommit?.author_email || pipelineCommitAuthor?.publicEmail}`,
-          username: pipelineCommit?.author_name || pipelineCommitAuthor?.name,
-        };
-      }
-
-      return commitAuthorInformation;
+      return {
+        avatar_url: pipelineCommit?.author_gravatar_url || this.pipeline?.commitAuthorGravatar,
+        path: pipelineCommit?.author_email && `mailto:${pipelineCommit.author_email}`,
+        username: name,
+        name,
+      };
     },
     commitIcon() {
       let name = '';
@@ -138,9 +139,11 @@ export default {
         };
       }
 
-      if (this.pipeline?.commit) {
+      const commitTitle = this.pipeline?.commit?.title || this.pipeline?.commitTitle;
+
+      if (commitTitle) {
         return {
-          text: this.pipeline?.commit?.title,
+          text: commitTitle,
           href: this.commitUrl,
           trackingAction: 'click_commit_title',
         };

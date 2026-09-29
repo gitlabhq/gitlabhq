@@ -8468,6 +8468,9 @@ msgstr ""
 msgid "AiGovernance|Audit events"
 msgstr ""
 
+msgid "AiGovernance|Background access"
+msgstr ""
+
 msgid "AiGovernance|Block"
 msgstr ""
 
@@ -8478,6 +8481,9 @@ msgid "AiGovernance|Blocked by a parent group and cannot be changed here."
 msgstr ""
 
 msgid "AiGovernance|Category"
+msgstr ""
+
+msgid "AiGovernance|Cloud access"
 msgstr ""
 
 msgid "AiGovernance|Connected"
@@ -8543,9 +8549,6 @@ msgstr ""
 msgid "AiGovernance|Local access"
 msgstr ""
 
-msgid "AiGovernance|Local access is not currently enforced."
-msgstr ""
-
 msgid "AiGovernance|MCP registry"
 msgstr ""
 
@@ -8600,7 +8603,13 @@ msgstr ""
 msgid "AiGovernance|Read"
 msgstr ""
 
-msgid "AiGovernance|Runner access"
+msgid "AiGovernance|Runs on GitLab as a service account, without waiting for anyone."
+msgstr ""
+
+msgid "AiGovernance|Runs on GitLab as the user."
+msgstr ""
+
+msgid "AiGovernance|Runs on the user's machine as the user. Local access is not currently enforced."
 msgstr ""
 
 msgid "AiGovernance|Search or filter tool rules..."
@@ -8670,9 +8679,6 @@ msgid "AiGovernance|View all skills"
 msgstr ""
 
 msgid "AiGovernance|View all users"
-msgstr ""
-
-msgid "AiGovernance|Web access"
 msgstr ""
 
 msgid "AiGovernance|Write"
@@ -33889,7 +33895,7 @@ msgstr ""
 msgid "DuoSlack|Close"
 msgstr ""
 
-msgid "DuoSlack|Could not set up the service account for the Duo Developer flow. Contact your group owner."
+msgid "DuoSlack|Could not set up the service account for the flow. Contact your group owner."
 msgstr ""
 
 msgid "DuoSlack|Could not set up the workspace project. Check that you have access to the namespace and permission to create projects."
@@ -33907,7 +33913,7 @@ msgstr ""
 msgid "DuoSlack|Done"
 msgstr ""
 
-msgid "DuoSlack|Failed to start the Duo Developer workflow. Try again."
+msgid "DuoSlack|Failed to start the GitLab Duo session. Try again."
 msgstr ""
 
 msgid "DuoSlack|GitLab Duo needs your approval to run: %{tool_names}"
@@ -33978,7 +33984,7 @@ msgstr ""
 msgid "DuoSlack|Tell us what went wrong."
 msgstr ""
 
-msgid "DuoSlack|The Duo Developer flow is not enabled for your namespace. Ask a group owner to enable it in the Duo Agent Platform settings."
+msgid "DuoSlack|The %{flow_name} flow is not turned on for your namespace. Ask a group owner to turn it on in the GitLab Duo Agent Platform settings."
 msgstr ""
 
 msgid "DuoSlack|The session was stopped before it finished."
@@ -72889,37 +72895,44 @@ msgstr ""
 msgid "SecretsManagerPermissions|Write"
 msgstr ""
 
-msgid "SecretsManagerTrial|%{creditsRemaining}%% of credits left in secrets manager trial"
+msgid "SecretsManagerTrial|%{percent}%% of GitLab Secrets Manager trial credits left."
 msgstr ""
 
-msgid "SecretsManagerTrial|0 credits left in secrets manager trial"
-msgstr ""
+msgid "SecretsManagerTrial|%{percent}%% of GitLab Secrets Manager trial credits left. If not used up, they expire in %{days} day."
+msgid_plural "SecretsManagerTrial|%{percent}%% of GitLab Secrets Manager trial credits left. If not used up, they expire in %{days} days."
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "SecretsManagerTrial|All trial credits used"
+msgid "SecretsManagerTrial|%{percent}%% of GitLab Secrets Manager trial credits left. If not used up, they expire today."
 msgstr ""
 
 msgid "SecretsManagerTrial|Contact your billing administrator to enable on-demand billing and avoid disruption."
 msgstr ""
 
+msgid "SecretsManagerTrial|Contact your subscription owner to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing and avoid a service disruption. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
+msgstr ""
+
 msgid "SecretsManagerTrial|GitLab Secrets Manager is disabled"
+msgstr ""
+
+msgid "SecretsManagerTrial|Less than 10%% of GitLab Secrets Manager trial credits left."
+msgstr ""
+
+msgid "SecretsManagerTrial|Less than 10%% of GitLab Secrets Manager trial credits left. If not used up, they expire in %{days} day."
+msgid_plural "SecretsManagerTrial|Less than 10%% of GitLab Secrets Manager trial credits left. If not used up, they expire in %{days} days."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecretsManagerTrial|Less than 10%% of GitLab Secrets Manager trial credits left. If not used up, they expire today."
 msgstr ""
 
 msgid "SecretsManagerTrial|On-demand billing is disabled"
 msgstr ""
 
-msgid "SecretsManagerTrial|On-demand billing is enabled, and you are incurring charges for continued usage. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
+msgid "SecretsManagerTrial|When all trial credits are used up, GitLab Secrets Manager starts using GitLab Credits. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
 msgstr ""
 
-msgid "SecretsManagerTrial|On-demand billing is enabled, and you will incur charges after the trial period ends. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
-msgstr ""
-
-msgid "SecretsManagerTrial|On-demand billing is enabled. When all trial credits are consumed, GitLab credits will be used. Disable secrets manager to stop credit consumption."
-msgstr ""
-
-msgid "SecretsManagerTrial|Secrets manager trial ends in %{trialDaysRemaining} days"
-msgstr ""
-
-msgid "SecretsManagerTrial|You can only view details or delete existing secrets. Please contact your subscription owner to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing, and then re-enable GitLab Secrets Manager."
+msgid "SecretsManagerTrial|You can only view details or delete existing secrets. Please visit the %{portalLinkStart}Customer Portal%{portalLinkEnd} or contact your subscription owner to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing, and then re-enable GitLab Secrets Manager."
 msgstr ""
 
 msgid "SecretsManagerTrial|You have a short grace period remaining before access is removed. Contact your billing administrator to enable on-demand billing and avoid disruption."
@@ -72983,9 +72996,6 @@ msgid "SecretsManager|Configure OpenBao"
 msgstr ""
 
 msgid "SecretsManager|Contact your GitLab administrator for a trial."
-msgstr ""
-
-msgid "SecretsManager|Contact your administrator to start a trial."
 msgstr ""
 
 msgid "SecretsManager|Contact your group owner or instance administrator to enable GitLab Secrets Manager."

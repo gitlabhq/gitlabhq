@@ -68312,6 +68312,22 @@
               "deprecationReason": null
             },
             {
+              "name": "restartDuoWorkflow",
+              "description": "If `true`, the user can perform `restart_duo_workflow` on this resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "resumeDuoWorkflow",
               "description": "If `true`, the user can perform `resume_duo_workflow` on this resource",
               "args": [],
@@ -142290,6 +142306,24 @@
               "defaultValue": null
             },
             {
+              "name": "authorUsernames",
+              "description": "Filter by author usernames (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "iterationWildcardId",
               "description": "Filter by iteration ID wildcard.",
               "type": {
@@ -142390,6 +142424,24 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "authorUsernames",
+              "description": "Filter by author usernames (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null
             }

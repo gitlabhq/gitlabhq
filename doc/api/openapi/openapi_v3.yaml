@@ -35948,7 +35948,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesGroup"
+                "$ref": "#/components/schemas/APIEntitiesPublicGroupDetails"
         '404':
           description: Not Found
         '400':
@@ -36996,7 +36996,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesGroup"
+                "$ref": "#/components/schemas/APIEntitiesPublicGroupDetails"
         '404':
           description: Not Found
         '400':
@@ -94591,6 +94591,27 @@ components:
         merge_request_title_regex_description:
           type: string
           example: This requires the title to include a Jira label
+    APIEntitiesPublicGroupDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        web_url:
+          type: string
+          example: http://gitlab.example.com/groups/diaspora
+        name:
+          type: string
+          example: Diaspora
+        avatar_url:
+          type: string
+          example: http://gitlab.example.com/uploads/group/avatar/1/avatar.png
+        full_name:
+          type: string
+          example: Foobar Group
+        full_path:
+          type: string
+          example: foo-bar
     APIEntitiesProjectAccess:
       type: object
       properties:
@@ -95527,27 +95548,6 @@ components:
         member_role_id:
           type: integer
           example: 12
-    APIEntitiesPublicGroupDetails:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        web_url:
-          type: string
-          example: http://gitlab.example.com/groups/diaspora
-        name:
-          type: string
-          example: Diaspora
-        avatar_url:
-          type: string
-          example: http://gitlab.example.com/uploads/group/avatar/1/avatar.png
-        full_name:
-          type: string
-          example: Foobar Group
-        full_path:
-          type: string
-          example: foo-bar
     APIEntitiesProjectRepositoryStorage:
       type: object
       properties:

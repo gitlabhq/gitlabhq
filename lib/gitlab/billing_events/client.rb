@@ -40,6 +40,12 @@ module Gitlab
         false
       end
 
+      # Overridden in EE, where an instance licensed offline has no route to the
+      # billing collector and must not attempt the connection. Always true without EE.
+      def emission_enabled?
+        true
+      end
+
       private
 
       def record_usage( # rubocop:disable Metrics/ParameterLists -- billing schema has many fields
@@ -81,16 +87,17 @@ module Gitlab
           metadata: metadata
         )
 
-        # An air-gapped instance cannot reach the billing collector, and
-        # EventEligibilityChecker would discard the event before any HTTP attempt is
-        # made, so the local path replaces emission rather than supplementing it. Only
-        # emission is replaced: the internal event is a separate concern that works
-        # without connectivity, so it is tracked either way.
+        # An air-gapped instance cannot reach the billing collector, so the local path
+        # replaces emission rather than supplementing it, and when local persistence is
+        # off emission is skipped rather than attempted. EventEligibilityChecker checks
+        # telemetry settings, not licensing, so it does not stop the attempt on its own.
+        # Only emission is affected: the internal event is a separate concern that works
+        # without connectivity, so it is tracked in every case.
         if local_persistence_enabled?
           # Defined in EE. Unreachable here, since local_persistence_enabled? is
           # always false without it.
           persist_local_aggregate(context, quantity_kind)
-        else
+        elsif emission_enabled?
           billing_context = SnowplowTracker::SelfDescribingJson.new(
             BILLABLE_USAGE_SCHEMA,
             context
@@ -107,6 +114,15 @@ module Gitlab
             event_type: event_type,
             event_id: event_id,
             quantity: quantity,
+            namespace_id: namespace.id
+          )
+        else
+          Gitlab::AppLogger.info(
+            message: 'BillingEvents: billing event emission skipped',
+            event_type: event_type,
+            event_id: event_id,
+            quantity: quantity,
+            quantity_kind: quantity_kind,
             namespace_id: namespace.id
           )
         end

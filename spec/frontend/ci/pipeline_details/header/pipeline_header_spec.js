@@ -122,6 +122,32 @@ describe('Pipeline header', () => {
     return waitForPromises();
   };
 
+  describe('when the commit is not readable', () => {
+    const commitTitle = 'Fix the build';
+    const { project } = pipelineHeaderSuccess.data;
+    const pipelineWithoutCommit = {
+      data: {
+        project: {
+          ...project,
+          pipeline: { ...project.pipeline, commit: null, commitTitle },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      return createComponent({
+        handlers: [
+          [getPipelineDetailsQuery, jest.fn().mockResolvedValue(pipelineWithoutCommit)],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
+        ],
+      });
+    });
+
+    it('displays the commit title from the pipeline', () => {
+      expect(findCommitTitle().text()).toBe(commitTitle);
+    });
+  });
+
   describe('loading state', () => {
     it('shows a loading state while graphQL is fetching initial data', () => {
       createComponent();

@@ -115,7 +115,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
         context 'with a merged results pipeline' do
           let(:merge_request) do
             create(:merge_request, :with_merge_request_pipeline,
-              source_project: project, target_project: project)
+              source_project: project, target_project: project, merge_sha: project.commit.sha)
           end
 
           it 'displays the "Run pipeline" button' do

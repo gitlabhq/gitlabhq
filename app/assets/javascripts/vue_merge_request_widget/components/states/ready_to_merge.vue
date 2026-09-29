@@ -385,12 +385,10 @@ export default {
   mounted() {
     eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
     eventHub.$on('mr-widget-update-requested', this.updateGraphqlState);
-    eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
   },
   beforeDestroy() {
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
     eventHub.$off('mr-widget-update-requested', this.updateGraphqlState);
-    eventHub.$off('mr.discussion.updated', this.updateGraphqlState);
     eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
 
     if (this.pollingInterval) {

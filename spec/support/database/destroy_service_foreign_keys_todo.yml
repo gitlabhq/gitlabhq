@@ -429,6 +429,7 @@ namespaces:
 - duo_workflows_workflow_notes.namespace_id
 - duo_workflows_workflow_pipelines.namespace_id
 - duo_workflows_workflow_work_items.namespace_id
+- duo_workflows_workflow_workflows.namespace_id
 - duo_workflows_workflows.namespace_id
 - elastic_group_index_statuses.namespace_id
 - elasticsearch_indexed_namespaces.namespace_id
@@ -942,6 +943,7 @@ projects:
 - duo_workflows_workflow_notes.project_id
 - duo_workflows_workflow_pipelines.project_id
 - duo_workflows_workflow_work_items.project_id
+- duo_workflows_workflow_workflows.project_id
 - duo_workflows_workflows.project_id
 - duo_workflows_workloads.project_id
 - elasticsearch_indexed_projects.project_id

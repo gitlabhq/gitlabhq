@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 
-	gitalyclient "gitlab.com/gitlab-org/gitaly/v18/client"
-	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
-	"gitlab.com/gitlab-org/gitaly/v18/streamio"
+	gitalyclient "gitlab.com/gitlab-org/gitaly/v19/client"
+	"gitlab.com/gitlab-org/gitaly/v19/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v19/streamio"
 	"google.golang.org/grpc/metadata"
 )
 

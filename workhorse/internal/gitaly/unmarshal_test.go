@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
+	"gitlab.com/gitlab-org/gitaly/v19/proto/go/gitalypb"
 	"google.golang.org/protobuf/proto"
 )
 

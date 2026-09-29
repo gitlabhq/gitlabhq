@@ -11,11 +11,11 @@ module Ci
     private
 
     # Returns a throttled ServiceResponse, or nil when the call may proceed.
-    def job_rate_limited_response(job, key:, per_project_key:, message:)
+    def job_rate_limited_response(job, key:, per_project_key:, log_message:)
       return unless rate_limit? && current_user
       return unless job_rate_limit_throttled?(job, key, per_project_key)
 
-      log_job_rate_limited(job, message)
+      log_job_rate_limited(job, log_message)
 
       ServiceResponse.error(
         message: ::Gitlab::ApplicationRateLimiter.throttled_error_message,
@@ -36,10 +36,10 @@ module Ci
       )
     end
 
-    def log_job_rate_limited(job, message)
+    def log_job_rate_limited(job, log_message)
       Gitlab::AppJsonLogger.info(
         Labkit::Fields::CLASS_NAME => self.class.to_s,
-        message: message,
+        message: log_message,
         Labkit::Fields::GL_PROJECT_ID => project.id,
         job_id: job.id,
         Labkit::Fields::GL_USER_ID => current_user.id,

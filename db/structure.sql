@@ -20793,6 +20793,28 @@ CREATE SEQUENCE duo_workflows_workflow_work_items_id_seq
 
 ALTER SEQUENCE duo_workflows_workflow_work_items_id_seq OWNED BY duo_workflows_workflow_work_items.id;
 
+CREATE TABLE duo_workflows_workflow_workflows (
+    id bigint NOT NULL,
+    workflow_id bigint NOT NULL,
+    linked_workflow_id bigint NOT NULL,
+    project_id bigint,
+    namespace_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    link_type smallint NOT NULL,
+    CONSTRAINT check_c8fe093d47 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
+    CONSTRAINT check_duo_wf_wf_wf_no_self_link CHECK ((workflow_id <> linked_workflow_id))
+);
+
+CREATE SEQUENCE duo_workflows_workflow_workflows_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE duo_workflows_workflow_workflows_id_seq OWNED BY duo_workflows_workflow_workflows.id;
+
 CREATE TABLE duo_workflows_workflows (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -37584,6 +37606,8 @@ ALTER TABLE ONLY duo_workflows_workflow_pipelines ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY duo_workflows_workflow_work_items ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workflow_work_items_id_seq'::regclass);
 
+ALTER TABLE ONLY duo_workflows_workflow_workflows ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workflow_workflows_id_seq'::regclass);
+
 ALTER TABLE ONLY duo_workflows_workflows ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workflows_id_seq'::regclass);
 
 ALTER TABLE ONLY duo_workflows_workloads ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workloads_id_seq'::regclass);
@@ -41083,6 +41107,9 @@ ALTER TABLE ONLY duo_workflows_workflow_pipelines
 
 ALTER TABLE ONLY duo_workflows_workflow_work_items
     ADD CONSTRAINT duo_workflows_workflow_work_items_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY duo_workflows_workflow_workflows
+    ADD CONSTRAINT duo_workflows_workflow_workflows_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT duo_workflows_workflows_pkey PRIMARY KEY (id);
@@ -48641,6 +48668,14 @@ CREATE INDEX index_duo_wf_wf_pipelines_on_pipeline_id ON duo_workflows_workflow_
 CREATE INDEX index_duo_wf_wf_pipelines_on_project_id ON duo_workflows_workflow_pipelines USING btree (project_id);
 
 CREATE UNIQUE INDEX index_duo_wf_wf_pipelines_on_workflow_id_and_pipeline_id ON duo_workflows_workflow_pipelines USING btree (workflow_id, pipeline_id, link_type);
+
+CREATE INDEX index_duo_wf_wf_wf_on_linked_workflow_id ON duo_workflows_workflow_workflows USING btree (linked_workflow_id);
+
+CREATE INDEX index_duo_wf_wf_wf_on_namespace_id ON duo_workflows_workflow_workflows USING btree (namespace_id);
+
+CREATE INDEX index_duo_wf_wf_wf_on_project_id ON duo_workflows_workflow_workflows USING btree (project_id);
+
+CREATE UNIQUE INDEX index_duo_wf_wf_wf_on_workflow_id_and_linked_workflow_id ON duo_workflows_workflow_workflows USING btree (workflow_id, linked_workflow_id, link_type);
 
 CREATE INDEX index_duo_wf_wf_wi_on_namespace_id ON duo_workflows_workflow_work_items USING btree (namespace_id);
 
@@ -58949,6 +58984,9 @@ ALTER TABLE ONLY ai_conversation_messages
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY duo_workflows_workflow_workflows
+    ADD CONSTRAINT fk_6ab757d7b9 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY custom_dashboard_versions
     ADD CONSTRAINT fk_6b53f240d7 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -59957,6 +59995,9 @@ ALTER TABLE ONLY work_item_decision_options
 ALTER TABLE ONLY status_check_responses
     ADD CONSTRAINT fk_b53bf31a72 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_workflows_workflow_workflows
+    ADD CONSTRAINT fk_b57557c3fa FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_dependency_links
     ADD CONSTRAINT fk_b5c56b6ede FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -60203,6 +60244,9 @@ ALTER TABLE ONLY jira_tracker_data
 ALTER TABLE ONLY evidences
     ADD CONSTRAINT fk_ca4bbc114d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_workflows_workflow_workflows
+    ADD CONSTRAINT fk_ca85eb899a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY subscription_add_on_purchases
     ADD CONSTRAINT fk_caed789645 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -60256,6 +60300,9 @@ ALTER TABLE ONLY cluster_providers_aws
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_cdfc40b861 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY duo_workflows_workflow_workflows
+    ADD CONSTRAINT fk_ce0416f6b6 FOREIGN KEY (linked_workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY mobile_device_push_subscriptions
     ADD CONSTRAINT fk_ce6837f03a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

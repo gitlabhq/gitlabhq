@@ -24,6 +24,10 @@ ENV["GITLAB_LOAD_WIP_CUSTOM_ABILITIES"] = 'true'
 
 require_relative '../config/environment'
 
+# Rails 8 draws routes lazily, so API::API may not be loaded when grape-path-helpers
+# memoizes its api_v4_*_path helpers. Draw them at boot as Rails 7.2 does.
+Rails.application.reload_routes_unless_loaded if Gitlab.next_rails?
+
 require 'rspec/mocks'
 require 'rspec/rails'
 require 'rspec-parameterized'

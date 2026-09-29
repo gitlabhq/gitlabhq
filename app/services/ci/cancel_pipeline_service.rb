@@ -75,7 +75,6 @@ module Ci
     # it is what stops a caller from looping on it. Internal callers pass rate_limit: false.
     def rate_limited_response
       return unless @rate_limit && current_user && pipeline
-      return unless Feature.enabled?(:rate_limit_pipeline_cancel, pipeline.project)
       return unless rate_limit_throttled?
 
       log_rate_limited

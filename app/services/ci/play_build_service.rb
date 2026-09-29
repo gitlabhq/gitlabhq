@@ -52,7 +52,7 @@ module Ci
       return unless Feature.enabled?(:rate_limit_job_play, project)
 
       job_rate_limited_response(
-        build, key: :job_play, per_project_key: :job_play_per_project, message: 'Job play rate limit exceeded'
+        build, key: :job_play, per_project_key: :job_play_per_project, log_message: 'Job play rate limit exceeded'
       )
     end
 

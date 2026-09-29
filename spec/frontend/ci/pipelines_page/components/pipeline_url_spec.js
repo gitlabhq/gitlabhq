@@ -144,6 +144,43 @@ describe('Pipeline Url Component', () => {
     );
   });
 
+  describe('when the commit is not readable', () => {
+    const commitPath = `/${projectPath}/-/commit/aabbccddeeff00112233445566778899aabbccdd`;
+    const commitTitle = 'Fix the build';
+    const commitAuthorName = 'Jane Author';
+    const commitAuthorGravatar = 'https://www.gravatar.com/avatar/jane';
+
+    beforeEach(() => {
+      createComponent({
+        props: merge(mockPipeline(projectPath), {
+          pipeline: {
+            commit: null,
+            commitPath,
+            commitTitle,
+            commitAuthorName,
+            commitAuthorGravatar,
+          },
+        }),
+      });
+    });
+
+    it('links the commit title from the pipeline summary fields', () => {
+      expect(findPipelineIdentifierLink().text()).toBe(commitTitle);
+      expect(findPipelineIdentifierLink().attributes('href')).toBe(commitPath);
+      expect(findPipelineIdentifierMissingMessage().exists()).toBe(false);
+      expect(findCommitPopover().exists()).toBe(false);
+    });
+
+    it('renders the author gravatar without a link', () => {
+      expect(wrapper.findComponent(UserAvatarLink).props()).toMatchObject({
+        imgSrc: commitAuthorGravatar,
+        imgAlt: commitAuthorName,
+        tooltipText: commitAuthorName,
+        linkHref: '',
+      });
+    });
+  });
+
   describe('commit user avatar', () => {
     it('renders when commit author exists', () => {
       const pipelineBranch = mockPipelineBranch();
@@ -165,6 +202,39 @@ describe('Pipeline Url Component', () => {
       createComponent();
 
       expect(wrapper.findComponent(UserAvatarLink).exists()).toBe(false);
+    });
+
+    describe('when the author is not a GitLab user', () => {
+      const gravatar = 'https://www.gravatar.com/avatar/external';
+
+      it.each`
+        authorEmail               | linkHref
+        ${'external@example.com'} | ${'mailto:external@example.com'}
+        ${null}                   | ${''}
+      `(
+        'links to "$linkHref" when the author email is $authorEmail',
+        ({ authorEmail, linkHref }) => {
+          createComponent({
+            props: merge(mockPipeline(projectPath), {
+              pipeline: {
+                commit: {
+                  author: null,
+                  author_name: 'External Author',
+                  author_email: authorEmail,
+                  author_gravatar_url: gravatar,
+                },
+              },
+            }),
+          });
+
+          expect(wrapper.findComponent(UserAvatarLink).props()).toMatchObject({
+            imgSrc: gravatar,
+            imgAlt: 'External Author',
+            tooltipText: 'External Author',
+            linkHref,
+          });
+        },
+      );
     });
   });
 

@@ -16,7 +16,6 @@ import { isInMRPage } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
 import TaskList from '~/task_list';
-import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import { useBatchComments } from '~/batch_comments/store';
@@ -312,7 +311,6 @@ export function removeNote(note) {
 
   this[types.DELETE_NOTE](note);
 
-  this.updateMergeRequestWidget();
   this.updateResolvableDiscussionsCounts();
 
   if (isInMRPage()) {
@@ -423,7 +421,6 @@ export function replyToDiscussion({ endpoint, data: reply }) {
 
       this.updateOrCreateNotes(data.discussion.notes);
 
-      this.updateMergeRequestWidget();
       this.startTaskList();
       this.updateResolvableDiscussionsCounts();
     } else {
@@ -439,7 +436,6 @@ export function createNewNote({ endpoint, data: reply }) {
     if (!data.errors) {
       this[types.ADD_NEW_NOTE](data);
 
-      this.updateMergeRequestWidget();
       this.startTaskList();
       this.updateResolvableDiscussionsCounts();
     }
@@ -479,8 +475,6 @@ export function toggleResolveNote({ endpoint, isResolved, discussion, discussion
     this[mutationType](data);
 
     this.updateResolvableDiscussionsCounts();
-
-    this.updateMergeRequestWidget();
 
     if (!isResolved && discussionId) {
       this.collapseDiscussion(discussionId);
@@ -721,10 +715,6 @@ export function fetchDiscussionDiffLines(discussion) {
     });
   });
 }
-
-export const updateMergeRequestWidget = () => {
-  mrWidgetEventHub.$emit('mr.discussion.updated');
-};
 
 export function setLoadingState(data) {
   this[types.SET_NOTES_LOADING_STATE](data);

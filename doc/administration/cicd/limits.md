@@ -406,12 +406,9 @@ To configure this limit:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627270) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_pipeline_cancel`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627270) in GitLab 19.5.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Canceling a pipeline stops every cancelable job in its [pipeline hierarchy](../../ci/pipelines/downstream_pipelines.md),
 so the cost of canceling scales with the size of the pipeline. Repeated cancellations,
@@ -500,9 +497,9 @@ The limits do not apply to automatic retries (for example, `retry:` in the CI/CD
 GitLab enforces the following limits:
 
 - Job retry, per user and job: Fixed at `3` requests each minute. Not configurable.
-- Job retry, per user and project: Configurable, with a default of `1250` requests each minute. Set to `0` to disable.
+- Job retry, per user and project: Configurable, with a default of `320` requests each minute. Set to `0` to disable.
 - Manual job run, per user and job: Fixed at `3` requests each minute. Not configurable.
-- Manual job run, per user and project: Configurable, with a default of `750` requests each minute. Set to `0` to disable.
+- Manual job run, per user and project: Configurable, with a default of `200` requests each minute. Set to `0` to disable.
 
 If a limit is exceeded, the request is blocked.
 

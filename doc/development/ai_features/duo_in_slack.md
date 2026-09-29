@@ -33,6 +33,7 @@ To test the feature locally, you must:
 - A [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)
   set on your user, with the [Developer Flow](../../user/project/merge_requests/developer.md)
   turned on for that top-level group.
+  If the `slack_duo_api_flow` feature flag is enabled for the group, turn on the GitLab Duo for Slack flow instead.
 
 ## Use a Slack developer sandbox
 
@@ -178,6 +179,7 @@ token that GitLab does not receive.
    bot again.
 1. The bot reacts to your message, runs the Developer Flow as a CI/CD workload, and replies in the
    thread with a link to the session in GitLab.
+   With the `slack_duo_api_flow` feature flag enabled, the bot runs the GitLab Duo for Slack flow without a CI/CD runner instead.
 
 Run the first mention as a user who can create projects in the default GitLab Duo namespace. Slack
 mentions carry no project context, so `Ai::Messaging::DefaultProjectFlowResolver` derives one from
@@ -264,9 +266,10 @@ Two cases behave differently in local development:
   your GDK: check that your tunnel is running and that `RAILS_HOSTS` includes the tunnel host, then
   reverify the request URL in Slack. If the logs do record it, the mention arrived and the failure is
   in the response, such as [`account_inactive`](#slack-api-returns-account_inactive).
-- The bot posts `Could not set up the service account for the Duo Developer flow`. The Developer Flow
+- The bot posts `Could not set up the service account for the flow`. The flow
   might be turned off for your top-level group. In the group, go to **Settings** > **GitLab Duo**,
   select **Change configuration**, and under **Flow execution**, turn on the Developer Flow.
+  If the `slack_duo_api_flow` feature flag is enabled for the group, turn on the GitLab Duo for Slack flow instead.
 
 ### Default Duo namespace project does not get initialized properly
 

@@ -11,6 +11,7 @@ import gqlTag from 'graphql-tag';
 import { buildOutput } from './helpers/output.js';
 import { aliases } from './helpers/aliases.js';
 import { supportedBrowsersHash } from './helpers/supported_browsers.js';
+import vendorDllHash from './helpers/vendor_dll_hash.js';
 import { VUE_VERSION, VUE_COMPILER_VERSION, logVueVersion } from './vue3migration/version.js';
 import { cacheGroups } from './rspack/cache_groups.js';
 import { define } from './rspack/define.js';
@@ -201,6 +202,9 @@ export default {
           supportedBrowsersHash,
           `vue${VUE_VERSION}`,
           `compiler${VUE_COMPILER_VERSION}`,
+          // package.json, yarn.lock and patch-package patches: a changed dependency
+          // must not be served from a persisted cache of the old one.
+          vendorDllHash(),
         ].join('-'),
         buildDependencies: [configPath],
         storage: {

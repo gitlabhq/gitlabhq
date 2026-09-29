@@ -159,6 +159,9 @@ const defaultJsOptions = {
     // A VUE_VERSION changes how we alias certain packages
     // use a different cache to prevent issues when switching between versions
     VUE_VERSION,
+    // package.json, yarn.lock and patch-package patches: transpiled output of a
+    // changed dependency must not be served from the cache of the old one.
+    vendorDllHash(),
   ].join('|'),
   cacheCompression: false,
 };
@@ -173,6 +176,7 @@ const vueLoaderOptions = {
     EXACT_VUE_VERSION,
     VUE_LOADER_VERSION,
     VUE_VERSION,
+    vendorDllHash(),
   ].join('|'),
   compilerOptions: {
     whitespace: 'preserve',

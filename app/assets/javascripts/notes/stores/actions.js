@@ -16,7 +16,6 @@ import { isInMRPage } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
 import TaskList from '~/task_list';
-import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import { uuids } from '~/lib/utils/uuids';
@@ -236,7 +235,6 @@ export const removeNote = ({ commit, dispatch, state }, note) => {
 
   commit(types.DELETE_NOTE, note);
 
-  dispatch('updateMergeRequestWidget');
   dispatch('updateResolvableDiscussionsCounts');
 
   if (isInMRPage()) {
@@ -348,7 +346,6 @@ export const replyToDiscussion = ({ commit, dispatch }, { endpoint, data: reply 
       commit(types.UPDATE_DISCUSSION, data.discussion);
 
       dispatch('updateOrCreateNotes', data.discussion.notes);
-      dispatch('updateMergeRequestWidget');
       dispatch('startTaskList');
       dispatch('updateResolvableDiscussionsCounts');
     } else {
@@ -363,7 +360,6 @@ export const createNewNote = ({ commit, dispatch }, { endpoint, data: reply }) =
     if (!data.errors) {
       commit(types.ADD_NEW_NOTE, data);
 
-      dispatch('updateMergeRequestWidget');
       dispatch('startTaskList');
       dispatch('updateResolvableDiscussionsCounts');
     }
@@ -400,8 +396,6 @@ export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, 
     commit(mutationType, data);
 
     dispatch('updateResolvableDiscussionsCounts');
-
-    dispatch('updateMergeRequestWidget');
   });
 };
 
@@ -641,10 +635,6 @@ export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
       diffLines: data.truncated_diff_lines,
     });
   });
-
-export const updateMergeRequestWidget = () => {
-  mrWidgetEventHub.$emit('mr.discussion.updated');
-};
 
 export const setLoadingState = ({ commit }, data) => {
   commit(types.SET_NOTES_LOADING_STATE, data);

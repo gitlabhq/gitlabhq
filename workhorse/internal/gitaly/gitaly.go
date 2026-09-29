@@ -28,9 +28,9 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
-	gitalyauth "gitlab.com/gitlab-org/gitaly/v18/auth"
-	gitalyclient "gitlab.com/gitlab-org/gitaly/v18/client"
-	"gitlab.com/gitlab-org/gitaly/v18/proto/go/gitalypb"
+	gitalyauth "gitlab.com/gitlab-org/gitaly/v19/auth"
+	gitalyclient "gitlab.com/gitlab-org/gitaly/v19/client"
+	"gitlab.com/gitlab-org/gitaly/v19/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"

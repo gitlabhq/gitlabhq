@@ -125,6 +125,34 @@ describe('filterVariables', () => {
         },
       },
     ],
+    [
+      'correctly processes a unioned (OR) filter using its unionedKey',
+      {
+        filters: {
+          'or[filterA]': ['val1', 'val2'],
+        },
+        expected: {
+          not: {},
+          or: {
+            filterAList: ['val1', 'val2'],
+          },
+        },
+      },
+    ],
+    [
+      'does not apply per-field transforms to unioned (OR) filters',
+      {
+        filters: {
+          'or[filterC]': ['abc', 'def'],
+        },
+        expected: {
+          not: {},
+          or: {
+            filterCList: ['abc', 'def'],
+          },
+        },
+      },
+    ],
   ])('%s', (_, { filters, issuableType = 'issue', expected }) => {
     const result = filterVariables({
       filters,
@@ -132,12 +160,14 @@ describe('filterVariables', () => {
       filterInfo: {
         filterA: {
           negatedSupport: true,
+          unionedKey: 'filterAList',
         },
         filterB: {
           negatedSupport: false,
         },
         filterC: {
           negatedSupport: true,
+          unionedKey: 'filterCList',
           transform: (val) => val.toUpperCase(),
         },
         filterD: {
@@ -148,7 +178,7 @@ describe('filterVariables', () => {
         },
       },
       filterFields: {
-        issue: ['filterA', 'filterB', 'filterC', 'filterD'],
+        issue: ['filterA', 'filterB', 'filterC', 'filterD', 'filterAList', 'filterCList'],
         epic: ['filterE'],
       },
     });
@@ -204,6 +234,53 @@ describe('filterVariables', () => {
         expected: {
           customField: [],
           not: {},
+        },
+      },
+    ],
+    [
+      'converts a single type to an array of workItemTypeIds global ids',
+      {
+        filters: {
+          type: ['1'],
+        },
+        expected: {
+          workItemTypeIds: ['gid://gitlab/WorkItems::Type/1'],
+          not: {},
+        },
+      },
+    ],
+    [
+      'converts a multi-value type (is one of) to an array of workItemTypeIds',
+      {
+        filters: {
+          type: ['1', '2'],
+        },
+        expected: {
+          workItemTypeIds: ['gid://gitlab/WorkItems::Type/1', 'gid://gitlab/WorkItems::Type/2'],
+          not: {},
+        },
+      },
+    ],
+    [
+      'converts the legacy types param to workItemTypeIds',
+      {
+        filters: {
+          types: '1',
+        },
+        expected: {
+          workItemTypeIds: 'gid://gitlab/WorkItems::Type/1',
+          not: {},
+        },
+      },
+    ],
+    [
+      'keeps negated author usernames on the issue board',
+      {
+        filters: {
+          'not[authorUsernames]': ['root', 'admin'],
+        },
+        expected: {
+          not: { authorUsernames: ['root', 'admin'] },
         },
       },
     ],

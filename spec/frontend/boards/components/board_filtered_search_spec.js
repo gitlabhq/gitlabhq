@@ -82,6 +82,10 @@ describe('BoardFilteredSearch', () => {
       expect(findFilteredSearch().props('tokens')).toEqual(tokens);
     });
 
+    it('shows friendly operator text so the description is left and the symbol is right', () => {
+      expect(findFilteredSearch().props('showFriendlyText')).toBe(true);
+    });
+
     describe('when on-filter is emitted', () => {
       it('calls historyPushState', () => {
         findFilteredSearch().vm.$emit('on-filter', [{ value: { data: 'searchQuery' } }]);
@@ -148,8 +152,60 @@ describe('BoardFilteredSearch', () => {
       expect(updateHistory).toHaveBeenCalledWith({
         title: '',
         replace: true,
-        url: 'http://test.host/?not[health_status]=atRisk&author_username=root&label_name[]=label&label_name[]=label%262&assignee_username=root&milestone_title=New%20Milestone&iteration_id=Any&iteration_cadence_id=3&types=INCIDENT&weight=2&release_tag=v1.0.0&health_status=onTrack',
+        url: 'http://test.host/?not[health_status]=atRisk&type%5B%5D=INCIDENT&author_username=root&label_name[]=label&label_name[]=label%262&assignee_username=root&milestone_title=New%20Milestone&iteration_id=Any&iteration_cadence_id=3&weight=2&release_tag=v1.0.0&health_status=onTrack',
       });
+    });
+
+    it('sets the url params for multi-value NOT (is not one of) filters', () => {
+      const mockFilters = [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: ['root', 'admin'], operator: '!=' } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: ['root', 'admin'], operator: '!=' } },
+        { type: TOKEN_TYPE_TYPE, value: { data: ['INCIDENT', 'ISSUE'], operator: '!=' } },
+      ];
+
+      findFilteredSearch().vm.$emit('on-filter', mockFilters);
+
+      expect(updateHistory).toHaveBeenCalledWith({
+        title: '',
+        replace: true,
+        url: 'http://test.host/?not[author_usernames][]=root&not[author_usernames][]=admin&not[assignee_username][]=root&not[assignee_username][]=admin&not[type][]=INCIDENT&not[type][]=ISSUE',
+      });
+
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+    });
+
+    it('sets the url params for OR (is one of) filters', () => {
+      const mockFilters = [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: ['root', 'admin'], operator: '||' } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: ['root', 'admin'], operator: '||' } },
+        { type: TOKEN_TYPE_LABEL, value: { data: ['bug', 'feature'], operator: '||' } },
+      ];
+
+      findFilteredSearch().vm.$emit('on-filter', mockFilters);
+
+      expect(updateHistory).toHaveBeenCalledWith({
+        title: '',
+        replace: true,
+        url: 'http://test.host/?or%5Blabel_name%5D%5B%5D=bug&or%5Blabel_name%5D%5B%5D=feature&or%5Bauthor_username%5D%5B%5D=root&or%5Bauthor_username%5D%5B%5D=admin&or%5Bassignee_username%5D%5B%5D=root&or%5Bassignee_username%5D%5B%5D=admin',
+      });
+
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+    });
+
+    it('serializes a type "is one of" (OR) filter as an encoded array of type[]', () => {
+      const mockFilters = [
+        { type: TOKEN_TYPE_TYPE, value: { data: ['INCIDENT', 'ISSUE'], operator: '||' } },
+      ];
+
+      findFilteredSearch().vm.$emit('on-filter', mockFilters);
+
+      expect(updateHistory).toHaveBeenCalledWith({
+        title: '',
+        replace: true,
+        url: 'http://test.host/?type%5B%5D=INCIDENT&type%5B%5D=ISSUE',
+      });
+
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
 
     describe('when assignee is passed a wildcard value', () => {
@@ -187,6 +243,108 @@ describe('BoardFilteredSearch', () => {
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'root', operator: '=' } },
         { type: TOKEN_TYPE_LABEL, value: { data: 'label', operator: '=' } },
         { type: TOKEN_TYPE_HEALTH, value: { data: 'Any', operator: '=' } },
+      ]);
+    });
+  });
+
+  describe('when OR (is one of) url params are already set', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: {
+          'or[authorUsername]': ['root', 'admin'],
+          'or[assigneeUsername]': ['root', 'admin'],
+          'or[labelName]': ['bug', 'feature'],
+        },
+      });
+    });
+
+    it('passes the correct OR tokens to FilterSearchBar', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: TOKEN_TYPE_AUTHOR, value: { data: ['root', 'admin'], operator: '||' } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: ['root', 'admin'], operator: '||' } },
+        { type: TOKEN_TYPE_LABEL, value: { data: ['bug', 'feature'], operator: '||' } },
+      ]);
+    });
+  });
+
+  describe('when multi-value NOT (is not one of) url params are already set', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: {
+          'not[authorUsernames]': ['root', 'admin'],
+          'not[assigneeUsername]': ['root', 'admin'],
+        },
+      });
+    });
+
+    it('passes a single NOT token with an array of values to FilterSearchBar', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: TOKEN_TYPE_AUTHOR, value: { data: ['root', 'admin'], operator: '!=' } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: ['root', 'admin'], operator: '!=' } },
+      ]);
+    });
+  });
+
+  describe('when NOT label url params are already set', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: {
+          'not[labelName]': ['bug', 'feature'],
+        },
+      });
+    });
+
+    it('passes a single multi-value NOT label token to FilterSearchBar', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: TOKEN_TYPE_LABEL, value: { data: ['bug', 'feature'], operator: '!=' } },
+      ]);
+    });
+  });
+
+  describe('when a legacy scalar NOT param is already set', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: {
+          'not[authorUsername]': 'root',
+          'not[assigneeUsername]': 'root',
+          'not[labelName]': 'bug',
+        },
+      });
+    });
+
+    it('still hydrates old bookmarked NOT URLs into a single token', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'root', operator: '!=' } },
+        { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'root', operator: '!=' } },
+        { type: TOKEN_TYPE_LABEL, value: { data: 'bug', operator: '!=' } },
+      ]);
+    });
+  });
+
+  describe('when a multi-value type param is already set', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: { type: ['INCIDENT', 'ISSUE'] },
+      });
+    });
+
+    it('passes a single type "is one of" (OR) token to FilterSearchBar', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: TOKEN_TYPE_TYPE, value: { data: ['INCIDENT', 'ISSUE'], operator: '||' } },
+      ]);
+    });
+  });
+
+  describe('when a legacy `types` param is already set', () => {
+    beforeEach(() => {
+      createComponent({
+        initialFilterParams: { types: 'INCIDENT' },
+      });
+    });
+
+    it('falls back to the legacy param and passes an "is" token to FilterSearchBar', () => {
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: TOKEN_TYPE_TYPE, value: { data: 'INCIDENT', operator: '=' } },
       ]);
     });
   });

@@ -360,20 +360,6 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, :clean_gitlab_red
         ).once
       end
 
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(rate_limit_pipeline_cancel: false)
-          stub_application_setting(pipeline_cancel_limit_per_user_project: 1)
-        end
-
-        it 'does not throttle' do
-          2.times do
-            expect(described_class.new(pipeline: pipeline, current_user: current_user).execute.reason)
-              .not_to eq(:rate_limited)
-          end
-        end
-      end
-
       context 'when the caller opts out with rate_limit: false' do
         before do
           stub_application_setting(pipeline_cancel_limit_per_user_project: 1)

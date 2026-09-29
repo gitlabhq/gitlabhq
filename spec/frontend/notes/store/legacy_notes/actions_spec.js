@@ -20,7 +20,6 @@ import * as utils from '~/notes/stores/utils';
 import updateIssueLockMutation from '~/sidebar/queries/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_request_lock.mutation.graphql';
 import promoteTimelineEvent from '~/notes/graphql/promote_timeline_event.mutation.graphql';
-import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import notesEventHub from '~/notes/event_hub';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
@@ -492,7 +491,7 @@ describe('Actions Notes Store', () => {
       document.body.dataset.page = '';
     });
 
-    it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', () => {
+    it('commits DELETE_NOTE', () => {
       const note = { path: endpoint, id: 1, discussion_id: 1, individual_note: true };
 
       discussionsStore.discussions = [note];
@@ -507,9 +506,6 @@ describe('Actions Notes Store', () => {
           },
         ],
         [
-          {
-            type: store.updateMergeRequestWidget,
-          },
           {
             type: store.updateResolvableDiscussionsCounts,
           },
@@ -535,9 +531,6 @@ describe('Actions Notes Store', () => {
           },
         ],
         [
-          {
-            type: store.updateMergeRequestWidget,
-          },
           {
             type: store.updateResolvableDiscussionsCounts,
           },
@@ -594,7 +587,7 @@ describe('Actions Notes Store', () => {
         axiosMock.onAny().reply(HTTP_STATUS_OK, res);
       });
 
-      it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', () => {
+      it('commits ADD_NEW_NOTE', () => {
         return testAction(
           store.createNewNote,
           { endpoint: `${TEST_HOST}`, data: {} },
@@ -606,9 +599,6 @@ describe('Actions Notes Store', () => {
             },
           ],
           [
-            {
-              type: store.updateMergeRequestWidget,
-            },
             {
               type: store.startTaskList,
             },
@@ -629,7 +619,7 @@ describe('Actions Notes Store', () => {
         axiosMock.onAny().replyOnce(HTTP_STATUS_OK, res);
       });
 
-      it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', () => {
+      it('does not commit ADD_NEW_NOTE or dispatch actions', () => {
         return testAction(
           store.createNewNote,
           { endpoint: `${TEST_HOST}`, data: {} },
@@ -654,7 +644,7 @@ describe('Actions Notes Store', () => {
     });
 
     describe('as note', () => {
-      it('commits UPDATE_NOTE and dispatches updateMergeRequestWidget', () => {
+      it('commits UPDATE_NOTE', () => {
         discussionsStore.discussions = [
           { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
         ];
@@ -672,16 +662,13 @@ describe('Actions Notes Store', () => {
             {
               type: store.updateResolvableDiscussionsCounts,
             },
-            {
-              type: store.updateMergeRequestWidget,
-            },
           ],
         );
       });
     });
 
     describe('as discussion', () => {
-      it('commits UPDATE_DISCUSSION and dispatches updateMergeRequestWidget', () => {
+      it('commits UPDATE_DISCUSSION', () => {
         discussionsStore.discussions = [
           { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
         ];
@@ -699,22 +686,9 @@ describe('Actions Notes Store', () => {
             {
               type: store.updateResolvableDiscussionsCounts,
             },
-            {
-              type: store.updateMergeRequestWidget,
-            },
           ],
         );
       });
-    });
-  });
-
-  describe('updateMergeRequestWidget', () => {
-    it('calls mrWidget checkStatus', () => {
-      jest.spyOn(mrWidgetEventHub, '$emit').mockImplementation(() => {});
-
-      store.updateMergeRequestWidget();
-
-      expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
     });
   });
 
@@ -860,7 +834,6 @@ describe('Actions Notes Store', () => {
         ],
         [
           { type: store.updateOrCreateNotes, payload: [] },
-          { type: store.updateMergeRequestWidget },
           { type: store.startTaskList },
           { type: store.updateResolvableDiscussionsCounts },
         ],

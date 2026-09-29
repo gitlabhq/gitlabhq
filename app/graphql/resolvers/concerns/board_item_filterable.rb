@@ -10,7 +10,12 @@ module BoardItemFilterable
 
     set_filter_values(filters)
 
-    set_filter_values(filters[:not]) if filters[:not]
+    if filters[:not]
+      set_filter_values(filters[:not])
+      # `authorUsernames` is the additive multi-value negation argument; the
+      # finder consumes the singular `author_username` (which accepts an array).
+      rewrite_param_name(filters[:not], :author_usernames, :author_username)
+    end
 
     if filters[:or]
       rewrite_param_name(filters[:or], :author_usernames, :author_username)

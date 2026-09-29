@@ -7,6 +7,7 @@ const EXACT_VUE_VERSION = require('vue/package.json').version;
 
 const { isCustomElement } = require('../vue3migration/compilers/vue3_template');
 const { INFECTION_LOADER_PATH } = require('../vue3migration/plugins/rspack_loader');
+const vendorDllHash = require('../helpers/vendor_dll_hash');
 
 const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
 
@@ -41,6 +42,8 @@ function buildVueLoaderOptions() {
       EXACT_VUE_VERSION,
       VUE_LOADER_VERSION,
       VUE_VERSION,
+      // package.json, yarn.lock and patch-package patches (vue-loader itself is patched)
+      vendorDllHash(),
     ].join('|'),
     compilerOptions: {
       whitespace: 'preserve',

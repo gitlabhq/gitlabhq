@@ -57,6 +57,23 @@ enforcement depends on where the flow runs:
 - For flows that run in an IDE extension, GitLab enforces governance rules.
 - For background flows, such as the Duo Developer foundational flow, GitLab enforces governance rules.
 
+## Access types
+
+Each tool has a separate mode for each access type. The access type depends on
+who the agent acts as and where it runs:
+
+Cloud access
+: Runs on GitLab as the user.
+  For example, GitLab Duo Agentic Chat in the GitLab UI.
+
+Local access
+: Runs on the user's machine as the user.
+  For example, the IDE extensions and the GitLab Duo CLI.
+
+Background access
+: Runs on GitLab as a service account, without waiting for anyone.
+  For example, flows started by a trigger or a mention, and code review.
+
 ## Default governance matrix
 
 | Classification | Mode |
@@ -278,11 +295,9 @@ ancestor.
 
 ## Known issues
 
-- The governance UI has three access categories: Web (browser-based sessions),
-  Local (IDE and CLI), and Runner (background flows that run in CI/CD runners).
-  Runner access supports only Always Allow and Always Deny. Always Ask does not apply,
-  because no user is present to respond to an approval prompt in a background flow.
-  A tool with no configured runner rule defaults to Always Allow.
+- [Background access](#access-types) supports only **Always Allow** and **Always Deny**.
+  **Always Ask** does not apply, because no user is present to respond to an approval prompt
+  in a background flow. A tool with no configured background access rule defaults to **Always Allow**.
 - The `search` tool served by the GitLab MCP server aggregates what the
   GitLab Duo Agent Platform exposes as separate, narrower search tools.
   Rules configured on those narrower tools do not extend to `search`. To

@@ -15508,6 +15508,18 @@
               "deprecationReason": null
             },
             {
+              "name": "replaceExistingDirectConfigurations",
+              "description": "Confirm replacement of a group configuration, and any project configurations, for this item when inheritance is turned on. Required when the item is already configured for the group.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "pinnedVersion",
               "description": "Version to pin the item to, in the format `n.n.n`. Must be a released version. Defaults to the latest released version. Ignored when enabling within the item's managing project, which always tracks the latest released version.",
               "type": {
@@ -151878,6 +151890,22 @@
             {
               "name": "readDuoWorkflow",
               "description": "If `true`, the user can perform `read_duo_workflow` on this resource",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "restartDuoWorkflow",
+              "description": "If `true`, the user can perform `restart_duo_workflow` on this resource",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -294776,6 +294804,26 @@
               "deprecationReason": null
             },
             {
+              "name": "authorUsernames",
+              "description": "Filter by author usernames (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "iterationWildcardId",
               "description": "Filter by iteration ID wildcard.",
               "type": {
@@ -294908,6 +294956,26 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "authorUsernames",
+              "description": "Filter by author usernames (maximum is 100 usernames).",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null,
               "isDeprecated": false,

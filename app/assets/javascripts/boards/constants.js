@@ -134,10 +134,13 @@ export const listIssuablesQueries = {
 export const FilterFields = {
   [TYPE_ISSUE]: [
     'assigneeUsername',
+    'assigneeUsernames',
     'assigneeWildcardId',
     'authorUsername',
+    'authorUsernames',
     'confidential',
     'labelName',
+    'labelNames',
     'milestoneTitle',
     'milestoneWildcardId',
     'myReactionEmoji',

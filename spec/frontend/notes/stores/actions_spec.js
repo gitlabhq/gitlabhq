@@ -18,7 +18,6 @@ import * as utils from '~/notes/stores/utils';
 import updateIssueLockMutation from '~/sidebar/queries/update_issue_lock.mutation.graphql';
 import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_request_lock.mutation.graphql';
 import promoteTimelineEvent from '~/notes/graphql/promote_timeline_event.mutation.graphql';
-import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import notesEventHub from '~/notes/event_hub';
 import { resetStore } from '../helpers';
 import {
@@ -416,7 +415,7 @@ describe('Actions Notes Store', () => {
       document.body.dataset.page = '';
     });
 
-    it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', () => {
+    it('commits DELETE_NOTE', () => {
       const note = { path: endpoint, id: 1 };
 
       return testAction(
@@ -430,9 +429,6 @@ describe('Actions Notes Store', () => {
           },
         ],
         [
-          {
-            type: 'updateMergeRequestWidget',
-          },
           {
             type: 'updateResolvableDiscussionsCounts',
           },
@@ -456,9 +452,6 @@ describe('Actions Notes Store', () => {
           },
         ],
         [
-          {
-            type: 'updateMergeRequestWidget',
-          },
           {
             type: 'updateResolvableDiscussionsCounts',
           },
@@ -517,7 +510,7 @@ describe('Actions Notes Store', () => {
         axiosMock.onAny().reply(HTTP_STATUS_OK, res);
       });
 
-      it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', () => {
+      it('commits ADD_NEW_NOTE', () => {
         return testAction(
           actions.createNewNote,
           { endpoint: `${TEST_HOST}`, data: {} },
@@ -529,9 +522,6 @@ describe('Actions Notes Store', () => {
             },
           ],
           [
-            {
-              type: 'updateMergeRequestWidget',
-            },
             {
               type: 'startTaskList',
             },
@@ -552,7 +542,7 @@ describe('Actions Notes Store', () => {
         axiosMock.onAny().replyOnce(HTTP_STATUS_OK, res);
       });
 
-      it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', () => {
+      it('does not commit ADD_NEW_NOTE or dispatch actions', () => {
         return testAction(
           actions.createNewNote,
           { endpoint: `${TEST_HOST}`, data: {} },
@@ -574,7 +564,7 @@ describe('Actions Notes Store', () => {
     });
 
     describe('as note', () => {
-      it('commits UPDATE_NOTE and dispatches updateMergeRequestWidget', () => {
+      it('commits UPDATE_NOTE', () => {
         return testAction(
           actions.toggleResolveNote,
           { endpoint: `${TEST_HOST}`, isResolved: true, discussion: false },
@@ -589,16 +579,13 @@ describe('Actions Notes Store', () => {
             {
               type: 'updateResolvableDiscussionsCounts',
             },
-            {
-              type: 'updateMergeRequestWidget',
-            },
           ],
         );
       });
     });
 
     describe('as discussion', () => {
-      it('commits UPDATE_DISCUSSION and dispatches updateMergeRequestWidget', () => {
+      it('commits UPDATE_DISCUSSION', () => {
         return testAction(
           actions.toggleResolveNote,
           { endpoint: `${TEST_HOST}`, isResolved: true, discussion: true },
@@ -613,22 +600,9 @@ describe('Actions Notes Store', () => {
             {
               type: 'updateResolvableDiscussionsCounts',
             },
-            {
-              type: 'updateMergeRequestWidget',
-            },
           ],
         );
       });
-    });
-  });
-
-  describe('updateMergeRequestWidget', () => {
-    it('calls mrWidget checkStatus', () => {
-      jest.spyOn(mrWidgetEventHub, '$emit').mockImplementation(() => {});
-
-      actions.updateMergeRequestWidget();
-
-      expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
     });
   });
 
@@ -773,7 +747,6 @@ describe('Actions Notes Store', () => {
         [{ type: mutationTypes.UPDATE_DISCUSSION, payload: discussion }],
         [
           { type: 'updateOrCreateNotes', payload: [] },
-          { type: 'updateMergeRequestWidget' },
           { type: 'startTaskList' },
           { type: 'updateResolvableDiscussionsCounts' },
         ],

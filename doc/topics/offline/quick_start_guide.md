@@ -445,8 +445,8 @@ Instead, you download the data on a machine with internet access and copy it to 
 The script takes the dataset as its first argument and is otherwise the same for both, since the two datasets
 differ only in the distribution service path they are read from and the vendor directory they are copied to.
 
-The script asks the distribution service which archives make up the current snapshot, the same request an online
-instance makes to synchronize, and writes each registry's checkpoint only after every archive is downloaded.
+The script asks the distribution service for the same archives an online instance would synchronize, and
+writes each registry's checkpoint only after every archive is downloaded.
 It exchanges your license key for a token that is valid for three days.
 The machine with internet access needs a copy of your license file, but does not need access to the offline
 instance.
@@ -488,10 +488,14 @@ set -euo pipefail
 CDOT_URL="${CDOT_URL:-https://customers.gitlab.com}"
 PDS_URL="${PDS_URL:-https://pmdb-dist-svc.runway.gitlab.net}"
 
+# A registry far enough behind is cheaper to replace with a fresh snapshot than
+# to catch up one delta at a time. Set to 0 to never download a delta.
+MAX_DELTAS="${MAX_DELTAS:-100}"
+
 if [ $# -lt 5 ]; then
-  echo "Usage: download_pmdb_data.sh <license_file> <gitlab_version> <dataset> <output_dir> <registry>..."
+  echo "Usage: download_pmdb_data.sh <license_file> <gitlab_version> <dataset> <output_dir> <registry>"
   echo "dataset is licenses or malware_advisories."
-  echo "Pass the package registries to download, or 'all' for every supported registry."
+  echo "Pass the package registries to download separated by space, or 'all' for every supported registry."
   exit 1
 fi
 
@@ -546,9 +550,11 @@ fi
 
 REQUEST_FILE="$(mktemp)"
 RESPONSE_FILE="$(mktemp)"
+SNAPSHOT_FILE="$(mktemp)"
 SHARDS_FILE="$(mktemp)"
+DELTAS_FILE="$(mktemp)"
 HEADER_FILE="$(mktemp)"
-trap 'rm -f "$REQUEST_FILE" "$RESPONSE_FILE" "$SHARDS_FILE" "$HEADER_FILE"; rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
+trap 'rm -f "$REQUEST_FILE" "$RESPONSE_FILE" "$SNAPSHOT_FILE" "$SHARDS_FILE" "$DELTAS_FILE" "$HEADER_FILE"; rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
 chmod 600 "$HEADER_FILE"
 
 # Exchange the license key for a Cloud Connector token.
@@ -645,6 +651,38 @@ else
   done
 fi
 
+# Downloads the current snapshot into a registry's full_dataset directory, and
+# removes any delta archives beside it: a snapshot supersedes every delta older
+# than itself, and GitLab reads whatever is newer than its own checkpoint, so
+# leaving them would re-apply changes the snapshot already contains.
+download_snapshot() {
+  REGISTRY=$1
+  UNTIL=$2
+  DATASET_DIR="$OUTPUT_DIR/v3/$REGISTRY/full_dataset"
+
+  # Remove any previous snapshot. GitLab reads every archive in this directory,
+  # so archives left over from an earlier snapshot would be imported alongside
+  # the new ones, restoring data that changed since.
+  rm -rf "$DATASET_DIR" "$OUTPUT_DIR/v3/$REGISTRY/deltas"
+  mkdir -p "$DATASET_DIR"
+
+  # Read the shards from the saved /all body. The delta loop reuses
+  # $RESPONSE_FILE, so by the time a fallback lands here it no longer holds it.
+  jq --raw-output '.shards[] | [.shard, (.signed_url // .url)] | @tsv' "$SNAPSHOT_FILE" >"$SHARDS_FILE"
+  SHARD_COUNT="$(wc -l <"$SHARDS_FILE" | tr -d ' ')"
+
+  while IFS=$'\t' read -r SHARD URL; do
+    echo "Downloading $REGISTRY snapshot archive $SHARD"
+    curl --fail --silent --show-error --location --output "$DATASET_DIR/$SHARD.tar.zst.part" "$URL"
+    mv "$DATASET_DIR/$SHARD.tar.zst.part" "$DATASET_DIR/$SHARD.tar.zst"
+  done <"$SHARDS_FILE"
+
+  # Write the checkpoint last. GitLab ignores a directory that has no
+  # checkpoint, so an interrupted download is never imported as a snapshot.
+  jq --null-input --argjson until "$UNTIL" --argjson shards "$SHARD_COUNT" \
+    '{until: $until, shards: $shards}' >"$DATASET_DIR/checkpoint.json"
+}
+
 for REGISTRY in $REGISTRIES; do
   HTTP_STATUS="$(pds_request "$PDS_URL/v1/$DATASET_PATH/all?purl_type=$REGISTRY" "$RESPONSE_FILE")"
 
@@ -672,41 +710,114 @@ for REGISTRY in $REGISTRIES; do
     exit 1
   fi
 
-  UNTIL="$(jq --raw-output '.until // empty' "$RESPONSE_FILE")"
+  # Keep the /all body: the snapshot is the fallback for every branch below,
+  # and the delta loop writes over $RESPONSE_FILE before one can be taken.
+  cp "$RESPONSE_FILE" "$SNAPSHOT_FILE"
+
+  UNTIL="$(jq --raw-output '.until // empty' "$SNAPSHOT_FILE")"
 
   if [ -z "$UNTIL" ]; then
     echo "The response for $REGISTRY has no snapshot timestamp"
     exit 1
   fi
-  DATASET_DIR="$OUTPUT_DIR/v3/$REGISTRY/full_dataset"
 
-  # Skip the download when this snapshot is already on disk. Every archive in a
-  # snapshot shares one `until`, so an unchanged value means no archive changed.
-  if [ -r "$DATASET_DIR/checkpoint.json" ] &&
-    [ "$(jq --raw-output '.until // empty' "$DATASET_DIR/checkpoint.json" 2>/dev/null)" = "$UNTIL" ]; then
-    echo "Skipping $REGISTRY, snapshot $UNTIL is already downloaded"
+  REGISTRY_DIR="$OUTPUT_DIR/v3/$REGISTRY"
+  LOCAL_UNTIL="$(jq --raw-output '.until // empty' \
+    "$REGISTRY_DIR/full_dataset/checkpoint.json" 2>/dev/null || true)"
+
+  # Take the whole snapshot unless the output directory already holds one this
+  # run can continue from. A delta cannot bootstrap a registry, and `since` has
+  # to be a 10-digit unix-seconds value or the service answers 400, so a
+  # checkpoint that is missing, unreadable or in another unit starts over.
+  if ! [[ "$LOCAL_UNTIL" =~ ^[0-9]{10}$ ]]; then
+    download_snapshot "$REGISTRY" "$UNTIL"
     continue
   fi
 
-  # Remove any previous snapshot. GitLab reads every archive in this directory,
-  # so archives left over from an earlier snapshot would be imported alongside
-  # the new ones, restoring data that changed since.
-  rm -rf "$DATASET_DIR"
-  mkdir -p "$DATASET_DIR"
+  # Resume from the newest archive on disk, snapshot or delta, which is where
+  # GitLab's own checkpoint ends up once it has imported them. Asking from an
+  # older timestamp would download deltas that are already here. Names that are
+  # not a bare timestamp are ignored, matching what the connector reads.
+  SINCE="$(find "$REGISTRY_DIR/deltas" -type f -name '*.tar.zst' 2>/dev/null |
+    sed -e 's#.*/##' -e 's#\.tar\.zst$##' | grep -E '^[0-9]{10}$' |
+    sort -n | tail -1 || true)"
 
-  jq --raw-output '.shards[] | [.shard, (.signed_url // .url)] | @tsv' "$RESPONSE_FILE" >"$SHARDS_FILE"
-  SHARD_COUNT="$(wc -l <"$SHARDS_FILE" | tr -d ' ')"
+  if [ -z "$SINCE" ] || [ "$LOCAL_UNTIL" -gt "$SINCE" ]; then
+    SINCE="$LOCAL_UNTIL"
+  fi
 
-  while IFS=$'\t' read -r SHARD URL; do
-    echo "Downloading $REGISTRY archive $SHARD"
-    curl --fail --silent --show-error --location --output "$DATASET_DIR/$SHARD.tar.zst.part" "$URL"
-    mv "$DATASET_DIR/$SHARD.tar.zst.part" "$DATASET_DIR/$SHARD.tar.zst"
-  done <"$SHARDS_FILE"
+  # With deltas disabled, the published snapshot decides everything.
+  if [ "$MAX_DELTAS" -le 0 ]; then
+    if [ "$UNTIL" -gt "$LOCAL_UNTIL" ]; then
+      echo "Replacing $REGISTRY, the published snapshot moved to $UNTIL"
+      download_snapshot "$REGISTRY" "$UNTIL"
+    else
+      echo "Skipping $REGISTRY, snapshot $LOCAL_UNTIL is already downloaded"
+    fi
+    continue
+  fi
 
-  # Write the checkpoint last. GitLab ignores a directory that has no
-  # checkpoint, so an interrupted download is never imported as a snapshot.
-  jq --null-input --argjson until "$UNTIL" --argjson shards "$SHARD_COUNT" \
-    '{until: $until, shards: $shards}' >"$DATASET_DIR/checkpoint.json"
+  # Page forward. The service caps a response at 20 archives per registry and
+  # sends the oldest of the backlog first, so re-asking from the newest archive
+  # received walks the whole backlog without gaps.
+  : >"$DELTAS_FILE"
+  DELTA_TOTAL=0
+  CAPPED=""
+
+  while :; do
+    HTTP_STATUS="$(pds_request "$PDS_URL/v1/$DATASET_PATH/delta?since=$REGISTRY:$SINCE" "$RESPONSE_FILE")"
+
+    if [ "$HTTP_STATUS" != "200" ]; then
+      echo "Delta request for $REGISTRY failed with HTTP $HTTP_STATUS"
+      head -c 500 "$RESPONSE_FILE"
+      exit 1
+    fi
+
+    # Registries are keyed by the identifier /supported gave us, and one that is
+    # up to date comes back as an empty array rather than being left out.
+    PAGE_COUNT="$(jq --arg r "$REGISTRY" '.purl_types[$r] // [] | length' "$RESPONSE_FILE")"
+
+    if [ "$PAGE_COUNT" -eq 0 ]; then
+      break
+    fi
+
+    jq --raw-output --arg r "$REGISTRY" \
+      '.purl_types[$r] | sort_by(.delta | tonumber) | .[] | [.delta, (.signed_url // .url)] | @tsv' \
+      "$RESPONSE_FILE" >>"$DELTAS_FILE"
+
+    DELTA_TOTAL=$((DELTA_TOTAL + PAGE_COUNT))
+    SINCE="$(cut -f1 "$DELTAS_FILE" | tail -1)"
+
+    # Past the ceiling, one snapshot is fewer bytes than the rest of the backlog.
+    if [ "$DELTA_TOTAL" -gt "$MAX_DELTAS" ]; then
+      CAPPED=yes
+      break
+    fi
+  done
+
+  if [ -n "$CAPPED" ]; then
+    echo "Replacing $REGISTRY, it is more than $MAX_DELTAS deltas behind"
+    download_snapshot "$REGISTRY" "$UNTIL"
+    continue
+  fi
+
+  if [ "$DELTA_TOTAL" -eq 0 ]; then
+    echo "Skipping $REGISTRY, it is up to date at $SINCE"
+    continue
+  fi
+
+  # Deltas sit beside the snapshot rather than replacing it: GitLab reads the
+  # snapshot on a first sync and the deltas on every sync after it.
+  mkdir -p "$REGISTRY_DIR/deltas"
+
+  while IFS=$'\t' read -r DELTA URL; do
+    echo "Downloading $REGISTRY delta $DELTA"
+    curl --fail --silent --show-error --location \
+      --output "$REGISTRY_DIR/deltas/$DELTA.tar.zst.part" "$URL"
+    mv "$REGISTRY_DIR/deltas/$DELTA.tar.zst.part" "$REGISTRY_DIR/deltas/$DELTA.tar.zst"
+  done <"$DELTAS_FILE"
+
+  echo "Downloaded $DELTA_TOTAL delta(s) for $REGISTRY"
 done
 
 set +f
@@ -722,8 +833,10 @@ echo "$DATASET_LABEL saved to $OUTPUT_DIR"
 Call the script like the following:
 
 ```shell
-./download_pmdb_data.sh <license_file> <gitlab_version> <dataset> <output_dir> <registry>...
+./download_pmdb_data.sh <license_file> <gitlab_version> <dataset> <output_dir> <registry>
 ```
+
+The following table describes what each flag of the script represents:
 
 | Argument         | Description |
 |------------------|-------------|
@@ -731,7 +844,7 @@ Call the script like the following:
 | `gitlab_version` | Version of the GitLab instance that imports the data, which is the output of `sudo gitlab-rails runner 'puts Gitlab::VERSION'`. For example, `19.4.0-ee`. |
 | `dataset`        | `licenses` or `malware_advisories`. |
 | `output_dir`     | Directory to write to. Created if it does not exist. Use the same directory on every run, so an unchanged snapshot is skipped. |
-| `registry`...    | One or more package registries, for example `npm` or `pypi`, or `all` for every supported registry. Pass the registries whose types are enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). The script prints the supported list before it downloads anything. |
+| `registry`   | One or more package registries, for example `npm` or `pypi`, or `all` for every supported registry. Pass the registries whose types are enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). Multiple registries must be separated by space. The script prints the supported list before it downloads anything. |
 
 The script creates one directory per package registry, named for the registry identifier rather than the package
 type, for example:
@@ -740,21 +853,40 @@ type, for example:
 licenses/
 └── v3/
     └── npm/
-        └── full_dataset/
-            ├── 00.tar.zst
-            ├── 01.tar.zst
-            ├── ...
-            ├── 7f.tar.zst
-            └── checkpoint.json
+        ├── full_dataset/
+        │   ├── 00.tar.zst
+        │   ├── 01.tar.zst
+        │   ├── ...
+        │   ├── 7f.tar.zst
+        │   └── checkpoint.json
+        └── deltas/
+            ├── 1757520000.tar.zst
+            └── 1757606400.tar.zst
 ```
 
-Each archive is named after its hexadecimal shard identifier.
+Each snapshot archive is named after its hexadecimal shard identifier.
 The number of archives per registry is set by the service, and an archive that contains no data is expected.
+Each delta archive is named for the Unix timestamp that ends its window.
+For what GitLab reads from these folders, see [v3 license data format version](#v3-license-data-format-version).
 
-The script creates a lock on the output directory, so if you run it again while the first pass is still writing the data, the script exits rather
+The first run for a registry downloads a whole snapshot, and later runs ask only for what the service published
+after the newest archive already in the output directory.
+
+> [!note]
+> Reuse the same output directory on every run, or the script has nothing to resume from and downloads a whole snapshot again.
+
+The script replaces the snapshot, and removes the `deltas/` folder beside it, when the registry is more than
+`MAX_DELTAS` archives behind.
+A snapshot that is newer than the deltas beside it is expected, because the service rebuilds it on its own
+schedule, and the script keeps reading deltas rather than downloading that snapshot again.
+`MAX_DELTAS` defaults to 100, and the service serves at most 20 delta archives per request.
+Set it to `0` to never download a delta, which restores the earlier behavior of replacing the snapshot on
+every run.
+
+The script also creates a lock on the output directory, so if you run it again while the first pass is still writing the data, the script exits rather
 than corrupting the directory.
-When the snapshot on the service matches the one already in the output directory, the script skips the download
-for that registry, so it is safe to run on a schedule.
+When there is nothing newer than what the output directory already holds, the script skips that registry, so it
+is safe to run on a schedule.
 
 Copy each dataset into place with the steps in its own section:
 [license data](#download-v3-license-data) and [malware advisories](#download-gitlab-v3-malware-advisories).
@@ -807,11 +939,8 @@ On GitLab Self-Managed the job adds an offset of up to five minutes to spread lo
 Only the package registry types enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) are imported, so the instance can hold data for registries it never imports.
 
 Repeat this procedure to update the advisories.
-Each run downloads a complete snapshot rather than a set of changes.
 `rsync --delete` is required so that archives from an earlier snapshot are not imported alongside the new ones.
 Reuse the same output directory on every run: `rsync --delete` removes any registry that is missing from it, including registries that were skipped because their snapshot is not published yet.
-
-When the snapshot on the service matches the one already in the output directory, the script skips the download for that registry.
 
 ### Download v3 license data
 
@@ -838,7 +967,7 @@ The v3 license data layout carries Software Package Data Exchange (SPDX) license
 
 The Package Metadata Database distribution service distributes the v3 license data, so you download it on a
 machine with internet access and copy it to the offline instance.
-It downloads only the current snapshot for the registries you have enabled, rather than every format and delta that the license bucket holds.
+It downloads only what the registries you have enabled need, rather than every format that the license bucket holds.
 It does not require `gsutil`.
 Download it with the shared script and its prerequisites, described in
 [Download v3 Package Metadata Database data](#download-v3-package-metadata-database-data):
@@ -881,13 +1010,9 @@ As with the advisories, the job imports only the package registry types enabled 
 can hold data for registries it never imports.
 
 To update the license data, repeat this procedure.
-Each run downloads a complete snapshot rather than a set of changes.
 Publishing replaces the whole `v3` directory, so a registry left out of a later run stops receiving updates.
 The license data already imported for that registry stays in the database, and updates resume the next time you
 include it in a run.
-
-When the snapshot on the service matches the one already in the output directory, the script skips the download
-for that registry, so it is safe to run on a schedule.
 
 ### Automatic synchronization
 
@@ -933,7 +1058,7 @@ re-downloads the whole export whether or not `-d` is present.
 > This behavior applies to the license, advisory, and CVE enrichment exports, which GitLab imports one file
 > at a time.
 > The malware advisory procedure described previously is different.
-> It replaces a complete snapshot on every run, and `rsync --delete` is required there.
+> It mirrors a directory that GitLab reads as a whole, and `rsync --delete` is required there.
 
 ### v3 license data format version
 
@@ -962,22 +1087,36 @@ About the v3 folder structure:
 
 - GitLab organizes data under `v3/<registry>`, where `<registry>` is a name such as `go`, `rubygem`, or
   `packagist`.
-- Each registry folder stores the full dataset for that registry in `full_dataset/`. The full dataset is divided
-  into multiple shards: a `checkpoint.json` with the snapshot timestamp, and one `.tar.zst` archive per shard,
-  named by shard ID, for example `00.tar.zst`:
+- Each registry folder holds a `full_dataset/` folder and, optionally, a `deltas/` folder.
+  `full_dataset/` is a complete snapshot, divided into shards: a `checkpoint.json` with the snapshot timestamp,
+  and one `.tar.zst` archive per shard, named by shard ID, for example `00.tar.zst`.
+  `deltas/` holds incremental changes
+  timestamp that ends its window.
 
   ```plaintext
   $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/checkpoint.json
   $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/00.tar.zst
   $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/01.tar.zst
   $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/full_dataset/...
+  $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/deltas/1757520000.tar.zst
+  $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v3/rubygem/deltas/1757606400.tar.zst
   ```
 
-- A registry folder in the bucket also holds a `deltas/` folder.
-  Do not copy it.
-  An offline instance reads `full_dataset/` only, and every snapshot it downloads is complete.
-  Reading deltas offline, so that a snapshot is downloaded once and later runs fetch only the changes, is tracked in
-  [issue 616703](https://gitlab.com/gitlab-org/gitlab/-/issues/616703).
+- The first synchronization of a registry reads `full_dataset/` and ignores `deltas/`, because a delta cannot
+  stand in for a complete dataset.
+  Later synchronizations read whatever is newer than the checkpoint, oldest first.
+
+  > [!warning]
+  > A delta archive names only the end of its window, so a `deltas/` folder with a gap in it looks the same as a
+  > complete one and GitLab reports no error. Copy the whole `deltas/` folder the download script produces
+  > rather than a selection of archives from it.
+
+- A sync job stops after a fixed duration, so a large registry takes several runs.
+  A snapshot resumes shard by shard, on every sync rather than only the first one, so an interrupted run
+  re-reads at most one shard.
+  A delta archive resumes as a whole, so an interrupted one is re-read from its start on the next run.
+  Sharding large deltas the way snapshots are sharded is tracked in
+  [issue 608196](https://gitlab.com/gitlab-org/gitlab/-/issues/608196).
 
 ### Change note
 
@@ -1138,7 +1277,7 @@ If packages and checkpoints exist but there isn't a license with an expression, 
 Check that the data on disk is under `v3/`.
 
 A snapshot is imported only if it is newer than the recorded checkpoint, so copying the same snapshot a second time has no effect.
-To get newer license data, run the download script again to fetch the current snapshot.
+To get newer license data, run the download script again.
 
 #### Missing malware advisory data
 

@@ -231,7 +231,7 @@ export default {
       return this.pipeline?.commit?.webPath || '';
     },
     commitTitle() {
-      return this.pipeline?.commit?.title || '';
+      return this.pipeline?.commit?.title || this.pipeline?.commitTitle || '';
     },
     totalJobsText() {
       const totalJobs = this.pipeline?.totalJobs || 0;
