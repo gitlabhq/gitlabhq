@@ -90516,6 +90516,12 @@ msgstr ""
 msgid "WorkItems|Your preferences"
 msgstr ""
 
+msgid "WorkItem|\"%{status_name}\" is already in the \"%{category}\" category. A status keeps its category in every lifecycle that uses it. To use a different category, create a status with a different name."
+msgstr ""
+
+msgid "WorkItem|\"%{status_name}\" is already in the \"%{category}\" category. A status that is in use cannot move between open and closed states. To use a different category, create a status with a different name."
+msgstr ""
+
 msgid "WorkItem|%d disabled type"
 msgid_plural "WorkItem|%d disabled types"
 msgstr[0] ""
