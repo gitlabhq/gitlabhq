@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-# Converts `<iframe>` HTML tags (e.g. copy-pasted embed code from YouTube or Figma) into
-# `<img>` tags so they survive sanitization and can be processed by IframeLinkFilter, the
+# Converts <iframe> HTML tags (e.g. copy-pasted embed code from YouTube or Figma) into
+# <img> tags so they survive sanitization and can be processed by IframeLinkFilter, the
 # same as embeds using GitLab's `![]()` embed syntax.
 #
-# This filter runs *before* SanitizationFilter. Without it, `<iframe>`s would be stripped
+# This filter runs *before* SanitizationFilter. Without it, <iframe>s would be stripped
 # entirely by the sanitizer, as we don't really want to ever permit them in HTML output
 # from (and cached by) the backend.
 #
-# The converted `<img>` tags carry through the `src`, `width`, and `height` attributes,
-# are later picked up by IframeLinkFilter which applies URL transforms, checks the allowlist,
-# and on match, adds the `js-render-iframe` class for frontend conversion into actual
-# sandboxed iframes.
+# The converted <img> tags carry through the `src`, `width`, and `height` attributes,
+# are later picked up by IframeLinkFilter which matches them against the provider list
+# and adds the `js-render-iframe` class for frontend conversion into actual sandboxed
+# <iframe>s.
 #
-# If they don't match, they're left as harmless `<img>` tags.
+# If they don't match, they're left as harmless <img> tags.
 module Banzai
   module Filter
     class IframeToImgFilter < HTML::Pipeline::Filter

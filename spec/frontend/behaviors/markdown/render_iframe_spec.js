@@ -1,4 +1,5 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { iframeProviders, YOUTUBE_SANDBOX } from 'helpers/iframe_providers';
 import renderIframes from '~/behaviors/markdown/render_iframe';
 import {
   YOUTUBE_EMBED_URL,
@@ -22,8 +23,7 @@ describe('Embedded iframe renderer', () => {
 
   beforeEach(() => {
     window.gon = {
-      iframe_rendering_enabled: true,
-      iframe_rendering_allowlist: ['www.youtube.com'],
+      iframe_rendering_providers: iframeProviders(),
       features: {
         allowIframesInMarkdown: true,
       },
@@ -44,15 +44,40 @@ describe('Embedded iframe renderer', () => {
     expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)).toHaveLength(1);
   });
 
-  it('does not render an embedded iframe and removes the image when the allowlist has no match', () => {
+  it("applies the provider's sandbox", () => {
     setHTMLFixture(fixtureDefault);
-
-    window.gon.iframe_rendering_allowlist = ['embed.figma.com'];
 
     renderAllIframes();
 
-    expect(findEmbeddedIframes()).toHaveLength(0);
-    expect(document.querySelectorAll('img')).toHaveLength(0);
+    expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)[0].getAttribute('sandbox')).toBe(YOUTUBE_SANDBOX);
+  });
+
+  describe('when the provider is no longer enabled', () => {
+    beforeEach(() => {
+      setHTMLFixture(fixtureDefault);
+      window.gon.iframe_rendering_providers = { figma: iframeProviders().figma };
+    });
+
+    it('does not render an embedded iframe and removes the image', () => {
+      renderAllIframes();
+
+      expect(findEmbeddedIframes()).toHaveLength(0);
+      expect(document.querySelectorAll('img')).toHaveLength(0);
+    });
+  });
+
+  describe("when the src origin does not match the provider's", () => {
+    beforeEach(() => {
+      setHTMLFixture(fixtureDefault);
+      document.querySelector('img').dataset.iframeProviderId = 'figma';
+    });
+
+    it('does not render an embedded iframe and removes the image', () => {
+      renderAllIframes();
+
+      expect(findEmbeddedIframes()).toHaveLength(0);
+      expect(document.querySelectorAll('img')).toHaveLength(0);
+    });
   });
 
   it('does not render an embedded iframe when the feature flag is not enabled for the project or group', () => {
@@ -68,7 +93,7 @@ describe('Embedded iframe renderer', () => {
   it('does not render an embedded iframe when the instance-wide setting is disabled', () => {
     setHTMLFixture(fixtureDefault);
 
-    window.gon.iframe_rendering_enabled = false;
+    window.gon.iframe_rendering_providers = null;
 
     renderAllIframes();
 

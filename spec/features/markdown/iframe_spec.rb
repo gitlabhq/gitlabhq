@@ -16,7 +16,7 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
   end
 
   let(:expected_selector) do
-    'iframe[src="https://iframe.example/some-video"][sandbox]'
+    'iframe[src="https://iframe.example/embed/some-video"][sandbox="allow-scripts"]'
   end
 
   let(:untouched_selector) do
@@ -24,9 +24,20 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
      img[src="https://iframe.example/some-video"]'
   end
 
+  before do
+    stub_iframe_providers(
+      'example' => {
+        'name' => 'Example',
+        'matches' => [{ 'host' => 'iframe.example', 'path' => '/{id}' }],
+        'src' => 'https://iframe.example/embed/{id}',
+        'sandbox' => %w[allow-scripts],
+        'require_activation' => false
+      })
+  end
+
   shared_examples_for 'an iframe renderer' do
     before do
-      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: ['iframe.example'])
+      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
     end
 
     context 'in an issue' do
@@ -97,7 +108,7 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
 
   shared_examples_for 'an iframe renderer in a group' do
     before do
-      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: ['iframe.example'])
+      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
     end
 
     context 'in a group milestone' do

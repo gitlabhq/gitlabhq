@@ -29,4 +29,34 @@ RSpec.describe 'merge request content spec', feature_category: :code_review_work
   describe 'GET cached_widget' do
     it_behaves_like 'cached widget request'
   end
+
+  describe 'GET widget' do
+    subject(:get_widget) { get widget_project_json_merge_request_path(project, merge_request, format: :json) }
+
+    before do
+      MergeRequest.id_in(merge_request.id).update_all(merge_status: 'unchecked')
+    end
+
+    it 'enqueues the mergeability check without writing the merge status' do
+      expect(MergeRequestMergeabilityCheckWorker).to receive(:perform_async).with(merge_request.id).at_least(:once)
+
+      get_widget
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(MergeRequest.find(merge_request.id)).to be_unchecked
+    end
+
+    context 'when the enqueue_widget_mergeability_check feature flag is disabled' do
+      before do
+        stub_feature_flags(enqueue_widget_mergeability_check: false)
+      end
+
+      it 'checks mergeability during the request' do
+        get_widget
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(MergeRequest.find(merge_request.id)).to be_can_be_merged
+      end
+    end
+  end
 end

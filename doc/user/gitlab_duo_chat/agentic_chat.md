@@ -125,7 +125,7 @@ most recent conversation, and that conversation is still active in the Chat draw
 {{< history >}}
 
 - Triggering foundational flows in a GitLab Duo Agentic Chat conversation [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20484) in GitLab 19.2 [with a feature flag](../../administration/feature_flags/_index.md) named `agentic_foundational_flow_tool`. Enabled by default.
-- Generally available in GitLab 19.5. Feature flag `agentic_foundational_flow_tool` removed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/605446) in GitLab 19.5. Feature flag `agentic_foundational_flow_tool` removed.
 
 {{< /history >}}
 
@@ -358,15 +358,20 @@ Prerequisites:
 
 {{< tab title=GitLab.com >}}
 
-- The Owner of the top-level group has not selected a model for the GitLab Duo Agent Platform. If a [model has been selected for the group](../gitlab_duo/model_selection.md), you cannot change the model for Chat.
+- A user with the Owner role for the top-level group has not pinned a model for Agentic Chat.
+  If they [selected a non-default model without restricting Agentic Chat to specific models](../duo_agent_platform/model_selection.md#select-a-model-for-agentic-chat),
+  the model is pinned and cannot be changed.
+  Otherwise, you can choose from the available models.
 - You must be using Chat in the top-level group. You cannot change the model if you access Chat in the organization.
 
 {{< /tab >}}
 
-{{< tab title="Self-managed" >}}
+{{< tab title="GitLab Self-Managed" >}}
 
-- The administrator has not selected a model for the instance. If a model has been selected for the instance,
-  you cannot change the model for Chat.
+- An administrator has not pinned a model for Agentic Chat.
+  If they [selected a non-default model without restricting Agentic Chat to specific models](../../administration/gitlab_duo/model_selection.md#select-a-model-for-agentic-chat),
+  the model is pinned and cannot be changed.
+  Otherwise, you can choose from the available models.
 - Your instance must be connected to the GitLab AI Gateway.
 
 {{< /tab >}}

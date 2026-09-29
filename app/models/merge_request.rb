@@ -1600,6 +1600,16 @@ class MergeRequest < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  # Used by GET requests so that #mergeable? enqueues the mergeability check
+  # instead of writing the merge status during the request.
+  def with_async_mergeability_check
+    previous = @async_mergeability_check
+    @async_mergeability_check = true
+    yield
+  ensure
+    @async_mergeability_check = previous
+  end
+
   def diffable_merge_ref?
     open? && merge_head_diff.present? && can_be_merged?
   end
@@ -1687,7 +1697,7 @@ class MergeRequest < ApplicationRecord
     skip_conflict_check: false, use_cache: true, **mergeable_state_check_params)
     return false unless mergeable_state?(use_cache: use_cache, **mergeable_state_check_params)
 
-    check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
+    check_mergeability(async: !!@async_mergeability_check, sync_retry_lease: check_mergeability_retry_lease)
     mergeable_git_state?(skip_rebase_check: skip_rebase_check, skip_conflict_check: skip_conflict_check, use_cache: use_cache)
   end
 

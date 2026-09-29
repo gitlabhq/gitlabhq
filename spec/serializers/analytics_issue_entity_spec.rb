@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AnalyticsIssueEntity, feature_category: :value_stream_management do
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:entity_hash) do
     {
       total_time: "172802.724419",

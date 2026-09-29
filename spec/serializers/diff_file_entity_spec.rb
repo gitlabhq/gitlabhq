@@ -23,8 +23,8 @@ RSpec.describe DiffFileEntity, feature_category: :code_review_workflow do
 
   context 'when there is a merge request' do
     let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:user) { create(:user) }
 
-    let(:user) { create(:user) }
     let(:code_navigation_path) { Gitlab::CodeNavigationPath.new(project, project.commit.sha) }
     let(:request) { EntityRequest.new(project: project, current_user: user) }
     let(:entity) { described_class.new(diff_file, options.merge(request: request, merge_request: merge_request, code_navigation_path: code_navigation_path)) }

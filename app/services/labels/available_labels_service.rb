@@ -18,7 +18,7 @@ module Labels
       labels = labels.split(',').map(&:strip) if labels.is_a?(String)
       existing_labels = LabelsFinder.new(current_user, finder_params(labels)).execute.index_by(&:title)
 
-      labels.map do |label_name|
+      labels = labels.map do |label_name|
         label = Labels::FindOrCreateService.new(
           current_user,
           parent,
@@ -29,6 +29,9 @@ module Labels
 
         label
       end.compact
+
+      record_assignable_label_ids(labels.filter_map { |label| label.id unless label.archived? })
+      labels
     end
 
     def filter_labels_ids_in_param(key)
@@ -36,9 +39,19 @@ module Labels
       return [] if ids.empty?
 
       # rubocop:disable CodeReuse/ActiveRecord
-      existing_ids = available_labels.id_in(ids).pluck(:id)
+      label_states = available_labels.id_in(ids).pluck(:id, :archived)
       # rubocop:enable CodeReuse/ActiveRecord
+
+      existing_ids = label_states.map(&:first)
+      record_assignable_label_ids(label_states.filter_map { |id, archived| id unless archived })
       ids.map(&:to_i) & existing_ids
+    end
+
+    def filter_assignable_label_ids(ids)
+      # Reuse IDs recorded during the authorized resolution above to avoid
+      # rebuilding the available-label scope for every issuable update.
+      ids = Array.wrap(ids).map(&:to_i)
+      ids & assignable_label_ids
     end
 
     def filter_locked_label_ids(ids)
@@ -50,6 +63,14 @@ module Labels
     end
 
     private
+
+    def record_assignable_label_ids(ids)
+      @assignable_label_ids = assignable_label_ids | ids
+    end
+
+    def assignable_label_ids
+      @assignable_label_ids ||= []
+    end
 
     def finder_params(titles = nil)
       finder_params = { include_ancestor_groups: true }

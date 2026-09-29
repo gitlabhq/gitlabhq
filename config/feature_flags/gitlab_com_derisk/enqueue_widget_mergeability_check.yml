@@ -1,0 +1,10 @@
+---
+name: enqueue_widget_mergeability_check
+description: Enqueue the mergeability check from the merge request widget endpoint instead of running it during the GET request.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628132
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257538
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630708
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

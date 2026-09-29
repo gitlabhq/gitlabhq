@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe DiscussionDiffFileEntity do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff_refs) { commit.diff_refs }
@@ -20,9 +21,10 @@ RSpec.describe DiscussionDiffFileEntity do
   end
 
   context 'when there is a merge request' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
     let(:request) { EntityRequest.new(project: project, current_user: user) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let(:entity) { described_class.new(diff_file, request: request, merge_request: merge_request) }
 
     it_behaves_like 'diff file discussion entity'

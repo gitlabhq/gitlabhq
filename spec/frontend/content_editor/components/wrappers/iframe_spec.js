@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { iframeProviders, YOUTUBE_SANDBOX } from 'helpers/iframe_providers';
 import IframeWrapper from '~/content_editor/components/wrappers/iframe.vue';
 
 describe('content/components/wrappers/iframe', () => {
@@ -12,10 +13,17 @@ describe('content/components/wrappers/iframe', () => {
     run: jest.fn().mockReturnThis(),
   };
 
+  beforeEach(() => {
+    window.gon = {
+      iframe_rendering_providers: iframeProviders(),
+      features: { allowIframesInMarkdown: true },
+    };
+  });
+
   const createWrapper = (attrs = {}, { selected = false } = {}) => {
     wrapper = shallowMountExtended(IframeWrapper, {
       propsData: {
-        node: { attrs },
+        node: { attrs: { providerId: 'youtube', ...attrs } },
         editor: mockEditor,
         getPos: () => 0,
         updateAttributes: jest.fn(),
@@ -33,10 +41,10 @@ describe('content/components/wrappers/iframe', () => {
     expect(findIframe().attributes('src')).toBe('https://www.youtube.com/embed/abc123');
   });
 
-  it('applies sandbox restrictions', () => {
+  it("applies the provider's sandbox restrictions", () => {
     createWrapper({ src: 'https://www.youtube.com/embed/abc123' });
 
-    expect(findIframe().attributes('sandbox')).toBe('allow-scripts allow-popups allow-same-origin');
+    expect(findIframe().attributes('sandbox')).toBe(YOUTUBE_SANDBOX);
   });
 
   it('sets referrerpolicy to strict-origin-when-cross-origin', () => {

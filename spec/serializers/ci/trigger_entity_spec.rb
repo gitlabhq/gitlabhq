@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::TriggerEntity, feature_category: :continuous_integration do
-  let(:project) { create(:project) }
-  let(:trigger) { create(:ci_trigger, project: project, token: '237f3604900a4cd71ed06ef13e57b96d') }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+
+  let(:trigger) { build_stubbed(:ci_trigger, project: project, token: '237f3604900a4cd71ed06ef13e57b96d') }
   let(:entity) { described_class.new(trigger, current_user: user, project: project) }
 
   describe '#as_json' do
@@ -23,7 +24,7 @@ RSpec.describe Ci::TriggerEntity, feature_category: :continuous_integration do
     end
 
     context 'when current user can manage triggers' do
-      before do
+      before_all do
         project.add_maintainer(user)
       end
 
@@ -41,9 +42,12 @@ RSpec.describe Ci::TriggerEntity, feature_category: :continuous_integration do
     end
 
     context 'when current user is the owner of the trigger' do
-      before do
+      let(:trigger) do
+        build_stubbed(:ci_trigger, project: project, owner: user, token: '237f3604900a4cd71ed06ef13e57b96d')
+      end
+
+      before_all do
         project.add_maintainer(user)
-        trigger.update!(owner: user)
       end
 
       it 'returns token as token' do

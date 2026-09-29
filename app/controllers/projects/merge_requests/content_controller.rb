@@ -21,7 +21,7 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
   def widget
     respond_to do |format|
       format.json do
-        render json: serializer(MergeRequestPollWidgetEntity)
+        render json: widget_json
       end
     end
   end
@@ -35,6 +35,14 @@ class Projects::MergeRequests::ContentController < Projects::MergeRequests::Appl
   end
 
   private
+
+  def widget_json
+    unless Feature.enabled?(:enqueue_widget_mergeability_check, merge_request.project)
+      return serializer(MergeRequestPollWidgetEntity)
+    end
+
+    merge_request.with_async_mergeability_check { serializer(MergeRequestPollWidgetEntity) }
+  end
 
   def set_polling_header
     interval = merge_request.open? ? FAST_POLLING_INTERVAL : SLOW_POLLING_INTERVAL

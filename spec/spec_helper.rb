@@ -134,6 +134,7 @@ RSpec.configure do |config|
   config.include NonExistingRecordsHelpers
   config.include GitlabRoutingHelper
   config.include StubGitlabCalls
+  config.include StubIframeProviders
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
   config.include FileReadHelpers

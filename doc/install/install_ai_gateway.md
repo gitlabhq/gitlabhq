@@ -551,14 +551,16 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
      --set "extraEnvironmentVariables[0].value=https://<your_gitlab_domain>" \
      --set "extraEnvironmentVariables[1].name=LITELLM_LOCAL_MODEL_COST_MAP" \
      --set-string "extraEnvironmentVariables[1].value=True" \
+     --set "grpc-tls-proxy.image.repository=<your_internal_registry>/nginx" \
    ```
 
    The chart already sets `DUO_WORKFLOW_AUTH__OIDC_CUSTOMER_PORTAL_URL` to `gitlab.url`.
-   Without internet access, `LITELLM_LOCAL_MODEL_COST_MAP` must be `true`.
+   Without internet access, `LITELLM_LOCAL_MODEL_COST_MAP` must be `True`.
    Otherwise, LiteLLM retries a download from `raw.githubusercontent.com` at startup,
    and the liveness probe restarts the pod before the AI Gateway accepts connections.
 
-   In an offline environment, mirror the TLS proxy's `nginx:alpine` image to your internal registry.
+   Before you run the command, mirror the TLS proxy's `nginx:alpine` image
+   to `<your_internal_registry>/nginx`.
 
 You can find the list of AI Gateway versions that can be used as `image.tag` in the [container registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&search%5B%5D=self-hosted).
 

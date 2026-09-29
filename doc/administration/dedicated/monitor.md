@@ -98,5 +98,7 @@ GitLab Support then completes the S3 event notifications configuration on your S
 
 To automate the AWS setup, you can use the
 [`terraform-log-collection`](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/terraform-log-collection)
-Terraform module. The module creates the notification destination and the read-only IAM role to
-register as a log access ARN. It then outputs the configuration details to include in your support request.
+Terraform module. The module creates the notification destination, attaches the required
+destination policy, and creates a read-only IAM role. You then register the role's ARN as a log
+access ARN in Switchboard. The module also outputs the configuration details to include in your
+support request.

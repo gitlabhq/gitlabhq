@@ -206,23 +206,6 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
     end
   end
 
-  describe '#mergeable' do
-    it 'shows whether a merge request is mergeable' do
-      expect(subject[:mergeable]).to be(true)
-    end
-
-    context 'when merge request is in checking state' do
-      before do
-        resource.mark_as_unchecked!
-        resource.mark_as_checking!
-      end
-
-      it 'calculates mergeability and returns true' do
-        expect(subject[:mergeable]).to be(true)
-      end
-    end
-  end
-
   describe '#jenkins_integration_active' do
     let_it_be_with_reload(:project_with_integration) { create :project, :repository }
     let_it_be_with_reload(:integration) { create(:jenkins_integration, push_events: true, project: project_with_integration) }

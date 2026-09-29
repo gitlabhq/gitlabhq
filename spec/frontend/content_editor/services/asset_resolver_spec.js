@@ -36,14 +36,15 @@ describe('content_editor/services/asset_resolver', () => {
   });
 
   describe('resolveIframeSrc', () => {
-    it('resolves an iframe canonical URL to a transformed src', async () => {
+    it('resolves an iframe canonical URL to a transformed src and its provider', async () => {
       renderMarkdown.mockResolvedValue({
-        body: '<p><span class="media-container img-container"><img class="js-render-iframe" src="https://www.youtube.com/embed/abc" data-iframe-canonical-src="https://www.youtube.com/watch?v=abc"></span></p>',
+        body: '<p><span class="media-container img-container"><img class="js-render-iframe" src="https://www.youtube.com/embed/abc" data-iframe-canonical-src="https://www.youtube.com/watch?v=abc" data-iframe-provider-id="youtube"></span></p>',
       });
 
-      expect(await assetResolver.resolveIframeSrc('https://www.youtube.com/watch?v=abc')).toBe(
-        'https://www.youtube.com/embed/abc',
-      );
+      expect(await assetResolver.resolveIframeSrc('https://www.youtube.com/watch?v=abc')).toEqual({
+        src: 'https://www.youtube.com/embed/abc',
+        providerId: 'youtube',
+      });
     });
 
     it('falls back to the input URL when no iframe element is found', async () => {
@@ -51,17 +52,19 @@ describe('content_editor/services/asset_resolver', () => {
         body: '<p><img src="https://example.com/image.png"></p>',
       });
 
-      expect(await assetResolver.resolveIframeSrc('https://example.com/image.png')).toBe(
-        'https://example.com/image.png',
-      );
+      expect(await assetResolver.resolveIframeSrc('https://example.com/image.png')).toEqual({
+        src: 'https://example.com/image.png',
+        providerId: null,
+      });
     });
 
     it('falls back to the input URL when no HTML is returned', async () => {
       renderMarkdown.mockResolvedValue({});
 
-      expect(await assetResolver.resolveIframeSrc('https://example.com/video')).toBe(
-        'https://example.com/video',
-      );
+      expect(await assetResolver.resolveIframeSrc('https://example.com/video')).toEqual({
+        src: 'https://example.com/video',
+        providerId: null,
+      });
     });
   });
 

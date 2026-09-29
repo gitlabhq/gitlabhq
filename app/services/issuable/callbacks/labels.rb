@@ -41,12 +41,18 @@ module Issuable # rubocop:disable Gitlab/BoundedContexts -- existing module we n
       end
 
       def compute_new_label_ids
-        new_label_ids = params[:label_ids] || issuable.label_ids || []
+        existing_label_ids = issuable.label_ids || []
+        new_label_ids = params[:label_ids] || existing_label_ids
 
         new_label_ids |= params[:add_label_ids] if params[:add_label_ids]
         new_label_ids -= params[:remove_label_ids] if params[:remove_label_ids]
 
-        restore_removed_locked_labels(new_label_ids.uniq)
+        new_label_ids = new_label_ids.uniq
+        candidate_label_ids = new_label_ids - existing_label_ids
+        assignable_label_ids = available_labels_service.filter_assignable_label_ids(candidate_label_ids)
+        new_label_ids &= existing_label_ids | assignable_label_ids
+
+        restore_removed_locked_labels(new_label_ids)
       end
 
       # Restore any locked labels that the user is attempting to remove

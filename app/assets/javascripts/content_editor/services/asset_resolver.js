@@ -18,13 +18,13 @@ export default class AssetResolver {
 
   resolveIframeSrc = memoize(async (canonicalSrc) => {
     const { body: html } = (await this.renderMarkdown(`![image](${canonicalSrc})`)) || {};
-    if (!html) return canonicalSrc;
+    if (!html) return { src: canonicalSrc, providerId: null };
 
     const { body } = parser.parseFromString(html, 'text/html');
     const img = body.querySelector('img.js-render-iframe');
-    if (!img) return canonicalSrc;
+    if (!img) return { src: canonicalSrc, providerId: null };
 
-    return img.getAttribute('src');
+    return { src: img.getAttribute('src'), providerId: img.dataset.iframeProviderId ?? null };
   });
 
   resolveReference = memoize(async (originalText) => {

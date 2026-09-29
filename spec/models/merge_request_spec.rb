@@ -5969,9 +5969,28 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'with check_mergeability_retry_lease option' do
       it 'call check_mergeability with sync_retry_lease' do
         allow(subject).to receive(:mergeable_state?) { true }
-        expect(subject).to receive(:check_mergeability).with(sync_retry_lease: true)
+        expect(subject).to receive(:check_mergeability).with(async: false, sync_retry_lease: true)
 
         subject.mergeable?(check_mergeability_retry_lease: true)
+      end
+    end
+
+    context 'within with_async_mergeability_check' do
+      before do
+        allow(subject).to receive(:mergeable_state?) { true }
+      end
+
+      it 'calls check_mergeability with async' do
+        expect(subject).to receive(:check_mergeability).with(async: true, sync_retry_lease: false)
+
+        subject.with_async_mergeability_check { subject.mergeable? }
+      end
+
+      it 'restores the synchronous check after the block, even when it raises' do
+        expect(subject).to receive(:check_mergeability).with(async: false, sync_retry_lease: false)
+
+        expect { subject.with_async_mergeability_check { raise ArgumentError } }.to raise_error(ArgumentError)
+        subject.mergeable?
       end
     end
 

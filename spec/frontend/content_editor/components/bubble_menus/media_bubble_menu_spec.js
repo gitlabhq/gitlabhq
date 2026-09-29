@@ -3,6 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
+import { iframeProviders } from 'helpers/iframe_providers';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import waitForPromises from 'helpers/wait_for_promises';
 import Audio from '~/content_editor/extensions/audio';
@@ -26,7 +27,7 @@ const TIPTAP_IMAGE_HTML = `<p dir="auto"><img src="https://gitlab.com/favicon.pn
 
 const TIPTAP_VIDEO_HTML = `<p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></video><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span></p>`;
 
-const TIPTAP_IFRAME_HTML = `<p dir="auto"><span class="media-container img-container"><img class="js-render-iframe" src="https://www.youtube.com/embed/abc" data-iframe-canonical-src="https://www.youtube.com/watch?v=abc" data-title="test-video" width="560" height="315"></span></p>`;
+const TIPTAP_IFRAME_HTML = `<p dir="auto"><span class="media-container img-container"><img class="js-render-iframe" src="https://www.youtube.com/embed/abc" data-iframe-canonical-src="https://www.youtube.com/watch?v=abc" data-iframe-provider-id="youtube" data-title="test-video" width="560" height="315"></span></p>`;
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
@@ -264,8 +265,7 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
 
     beforeEach(() => {
       window.gon = {
-        iframe_rendering_enabled: true,
-        iframe_rendering_allowlist: ['www.youtube.com'],
+        iframe_rendering_providers: iframeProviders(),
         features: { allowIframesInMarkdown: true },
       };
 
@@ -286,7 +286,10 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
 
     it('calls resolveIframeSrc when saving an iframe edit, not resolveUrl', async () => {
       contentEditor.resolveUrl.mockResolvedValue('https://www.youtube.com/embed/abc');
-      contentEditor.resolveIframeSrc.mockResolvedValue('https://www.youtube.com/embed/xyz');
+      contentEditor.resolveIframeSrc.mockResolvedValue({
+        src: 'https://www.youtube.com/embed/xyz',
+        providerId: 'youtube',
+      });
 
       buildWrapper();
       await showMenu();
@@ -311,30 +314,61 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
       expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=xyz');
     });
 
-    describe('#security: when the edited URL does not resolve to an allowlisted src', () => {
+    it('adopts the provider the edited URL resolves to', async () => {
+      contentEditor.resolveIframeSrc.mockResolvedValue({
+        src: 'https://embed.figma.com/design/xyz',
+        providerId: 'figma',
+      });
+
+      await editEmbedUrl('https://www.figma.com/design/xyz');
+
+      const { src, providerId } = tiptapEditor.getAttributes('iframe');
+      expect(src).toBe('https://embed.figma.com/design/xyz');
+      expect(providerId).toBe('figma');
+    });
+
+    describe('#security: when the edited URL does not resolve to a src its provider allows', () => {
+      const expectNodeUntouched = () => {
+        const { src, canonicalSrc, providerId } = tiptapEditor.getAttributes('iframe');
+
+        expect(src).toBe('https://www.youtube.com/embed/abc');
+        expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=abc');
+        expect(providerId).toBe('youtube');
+      };
+
       // eslint-disable-next-line no-script-url
       it.each(['javascript:alert(document.domain)', 'https://evil.example.com/embed/abc'])(
         'leaves the node untouched for %s',
         async (url) => {
           contentEditor.resolveUrl.mockResolvedValue(url);
-          contentEditor.resolveIframeSrc.mockResolvedValue(url);
+          contentEditor.resolveIframeSrc.mockResolvedValue({ src: url, providerId: 'youtube' });
 
           await editEmbedUrl(url);
 
-          const { src, canonicalSrc } = tiptapEditor.getAttributes('iframe');
-          expect(src).toBe('https://www.youtube.com/embed/abc');
-          expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=abc');
+          expectNodeUntouched();
         },
       );
 
-      it('leaves the node untouched when an allowlisted URL resolves to a disallowed src', async () => {
-        contentEditor.resolveIframeSrc.mockResolvedValue('https://evil.example.com/embed/xyz');
+      it('leaves the node untouched when the resolved src belongs to no provider', async () => {
+        contentEditor.resolveIframeSrc.mockResolvedValue({
+          src: 'https://evil.example.com/embed/xyz',
+          providerId: null,
+        });
 
         await editEmbedUrl('https://www.youtube.com/watch?v=xyz');
 
-        const { src, canonicalSrc } = tiptapEditor.getAttributes('iframe');
-        expect(src).toBe('https://www.youtube.com/embed/abc');
-        expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=abc');
+        expectNodeUntouched();
+      });
+
+      it("leaves the node untouched when the resolved src belongs to another provider's origin", async () => {
+        contentEditor.resolveIframeSrc.mockResolvedValue({
+          src: 'https://embed.figma.com/design/xyz',
+          providerId: 'youtube',
+        });
+
+        await editEmbedUrl('https://www.figma.com/design/xyz');
+
+        expectNodeUntouched();
       });
     });
   });

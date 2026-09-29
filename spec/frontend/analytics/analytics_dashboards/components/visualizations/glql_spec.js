@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GlqlVisualization from '~/analytics/analytics_dashboards/components/visualizations/glql.vue';
 import PanelState from '~/analytics/shared/components/panel_state.vue';
@@ -18,12 +19,22 @@ jest.mock('~/lib/utils/copy_to_clipboard');
 describe('GlqlVisualization', () => {
   let wrapper;
 
-  const createWrapper = (props = {}, { glFeatures = {}, attachTo } = {}) => {
+  // Panels near the viewport appear as soon as their observer mounts, as they do on screen.
+  const createWrapper = async (props = {}, { attachTo, nearViewport = true } = {}) => {
     wrapper = shallowMountExtended(GlqlVisualization, {
       propsData: props,
-      provide: { glFeatures },
       attachTo,
+      stubs: nearViewport
+        ? {
+            GlIntersectionObserver: stubComponent(GlIntersectionObserver, {
+              mounted() {
+                this.$emit('appear');
+              },
+            }),
+          }
+        : {},
     });
+    await nextTick();
   };
 
   const findResolver = () => wrapper.findComponent(GlqlResolver);
@@ -37,10 +48,10 @@ describe('GlqlVisualization', () => {
   const lastActions = () => wrapper.emitted('set-actions').at(-1)[0];
   const findAction = (text) => lastActions().find((action) => action.text === text);
 
-  it('renders the GLQL resolver', () => {
+  it('renders the GLQL resolver', async () => {
     const glqlQuery = 'type = Issue AND state = opened';
 
-    createWrapper({ data: glqlQuery });
+    await createWrapper({ data: glqlQuery });
 
     expect(findResolver().exists()).toBe(true);
     expect(findResolver().props()).toEqual({
@@ -53,12 +64,9 @@ describe('GlqlVisualization', () => {
     });
   });
 
-  describe('when the deferOffscreenGlqlDashboardPanels feature flag is enabled', () => {
-    beforeEach(() => {
-      createWrapper(
-        { data: 'type = Issue AND state = opened' },
-        { glFeatures: { deferOffscreenGlqlDashboardPanels: true } },
-      );
+  describe('when the panel is offscreen', () => {
+    beforeEach(async () => {
+      await createWrapper({ data: 'type = Issue AND state = opened' }, { nearViewport: false });
     });
 
     it('waits for the panel to near the viewport before mounting the resolver', () => {
@@ -72,16 +80,16 @@ describe('GlqlVisualization', () => {
     describe('when the dashboard scrolls inside a page panel', () => {
       let scrollPanel;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         scrollPanel = document.createElement('div');
         scrollPanel.classList.add('js-static-panel-inner');
         const mountPoint = document.createElement('div');
         scrollPanel.appendChild(mountPoint);
         document.body.appendChild(scrollPanel);
 
-        createWrapper(
+        await createWrapper(
           { data: 'type = Issue AND state = opened' },
-          { glFeatures: { deferOffscreenGlqlDashboardPanels: true }, attachTo: mountPoint },
+          { nearViewport: false, attachTo: mountPoint },
         );
       });
 
@@ -116,23 +124,12 @@ describe('GlqlVisualization', () => {
     });
   });
 
-  describe('when the deferOffscreenGlqlDashboardPanels feature flag is disabled', () => {
-    beforeEach(() => {
-      createWrapper({ data: 'type = Issue AND state = opened' });
-    });
-
-    it('mounts the resolver straight away', () => {
-      expect(findResolver().exists()).toBe(true);
-      expect(findViewportObserver().exists()).toBe(false);
-    });
-  });
-
   // The resolver does not re-query on prop changes, so the panel remounts it instead.
   describe('when the panel changes', () => {
     const query = 'type = Issue AND state = opened';
 
     it('remounts the resolver when the query changes', async () => {
-      createWrapper({ data: query, namespace: 'gitlab-org' });
+      await createWrapper({ data: query, namespace: 'gitlab-org' });
       const original = findResolver().vm;
 
       wrapper.setProps({ data: 'type = Issue AND state = closed' });
@@ -142,7 +139,7 @@ describe('GlqlVisualization', () => {
     });
 
     it('remounts the resolver when the namespace changes', async () => {
-      createWrapper({ data: query, namespace: 'gitlab-org' });
+      await createWrapper({ data: query, namespace: 'gitlab-org' });
       const original = findResolver().vm;
 
       wrapper.setProps({ namespace: 'gitlab-com' });
@@ -152,7 +149,7 @@ describe('GlqlVisualization', () => {
     });
 
     it('remounts the resolver when the scope filters change', async () => {
-      createWrapper({ data: query, filters: { groups: ['gitlab-org'] } });
+      await createWrapper({ data: query, filters: { groups: ['gitlab-org'] } });
       const original = findResolver().vm;
 
       wrapper.setProps({ filters: { groups: ['gitlab-org', 'gitlab-com'] } });
@@ -162,7 +159,7 @@ describe('GlqlVisualization', () => {
     });
 
     it('keeps the same resolver when nothing it depends on changes', async () => {
-      createWrapper({ data: query, namespace: 'gitlab-org' });
+      await createWrapper({ data: query, namespace: 'gitlab-org' });
       const original = findResolver().vm;
 
       wrapper.setProps({ options: { showActions: false } });
@@ -175,8 +172,8 @@ describe('GlqlVisualization', () => {
   describe('comparison', () => {
     const comparisonQuery = 'type = Issue AND created >= "2026-01-01"';
 
-    it("bundles the derived query and the panel's metric for the resolver", () => {
-      createWrapper({
+    it("bundles the derived query and the panel's metric for the resolver", async () => {
+      await createWrapper({
         data: 'type = Issue AND created >= "2026-02-01"',
         options: { comparisonQuery, trendMetric: 'totalCount' },
       });
@@ -187,8 +184,8 @@ describe('GlqlVisualization', () => {
       });
     });
 
-    it('leaves the metric out when the panel selects a single metric', () => {
-      createWrapper({
+    it('leaves the metric out when the panel selects a single metric', async () => {
+      await createWrapper({
         data: 'type = Issue AND created >= "2026-02-01"',
         options: { comparisonQuery },
       });
@@ -201,8 +198,8 @@ describe('GlqlVisualization', () => {
 
     // The data source only derives a query for a panel that asked for trends, so a metric
     // on its own is not a comparison.
-    it('is null without a derived query', () => {
-      createWrapper({
+    it('is null without a derived query', async () => {
+      await createWrapper({
         data: 'type = Issue AND created >= "2026-02-01"',
         options: { trendMetric: 'totalCount' },
       });
@@ -216,26 +213,26 @@ describe('GlqlVisualization', () => {
 
     // Without a namespace the resolver falls back to deriving one from the URL, which is what
     // group and project dashboards already rely on.
-    it('is null when no namespace is given', () => {
-      createWrapper({ data: glqlQuery });
+    it('is null when no namespace is given', async () => {
+      await createWrapper({ data: glqlQuery });
 
       expect(findResolver().props('scope')).toBe(null);
     });
 
-    it('is null when the given namespace is empty', () => {
-      createWrapper({ data: glqlQuery, namespace: '', isProject: false });
+    it('is null when the given namespace is empty', async () => {
+      await createWrapper({ data: glqlQuery, namespace: '', isProject: false });
 
       expect(findResolver().props('scope')).toBe(null);
     });
 
-    it('is a group scope for a group namespace', () => {
-      createWrapper({ data: glqlQuery, namespace: 'gitlab-org', isProject: false });
+    it('is a group scope for a group namespace', async () => {
+      await createWrapper({ data: glqlQuery, namespace: 'gitlab-org', isProject: false });
 
       expect(findResolver().props('scope')).toEqual({ group: 'gitlab-org' });
     });
 
-    it('is a project scope for a project namespace', () => {
-      createWrapper({ data: glqlQuery, namespace: 'gitlab-org/gitlab', isProject: true });
+    it('is a project scope for a project namespace', async () => {
+      await createWrapper({ data: glqlQuery, namespace: 'gitlab-org/gitlab', isProject: true });
 
       expect(findResolver().props('scope')).toEqual({ project: 'gitlab-org/gitlab' });
     });
@@ -244,14 +241,14 @@ describe('GlqlVisualization', () => {
   describe('the scope bindings', () => {
     const glqlQuery = 'type = Issue AND state = opened';
 
-    it('is empty when the dashboard filters name no scope', () => {
-      createWrapper({ data: glqlQuery });
+    it('is empty when the dashboard filters name no scope', async () => {
+      await createWrapper({ data: glqlQuery });
 
       expect(findResolver().props('bindings')).toEqual([]);
     });
 
-    it('binds the selected groups onto the query', () => {
-      createWrapper({ data: glqlQuery, filters: { groups: ['gitlab-org', 'gitlab-com'] } });
+    it('binds the selected groups onto the query', async () => {
+      await createWrapper({ data: glqlQuery, filters: { groups: ['gitlab-org', 'gitlab-com'] } });
 
       expect(findResolver().props('bindings')).toEqual([
         {
@@ -261,8 +258,8 @@ describe('GlqlVisualization', () => {
       ]);
     });
 
-    it('binds groups and projects as separate filters', () => {
-      createWrapper({
+    it('binds groups and projects as separate filters', async () => {
+      await createWrapper({
         data: glqlQuery,
         filters: { groups: ['gitlab-org'], projects: ['gitlab-com/www-gitlab-com'] },
       });
@@ -279,8 +276,11 @@ describe('GlqlVisualization', () => {
       ]);
     });
 
-    it('leaves out a filter the dashboard has nothing selected for', () => {
-      createWrapper({ data: glqlQuery, filters: { groups: [], projects: ['gitlab-org/gitlab'] } });
+    it('leaves out a filter the dashboard has nothing selected for', async () => {
+      await createWrapper({
+        data: glqlQuery,
+        filters: { groups: [], projects: ['gitlab-org/gitlab'] },
+      });
 
       expect(findResolver().props('bindings')).toEqual([
         {
@@ -294,8 +294,8 @@ describe('GlqlVisualization', () => {
   describe('error handling', () => {
     const graphQLError = (extensions) => ({ graphQLErrors: [{ message: 'failed', extensions }] });
 
-    beforeEach(() => {
-      createWrapper({ data: 'type = Issue AND state = opened' });
+    beforeEach(async () => {
+      await createWrapper({ data: 'type = Issue AND state = opened' });
     });
 
     it.each`
@@ -411,8 +411,8 @@ describe('GlqlVisualization', () => {
   });
 
   describe('empty state', () => {
-    beforeEach(() => {
-      createWrapper({ data: 'type = Issue AND state = opened' });
+    beforeEach(async () => {
+      await createWrapper({ data: 'type = Issue AND state = opened' });
     });
 
     it('does not render the empty state before the resolver reports data', () => {
@@ -459,7 +459,7 @@ describe('GlqlVisualization', () => {
     });
 
     it('passes the empty state copy configured on the panel', async () => {
-      createWrapper({
+      await createWrapper({
         data: 'type = Issue AND state = opened',
         options: {
           emptyState: { title: 'No data in this range', description: 'Use Duo to see data here.' },
@@ -491,7 +491,7 @@ describe('GlqlVisualization', () => {
     // The empty state unmounts the resolver, so without this reset the resolver could never run
     // its own scope watcher and the panel would stay empty for the newly selected namespace.
     it('resets the resolver data when the namespace changes', async () => {
-      createWrapper({ data: 'type = Issue AND state = opened', namespace: 'gitlab-org' });
+      await createWrapper({ data: 'type = Issue AND state = opened', namespace: 'gitlab-org' });
 
       findResolver().vm.$emit('change', { data: { nodes: [] } });
       await nextTick();
@@ -506,7 +506,7 @@ describe('GlqlVisualization', () => {
     });
 
     it('resets the resolver data when the scope filters change', async () => {
-      createWrapper({
+      await createWrapper({
         data: 'type = Issue AND state = opened',
         filters: { groups: ['gitlab-org'] },
       });
@@ -524,7 +524,7 @@ describe('GlqlVisualization', () => {
     });
 
     it('keeps the resolver data when only the date range changes', async () => {
-      createWrapper({
+      await createWrapper({
         data: 'type = Issue AND state = opened',
         filters: { groups: ['gitlab-org'], dateRangeOption: '7d' },
       });
@@ -546,7 +546,7 @@ describe('GlqlVisualization', () => {
     const wrappedQuery = `\`\`\`glql\n${glqlQuery}\n\`\`\``;
 
     beforeEach(async () => {
-      createWrapper({ data: glqlQuery });
+      await createWrapper({ data: glqlQuery });
 
       // The resolver reports its state on load, which is when the panel actions
       // are emitted.
@@ -618,7 +618,7 @@ describe('GlqlVisualization', () => {
 
     describe('when the panel opts out with showActions: false', () => {
       const createOptedOutWrapper = async (change) => {
-        createWrapper({ data: glqlQuery, options: { showActions: false } });
+        await createWrapper({ data: glqlQuery, options: { showActions: false } });
 
         findResolver().vm.$emit('change', change);
         await nextTick();
@@ -646,7 +646,7 @@ describe('GlqlVisualization', () => {
     });
 
     it('emits the base set of actions when the panel opts in with showActions: true', async () => {
-      createWrapper({ data: glqlQuery, options: { showActions: true } });
+      await createWrapper({ data: glqlQuery, options: { showActions: true } });
 
       findResolver().vm.$emit('change', { data: undefined });
       await nextTick();
@@ -663,7 +663,7 @@ describe('GlqlVisualization', () => {
     const glqlQuery = 'type = Issue AND state = opened';
 
     beforeEach(async () => {
-      createWrapper({ data: glqlQuery });
+      await createWrapper({ data: glqlQuery });
 
       // The resolver reports its state on load, which is when the panel actions
       // (including "View source") are emitted.

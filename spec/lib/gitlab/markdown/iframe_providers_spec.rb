@@ -89,6 +89,26 @@ RSpec.describe Gitlab::Markdown::IframeProviders, feature_category: :markdown do
     end
   end
 
+  describe '.frontend_config' do
+    it 'exposes the enabled providers keyed by ID with the fields the frontend needs' do
+      stub_application_setting(iframe_rendering_allowlist: %w[youtube])
+
+      expect(described_class.frontend_config).to eq(
+        'youtube' => {
+          src_origin: 'https://www.youtube.com',
+          sandbox: 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox',
+          require_activation: false
+        }
+      )
+    end
+
+    it 'is empty when no providers are enabled' do
+      stub_application_setting(iframe_rendering_allowlist: [])
+
+      expect(described_class.frontend_config).to eq({})
+    end
+  end
+
   describe '.match' do
     context 'with YouTube URLs' do
       it 'transforms a watch URL to an embed URL' do

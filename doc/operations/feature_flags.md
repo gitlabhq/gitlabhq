@@ -410,7 +410,13 @@ else
 end
 ```
 
-### Unleash Proxy example
+<!--- start_remove The following content will be removed on remove_date: '2026-11-26' -->
+
+### Unleash Proxy example (deprecated)
+
+> [!warning]
+> Unleash Proxy was [deprecated](https://github.com/Unleash/unleash-proxy/blob/main/README.md) on 2023-09-06.
+> EOL is scheduled for 2026-11-26.
 
 As of [Unleash Proxy](https://docs.getunleash.io/reference/unleash-proxy) version
 0.2, the proxy is compatible with feature flags.
@@ -441,6 +447,8 @@ docker run \
 
 There is a limitation when using the Unleash Proxy where each proxy instance can request flags only for the environment named in `UNLEASH_APP_NAME`. The Proxy sends
 this to GitLab on behalf of the client, which means the client can't override it.
+
+<!--- end_remove -->
 
 ## Feature flag related issues
 
@@ -474,12 +482,7 @@ The polling rate is configurable in SDKs. Provided that all clients are requesti
 - At one request per minute, supports approximately 500 clients (8 RPS).
 - At one request per 15 sec, supports approximately 125 clients.
 
-For applications looking for a more scalable solution, you should use [Unleash Proxy](#unleash-proxy-example).
-On GitLab.com, you should use Unleash Proxy to reduce the chance of being rate limited across endpoints.
-This proxy server sits between the server and clients. It makes requests to the server on behalf of the client groups,
-so the number of outbound requests can be greatly reduced. If you still get `429` responses, increase the `UNLEASH_FETCH_INTERVAL` value in the Unleash Proxy.
-
-There is also an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
+There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
 capacity to the current rate limit.
 
 ### Recovering from network errors

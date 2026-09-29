@@ -63,8 +63,9 @@ RSpec.describe UserPresenter do
   end
 
   describe '#saved_replies' do
-    let_it_be(:other_user) { create(:user) }
     let_it_be(:saved_reply) { create(:saved_reply, user: user) }
+
+    let(:other_user) { build_stubbed(:user) }
 
     context 'when user has no permission to read saved replies' do
       let(:current_user) { other_user }

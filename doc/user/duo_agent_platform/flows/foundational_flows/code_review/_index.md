@@ -72,7 +72,7 @@ The Code Review Flow is available in the GitLab UI and through the REST API.
 {{< history >}}
 
 - Using a flow in a GitLab Duo Agentic Chat conversation [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20484) in GitLab 19.2 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `agentic_foundational_flow_tool`. Enabled by default.
-- Generally available in GitLab 19.5. Feature flag `agentic_foundational_flow_tool` removed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/605446) in GitLab 19.5. Feature flag `agentic_foundational_flow_tool` removed.
 
 {{< /history >}}
 

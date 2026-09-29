@@ -27,9 +27,7 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
   let(:height) { nil }
 
   before do
-    allow(Gitlab::CurrentSettings).to receive_messages(
-      iframe_rendering_enabled?: true,
-      iframe_rendering_allowlist: ["www.youtube.com"])
+    stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[youtube])
   end
 
   shared_examples 'an iframe element' do
@@ -44,7 +42,10 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
       iframe = container.children.first
 
       expect(iframe.name).to eq 'img'
+      expect(iframe['class']).to eq 'js-render-iframe'
       expect(iframe['src']).to eq src
+      expect(iframe['data-iframe-canonical-src']).to eq src
+      expect(iframe['data-iframe-provider-id']).to eq 'youtube'
       expect(iframe['height']).to eq height if height
       expect(iframe['width']).to eq width if width
     end
@@ -88,65 +89,53 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
     it_behaves_like 'an unchanged element'
   end
 
-  context 'when the element src does not match a domain' do
+  context 'when the element src does not match any provider' do
     let(:src) { 'https://path/my_image.jpg' }
 
     it_behaves_like 'an unchanged element'
   end
 
-  context 'when the element src matches a URL transform rule' do
-    it 'transforms a YouTube watch URL and matches the allowlist' do
-      image = link_to_image('https://www.youtube.com/watch?v=foo')
-      container = filter(image).children.first
+  context 'when the element src is on a provider host but does not match its rules' do
+    let(:src) { 'https://www.youtube.com/account' }
 
-      expect(container.name).to eq 'span'
-      expect(container['class']).to eq 'media-container img-container'
+    it_behaves_like 'an unchanged element'
+  end
 
-      iframe = container.children.first
-      expect(iframe.name).to eq 'img'
-      expect(iframe['src']).to eq 'https://www.youtube.com/embed/foo'
-      expect(iframe['data-iframe-canonical-src']).to eq 'https://www.youtube.com/watch?v=foo'
-    end
-
-    it 'transforms a YouTube short URL and matches the allowlist' do
+  context 'when the element src matches a provider rule that rewrites it' do
+    it 'rewrites the src and records the original and the provider' do
       image = link_to_image('https://youtu.be/foo')
-      container = filter(image).children.first
+      iframe = filter(image).children.first.children.first
 
-      expect(container['class']).to eq 'media-container img-container'
-
-      iframe = container.children.first
+      expect(iframe['class']).to eq 'js-render-iframe'
       expect(iframe['src']).to eq 'https://www.youtube.com/embed/foo'
       expect(iframe['data-iframe-canonical-src']).to eq 'https://youtu.be/foo'
+      expect(iframe['data-iframe-provider-id']).to eq 'youtube'
+    end
+  end
+
+  context 'when the matching provider is not enabled' do
+    let(:src) { 'https://www.figma.com/design/abc123' }
+
+    it_behaves_like 'an unchanged element'
+  end
+
+  context 'when the document contains several images' do
+    it 'only converts those matching an enabled provider' do
+      doc = filter(link_to_image('https://youtu.be/foo') + link_to_image('https://path/my_image.jpg'))
+
+      expect(doc.css('img.js-render-iframe').map { |img| img['src'] }).to eq(%w[https://www.youtube.com/embed/foo])
+      expect(doc.css('img:not(.js-render-iframe)').map { |img| img['src'] }).to eq(%w[https://path/my_image.jpg])
+    end
+  end
+
+  context 'when iframe rendering is disabled' do
+    before do
+      stub_application_setting(iframe_rendering_enabled: false)
     end
 
-    it 'transforms a Figma view URL and matches the allowlist' do
-      allow(Gitlab::CurrentSettings).to receive(:iframe_rendering_allowlist)
-        .and_return(["embed.figma.com"])
+    let(:src) { 'https://www.youtube.com/embed/foo' }
 
-      image = link_to_image('https://www.figma.com/design/abc123/My-Design')
-      container = filter(image).children.first
-
-      expect(container['class']).to eq 'media-container img-container'
-
-      iframe = container.children.first
-      expect(iframe['src']).to eq 'https://embed.figma.com/design/abc123?embed-host=gitlab'
-      expect(iframe['data-iframe-canonical-src']).to eq 'https://www.figma.com/design/abc123/My-Design'
-    end
-
-    it 'does not set data-iframe-canonical-src when no transform is applied' do
-      image = link_to_image('https://www.youtube.com/embed/foo')
-      container = filter(image).children.first
-      iframe = container.children.first
-
-      expect(iframe['data-iframe-canonical-src']).to be_nil
-    end
-
-    it 'leaves the element unchanged when the transformed URL does not match the allowlist' do
-      image = link_to_image('https://www.figma.com/design/abc123')
-      element = filter(image).children.first
-
-      expect(element.name).to eq 'img'
-    end
+    it_behaves_like 'an unchanged element'
   end
 
   context 'when allow_iframes_in_markdown is disabled' do
@@ -191,5 +180,18 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
 
   it_behaves_like 'pipeline timing check' do
     let(:context) { { project: } }
+  end
+
+  context 'when the pipeline has exceeded its maximum time' do
+    it 'leaves matching elements untouched' do
+      src = 'https://youtu.be/foo'
+      instance = described_class.new(link_to_image(src), { project: project })
+      allow(instance).to receive(:exceeded_pipeline_max?).and_return(true)
+
+      element = instance.call.children.first
+
+      expect(element.name).to eq 'img'
+      expect(element.attributes.transform_values(&:value)).to eq('src' => src)
+    end
   end
 end

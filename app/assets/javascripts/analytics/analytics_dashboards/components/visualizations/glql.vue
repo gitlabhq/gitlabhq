@@ -4,7 +4,6 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getPanelElement } from '~/lib/utils/panels';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { EXECUTION_QUEUE_DASHBOARD } from '~/glql/constants';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import ViewSourceModal from '~/glql/components/common/view_source_modal.vue';
@@ -56,7 +55,6 @@ export default {
     PanelState,
     ViewSourceModal,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     data: {
       type: String,
@@ -100,7 +98,7 @@ export default {
     // Panels mount all at once, so without this every panel on the view queues its queries
     // before the ones on screen can finish.
     waitingForViewport() {
-      return Boolean(this.glFeatures.deferOffscreenGlqlDashboardPanels) && !this.nearViewport;
+      return !this.nearViewport;
     },
     showEmptyState() {
       return this.resolverResult?.data?.nodes?.length === 0;

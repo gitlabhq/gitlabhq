@@ -79,6 +79,49 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       end
     end
 
+    context 'when iframe rendering is enabled' do
+      before do
+        stub_iframe_providers(
+          'example' => {
+            'name' => 'Example',
+            'matches' => [{ 'host' => 'example.com', 'path' => '/{id}' }],
+            'src' => 'https://embed.example.com/{id}',
+            'sandbox' => %w[allow-scripts allow-popups]
+          },
+          'other' => {
+            'name' => 'Other',
+            'matches' => [{ 'host' => 'other.example.com', 'path' => '/{id}' }],
+            'src' => 'https://other.example.com/embed/{id}',
+            'sandbox' => []
+          })
+        stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
+      end
+
+      it 'exposes the enabled providers' do
+        expect(gon).to receive(:iframe_rendering_providers=).with({
+          'example' => {
+            src_origin: 'https://embed.example.com',
+            sandbox: 'allow-scripts allow-popups',
+            require_activation: true
+          }
+        })
+
+        helper.add_gon_variables
+      end
+    end
+
+    context 'when iframe rendering is disabled' do
+      before do
+        stub_application_setting(iframe_rendering_enabled: false, iframe_rendering_allowlist: %w[youtube])
+      end
+
+      it 'does not expose any providers' do
+        expect(gon).not_to receive(:iframe_rendering_providers=)
+
+        helper.add_gon_variables
+      end
+    end
+
     context 'when current_organization is set', :with_current_organization do
       subject(:add_gon_variables) { helper.add_gon_variables }
 

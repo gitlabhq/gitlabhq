@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe DiffsMetadataEntity, feature_category: :code_review_workflow do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+
   let(:request) { EntityRequest.new(project: project, current_user: user) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.last }
   let(:options) { {} }

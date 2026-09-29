@@ -324,6 +324,78 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
 
+    it 'does not add an archived label', :aggregate_failures do
+      archived_label = create(:label, :archived, project: project)
+
+      expect do
+        put api_for_user, params: { add_labels: archived_label.title }
+      end.to not_change { project.labels.count }
+        .and not_change { issue.resource_label_events.count }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['labels']).to contain_exactly(label.title)
+      expect(issue.reload.labels).to contain_exactly(label)
+    end
+
+    it 'does not add an archived label when replacing labels', :aggregate_failures do
+      archived_label = create(:label, :archived, project: project)
+
+      put api_for_user, params: { labels: [label.title, archived_label.title].join(',') }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['labels']).to contain_exactly(label.title)
+      expect(issue.reload.labels).to contain_exactly(label)
+    end
+
+    it 'preserves an existing archived label when adding an active label', :aggregate_failures do
+      archived_label = create(:label, :archived, project: project)
+      active_label = create(:label, project: project)
+      create(:label_link, label: archived_label, target: issue)
+
+      put api_for_user, params: { add_labels: active_label.title }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['labels']).to contain_exactly(label.title, archived_label.title, active_label.title)
+      expect(issue.reload.labels).to contain_exactly(label, archived_label, active_label)
+    end
+
+    it 'preserves an existing archived label included when replacing labels', :aggregate_failures do
+      archived_label = create(:label, :archived, project: project)
+      create(:label_link, label: archived_label, target: issue)
+
+      put api_for_user, params: { labels: [label.title, archived_label.title].join(',') }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['labels']).to contain_exactly(label.title, archived_label.title)
+      expect(issue.reload.labels).to contain_exactly(label, archived_label)
+    end
+
+    it 'removes an existing archived label', :aggregate_failures do
+      archived_label = create(:label, :archived, project: project)
+      create(:label_link, label: archived_label, target: issue)
+
+      put api_for_user, params: { remove_labels: archived_label.title }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['labels']).to contain_exactly(label.title)
+      expect(issue.reload.labels).to contain_exactly(label)
+    end
+
+    it 'adds an active inherited group label but not an archived one', :aggregate_failures do
+      group = create(:group)
+      group_project = create(:project, :public, group: group, reporters: user)
+      group_issue = create(:issue, project: group_project)
+      group_label = create(:group_label, group: group)
+      archived_group_label = create(:group_label, :archived, group: group)
+
+      put api("/projects/#{group_project.id}/issues/#{group_issue.iid}", user),
+        params: { add_labels: [group_label.title, archived_group_label.title].join(',') }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['labels']).to contain_exactly(group_label.title)
+      expect(group_issue.reload.labels).to contain_exactly(group_label)
+    end
+
     context 'removes' do
       let_it_be(:label2) { create(:label, title: 'a-label', project: project) }
       let!(:label_link2) { create(:label_link, label: label2, target: issue) }

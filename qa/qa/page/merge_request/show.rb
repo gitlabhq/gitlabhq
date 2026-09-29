@@ -650,7 +650,11 @@ module QA
         end
 
         def cherry_pick!
-          click_element('cherry-pick-button', Page::Component::CommitModal)
+          # reload page since the cherry-pick button can render after the merged status text
+          # https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37617 (transient issue)
+          retry_on_exception(reload: true, sleep_interval: 2, message: "Retry cherry-pick button click") do
+            click_element('cherry-pick-button', Page::Component::CommitModal)
+          end
           submit_commit
         end
 

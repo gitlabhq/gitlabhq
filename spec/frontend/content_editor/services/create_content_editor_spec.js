@@ -1,6 +1,7 @@
 import * as Y from 'yjs';
 import { DOMSerializer } from '@tiptap/pm/model';
 import { Awareness } from 'y-protocols/awareness';
+import { iframeProviders } from 'helpers/iframe_providers';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '~/content_editor/constants';
 import { createContentEditor } from '~/content_editor/services/create_content_editor';
 import AssetResolver from '~/content_editor/services/asset_resolver';
@@ -148,7 +149,7 @@ describe('content_editor/services/create_content_editor', () => {
     describe('when iframe rendering is enabled and the feature flag is on', () => {
       beforeEach(() => {
         window.gon = {
-          iframe_rendering_enabled: true,
+          iframe_rendering_providers: iframeProviders(),
           features: { allowIframesInMarkdown: true },
         };
       });
@@ -161,7 +162,7 @@ describe('content_editor/services/create_content_editor', () => {
     describe('when iframe rendering is disabled', () => {
       beforeEach(() => {
         window.gon = {
-          iframe_rendering_enabled: false,
+          iframe_rendering_providers: null,
           features: { allowIframesInMarkdown: true },
         };
       });
@@ -174,7 +175,7 @@ describe('content_editor/services/create_content_editor', () => {
     describe('when the feature flag is off', () => {
       beforeEach(() => {
         window.gon = {
-          iframe_rendering_enabled: true,
+          iframe_rendering_providers: iframeProviders(),
           features: { allowIframesInMarkdown: false },
         };
       });
@@ -186,7 +187,7 @@ describe('content_editor/services/create_content_editor', () => {
 
     describe('when the page pushes no feature flags', () => {
       beforeEach(() => {
-        window.gon = { iframe_rendering_enabled: true };
+        window.gon = { iframe_rendering_providers: iframeProviders() };
       });
 
       it('is not loaded', () => {

@@ -48,6 +48,16 @@ module Gitlab
           known_providers.select { |provider| allowlist.include?(provider.id) }
         end
 
+        def frontend_config
+          enabled_providers.to_h do |provider|
+            [provider.id, {
+              src_origin: provider.src_origin,
+              sandbox: provider.sandbox.join(' '),
+              require_activation: provider.require_activation
+            }]
+          end
+        end
+
         def reset!
           @known_providers = nil
         end

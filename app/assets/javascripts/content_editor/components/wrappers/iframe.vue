@@ -1,6 +1,6 @@
 <script>
 import { NodeViewWrapper } from '@tiptap/vue-2';
-import { IFRAME_SANDBOX_RESTRICTIONS } from '~/behaviors/markdown/render_iframe';
+import { iframeProviderFor } from '~/behaviors/markdown/render_iframe';
 import mediaResize from './media_resize';
 
 export default {
@@ -9,13 +9,15 @@ export default {
     NodeViewWrapper,
   },
   mixins: [mediaResize('iframe')],
-  iframeSandbox: IFRAME_SANDBOX_RESTRICTIONS,
   data() {
     return {
       interactiveMode: false,
     };
   },
   computed: {
+    sandbox() {
+      return iframeProviderFor(this.node.attrs.src, this.node.attrs.providerId).sandbox;
+    },
     hasExplicitDimensions() {
       return this.resizeWidth !== 'auto' || this.resizeHeight !== 'auto';
     },
@@ -109,7 +111,7 @@ export default {
     <iframe
       ref="iframe"
       :src="node.attrs.src"
-      :sandbox="$options.iframeSandbox"
+      :sandbox="sandbox"
       allowfullscreen="true"
       referrerpolicy="strict-origin-when-cross-origin"
       :width="resizeWidth"

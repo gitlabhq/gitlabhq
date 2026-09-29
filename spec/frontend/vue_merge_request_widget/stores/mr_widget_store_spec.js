@@ -169,6 +169,20 @@ describe('MergeRequestStore', () => {
     });
   });
 
+  describe('isMergeAllowed', () => {
+    it('is true when the detailed merge status is MERGEABLE', () => {
+      store.setGraphqlSubscriptionData({ detailedMergeStatus: 'MERGEABLE' });
+
+      expect(store.isMergeAllowed).toBe(true);
+    });
+
+    it('is false when the detailed merge status is not MERGEABLE', () => {
+      store.setGraphqlSubscriptionData({ detailedMergeStatus: 'UNCHECKED' });
+
+      expect(store.isMergeAllowed).toBe(false);
+    });
+  });
+
   describe('buildMetrics', () => {
     it('returns empty object when metrics is undefined', () => {
       expect(MergeRequestStore.buildMetrics(undefined)).toEqual({});

@@ -1,31 +1,36 @@
 import { setAttributes } from '~/lib/utils/dom_utils';
 
-// https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe#sandbox
-export const IFRAME_SANDBOX_RESTRICTIONS = 'allow-scripts allow-popups allow-same-origin';
-
 export const iframeRenderingEnabled = () =>
-  Boolean(window.gon?.iframe_rendering_enabled && window.gon?.features?.allowIframesInMarkdown);
+  Boolean(window.gon?.iframe_rendering_providers && window.gon?.features?.allowIframesInMarkdown);
 
-export const isIframeSrcAllowed = (src) => {
-  if (!iframeRenderingEnabled()) return false;
-
-  let srcUrl;
+const originOf = (src) => {
   try {
-    srcUrl = new URL(src, window.location.origin);
+    return new URL(src, window.location.origin).origin;
   } catch {
-    return false;
+    return null;
   }
-
-  const allowlist = window.gon?.iframe_rendering_allowlist ?? [];
-  return allowlist.some((domain) => new URL(`https://${domain}`).origin === srcUrl.origin);
 };
+
+export const iframeProviderFor = (src, providerId) => {
+  if (!iframeRenderingEnabled()) return null;
+
+  const providers = window.gon.iframe_rendering_providers;
+  if (!Object.prototype.hasOwnProperty.call(providers, providerId)) return null;
+
+  const provider = providers[providerId];
+
+  return provider.src_origin === originOf(src) ? provider : null;
+};
+
+export const isIframeSrcAllowed = (src, providerId) => Boolean(iframeProviderFor(src, providerId));
 
 const elsProcessingMap = new WeakMap();
 
 function renderIframeEl(el) {
   const { src } = el;
 
-  if (!isIframeSrcAllowed(src)) {
+  const provider = iframeProviderFor(src, el.dataset.iframeProviderId);
+  if (!provider) {
     // This URL passed the allowlist at the time the Markdown content was
     // created/last updated, but no longer does. We must remove the node
     // entirely: if this instance uses the asset proxy, allowing it to remain in
@@ -43,7 +48,7 @@ function renderIframeEl(el) {
   setAttributes(iframeEl, {
     src,
     class: 'gl-border-none',
-    sandbox: IFRAME_SANDBOX_RESTRICTIONS,
+    sandbox: provider.sandbox,
     allowfullscreen: 'true',
     referrerpolicy: 'strict-origin-when-cross-origin',
   });

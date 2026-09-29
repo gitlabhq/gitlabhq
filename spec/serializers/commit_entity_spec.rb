@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe CommitEntity do
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:entity) do
     described_class.new(commit, request: request)
   end
 
   let(:request) { double('request') }
-  let(:project) { create(:project, :repository) }
   let(:commit) { project.commit }
 
   subject { entity.as_json }

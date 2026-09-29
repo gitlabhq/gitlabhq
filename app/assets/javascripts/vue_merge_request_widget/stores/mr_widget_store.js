@@ -12,6 +12,7 @@ import { badgeState } from '~/merge_requests/badge_state';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_STAGE } from '~/graphql_shared/constants';
 import {
+  DETAILED_MERGE_STATUS,
   MT_MERGE_STRATEGY,
   MWCP_MERGE_STRATEGY,
   MTWCP_MERGE_STRATEGY,
@@ -136,7 +137,6 @@ export default class MergeRequestStore {
     this.mergeRequestState = data.state;
     this.isOpen = this.mergeRequestState === STATUS_OPEN;
     this.latestSHA = data.diff_head_sha;
-    this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
     this.allowCollaboration = data.allow_collaboration;
     this.sourceProjectId = data.source_project_id;
@@ -363,6 +363,10 @@ export default class MergeRequestStore {
 
   get isMergedState() {
     return this.state === stateKey.merged;
+  }
+
+  get isMergeAllowed() {
+    return this.detailedMergeStatus === DETAILED_MERGE_STATUS.MERGEABLE;
   }
 
   static buildMetrics(metrics) {

@@ -113,6 +113,43 @@ RSpec.describe Labels::AvailableLabelsService, feature_category: :team_planning 
     end
   end
 
+  describe '#filter_assignable_label_ids' do
+    let(:archived_project_label) { create(:label, :archived, project: project) }
+    let(:archived_group_label) { create(:group_label, :archived, group: group) }
+
+    it 'returns active project and inherited group label ids resolved from IDs without another query' do
+      label_ids = [archived_project_label.id, group_label.id, archived_group_label.id, project_label.id]
+      service = described_class.new(user, project, ids: label_ids)
+      resolved_ids = service.filter_labels_ids_in_param(:ids)
+      result = nil
+
+      expect do
+        result = service.filter_assignable_label_ids(resolved_ids)
+      end.not_to make_queries
+
+      expect(result).to match_array([group_label.id, project_label.id])
+    end
+
+    it 'returns active project and inherited group label ids resolved from titles without another query' do
+      label_titles = [archived_project_label.title, group_label.title, archived_group_label.title, project_label.title]
+      service = described_class.new(user, project, labels: label_titles)
+      resolved_ids = service.find_or_create_by_titles.map(&:id)
+      result = nil
+
+      expect do
+        result = service.filter_assignable_label_ids(resolved_ids)
+      end.not_to make_queries
+
+      expect(result).to match_array([group_label.id, project_label.id])
+    end
+
+    it 'does not query when no ids are provided' do
+      expect do
+        described_class.new(user, project, {}).filter_assignable_label_ids([])
+      end.not_to make_queries
+    end
+  end
+
   describe '#filter_locked_label_ids' do
     let(:label_ids) { labels.map(&:id) }
 

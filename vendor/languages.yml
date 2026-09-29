@@ -1,4 +1,6 @@
-# Defines all languages known to GitHub.
+# Defines all languages known to GitLab. Originally forked from GitHub Linguist
+# (https://github.com/github/linguist), now maintained directly in this
+# repository and updated as needed.
 #
 # Required fields:
 #    type                  - Either "data", "programming", "markup" or "prose".

@@ -8,7 +8,9 @@ export const fixtureDefault = `
     <span class="media-container img-container">
       <img src="${YOUTUBE_EMBED_URL}"
            controls="true" data-setup="{}" data-title="YouTube embed"
-           class="js-render-iframe">
+           class="js-render-iframe"
+           data-iframe-canonical-src="${YOUTUBE_EMBED_URL}"
+           data-iframe-provider-id="youtube">
     </span>
   </p>
 `;
@@ -19,6 +21,8 @@ export const fixtureWithDimensions = `
       <img src="${YOUTUBE_EMBED_URL}"
            controls="true" data-setup="{}" data-title="YouTube embed"
            class="js-render-iframe"
+           data-iframe-canonical-src="${YOUTUBE_EMBED_URL}"
+           data-iframe-provider-id="youtube"
            width="560" height="315">
     </span>
   </p>
@@ -30,6 +34,8 @@ export const fixtureWithWidthOnly = `
       <img src="${YOUTUBE_EMBED_URL}"
            controls="true" data-setup="{}" data-title="YouTube embed"
            class="js-render-iframe"
+           data-iframe-canonical-src="${YOUTUBE_EMBED_URL}"
+           data-iframe-provider-id="youtube"
            width="560">
     </span>
   </p>
