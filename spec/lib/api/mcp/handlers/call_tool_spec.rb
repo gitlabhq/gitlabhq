@@ -17,6 +17,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
     before do
       allow(request).to receive(:[]).with(:id).and_return('1')
+      allow(manager).to receive(:resolve_alias) { |name| name }
       allow(Gitlab::Mcp::Logger).to receive(:build).and_return(logger)
       allow(logger).to receive(:conditional_info)
     end
@@ -58,6 +59,31 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
           current_user, hash_excluding(::Labkit::Fields::ERROR_TYPE)
         )
       end
+
+      it 'does not add canonical_tool_name for a canonical call' do
+        handler.invoke(request, params, current_user)
+
+        expect(logger).to have_received(:conditional_info).with(
+          current_user, hash_excluding(:canonical_tool_name)
+        )
+      end
+
+      context 'when the tool is called by an alias' do
+        let(:tool_name) { 'legacy_tool' }
+
+        before do
+          allow(manager).to receive(:resolve_alias).with('legacy_tool').and_return('test_tool')
+        end
+
+        it 'logs the name as sent alongside the canonical name' do
+          handler.invoke(request, params, current_user)
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(tool_name: 'legacy_tool', canonical_tool_name: 'test_tool')
+          )
+        end
+      end
     end
 
     context 'when the tool raises during execution' do
@@ -80,6 +106,23 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
             expanded: hash_including(::Labkit::Fields::ERROR_MESSAGE => 'boom')
           )
         )
+      end
+
+      context 'when the tool is called by an alias' do
+        let(:tool_name) { 'legacy_tool' }
+
+        before do
+          allow(manager).to receive(:resolve_alias).with('legacy_tool').and_return('test_tool')
+        end
+
+        it 'records both the name as sent and the canonical name' do
+          expect { handler.invoke(request, params, current_user) }.to raise_error(StandardError, 'boom')
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user,
+            hash_including(tool_name: 'legacy_tool', canonical_tool_name: 'test_tool')
+          )
+        end
       end
     end
 

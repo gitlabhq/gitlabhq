@@ -204,7 +204,13 @@ describe('Shortcuts', () => {
       });
 
       it('prefils current path from breadcrumbs', async () => {
-        setHTMLFixture('<div class="js-repo-breadcrumbs" data-current-path="files/test"></div>');
+        setHTMLFixture(`
+          <div class="js-repo-breadcrumbs">
+            <nav class="gl-breadcrumbs">
+              <ol class="gl-breadcrumb-list" data-current-path="files/test"></ol>
+            </nav>
+          </div>
+        `);
 
         event = new KeyboardEvent('keydown', { cancelable: true });
         await Shortcuts.focusSearchFile(event);

@@ -330,6 +330,16 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'stashes request_channel: :ui for the created import state', :request_store do
+      allow(Gitlab::BitbucketImport::ProjectCreator)
+        .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params)
+        .and_return(double(execute: project))
+
+      post :create, format: :json
+
+      expect(Gitlab::Import::RequestChannel.stashed).to eq(:ui)
+    end
+
     it 'returns 422 response when the project could not be imported' do
       allow(Gitlab::BitbucketImport::ProjectCreator)
         .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params)

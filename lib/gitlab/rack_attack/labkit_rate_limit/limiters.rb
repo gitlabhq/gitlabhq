@@ -10,10 +10,11 @@ module Gitlab
       #   rack_request_protected_paths - the protected-path throttles, which
       #                                  overlap general ones and so need their
       #                                  own counters
+      #   rack_request_mcp             - the MCP throttle, which overlaps the
+      #                                  general API one
       #
-      # (EE adds a third limiter for the incident-management throttle, which
-      # likewise overlaps the general web throttle.) The limiters are built straight
-      # from the registry, so an added limiter needs no change here.
+      # The limiters are built straight from the registry, so an added limiter needs
+      # no change here.
       #
       # Every rule is always built, regardless of cohort: cohort gates enforcement
       # (whether a matched block becomes a 429, decided in the middleware), not

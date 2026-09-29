@@ -34,9 +34,9 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
 
   # Sum labkit's counters for a rule across whatever discriminator value the
   # request produced, so the assertion need not know the request IP or user id.
-  def labkit_count_for(rule)
+  def labkit_count_for(rule, limiter = 'rack_request')
     Gitlab::Redis::RateLimiting.with do |redis|
-      redis.scan_each(match: "labkit:rl:{rack_request:#{rule}:*").sum { |key| redis.get(key).to_i }
+      redis.scan_each(match: "labkit:rl:{#{limiter}:#{rule}:*").sum { |key| redis.get(key).to_i }
     end
   end
 
@@ -252,6 +252,62 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
       let(:login_as_user) { false }
 
       include_examples 'a labkit-enforced throttle toggle'
+    end
+  end
+
+  describe 'the MCP throttle, which has its own limiter' do
+    # What a real client sends. Clients register through dynamic client registration,
+    # and an mcp-scope personal access token is not offered by the UI at all.
+    let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
+
+    let(:throttle_name) { 'throttle_authenticated_mcp' }
+    let(:setting_prefix) { 'throttle_authenticated_mcp' }
+    let(:method) { :post }
+    let(:path) { '/api/v4/mcp' }
+    let(:login_as_user) { false }
+    let(:params) { {} }
+    let(:headers) { { 'Authorization' => "Bearer #{oauth_token.plaintext_token}" } }
+
+    before do
+      enable_cohort!(1)
+    end
+
+    include_examples 'a labkit-enforced throttle toggle'
+
+    it 'resolves the same requester in both stacks', :aggregate_failures do
+      stub_throttle_settings(enabled: true)
+
+      perform_request
+
+      rack_attack_request = ::Rack::Attack::Request.new(request.env)
+      identifier = Gitlab::RackAttack.all_throttle_definitions['throttle_authenticated_mcp']
+        .request_identifier.call(rack_attack_request)
+
+      expect(identifier).to eq("user:#{user.id}")
+      expect(labkit_count_for('authenticated_mcp', 'rack_request_mcp')).to eq(1)
+    end
+
+    it 'counts a request the endpoint refuses for lacking the mcp scope', :aggregate_failures do
+      stub_throttle_settings(enabled: true)
+
+      post path, params: private_token_params, headers: {}
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(labkit_count_for('authenticated_mcp', 'rack_request_mcp')).to eq(1)
+    end
+
+    it 'counts in its own limiter and still counts against the general API throttle', :aggregate_failures do
+      stub_throttle_settings(enabled: true)
+      stub_application_setting(
+        throttle_authenticated_api_enabled: true,
+        throttle_authenticated_api_requests_per_period: 100,
+        throttle_authenticated_api_period_in_seconds: 60
+      )
+
+      perform_request
+
+      expect(labkit_count_for('authenticated_mcp', 'rack_request_mcp')).to eq(1)
+      expect(labkit_count_for('authenticated_api')).to eq(1)
     end
   end
 

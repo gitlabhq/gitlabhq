@@ -66,7 +66,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     result = publish_service.execute(draft: draft_note(allow_nil: true))
 
     if create_note_params[:note]
-      ::Notes::CreateService.new(@project, current_user, create_note_params).execute
+      ::Notes::CreateService.new(@project, current_user, create_note_params).execute unless summary_note_in_review?
 
       merge_request_activity_counter.track_submit_review_comment(user: current_user)
     end
@@ -170,7 +170,12 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
     params.permit(:review_id, :defer_notifications, ids: []).tap do |permitted|
       permitted[:ids] = permitted[:ids]&.map(&:to_i) if permitted[:ids].present?
       permitted[:defer_notifications] = Gitlab::Utils.to_boolean(permitted[:defer_notifications])
+      permitted[:summary_note] = create_note_params if summary_note_in_review?
     end
+  end
+
+  def summary_note_in_review?
+    create_note_params[:note].present? && Feature.enabled?(:improved_review_email, @project)
   end
 
   def approve_params

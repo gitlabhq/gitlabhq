@@ -117,7 +117,7 @@ To set up SSO with Okta as your identity provider:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **SAML SSO**.
 1. Note the information on this page.
-1. Follow the instructions for [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
+1. Follow the instructions to [create a SAML application in Okta](https://developer.okta.com/docs/guides/create-an-app-integration/saml2/main/).
 
    The following GitLab settings correspond to the Okta fields.
 

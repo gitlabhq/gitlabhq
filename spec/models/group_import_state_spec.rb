@@ -91,7 +91,35 @@ RSpec.describe GroupImportState, feature_category: :importers do
     end
   end
 
-  describe 'import state transitions' do
+  describe '#request_channel', :clean_gitlab_redis_shared_state do
+    let_it_be(:group_import_state) { create(:group_import_state) }
+
+    it 'returns nil when nothing was stored' do
+      expect(group_import_state.request_channel).to be_nil
+    end
+
+    it 'round-trips a symbol as a string' do
+      group_import_state.request_channel = :ui
+
+      expect(group_import_state.request_channel).to eq('ui')
+    end
+
+    it 'is scoped per group' do
+      group_import_state.request_channel = :congregate
+
+      other_state = create(:group_import_state)
+
+      expect(other_state.request_channel).to be_nil
+    end
+
+    it 'does not write anything when given a blank value' do
+      group_import_state.request_channel = nil
+
+      expect(group_import_state.request_channel).to be_nil
+    end
+  end
+
+  describe 'import state transitions', :clean_gitlab_redis_shared_state do
     context 'when transitioning from created to started' do
       it 'tracks the start_group_import internal event' do
         group_import_state = create(:group_import_state, :created, jid: 'group_import_state_start')
@@ -104,11 +132,25 @@ RSpec.describe GroupImportState, feature_category: :importers do
             additional_properties: { label: 'gitlab_group_export' }
           )
       end
+
+      it 'includes request_channel when one was captured' do
+        group_import_state = create(:group_import_state, :created, jid: 'group_import_state_start')
+        group_import_state.request_channel = :congregate
+
+        expect { group_import_state.start }
+          .to trigger_internal_events('start_group_import')
+          .with(
+            namespace: group_import_state.group,
+            user: group_import_state.user,
+            additional_properties: { label: 'gitlab_group_export', request_channel: 'congregate' }
+          )
+      end
     end
 
     context 'when transitioning from started to finished' do
-      it 'tracks the finish_group_import internal event' do
+      it 'tracks the finish_group_import internal event without request_channel' do
         group_import_state = create(:group_import_state, :started)
+        group_import_state.request_channel = :ui
 
         expect { group_import_state.finish }
           .to trigger_internal_events('finish_group_import')
@@ -121,8 +163,9 @@ RSpec.describe GroupImportState, feature_category: :importers do
     end
 
     context 'when transitioning to failed' do
-      it 'tracks the fail_group_import internal event' do
+      it 'tracks the fail_group_import internal event without request_channel' do
         group_import_state = create(:group_import_state, :started)
+        group_import_state.request_channel = :ui
 
         expect { group_import_state.fail_op }
           .to trigger_internal_events('fail_group_import')

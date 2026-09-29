@@ -1838,6 +1838,28 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(response).to have_gitlab_http_status(:created)
     end
 
+    describe 'request_channel for an import_url', :clean_gitlab_redis_shared_state do
+      let(:url) { 'http://example.com' }
+      let(:project_params) { { import_url: url, path: 'path-project-Foo', name: 'Foo Project' } }
+
+      before do
+        allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with(url).and_return(true)
+        stub_application_setting(import_sources: ['git'])
+      end
+
+      it 'defaults to :api' do
+        post api(path, user), params: project_params
+
+        expect(Project.find(json_response['id']).import_state.request_channel).to eq('api')
+      end
+
+      it 'is :congregate when the caller identifies as Congregate' do
+        post api(path, user), params: project_params, headers: { 'User-Agent' => 'GitLabApiClient' }
+
+        expect(Project.find(json_response['id']).import_state.request_channel).to eq('congregate')
+      end
+    end
+
     it 'sets a project as public' do
       project = attributes_for(:project, visibility: 'public')
 
@@ -2464,6 +2486,18 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     it_behaves_like 'POST request permissions for admin mode' do
       let(:params) { { name: 'Foo Project' } }
+    end
+
+    it 'captures request_channel for an import_url', :clean_gitlab_redis_shared_state do
+      url = 'http://example.com'
+      allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with(url).and_return(true)
+      stub_application_setting(import_sources: ['git'])
+
+      post api(path, admin, admin_mode: true),
+        params: { import_url: url, path: 'path-project-Foo', name: 'Foo Project' },
+        headers: { 'User-Agent' => 'GitLabApiClient' }
+
+      expect(Project.find(json_response['id']).import_state.request_channel).to eq('congregate')
     end
 
     it 'creates new project without path but with name and return 201' do

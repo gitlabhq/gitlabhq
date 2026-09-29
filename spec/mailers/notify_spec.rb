@@ -2412,6 +2412,24 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
+    context 'with a summary note' do
+      let!(:summary_note) do
+        create(:note, review: review, project: project, author: review.author, noteable: merge_request, note: 'Review summary')
+      end
+
+      subject { described_class.new_review_email(recipient.id, review.id, summary_note.id) }
+
+      it 'shows the summary note first, without a header' do
+        text = subject.text_part.body.to_s
+        html = subject.html_part.body.to_s
+
+        expect(text.index('Review summary')).to be < text.index(notes.first.note)
+        expect(text.scan("#{review.author.name} commented").size).to eq(notes.size)
+        expect(html.index('Review summary')).to be < html.index(notes.first.note)
+        expect(html.scan('>commented</a>').size).to eq(notes.size)
+      end
+    end
+
     context 'when every note holds a blob permalink' do
       let(:permalink) do
         "#{Gitlab.config.gitlab.url}/#{project.full_path}" \

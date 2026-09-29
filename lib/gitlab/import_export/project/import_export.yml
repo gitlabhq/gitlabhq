@@ -707,6 +707,7 @@ included_attributes:
     - :autoclose_referenced_issues
     - :build_allow_git_fetch
     - :build_timeout
+    - :created_at
     - :description
     - :disable_overriding_approvers_per_merge_request
     - :external_authorization_classification_label
@@ -831,7 +832,6 @@ excluded_attributes:
     - :repository_storage
     - :repository_read_only
     - :lfs_enabled
-    - :created_at
     - :updated_at
     - :id
     - :star_count

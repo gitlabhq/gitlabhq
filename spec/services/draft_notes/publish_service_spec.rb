@@ -201,6 +201,37 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       end
     end
 
+    context 'with a summary note' do
+      let(:summary) { 'Review summary' }
+      let(:params) { { summary_note: { note: summary, noteable_type: 'MergeRequest', noteable_id: merge_request.id } } }
+
+      it 'adds the summary note to the review and to the event' do
+        allow(::Gitlab::EventStore).to receive(:publish).and_call_original
+
+        publish
+
+        summary_note = merge_request.notes.find_by(note: summary)
+        expect(summary_note.review).to eq(Review.last)
+        expect(::Gitlab::EventStore).to have_received(:publish)
+          .with(an_instance_of(MergeRequests::DraftNotePublishedEvent)
+            .and(having_attributes(data: hash_including(summary_note_id: summary_note.id))))
+      end
+
+      context 'when the summary note only contains quick actions' do
+        let(:summary) { '/title New title' }
+
+        it 'does not add a summary note id to the event' do
+          allow(::Gitlab::EventStore).to receive(:publish).and_call_original
+
+          publish
+
+          expect(::Gitlab::EventStore).to have_received(:publish)
+            .with(an_instance_of(MergeRequests::DraftNotePublishedEvent)
+              .and(having_attributes(data: hash_excluding(:summary_note_id))))
+        end
+      end
+    end
+
     context 'when deferring notifications' do
       let(:params) { { defer_notifications: true } }
 
@@ -542,6 +573,23 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
         )
 
         publish(draft: draft)
+      end
+    end
+
+    context 'when publishing a summary note' do
+      let(:params) { { summary_note: { note: 'Summary', noteable_type: 'MergeRequest', noteable_id: merge_request.id } } }
+
+      it 'logs a warning with details' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          hash_including(
+            message: 'Draft note publish: summary note not persisted',
+            merge_request_id: merge_request.id,
+            project_id: project.id,
+            errors: ['Position is incomplete']
+          )
+        )
+
+        publish
       end
     end
   end

@@ -20975,10 +20975,11 @@ Arguments:
 | <a id="mutation-workitemdecisionupdate-description"></a>`description` | [`String`](#string) | Context of the decision. |
 | <a id="mutation-workitemdecisionupdate-discussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the originating discussion thread. |
 | <a id="mutation-workitemdecisionupdate-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
-| <a id="mutation-workitemdecisionupdate-options"></a>`options` | [`[WorkItemDecisionOptionUpdateInput!]`](#workitemdecisionoptionupdateinput) | Existing options of the decision to update. Maximum of 5 options. |
+| <a id="mutation-workitemdecisionupdate-options"></a>`options` | [`[WorkItemDecisionOptionUpdateInput!]`](#workitemdecisionoptionupdateinput) | Existing options of the decision to update. Maximum of 6 options. |
 | <a id="mutation-workitemdecisionupdate-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-resolvedbyid"></a>`resolvedById` | [`UserID`](#userid) | Global ID of the user who resolved the decision. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-resolvingnoteid"></a>`resolvingNoteId` | [`NoteID`](#noteid) | Global ID of the comment that resolved the decision. Can only be updated on resolved decisions. |
+| <a id="mutation-workitemdecisionupdate-selectedoptioncontent"></a>`selectedOptionContent` | [`String`](#string) | Content of the selected option. Unless exactly one option is selected, a new selected option with this content is added and any selected options are deselected. Can only be updated on resolved decisions. |
 | <a id="mutation-workitemdecisionupdate-sourcelink"></a>`sourceLink` | [`String`](#string) | URL of the comment, discussion, or external resource that prompted the decision. |
 | <a id="mutation-workitemdecisionupdate-title"></a>`title` | [`String`](#string) | Question being decided. |
 
@@ -58002,6 +58003,7 @@ Fields:
 | <a id="project-mergerequesttitleregex"></a>`mergeRequestTitleRegex` | [`String`](#string) | Regex used to validate the title of merge requests. |
 | <a id="project-mergerequesttitleregexdescription"></a>`mergeRequestTitleRegexDescription` | [`String`](#string) | Description of the regex used to validate the title of merge requests. |
 | <a id="project-mergerequestsaccesslevel"></a>`mergeRequestsAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for merge requests access. |
+| <a id="project-mergerequestsdefaulttargetself"></a>`mergeRequestsDefaultTargetSelf` | [`Boolean`](#boolean) | Indicates if merge requests of a forked project target the fork itself by default instead of the upstream project. |
 | <a id="project-mergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="project-mergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge requests are enabled for the current user. |
 | <a id="project-mergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
@@ -60503,6 +60505,23 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="project-snippets-ids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
 | <a id="project-snippets-visibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
+
+##### `Project.sourcedMergeRequests`
+
+Merge requests that have this project as their source, including merge requests targeting other projects. Ordered by ID in descending order.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="project-sourcedmergerequests-sourcebranches"></a>`sourceBranches` | [`[String!]!`](#string) | Array of source branch names (maximum is 100). All resolved merge requests will have one of these branches as their source. |
+| <a id="project-sourcedmergerequests-state"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 
 ##### `Project.terraformState`
 

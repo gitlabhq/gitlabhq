@@ -161,6 +161,7 @@ export default {
   emits: [
     'cancel-editing',
     'delete-note',
+    'duo-question-answered',
     'error',
     'report-abuse',
     'resolve',
@@ -598,6 +599,7 @@ export default {
               :is-discussion-resolved="isDiscussionResolved"
               :is-discussion-resolvable="isDiscussionResolvable"
               :can-reply="canReply"
+              @duo-question-answered="$emit('duo-question-answered')"
               @error="$emit('error', $event)"
             />
           </div>

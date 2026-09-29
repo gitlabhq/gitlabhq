@@ -24,13 +24,14 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       http_url_to_repo web_url web_path edit_path admin_show_path admin_edit_path star_count forks_count
       created_at updated_at last_activity_at archived is_self_archived visibility
       container_registry_enabled shared_runners_enabled
-      lfs_enabled merge_requests_ff_only_enabled avatar_url
+      lfs_enabled merge_requests_ff_only_enabled merge_requests_default_target_self avatar_url
       issues_enabled merge_requests_enabled wiki_enabled
       forking_access_level issues_access_level merge_requests_access_level
       snippets_enabled jobs_enabled public_jobs open_issues_count open_merge_requests_count import_status
       only_allow_merge_if_pipeline_succeeds request_access_enabled
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
       namespace group root_group statistics statistics_details_paths repository merge_requests merge_request issues
+      sourced_merge_requests
       issue milestones pipelines removeSourceBranchAfterMerge pipeline_counts sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       environment boards jira_import_status jira_imports services releases release

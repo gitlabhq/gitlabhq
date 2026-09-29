@@ -74,12 +74,12 @@ RSpec.describe Gitlab::ImportExport::Group::TreeSaver do
         it 'has a file for each group with its attributes' do
           expect(group_attributes['description']).to eq(group.description)
           expect(group_attributes['parent_id']).to eq(group.parent_id)
+          expect(group_attributes['created_at']).to eq(group.created_at.as_json)
         end
 
         shared_examples 'excluded attributes' do
           excluded_attributes = %w[
             owner_id
-            created_at
             updated_at
             runners_token
             runners_token_encrypted

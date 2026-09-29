@@ -148,6 +148,25 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
     end
   end
 
+  describe 'POST create' do
+    let_it_be(:project) { create(:project) }
+
+    let(:repository) { { id: 1, path: 'device/common', url: 'https://android-review.googlesource.com/device/common' } }
+
+    before do
+      Gitlab::ManifestImport::Metadata.new(user).save([repository], group.id)
+    end
+
+    it 'stashes request_channel: :ui for the created import state', :request_store do
+      allow(Gitlab::ManifestImport::ProjectCreator)
+        .to receive(:new).and_return(instance_double(Gitlab::ManifestImport::ProjectCreator, execute: project))
+
+      post :create, format: :json, params: { repo_id: repository[:id] }
+
+      expect(Gitlab::Import::RequestChannel.stashed).to eq(:ui)
+    end
+  end
+
   describe 'GET status' do
     let(:repo1) { { id: 'test1', url: 'http://demo.host/test1' } }
     let(:repo2) { { id: 'test2', url: 'http://demo.host/test2' } }

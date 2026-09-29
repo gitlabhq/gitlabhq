@@ -22,6 +22,7 @@ module Import
             {
               name: uniquify(namespace, data['name'], :name),
               path: uniquify(namespace, path, :path),
+              created_at: data['created_at'],
               description: data['description'],
               visibility_level: allowed_visibility_level(data['visibility_level'], namespace),
               project_creation_level: data['project_creation_level'],

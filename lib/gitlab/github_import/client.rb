@@ -101,6 +101,14 @@ module Gitlab
         with_rate_limit { octokit.pull_request(repo_name, iid).to_h }
       end
 
+      def create_hook(repo, config, options = {})
+        with_rate_limit { octokit.create_hook(repo, 'web', config, options).to_h }
+      end
+
+      def delete_hook(repo, hook_id)
+        with_rate_limit { octokit.remove_hook(repo, hook_id) }
+      end
+
       def labels(*args)
         each_object(:labels, *args)
       end

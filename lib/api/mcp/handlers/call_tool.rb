@@ -85,6 +85,7 @@ module API
             event_name: 'tool_call',
             ai_component: 'mcp_server',
             tool_name: tool_name,
+            **canonical_tool_name_field(tool_name),
             session_id: session_id,
             tool_status: error ? TOOL_STATUS_FAIL : TOOL_STATUS_DONE,
             ::Labkit::Fields::DURATION_S => duration_s,
@@ -93,6 +94,13 @@ module API
             expanded: expanded,
             **error_fields
           )
+        end
+
+        def canonical_tool_name_field(tool_name)
+          canonical_name = manager.resolve_alias(tool_name)
+          return {} if canonical_name == tool_name
+
+          { canonical_tool_name: canonical_name }
         end
 
         def filter_parameters(arguments)

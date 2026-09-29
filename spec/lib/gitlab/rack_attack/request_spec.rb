@@ -732,6 +732,32 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     end
   end
 
+  describe '#throttle_authenticated_mcp?' do
+    let(:mcp_path) { '/api/v4/mcp' }
+    let(:orbit_mcp_path) { '/api/v4/orbit/mcp' }
+    let(:api_path) { '/api/v4/projects' }
+    let(:web_path) { '/users/sign_in' }
+
+    subject { request.throttle_authenticated_mcp? }
+
+    where(:path, :throttle_authenticated_mcp_enabled, :expected) do
+      ref(:mcp_path)       | true  | true
+      ref(:mcp_path)       | false | false
+
+      ref(:orbit_mcp_path) | true  | false
+      ref(:api_path)       | true  | false
+      ref(:web_path)       | true  | false
+    end
+
+    with_them do
+      before do
+        stub_application_setting(throttle_authenticated_mcp_enabled: throttle_authenticated_mcp_enabled)
+      end
+
+      it { is_expected.to eq expected }
+    end
+  end
+
   describe '#throttle_authenticated_dependency_proxy?' do
     let_it_be(:group) { create(:group) }
 

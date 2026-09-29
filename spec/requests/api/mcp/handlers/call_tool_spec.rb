@@ -1633,6 +1633,16 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['result']['structuredContent']['log']['content']).to eq('BUILD TRACE')
       end
+
+      it 'logs the alias as sent together with the canonical tool name' do
+        expect_next_instance_of(Gitlab::Mcp::Logger) do |logger|
+          expect(logger).to receive(:conditional_info).with(
+            user, hash_including(tool_name: 'get_job_log', canonical_tool_name: 'get_job')
+          ).and_call_original
+        end
+
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+      end
     end
 
     context 'when caller does not have permission to read the job' do

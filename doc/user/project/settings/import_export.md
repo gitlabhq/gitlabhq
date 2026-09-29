@@ -271,6 +271,12 @@ Items that are not exported include:
 
 ### Import a project and its data
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256551) in GitLab 19.5 to retain the creation date of the source project.
+
+{{< /history >}}
+
 You can import a project and its data. The amount of data you can import depends on the maximum import file size:
 
 - On GitLab Self-Managed, administrators can
@@ -369,6 +375,7 @@ To help avoid abuse, by default, users are rate limited to:
 {{< history >}}
 
 - [Deprecated](https://gitlab.com/groups/gitlab-org/-/work_items/4619) in GitLab 14.6.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256551) in GitLab 19.5 to retain the creation date of the source group.
 
 {{< /history >}}
 

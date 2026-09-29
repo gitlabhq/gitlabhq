@@ -9,6 +9,7 @@ module Gitlab
       include ::Gitlab::Utils::StrongMemoize
 
       API_PATH_REGEX = %r{^/api/|/oauth/}
+      MCP_PATH_REGEX = %r{^/api/v\d+/mcp(?:/|$)}
       FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}
       GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}
       RUNNER_JOBS_PATH_REGEX = %r{^/api/v\d+/jobs/}
@@ -109,6 +110,10 @@ module Gitlab
 
       def packages_api_path?
         matches?(::Gitlab::Regex::Packages::API_PATH_REGEX)
+      end
+
+      def mcp_path?
+        matches?(MCP_PATH_REGEX)
       end
 
       def git_path?

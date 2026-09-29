@@ -10,7 +10,7 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-        desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+        desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Unpublish Pages' do
@@ -43,9 +43,12 @@ module API
         tags %w[gitlab_pages]
       end
       params do
-        optional :pages_unique_domain_enabled, type: Boolean, desc: 'Whether to use unique domain'
-        optional :pages_https_only, type: Boolean, desc: 'Whether to force HTTPS'
-        optional :pages_primary_domain, type: String, desc: 'Set pages primary domain'
+        optional :pages_unique_domain_enabled, type: Boolean, desc: 'If `true`, uses a unique domain.'
+        optional :pages_https_only, type: Boolean, desc: 'If `true`, forces HTTPS.'
+        optional :pages_primary_domain, type: String,
+          desc: 'Primary domain, from the existing assigned domains, to redirect all Pages ' \
+            'requests to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) ' \
+            'in GitLab 17.8.'
       end
       route_setting :authorization, permissions: :update_page, boundary_type: :project
       patch ':id/pages' do

@@ -103,6 +103,7 @@ describe('Work Item Note', () => {
   const findUpdateError = () => wrapper.findByTestId('update-error');
   const findSessionBar = () => wrapper.findComponent({ name: 'NoteSessionBar' });
   const findAgentActorLine = () => wrapper.findComponent({ name: 'NoteAgentActorLine' });
+  const findDuoQuestionNote = () => wrapper.findComponent({ name: 'DuoQuestionNote' });
   const findActorLineSeparator = () => wrapper.findByTestId('actor-line-separator');
 
   const createComponent = ({
@@ -359,6 +360,12 @@ end`;
       beforeEach(async () => {
         createComponent({ isFirstNote: true, canReply: true });
         await waitForPromises();
+      });
+
+      it('emits `duo-question-answered` when its Duo question is answered', () => {
+        findDuoQuestionNote().vm.$emit('duo-question-answered');
+
+        expect(wrapper.emitted('duo-question-answered')).toEqual([[]]);
       });
 
       it('should have the note header, actions and body', () => {

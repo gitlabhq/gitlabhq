@@ -605,7 +605,9 @@ module API
         desc: 'Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. ' \
           'Default value: `3600`.'
       optional :throttle_authenticated_mcp_enabled,
-        desc: 'If `true`, enforces the MCP Server request rate limit. Default value: `false`.'
+        desc: 'If `true`, enforces the rate limit on requests to the MCP Server endpoint, ' \
+          '`/api/v4/mcp`, for any HTTP method. Does not apply to other MCP endpoints. ' \
+          'Default value: `false`.'
       optional :throttle_authenticated_mcp_period_in_seconds,
         desc: 'Rate limit period in seconds. `throttle_authenticated_mcp_enabled` must be `true`. Default value: `60`.'
       optional :throttle_authenticated_mcp_requests_per_period,

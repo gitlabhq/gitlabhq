@@ -204,6 +204,7 @@ export default {
     'add-child',
     'attributes-updated',
     'delete-work-item',
+    'duo-question-answered',
     'work-item-emoji-updated',
     'work-item-updated',
     'work-item-state-updated',
@@ -1294,6 +1295,7 @@ export default {
             :use-h2="!isDetailPanel"
             :parent-id="parentWorkItemId"
             :hide-fullscreen-markdown-button="isDetailPanel"
+            @duo-question-answered="$emit('duo-question-answered')"
             @error="updateError = $event"
             @open-report-abuse="openReportAbuseModal"
             @start-editing="isAddingNotes = true"

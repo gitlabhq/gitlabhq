@@ -58,6 +58,12 @@ module Namespaces
     end
     strong_memoize_attr :visibility_levels
 
+    def public_or_internal_only?
+      return false unless visibility_levels.present?
+
+      (visibility_levels - [::Gitlab::VisibilityLevel::PUBLIC, ::Gitlab::VisibilityLevel::INTERNAL]).empty?
+    end
+
     def by_visibility(groups)
       return groups unless visibility_levels
 

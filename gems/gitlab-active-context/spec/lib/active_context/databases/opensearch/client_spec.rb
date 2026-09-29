@@ -67,18 +67,31 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
       expect(client.client).to be(raw_client)
     end
 
-    context 'when AWS credentials cannot be resolved' do
+    context 'when AWS is enabled' do
       let(:options) { { url: 'http://localhost:9200', aws: true } }
       let(:credentials) { Aws::Credentials.new('access_key', 'secret_key') }
+      let(:chain) { instance_double(Aws::CredentialProviderChain, resolve: credentials) }
 
       before do
-        allow(client).to receive(:aws_credentials).and_return(nil, credentials)
+        allow(Aws::CredentialProviderChain).to receive(:new).and_return(chain)
       end
 
-      it 'raises and builds a new client on the next call', :aggregate_failures do
-        expect { client.client }.to raise_error(Aws::Sigv4::Errors::MissingCredentialsError)
-        expect(client.client).to be_a(OpenSearch::Client)
-        expect(client).to have_received(:aws_credentials).twice
+      it 'resolves AWS credentials once across calls' do
+        2.times { client.client }
+
+        expect(chain).to have_received(:resolve).once
+      end
+
+      context 'when AWS credentials cannot be resolved' do
+        before do
+          allow(chain).to receive(:resolve).and_return(nil, credentials)
+        end
+
+        it 'raises and builds a new client on the next call', :aggregate_failures do
+          expect { client.client }.to raise_error(Aws::Sigv4::Errors::MissingCredentialsError)
+          expect(client.client).to be_a(OpenSearch::Client)
+          expect(chain).to have_received(:resolve).twice
+        end
       end
     end
   end

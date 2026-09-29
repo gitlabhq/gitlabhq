@@ -40,6 +40,8 @@ module Gitlab
             note_id: note[:id],
             end_line: note[:line],
             start_line: note[:start_line],
+            original_end_line: note[:original_line],
+            original_start_line: note[:original_start_line],
             side: note[:side],
             in_reply_to_id: note[:in_reply_to_id],
             discussion_id: DiffNotes::DiscussionId.new(note).find_or_generate,
@@ -68,7 +70,9 @@ module Gitlab
           @note_formatter = DiffNotes::SuggestionFormatter.new(
             note: attributes[:note],
             start_line: attributes[:start_line],
-            end_line: attributes[:end_line]
+            end_line: attributes[:end_line],
+            original_start_line: attributes[:original_start_line],
+            original_end_line: attributes[:original_end_line]
           )
         end
 
@@ -142,7 +146,7 @@ module Gitlab
         private
 
         def generate_default_diff_hunk
-          line_number = @attributes[:end_line] || @attributes[:line] || 1
+          line_number = @attributes[:end_line] || @attributes[:original_end_line] || @attributes[:line] || 1
           "@@ -#{line_number},1 +#{line_number},1 @@\n#{fetch_file_line_content(line_number)}"
         end
 
@@ -158,10 +162,12 @@ module Gitlab
         end
 
         def diff_line_params
+          line = end_line || @attributes[:original_end_line]
+
           if addition?
-            { new_line: end_line, old_line: nil }
+            { new_line: line, old_line: nil }
           else
-            { new_line: nil, old_line: end_line }
+            { new_line: nil, old_line: line }
           end
         end
 

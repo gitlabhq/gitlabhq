@@ -5,7 +5,13 @@ module Gitlab
     module Aggregation
       module Graphql
         class AggregationConnection < GraphQL::Pagination::Connection
-          delegate :count, to: :items
+          # A page that reaches the end already proves the total, which spares a second
+          # full aggregation for the COUNT. An empty page past offset 0 proves nothing.
+          def count
+            return selection_range.first + nodes.size if !has_next_page && (nodes.any? || selection_range.first == 0)
+
+            items.count
+          end
 
           # Without the flag, every engine keeps the schema default, whatever cap its field sets.
           def self.effective_max_page_size(configured_max_page_size, context:)

@@ -1300,10 +1300,10 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
     end
 
     context 'when the exclusive lease is taken' do
+      let(:pipeline) { build_stubbed(:ci_empty_pipeline, ref: 'master', project: project) }
       let(:lease_key) { "ci/pipeline_processing/atomic_processing_service::pipeline_id:#{pipeline.id}" }
 
       before do
-        create_build('linux', stage_idx: 0)
         stub_exclusive_lease_taken(lease_key)
       end
 

@@ -713,4 +713,48 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
 
     it { expect(graphql_data_at(:project)).to be_nil }
   end
+
+  # The outer before block posts before this capture stub is installed, so the
+  # examples below post again with the stub in place.
+  describe 'ClickHouse query attribution' do
+    let(:current_user) { user }
+    let(:captured_log_comments) { [] }
+
+    before do
+      stub_application_setting(use_clickhouse_for_analytics: true)
+
+      # Wrap log_comment rather than a Connection instance: execute_query builds a
+      # new Connection per call, so this sees every query.
+      allow(::ClickHouse::HttpClient).to receive(:log_comment).and_wrap_original do |original|
+        comment = original.call
+        captured_log_comments << ::Gitlab::Json::SafeParser.parse(comment)
+        comment
+      end
+    end
+
+    shared_examples 'attributes every ClickHouse query to the project root namespace' do
+      it 'attributes every executed ClickHouse query', :aggregate_failures do
+        post_graphql(query, current_user: current_user)
+
+        expect_graphql_errors_to_be_empty
+        expect(captured_log_comments).to be_present
+        expect(captured_log_comments).to all(include('root_namespace_id' => project.root_ancestor.id))
+      end
+    end
+
+    # The default (forward) path and the `last:` path build different queries and
+    # each goes through execute_query, so cover both to guard the whole connection.
+    context 'with a forward (first-page) query' do
+      let(:job_analytics_fields) { simple_name_fields }
+
+      it_behaves_like 'attributes every ClickHouse query to the project root namespace'
+    end
+
+    context 'with a backward (last:) paginated query' do
+      let(:job_analytics_args) { { last: 2, sort: :NAME_ASC } }
+      let(:job_analytics_fields) { "#{simple_name_fields} #{page_info_selection}" }
+
+      it_behaves_like 'attributes every ClickHouse query to the project root namespace'
+    end
+  end
 end

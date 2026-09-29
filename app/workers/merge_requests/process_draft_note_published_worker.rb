@@ -36,7 +36,7 @@ module MergeRequests
       TodoService.new.new_review(merge_request, current_user)
 
       review = merge_request.reviews.find_by_id(event.data[:review_id])
-      notification_service.new_review(review) if review
+      notification_service.new_review(review, event.data[:summary_note_id]) if review
 
       return unless merge_request.discussions_resolved?
 

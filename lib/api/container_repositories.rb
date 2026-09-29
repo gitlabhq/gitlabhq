@@ -16,7 +16,7 @@ module API
 
     namespace 'registry' do
       params do
-        requires :id, types: [String, Integer], desc: 'The ID of the repository'
+        requires :id, types: [String, Integer], desc: 'ID of the repository.'
       end
       resource :repositories, requirements: { id: /[0-9]*/ } do
         desc 'Retrieve details of a container registry repository' do
@@ -29,9 +29,12 @@ module API
           tags %w[container_registry]
         end
         params do
-          optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
-          optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
-          optional :size, type: Boolean, default: false, desc: 'Determines if the size should be included'
+          optional :tags, type: Boolean, default: false, desc: 'If `true`, includes an array of `tags` in the response.'
+          optional :tags_count, type: Boolean, default: false, desc: 'If `true`, includes `tags_count` in the response.'
+          optional :size, type: Boolean, default: false, desc: 'If `true`, response includes the deduplicated ' \
+                                                           'size of all images in the repository. Only ' \
+                                                           'available on GitLab.com for repositories created ' \
+                                                           'after `2021-11-04`.'
         end
         route_setting :authorization,
           permissions: :read_container_repository,

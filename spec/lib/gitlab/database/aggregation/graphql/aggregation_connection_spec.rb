@@ -178,13 +178,54 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
     end
 
     describe '#count' do
-      it 'returns the total number of aggregated rows via a database query' do
-        expect(connection.count).to eq(3)
+      shared_examples 'a count derived from the page' do |expected_count|
+        it 'returns the total without a count query' do
+          expect(nodes).not_to receive(:count)
+
+          expect(connection.count).to eq(expected_count)
+        end
       end
 
-      it 'does not load rows into memory' do
-        expect(nodes).not_to receive(:load_data)
-        connection.count
+      shared_examples 'a count from a count query' do
+        it 'returns the total from a count query' do
+          expect(nodes).to receive(:count).and_call_original
+
+          expect(connection.count).to eq(3)
+        end
+      end
+
+      context 'when the first page holds every row' do
+        it_behaves_like 'a count derived from the page', 3
+      end
+
+      context 'when a later page reaches the end' do
+        let(:arguments) { { first: 2, after: encode_cursor(0) } }
+
+        it_behaves_like 'a count derived from the page', 3
+      end
+
+      context 'when there are no rows' do
+        let(:query_builder) { query.where(author_id: non_existing_record_id) }
+
+        it_behaves_like 'a count derived from the page', 0
+      end
+
+      context 'when there is a next page' do
+        let(:arguments) { { first: 2 } }
+
+        it_behaves_like 'a count from a count query'
+      end
+
+      context 'when "after" is past the last row' do
+        let(:arguments) { { first: 2, after: encode_cursor(3) } }
+
+        it_behaves_like 'a count from a count query'
+      end
+
+      context 'when using last and before' do
+        let(:arguments) { { last: 1, before: encode_cursor(2) } }
+
+        it_behaves_like 'a count from a count query'
       end
     end
   end

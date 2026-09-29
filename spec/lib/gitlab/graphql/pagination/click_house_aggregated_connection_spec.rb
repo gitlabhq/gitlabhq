@@ -360,6 +360,43 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseAggregatedConnection, :cli
     end
   end
 
+  describe '#execute_query' do
+    let(:captured_log_comment) do
+      comment = nil
+
+      allow(clickhouse_connection).to receive(:select).and_wrap_original do |original, *args|
+        comment = Gitlab::Json::SafeParser.parse(ClickHouse::HttpClient.log_comment)
+        original.call(*args)
+      end
+
+      connection.nodes
+
+      comment
+    end
+
+    context 'when the relation carries a namespace in its context attributes' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+
+      let(:aggregated_relation) do
+        Gitlab::Graphql::Pagination::ClickHouseAggregatedRelation.new(
+          aggregated_query_builder,
+          context_attributes: { namespace: subgroup }
+        )
+      end
+
+      it 'attributes the query to the root namespace' do
+        expect(captured_log_comment).to include('root_namespace_id' => root_group.id)
+      end
+    end
+
+    context 'when the relation carries no context attributes' do
+      it 'runs the query without namespace attribution' do
+        expect(captured_log_comment).not_to have_key('root_namespace_id')
+      end
+    end
+  end
+
   private
 
   def encoded_cursor(node)

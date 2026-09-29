@@ -148,6 +148,24 @@ RSpec.describe SupplyChain::SigningCertificate, feature_category: :artifact_secu
     end
   end
 
+  describe 'scopes' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns the active certificate for the project' do
+      create(:supply_chain_signing_certificate, :inactive, project: project)
+      active = create(:supply_chain_signing_certificate, project: project)
+      create(:supply_chain_signing_certificate, project: create(:project))
+
+      expect(described_class.for_project(project).with_active).to contain_exactly(active)
+    end
+
+    it 'returns an empty relation when the project has no active certificate' do
+      create(:supply_chain_signing_certificate, :inactive, project: project)
+
+      expect(described_class.for_project(project).with_active).to be_empty
+    end
+  end
+
   describe 'encryption' do
     subject(:signing_certificate) { create(:supply_chain_signing_certificate) }
 

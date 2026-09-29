@@ -43,6 +43,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
           is_expected.to include({
             'description' => 'description',
             'visibility_level' => 20,
+            'created_at' => project.created_at.as_json,
             'merge_commit_template' => 'merge commit message template',
             'squash_commit_template' => 'squash commit message template'
           })

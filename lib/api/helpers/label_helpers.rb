@@ -7,15 +7,15 @@ module API
 
       params :label_create_params do
         requires :name, type: String, desc: 'The name of the label to be created'
-        requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The description of label to be created'
+        requires :color, type: String, desc: 'Color of the label in 6-digit hex notation with a leading `#` sign, for example `#FFAABB`, or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).'
+        optional :description, type: String, desc: 'Description of the label.'
         optional :archived, type: Boolean, desc: 'Whether the label is archived'
       end
 
       params :label_update_params do
         optional :new_name, type: String, desc: 'The new name of the label'
-        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The new description of label'
+        optional :color, type: String, desc: 'New color of the label, given in 6-digit hex notation with a leading `#` sign (for example, `#FFAABB`), or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).'
+        optional :description, type: String, desc: 'New description of label.'
         optional :archived, type: Boolean, desc: 'Whether the label is archived'
       end
 

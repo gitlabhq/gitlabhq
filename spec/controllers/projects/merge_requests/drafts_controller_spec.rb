@@ -629,6 +629,24 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect(merge_request.notes.reload.size).to be(2)
       end
 
+      it 'adds the note to the review' do
+        post :publish, params: params.merge!(note: 'Hello world')
+
+        expect(merge_request.notes.find_by(note: 'Hello world').review).to eq(merge_request.reviews.sole)
+      end
+
+      context 'when improved_review_email is disabled' do
+        before do
+          stub_feature_flags(improved_review_email: false)
+        end
+
+        it 'does not add the note to the review' do
+          post :publish, params: params.merge!(note: 'Hello world')
+
+          expect(merge_request.notes.find_by(note: 'Hello world').review).to be_nil
+        end
+      end
+
       it 'does not create note when note param is empty' do
         post :publish, params: params.merge!(note: '')
 

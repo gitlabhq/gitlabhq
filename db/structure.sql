@@ -22821,6 +22821,8 @@ CREATE TABLE import_sync_repositories (
     provider_repository_node_id text NOT NULL,
     provider_full_name text NOT NULL,
     provider_default_branch text,
+    provider_webhook_xid bigint,
+    webhook_secret jsonb,
     CONSTRAINT check_40e5f3d631 CHECK ((char_length(provider_default_branch) <= 255)),
     CONSTRAINT check_6e9da9633d CHECK ((char_length(provider_account_login) <= 255)),
     CONSTRAINT check_94a7426e52 CHECK ((char_length(provider_repository_node_id) <= 255)),
@@ -22832,7 +22834,8 @@ CREATE TABLE import_sync_repositories (
     CONSTRAINT chk_import_sync_repositories_installation_xid CHECK (((provider_installation_xid IS NULL) OR (provider_installation_xid > 0))),
     CONSTRAINT chk_import_sync_repositories_provider CHECK ((provider = 0)),
     CONSTRAINT chk_import_sync_repositories_provider_repo_xid CHECK ((provider_repository_xid > 0)),
-    CONSTRAINT chk_import_sync_repositories_restore_authority CHECK (((restore_authority_state IS NULL) OR (restore_authority_state = ANY (ARRAY[0, 2]))))
+    CONSTRAINT chk_import_sync_repositories_restore_authority CHECK (((restore_authority_state IS NULL) OR (restore_authority_state = ANY (ARRAY[0, 2])))),
+    CONSTRAINT chk_import_sync_repositories_webhook_xid CHECK (((provider_webhook_xid IS NULL) OR (provider_webhook_xid > 0)))
 );
 
 CREATE SEQUENCE import_sync_repositories_id_seq

@@ -78,7 +78,7 @@ gem 'faraday-retry', '~> 2.4', feature_category: :shared # rubocop:todo Gemfile/
 gem 'logger', '~> 1.7.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Authorization
-gem 'declarative_policy', '~> 2.1.0', feature_category: :permissions
+gem 'declarative_policy', '~> 2.2.0', feature_category: :permissions
 gem 'gitlab-glaz', '~> 2.0.0', feature_category: :permissions
 
 # For source code paths mapping
@@ -438,7 +438,7 @@ gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
 # Mobile push notifications via APNs (GitLab mobile app prototype)
 gem 'apnotic', '~> 1.8', require: false, feature_category: :notifications
 
-gem 'gitlab-labkit', '~> 5.2.0', feature_category: :error_budgets
+gem 'gitlab-labkit', '~> 5.2.1', feature_category: :error_budgets
 gem 'thrift', '~> 0.22.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # I18n

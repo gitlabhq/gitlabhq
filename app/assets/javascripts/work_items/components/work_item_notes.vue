@@ -141,7 +141,15 @@ export default {
       default: false,
     },
   },
-  emits: ['blur', 'error', 'focus', 'open-report-abuse', 'start-editing', 'stop-editing'],
+  emits: [
+    'blur',
+    'duo-question-answered',
+    'error',
+    'focus',
+    'open-report-abuse',
+    'start-editing',
+    'stop-editing',
+  ],
   data() {
     return {
       isLoadingMore: false,
@@ -667,6 +675,7 @@ export default {
             :uploads-path="uploadsPath"
             @delete-note="showDeleteNoteModal($event, discussion)"
             @report-abuse="reportAbuse(true, $event)"
+            @duo-question-answered="$emit('duo-question-answered')"
             @error="$emit('error', $event)"
             @start-editing="$emit('start-editing')"
             @cancel-editing="$emit('stop-editing')"

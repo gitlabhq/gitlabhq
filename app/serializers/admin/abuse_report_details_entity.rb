@@ -6,7 +6,10 @@ module Admin
 
     expose :user, if: ->(report) { report.user } do
       expose :details, merge: true do |report|
-        UserEntity.represent(report.user, only: [:name, :username, :avatar_url, :email, :created_at, :last_activity_on])
+        UserEntity.represent(
+          report.user,
+          options.merge(only: [:name, :username, :avatar_url, :email, :created_at, :last_activity_on])
+        )
       end
 
       expose :path do |report|

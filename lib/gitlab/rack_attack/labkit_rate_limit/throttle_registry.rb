@@ -85,6 +85,7 @@ module Gitlab
       module ThrottleRegistry
         GENERAL = 'rack_request'
         PROTECTED = 'rack_request_protected_paths'
+        MCP = 'rack_request_mcp'
 
         COLLECTOR_PATH_REGEX = %r{^/-/collector/i}
 
@@ -231,6 +232,7 @@ module Gitlab
             request = ::Gitlab::RateLimit::RequestClassification
             api = request::API_PATH_REGEX
             files = request::FILES_PATH_REGEX
+            mcp = request::MCP_PATH_REGEX
             packages = ::Gitlab::Regex::Packages::API_PATH_REGEX
             git = ::Gitlab::PathRegex.repository_git_route_regex
             git_lfs = ::Gitlab::PathRegex.repository_git_lfs_route_regex
@@ -273,6 +275,13 @@ module Gitlab
               'throttle_authenticated_deprecated_api' => {
                 limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1, claims: true,
                 match: { deprecated: true, setting_authenticated_deprecated: true, requester_id: /./ }
+              },
+
+              # Counts every request to the endpoint, not only tools/call: the
+              # middleware runs before routing and cannot read the JSON-RPC body.
+              'throttle_authenticated_mcp' => {
+                limiter: MCP, characteristics: [:requester_type, :requester_id], cohort: 1, claims: true,
+                match: { setting_authenticated_mcp: true, requester_id: /./, path: mcp }
               },
 
               # Cohort 3: git over HTTP / LFS. Ordered before the web rules because a

@@ -62,6 +62,7 @@ class Import::ManifestController < Import::BaseController
       project[:id] == repo_id_param.to_i
     end
 
+    ::Gitlab::Import::RequestChannel.stash(::Gitlab::Import::RequestChannel::UI)
     project = Gitlab::ManifestImport::ProjectCreator.new(repository, group, current_user).execute
 
     if project.persisted?

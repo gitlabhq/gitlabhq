@@ -109,6 +109,48 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
     end
   end
 
+  describe '#create_hook' do
+    let(:config) { { url: 'https://gitlab.example.com/hook', content_type: 'json', secret: 'secret' } }
+    let(:options) { { events: %w[push pull_request], active: true } }
+
+    it 'creates a web hook on the repository' do
+      expect(client.octokit).to receive(:create_hook).with(123, 'web', config, options)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.create_hook(123, config, options)
+    end
+
+    it 'returns the hook data as a hash' do
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:post, 'https://api.github.com/repositories/123/hooks')
+        .to_return(status: 201, body: { id: 42 }.to_json, headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.create_hook(123, config, options)).to eq({ id: 42 })
+    end
+  end
+
+  describe '#delete_hook' do
+    it 'removes the hook from the repository' do
+      expect(client.octokit).to receive(:remove_hook).with(123, 42)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.delete_hook(123, 42)
+    end
+
+    it 'sends a DELETE request for the hook' do
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      delete_request = stub_request(:delete, 'https://api.github.com/repositories/123/hooks/42')
+        .to_return(status: 204)
+
+      expect(client.delete_hook(123, 42)).to be(true)
+      expect(delete_request).to have_been_requested
+    end
+  end
+
   describe '#labels' do
     it 'returns the labels' do
       expect(client)

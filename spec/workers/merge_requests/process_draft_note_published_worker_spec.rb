@@ -27,13 +27,21 @@ RSpec.describe MergeRequests::ProcessDraftNotePublishedWorker, feature_category:
 
   context 'with review for merge request' do
     let(:review) { create(:review, project: project, merge_request: merge_request) }
-    let(:data) { { current_user_id: user.id, merge_request_id: merge_request.id, review_id: review.id } }
+    let(:summary_note) { create(:note, project: project, noteable: merge_request, review: review) }
+    let(:data) do
+      {
+        current_user_id: user.id,
+        merge_request_id: merge_request.id,
+        review_id: review.id,
+        summary_note_id: summary_note.id
+      }
+    end
 
     it 'calls NotificationService#new_review' do
       expect_next_instance_of(NotificationService) do |notification_service|
         expect(notification_service)
           .to receive(:new_review)
-                .with(review)
+                .with(review, summary_note.id)
       end
 
       consume_event(subscriber: described_class, event: approved_event)

@@ -286,6 +286,13 @@ module API
         params
       end
 
+      # Picked up by ProjectImportState#after_create when CreateService builds the import state.
+      def stash_import_request_channel(params)
+        return unless params[:import_url].present?
+
+        ::Gitlab::Import::RequestChannel.stash(::Gitlab::Import::RequestChannel.detect(request))
+      end
+
       # `cicd_catalog_enabled` is not a project attribute. It is backed by the
       # presence of a `Ci::Catalog::Resource` record, so it is handled through a
       # dedicated service rather than the project create/update service.
@@ -500,6 +507,7 @@ module API
         validate_cicd_catalog_owner_access!(attrs, cicd_catalog_enabled)
 
         validate_git_import_url!(params[:import_url])
+        stash_import_request_channel(attrs)
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
@@ -554,6 +562,7 @@ module API
         filter_attributes_using_license!(attrs)
         validate_cicd_catalog_description!(attrs, cicd_catalog_enabled)
         validate_git_import_url!(params[:import_url])
+        stash_import_request_channel(attrs)
 
         project = ::Projects::CreateService.new(user, attrs).execute
 

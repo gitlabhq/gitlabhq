@@ -19,7 +19,7 @@ module API
 
           helpers do
             params :terraform_get do
-              optional 'terraform-get', type: String, values: %w[1], desc: 'Terraform get redirection flag'
+              optional 'terraform-get', type: String, values: %w[1], desc: 'Terraform get redirection flag.'
             end
 
             def present_package_file
@@ -63,11 +63,12 @@ module API
           end
 
           params do
-            requires :id, types: [String, Integer], allow_blank: false, desc: 'The ID or full path of a project'
+            requires :id, types: [String, Integer], allow_blank: false, desc: 'ID or URL-encoded path of the project.'
             requires :module_name, type: String, allow_blank: false, regexp: ::API::NO_SLASH_URL_PART_REGEX,
-              desc: 'Module name', documentation: { example: 'infra-registry' }
+              desc: 'Module name.', documentation: { example: 'infra-registry' }
             requires :module_system, type: String, allow_blank: false, regexp: ::API::NO_SLASH_URL_PART_REGEX,
-              desc: 'Module system', documentation: { example: 'aws' }
+              desc: 'Name of the module system, or ' \
+                '[provider](https://www.terraform.io/registry/providers).', documentation: { example: 'aws' }
           end
 
           resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

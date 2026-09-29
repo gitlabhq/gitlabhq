@@ -5081,6 +5081,13 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       subject.new_review(review)
     end
 
+    it 'passes the summary note id to the email' do
+      allow(Notify).to receive(:new_review_email).and_call_original
+      expect(Notify).to receive(:new_review_email).with(merge_request.author.id, review.id, note.id).and_call_original
+
+      subject.new_review(review, note.id)
+    end
+
     it_behaves_like 'project emails are disabled', check_delivery_jobs_queue: true do
       let(:notification_target)  { review }
       let(:notification_trigger) { subject.new_review(review) }

@@ -167,6 +167,7 @@ module Gitlab
             setting_authenticated_git_http: settings.throttle_authenticated_git_http_enabled,
             setting_authenticated_git_lfs: settings.throttle_authenticated_git_lfs_enabled,
             setting_authenticated_dependency_proxy: settings.throttle_authenticated_dependency_proxy_enabled,
+            setting_authenticated_mcp: settings.throttle_authenticated_mcp_enabled,
             setting_protected_paths: ::Gitlab::Throttle.protected_paths_enabled?
           }
         end

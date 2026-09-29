@@ -7,10 +7,10 @@ module Admin
     include UserActionsHelper
 
     expose :created_at
-    expose :email
+    expose :email, if: ->(user, _) { can?(current_user, :read_user_email_address, user) }
     expose :last_activity_on
     expose :avatar_url
-    expose :note
+    expose :note, if: ->(user, _) { can?(current_user, :read_user_admin_note, user) }
     expose :badges do |user|
       user_badges_in_admin_section(user, authorization_context)
     end

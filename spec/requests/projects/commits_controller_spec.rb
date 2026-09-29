@@ -68,4 +68,118 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       end
     end
   end
+
+  describe 'GET show' do
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user, maintainer_of: project) }
+
+    let(:id) { 'master/README.md' }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'with an invalid limit' do
+      it 'uses the default limit' do
+        expect_next_instance_of(Repository) do |instance|
+          expect(instance).to receive(:commits).with(
+            'master',
+            path: 'README.md',
+            limit: described_class::COMMITS_DEFAULT_LIMIT,
+            offset: 0
+          ).and_call_original
+        end
+
+        get project_commits_path(project, id, limit: 'foo')
+
+        expect(response).to be_successful
+      end
+
+      context 'when limit is a hash' do
+        it 'uses the default limit' do
+          expect_next_instance_of(Repository) do |instance|
+            expect(instance).to receive(:commits).with(
+              'master',
+              path: 'README.md',
+              limit: described_class::COMMITS_DEFAULT_LIMIT,
+              offset: 0
+            ).and_call_original
+          end
+
+          get project_commits_path(project, id, limit: { 'broken' => 'value' })
+
+          expect(response).to be_successful
+        end
+      end
+    end
+
+    context 'date range' do
+      let(:base_repository_params) do
+        {
+          path: 'README.md',
+          limit: described_class::COMMITS_DEFAULT_LIMIT,
+          offset: 0
+        }
+      end
+
+      # Dates must be parsed as UTC regardless of the ambient time zone.
+      around do |example|
+        Time.use_zone('America/Los_Angeles') { example.run }
+      end
+
+      shared_examples 'repository commits call' do
+        it 'passes the correct params' do
+          expect_next_instance_of(Repository) do |instance|
+            expect(instance).to receive(:commits).with(
+              'master',
+              **repository_params
+            ).and_call_original
+          end
+
+          get project_commits_path(project, id, **query_params)
+
+          expect(response).to be_successful
+        end
+      end
+
+      context 'when committed_before param' do
+        context 'is valid' do
+          let(:query_params) { { committed_before: '2020-01-01' } }
+          let(:repository_params) { base_repository_params.merge(before: Time.utc(2020, 1, 1).to_i) }
+
+          it_behaves_like 'repository commits call'
+        end
+
+        context 'is invalid' do
+          let(:query_params) { { committed_before: 'xxx' } }
+          let(:repository_params) { base_repository_params }
+
+          it_behaves_like 'repository commits call'
+        end
+
+        context 'is not provided' do
+          let(:query_params) { {} }
+          let(:repository_params) { base_repository_params }
+
+          it_behaves_like 'repository commits call'
+        end
+      end
+
+      context 'with committed_after param' do
+        context 'is valid' do
+          let(:query_params) { { committed_after: '2020-01-01' } }
+          let(:repository_params) { base_repository_params.merge(after: Time.utc(2020, 1, 1).to_i) }
+
+          it_behaves_like 'repository commits call'
+        end
+
+        context 'is invalid' do
+          let(:query_params) { { committed_after: 'xxx' } }
+          let(:repository_params) { base_repository_params }
+
+          it_behaves_like 'repository commits call'
+        end
+      end
+    end
+  end
 end

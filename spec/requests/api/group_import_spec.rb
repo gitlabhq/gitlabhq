@@ -203,6 +203,22 @@ RSpec.describe API::GroupImport, :with_current_organization, feature_category: :
 
         include_examples 'when all params are correct'
         include_examples 'when some params are missing'
+
+        describe 'request_channel' do
+          it 'defaults to :api' do
+            expect(Groups::ImportExport::ImportService)
+              .to receive(:new).with(hash_including(request_channel: :api)).and_call_original
+
+            upload_archive(file_upload, workhorse_headers, params)
+          end
+
+          it 'is :congregate when the caller identifies as Congregate' do
+            expect(Groups::ImportExport::ImportService)
+              .to receive(:new).with(hash_including(request_channel: :congregate)).and_call_original
+
+            upload_archive(file_upload, workhorse_headers.merge('User-Agent' => 'GitLabApiClient'), params)
+          end
+        end
       end
     end
 

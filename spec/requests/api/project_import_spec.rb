@@ -53,6 +53,29 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
   end
 
+  shared_examples 'passes request_channel to the create project service' do
+    let(:service) do
+      instance_double(
+        ::Import::GitlabProjects::CreateProjectService,
+        execute: ServiceResponse.error(message: 'stubbed', http_status: :bad_request)
+      )
+    end
+
+    it 'defaults to :api' do
+      expect(::Import::GitlabProjects::CreateProjectService)
+        .to receive(:new).with(user, hash_including(request_channel: :api)).and_return(service)
+
+      perform_request({})
+    end
+
+    it 'is :congregate when the caller identifies as Congregate' do
+      expect(::Import::GitlabProjects::CreateProjectService)
+        .to receive(:new).with(user, hash_including(request_channel: :congregate)).and_return(service)
+
+      perform_request({ 'User-Agent' => 'GitLabApiClient' })
+    end
+  end
+
   describe 'POST /projects/import' do
     subject(:perform_archive_upload) { upload_archive(file_upload, workhorse_headers, params) }
 
@@ -435,6 +458,12 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       end
     end
 
+    it_behaves_like 'passes request_channel to the create project service' do
+      def perform_request(headers)
+        upload_archive(file_upload, workhorse_headers.merge(headers), params)
+      end
+    end
+
     def upload_archive(file, headers = {}, params = {})
       workhorse_finalize(
         api("/projects/import", user),
@@ -473,6 +502,12 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
       let(:request) do
         post api('/projects/remote-import', personal_access_token: pat), params: params.merge(namespace_id: namespace.id)
+      end
+    end
+
+    it_behaves_like 'passes request_channel to the create project service' do
+      def perform_request(headers)
+        post api('/projects/remote-import', user), params: params, headers: headers
       end
     end
 
@@ -558,6 +593,12 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
       let(:request) do
         post api('/projects/remote-import-s3', personal_access_token: pat), params: params.merge(namespace_id: namespace.id)
+      end
+    end
+
+    it_behaves_like 'passes request_channel to the create project service' do
+      def perform_request(headers)
+        post api('/projects/remote-import-s3', user), params: params, headers: headers
       end
     end
 
@@ -704,6 +745,25 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       expect(response).to have_gitlab_http_status(:created)
       expect(project.reload.import_type).to eq('git')
       expect(json_response).to include('import_status' => 'scheduled')
+    end
+
+    describe 'request_channel', :clean_gitlab_redis_shared_state do
+      before do
+        project.import_state.update!(status: :failed)
+        allow(RepositoryImportWorker).to receive(:perform_async).and_return('job-id')
+      end
+
+      it 'defaults to :api' do
+        post path, params: params
+
+        expect(project.import_state.request_channel).to eq('api')
+      end
+
+      it 'is :congregate when the caller identifies as Congregate' do
+        post path, params: params, headers: { 'User-Agent' => 'GitLabApiClient' }
+
+        expect(project.import_state.request_channel).to eq('congregate')
+      end
     end
 
     it 'returns conflict when import is already in progress' do

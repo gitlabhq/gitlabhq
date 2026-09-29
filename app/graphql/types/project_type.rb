@@ -250,6 +250,11 @@ module Types
       description: 'Indicates if no merge commits should be created and all merges should instead be ' \
         'fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.'
 
+    field :merge_requests_default_target_self, GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates if merge requests of a forked project target the fork itself by default ' \
+        'instead of the upstream project.'
+
     field :shared_runners_enabled, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if shared runners are enabled for the project.'
@@ -393,6 +398,13 @@ module Types
       null: true,
       description: 'A single merge request of the project.',
       resolver: Resolvers::MergeRequestsResolver.single
+
+    field :sourced_merge_requests,
+      Types::MergeRequestType.connection_type,
+      null: true,
+      description: 'Merge requests that have this project as their source, ' \
+        'including merge requests targeting other projects. Ordered by ID in descending order.',
+      resolver: Resolvers::Projects::SourcedMergeRequestsResolver
 
     field :issues,
       Types::IssueType.connection_type,
@@ -978,14 +990,14 @@ module Types
     end
 
     def pages_use_unique_domain
-      lazy_project_settings = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
-        ::ProjectSetting.for_projects(project_ids).each do |project_setting|
-          loader.call(project_setting.project_id, project_setting)
-        end
-      end
-
       Gitlab::Graphql::Lazy.with_value(lazy_project_settings) do |settings|
         (settings || object.project_setting).pages_unique_domain_enabled?
+      end
+    end
+
+    def merge_requests_default_target_self
+      Gitlab::Graphql::Lazy.with_value(lazy_project_settings) do |settings|
+        (settings || object.project_setting).mr_default_target_self
       end
     end
 
@@ -1269,6 +1281,14 @@ module Types
 
     def project
       @project ||= object.respond_to?(:sync) ? object.sync : object
+    end
+
+    def lazy_project_settings
+      BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        ::ProjectSetting.for_projects(project_ids).each do |project_setting|
+          loader.call(project_setting.project_id, project_setting)
+        end
+      end
     end
 
     def add_file_docs_link

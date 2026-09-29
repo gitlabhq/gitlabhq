@@ -381,6 +381,30 @@ RSpec.describe UserPolicy, feature_category: :permissions do
     end
   end
 
+  describe ':read_user_admin_note' do
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_user_admin_note) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:read_user_admin_note) }
+      end
+    end
+
+    context 'when user is not an admin' do
+      it { is_expected.not_to be_allowed(:read_user_admin_note) }
+
+      context 'requesting their own' do
+        subject { described_class.new(current_user, current_user) }
+
+        it { is_expected.not_to be_allowed(:read_user_admin_note) }
+      end
+    end
+  end
+
   describe "managing a service account's personal access tokens" do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }

@@ -1046,6 +1046,166 @@ principles:
       - path: doc/development/bulk_imports/contributing.md
         url: https://docs.gitlab.com/development/bulk_imports/contributing/
 
+  # ── Webhooks ─────────────────────────────────────────────────────────────
+
+  webhooks:
+    description: Webhook definitions, triggering, and payload building for project, group, and system webhooks
+    group: Import
+    owner_team: '@gitlab-com/create-team/import'
+    file_filters:
+      # Models
+      - 'app/models/hooks/**/*.rb'
+      - 'app/models/concerns/web_hooks/**/*.rb'
+      - 'app/models/concerns/triggerable_hooks.rb'
+      - 'app/models/concerns/integrations/has_web_hook.rb'
+      - 'app/models/projects/triggered_hooks.rb'
+      - 'ee/app/models/hooks/**/*.rb'
+      - 'ee/app/models/ee/project_hook.rb'
+      - 'ee/app/models/ee/system_hook.rb'
+      - 'ee/app/models/concerns/ee/triggerable_hooks.rb'
+      - 'ee/app/models/concerns/ee/web_hooks/**/*.rb'
+      # Validators
+      - 'app/validators/web_hooks/**/*.rb'
+      - 'app/validators/system_hook_url_validator.rb'
+      # Finders
+      - 'app/finders/web_hooks/**/*.rb'
+      # Policies
+      - 'app/policies/system_hook_policy.rb'
+      - 'app/policies/project_hook_policy.rb'
+      - 'app/policies/web_hook_log_policy.rb'
+      - 'ee/app/policies/group_hook_policy.rb'
+      # Workers
+      - 'app/workers/web_hooks/**/*.rb'
+      - 'app/workers/web_hook_worker.rb'
+      - 'app/workers/system_hook_push_worker.rb'
+      - 'app/workers/merge_requests/refresh/web_hooks_worker.rb'
+      # Services
+      - 'app/services/web_hooks/**/*.rb'
+      - 'app/services/web_hook_service.rb'
+      - 'app/services/system_hooks_service.rb'
+      - 'app/services/test_hooks/**/*.rb'
+      - 'app/services/merge_requests/refresh/web_hooks_service.rb'
+      - 'ee/app/services/ee/web_hooks/**/*.rb'
+      - 'ee/app/services/test_hooks/**/*.rb'
+      # GraphQL
+      - 'app/graphql/resolvers/web_hooks/**/*.rb'
+      - 'app/graphql/types/web_hooks/**/*.rb'
+      - 'ee/app/graphql/ee/types/web_hooks/**/*.rb'
+      - 'ee/app/graphql/resolvers/web_hooks/**/*.rb'
+      - 'ee/app/graphql/types/web_hooks/**/*.rb'
+      # Rake tasks
+      - 'lib/tasks/gitlab/web_hook.rake'
+      # Controllers
+      - 'app/controllers/projects/hooks_controller.rb'
+      - 'app/controllers/projects/hook_logs_controller.rb'
+      - 'app/controllers/admin/hooks_controller.rb'
+      - 'app/controllers/admin/hook_logs_controller.rb'
+      - 'app/controllers/concerns/web_hooks/**/*.rb'
+      - 'ee/app/controllers/groups/hooks_controller.rb'
+      - 'ee/app/controllers/groups/hook_logs_controller.rb'
+      # Helpers
+      - 'app/helpers/hooks_helper.rb'
+      - 'app/helpers/web_hooks/**/*.rb'
+      - 'ee/app/helpers/ee/web_hooks/**/*.rb'
+      # Presenters
+      - 'app/presenters/service_hook_presenter.rb'
+      - 'app/presenters/project_hook_presenter.rb'
+      - 'app/presenters/web_hook_log_presenter.rb'
+      - 'ee/app/presenters/web_hooks/**/*.rb'
+      # Views
+      - 'app/views/projects/hooks/**/*'
+      - 'app/views/projects/hook_logs/**/*'
+      - 'app/views/admin/hooks/**/*'
+      - 'app/views/admin/hook_logs/**/*'
+      - 'app/views/admin/application_settings/_web_hook_limits.html.haml'
+      - 'app/views/shared/web_hooks/**/*'
+      - 'app/views/shared/hook_logs/**/*'
+      - 'ee/app/views/groups/hooks/**/*'
+      - 'ee/app/views/groups/hook_logs/**/*'
+      - 'ee/app/views/shared/web_hooks/**/*'
+      # REST API
+      - 'lib/api/project_hooks.rb'
+      - 'lib/api/system_hooks.rb'
+      - 'lib/api/hooks/**/*.rb'
+      - 'lib/api/helpers/web_hooks_helpers.rb'
+      - 'lib/api/entities/hook.rb'
+      - 'lib/api/entities/project_hook.rb'
+      - 'lib/api/entities/web_hook_log.rb'
+      - 'lib/api/entities/retry_webhook_event.rb'
+      - 'ee/lib/api/group_hooks.rb'
+      - 'ee/lib/api/entities/group_hook.rb'
+      - 'ee/lib/ee/api/hooks/**/*.rb'
+      # Payload building
+      - 'lib/gitlab/hook_data/**/*.rb'
+      - 'lib/gitlab/data_builder/**/*.rb'
+      - 'lib/gitlab/web_hooks/**/*.rb'
+      - 'lib/gitlab/web_hooks.rb'
+      - 'lib/gitlab/middleware/webhook_recursion_detection.rb'
+      - 'config/initializers/webhook_recursion_detection.rb'
+      - 'ee/lib/ee/gitlab/hook_data/**/*.rb'
+      - 'ee/lib/ee/gitlab/web_hooks/**/*.rb'
+      # Specs (CE)
+      - 'spec/models/hooks/**/*_spec.rb'
+      - 'spec/models/concerns/web_hooks/**/*_spec.rb'
+      - 'spec/models/concerns/triggerable_hooks_spec.rb'
+      - 'spec/models/concerns/integrations/has_web_hook_spec.rb'
+      - 'spec/models/projects/triggered_hooks_spec.rb'
+      - 'spec/validators/web_hooks/**/*_spec.rb'
+      - 'spec/validators/system_hook_url_validator_spec.rb'
+      - 'spec/finders/web_hooks/**/*_spec.rb'
+      - 'spec/policies/system_hook_policy_spec.rb'
+      - 'spec/policies/project_hook_policy_spec.rb'
+      - 'spec/policies/web_hook_log_policy_spec.rb'
+      - 'spec/workers/web_hooks/**/*_spec.rb'
+      - 'spec/workers/web_hook_worker_spec.rb'
+      - 'spec/workers/system_hook_push_worker_spec.rb'
+      - 'spec/workers/merge_requests/refresh/web_hooks_worker_spec.rb'
+      - 'spec/services/web_hooks/**/*_spec.rb'
+      - 'spec/services/web_hook_service_spec.rb'
+      - 'spec/services/system_hooks_service_spec.rb'
+      - 'spec/services/test_hooks/**/*_spec.rb'
+      - 'spec/services/merge_requests/refresh/web_hooks_service_spec.rb'
+      - 'spec/graphql/resolvers/web_hooks/**/*_spec.rb'
+      - 'spec/graphql/types/web_hooks/**/*_spec.rb'
+      - 'spec/tasks/gitlab/web_hook_rake_spec.rb'
+      - 'spec/helpers/hooks_helper_spec.rb'
+      - 'spec/helpers/web_hooks/**/*_spec.rb'
+      - 'spec/presenters/service_hook_presenter_spec.rb'
+      - 'spec/presenters/project_hook_presenter_spec.rb'
+      - 'spec/presenters/web_hook_log_presenter_spec.rb'
+      - 'spec/requests/api/project_hooks_spec.rb'
+      - 'spec/requests/api/system_hooks_spec.rb'
+      - 'spec/lib/api/entities/hook_spec.rb'
+      - 'spec/lib/gitlab/hook_data/**/*_spec.rb'
+      - 'spec/lib/gitlab/data_builder/**/*_spec.rb'
+      - 'spec/lib/gitlab/web_hooks/**/*_spec.rb'
+      - 'spec/controllers/projects/hooks_controller_spec.rb'
+      - 'spec/controllers/admin/hooks_controller_spec.rb'
+      - 'spec/controllers/concerns/web_hooks/**/*_spec.rb'
+      - 'spec/features/admin/admin_hooks_spec.rb'
+      - 'spec/features/admin/admin_hook_logs_spec.rb'
+      - 'spec/features/projects/settings/webhooks_settings_spec.rb'
+      # Specs (EE)
+      - 'ee/spec/models/hooks/**/*_spec.rb'
+      - 'ee/spec/models/concerns/triggerable_hooks_spec.rb'
+      - 'ee/spec/policies/group_hook_policy_spec.rb'
+      - 'ee/spec/policies/web_hook_log_policy_spec.rb'
+      - 'ee/spec/presenters/web_hooks/**/*_spec.rb'
+      - 'ee/spec/services/test_hooks/**/*_spec.rb'
+      - 'ee/spec/services/ee/web_hooks/**/*_spec.rb'
+      - 'ee/spec/services/web_hook_service_spec.rb'
+      - 'ee/spec/requests/api/project_hooks_spec.rb'
+      - 'ee/spec/requests/api/group_hooks_spec.rb'
+      - 'ee/spec/controllers/groups/hooks_controller_spec.rb'
+      - 'ee/spec/graphql/resolvers/web_hooks/**/*_spec.rb'
+      - 'ee/spec/graphql/types/web_hooks/**/*_spec.rb'
+      - 'ee/spec/graphql/ee/types/web_hooks/**/*_spec.rb'
+      - 'ee/spec/lib/ee/gitlab/hook_data/**/*_spec.rb'
+      - 'ee/spec/lib/ee/gitlab/web_hooks/**/*_spec.rb'
+    sources:
+      - path: doc/development/webhooks.md
+        url: https://docs.gitlab.com/development/webhooks/
+
   # ── MCP Server ───────────────────────────────────────────────────────────
 
   mcp-server:

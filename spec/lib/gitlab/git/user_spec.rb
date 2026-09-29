@@ -63,6 +63,15 @@ RSpec.describe Gitlab::Git::User, feature_category: :source_code_management do
         'Europe/Belgrade' | 'Europe/Belgrade'
         'pug/pug'          | 'Etc/UTC'
         'Edinburgh'        | "Europe/London"
+        'Kyiv'             | 'Europe/Kyiv'
+        'Europe/Kiev'      | 'Europe/Kyiv'
+        'Europe/Kyiv'      | 'Europe/Kyiv'
+        'Greenland'        | 'America/Nuuk'
+        'America/Godthab'  | 'America/Nuuk'
+        'Rangoon'          | 'Asia/Yangon'
+        'Asia/Rangoon'     | 'Asia/Yangon'
+        'Israel'           | 'Asia/Jerusalem'
+        'US/Eastern'       | 'America/New_York'
         nil                | 'Etc/UTC'
       end
 
@@ -71,6 +80,18 @@ RSpec.describe Gitlab::Git::User, feature_category: :source_code_management do
 
         it 'handles timezone appropriately' do
           expect(user.timezone).to eq(expected_timezone)
+        end
+      end
+
+      context 'when the system timezone is a legacy identifier' do
+        let(:timezone) { nil }
+
+        around do |example|
+          Time.use_zone('Kyiv') { example.run }
+        end
+
+        it 'falls back to the canonical identifier' do
+          expect(user.timezone).to eq('Europe/Kyiv')
         end
       end
     end

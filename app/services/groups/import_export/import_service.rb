@@ -3,11 +3,12 @@
 module Groups
   module ImportExport
     class ImportService
-      attr_reader :current_user, :group, :shared
+      attr_reader :current_user, :group, :shared, :request_channel
 
-      def initialize(group:, user:)
+      def initialize(group:, user:, request_channel: ::Gitlab::Import::RequestChannel::API)
         @group = group
         @current_user = user
+        @request_channel = request_channel
         @user_role = user_role
         @shared = Gitlab::ImportExport::Shared.new(@group)
         @logger = ::Import::Framework::Logger.build
@@ -15,6 +16,7 @@ module Groups
 
       def async_execute
         group_import_state = GroupImportState.safe_find_or_create_by!(group: group, user: current_user)
+        group_import_state.request_channel = request_channel
         jid = GroupImportWorker.with_status.perform_async(current_user.id, group.id)
 
         if jid.present?

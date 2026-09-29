@@ -23,15 +23,26 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     expand_all_collapsed_discussions
   end
 
-  let(:project) { create(:project, :repository) }
-  let(:merge_request) do
-    create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
+  # Applying a suggestion commits to the source branch, so each example works on
+  # its own copy and the shared repository stays reusable.
+  def source_branch_copy
+    "merge-test-#{SecureRandom.hex(4)}".tap do |name|
+      project.repository.create_branch(name, 'merge-test')
+    end
   end
 
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+
+  let(:merge_request) do
+    create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: source_branch_copy)
+  end
+
+  before_all do
+    project.add_maintainer(user)
+  end
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))

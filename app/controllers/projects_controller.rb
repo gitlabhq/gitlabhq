@@ -111,6 +111,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def create
+    ::Gitlab::Import::RequestChannel.stash(::Gitlab::Import::RequestChannel::UI) if import_url_params.present?
+
     @project = ::Projects::CreateService.new(current_user,
       project_params(attributes: project_params_create_attributes)).execute
 

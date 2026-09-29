@@ -724,13 +724,13 @@ class NotificationService
   end
 
   # Notify users on new review in system
-  def new_review(review)
+  def new_review(review, summary_note_id = nil)
     recipients = NotificationRecipients::BuildService.build_new_review_recipients(review)
     deliver_options = new_review_deliver_options(review)
 
     recipients.each do |recipient|
       mailer
-        .new_review_email(recipient.user.id, review.id)
+        .new_review_email(*[recipient.user.id, review.id, summary_note_id].compact)
         .deliver_later(deliver_options)
     end
   end

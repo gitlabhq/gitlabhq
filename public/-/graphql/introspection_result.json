@@ -335674,6 +335674,18 @@
               "deprecationReason": null
             },
             {
+              "name": "mergeRequestsDefaultTargetSelf",
+              "description": "Indicates if merge requests of a forked project target the fork itself by default instead of the upstream project.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mergeRequestsDisableCommittersApproval",
               "description": "Indicates that committers of the given merge request cannot approve.",
               "args": [],
@@ -340669,6 +340681,103 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sourcedMergeRequests",
+              "description": "Merge requests that have this project as their source, including merge requests targeting other projects. Ordered by ID in descending order.",
+              "args": [
+                {
+                  "name": "sourceBranches",
+                  "description": "Array of source branch names (maximum is 100). All resolved merge requests will have one of these branches as their source.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "LIST",
+                      "name": null,
+                      "ofType": {
+                        "kind": "NON_NULL",
+                        "name": null,
+                        "ofType": {
+                          "kind": "SCALAR",
+                          "name": "String",
+                          "ofType": null
+                        }
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "state",
+                  "description": "Merge request state. If provided, all resolved merge requests will have the state.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "MergeRequestState",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -456270,7 +456379,7 @@
             },
             {
               "name": "options",
-              "description": "Existing options of the decision to update. Maximum of 5 options.",
+              "description": "Existing options of the decision to update. Maximum of 6 options.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -456283,6 +456392,18 @@
                     "ofType": null
                   }
                 }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "selectedOptionContent",
+              "description": "Content of the selected option. Unless exactly one option is selected, a new selected option with this content is added and any selected options are deselected. Can only be updated on resolved decisions.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null,
               "isDeprecated": false,

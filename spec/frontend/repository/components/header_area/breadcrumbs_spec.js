@@ -22,6 +22,7 @@ describe('Repository breadcrumbs component', () => {
     extraProps = {},
     mockRoute = {},
     projectRootPath = TEST_PROJECT_PATH,
+    mountOptions = {},
   } = {}) => {
     const apolloProvider = createApolloProvider();
 
@@ -47,6 +48,7 @@ describe('Repository breadcrumbs component', () => {
           ...mockRoute,
         },
       },
+      ...mountOptions,
     });
   };
 
@@ -119,6 +121,18 @@ describe('Repository breadcrumbs component', () => {
       expect(findGLBreadcrumb().attributes('data-current-path')).toBe(expectedPath);
     },
   );
+
+  it('renders data-current-path inside the `.js-repo-breadcrumbs` element used by the find-file shortcut', () => {
+    factory({
+      currentPath: 'foo/bar/index.js',
+      mockRoute: { name: 'blobPath' },
+      mountOptions: { attrs: { class: 'js-repo-breadcrumbs' } },
+    });
+
+    expect(
+      wrapper.element.querySelector('.js-repo-breadcrumbs [data-current-path]').dataset.currentPath,
+    ).toBe('foo/bar');
+  });
 
   describe('copy-to-clipboard icon button', () => {
     it.each`

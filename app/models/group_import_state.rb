@@ -68,6 +68,16 @@ class GroupImportState < ApplicationRecord
     track_group_import_event('fail_group_import')
   end
 
+  # Kept in Redis rather than a column, matching ProjectImportState: it's only
+  # read once, when start_group_import fires, so the 24h cache TTL is enough.
+  def request_channel=(value)
+    Gitlab::Cache::Import::Caching.write(request_channel_cache_key, value.to_s) if value.present?
+  end
+
+  def request_channel
+    Gitlab::Cache::Import::Caching.read(request_channel_cache_key)
+  end
+
   private
 
   def track_group_import_event(action)
@@ -76,8 +86,15 @@ class GroupImportState < ApplicationRecord
         action,
         namespace: group,
         user: user,
-        additional_properties: { label: IMPORT_LABEL }
+        additional_properties: {
+          label: IMPORT_LABEL,
+          request_channel: (request_channel if action == 'start_group_import')
+        }.compact
       )
     end
+  end
+
+  def request_channel_cache_key
+    "group_import_request_channel_#{group_id}"
   end
 end

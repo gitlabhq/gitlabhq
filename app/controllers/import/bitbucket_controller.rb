@@ -82,6 +82,7 @@ class Import::BitbucketController < Import::BaseController
       # Bitbucket::Connection class refreshes it.
       session[:bitbucket_token] = client.connection.token
 
+      ::Gitlab::Import::RequestChannel.stash(::Gitlab::Import::RequestChannel::UI)
       project = Gitlab::BitbucketImport::ProjectCreator.new(
         repo,
         project_name,

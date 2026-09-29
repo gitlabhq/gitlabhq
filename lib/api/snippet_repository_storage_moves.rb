@@ -33,7 +33,7 @@ module API
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
       params do
-        requires :repository_storage_move_id, type: Integer, desc: 'The ID of a snippet repository storage move'
+        requires :repository_storage_move_id, type: Integer, desc: 'ID of the snippet repository storage move.'
       end
       route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance,
         assignable_when: [:admin]
@@ -51,8 +51,8 @@ module API
       end
       # rubocop:disable API/ParameterValuesProc -- storage shards are instance-specific
       params do
-        requires :source_storage_name, type: String, desc: 'The source storage shard', values: -> { Gitlab.config.repositories.storages.keys }
-        optional :destination_storage_name, type: String, desc: 'The destination storage shard', values: -> { Gitlab.config.repositories.storages.keys }
+        requires :source_storage_name, type: String, desc: 'Name of the source storage shard.', values: -> { Gitlab.config.repositories.storages.keys }
+        optional :destination_storage_name, type: String, desc: 'Name of the destination storage shard. If not provided, the storage is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).', values: -> { Gitlab.config.repositories.storages.keys }
       end
       # rubocop:enable API/ParameterValuesProc
 
@@ -69,7 +69,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a snippet'
+      requires :id, type: String, desc: 'ID of the snippet.'
     end
     resource :snippets do
       helpers do
@@ -106,7 +106,7 @@ module API
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
       params do
-        requires :repository_storage_move_id, type: Integer, desc: 'The ID of a snippet repository storage move'
+        requires :repository_storage_move_id, type: Integer, desc: 'ID of the snippet repository storage move.'
       end
       route_setting :authorization, permissions: :read_repository_storage_move, boundary_type: :instance,
         assignable_when: [:admin]
@@ -122,7 +122,7 @@ module API
         success code: 201, model: Entities::Snippets::RepositoryStorageMove
       end
       params do
-        optional :destination_storage_name, type: String, desc: 'The destination storage shard'
+        optional :destination_storage_name, type: String, desc: 'Name of the destination storage shard. If not provided, the storage is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).'
       end
       route_setting :authorization, permissions: :create_repository_storage_move, boundary_type: :instance,
         assignable_when: [:admin]

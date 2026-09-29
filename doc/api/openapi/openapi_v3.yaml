@@ -2536,7 +2536,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -2545,7 +2545,7 @@ paths:
         example: 1
       - name: control_id
         required: true
-        description: The ID of the control
+        description: ID of the control.
         schema:
           type: integer
         in: path
@@ -2554,7 +2554,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5fb43d25135d"
+              "$ref": "#/components/schemas/RequestBody_994517ca5bb4"
   "/api/v4/projects/{id}/security_scans/sast/{sast_endpoint}":
     post:
       operationId: postApiV4ProjectsIdSecurityScansSastSastEndpoint
@@ -2894,7 +2894,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -2988,7 +2988,7 @@ paths:
         example: 20
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -3030,7 +3030,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -3072,7 +3072,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -3112,7 +3112,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -5061,7 +5061,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -5069,7 +5069,7 @@ paths:
         in: path
       - name: eventable_id
         required: true
-        description: The ID of the eventable
+        description: ID of the eventable.
         schema:
           oneOf:
           - type: integer
@@ -5112,7 +5112,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -5120,13 +5120,13 @@ paths:
         in: path
       - name: event_id
         required: true
-        description: The ID of a resource iteration event
+        description: ID of the resource iteration event.
         schema:
           type: string
         in: path
       - name: eventable_id
         required: true
-        description: The ID of the eventable
+        description: ID of the eventable.
         schema:
           oneOf:
           - type: integer
@@ -5153,7 +5153,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -5161,7 +5161,7 @@ paths:
         in: path
       - name: eventable_id
         required: true
-        description: The ID of the eventable
+        description: ID of the eventable.
         schema:
           oneOf:
           - type: integer
@@ -5204,7 +5204,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -5212,13 +5212,13 @@ paths:
         in: path
       - name: event_id
         required: true
-        description: The ID of a resource weight event
+        description: ID of the resource weight event.
         schema:
           type: string
         in: path
       - name: eventable_id
         required: true
-        description: The ID of the eventable
+        description: ID of the eventable.
         schema:
           oneOf:
           - type: integer
@@ -11092,7 +11092,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -11139,14 +11139,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
         example: '1'
       - name: board_id
         required: true
-        description: The ID of an epic board
+        description: ID of the epic board.
         schema:
           type: integer
         in: path
@@ -11177,14 +11177,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
         example: '1'
       - name: board_id
         required: true
-        description: The ID of an epic board
+        description: ID of the epic board.
         schema:
           type: integer
         in: path
@@ -11231,21 +11231,21 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
         example: '1'
       - name: board_id
         required: true
-        description: The ID of an epic board
+        description: ID of the epic board.
         schema:
           type: integer
         in: path
         example: 1
       - name: list_id
         required: true
-        description: The ID of a list
+        description: ID of the epic board's list.
         schema:
           type: integer
         in: path
@@ -13009,7 +13009,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_96a9a7d35035"
+              "$ref": "#/components/schemas/RequestBody_ac1b5013fe8b"
   "/api/v4/groups/{id}/approval_rules/{approval_rule_id}":
     put:
       operationId: putApiV4GroupsIdApprovalRulesApprovalRuleId
@@ -13046,7 +13046,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5ef4c0b646b6"
+              "$ref": "#/components/schemas/RequestBody_9583ed7cca8d"
   "/api/v4/groups/{id}/security_settings":
     put:
       operationId: putApiV4GroupsIdSecuritySettings
@@ -13065,7 +13065,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -13076,7 +13076,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_7c69046aa4ca"
+              "$ref": "#/components/schemas/RequestBody_52756e9c0fbf"
   "/api/v4/projects/{id}/security_settings":
     get:
       operationId: getApiV4ProjectsIdSecuritySettings
@@ -13487,7 +13487,7 @@ paths:
       parameters:
       - name: runner_controller_id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -13530,7 +13530,7 @@ paths:
       parameters:
       - name: runner_controller_id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -13539,7 +13539,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_7e3e1660f655"
+              "$ref": "#/components/schemas/RequestBody_7ac1e50a4f4a"
       x-gitlab-lifecycle: experiment
   "/api/v4/runner_controllers/{runner_controller_id}/tokens/{id}":
     get:
@@ -13565,13 +13565,13 @@ paths:
       parameters:
       - name: runner_controller_id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
       - name: id
         required: true
-        description: ID of the runner controller token
+        description: ID of the runner controller token.
         schema:
           type: integer
         in: path
@@ -13594,13 +13594,13 @@ paths:
       parameters:
       - name: runner_controller_id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
       - name: id
         required: true
-        description: ID of the runner controller token
+        description: ID of the runner controller token.
         schema:
           type: integer
         in: path
@@ -13628,13 +13628,13 @@ paths:
       parameters:
       - name: runner_controller_id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
       - name: id
         required: true
-        description: ID of the runner controller token
+        description: ID of the runner controller token.
         schema:
           type: integer
         in: path
@@ -13843,7 +13843,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f837c2c3f3be"
+              "$ref": "#/components/schemas/RequestBody_5520698f56ae"
       x-gitlab-lifecycle: experiment
   "/api/v4/runner_controllers/{id}":
     get:
@@ -13868,7 +13868,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -13895,7 +13895,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -13904,7 +13904,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ea780ea7b5ae"
+              "$ref": "#/components/schemas/RequestBody_a865489118e1"
       x-gitlab-lifecycle: experiment
     delete:
       operationId: deleteApiV4RunnerControllersId
@@ -13928,7 +13928,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of the runner controller
+        description: ID of the runner controller.
         schema:
           type: integer
         in: path
@@ -14871,7 +14871,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_92cb9c432aa9"
+              "$ref": "#/components/schemas/RequestBody_1ffd3dffed64"
   "/api/v4/admin_member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4AdminMemberRolesMemberRoleId
@@ -14890,7 +14890,7 @@ paths:
       parameters:
       - name: member_role_id
         required: true
-        description: ID of the member role
+        description: ID of the member role.
         schema:
           type: integer
         in: path
@@ -15270,7 +15270,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15300,7 +15300,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15332,7 +15332,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15374,7 +15374,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15402,7 +15402,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15436,7 +15436,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15478,7 +15478,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15538,7 +15538,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15576,7 +15576,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15604,7 +15604,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15652,7 +15652,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15681,7 +15681,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15715,7 +15715,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15745,7 +15745,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15775,7 +15775,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15805,7 +15805,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15835,7 +15835,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15865,7 +15865,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15899,7 +15899,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15947,7 +15947,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -15989,7 +15989,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16017,7 +16017,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16051,35 +16051,35 @@ paths:
       parameters:
       - name: run_id
         required: true
-        description: UUID of the run
+        description: UUID of the run.
         schema:
           type: string
           nullable: true
         in: query
       - name: metric_key
         required: true
-        description: Name of the metric
+        description: Name of the metric.
         schema:
           type: string
           nullable: true
         in: query
       - name: max_results
         required: false
-        description: Maximum number of metrics to return. Default is 1000.
+        description: Maximum number of metrics to return.
         schema:
           type: integer
           default: 1000
         in: query
       - name: page_token
         required: false
-        description: Token for pagination
+        description: Token for pagination.
         schema:
           type: string
           nullable: true
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16114,7 +16114,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16149,7 +16149,7 @@ paths:
         in: query
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16175,7 +16175,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16203,7 +16203,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16237,7 +16237,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16267,7 +16267,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -16297,7 +16297,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -19780,7 +19780,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c5f939561e3c"
+              "$ref": "#/components/schemas/RequestBody_87548323884d"
   "/api/v4/snippet_repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4SnippetRepositoryStorageMovesRepositoryStorageMoveId
@@ -19802,7 +19802,7 @@ paths:
       parameters:
       - name: repository_storage_move_id
         required: true
-        description: The ID of a snippet repository storage move
+        description: ID of the snippet repository storage move.
         schema:
           type: integer
         in: path
@@ -19829,7 +19829,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: string
         in: path
@@ -19869,7 +19869,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: string
         in: path
@@ -19878,7 +19878,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_db0654dec4c2"
+              "$ref": "#/components/schemas/RequestBody_7ccfe016f4e3"
   "/api/v4/snippets/{id}/repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4SnippetsIdRepositoryStorageMovesRepositoryStorageMoveId
@@ -19900,13 +19900,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: string
         in: path
       - name: repository_storage_move_id
         required: true
-        description: The ID of a snippet repository storage move
+        description: ID of the snippet repository storage move.
         schema:
           type: integer
         in: path
@@ -20011,7 +20011,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_89f350c1ba64"
+              "$ref": "#/components/schemas/RequestBody_bcb4ff6f1ed1"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -21192,7 +21192,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c5f939561e3c"
+              "$ref": "#/components/schemas/RequestBody_87548323884d"
   "/api/v4/project_repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4ProjectRepositoryStorageMovesRepositoryStorageMoveId
@@ -21214,7 +21214,7 @@ paths:
       parameters:
       - name: repository_storage_move_id
         required: true
-        description: The ID of a project repository storage move
+        description: ID of the project repository storage move.
         schema:
           type: integer
         in: path
@@ -21239,7 +21239,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -21281,7 +21281,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -21292,7 +21292,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_db0654dec4c2"
+              "$ref": "#/components/schemas/RequestBody_7ccfe016f4e3"
   "/api/v4/projects/{id}/repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4ProjectsIdRepositoryStorageMovesRepositoryStorageMoveId
@@ -21314,7 +21314,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -21322,7 +21322,7 @@ paths:
         in: path
       - name: repository_storage_move_id
         required: true
-        description: The ID of a project repository storage move
+        description: ID of the project repository storage move.
         schema:
           type: integer
         in: path
@@ -24490,7 +24490,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5d7c35d55ff7"
+              "$ref": "#/components/schemas/RequestBody_25f1867b4335"
     put:
       operationId: putApiV4ProjectsIdLabels
       summary: Update an existing label. At least one optional parameter is required.
@@ -24523,7 +24523,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5a4e5cc28e59"
+              "$ref": "#/components/schemas/RequestBody_599ada68dad2"
     delete:
       operationId: deleteApiV4ProjectsIdLabels
       summary: Delete an existing label
@@ -24646,7 +24646,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_57a19d02f2c7"
+              "$ref": "#/components/schemas/RequestBody_d18846e05940"
     delete:
       operationId: deleteApiV4ProjectsIdLabelsName
       summary: Delete a project label
@@ -24862,7 +24862,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_02089c8031f0"
+              "$ref": "#/components/schemas/RequestBody_f42e407fc22a"
     put:
       operationId: putApiV4GroupsIdLabels
       summary: Update a group label
@@ -24893,7 +24893,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_433478749095"
+              "$ref": "#/components/schemas/RequestBody_4bbd264242fa"
     delete:
       operationId: deleteApiV4GroupsIdLabels
       summary: Delete a group label
@@ -25016,7 +25016,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_4c5d8e77f5f2"
+              "$ref": "#/components/schemas/RequestBody_8358ecb75b22"
     delete:
       operationId: deleteApiV4GroupsIdLabelsName
       summary: Delete a group label
@@ -28854,7 +28854,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -28862,13 +28862,13 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
       - name: ID
         required: false
-        description: Terraform state lock ID
+        description: Terraform state lock ID.
         schema:
           type: string
           nullable: true
@@ -28898,7 +28898,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -28906,7 +28906,7 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
@@ -28936,7 +28936,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -28944,7 +28944,7 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
@@ -28970,7 +28970,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -28978,7 +28978,7 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
@@ -29005,7 +29005,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -29013,7 +29013,7 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
@@ -29022,7 +29022,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_fcbe52168a61"
+              "$ref": "#/components/schemas/RequestBody_2acf50f9a877"
     delete:
       operationId: deleteApiV4ProjectsIdTerraformStateNameLock
       summary: Unlock a Terraform state
@@ -29045,7 +29045,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -29053,13 +29053,13 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of a Terraform state
+        description: Name of the Terraform state.
         schema:
           type: string
         in: path
       - name: ID
         required: false
-        description: Terraform state lock ID
+        description: Terraform state lock ID.
         schema:
           type: string
           nullable: true
@@ -29087,7 +29087,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or full path of a project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -29095,21 +29095,21 @@ paths:
         in: path
       - name: module_name
         required: true
-        description: Module name
+        description: Module name.
         schema:
           type: string
         in: path
         example: infra-registry
       - name: module_system
         required: true
-        description: Module system
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
         example: aws
       - name: terraform-get
         required: false
-        description: Terraform get redirection flag
+        description: Terraform get redirection flag.
         schema:
           type: string
           enum:
@@ -29137,7 +29137,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or full path of a project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -29145,14 +29145,14 @@ paths:
         in: path
       - name: module_name
         required: true
-        description: Module name
+        description: Module name.
         schema:
           type: string
         in: path
         example: infra-registry
       - name: module_system
         required: true
-        description: Module system
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -29165,7 +29165,7 @@ paths:
         in: path
       - name: terraform-get
         required: false
-        description: Terraform get redirection flag
+        description: Terraform get redirection flag.
         schema:
           type: string
           enum:
@@ -29191,7 +29191,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or full path of a project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -29199,14 +29199,14 @@ paths:
         in: path
       - name: module_name
         required: true
-        description: Module name
+        description: Module name.
         schema:
           type: string
         in: path
         example: infra-registry
       - name: module_system
         required: true
-        description: Module system
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -29238,7 +29238,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or full path of a project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -29246,14 +29246,14 @@ paths:
         in: path
       - name: module_name
         required: true
-        description: Module name
+        description: Module name.
         schema:
           type: string
         in: path
         example: infra-registry
       - name: module_system
         required: true
-        description: Module system
+        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
         schema:
           type: string
         in: path
@@ -30515,7 +30515,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: string
         in: path
@@ -34026,7 +34026,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34364,7 +34364,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34411,7 +34411,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34422,7 +34422,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_586dac379fa0"
+              "$ref": "#/components/schemas/RequestBody_ddf539206347"
   "/api/v4/projects/{id}/protected_tags/{name}":
     get:
       operationId: getApiV4ProjectsIdProtectedTagsName
@@ -34446,7 +34446,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34454,7 +34454,7 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of the tag or wildcard
+        description: Name of the tag or wildcard.
         schema:
           type: string
         in: path
@@ -34479,7 +34479,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34487,7 +34487,7 @@ paths:
         in: path
       - name: name
         required: true
-        description: The name of the protected tag
+        description: Name of the tag or wildcard.
         schema:
           type: string
         in: path
@@ -35463,7 +35463,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -35498,7 +35498,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -35533,7 +35533,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -37326,7 +37326,7 @@ paths:
         example: 20
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -37361,7 +37361,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38648,7 +38648,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38684,7 +38684,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38695,7 +38695,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5976c38b9245"
+              "$ref": "#/components/schemas/RequestBody_110b52088c0d"
   "/api/v4/projects/remote-import":
     post:
       operationId: postApiV4ProjectsRemoteImport
@@ -38803,7 +38803,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38871,7 +38871,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38912,7 +38912,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38948,7 +38948,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38989,7 +38989,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -39295,7 +39295,7 @@ paths:
         example: 1
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -39366,7 +39366,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -39409,7 +39409,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41575,8 +41575,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41601,8 +41600,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41613,7 +41611,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_48e89df6b887"
+              "$ref": "#/components/schemas/RequestBody_8ebf06dd26a6"
     get:
       operationId: getApiV4ProjectsIdPages
       summary: Retrieve Pages settings for a project
@@ -41633,8 +41631,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -44584,7 +44581,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -47301,7 +47298,7 @@ paths:
         in: query
       - name: with_saml_identity
         required: false
-        description: List only members with linked SAML identity
+        description: If `true`, returns only members with a linked SAML identity.
         schema:
           type: boolean
           nullable: true
@@ -47409,7 +47406,7 @@ paths:
         in: query
       - name: state
         required: false
-        description: Filter results by member state
+        description: Filter results by member state. Premium and Ultimate only.
         schema:
           type: string
           enum:
@@ -47500,7 +47497,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c64319e2de56"
+              "$ref": "#/components/schemas/RequestBody_f72cc0507ac5"
     delete:
       operationId: deleteApiV4GroupsIdMembersUserId
       summary: Remove a member from a group
@@ -47641,7 +47638,7 @@ paths:
         in: query
       - name: with_saml_identity
         required: false
-        description: List only members with linked SAML identity
+        description: If `true`, returns only members with a linked SAML identity.
         schema:
           type: boolean
           nullable: true
@@ -47749,7 +47746,7 @@ paths:
         in: query
       - name: state
         required: false
-        description: Filter results by member state
+        description: Filter results by member state. Premium and Ultimate only.
         schema:
           type: string
           enum:
@@ -47840,7 +47837,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c64319e2de56"
+              "$ref": "#/components/schemas/RequestBody_f72cc0507ac5"
     delete:
       operationId: deleteApiV4ProjectsIdMembersUserId
       summary: Remove a member from a project
@@ -53056,7 +53053,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53088,7 +53085,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53126,7 +53123,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53164,7 +53161,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53202,7 +53199,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53240,7 +53237,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53278,7 +53275,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53316,7 +53313,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53354,7 +53351,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53392,7 +53389,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53430,7 +53427,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53468,7 +53465,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53506,7 +53503,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53544,7 +53541,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53582,7 +53579,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53620,7 +53617,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53658,7 +53655,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53696,7 +53693,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53734,7 +53731,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53772,7 +53769,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53810,7 +53807,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53848,7 +53845,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53886,7 +53883,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53924,7 +53921,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -53962,7 +53959,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54000,7 +53997,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54038,7 +54035,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54076,7 +54073,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54114,7 +54111,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54152,7 +54149,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54190,7 +54187,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54228,7 +54225,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54266,7 +54263,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54304,7 +54301,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54342,7 +54339,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54380,7 +54377,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54418,7 +54415,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54456,7 +54453,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54494,7 +54491,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54532,7 +54529,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54570,7 +54567,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54608,7 +54605,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54646,7 +54643,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54684,7 +54681,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54722,7 +54719,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54760,7 +54757,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54798,7 +54795,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54836,7 +54833,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54875,7 +54872,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54915,7 +54912,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54953,7 +54950,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -54991,7 +54988,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55082,7 +55079,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55170,7 +55167,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55229,7 +55226,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55261,7 +55258,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55299,7 +55296,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55337,7 +55334,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55375,7 +55372,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55413,7 +55410,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55451,7 +55448,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55489,7 +55486,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55527,7 +55524,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55565,7 +55562,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55603,7 +55600,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55641,7 +55638,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55679,7 +55676,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55717,7 +55714,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55755,7 +55752,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55793,7 +55790,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55831,7 +55828,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55869,7 +55866,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55907,7 +55904,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55945,7 +55942,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -55983,7 +55980,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56021,7 +56018,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56059,7 +56056,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56097,7 +56094,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56135,7 +56132,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56173,7 +56170,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56211,7 +56208,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56249,7 +56246,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56287,7 +56284,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56325,7 +56322,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56363,7 +56360,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56401,7 +56398,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56439,7 +56436,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56477,7 +56474,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56515,7 +56512,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56553,7 +56550,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56591,7 +56588,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56629,7 +56626,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56667,7 +56664,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56705,7 +56702,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56743,7 +56740,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56781,7 +56778,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56819,7 +56816,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56857,7 +56854,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56895,7 +56892,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56933,7 +56930,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -56971,7 +56968,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -57009,7 +57006,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -57048,7 +57045,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -57088,7 +57085,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -57126,7 +57123,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -57164,7 +57161,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -57255,7 +57252,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -57343,7 +57340,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66557,7 +66554,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the repository
+        description: ID of the repository.
         schema:
           oneOf:
           - type: string
@@ -66565,21 +66562,23 @@ paths:
         in: path
       - name: tags
         required: false
-        description: Determines if tags should be included
+        description: If `true`, includes an array of `tags` in the response.
         schema:
           type: boolean
           default: false
         in: query
       - name: tags_count
         required: false
-        description: Determines if the tags count should be included
+        description: If `true`, includes `tags_count` in the response.
         schema:
           type: boolean
           default: false
         in: query
       - name: size
         required: false
-        description: Determines if the size should be included
+        description: If `true`, response includes the deduplicated size of all images
+          in the repository. Only available on GitLab.com for repositories created
+          after `2021-11-04`.
         schema:
           type: boolean
           default: false
@@ -75697,7 +75696,7 @@ paths:
         example: 88
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -75793,7 +75792,7 @@ paths:
         example: 88
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -75840,7 +75839,7 @@ paths:
         example: 88
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -75888,7 +75887,7 @@ paths:
         example: 88
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -75930,7 +75929,7 @@ paths:
         example: 88
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79701,7 +79700,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79748,7 +79747,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79786,7 +79785,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79844,7 +79843,7 @@ paths:
         example: 20
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79877,7 +79876,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79931,7 +79930,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79975,7 +79974,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80065,7 +80064,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80113,7 +80112,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80151,7 +80150,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80209,7 +80208,7 @@ paths:
         example: 20
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80242,7 +80241,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80296,7 +80295,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80340,7 +80339,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80430,7 +80429,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80477,7 +80476,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80515,7 +80514,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80573,7 +80572,7 @@ paths:
         example: 20
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80606,7 +80605,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80660,7 +80659,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80704,7 +80703,7 @@ paths:
         in: path
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -101530,7 +101529,7 @@ components:
           nullable: true
       required:
       - purl_types
-    RequestBody_5fb43d25135d:
+    RequestBody_994517ca5bb4:
       type: object
       properties:
         status:
@@ -101538,7 +101537,7 @@ components:
           enum:
           - pass
           - fail
-          description: The status of the control
+          description: Status of the control.
           minLength: 1
       required:
       - status
@@ -105791,7 +105790,7 @@ components:
       - external_status_check_id
       - sha
       - status
-    RequestBody_96a9a7d35035:
+    RequestBody_ac1b5013fe8b:
       type: object
       properties:
         name:
@@ -105804,25 +105803,25 @@ components:
           nullable: true
         rule_type:
           type: string
-          description: The type of approval rule
+          description: Type of the approval rule.
           example: regular
           nullable: true
         user_ids:
           type: array
           items:
             type: integer
-          description: The user ids for this rule
+          description: IDs of users to add as approvers for this rule.
           nullable: true
         group_ids:
           type: array
           items:
             type: integer
-          description: The group ids for this rule
+          description: IDs of groups to add as approvers.
           nullable: true
       required:
       - name
       - approvals_required
-    RequestBody_5ef4c0b646b6:
+    RequestBody_9583ed7cca8d:
       type: object
       properties:
         name:
@@ -105835,33 +105834,34 @@ components:
           nullable: true
         rule_type:
           type: string
-          description: The type of approval rule
+          description: Type of the approval rule.
           example: regular
           nullable: true
         user_ids:
           type: array
           items:
             type: integer
-          description: The user ids for this rule
+          description: IDs of users to add as approvers for this rule.
           nullable: true
         group_ids:
           type: array
           items:
             type: integer
-          description: The group ids for this rule
+          description: IDs of groups to add as approvers.
           nullable: true
-    RequestBody_7c69046aa4ca:
+    RequestBody_52756e9c0fbf:
       type: object
       properties:
         secret_push_protection_enabled:
           type: boolean
-          description: Whether to enable the feature
+          description: If `true`, enables secret push protection for projects in the
+            group.
           nullable: true
         projects_to_exclude:
           type: array
           items:
             type: integer
-          description: IDs of projects to exclude from the feature
+          description: IDs of projects to exclude from secret push protection.
           nullable: true
       required:
       - secret_push_protection_enabled
@@ -105908,20 +105908,20 @@ components:
           nullable: true
       required:
       - url
-    RequestBody_7e3e1660f655:
+    RequestBody_7ac1e50a4f4a:
       type: object
       properties:
         description:
           type: string
-          description: Description of the runner controller token
+          description: Description of the runner controller token.
           example: Token for managing runner
           nullable: true
-    RequestBody_f837c2c3f3be:
+    RequestBody_5520698f56ae:
       type: object
       properties:
         description:
           type: string
-          description: Description of the runner controller
+          description: Description of the runner controller.
           example: Controller for managing runner
           nullable: true
         state:
@@ -105930,14 +105930,14 @@ components:
           - disabled
           - enabled
           - dry_run
-          description: State of the runner controller (disabled, enabled, dry_run)
+          description: State of the runner controller.
           default: disabled
-    RequestBody_ea780ea7b5ae:
+    RequestBody_a865489118e1:
       type: object
       properties:
         description:
           type: string
-          description: Description of the runner controller
+          description: Description of the runner controller.
           example: Controller for managing runner
           nullable: true
         state:
@@ -105946,7 +105946,7 @@ components:
           - disabled
           - enabled
           - dry_run
-          description: State of the runner controller (disabled, enabled, dry_run)
+          description: State of the runner controller.
           nullable: true
     RequestBody_ad699f18a0b7:
       type: object
@@ -106098,16 +106098,16 @@ components:
       required:
       - namespace_id
       - state
-    RequestBody_92cb9c432aa9:
+    RequestBody_1ffd3dffed64:
       type: object
       properties:
         name:
           type: string
-          description: 'Name for role (default: ''Admin role - custom'')'
+          description: Name for the role. Defaults to `Admin role - custom`.
           nullable: true
         description:
           type: string
-          description: Description for role
+          description: Description for role.
           nullable: true
         read_admin_cicd:
           type: boolean
@@ -107230,7 +107230,29 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_89f350c1ba64:
+    RequestBody_87548323884d:
+      type: object
+      properties:
+        source_storage_name:
+          type: string
+          description: Name of the source storage shard.
+          minLength: 1
+        destination_storage_name:
+          type: string
+          description: Name of the destination storage shard. If not provided, the
+            storage is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).
+          nullable: true
+      required:
+      - source_storage_name
+    RequestBody_7ccfe016f4e3:
+      type: object
+      properties:
+        destination_storage_name:
+          type: string
+          description: Name of the destination storage shard. If not provided, the
+            storage is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).
+          nullable: true
+    RequestBody_bcb4ff6f1ed1:
       type: object
       properties:
         admin_mode:
@@ -108930,8 +108952,9 @@ components:
           nullable: true
         throttle_authenticated_mcp_enabled:
           type: string
-          description: 'If `true`, enforces the MCP Server request rate limit. Default
-            value: `false`.'
+          description: 'If `true`, enforces the rate limit on requests to the MCP
+            Server endpoint, `/api/v4/mcp`, for any HTTP method. Does not apply to
+            other MCP endpoints. Default value: `false`.'
           nullable: true
         throttle_authenticated_mcp_period_in_seconds:
           type: string
@@ -110784,7 +110807,7 @@ components:
       required:
       - jsonrpc
       - method
-    RequestBody_5d7c35d55ff7:
+    RequestBody_25f1867b4335:
       type: object
       properties:
         name:
@@ -110793,12 +110816,12 @@ components:
           nullable: true
         color:
           type: string
-          description: 'The color of the label given in 6-digit hex notation with
-            leading ''#'' sign (e.g. #FFAABB) or one of the allowed CSS color names'
+          description: Color of the label in 6-digit hex notation with a leading `#`
+            sign, for example `#FFAABB`, or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).
           nullable: true
         description:
           type: string
-          description: The description of label to be created
+          description: Description of the label.
           nullable: true
         archived:
           type: boolean
@@ -110811,7 +110834,7 @@ components:
       required:
       - name
       - color
-    RequestBody_5a4e5cc28e59:
+    RequestBody_599ada68dad2:
       type: object
       properties:
         label_id:
@@ -110828,12 +110851,13 @@ components:
           nullable: true
         color:
           type: string
-          description: 'The new color of the label given in 6-digit hex notation with
-            leading ''#'' sign (e.g. #FFAABB) or one of the allowed CSS color names'
+          description: New color of the label, given in 6-digit hex notation with
+            a leading `#` sign (for example, `#FFAABB`), or one of the [CSS color
+            names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).
           nullable: true
         description:
           type: string
-          description: The new description of label
+          description: New description of label.
           nullable: true
         archived:
           type: boolean
@@ -110843,7 +110867,7 @@ components:
           type: integer
           description: The priority of the label
           nullable: true
-    RequestBody_57a19d02f2c7:
+    RequestBody_d18846e05940:
       type: object
       properties:
         new_name:
@@ -110852,12 +110876,13 @@ components:
           nullable: true
         color:
           type: string
-          description: 'The new color of the label given in 6-digit hex notation with
-            leading ''#'' sign (e.g. #FFAABB) or one of the allowed CSS color names'
+          description: New color of the label, given in 6-digit hex notation with
+            a leading `#` sign (for example, `#FFAABB`), or one of the [CSS color
+            names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).
           nullable: true
         description:
           type: string
-          description: The new description of label
+          description: New description of label.
           nullable: true
         archived:
           type: boolean
@@ -110876,7 +110901,7 @@ components:
           nullable: true
       required:
       - name
-    RequestBody_02089c8031f0:
+    RequestBody_f42e407fc22a:
       type: object
       properties:
         name:
@@ -110885,12 +110910,12 @@ components:
           nullable: true
         color:
           type: string
-          description: 'The color of the label given in 6-digit hex notation with
-            leading ''#'' sign (e.g. #FFAABB) or one of the allowed CSS color names'
+          description: Color of the label in 6-digit hex notation with a leading `#`
+            sign, for example `#FFAABB`, or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).
           nullable: true
         description:
           type: string
-          description: The description of label to be created
+          description: Description of the label.
           nullable: true
         archived:
           type: boolean
@@ -110899,7 +110924,7 @@ components:
       required:
       - name
       - color
-    RequestBody_433478749095:
+    RequestBody_4bbd264242fa:
       type: object
       properties:
         label_id:
@@ -110916,18 +110941,19 @@ components:
           nullable: true
         color:
           type: string
-          description: 'The new color of the label given in 6-digit hex notation with
-            leading ''#'' sign (e.g. #FFAABB) or one of the allowed CSS color names'
+          description: New color of the label, given in 6-digit hex notation with
+            a leading `#` sign (for example, `#FFAABB`), or one of the [CSS color
+            names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).
           nullable: true
         description:
           type: string
-          description: The new description of label
+          description: New description of label.
           nullable: true
         archived:
           type: boolean
           description: Whether the label is archived
           nullable: true
-    RequestBody_4c5d8e77f5f2:
+    RequestBody_8358ecb75b22:
       type: object
       properties:
         new_name:
@@ -110936,12 +110962,13 @@ components:
           nullable: true
         color:
           type: string
-          description: 'The new color of the label given in 6-digit hex notation with
-            leading ''#'' sign (e.g. #FFAABB) or one of the allowed CSS color names'
+          description: New color of the label, given in 6-digit hex notation with
+            a leading `#` sign (for example, `#FFAABB`), or one of the [CSS color
+            names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords).
           nullable: true
         description:
           type: string
-          description: The new description of label
+          description: New description of label.
           nullable: true
         archived:
           type: boolean
@@ -111530,17 +111557,17 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_fcbe52168a61:
+    RequestBody_2acf50f9a877:
       type: object
       properties:
         ID:
           type: string
-          description: Terraform state lock ID
+          description: Terraform state lock ID.
           nullable: true
           maxLength: 255
         Operation:
           type: string
-          description: Terraform operation
+          description: Terraform operation.
           nullable: true
         Info:
           type: string
@@ -112481,12 +112508,12 @@ components:
       required:
       - content
       - name
-    RequestBody_586dac379fa0:
+    RequestBody_ddf539206347:
       type: object
       properties:
         name:
           type: string
-          description: The name of the protected tag
+          description: Name of the tag or wildcard.
           example: release-1-0
           nullable: true
         create_access_level:
@@ -112496,8 +112523,8 @@ components:
           - 40
           - 60
           - 0
-          description: 'Access levels allowed to create (defaults: `40`, maintainer
-            access level)'
+          description: Access level allowed to create the protected tag. Defaults
+            to `40` (Maintainer role).
           nullable: true
         allowed_to_create:
           type: array
@@ -115299,20 +115326,20 @@ components:
       required:
       - path
       - file
-    RequestBody_5976c38b9245:
+    RequestBody_110b52088c0d:
       type: object
       properties:
         import_url:
           type: string
-          description: The URL from which the project is imported
+          description: URL from which the project is imported.
           nullable: true
         import_url_user:
           type: string
-          description: Username for the import URL
+          description: Username for the import URL.
           nullable: true
         import_url_password:
           type: string
-          description: Password for the import URL
+          description: Password for the import URL.
           nullable: true
       required:
       - import_url
@@ -117330,20 +117357,22 @@ components:
           description: Enables automatic generation of SSL certificates issued by
             Let's Encrypt for custom domains.
           nullable: true
-    RequestBody_48e89df6b887:
+    RequestBody_8ebf06dd26a6:
       type: object
       properties:
         pages_unique_domain_enabled:
           type: boolean
-          description: Whether to use unique domain
+          description: If `true`, uses a unique domain.
           nullable: true
         pages_https_only:
           type: boolean
-          description: Whether to force HTTPS
+          description: If `true`, forces HTTPS.
           nullable: true
         pages_primary_domain:
           type: string
-          description: Set pages primary domain
+          description: Primary domain, from the existing assigned domains, to redirect
+            all Pages requests to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334)
+            in GitLab 17.8.
           nullable: true
     RequestBody_8bde8bd4a7b8:
       type: object
@@ -118194,7 +118223,7 @@ components:
           default: members-api
       required:
       - access_level
-    RequestBody_c64319e2de56:
+    RequestBody_f72cc0507ac5:
       type: object
       properties:
         access_level:
@@ -118208,7 +118237,8 @@ components:
           nullable: true
         member_role_id:
           type: integer
-          description: The ID of the Member Role to be updated
+          description: ID of a custom member role to assign to the member. Set to
+            `null` to remove all custom roles. Ultimate only.
           nullable: true
       required:
       - access_level

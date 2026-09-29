@@ -545,6 +545,15 @@ describe('WorkItemNotes component', () => {
     ]);
   });
 
+  it('emits `duo-question-answered` when a discussion emits it', async () => {
+    createComponent({ defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler });
+    await waitForPromises();
+
+    findWorkItemDiscussionAtIndex(0).vm.$emit('duo-question-answered');
+
+    expect(wrapper.emitted('duo-question-answered')).toEqual([[]]);
+  });
+
   describe('Notes subscriptions', () => {
     beforeEach(async () => {
       createComponent({

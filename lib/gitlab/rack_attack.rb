@@ -79,6 +79,7 @@ module Gitlab
           ->(req) { req.throttled_identifer([:api]) if req.throttle_authenticated_git_lfs? }
         ),
         **throttle_definitions_authenticated_dependency_proxy,
+        **throttle_definitions_authenticated_mcp,
         **throttle_definitions_unauthenticated_git_http,
         **throttle_definitions_authenticated_git_http
       }
@@ -93,6 +94,18 @@ module Gitlab
           # resolve to no identifier, which would make the excluded request go
           # uncounted rather than counted here.
           ->(req) { req.throttled_identifer([:api, :rss, :ics]) if req.throttle_authenticated_dependency_proxy? }
+        )
+      }
+    end
+
+    def self.throttle_definitions_authenticated_mcp
+      {
+        'throttle_authenticated_mcp' => ThrottleDefinition.new(
+          Gitlab::Throttle.throttle_authenticated_mcp_options,
+          ->(req) {
+            req.throttled_identifer(Gitlab::RateLimit::RequestClassification::REQUESTER_FORMATS) if
+              req.throttle_authenticated_mcp?
+          }
         )
       }
     end

@@ -137,7 +137,8 @@ module API
             file: import_params[:file],
             overwrite: import_params[:overwrite],
             override: filtered_override_params(import_params)
-          }
+          },
+          request_channel: ::Gitlab::Import::RequestChannel.detect(request)
         ).execute
 
         if response.success?
@@ -148,7 +149,7 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       desc 'Retrieve the status of a project import' do
         detail 'Retrieves the status of the most recent import for a specified project.'
@@ -168,10 +169,10 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-        requires :import_url, type: String, desc: 'The URL from which the project is imported'
-        optional :import_url_user, type: String, desc: 'Username for the import URL'
-        optional :import_url_password, type: String, desc: 'Password for the import URL'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+        requires :import_url, type: String, desc: 'URL from which the project is imported.'
+        optional :import_url_user, type: String, desc: 'Username for the import URL.'
+        optional :import_url_password, type: String, desc: 'Password for the import URL.'
       end
       desc 'Import a project from a Git URL' do
         detail 'Imports a project from a specified Git URL. This feature was introduced in GitLab 18.10.'
@@ -204,6 +205,7 @@ module API
         validate_git_import_url!(import_url)
 
         user_project.update(import_url: import_url, import_type: 'git')
+        user_project.import_state.request_channel = ::Gitlab::Import::RequestChannel.detect(request)
         user_project.import_state.reset.schedule
 
         status :created
@@ -258,7 +260,8 @@ module API
             overwrite: import_params[:overwrite],
             override: filtered_override_params(import_params)
           },
-          file_acquisition_strategy: ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFile
+          file_acquisition_strategy: ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFile,
+          request_channel: ::Gitlab::Import::RequestChannel.detect(request)
         ).execute
 
         if response.success?
@@ -353,7 +356,7 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       end
       desc 'Retrieve the status of a project resource import' do
         detail 'Retrieves the status of the most recent relation import for a specified project. Because only one ' \
@@ -433,7 +436,8 @@ module API
             access_key_id: import_params[:access_key_id],
             secret_access_key: import_params[:secret_access_key]
           },
-          file_acquisition_strategy: ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3
+          file_acquisition_strategy: ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFileS3,
+          request_channel: ::Gitlab::Import::RequestChannel.detect(request)
         ).execute
 
         if response.success?

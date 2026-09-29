@@ -1,0 +1,9 @@
+---
+name: improved_review_email
+description: Send one email for a merge request review, with the summary comment at the top
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257778
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631313
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

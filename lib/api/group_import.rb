@@ -88,7 +88,11 @@ module API
         group = response[:group]
 
         if response.success?
-          ::Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
+          ::Groups::ImportExport::ImportService.new(
+            group: group,
+            user: current_user,
+            request_channel: ::Gitlab::Import::RequestChannel.detect(request)
+          ).async_execute
 
           accepted!
         else

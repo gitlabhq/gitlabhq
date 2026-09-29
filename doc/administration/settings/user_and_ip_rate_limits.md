@@ -282,6 +282,7 @@ The possible names are:
 - `throttle_authenticated_deprecated_api`
 - `throttle_unauthenticated_git_http`
 - `throttle_authenticated_git_http`
+- `throttle_authenticated_mcp`
 
 For example, you can try out throttles for all authenticated requests to
 non-protected paths by setting

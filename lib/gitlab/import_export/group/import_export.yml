@@ -69,7 +69,6 @@ included_attributes:
 excluded_attributes:
   group:
     - :owner_id
-    - :created_at
     - :updated_at
     - :runners_token
     - :runners_token_encrypted

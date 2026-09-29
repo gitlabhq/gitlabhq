@@ -195,6 +195,13 @@ describe('Work Item Discussion', () => {
     expect(wrapper.emitted('delete-note')).toEqual([[mockWorkItemDiscussion.notes.nodes[0]]]);
   });
 
+  it('emits `duo-question-answered` when the first note emits it', () => {
+    createComponent();
+    findThreadAtIndex(0).vm.$emit('duo-question-answered');
+
+    expect(wrapper.emitted('duo-question-answered')).toEqual([[]]);
+  });
+
   it('emits `error` event when child note emits an `error`', () => {
     const mockErrorText = 'Houston, we have a problem';
 

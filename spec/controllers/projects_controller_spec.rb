@@ -612,6 +612,12 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           expect(response).to have_gitlab_http_status(:redirect)
         end
+
+        it 'captures request_channel: ui on the import state', :clean_gitlab_redis_shared_state, :request_store do
+          subject
+
+          expect(Project.find_by(path: 'foo').import_state.request_channel).to eq('ui')
+        end
       end
     end
 

@@ -21,6 +21,8 @@ module SupplyChain
 
     LeafCertificate = Struct.new(:key, :certificate, keyword_init: true)
 
+    # Always resolves through fetch_ca/provision_ca!: drivers may track state in those hooks
+    # (see PostgresCaDriver#signing_certificate).
     def ca_certificate
       certificate = fetch_ca || provision_ca!
       return certificate if valid_for_leaf_certificate?(certificate)

@@ -28,7 +28,11 @@ class Import::GitlabGroupsController < ApplicationController
     group = response[:group]
 
     if response.success?
-      if Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
+      import_service = Groups::ImportExport::ImportService.new(
+        group: group, user: current_user, request_channel: ::Gitlab::Import::RequestChannel::UI
+      )
+
+      if import_service.async_execute
         redirect_to(
           group_path(group),
           notice: safe_format(s_("GroupImport|Group '%{group_name}' is being imported."), group_name: group.name)

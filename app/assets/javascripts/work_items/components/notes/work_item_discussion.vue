@@ -100,7 +100,14 @@ export default {
       required: true,
     },
   },
-  emits: ['cancel-editing', 'delete-note', 'error', 'report-abuse', 'start-editing'],
+  emits: [
+    'cancel-editing',
+    'delete-note',
+    'duo-question-answered',
+    'error',
+    'report-abuse',
+    'start-editing',
+  ],
   data() {
     return {
       isExpanded: this.isExpandedOnLoad,
@@ -293,6 +300,7 @@ export default {
                   @report-abuse="$emit('report-abuse', firstNote)"
                   @cancel-editing="$emit('cancel-editing')"
                   @resolve="resolveDiscussion"
+                  @duo-question-answered="$emit('duo-question-answered')"
                   @error="$emit('error', $event)"
                 />
                 <discussion-notes-replies-wrapper>

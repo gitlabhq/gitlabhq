@@ -21,6 +21,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
   let(:note_body) { 'Hello' }
   let(:file_path) { 'files/ruby/popen.rb' }
   let(:end_line) { 15 }
+  let(:original_end_line) { nil }
 
   let(:diff_hunk) do
     '@@ -14 +14 @@
@@ -41,6 +42,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
       updated_at: updated_at,
       start_line: nil,
       end_line: end_line,
+      original_end_line: original_end_line,
       github_id: 1,
       diff_hunk: diff_hunk,
       side: 'RIGHT',
@@ -204,6 +206,22 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
               expect { subject.execute }
                 .to change { LegacyDiffNote.count }
                       .and not_change(DiffNote, :count)
+            end
+          end
+
+          context 'when the diff position is outdated but original_end_line is still valid' do
+            let(:end_line) { nil }
+            let(:original_end_line) { 15 }
+
+            it 'imports the note as diff note using original_end_line' do
+              expect { subject.execute }
+                .to change { DiffNote.count }
+                .by(1)
+                .and not_change(LegacyDiffNote, :count)
+
+              note = project.notes.diff_notes.take
+              expect(note.position.new_line).to eq(15)
+              expect(note.position.old_line).to be_nil
             end
           end
 

@@ -947,6 +947,15 @@ describe('WorkItemDetail component', () => {
       expect(findNotesWidget().props('canCreateNote')).toBeDefined();
     });
 
+    it('emits `duo-question-answered` when the notes widget emits it', async () => {
+      createComponent();
+      await mockApollo.resolveAll();
+
+      findNotesWidget().vm.$emit('duo-question-answered');
+
+      expect(wrapper.emitted('duo-question-answered')).toEqual([[]]);
+    });
+
     describe('comment templates', () => {
       const mockCommentTemplatePaths = [
         {

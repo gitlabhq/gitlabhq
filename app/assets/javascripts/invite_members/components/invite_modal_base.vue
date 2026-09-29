@@ -309,6 +309,7 @@ export default {
                 <strong>{{ content }}</strong>
               </template>
             </gl-sprintf>
+            <slot name="intro-text-suffix"></slot>
           </p>
         </div>
 

@@ -2,8 +2,8 @@
 
 module Emails
   module Reviews
-    def new_review_email(recipient_id, review_id)
-      setup_review_email(review_id, recipient_id)
+    def new_review_email(recipient_id, review_id, summary_note_id = nil)
+      setup_review_email(review_id, recipient_id, summary_note_id)
 
       # NOTE: We must not send any internal notes to users who are not supposed to be able to see it.
       #   Also, we don't want to send an empty email the review only contains internal notes.
@@ -26,10 +26,12 @@ module Emails
       }
     end
 
-    def setup_review_email(review_id, recipient_id)
+    def setup_review_email(review_id, recipient_id, summary_note_id)
       @review = Review.find_by_id(review_id)
       @recipient = User.find(recipient_id)
-      @notes = @review.notes
+      @notes = @review.notes.to_a
+      @summary_note = @notes.find { |note| note.id == summary_note_id }
+      @notes.unshift(@notes.delete(@summary_note)) if @summary_note
       @discussions = Discussion.build_discussions(@review.discussion_ids, preload_note_diff_file: true)
       @include_diff_discussion_stylesheet = @discussions.values.any? do |discussion|
         discussion.diff_discussion? && discussion.on_text?

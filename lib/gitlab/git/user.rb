@@ -37,10 +37,11 @@ module Gitlab
       end
 
       def convert_timezone(timezone)
-        return system_timezone if timezone.nil?
+        tz = ActiveSupport::TimeZone[timezone] unless timezone.nil?
+        identifier = tz ? tz.tzinfo.identifier : system_timezone
 
-        tz = ActiveSupport::TimeZone[timezone]
-        tz ? tz.tzinfo.identifier : system_timezone
+        # Gitaly hosts without legacy tzdata (for example, Debian trixie) cannot load legacy links.
+        LegacyTimezones::MAPPING.fetch(identifier, identifier)
       end
 
       def system_timezone

@@ -1005,7 +1005,7 @@ This log is located:
 ### `zoekt.log` fields
 
 Entries from the periodic metrics cron job are distinguished by the `metric`
-field (`node_metrics` or `indices_metrics`). Per-request log entries do not
+field (`node_metrics`, `indices_metrics`, or `enabled_namespaces_metrics`). Per-request log entries do not
 carry a `metric` field and instead append the Zoekt fields documented below
 to whichever Rails request or Sidekiq job log line they were captured in.
 
@@ -1034,6 +1034,17 @@ flat key name with dots, not a nested object path.
 | Field | Type | Description |
 |:------|:-----|:------------|
 | `meta.zoekt.with_stale_used_storage_bytes_updated_at` | Integer | Number of Zoekt indices whose `used_storage_bytes` value has not been updated recently |
+
+#### Enabled namespaces metrics entries (`metric: enabled_namespaces_metrics`)
+
+These entries are emitted once per metrics collection cycle.
+
+The key `meta.zoekt.enabled_namespaces_without_replicas` is a literal
+flat key name with dots, not a nested object path.
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `meta.zoekt.enabled_namespaces_without_replicas` | Integer | Number of namespaces enabled for exact code search that have no Zoekt replicas and are waiting for rollout |
 
 #### Per-request fields
 

@@ -116,9 +116,10 @@ When the method is called on:
   group's ancestor groups will
   [also execute](https://gitlab.com/gitlab-org/gitlab/-/blob/6d915390b0b9e1842d7ceba97af2db1ac7f76f65/ee/app/models/ee/group.rb#L826-829).
 
-Building a payload can be expensive because it generally requires that we load more records from the database,
-so check `#has_active_hooks?` on the project before triggering the webhook
-(support for a similar method for groups is tracked in [issue #517890](https://gitlab.com/gitlab-org/gitlab/-/issues/517890)).
+Building a payload is expensive because it generally requires loading more records from the database,
+so check `#has_active_hooks?` on the project or group before triggering the webhook.
+Group webhooks and `Group#has_active_hooks?` are EE-only; refactoring remaining call sites to use the
+method is tracked in [issue #517890](https://gitlab.com/gitlab-org/gitlab/-/issues/517890).
 
 The method returns `true` if either:
 
@@ -199,6 +200,14 @@ The attributes in `#hook_attrs` must be defined with static keys. The method mus
 a specific set of attributes and not just the attributes returned by `#attributes` or `#as_json`.
 Otherwise, all future attributes of the model will be included in webhook payloads
 (see [issue 440384](https://gitlab.com/gitlab-org/gitlab/-/issues/440384)).
+
+For objects with many attributes, or attributes that need computed or derived values, `#hook_attrs`
+should delegate to a `Gitlab::HookData::<X>Builder` class under `lib/gitlab/hook_data/`, subclassing
+`Gitlab::HookData::BaseBuilder`. The builder declares `self.safe_hook_attributes`, an allowlist of
+permitted attribute names, and slices the object's `#attributes` hash down to that allowlist before
+merging in computed fields. This keeps the static-keys guarantee from
+[issue 440384](https://gitlab.com/gitlab-org/gitlab/-/issues/440384) while avoiding a fully hand-written
+hash literal. See `lib/gitlab/hook_data/issue_builder.rb` for an example.
 
 A module or class in `Gitlab::DataBuilder::` should compose the full payload. The full payload usually
 includes associated objects.
@@ -391,6 +400,37 @@ Breaking changes include:
 
 If the value of a property other than `"object_kind"` or `"action"` must change, for example due
 to feature removal, set the value to `null`, `{}`, or `[]` rather than remove the property.
+
+## Webhook execution safety
+
+Webhook delivery is protected by three mechanisms applied automatically inside `WebHookService`.
+
+### Auto-disabling
+
+After more than 3 consecutive failures (that is, on the 4th failure), a hook is temporarily disabled
+with exponential backoff (starting at 1 minute, doubling up to a 1-day cap) until it succeeds or
+reaches 40 total failures, at which point it is permanently disabled. `WebHookService` checks
+`hook.executable?` before sending a request.
+Auto-disabling is enabled for `ProjectHook`, and for `GroupHook` in EE, behind the
+`auto_disabling_web_hooks` feature flag.
+
+### Rate limiting
+
+Webhook calls are throttled per root namespace through `Gitlab::ApplicationRateLimiter` (limit key
+`:web_hook_calls`). `SystemHook` and `ServiceHook` (integration webhooks) are excluded from rate
+limiting.
+
+### Recursion detection
+
+A UUID identifies the request chain. GitLab sends it as a header on each outgoing webhook request,
+and reads it back from the incoming request's headers if that call triggers the GitLab API.
+The set of hook IDs triggered in a chain is cached in Redis for 30 minutes. A request is blocked
+if the hook already appears earlier in the same chain, or if the chain has already triggered
+100 or more hooks, to prevent a webhook that calls back into the GitLab API from looping
+indefinitely.
+
+When adding a new webhook type, these protections apply automatically and need no extra code. When
+changing webhook execution or delivery behavior, preserve these checks.
 
 ## Testing
 

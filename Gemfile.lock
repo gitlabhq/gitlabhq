@@ -612,7 +612,7 @@ GEM
       reline (>= 0.3.8)
     debug_inspector (1.1.0)
     declarative (0.0.20)
-    declarative_policy (2.1.0)
+    declarative_policy (2.2.0)
     derailed_benchmarks (2.2.1)
       base64
       benchmark-ips (~> 2)
@@ -914,7 +914,7 @@ GEM
     gitlab-kas-grpc (19.4.0.pre.rc1)
       google-protobuf (>= 3.25, < 5.0)
       grpc (~> 1.81)
-    gitlab-labkit (5.2.0)
+    gitlab-labkit (5.2.1)
       actionpack (>= 5.0.0, < 8.2.0)
       activesupport (>= 5.0.0, < 8.2.0)
       google-protobuf (>= 3.25, < 5.0)
@@ -2486,7 +2486,7 @@ DEPENDENCIES
   cvss-suite (~> 4.1.1)
   database_cleaner-active_record (~> 2.2.0)
   debug (~> 1.11.0)
-  declarative_policy (~> 2.1.0)
+  declarative_policy (~> 2.2.0)
   derailed_benchmarks
   devfile (~> 0.5.4)
   device_detector
@@ -2554,7 +2554,7 @@ DEPENDENCIES
   gitlab-http!
   gitlab-iam-grpc!
   gitlab-kas-grpc (~> 19.4.0.pre.rc1)
-  gitlab-labkit (~> 5.2.0)
+  gitlab-labkit (~> 5.2.1)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 1.1.0)
   gitlab-markup (~> 2.1.0)
@@ -2947,7 +2947,7 @@ CHECKSUMS
   debug (1.11.1) sha256=2e0b0ac6119f2207a6f8ac7d4a73ca8eb4e440f64da0a3136c30343146e952b6
   debug_inspector (1.1.0) sha256=eaa5a2d0195e1d65fb4164e8e7e466cca2e7eb53bc5e608cf12b8bf02c3a8606
   declarative (0.0.20) sha256=8021dd6cb17ab2b61233c56903d3f5a259c5cf43c80ff332d447d395b17d9ff9
-  declarative_policy (2.1.0) sha256=f9ab705da726174bde97785c319311a4abf6143c07862f882bd8bc1b69361eea
+  declarative_policy (2.2.0) sha256=add19e3704f28efb590f4983d212413cc3b8d4056ca475613f0ef234d890cd05
   derailed_benchmarks (2.2.1) sha256=654280664fded41c9cd8fc27fc0fcfaf096023afab90eb4ac1185ba70c5d4439
   devfile (0.5.4) sha256=c559bbb23275b5cf1bb67bd49fc2810105a53cfbcd841b216d551a4fa7391862
   devfile (0.5.4-aarch64-linux) sha256=264cf8d9762d78558c8c6136fb7ba0ffd147476e3eb4583e7e6327837da87314
@@ -3077,7 +3077,7 @@ CHECKSUMS
   gitlab-http (0.1.0)
   gitlab-iam-grpc (0.1.0)
   gitlab-kas-grpc (19.4.0.pre.rc1) sha256=ebe94f6a8611d43ab1f09967bb997185a1745716caa429a4f359387a79ec8a91
-  gitlab-labkit (5.2.0) sha256=fc1546b48bc0a4576b748bf29cbb05e4894849dea16be28ccab2632087f50120
+  gitlab-labkit (5.2.1) sha256=2808b3acd943a96d9a41381a64668b83b6cdc7720bb23e9198c72dab960ea86f
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f
