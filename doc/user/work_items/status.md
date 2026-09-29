@@ -161,6 +161,17 @@ Custom statuses have the following limits:
 - Maximum 70 statuses per namespace
 - Maximum 30 statuses per lifecycle
 
+### Status category changes
+
+A status has one category, and that category applies to every lifecycle that uses the status.
+You cannot change the category of a status when:
+
+- The status is used in another lifecycle.
+- The status is in use, and the new category would move the status between the open and closed states.
+  A status is in use when work items are assigned to it, or when it is the replacement status for a status that was removed.
+
+To use a different category, create a status with a different name and the category you want.
+
 ### Configure custom statuses for a namespace
 
 Configure custom statuses for top-level groups to make them available for work items in that group, its subgroups, and projects.
