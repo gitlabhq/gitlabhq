@@ -5,18 +5,9 @@ require "spec_helper"
 RSpec.describe NotesHelper, feature_category: :team_planning do
   include RepoHelpers
 
-  let_it_be(:owner) { create(:owner) }
-  let_it_be(:group) { create(:group, owners: owner) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
-  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
-  let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
-
-  let_it_be(:owner_note) { create(:note, author: owner, project: project) }
-  let_it_be(:maintainer_note) { create(:note, author: maintainer, project: project) }
-  let_it_be(:reporter_note) { create(:note, author: reporter, project: project) }
-
-  let!(:notes) { [owner_note, maintainer_note, reporter_note] }
 
   describe '#note_target_title' do
     context 'note does not exist' do
@@ -219,7 +210,7 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
     it 'return initial notes data for issuable' do
       autocomplete = '/autocomplete/users'
       @project = project
-      @noteable = create(:issue, project: @project)
+      @noteable = build_stubbed(:issue, project: @project)
 
       expect(helper.initial_notes_data(autocomplete).keys).to match_array(%i[notesUrl now diffView enableGFM])
       expect(helper.initial_notes_data(autocomplete)[:enableGFM].keys).to match(%i[emojis members issues mergeRequests vulnerabilities epics milestones labels])
@@ -228,14 +219,14 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
 
   describe '#notes_url' do
     it 'return snippet notes path for personal snippet' do
-      @snippet = create(:personal_snippet)
+      @snippet = build_stubbed(:personal_snippet)
 
       expect(helper.notes_url).to eq("/-/snippets/#{@snippet.id}/notes")
     end
 
     it 'return project notes path for project snippet' do
       @project = project
-      @snippet = create(:project_snippet, project: @project)
+      @snippet = build_stubbed(:project_snippet, project: @project)
       @noteable = @snippet
 
       expect(helper.notes_url).to eq("/#{project.full_path}/noteable/project_snippet/#{@noteable.id}/notes")
@@ -243,7 +234,7 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
 
     it 'return project notes path for other noteables' do
       @project = project
-      @noteable = create(:issue, project: @project)
+      @noteable = build_stubbed(:issue, project: @project)
 
       expect(helper.notes_url).to eq("/#{@project.full_path}/noteable/issue/#{@noteable.id}/notes")
     end
@@ -251,21 +242,21 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
 
   describe '#note_url' do
     it 'return snippet notes path for personal snippet' do
-      note = create(:note_on_personal_snippet)
+      note = build_stubbed(:note_on_personal_snippet)
 
       expect(helper.note_url(note)).to eq("/-/snippets/#{note.noteable.id}/notes/#{note.id}")
     end
 
     it 'return project notes path for project snippet' do
       @project = project
-      note = create(:note_on_project_snippet, project: @project)
+      note = build_stubbed(:note_on_project_snippet, project: @project)
 
       expect(helper.note_url(note)).to eq("/#{project.full_path}/notes/#{note.id}")
     end
 
     it 'return project notes path for other noteables' do
       @project = project
-      note = create(:note_on_issue, project: @project)
+      note = build_stubbed(:note_on_issue, project: @project)
 
       expect(helper.note_url(note)).to eq("/#{project.full_path}/notes/#{note.id}")
     end
@@ -273,31 +264,31 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
 
   describe '#form_resources' do
     it 'returns note for personal snippet' do
-      @snippet = create(:personal_snippet)
-      @note = create(:note_on_personal_snippet)
+      @snippet = build_stubbed(:personal_snippet)
+      @note = build_stubbed(:note_on_personal_snippet)
 
       expect(helper.form_resources).to eq([@note])
     end
 
     it 'returns namespace, project and note for project snippet' do
       @project = project
-      @snippet = create(:project_snippet, project: @project)
-      @note = create(:note_on_personal_snippet)
+      @snippet = build_stubbed(:project_snippet, project: @project)
+      @note = build_stubbed(:note_on_personal_snippet)
 
       expect(helper.form_resources).to eq([@project, @note])
     end
 
     it 'returns namespace, project and note path for other noteables' do
       @project = project
-      @note = create(:note_on_issue, project: @project)
+      @note = build_stubbed(:note_on_issue, project: @project)
 
       expect(helper.form_resources).to eq([@project, @note])
     end
   end
 
   describe '#noteable_note_url' do
-    let(:issue) { create(:issue, project: project) }
-    let(:note) { create(:note_on_issue, noteable: issue, project: project) }
+    let(:issue) { build_stubbed(:issue, project: project) }
+    let(:note) { build_stubbed(:note_on_issue, noteable: issue, project: project) }
 
     it 'returns the noteable url with an anchor to the note' do
       expect(noteable_note_url(note)).to match("#{::Gitlab::UrlBuilder.instance.issue_path(issue)}##{dom_id(note)}")

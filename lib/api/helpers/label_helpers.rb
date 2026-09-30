@@ -55,7 +55,7 @@ module API
       end
 
       def create_label(parent, entity)
-        authorize! :admin_label, parent
+        authorize! :create_label, parent
 
         label = available_labels_for(parent).find_by_title(params[:name])
         conflict!('Label already exists') if label
@@ -77,7 +77,7 @@ module API
       end
 
       def update_label(parent, entity)
-        authorize! :admin_label, parent
+        authorize! :update_label, parent
 
         label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
         update_priority = params.key?(:priority)
@@ -90,7 +90,7 @@ module API
         update_params = declared_params(include_missing: false)
 
         if update_params.present?
-          authorize! :admin_label, label
+          authorize! :update_label, label
 
           label = ::Labels::UpdateService.new(current_user, update_params).execute(label)
           render_validation_error!(label) unless label.valid?
@@ -110,7 +110,7 @@ module API
       def delete_label(parent)
         label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
 
-        authorize! :admin_label, label
+        authorize! :delete_label, label
 
         destroy_conditionally!(label) do |label_to_destroy|
           ::Labels::DestroyService.new(current_user, label_to_destroy).execute
@@ -124,7 +124,7 @@ module API
           render_api_error!('Failed to promote project label to group label', 400)
         end
 
-        authorize! :admin_label, parent.group
+        authorize! :promote_label, parent.group
 
         label = find_label(parent, params[:name], include_ancestor_groups: false)
 

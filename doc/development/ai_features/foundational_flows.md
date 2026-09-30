@@ -146,6 +146,68 @@ When adding a flow to the `FoundationalFlow` model, you must provide the followi
 | `triggers` | Array | No | Event types that can trigger the flow (default: empty array)           |
 | `coding_environment` | Enum | No | Repository setup required before execution: `full` or `none` (default: `full`). `full` prepares a checkout and tooling. `none` skips the repository clone and setup for API-only flows. See the [custom flow YAML schema](../../user/duo_agent_platform/flows/custom_flows_schema.md#coding_environment). |
 
+### Session lifecycle hooks
+
+A flow that keeps a record outside its session, such as a placeholder row a widget
+reads, can react to the session's own lifecycle instead of polling or setting a
+timer. Declare this optional attribute:
+
+| Attribute | Runs when | Event |
+|-----------|-----------|-------|
+| `on_session_failed` | The session is dropped, so it failed and never reports back. | `Ai::DuoWorkflows::WorkflowFailedEvent` |
+| `on_session_stopped` | A user cancels the session. | `Ai::DuoWorkflows::WorkflowStoppedEvent` |
+
+Each is either a `->(workflow:)` lambda or a class responding to `call(workflow:)`.
+Prefer a class once the hook writes data, so it gets its own tests and owner.
+Declare only the points you want: a flow that treats a cancellation differently from
+a failure declares both, one that only cares about failures declares one.
+
+Declaring the hook is all you must do. `Ai::DuoWorkflows::SessionLifecycleWorker`
+finds the flow that a session ran, and calls the hook for that ending. A flow with no
+hook for that ending is never enqueued. This check happens when the event is
+published, not in a job.
+
+Hooks run for every session, whatever started it. A drop publishes
+`Ai::DuoWorkflows::WorkflowFailedEvent`. A cancellation publishes
+`Ai::DuoWorkflows::WorkflowStoppedEvent`. Both events carry the flow identifier,
+which is how the worker finds your flow.
+
+A session that starts from a messaging surface, such as Slack or a GitLab Duo note,
+also publishes a combined `Ai::DuoWorkflows::WorkflowFailedEvent` for both endings.
+That extra event is for the messaging callback that replies to the surface. It
+carries no flow identifier, so it never reaches a hook. A future release removes it.
+Track this work in
+[work item 630318](https://gitlab.com/gitlab-org/gitlab/-/work_items/630318).
+
+```ruby
+on_session_failed: ->(workflow:) do
+  merge_request = workflow.merge_request
+  next unless merge_request
+
+  merge_request.risk_assessment&.mark_failed
+end
+```
+
+Hooks differ from `before_start` and `after_start`, which run inline while a trigger
+starts a flow. These run asynchronously after the session changes state, so they fire
+no matter which service created the session.
+
+Write hooks to this contract:
+
+- Make them idempotent. The same event can be delivered more than once.
+- Do not assume the session is still in the state the hook is named for. A retried
+  session can be running again by then, so read `workflow.status_name` before acting
+  on state.
+- Authorize the writes yourself. A caller supplies `workflow_definition`, so a session
+  can name your flow without GitLab having vouched for it.
+- Do not assume the hook always runs. A session can be deleted or stay in a
+  non-terminal state, so give the hook's record its own cleanup.
+- Keep them cheap. To wait before acting, the hook must schedule its own worker.
+
+Only the two terminal points exist today. `WorkflowStartedEvent` and
+`WorkflowFinishedEvent` already exist with their own messaging-only publishing rules,
+so adding started and finished hooks means migrating those events first.
+
 ### Agent privileges
 
 Agent privileges define what actions a flow can perform. The complete list of available privileges is defined in [`AgentPrivileges`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/ai/duo_workflows/workflow.rb):

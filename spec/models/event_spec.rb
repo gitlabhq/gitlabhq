@@ -15,7 +15,6 @@ RSpec.describe Event, feature_category: :user_profile do
     it { is_expected.to respond_to(:author_email) }
     it { is_expected.to respond_to(:issue_title) }
     it { is_expected.to respond_to(:merge_request_title) }
-    it { is_expected.to respond_to(:design_title) }
   end
 
   describe 'Callbacks' do

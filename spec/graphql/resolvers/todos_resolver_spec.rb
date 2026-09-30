@@ -20,7 +20,7 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
     let_it_be(:issue_todo_done) { create(:todo, user: current_user, state: :done, action: Todo::ASSIGNED, author: author2, target: issue) }
     let_it_be(:issue_todo_pending) { create(:todo, user: current_user, state: :pending, action: Todo::ASSIGNED, author: author1, target: issue) }
 
-    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request) { create(:merge_request, :skip_diff_creation, source_project: project) }
     let_it_be(:merge_request_todo_pending) { create(:todo, user: current_user, target: merge_request, state: :pending, action: Todo::MENTIONED, author: author1) }
 
     it 'calls TodosFinder' do

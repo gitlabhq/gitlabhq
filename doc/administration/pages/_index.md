@@ -1217,7 +1217,11 @@ or the Pages daemon serving stale content.
 Examples:
 
 - Increasing `gitlab_cache_expiry` allows items to exist in the cache longer. Use this setting if
-  the communication between GitLab Pages and GitLab Rails is not stable.
+  the communication between GitLab Pages and GitLab Rails is not stable. If you use
+  [Amazon instance profiles](../object_storage.md#use-amazon-instance-profiles) for Pages object
+  storage and raise this value above 14 minutes, also set `aws_credentials_refresh_threshold_seconds`
+  in the connection settings to at least the new expiry plus 60 seconds. Otherwise GitLab Pages can
+  serve a cached URL whose temporary credentials have already expired.
 - Increasing `gitlab_cache_refresh` reduces the frequency at which GitLab Pages requests a domain's
   configuration from GitLab Rails. Use this setting if GitLab Pages generates too many requests to
   the GitLab API and content does not change frequently.

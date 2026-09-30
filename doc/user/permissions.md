@@ -613,7 +613,7 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | Action                                                                                    | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
 | ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
 | [View](project/merge_requests/_index.md#view-merge-requests) a merge request[^project-merge-guest-role-limited] |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) merge requests and comments[^project-merge-guest-role-limited], [^users-planner-role]           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) merge requests and comments[^project-merge-guest-role-limited]           |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Approve](project/merge_requests/approvals/_index.md) merge requests[^approval-planner-reporter]         |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Add internal note                                                                         |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Comment and add suggestions                                                               |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
@@ -629,9 +629,6 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
     must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
     with the Guest role on GitLab.com are only able to perform this action on public projects because
     internal visibility is not available.
-[^users-planner-role]: In private projects, comments on merge
-    requests are not returned in advanced search results for users with the Planner role.
-    For more information, see [epic 17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 [^approval-planner-reporter]: Approval from Planner and Reporter roles is available only if
     [enabled for the project](project/merge_requests/approvals/rules.md#enable-approval-permissions-for-additional-users).
 [^external-contributions]: In projects that accept contributions from external members, users can create, edit, and close their
@@ -728,7 +725,7 @@ Project permissions for [issues](project/issues/_index.md):
 | [Search](search/_index.md) issues and comments                                    |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create issues                                                                     |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | View [confidential issues](project/issues/confidential_issues.md)                 |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) confidential issues and comments[^project-planning-users-planner-role]          |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) confidential issues and comments          |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Edit issues, including metadata and item locking[^metadata-includes-labels] |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Resolve threads on issues[^project-planning-resolve-threads] |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 | Add internal notes                                                                |       |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
@@ -757,8 +754,6 @@ Project permissions for [issues](project/issues/_index.md):
 [^guest-users-archive]: Guest users can archive and reopen issues that they authored or are assigned to.
 [^guest-authored-items]: Guest users can modify the title and description that they authored or are assigned to.
 [^project-planning-users-who-don]: Users who don't have the Planner or Owner role can only delete the issues they authored.
-[^project-planning-users-planner-role]: Users with the Planner role can not use advanced search for comments on confidential issues.
-    For more information, see [epic 17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 [^project-planning-resolve-threads]: Users can resolve threads they started and threads on issues they authored.
 
 Project permissions for [tasks](tasks.md):
@@ -816,7 +811,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
 | View project code[^project-repositories-guest-role-limited]                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) project code[^project-repositories-guest-role-limited], [^project-repositories-users-planner-role]                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) commits and comments[^project-repositories-guest-role-limited], [^project-repositories-users-planner-role]          |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) commits and comments[^project-repositories-guest-role-limited]          |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Pull project code[^branch-protected-depends]                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | View commit status                                                    |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Create commit status[^project-repositories-guest-role-limited-2]                                     |       |         |          |                  |     ✓     |     ✓      |   ✓   |
@@ -844,7 +839,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
     or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
     or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
     that role to the users. In GitLab 18.7 and later, users with the Planner role can view private repository content.
-[^project-repositories-users-planner-role]: Users with the Planner role cannot use exact code search, advanced search for code, or advanced search for comments on commits in private projects. For more information, see [epic &17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
+[^project-repositories-users-planner-role]: Users with the Planner role cannot use exact code search or advanced search for code in private projects. For more information, see [epic &17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
 [^branch-protected-depends]: If the [branch is protected](project/repository/branches/protected.md), this depends on the
     access given to Developers and Maintainers.
 [^project-repositories-guest-role-limited-2]: On GitLab Self-Managed, users with the Guest role are able to perform this action only on public

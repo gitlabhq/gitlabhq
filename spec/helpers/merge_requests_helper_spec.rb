@@ -13,7 +13,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   include MarkupHelper
   include SafeFormatHelper
 
-  let_it_be(:current_user, freeze: false) { create(:user) }
+  let_it_be_with_reload(:current_user) { create(:user) }
 
   describe '#merge_params' do
     let(:merge_request) { create(:merge_request) }
@@ -32,7 +32,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
-      let(:merge_request) { create(:merge_request) }
+      let(:merge_request) { build_stubbed(:merge_request) }
 
       subject { format_mr_branch_names(merge_request) }
 
@@ -40,9 +40,9 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
 
     describe 'within different projects' do
-      let(:project) { create(:project) }
-      let(:forked_project) { fork_project(project) }
-      let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
+      let(:project) { build_stubbed(:project) }
+      let(:forked_project) { build_stubbed(:project) }
+      let(:merge_request) { build_stubbed(:merge_request, source_project: forked_project, target_project: project) }
       let(:source_title) { "#{forked_project.full_path}:#{merge_request.source_branch}" }
       let(:target_title) { "#{project.full_path}:#{merge_request.target_branch}" }
 
@@ -57,10 +57,10 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
     context 'for endpoint_diff_for_path' do
       context 'when sub-group project namespace' do
-        let_it_be(:group, freeze: false) { create(:group, :public) }
-        let_it_be(:subgroup, freeze: false) { create(:group, :private, parent: group) }
-        let_it_be(:project, freeze: false) { create(:project, :private, group: subgroup) }
-        let_it_be(:merge_request, freeze: false) do
+        let_it_be_with_reload(:group) { create(:group, :public) }
+        let_it_be_with_reload(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be_with_reload(:project) { create(:project, :private, group: subgroup) }
+        let_it_be_with_reload(:merge_request) do
           create(:merge_request, source_project: project, target_project: project)
         end
 
@@ -74,15 +74,13 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#merge_path_description' do
-    # Using let_it_be(:project) raises the following error, so we use need to use let(:project):
-    #  ActiveRecord::InvalidForeignKey:
-    #    PG::ForeignKeyViolation: ERROR:  insert or update on table "fork_network_members" violates foreign key
-    #      constraint "fk_rails_a40860a1ca"
-    #    DETAIL:  Key (fork_network_id)=(8) is not present in table "fork_networks".
-    let(:project) { create(:project) }
-    let(:forked_project) { fork_project(project) }
-    let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:project) { build_stubbed(:project) }
+    let(:forked_project) { build_stubbed(:project) }
+    let(:merge_request_forked) do
+      build_stubbed(:merge_request, source_project: forked_project, target_project: project)
+    end
+
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project, target_project: project) }
 
     where(:case_name, :mr, :with_arrow, :result) do
       [
@@ -109,7 +107,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#tab_link_for' do
-    let_it_be(:merge_request) { create(:merge_request, :simple) }
+    let(:merge_request) { build_stubbed(:merge_request, :simple) }
 
     let(:options) { {} }
 
@@ -216,11 +214,11 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
   describe '#merge_request_source_branch' do
     let(:malicious_branch_name) { 'name<script>test</script>' }
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-    let(:forked_project) { fork_project(project) }
+    let(:project) { build_stubbed(:project) }
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project, target_project: project) }
+    let(:forked_project) { build_stubbed(:project) }
     let(:merge_request_forked) do
-      create(
+      build_stubbed(
         :merge_request,
         source_project: forked_project,
         source_branch: malicious_branch_name,
@@ -250,8 +248,14 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#sticky_header_data' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:draft_merge_request, freeze: false) { create(:merge_request, :opened, :draft_merge_request) }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:draft_merge_request) do
+      create(
+        :merge_request, :opened, :draft_merge_request,
+        source_project: project, target_project: project, source_branch: generate(:branch)
+      )
+    end
+
     let(:imported_merge_request) do
       create(:merge_request, source_project: project, target_project: project, imported_from: imported_from)
     end
@@ -286,7 +290,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#tab_count_display' do
-    let(:merge_request) { create(:merge_request) }
+    let(:merge_request) { build_stubbed(:merge_request) }
 
     context 'when merge request is preparing' do
       before do
@@ -310,11 +314,12 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   describe '#allow_collaboration_unavailable_reason' do
     subject { allow_collaboration_unavailable_reason(merge_request) }
 
+    let_it_be_with_reload(:public_project) { create(:project, :small_repo, :public) }
+
     let(:merge_request) do
-      create(:merge_request, author: author, source_project: project, source_branch: generate(:branch))
+      build_stubbed(:merge_request, author: author, source_project: project, source_branch: generate(:branch))
     end
 
-    let_it_be(:public_project, freeze: false) { create(:project, :small_repo, :public) }
     let(:project) { public_project }
     let(:forked_project) { fork_project(project) }
     let(:author) { project.creator }
@@ -328,7 +333,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
 
     context 'when the project is private' do
-      let(:project) { create(:project, :empty_repo, :private) }
+      let(:project) { build_stubbed(:project, :private) }
 
       it { is_expected.to eq(_('Not available for private projects')) }
     end
@@ -340,14 +345,14 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
 
     context 'when the merge request author cannot push to the source project' do
-      let(:author) { create(:user) }
+      let(:author) { build_stubbed(:user) }
 
       it { is_expected.to eq(_('Merge request author cannot push to target project')) }
     end
   end
 
   describe '#project_merge_requests_list_data' do
-    let(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     subject { helper.project_merge_requests_list_data(project, current_user) }
 

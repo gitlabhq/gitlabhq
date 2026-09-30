@@ -87,4 +87,24 @@ RSpec.describe 'Update a label', feature_category: :team_planning do
         errors: ['Label is not a project or group label.']
     end
   end
+
+  context 'when user is a reporter' do
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+
+    it 'updates the label' do
+      expect { post_graphql_mutation(mutation, current_user: reporter) }
+        .to change { label.reload.archived }.from(false).to(true)
+    end
+  end
+
+  context 'when user is a guest' do
+    let_it_be(:guest) { create(:user, guest_of: project) }
+
+    it 'does not update the label' do
+      expect { post_graphql_mutation(mutation, current_user: guest) }
+        .not_to change { label.reload.archived }
+
+      expect_graphql_errors_to_include(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
+    end
+  end
 end

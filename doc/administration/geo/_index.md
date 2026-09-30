@@ -203,6 +203,8 @@ The following are required to run Geo:
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run the exact same GitLab version. The [major, minor, and patch versions](../../policy/maintenance.md#versioning) must all match.
+  To check the GitLab version of a site, run `sudo gitlab-rake gitlab:env:info`. For more information, see
+  [Gather GitLab and system information](../raketasks/maintenance.md#gather-gitlab-and-system-information).
 - All sites must define the same [repository storages](../repository_storage_paths.md).
 - When using the container registry with Geo, you must configure separate, external PostgreSQL instances for the container registry metadata database at each site. See [Container registry for a secondary site](replication/container_registry.md) for details.
 

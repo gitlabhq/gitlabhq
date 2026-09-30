@@ -1,10 +1,10 @@
 ---
 name: dependency_firewall_dashboard_v2
-description: Gates the dependency firewall dashboard's prevented-package stats (write path and GraphQL fields)
+description: Gates the dependency firewall dashboard's prevented-package stats (write path, GraphQL fields and the redesigned dashboard)
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/627538
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255353
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631486
 milestone: '19.5'
 group: group::dependency firewall
-type: wip
+type: beta
 default_enabled: false

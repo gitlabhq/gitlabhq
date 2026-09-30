@@ -10,7 +10,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
   let_it_be(:award_emoji) { create(:award_emoji, awardable: issue, user: user) }
   let_it_be(:note, freeze: false) { create(:note, project: project, noteable: issue) }
   let_it_be_with_reload(:snippet_note) { create(:note, project: project, noteable: snippet) }
-  let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request, :skip_diff_creation, source_project: project, target_project: project) }
   let_it_be_with_reload(:mr_note) { create(:note, project: project, noteable: merge_request) }
   let_it_be(:downvote) { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
 
@@ -109,7 +109,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
       context 'with custom emoji' do
         let_it_be_with_reload(:project) { create(:project, :public, namespace: create(:group)) }
         let_it_be(:custom_emoji) { create_list(:custom_emoji, 4, namespace: project.namespace) }
-        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+        let(:merge_request) { create(:merge_request, :skip_diff_creation, source_project: project, target_project: project) }
 
         it 'prevents n+1 queries', :use_sql_query_cache do
           custom_emoji[0...2].each do |emoji|

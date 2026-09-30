@@ -929,4 +929,32 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'label permissions by role' do
+    let_it_be(:guest) { create(:user, guest_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be_with_reload(:label) { create(:label, title: 'Role label', project: project) }
+
+    it 'lets a reporter create, update and delete a label', :aggregate_failures do
+      post api("/projects/#{project.id}/labels", reporter), params: { name: 'Reporter label', color: '#FFAABB' }
+      expect(response).to have_gitlab_http_status(:created)
+
+      put api("/projects/#{project.id}/labels/#{label.id}", reporter), params: { new_name: 'Renamed' }
+      expect(response).to have_gitlab_http_status(:ok)
+
+      delete api("/projects/#{project.id}/labels/#{label.id}", reporter)
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it 'does not let a guest create, update or delete a label', :aggregate_failures do
+      post api("/projects/#{project.id}/labels", guest), params: { name: 'Guest label', color: '#FFAABB' }
+      expect(response).to have_gitlab_http_status(:forbidden)
+
+      put api("/projects/#{project.id}/labels/#{label.id}", guest), params: { new_name: 'Renamed' }
+      expect(response).to have_gitlab_http_status(:forbidden)
+
+      delete api("/projects/#{project.id}/labels/#{label.id}", guest)
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
 end

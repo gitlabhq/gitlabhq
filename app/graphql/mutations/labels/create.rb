@@ -32,7 +32,7 @@ module Mutations
                  (for example, `#FFAABB`) or one of the CSS color names.
         DESC
 
-      authorize :admin_label
+      authorize :create_label
       authorize_granular_token permissions: :create_label,
         boundaries: [
           { boundary_argument: :project_path, boundary_type: :project },

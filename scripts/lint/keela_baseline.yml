@@ -246,9 +246,6 @@ constants:
 delegations:
   app/models/ci/build_trace.rb:
   - build_complete?
-  app/models/event.rb:
-  - note_title
-  - design_title
   app/models/merge_request.rb:
   - head_pipeline_builds_with_coverage
   app/models/namespace.rb:

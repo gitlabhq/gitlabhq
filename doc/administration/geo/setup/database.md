@@ -22,7 +22,9 @@ values, based on attributes including your database's setup and size.
 > the roles cannot perform all necessary configuration steps. In this case, use the
 > [Geo with external PostgreSQL instances](external_database.md) process instead.
 
-Ensure the secondary site is running the same version of GitLab Enterprise Edition as the primary site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your primary site.
+Ensure the secondary site is running the same version of GitLab Enterprise Edition as the primary site.
+To check the GitLab version of a site, run `sudo gitlab-rake gitlab:env:info`. For more information, see [Gather GitLab and system information](../../raketasks/maintenance.md#gather-gitlab-and-system-information).
+Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your primary site.
 
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.

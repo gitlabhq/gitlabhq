@@ -45,7 +45,7 @@ RSpec.describe Mutations::Labels::Create, feature_category: :api do
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_label) }
+  specify { expect(described_class).to require_graphql_authorizations(:create_label) }
 
   context 'when creating a project label' do
     let_it_be(:parent) { create(:project) }

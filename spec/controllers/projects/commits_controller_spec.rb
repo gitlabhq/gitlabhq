@@ -91,16 +91,6 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       sign_in(user)
     end
 
-    describe "GET commits_root" do
-      context "no ref is provided" do
-        it 'redirects to the default branch of the project' do
-          get :commits_root, params: { namespace_id: project.namespace, project_id: project }
-
-          expect(response).to redirect_to project_commits_path(project)
-        end
-      end
-    end
-
     describe "GET show" do
       let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
       let(:ref_type) { nil }

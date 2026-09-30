@@ -251,6 +251,200 @@ RSpec.shared_context 'ProjectPolicyTable context' do
     :private  | :disabled | :anonymous  | nil   | 0
   end
 
+  # Notes on issues, where Planner can also read confidential notes.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_planner_notes_feature_access
+    :public   | :enabled  | :admin      | true  | 2
+    :public   | :enabled  | :admin      | false | 1
+    :public   | :enabled  | :reporter   | nil   | 2
+    :public   | :enabled  | :planner    | nil   | 2
+    :public   | :enabled  | :guest      | nil   | 1
+    :public   | :enabled  | :non_member | nil   | 1
+    :public   | :enabled  | :anonymous  | nil   | 1
+
+    :public   | :private  | :admin      | true  | 2
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 2
+    :public   | :private  | :planner    | nil   | 2
+    :public   | :private  | :guest      | nil   | 1
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 2
+    :internal | :enabled  | :admin      | false | 1
+    :internal | :enabled  | :reporter   | nil   | 2
+    :internal | :enabled  | :planner    | nil   | 2
+    :internal | :enabled  | :guest      | nil   | 1
+    :internal | :enabled  | :non_member | nil   | 1
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 2
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 2
+    :internal | :private  | :planner    | nil   | 2
+    :internal | :private  | :guest      | nil   | 1
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 2
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 2
+    :private  | :private  | :planner    | nil   | 2
+    :private  | :private  | :guest      | nil   | 1
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
+  # Comments on confidential issues, which Planner and above can read.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_planner_confidential_issue_access
+    :public   | :enabled  | :admin      | true  | 1
+    :public   | :enabled  | :admin      | false | 0
+    :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
+    :public   | :enabled  | :guest      | nil   | 0
+    :public   | :enabled  | :non_member | nil   | 0
+    :public   | :enabled  | :anonymous  | nil   | 0
+
+    :public   | :private  | :admin      | true  | 1
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 1
+    :public   | :private  | :planner    | nil   | 1
+    :public   | :private  | :guest      | nil   | 0
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 1
+    :internal | :enabled  | :admin      | false | 0
+    :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
+    :internal | :enabled  | :guest      | nil   | 0
+    :internal | :enabled  | :non_member | nil   | 0
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 1
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 1
+    :internal | :private  | :guest      | nil   | 0
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 1
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 1
+    :private  | :private  | :guest      | nil   | 0
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
+  # Internal comments on merge requests: Planner reads them wherever it can read merge requests.
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_planner_internal_note_access
+    :public   | :enabled  | :admin      | true  | 1
+    :public   | :enabled  | :admin      | false | 0
+    :public   | :enabled  | :reporter   | nil   | 1
+    :public   | :enabled  | :planner    | nil   | 1
+    :public   | :enabled  | :guest      | nil   | 0
+    :public   | :enabled  | :non_member | nil   | 0
+    :public   | :enabled  | :anonymous  | nil   | 0
+
+    :public   | :private  | :admin      | true  | 1
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 1
+    :public   | :private  | :planner    | nil   | 0
+    :public   | :private  | :guest      | nil   | 0
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :planner    | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 1
+    :internal | :enabled  | :admin      | false | 0
+    :internal | :enabled  | :reporter   | nil   | 1
+    :internal | :enabled  | :planner    | nil   | 1
+    :internal | :enabled  | :guest      | nil   | 0
+    :internal | :enabled  | :non_member | nil   | 0
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 1
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 1
+    :internal | :private  | :planner    | nil   | 0
+    :internal | :private  | :guest      | nil   | 0
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :planner    | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :enabled  | :admin      | true  | 1
+    :private  | :enabled  | :admin      | false | 0
+    :private  | :enabled  | :reporter   | nil   | 1
+    :private  | :enabled  | :planner    | nil   | 1
+    :private  | :enabled  | :guest      | nil   | 0
+    :private  | :enabled  | :non_member | nil   | 0
+    :private  | :enabled  | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 1
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 1
+    :private  | :private  | :planner    | nil   | 0
+    :private  | :private  | :guest      | nil   | 0
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :planner    | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
   # This table is based on permission_table_for_guest_feature_access,
   # but with a slight twist.
   # Some features can be hidden away to GUEST, when project is private.

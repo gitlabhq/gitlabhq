@@ -244,8 +244,16 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `endpoint`                                  | Can be used when configuring an S3-compatible service, by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
 | `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for S3-compatible services that require path-style addressing. Leave as `false` for AWS S3. | `false` |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
-| `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
+| `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. Must be an integer. | `15`[^refresh-threshold] |
 | `disable_imds_v2`                           | Force the use of IMDS v1 by disabling access to the IMDS v2 endpoint that retrieves `X-aws-ec2-metadata-token`. | `false` |
+
+[^refresh-threshold]: GitLab Pages deployments default to `900` when `use_iam_profile` is `true`.
+    By default, GitLab Pages can serve a cached pre-signed URL for up to 11 minutes
+    (`gitlab_cache_expiry` plus `zip_cache_expiration`), and the URL is valid only while the
+    temporary credentials that signed it are valid. With an EC2 instance profile, this default
+    shortens the window but does not close it, because the instance metadata service returns the
+    same credentials until AWS rotates them. A value set in the consolidated connection also
+    applies to GitLab Pages and replaces this default.
 
 #### S3 compatibility and known failure modes
 

@@ -182,4 +182,21 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       end
     end
   end
+
+  describe 'GET commits_root' do
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user, maintainer_of: project) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'no ref is provided' do
+      it 'redirects to the default branch of the project' do
+        get project_commits_root_path(project)
+
+        expect(response).to redirect_to project_commits_path(project)
+      end
+    end
+  end
 end

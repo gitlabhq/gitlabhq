@@ -78,8 +78,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuables_state_counter_text' do
-    let_it_be(:user) { create(:user) }
-
     describe 'state text' do
       context 'when number of issuables can be generated' do
         before do
@@ -116,7 +114,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       end
 
       context 'when count is over the threshold' do
-        let_it_be(:group) { create(:group) }
+        let(:group) { build_stubbed(:group) }
 
         before do
           allow(helper).to receive_messages(issuables_count_for_state: 1100, parent: group)
@@ -188,7 +186,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_initial_data' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_refind(:issue) { create(:issue, author: user) }
 
     before do
       allow(helper).to receive_messages(current_user: user, can?: true)
@@ -306,8 +305,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     context 'when work_item_type is nil' do
-      let(:issue) { create(:issue) }
-
       it 'defaults isIncidentManagement and isServiceDesk to false' do
         @project = issue.project
         allow(issue).to receive(:work_item_type).and_return(nil)
@@ -377,8 +374,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     describe '#zoomMeetingUrl in issue' do
-      let(:issue) { create(:issue, author: user) }
-
       before do
         assign(:project, issue.project)
       end
@@ -429,8 +424,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     describe '#duplicatedToIssueUrl' do
-      let(:issue) { create(:issue, author: user) }
-
       before do
         assign(:project, issue.project)
       end
@@ -457,8 +450,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
 
     describe '#movedToIssueUrl' do
-      let(:issue) { create(:issue, author: user) }
-
       before do
         assign(:project, issue.project)
       end
@@ -509,7 +500,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       let_it_be(:label) { create(:label, name: 'Bug') }
       let_it_be(:label2) { create(:label, name: 'Community contribution') }
       let_it_be(:issuable) do
-        create(:merge_request, source_project: project, target_project: project, labels: [label, label2])
+        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project, labels: [label, label2])
       end
 
       it 'returns the expected data' do

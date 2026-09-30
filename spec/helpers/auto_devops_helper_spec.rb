@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AutoDevopsHelper do
-  let_it_be_with_reload(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let(:project) { build_stubbed(:project) }
 
   describe '#auto_devops_settings_path' do
     it 'returns auto devops settings path' do
@@ -17,19 +16,19 @@ RSpec.describe AutoDevopsHelper do
 
     context 'when receiver is a group' do
       context 'when explicitly enabled' do
-        let(:receiver) { create(:group, :auto_devops_enabled) }
+        let(:receiver) { build_stubbed(:group, :auto_devops_enabled) }
 
         it { is_expected.to eq('group enabled') }
       end
 
       context 'when explicitly disabled' do
-        let(:receiver) { create(:group, :auto_devops_disabled) }
+        let(:receiver) { build_stubbed(:group, :auto_devops_disabled) }
 
         it { is_expected.to be_nil }
       end
 
       context 'when auto devops is implicitly enabled' do
-        let(:receiver) { create(:group) }
+        let(:receiver) { build_stubbed(:group) }
 
         context 'by instance' do
           before do
@@ -40,26 +39,24 @@ RSpec.describe AutoDevopsHelper do
         end
 
         context 'with groups' do
-          before do
-            receiver.update!(parent: parent)
-          end
+          let(:receiver) { build_stubbed(:group, parent: parent) }
 
           context 'when auto devops is enabled on parent' do
-            let(:parent) { create(:group, :auto_devops_enabled) }
+            let(:parent) { build_stubbed(:group, :auto_devops_enabled) }
 
             it { is_expected.to eq('group enabled') }
           end
 
           context 'when auto devops is enabled on parent group' do
-            let(:root_parent) { create(:group, :auto_devops_enabled) }
-            let(:parent) { create(:group, parent: root_parent) }
+            let(:root_parent) { build_stubbed(:group, :auto_devops_enabled) }
+            let(:parent) { build_stubbed(:group, parent: root_parent) }
 
             it { is_expected.to eq('group enabled') }
           end
 
           context 'when auto devops disabled set on parent group' do
-            let(:root_parent) { create(:group, :auto_devops_disabled) }
-            let(:parent) { create(:group, parent: root_parent) }
+            let(:root_parent) { build_stubbed(:group, :auto_devops_disabled) }
+            let(:parent) { build_stubbed(:group, parent: root_parent) }
 
             it { is_expected.to be_nil }
           end
@@ -69,19 +66,19 @@ RSpec.describe AutoDevopsHelper do
 
     context 'when receiver is a project' do
       context 'when auto devops is enabled at project level' do
-        let(:receiver) { create(:project, :auto_devops) }
+        let(:receiver) { build_stubbed(:project, :auto_devops) }
 
         it { is_expected.to be_nil }
       end
 
       context 'when auto devops is disabled at project level' do
-        let(:receiver) { create(:project, :auto_devops_disabled) }
+        let(:receiver) { build_stubbed(:project, :auto_devops_disabled) }
 
         it { is_expected.to be_nil }
       end
 
       context 'when auto devops is implicitly enabled' do
-        let(:receiver) { create(:project) }
+        let(:receiver) { build_stubbed(:project) }
 
         context 'by instance' do
           before do
@@ -92,21 +89,21 @@ RSpec.describe AutoDevopsHelper do
         end
 
         context 'with groups' do
-          let(:receiver) { create(:project, namespace: group) }
+          let(:receiver) { build_stubbed(:project, namespace: group) }
 
           before do
             stub_application_setting(auto_devops_enabled: false)
           end
 
           context 'when auto devops is enabled on group level' do
-            let(:group) { create(:group, :auto_devops_enabled) }
+            let(:group) { build_stubbed(:group, :auto_devops_enabled) }
 
             it { is_expected.to eq('group enabled') }
           end
 
           context 'when auto devops is enabled on root group' do
-            let(:root_parent) { create(:group, :auto_devops_enabled) }
-            let(:group) { create(:group, parent: root_parent) }
+            let(:root_parent) { build_stubbed(:group, :auto_devops_enabled) }
+            let(:group) { build_stubbed(:group, parent: root_parent) }
 
             it { is_expected.to eq('group enabled') }
           end
@@ -114,7 +111,7 @@ RSpec.describe AutoDevopsHelper do
       end
 
       context 'when auto devops is implicitly disabled' do
-        let(:receiver) { create(:project) }
+        let(:receiver) { build_stubbed(:project) }
 
         context 'by instance' do
           before do
@@ -125,17 +122,17 @@ RSpec.describe AutoDevopsHelper do
         end
 
         context 'with groups' do
-          let(:receiver) { create(:project, namespace: group) }
+          let(:receiver) { build_stubbed(:project, namespace: group) }
 
           context 'when auto devops is disabled on group level' do
-            let(:group) { create(:group, :auto_devops_disabled) }
+            let(:group) { build_stubbed(:group, :auto_devops_disabled) }
 
             it { is_expected.to be_nil }
           end
 
           context 'when root group is enabled and parent disabled' do
-            let(:root_parent) { create(:group, :auto_devops_enabled) }
-            let(:group) { create(:group, :auto_devops_disabled, parent: root_parent) }
+            let(:root_parent) { build_stubbed(:group, :auto_devops_enabled) }
+            let(:group) { build_stubbed(:group, :auto_devops_disabled, parent: root_parent) }
 
             it { is_expected.to be_nil }
           end

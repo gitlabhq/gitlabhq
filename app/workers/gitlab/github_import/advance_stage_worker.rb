@@ -67,3 +67,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GithubImport::AdvanceStageWorker.prepend_mod

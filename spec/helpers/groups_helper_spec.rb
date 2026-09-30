@@ -111,8 +111,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     it 'does not escape special characters such as ampersands in the name' do
-      group_with_special_chars = create(:group)
-      group_with_special_chars.update_column(:name, 'Digital & Clients')
+      group_with_special_chars = build_stubbed(:group, name: 'Digital & Clients')
 
       expect(helper).to receive(:push_to_schema_breadcrumb)
         .with('Digital & Clients', group_path(group_with_special_chars), nil)
@@ -269,9 +268,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       create(:group, name: 'group', owners: group_owner, maintainers: group_maintainer)
     end
 
-    # `build_stubbed` keeps `subgroup.parent` as the same object as `group`, so the stub below holds.
-    let(:subgroup) { build_stubbed(:group, name: 'subgroup', parent: group) }
-
+    let(:subgroup) { create(:group, name: 'subgroup', parent: group) }
     let(:current_user) { build_stubbed(:user) }
 
     it 'returns true for an owner of the group' do
@@ -387,10 +384,13 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe 'group member permission helpers' do
     let_it_be_with_reload(:user) { create(:user) }
-    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be(:owner) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group, owners: owner) }
+
+    let(:current_user) { user }
 
     before do
-      allow(helper).to receive(:current_user) { user }
+      allow(helper).to receive(:current_user) { current_user }
     end
 
     describe '#can_admin_group_member?' do
@@ -399,9 +399,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       it { is_expected.to be(false) }
 
       context 'when current_user can admin members' do
-        before_all do
-          group.add_owner(user)
-        end
+        let(:current_user) { owner }
 
         it { is_expected.to be(true) }
       end
@@ -413,9 +411,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       it { is_expected.to be(false) }
 
       context 'when current_user can invite members' do
-        before_all do
-          group.add_owner(user)
-        end
+        let(:current_user) { owner }
 
         it { is_expected.to be(true) }
       end
@@ -429,10 +425,10 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#subgroup_creation_data' do
-    let_it_be(:name) { 'parent group' }
-    let_it_be(:user) { build(:user) }
-    let_it_be(:group) { build(:group, name: name) }
-    let_it_be(:subgroup) { build(:group, parent: group) }
+    let(:name) { 'parent group' }
+    let(:user) { build(:user) }
+    let(:group) { build(:group, name: name) }
+    let(:subgroup) { build(:group, parent: group) }
 
     # `current_user` is required by the EE override of `subgroup_creation_data`.
     before do
@@ -461,7 +457,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#group_name_and_path_app_data' do
-    let_it_be(:root_url) { 'https://gitlab.com/' }
+    let(:root_url) { 'https://gitlab.com/' }
 
     before do
       allow(Gitlab.config.mattermost).to receive(:enabled).and_return(true)
@@ -479,8 +475,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#groups_show_app_data' do
-    let_it_be(:initial_sort) { 'created_asc' }
-
+    let(:initial_sort) { 'created_asc' }
     let(:group) { build_stubbed(:group) }
     let(:user) { build_stubbed(:user) }
 
@@ -555,7 +550,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context 'when group is marked for deletion' do
-      let_it_be(:group, freeze: false) { create(:group, :deletion_scheduled) }
+      let_it_be_with_reload(:group) { create(:group, :deletion_scheduled) }
 
       it { is_expected.to match(hash_including(marked_for_deletion: 'true')) }
     end
@@ -563,7 +558,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#group_unarchive_settings_app_data' do
     let_it_be_with_reload(:ancestor) { create(:group) }
-    let_it_be(:group, freeze: false) { create(:group, parent: ancestor) }
+    let_it_be_with_reload(:group) { create(:group, parent: ancestor) }
 
     subject { helper.group_unarchive_settings_app_data(group) }
 
@@ -671,8 +666,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#groups_list_with_filtered_search_app_data' do
-    let_it_be(:endpoint) { '/groups' }
-
+    let(:endpoint) { '/groups' }
     let(:user) { build_stubbed(:user) }
 
     before do
@@ -752,18 +746,15 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     subject(:result) { helper.group_more_action_data(group) }
 
-    it 'returns expected values' do
-      serialized_group = GroupChildSerializer.new(current_user: user).represent(group).to_json
-
-      expect(result).to include({
-        group: serialized_group,
-        dashboard_path: '/dashboard/groups'
-      })
-    end
-
     context 'when user has no access request' do
-      context 'when user can request access' do
-        specify { expect(result[:can_request_access]).to eq('true') }
+      it 'returns expected values and allows requesting access', :aggregate_failures do
+        serialized_group = GroupChildSerializer.new(current_user: user).represent(group).to_json
+
+        expect(result).to include({
+          group: serialized_group,
+          dashboard_path: '/dashboard/groups'
+        })
+        expect(result[:can_request_access]).to eq('true')
       end
 
       context 'when user cannot request access' do
@@ -777,13 +768,12 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'when user has existing access request' do
       let_it_be_with_reload(:access_request) do
-        create(:group_member, :guest, :access_request, group: group, user: user)
+        create(:group_member, :guest, :access_request, source: group, user: user)
       end
 
-      specify { expect(result[:can_request_access]).to eq('false') }
-
-      context 'when user can withdraw access request' do
-        specify { expect(result[:can_withdraw_access_request]).to eq('true') }
+      it 'does not allow requesting access and allows withdrawing the request', :aggregate_failures do
+        expect(result[:can_request_access]).to eq('false')
+        expect(result[:can_withdraw_access_request]).to eq('true')
       end
 
       context 'when user cannot withdraw access request' do
@@ -836,7 +826,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context 'when the group is a subgroup' do
-      let(:subgroup) { build_stubbed(:group, parent: group, organization: unconfirmed_organization) }
+      let(:subgroup) { create(:group, parent: group, organization: unconfirmed_organization) }
 
       subject(:can_create_organization) { helper.can_create_organization_from_group_settings?(subgroup) }
 

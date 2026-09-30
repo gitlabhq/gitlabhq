@@ -1,23 +1,15 @@
 <script>
-import {
-  GlButton,
-  GlButtonGroup,
-  GlDrawer,
-  GlIcon,
-  GlSegmentedControl,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlButton, GlDrawer, GlIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
-import { hasBoardViewMode, viewModeOptions } from 'ee_else_ce/work_items/view_modes';
+import { hasBoardViewMode } from 'ee_else_ce/work_items/view_modes';
 import {
   DISPLAY_SETTINGS_PAGE_GROUP_BY,
   DISPLAY_SETTINGS_PAGE_ROOT,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
-  VIEW_MODE_TABLE,
 } from '../../constants';
 import WorkItemDisplaySettingsSort from './work_item_display_settings_sort.vue';
 import WorkItemDisplaySettingsMetadata from './work_item_display_settings_metadata.vue';
@@ -29,18 +21,13 @@ export default {
   name: 'WorkItemDisplaySettingsDrawer',
   components: {
     GlButton,
-    GlButtonGroup,
     GlDrawer,
     GlIcon,
-    GlSegmentedControl,
     WorkItemDisplaySettingsSort,
     WorkItemDisplaySettingsMetadata,
     WorkItemDisplaySettingsUserPreferences,
     WorkItemDisplaySettingsGroupBy,
     WorkItemDisplaySettingsEmptyGroups,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
   i18n: {
@@ -48,7 +35,6 @@ export default {
     groupBy: s__('WorkItems|Group by'),
     goBack: __('Go back'),
   },
-  viewModeOptions,
   props: {
     open: {
       type: Boolean,
@@ -108,24 +94,13 @@ export default {
       default: DISPLAY_SETTINGS_PAGE_ROOT,
     },
   },
-  emits: ['close', 'sort', 'update-settings', 'toggle-view-mode', 'page-change'],
+  emits: ['close', 'sort', 'update-settings', 'page-change'],
   computed: {
     hasSortOptions() {
       return this.viewMode !== VIEW_MODE_BOARD && this.sortOptions.length > 0;
     },
     isPlanningViewBoardEnabled() {
       return hasBoardViewMode && Boolean(this.glFeatures.planningViewBoards);
-    },
-    isPlanningViewTableEnabled() {
-      return Boolean(this.glFeatures.planningViewTable);
-    },
-    labelledViewModeOptions() {
-      return this.$options.viewModeOptions.filter((option) => option.value !== VIEW_MODE_TABLE);
-    },
-    iconViewModeOptions() {
-      return this.$options.viewModeOptions.filter(
-        (option) => option.value !== VIEW_MODE_BOARD || this.isPlanningViewBoardEnabled,
-      );
     },
     isGroupByPage() {
       return this.page === DISPLAY_SETTINGS_PAGE_GROUP_BY;
@@ -146,9 +121,6 @@ export default {
     },
     onSettingsUpdate(input) {
       this.$emit('update-settings', input);
-    },
-    onToggleViewMode(newViewMode) {
-      this.$emit('toggle-view-mode', newViewMode);
     },
     openGroupByPage() {
       this.$emit('page-change', DISPLAY_SETTINGS_PAGE_GROUP_BY);
@@ -197,32 +169,6 @@ export default {
         @update-settings="onSettingsUpdate"
       />
       <div v-else class="gl-flex gl-h-full gl-flex-col !gl-p-0">
-        <gl-button-group
-          v-if="isPlanningViewTableEnabled"
-          class="gl-mx-5 gl-mt-5"
-          data-testid="icon-view-mode-toggle"
-        >
-          <gl-button
-            v-for="option in iconViewModeOptions"
-            :key="option.value"
-            v-gl-tooltip
-            :icon="option.props.icon"
-            :title="option.text"
-            :aria-label="option.text"
-            :aria-pressed="option.value === viewMode ? 'true' : 'false'"
-            :selected="option.value === viewMode"
-            :data-testid="`view-mode-${option.value}`"
-            @click="onToggleViewMode(option.value)"
-          />
-        </gl-button-group>
-        <gl-segmented-control
-          v-else-if="isPlanningViewBoardEnabled && labelledViewModeOptions.length > 1"
-          :options="labelledViewModeOptions"
-          :value="viewMode"
-          class="gl-mx-5 gl-mt-5"
-          data-testid="view-mode-toggle"
-          @input="onToggleViewMode"
-        />
         <work-item-display-settings-sort
           v-if="hasSortOptions"
           :sort-options="sortOptions"
@@ -234,7 +180,7 @@ export default {
           v-if="isBoardMode"
           type="button"
           data-testid="group-by-row"
-          class="gl-flex gl-w-full gl-items-center gl-justify-between gl-border-none gl-bg-transparent gl-px-5 gl-py-4"
+          class="gl-flex gl-w-full gl-items-center gl-justify-between gl-border-none gl-bg-transparent gl-px-5 gl-pb-4 gl-pt-5"
           @click="openGroupByPage"
         >
           <span>{{ $options.i18n.groupBy }}</span>

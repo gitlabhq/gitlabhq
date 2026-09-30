@@ -646,7 +646,7 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
   end
 
   describe "merge request metrics" do
-    let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: project) }
+    let(:merge_request) { create(:merge_request, :skip_diff_creation, target_branch: 'master', source_branch: 'feature', source_project: project) }
 
     context "while updating the 'first_deployed_to_production_at' time" do
       before do

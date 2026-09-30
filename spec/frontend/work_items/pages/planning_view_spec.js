@@ -105,6 +105,8 @@ import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filte
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 import WorkItemDisplaySettingsDrawer from '~/work_items/list/components/work_item_display_settings_drawer.vue';
+import WorkItemViewModeToggle from '~/work_items/components/work_item_view_mode_toggle.vue';
+import WorkItemDisplaySettingsButton from '~/work_items/components/work_item_display_settings_button.vue';
 import InfoBanner from '~/work_items/list/components/info_banner.vue';
 import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
 import EmptyStateWithAnyTickets from '~/work_items/list/components/empty_state_with_any_tickets.vue';
@@ -294,7 +296,9 @@ const findWorkItemsSavedViewsSelectors = () => wrapper.findComponent(WorkItemsSa
 const findViewNotFoundModal = () => wrapper.findComponentByTestId('view-not-found-modal');
 const findViewLimitWarningModal = () => wrapper.findComponentByTestId('view-limit-warning-modal');
 const findDisplaySettingsDrawer = () => wrapper.findComponent(WorkItemDisplaySettingsDrawer);
-const findDisplaySettingsButton = () => wrapper.findComponentByTestId('display-settings-button');
+const findViewModeToggle = () => wrapper.findComponent(WorkItemViewModeToggle);
+const findToolbarViewActions = () => wrapper.findByTestId('toolbar-view-actions');
+const findDisplaySettingsButton = () => wrapper.findComponent(WorkItemDisplaySettingsButton);
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
 const findBulkEditStartButton = () => wrapper.findComponentByTestId('bulk-edit-start-button');
@@ -1665,7 +1669,7 @@ describe('planning-view', () => {
           stubs: { BoardView: boardViewStub },
         });
 
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
       });
 
@@ -2605,7 +2609,7 @@ describe('planning-view', () => {
         await mountComponent({
           provide: { glFeatures: { planningViewBoards: true } },
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(findBulkEditStartButton().exists()).toBe(false);
@@ -2983,6 +2987,18 @@ describe('planning-view', () => {
       expect(findDisplaySettingsButton().exists()).toBe(true);
     });
 
+    it('renders the view mode toggle with the current view mode', () => {
+      expect(findViewModeToggle().props('viewMode')).toBe(VIEW_MODE_LIST);
+    });
+
+    it('right-aligns the view mode toggle and Display button as a group', () => {
+      expect(findToolbarViewActions().classes()).toContain('gl-ml-auto');
+      expect(findToolbarViewActions().findComponent(WorkItemViewModeToggle).exists()).toBe(true);
+      expect(
+        findToolbarViewActions().find('[data-testid="display-settings-button"]').exists(),
+      ).toBe(true);
+    });
+
     it('renders the drawer closed by default with the Display button unselected', () => {
       expect(findDisplaySettingsDrawer().props('open')).toBe(false);
       expect(findDisplaySettingsButton().props('selected')).toBe(false);
@@ -3137,8 +3153,8 @@ describe('planning-view', () => {
         expect(findDisplaySettingsDrawer().props('viewMode')).toBe(VIEW_MODE_LIST);
       });
 
-      it('switches to board view when the drawer emits toggle-view-mode with "board"', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+      it('switches to board view when the view mode toggle emits toggle-view-mode with "board"', async () => {
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(findListView().exists()).toBe(false);
@@ -3147,7 +3163,7 @@ describe('planning-view', () => {
       });
 
       it('passes rootPageFullPath and queryVariables to the board view', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', 'board');
+        findViewModeToggle().vm.$emit('toggle-view-mode', 'board');
         await waitForPromises();
 
         expect(findBoardView().props('rootPageFullPath')).toBe('full/path');
@@ -3159,7 +3175,7 @@ describe('planning-view', () => {
       });
 
       it('passes the preselected work item type to the board view for in-column creation', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', 'board');
+        findViewModeToggle().vm.$emit('toggle-view-mode', 'board');
         await waitForPromises();
 
         expect(findBoardView().props('preselectedWorkItemType')).toBe('Issue');
@@ -3167,7 +3183,7 @@ describe('planning-view', () => {
 
       describe('when the board asks for the group by settings', () => {
         beforeEach(async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           findBoardView().vm.$emit('open-group-by-settings');
@@ -3186,6 +3202,13 @@ describe('planning-view', () => {
           expect(findDisplaySettingsDrawer().props('page')).toBe('root');
         });
 
+        it('goes back to the root page when switching away from the board view', async () => {
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          await waitForPromises();
+
+          expect(findDisplaySettingsDrawer().props('page')).toBe('root');
+        });
+
         it('re-opens the group by page after the drawer navigates itself back to root', async () => {
           findDisplaySettingsDrawer().vm.$emit('page-change', 'root');
           await nextTick();
@@ -3200,7 +3223,7 @@ describe('planning-view', () => {
       describe('when board card is selected', () => {
         it('opens the detail panel and marks the card active', async () => {
           const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           findBoardView().vm.$emit('set-active-item', payload);
@@ -3213,13 +3236,13 @@ describe('planning-view', () => {
 
         it('keeps the detail panel open when switching from board to list view', async () => {
           const payload = { id: 'gid://gitlab/WorkItem/1', iid: '1' };
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           findBoardView().vm.$emit('set-active-item', payload);
           await waitForPromises();
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
           await waitForPromises();
 
           expect(findBoardView().exists()).toBe(false);
@@ -3255,7 +3278,7 @@ describe('planning-view', () => {
             }),
           });
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           expect(findBoardView().props('detailPanelEnabled')).toBe(false);
@@ -3264,7 +3287,7 @@ describe('planning-view', () => {
       });
 
       it('enforces Manual sort on the board and restores the list sort on exit', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
@@ -3272,7 +3295,7 @@ describe('planning-view', () => {
         ]);
         expect(findDisplaySettingsDrawer().props('sortKey')).toBe(RELATIVE_POSITION_ASC);
 
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
         await waitForPromises();
 
         expect(findDisplaySettingsDrawer().props('sortOptions').length).toBeGreaterThan(1);
@@ -3280,7 +3303,7 @@ describe('planning-view', () => {
       });
 
       it('does not persist the sort when the locked Manual option is selected on the board', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         findDisplaySettingsDrawer().vm.$emit('sort', RELATIVE_POSITION_ASC);
@@ -3291,16 +3314,16 @@ describe('planning-view', () => {
         );
 
         // The list sort is preserved so it is restored on exit.
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
         await waitForPromises();
 
         expect(findDisplaySettingsDrawer().props('sortKey')).toBe(CREATED_DESC);
       });
 
-      it('switches back to list view when the drawer emits toggle-view-mode with "list"', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+      it('switches back to list view when the view mode toggle emits toggle-view-mode with "list"', async () => {
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
         await waitForPromises();
 
         expect(findListView().exists()).toBe(true);
@@ -3314,7 +3337,7 @@ describe('planning-view', () => {
         it('tracks switching to board view', async () => {
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
@@ -3325,11 +3348,11 @@ describe('planning-view', () => {
         });
 
         it('tracks switching back to list view', async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_LIST);
           await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
@@ -3341,7 +3364,7 @@ describe('planning-view', () => {
       });
 
       it('persists view mode for All Items', async () => {
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         await mountComponent({
@@ -3372,7 +3395,7 @@ describe('planning-view', () => {
           userPreferenceMutationResponse: mutationHandler,
         });
 
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         expect(mutationHandler).toHaveBeenCalledWith({
@@ -3407,7 +3430,7 @@ describe('planning-view', () => {
 
       describe('when creating a new saved view in board mode', () => {
         beforeEach(async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
         });
 
@@ -3429,7 +3452,7 @@ describe('planning-view', () => {
         const message = 'Something went wrong when fetching the board columns.';
 
         beforeEach(async () => {
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
           findBoardView().vm.$emit('set-error', message);
           await nextTick();
@@ -3460,7 +3483,7 @@ describe('planning-view', () => {
             userPreferenceMutationResponse: mutationHandler,
           });
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_TABLE);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_TABLE);
           await waitForPromises();
         });
 
@@ -3533,7 +3556,7 @@ describe('planning-view', () => {
             provide: { glFeatures: { planningViewBoards: true } },
             stubs: { BoardView: boardViewStub },
           });
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await waitForPromises();
         });
 
@@ -3609,7 +3632,7 @@ describe('planning-view', () => {
         beforeEach(async () => {
           await mountSavedViewWithDrawer({ displaySettings: { viewMode: VIEW_MODE_LIST } });
 
-          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
           await nextTick();
         });
 
@@ -3672,7 +3695,7 @@ describe('planning-view', () => {
           },
           ...options,
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
       };
 
@@ -3730,7 +3753,7 @@ describe('planning-view', () => {
               mockPreferencesHandler: deferredHandler,
               skipLastWait: true,
             });
-            findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+            findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
             await waitForPromises();
 
             // The preferences query is still in flight, so the selection isn't known yet.
@@ -3904,7 +3927,7 @@ describe('planning-view', () => {
           },
           ...options,
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
       };
 
@@ -4337,7 +4360,7 @@ describe('planning-view', () => {
           provide: { glFeatures: { planningViewBoards: true } },
           stubs: { BoardView: BoardViewStub },
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
         cacheWorkItem(cachedWorkItemId);
         const matchedNode = buildWorkItemNode(1);
@@ -4388,7 +4411,7 @@ describe('planning-view', () => {
           provide: { glFeatures: { planningViewBoards: true } },
           stubs: { BoardView: BoardViewStub },
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
 
         cacheWorkItem(cachedWorkItemId);
@@ -4476,7 +4499,7 @@ describe('planning-view', () => {
           provide: { glFeatures: { planningViewBoards: true } },
           stubs: { BoardView: BoardViewStub },
         });
-        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
         await waitForPromises();
         const matchedNode = buildWorkItemNode(2);
         boardMatchHandler.mockResolvedValue(buildBoardWorkItemsResponse([matchedNode]));

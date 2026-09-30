@@ -59,4 +59,44 @@ RSpec.describe "User views incident", feature_category: :incident_management do
       end
     end
   end
+
+  describe 'state toggling', :js do
+    def open_header_dropdown
+      within_testid('issue-header') do
+        find_by_testid('desktop-dropdown').click
+      end
+    end
+
+    def click_header_state_button(text)
+      within_testid('toggle-issue-state-button') do
+        click_button text
+      end
+    end
+
+    it 'closes and reopens the incident from the header', :aggregate_failures do
+      expect(page).to have_css('[data-testid="issue-state-badge"]', text: 'Open')
+
+      open_header_dropdown
+      click_header_state_button 'Close incident'
+
+      expect(page).to have_css('[data-testid="issue-state-badge"]', text: 'Closed')
+
+      open_header_dropdown
+      click_header_state_button 'Reopen incident'
+
+      expect(page).to have_css('[data-testid="issue-state-badge"]', text: 'Open')
+    end
+
+    it 'closes the incident from the comment form and updates the header', :aggregate_failures do
+      within_testid('comment-form') do
+        click_button 'Close incident'
+      end
+
+      expect(page).to have_css('[data-testid="issue-state-badge"]', text: 'Closed')
+
+      open_header_dropdown
+
+      expect(page).to have_button('Reopen incident')
+    end
+  end
 end

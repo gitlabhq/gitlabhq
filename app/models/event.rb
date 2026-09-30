@@ -60,8 +60,6 @@ class Event < ApplicationRecord
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
-  delegate :title, to: :note, prefix: true, allow_nil: true
-  delegate :title, to: :design, prefix: true, allow_nil: true
 
   belongs_to :author, class_name: "User"
   belongs_to :project

@@ -31958,6 +31958,9 @@ msgstr ""
 msgid "DuoAgenticChat|%{modelName} isn't included in your trial"
 msgstr ""
 
+msgid "DuoAgenticChat|/goal"
+msgstr ""
+
 msgid "DuoAgenticChat|AGENTS.md"
 msgstr ""
 
@@ -32348,7 +32351,7 @@ msgstr ""
 msgid "DuoAgenticChat|Work items"
 msgstr ""
 
-msgid "DuoAgenticChat|Work towards a goal until it is achieved"
+msgid "DuoAgenticChat|Work until a goal is met"
 msgstr ""
 
 msgid "DuoAgenticChat|You can attach up to %{max} images per message. Some images were not attached."
@@ -73083,9 +73086,6 @@ msgstr ""
 msgid "SecretsManager|After %{cutoffDate}, GitLab Secrets Manager usage will require GitLab Credits. To avoid a service disruption, enable GitLab Secrets Manager with GitLab Credits. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
 msgstr ""
 
-msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
-msgstr ""
-
 msgid "SecretsManager|After you use up all your trial credits or your trial period ends, you need %{linkStart}GitLab Credits%{linkEnd} to continue using GitLab Secrets Manager as a paid capability. To avoid a disruption at the end of your trial, contact your subscription owner to make sure you have purchased a Monthly Commitment of GitLab Credits or accepted on-demand billing. You can disable this feature any time in your settings to avoid credit consumption."
 msgstr ""
 
@@ -73153,9 +73153,6 @@ msgid "SecretsManager|Enable GitLab Secrets Manager for all groups and projects 
 msgstr ""
 
 msgid "SecretsManager|Enable GitLab Secrets Manager with GitLab Credits"
-msgstr ""
-
-msgid "SecretsManager|Enable on-demand billing to try GitLab Secrets Manager"
 msgstr ""
 
 msgid "SecretsManager|Enable with GitLab Credits"
@@ -73242,10 +73239,10 @@ msgstr ""
 msgid "SecretsManager|New secret"
 msgstr ""
 
-msgid "SecretsManager|On-demand is enabled"
+msgid "SecretsManager|Please wait while the secrets manager is enabled."
 msgstr ""
 
-msgid "SecretsManager|Please wait while the secrets manager is enabled."
+msgid "SecretsManager|Project and group members can only view details or delete existing secrets. When enabled, GitLab Secrets Manager consumes GitLab Credits."
 msgstr ""
 
 msgid "SecretsManager|Project and group members will only be able to view details or delete existing secrets."
@@ -88352,6 +88349,9 @@ msgstr ""
 msgid "UsageBilling|Bulk update"
 msgstr ""
 
+msgid "UsageBilling|Bulk update cap overrides"
+msgstr ""
+
 msgid "UsageBilling|Cancel"
 msgstr ""
 
@@ -88564,6 +88564,9 @@ msgstr ""
 msgid "UsageBilling|Override saved."
 msgstr ""
 
+msgid "UsageBilling|Overrides"
+msgstr ""
+
 msgid "UsageBilling|Peak day usage"
 msgstr ""
 
@@ -88598,6 +88601,9 @@ msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
 msgid "UsageBilling|Save override"
+msgstr ""
+
+msgid "UsageBilling|Save overrides"
 msgstr ""
 
 msgid "UsageBilling|Saving in the background."
@@ -94116,7 +94122,7 @@ msgstr ""
 msgid "WorkItemDuoQuestion|Your answer was posted, but the thread could not be resolved. Resolve it manually so GitLab Duo can continue."
 msgstr ""
 
-msgid "WorkItemPlanningView|Board (Beta)"
+msgid "WorkItemPlanningView|Board"
 msgstr ""
 
 msgid "WorkItemPlanningView|List"

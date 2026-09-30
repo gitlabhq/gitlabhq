@@ -18,7 +18,7 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
   end
 
   shared_examples_for 'with a project' do
-    let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request, :skip_diff_creation, source_project: project) }
     let_it_be(:timelog1, freeze: false) { create(:issue_timelog, issue: issue, spent_at: 2.days.ago.beginning_of_day) }
     let_it_be(:timelog2, freeze: false) { create(:issue_timelog, issue: issue, spent_at: 2.days.ago.end_of_day) }
     let_it_be(:timelog3, freeze: false) do
@@ -129,7 +129,7 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     let_it_be(:medium_time_ago, freeze: false) { 15.days.ago.beginning_of_day }
 
     let_it_be(:issue, freeze: false) { create(:issue, project: project) }
-    let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request, :skip_diff_creation, source_project: project) }
 
     let_it_be(:timelog1, freeze: false) do
       create(:issue_timelog, issue: issue, spent_at: short_time_ago.beginning_of_day)
@@ -236,7 +236,7 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     let_it_be(:medium_time_ago, freeze: false) { 15.days.ago.beginning_of_day }
 
     let_it_be(:issue, freeze: false) { create(:issue, project: project) }
-    let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request, freeze: false) { create(:merge_request, :skip_diff_creation, source_project: project) }
 
     let_it_be(:timelog1, freeze: false) { create(:issue_timelog, issue: issue, user: current_user) }
     let_it_be(:timelog2, freeze: false) { create(:issue_timelog, issue: issue, user: create(:user)) }

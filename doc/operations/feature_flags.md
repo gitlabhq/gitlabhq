@@ -475,15 +475,36 @@ For more information, see [using feature flags](#using-feature-flags).
 ### Maximum supported clients in application nodes
 
 GitLab accepts as many client requests as possible until it hits the [rate limit](../rate_limits/_index.md).
-The feature flag API is considered **Unauthenticated traffic (from a given IP address)**. For GitLab.com, see the [GitLab.com specific limits](../user/gitlab_com/_index.md).
+The feature flag API is considered **Unauthenticated traffic** and is limited for each source IP address.
+For GitLab.com, see the [GitLab.com specific limits](../user/gitlab_com/_index.md).
+
+Because the rate limit applies to each source IP, all clients behind a shared egress address draw on one quota, together with any other GitLab.com traffic from that address.
 
 The polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
 
 - At one request per minute, supports approximately 500 clients (8 RPS).
 - At one request per 15 sec, supports approximately 125 clients.
 
-There is an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
-capacity to the current rate limit.
+To increase available throughput, distribute clients across multiple egress addresses. Because the limit is for each source IP, this requires no application change.
+
+For applications that need to reduce outbound request volume, the Unleash Proxy sits
+between your clients and GitLab. It makes requests on behalf of client groups, so many
+client-side evaluations collapse into a small number of outbound calls. If you run the
+proxy and still receive `429` responses, increase its `UNLEASH_FETCH_INTERVAL` value.
+
+The Unleash Proxy is deprecated upstream and reaches planned end of life on November 26, 2026. After that date, no further releases, including security releases, are planned. It continues to work against the GitLab feature flags API and remains the only component known to do so.
+
+> [!warning]
+> Unleash Edge, the [recommended](https://docs.getunleash.io/unleash-edge/migrate-from-proxy) replacement
+> for Unleash Proxy, is not compatible with GitLab. The incompatibility is structural, not a matter of
+> configuration:
+>
+> - Environment model. GitLab implements a pre-v4 Unleash environment model. From Unleash v4 onward,
+>   the environment is encoded in the API key.
+> - Token format. Edge requires valid Unleash tokens. GitLab issues per-project instance IDs,
+>   which are not Unleash tokens.
+> - Custom activation strategies. GitLab environment segregation relies on custom activation strategies.
+>   The Unleash Proxy supports these through `UNLEASH_CUSTOM_STRATEGIES_FILE`. Edge has no equivalent.
 
 ### Recovering from network errors
 

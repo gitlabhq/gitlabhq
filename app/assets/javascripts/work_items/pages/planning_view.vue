@@ -175,6 +175,8 @@ import InfoBanner from '../list/components/info_banner.vue';
 import NewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
 import WorkItemDetailPanel from '../components/work_item_detail_panel.vue';
 import WorkItemDisplaySettingsDrawer from '../list/components/work_item_display_settings_drawer.vue';
+import WorkItemViewModeToggle from '../components/work_item_view_mode_toggle.vue';
+import WorkItemDisplaySettingsButton from '../components/work_item_display_settings_button.vue';
 
 import {
   WORK_ITEM_TYPE_NAME_TICKET,
@@ -246,6 +248,8 @@ export default {
     CreateWorkItemModal,
     FilteredSearchBar,
     WorkItemDisplaySettingsDrawer,
+    WorkItemViewModeToggle,
+    WorkItemDisplaySettingsButton,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     EmptyStateWithAnyTickets,
@@ -1354,6 +1358,7 @@ export default {
     handleToggleViewMode(newViewMode) {
       this.trackEvent('switch_view_mode_on_work_item_planning_view', { label: newViewMode });
       this.viewMode = newViewMode;
+      this.displayDrawerPage = DISPLAY_SETTINGS_PAGE_ROOT;
       if (this.isSavedView) {
         this.persistSavedViewDraft();
         return;
@@ -2409,14 +2414,20 @@ export default {
         @on-sort="handleSort"
       >
         <template #user-preference>
-          <gl-button
-            icon="preferences"
-            :selected="isDisplayDrawerOpen"
-            data-testid="display-settings-button"
-            @click="toggleDisplayDrawer"
+          <div
+            class="gl-ml-auto gl-flex gl-items-center gl-gap-3"
+            data-testid="toolbar-view-actions"
           >
-            {{ __('Display') }}
-          </gl-button>
+            <work-item-view-mode-toggle
+              :view-mode="viewMode"
+              @toggle-view-mode="handleToggleViewMode"
+            />
+            <work-item-display-settings-button
+              :selected="isDisplayDrawerOpen"
+              data-testid="display-settings-button"
+              @click="toggleDisplayDrawer"
+            />
+          </div>
         </template>
       </filtered-search-bar>
       <gl-intersection-observer
@@ -2448,14 +2459,20 @@ export default {
               @on-sort="handleSort"
             >
               <template #user-preference>
-                <gl-button
-                  icon="preferences"
-                  :selected="isDisplayDrawerOpen"
-                  data-testid="display-settings-button"
-                  @click="toggleDisplayDrawer"
+                <div
+                  class="gl-ml-auto gl-flex gl-items-center gl-gap-3"
+                  data-testid="toolbar-view-actions"
                 >
-                  {{ __('Display') }}
-                </gl-button>
+                  <work-item-view-mode-toggle
+                    :view-mode="viewMode"
+                    @toggle-view-mode="handleToggleViewMode"
+                  />
+                  <work-item-display-settings-button
+                    :selected="isDisplayDrawerOpen"
+                    data-testid="display-settings-button"
+                    @click="toggleDisplayDrawer"
+                  />
+                </div>
               </template>
             </filtered-search-bar>
           </div>
@@ -2696,7 +2713,6 @@ export default {
       @page-change="displayDrawerPage = $event"
       @sort="handleSort"
       @update-settings="handleLocalDisplayPreferencesUpdate"
-      @toggle-view-mode="handleToggleViewMode"
     />
   </div>
 </template>
