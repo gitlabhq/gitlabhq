@@ -73499,6 +73499,7 @@ Actions that can be performed on secrets.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="secretsmanagementaction-create"></a>`CREATE` | Create secrets without updating existing ones. |
 | <a id="secretsmanagementaction-delete"></a>`DELETE` | Delete secrets. |
 | <a id="secretsmanagementaction-read"></a>`READ` | Read secrets. |
 | <a id="secretsmanagementaction-read_value"></a>`READ_VALUE` | Read secret values. |

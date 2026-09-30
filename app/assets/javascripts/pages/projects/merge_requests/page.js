@@ -8,7 +8,6 @@ import { EVT_MR_DIFF_GENERATED, EVT_MR_PREPARED } from '~/diffs/constants';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { initMrMoreDropdown } from '~/mr_more_dropdown';
 import { pinia } from '~/pinia/instance';
 import ReviewDrawer from '~/batch_comments/components/review_drawer.vue';
 import { observable } from '~/lib/utils/observable';
@@ -143,7 +142,6 @@ const initStackedDropdown = () => {
 export function initMrPage(createRapidDiffsApp) {
   const mergeRequest = initMrNotes(createRapidDiffsApp);
   initShow();
-  initMrMoreDropdown();
   initReportsTabCount();
   startCodeReviewMessaging({ signalBus: diffsEventHub });
 

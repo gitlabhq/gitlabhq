@@ -13184,6 +13184,7 @@ CREATE TABLE ai_governance_sessions (
     external_xid text,
     agent_type text,
     flow_type text,
+    agent_identity_id bigint,
     CONSTRAINT check_9a68a35540 CHECK ((char_length(flow_type) <= 255)),
     CONSTRAINT check_9ceb097d60 CHECK ((char_length(external_xid) <= 255)),
     CONSTRAINT check_aaebd6889a CHECK ((char_length(agent_type) <= 50)),
@@ -47221,6 +47222,8 @@ CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btre
 
 CREATE INDEX index_ai_flow_triggers_on_user_id_and_project_id ON ai_flow_triggers USING btree (user_id, project_id);
 
+CREATE INDEX index_ai_governance_sessions_on_agent_identity_id ON ai_governance_sessions USING btree (agent_identity_id) WHERE (agent_identity_id IS NOT NULL);
+
 CREATE INDEX index_ai_governance_sessions_on_project_id ON ai_governance_sessions USING btree (project_id);
 
 CREATE INDEX index_ai_governance_sessions_on_user_id ON ai_governance_sessions USING btree (user_id);
@@ -58489,6 +58492,9 @@ ALTER TABLE ONLY merge_requests_risk_assessments
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_405568b491 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_governance_sessions
+    ADD CONSTRAINT fk_4090b6612a FOREIGN KEY (agent_identity_id) REFERENCES ai_agent_identities(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY security_pipeline_execution_policy_config_links
     ADD CONSTRAINT fk_40c1d0c74a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

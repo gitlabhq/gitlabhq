@@ -166,7 +166,8 @@ export default {
     <gl-button
       ref="tooltip"
       v-gl-tooltip.hover.top
-      category="secondary"
+      category="tertiary"
+      size="small"
       data-testid="subscribe-button"
       class="hide-collapsed btn-icon !gl-align-top"
       :title="notificationTooltip"

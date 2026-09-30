@@ -96,7 +96,6 @@ The following tables list the models you can select for each feature.
 
 | Model | Vulnerability Explanation | Vulnerability Resolution | GitLab Duo for CLI | Discussion Summary |
 |------------|----------------------------|--------------------------|-------------------|---------------------|
-| Claude Haiku 3 | {{< yes >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
 | Claude Haiku 4.5 | {{< no >}} | | {{< yes >}} | {{< no >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< yes >}} |  |  | {{< yes >}} |

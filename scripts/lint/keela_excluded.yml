@@ -14,8 +14,6 @@ delegations:
   ee/app/models/work_items/widgets/agent_plan.rb:
     - readiness_score_feedback_html: Read by the GraphQL markdown field added in !252884
 methods:
-  ee/lib/security/dependency_firewall/availability.rb:
-    - dashboard_v2_enabled?: Called by the prevented-package write and read paths landing in stacked follow-up MRs of the 627538 series
   app/helpers/mirror_helper.rb:
     - remote_mirrors_table_data: Will be called from HAML view in follow-up feature-flagged MR for Vue mirror list table
   app/helpers/routing/groups/members_helper.rb:

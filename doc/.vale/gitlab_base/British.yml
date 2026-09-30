@@ -25,6 +25,7 @@ swap:
   authorisation: authorization
   authorising: authorizing
   behaviour: behavior
+  behaviours: behaviors
   busses: buses
   calibre: caliber
   categorise: categorize
@@ -93,6 +94,8 @@ swap:
   organise: organize
   orientated: oriented
   paralyse: paralyze
+  parameterise: parameterize
+  parameterised: parameterized
   plough: plow
   pretence: pretense
   programme: program
@@ -117,7 +120,12 @@ swap:
   splendour: splendor
   standardise: standardize
   standardised: standardized
+  standardisation: standardization
   sulphur: sulfur
+  synchronise: synchronize
+  synchronised: synchronized
+  synchronisation: synchronization
+  synchronising: synchronizing
   theatre: theater
   travelled: traveled
   traveller: traveler

@@ -38,7 +38,7 @@ Make sure to communicate with your team as you progress or if you are unable to 
 
 If you require assistance, make sure to push your branch and share your merge request either directly to a teammate or in the Slack channel `#frontend` to get advice on how to move forward. You can [mark your merge request as a draft](../../user/project/merge_requests/drafts.md), which will clearly communicate that it is not ready for a full on review. Always remember to have a [low level of shame](https://handbook.gitlab.com/handbook/values/#low-level-of-shame) and ask for help when you need it.
 
-As you write code, make sure to test your change thoroughly. It is the author's responsibility to test their code, ensure that it works as expected, and ensure that it did not break existing behaviours. Reviewers may help in that regard, but do not expect it. Make sure to check different browsers, mobile viewports and unexpected user flows.
+As you write code, make sure to test your change thoroughly. It is the author's responsibility to test their code, ensure that it works as expected, and ensure that it did not break existing behaviors. Reviewers may help in that regard, but do not expect it. Make sure to check different browsers, mobile viewports and unexpected user flows.
 
 ### Step 4: Review
 

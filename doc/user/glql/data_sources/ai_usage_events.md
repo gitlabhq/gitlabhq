@@ -39,7 +39,7 @@ GitLab Duo feature usage across your project or group.
 To aggregate AI usage events across multiple groups or projects, use a list with the `in` operator.
 For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
 
-## Query fields
+## Query filters
 
 Use these fields in the `query` parameter to filter your results.
 

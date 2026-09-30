@@ -1,0 +1,11 @@
+---
+name: vue3_migrate_google_cloud
+description: Enables Vue 3 in compatibility mode for the Google Cloud (Cloud Seed) configuration,
+  deployments, databases, GCP regions, and service accounts pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631118
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258186
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631118
+milestone: '19.5'
+group: group::environments
+type: beta
+default_enabled: false

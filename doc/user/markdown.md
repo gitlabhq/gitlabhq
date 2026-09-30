@@ -1079,12 +1079,18 @@ In a rendered table, you can sort the rows by the values in a column.
 
 To sort a table:
 
-1. Select a column header.
-   The rows sort in ascending order, and an arrow in the header shows the sort direction.
-1. To sort in descending order, select the same column header again.
+1. In a column header, select the sort button ({{< icon name="sort-lowest" >}})
+   to sort in ascending order.
+1. Select the same button ({{< icon name="sort-highest" >}}) again to sort in descending order.
+1. Select the same button ({{< icon name="redo" >}}) a third time to restore the original row order.
 
-To sort with a keyboard, move the focus to a column header and press <kbd>Enter</kbd> or
-<kbd>Space</kbd>.
+You can also click anywhere in the column header cell, including text and empty space,
+to perform the same sort actions.
+Links in headers open without sorting the table.
+
+The icon shows the next action.
+To sort with a keyboard, move focus to the column header or its sort button and press
+<kbd>Enter</kbd> or <kbd>Space</kbd>.
 
 Sorting behavior:
 
@@ -1094,7 +1100,6 @@ Sorting behavior:
 
 You can sort by only one column at a time.
 When you sort by a different column, the previous sort clears.
-To restore the original order of the rows, reload the page.
 
 Exclusions:
 

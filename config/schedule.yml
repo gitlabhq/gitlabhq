@@ -390,6 +390,26 @@ personal_access_tokens_expiring_worker:
   class: PersonalAccessTokens::ExpiringWorker
   cron: "0 1 * * *"
 
+pg_ash_rollup_cleanup_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "7 3-5 * * *"
+  args: [rollup_cleanup]
+
+pg_ash_rollup_hour_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "1 * * * *"
+  args: [rollup_hour]
+
+pg_ash_rollup_minute_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "* * * * *"
+  args: [rollup_minute]
+
+pg_ash_rotate_worker:
+  class: Database::PgAshMaintenanceWorker
+  cron: "3 0-5 * * *"
+  args: [rotate]
+
 pipeline_schedule_worker:
   class: PipelineScheduleWorker
   cron: "3-59/10 * * * *"

@@ -14,7 +14,7 @@ RSpec.describe 'Merge request > User sees check out branch modal', :js, feature_
     sign_in(user)
     visit project_merge_request_path(project, merge_request)
 
-    page.within 'main' do
+    page.within '.panel-header-inner-actions' do
       click_button 'Code'
       click_button('Check out branch')
     end

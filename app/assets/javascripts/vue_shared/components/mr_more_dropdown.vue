@@ -19,7 +19,6 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 export default {
   name: 'MrMoreDropdown',
   i18n: {
-    edit: __('Edit'),
     copyReferenceText: __('Copy reference'),
     errorMessage: __('Something went wrong. Please try again.'),
     issuableName: __('merge request'),
@@ -52,11 +51,6 @@ export default {
       required: true,
     },
     url: {
-      type: String,
-      default: '',
-      required: false,
-    },
-    editUrl: {
       type: String,
       default: '',
       required: false,
@@ -105,6 +99,11 @@ export default {
       default: false,
       required: false,
     },
+    showLock: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
   },
   data() {
     return {
@@ -125,12 +124,6 @@ export default {
     },
     draftState() {
       return this.draft ? 'ready' : 'draft';
-    },
-    editItem() {
-      return {
-        text: this.$options.i18n.edit,
-        href: this.editUrl,
-      };
     },
     copyReferenceItem() {
       return { text: this.$options.i18n.copyReferenceText, icon: 'copy-to-clipboard' };
@@ -244,7 +237,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-self-start" data-testid="merge-request-actions">
+  <div class="gl-self-center" data-testid="merge-request-actions">
     <gl-disclosure-dropdown
       id="new-actions-header-dropdown"
       ref="mrMoreActionsDropdown"
@@ -253,9 +246,10 @@ export default {
       data-testid="dropdown-toggle"
       placement="bottom-end"
       block
+      size="small"
       class="gl-w-full"
       :auto-close="false"
-      icon="ellipsis_v"
+      icon="ellipsis_h"
       category="tertiary"
       text-sr-only
       no-caret
@@ -265,14 +259,6 @@ export default {
       @hidden="hideDropdown"
     >
       <gl-disclosure-dropdown-group>
-        <gl-disclosure-dropdown-item
-          v-if="canUpdateMergeRequest"
-          class="@sm/panel:!gl-hidden"
-          data-testid="edit-merge-request"
-          :item="editItem"
-          icon="pencil"
-        />
-
         <gl-disclosure-dropdown-item
           v-if="isOpen && canUpdateMergeRequest"
           :item="mergeRequestDraftItem"
@@ -317,7 +303,7 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="canUpdateMergeRequest"
+          v-if="canUpdateMergeRequest && showLock"
           :item="mergeRequestLockItem"
           data-testid="lock-merge-request"
           class="js-sidebar-lock-root"

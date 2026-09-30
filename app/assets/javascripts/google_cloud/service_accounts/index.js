@@ -1,12 +1,18 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Form from './form.vue';
 
 export default (containerId = '#js-google-cloud-service-accounts') => {
   const element = document.querySelector(containerId);
-  const { ...attrs } = JSON.parse(element.getAttribute('data'));
-  return new Vue({
+  const { gcpProjects, refs, cancelPath } = JSON.parse(element.getAttribute('data'));
+
+  return initVueApp({
     el: element,
     name: 'GoogleCloudServiceAccountsFormRoot',
-    render: (createElement) => createElement(Form, { attrs }),
+    component: Form,
+    props: {
+      gcpProjects,
+      refs,
+      cancelPath,
+    },
   });
 };

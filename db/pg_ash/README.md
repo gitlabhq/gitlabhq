@@ -66,10 +66,13 @@ within its application settings cache window.
 The sampler writes the interval back into `ash.config`, because pg_ash uses its
 own copy for missed-sample bookkeeping.
 
-Rollup and retention (`ash.rollup_minute`, `ash.rollup_hour`,
-`ash.rollup_cleanup` and `ash.rotate`) still have no driver, so samples
-accumulate until an administrator uninstalls `pg_ash`. Tracked in
-<https://gitlab.com/gitlab-org/gitlab/-/issues/608100>.
+Upstream schedules rollup and retention (`ash.rollup_minute`,
+`ash.rollup_hour`, `ash.rotate`, `ash.rollup_cleanup`) with pg_cron. GitLab
+has no pg_cron, so `Database::PgAshMaintenanceWorker` runs them from
+`config/schedule.yml` at the upstream cadence, under the same gate as the
+sampler. `ash.rotate` rolls up the slot it is about to truncate, then fails
+if a minute inside `rollup_1m_retention_days` is still missing from
+`ash.rollup_1m`. The minute job keeps that catch-up small.
 
 ## Why the schema is invisible to the schema tooling
 

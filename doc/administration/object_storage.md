@@ -223,7 +223,7 @@ These settings apply to Amazon S3 and any S3-compatible service using the `AWS` 
 When not using AWS directly, set `endpoint` to your provider's URL.
 
 S3-compatible services vary in how closely they implement the AWS S3 API. GitLab uses specific
-S3 behaviours, including pre-signed URLs, multipart uploads, and optionally chunked signature
+S3 behaviors, including pre-signed URLs, multipart uploads, and optionally chunked signature
 streaming, that not every S3-compatible implementation supports identically. If a provider works
 in other tools but not in GitLab, the settings that most likely need adjustment are:
 

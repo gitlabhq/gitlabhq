@@ -97,11 +97,11 @@ response attributes:
 | `data.pageInfo.startCursor`     | string  | Cursor for fetching the previous page of results. |
 | `error`                         | string  | Error message if the query failed. |
 | `fields`                        | array   | Array of field definitions. |
-| `fields[].field`                | string  | The base field name. For aliased parameterised fields, this is the underlying field name (for example, `durationQuantile`), while `key` is the alias (for example, `p50`). For standard fields, same as `key`. |
+| `fields[].field`                | string  | The base field name. For aliased parameterized fields, this is the underlying field name (for example, `durationQuantile`), while `key` is the alias (for example, `p50`). For standard fields, same as `key`. |
 | `fields[].key`                  | string  | The unique field identifier. |
 | `fields[].label`                | string  | The human-readable field name. |
-| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. For aliased parameterised fields, this is the generated response key (for example, `durationQuantile_quantile_0_d5`), not a common name. |
-| `fields[].parameters`           | object  | Resolved parameter metadata for parameterised fields. Absent when the field has no parameters. Values are strings, or arrays of strings for list parameters. For example, `{"granularity": "weekly"}`, `{"quantile": "0.5"}`, or `{"thresholds": ["4", "25", "100"]}`. |
+| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. For aliased parameterized fields, this is the generated response key (for example, `durationQuantile_quantile_0_d5`), not a common name. |
+| `fields[].parameters`           | object  | Resolved parameter metadata for parameterized fields. Absent when the field has no parameters. Values are strings, or arrays of strings for list parameters. For example, `{"granularity": "weekly"}`, `{"quantile": "0.5"}`, or `{"thresholds": ["4", "25", "100"]}`. |
 | `fields[].type`                 | string  | Field classification: `dimension` or `metric` for analytics mode fields. Absent for standard fields. |
 | `success`                       | boolean | Indicates if the query was successful. |
 
@@ -413,7 +413,7 @@ curl --request POST \
 
 Aggregate pipeline metrics grouped by a dimension.
 In analytics mode, the `fields` array includes the `type` attribute for each field,
-and the `parameters` attribute for parameterised fields:
+and the `parameters` attribute for parameterized fields:
 
 ```shell
 curl --request POST \

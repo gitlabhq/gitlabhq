@@ -32,7 +32,7 @@ import {
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_NOTIFICATIONS,
-  WIDGET_TYPE_AGENT_PLAN,
+  WIDGET_TYPE_WORKPLAN,
   WIDGET_TYPE_DECISION_LOG,
 } from 'ee_else_ce/work_items/constants';
 import {
@@ -558,8 +558,8 @@ export const getNewWorkItemSharedCache = ({
       __typename: 'WorkItemWidgetProgress',
     },
     agentPlan: {
-      ...widgetDefinitionsHash[WIDGET_TYPE_AGENT_PLAN],
-      type: WIDGET_TYPE_AGENT_PLAN,
+      ...widgetDefinitionsHash[WIDGET_TYPE_WORKPLAN],
+      type: WIDGET_TYPE_WORKPLAN,
       aiPlanningEnabled: false,
       __typename: 'WorkItemWidgetAgentPlan',
     },

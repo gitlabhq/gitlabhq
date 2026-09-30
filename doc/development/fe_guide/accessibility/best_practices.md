@@ -168,7 +168,7 @@ element is interactive you must ensure:
 - It can receive keyboard focus.
 - It has a visible focus state.
 
-Use semantic HTML, such as `a` (`GlLink`) and `button` (`GlButton`), which provides these behaviours by default.
+Use semantic HTML, such as `a` (`GlLink`) and `button` (`GlButton`), which provides these behaviors by default.
 
 Keep in mind that:
 

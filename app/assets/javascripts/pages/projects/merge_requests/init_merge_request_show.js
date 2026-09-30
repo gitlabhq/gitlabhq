@@ -15,7 +15,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import { pinia } from '~/pinia/instance';
 import getStateQuery from './queries/get_state.query.graphql';
 import initCheckoutModal from './init_checkout_modal';
-import initCodeDropdown from './init_code_dropdown';
+import initMergeRequestTitleActions from './init_merge_request_title_actions';
 
 export default function initMergeRequestShow() {
   new ZenMode(); // eslint-disable-line no-new
@@ -25,7 +25,7 @@ export default function initMergeRequestShow() {
   initIssuableSidebar();
   initAwardsApp(document.getElementById('js-vue-awards-block'));
   initCheckoutModal();
-  initCodeDropdown();
+  initMergeRequestTitleActions();
 
   const el = document.querySelector('.js-mr-header');
   const { hidden, imported, isDraft, iid, projectPath, state } = el.dataset;

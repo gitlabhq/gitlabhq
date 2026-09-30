@@ -37,7 +37,7 @@ To query individual pipeline records, use [Pipelines](pipelines.md).
 To aggregate pipelines across multiple groups or projects, use a list with the `in` operator.
 For more information, see [multiple groups and projects](_index.md#multiple-groups-and-projects).
 
-## Query fields
+## Query filters
 
 Use these fields in the `query` parameter to filter your results.
 

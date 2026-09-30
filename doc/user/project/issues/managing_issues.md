@@ -59,7 +59,7 @@ To edit an issue:
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- Default LLM: Anthropic [Claude Sonnet 4.6](https://console.cloud.google.com/agent-platform/publishers/anthropic/model-garden/claude-sonnet-4-6)
 - Not available on GitLab Duo with self-hosted models
 
 {{< /collapsible >}}

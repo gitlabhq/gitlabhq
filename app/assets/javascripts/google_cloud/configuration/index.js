@@ -1,12 +1,34 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Panel from './panel.vue';
 
 export default (containerId = '#js-google-cloud-configuration') => {
   const element = document.querySelector(containerId);
-  const { ...attrs } = JSON.parse(element.getAttribute('data'));
-  return new Vue({
+  const {
+    configurationUrl,
+    deploymentsUrl,
+    databasesUrl,
+    serviceAccounts,
+    createServiceAccountUrl,
+    emptyIllustrationUrl,
+    configureGcpRegionsUrl,
+    gcpRegions,
+    revokeOauthUrl,
+  } = JSON.parse(element.getAttribute('data'));
+
+  return initVueApp({
     el: element,
     name: 'GoogleCloudConfigurationPanelRoot',
-    render: (createElement) => createElement(Panel, { attrs }),
+    component: Panel,
+    props: {
+      configurationUrl,
+      deploymentsUrl,
+      databasesUrl,
+      serviceAccounts,
+      createServiceAccountUrl,
+      emptyIllustrationUrl,
+      configureGcpRegionsUrl,
+      gcpRegions,
+      revokeOauthUrl,
+    },
   });
 };

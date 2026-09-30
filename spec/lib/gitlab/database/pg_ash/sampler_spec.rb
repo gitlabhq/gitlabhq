@@ -72,6 +72,8 @@ RSpec.describe Gitlab::Database::PgAsh::Sampler, :clean_gitlab_redis_shared_stat
       end
 
       it 'does not sample' do
+        expect(Gitlab::Metrics).not_to receive(:gauge)
+
         execute(ticks: 1)
 
         expect(Gitlab::Database::PgAsh).not_to have_received(:execute)
@@ -181,7 +183,14 @@ RSpec.describe Gitlab::Database::PgAsh::Sampler, :clean_gitlab_redis_shared_stat
     end
 
     context 'when ash.config reports its own counters' do
-      let(:counters) { { 'skipped_samples' => '2', 'missed_samples' => '3', 'insert_errors' => '4' } }
+      let(:counters) do
+        {
+          'skipped_samples' => '2',
+          'missed_samples' => '3',
+          'insert_errors' => '4',
+          'consecutive_rotate_failures' => '5'
+        }
+      end
 
       before do
         allow(Gitlab::Database::PgAsh).to receive(:execute)
@@ -199,6 +208,53 @@ RSpec.describe Gitlab::Database::PgAsh::Sampler, :clean_gitlab_redis_shared_stat
         expect(gauges[:gitlab_pg_ash_skipped_samples]).to have_received(:set).with({}, 2)
         expect(gauges[:gitlab_pg_ash_missed_samples]).to have_received(:set).with({}, 3)
         expect(gauges[:gitlab_pg_ash_insert_errors]).to have_received(:set).with({}, 4)
+        expect(gauges[:gitlab_pg_ash_consecutive_rotate_failures]).to have_received(:set).with({}, 5)
+      end
+
+      context 'with a rotation failure gauge' do
+        let(:gauge) { instance_double(Prometheus::Client::Gauge, set: nil) }
+
+        before do
+          allow(Gitlab::Metrics).to receive(:gauge).and_call_original
+          allow(Gitlab::Metrics).to receive(:gauge)
+            .with(:gitlab_pg_ash_consecutive_rotate_failures, anything, {}, :max).and_return(gauge)
+        end
+
+        it 'clears the gauge before releasing the lease when the caller stops' do
+          expect(gauge).to receive(:set).with({}, 5).ordered
+          expect(gauge).to receive(:set).with({}, 0).ordered
+          expect(sampler).to receive(:release_lease).ordered.and_call_original
+
+          execute(ticks: 1)
+        end
+
+        it 'clears the gauge when the lease is lost' do
+          allow(sampler).to receive(:renew_lease!).and_return(true, false)
+          expect(gauge).to receive(:set).with({}, 5).ordered
+          expect(gauge).to receive(:set).with({}, 0).ordered
+
+          execute(ticks: 2)
+        end
+
+        it 'clears the gauge when sampling is disabled' do
+          allow(Gitlab::CurrentSettings).to receive(:pg_ash_sampling_enabled).and_return(true, true, false)
+          expect(gauge).to receive(:set).with({}, 5).ordered
+          expect(gauge).to receive(:set).with({}, 0).ordered
+
+          execute(ticks: 2)
+        end
+
+        it 'clears the gauge when lease renewal raises after publishing' do
+          allow(Kernel).to receive(:sleep) do
+            allow(sampler).to receive(:renew_lease!).and_raise(Redis::CannotConnectError, 'boom')
+          end
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(Redis::CannotConnectError), lease_key: sampler.lease_key)
+          expect(gauge).to receive(:set).with({}, 5).ordered
+          expect(gauge).to receive(:set).with({}, 0).ordered
+
+          execute(ticks: 2)
+        end
       end
     end
   end

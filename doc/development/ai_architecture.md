@@ -63,7 +63,7 @@ AIGW -down-> Models : prompts
 - GitLab.com
   - GitLab.com instances self-issue JWT Auth token signed with a private key.
 - Other types of instances
-  - GitLab Self-Managed and Dedicated regularly synchronise their licenses and AI Access tokens with CustomersDot.
+  - GitLab Self-Managed and Dedicated regularly synchronize their licenses and AI Access tokens with CustomersDot.
   - GitLab Self-Managed and Dedicated instances route traffic to appropriate AI Gateway.
 
 ## SaaS-based AI abstraction layer

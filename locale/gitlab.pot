@@ -72886,6 +72886,9 @@ msgstr ""
 msgid "SecretsManagerPermissions|Can read the metadata of secrets but not the secret values."
 msgstr ""
 
+msgid "SecretsManagerPermissions|Create"
+msgstr ""
+
 msgid "SecretsManagerPermissions|Delete"
 msgstr ""
 
@@ -82439,10 +82442,16 @@ msgstr ""
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr ""
 
-msgid "Table|Click to sort ascending"
+msgid "Table|%{columnName} sorted ascending."
 msgstr ""
 
-msgid "Table|Click to sort descending"
+msgid "Table|%{columnName} sorted descending."
+msgstr ""
+
+msgid "Table|Column %{columnNumber}"
+msgstr ""
+
+msgid "Table|Original row order restored."
 msgstr ""
 
 msgid "Tag"

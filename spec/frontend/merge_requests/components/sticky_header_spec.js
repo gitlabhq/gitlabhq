@@ -47,6 +47,7 @@ describe('Merge requests sticky header component', () => {
   const findStickyHeaderTitle = () => wrapper.findByTestId('sticky-header-title');
   const findTodoWidget = () => wrapper.findComponent(TodoWidget);
   const findSubscriptionsWidget = () => wrapper.findComponent(SubscriptionsWidget);
+  const findSubmitReviewButton = () => wrapper.findComponent(SubmitReviewButton);
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
@@ -104,7 +105,7 @@ describe('Merge requests sticky header component', () => {
     it('renders submit review button', () => {
       createComponent();
 
-      expect(wrapper.findComponent(SubmitReviewButton).exists()).toBe(true);
+      expect(findSubmitReviewButton().exists()).toBe(true);
     });
   });
 

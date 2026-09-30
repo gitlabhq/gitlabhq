@@ -127,7 +127,8 @@ For more information, see [secret false positive detection](secret_false_positiv
 {{< /history >}}
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
-resolves the vulnerability. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+resolves the vulnerability.
+By default, it is powered by the Anthropic [Claude Sonnet 4.6](https://console.cloud.google.com/agent-platform/publishers/anthropic/model-garden/claude-sonnet-4-6) model.
 
 GitLab cannot guarantee that the large language model produces correct results.
 You should always review the proposed change before merging it. When reviewing, check that:
@@ -275,7 +276,8 @@ The following data is shared with third-party AI APIs:
 {{< /history >}}
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
-resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
+resolves the vulnerability finding.
+By default, it is powered by the Anthropic [Claude Sonnet 4.6](https://console.cloud.google.com/agent-platform/publishers/anthropic/model-garden/claude-sonnet-4-6) model.
 
 To resolve the vulnerability finding:
 

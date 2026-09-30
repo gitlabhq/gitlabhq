@@ -42,20 +42,20 @@ export default {
 </script>
 
 <template>
-  <div v-if="draftsCount > 0 || isReviewer" data-testid="review-drawer-toggle">
-    <gl-button
-      variant="confirm"
-      data-testid="review-drawer-toggle"
-      :disabled="isLoading"
-      :loading="isLoading"
-      :count="draftsCount > 0 ? draftsCount : null"
-      :count-sr-text="draftsCountSrText"
-      :class="{
-        'motion-safe:gl-animate-[review-btn-animate_300ms_ease-in]': shouldAnimateReviewButton,
-      }"
-      @click="setDrawerOpened(true)"
-    >
-      {{ __('Your review') }}
-    </gl-button>
-  </div>
+  <gl-button
+    v-if="draftsCount > 0 || isReviewer"
+    variant="confirm"
+    data-testid="review-drawer-toggle"
+    :disabled="isLoading"
+    :loading="isLoading"
+    :count="draftsCount > 0 ? draftsCount : null"
+    :count-sr-text="draftsCountSrText"
+    class="gl-self-start"
+    :class="{
+      'motion-safe:gl-animate-[review-btn-animate_300ms_ease-in]': shouldAnimateReviewButton,
+    }"
+    @click="setDrawerOpened(true)"
+  >
+    {{ __('Your review') }}
+  </gl-button>
 </template>

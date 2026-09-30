@@ -193567,6 +193567,12 @@
               "deprecationReason": null
             },
             {
+              "name": "CREATE",
+              "description": "Create secrets without updating existing ones.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "WRITE",
               "description": "Create and update secrets.",
               "isDeprecated": false,

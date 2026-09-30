@@ -207,7 +207,27 @@ Each Sidekiq process reads the new value in up to 90 seconds.
 over as the sampling process.
 It does not set the sample interval.
 
-> [!note]
-> GitLab does not summarize or delete old samples. Sample data grows until you uninstall `pg_ash`.
-> Support for these operations is proposed in
-> [issue 608100](https://gitlab.com/gitlab-org/gitlab/-/work_items/608100).
+### Rollup and retention
+
+While sampling is on, Sidekiq cron jobs summarize and remove old samples:
+
+| Job | Runs | Effect |
+|-----|------|--------|
+| `pg_ash_rollup_minute_worker` | Every minute | Summarizes raw samples into one row per minute. |
+| `pg_ash_rollup_hour_worker` | Every hour | Summarizes minute rows into one row per hour. |
+| `pg_ash_rotate_worker` | Every hour from 00:03 to 05:03 | Removes the oldest day of raw samples once a day. The other runs are retries. |
+| `pg_ash_rollup_cleanup_worker` | Every hour from 03:07 to 05:07 | Removes minute and hour rows older than their retention. |
+
+Times are in the [cron jobs time zone](../../settings/sidekiq.md#cron-jobs-time-zone), UTC by default.
+
+With the `pg_ash` defaults, raw samples are kept for one full day plus the current day,
+minute rows for 30 days, and hour rows for five years.
+The retention values are in the `ash.config` table.
+An admin setting for them is proposed in
+[issue 608100](https://gitlab.com/gitlab-org/gitlab/-/work_items/608100).
+
+Raw samples are removed only after they are summarized.
+If a rotation cannot confirm this, it fails and the `gitlab_pg_ash_consecutive_rotate_failures`
+metric increases. The `gitlab:db:pg_ash:status` Rake task shows the same counter.
+
+The jobs stop when you turn off sampling. Data collected until then stays until you uninstall `pg_ash`.

@@ -1,14 +1,15 @@
 <script>
+import { GlIcon } from '@gitlab/ui';
+import { uniqueId } from 'lodash-es';
 import {
   STICKY_HEADER_CLASSES,
   STICKY_TABLE_WRAPPER_CLASSES,
 } from '~/lib/utils/table_sticky_header';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import { InternalEvents } from '~/tracking';
 
 const ASCENDING = 'ascending';
 const DESCENDING = 'descending';
-const SORT_ARROWS = { [ASCENDING]: '↑', [DESCENDING]: '↓' };
 // Performance limit: disable sorting for tables with more than 1000 rows.
 const MAX_SORTABLE_ROWS = 1000;
 
@@ -31,6 +32,9 @@ const adoptDirective = { bind: adopt, update: adopt };
 
 export default {
   name: 'MarkdownTable',
+  components: {
+    GlIcon,
+  },
   directives: {
     adoptCells: adoptDirective,
     adoptContent: adoptDirective,
@@ -66,6 +70,21 @@ export default {
   },
   data() {
     return {
+      tableId: uniqueId('markdown-table-'),
+      interactiveHeaderKeys: this.fields
+        .filter(({ cell }) => cell.querySelector('a, button, input, select, textarea, [tabindex]'))
+        .map(({ key }) => key),
+      emptyHeaderKeys: this.fields
+        .filter(({ cell }) => !cell.textContent.trim())
+        .map(({ key }) => key),
+      columnNames: Object.fromEntries(
+        this.fields.map(({ key, cell }, index) => [
+          key,
+          cell.textContent.trim() ||
+            sprintf(s__('Table|Column %{columnNumber}'), { columnNumber: index + 1 }),
+        ]),
+      ),
+      hasSorted: false,
       sortKey: null,
       sortDirection: ASCENDING,
     };
@@ -73,6 +92,18 @@ export default {
   computed: {
     canSort() {
       return this.isSortable && this.items.length <= MAX_SORTABLE_ROWS && this.items.length > 1;
+    },
+    sortAnnouncement() {
+      if (!this.hasSorted) return '';
+      if (this.sortKey === null) return s__('Table|Original row order restored.');
+
+      return sprintf(
+        this.sortDirection === ASCENDING
+          ? s__('Table|%{columnName} sorted ascending.')
+          : s__('Table|%{columnName} sorted descending.'),
+        { columnName: this.columnNames[this.sortKey] },
+        false,
+      );
     },
     sortedItems() {
       if (!this.canSort || !this.sortKey) {
@@ -108,20 +139,19 @@ export default {
       return this.sortDirection;
     },
     sortIcon(key) {
-      if (this.sortKey !== key) return '';
-      return SORT_ARROWS[this.sortDirection];
-    },
-    srOnlyText(key) {
-      if (this.sortKey === key && this.sortDirection === ASCENDING) {
-        return s__('Table|Click to sort descending');
-      }
-      return s__('Table|Click to sort ascending');
+      if (this.sortKey !== key) return 'sort-lowest';
+      return this.sortDirection === ASCENDING ? 'sort-highest' : 'redo';
     },
     handleSort(key) {
       if (!this.canSort) return;
 
+      this.hasSorted = true;
       if (this.sortKey === key) {
-        this.sortDirection = this.sortDirection === ASCENDING ? DESCENDING : ASCENDING;
+        if (this.sortDirection === DESCENDING) {
+          this.sortKey = null;
+          return;
+        }
+        this.sortDirection = DESCENDING;
       } else {
         this.sortKey = key;
         this.sortDirection = ASCENDING;
@@ -165,22 +195,44 @@ export default {
               :align="headerAlign(field)"
               :style="headerStyle(field)"
               :aria-sort="ariaSort(field.key)"
-              :tabindex="canSort ? '0' : null"
-              :class="{ 'gl-cursor-pointer': canSort }"
-              @click="handleSort(field.key)"
-              @keydown.enter.prevent="handleSort(field.key)"
-              @keydown.space.prevent="handleSort(field.key)"
+              :aria-labelledby="
+                interactiveHeaderKeys.includes(field.key) ? `${tableId}-${field.key}` : null
+              "
+              scope="col"
+              class="gl-group/markdown-table-header"
+              :class="{ 'gl-relative': canSort && !isSticky }"
             >
-              <div class="gl-flex">
-                <span v-adopt-content="field.cell"></span>
-                <template v-if="canSort">
-                  <div
-                    class="gl-table-th-sort-icon-wrapper gl-ml-2 gl-flex gl-w-5 gl-justify-center"
-                  >
-                    <span data-sort-icon>{{ sortIcon(field.key) }}</span>
-                  </div>
-                  <span class="gl-sr-only">{{ srOnlyText(field.key) }}</span>
-                </template>
+              <div class="gl-flex gl-items-center gl-gap-2">
+                <span
+                  v-if="!canSort || interactiveHeaderKeys.includes(field.key)"
+                  :id="`${tableId}-${field.key}`"
+                  v-adopt-content="field.cell"
+                  :class="{ 'gl-relative gl-z-1': canSort }"
+                ></span>
+                <button
+                  v-if="canSort"
+                  type="button"
+                  class="gl-group gl-flex gl-cursor-pointer gl-items-center gl-gap-2 gl-border-0 gl-bg-transparent gl-p-0 gl-text-left gl-font-bold gl-text-inherit focus-visible:gl-outline-none"
+                  :aria-labelledby="
+                    interactiveHeaderKeys.includes(field.key) ? `${tableId}-${field.key}` : null
+                  "
+                  :aria-label="emptyHeaderKeys.includes(field.key) ? columnNames[field.key] : null"
+                  @click="handleSort(field.key)"
+                >
+                  <span
+                    aria-hidden="true"
+                    class="gl-absolute gl-inset-0 group-focus-visible:gl-focus-inset"
+                  ></span>
+                  <span
+                    v-if="!interactiveHeaderKeys.includes(field.key)"
+                    v-adopt-content="field.cell"
+                  ></span>
+                  <gl-icon
+                    :name="sortIcon(field.key)"
+                    class="gl-shrink-0 gl-opacity-0 group-hover/markdown-table-header:gl-opacity-10 group-focus-visible:gl-opacity-10"
+                    data-sort-icon
+                  />
+                </button>
               </div>
             </th>
           </tr>
@@ -189,6 +241,9 @@ export default {
           <tr v-for="item in sortedItems" :key="item.rowIndex" v-adopt-cells="item.cells"></tr>
         </tbody>
       </table>
+    </div>
+    <div v-if="canSort" class="gl-sr-only" role="status" aria-live="polite" aria-atomic="true">
+      <span :key="`${sortKey}-${sortDirection}`">{{ sortAnnouncement }}</span>
     </div>
   </div>
 </template>

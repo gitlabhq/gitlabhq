@@ -14,7 +14,6 @@ describe('MR More actions sidebar', () => {
 
   const findMoreDropdown = () => wrapper.findByTestId('dropdown-toggle');
   const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
-  const findEditMergeRequestOption = () => wrapper.find('[data-testid="edit-merge-request"]');
   const findMarkAsReadyAndDraftOption = () =>
     wrapper.find('[data-testid="ready-and-draft-action"]');
   const findCopyReferenceButton = () => wrapper.find('[data-testid="copy-reference"]');
@@ -29,6 +28,7 @@ describe('MR More actions sidebar', () => {
     canUpdateMergeRequest = false,
     aiOverviewAvailable = false,
     aiOverviewEnabled = false,
+    showLock = true,
   } = {}) => {
     wrapper = mountExtended(MRMoreActionsDropdown, {
       directives: {
@@ -43,25 +43,12 @@ describe('MR More actions sidebar', () => {
         canUpdateMergeRequest,
         aiOverviewAvailable,
         aiOverviewEnabled,
+        showLock,
       },
     });
   };
 
-  describe('Edit/Draft/Reopen MR', () => {
-    it('should not have the edit option when `canUpdateMergeRequest` is false', () => {
-      createComponent();
-
-      expect(findEditMergeRequestOption().exists()).toBe(false);
-    });
-
-    it('should have the edit option when `canUpdateMergeRequest` is true', () => {
-      createComponent({
-        canUpdateMergeRequest: true,
-      });
-
-      expect(findEditMergeRequestOption().exists()).toBe(true);
-    });
-
+  describe('Draft/Reopen MR', () => {
     it('should not have the ready and draft option when the MR is open and `canUpdateMergeRequest` is false', () => {
       createComponent({
         open: true,
@@ -113,6 +100,12 @@ describe('MR More actions sidebar', () => {
         expect(findLockMergeRequestOption().exists()).toBe(expected);
       },
     );
+
+    it('does not have the lock option when `showLock` is false', () => {
+      createComponent({ canUpdateMergeRequest: true, showLock: false });
+
+      expect(findLockMergeRequestOption().exists()).toBe(false);
+    });
   });
 
   describe('Copy reference', () => {

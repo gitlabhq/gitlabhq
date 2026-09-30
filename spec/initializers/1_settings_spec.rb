@@ -562,6 +562,10 @@ RSpec.describe '1_settings', feature_category: :settings do
         performance_bar_stats
         personal_access_tokens_expired_notification_worker
         personal_access_tokens_expiring_worker
+        pg_ash_rollup_cleanup_worker
+        pg_ash_rollup_hour_worker
+        pg_ash_rollup_minute_worker
+        pg_ash_rotate_worker
         pipeline_schedule_worker
         postgres_dynamic_partitions_dropper
         postgres_dynamic_partitions_manager

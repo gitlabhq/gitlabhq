@@ -246,7 +246,7 @@
   display: none;
 
   /* stylelint-disable-next-line gitlab/no-gl-class, gitlab/no-has -- scoped to a specific panel-header-inner element */
-  &:has(> :is(.gl-badge, .gl-button)) {
+  &:has(.gl-badge, .gl-button) {
     display: flex;
     justify-content: end;
   }

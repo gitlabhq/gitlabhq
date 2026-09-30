@@ -288,7 +288,6 @@ for models with basic integration:
 
 | Model | Calls with one credit |
 |-------|------------------------|
-| `claude-3-haiku` | 8.0 |
 | `codestral-2501` | 8.0 |
 | `gemini-2.5-flash` | 8.0 |
 | `gpt-5-mini` | 8.0 |
@@ -314,13 +313,12 @@ for premium models with optimized integration:
 | `gpt-5`                                                          | 3.3                   |
 | `gpt-5-codex`                                                    | 3.3                   |
 | `claude-sonnet-5`                                                | 3.2                   |
+| `claude-sonnet-5.5`                                              | 3.2                   |
 | `gpt-6-sol`[^short-context-window]                               | 2.86                  |
 | `gpt-5.2`                                                        | 2.5                   |
 | `gpt-5.2-codex`                                                  | 2.5                   |
 | `gpt-5.3-codex`                                                  | 2.5                   |
 | `gpt-5.6-terra`[^short-context-window]                           | 2.5                   |
-| `claude-3.5-sonnet`                                              | 2.0                   |
-| `claude-3.7-sonnet`                                              | 2.0                   |
 | `claude-sonnet-4.5`                                              | 2.0                   |
 | `claude-sonnet-4.6`                                              | 2.0                   |
 | `gpt-5.4`[^short-context-window]                                 | 2.0                   |

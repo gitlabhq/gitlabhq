@@ -2,10 +2,11 @@
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 - hide_gutter_toggle = local_assigns.fetch(:hide_gutter_toggle, false)
+- show_lock = local_assigns.fetch(:show_lock, true)
 - rapid_diffs_enabled = Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
 - ai_overview_available = ai_overview_available?
 - ai_overview_enabled = ai_overview_enabled?
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.4-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, ai_overview_available, ai_overview_enabled]
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.9-panel_header_actions", true, hide_gutter_toggle, show_lock, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, ai_overview_available, ai_overview_enabled]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
@@ -24,35 +25,16 @@
       - if rapid_diffs_enabled
         #js-rapid-diffs-toggle{ class: "!gl-hidden" }
           .js-rapid-diffs-toggle-mount
-      - if can_update_merge_request
-        - edit_action_description = _('Edit merge request')
-        - edit_action_shortcut = 'e'
-        - edit_button_title = "#{edit_action_description} <kbd class='flat !gl-ml-2' aria-hidden=true>#{edit_action_shortcut}</kbd>"
-        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-hidden @sm/panel:gl-inline-flex gl-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
-          = _('Edit')
       - if @merge_request.source_project
-        .gl-flex-1
-          #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
-          .js-mr-code-dropdown{ data: code_dropdown_data(@merge_request) }
+        #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
 
+      - more_dropdown_json = nil
       - if current_user
-        - merge_request_data = { iid: @merge_request.iid, draft: @merge_request.draft, target_project_id: @merge_request.target_project_id }
-
-        .js-mr-more-dropdown{ data: {
-          merge_request: merge_request_data.to_json,
-          url: merge_request_url(@merge_request),
-          edit_url: edit_project_merge_request_path(@project, @merge_request),
-          is_current_user: issuable_author_is_current_user(@merge_request),
-          can_update_merge_request: can?(current_user, :update_merge_request, @merge_request),
-          open: @merge_request.open?,
-          merged: @merge_request.merged?,
-          source_project_missing: @merge_request.source_project_missing?,
-          clipboard_text: @merge_request.to_reference(full: true),
-          report_abuse_path: add_category_abuse_reports_path,
-          reported_user_id: @merge_request.author.id,
-          ai_overview_available: ai_overview_available.to_s,
-          ai_overview_enabled: ai_overview_enabled.to_s,
-        } }
+        - more_dropdown_data = { mr: { iid: @merge_request.iid, draft: @merge_request.draft, target_project_id: @merge_request.target_project_id }, url: merge_request_url(@merge_request), is_current_user: issuable_author_is_current_user(@merge_request), can_update_merge_request: can_update_merge_request, open: @merge_request.open?, is_merged: @merge_request.merged?, source_project_missing: @merge_request.source_project_missing?, clipboard_text: @merge_request.to_reference(full: true), reported_user_id: @merge_request.author.id, ai_overview_available: ai_overview_available, ai_overview_enabled: ai_overview_enabled, show_lock: show_lock }
+        - more_dropdown_json = more_dropdown_data.to_json
+      - code_dropdown_json = @merge_request.source_project ? code_dropdown_data(@merge_request).to_json : nil
+      - title_actions_data = { project_path: @merge_request.project.full_path, iid: @merge_request.iid, id: @merge_request.id, can_update: can_update_merge_request.to_s, is_signed_in: current_user.present?.to_s, edit_path: edit_project_merge_request_path(@project, @merge_request), report_abuse_path: add_category_abuse_reports_path, code_dropdown: code_dropdown_json, more_dropdown: more_dropdown_json }
+      .js-mr-title-actions{ data: title_actions_data }
 
       - unless hide_gutter_toggle
         = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-h-fit gutter-toggle js-sidebar-toggle @lg/panel:!gl-hidden" }) do

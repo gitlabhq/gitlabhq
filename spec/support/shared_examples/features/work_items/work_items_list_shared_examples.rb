@@ -54,48 +54,6 @@ RSpec.shared_examples 'dates on the work items list' do |date|
   end
 end
 
-RSpec.shared_examples 'pagination on the work items list page' do
-  it 'displays default page size of 20 items with correct dropdown text' do
-    expect(page).to have_selector(issuable_container, count: 20)
-
-    expect(page).to have_button _('Show 20 items')
-
-    expect(page).to have_button _('Next')
-    expect(page).to have_button _('Previous'), disabled: true
-  end
-
-  it 'navigates through pages using Next and Previous buttons' do
-    expect(page).to have_button _('Previous'), disabled: true
-    expect(page).to have_button _('Next'), disabled: false
-
-    click_button _('Next')
-
-    expect(page).to have_button _('Previous'), disabled: false
-    expect(page).to have_button _('Next'), disabled: true
-
-    expect(page).to have_selector(issuable_container, count: 5)
-
-    click_button _('Previous')
-
-    expect(page).to have_button _('Previous'), disabled: true
-    expect(page).to have_button _('Next'), disabled: false
-    expect(page).to have_selector(issuable_container, count: 20)
-  end
-
-  it 'changes page size and updates display accordingly' do
-    click_button _('Show 20 items')
-
-    within_testid('list-footer') do
-      find('[role="option"]', text: _('Show 50 items')).click
-    end
-
-    expect(page).to have_selector(issuable_container, count: 25)
-
-    expect(page).not_to have_button _('Next'), disabled: true
-    expect(page).not_to have_button _('Previous'), disabled: true
-  end
-end
-
 RSpec.shared_examples 'parent filter' do
   it 'filters the child item by parent' do
     select_tokens 'Parent', '=', parent_item.title, submit: true

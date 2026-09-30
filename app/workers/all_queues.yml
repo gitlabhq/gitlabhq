@@ -856,6 +856,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:database_pg_ash_maintenance
+  :worker_name: Database::PgAshMaintenanceWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:dependency_proxy_cleanup_dependency_proxy
   :worker_name: DependencyProxy::CleanupDependencyProxyWorker
   :feature_category: :virtual_registry

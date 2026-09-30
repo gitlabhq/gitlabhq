@@ -303,14 +303,9 @@ configure both of the following:
 - Add the proxy's [CA certificate](#custom-ca-certificate).
 
 The GitLab Duo CLI, the GitLab Duo plugin for JetBrains IDEs, and GitLab for Visual Studio
-have two known issues:
+have one known issue. If the proxy URL uses `https://`, the WebSocket connection fails.
+Use an `http://` proxy URL if possible.
 
-- If the proxy URL uses `https://`, the WebSocket connection fails.
-  Use an `http://` proxy URL if possible.
-- These clients cannot present a client certificate for mTLS.
-
-For more information, see
-[issue 2527](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2527).
 GitLab for VS Code is not affected.
 
 ## Troubleshooting in your IDE

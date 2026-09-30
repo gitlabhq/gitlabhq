@@ -1,5 +1,6 @@
 - @gfm_form = true
 - @ignore_password_managers = true
+- @force_show_panel_header = true
 - add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge requests")
@@ -52,11 +53,8 @@
                 = _("Changes")
                 = render Pajamas::BadgeComponent.new do
                   %span.js-changes-tab-count{ data: { gid: @merge_request.to_gid.to_s, preparing: @merge_request.initial_preparation?.to_s } }= tab_count_display(@merge_request, @diffs_count)
-          .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
+          .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3.gl-pr-3
             #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s, can_resolve_discussion: @merge_request.resolvable_discussions.first&.can_resolve?(current_user).to_s } }
-            - if !!@issuable_sidebar.dig(:current_user, :id)
-              .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
-              .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
             #js-submit-review-button
     .tab-content#diff-notes-app
       #js-diff-file-finder

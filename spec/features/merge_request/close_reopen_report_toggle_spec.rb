@@ -8,7 +8,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
   let(:user) { create(:user) }
 
   context 'on a merge request' do
-    let(:container) { find('.detail-page-header') }
+    let(:container) { find('.panel-header-inner-actions') }
     let_it_be(:project) { create(:project, :repository) }
     let(:issuable) { create(:merge_request, source_project: project) }
 

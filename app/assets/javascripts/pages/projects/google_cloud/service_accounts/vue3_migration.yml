@@ -1,0 +1,5 @@
+---
+status: rollout
+feature_flag: vue3_migrate_google_cloud
+group: group::environments
+migration_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/631118

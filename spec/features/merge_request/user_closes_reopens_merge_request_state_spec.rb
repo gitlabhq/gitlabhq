@@ -22,7 +22,7 @@ RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :co
       it 'closes the merge request' do
         expect(page).to have_css('.gl-badge', text: 'Open')
 
-        within '.detail-page-header' do
+        within '.panel-header-inner-actions' do
           click_button 'Merge request actions'
           click_button 'Close merge request'
         end
@@ -55,7 +55,7 @@ RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :co
       it 'reopens the merge request', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16775' do
         expect(page).to have_css('.gl-badge', text: 'Closed')
 
-        within '.detail-page-header' do
+        within '.panel-header-inner-actions' do
           click_button 'Merge request actions'
           click_button 'Reopen merge request'
         end

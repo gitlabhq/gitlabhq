@@ -30,6 +30,7 @@ import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   i18n,
+  WIDGET_TYPE_WORKPLAN,
   WIDGET_TYPE_DESCRIPTION,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WIDGET_TYPE_DESIGNS,
@@ -338,7 +339,7 @@ export default {
       return !this.agentPlanWidget;
     },
     agentPlanWidget() {
-      return this.workItem?.features?.agentPlan || this.findWidget('AGENT_PLAN');
+      return this.workItem?.features?.agentPlan || this.findWidget(WIDGET_TYPE_WORKPLAN);
     },
     workItemProjectId() {
       return this.workItem?.project?.id;

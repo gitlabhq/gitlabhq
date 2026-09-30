@@ -1,3 +1,4 @@
+- @force_show_panel_header = true
 - add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
 - add_to_breadcrumbs @merge_request.to_reference, project_merge_request_path(@project, @merge_request)
 - breadcrumb_title _("Merge conflicts")
@@ -5,7 +6,7 @@
 - add_page_specific_style 'page_bundles/merge_conflicts'
 - add_page_specific_style 'page_bundles/merge_request'
 
-= render "projects/merge_requests/mr_title", hide_gutter_toggle: true
+= render "projects/merge_requests/mr_title", hide_gutter_toggle: true, show_lock: false
 
 .merge-request-details.issuable-details
   = render "projects/merge_requests/mr_box"

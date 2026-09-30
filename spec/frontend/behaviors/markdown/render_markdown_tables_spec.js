@@ -227,7 +227,7 @@ describe('renderMarkdownTables', () => {
         const container = appendTable(table);
 
         await renderMarkdownTables([table]);
-        container.querySelector('thead th').click();
+        container.querySelector('thead th button').click();
         await waitForPromises();
 
         const sorted = Array.from(container.querySelectorAll('tbody td'));

@@ -163,16 +163,17 @@ Group permissions for [Application Security](application_security/secure_your_ap
 
 Group permissions for [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md):
 
-| Action                                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
-|-------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
-| Enable GitLab Secrets Manager[^com-top-level]      |       |         |          |                  |           |            |   ✓   |
-| Manage permissions for secrets                  |       |         |          |                  |           |            |   ✓   |
-| Read secret metadata                            |       |         |          |                  |           |            |   ✓   |
-| Create, update, and delete secrets[^owners-grant-action] |       |         |          |                  |           |            |   ✓   |
-| Read secret value[^secret-values]                  |       |         |          |                  |           |            |       |
+| Action                                                           | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+|------------------------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
+| Enable GitLab Secrets Manager[^com-top-level]                    |       |         |          |                  |           |            |   ✓   |
+| Manage permissions for secrets                                   |       |         |          |                  |           |            |   ✓   |
+| Read secret metadata                                             |       |         |          |                  |           |            |   ✓   |
+| Create, update, and delete secrets[^owners-grant-action]         |       |         |          |                  |           |            |   ✓   |
+| Create secrets (without update permission)[^owners-grant-action] |       |         |          |                  |           |            |   ✓   |
+| Read secret value[^secret-values]                                |       |         |          |                  |           |            |       |
 
-[^com-top-level]: On GitLab.com, only a top level group Owner can enable Secrets Manager for subgroups and projects. On self-managed, an administrator must enable it for the instance.
-[^owners-grant-action]: Owners can grant this action to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
+[^com-top-level]: On GitLab.com, only a top-level group Owner can enable Secrets Manager for subgroups and projects. On GitLab Self-Managed, an administrator must enable it for the instance.
+[^owners-grant-action]: Owners can grant these actions to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
 [^secret-values]: No role can read a secret's value. CI/CD jobs read values through job authentication. Other workloads read values through the [Secrets Manager API](../ci/secrets/secrets_manager/non_cicd_access.md), and only if they have been granted the read value permission for that secret.
 
 ### Group CI/CD
@@ -454,16 +455,17 @@ Project permissions for [application security](application_security/secure_your_
 
 Project permissions for [GitLab Secrets Manager](../ci/secrets/secrets_manager/_index.md):
 
-| Action                                          | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
-|-------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
-| View Secrets Manager user permissions           |       |         |          |                  |           |     ✓      |   ✓   |
-| Manage permissions for secrets                  |       |         |          |                  |           |            |   ✓   |
-| Read secrets metadata[^users-owner-role], [^users-maintainer-role] |       |         |          |                  |           |     ✓      |   ✓   |
-| Create and update secrets[^users-owner-role], [^users-maintainer-role] |   |         |          |                  |           |     ✓      |   ✓   |
-| Delete secrets[^users-owner-role]                     |       |         |          |                  |           |            |   ✓   |
-| Read secret value[^project-secrets-secret-values]                  |       |         |          |                  |           |            |       |
+| Action                                                                 | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
+|------------------------------------------------------------------------|:-----:|:-------:|:--------:|:----------------:|:---------:|:----------:|:-----:|
+| View Secrets Manager user permissions                                  |       |         |          |                  |           | ✓          |   ✓   |
+| Manage permissions for secrets                                         |       |         |          |                  |           |            |   ✓   |
+| Read secrets metadata[^users-owner-role], [^users-maintainer-role]     |       |         |          |                  |           | ✓          |   ✓   |
+| Create and update secrets[^users-owner-role], [^users-maintainer-role] |       |         |          |                  |           | ✓          |   ✓   |
+| Create secrets (without update permission)[^users-owner-role]          |       |         |          |                  |           |            |   ✓   |
+| Delete secrets[^users-owner-role]                                      |       |         |          |                  |           |            |   ✓   |
+| Read secret value[^project-secrets-secret-values]                      |       |         |          |                  |           |            |       |
 
-[^users-owner-role]: Users with the Owner role can grant this action to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
+[^users-owner-role]: Users with the Owner role can grant these actions to other roles, specific users, groups, or custom roles. See [Manage secrets permissions](../ci/secrets/secrets_manager/_index.md#manage-secrets-permissions).
 [^users-maintainer-role]: Users with the Maintainer role have this permission by default for secrets managers enabled in GitLab 19.4 and later. Users with the Owner role can remove or change the default permissions for the Maintainer role.
 [^project-secrets-secret-values]: No role can read a secret's value. CI/CD jobs read values through job authentication. Other workloads read values through the [Secrets Manager API](../ci/secrets/secrets_manager/non_cicd_access.md), and only if they have been granted the read value permission for that secret.
 

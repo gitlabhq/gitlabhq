@@ -39,7 +39,8 @@ module Gitlab
         CONFIG_COUNTERS = {
           skipped_samples: 'Number of pg_ash samples skipped because sampling was disabled in the database.',
           missed_samples: 'Number of pg_ash samples interrupted before they could be recorded.',
-          insert_errors: 'Number of errors pg_ash hit while writing samples.'
+          insert_errors: 'Number of errors pg_ash hit while writing samples.',
+          consecutive_rotate_failures: 'Number of pg_ash partition rotations that failed in a row.'
         }.freeze
 
         def initialize(connection = ApplicationRecord.connection)
@@ -56,6 +57,9 @@ module Gitlab
 
             reconcile_config!
             sample_loop(&continue)
+          ensure
+            # Only the lease holder contributes to this resettable gauge.
+            config_gauges[:consecutive_rotate_failures].set({}, 0)
           end
 
           nil

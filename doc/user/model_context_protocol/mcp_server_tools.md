@@ -753,7 +753,7 @@ Provide exactly one of `username`, `id`, or `me`.
 |------------|---------|----------|-------------|
 | `username` | string  | No       | Username of the user to look up. |
 | `id`       | integer | No       | Numeric ID of the user to look up. |
-| `me`       | boolean | No       | Set to `true` to look up the authenticated user. When provided, must be `true`. Omit `username` and `id`. |
+| `me`       | boolean | No       | Set to `true` to look up the authenticated user. Omit `username` and `id` when set. Set to `false` to not use this parameter. |
 
 The response returns the user's numeric `id`, `username`, `name`, `state`, and `web_url`.
 

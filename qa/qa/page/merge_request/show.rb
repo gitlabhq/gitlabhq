@@ -171,8 +171,11 @@ module QA
           element 'description-content'
         end
 
-        view 'app/views/projects/merge_requests/_mr_title.html.haml' do
+        view 'app/assets/javascripts/merge_requests/components/merge_request_title_actions.vue' do
           element 'edit-title-button'
+        end
+
+        view 'app/views/projects/merge_requests/_mr_title.html.haml' do
           element 'title-content', required: true
         end
 

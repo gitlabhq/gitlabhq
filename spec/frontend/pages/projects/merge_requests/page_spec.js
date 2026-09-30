@@ -7,7 +7,6 @@ import { EVT_MR_DIFF_GENERATED, EVT_MR_PREPARED } from '~/diffs/constants';
 
 jest.mock('ee_else_ce/mr_notes', () => jest.fn());
 jest.mock('~/pages/projects/merge_requests/init_merge_request_show', () => jest.fn());
-jest.mock('~/mr_more_dropdown', () => ({ initMrMoreDropdown: jest.fn() }));
 jest.mock('~/code_review/signals', () => ({ start: jest.fn() }));
 jest.mock('~/sidebar/sidebar_bundle', () => jest.fn());
 
