@@ -57,6 +57,7 @@ permissions:
   - create_iteration
   - create_iteration_cadence
   - create_jira_connect_subscription
+  - create_label
   - create_merge_request_from
   - create_merge_request_in
   - create_note
@@ -72,6 +73,7 @@ permissions:
   - create_test_case
   - create_vulnerability_export
   - create_wiki
+  - delete_label
   - delete_note
   - delete_timelog
   - destroy_deploy_token
@@ -103,6 +105,7 @@ permissions:
   - update_epic
   - update_git_access_protocol
   - update_issue
+  - update_label
   - update_max_artifacts_size
   - update_note
   - update_o11y_settings

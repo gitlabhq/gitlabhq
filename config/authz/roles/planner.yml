@@ -72,10 +72,12 @@ group:
   - create_epic
   - create_iteration
   - create_iteration_cadence
+  - create_label
   - create_saved_view
   - create_timelog
   - create_wiki
   - create_work_item_saved_view
+  - delete_label
   - destroy_epic
   - destroy_issue
   - download_wiki_code
@@ -89,3 +91,4 @@ group:
   - reopen_issue
   - update_epic
   - update_issue
+  - update_label

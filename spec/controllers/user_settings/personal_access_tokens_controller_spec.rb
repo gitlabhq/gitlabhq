@@ -167,54 +167,62 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
     context 'when `granular_personal_access_tokens` feature flag is enabled' do
       before do
         stub_feature_flags(granular_personal_access_tokens: true)
+        allow(Gitlab::CurrentSettings).to receive(:granular_tokens_enforced?).and_return(false)
       end
 
-      context 'when name and valid scopes are present' do
-        let(:params) do
-          {
-            name: 'My Token',
-            scopes: 'api,read_user',
-            description: 'My token description'
-          }
+      context 'when valid scopes are present' do
+        where(:token_params, :scopes) do
+          [
+            {},
+            { name: 'My Token', description: 'My token description' },
+            { name: '' },
+            { name: ' ' }
+          ].product(%w[api api,read_user])
         end
 
-        it 'redirects to legacy_new with params' do
-          get_index
+        with_them do
+          let(:params) { token_params.merge(scopes: scopes) }
 
-          expect(response).to redirect_to(action: :legacy_new, **params)
+          it 'redirects to legacy_new with params' do
+            get_index
+
+            expect(response).to redirect_to(action: :legacy_new, **params)
+          end
         end
-      end
 
-      context 'when name is present but scopes are not' do
-        let(:params) { { name: 'My Token' } }
+        context 'when granular tokens are enforced' do
+          let(:params) { { name: 'My Token', scopes: 'api' } }
 
-        it 'does not redirect' do
-          get_index
+          before do
+            allow(Gitlab::CurrentSettings).to receive(:granular_tokens_enforced?).and_return(true)
+          end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).not_to be_redirect
-        end
-      end
+          it 'does not redirect' do
+            get_index
 
-      context 'when scopes contain only invalid values' do
-        let(:params) { { name: 'My Token', scopes: 'invalid_scope' } }
-
-        it 'does not redirect' do
-          get_index
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).not_to be_redirect
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
 
-      context 'when scopes are present but name is not' do
-        let(:params) { { scopes: 'api,read_user' } }
+      context 'when no valid scopes are present' do
+        where(:params) do
+          [
+            {},
+            { scopes: '' },
+            { scopes: ' ' },
+            { scopes: 'invalid_scope' },
+            { name: 'My Token' },
+            { name: 'My Token', scopes: 'invalid_scope' }
+          ]
+        end
 
-        it 'does not redirect' do
-          get_index
+        with_them do
+          it 'does not redirect' do
+            get_index
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).not_to be_redirect
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
     end
@@ -224,13 +232,16 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
         stub_feature_flags(granular_personal_access_tokens: false)
       end
 
-      let(:params) { { name: 'My Token', scopes: 'api' } }
+      where(:params) do
+        [{ name: 'My Token', scopes: 'api' }, { scopes: 'api,read_user' }]
+      end
 
-      it 'does not redirect' do
-        get_index
+      with_them do
+        it 'does not redirect' do
+          get_index
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).not_to be_redirect
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 

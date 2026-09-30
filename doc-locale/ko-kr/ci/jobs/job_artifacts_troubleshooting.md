@@ -30,7 +30,7 @@ title: 작업 아티팩트 문제 해결
 
 ## 오류 메시지 `No files to upload` {#error-message-no-files-to-upload}
 
-이 메시지는 러너가 업로드할 파일을 찾지 못했을 때 작업 로그에 나타납니다. 파일 경로가 잘못되었거나 파일이 생성되지 않았습니다. 작업 로그에서 파일명을 지정하고 생성되지 않은 이유를 설명하는 다른 오류 또는 경고를 확인할 수 있습니다.
+이 메시지는 러너가 업로드할 파일을 찾을 수 없을 때 작업 로그에 나타납니다. 파일 경로가 잘못되었거나 파일이 생성되지 않았습니다. 작업 로그에서 파일명을 지정하고 생성되지 않은 이유를 설명하는 다른 오류 또는 경고를 확인할 수 있습니다.
 
 더 자세한 작업 로그를 보려면 [CI/CD 디버그 로깅 활성화](../variables/variables_troubleshooting.md#enable-debug-logging)를 수행하고 작업을 다시 시도할 수 있습니다. 이 로깅은 파일이 생성되지 않은 이유에 대한 자세한 정보를 제공할 수 있습니다.
 
@@ -88,11 +88,11 @@ rspec:
 이 오류를 해결하려면 다음을 확인하세요:
 
 - 프로젝트 `my-group/my-project`는 Premium 구독 계획이 있는 그룹에 있습니다.
-- 작업을 실행하는 사용자는 `my-group/my-project`의 리소스에 액세스할 수 있습니다.
+- 파이프라인을 트리거하는 사용자는 `my-group/my-project`에서 최소한 리포터 역할을 가지고 있어야 합니다. 자세한 내용은 [프로젝트 CI/CD 권한](../../user/permissions.md#project-cicd)을 참고하세요.
 - `project`, `job` 및 `ref` 조합이 존재하고 원하는 종속성을 결과로 생성합니다.
 - 사용 중인 모든 변수가 올바른 값으로 평가됩니다.
 
-`CI_JOB_TOKEN`을 사용하는 경우 토큰을 프로젝트의 [allowlist](ci_job_token.md#control-job-token-access-to-your-project)에 추가하여 다른 프로젝트의 아티팩트를 가져옵니다.
+`CI_JOB_TOKEN`을 사용하는 경우 토큰을 프로젝트의 [allowlist](ci_job_token.md#control-job-token-access-to-your-project)에 추가하여 다른 프로젝트의 아티팩트를 가져옵니다. 프로젝트를 허용 목록에 추가해도 트리거 사용자에게 `my-group/my-project`에 대한 액세스 권한이 부여되지 않습니다. 해당 사용자는 이미 필요한 역할을 가지고 있어야 합니다.
 
 ### `needs:pipeline:job`로 구성된 작업 {#for-a-job-configured-with-needspipelinejob}
 

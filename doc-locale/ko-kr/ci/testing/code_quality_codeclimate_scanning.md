@@ -104,7 +104,7 @@ GitLab CI/CD YAML에서 [CI/CD 변수](#available-cicd-variables)를 설정하�
 |---------------------------------|-------------|
 | `CODECLIMATE_DEBUG`             | [코드 클라이밋 디버그 모드](https://github.com/codeclimate/codeclimate#environment-variables)를 활성화하도록 설정합니다. |
 | `CODECLIMATE_DEV`               | `--dev` 모드를 활성화하도록 설정하면 CLI에 알려지지 않은 엔진을 실행할 수 있습니다. |
-| `CODECLIMATE_PREFIX`            | CodeClimate 엔진에서 모든 `docker pull` 명령과 함께 사용할 접두사를 설정합니다. [오프라인 스캔](https://github.com/codeclimate/codeclimate/pull/948)에 유용합니다. 자세한 내용은 [프라이빗 컨테이너 레지스트리 사용](#use-a-private-container-image-registry)을 참조하세요. |
+| `CODECLIMATE_PREFIX`            | CodeClimate 엔진에서 모든 `docker pull` 명령과 함께 사용할 접두사를 설정합니다. 오프라인 스캔을 위해 이 변수를 사용합니다. [오프라인 스캔](https://github.com/codeclimate/codeclimate/pull/948) 자세한 내용은 [프라이빗 컨테이너 이미지 레지스트리 사용](#use-a-private-container-image-registry)을 참조하세요. |
 | `CODECLIMATE_REGISTRY_USERNAME` | `CODECLIMATE_PREFIX`에서 구문 분석한 레지스트리 도메인의 사용자 이름을 지정하도록 설정합니다. |
 | `CODECLIMATE_REGISTRY_PASSWORD` | `CODECLIMATE_PREFIX`에서 구문 분석한 레지스트리 도메인의 암호를 지정하도록 설정합니다. |
 | `CODE_QUALITY_DISABLED`         | 코드 품질 작업이 실행되지 않도록 합니다. |
@@ -427,8 +427,8 @@ CodeClimate은 각 분석 단계에 대해 별도의 컨테이너를 실행합�
 
 코드 품질 작업이 Kubernetes 실행기에서 실행될 수 있도록 하려면:
 
-- TLS를 사용하여 Docker 데몬과 통신하는 경우 실행기는 [권한 있는 모드에서 실행](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings)되어야 합니다. 또한 인증서 디렉터리를 [볼륨 마운트로 지정](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes)해야 합니다.
-- DinD 서비스가 코드 품질 작업이 시작되기 전에 완전히 시작되지 않을 수 있습니다. 이는 [Kubernetes 실행기 문제 해결](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting/#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running)에 설명된 제한 사항입니다. 이슈를 해결하려면 `before_script`을(를) 사용하여 Docker 데몬이 완전히 부팅될 때까지 기다리세요. 예제는 다음 섹션에서 설명하는 `.gitlab-ci.yml` 파일의 구성을 참조하세요.
+- TLS를 사용하여 Docker 데몬과 통신하는 경우 실행기는 [권한 있는 모드에서 실행](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings)되어야 합니다. 또한 인증서 디렉터리는 [볼륨 마운트로 지정](../docker/docker_in_docker.md#docker-in-docker-with-tls-enabled-in-kubernetes-recommended)되어야 합니다.
+- DinD 서비스가 코드 품질 작업이 시작되기 전에 완전히 시작되지 않을 수 있습니다. 자세한 내용은 [Kubernetes 실행기 문제 해결](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting/#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running)을 참조하세요. 이슈를 해결하려면 `before_script`을(를) 사용하여 Docker 데몬이 완전히 부팅될 때까지 기다리세요. 예제는 다음 섹션에서 설명하는 `.gitlab-ci.yml` 파일의 구성을 참조하세요.
 
 #### Kubernetes {#kubernetes}
 
@@ -467,12 +467,12 @@ name = "docker:29.1.4-dind"
 > [!note]
 > [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes/)를 사용하면 `values.yaml` 파일의 [`config` 필드](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration/)에서 이전 Kubernetes 구성을 사용할 수 있습니다.
 
-`overlay2` [스토리지 드라이버](https://docs.docker.com/storage/storagedriver/select-storage-driver/)를 사용하는지 확인하세요. 이는 최고의 전체 성능을 제공합니다:
+`overlay2` [스토리지 드라이버](https://docs.docker.com/engine/storage/drivers/select-storage-driver/)를 사용하는지 확인하세요. 이는 최고의 성능을 제공합니다:
 
 - Docker CLI가 통신하는 `DOCKER_HOST`을(를) 지정하세요.
 - `DOCKER_DRIVER` 변수를 비워 두도록 설정하세요.
 
-`before_script` 섹션을 사용하여 Docker 데몬이 완전히 부팅될 때까지 기다리세요. GitLab Runner v16.9 이후로는 [`HEALTHCHECK_TCP_PORT` 변수를 설정하기만](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services) 해도 됩니다.
+Docker 데몬이 완전히 부팅될 때까지 대기하려면 [`HEALTHCHECK_TCP_PORT` 변수를 설정](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services)하거나 `before_script` 섹션을 사용하세요.
 
 ```yaml
 include:
@@ -492,7 +492,7 @@ code_quality:
 OpenShift의 경우 [GitLab Runner Operator](https://docs.gitlab.com/runner/install/operator/)를 사용해야 합니다. 서비스 컨테이너의 Docker 데몬이 스토리지를 초기화할 권한을 얻도록 하려면 `/var/lib` 디렉터리를 볼륨 마운트로 마운트해야 합니다.
 
 > [!note]
-> `/var/lib` 디렉터리를 볼륨 마운트로 마운트할 수 없으면 `--storage-driver`을(를) `vfs`로 설정할 수 있습니다. `vfs` 값을 선택하면 [성능](https://docs.docker.com/storage/storagedriver/select-storage-driver/)에 부정적인 영향을 미칠 수 있습니다.
+> `/var/lib` 디렉터리를 볼륨 마운트로 마운트할 수 없으면 `--storage-driver`을 `vfs`로 설정할 수 있습니다. `vfs` 값을 선택하면 [성능](https://docs.docker.com/engine/storage/drivers/select-storage-driver/)에 부정적인 영향을 미칠 수 있습니다.
 
 Docker 데몬의 권한을 구성하려면:
 

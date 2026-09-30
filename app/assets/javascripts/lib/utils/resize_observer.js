@@ -27,10 +27,12 @@ export function scrollToTargetOnResize({
   let targetTop = 0;
   let currentScrollPosition = 0;
   let userScrollOffset = 0;
+  let ownScrollTop = null;
 
   // start listening to scroll after the first keepTargetAtTop call
   let scrollListenerEnabled = false;
   let intersectionObserver = null;
+  let observedElement = null;
 
   let { scrollHeight } = scrollingElement;
 
@@ -48,6 +50,12 @@ export function scrollToTargetOnResize({
       return;
     }
 
+    if (scrollingElement.scrollTop === ownScrollTop) return;
+    ownScrollTop = null;
+
+    // A replaced node reads as all zeros until the next resize finds the new one
+    if (!targetElement?.isConnected) return;
+
     targetTop = targetElement.getBoundingClientRect().top;
     userScrollOffset = targetTop - contentTop();
   }
@@ -60,18 +68,23 @@ export function scrollToTargetOnResize({
     scrollingElement.removeEventListener('scroll', handleScroll);
   }
 
-  function setupIntersectionObserver() {
-    intersectionObserver = new IntersectionObserver((entries) => {
-      const [entry] = entries;
+  function observeTarget() {
+    if (!intersectionObserver) {
+      intersectionObserver = new IntersectionObserver((entries) => {
+        // Vue replaces the target node as notes load, and a detached node also reports
+        // isIntersecting: false. Only a connected node means the user scrolled it away.
+        if (entries.some((entry) => entry.target.isConnected && !entry.isIntersecting)) {
+          // eslint-disable-next-line no-use-before-define
+          cleanup();
+        }
+      });
+    }
 
-      // if element gets scrolled off screen then remove listeners
-      if (!entry.isIntersecting) {
-        // eslint-disable-next-line no-use-before-define
-        cleanup();
-      }
-    });
+    if (observedElement === targetElement) return;
 
+    if (observedElement) intersectionObserver.unobserve(observedElement);
     intersectionObserver.observe(targetElement);
+    observedElement = targetElement;
   }
 
   function keepTargetAtTop() {
@@ -95,15 +108,15 @@ export function scrollToTargetOnResize({
     targetTop = anchorTop + currentScrollPosition - userScrollOffset - contentTop();
 
     scrollingElement.scrollTo({ top: targetTop, behavior: 'instant' });
+    // The browser clamps targetTop to the max scroll, so read back where it landed
+    ownScrollTop = scrollingElement.scrollTop;
 
     if (!scrollListenerEnabled) {
       addScrollListener();
       scrollListenerEnabled = true;
     }
 
-    if (!intersectionObserver) {
-      setupIntersectionObserver();
-    }
+    observeTarget();
   }
 
   function cleanup() {
@@ -112,7 +125,7 @@ export function scrollToTargetOnResize({
       removeScrollListener();
 
       if (intersectionObserver) {
-        intersectionObserver.unobserve(targetElement);
+        intersectionObserver.unobserve(observedElement);
         intersectionObserver.disconnect();
       }
     }, 1000);

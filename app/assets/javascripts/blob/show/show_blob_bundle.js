@@ -5,7 +5,6 @@ import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_id
 import '~/sourcegraph/load';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
-import { initFindFileShortcut } from '~/projects/behaviors';
 import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
@@ -30,7 +29,6 @@ export default function initBlobShow() {
 
   initPerformancePlugin(performancePluginComponents);
   initAmbiguousRefModal();
-  initFindFileShortcut();
   showAlertFromLocalStorage();
 
   if (viewBlobEl) {

@@ -1,5 +1,5 @@
 ---
-stage: Create
+stage: GitLab Dedicated
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 프로젝트 가져오기 및 내보내기 API
@@ -146,7 +146,6 @@ ls *export.tar.gz
 
 {{< history >}}
 
-- GitLab 16.0에서 개발자 역할 대신 유지 관리자 역할에 대한 요구 사항이 도입되었습니다.
 - `namespace_id` 및 `namespace_path` 속성이 GitLab 18.7에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/issues/511053).
 
 {{< /history >}}
@@ -229,9 +228,6 @@ requests.post(url, headers=headers, data=data, files=files)
 - `namespace_id` 및 `namespace_path` 속성이 GitLab 18.7에서 [도입되었습니다](https://gitlab.com/gitlab-org/gitlab/-/issues/511053).
 
 {{< /history >}}
-
-> [!flag]
-> GitLab Self-Managed에서 기본적으로 이 기능을 사용할 수 있습니다. 기능을 숨기려면 관리자가 `import_project_from_remote_file` 이름의 [기능 플래그를 비활성화](../administration/feature_flags/_index.md)할 수 있습니다. GitLab.com 및 GitLab Dedicated에서 이 기능을 사용할 수 있습니다.
 
 원격 아카이브에서 프로젝트를 가져옵니다.
 
@@ -386,7 +382,7 @@ curl --request GET \
 - `started`
 - `finished`
 
-상태가 `failed`인 경우 `import_error` 아래에 가져오기 오류 메시지를 포함합니다. 상태가 `failed`, `started` 또는 `finished`인 경우 `failed_relations` 배열이 다음 중 하나로 인해 가져오기가 실패한 관계의 발생으로 채워질 수 있습니다:
+상태가 `failed`인 경우 `import_error` 아래에 가져오기 오류 메시지를 포함합니다. 상태가 `failed`, `started` 또는 `finished`인 경우 `failed_relations` 배열에 가져오기에 실패한 관계의 발생 항목이 채워질 수 있습니다:
 
 - 복구 불가능한 오류입니다.
 - 재시도가 소진되었습니다. 일반적인 예: 쿼리 시간 초과입니다.
@@ -420,7 +416,7 @@ curl --request GET \
 }
 ```
 
-GitHub에서 가져올 때 `stats` 필드는 GitHub에서 이미 가져온 객체 수와 이미 가져온 객체 수를 나열합니다:
+GitHub에서 가져올 때 `stats` 필드에는 이미 GitHub에서 가져온 객체의 개수와 이미 가져온 객체의 개수가 표시됩니다:
 
 ```json
 {
@@ -472,7 +468,7 @@ GitHub에서 가져올 때 `stats` 필드는 GitHub에서 이미 가져온 객�
 
 {{< history >}}
 
-- GitLab 16.11에서 [베타](../policy/development_stages_support.md#beta) 버전으로 [도입되었으며](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) [플래그](../administration/feature_flags/_index.md) 이름은 `single_relation_import`입니다. 기본적으로 비활성화됨.
+- [도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) GitLab 16.11에서 [베타](../policy/development_stages_support.md#beta) [기능 플래그](../administration/feature_flags/_index.md)로 `single_relation_import`라는 이름으로. 기본적으로 비활성화됨.
 - GitLab 17.1에서 [일반적으로 사용 가능합니다](https://gitlab.com/gitlab-org/gitlab/-/issues/455889). 기능 플래그 `single_relation_import` 제거됨.
 
 {{< /history >}}

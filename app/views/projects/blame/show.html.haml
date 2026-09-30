@@ -5,7 +5,7 @@
   - page_title _("Blame"), @path, @ref
   = render 'shared/errors/gitaly_unavailable', reason: s_('Blame|Unable to load blame')
 - else
-  - blob_path = project_blob_path(@project, @id, ref_type: @ref_type.presence, blame: 1)
+  - blob_path = project_blob_path(@project, @id, ref_type: @ref_type.presence, blame: 1, ignore_revs: params[:ignore_revs].presence)
   - content_for :startup_js do
     = javascript_tag nonce: content_security_policy_nonce do
       :plain

@@ -379,16 +379,21 @@ List my active Duo Agent Platform sessions in gitlab-org/gitlab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607634) in GitLab 19.4. `get_duo_workflow_status` is also accepted as an alias.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/627561) to return the merge requests, work items and comments the session created, to vary the polling delay by status, and to report `status` with underscores (`input_required` rather than `input required`) to match `list_duo_sessions`, in GitLab 19.5.
 
 {{< /history >}}
 
 Checks the status of a GitLab Duo Agent Platform session. Running sessions include a suggested
-polling delay. Finished sessions and completed chat turns include the latest agent answer.
-Sessions waiting for approval include instructions for continuing the session.
+polling delay, which is longer while the session waits for its CI job to start. Finished sessions
+and completed chat turns include the latest agent answer. Any merge request, work item or comment
+the session created is included once it exists, as `created_merge_requests`, `created_work_items`
+and `created_notes`. Each is an array, empty when the session created nothing of that kind.
+Sessions waiting for approval include instructions for continuing the session with
+`send_duo_session_input`.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
-| `workflow_id` | integer | Yes      | Workflow ID returned by `trigger_duo_flow` or `ask_duo_agent`. |
+| `workflow_id` | integer | Yes      | ID of the Duo session, as returned by `start_duo_session` or `list_duo_sessions`. |
 
 Example:
 

@@ -1,6 +1,6 @@
 ---
-source_checksum: 01eda961cda9d6f6
-distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
+source_checksum: 17394dca43fc8ca4
+distilled_at_sha: 70a19aa9c2cec333372ea24d654eccd642639546
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -48,6 +48,31 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 ### Finding Elements & Interactions
 
 - Use `@testing-library/vue` queries to locate elements
+- Prefer `screen.queryByTestId('foo')` and `screen.queryAllByTestId('foo')` over
+  `document.querySelector('[data-testid="foo"]')` and
+  `document.querySelectorAll('[data-testid="foo"]')`; `screen` is available from
+  `@testing-library/vue` and the suite's `test_helpers.js`
+- Prefer role/label queries (`screen.queryByRole`, `screen.queryByLabelText`)
+  for one-shot assertions — they match the way users and assistive technology
+  find elements, so they double as an accessibility check (see the
+  [query priority guide](https://testing-library.com/docs/queries/about/#priority))
+- DO NOT poll an unscoped role query (`waitForElement`/`waitFor` +
+  `screen.queryByRole` on the full tree). `ByRole` computes visibility and an
+  accessible name for every candidate on every poll tick, which is cripplingly
+  slow in a `fullMount`. Address the container by test ID and query the role
+  inside it, with a null guard because `within(null)` throws:
+  `const form = screen.queryByTestId('x'); return form ? within(form).queryByRole(…) : null;`
+- Scoping queries with `within()` to the region under test is good practice
+  for any query type in a full mount, but DO NOT scope past a portal boundary
+  (`GlModal`, dropdowns, and tooltips render outside their parent) — query
+  portaled content from `screen`
+- DO NOT key finders off an accessible name that changes with state (for
+  example, a toggle that relabels itself): a copy change reads as "element
+  missing" instead of "label changed". Address the element by test ID once and
+  read state from ARIA attributes (`aria-pressed`, and so on)
+- `querySelector` remains acceptable for scoping a search inside an
+  already-found element, and for selectors Testing Library cannot express
+  (class or ID selectors)
 - Drive navigation and state changes through user-facing UI actions (click
   the link or button); DO NOT push routes or call component methods to get
   the app into a state.
@@ -89,6 +114,13 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 - In the feature handler, use `getActiveVariant('operationName') ?? defaultFixture` to serve the active variant; `getActiveVariant` returns `null` for `BASE` (not the `BASE` fixture), so the `??` fallback serves the handler's own default. Prefer `??` over `||`.
 - DO NOT declare the same `query` name in two different variant files — `defineFixtureVariants` throws `"variants for query X are already registered"` if the same query is registered twice; keep one variant file per query.
 - Generate a manifest of all registered queries and variant keys with `yarn integration:variants` (writes to `tmp/tests/frontend/integration_variants.manifest.json`); DO NOT commit the manifest.
+- For REST endpoints, use `defineRestFixtureVariants({ query, variants })` from `ee_jest/integration/core/fixture_variant_schema` and set the variant file's default export as the endpoint descriptor's `variants` property instead of `response`; the same `BASE`/UPPER_SNAKE_CASE/`setQueryVariant` rules apply. Keep REST variants separate from GraphQL variants — DO NOT derive a REST response from which GraphQL variant is active; activate each one independently in the spec.
+
+### Paginated Responses
+
+- Use `createFixturePaginator({ lookupKey, variableNames, pageSize, countKey })` from `fixture_utils.js` to serve one page of a connection per request; create it once at module level in the handler and call it on every request with the served fixture and request variables.
+- Declare the total item count in a variant (e.g. `MANY_PAGES` with `setFixtureItemsCount`) and let the paginator synthesize cursors and `pageInfo`; DO NOT use cursors recorded by Rails with the paginator — it only recognizes cursors it issued itself.
+- Prefer recorded page fixtures when the test depends on what Rails returns for a specific page; use the paginator when only the shape of pagination matters.
 
 ### Test Unlicensed Feature States
 
@@ -112,9 +144,15 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 - Mount the root component with `fullMount` from `test_helpers.js` and the real `apolloProvider`; DO NOT use `shallowMountExtended` or `mountExtended` in frontend integration tests.
 - Use `waitFor` from `@testing-library/dom` after actions that trigger API calls.
 - Reset the Apollo cache in `beforeEach` with `apolloProvider.defaultClient.cache.reset()` to prevent state leaking between tests; `test_setup.js` calls `clearMountedApolloStores()` in `beforeEach` to cancel in-flight fetches before each test, so spec files do not need to do anything extra beyond the usual `cache.reset()`.
+- Set feature flags before mounting with `setFeatureFlags({ flagName: true })` imported from `ee_jest/integration/helpers/setup_utils`; DO NOT pass `glFeatures` through `provide` — nested components do not receive it. The harness resets `window.gon` before each test, so no cleanup is needed.
 - DO NOT add `afterEach` cleanup for wrapper destruction or Apollo client teardown — the global `test_setup.js` handles router resets, wrapper destroy, and metadata cleanup.
 - DO NOT add `server.listen`, `server.resetHandlers`, or `server.close` calls in individual test files — server lifecycle is handled globally by `test_setup.js`.
 - DO NOT mock child components in frontend integration tests; the goal is to test how components work together.
+
+### Register Apps Booted by Their Page Bootstrap
+
+- Pass the app returned by a page bootstrap function to `registerBootstrappedApp` from `test_helpers.js`; the harness unmounts it and removes its root element in `afterEach`, and clears its Apollo cache in the next `beforeEach`. DO NOT remove the mount element manually in the spec.
+- Ensure the bootstrap function returns an app with an exposed Apollo client — registration fails when no app is returned (usually a missing mount element) or when the app exposes no Apollo client (causes stale cache leaking into later tests).
 
 ### DOM Assertions (Vue-Agnostic)
 
@@ -127,3 +165,4 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 For the full picture, see:
 
 - doc/development/testing_guide/frontend_testing.md
+

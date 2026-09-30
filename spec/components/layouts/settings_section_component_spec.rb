@@ -16,6 +16,13 @@ RSpec.describe Layouts::SettingsSectionComponent, feature_category: :shared do
       expect(page).to have_css('h2.gl-heading-2', text: heading)
     end
 
+    it 'renders heading with custom heading classes instead of the default size' do
+      render_inline described_class.new(heading, heading_classes: 'gl-heading-3')
+
+      expect(page).to have_css('h2.gl-heading-3', text: heading)
+      expect(page).not_to have_css('h2.gl-heading-2')
+    end
+
     it 'renders description' do
       render_inline described_class.new(heading, description: description)
 

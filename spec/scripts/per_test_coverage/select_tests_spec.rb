@@ -102,6 +102,13 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
         expect(clickhouse_client).to have_received(:query).with(/INTERVAL 14 DAY/, anything).once
       end
 
+      it 'excludes qa/ rows from the base-SHA query so an E2E export cannot move the base' do
+        select_tests.run!
+
+        expect(clickhouse_client).to have_received(:query)
+          .with(%r{argMax\(captured_sha, timestamp\).*test_file NOT LIKE 'qa/%'}m, anything).once
+      end
+
       it_behaves_like 'writes the expected queues',
         foss: %w[spec/models/user_spec.rb spec/models/new_thing_spec.rb spec/services/foo_spec.rb],
         ee: %w[ee/spec/services/user_service_spec.rb]
@@ -153,6 +160,33 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
 
         it_behaves_like 'writes the expected queues',
           foss: %w[spec/services/foo_spec.rb spec/models/user_spec.rb spec/other_spec.rb spec/models/new_thing_spec.rb],
+          ee: []
+      end
+
+      context 'when more source files changed than fit in one ClickHouse query' do
+        let(:changed_source_files) { Array.new(1001) { |i| "app/models/model_#{i}.rb" } }
+
+        before do
+          allow(clickhouse_client).to receive(:query).with(/test_files_by_source_file/, anything)
+            .and_return(
+              [{ 'test_file' => 'spec/models/user_spec.rb' }],
+              [{ 'test_file' => 'spec/models/other_spec.rb' }]
+            )
+        end
+
+        it 'splits the source files across batched queries', :aggregate_failures do
+          select_tests.run!
+
+          expect(clickhouse_client).to have_received(:query).with(/test_files_by_source_file/, anything).twice
+          expect(clickhouse_client).to have_received(:query)
+            .with(%r{'app/models/model_999\.rb'\)}, anything).once
+          expect(clickhouse_client).to have_received(:query)
+            .with(%r{IN \('app/models/model_1000\.rb'\)}, anything).once
+        end
+
+        it_behaves_like 'writes the expected queues',
+          foss: %w[spec/models/user_spec.rb spec/models/other_spec.rb spec/models/new_thing_spec.rb
+            spec/services/foo_spec.rb],
           ee: []
       end
 
@@ -503,7 +537,8 @@ RSpec.describe PerTestCoverage::SelectTests, :silence_stdout, feature_category: 
       it 'excludes qa/ paths in the stale-rescue query so they cannot consume the LIMIT budget' do
         select_tests.run!
 
-        expect(clickhouse_client).to have_received(:query).with(%r{test_file NOT LIKE 'qa/%'}, anything)
+        expect(clickhouse_client).to have_received(:query)
+          .with(%r{test_file NOT LIKE 'qa/%'.*INTERVAL 14 DAY}m, anything)
       end
 
       context 'when every queued file is deleted' do

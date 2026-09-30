@@ -63,6 +63,8 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_label
         admin_milestone
         admin_work_item
+        create_label
+        delete_label
         destroy_issue
         promote_label
         read_confidential_issues
@@ -70,6 +72,7 @@ RSpec.shared_context 'GroupPolicy context' do
         read_crm_organization
         read_internal_note
         update_issue
+        update_label
       ]
     ).uniq
   end
@@ -83,6 +86,8 @@ RSpec.shared_context 'GroupPolicy context' do
         admin_label
         admin_milestone
         admin_work_item
+        create_label
+        delete_label
         promote_label
         read_ci_cd_analytics
         read_confidential_issues
@@ -93,6 +98,7 @@ RSpec.shared_context 'GroupPolicy context' do
         read_internal_note
         read_prometheus
         update_issue
+        update_label
       ]
     ).uniq
   end

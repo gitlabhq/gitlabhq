@@ -6,7 +6,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/controllers/groups/achievements_controller.rb'
     - 'app/controllers/groups/application_controller.rb'
     - 'app/controllers/groups/group_members_controller.rb'
-    - 'app/controllers/groups/labels_controller.rb'
     - 'app/controllers/groups/milestones_controller.rb'
     - 'app/controllers/groups/settings/ci_cd_controller.rb'
     - 'app/controllers/groups_controller.rb'

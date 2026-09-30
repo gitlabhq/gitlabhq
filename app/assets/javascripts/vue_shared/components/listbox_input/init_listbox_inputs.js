@@ -6,7 +6,15 @@ export const initListboxInputs = () => {
   const els = [...document.querySelectorAll('.js-listbox-input')];
 
   els.forEach((el, index) => {
-    const { label, description, name, defaultToggleText, value = null, toggleClass } = el.dataset;
+    const {
+      label,
+      labelDescription,
+      description,
+      name,
+      defaultToggleText,
+      value = null,
+      toggleClass,
+    } = el.dataset;
     const { id } = el;
     const items = JSON.parse(el.dataset.items);
 
@@ -27,6 +35,7 @@ export const initListboxInputs = () => {
           },
           props: {
             label,
+            labelDescription,
             description,
             name,
             defaultToggleText,

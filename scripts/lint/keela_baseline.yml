@@ -267,9 +267,7 @@ delegations:
   - debian_architecture
   app/models/project.rb:
   - runner_token_expiration_interval_human_readable
-  - runner_token_expiration_interval_human_readable
   - ci_outbound_ci_outbound
-  - separated_caches
   - separated_caches
   app/models/work_items/widgets/assignees.rb:
   - assignees_by_name_and_id
@@ -282,7 +280,6 @@ delegations:
   - base_pipeline_sha
   ee/app/models/ee/user.rb:
   - enabled_zoekt?
-  - enabled_zoekt
   - enabled_zoekt
   - policy_advanced_editor?
   ee/app/models/ee/vulnerability.rb:
@@ -363,7 +360,6 @@ methods:
   - event_description
   - instance_exists_for?
   app/models/concerns/issuable.rb:
-  - locking_enabled?
   - locking_enabled?
   - any_label
   app/models/concerns/mentionable.rb:

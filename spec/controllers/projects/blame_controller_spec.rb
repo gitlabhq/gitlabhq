@@ -93,6 +93,17 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
           expect(response.body).to include('blame=1')
         end
       end
+
+      context 'when ignore_revs is given' do
+        let(:params) { super().merge(ignore_revs: 'true') }
+
+        it 'includes ignore_revs in the redirect URL' do
+          request
+
+          expect(response.body).to include('ignore_revs=true')
+          expect(response.body).to include('blame=1')
+        end
+      end
     end
   end
 

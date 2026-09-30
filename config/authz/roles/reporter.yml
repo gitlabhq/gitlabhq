@@ -128,11 +128,13 @@ group:
   - create_epic
   - create_iteration
   - create_iteration_cadence
+  - create_label
   - create_saved_view
   - create_secret
   - create_secrets_manager_api_jwt
   - create_timelog
   - create_work_item_saved_view
+  - delete_label
   - delete_secret
   - download_wiki_code
   - manage_devops_adoption_namespaces
@@ -165,6 +167,7 @@ group:
   - rollover_issues
   - update_epic
   - update_issue
+  - update_label
   - update_secret
   - view_group_ci_cd_analytics
   - view_group_devops_adoption

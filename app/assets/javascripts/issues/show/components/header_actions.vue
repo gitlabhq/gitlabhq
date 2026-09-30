@@ -9,8 +9,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
@@ -30,6 +29,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
+import { useNotes } from '~/notes/store/legacy_notes';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -128,8 +128,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['isToggleStateButtonLoading']),
-    ...mapGetters(['openState', 'getBlockedByIssues']),
+    ...mapState(useNotes, ['isToggleStateButtonLoading', 'openState', 'getBlockedByIssues']),
     isClosed() {
       return this.openState === STATUS_CLOSED;
     },
@@ -232,7 +231,7 @@ export default {
     eventHub.$off('toggle-issuable-state', this.toggleIssueState);
   },
   methods: {
-    ...mapActions(['toggleStateButtonLoading']),
+    ...mapActions(useNotes, ['toggleStateButtonLoading']),
     toggleIssueState() {
       if (!this.isClosed && this.getBlockedByIssues?.length) {
         this.$refs.blockedByIssuesModal.show();

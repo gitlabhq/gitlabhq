@@ -37,12 +37,10 @@ GitLab Self-Managed 및 GitLab Dedicated에서 관리자는 Active Directory, Go
 
 | 기능                                      | GitLab.com                              | GitLab Self-Managed                       |
 |-------------------------------------------------|-----------------------------------------|------------------------------------|
-| **User Provisioning**                           | SCIM<br>SAML <sup>1</sup> | LDAP <sup>1</sup><br>SAML <sup>1</sup><br>[OmniAuth 공급자](../../integration/omniauth.md#supported-providers) <sup>1</sup><br>SCIM  |
+| **User Provisioning**                           | SCIM<br>SAML[^jit-provisioning] | LDAP[^jit-provisioning]<br>SAML[^jit-provisioning]<br>[OmniAuth 제공자](../../integration/omniauth.md#supported-providers)[^jit-provisioning]<br>SCIM  |
 | **User Detail Updating** (그룹 관리 제외) | 이용 불가                           | LDAP 동기화                          |
 | **인증**                              | 최상위 그룹의 SAML (1개 공급자)    | LDAP (여러 공급자)<br>일반 OAuth 2.0<br>SAML (고유 공급자당 1개만 허용)<br>Kerberos<br>JWT<br>스마트 카드<br>[OmniAuth 공급자](../../integration/omniauth.md#supported-providers) (고유 공급자당 1개만 허용) |
-| **Provider-to-GitLab Role Sync**                | SAML Group Sync                         | LDAP Group Sync<br>SAML Group Sync ([GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/285150) 이상) |
+| **Provider-to-GitLab Role Sync**                | SAML Group Sync                         | LDAP Group Sync<br>SAML Group Sync |
 | **User Removal**                                | SCIM (최상위 그룹에서 사용자 제거) | LDAP (그룹에서 사용자 제거 및 인스턴스에서 차단)<br>SCIM |
 
-**각주**:
-
-1. Just-In-Time (JIT) 프로비저닝을 사용하여 사용자가 처음 로그인할 때 사용자 계정이 생성됩니다.
+[^jit-provisioning]: Just-In-Time (JIT) 프로비저닝을 사용하여 사용자가 처음 로그인할 때 사용자 계정이 생성됩니다.

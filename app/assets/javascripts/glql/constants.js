@@ -38,6 +38,7 @@ export const PAGINATION_BY_DISPLAY_TYPE = {
   [DISPLAY_TYPES.DIVERGING_BAR_CHART]: PAGINATION_AUTO,
 };
 
+// Used when gon lacks the backend's aggregation page cap, matching the GraphQL schema default.
 export const AGGREGATED_AUTO_PAGE_SIZE = 100;
 export const MAX_AUTO_PAGINATED_ROWS = 1000;
 

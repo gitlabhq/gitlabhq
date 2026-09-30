@@ -12680,16 +12680,19 @@ msgstr ""
 msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.sbt%{codeEnd} file:"
 msgstr ""
 
-msgid "ArtifactRegistry|Add the registry to your %{codeStart}.npmrc%{codeEnd} file:"
+msgid "ArtifactRegistry|Add the registry to your %{codeStart}~/.npmrc%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle%{codeEnd} file in place of %{codeStart}mavenCentral()%{codeEnd}, using the values glab wrote to %{codeStart}gradle.properties%{codeEnd}:"
 msgstr ""
 
 msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle%{codeEnd} file, using the values glab wrote to %{codeStart}gradle.properties%{codeEnd}:"
 msgstr ""
 
-msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle.kts%{codeEnd} file, using the values glab wrote to %{codeStart}gradle.properties%{codeEnd}:"
+msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle.kts%{codeEnd} file in place of %{codeStart}mavenCentral()%{codeEnd}, using the values glab wrote to %{codeStart}gradle.properties%{codeEnd}:"
 msgstr ""
 
-msgid "ArtifactRegistry|Add this to your %{codeStart}.yarnrc.yml%{codeEnd} file:"
+msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle.kts%{codeEnd} file, using the values glab wrote to %{codeStart}gradle.properties%{codeEnd}:"
 msgstr ""
 
 msgid "ArtifactRegistry|Add this to your %{codeStart}build.sbt%{codeEnd} file:"
@@ -12877,6 +12880,9 @@ msgstr ""
 msgid "ArtifactRegistry|Copy the repository configuration"
 msgstr ""
 
+msgid "ArtifactRegistry|Copy the snapshot repository configuration"
+msgstr ""
+
 msgid "ArtifactRegistry|Copy upstream URL"
 msgstr ""
 
@@ -12926,6 +12932,9 @@ msgid "ArtifactRegistry|Delete version"
 msgstr ""
 
 msgid "ArtifactRegistry|Delete version?"
+msgstr ""
+
+msgid "ArtifactRegistry|Dependencies your build would fetch from Maven Central now resolve through this repository."
 msgstr ""
 
 msgid "ArtifactRegistry|Description (optional)"
@@ -13000,6 +13009,9 @@ msgid "ArtifactRegistry|File"
 msgstr ""
 
 msgid "ArtifactRegistry|Filter repositories by type"
+msgstr ""
+
+msgid "ArtifactRegistry|For images from Docker Hub, use the full image name. Official images need the %{codeStart}library/%{codeEnd} prefix, for example %{codeStart}library/alpine%{codeEnd}."
 msgstr ""
 
 msgid "ArtifactRegistry|For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}."
@@ -13290,6 +13302,9 @@ msgstr[1] ""
 msgid "ArtifactRegistry|Package successfully scheduled for deletion."
 msgstr ""
 
+msgid "ArtifactRegistry|Packages that use the default registry now resolve through this repository. Scope-specific registry settings still apply."
+msgstr ""
+
 msgid "ArtifactRegistry|Platform"
 msgstr ""
 
@@ -13488,6 +13503,9 @@ msgstr ""
 msgid "ArtifactRegistry|Search by name or URL"
 msgstr ""
 
+msgid "ArtifactRegistry|Set this repository as your default registry in your %{codeStart}~/.npmrc%{codeEnd} file:"
+msgstr ""
+
 msgid "ArtifactRegistry|Set up Artifact registry"
 msgstr ""
 
@@ -13551,6 +13569,9 @@ msgstr ""
 msgid "ArtifactRegistry|The Artifact Registry service is unavailable. Please try again."
 msgstr ""
 
+msgid "ArtifactRegistry|The Docker credential helper ignores %{codeStart}GITLAB_TOKEN%{codeEnd}. If glab has no stored credential, run %{codeStart}glab auth login%{codeEnd} first."
+msgstr ""
+
 msgid "ArtifactRegistry|The format cannot be changed after the repository is created."
 msgstr ""
 
@@ -13579,6 +13600,9 @@ msgid "ArtifactRegistry|The role revocation could not be completed."
 msgstr ""
 
 msgid "ArtifactRegistry|The role revocation request was invalid."
+msgstr ""
+
+msgid "ArtifactRegistry|The token lasts 15 minutes by default, and up to 12 hours if you request a longer duration. Run the command again before it expires."
 msgstr ""
 
 msgid "ArtifactRegistry|There are no images in this repository yet"
@@ -13630,6 +13654,15 @@ msgid "ArtifactRegistry|This will affect all projects currently using this regis
 msgstr ""
 
 msgid "ArtifactRegistry|Time in hours"
+msgstr ""
+
+msgid "ArtifactRegistry|To also resolve snapshot dependencies, merge this configuration into your %{codeStart}pom.xml%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|To replace Maven Central, merge this configuration into your %{codeStart}~/.m2/settings.xml%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|To use this repository in place of Maven Central, add this to your %{codeStart}build.sbt%{codeEnd} file:"
 msgstr ""
 
 msgid "ArtifactRegistry|Token or password"
@@ -13713,6 +13746,12 @@ msgstr ""
 msgid "ArtifactRegistry|Where the registry handle appears"
 msgstr ""
 
+msgid "ArtifactRegistry|Yarn 2.0 and later read registry settings from %{codeStart}.yarnrc.yml%{codeEnd}. Add this to that file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Yarn 2.0 and later read registry settings from %{codeStart}.yarnrc.yml%{codeEnd}. To set this repository as your default registry, add this to that file:"
+msgstr ""
+
 msgid "ArtifactRegistry|You are about to disable Artifact Registry."
 msgstr ""
 
@@ -13731,6 +13770,9 @@ msgstr ""
 msgid "ArtifactRegistry|You cannot grant roles in another organization."
 msgstr ""
 
+msgid "ArtifactRegistry|You cannot refresh this token. Run the command again before it expires."
+msgstr ""
+
 msgid "ArtifactRegistry|You cannot revoke roles in another organization."
 msgstr ""
 
@@ -13743,7 +13785,7 @@ msgstr ""
 msgid "ArtifactRegistry|You must be signed in to revoke a role."
 msgstr ""
 
-msgid "ArtifactRegistry|glab cannot configure Yarn yet. See %{linkStart}how to authenticate%{linkEnd}:"
+msgid "ArtifactRegistry|glab reads your GitLab token from %{codeStart}GITLAB_TOKEN%{codeEnd}. If that is not set, run %{codeStart}glab auth login%{codeEnd} first."
 msgstr ""
 
 msgid "ArtifactRegistry|npm"
@@ -31365,6 +31407,30 @@ msgid_plural "DuoAgentPlatform|%d steps left to set up flows."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgentPlatform|%{agentName} failed to complete this task"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{agentName} is investigating..."
+msgstr ""
+
+msgid "DuoAgentPlatform|%{agentName} is pondering..."
+msgstr ""
+
+msgid "DuoAgentPlatform|%{agentName} is thinking..."
+msgstr ""
+
+msgid "DuoAgentPlatform|%{agentName} is working..."
+msgstr ""
+
+msgid "DuoAgentPlatform|%{agentName} needs input"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{agentName} session is paused"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{agentName} session was canceled"
+msgstr ""
+
 msgid "DuoAgentPlatform|%{base} Attention required."
 msgstr ""
 
@@ -32285,27 +32351,6 @@ msgid "DuoAgenticChat|chat-rules.md included"
 msgstr ""
 
 msgid "DuoAgenticChat|chat-rules.md was not found in this page"
-msgstr ""
-
-msgid "DuoAgentsPlatform|%{agentName} is investigating..."
-msgstr ""
-
-msgid "DuoAgentsPlatform|%{agentName} is paused"
-msgstr ""
-
-msgid "DuoAgentsPlatform|%{agentName} is pondering..."
-msgstr ""
-
-msgid "DuoAgentsPlatform|%{agentName} is thinking..."
-msgstr ""
-
-msgid "DuoAgentsPlatform|%{agentName} is working..."
-msgstr ""
-
-msgid "DuoAgentsPlatform|%{agentName} needs input"
-msgstr ""
-
-msgid "DuoAgentsPlatform|%{agentName} was unable to complete your request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|%{event}: %{conditions}"
@@ -40874,9 +40919,6 @@ msgid "Go to parent"
 msgstr ""
 
 msgid "Go to parent directory"
-msgstr ""
-
-msgid "Go to permalink"
 msgstr ""
 
 msgid "Go to pipelines"
@@ -54779,9 +54821,6 @@ msgstr ""
 msgid "Normal text"
 msgstr ""
 
-msgid "Normal view"
-msgstr ""
-
 msgid "Not Connected"
 msgstr ""
 
@@ -60707,9 +60746,6 @@ msgid "PerformanceBar|flamegraph"
 msgstr ""
 
 msgid "Period in seconds"
-msgstr ""
-
-msgid "Permalink"
 msgstr ""
 
 msgid "Permalink copied to clipboard."

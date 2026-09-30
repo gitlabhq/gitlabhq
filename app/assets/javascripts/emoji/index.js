@@ -385,7 +385,7 @@ export function glEmojiTag(inputName, options) {
 
   const fallbackUrl = opts.url;
   const fallbackSrcAttribute = fallbackUrl
-    ? `data-fallback-src="${fallbackUrl}" data-unicode-version="custom"`
+    ? `data-fallback-src="${escape(fallbackUrl)}" data-unicode-version="custom"`
     : '';
 
   return `<gl-emoji ${fallbackSrcAttribute}${fallbackSpriteAttribute}data-name="${escape(

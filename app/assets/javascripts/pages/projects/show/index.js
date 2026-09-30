@@ -1,7 +1,6 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import { initFindFileShortcut } from '~/projects/behaviors';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
 import leaveByUrl, { NAMESPACE_TYPES } from '~/namespaces/leave_by_url';
 import { initUploadFileTrigger } from '~/projects/upload_file';
@@ -140,7 +139,6 @@ const initWikiContent = () => {
 };
 
 initCodeDropdown();
-initFindFileShortcut();
 initEmptyProjectTabs();
 initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link') });
 initWikiContent();

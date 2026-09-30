@@ -231,4 +231,58 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
       let(:expected_redirect_path) { group_labels_path }
     end
   end
+
+  describe 'label management authorization' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:label) { create(:group_label, group: group) }
+    let_it_be(:guest) { create(:user, guest_of: group) }
+    let_it_be(:planner) { create(:user, planner_of: group) }
+    let_it_be(:reporter) { create(:user, reporter_of: group) }
+
+    def action_params(action)
+      case action
+      when :create then { label: { title: 'New label', color: '#FFFFFF' } }
+      when :update then { id: label.to_param, label: { title: 'Renamed' } }
+      when :edit, :destroy then { id: label.to_param }
+      else {}
+      end
+    end
+
+    where(:http_method, :action) do
+      :get    | :new
+      :post   | :create
+      :get    | :edit
+      :put    | :update
+      :delete | :destroy
+    end
+
+    with_them do
+      let(:params) { { group_id: group.to_param }.merge(action_params(action)) }
+
+      it 'returns 404 for a guest' do
+        sign_in(guest)
+
+        send(http_method, action, params: params)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'is allowed for a planner' do
+        sign_in(planner)
+
+        send(http_method, action, params: params)
+
+        expect(response).not_to have_gitlab_http_status(:not_found)
+      end
+
+      it 'is allowed for a reporter' do
+        sign_in(reporter)
+
+        send(http_method, action, params: params)
+
+        expect(response).not_to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

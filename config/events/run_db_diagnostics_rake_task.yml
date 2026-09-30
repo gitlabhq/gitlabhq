@@ -1,0 +1,13 @@
+---
+description: An administrator runs the gitlab:db:diagnostics Rake task or one of its per-check subtasks
+internal_events: true
+action: run_db_diagnostics_rake_task
+product_group: database_health
+product_categories:
+- database
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258317
+tiers:
+- free
+- premium
+- ultimate

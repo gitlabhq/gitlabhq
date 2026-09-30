@@ -4,8 +4,9 @@ class Groups::LabelsController < Groups::ApplicationController
   include ToggleSubscriptionAction
 
   before_action :label, only: [:edit, :update, :destroy]
-  before_action :authorize_group_for_admin_labels!, only: [:new, :create, :edit, :update, :destroy]
-  before_action :authorize_label_for_admin_label!, only: [:edit, :update, :destroy]
+  before_action :authorize_create_label!, only: [:new, :create]
+  before_action :authorize_update_label!, only: [:edit, :update]
+  before_action :authorize_delete_label!, only: [:destroy]
   before_action :save_previous_label_path, only: [:edit]
 
   respond_to :html
@@ -79,12 +80,17 @@ class Groups::LabelsController < Groups::ApplicationController
 
   protected
 
-  def authorize_group_for_admin_labels!
-    render_404 unless can?(current_user, :admin_label, @group)
+  def authorize_create_label!
+    render_404 unless can?(current_user, :create_label, @group)
   end
 
-  def authorize_label_for_admin_label!
-    render_404 unless can?(current_user, :admin_label, @label)
+  # The label can belong to an ancestor group, so check both.
+  def authorize_update_label!
+    render_404 unless can?(current_user, :update_label, @group) && can?(current_user, :update_label, @label)
+  end
+
+  def authorize_delete_label!
+    render_404 unless can?(current_user, :delete_label, @group) && can?(current_user, :delete_label, @label)
   end
 
   def authorize_read_labels!

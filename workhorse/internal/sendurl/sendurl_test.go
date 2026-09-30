@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -693,6 +695,126 @@ func TestTransformAlsoMatchesInsecureScheme(t *testing.T) {
 			assert.Contains(t, response.Body.String(), tt.want)
 			if tt.unwanted != "" {
 				assert.NotContains(t, response.Body.String(), tt.unwanted)
+			}
+		})
+	}
+}
+
+// A transform parses the whole document, so it must never run on a byte span.
+func TestUpstreamRangeRejectsTransform(t *testing.T) {
+	var upstreamCalled bool
+	upstream := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
+		upstreamCalled = true
+	}))
+	defer upstream.Close()
+
+	sendData := map[string]interface{}{
+		"URL":           upstream.URL,
+		"UpstreamRange": "bytes=0-9",
+		"TransformConfig": map[string]interface{}{
+			"Key": "tarball", "From": "https://registry.npmjs.org/", "To": "https://gitlab.example.com/npm/",
+		},
+	}
+	jsonParams, err := json.Marshal(sendData)
+	require.NoError(t, err)
+
+	response := httptest.NewRecorder()
+	request := testhelper.RequestWithMetrics(t, httptest.NewRequest("GET", "/target", nil))
+
+	SendURL.Inject(response, request, base64.URLEncoding.EncodeToString(jsonParams))
+
+	require.Equal(t, http.StatusInternalServerError, response.Code)
+	assert.False(t, upstreamCalled, "upstream must not be requested")
+}
+
+// UpstreamRange fetches one byte span of the object and serves it as a plain
+// 200: the client never asked for a range, so it must not see a 206 or a
+// Content-Range, and its own Range and If-Range must not reach upstream.
+func TestUpstreamRange(t *testing.T) {
+	for _, tt := range []struct {
+		name          string
+		clientHeaders http.Header
+		sendHeaders   http.Header
+		upstreamRange string
+		ignoreRange   bool
+		wantStatus    int
+		wantBody      string
+	}{
+		{
+			name:          "serves the span as a full response",
+			upstreamRange: "bytes=1-2",
+			wantStatus:    http.StatusOK,
+			wantBody:      "23",
+		},
+		{
+			name: "replaces the client's Range and drops its If-Range",
+			clientHeaders: http.Header{
+				"Range":    []string{"bytes=5-6"},
+				"If-Range": []string{testDataEtag},
+			},
+			upstreamRange: "bytes=1-2",
+			wantStatus:    http.StatusOK,
+			wantBody:      "23",
+		},
+		{
+			name: "overrides a Range and If-Range in the send-url headers",
+			sendHeaders: http.Header{
+				"Range":    []string{"bytes=5-6"},
+				"If-Range": []string{testDataEtag},
+			},
+			upstreamRange: "bytes=1-2",
+			wantStatus:    http.StatusOK,
+			wantBody:      "23",
+		},
+		{
+			name:          "passes a 200 through when upstream ignores the range",
+			upstreamRange: "bytes=1-2",
+			ignoreRange:   true,
+			wantStatus:    http.StatusOK,
+			wantBody:      testData,
+		},
+		{
+			name:          "passes an unsatisfiable range through",
+			upstreamRange: "bytes=100-101",
+			wantStatus:    http.StatusRequestedRangeNotSatisfiable,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			var gotRange, gotIfRange []string
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				gotRange = r.Header.Values("Range")
+				gotIfRange = r.Header.Values("If-Range")
+
+				if tt.ignoreRange {
+					_, _ = io.WriteString(w, testData)
+					return
+				}
+				http.ServeContent(w, r, "archive.txt", time.Time{}, strings.NewReader(testData))
+			}))
+			defer upstream.Close()
+
+			sendData := map[string]interface{}{"URL": upstream.URL, "UpstreamRange": tt.upstreamRange, "Header": tt.sendHeaders}
+			jsonParams, err := json.Marshal(sendData)
+			require.NoError(t, err)
+
+			response := httptest.NewRecorder()
+			request := httptest.NewRequest("GET", "/target", nil)
+			for key, values := range tt.clientHeaders {
+				request.Header[key] = values
+			}
+			request = testhelper.RequestWithMetrics(t, request)
+
+			SendURL.Inject(response, request, base64.URLEncoding.EncodeToString(jsonParams))
+			testhelper.AssertMetrics(t, request)
+
+			assert.Equal(t, []string{tt.upstreamRange}, gotRange, "Range seen by upstream")
+			assert.Empty(t, gotIfRange, "If-Range seen by upstream")
+
+			require.Equal(t, tt.wantStatus, response.Code)
+			if tt.wantStatus == http.StatusOK {
+				assert.Empty(t, response.Header().Get("Content-Range"))
+				assert.Equal(t, tt.wantBody, response.Body.String())
+				assert.Equal(t, strconv.Itoa(len(tt.wantBody)), response.Header().Get("Content-Length"))
 			}
 		})
 	}

@@ -541,6 +541,38 @@ describe('Resolver', () => {
       expect(findPresenter().props('comparisonData')).toEqual(PREVIOUS);
     });
 
+    describe('when the backend sets its own page cap', () => {
+      beforeEach(() => {
+        window.gon.aggregation_max_page_size = 250;
+      });
+
+      it('drops the comparison when the main result outgrows that page', async () => {
+        mockParse();
+        execute.mockImplementation((query) =>
+          Promise.resolve(isComparison(query) ? PREVIOUS : { ...CURRENT, count: 251 }),
+        );
+        transform.mockImplementation(identity);
+
+        createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
+        await waitForPromises();
+
+        expect(findPresenter().props('comparisonData')).toBeNull();
+      });
+
+      it('keeps the comparison when the main result fills exactly that page', async () => {
+        mockParse();
+        execute.mockImplementation((query) =>
+          Promise.resolve(isComparison(query) ? PREVIOUS : { ...CURRENT, count: 250 }),
+        );
+        transform.mockImplementation(identity);
+
+        createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
+        await waitForPromises();
+
+        expect(findPresenter().props('comparisonData')).toEqual(PREVIOUS);
+      });
+    });
+
     describe('when the main query fails', () => {
       const mainError = new Error('main execute error');
       const comparisonError = new Error('comparison execute error');
@@ -977,6 +1009,33 @@ describe('Resolver', () => {
       expect(execute).toHaveBeenCalledTimes(10);
       expect(findPresenter().props('data').nodes).toHaveLength(1000);
       expect(lastEmittedChange().resultsTruncated).toBe(true);
+    });
+
+    describe('when the backend sets its own page cap', () => {
+      const BACKEND_PAGE_SIZE = 250;
+
+      beforeEach(() => {
+        window.gon.aggregation_max_page_size = BACKEND_PAGE_SIZE;
+      });
+
+      it('requests pages of that size and derives the request cap from it', async () => {
+        await setup({
+          respond: (page) =>
+            Promise.resolve({
+              count: 5000,
+              pageInfo: { endCursor: `cursor-${page + 1}`, hasNextPage: true },
+              nodes: new Array(BACKEND_PAGE_SIZE).fill({ language: 'ruby', totalCount: 1 }),
+            }),
+        });
+
+        expect(execute).toHaveBeenCalledTimes(4);
+        expect(execute).toHaveBeenLastCalledWith(
+          expect.anything(),
+          expect.objectContaining({ limit: { value: BACKEND_PAGE_SIZE, type: 'Int' } }),
+          expect.anything(),
+        );
+        expect(findPresenter().props('data').nodes).toHaveLength(1000);
+      });
     });
 
     it('stops when the backend reports no further page, whatever the count says', async () => {

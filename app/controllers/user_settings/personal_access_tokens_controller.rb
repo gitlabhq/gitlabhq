@@ -172,7 +172,6 @@ module UserSettings
     def redirect_for_legacy_new?
       granular_tokens_feature_enabled? &&
         !granular_tokens_enforced? &&
-        permitted_params[:name].present? &&
         parse_scopes_from_params.any?
     end
 

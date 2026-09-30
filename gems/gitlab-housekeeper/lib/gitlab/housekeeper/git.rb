@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'logger'
+require 'openssl'
 require 'gitlab/housekeeper/shell'
 require 'gitlab/housekeeper/push_options'
 
@@ -48,6 +49,10 @@ module Gitlab
         push_command << '-o ci.skip' if push_options.ci_skip
 
         Shell.execute(*push_command)
+      end
+
+      def diff(branch_name, files)
+        Shell.execute('git', '--no-pager', 'diff', '--color=always', @branch_from, branch_name, '--', *files)
       end
 
       def remote_branch_changed_files(branch_name, path = nil)

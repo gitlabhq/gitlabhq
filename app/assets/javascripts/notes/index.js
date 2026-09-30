@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { createAlert } from '~/alert';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import { pinia } from '~/pinia/instance';
 import { useNotes } from '~/notes/store/legacy_notes';
 import NotesApp from './components/notes_app.vue';
-import { store } from './stores';
 import { getNotesFilterData } from './utils/get_notes_filter_data';
 
 export default ({ editorAiActions = [] } = {}) => {
@@ -43,13 +44,18 @@ export default ({ editorAiActions = [] } = {}) => {
 
   const notesData = JSON.parse(notesDataset.notesData);
 
-  useNotes().syncWith({ store });
-
-  store.dispatch('setNotesData', notesData);
-  store.dispatch('setNoteableData', noteableData);
-  store.dispatch('setUserData', currentUserData);
-  store.dispatch('setTargetNoteHash', getLocationHash());
-  store.dispatch('fetchNotes');
+  const notesStore = useNotes();
+  notesStore.setNotesData(notesData);
+  notesStore.setNoteableData(noteableData);
+  notesStore.setUserData(currentUserData);
+  notesStore.setTargetNoteHash(getLocationHash());
+  notesStore.fetchNotes().catch((error) =>
+    createAlert({
+      message: __('Something went wrong while fetching comments. Please try again.'),
+      captureError: true,
+      error,
+    }),
+  );
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -58,7 +64,6 @@ export default ({ editorAiActions = [] } = {}) => {
     components: {
       NotesApp,
     },
-    store,
     pinia,
     apolloProvider,
     provide: {

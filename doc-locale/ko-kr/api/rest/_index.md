@@ -47,8 +47,8 @@ curl --request GET \
 
 요청은 설정의 적용을 받습니다. 이 설정은 GitLab 인스턴스가 과부하되는 위험을 줄입니다.
 
-- 자세한 내용은 [속도 제한](../../security/rate_limits.md)을 참조하세요.
-- GitLab.com에서 사용하는 설정의 세부 사항을 보려면 [GitLab.com 특정](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom)을 참조하세요.
+- 자세한 내용은 [속도 제한](../../rate_limits/_index.md)을(를) 참조하세요.
+- GitLab.com에서 사용되는 속도 제한 설정에 대한 자세한 내용은 [GitLab.com 고유 속도 제한](../../user/gitlab_com/rate_limits.md)을(를) 참조하세요.
 
 ## 응답 형식 {#response-format}
 
@@ -135,7 +135,7 @@ GET /api/v4/projects/diaspora%2Fdiaspora
 
 #### 파일 경로, 및 이름 {#file-path-branches-and-tags-name}
 
-파일 경로, 또는 에 `/`이(가) 포함되면 URL 인코딩되었는지 확인합니다.
+파일 경로, 브랜치 또는 태그에 `/`이(가) 포함되어 있으면 URL 인코딩되어야 합니다.
 
 예를 들어 `/`은(는) `%2F`로 표현됩니다:
 
@@ -218,13 +218,6 @@ API 응답에서 일부 부울 필드는 `null` 값을 가질 수 있습니다. 
 
 ### 리디렉션 {#redirects}
 
-{{< history >}}
-
-- GitLab 16.4에서 [플래그](../../administration/feature_flags/_index.md) `api_redirect_moved_projects`로 도입되었습니다. 기본적으로 비활성화됨.
-- GitLab 16.7에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578)합니다. 기능 플래그 `api_redirect_moved_projects` 제거됨.
-
-{{< /history >}}
-
 [경로 변경](../../user/project/repository/_index.md#repository-path-changes) 후 는 엔드포인트가 이동했음을 나타내는 메시지로 응답할 수 있습니다. 이 경우 `Location` 헤더에 지정된 엔드포인트를 사용하세요.
 
 다른 경로로 이동한 프로젝트의 예:
@@ -248,8 +241,8 @@ This resource has been moved permanently to https://gitlab.example.com/api/v4/pr
 
 GitLab은 다음 페이지 매김 방법을 지원합니다:
 
-- 오프셋 기반 페이지 매김입니다. 기본 방법이며 GitLab 16.5 이상에서 `users` 엔드포인트를 제외한 모든 엔드포인트에서 사용 가능합니다.
-- 키셋 기반 페이지 매김입니다. 선택된 엔드포인트에 추가되었지만 [점진적으로 롤아웃 중](https://gitlab.com/groups/gitlab-org/-/epics/2039)입니다.
+- 오프셋 기반 페이지 매김입니다. 기본 방법이며 `users` 엔드포인트를 제외한 모든 엔드포인트에서 사용 가능합니다.
+- 키셋 기반 페이지 매김입니다. 선택된 엔드포인트에 추가되었지만 [점진적으로 롤아웃 중](https://gitlab.com/groups/gitlab-org/-/work_items/2039)입니다.
 
 대규모 컬렉션의 경우 성능상의 이유로 오프셋 페이지 매김 대신 키셋 페이지 매김(사용 가능한 경우)을 사용해야 합니다.
 
@@ -284,7 +277,7 @@ curl --request GET \
 
 [`Link` 헤더](https://www.w3.org/wiki/LinkHeader)는 각 응답과 함께 반환됩니다. `rel`이(가) `prev`, `next`, `first` 또는 `last`로 설정되며 관련 URL을 포함합니다. 사용자 지정 URL을 생성하는 대신 이 링크를 사용해야 합니다.
 
-GitLab.com 사용자의 경우 [일부 페이지 매김 헤더가 반환되지 않을 수 있습니다](../../user/gitlab_com/_index.md#pagination-response-headers).
+GitLab.com 사용자의 경우 [일부 페이지 매김 헤더가 반환되지 않을 수 있습니다](../../user/gitlab_com/rate_limits.md#pagination-response-headers).
 
 다음 cURL 예제는 출력을 페이지당 3개 항목(`per_page=3`)으로 제한하고 ID `8`인 의 ID `9`인 프로젝트에 속하는 [댓글](../notes.md)의 두 번째 페이지(`page=2`)를 요청합니다:
 
@@ -329,7 +322,7 @@ GitLab은 다음 추가 페이지 매김 헤더도 반환합니다:
 | `x-total`       | 총 항목 수입니다. |
 | `x-total-pages` | 총 페이지 수입니다. |
 
-GitLab.com 사용자의 경우 [일부 페이지 매김 헤더가 반환되지 않을 수 있습니다](../../user/gitlab_com/_index.md#pagination-response-headers).
+GitLab.com 사용자의 경우 [일부 페이지 매김 헤더가 반환되지 않을 수 있습니다](../../user/gitlab_com/rate_limits.md#pagination-response-headers).
 
 ### 키셋 기반 페이지 매김 {#keyset-based-pagination}
 
@@ -408,10 +401,11 @@ Status: 200 OK
 | [프로젝트 작업](../jobs.md#list-all-jobs-for-a-project)                         | `order_by=id`, `sort=desc`만                                                                                                                                                       | 인증된 사용자만 해당합니다. |
 | [감사 이벤트](../audit_events.md#list-all-project-audit-events)   | `order_by=id`, `sort=desc`만                                                                                                                                                       | 인증된 사용자만 해당합니다. |
 | [프로젝트](../projects.md)                                                     | `order_by=id`만                                                                                                                                                                    | 인증된 사용자 및 인증되지 않은 사용자입니다. |
-| [사용자](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`, `order_by=created_at` 또는 `order_by=updated_at`.                                                                                 | 인증된 사용자 및 인증되지 않은 사용자입니다. GitLab 16.5에서 [도입됨](https://gitlab.com/gitlab-org/gitlab/-/issues/419556). |
+| [사용자](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`, `order_by=created_at` 또는 `order_by=updated_at`.                                                                                 | 인증된 사용자 및 인증되지 않은 사용자입니다. |
 | [레지스트리](../container_registry.md)                           | `order_by=name`, `sort=asc` 또는 `sort=desc`만.                                                                                                                                     | 인증된 사용자만 해당합니다. |
 | [트리 나열](../repositories.md#list-all-repository-trees-in-a-project)                | 해당 없음                                                                                                                                                                                   | 인증된 사용자 및 인증되지 않은 사용자입니다. GitLab 17.1에서 [도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154897). |
 | [프로젝트 이슈](../issues.md#list-all-project-issues)                             | `order_by=created_at`, `order_by=updated_at`, `order_by=title`, `order_by=id`, `order_by=weight`, `order_by=due_date`, `order_by=relative_position`, `sort=asc` 또는 `sort=desc`만. | 인증된 사용자 및 인증되지 않은 사용자입니다. GitLab 18.3에서 [도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199887/). |
+| [러너 작업](../runners.md#list-all-jobs-processed-by-a-runner) | `order_by=id`, `sort=desc`만 | 인증된 사용자만 해당합니다. |
 
 ### 페이지 매김 응답 헤더 {#pagination-response-headers}
 

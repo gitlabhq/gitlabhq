@@ -57,6 +57,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         .and_return(git)
       allow(git).to receive(:with_clean_state)
         .and_yield
+      allow(git).to receive(:diff)
 
       allow(git).to receive(:create_branch).with(change1)
         .and_return('the-identifier-for-the-first-change')
@@ -103,14 +104,12 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change2)
 
       # Branches get shown and pushed
-      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', '--no-pager', 'diff', '--color=always', 'master',
-          'the-identifier-for-the-first-change', '--', 'change1.txt', 'change2.txt')
+      expect(git).to receive(:diff)
+        .with('the-identifier-for-the-first-change', ['change1.txt', 'change2.txt'])
       expect(git).to receive(:push)
         .with('the-identifier-for-the-first-change', change1.push_options)
-      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', '--no-pager', 'diff', '--color=always', 'master',
-          'the-identifier-for-the-second-change', '--', 'change1.txt', 'change2.txt')
+      expect(git).to receive(:diff)
+        .with('the-identifier-for-the-second-change', ['change1.txt', 'change2.txt'])
       expect(git).to receive(:push)
         .with('the-identifier-for-the-second-change', change2.push_options)
 
@@ -147,9 +146,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           .and_return(git)
 
         # Branches get shown and pushed
-        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', '--no-pager', 'diff', '--color=always', 'the-target-branch',
-            'the-identifier-for-the-first-change', '--', 'change1.txt', 'change2.txt')
+        expect(git).to receive(:diff)
+          .with('the-identifier-for-the-first-change', ['change1.txt', 'change2.txt'])
 
         # Merge requests get created
         expect(gitlab_client).to receive(:create_or_update_merge_request)
@@ -187,9 +185,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change2)
 
         # Branches get shown and pushed
-        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', '--no-pager', 'diff', '--color=always', 'master',
-            'the-identifier-for-the-second-change', '--', 'change1.txt', 'change2.txt')
+        expect(git).to receive(:diff)
+          .with('the-identifier-for-the-second-change', ['change1.txt', 'change2.txt'])
         expect(git).to receive(:push)
           .with('the-identifier-for-the-second-change', change2.push_options)
 
@@ -270,9 +267,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           change.changed_files = ['updated_file1.rb', 'updated_file2.rb']
         end
 
-        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', '--no-pager', 'diff', '--color=always', 'master',
-            'the-identifier-for-the-first-change', '--', 'updated_file1.rb', 'updated_file2.rb')
+        expect(git).to receive(:diff)
+          .with('the-identifier-for-the-first-change', ['updated_file1.rb', 'updated_file2.rb'])
 
         described_class.new(max_mrs: 1, keeps: [fake_keep]).run
       end
@@ -295,6 +291,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       allow(fake_keep_with_closed_mr_instance).to receive(:recreate_when_closed?).and_return(false)
 
       allow(::Gitlab::Housekeeper::Git).to receive(:new).and_return(closed_mr_git)
+      allow(closed_mr_git).to receive(:diff)
       allow(::Gitlab::Housekeeper::GitlabClient).to receive(:new).and_return(closed_mr_gitlab_client)
       allow(closed_mr_git).to receive(:with_clean_state).and_yield
       allow(closed_mr_git).to receive(:create_branch).with(closed_mr_change).and_return('closed-mr-branch')

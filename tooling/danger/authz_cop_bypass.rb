@@ -40,6 +40,9 @@ module Tooling
         'Please request an ~"authorization" review.'
 
       def add_comment_for_authz_cop_bypass
+        # The comment pings the Authorization team, so wait until the MR is ready for review.
+        return if helper.draft_mr?
+
         files = changed_files_with_authz_bypass
         return if files.empty?
 

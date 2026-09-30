@@ -47,6 +47,10 @@ module PerTestCoverage
     STALE_INTERVAL_DAYS = 14
     STALE_RESCUE_LIMIT = 100
     EMPTY_QUEUE_EXIT_CODE = 2
+    # ClickHouse rejects a query over max_query_size (256 KiB by default), and a
+    # delta spanning weeks of master can change thousands of source files. 1,000
+    # paths keep each IN list well under the limit even for long paths.
+    SOURCE_FILE_BATCH_SIZE = 1_000
     # GitLab pipeline schedule (id 23503) that drives per-test-coverage capture
     # on master. The weekend bucket sweep counts prior pipelines from this
     # schedule to decide which slot of the weekend we're in.
@@ -341,11 +345,15 @@ module PerTestCoverage
       @last_capture_sha ||= begin
         # argMax picks the SHA of the newest capture by timestamp. A plain
         # max(captured_sha) is a lexicographic string max, which freezes the
-        # base on whichever SHA happens to sort highest.
+        # base on whichever SHA happens to sort highest. qa/ rows come from the
+        # E2E export, which writes its own captured_sha on a separate schedule,
+        # so counting them would move the base past commits no rspec or jest
+        # capture has covered.
         sql = <<~SQL
           SELECT argMax(captured_sha, timestamp) AS sha
           FROM code_coverage.test_coverage_per_file FINAL
           WHERE ci_project_path = '#{escape_sql_string(project_path)}' AND captured_sha != ''
+            AND test_file NOT LIKE 'qa/%'
         SQL
         rows = clickhouse_client.query(sql, format: 'JSONEachRow')
         rows.dig(0, 'sha').to_s
@@ -353,13 +361,15 @@ module PerTestCoverage
     end
 
     def query_tests_for_source_files(source_files)
-      escaped = source_files.map { |f| "'#{escape_sql_string(f)}'" }.join(', ')
-      sql = <<~SQL
-        SELECT DISTINCT test_file FROM code_coverage.test_files_by_source_file FINAL
-        WHERE ci_project_path = '#{escape_sql_string(project_path)}'
-          AND source_file IN (#{escaped})
-      SQL
-      clickhouse_client.query(sql, format: 'JSONEachRow').map { |row| row['test_file'] } # rubocop:disable Rails/Pluck -- standalone script, ActiveSupport extensions not guaranteed
+      source_files.each_slice(SOURCE_FILE_BATCH_SIZE).flat_map do |batch|
+        escaped = batch.map { |f| "'#{escape_sql_string(f)}'" }.join(', ')
+        sql = <<~SQL
+          SELECT DISTINCT test_file FROM code_coverage.test_files_by_source_file FINAL
+          WHERE ci_project_path = '#{escape_sql_string(project_path)}'
+            AND source_file IN (#{escaped})
+        SQL
+        clickhouse_client.query(sql, format: 'JSONEachRow').map { |row| row['test_file'] }
+      end
     end
 
     # ClickHouse uses standard SQL single-quote escaping (doubled). Project paths come from

@@ -48,6 +48,12 @@ type entryParams struct {
 	Method                           string
 	RestrictForwardedResponseHeaders forwardheaders.Params
 	TransformConfig                  *transformConfig
+
+	// UpstreamRange, when set, is the Range header sent upstream in place of the
+	// client's own Range and If-Range. It serves a byte span of the stored object
+	// as an ordinary full response: the upstream 206 becomes 200 and Content-Range
+	// is dropped, since the client itself never sent a Range request.
+	UpstreamRange string
 }
 
 // transformConfig, when set, rewrites string values found at the given object
@@ -198,7 +204,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		w.Header().Del("Content-Length")
 	}
 
-	w.WriteHeader(resp.StatusCode)
+	w.WriteHeader(responseStatus(w, resp, &params))
 
 	defer func() {
 		if err = resp.Body.Close(); err != nil {
@@ -215,6 +221,17 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	sendURLRequestsSucceeded.Inc()
 }
 
+// A 206 answers our UpstreamRange, not a Range request from the client, so the
+// client must see a plain full response.
+func responseStatus(w http.ResponseWriter, resp *http.Response, params *entryParams) int {
+	if params.UpstreamRange == "" || resp.StatusCode != http.StatusPartialContent {
+		return resp.StatusCode
+	}
+
+	w.Header().Del("Content-Range")
+	return http.StatusOK
+}
+
 func setDefaultMethod(params *entryParams) {
 	if params.Method == "" {
 		params.Method = http.MethodGet
@@ -222,6 +239,14 @@ func setDefaultMethod(params *entryParams) {
 }
 
 func (e *entry) createNewRequest(w http.ResponseWriter, r *http.Request, params *entryParams) (*http.Request, error) {
+	// A transform parses the whole document, so it cannot run on a byte span.
+	if params.UpstreamRange != "" && params.TransformConfig != nil {
+		err := fmt.Errorf("SendURL: UpstreamRange cannot be combined with TransformConfig")
+		sendURLRequestsInvalidData.Inc()
+		fail.Request(w, r, err)
+		return nil, err
+	}
+
 	newReq, err := http.NewRequest(params.Method, params.URL, strings.NewReader(params.Body))
 	if err != nil {
 		sendURLRequestsInvalidData.Inc()
@@ -246,6 +271,13 @@ func (e *entry) createNewRequest(w http.ResponseWriter, r *http.Request, params 
 		for _, value := range values {
 			newReq.Header.Add(key, value)
 		}
+	}
+
+	// Applied last so no other Range is sent alongside ours, and no If-Range
+	// whose validator fails can make upstream ignore our Range.
+	if params.UpstreamRange != "" {
+		newReq.Header.Set("Range", params.UpstreamRange)
+		newReq.Header.Del("If-Range")
 	}
 
 	return newReq, nil

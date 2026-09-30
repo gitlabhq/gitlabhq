@@ -421,3 +421,149 @@ export const lfkNoBacklogResults = {
     main: [],
   },
 };
+
+export const timeoutsUnlimited = {
+  settings: {
+    ...timeoutsSettings,
+    statement_timeout: { ...timeoutsSettings.statement_timeout, value: 0 },
+  },
+  overrides: [],
+  findings: [
+    {
+      severity: 'error',
+      code: 'statement_timeout_unlimited',
+      message:
+        'The statement_timeout value is 0 on the connection GitLab uses, so a query can run with no limit. A query that does not end keeps its connection, which can use up the connection pool and stop GitLab. Set statement_timeout to 60000 ms or less.',
+    },
+  ],
+  severity: 'error',
+  counts: { error: 1 },
+};
+
+export const timeoutsAboveMaximum = {
+  settings: {
+    ...timeoutsSettings,
+    statement_timeout: { ...timeoutsSettings.statement_timeout, value: 300000 },
+  },
+  overrides: [],
+  findings: [
+    {
+      severity: 'warning',
+      code: 'statement_timeout_above_maximum',
+      message:
+        'The statement_timeout value is 300000 ms on the connection GitLab uses, more than the recommended maximum of 60000 ms. A higher value lets a slow query hold its connection for longer.',
+    },
+    {
+      severity: 'warning',
+      code: 'statement_timeout_unlimited_by_default',
+      message:
+        'The cluster default for statement_timeout is 0. GitLab sets its own value for each of its sessions, but any other session, for example psql, a backup or an external tool, can run a query with no limit. Set statement_timeout in postgresql.conf, or with ALTER DATABASE or ALTER ROLE.',
+    },
+  ],
+  severity: 'warning',
+  counts: { warning: 2 },
+};
+
+export const timeoutsFromConfigurationFile = {
+  settings: {
+    statement_timeout: {
+      value: 60000,
+      default_value: 60000,
+      unit: 'ms',
+      source: 'configuration file',
+      source_location: '/etc/postgresql/postgresql.conf:750',
+    },
+    lock_timeout: {
+      value: 0,
+      default_value: 0,
+      unit: 'ms',
+      source: 'default',
+      source_location: null,
+    },
+  },
+  overrides: [],
+  findings: [],
+  severity: null,
+  counts: {},
+};
+
+export const timeoutsWithOverrides = {
+  ...timeoutsWithoutFindings,
+  overrides: [
+    { database_name: null, role_name: null, name: 'statement_timeout', value: '90s' },
+    {
+      database_name: 'gitlabhq_production',
+      role_name: 'gitlab',
+      name: 'lock_timeout',
+      value: '5s',
+    },
+    {
+      database_name: 'gitlabhq_production',
+      role_name: null,
+      name: 'statement_timeout',
+      value: '0',
+    },
+  ],
+};
+
+export const timeoutsWithoutSettings = {
+  ...timeoutsWithoutFindings,
+  settings: {},
+};
+
+export const vacuumActivityAntiWraparound = [
+  {
+    pid: 5150,
+    schema_name: 'public',
+    table_name: 'ci_job_artifacts',
+    phase: 'scanning heap',
+    heap_blks_total: 480000,
+    heap_blks_scanned: 96000,
+    heap_blks_vacuumed: 0,
+    index_vacuum_count: 0,
+    max_dead_tuple_bytes: 67108864,
+    dead_tuple_bytes: 12000000,
+    indexes_total: 4,
+    indexes_processed: 0,
+    vacuum_type: 'autovacuum',
+    anti_wraparound: true,
+    running_time_seconds: 7200,
+    delay_time: 0,
+  },
+];
+
+// The role lacks pg_monitor, so pg_stat_activity yields no type, running time or
+// anti-wraparound status. Progress still comes from pg_stat_progress_vacuum.
+export const vacuumActivityWithoutPgMonitor = [
+  {
+    ...vacuumActivity[0],
+    index_vacuum_count: 3,
+    vacuum_type: null,
+    anti_wraparound: null,
+    running_time_seconds: null,
+    delay_time: null,
+  },
+];
+
+export const corruptedIndexesStructural = [
+  ...collationMismatchResults.databases.main.corrupted_indexes,
+  {
+    index_name: 'index_projects_on_path',
+    table_name: 'projects',
+    affected_columns: 'path',
+    index_type: 'btree',
+    is_unique: false,
+    size_bytes: 134217728,
+    corruption_types: ['structural', 'duplicates'],
+    needs_deduplication: false,
+  },
+];
+
+export const autovacuumConfigHealthy = {
+  settings: autovacuumConfig.settings,
+  findings: [],
+  severity: null,
+  counts: {},
+  table_overrides: [],
+  scale_factor_risks: [],
+};

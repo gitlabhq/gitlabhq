@@ -211,6 +211,16 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
     end
   end
 
+  describe '#diff' do
+    it 'diffs the branch against the branch it was cut from' do
+      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', '--no-pager', 'diff', '--color=always', 'master', 'some-branch', '--', 'a.rb', 'b.rb')
+        .and_return('the diff')
+
+      expect(git.diff('some-branch', ['a.rb', 'b.rb'])).to eq('the diff')
+    end
+  end
+
   describe '#remote_branch_changed_files' do
     let(:branch_name) { 'feature-branch' }
     let(:remote) { 'origin' }

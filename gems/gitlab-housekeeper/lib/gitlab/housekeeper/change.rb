@@ -21,6 +21,8 @@ module Gitlab
       attr_reader :assignees,
         :reviewers
 
+      HOUSEKEEPER_LABEL = 'automation:gitlab-housekeeper-authored'
+
       def initialize
         @labels = []
         @assignees = []
@@ -37,6 +39,11 @@ module Gitlab
 
       def reviewers=(reviewers)
         @reviewers = Array(reviewers)
+      end
+
+      def add_standard_data!
+        self.labels ||= []
+        labels << HOUSEKEEPER_LABEL
       end
 
       def abort!

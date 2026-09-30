@@ -357,6 +357,15 @@ describe('emoji', () => {
         />
       `);
     });
+
+    it('escapes the fallback URL #security', () => {
+      const markup = glEmojiTag('bomb', {
+        url: '" onload="alert(1)',
+      });
+
+      expect(markup).toContain('data-fallback-src="&quot; onload=&quot;alert(1)"');
+      expect(markup).not.toContain('onload="alert(1)"');
+    });
   });
 
   describe('isFlagEmoji', () => {

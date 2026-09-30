@@ -1,12 +1,12 @@
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import initLinkedResources from '~/linked_resources';
 import { pinia } from '~/pinia/instance';
+import { useNotes } from '~/notes/store/legacy_notes';
 import IssueApp from './components/app.vue';
 import DescriptionComponent from './components/description.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
@@ -25,7 +25,7 @@ const bootstrapApollo = (state = {}) => {
   });
 };
 
-export function initIssuableApp(store) {
+export function initIssuableApp() {
   const el = document.getElementById('js-issuable-app');
 
   if (!el) {
@@ -81,7 +81,6 @@ export function initIssuableApp(store) {
     el,
     name: 'DescriptionRoot',
     apolloProvider,
-    store,
     pinia,
     router: issueType === TYPE_INCIDENT ? createRouter(currentPath, currentTab) : undefined,
     provide: {
@@ -114,7 +113,7 @@ export function initIssuableApp(store) {
       issuableEmailAddress: headerActionsData.issuableEmailAddress,
     },
     computed: {
-      ...mapGetters(['getNoteableData']),
+      ...mapState(useNotes, ['getNoteableData']),
     },
     render(createElement) {
       return createElement(IssueApp, {

@@ -339,15 +339,16 @@ export default {
             @award="toggleAward"
           />
         </div>
+        <note-session-bar
+          v-if="hasSession"
+          :class="{ 'gl-ml-3': !isFirstNote }"
+          :agent-name="note.duo_session_agent_name"
+          :session-id="note.duo_session_id_triggered"
+          :status="note.duo_session_status"
+          :is-reply="!isFirstNote"
+        />
         <slot name="footer"></slot>
       </div>
-      <note-session-bar
-        v-if="hasSession"
-        :agent-name="note.duo_session_agent_name"
-        :session-id="note.duo_session_id_triggered"
-        :status="note.duo_session_status"
-        :is-reply="!isFirstNote"
-      />
     </template>
   </timeline-entry-item>
 </template>

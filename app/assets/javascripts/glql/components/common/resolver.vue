@@ -105,6 +105,10 @@ export default {
     hasDisplayType() {
       return Boolean(this.config?.display);
     },
+    // The backend's cap, so each auto-paginated page is as large as it allows.
+    aggregatedPageSize() {
+      return gon.aggregation_max_page_size ?? AGGREGATED_AUTO_PAGE_SIZE;
+    },
     pagination() {
       const strategy = PAGINATION_BY_DISPLAY_TYPE[this.config?.display ?? DEFAULT_DISPLAY_TYPE];
 
@@ -207,7 +211,7 @@ export default {
         } else if (this.pagination === PAGINATION_LOAD_MORE) {
           this.setVariable('limit', DEFAULT_PAGE_SIZE);
         } else if (this.pagination === PAGINATION_AUTO) {
-          this.setVariable('limit', AGGREGATED_AUTO_PAGE_SIZE);
+          this.setVariable('limit', this.aggregatedPageSize);
         }
 
         // Started before the comparison, so the main query is queued first, and awaited only once
@@ -225,7 +229,7 @@ export default {
 
         const comparisonData = await comparisonRequest;
         this.comparisonData =
-          this.data?.count > AGGREGATED_AUTO_PAGE_SIZE ? undefined : comparisonData;
+          this.data?.count > this.aggregatedPageSize ? undefined : comparisonData;
 
         this.trackRender();
       } catch (error) {
@@ -298,7 +302,7 @@ export default {
       if (!this.data?.nodes) return;
 
       // Bounds requests as well as rows, so a backend that keeps claiming another page can't spin.
-      const maxPages = Math.ceil(MAX_AUTO_PAGINATED_ROWS / AGGREGATED_AUTO_PAGE_SIZE);
+      const maxPages = Math.ceil(MAX_AUTO_PAGINATED_ROWS / this.aggregatedPageSize);
 
       for (let page = 0; page < maxPages; page += 1) {
         if (this.discarded) return;

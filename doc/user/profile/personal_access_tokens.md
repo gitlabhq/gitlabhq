@@ -76,12 +76,15 @@ configured for personal access tokens.
 
 ### Prefill personal access token details
 
-You can prefill the details of the personal access token by appending the name, description, and
-list of scopes to the URL. For example:
+You can prefill a personal access token's details by appending the `name`, `description`, and
+`scopes` parameters to the URL. For example:
 
 ```plaintext
 https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&description=My+description&scopes=api,read_user
 ```
+
+The URL must include at least one valid scope. The `name` and `description` parameters are optional in the URL, but
+you must enter a token name on the creation form if the URL doesn't include one.
 
 > [!note]
 > Personal access tokens must be treated carefully. For guidance on managing personal access tokens,

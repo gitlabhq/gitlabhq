@@ -18,7 +18,7 @@ title: 토큰 정보 API
 
 ## 토큰 접두사 {#token-prefixes}
 
-요청할 때 `personal`, `project` 또는 `group access` 토큰은 `glpat` 또는 현재 [사용자 지정 접두사](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)로 시작해야 합니다. 토큰이 이전 사용자 지정 접두사로 시작하면 작업이 실패합니다. 이전 사용자 지정 접두사 지원에 대한 관심은 [이슈 165663](https://gitlab.com/gitlab-org/gitlab/-/issues/165663)에서 추적됩니다.
+요청을 수행할 때 `personal`, `project`, 또는 `group access` 토큰은 `glpat` 또는 현재 [사용자 지정 접두사](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)로 시작해야 합니다. 토큰이 이전 사용자 지정 접두사로 시작하면 작업이 실패합니다. 이전 사용자 지정 접두사 지원에 대한 관심은 [이슈 165663](https://gitlab.com/gitlab-org/gitlab/-/issues/165663)에서 추적됩니다.
 
 전제 조건:
 
@@ -28,8 +28,8 @@ title: 토큰 정보 API
 
 {{< history >}}
 
-- GitLab 17.5에 [도입됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) [기능 플래그](../../administration/feature_flags/_index.md) `admin_agnostic_token_finder`. 기본적으로 비활성화됨.
-- GitLab 17.8에 [일반적으로 제공됨](https://gitlab.com/gitlab-org/gitlab/-/issues/490572). 기능 플래그 `admin_agnostic_token_finder` 제거됨.
+- GitLab 17.5에서 `admin_agnostic_token_finder`라는 [기능 플래그](../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157)되었습니다. 기본적으로 비활성화됨.
+- GitLab 17.8에 [일반적으로 제공됨](https://gitlab.com/gitlab-org/gitlab/-/issues/490572). 기능 플래그 `admin_agnostic_token_finder`가 제거되었습니다.
 - GitLab 17.6에 [피드 토큰 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821).
 - GitLab 17.7에 [OAuth 애플리케이션 시크릿 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985).
 - GitLab 17.7에 [클러스터 에이전트 토큰 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932).
@@ -39,6 +39,7 @@ title: 토큰 정보 API
 - GitLab 17.9에 [기능 플래그 클라이언트 토큰 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431).
 - GitLab 17.9에 [GitLab 세션 쿠키 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178022).
 - GitLab 17.9에 [수신 이메일 토큰 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177077).
+- [SCIM 액세스 토큰이 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231880) (GitLab 19.1).
 
 {{< /history >}}
 
@@ -56,6 +57,7 @@ title: 토큰 정보 API
 - [기능 플래그 클라이언트 토큰](../../operations/feature_flags.md#get-access-credentials)
 - [GitLab 세션 쿠키](../../user/profile/active_sessions.md)
 - [수신 이메일 토큰](../../security/tokens/_index.md#incoming-email-token)
+- [SCIM 액세스 토큰](../../user/group/saml_sso/scim_setup.md)
 
 ```plaintext
 POST /api/v4/admin/token
@@ -63,7 +65,7 @@ POST /api/v4/admin/token
 
 지원되는 속성:
 
-| 속성    | 유형    | 필수 | 설명                |
+| 속성    | 형식    | 필수 | 설명                |
 |--------------|---------|----------|----------------------------|
 | `token`      | 문자열  | 예      | 식별할 기존 토큰입니다. `Personal`, `project` 또는 `group access` 토큰은 `glpat` 또는 현재 [사용자 지정 접두사](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)로 시작해야 합니다. |
 
@@ -71,11 +73,11 @@ POST /api/v4/admin/token
 
 다음 상태 코드를 반환할 수 있습니다:
 
-- `200 OK`:  토큰에 대한 정보입니다.
-- `401 Unauthorized`:  사용자가 권한을 부여받지 않았습니다.
-- `403 Forbidden`:  사용자가 관리자가 아닙니다.
-- `404 Not Found`:  토큰을 찾을 수 없습니다.
-- `422 Unprocessable`:  토큰 유형은 지원되지 않습니다.
+- `200 OK`: 토큰에 대한 정보입니다.
+- `401 Unauthorized`: 사용자가 권한을 부여받지 않았습니다.
+- `403 Forbidden`: 사용자가 관리자가 아닙니다.
+- `404 Not Found`: 토큰을 찾을 수 없습니다.
+- `422 Unprocessable`: 토큰 유형은 지원되지 않습니다.
 
 요청 예:
 
@@ -121,13 +123,14 @@ curl --request POST \
 - GitLab 17.9에 [OAuth 애플리케이션 시크릿 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035).
 - GitLab 17.9에 [수신 이메일 토큰 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763).
 - GitLab 17.9에 [기능 플래그 클라이언트 토큰 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096).
-- GitLab 17.10에 [파이프라인 트리거 토큰 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) [기능 플래그](../../administration/feature_flags/_index.md) `token_api_expire_pipeline_triggers`. 기본적으로 비활성화됨.
+- [파이프라인 트리거 토큰이 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) (GitLab 17.10) [기능 플래그](../../administration/feature_flags/_index.md)가 포함되어 `token_api_expire_pipeline_triggers`로 명명되었습니다. 기본적으로 비활성화됨.
 - GitLab 17.11에 [GitLab 세션 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184047).
+- [SCIM 액세스 토큰이 추가됨](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243804) (GitLab 19.3).
 
 {{< /history >}}
 
 > [!flag]
-> 이 기능의 가용성은 기능 플래그에 의해 제어됩니다. 자세한 내용은 이력을 참조하세요. 이 기능은 테스트용으로 사용할 수 있지만, 프로덕션 환경에서 사용할 준비가 되지 않았습니다.
+> 이 기능의 사용 가능성은 기능 플래그로 제어합니다. 자세한 내용은 기록을 참조하세요. 이 기능은 테스트용으로 사용 가능하지만 프로덕션 사용을 위한 준비가 되어 있지 않습니다.
 
 토큰 유형에 따라 지정된 토큰을 해지, 재설정 또는 삭제합니다. 이 엔드포인트는 다음 토큰 유형을 지원합니다:
 
@@ -140,6 +143,7 @@ curl --request POST \
 | [배포 토큰](../../user/project/deploy_tokens/_index.md)                                   | 해지             |
 | [클러스터 에이전트 토큰](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)          | 해지             |
 | [파이프라인 트리거 토큰](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)       | 해지             |
+| [SCIM 액세스 토큰](../../user/group/saml_sso/scim_setup.md) | 재설정           |
 | [피드 토큰](../../security/tokens/_index.md#feed-token)                                    | 재설정              |
 | [러너 인증 토큰](../../security/tokens/_index.md#runner-authentication-tokens) | 재설정              |
 | [OAuth 애플리케이션 시크릿](../../integration/oauth_provider.md)                             | 재설정              |
@@ -153,7 +157,7 @@ DELETE /api/v4/admin/token
 
 지원되는 속성:
 
-| 속성    | 유형    | 필수 | 설명              |
+| 속성    | 형식    | 필수 | 설명              |
 |--------------|---------|----------|--------------------------|
 | `token`      | 문자열  | 예      | 해지할 기존 토큰입니다. `Personal`, `project` 또는 `group access` 토큰은 `glpat` 또는 현재 [사용자 지정 접두사](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)로 시작해야 합니다. |
 
@@ -161,11 +165,11 @@ DELETE /api/v4/admin/token
 
 다음 상태 코드를 반환할 수 있습니다:
 
-- `204 No content`:  토큰이 해지되었습니다.
-- `401 Unauthorized`:  사용자가 권한을 부여받지 않았습니다.
-- `403 Forbidden`:  사용자가 관리자가 아닙니다.
-- `404 Not Found`:  토큰을 찾을 수 없습니다.
-- `422 Unprocessable`:  토큰 유형은 지원되지 않습니다.
+- `204 No content`: 토큰이 해지되었습니다.
+- `401 Unauthorized`: 사용자가 권한을 부여받지 않았습니다.
+- `403 Forbidden`: 사용자가 관리자가 아닙니다.
+- `404 Not Found`: 토큰을 찾을 수 없습니다.
+- `422 Unprocessable`: 토큰 유형은 지원되지 않습니다.
 
 요청 예:
 

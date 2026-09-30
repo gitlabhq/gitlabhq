@@ -12,11 +12,12 @@ RSpec.describe Tooling::Danger::AuthzCopBypass, feature_category: :tooling do
   let(:changed_files) { [file_path] }
   let(:changed_lines) { [] }
   let(:file_path) { 'app/services/widgets/create_service.rb' }
+  let(:draft_mr?) { false }
 
   subject(:authz_cop_bypass) { fake_danger.new(helper: fake_helper) }
 
   before do
-    allow(fake_helper).to receive_messages(all_changed_files: changed_files, changed_lines: [])
+    allow(fake_helper).to receive_messages(all_changed_files: changed_files, changed_lines: [], draft_mr?: draft_mr?)
     allow(fake_helper).to receive(:changed_lines).with(file_path).and_return(changed_lines)
     allow(fake_helper).to receive(:markdown_list) { |items| items.join("\n") }
   end
@@ -46,6 +47,12 @@ RSpec.describe Tooling::Danger::AuthzCopBypass, feature_category: :tooling do
       end
 
       it_behaves_like 'a comment'
+
+      context 'when the merge request is a draft' do
+        let(:draft_mr?) { true }
+
+        it_behaves_like 'no comment'
+      end
     end
 
     context 'when an added line adds a rubocop:todo for an authz cop' do

@@ -20,7 +20,7 @@ label notes를 관리하려면 [resource label events API](resource_label_events
 
 모든 discussion 유형이 API에서 동일하게 사용 가능한 것은 아닙니다:
 
-- 참고: _root_에서 issue, , 또는 snippet에 남겨진 .
+- Note: 이슈, 머지 리퀘스트, 커밋 또는 스니펫의 _루트_에 남겨진 댓글입니다.
 - Discussion:  종종 _스레드_라고 불리는 issue, merge request, commit 또는 snippet의 `DiscussionNotes` 모음.
 - DiscussionNote:  issue, merge request, commit 또는 snippet의 discussion에 있는 개별 항목. `DiscussionNote` 유형의 항목은 Note API의 일부로 반환되지 않습니다. [Events API](events.md)에서는 사용할 수 없습니다.
 
@@ -1064,7 +1064,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/discussions
 | `position[base_sha]`      | 문자열            | 예(`position*` 제공된 경우)     | 소스 브랜치의 base commit SHA. |
 | `position[head_sha]`      | 문자열            | 예(`position*` 제공된 경우)     | 이 merge request의 HEAD를 참조하는 SHA. |
 | `position[start_sha]`     | 문자열            | 예(`position*` 제공된 경우)     | 대상 브랜치의 commit를 참조하는 SHA. |
-| `position[position_type]` | 문자열            | 예(position* 제공된 경우)       | 위치 참조의 유형. 허용되는 값: `text`, `image`, 또는 `file`. `file` GitLab 16.4에서 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046). |
+| `position[position_type]` | 문자열            | 예(position\* 제공된 경우)       | 위치 참조의 유형. 허용되는 값: `text`, `image`, 또는 `file`. |
 | `position[new_path]`      | 문자열            | 예(위치 유형이 `text`인 경우) | 변경 후 파일 경로. |
 | `position[old_path]`      | 문자열            | 예(위치 유형이 `text`인 경우) | 변경 전 파일 경로. |
 | `position[new_line]`      | 정수           | 아니요                                   | `text` diff notes의 경우 변경 후 줄 번호. |
@@ -1421,7 +1421,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-diff 주석에는 위치 정보도 포함됩니다:
+Diff comments도 위치를 포함합니다:
 
 ```json
 [
@@ -1511,7 +1511,7 @@ POST /projects/:id/repository/commits/:commit_id/discussions
 | `position[base_sha]`      | 문자열            | 예(`position*` 제공된 경우) | 상위 커밋의 SHA입니다. |
 | `position[head_sha]`      | 문자열            | 예(`position*` 제공된 경우) | 이 커밋의 SHA입니다. `commit_id`과 동일합니다. |
 | `position[start_sha]`     | 문자열            | 예(`position*` 제공된 경우) | 상위 커밋의 SHA입니다. |
-| `position[position_type]` | 문자열            | 예(`position*` 제공된 경우) | 위치 참조의 유형. 허용되는 값: `text`, `image`, 또는 `file`. `file` GitLab 16.4에서 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046). |
+| `position[position_type]` | 문자열            | 예(`position*` 제공된 경우) | 위치 참조의 유형. 허용되는 값: `text`, `image`, 또는 `file`. |
 | `position[new_path]`      | 문자열            | 아니요                               | 변경 후 파일 경로. |
 | `position[new_line]`      | 정수           | 아니요                               | 변경 후 라인 번호입니다. |
 | `position[old_path]`      | 문자열            | 아니요                               | 변경 전 파일 경로. |
