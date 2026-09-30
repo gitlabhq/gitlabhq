@@ -315,6 +315,7 @@ for premium models with optimized integration:
 | `claude-sonnet-5`                                                | 3.2                   |
 | `claude-sonnet-5.5`                                              | 3.2                   |
 | `gpt-6-sol`[^short-context-window]                               | 2.86                  |
+| `gpt-6.1-sol`[^short-context-window]                             | 2.86                  |
 | `gpt-5.2`                                                        | 2.5                   |
 | `gpt-5.2-codex`                                                  | 2.5                   |
 | `gpt-5.3-codex`                                                  | 2.5                   |
@@ -324,6 +325,7 @@ for premium models with optimized integration:
 | `gpt-5.4`[^short-context-window]                                 | 2.0                   |
 | `kimi-k3`                                                        | 1.82                  |
 | `gpt-6-sol`[^long-context-window]                                | 1.54                  |
+| `gpt-6.1-sol`[^long-context-window]                              | 1.54                  |
 | `gpt-5.6-terra`[^long-context-window]                            | 1.43                  |
 | `claude-opus-5.5`                                                | 1.35                  |
 | `gpt-5.6-sol`[^promotional-pricing-gpt], [^short-context-window] | 1.33                  |

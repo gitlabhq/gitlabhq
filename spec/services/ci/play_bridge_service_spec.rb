@@ -90,6 +90,7 @@ RSpec.describe Ci::PlayBridgeService, '#execute', feature_category: :continuous_
         a_hash_including(
           Labkit::Fields::CLASS_NAME => described_class.to_s,
           message: 'Job play rate limit exceeded',
+          rate_limit: 'job_play_per_project',
           Labkit::Fields::GL_PROJECT_ID => project.id,
           job_id: other_bridge.id,
           Labkit::Fields::GL_USER_ID => user.id

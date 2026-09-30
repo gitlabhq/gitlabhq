@@ -353,10 +353,21 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, :clean_gitlab_red
           a_hash_including(
             class: described_class.to_s,
             message: 'Pipeline cancel rate limit exceeded',
+            rate_limit: 'pipeline_cancel_per_project',
             project_id: project.id,
             pipeline_id: pipeline.id,
             Labkit::Fields::GL_USER_ID => current_user.id
           )
+        ).once
+      end
+
+      it 'logs the per-pipeline limit when it fires' do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+
+        6.times { service.execute }
+
+        expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+          a_hash_including(message: 'Pipeline cancel rate limit exceeded', rate_limit: 'pipeline_cancel')
         ).once
       end
 

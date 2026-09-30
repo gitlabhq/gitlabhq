@@ -116,6 +116,7 @@ The following tools are available to custom agents.
 | Grep | `grep` | Recursively search for text patterns in files. This tool respects `.gitignore` file rules. |
 | List Dir | `list_dir` | List files in a directory relative to the root of the project. |
 | Mkdir | `mkdir` | Create a directory in the current working tree. |
+| Notify Me When | `notify_me_when` | Schedule the agent to resume itself once a condition is met, for example when a pipeline finishes. |
 | Read File | `read_file` | Read the contents of a file. |
 | Read Files | `read_files` | Read the contents of files. |
 | Run Command | `run_command` | Run bash commands, including Git commands, in the current working directory. |

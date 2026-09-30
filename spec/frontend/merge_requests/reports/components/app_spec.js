@@ -156,6 +156,14 @@ describe('Merge request reports App component', () => {
           name: 'TerraformProvider',
           template: '<div><slot /></div>',
         },
+        StatusChecksProvider: {
+          name: 'StatusChecksProvider',
+          template: '<div><slot /></div>',
+        },
+        StatusChecksNavItem: {
+          name: 'StatusChecksNavItem',
+          template: '<div></div>',
+        },
         TerraformNavItem: {
           name: 'TerraformNavItem',
           template: '<div></div>',

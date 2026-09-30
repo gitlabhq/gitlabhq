@@ -33,7 +33,7 @@ describe('Pipeline New Form', () => {
   const findIdentityVerificationRequiredAlert = () =>
     wrapper.findComponent(PipelineAccountVerificationAlert);
 
-  const createComponentWithApollo = ({ props = {} } = {}) => {
+  const createComponentWithApollo = () => {
     const handlers = [
       [ciConfigVariablesQuery, mockCiConfigVariables],
       [pipelineCreateMutation, pipelineCreateMutationHandler],
@@ -58,7 +58,6 @@ describe('Pipeline New Form', () => {
         refParam: defaultBranch,
         settingsLink: '',
         maxWarnings: 25,
-        ...props,
       },
     });
   };

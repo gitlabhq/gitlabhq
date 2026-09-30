@@ -9,6 +9,7 @@ export const ROOT_ROUTE = 'reports-root';
 export const METRICS_ROUTE = 'metrics';
 export const TEST_SUMMARY_ROUTE = 'test-summary';
 export const TERRAFORM_ROUTE = 'terraform';
+export const STATUS_CHECKS_ROUTE = 'status-checks';
 
 export const EMPTY_STATE_NO_PIPELINE = 'no-pipeline';
 export const EMPTY_STATE_PIPELINE_RUNNING = 'pipeline-running';
@@ -29,4 +30,5 @@ export const TRACKING_LABEL_BY_ROUTE = {
   [ACCESSIBILITY_ROUTE]: 'accessibility',
   [TEST_SUMMARY_ROUTE]: 'test_summary',
   [TERRAFORM_ROUTE]: 'terraform',
+  [STATUS_CHECKS_ROUTE]: 'status_checks',
 };

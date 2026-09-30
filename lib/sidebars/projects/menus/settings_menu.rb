@@ -32,7 +32,7 @@ module Sidebars
           ],
           repository_menu_item: [
             :admin_push_rules,
-            :manage_deploy_tokens,
+            :read_deploy_token,
             :admin_protected_branch,
             :manage_merge_request_settings,
             :manage_protected_tags

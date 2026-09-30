@@ -12,11 +12,10 @@ describe('CiResourceDetails', () => {
     version: '1.0.1',
   };
 
-  const createComponent = ({ props = {}, slots = {} } = {}) => {
+  const createComponent = ({ slots = {} } = {}) => {
     wrapper = shallowMount(CiResourceDetails, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
       slots,
     });

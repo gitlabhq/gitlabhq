@@ -1032,7 +1032,11 @@ The [dependency scanning using SBOM feature](../user/application_security/depend
 - Maximum number of upload requests per project per hour: 400
 - Maximum number of download requests per project per hour: 6000
 
-You can configure these limits for GitLab Self-Managed instances using the [dependency scanning settings](settings/security_and_compliance.md#sbom-scan-api-limits).
+You can configure these upload and download limits for GitLab Self-Managed instances using the [dependency scanning settings](settings/security_and_compliance.md#sbom-scan-api-limits).
+
+The API also applies a soft throttle of 50 SBOM scans per project per hour, across all pipelines in a project.
+Scans above this threshold still run, but at a lower priority, so they can take longer to complete.
+This throttle is separate from the upload and download limits, and you cannot configure it.
 
 ## Commits and Files API limits
 

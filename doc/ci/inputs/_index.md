@@ -1010,7 +1010,7 @@ which is assigned to `tags` as an array.
 ### YAML syntax errors when using `inputs` in `rules`
 
 When you use input to modify `rules:if` expressions, you might get one of
-[a variety of syntax errors](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
+[a variety of syntax errors](../jobs/job_troubleshooting.md#error-this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
 
 These errors are often related to how strings are handled in [CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions).
 Expressions in `rules:if` expect a CI/CD variable compared to a quoted string (`'` or `"`) or another variable.

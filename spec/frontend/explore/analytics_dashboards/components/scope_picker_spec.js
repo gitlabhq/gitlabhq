@@ -330,6 +330,7 @@ describe('ScopePicker', () => {
     frecentGroupsHandler = respondWithFrecentGroups(),
     organizationGroupHandler = respondWithOrganizationGroup(),
     props = {},
+    listeners = {},
   } = {}) => {
     subgroupRequestHandler = subgroupHandler;
     topLevelGroupsRequestHandler = topLevelGroupsHandler;
@@ -348,6 +349,7 @@ describe('ScopePicker', () => {
         [getOrganizationGroupQuery, organizationGroupRequestHandler],
       ]),
       propsData: { multiSelect: true, ...props },
+      listeners,
       stubs: { GlCollapsibleListbox: listboxStub },
     });
   };
@@ -402,6 +404,19 @@ describe('ScopePicker', () => {
   const hideListbox = () => findListbox().vm.$emit('hidden');
 
   const findSlotsLeft = () => wrapper.findByTestId('scope-picker-slots-left');
+
+  // `emitted()` keeps no order across events, so record them as they arrive.
+  const recordEvents = () => {
+    const events = [];
+    const listeners = {
+      change: () => events.push('change'),
+      ready: () => events.push('ready'),
+    };
+
+    return { events, listeners };
+  };
+
+  const expectReadyOnce = () => expect(wrapper.emitted('ready')).toEqual([[]]);
 
   // The listbox owns the search input, so typing arrives as an event. The handler is debounced.
   const search = async (term) => {
@@ -1276,20 +1291,32 @@ describe('ScopePicker', () => {
       });
     });
 
-    // The list is browsable without it, and the filter bar remounts on every view switch, so
-    // gating the list on the lookup flashed loading each time.
-    it('leaves the list usable while the lookup is outstanding, naming the toggle once it lands', async () => {
+    // Nothing can be picked until the lookup lands, so a pick can never race it.
+    it('holds the list in its loading state until the lookup lands', async () => {
       const lookup = deferLookup();
       createWrapper({ props: { initialPaths }, scopeNamespaceHandler: lookup.handler });
       await waitForPromises();
 
-      expect(findListbox().props('loading')).toBe(false);
-      expect(findListbox().props('toggleText')).toBe('Select a group or project');
+      expect(findListbox().props('loading')).toBe(true);
+      expect(wrapper.emitted('ready')).toBeUndefined();
 
       lookup.resolve(respondWithGroup(mockFrontend));
       await waitForPromises();
 
+      expect(findListbox().props('loading')).toBe(false);
       expect(findListbox().props('toggleText')).toBe(mockFrontend.name);
+    });
+
+    it('emits ready once, after the change the lookup caused', async () => {
+      const { events, listeners } = recordEvents();
+      createWrapper({
+        props: { initialPaths: [mockCapsuleCorp.fullPath] },
+        scopeNamespaceHandler: respondWithScopeNamespace({ group: mockCapsuleCorp }),
+        listeners,
+      });
+      await waitForPromises();
+
+      expect(events).toEqual(['change', 'ready']);
     });
 
     describe('when a path is a group', () => {
@@ -1509,6 +1536,10 @@ describe('ScopePicker', () => {
       it('emits no change', () => {
         expect(wrapper.emitted('change')).toBeUndefined();
       });
+
+      it('emits ready', () => {
+        expectReadyOnce();
+      });
     });
 
     describe('when the lookup fails', () => {
@@ -1533,6 +1564,10 @@ describe('ScopePicker', () => {
       it('leaves the picker empty', () => {
         expect(findSelectedPaths()).toEqual([]);
       });
+
+      it('emits ready', () => {
+        expectReadyOnce();
+      });
     });
 
     // The page hands its current selection back down through this prop, so it changes on every
@@ -1554,25 +1589,6 @@ describe('ScopePicker', () => {
         expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
       });
     });
-
-    describe('when the user picks something before the lookup lands', () => {
-      beforeEach(async () => {
-        const lookup = deferLookup();
-        createWrapper({ props: { initialPaths }, scopeNamespaceHandler: lookup.handler });
-        await waitForPromises();
-
-        await toggleSelected(mockCapsuleCorp);
-
-        lookup.resolve(respondWithGroup(mockFrontend));
-        await waitForPromises();
-      });
-
-      // The pick is the more recent intent, so the arriving param must not stomp it.
-      it('keeps what the user picked', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
-        expect(findListbox().props('toggleText')).toBe(mockCapsuleCorp.name);
-      });
-    });
   });
 
   describe('a default derived from the most frecent group', () => {
@@ -1588,8 +1604,7 @@ describe('ScopePicker', () => {
     const error = new Error('no such luck');
     const rejecting = () => jest.fn().mockRejectedValue(error);
 
-    // Leaves the frecent lookup outstanding once the browse queries have settled, so a pick can
-    // be made while it is still in flight.
+    // Leaves the frecent lookup outstanding once the browse queries have settled.
     const deferFrecentGroups = () => {
       let resolveLookup;
       const handler = jest.fn(
@@ -1632,6 +1647,18 @@ describe('ScopePicker', () => {
       });
     });
 
+    it('emits ready once, after the change the default caused', async () => {
+      const { events, listeners } = recordEvents();
+      createWrapper({
+        frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
+        organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
+        listeners,
+      });
+      await waitForPromises();
+
+      expect(events).toEqual(['change', 'ready']);
+    });
+
     describe('when the `scope` URL param already names one', () => {
       beforeEach(async () => {
         createWrapper({
@@ -1669,6 +1696,10 @@ describe('ScopePicker', () => {
       it('emits no change', () => {
         expect(wrapper.emitted('change')).toBeUndefined();
       });
+
+      it('emits ready', () => {
+        expectReadyOnce();
+      });
     });
 
     describe('when the page organization does not hold the most frecent group', () => {
@@ -1686,6 +1717,10 @@ describe('ScopePicker', () => {
 
       it('emits no change', () => {
         expect(wrapper.emitted('change')).toBeUndefined();
+      });
+
+      it('emits ready', () => {
+        expectReadyOnce();
       });
     });
 
@@ -1713,23 +1748,22 @@ describe('ScopePicker', () => {
       });
     });
 
-    describe('when the user picks something before it lands', () => {
-      beforeEach(async () => {
-        const lookup = deferFrecentGroups();
-        createWrapper({ frecentGroupsHandler: lookup.handler });
-        await waitForPromises();
-
-        await toggleSelected(mockCapsuleCorp);
-
-        lookup.resolve({ data: { frecentGroups: mockFrecentGroups } });
-        await waitForPromises();
+    it('stays in the loading state until the initial scope is ready', async () => {
+      const lookup = deferFrecentGroups();
+      createWrapper({
+        frecentGroupsHandler: lookup.handler,
+        organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
       });
+      await waitForPromises();
 
-      // The pick is the more recent intent, so a default arriving behind it must not stomp it.
-      it('keeps what the user picked', () => {
-        expect(findListbox().props('selected')).toEqual([mockCapsuleCorp.fullPath]);
-        expect(findListbox().props('toggleText')).toBe(mockCapsuleCorp.name);
-      });
+      expect(findListbox().props('loading')).toBe(true);
+      expect(wrapper.emitted('ready')).toBeUndefined();
+
+      lookup.resolve({ data: { frecentGroups: mockFrecentGroups } });
+      await waitForPromises();
+
+      expect(findListbox().props('loading')).toBe(false);
+      expect(findListbox().props('toggleText')).toBe(mockAcme.name);
     });
 
     describe('when the frecent groups query fails', () => {
@@ -1744,6 +1778,10 @@ describe('ScopePicker', () => {
 
       it('leaves the picker empty', () => {
         expectEmptyState();
+      });
+
+      it('emits ready', () => {
+        expectReadyOnce();
       });
     });
 
@@ -1762,6 +1800,10 @@ describe('ScopePicker', () => {
 
       it('leaves the picker empty', () => {
         expectEmptyState();
+      });
+
+      it('emits ready', () => {
+        expectReadyOnce();
       });
     });
   });

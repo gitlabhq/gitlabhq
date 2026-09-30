@@ -1,6 +1,6 @@
 ---
 name: larger_clickhouse_aggregation_pages
-description: Raises the aggregation engine page size cap for ClickHouse engines from 100 to 250
+description: Raises the aggregation engine page size cap for ClickHouse engines from 100 to 500
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630507
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257575
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/630765

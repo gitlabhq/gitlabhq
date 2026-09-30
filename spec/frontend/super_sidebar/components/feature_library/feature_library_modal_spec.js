@@ -299,6 +299,10 @@ describe('FeatureLibraryModal', () => {
           it('hides the footer', () => {
             expect(findModal().attributes('hide-footer')).toBe('true');
           });
+
+          it('removes the modal body bottom padding', () => {
+            expect(findModal().vm.$attrs['body-class']).toContainEqual({ '!gl-pb-0': true });
+          });
         });
 
         describe('when the gemini search button is clicked', () => {
@@ -809,6 +813,7 @@ describe('FeatureLibraryModal', () => {
         await emitSearch('re');
         await waitForPromises();
         expect(findModal().attributes('hide-footer')).toBeUndefined();
+        expect(findModal().vm.$attrs['body-class']).toContainEqual({ '!gl-pb-0': false });
       });
 
       it('keeps the button visible while the endpoint is in flight', async () => {

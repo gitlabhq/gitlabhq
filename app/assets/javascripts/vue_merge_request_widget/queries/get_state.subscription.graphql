@@ -6,6 +6,13 @@ subscription getStateSubscription($issuableId: IssuableID!) {
       commitCount
       availableAutoMergeStrategies
       autoMergeEnabled
+      userPermissions {
+        canMerge
+      }
+      mergeabilityChecks {
+        identifier
+        status
+      }
     }
   }
 }

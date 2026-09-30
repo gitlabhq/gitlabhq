@@ -513,10 +513,21 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, :clean_git
           a_hash_including(
             Labkit::Fields::CLASS_NAME => described_class.to_s,
             message: 'Job retry rate limit exceeded',
+            rate_limit: 'job_retry_per_project',
             Labkit::Fields::GL_PROJECT_ID => project.id,
             job_id: job.id,
             Labkit::Fields::GL_USER_ID => user.id
           )
+        ).once
+      end
+
+      it 'logs the per-job limit when it fires' do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+
+        4.times { retry_job }
+
+        expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+          a_hash_including(message: 'Job retry rate limit exceeded', rate_limit: 'job_retry')
         ).once
       end
     end

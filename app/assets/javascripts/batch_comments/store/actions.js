@@ -109,24 +109,30 @@ export async function publishReviewInBatches(noteData = {}, batchSize = 20) {
   const { note, reviewer_state, approve, approval_password, ...draftNotesData } = noteData;
 
   const chunksLen = chunks.length - 1;
+  const singleReview = window.gon?.features?.improvedReviewEmail;
+
   for (const [i, draftNoteChunk] of chunks.entries()) {
     const ids = draftNoteChunk.map((d) => d.id);
+    const isLastChunk = i === chunksLen;
+    const data = isLastChunk ? { ids, ...noteData } : { ids, ...draftNotesData };
+
+    if (singleReview) {
+      if (this.publishReviewId) data.review_id = this.publishReviewId;
+      if (!isLastChunk) data.defer_notifications = true;
+    }
 
     // The publish calls need to happen in the specified order
     // so that the order of the notes when created matches the order of the draft notes.
     // eslint-disable-next-line no-await-in-loop
-    await service
-      .publish(
-        this.getNotesData.draftsPublishPath,
-        i === chunksLen ? { ids, ...noteData } : { ids, ...draftNotesData },
-      )
-      .then(() => {
-        this.drafts = this.drafts.filter((d) => !draftNoteChunk.find((draft) => draft.id === d.id));
+    const { data: response } = await service.publish(this.getNotesData.draftsPublishPath, data);
 
-        if (i === chunksLen) {
-          this[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]();
-        }
-      });
+    this.publishReviewId = response?.review_id;
+    this.drafts = this.drafts.filter((d) => !draftNoteChunk.find((draft) => draft.id === d.id));
+
+    if (isLastChunk) {
+      this.publishReviewId = null;
+      this[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]();
+    }
   }
 }
 

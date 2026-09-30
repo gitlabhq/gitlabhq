@@ -36,7 +36,6 @@ describe('WorkItemMetadataProvider', () => {
   const createComponent = ({
     metadataQueryHandlerParam = defaultMetadataQueryHandler,
     workItemTypesConfigurationHandlerParam = defaultWorkItemTypesConfigurationHandler,
-    props = {},
   } = {}) => {
     workItemTypesConfigurationHandler = workItemTypesConfigurationHandlerParam;
     metadataQueryHandler = metadataQueryHandlerParam;
@@ -49,7 +48,6 @@ describe('WorkItemMetadataProvider', () => {
       ]),
       propsData: {
         fullPath: 'my-group',
-        ...props,
       },
       slots: {
         default: SlottedStub,

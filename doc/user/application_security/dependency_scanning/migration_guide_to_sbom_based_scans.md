@@ -117,6 +117,16 @@ You can also locate legacy usage in your CI/CD configuration:
   in `.gitlab-ci.yml` files, policy YAML, or downstream jobs that use them in
   `needs:` or `dependencies:`.
 
+### Plan for scan volume
+
+Before you migrate a high-volume project, estimate the number of SBOM scans across all pipelines in the project each hour.
+Scans above [50 per project per hour](../../../administration/instance_limits.md#dependency-scanning-using-sbom-limits)
+run at a lower priority and can take longer to complete.
+
+To reduce scan volume, avoid redundant pipelines.
+To reduce the work in each scan, use the
+[scan scope options](dependency_scanning_sbom/_index.md#improve-scanning-performance).
+
 ## Understand the changes
 
 The transition from the Gemnasium analyzer to the new dependency scanning

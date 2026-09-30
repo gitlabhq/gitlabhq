@@ -370,10 +370,21 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
         a_hash_including(
           Labkit::Fields::CLASS_NAME => described_class.to_s,
           message: 'Job play rate limit exceeded',
+          rate_limit: 'job_play_per_project',
           Labkit::Fields::GL_PROJECT_ID => project.id,
           job_id: build.id,
           Labkit::Fields::GL_USER_ID => user.id
         )
+      ).once
+    end
+
+    it 'logs the per-job limit when it fires' do
+      allow(Gitlab::AppJsonLogger).to receive(:info)
+
+      4.times { play }
+
+      expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+        a_hash_including(message: 'Job play rate limit exceeded', rate_limit: 'job_play')
       ).once
     end
   end

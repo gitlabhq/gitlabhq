@@ -50,10 +50,20 @@ The following display types are available only in analytics mode:
 
 ## Table
 
+{{< history >}}
+
+- Dynamic descriptions and `hiddenMetrics` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
+
+{{< /history >}}
+
 A table renders one row per result and one column per [field](fields.md).
 
 To sort a table by a column, select the column header. This view reorders the rows loaded in
 the view, not the full result set.
+
+A table can describe its result. This requires [analytics mode](_index.md#analytics-mode). Set
+`description` under `displayConfig`, and set `hiddenMetrics` to keep a metric out of the columns.
+See [Dynamic descriptions](#dynamic-descriptions) for placeholder syntax and rules.
 
 ### Example
 
@@ -138,18 +148,8 @@ instead, for example `1.45M`, set `compact: true` under `displayConfig`. Rates k
 percentage format, and durations drop to their largest unit, for example `1h 1m 1s`
 becomes `1h`.
 
-To describe the value, set `description` under `displayConfig`. A description can include
-`%{metricName}` placeholders, where `metricName` identifies a metric from `metrics`.
-GitLab replaces each placeholder with that metric's value, formatted by that metric's own unit. A
-placeholder that names a metric the query does not select shows a validation error. When a metric's
-value is missing from the response, its placeholder renders as an em dash (`—`).
-
-Metrics are always identified by key name, unless they are duplicated parameterized metrics, in
-which case they need an alias to be identified. For example, `metrics: totalCount as "count"` is
-still referenced as `%{totalCount}`, because the alias only sets the label. When the same metric
-appears twice with different parameters, as in
-`metrics: durationQuantile(0.5) as "Median", durationQuantile(0.95) as "p95 duration"`, each alias
-becomes the key, so you reference them as `%{Median}` and `%{p95 duration}`.
+To describe the value, set `description` under `displayConfig`. See
+[Dynamic descriptions](#dynamic-descriptions) for placeholder syntax and rules.
 
 ### Example
 
@@ -328,6 +328,7 @@ sort: acceptedCount asc
 - Rows from metrics for a query without a dimension, and `color: gray`, [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628932) in GitLab 19.5.
 - Two-dimension stacked bars and the `maxSeries` display option [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23470) in GitLab 19.5.
 - `metricRows` display option [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628025) in GitLab 19.5.
+- Dynamic descriptions and `hiddenMetrics` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -371,6 +372,10 @@ A `maxRows` value that is not a whole number greater than zero falls back to the
 
 A share of the total is meaningful only when the metric is a count or a sum. For a metric such as
 an average or a median, the total behind the shares has no meaning.
+
+A bar list without dimensions renders one bar per metric. To select a metric purely for the
+description, without giving it a bar, add it to `hiddenMetrics` under `displayConfig`. See
+[Dynamic descriptions](#dynamic-descriptions) for placeholder syntax and the `hiddenMetrics` rules.
 
 ### One dimension
 
@@ -726,6 +731,65 @@ query: type = AgentPlatformSession and created >= -30d
 dimensions: flowType
 metrics: usersCount, totalCount
 sort: totalCount desc
+```
+````
+
+## Dynamic descriptions
+
+{{< history >}}
+
+- Dynamic descriptions for single stat [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255287) in GitLab 19.5.
+- Dynamic descriptions for bar list and table [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
+- `hiddenMetrics` for bar list and table [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256879) in GitLab 19.5.
+
+{{< /history >}}
+
+The `stat`, `barList`, and `table` display types support a dynamic description in
+[analytics mode](_index.md#analytics-mode). Use a description to summarize the result in a
+sentence, alongside the visualization.
+
+To describe the result, set `description` under `displayConfig`. A description can include
+`%{metricName}` placeholders, where `metricName` identifies a metric from `metrics`.
+GitLab replaces each placeholder with that metric's value, formatted by that metric's own unit. A
+placeholder that names a metric the query does not select shows a validation error. When a metric's
+value is missing from the response, its placeholder renders as an em dash (`—`).
+
+Metrics are always identified by key name, unless they are duplicated parameterized metrics, in
+which case they need an alias to be identified. For example, `metrics: totalCount as "count"` is
+still referenced as `%{totalCount}`, because the alias only sets the label. When the same metric
+appears twice with different parameters, as in
+`metrics: durationQuantile(0.5) as "Median", durationQuantile(0.95) as "p95 duration"`, each alias
+becomes the key, so you reference them as `%{Median}` and `%{p95 duration}`.
+
+For bar list and table, a description can't use placeholders when the query has `dimensions`. This
+causes a validation error in the view: `Description placeholders cannot be used with dimensions.`
+A placeholder reads a single row, so with dimensions it would show one group's value as if it
+covered every group. A description with no placeholders still works with dimensions.
+
+For bar list and table, set `hiddenMetrics` under `displayConfig` to a list of metrics to leave out
+of the bars or columns. Name them the same way as placeholders. Naming a duplicated metric by its
+base name, such as `durationQuantile`, hides every copy of it. GitLab still runs those metrics, so
+the description can quote them. A `hiddenMetrics` value that isn't a list, or a name that isn't one of the query's
+metrics, causes a validation error in the view. A bar list needs at least one metric left out of
+`hiddenMetrics`.
+
+The description renders above the visualization. While the query loads, a description that
+contains placeholders stays hidden, so it never flashes em dashes for values it doesn't have yet.
+
+### Example
+
+To plot the median and 75th percentile time to merge for merge requests created by GitLab Duo,
+and quote how many merged without drawing a third bar:
+
+````yaml
+```glql
+display: barList
+mode: analytics
+query: type = MergeRequest and createdByDuo = true and merged >= -30d
+metrics: timeToMergeQuantile(0.5) as "Median", timeToMergeQuantile(0.75) as "p75", throughputCount
+displayConfig:
+  description: "%{throughputCount} merged merge requests"
+  hiddenMetrics: [throughputCount]
 ```
 ````
 

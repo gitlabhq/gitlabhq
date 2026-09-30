@@ -5,6 +5,16 @@ import {
 } from 'jest/glql/mock_data';
 import BarList from './bar_list.vue';
 
+// The shape the DAP Impact MR cycle time panels use: two quantiles plus a merged count.
+const QUANTILE_FIELDS = [
+  { key: 'Median', field: 'timeToMergeQuantile', label: 'Median', type: 'metric' },
+  { key: 'p75', field: 'timeToMergeQuantile', label: 'p75', type: 'metric' },
+  { key: 'throughputCount', field: 'throughputCount', label: 'Merged', type: 'metric' },
+];
+
+// 9h 24m and 23h, in seconds.
+const QUANTILES = { nodes: [{ Median: 33840, p75: 82800, throughputCount: 2362 }] };
+
 export default {
   component: BarList,
   title: 'glql/components/presenters/bar_list',
@@ -12,7 +22,10 @@ export default {
     data: { control: false, description: 'Aggregated query result, as `{ nodes: [] }`.' },
     fields: { control: false, description: 'Dimension and metric fields the query selected.' },
     loading: { control: 'boolean' },
-    displayConfig: { control: 'object', description: 'Block `displayConfig`, e.g. `maxRows`.' },
+    displayConfig: {
+      control: 'object',
+      description: 'Block `displayConfig`, e.g. `maxRows`, `description`, `hiddenMetrics`.',
+    },
 
     // events
     error: { action: 'error' },
@@ -56,6 +69,19 @@ ZeroTotal.args = {
       { language: 'ruby', totalCount: 0 },
       { language: 'go', totalCount: 0 },
     ],
+  },
+};
+
+// Without a dimension each metric becomes a bar, so a metric that only the description
+// quotes has to be named in `hiddenMetrics` to stay out of them.
+export const WithDescription = Template.bind({});
+WithDescription.args = {
+  ...Default.args,
+  data: QUANTILES,
+  fields: QUANTILE_FIELDS,
+  displayConfig: {
+    description: '%{throughputCount} merged merge requests',
+    hiddenMetrics: ['throughputCount'],
   },
 };
 

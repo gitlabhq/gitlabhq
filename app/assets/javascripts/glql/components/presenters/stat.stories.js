@@ -64,6 +64,13 @@ AuthoredDescription.args = {
   displayConfig: { description: 'Merge requests merged in the last 30 days' },
 };
 
+// A placeholder resolves against the aggregated row, formatted in the metric's own unit.
+export const InterpolatedDescription = Template.bind({});
+InterpolatedDescription.args = {
+  ...Default.args,
+  displayConfig: { description: '%{totalCount} merged in the last 30 days' },
+};
+
 export const WithTitleAndUnit = Template.bind({});
 WithTitleAndUnit.args = {
   ...Default.args,

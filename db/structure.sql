@@ -13153,8 +13153,10 @@ CREATE TABLE ai_flow_triggers (
     active boolean DEFAULT true NOT NULL,
     autonomous_service_account_id bigint,
     group_id bigint,
+    goals jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ai_flow_triggers_filter_is_hash CHECK ((jsonb_typeof(filter) = 'object'::text)),
+    CONSTRAINT check_ai_flow_triggers_goals_is_hash CHECK ((jsonb_typeof(goals) = 'object'::text)),
     CONSTRAINT check_ai_flow_triggers_project_or_group CHECK ((num_nonnulls(group_id, project_id) = 1)),
     CONSTRAINT check_ai_flow_triggers_user_consumer_mutually_exclusive CHECK ((num_nonnulls(ai_catalog_item_consumer_id, user_id) <= 1)),
     CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))

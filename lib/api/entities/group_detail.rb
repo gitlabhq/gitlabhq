@@ -3,6 +3,9 @@
 module API
   module Entities
     class GroupDetail < Group
+      expose :require_sha_for_merge, documentation: { type: 'Boolean' }
+      expose :lock_require_sha_for_merge, documentation: { type: 'Boolean' }
+
       expose :shared_with_groups, documentation: { is_array: true, type: 'Hash' } do |group, options|
         SharedGroupWithGroup.represent(group.shared_with_group_links_visible_to_user(options[:current_user]))
       end

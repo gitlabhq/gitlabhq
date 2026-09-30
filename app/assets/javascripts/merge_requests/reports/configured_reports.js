@@ -13,3 +13,5 @@ export const hasBrowserPerformanceReport = () => false;
 export const hasLoadPerformanceReport = () => false;
 
 export const hasMetricsReport = () => false;
+
+export const hasStatusChecksReport = () => false;

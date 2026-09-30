@@ -122,11 +122,11 @@ export default {
           action: this.filter ? this.filter.split(';') : null,
         };
       },
-      update({ currentUser: { id, todos: { nodes = [] } } = {} }) {
-        this.currentUserId = id;
+      update({ currentUser }) {
+        this.currentUserId = currentUser?.id;
         this.showLoading = false;
 
-        return nodes;
+        return currentUser?.todos?.nodes ?? [];
       },
       error(error) {
         Sentry.captureException(error);

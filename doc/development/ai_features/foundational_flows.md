@@ -188,7 +188,7 @@ on_session_failed: ->(workflow:) do
 end
 ```
 
-Hooks differ from `before_start` and `after_start`, which run inline while a trigger
+Hooks differ from `before_start`, which runs inline while a trigger
 starts a flow. These run asynchronously after the session changes state, so they fire
 no matter which service created the session.
 

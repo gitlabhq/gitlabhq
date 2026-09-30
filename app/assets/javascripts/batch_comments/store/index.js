@@ -10,6 +10,7 @@ export const useBatchComments = defineStore('batchComments', {
       fetchDraftsPromise: null,
       drafts: [],
       isPublishing: false,
+      publishReviewId: null,
       currentlyPublishingDrafts: [],
       shouldAnimateReviewButton: false,
       isMergeRequest: false,

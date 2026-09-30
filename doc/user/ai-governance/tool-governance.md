@@ -80,6 +80,7 @@ Background access
 |------|------|
 | Read (GitLab resources) | Always Allow |
 | Read (local files) | Always Ask |
+| Read (agent session) | Always Allow |
 | Write | Always Ask |
 | Delete | Always Ask |
 

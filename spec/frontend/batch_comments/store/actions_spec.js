@@ -224,6 +224,46 @@ describe('Batch comments store actions', () => {
       expect(axios.post.mock.calls[1]).toEqual(['http://test.host', { ids: [2] }]);
       expect(store[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]).toHaveBeenCalled();
     });
+
+    it('publishes every batch into one review when improvedReviewEmail is enabled', async () => {
+      window.gon.features = { improvedReviewEmail: true };
+      mock.onAny().reply(HTTP_STATUS_OK, { review_id: 5 });
+      jest.spyOn(axios, 'post');
+
+      store.$patch({ drafts: [{ id: 1 }, { id: 2 }, { id: 3 }] });
+
+      await store.publishReviewInBatches({ note: 'Summary' }, 1);
+
+      expect(axios.post.mock.calls.map(([, data]) => data)).toEqual([
+        { ids: [1], defer_notifications: true },
+        { ids: [2], defer_notifications: true, review_id: 5 },
+        { ids: [3], note: 'Summary', review_id: 5 },
+      ]);
+    });
+
+    it('continues the same review when a failed batch is retried', async () => {
+      window.gon.features = { improvedReviewEmail: true };
+      mock
+        .onPost()
+        .replyOnce(HTTP_STATUS_OK, { review_id: 5 })
+        .onPost()
+        .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .onPost()
+        .reply(HTTP_STATUS_OK, { review_id: 5 });
+      jest.spyOn(axios, 'post');
+
+      store.$patch({ drafts: [{ id: 1 }, { id: 2 }] });
+
+      await expect(store.publishReviewInBatches({}, 1)).rejects.toThrow();
+      await store.publishReviewInBatches({}, 1);
+
+      expect(axios.post.mock.calls.map(([, data]) => data)).toEqual([
+        { ids: [1], defer_notifications: true },
+        { ids: [2], review_id: 5 },
+        { ids: [2], review_id: 5 },
+      ]);
+      expect(store.publishReviewId).toBeNull();
+    });
   });
 
   describe('updateDraft', () => {

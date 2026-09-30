@@ -224949,6 +224949,12 @@
               "description": "Callout feature name for billing_retrial_card.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "ORGANIZATIONS_AVAILABLE_ALERT",
+              "description": "Callout feature name for organizations_available_alert.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

@@ -29,7 +29,7 @@ describe('BoardColumnCount', () => {
     groupFilter: (value) => ({ status: { name: value.name } }),
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     apolloProvider = createMockApollo([[getWorkItemsCountOnlyQuery, countQueryHandler]]);
 
     wrapper = shallowMountExtended(BoardColumnCount, {
@@ -39,7 +39,6 @@ describe('BoardColumnCount', () => {
         strategy: mockStrategy,
         rootPageFullPath: 'full/path',
         baseQueryVariables,
-        ...props,
       },
     });
   };

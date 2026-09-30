@@ -40,7 +40,6 @@ import {
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import mergeChecksQuery from './queries/merge_checks.query.graphql';
-import mergeChecksSubscription from './queries/merge_checks.subscription.graphql';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';
 
@@ -123,7 +122,10 @@ export default {
           },
         ) {
           if (mergeRequestMergeStatusUpdated) {
+            const { userPermissions, mergeabilityChecks } = mergeRequestMergeStatusUpdated;
+
             this.mr.setGraphqlSubscriptionData(mergeRequestMergeStatusUpdated);
+            this.mergeChecksState = { userPermissions, mergeabilityChecks };
           }
         },
       },
@@ -140,31 +142,6 @@ export default {
       update: (data) => data?.project?.mergeRequest,
       error() {
         this.mergeChecksState = {};
-      },
-      subscribeToMore: {
-        document() {
-          return mergeChecksSubscription;
-        },
-        skip() {
-          return !this.mr?.id;
-        },
-        variables() {
-          return {
-            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
-          };
-        },
-        updateQuery(
-          _,
-          {
-            subscriptionData: {
-              data: { mergeRequestMergeStatusUpdated },
-            },
-          },
-        ) {
-          if (mergeRequestMergeStatusUpdated) {
-            this.mergeChecksState = mergeRequestMergeStatusUpdated;
-          }
-        },
       },
     },
   },

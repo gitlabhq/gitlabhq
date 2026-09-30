@@ -50,7 +50,7 @@ describe('Pipeline editor branch switcher', () => {
     });
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
     mockApollo = createMockApollo(handlers, resolvers);
 
@@ -59,7 +59,6 @@ describe('Pipeline editor branch switcher', () => {
     wrapper = shallowMount(BranchSelector, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
       provide: {
         projectFullPath: mockProjectFullPath,

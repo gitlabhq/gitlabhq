@@ -10,6 +10,7 @@ import {
   hasLicenseComplianceReport,
   hasLoadPerformanceReport,
   hasMetricsReport,
+  hasStatusChecksReport,
   hasTestSummaryReport,
   hasTerraformReport,
 } from 'ee_else_ce/merge_requests/reports/configured_reports';
@@ -111,6 +112,9 @@ export default {
     },
     hasMetricsReports() {
       return hasMetricsReport(state.mr);
+    },
+    hasStatusChecksReports() {
+      return hasStatusChecksReport(state.mr);
     },
     hasTestSummaryReports() {
       return hasTestSummaryReport(state.mr);

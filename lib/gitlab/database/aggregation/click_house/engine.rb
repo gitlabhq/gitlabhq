@@ -60,7 +60,7 @@ module Gitlab
             # Each page re-runs the whole aggregation and skips earlier rows with OFFSET, so clients
             # that walk every page cost less with fewer, larger pages.
             def max_page_size
-              250
+              500
             end
           end
 

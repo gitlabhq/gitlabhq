@@ -166,14 +166,16 @@ export default {
           <time-ago :time="value" />
         </template>
         <template #cell(status)="{ item, toggleDetails, detailsShowing }">
-          <import-status :status="item.import_status" class="gl-inline-block gl-w-13" />
-          <gl-button
-            v-if="item.import_status === 'failed'"
-            class="gl-ml-3"
-            :selected="detailsShowing"
-            @click="toggleDetails"
-            >{{ __('Details') }}</gl-button
-          >
+          <div class="gl-inline-flex gl-items-center gl-whitespace-nowrap">
+            <import-status :status="item.import_status" class="gl-inline-block gl-w-13" />
+            <gl-button
+              v-if="item.import_status === 'failed'"
+              class="gl-ml-3"
+              :selected="detailsShowing"
+              @click="toggleDetails"
+              >{{ __('Details') }}</gl-button
+            >
+          </div>
         </template>
         <template #row-details="{ item }">
           <import-error-details :id="item.id" />

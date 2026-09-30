@@ -12,6 +12,7 @@ import {
   METRICS_ROUTE,
   TEST_SUMMARY_ROUTE,
   TERRAFORM_ROUTE,
+  STATUS_CHECKS_ROUTE,
   ROOT_ROUTE,
   EMPTY_STATE_NO_PIPELINE,
   EMPTY_STATE_PIPELINE_RUNNING,
@@ -29,6 +30,7 @@ const REPORT_ROUTES = [
   METRICS_ROUTE,
   TEST_SUMMARY_ROUTE,
   TERRAFORM_ROUTE,
+  STATUS_CHECKS_ROUTE,
 ];
 const OWNED_ROUTES = [ROOT_ROUTE, ...REPORT_ROUTES];
 
@@ -98,6 +100,12 @@ export default {
     TerraformNavItem: defineAsyncComponent(
       () => import('~/merge_requests/reports/terraform/terraform_nav_item.vue'),
     ),
+    StatusChecksProvider: defineAsyncComponent(
+      () => import('ee_component/merge_requests/reports/status_checks/status_checks_provider.vue'),
+    ),
+    StatusChecksNavItem: defineAsyncComponent(
+      () => import('ee_component/merge_requests/reports/status_checks/status_checks_nav_item.vue'),
+    ),
   },
   mixins: [mergeRequestData],
   inject: {
@@ -120,9 +128,15 @@ export default {
         [METRICS_ROUTE]: this.hasMetricsReports,
         [TEST_SUMMARY_ROUTE]: this.hasTestSummaryReports,
         [TERRAFORM_ROUTE]: this.hasTerraformReports,
+        [STATUS_CHECKS_ROUTE]: this.hasStatusChecksReports,
       };
 
-      return REPORT_ROUTES.filter((route) => isConfigured[route]);
+      return REPORT_ROUTES.filter((route) => {
+        if (!isConfigured[route]) return false;
+
+        // Status checks do not come from a pipeline, so they list without one.
+        return this.isPipelineComplete || route === STATUS_CHECKS_ROUTE;
+      });
     },
     isPipelineComplete() {
       return this.pipelineState === PIPELINE_STATE.complete;
@@ -130,8 +144,13 @@ export default {
     isSecurityScanStateKnown() {
       return this.hasSecurityScans !== null;
     },
+    isReportSetKnown() {
+      if (this.isPipelineComplete) return this.isSecurityScanStateKnown;
+
+      return this.hasStatusChecksReports;
+    },
     hasConfiguredReports() {
-      return this.isPipelineComplete && this.configuredRoutes.length > 0;
+      return this.configuredRoutes.length > 0;
     },
     emptyStateType() {
       if (this.pipelineState === PIPELINE_STATE.noPipeline) return EMPTY_STATE_NO_PIPELINE;
@@ -145,6 +164,11 @@ export default {
   },
   watch: {
     $route() {
+      this.syncRouteWithConfiguredReports();
+    },
+    // Status checks can become configured while the pipeline still runs, and no
+    // provider emits in that case, so the report set itself has to drive the sync.
+    configuredRoutes() {
       this.syncRouteWithConfiguredReports();
     },
   },
@@ -163,8 +187,7 @@ export default {
       if (action === 'reports') this.syncRouteWithConfiguredReports();
     },
     syncRouteWithConfiguredReports() {
-      if (!this.isPipelineComplete) return;
-      if (!this.isSecurityScanStateKnown) return;
+      if (!this.isReportSetKnown) return;
       if (!window.location.pathname.startsWith(this.basePath)) return;
 
       const { name } = this.$route;
@@ -220,6 +243,9 @@ export default {
             <terraform-nav-item />
           </terraform-provider>
         </template>
+        <status-checks-provider v-if="hasStatusChecksReports" :mr="mr">
+          <status-checks-nav-item />
+        </status-checks-provider>
       </nav>
     </aside>
     <section class="@md/panel:gl-pt-5">

@@ -76930,7 +76930,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c4f77126635f"
+              "$ref": "#/components/schemas/RequestBody_3eca46952916"
     get:
       operationId: getApiV4GroupsId
       summary: Retrieve a group
@@ -101212,6 +101212,10 @@ components:
         built_in_project_templates_enabled:
           type: boolean
         lock_built_in_project_templates_enabled:
+          type: boolean
+        require_sha_for_merge:
+          type: boolean
+        lock_require_sha_for_merge:
           type: boolean
         shared_with_groups:
           type: array
@@ -125767,7 +125771,7 @@ components:
       required:
       - name
       - path
-    RequestBody_c4f77126635f:
+    RequestBody_3eca46952916:
       type: object
       properties:
         name:
@@ -126168,6 +126172,16 @@ components:
         math_rendering_limits_enabled:
           type: boolean
           description: Indicates if math rendering limits are used for this group.
+          nullable: true
+        require_sha_for_merge:
+          type: boolean
+          description: Indicates whether merge requests in this group require a valid
+            commit SHA for calls to the merge a merge request endpoint
+          nullable: true
+        lock_require_sha_for_merge:
+          type: boolean
+          description: Enforce the require_sha_for_merge setting for all descendant
+            groups
           nullable: true
         max_artifacts_size:
           type: integer

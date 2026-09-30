@@ -185,6 +185,121 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
     end
   end
 
+  context 'when tags are requested' do
+    let(:fields) do
+      %(
+        tags(sort: NAME_ASC, first: 2) {
+          nodes {
+            name
+            message
+            commit {
+              sha
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      )
+    end
+
+    let(:tag_names) { repository.tags_sorted_by('name_asc').map(&:name) }
+
+    it 'returns the first page of tags with their commit' do
+      post_graphql(query, current_user: current_user)
+
+      tags = graphql_data_at(:project, :repository, :tags)
+
+      expect(tags['nodes'].pluck('name')).to eq(tag_names.first(2))
+      expect(tags['nodes'].first['commit']['sha']).to eq(repository.find_tag(tag_names.first).dereferenced_target.id)
+      expect(tags['pageInfo']['hasNextPage']).to be(true)
+      expect(tags['pageInfo']['endCursor']).to be_present
+    end
+
+    it 'returns the next page when the cursor is passed back' do
+      post_graphql(query, current_user: current_user)
+      cursor = graphql_data_at(:project, :repository, :tags, :page_info, :end_cursor)
+
+      next_query = graphql_query_for(
+        'project',
+        { fullPath: project.full_path },
+        query_graphql_field('repository', {}, %(tags(sort: NAME_ASC, first: 2, after: "#{cursor}") { nodes { name } }))
+      )
+
+      post_graphql(next_query, current_user: current_user)
+
+      expect(graphql_data_at(:project, :repository, :tags, :nodes).pluck('name')).to eq(tag_names.drop(2).first(2))
+    end
+
+    it 'resolves a page of tags with one FindAllTags call and nothing per tag' do
+      allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:project, :repository, :tags, :nodes).size).to eq(2)
+      expect(Gitlab::GitalyClient)
+        .to have_received(:call).with(anything, :ref_service, :find_all_tags, anything, anything).once
+      expect(Gitlab::GitalyClient)
+        .not_to have_received(:call).with(anything, :ref_service, :find_tag, anything, anything)
+      expect(Gitlab::GitalyClient)
+        .not_to have_received(:call).with(anything, :commit_service, :find_commit, anything, anything)
+    end
+
+    context 'when sorting by version' do
+      let(:fields) { %(tags(sort: VERSION_ASC, first: 100) { nodes { name } }) }
+      let(:version_tags) { %w[v1.9.0 v1.10.0] }
+
+      # Ascending is the direction that discriminates: name order puts v1.10.0
+      # first, version order puts v1.9.0 first. Descending agrees with the
+      # refname fallback Gitaly uses when sort_by is unset, so it would pass
+      # even with version sorting degraded.
+      before do
+        version_tags.each { |tag| repository.add_tag(current_user, tag, 'master') }
+      end
+
+      # Guarded because these tags live on the file-wide project: a partial
+      # failure above must not leak them into examples that assert on all tags.
+      after do
+        version_tags.each { |tag| repository.rm_tag(current_user, tag) if repository.find_tag(tag) }
+      end
+
+      it 'orders tags by semantic version rather than by name' do
+        post_graphql(query, current_user: current_user)
+
+        names = graphql_data_at(:project, :repository, :tags, :nodes).pluck('name')
+
+        expect(names.index('v1.9.0')).to be < names.index('v1.10.0')
+      end
+    end
+
+    context 'when searching' do
+      let(:fields) { %(tags(search: "v1.1") { nodes { name } }) }
+
+      it 'returns only matching tags' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :repository, :tags, :nodes).pluck('name')).to all(include('v1.1'))
+        expect(graphql_data_at(:project, :repository, :tags, :nodes)).not_to be_empty
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL',
+      [:read_project, :read_code, :read_repository_tag] do
+      let(:user) { current_user }
+      let(:boundary_object) { project }
+      let(:query) do
+        graphql_query_for(
+          'project',
+          { fullPath: project.full_path },
+          query_graphql_field('repository', {}, 'tags { nodes { name } }')
+        )
+      end
+
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+  end
+
   context 'when commit is requested' do
     let(:fields) do
       %(

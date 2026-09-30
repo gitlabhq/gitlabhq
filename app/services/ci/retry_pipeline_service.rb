@@ -56,7 +56,11 @@ module Ci
     def check_rate_limit(pipeline)
       return unless current_user
       return unless Feature.enabled?(:rate_limit_pipeline_retry, pipeline.project)
-      return unless rate_limit_throttled?(pipeline)
+
+      limit = throttled_limit(pipeline)
+      return unless limit
+
+      log_rate_limited(pipeline, limit)
 
       ServiceResponse.error(
         message: ::Gitlab::ApplicationRateLimiter.throttled_error_message,
@@ -65,14 +69,30 @@ module Ci
       )
     end
 
-    # Short-circuited on purpose: a call already blocked per-pipeline must not consume the
-    # per-project budget, or repeated retries of one pipeline would escalate into a
-    # project-wide block. The per-project counter therefore tracks calls that did work.
-    def rate_limit_throttled?(pipeline)
-      ::Gitlab::ApplicationRateLimiter.throttled?(
+    # Returns the key of the limit that fired, or nil. Short-circuited on purpose: a call
+    # already blocked per-pipeline must not consume the per-project budget, or repeated
+    # retries of one pipeline would escalate into a project-wide block.
+    def throttled_limit(pipeline)
+      return :pipeline_retry if ::Gitlab::ApplicationRateLimiter.throttled?(
         :pipeline_retry, scope: { user: current_user, ci_pipeline: pipeline }
-      ) || ::Gitlab::ApplicationRateLimiter.throttled?(
+      )
+
+      return :pipeline_retry_per_project if ::Gitlab::ApplicationRateLimiter.throttled?(
         :pipeline_retry_per_project, scope: { user: current_user, project: pipeline.project }
+      )
+
+      nil
+    end
+
+    def log_rate_limited(pipeline, limit)
+      Gitlab::AppJsonLogger.info(
+        Labkit::Fields::CLASS_NAME => self.class.to_s,
+        message: 'Pipeline retry rate limit exceeded',
+        rate_limit: limit.to_s,
+        Labkit::Fields::GL_PROJECT_ID => pipeline.project_id,
+        Labkit::Fields::GL_PIPELINE_ID => pipeline.id,
+        Labkit::Fields::GL_USER_ID => current_user.id,
+        **Gitlab::ApplicationContext.current
       )
     end
 

@@ -45,7 +45,7 @@ describe('Test reports app', () => {
     setPage: jest.fn(),
   };
 
-  const createComponent = ({ state = {}, getterStubs = {} } = {}) => {
+  const createComponent = ({ state = {} } = {}) => {
     store = new Vuex.Store({
       modules: {
         testReports: {
@@ -59,7 +59,6 @@ describe('Test reports app', () => {
           actions: actionSpies,
           getters: {
             ...getters,
-            ...getterStubs,
           },
         },
       },

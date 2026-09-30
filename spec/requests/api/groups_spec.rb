@@ -11,7 +11,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be_with_reload(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
+  let_it_be_with_reload(:group1) { create(:group, :with_require_sha_for_merge_enabled_and_locked, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
   let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
@@ -803,6 +803,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['shared_projects'].length).to eq(2)
         expect(json_response['shared_projects'][0]['id']).to eq(project2.id)
         expect(json_response['math_rendering_limits_enabled']).to eq(group2.math_rendering_limits_enabled?)
+        expect(json_response['require_sha_for_merge']).to be(true)
+        expect(json_response['lock_require_sha_for_merge']).to be(true)
       end
 
       it "returns one of user1's groups without projects when with_projects option is set to false", :aggregate_failures do
@@ -1358,6 +1360,22 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['lock_resource_access_token_notify_inherited']).to be(true)
         expect(group1.reload.lock_resource_access_token_notify_inherited).to be(true)
+      end
+
+      it 'updates require_sha_for_merge' do
+        put api("/groups/#{group1.id}", user1), params: { require_sha_for_merge: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['require_sha_for_merge']).to be(false)
+        expect(group1.reload.require_sha_for_merge).to be(false)
+      end
+
+      it 'updates lock_require_sha_for_merge' do
+        put api("/groups/#{group1.id}", user1), params: { lock_require_sha_for_merge: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['lock_require_sha_for_merge']).to be(false)
+        expect(group1.reload.lock_require_sha_for_merge).to be(false)
       end
 
       context 'when default_branch_protection_defaults set to No one' do

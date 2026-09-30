@@ -47,7 +47,6 @@ describe('WorkItemAncestors', () => {
   const findPopover = () => wrapper.findComponent(GlPopover);
 
   const createComponent = ({
-    props = {},
     options = {},
     ancestorsQueryHandler = workItemAncestorsQueryHandler,
   } = {}) => {
@@ -59,7 +58,6 @@ describe('WorkItemAncestors', () => {
       apolloProvider: mockApollo,
       propsData: {
         workItem: workItemTask,
-        ...props,
       },
       ...options,
     });

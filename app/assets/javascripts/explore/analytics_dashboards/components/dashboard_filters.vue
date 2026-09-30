@@ -36,7 +36,7 @@ export default {
       default: () => ({}),
     },
   },
-  emits: ['set-date-range', 'set-scope', 'error'],
+  emits: ['set-date-range', 'set-scope', 'ready', 'error'],
   computed: {
     scopeConfig() {
       return this.dashboardFilters?.scope ?? {};
@@ -66,6 +66,10 @@ export default {
       return this.dateRangeFilter.dateRangeOption ?? this.dateRangeDefaultOption;
     },
   },
+  mounted() {
+    // Call ready immediately if the scope picker is disabled
+    if (!this.showScopePicker) this.$emit('ready');
+  },
 };
 </script>
 <template>
@@ -84,6 +88,7 @@ export default {
         :multi-select="scopeMultiSelect"
         :initial-paths="scopePaths"
         @change="$emit('set-scope', $event)"
+        @ready="$emit('ready')"
         @error="$emit('error', $event)"
       />
     </gl-form-group>

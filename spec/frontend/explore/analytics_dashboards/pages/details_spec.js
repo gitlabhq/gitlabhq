@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -789,12 +789,13 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
     // Panels only render once a namespace is chosen, so these specs select a
     // group before asserting on them.
-    const createWithConfig = async (config) => {
+    const createWithConfig = async (config, { scopedSlots } = {}) => {
       createComponent({
         stubs: {
           DashboardLoader: dashboardLoaderSlotStub(config),
           GlDashboardLayout: filtersSlotStub,
         },
+        scopedSlots,
       });
 
       await waitForPromises();
@@ -802,7 +803,17 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     };
 
     describe('when the dashboard defines views', () => {
-      beforeEach(() => createWithConfig(configWithViews));
+      let filterActionsProps;
+
+      beforeEach(() =>
+        createWithConfig(configWithViews, {
+          scopedSlots: {
+            'filter-actions': (props) => {
+              filterActionsProps = props;
+            },
+          },
+        }),
+      );
 
       it('renders a tab for each view', () => {
         expect(findViewsTabs().exists()).toBe(true);
@@ -821,6 +832,24 @@ describe('ExploreAnalyticsDashboardDetails', () => {
         await waitForPromises();
 
         expect(findDashboardLayout().props('config').panels).toEqual(detailsPanels);
+      });
+
+      it('withholds the panels from the layout for a tick when switching views', async () => {
+        findViewsTabs().vm.$emit('input', 1);
+        await nextTick();
+
+        expect(findDashboardLayout().props('config').panels).toEqual([]);
+
+        await waitForPromises();
+
+        expect(findDashboardLayout().props('config').panels).toEqual(detailsPanels);
+      });
+
+      it('keeps the panels in the filter-actions slot when switching views', async () => {
+        findViewsTabs().vm.$emit('input', 1);
+        await nextTick();
+
+        expect(filterActionsProps.panels).toEqual(detailsPanels);
       });
 
       it('syncs the active view tab with the view query param', () => {
@@ -935,8 +964,51 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       await waitForPromises();
     });
 
-    it('renders when no group or project is selected', () => {
-      expect(findEmptyState().props('title')).toBe('Select a group or project');
+    it('does not render before the scope picker is ready', () => {
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    describe('once the scope picker is ready', () => {
+      beforeEach(async () => {
+        findDashboardFilters().vm.$emit('ready');
+        await nextTick();
+      });
+
+      it('renders when no group or project is selected', () => {
+        expect(findEmptyState().props('title')).toBe('Select a group or project');
+      });
+
+      describe('when the selected group is cleared', () => {
+        beforeEach(async () => {
+          await selectGroup();
+          await clearScope();
+        });
+
+        it('returns to the empty state', () => {
+          expect(findEmptyState().exists()).toBe(true);
+          expect(findDashboardLayout().props('config').panels).toEqual([]);
+        });
+      });
+
+      describe('when the filters are reset', () => {
+        beforeEach(async () => {
+          await selectGroup();
+          findResetButton().vm.$emit('click');
+          await waitForPromises();
+        });
+
+        it('does not render until the remounted scope picker is ready', () => {
+          expect(findEmptyState().exists()).toBe(false);
+          expect(findDashboardLayout().props('config').panels).toEqual([]);
+        });
+
+        it('returns to the empty state once the remounted scope picker is ready', async () => {
+          findDashboardFilters().vm.$emit('ready');
+          await nextTick();
+
+          expect(findEmptyState().exists()).toBe(true);
+        });
+      });
     });
 
     it('withholds the panels from the layout', () => {
@@ -966,30 +1038,45 @@ describe('ExploreAnalyticsDashboardDetails', () => {
         expect(findDashboardLayout().props('config').panels).toEqual(panels);
       });
     });
+  });
 
-    describe('when the selected group is cleared', () => {
-      beforeEach(async () => {
-        await selectGroup();
-        await clearScope();
-      });
+  describe('switching views', () => {
+    const gridPanel = (id) => ({ id, title: id, gridAttributes: { width: 6, height: 2 } });
+    const configWithViews = {
+      panels: [],
+      views: [
+        { title: 'Overview', panels: [gridPanel('panel-1')] },
+        { title: 'Details', panels: [gridPanel('panel-2')] },
+      ],
+    };
 
-      it('returns to the empty state', () => {
-        expect(findEmptyState().exists()).toBe(true);
-        expect(findDashboardLayout().props('config').panels).toEqual([]);
+    const findGrid = () => wrapper.findComponent({ name: 'GlGridLayout' });
+    const switchView = async () => {
+      findViewsTabs().vm.$emit('input', 1);
+      await waitForPromises();
+    };
+
+    beforeEach(async () => {
+      await createWithFilters(filtersLoaderStubFor(configWithViews), {
+        stubs: { GlDashboardLayout },
       });
+      await selectGroup();
     });
 
-    describe('when the filters are reset', () => {
-      beforeEach(async () => {
-        await selectGroup();
-        findResetButton().vm.$emit('click');
-        await waitForPromises();
-      });
+    it('does not re-render the filters', async () => {
+      const filterBarBefore = findDashboardFilters().element;
 
-      it('returns to the empty state', () => {
-        expect(findEmptyState().exists()).toBe(true);
-        expect(findDashboardLayout().props('config').panels).toEqual([]);
-      });
+      await switchView();
+
+      expect(findDashboardFilters().element).toBe(filterBarBefore);
+    });
+
+    it('re-renders the dashboard content', async () => {
+      const gridBefore = findGrid().element;
+
+      await switchView();
+
+      expect(findGrid().element).not.toBe(gridBefore);
     });
   });
 

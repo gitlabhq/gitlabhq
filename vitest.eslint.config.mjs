@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-default-export */
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({

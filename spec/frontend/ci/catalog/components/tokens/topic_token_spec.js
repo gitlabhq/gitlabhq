@@ -43,14 +43,13 @@ describe('TopicToken', () => {
     await waitForPromises();
   };
 
-  const createComponent = ({ props = {}, handler = queryHandler } = {}) => {
+  const createComponent = ({ handler = queryHandler } = {}) => {
     const mockApollo = createMockApollo([[searchProjectTopics, handler]]);
 
     wrapper = shallowMountExtended(TopicToken, {
       apolloProvider: mockApollo,
       propsData: {
         ...defaultProps,
-        ...props,
       },
     });
   };

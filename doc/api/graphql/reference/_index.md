@@ -32357,6 +32357,29 @@ Fields:
 | <a id="suggestionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="suggestionedge-node"></a>`node` | [`Suggestion`](#suggestion) | The item at the end of the edge. |
 
+#### `TagConnection`
+
+The connection type for [`Tag`](#tag).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="tagconnection-edges"></a>`edges` | [`[TagEdge]`](#tagedge) | A list of edges. |
+| <a id="tagconnection-nodes"></a>`nodes` | [`[Tag]`](#tag) | A list of nodes. |
+| <a id="tagconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `TagEdge`
+
+The edge type for [`Tag`](#tag).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="tagedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="tagedge-node"></a>`node` | [`Tag`](#tag) | The item at the end of the edge. |
+
 #### `TerraformStateConnection`
 
 The connection type for [`TerraformState`](#terraformstate).
@@ -47520,6 +47543,7 @@ Fields:
 | <a id="group-metadata"></a>`metadata` {{< icon name="warning-solid" >}} | [`NamespaceMetadata`](#namespacemetadata) | Introduced in GitLab 18.6. Status: Experiment. Metadata information for the namespace. |
 | <a id="group-name"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="group-namespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
+| <a id="group-orbittrial"></a>`orbitTrial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can only be resolved for one group in any single request. |
 | <a id="group-organizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.1. Status: Experiment. Path for editing group at the organization level. |
 | <a id="group-packagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="group-parent"></a>`parent` | [`Group`](#group) | Parent group. |
@@ -50200,6 +50224,7 @@ Fields:
 | <a id="grouppermissions-readcrmcontact"></a>`readCrmContact` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_contact` on this resource. |
 | <a id="grouppermissions-readcrmorganization"></a>`readCrmOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_organization` on this resource. |
 | <a id="grouppermissions-readgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
+| <a id="grouppermissions-readorbittrial"></a>`readOrbitTrial` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_orbit_trial` on this resource. |
 | <a id="grouppermissions-readproaianalytics"></a>`readProAiAnalytics` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_pro_ai_analytics` on this resource. |
 | <a id="grouppermissions-readrunnercloudprovisioninginfo"></a>`readRunnerCloudProvisioningInfo` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. If `true`, the user can perform `read_runner_cloud_provisioning_info` on this resource. |
 | <a id="grouppermissions-readsecurityscanprofiles"></a>`readSecurityScanProfiles` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. If `true`, the user can perform `read_security_scan_profiles` on the top-level namespace of this resource. Security scan profiles belong to the top-level namespace, so this ability is evaluated on the root ancestor rather than on this resource. |
@@ -55743,6 +55768,29 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="oncallrotationactiveperiodtype-endtime"></a>`endTime` | [`String`](#string) | End of the rotation active period. |
 | <a id="oncallrotationactiveperiodtype-starttime"></a>`startTime` | [`String`](#string) | Start of the rotation active period. |
+
+### `OrbitTrial`
+
+Orbit trial of a top-level group, as reported by CustomersDot.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbittrial-credits"></a>`credits` {{< icon name="warning-solid" >}} | [`OrbitTrialCredits`](#orbittrialcredits) | Introduced in GitLab 19.5. Status: Experiment. Credits of the trial. |
+| <a id="orbittrial-expireson"></a>`expiresOn` {{< icon name="warning-solid" >}} | [`Date`](#date) | Introduced in GitLab 19.5. Status: Experiment. Last day of the trial, in UTC. Null before a trial starts. |
+| <a id="orbittrial-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrbitTrialState!`](#orbittrialstate) | Introduced in GitLab 19.5. Status: Experiment. State of the trial. |
+
+### `OrbitTrialCredits`
+
+Credits of an Orbit trial.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbittrialcredits-remaining"></a>`remaining` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.5. Status: Experiment. Number of trial credits remaining. |
+| <a id="orbittrialcredits-total"></a>`total` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.5. Status: Experiment. Number of credits the trial started with. |
 
 ### `Organization`
 
@@ -62272,6 +62320,30 @@ Arguments:
 | <a id="repository-paginatedtree-recursive"></a>`recursive` | [`Boolean`](#boolean) | Used to get a recursive tree. Default is false. |
 | <a id="repository-paginatedtree-ref"></a>`ref` | [`String`](#string) | Commit ref to get the tree for. Default value is HEAD. |
 | <a id="repository-paginatedtree-reftype"></a>`refType` | [`RefType`](#reftype) | Type of ref. |
+
+##### `Repository.tags`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Tags in the repository.
+
+Returns [`TagConnection`](#tagconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repository-tags-search"></a>`search` | [`String`](#string) | Filter tags by name. Supports `^` for prefix, `$` for suffix, and `*` as a wildcard. |
+| <a id="repository-tags-sort"></a>`sort` | [`TagSort`](#tagsort) | Sort tags by the criteria. Defaults to `UPDATED_DESC`. |
 
 ##### `Repository.tree`
 
@@ -72654,6 +72726,17 @@ Enum defining the type of OpenTelemetry metric.
 | <a id="opentelemetrymetrictype-histogram_type"></a>`HISTOGRAM_TYPE` | Histogram Type type. |
 | <a id="opentelemetrymetrictype-sum_type"></a>`SUM_TYPE` | Sum Type type. |
 
+### `OrbitTrialState`
+
+State of the Orbit trial for a top-level group.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="orbittrialstate-active"></a>`ACTIVE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Trial is active. |
+| <a id="orbittrialstate-eligible"></a>`ELIGIBLE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Group can start a trial. |
+| <a id="orbittrialstate-ended"></a>`ENDED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Trial expired or used all its credits. |
+| <a id="orbittrialstate-not_eligible"></a>`NOT_ELIGIBLE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Group cannot start a trial. |
+
 ### `OrganizationClusterAgentFilter`
 
 Possible filter types for remote development cluster agents in an organization.
@@ -73881,6 +73964,19 @@ Status of the subscription to an issuable.
 | <a id="subscriptionstatus-explicitly_subscribed"></a>`EXPLICITLY_SUBSCRIBED` | User is explicitly subscribed to the issuable. |
 | <a id="subscriptionstatus-explicitly_unsubscribed"></a>`EXPLICITLY_UNSUBSCRIBED` | User is explicitly unsubscribed from the issuable. |
 
+### `TagSort`
+
+Values for sorting repository tags.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="tagsort-name_asc"></a>`NAME_ASC` | Name by ascending order. |
+| <a id="tagsort-name_desc"></a>`NAME_DESC` | Name by descending order. |
+| <a id="tagsort-updated_asc"></a>`UPDATED_ASC` | Tag creation date by ascending order. |
+| <a id="tagsort-updated_desc"></a>`UPDATED_DESC` | Tag creation date by descending order. |
+| <a id="tagsort-version_asc"></a>`VERSION_ASC` | Semantic version by ascending order. |
+| <a id="tagsort-version_desc"></a>`VERSION_DESC` | Semantic version by descending order. |
+
 ### `TerraformStateProtectionRuleAccessLevel`
 
 Access level for Terraform state protection rule write operations.
@@ -74164,6 +74260,7 @@ Name of the feature that the callout is for.
 | <a id="usergroupcalloutfeaturename-namespace_storage_limit_alert_warning_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_warning_threshold. |
 | <a id="usergroupcalloutfeaturename-namespace_storage_pre_enforcement_banner"></a>`NAMESPACE_STORAGE_PRE_ENFORCEMENT_BANNER` | Callout feature name for namespace_storage_pre_enforcement_banner. |
 | <a id="usergroupcalloutfeaturename-namespace_user_cap_reached_alert"></a>`NAMESPACE_USER_CAP_REACHED_ALERT` | Callout feature name for namespace_user_cap_reached_alert. |
+| <a id="usergroupcalloutfeaturename-organizations_available_alert"></a>`ORGANIZATIONS_AVAILABLE_ALERT` | Callout feature name for organizations_available_alert. |
 | <a id="usergroupcalloutfeaturename-overage_seat_count_threshold"></a>`OVERAGE_SEAT_COUNT_THRESHOLD` | Callout feature name for overage_seat_count_threshold. |
 | <a id="usergroupcalloutfeaturename-preview_usage_quota_free_plan_alert"></a>`PREVIEW_USAGE_QUOTA_FREE_PLAN_ALERT` | Callout feature name for preview_usage_quota_free_plan_alert. |
 | <a id="usergroupcalloutfeaturename-preview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |

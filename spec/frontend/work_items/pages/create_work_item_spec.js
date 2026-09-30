@@ -55,11 +55,10 @@ describe('Create work item page component', () => {
 
   const relatedItemQueryHandler = jest.fn().mockResolvedValue(mockRelatedItem);
 
-  const createComponent = ({ props = {}, provide = {}, $router = undefined } = {}) => {
+  const createComponent = ({ provide = {}, $router = undefined } = {}) => {
     wrapper = shallowMount(CreateWorkItemPage, {
       propsData: {
         rootPageFullPath: 'gitlab-org',
-        ...props,
       },
       apolloProvider: createMockApollo([[workItemRelatedItemQuery, relatedItemQueryHandler]]),
       mocks: {

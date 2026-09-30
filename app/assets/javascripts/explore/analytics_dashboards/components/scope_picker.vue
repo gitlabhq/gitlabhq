@@ -53,7 +53,7 @@ export default {
       default: false,
     },
   },
-  emits: ['change', 'error'],
+  emits: ['change', 'error', 'ready'],
   data() {
     return {
       topLevelGroups: [],
@@ -77,6 +77,7 @@ export default {
       // A default is only derived for a load that named no scope, and only until the user picks
       // something: deriving it again would put a group back after they cleared it.
       skipDefaultScope: this.initialPaths.length > 0,
+      isReady: false,
     };
   },
   apollo: {
@@ -101,11 +102,15 @@ export default {
     frecentGroup: {
       query: getFrecentGroupsQuery,
       update: ({ frecentGroups }) => frecentGroups?.[0] ?? null,
+      result() {
+        if (!this.frecentGroup) this.completeInitialLoad();
+      },
       skip() {
         return this.skipDefaultScope;
       },
       error(error) {
         captureException(error);
+        this.completeInitialLoad();
       },
     },
     validatedFrecentGroup: {
@@ -114,17 +119,22 @@ export default {
         return { ids: this.frecentGroup ? [this.frecentGroup.id] : [] };
       },
       update: ({ organization }) => organization?.groups?.nodes?.[0] ?? null,
+      result() {
+        this.selectResolvedNamespace(this.validatedFrecentGroup);
+        this.completeInitialLoad();
+      },
       skip() {
         return !this.frecentGroup;
       },
       error(error) {
         captureException(error);
+        this.completeInitialLoad();
       },
     },
   },
   computed: {
-    isLoadingFirstPage() {
-      return this.isLoadingTopLevelGroups && !this.topLevelGroups.length;
+    isLoading() {
+      return !this.isReady || (this.isLoadingTopLevelGroups && !this.topLevelGroups.length);
     },
     hasSearch() {
       return this.searchTerm.trim().length > 0;
@@ -215,11 +225,6 @@ export default {
       return union(this.selectedPaths, visible);
     },
   },
-  watch: {
-    validatedFrecentGroup(namespace) {
-      this.selectResolvedNamespace(namespace);
-    },
-  },
   beforeDestroy() {
     this.onSearch.cancel();
   },
@@ -240,6 +245,14 @@ export default {
 
       this.selectedNamespaces = [this.asNamespace(namespace)];
       this.commitChange(this.selectedNamespaces);
+    },
+    // Tells the page the starting selection is settled, emitted after any `change` it caused,
+    // so the page can hold back its empty state until then.
+    completeInitialLoad() {
+      if (this.isReady) return;
+
+      this.isReady = true;
+      this.$emit('ready');
     },
     commitChange(namespaces) {
       this.committedPaths = namespaces.map(({ fullPath }) => fullPath);
@@ -483,6 +496,13 @@ export default {
 
       if (!paths.length) return;
 
+      try {
+        await this.restoreScope(paths);
+      } finally {
+        this.completeInitialLoad();
+      }
+    },
+    async restoreScope(paths) {
       const results = await Promise.allSettled(paths.map(this.fetchScopeNamespace));
       const failures = results.filter(({ status }) => status === 'rejected');
 
@@ -501,9 +521,6 @@ export default {
         if (failures.length) this.$emit('error', failures[0].reason);
         return;
       }
-
-      // Discard if the user has already picked something by the time the lookups land.
-      if (this.selectedNamespaces.length) return;
 
       this.selectedNamespaces = restored;
       this.commitChange(restored);
@@ -541,7 +558,7 @@ export default {
     :selected="listboxSelectedPaths"
     :toggle-text="toggleText"
     :header-text="s__('AnalyticsDashboards|Scope')"
-    :loading="isLoadingFirstPage"
+    :loading="isLoading"
     searchable
     :searching="isSearching"
     :search-placeholder="s__('AnalyticsDashboards|Search groups and projects')"

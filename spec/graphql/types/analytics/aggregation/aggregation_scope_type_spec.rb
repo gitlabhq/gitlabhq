@@ -26,16 +26,16 @@ RSpec.describe Types::Analytics::Aggregation::AggregationScopeType, feature_cate
       let(:engine) { Class.new(Gitlab::Database::Aggregation::ClickHouse::Engine) }
 
       where(:flag_enabled, :arguments, :expected_complexity) do
-        true  | {}             | 35
-        false | {}             | 20
-        true  | { first: 250 } | 35
-        false | { first: 250 } | 20
-        true  | { first: 500 } | 35
-        false | { first: 500 } | 20
-        true  | { first: 50 }  | 15
-        false | { first: 50 }  | 15
-        true  | { last: 250 }  | 35
-        false | { last: 250 }  | 20
+        true  | {}              | 60
+        false | {}              | 20
+        true  | { first: 250 }  | 35
+        false | { first: 250 }  | 20
+        true  | { first: 1000 } | 60
+        false | { first: 1000 } | 20
+        true  | { first: 50 }   | 15
+        false | { first: 50 }   | 15
+        true  | { last: 250 }   | 35
+        false | { last: 250 }   | 20
       end
 
       with_them do

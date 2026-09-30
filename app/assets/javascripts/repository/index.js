@@ -2,7 +2,6 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
@@ -149,8 +148,6 @@ export default function setupVueRepositoryList() {
   initHeaderApp({ router });
   initLastCommitApp();
   initForkInfo();
-
-  initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link'), router });
 
   // eslint-disable-next-line no-new
   new Vue({

@@ -29,3 +29,5 @@ module InstanceSshCertificates # rubocop:disable Gitlab/BoundedContexts -- Mirro
     attr_reader :certificate_id, :current_user
   end
 end
+
+InstanceSshCertificates::DestroyService.prepend_mod_with('InstanceSshCertificates::DestroyService')

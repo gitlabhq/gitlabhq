@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-default-export */
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import { createNodeResolver } from 'eslint-plugin-import-x';
@@ -41,7 +40,7 @@ if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO 
   REVEAL_ESLINT_TODO = false;
 }
 
-const NO_HARDCODED_URLS_OPTIONS = {
+const noHardcodedUrlsOptions = {
   allowedKeys: ['path', 'redirect'],
   allowedFunctions: ['helpPagePath', 'dispatch', 'commit'],
   allowedInterpolationVariables: ['FORUM_URL', 'DOCS_URL', 'PROMO_URL', 'CONTRIBUTE_URL'],
@@ -70,53 +69,23 @@ if (existsSync(path.resolve(dirname, 'jh'))) {
   jhConfigs = (await import(pathToJhConfig)).default;
 }
 
-const jestConfig = {
-  files: ['{,ee/}spec/frontend/**/*.js'],
+// ESLint 10 lints `.mjs` and `.cjs` by default.
+const scriptAndVueFiles = '**/*.{js,mjs,cjs,vue}';
 
-  settings: {
-    // We have to teach eslint-plugin-import-x what node modules we use
-    // otherwise there is an error when it tries to resolve them
-    'import-x/core-modules': ['events', 'fs', 'path'],
-    'import-x/resolver': {
-      jest: {
-        jestConfigFile: 'jest.config.js',
-      },
-    },
-  },
+// Every tree Jest runs.
+const jestFiles = [
+  '{,ee/,jh/}spec/frontend/**/*',
+  '{,ee/}spec/contracts/consumer/**/*',
+  'storybook/test-runner-setup.js',
+];
 
-  rules: {
-    '@gitlab/vtu-no-explicit-wrapper-destroy': 'error',
-    'vue/require-name-property': 'off',
-    'jest/expect-expect': [
-      'off',
-      {
-        assertFunctionNames: ['expect*', 'assert*', 'testAction'],
-      },
-    ],
-    '@gitlab/no-global-event-off': 'off',
-    'import-x/no-unresolved': [
-      'error',
-      // The test fixtures and graphql schema are dynamically generated in CI
-      // during the `frontend-fixtures` and `graphql-schema-dump` jobs.
-      // They may not be present during linting.
-      {
-        ignore: ['^test_fixtures/', 'tmp/tests/graphql/gitlab_schema.graphql'],
-      },
-    ],
-    // Catches the FOSS-only `import-x/no-duplicates` failure described in
-    // gitlab-org/gitlab!230984: in EE, `jest/X` and `ee_else_ce_jest/X`
-    // resolve to different files, but in FOSS the latter falls back to
-    // the former, collapsing both imports onto the same path.
-    'local-rules/no-mixed-jest-aliases': 'error',
-    // Specs must not rely on the VTU v1 "find upgrade" (string-selector
-    // find() returning component wrappers), which the vue-test-utils-compat
-    // shim emulates in the Vue 3 jest lane via
-    // WRAPPER_FIND_BY_CSS_SELECTOR_RETURNS_COMPONENTS. Use the explicit
-    // component finders (findComponent/findComponentByTestId) instead.
-    // Batch-fix with `scripts/frontend/codemods/vue3_find_component_upgrade.mjs`.
-    'local-rules/vue3-find-component-upgrade': 'error',
-  },
-};
+// The test fixtures and graphql schema are dynamically generated in CI
+// during the `frontend-fixtures` and `graphql-schema-dump` jobs.
+// They may not be present during linting.
+const noUnresolvedGeneratedFiles = [
+  'error',
+  { ignore: ['^test_fixtures/', 'tmp/tests/graphql/gitlab_schema.graphql'] },
+];
 
 // ── Restricted Globals ──
 
@@ -195,13 +164,13 @@ const specRestrictedImportsPaths = [
   },
 ];
 
-const VUE_SET_DELETE_MESSAGE =
+const vueSetDeleteMessage =
   "Vue 2's set/delete methods are not available in Vue 3. Create/assign new objects with the desired properties instead.";
 
 // Restricted `Vue.*` statics, shared by the app and spec blocks.
 const vueGlobalRestrictedProperties = [
-  { object: 'Vue', property: 'delete', message: VUE_SET_DELETE_MESSAGE },
-  { object: 'Vue', property: 'set', message: VUE_SET_DELETE_MESSAGE },
+  { object: 'Vue', property: 'delete', message: vueSetDeleteMessage },
+  { object: 'Vue', property: 'set', message: vueSetDeleteMessage },
   {
     object: 'Vue',
     property: 'observable',
@@ -251,7 +220,7 @@ const specNoRestrictedSyntax = [
   },
   {
     selector: 'CallExpression[callee.property.name=/(\\$delete|\\$set)/]',
-    message: VUE_SET_DELETE_MESSAGE,
+    message: vueSetDeleteMessage,
   },
 ];
 
@@ -289,12 +258,14 @@ export default [
   },
   ...gitlabPlugin.configs.default,
   ...gitlabPlugin.configs.i18n,
-  ...gitlabPlugin.configs.jest,
+  // Jest rules and globals only where Jest runs.
+  ...gitlabPlugin.configs.jest.map((config) => ({ ...config, files: jestFiles })),
   ...gitlabPlugin.configs.tailwind,
   noJQueryPlugin.configs.slim,
   noJQueryDeprecatedUntilVersion('3.4'),
   // Native flat config plugins
   noUnsanitizedPlugin.configs.recommended,
+
   // Registered here with no `files` key so it applies to every linted file:
   // flat config merges the `plugins` of all matching objects before resolving
   // rule names, so rules need not be co-located with their plugin.
@@ -320,9 +291,10 @@ export default [
       },
     },
   },
+
   // Main application code rules
   {
-    files: ['**/*.{js,vue}'],
+    files: [scriptAndVueFiles],
 
     languageOptions: {
       globals: {
@@ -389,17 +361,14 @@ export default [
       // Covers new Vue(), Vue.extend(), defineComponent() and createApp() too.
       // The name is stamped on Vue 3 app roots as data-gitlab-vue3-app.
       'vue/require-name-property': 'error',
-      // Prefers $scopedSlots, which vue/no-deprecated-dollar-scopedslots-api
-      // forbids. Removed upstream in gitlab-org/frontend/eslint-plugin!175.
-      '@gitlab/vue-prefer-dollar-scopedslots': 'off',
 
       // URL rules
-      '@gitlab/no-hardcoded-urls': ['error', NO_HARDCODED_URLS_OPTIONS],
+      '@gitlab/no-hardcoded-urls': ['error', noHardcodedUrlsOptions],
       '@gitlab/vue-no-hardcoded-urls': [
         'error',
         {
           allowedVueComponents: ['help-page-link'],
-          ...NO_HARDCODED_URLS_OPTIONS,
+          ...noHardcodedUrlsOptions,
         },
       ],
 
@@ -499,7 +468,7 @@ export default [
           // .js mixin object needs this guard. The .vue block drops it.
           selector:
             "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
-          message: VUE_SET_DELETE_MESSAGE,
+          message: vueSetDeleteMessage,
         },
       ],
 
@@ -579,9 +548,10 @@ export default [
       'local-rules/vue-no-web-url': 'error',
     },
   },
+
   // Overrides for EE files to be allowed to import from EE
   {
-    files: ['ee/**/*.{js,vue}'],
+    files: [`ee/${scriptAndVueFiles}`],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -589,6 +559,7 @@ export default [
       ],
     },
   },
+
   // Page entrypoints must be top-level execution scripts and must not export anything.
   // See `scripts/frontend/find_pages_without_top_level_execution.mjs`.
   {
@@ -597,10 +568,12 @@ export default [
       'local-rules/page-entrypoint-must-execute': 'error',
     },
   },
+
   // Vue file rules and Vue 3 compatibility
   {
-    files: ['*.vue', '**/*.vue'],
+    files: ['**/*.vue'],
     rules: {
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'error',
       // eslint-plugin-vue v10 ships this at `warn`; raised to `error` so the
       // `.eslint_todo` exemption list is the only thing keeping it green.
       'vue/no-required-prop-with-default': 'error',
@@ -637,14 +610,13 @@ export default [
       'vue/custom-event-name-casing': ['error', 'kebab-case', { ignores: ['/^update:/'] }],
       'vue/require-explicit-emits': 'error',
 
-      // Vue 3 deprecated features that @gitlab/eslint-plugin does not enable.
-      // Left off on purpose while the code still uses the Vue 2 syntax:
-      // no-deprecated-destroyed-lifecycle and no-deprecated-model-definition.
-      // $listeners reads are converted to the dual-runtime glListeners()
-      // mixin (lib/utils/vue3compat/gl_listeners_mixin.js): Vue 3 removed
-      // $listeners, and on Vue 2 $attrs never contains listeners, so
-      // neither spelling works alone on both runtimes.
-      // Batch-fix with `scripts/frontend/codemods/vue3_gl_listeners.mjs`.
+      // Vue 3 deprecation rules the plugin leaves off. Two stay off while the
+      // code uses Vue 2 syntax: no-deprecated-destroyed-lifecycle and
+      // no-deprecated-model-definition.
+      //
+      // $listeners and $scopedSlots have no dual-runtime spelling. Use the
+      // glListeners() and glSlots() mixins from lib/utils/vue3compat;
+      // codemod: `scripts/frontend/codemods/vue3_gl_listeners.mjs`.
       'vue/no-deprecated-dollar-listeners-api': 'error',
       'vue/no-deprecated-dollar-scopedslots-api': 'error',
       'vue/no-deprecated-router-link-tag-prop': 'error',
@@ -740,17 +712,13 @@ export default [
       ],
     },
   },
-  // App code only: the deliberate slot-forwarding fixtures in
-  // spec/frontend/vue3migration and storybook helpers stay unguarded.
-  {
-    files: ['{,ee/,jh/}app/assets/javascripts/**/*.vue'],
-    rules: {
-      'local-rules/vue3-no-unconditional-slot-forwarding': 'error',
-    },
-  },
+
+  // Deliberate unconditional slot forwarding
   {
     files: [
       'app/assets/javascripts/access_tokens/components/token.vue',
+      'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue',
+      'app/assets/javascripts/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue',
       'ee/app/assets/javascripts/groups/settings/components/comma_separated_list_token_selector.vue',
       'ee/app/assets/javascripts/members/components/action_dropdowns/ldap_override_dropdown_item.vue',
     ],
@@ -758,30 +726,48 @@ export default [
       'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
     },
   },
-  {
-    files: [
-      'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue',
-      'app/assets/javascripts/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue',
-    ],
-    rules: {
-      'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
-    },
-  },
+
   // Spec files (unit tests)
   {
-    files: ['{,ee/,jh/}spec/frontend*/**/*'],
+    files: ['{,ee/,jh/}spec/frontend/**/*'],
+
+    settings: {
+      // We have to teach eslint-plugin-import-x what node modules we use
+      // otherwise there is an error when it tries to resolve them
+      'import-x/core-modules': ['events', 'fs', 'path'],
+      'import-x/resolver': {
+        jest: {
+          jestConfigFile: 'jest.config.js',
+        },
+      },
+    },
 
     rules: {
       ...relaxedUrlAndI18nRules,
       '@gitlab/no-runtime-template-compiler': 'off',
       '@gitlab/tailwind-no-interpolation': 'off',
-      '@gitlab/vue-tailwind-no-interpolation': 'off',
-      '@gitlab/no-max-width-media-queries': 'off',
-      '@gitlab/vue-tailwind-no-max-width-media-queries': 'off',
+      '@gitlab/vtu-no-explicit-wrapper-destroy': 'error',
+      '@gitlab/no-global-event-off': 'off',
+      'jest/expect-expect': 'off',
+      'vue/require-name-property': 'off',
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
       'require-await': 'error',
       'import-x/no-extraneous-dependencies': 'off',
       'import-x/no-dynamic-require': 'off',
+      'import-x/no-unresolved': noUnresolvedGeneratedFiles,
       'no-import-assign': 'off',
+      // Catches the FOSS-only `import-x/no-duplicates` failure described in
+      // gitlab-org/gitlab!230984: in EE, `jest/X` and `ee_else_ce_jest/X`
+      // resolve to different files, but in FOSS the latter falls back to
+      // the former, collapsing both imports onto the same path.
+      'local-rules/no-mixed-jest-aliases': 'error',
+      // Specs must not rely on the VTU v1 "find upgrade" (string-selector
+      // find() returning component wrappers), which the vue-test-utils-compat
+      // shim emulates in the Vue 3 jest lane via
+      // WRAPPER_FIND_BY_CSS_SELECTOR_RETURNS_COMPONENTS. Use the explicit
+      // component finders (findComponent/findComponentByTestId) instead.
+      // Batch-fix with `scripts/frontend/codemods/vue3_find_component_upgrade.mjs`.
+      'local-rules/vue3-find-component-upgrade': 'error',
 
       'no-restricted-syntax': [
         'error',
@@ -818,17 +804,10 @@ export default [
 
     rules: {
       ...relaxedUrlAndI18nRules,
-      'filenames/match-regex': 'off',
-      'import-x/no-unresolved': [
-        'error',
-        // The test fixtures are dynamically generated in CI during
-        // the `frontend-fixtures` job. They may not be present during linting.
-        {
-          ignore: ['^test_fixtures/'],
-        },
-      ],
+      'import-x/no-unresolved': noUnresolvedGeneratedFiles,
     },
   },
+
   // GraphQL files
   {
     files: ['**/*.graphql'],
@@ -848,7 +827,6 @@ export default [
     },
 
     rules: {
-      'filenames/match-regex': 'off',
       'spaced-comment': 'off',
       '@graphql-eslint/no-anonymous-operations': 'error',
       '@graphql-eslint/unique-operation-name': 'error',
@@ -860,6 +838,7 @@ export default [
       'local-rules/graphql-require-valid-urgency': 'error',
     },
   },
+
   // GraphQL files that don't require selections (branch rules)
   {
     files: [
@@ -874,11 +853,13 @@ export default [
       '@graphql-eslint/require-selections': 'off',
     },
   },
-  // Config, scripts, and tooling files
+
+  // Config, scripts, tooling, and storybook files
   {
     files: [
       'config/**/*',
       'scripts/**/*',
+      'storybook/**/*',
       '**/*.config.js',
       '**/*.config.*.js',
       '**/*.config.mjs',
@@ -897,31 +878,20 @@ export default [
     rules: {
       ...relaxedUrlAndI18nRules,
       'import-x/extensions': 'off',
-      'import-x/no-nodejs-modules': 'off',
-      'filenames/match-regex': 'off',
       'no-console': 'off',
       'import-x/no-commonjs': 'off',
       'import-x/no-extraneous-dependencies': 'off',
     },
   },
 
-  // Storybook config
+  // Storybook resolves its own imports
   {
-    files: ['storybook/**/*.{js,vue}'],
-
+    files: ['storybook/**/*'],
     rules: {
-      ...relaxedUrlAndI18nRules,
-      'import-x/no-extraneous-dependencies': 'off',
-      'import-x/no-commonjs': 'off',
-      'import-x/no-nodejs-modules': 'off',
-      'filenames/match-regex': 'off',
-      'no-console': 'off',
       'import-x/no-unresolved': 'off',
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
     },
   },
-
-  // Jest config
-  jestConfig,
 
   // Frontend integration tests (EE-only)
   {
@@ -950,9 +920,6 @@ export default [
     },
 
     rules: {
-      ...jestConfig.rules,
-      '@gitlab/require-i18n-strings': 'off',
-      '@gitlab/no-hardcoded-urls': 'off',
       'jest/no-standalone-expect': 'off',
       'no-restricted-imports': [
         'error',
@@ -1041,22 +1008,6 @@ export default [
           selector: 'MemberExpression[object.property.name=/[Ss]tore/][property.name="state"]',
           message:
             'Do not access store.state directly. Simulate user behaviours and assert the resulting HTML.',
-        },
-      ],
-    },
-  },
-
-  // Frontend integration tests are EE-only. Block any file from being (re)introduced
-  // under the CE path; the harness and fixtures live under ee/spec/frontend/integration/.
-  {
-    files: ['spec/frontend/integration/**/*'],
-    rules: {
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector: 'Program',
-          message:
-            'Frontend integration tests are EE-only; use Capybara for FOSS/licensed behavior. Place this file under ee/spec/frontend/integration/ instead.',
         },
       ],
     },

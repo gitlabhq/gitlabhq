@@ -232,6 +232,41 @@ describe('HomepageApp', () => {
       );
     });
 
+    const findAllUserItemsWidgets = () => [
+      findReviewRequestedWidget(),
+      findAssignedMergeRequestsWidget(),
+      findAssignedWorkItemsWidget(),
+      findAuthoredWorkItemsWidget(),
+    ];
+
+    it('passes null userItems to all widgets before the queries resolve', () => {
+      findAllUserItemsWidgets().forEach((widget) => {
+        expect(widget.props()).toEqual(
+          expect.objectContaining({ hasError: false, userItems: null }),
+        );
+      });
+    });
+
+    describe('when the queries resolve without a current user', () => {
+      beforeEach(async () => {
+        const nullUserResponse = { data: { currentUser: null } };
+        createApolloWrapper({
+          mergeRequestsWidgetMetadataQueryHandler: jest.fn().mockResolvedValue(nullUserResponse),
+          workItemsWidgetMetadataQueryHandler: jest.fn().mockResolvedValue(nullUserResponse),
+        });
+        await waitForPromises();
+      });
+
+      it('passes null userItems to all widgets without an error', () => {
+        findAllUserItemsWidgets().forEach((widget) => {
+          expect(widget.props()).toEqual(
+            expect.objectContaining({ hasError: false, userItems: null }),
+          );
+        });
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
+    });
+
     describe('query errors', () => {
       it('provides error to both merge request widgets, if the query errors out', async () => {
         createApolloWrapper({

@@ -75,9 +75,11 @@ module Ci
     # it is what stops a caller from looping on it. Internal callers pass rate_limit: false.
     def rate_limited_response
       return unless @rate_limit && current_user && pipeline
-      return unless rate_limit_throttled?
 
-      log_rate_limited
+      limit = throttled_limit
+      return unless limit
+
+      log_rate_limited(limit)
 
       ServiceResponse.error(
         message: ::Gitlab::ApplicationRateLimiter.throttled_error_message,
@@ -85,10 +87,11 @@ module Ci
       )
     end
 
-    def log_rate_limited
+    def log_rate_limited(limit)
       Gitlab::AppJsonLogger.info(
         class: self.class.to_s,
         message: 'Pipeline cancel rate limit exceeded',
+        rate_limit: limit.to_s,
         project_id: pipeline.project_id,
         pipeline_id: pipeline.id,
         Labkit::Fields::GL_USER_ID => current_user.id,
@@ -96,17 +99,20 @@ module Ci
       )
     end
 
-    def rate_limit_throttled?
+    # Returns the key of the limit that fired, or nil.
+    def throttled_limit
       # Short-circuit on the per-pipeline limit so an already-blocked caller does not
       # keep consuming the per-project budget: hammering Cancel on one pipeline must
       # not lock the whole project's other pipelines out of cancellation.
-      return true if ::Gitlab::ApplicationRateLimiter.throttled?(
+      return :pipeline_cancel if ::Gitlab::ApplicationRateLimiter.throttled?(
         :pipeline_cancel, scope: { user: current_user, ci_pipeline: pipeline }
       )
 
-      ::Gitlab::ApplicationRateLimiter.throttled?(
+      return :pipeline_cancel_per_project if ::Gitlab::ApplicationRateLimiter.throttled?(
         :pipeline_cancel_per_project, scope: { user: current_user, project: pipeline.project }
       )
+
+      nil
     end
 
     def log_pipeline_being_canceled

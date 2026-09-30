@@ -52,7 +52,7 @@ When the `DOCKERFILES_DIR` variable is expanded in the `changes:` section, the f
 path becomes `path/to/files//*`. The double slashes might cause unexpected behavior
 depending on factors like the keyword used, or the shell and OS of the runner.
 
-## `You are not allowed to download code from this project.` error message
+## Error: `You are not allowed to download code from this project.`
 
 You might see pipelines fail when a GitLab administrator runs a protected manual job
 in a private project.
@@ -75,7 +75,7 @@ When you rerun a job, it uses the same configuration each time. If you update co
 including separate files added with [`include`](../yaml/_index.md#include), you must
 start a new pipeline to use the new configuration.
 
-## `Job may allow multiple pipelines to run for a single action` warning
+## Warning: `Job may allow multiple pipelines to run for a single action`
 
 When you use [`rules`](../yaml/_index.md#rules) with a `when` clause without an `if`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
@@ -85,7 +85,7 @@ To [prevent duplicate pipelines](job_rules.md#avoid-duplicate-pipelines), use
 [`workflow: rules`](../yaml/_index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
-## `This GitLab CI configuration is invalid` for variable expressions
+## Error: `This GitLab CI configuration is invalid` for variable expressions
 
 You might receive one of several `This GitLab CI configuration is invalid` errors
 when working with [CI/CD variable expressions](job_rules.md#cicd-variable-expressions).
@@ -220,7 +220,7 @@ If the error persists, inspect the job in the
 [Rails console](../../administration/operations/rails_console.md) to determine the
 `failure_reason` and whether a downstream pipeline was created.
 
-## `You are not authorized to run this manual job` message
+## Error: `You are not authorized to run this manual job`
 
 You might get this message with **Run** disabled when trying to run a manual job if:
 

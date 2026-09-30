@@ -78,6 +78,17 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
 
         it { is_expected.not_to be_nil }
       end
+
+      context 'when the user does not have admin_project but has read_deploy_token' do
+        let(:user) { build_stubbed(:user) }
+
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :read_deploy_token, project).and_return(true)
+        end
+
+        it { is_expected.not_to be_nil }
+      end
     end
 
     describe 'CI/CD' do

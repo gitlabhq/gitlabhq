@@ -289,6 +289,15 @@ By default, dependency scanning operates with the following scope:
 To improve performance, you can exclude specific paths, limit the scan directory depth, and exclude
 development and test dependencies.
 
+### Scan limits
+
+Each project has a soft throttle of 50 SBOM scans per hour across its pipelines.
+Additional scans are accepted at lower priority, which can increase scan duration for high-volume
+projects such as monorepos.
+
+You cannot configure this throttle.
+For details, see [dependency scanning using SBOM limits](../../../../administration/instance_limits.md#dependency-scanning-using-sbom-limits).
+
 ### Exclude paths from scanning
 
 To improve scanning performance, exclude paths. For example, you might exclude paths that contain

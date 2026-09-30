@@ -12,11 +12,10 @@ describe('PipelineStages', () => {
     isMergeTrain: false,
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMount(PipelineStages, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
     });
   };

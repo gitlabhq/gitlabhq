@@ -117,7 +117,6 @@ const output = (() => {
   };
 })();
 
-// eslint-disable-next-line import-x/no-default-export -- Rspack's config loader reads the default export
 export default {
   bail: !IS_DEV_SERVER,
   mode: IS_PRODUCTION ? 'production' : 'development',

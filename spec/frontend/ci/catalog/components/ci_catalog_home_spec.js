@@ -16,11 +16,8 @@ describe('CiCatalogHome', () => {
     router = createRouter(baseRoute, resourcesPageComponentStub);
   });
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     shallowMount(CiCatalogHome, {
-      propsData: {
-        ...props,
-      },
       router,
     });
   };

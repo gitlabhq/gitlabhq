@@ -16,7 +16,7 @@ RSpec.describe Resolvers::Analytics::Aggregation::AggregationFieldResolver, feat
       let(:engine) { Class.new(Gitlab::Database::Aggregation::ClickHouse::Engine) }
 
       it 'raises the page size cap' do
-        expect(resolver.max_page_size).to eq(250)
+        expect(resolver.max_page_size).to eq(500)
       end
     end
 

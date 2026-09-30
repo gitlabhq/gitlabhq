@@ -542,7 +542,7 @@ export default {
     :aria-label="s__('FeatureLibrary|GitLab features')"
     :hide-footer="!showFooter"
     modal-class="feature-library-modal"
-    body-class="gl-flex gl-flex-col gl-overflow-hidden"
+    :body-class="['gl-flex gl-flex-col gl-overflow-hidden', { '!gl-pb-0': !showFooter }]"
     size="lg"
     hide-header
     @shown="onShown"

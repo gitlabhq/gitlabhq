@@ -51,6 +51,7 @@ This table lists the default model for each feature in the Agent Platform.
 - GLM 5.3, Kimi K3, and MiniMax M3 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6930) as supported models for GitLab Duo Agentic Chat and all other agents on September 16, 2026.
 - GPT-6 Sol and GPT-6 Luna [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7062) as supported models for GitLab Duo Agentic Chat and all other agents on September 22, 2026.
 - Claude Sonnet 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7129) as a supported model for GitLab Duo Agentic Chat and all other agents on September 28, 2026.
+- GPT-6.1 Sol [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7169) as a supported model for GitLab Duo Agentic Chat and all other agents on September 29, 2026.
 
 {{< /history >}}
 
@@ -93,6 +94,7 @@ in the Agent Platform.
 | GPT-6 Astra[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-6 Sol[^model-subject-limited]      | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | GPT-6 Luna[^model-subject-limited]     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-6.1 Sol[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | Kimi K3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 | MiniMax M3                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 

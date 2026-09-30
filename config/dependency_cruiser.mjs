@@ -72,7 +72,6 @@ if (!process.env.DISABLE_EXCLUSIONS) {
 }
 
 /** @type {import('dependency-cruiser').IConfiguration} */
-// eslint-disable-next-line import-x/no-default-export -- dependency-cruiser's config loader reads the default export
 export default {
   forbidden: [
     {

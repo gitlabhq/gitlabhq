@@ -268,6 +268,17 @@ describe('ReportSection', () => {
         expect(supportingText.find('strong').exists()).toBe(false);
       });
 
+      it('renders the styling tags in supporting text', () => {
+        createComponent({
+          sections: [{ children: [{ supportingText: '%{small_start}ID: 1%{small_end}' }] }],
+        });
+
+        const supportingText = wrapper.findByTestId('item-supporting-text');
+
+        expect(supportingText.text()).toBe('ID: 1');
+        expect(supportingText.find('.gl-text-sm').text()).toBe('ID: 1');
+      });
+
       it('renders item text when text is provided', () => {
         createComponent({ sections: MOCK_SECTIONS });
 

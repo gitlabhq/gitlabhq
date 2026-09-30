@@ -37,11 +37,10 @@ describe('PipelineFailedJobsWidget component', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = ({ props = {}, provide = {}, handler = defaultHandler } = {}) => {
+  const createComponent = ({ provide = {}, handler = defaultHandler } = {}) => {
     wrapper = shallowMountExtended(PipelineFailedJobsWidget, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
       provide: {
         ...defaultProvide,

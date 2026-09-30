@@ -496,6 +496,23 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         expect(response.message).to eq(throttle_message)
       end
 
+      it 'logs the per-pipeline limit when it fires' do
+        allow(Gitlab::AppJsonLogger).to receive(:info)
+
+        6.times { service.execute(pipeline) }
+
+        expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+          a_hash_including(
+            Labkit::Fields::CLASS_NAME => described_class.to_s,
+            message: 'Pipeline retry rate limit exceeded',
+            rate_limit: 'pipeline_retry',
+            Labkit::Fields::GL_PROJECT_ID => project.id,
+            Labkit::Fields::GL_PIPELINE_ID => pipeline.id,
+            Labkit::Fields::GL_USER_ID => user.id
+          )
+        ).once
+      end
+
       context 'when the per-project limit is exceeded' do
         let(:other_pipeline) { create(:ci_pipeline, sha: sha, project: project) }
 
@@ -511,6 +528,17 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
           expect(response).to be_error
           expect(response.reason).to eq(:rate_limited)
           expect(response.http_status).to eq(:too_many_requests)
+        end
+
+        it 'logs the per-project limit when it fires' do
+          allow(Gitlab::AppJsonLogger).to receive(:info)
+
+          service.execute(pipeline)
+          service.execute(other_pipeline)
+
+          expect(Gitlab::AppJsonLogger).to have_received(:info).with(
+            a_hash_including(message: 'Pipeline retry rate limit exceeded', rate_limit: 'pipeline_retry_per_project')
+          ).once
         end
       end
 

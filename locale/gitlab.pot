@@ -2557,6 +2557,12 @@ msgstr[1] ""
 msgid "AICatalog|%{linkStart}Service accounts%{linkEnd} represent non-human entities. This is the account that you mention or assign to trigger the %{itemType}."
 msgstr ""
 
+msgid "AICatalog|A goal cannot be set for an event type the trigger does not use: %{event_types}."
+msgstr ""
+
+msgid "AICatalog|A goal cannot be set for the %{flow_name} flow."
+msgstr ""
+
 msgid "AICatalog|A new version is available"
 msgstr ""
 
@@ -49209,6 +49215,15 @@ msgstr ""
 msgid "LicenseCompliance|Allowed"
 msgstr ""
 
+msgid "LicenseCompliance|Classified as unknown under a license_types policy, and allowed under that name."
+msgstr ""
+
+msgid "LicenseCompliance|Classified as unknown under a license_types policy, and denied under that name."
+msgstr ""
+
+msgid "LicenseCompliance|Classified as unknown under a license_types policy, and denied under that name. Used by %{dependencies}."
+msgstr ""
+
 msgid "LicenseCompliance|Collapse license compliance details"
 msgstr ""
 
@@ -53509,6 +53524,9 @@ msgid "MrReports|Security scan"
 msgstr ""
 
 msgid "MrReports|Start a pipeline to generate reports."
+msgstr ""
+
+msgid "MrReports|Status checks"
 msgstr ""
 
 msgid "MrReports|Terraform"
@@ -59025,6 +59043,9 @@ msgstr ""
 msgid "Organization|Create your Organizations"
 msgstr ""
 
+msgid "Organization|Create your organization"
+msgstr ""
+
 msgid "Organization|Current organization"
 msgstr ""
 
@@ -59173,6 +59194,12 @@ msgid "Organization|Organization was successfully updated."
 msgstr ""
 
 msgid "Organization|Organizations"
+msgstr ""
+
+msgid "Organization|Organizations are now available"
+msgstr ""
+
+msgid "Organization|Organizations bring your top-level groups, projects, and users into one place so you can manage organization level settings and features together. Create yours to get started with features like Artifact Central."
 msgstr ""
 
 msgid "Organization|Organizations is a new feature. Help us make it better by"

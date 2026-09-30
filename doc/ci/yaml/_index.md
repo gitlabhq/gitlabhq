@@ -5283,6 +5283,7 @@ An array including any number of:
   - A directory and all its subdirectories, for example `path/to/directory/**/*`.
 - Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
   with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
+  Paths that start with `*` must be wrapped in double quotes (`"`).
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 

@@ -93,7 +93,7 @@ export default {
         };
       },
       update({ currentUser }) {
-        return currentUser;
+        return currentUser ?? {};
       },
       error(error) {
         this.mergeRequestsHaveError = true;
@@ -109,7 +109,7 @@ export default {
         return { username: gon?.current_username || null };
       },
       update({ currentUser }) {
-        return currentUser;
+        return currentUser ?? {};
       },
       error(error) {
         this.workItemsHaveError = true;

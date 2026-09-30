@@ -43,7 +43,7 @@ describe('CiResourceDetailsPage', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findHeaderSkeletonLoader = () => wrapper.findComponent(CiResourceHeaderSkeletonLoader);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     const handlers = [
       [getCiCatalogResourceVersions, versionsResponse],
       [getCiCatalogResourceSharedData, sharedDataResponse],
@@ -56,7 +56,6 @@ describe('CiResourceDetailsPage', () => {
       apolloProvider: mockApollo,
       propsData: {
         ...defaultProps,
-        ...props,
       },
     });
   };

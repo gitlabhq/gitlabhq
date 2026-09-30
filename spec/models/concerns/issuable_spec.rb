@@ -154,7 +154,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
 
   describe 'author_name' do
     it 'is delegated to author' do
-      expect(issue.author_name).to eq issue.author.name
+      stubbed_issue = build_stubbed(:issue)
+
+      expect(stubbed_issue.author_name).to eq stubbed_issue.author.name
     end
 
     it 'returns nil when author is nil' do
@@ -511,6 +513,8 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '#time_estimate=' do
+    let(:issue) { build_stubbed(:issue) }
+
     it 'coerces the value below Gitlab::Database::MAX_INT_VALUE' do
       expect { issue.time_estimate = 100 }.to change { issue.time_estimate }.to(100)
       expect { issue.time_estimate = Gitlab::Database::MAX_INT_VALUE + 100 }.to change { issue.time_estimate }.to(Gitlab::Database::MAX_INT_VALUE)
@@ -809,7 +813,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
 
     context 'when actioned_at is provided' do
-      let(:merge_request) { create(:merge_request) }
+      let(:merge_request) { build_stubbed(:merge_request) }
       let(:actioned_at) { Time.current }
 
       before do
@@ -1087,7 +1091,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
   end
 
   describe '#notes_with_associations' do
-    let!(:note) { create(:note, noteable: issue, project: issue.project) }
+    let(:issue) { build_stubbed(:issue) }
 
     it 'returns notes with associations' do
       expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji)

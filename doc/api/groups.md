@@ -217,7 +217,9 @@ Example response:
   ],
   "ip_restriction_ranges": null,
   "math_rendering_limits_enabled": true,
-  "lock_math_rendering_limits_enabled": false
+  "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false
 }
 ```
 
@@ -1589,6 +1591,8 @@ Example response:
   "archived": true,
   "math_rendering_limits_enabled": true,
   "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false,
   "default_branch": null,
   "default_branch_protection": 2,
   "default_branch_protection_defaults": {
@@ -1676,6 +1680,8 @@ Example response:
   "archived": false,
   "math_rendering_limits_enabled": true,
   "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false,
   "default_branch": null,
   "default_branch_protection": 2,
   "default_branch_protection_defaults": {
@@ -1928,6 +1934,8 @@ PUT /groups/:id
 | `ai_settings_attributes`                             | hash | no | AI-related settings for this group. For available options, see [Options for `ai_settings_attributes`](#options-for-ai_settings_attributes). GitLab Duo features must be enabled. |
 | `math_rendering_limits_enabled`                      | boolean           | no       | Indicates if math rendering limits are used for this group. |
 | `lock_math_rendering_limits_enabled`                 | boolean           | no       | Indicates if math rendering limits are locked for all descendent groups. |
+| `require_sha_for_merge`                              | boolean           | no       | Indicates whether merge requests in this group require a valid commit SHA for calls to the [merge a merge request](merge_requests.md#merge-a-merge-request) endpoint. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256966) in GitLab 19.5. |
+| `lock_require_sha_for_merge`                         | boolean           | no       | Enforces the `require_sha_for_merge` setting for all descendant groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256966) in GitLab 19.5. |
 | `duo_features_enabled`                               | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. GitLab Self-Managed, Premium and Ultimate only. |
 | `lock_duo_features_enabled`                          | boolean           | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. GitLab Self-Managed, Premium and Ultimate only. |
 | `ai_audit_events_storage_enabled`                    | boolean           | no       | Indicates whether AI audit events are stored for the group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245843) in GitLab 19.2. Premium and Ultimate only. |
@@ -2019,7 +2027,9 @@ Example response:
   ],
   "ip_restriction_ranges": null,
   "math_rendering_limits_enabled": true,
-  "lock_math_rendering_limits_enabled": false
+  "lock_math_rendering_limits_enabled": false,
+  "require_sha_for_merge": false,
+  "lock_require_sha_for_merge": false
 }
 ```
 

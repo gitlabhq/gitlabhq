@@ -10,6 +10,7 @@ import {
   METRICS_ROUTE,
   TEST_SUMMARY_ROUTE,
   TERRAFORM_ROUTE,
+  STATUS_CHECKS_ROUTE,
 } from './constants';
 
 const CATCH_ALL_ROUTE = '/:pathMatch(.*)*';
@@ -72,6 +73,12 @@ export default [
     name: TERRAFORM_ROUTE,
     path: `/${TERRAFORM_ROUTE}`,
     component: () => import('~/merge_requests/reports/terraform/terraform_page.vue'),
+  },
+  {
+    name: STATUS_CHECKS_ROUTE,
+    path: `/${STATUS_CHECKS_ROUTE}`,
+    component: () =>
+      import('ee_component/merge_requests/reports/status_checks/status_checks_page.vue'),
   },
   {
     path: CATCH_ALL_ROUTE,

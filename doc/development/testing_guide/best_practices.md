@@ -88,6 +88,34 @@ When using spring and guard together, use `SPRING=1 bundle exec guard` instead t
   Run the spec with the condition inverted or the behavior under test removed to confirm the failure message is meaningful.
   A test that cannot fail is not providing coverage.
 
+#### Match each example to its scenario
+
+A passing example provides coverage only when its setup and assertions exercise the intended scenario.
+When you add or copy an example group:
+
+- Check that the setup, including inherited hooks and `let` values, matches the description.
+  For example, a `context 'for a private project'` must use a private project, not an internal one.
+  Override the relevant role, trait, visibility, feature flag, or configuration value explicitly
+  when the parent group sets up a different scenario.
+- In a `describe '#method'` or `describe '.method'` group, check that the subject or action calls
+  the named method.
+  Copying an assertion from another group can leave a call to the wrong method that still passes.
+- Choose assertions that distinguish the intended behavior from the behavior of a neighboring case.
+  When both cases return the same result, verify the distinguishing setup or relevant side effect.
+
+Treat an `RSpec/RepeatedExampleGroupBody` offense as a reason to check coverage before deleting code:
+
+- If the groups intend to test different scenarios, add the missing setup or action.
+- If both groups exercise the same scenario, keep one group with an accurate description.
+
+Do not delete a group solely because its body duplicates another group.
+First check whether another example covers the scenario named by the group you would remove.
+
+For randomized selection, verify that the fixture data provides more than one possible result.
+An assertion that a value falls in a range still passes when that range contains only one value.
+Assert the bounds passed to the random generator or use controlled results to exercise the boundaries,
+rather than relying on repeated random draws to produce different values.
+
 ### Eager loading the application code
 
 By default, the application code is not eager loaded in the test environment in order to speed up test runtime.
@@ -164,6 +192,9 @@ a parent context. Examples of these are:
 - `:clean_gitlab_redis_cache` which provides a clean Redis cache to the examples.
 - `:request_store` which provides a request store to the examples.
 
+Scope capabilities such as `:sidekiq_inline` to the examples that need them instead of
+applying them to an entire group.
+
 We should reduce test dependencies, and avoiding
 capabilities also reduces the amount of set-up needed.
 
@@ -227,14 +258,27 @@ To avoid creation, it is worth bearing in mind that:
 
 - `instance_double` and `spy` are faster than `FactoryBot.build(...)`.
 - `FactoryBot.build(...)` and `.build_stubbed` are faster than `.create`.
-- `build_stubbed` is usually faster than `build`: it never touches the database,
-  assigns a fake `id` and timestamps, and stubs associated records instead of
-  building them, so it avoids the association cascades that `build` can still
-  trigger.
+- `build_stubbed` is usually faster than `build`: it assigns a fake `id` and timestamps,
+  and uses the stub strategy for associations.
+  However, custom factory attributes and callbacks can still access the database.
   Prefer `build_stubbed` unless the code under test persists the object
   or relies on real association records.
+- Do not assume `build` avoids database writes.
+  Explicit `create` calls in attribute blocks can write records.
+  `after(:build)` callbacks can also call methods that save.
+  For example, user state traits such as `:blocked` and `:banned` call state transitions.
+  When a test only reads the resulting state, use `build_stubbed(:user, state: 'blocked')`
+  instead of exercising the transition in setup.
 - Don't `create` an object when you can use `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `instance_double`. Database persistence is slow!
+- Set attributes and associations in the factory call instead of saving the record again in a hook.
+  When the code only reads an attribute from the same instance, assign it in memory or stub its reader.
+  Keep persisted setup when the test exercises a query, callback, or state transition.
+- Build the object the code receives directly instead of creating a parent only to retrieve a child.
+  Suppress default children the test does not need, such as `package_files: []` on a package factory.
+- Remove unused setup before optimizing it.
+  A record can be relevant without an explicit reference, for example when a query must exclude it.
+  Check the behavior under test before removing such records.
 
 Use [Factory Doctor](https://test-prof.evilmartians.io/#/profilers/factory_doctor) to find cases where database persistence is not needed in a given test.
 
@@ -252,7 +296,7 @@ A common change is to use `build` or `build_stubbed` instead of `create`:
 let(:project) { create(:project) }
 
 # New
-let(:project) { build(:project) }
+let(:project) { build_stubbed(:project) }
 ```
 
 [Factory Profiler](https://test-prof.evilmartians.io/#/profilers/factory_prof) can help to identify repetitive database persistence via factories.
@@ -278,6 +322,13 @@ They can be identified by a noticeable difference between `total time` and `top-
 The table above shows us that we never create any `namespace` objects explicitly
 (`top-level == 0`) - they are all created implicitly for us. But we still end up
 with 208 of them (one for each project) and this takes 9.5 seconds.
+
+Pass an existing parent explicitly when several factory calls should use the same record.
+For example, use `create(:wiki_page, project: project)` to reuse a shared project.
+Otherwise, each call can create another project and its associated records.
+If you share this project between examples, use `let_it_be_with_reload`.
+Wiki activity updates the project, so a project frozen by the default `let_it_be` raises `FrozenError`.
+Keep distinct parents when their differences are part of the scenario.
 
 In order to reuse a single object for all calls to a named factory in implicit parent associations,
 [`FactoryDefault`](https://github.com/test-prof/test-prof/blob/master/docs/recipes/factory_default.md)
@@ -315,6 +366,28 @@ In this case, the `total time` and `top-level time` numbers match more closely:
        8           8        0.0477s            0.0477s             0.0477s          namespace
 ```
 
+##### Create only the records the test needs
+
+Use the smallest dataset that exercises the behavior.
+For example, two records can demonstrate that a result contains more than one item.
+For a limit test, cover the boundary with `limit` and `limit + 1` records.
+The `FactoryBot/ExcessiveCreateList` cop flags large lists, but a list below its threshold can
+still contain unnecessary records.
+
+- Stub configurable pagination limits, validation limits, and batch sizes to a small value
+  such as two or three when the production value is not itself under test.
+  Use `stub_const` for constants or stub the configuration reader.
+- When the test supplies `per_page:`, `first:`, or `limit:`, choose a small value and create
+  enough records to exercise the required page boundaries.
+  For batch loops, include a partial final batch when the test needs to cover it.
+- In N+1 tests, start with two or three additional records and verify that removing the query
+  optimization makes the test fail.
+  Create distinct associated records when a shared association would hide repeated queries.
+  Use warm-up requests and cache-aware measurement rather than increasing the dataset to avoid caches.
+  See the [QueryRecorder recommended pattern](../database/query_recorder.md#recommended-pattern).
+- If a limit cannot be reduced, explain why the test needs that many records.
+  Preserve the scenario when reducing counts, including later pages or multiple batches when relevant.
+
 ##### Let's talk about `let`
 
 There are various ways to create objects and store them in variables in your tests. They are, from least efficient to most efficient:
@@ -344,10 +417,21 @@ let_it_be(:project) { create(:project) }
 let_it_be_with_reload(:project) { create(:project) }
 ```
 
-`freeze: false` on its own unfreezes the object but does not restore it between
-examples. Use it only when the object is never mutated in a way that later
-examples can observe, such as when the mutation happens inside a `before_all`
-hook. When in doubt, use `let_it_be_with_reload`.
+- Do not use `freeze: false` alone to fix a mutation of a shared record in an example.
+  It unfreezes the object but does not restore it between examples.
+  Use `let_it_be_with_reload` for persisted records that examples modify.
+  Use `freeze: false` only when changes cannot leak into later examples, such as setup
+  performed once in `before_all`.
+- Prefer `let` for inexpensive in-memory objects, including `build_stubbed` objects, presenters,
+  and pagination objects, especially when examples modify them.
+  Reloading an ActiveRecord object restores persisted state, not unsaved attributes or children.
+  If shared setup relies on unsaved state, keep that setup per example or persist the required state.
+  Reload modifiers do not provide isolation for arbitrary Ruby objects.
+- Reuse an existing outer `let_it_be` when nested groups need the same record.
+  Share setup at the narrowest common scope that needs it.
+  `let_it_be` is eager, so remove unused definitions and place setup used only by a nested
+  context in that context.
+  Do not define the same memoized helper name twice in one group (`RSpec/OverwritingSetup`).
 
 See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection> for more information on `let_it_be` freezing.
 
@@ -445,9 +529,10 @@ and it is reasonable to decline it in these cases:
 
 A context with only one example is a weak reason on its own. When the example
 uses the object, both `let` and `let_it_be` create it once, so neither is
-faster. The exception is an object that some examples never reference: `let` is
-lazy and skips it, whereas `let_it_be` is eager and always creates it. Check
-whether the object is actually used before you decline on this basis.
+faster.
+An object that only some examples reference is the exception.
+A lazy `let` skips it for examples that do not use it.
+`let_it_be` is eager and always creates it.
 
 When you decline a suggestion, say which of these applies, so the next reader
 does not have to work it out again.
@@ -486,6 +571,13 @@ Instead, you can use `stub_method` to stub the method:
 > `stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
 
 #### Stubbing member access level
+
+When building membership records, pass the target as `source:`:
+`build_stubbed(:project_member, source: project, user: user)` or
+`build_stubbed(:group_member, source: group, user: user)`.
+The factories define a `source` association.
+Passing `project:` or `group:` does not override that factory association and can build
+an additional project or group.
 
 To stub [member access level](../../user/permissions.md#roles) for factory stubs like `Project` or `Group` use
 [`stub_member_access_level`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/stub_member_access_level.rb):
@@ -580,6 +672,12 @@ shared examples; any reductions generally have a larger impact as
 they are called in multiple places.
 
 #### Avoid repeating expensive actions
+
+Check for a one-line `it { is_expected.to ... }` beside examples that evaluate the same expensive
+subject with the same inputs.
+Each example repeats setup and evaluates the subject again.
+Combine assertions about the same operation with `:aggregate_failures` when that keeps the test clear.
+Keep separate examples for different scenarios.
 
 While isolated examples are very clear, and help serve the purpose of specs as
 specification, the following example shows how we can combine expensive
@@ -1020,6 +1118,32 @@ firefox coverage/index.html
 ```
 
 Use the coverage reports to ensure your tests cover 100% of your code.
+
+### Helper specs
+
+Use `build_stubbed` in `spec/helpers/` and `ee/spec/helpers/` when the helper only reads attributes,
+identifiers, or paths.
+Even one persisted project can create a namespace, owner, memberships, and other associated records.
+Share persisted records only after checking whether persistence is needed at all.
+
+- Supply attributes usually assigned on save when the helper needs them, such as `iid:` on an issue
+  or merge request.
+  Pass required associations explicitly, such as `source_project:` on a merge request,
+  or use `:with_namespace` when a stubbed user needs a namespace.
+  A missing attribute is a reason to inspect the factory before switching back to `create`.
+- When a lookup is outside the behavior under test, stub it to return an in-memory object.
+  For example, a helper spec can stub `Appearance.current` to return
+  `build_stubbed(:appearance)` instead of saving an appearance for the lookup.
+  Keep real records when the lookup or persisted relationship is what the test verifies.
+- Use `RSpec/FactoryBot/AvoidCreate` to check unnecessary persistence.
+  Its configured scope includes helpers, presenters, serializers, views, components, mailers,
+  direct routes, and sidebars, including their EE equivalents.
+  When removing unnecessary persistence from an excluded file, check all `AvoidCreate` offenses before
+  removing the entry from `.rubocop_todo/rspec/factory_bot/avoid_create.yml`.
+  Preserve genuine persistence requirements rather than stubbing the behavior under test.
+- Keep `create` when the behavior under test saves the record.
+  For example, `user.feed_token` can save the user when the token is missing.
+  A `build_stubbed(:user)` cannot perform that save.
 
 ### View specs
 
@@ -2504,6 +2628,10 @@ end
 When testing code that uses Ruby constants, focus the test on the behavior that depends on the constant,
 rather than testing the values of the constant.
 
+When you stub a limit, derive record counts and expected results from the test's limit value.
+Describe the behavior, such as 'returns at most the limit', instead of putting the production
+number in the example description.
+
 For example, the following is preferred because it tests the behavior of the class method `.categories`.
 
 ```ruby
@@ -2562,6 +2690,21 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
   instead of `create` / `build` for association setup in callbacks.
   See [issue #262624](https://gitlab.com/gitlab-org/gitlab/-/issues/262624) for further context.
 
+  If an association must be assigned in a callback, use `evaluator.association(...)` instead of
+  hard-coding `create` or `create_list` (`RSpec/FactoryBot/StrategyInCallback`).
+  For example:
+
+  ```ruby
+  after(:build) do |event, evaluator|
+    event.issue = evaluator.association(:issue) unless event.issuable
+  end
+  ```
+
+  This follows the parent factory strategy: `build` builds the issue, and `create` persists it.
+  Check the associated factory's callbacks too, because they can still write to the database.
+  `build_stubbed` does not run `after(:build)`, so use a declarative association when stubbed
+  objects also need that association.
+
   When creating factories with a [`has_many`](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#has_many-associations) and `belongs_to` association, use the `instance` method to refer to the object being built.
   This prevents [creation of unnecessary records](https://gitlab.com/gitlab-org/gitlab/-/issues/378183) by using [interconnected associations](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#interconnected-associations).
 
@@ -2603,6 +2746,9 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
 
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
+  For example, use `build(:commit, project: project)` for a commit object.
+  The commit factory uses `skip_create` because commits are not ActiveRecord records.
+  Its project association can still require persistence if the test needs a real repository.
 - Avoid the use of [`skip_callback`](https://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-skip_callback) in factories.
   See [issue #247865](https://gitlab.com/gitlab-org/gitlab/-/issues/247865) for details.
 

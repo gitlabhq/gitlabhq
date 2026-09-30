@@ -132,12 +132,14 @@ describe('Batch comments mutations', () => {
   });
 
   describe(types.CLEAR_DRAFTS, () => {
-    it('clears drafts array', () => {
+    it('clears drafts array and the review of a batched publish', () => {
       store.drafts.push({ id: 1 });
+      store.publishReviewId = 5;
 
       store[types.CLEAR_DRAFTS]();
 
       expect(store.drafts).toEqual([]);
+      expect(store.publishReviewId).toBeNull();
     });
   });
 

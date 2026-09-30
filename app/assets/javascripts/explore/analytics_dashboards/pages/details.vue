@@ -63,8 +63,10 @@ export default {
   data() {
     return {
       filters: {},
+      filtersReady: false,
       selectedNamespaces: [],
       activeViewIndex: 0,
+      switchingViews: false,
       viewCount: 0,
       filtersKey: 0,
       dashboardFilterConfig: null,
@@ -104,6 +106,15 @@ export default {
       return Boolean(
         this.hasNamespace || (dateRangeOption && dateRangeOption !== defaultDateRange),
       );
+    },
+  },
+  watch: {
+    // Ensure that the previous dashboard view is fully unloaded before the next one is built.
+    activeViewIndex() {
+      this.switchingViews = true;
+      this.$nextTick(() => {
+        this.switchingViews = false;
+      });
     },
   },
   // createAlert renders into the global flash container, which outlives this page, so an alert
@@ -146,15 +157,16 @@ export default {
 
       return viewPrompts ?? config.duoPrompts ?? [];
     },
-    // When a dashboard defines views, feed the active view's panels to the layout
-    // so the shared grid re-renders as the user switches views.
-    layoutConfig(config) {
+    getPanels(config) {
       // Every panel is namespace-scoped, render none until a namespace is specified
-      if (!this.hasNamespace) return { ...config, panels: [] };
+      if (!this.hasNamespace) return [];
 
-      if (!this.hasViews(config)) return config;
+      if (!this.hasViews(config)) return config.panels;
 
-      return { ...config, panels: config.views[this.activeViewIndex]?.panels || [] };
+      return config.views[this.activeViewIndex]?.panels || [];
+    },
+    layoutConfig(config) {
+      return { ...config, panels: this.switchingViews ? [] : this.getPanels(config) };
     },
     panelTestId({ visualization: { slug = '' } }) {
       return `panel-${slug.replaceAll('_', '-')}`;
@@ -256,6 +268,7 @@ export default {
       this.syncScopeToUrl([]);
       // Cleared rather than set to the default, so the URL only names a range the user chose.
       this.syncDateRangeToUrl({});
+      this.filtersReady = false;
       // The controls own their selection, so remount them to clear it.
       this.filtersKey += 1;
     },
@@ -265,14 +278,7 @@ export default {
 <template>
   <dashboard-loader @loaded="onDashboardLoaded">
     <template #dashboard="{ config, cellHeight, minCellHeight, isSystemDashboard }">
-      <!--
-        Keying the layout by the active view forces a clean remount of the grid on
-        view change. This routes panel rendering through GlDashboardLayout's initial
-        load (which does not scroll) instead of Gridstack's incremental "added" event,
-        which smooth-scrolls to the last panel and jumps the page to the bottom.
-      -->
       <gl-dashboard-layout
-        :key="activeViewIndex"
         class="explore-analytics-dashboard"
         filters-class="explore-dashboard-filters"
         :config="layoutConfig(config)"
@@ -303,6 +309,7 @@ export default {
             :date-range-filter="filters"
             @set-date-range="setDateRangeFilter"
             @set-scope="setScopeFilter"
+            @ready="filtersReady = true"
             @error="onScopeError"
           />
           <!-- Outside the filter bar so the remount above cannot destroy it mid-click. -->
@@ -320,7 +327,7 @@ export default {
           <slot
             name="filter-actions"
             :filters="filters"
-            :panels="layoutConfig(config).panels"
+            :panels="getPanels(config)"
             :duo-prompts="activeDuoPrompts(config)"
             :is-system-dashboard="isSystemDashboard"
           ></slot>
@@ -349,7 +356,7 @@ export default {
           />
         </template>
 
-        <template v-if="!hasNamespace" #empty-state>
+        <template v-if="filtersReady && !hasNamespace" #empty-state>
           <gl-empty-state
             :title="$options.i18n.noNamespaceTitle"
             :description="$options.i18n.noNamespaceDescription"

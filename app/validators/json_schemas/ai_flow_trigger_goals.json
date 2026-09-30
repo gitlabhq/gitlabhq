@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Per-event goals for an AI flow trigger, keyed by event type",
+  "$comment": "maxLength is far below Workflow::GOAL_MAX_LENGTH (65536) on purpose: a goal is one input to the rendered workflow goal, which RunService budgets the discussion thread into.",
+  "type": "object",
+  "additionalProperties": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 4096
+  }
+}

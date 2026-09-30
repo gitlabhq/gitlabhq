@@ -88,6 +88,20 @@ describe('DashboardFilters', () => {
       expect(findScopePicker().exists()).toBe(false);
     });
 
+    it('emits ready on mount when the YAML disables the scope picker', () => {
+      createComponent({
+        props: { dashboardFilters: { scope: { enabled: false } } },
+      });
+
+      expect(wrapper.emitted('ready')).toEqual([[]]);
+    });
+
+    it('leaves ready to the scope picker when it is shown', () => {
+      createComponent();
+
+      expect(wrapper.emitted('ready')).toBeUndefined();
+    });
+
     it('makes the scope picker multi-select when the YAML enables multiSelect', () => {
       createComponent({
         props: { dashboardFilters: { scope: { enabled: true, multiSelect: true } } },
@@ -178,6 +192,12 @@ describe('DashboardFilters', () => {
       findScopePicker().vm.$emit('error', error);
 
       expect(wrapper.emitted('error')).toEqual([[error]]);
+    });
+
+    it('re-emits the scope picker ready event', () => {
+      findScopePicker().vm.$emit('ready');
+
+      expect(wrapper.emitted('ready')).toEqual([[]]);
     });
 
     it('re-emits date-range filter change as set-date-range', () => {

@@ -87,6 +87,22 @@ describe('TodosWidget', () => {
       expect(findTodoItems()).toHaveLength(0);
     });
 
+    describe('when the query resolves without a current user', () => {
+      beforeEach(async () => {
+        const nullUserHandler = jest.fn().mockResolvedValue({ data: { currentUser: null } });
+        createComponent({ todosQueryHandler: nullUserHandler });
+        await waitForPromises();
+        // An exception thrown inside the Apollo `update` hook is rethrown from a timer
+        jest.runOnlyPendingTimers();
+      });
+
+      it('shows the empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findTodoItems()).toHaveLength(0);
+        expect(findErrorMessage().exists()).toBe(false);
+      });
+    });
+
     it('does not show empty state when loading', () => {
       createComponent();
 

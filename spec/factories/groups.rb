@@ -147,6 +147,12 @@ FactoryBot.define do
       namespace_settings { association(:namespace_settings, mcp_server_enabled: false) }
     end
 
+    trait :with_require_sha_for_merge_enabled_and_locked do
+      namespace_settings do
+        association(:namespace_settings, require_sha_for_merge: true, lock_require_sha_for_merge: true)
+      end
+    end
+
     trait :deletion_scheduled do
       deletion_scheduled_at { Date.current }
 

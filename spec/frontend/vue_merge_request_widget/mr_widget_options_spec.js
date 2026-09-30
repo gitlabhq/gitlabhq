@@ -35,7 +35,6 @@ import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/componen
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.query.graphql';
-import mergeChecksSubscription from '~/vue_merge_request_widget/queries/merge_checks.subscription.graphql';
 import userPermissionsReviewerQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import missingBranchQuery from '~/vue_merge_request_widget/queries/states/missing_branch.query.graphql';
@@ -156,7 +155,6 @@ describe('MrWidgetOptions', () => {
       [approvedBySubscription, () => mockedApprovalsSubscription],
       [getStateSubscription, stateSubscriptionHandler],
       [readyToMergeSubscription, () => createMockApolloSubscription()],
-      [mergeChecksSubscription, () => createMockApolloSubscription()],
       [mrPipelineUpdatedSubscription, () => createMockApolloSubscription()],
       [mrPipelineCreationRequestUpdated, () => createMockApolloSubscription()],
     ];
@@ -742,6 +740,43 @@ describe('MrWidgetOptions', () => {
     it('renders the widget container when there is MR data', async () => {
       await createComponent(mockData);
       expect(findWidgetContainer().props('mr')).not.toBeUndefined();
+    });
+  });
+
+  describe('merge checks', () => {
+    it('refreshes the merge checks from the merge status subscription', async () => {
+      const stateSubscriptions = [];
+
+      await createComponent({
+        mountFn: mountExtended,
+        updatedMrData: {
+          state: 'opened',
+          source_branch_exists: true,
+          target_branch_sha: 'abc123',
+        },
+        stateSubscriptionHandler: () => {
+          const subscription = createMockApolloSubscription();
+          stateSubscriptions.push(subscription);
+          return subscription;
+        },
+      });
+
+      expect(wrapper.text()).not.toContain('Merge blocked: 1 check failed');
+
+      stateSubscriptions.forEach((subscription) => {
+        subscription.next({
+          data: {
+            mergeRequestMergeStatusUpdated: {
+              userPermissions: { canMerge: true },
+              mergeabilityChecks: [{ identifier: 'DRAFT_STATUS', status: 'FAILED' }],
+            },
+          },
+        });
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('Merge blocked: 1 check failed');
     });
   });
 

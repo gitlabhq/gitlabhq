@@ -73,7 +73,7 @@ export default {
         return this.truncateTarget(this.$el);
       }
       if (this.truncateTarget === 'child') {
-        return this.$el.childNodes[0];
+        return this.$el.firstElementChild;
       }
       return this.$el;
     },

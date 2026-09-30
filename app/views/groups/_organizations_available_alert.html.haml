@@ -1,0 +1,11 @@
+- return unless show_organizations_available_alert?(group)
+
+= render ::Users::GroupDismissibleAlertComponent.new(title: s_("Organization|Organizations are now available"), dismiss_options: { user: current_user, group: group, feature_id: Users::GroupCalloutsHelper::ORGANIZATIONS_AVAILABLE_ALERT }) do |c|
+  - c.with_body do
+    = s_("Organization|Organizations bring your top-level groups, projects, and users into one place so you can manage organization level settings and features together. Create yours to get started with features like Artifact Central.")
+  - c.with_actions do
+    .gl-flex.gl-gap-3
+      = render Pajamas::ButtonComponent.new(variant: 'confirm', href: edit_group_path(group, anchor: 'js-advanced-settings')) do
+        = s_("Organization|Create your organization")
+      = render Pajamas::ButtonComponent.new(category: 'tertiary', variant: 'link', href: help_page_path('user/organization/_index.md', anchor: 'create-an-organization'), target: '_blank') do
+        = _("Learn more")
