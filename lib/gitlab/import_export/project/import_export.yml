@@ -148,6 +148,7 @@ included_attributes:
     - :id
     - :public_email
     - :username
+    - :name
   user_contributions:
     - :id
     - :public_email

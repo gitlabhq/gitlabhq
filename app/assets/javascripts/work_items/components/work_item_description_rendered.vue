@@ -213,14 +213,14 @@ export default {
       }
     },
     renderSortableLists() {
-      // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.
+      // We exclude GLFM table of contents, including nested lists within their `section-nav` root.
       // We also exclude footnotes, which are in an `ol` inside a `section.footnotes`.
       const lists = this.$el.querySelectorAll?.(
-        '.description ul:not(.section-nav), .description ul:not(.section-nav) ul, .description :not(section.footnotes) > ol',
+        '.description ul, .description :not(section.footnotes) > ol',
       );
 
       lists?.forEach((list) => {
-        if (list.children.length <= 1) {
+        if (list.closest('.section-nav') || list.children.length <= 1) {
           return;
         }
 

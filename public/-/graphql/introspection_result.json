@@ -38696,7 +38696,7 @@
             },
             {
               "name": "registry",
-              "description": "Registry provisioned. Null when the request was refused. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "The organization's registry: the one just provisioned, or the existing one when the organization is already activated. Null on every other refusal. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",

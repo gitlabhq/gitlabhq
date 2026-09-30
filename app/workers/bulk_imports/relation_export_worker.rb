@@ -62,7 +62,10 @@ module BulkImports
     def perform(user_id, portable_id, portable_class, relation, batched, params = {})
       @user = User.find(user_id)
       portable = self.class.portable(portable_id, portable_class)
-      config = BulkImports::FileTransfer.config_for(portable)
+      config = BulkImports::FileTransfer.config_for(
+        portable,
+        offline: params['offline_export_id'].present?
+      )
       @params = params
 
       log_extra_metadata_on_done(:relation, relation)

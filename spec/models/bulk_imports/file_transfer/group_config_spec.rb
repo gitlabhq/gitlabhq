@@ -6,11 +6,13 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
   let_it_be(:exportable) { create(:group) }
   let_it_be(:hex) { '123' }
 
+  let(:offline) { false }
+
   before do
     allow(SecureRandom).to receive(:hex).and_return(hex)
   end
 
-  subject { described_class.new(exportable) }
+  subject { described_class.new(exportable, offline: offline) }
 
   describe '#portable_tree' do
     it 'returns portable tree' do
@@ -37,8 +39,16 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
       expect(subject.portable_relations).to include('max_iids')
     end
 
-    it 'does not include skipped relations' do
+    it 'excludes members for direct transfer' do
       expect(subject.portable_relations).not_to include('members')
+    end
+
+    context 'when exporting for offline transfer' do
+      let(:offline) { true }
+
+      it 'includes members' do
+        expect(subject.portable_relations).to include('members')
+      end
     end
   end
 
@@ -61,7 +71,7 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
 
   describe '#relation_included_keys' do
     it 'returns included keys for relation' do
-      expect(subject.relation_included_keys('user')).to include('id')
+      expect(subject.relation_included_keys('user')).to include('id', 'name')
     end
   end
 

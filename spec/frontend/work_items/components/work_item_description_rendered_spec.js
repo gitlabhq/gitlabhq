@@ -362,6 +362,34 @@ describe('WorkItemDescriptionRendered', () => {
 
       expect(Sortable.create).not.toHaveBeenCalled();
     });
+
+    describe('when the description contains a table of contents', () => {
+      beforeEach(async () => {
+        createComponent({
+          canEdit: true,
+          workItemDescription: {
+            description: 'test',
+            descriptionHtml: `
+              <ul class="section-nav">
+                <li>Heading
+                  <ul><li>Section A</li><li>Section B</li></ul>
+                </li>
+              </ul>
+              <ul><li>task 1</li><li>task 2</li></ul>
+              <ol><li>step 1</li><li>step 2</li></ol>
+            `,
+          },
+        });
+        await nextTick();
+      });
+
+      it('excludes its nested lists while keeping ordinary lists sortable', () => {
+        const sortableLists = Sortable.create.mock.calls.map(([list]) => list);
+
+        expect(sortableLists).toHaveLength(2);
+        expect(sortableLists.map((list) => list.tagName)).toEqual(['UL', 'OL']);
+      });
+    });
   });
 
   describe('task list item actions', () => {

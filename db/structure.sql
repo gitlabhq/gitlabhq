@@ -21052,27 +21052,6 @@ CREATE SEQUENCE emails_id_seq
 
 ALTER SEQUENCE emails_id_seq OWNED BY emails.id;
 
-CREATE TABLE enabled_foundational_flow_check_results (
-    id bigint NOT NULL,
-    organization_id bigint NOT NULL,
-    enabled_foundational_flow_id bigint NOT NULL,
-    check_id smallint NOT NULL,
-    status smallint NOT NULL,
-    message text,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    CONSTRAINT check_270d2ebc3c CHECK ((char_length(message) <= 4096))
-);
-
-CREATE SEQUENCE enabled_foundational_flow_check_results_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE enabled_foundational_flow_check_results_id_seq OWNED BY enabled_foundational_flow_check_results.id;
-
 CREATE TABLE enabled_foundational_flows (
     id bigint NOT NULL,
     namespace_id bigint,
@@ -37629,8 +37608,6 @@ ALTER TABLE ONLY elastic_reindexing_tasks ALTER COLUMN id SET DEFAULT nextval('e
 
 ALTER TABLE ONLY emails ALTER COLUMN id SET DEFAULT nextval('emails_id_seq'::regclass);
 
-ALTER TABLE ONLY enabled_foundational_flow_check_results ALTER COLUMN id SET DEFAULT nextval('enabled_foundational_flow_check_results_id_seq'::regclass);
-
 ALTER TABLE ONLY enabled_foundational_flows ALTER COLUMN id SET DEFAULT nextval('enabled_foundational_flows_id_seq'::regclass);
 
 ALTER TABLE ONLY environments ALTER COLUMN id SET DEFAULT nextval('environments_id_seq'::regclass);
@@ -41148,9 +41125,6 @@ ALTER TABLE ONLY elasticsearch_indexed_projects
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT emails_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY enabled_foundational_flow_check_results
-    ADD CONSTRAINT enabled_foundational_flow_check_results_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY enabled_foundational_flows
     ADD CONSTRAINT enabled_foundational_flows_pkey PRIMARY KEY (id);
@@ -46143,10 +46117,6 @@ CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON e
 CREATE UNIQUE INDEX idx_enabled_flows_on_namespace_catalog_item ON enabled_foundational_flows USING btree (namespace_id, catalog_item_id) WHERE (namespace_id IS NOT NULL);
 
 CREATE UNIQUE INDEX idx_enabled_flows_on_project_catalog_item ON enabled_foundational_flows USING btree (project_id, catalog_item_id) WHERE (project_id IS NOT NULL);
-
-CREATE UNIQUE INDEX idx_enabled_foundational_flow_check_results_on_flow_and_check ON enabled_foundational_flow_check_results USING btree (enabled_foundational_flow_id, check_id);
-
-CREATE INDEX idx_enabled_foundational_flow_check_results_on_organization ON enabled_foundational_flow_check_results USING btree (organization_id);
 
 CREATE INDEX idx_enabled_pkgs_cleanup_policies_on_next_run_at_project_id ON packages_cleanup_policies USING btree (next_run_at, project_id) WHERE (keep_n_duplicated_package_files <> 'all'::text);
 
@@ -59612,9 +59582,6 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 ALTER TABLE ONLY namespace_state_propagations
     ADD CONSTRAINT fk_9798d3f752 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY enabled_foundational_flow_check_results
-    ADD CONSTRAINT fk_97ace560fa FOREIGN KEY (enabled_foundational_flow_id) REFERENCES enabled_foundational_flows(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY resource_weight_events
     ADD CONSTRAINT fk_97c7849ca4 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -60895,9 +60862,6 @@ ALTER TABLE ONLY workspaces
 
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT fk_f7aacd483c FOREIGN KEY (recipe_revision_id) REFERENCES packages_conan_recipe_revisions(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY enabled_foundational_flow_check_results
-    ADD CONSTRAINT fk_f7acffc5d7 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_transitions
     ADD CONSTRAINT fk_f7c401aeb4 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

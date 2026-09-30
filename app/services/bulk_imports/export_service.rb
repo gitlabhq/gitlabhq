@@ -16,7 +16,9 @@ module BulkImports
     def execute
       validate_user_permissions!
 
-      FileTransfer.config_for(portable).portable_relations.each do |relation|
+      config = FileTransfer.config_for(portable, offline: offline_export_id.present?)
+
+      config.portable_relations.each do |relation|
         RelationExportWorker.perform_async(
           current_user.id,
           portable.id,

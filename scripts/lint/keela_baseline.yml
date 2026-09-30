@@ -457,8 +457,6 @@ methods:
   - self.enqueue_refresh
   app/models/protected_branch.rb:
   - self.get_ids_by_name
-  app/models/remote_mirror.rb:
-  - update_failed?
   app/models/user_custom_attribute.rb:
   - declarative_policy_class
   app/models/wiki_page/meta.rb:

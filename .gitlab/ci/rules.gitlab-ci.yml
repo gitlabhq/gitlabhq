@@ -1207,6 +1207,7 @@
   - "{,ee/}app/policies/{,**/}*.rb"
   - "{,ee/}app/graphql/{,**/}*.rb"
   - "{,ee/}lib/{,**/}api/{,**/}*.rb"
+  - "{,ee/}spec/support/shared_examples/{,**/}*.rb"
   - "doc/api/graphql/reference/_index.md"
   - "doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md"
   - "tooling/authz/permissions/docs/templates/*"

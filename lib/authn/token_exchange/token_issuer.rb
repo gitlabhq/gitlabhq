@@ -45,11 +45,8 @@ module Authn
       # organization is required (not derived from user) because IAM keys a
       # principal's identity on (origin, origin_id, local_id), and organization
       # decides which principal the token resolves to.
-      #
-      # job's project and commit are emitted as build provenance (ADR-020 R3);
-      # they carry no authorization meaning.
       def initialize(
-        audiences:, user:, organization:, ttl: DEFAULT_TTL_SECONDS, scopes: [], identities: [], routing: {}, job: nil
+        audiences:, user:, organization:, ttl: DEFAULT_TTL_SECONDS, scopes: [], identities: [], routing: {}
       )
         @audiences = Array(audiences).uniq
         raise ArgumentError, 'audiences must not be empty' if @audiences.empty?
@@ -60,7 +57,6 @@ module Authn
         @scopes = Array(scopes).map(&:to_s)
         @identities = Array.wrap(identities)
         @routing = routing
-        @job = job
       end
 
       def token
@@ -88,8 +84,7 @@ module Authn
           identity_kind: IDENTITY_KIND_USER,
           organization_role: organization_role,
           scopes: @scopes.presence,
-          identities: @identities.presence,
-          job: job_claims
+          identities: @identities.presence
         }.compact
 
         {
@@ -103,12 +98,6 @@ module Authn
           ver: SCHEMA_VERSION,
           gitlab: gitlab_claims
         }.merge(routing_claims)
-      end
-
-      def job_claims
-        return unless @job
-
-        { project_id: @job.project_id, git_commit_sha: @job.sha }
       end
 
       def routing_claims

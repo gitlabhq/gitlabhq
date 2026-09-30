@@ -393,7 +393,6 @@
 - elasticsearch_indexed_namespaces
 - elasticsearch_indexed_projects
 - emails
-- enabled_foundational_flow_check_results
 - enabled_foundational_flows
 - environments
 - epic_issues

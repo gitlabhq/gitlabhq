@@ -21,6 +21,10 @@ module Import
                 pipeline: ::BulkImports::Projects::Pipelines::RepositoryBundlePipeline,
                 stage: 1
               },
+              members: {
+                pipeline: Import::Offline::Projects::Pipelines::MembersPipeline,
+                stage: 1
+              },
               labels: {
                 pipeline: ::BulkImports::Common::Pipelines::LabelsPipeline,
                 stage: 2

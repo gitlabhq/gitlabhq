@@ -604,7 +604,7 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     end
 
     context 'with instance runner' do
-      let(:runner) { create(:ci_runner, :instance) }
+      let(:runner) { build_stubbed(:ci_runner, :instance) }
 
       it 'raises an error' do
         expect { assign_to }
@@ -613,7 +613,7 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
     end
 
     context 'with group runner' do
-      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let(:runner) { build_stubbed(:ci_runner, :group, groups: [group]) }
 
       it 'raises an error' do
         expect { assign_to }
@@ -2342,7 +2342,7 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
 
     context 'when runner already has a uuid' do
       let(:existing_uuid) { '01966aa0-f383-7a6b-b694-cd4f2f96cca1' }
-      let(:runner) { create(:ci_runner, uuid: existing_uuid) }
+      let(:runner) { build_stubbed(:ci_runner, uuid: existing_uuid) }
 
       it 'returns the existing uuid without changing it' do
         expect(runner.uuid).to eq(existing_uuid)

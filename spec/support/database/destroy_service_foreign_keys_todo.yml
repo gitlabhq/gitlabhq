@@ -774,7 +774,6 @@ organizations:
 - dependency_list_export_part_upload_states.organization_id
 - dependency_list_export_upload_states.organization_id
 - emails.organization_id
-- enabled_foundational_flow_check_results.organization_id
 - granular_scopes.organization_id
 - iam_outbox.organization_id
 - import_failures.organization_id

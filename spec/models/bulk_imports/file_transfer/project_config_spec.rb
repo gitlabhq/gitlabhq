@@ -6,11 +6,13 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
   let_it_be(:exportable) { create(:project) }
   let_it_be(:hex) { '123' }
 
+  let(:offline) { false }
+
   before do
     allow(SecureRandom).to receive(:hex).and_return(hex)
   end
 
-  subject { described_class.new(exportable) }
+  subject { described_class.new(exportable, offline: offline) }
 
   describe 'portable_tree' do
     it 'returns portable tree' do
@@ -37,8 +39,18 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
       expect(subject.portable_relations).to include('max_iids')
     end
 
-    it 'does not include skipped relations' do
-      expect(subject.portable_relations).not_to include('project_members', 'group_members')
+    it 'excludes project and group members for direct transfer' do
+      expect(subject.portable_relations).not_to include('project_members')
+      expect(subject.portable_relations).not_to include('group_members')
+    end
+
+    context 'when exporting for offline transfer' do
+      let(:offline) { true }
+
+      it 'includes project members and excludes group members' do
+        expect(subject.portable_relations).to include('project_members')
+        expect(subject.portable_relations).not_to include('group_members')
+      end
     end
   end
 
@@ -69,6 +81,10 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
   describe '#relation_included_keys' do
     it 'returns included keys for relation' do
       expect(subject.relation_included_keys('project')).to include('approvals_before_merge')
+    end
+
+    it 'includes names for exported members' do
+      expect(subject.relation_included_keys('user')).to include('id', 'name')
     end
   end
 

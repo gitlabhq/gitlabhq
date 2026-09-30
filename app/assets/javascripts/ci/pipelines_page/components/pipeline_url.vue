@@ -3,7 +3,6 @@ import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import TooltipOnTruncateDirective from '~/vue_shared/directives/tooltip_on_truncate';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ICONS, PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
@@ -17,7 +16,6 @@ export default {
     GlIcon,
     GlLink,
     PipelineLabels,
-    TooltipOnTruncate,
     UserAvatarLink,
   },
   directives: {
@@ -64,9 +62,6 @@ export default {
     },
     refUrl() {
       return this.commitRef?.ref_url || this.commitRef?.path || `commits/${this.pipeline?.ref}`;
-    },
-    tooltipTitle() {
-      return this.mergeRequestRef?.title || this.commitRef?.name || this.pipeline?.ref;
     },
     commitAuthor() {
       const pipelineCommit = this.pipeline?.commit;
@@ -193,33 +188,31 @@ export default {
       </div>
 
       <!--Commit row-->
-      <div class="gl-inline-flex gl-rounded-base gl-bg-strong gl-px-2">
-        <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
-          <gl-icon
-            v-gl-tooltip
-            :name="commitIcon"
-            :title="commitIconTooltipTitle"
-            :size="12"
-            data-testid="commit-icon-type"
-            variant="subtle"
-          />
-          <gl-link
-            v-if="mergeRequestRef"
-            :href="mergeRequestRef.path || mergeRequestRef.webPath"
-            class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
-            data-testid="merge-request-ref"
-            @click="trackClick('click_mr_ref')"
-            >{{ mergeRequestRef.iid }}</gl-link
-          >
-          <gl-link
-            v-else
-            :href="refUrl"
-            class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
-            data-testid="commit-ref-name"
-            @click="trackClick('click_commit_name')"
-            >{{ commitRef.name || pipeline.ref }}</gl-link
-          >
-        </tooltip-on-truncate>
+      <div class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
+        <gl-icon
+          v-gl-tooltip
+          :name="commitIcon"
+          :title="commitIconTooltipTitle"
+          :size="12"
+          data-testid="commit-icon-type"
+          variant="subtle"
+        />
+        <gl-link
+          v-if="mergeRequestRef"
+          :href="mergeRequestRef.path || mergeRequestRef.webPath"
+          class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
+          data-testid="merge-request-ref"
+          @click="trackClick('click_mr_ref')"
+          >{{ mergeRequestRef.iid }}</gl-link
+        >
+        <gl-link
+          v-else
+          :href="refUrl"
+          class="gl-font-monospace gl-text-sm gl-text-subtle hover:gl-text-subtle"
+          data-testid="commit-ref-name"
+          @click="trackClick('click_commit_name')"
+          >{{ commitRef.name || pipeline.ref }}</gl-link
+        >
       </div>
 
       <div class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2 gl-text-sm">

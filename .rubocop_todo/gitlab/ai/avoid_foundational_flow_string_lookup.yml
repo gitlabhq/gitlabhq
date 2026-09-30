@@ -10,8 +10,6 @@ Gitlab/Ai/AvoidFoundationalFlowStringLookup:
     - 'ee/app/services/ai/catalog/item_consumers/create_service.rb'
     - 'ee/app/services/ai/duo_workflows/create_workflow_service.rb'
     - 'ee/app/services/ai/duo_workflows/flow_execution_authorizer.rb'
-    - 'ee/app/services/ai/duo_workflows/generate_readiness_score_service.rb'
-    - 'ee/app/services/ai/duo_workflows/generate_workplan_service.rb'
     - 'ee/app/services/ai/duo_workflows/workflow_context_generation_service.rb'
     - 'ee/app/services/ai/flow_triggers/run_service.rb'
     - 'ee/app/services/ai/messaging/default_project_flow_resolver.rb'

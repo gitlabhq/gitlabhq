@@ -17,6 +17,10 @@ module Import
                 pipeline: ::BulkImports::Common::Pipelines::MaxIidsPipeline,
                 stage: 1
               },
+              members: {
+                pipeline: Import::Offline::Common::Pipelines::MembersPipeline,
+                stage: 1
+              },
               namespace_settings: {
                 pipeline: ::BulkImports::Groups::Pipelines::NamespaceSettingsPipeline,
                 stage: 1

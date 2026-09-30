@@ -73,7 +73,7 @@ describe('GlqlVisualization', () => {
       expect(findResolver().exists()).toBe(false);
       expect(findViewportObserver().props('options')).toEqual({
         root: null,
-        rootMargin: '100% 0px',
+        rootMargin: '50% 0px',
       });
     });
 

@@ -2634,10 +2634,9 @@ paths:
       operationId: postApiV4TokenExchange
       summary: Issue a short-lived JWT for a single modular-service audience
       description: Issues a short-lived RS256 JWT scoped to one modular-service audience
-        (such as the Artifact Registry). Claims include the requesting user (sub)
-        and the organization it acts in. When called with a CI job token, the claims
-        also carry the job project id and commit SHA as build provenance. Presented
-        to the corresponding backend and verified against the instance JWKS.
+        (such as the Artifact Registry). Claims include the requesting user id (sub),
+        organization id, and deployment realm (saas / self-managed). Presented to
+        the corresponding backend and verified against the instance JWKS.
       tags:
       - Token exchange
       responses:
@@ -3402,6 +3401,18 @@ paths:
           nullable: true
           maxLength: 4096
         in: query
+      - name: channels
+        required: false
+        description: Comma-separated channels to return in each checkpoint's channel_values,
+          at most 100, each 1 to 255 characters. Omit to return every channel.
+        schema:
+          type: array
+          items:
+            type: string
+          nullable: true
+        in: query
+        style: form
+        explode: false
   "/api/v4/ai/duo_workflows/workflows/{id}/checkpoints/by_thread_ts":
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpointsByThreadTs

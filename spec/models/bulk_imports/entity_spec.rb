@@ -805,6 +805,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
           expect(pipelines).to contain_exactly(
             hash_including(pipeline: Import::Offline::Groups::Pipelines::GroupPipeline, stage: 0),
             hash_including(pipeline: BulkImports::Common::Pipelines::MaxIidsPipeline, stage: 1),
+            hash_including(pipeline: Import::Offline::Common::Pipelines::MembersPipeline, stage: 1),
             hash_including(pipeline: BulkImports::Groups::Pipelines::NamespaceSettingsPipeline, stage: 1),
             hash_including(pipeline: BulkImports::Common::Pipelines::LabelsPipeline, stage: 1),
             hash_including(pipeline: BulkImports::Common::Pipelines::MilestonesPipeline, stage: 1),
@@ -826,6 +827,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
           expect(pipelines).to contain_exactly(
             hash_including(pipeline: Import::Offline::Projects::Pipelines::ProjectPipeline, stage: 0),
             hash_including(pipeline: BulkImports::Common::Pipelines::MaxIidsPipeline, stage: 1),
+            hash_including(pipeline: Import::Offline::Projects::Pipelines::MembersPipeline, stage: 1),
             hash_including(pipeline: BulkImports::Projects::Pipelines::RepositoryBundlePipeline, stage: 1),
             hash_including(pipeline: BulkImports::Common::Pipelines::LabelsPipeline, stage: 2),
             hash_including(pipeline: BulkImports::Common::Pipelines::MilestonesPipeline, stage: 2),

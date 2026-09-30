@@ -118,13 +118,19 @@ list of restrictions, see
 
 ## Migrated items
 
+{{< history >}}
+
+- Importing of group and project memberships [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/538356)
+  in GitLab 19.5.
+
+{{< /history >}}
+
 Offline transfer imports the same group and project items as migration by direct transfer.
 For the full list, see [migrated group items](../../group/import/migrated_items.md#migrated-group-items) and
 [migrated project items](../../group/import/migrated_items.md#migrated-project-items).
 
 The following items are not imported by offline transfer:
 
-- Group and project memberships. Support for membership import is proposed in [work item 538356](https://gitlab.com/gitlab-org/gitlab/-/work_items/538356).
 - Wikis. Support for wiki import is proposed in [work item 538858](https://gitlab.com/gitlab-org/gitlab/-/work_items/538858).
 - Snippets. Support for snippet import is proposed in [work item 538347](https://gitlab.com/gitlab-org/gitlab/-/work_items/538347).
 - Badges. Support for badge import is proposed in [work item 538355](https://gitlab.com/gitlab-org/gitlab/-/work_items/538355).
@@ -140,8 +146,8 @@ After the import finishes,
 [reassign the placeholder users](../../import/mapping/reassignment.md) to users on the destination
 instance.
 
-Because offline transfer does not import group and project memberships, you must add members to the
-imported groups and projects yourself.
+Offline transfer imports group and project memberships as placeholder memberships. When you reassign
+placeholder users, GitLab reassigns their memberships to the corresponding users.
 
 ## Visibility rules
 

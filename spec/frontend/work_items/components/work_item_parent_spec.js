@@ -230,7 +230,7 @@ describe('WorkItemParent component', () => {
       createComponent({ parent: mockEmptyAncestorWidgetResponse });
 
       showDropdown();
-      findSidebarDropdownWidget().vm.$emit('reset');
+      findSidebarDropdownWidget().vm.$emit('update-value', null);
       await nextTick();
 
       expect(findSidebarDropdownWidget().props('updateInProgress')).toBe(true);
@@ -513,7 +513,7 @@ describe('WorkItemParent component', () => {
       });
 
       showDropdown();
-      findSidebarDropdownWidget().vm.$emit('reset');
+      findSidebarDropdownWidget().vm.$emit('update-value', null);
       await waitForPromises();
 
       expect(unAssignParentWorkItemMutationHandler).toHaveBeenCalledWith({

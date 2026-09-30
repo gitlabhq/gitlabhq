@@ -91,10 +91,6 @@ class RemoteMirror < ApplicationRecord
     end
   end
 
-  def update_failed?
-    update_status == 'failed'
-  end
-
   def update_in_progress?
     update_status == 'started'
   end

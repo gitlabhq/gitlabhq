@@ -31,8 +31,9 @@ import {
 
 // The page scrolls inside a panel whose ancestors clip it, and `rootMargin` only grows the
 // root's own box, so the panel is the root. Memoized per root so every dashboard panel shares
-// one observer, loading a viewport ahead so panels usually have data by the time they scroll in.
-const observerOptionsFor = memoize((root) => Object.freeze({ root, rootMargin: '100% 0px' }));
+// one observer, loading half a viewport ahead so panels usually have data by the time they
+// scroll in.
+const observerOptionsFor = memoize((root) => Object.freeze({ root, rootMargin: '50% 0px' }));
 
 const STATE_VARIANT_BY_ERROR_CATEGORY = {
   [GLQL_ERROR_NO_ACCESS]: PANEL_STATE_NO_ACCESS,

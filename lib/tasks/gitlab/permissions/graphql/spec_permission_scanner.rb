@@ -17,6 +17,8 @@ module Tasks
             ee/spec/requests/api/graphql
             spec/support/shared_examples/graphql
             ee/spec/support/shared_examples/graphql
+            spec/support/shared_examples/requests
+            ee/spec/support/shared_examples/requests
           ].freeze
         end
       end

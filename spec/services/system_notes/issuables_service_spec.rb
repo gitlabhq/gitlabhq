@@ -1014,18 +1014,53 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
     context 'when mentioned_in is a MergeRequest' do
       let(:mentioned_in) { create(:merge_request, :simple, source_project: project) }
-      let(:noteable) { project.commit }
 
-      it 'is truthy when noteable is in commits' do
-        expect(mentioned_in).to receive(:commits).and_return([noteable])
+      context 'when noteable is in commits' do
+        let(:noteable) { project.commit(mentioned_in.source_branch) }
 
-        expect(service.cross_reference_disallowed?(mentioned_in)).to be_truthy
+        it 'is truthy' do
+          expect(service.cross_reference_disallowed?(mentioned_in)).to be_truthy
+        end
+
+        it 'does not load the merge request diff commits' do
+          merge_request = MergeRequest.find(mentioned_in.id)
+
+          service.cross_reference_disallowed?(merge_request)
+
+          expect(merge_request.merge_request_diff.association(:merge_request_diff_commits)).not_to be_loaded
+        end
       end
 
-      it 'is falsey when noteable is not in commits' do
-        expect(mentioned_in).to receive(:commits).and_return([])
+      context 'when noteable is not in commits' do
+        let(:noteable) { project.commit }
 
-        expect(service.cross_reference_disallowed?(mentioned_in)).to be_falsey
+        it 'is falsey' do
+          expect(service.cross_reference_disallowed?(mentioned_in)).to be_falsey
+        end
+      end
+
+      context 'when the merge request diff is not persisted' do
+        let(:mentioned_in) { build(:merge_request, :simple, source_project: project) }
+
+        before do
+          mentioned_in.compare_commits = project.repository.commits_between('master', 'feature')
+        end
+
+        context 'when noteable is in commits' do
+          let(:noteable) { project.commit('feature') }
+
+          it 'is truthy' do
+            expect(service.cross_reference_disallowed?(mentioned_in)).to be_truthy
+          end
+        end
+
+        context 'when noteable is not in commits' do
+          let(:noteable) { project.commit('master') }
+
+          it 'is falsey' do
+            expect(service.cross_reference_disallowed?(mentioned_in)).to be_falsey
+          end
+        end
       end
     end
 

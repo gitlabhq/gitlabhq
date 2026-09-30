@@ -86,7 +86,6 @@ dependency_list_export_parts: supported
 dependency_list_export_upload_states: no_work_needed
 dependency_list_export_uploads: no_work_needed
 dependency_list_exports: no_work_needed
-enabled_foundational_flow_check_results: no_work_needed
 fork_networks: supported
 govern_policies: https://gitlab.com/gitlab-org/gitlab/-/work_items/616253
 govern_policy_enforcements: https://gitlab.com/gitlab-org/gitlab/-/work_items/616254

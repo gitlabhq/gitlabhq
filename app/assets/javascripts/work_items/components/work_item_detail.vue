@@ -1026,7 +1026,6 @@ export default {
                 :title-html="workItem.titleHtml"
                 @update-work-item="updateWorkItem"
                 @update-draft="updateDraft('title', $event)"
-                @error="updateError = $event"
               />
             </div>
             <work-item-title
@@ -1037,7 +1036,6 @@ export default {
               :class="titleClassComponent"
               :title="workItem.title"
               :title-html="workItem.titleHtml"
-              @error="updateError = $event"
               @update-work-item="updateWorkItem"
               @update-draft="updateDraft('title', $event)"
             />

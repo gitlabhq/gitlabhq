@@ -20,35 +20,51 @@ describe('google_cloud/configuration/panel', () => {
     revokeOauthUrl: 'revoke-oauth-url',
   };
 
-  beforeEach(() => {
-    wrapper = shallowMountExtended(Panel, { propsData: props });
+  const createComponent = (extraProps = {}) => {
+    wrapper = shallowMountExtended(Panel, { propsData: { ...props, ...extraProps } });
+  };
+
+  describe('with a revoke OAuth URL', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('contains google cloud menu with `configuration` active', () => {
+      const target = wrapper.findComponent(GoogleCloudMenu);
+      expect(target.exists()).toBe(true);
+      expect(target.props('active')).toBe('configuration');
+      expect(target.props('configurationUrl')).toBe(props.configurationUrl);
+      expect(target.props('deploymentsUrl')).toBe(props.deploymentsUrl);
+      expect(target.props('databasesUrl')).toBe(props.databasesUrl);
+    });
+
+    it('contains service accounts list', () => {
+      const target = wrapper.findComponent(ServiceAccountsList);
+      expect(target.exists()).toBe(true);
+      expect(target.props('list')).toBe(props.serviceAccounts);
+      expect(target.props('createUrl')).toBe(props.createServiceAccountUrl);
+      expect(target.props('emptyIllustrationUrl')).toBe(props.emptyIllustrationUrl);
+    });
+
+    it('contains gcp regions list', () => {
+      const target = wrapper.findComponent(GcpRegionsList);
+      expect(target.props('list')).toBe(props.gcpRegions);
+      expect(target.props('createUrl')).toBe(props.configureGcpRegionsUrl);
+    });
+
+    it('contains revoke oauth', () => {
+      const target = wrapper.findComponent(RevokeOauth);
+      expect(target.props('url')).toBe(props.revokeOauthUrl);
+    });
   });
 
-  it('contains google cloud menu with `configuration` active', () => {
-    const target = wrapper.findComponent(GoogleCloudMenu);
-    expect(target.exists()).toBe(true);
-    expect(target.props('active')).toBe('configuration');
-    expect(target.props('configurationUrl')).toBe(props.configurationUrl);
-    expect(target.props('deploymentsUrl')).toBe(props.deploymentsUrl);
-    expect(target.props('databasesUrl')).toBe(props.databasesUrl);
-  });
+  describe('without a revoke OAuth URL', () => {
+    beforeEach(() => {
+      createComponent({ revokeOauthUrl: null });
+    });
 
-  it('contains service accounts list', () => {
-    const target = wrapper.findComponent(ServiceAccountsList);
-    expect(target.exists()).toBe(true);
-    expect(target.props('list')).toBe(props.serviceAccounts);
-    expect(target.props('createUrl')).toBe(props.createServiceAccountUrl);
-    expect(target.props('emptyIllustrationUrl')).toBe(props.emptyIllustrationUrl);
-  });
-
-  it('contains gcp regions list', () => {
-    const target = wrapper.findComponent(GcpRegionsList);
-    expect(target.props('list')).toBe(props.gcpRegions);
-    expect(target.props('createUrl')).toBe(props.configureGcpRegionsUrl);
-  });
-
-  it('contains revoke oauth', () => {
-    const target = wrapper.findComponent(RevokeOauth);
-    expect(target.props('url')).toBe(props.revokeOauthUrl);
+    it('does not render revoke oauth', () => {
+      expect(wrapper.findComponent(RevokeOauth).exists()).toBe(false);
+    });
   });
 });

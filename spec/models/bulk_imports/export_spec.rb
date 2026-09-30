@@ -57,6 +57,43 @@ RSpec.describe BulkImports::Export, feature_category: :importers do
         expect(export.errors).to include(:relation)
       end
     end
+
+    context 'when exporting memberships' do
+      it 'rejects group members for direct transfer' do
+        export = build(:bulk_import_export, relation: 'members')
+
+        expect(export).to be_invalid
+      end
+
+      it 'allows group members for offline transfer' do
+        export = build(:bulk_import_export, offline_export: create(:offline_export), relation: 'members')
+
+        expect(export).to be_valid
+      end
+
+      it 'rejects project members for direct transfer' do
+        export = build(
+          :bulk_import_export,
+          group: nil,
+          project: build(:project),
+          relation: 'project_members'
+        )
+
+        expect(export).to be_invalid
+      end
+
+      it 'allows project members for offline transfer' do
+        export = build(
+          :bulk_import_export,
+          group: nil,
+          project: build(:project),
+          offline_export: create(:offline_export),
+          relation: 'project_members'
+        )
+
+        expect(export).to be_valid
+      end
+    end
   end
 
   describe 'scopes' do

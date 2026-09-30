@@ -10,6 +10,7 @@
 
 export default {
   '1c': () => import(/* webpackChunkName: 'hl-1c' */ 'highlight.js/lib/languages/1c'),
+  '4d': () => import(/* webpackChunkName: 'hl-4d' */ 'highlightjs-4d'),
   abnf: () => import(/* webpackChunkName: 'hl-abnf' */ 'highlight.js/lib/languages/abnf'),
   accesslog: () =>
     import(/* webpackChunkName: 'hl-accesslog' */ 'highlight.js/lib/languages/accesslog'),

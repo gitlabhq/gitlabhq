@@ -31,6 +31,10 @@ RSpec.describe Import::Offline::Imports::Projects::Stage, feature_category: :imp
           stage: 1
         }),
         hash_including({
+          pipeline: Import::Offline::Projects::Pipelines::MembersPipeline,
+          stage: 1
+        }),
+        hash_including({
           pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
           stage: 2
         }),

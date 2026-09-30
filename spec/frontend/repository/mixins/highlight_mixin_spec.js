@@ -169,6 +169,26 @@ describe('HighlightMixin', () => {
     });
   });
 
+  describe('4D language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it.each`
+      extension           | language
+      ${'.4dm'}           | ${'4d'}
+      ${'.4DCatalog'}     | ${'xml'}
+      ${'.4DForm'}        | ${'json'}
+      ${'.4DPreferences'} | ${'xml'}
+      ${'.4DProject'}     | ${'json'}
+      ${'.4DSettings'}    | ${'xml'}
+    `(
+      'sets language to $language for $extension files regardless of passed language',
+      ({ extension, language }) => {
+        createComponent({ language: 'plaintext', name: `test${extension}` });
+        expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({ language });
+      },
+    );
+  });
+
   describe('Gleam language handling', () => {
     beforeEach(() => workerMock.postMessage.mockClear());
 

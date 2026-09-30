@@ -23,7 +23,7 @@ module BulkImports
       @resolved_relation = portable.public_send(relation) # rubocop:disable GitlabSecurity/PublicSend
       @jid = jid
       @offline_export_id = offline_export_id
-      @config = FileTransfer.config_for(portable)
+      @config = FileTransfer.config_for(portable, offline: offline_export_id.present?)
     end
 
     def execute

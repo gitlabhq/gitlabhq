@@ -867,6 +867,11 @@ msgstr ""
 msgid "%{count} more assignees"
 msgstr ""
 
+msgid "%{count} more recommended reviewer"
+msgid_plural "%{count} more recommended reviewers"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} more release"
 msgid_plural "%{count} more releases"
 msgstr[0] ""
@@ -886,6 +891,9 @@ msgid_plural "%{count} of these files are collapsed."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} open"
+msgstr ""
+
 msgid "%{count} project"
 msgid_plural "%{count} projects"
 msgstr[0] ""
@@ -893,6 +901,11 @@ msgstr[1] ""
 
 msgid "%{count} project has access"
 msgid_plural "%{count} projects have access"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{count} recommended reviewer"
+msgid_plural "%{count} recommended reviewers"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -12713,6 +12726,9 @@ msgstr ""
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact Registry is already activated for this organization with the handle '%{handle}'."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact Registry is disabled"
 msgstr ""
 
@@ -13648,6 +13664,9 @@ msgid "ArtifactRegistry|This cannot be changed once claimed, even if Artifact Re
 msgstr ""
 
 msgid "ArtifactRegistry|This organization has no repositories yet."
+msgstr ""
+
+msgid "ArtifactRegistry|This organization's Artifact Registry was purged. Setting up a new one is not available yet."
 msgstr ""
 
 msgid "ArtifactRegistry|This will affect all projects currently using this registry."
@@ -21195,6 +21214,9 @@ msgstr ""
 msgid "Collapse milestones"
 msgstr ""
 
+msgid "Collapse recommended reviewers"
+msgstr ""
+
 msgid "Collapse replies"
 msgstr ""
 
@@ -25668,6 +25690,9 @@ msgstr ""
 msgid "Control who has access to your project and what they can do"
 msgstr ""
 
+msgid "Conversations"
+msgstr ""
+
 msgid "Convert Jenkins to GitLab CI/CD using Duo"
 msgstr ""
 
@@ -26020,6 +26045,9 @@ msgid "Could not generate new reviewer recommendations. Try again later."
 msgstr ""
 
 msgid "Could not link %{issuables}. You must be a member of the project or group of both %{issuables}."
+msgstr ""
+
+msgid "Could not load conversations."
 msgstr ""
 
 msgid "Could not load the user chart. Please refresh the page to try again."
@@ -36374,6 +36402,9 @@ msgid "Expand milestones"
 msgstr ""
 
 msgid "Expand project information"
+msgstr ""
+
+msgid "Expand recommended reviewers"
 msgstr ""
 
 msgid "Expand settings section"
@@ -54407,9 +54438,6 @@ msgstr ""
 msgid "No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr ""
 
-msgid "No approval rule"
-msgstr ""
-
 msgid "No approvers"
 msgstr ""
 
@@ -54492,6 +54520,9 @@ msgid "No contributions were found"
 msgstr ""
 
 msgid "No contributions were found."
+msgstr ""
+
+msgid "No conversations to show."
 msgstr ""
 
 msgid "No corrupted indexes detected."

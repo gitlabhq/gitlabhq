@@ -8657,6 +8657,9 @@ XML:
   - wsdl
   extensions:
   - ".xml"
+  - ".4DCatalog"
+  - ".4DPreferences"
+  - ".4DSettings"
   - ".arxml"
   - ".adml"
   - ".admx"

@@ -105,7 +105,7 @@ module BulkImports
 
     def config
       strong_memoize(:config) do
-        FileTransfer.config_for(portable)
+        FileTransfer.config_for(portable, offline: offline?)
       end
     end
 

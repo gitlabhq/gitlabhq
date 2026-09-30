@@ -9947,6 +9947,11 @@ highlight.js@~11.8.0:
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.8.0.tgz#966518ea83257bae2e7c9a48596231856555bb65"
   integrity sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==
 
+highlightjs-4d@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/highlightjs-4d/-/highlightjs-4d-1.0.6.tgz#2546a7c9711b139ddddc70d3a91d740d316ec9a9"
+  integrity sha512-CLLwv21UNx4T7lXL6+cjMMGUOvLwupCc9qPVrZNEHofsuWmvQTGmA0A2lmNNk1vgoWeTitaV7vsmOq58HDT6SQ==
+
 highlightjs-glimmer@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/highlightjs-glimmer/-/highlightjs-glimmer-2.2.2.tgz#b0219da39312e557c6e218d43434f7667f8b243c"

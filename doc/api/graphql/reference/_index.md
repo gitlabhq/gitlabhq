@@ -4901,7 +4901,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mutation-artifactregistryactivate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-artifactregistryactivate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutation-artifactregistryactivate-registry"></a>`registry` {{< icon name="warning-solid" >}} | [`ArtifactRegistry`](#artifactregistry) | Introduced in GitLab 19.4. Status: Experiment. Registry provisioned. Null when the request was refused. |
+| <a id="mutation-artifactregistryactivate-registry"></a>`registry` {{< icon name="warning-solid" >}} | [`ArtifactRegistry`](#artifactregistry) | Introduced in GitLab 19.4. Status: Experiment. The organization's registry: the one just provisioned, or the existing one when the organization is already activated. Null on every other refusal. |
 
 ### `Mutation.artifactRegistryArtifactDelete`
 
