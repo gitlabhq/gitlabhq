@@ -31,6 +31,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         'rspec unit pg17 single-redis 4/5',
         'rspec unit pg17 5/5',
         'rspec integration pg17',
+        'rspec graphql-document-integration pg17',
         'rspec system pg17',
         'rspec migration pg17',
         'rspec background_migration pg17',
@@ -100,6 +101,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION: 'true',
         ENABLE_RSPEC_SINGLE_REDIS: 'true',
         ENABLE_RSPEC_INTEGRATION: 'true',
+        ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION: 'true',
         ENABLE_RSPEC_SYSTEM: 'true',
         ENABLE_RSPEC_MIGRATION: 'true',
         ENABLE_RSPEC_BACKGROUND_MIGRATION: 'true',
@@ -215,6 +217,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION=true
         ENABLE_RSPEC_SINGLE_REDIS=true
         ENABLE_RSPEC_INTEGRATION=true
+        ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION=true
         ENABLE_RSPEC_SYSTEM=true
         ENABLE_RSPEC_MIGRATION=true
         ENABLE_RSPEC_BACKGROUND_MIGRATION=true

@@ -52,7 +52,7 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 ## Prerequisites
 
-- If you have GitLab Duo Core, [IDE features are on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- [GitLab Duo Core is on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Code Suggestions is set up](set_up.md) in your IDE.
 - You have a [default GitLab Duo namespace](../../../profile/preferences.md#namespace-resolution-in-your-local-environment)
   set, or have a project open that has GitLab Duo access.
@@ -114,7 +114,7 @@ Code Suggestions uses code completion and code generation:
 | When to use | Use code completion to quickly complete one or a few lines of code. | Use code generation for more complex tasks, larger codebases, when you want to write new code from scratch based on a natural language description, or when the file you're editing has fewer than five lines of code. |
 
 Code Suggestions always uses both of these features. You cannot use only code
-generation or only code completion.
+generation or only code completion. You also cannot turn them off separately.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 [View a code completion vs. code generation comparison demo](https://www.youtube.com/watch?v=9dsyqMt9yg4).

@@ -103,11 +103,7 @@ per-test-coverage:trigger:
       artifacts: false
     - job: "compile-test-assets"
       artifacts: false
-    # The jest child jobs pull compile-fe-islands and frontend-fixtures
-    # artifacts through cross-pipeline needs, which do not wait for the parent
-    # jobs to finish. Gate the trigger on them so the child is created only
-    # after their artifacts exist; otherwise the jest shards race ahead and
-    # fail with missing_dependency_failure.
+    # Missing these needs 404s the fixture download and breaks jest specs.
     - job: "compile-fe-islands"
       artifacts: false
     - job: "rspec-all frontend_fixture"

@@ -5,22 +5,28 @@ require 'optparse'
 
 require_relative 'per_test_coverage_artifact_downloader'
 
-# CLI wrapper around PerTestCoverageArtifactDownloader. Reads the bridge job
-# that triggered the per-test-coverage child pipeline, finds every job whose
-# name matches the given regex, and pulls each job's artifacts into the
-# output directory. The export jobs in `.gitlab/ci/coverage.gitlab-ci.yml`
-# then feed the unpacked NDJSON / JSON files into the gem's
-# `--per-test-coverage` flag.
+# CLI wrapper around PerTestCoverageArtifactDownloader: matches jobs by regex
+# in the triggered child pipeline, or in --pipeline-id's pipeline if given.
+# The export jobs in `.gitlab/ci/coverage.gitlab-ci.yml` then feed the
+# unpacked NDJSON / JSON files into the gem's `--per-test-coverage` flag.
 
-options = { pattern: nil, output_dir: '.', process_command: nil, output_glob: nil, batch_size: 1 }
+options = { pattern: nil, output_dir: '.', process_command: nil, output_glob: nil, batch_size: 1,
+            target_pipeline_id: nil }
 
 OptionParser.new do |opts|
   opts.banner = 'Usage: download_per_test_coverage_artifacts.rb -p REGEX [-o PATH]'
 
   opts.on('-p', '--pattern REGEX', String,
-    'Job-name regex matched against the child pipeline jobs (e.g. ' \
+    'Job-name regex matched against the target pipeline jobs (e.g. ' \
       '"^rspec(-ee)? .+ per-test-coverage( [0-9]+/[0-9]+)?$").') do |value|
     options[:pattern] = Regexp.new(value)
+  end
+
+  opts.on('--pipeline-id ID', String,
+    'Pipeline to search for matching jobs (default: the child pipeline ' \
+      "triggered by the '#{PerTestCoverageArtifactDownloader::BRIDGE_NAME}' bridge " \
+      'in the current pipeline).') do |value|
+    options[:target_pipeline_id] = value
   end
 
   opts.on('-o', '--output-dir PATH', String,
@@ -59,5 +65,6 @@ exit PerTestCoverageArtifactDownloader.new(
   output_dir: options[:output_dir],
   process_command: options[:process_command],
   output_glob: options[:output_glob],
-  batch_size: options[:batch_size]
+  batch_size: options[:batch_size],
+  target_pipeline_id: options[:target_pipeline_id]
 ).run

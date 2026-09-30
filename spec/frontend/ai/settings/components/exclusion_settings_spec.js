@@ -1,8 +1,8 @@
 import { GlTable } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import ExclusionSettings from '~/pages/projects/shared/permissions/components/exclusion_settings.vue';
-import ManageExclusionsDrawer from '~/pages/projects/shared/permissions/components/manage_exclusions_drawer.vue';
+import ExclusionSettings from '~/ai/settings/components/exclusion_settings.vue';
+import ManageExclusionsDrawer from '~/ai/settings/components/manage_exclusions_drawer.vue';
 import { createAlert } from '~/alert';
 
 jest.mock('~/alert');

@@ -8,9 +8,9 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
-import projectAutoRemediationProfileQuery from 'ee_else_ce/pages/projects/shared/permissions/graphql/project_auto_remediation_profile.query.graphql';
-import attachProfileMutation from 'ee_else_ce/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql';
+import DuoDependencyBumpProfileModal from 'ee_component/ai/settings/components/duo_dependency_bump_profile_modal.vue';
+import projectAutoRemediationProfileQuery from 'ee_else_ce/ai/settings/graphql/queries/project_auto_remediation_profile.query.graphql';
+import attachProfileMutation from 'ee_else_ce/ai/settings/graphql/mutations/auto_remediation_profile_attach.mutation.graphql';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import { __, s__ } from '~/locale';
 import {
@@ -22,10 +22,10 @@ import {
   DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED,
   DUO_SECRET_DETECTION_FP_ENABLED,
   DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED,
-} from '../constants';
-import ProjectSettingRow from './project_setting_row.vue';
-import ExclusionSettings from './exclusion_settings.vue';
-import DuoReadinessCard from './duo_readiness_card.vue';
+} from '~/ai/constants';
+import ProjectSettingRow from '~/projects/settings/components/project_setting_row.vue';
+import ExclusionSettings from '../components/exclusion_settings.vue';
+import DuoReadinessCard from '../readiness/components/duo_readiness_card.vue';
 
 const AUTO_REMEDIATION_PROFILE_SCAN_TYPE = 'DEPENDENCY_SCANNING_POST_PROCESSING';
 const AUTO_REMEDIATION_PROFILE_VIRTUAL_ID =

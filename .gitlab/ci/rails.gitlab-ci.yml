@@ -143,6 +143,21 @@ rspec graphql-query-documents pg17:
     - !reference [.base-script, script]
     - rspec_section rspec_simple_job "-- spec/graphql/all_queries_spec.rb"
 
+rspec graphql-document-integration pg17:
+  extends:
+    - .rspec-base-pg17
+    - .rails:rules:graphql-document-integration
+  script:
+    - !reference [.base-script, script]
+    - |
+      set -e
+      tests="$(tooling/ci/graphql_query_document_specs.rb foss)"
+      if [ -z "${tests}" ]; then
+        echo "No backend specs read the changed GraphQL query documents. Skipping."
+      else
+        rspec_section rspec_simple_job_with_retry "-- ${tests}"
+      fi
+
 rspec unit pg17 single-redis:
   extends:
     - rspec unit pg17
@@ -552,6 +567,8 @@ rspec:artifact-collector part-b:
       optional: true
     - job: rspec migration pg17  # 8 jobs
       optional: true
+    - job: rspec graphql-document-integration pg17  # 1 job
+      optional: true
 
 rspec:artifact-collector unit single-redis:
   extends:
@@ -628,6 +645,8 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee fail-fast  # 1 job
       optional: true
+    - job: rspec-ee graphql-document-integration pg17  # 1 job
+      optional: true
   rules:
     - !reference ['.rails:rules:rspec fail-fast', rules]
     - !reference ['.rails:rules:ee-only-migration', rules]
@@ -635,6 +654,7 @@ rspec:artifact-collector ee remainder:
     - !reference ['.rails:rules:ee-only-integration', rules]
     - !reference ['.rails:rules:ee-only-system', rules]
     - !reference ['.rails:rules:ee-only-clickhouse-system-changes', rules]
+    - !reference ['.rails:rules:graphql-document-integration-ee', rules]
 
 rspec:predictive artifact-collector:
   stage: post-test
@@ -1202,6 +1222,21 @@ rspec-ee graphql-query-documents pg17:
   script:
     - !reference [.base-script, script]
     - rspec_section rspec_simple_job "-- ee/spec/graphql/all_queries_spec.rb"
+
+rspec-ee graphql-document-integration pg17:
+  extends:
+    - .rspec-ee-base-pg17
+    - .rails:rules:graphql-document-integration-ee
+  script:
+    - !reference [.base-script, script]
+    - |
+      set -e
+      tests="$(tooling/ci/graphql_query_document_specs.rb ee)"
+      if [ -z "${tests}" ]; then
+        echo "No backend specs read the changed GraphQL query documents. Skipping."
+      else
+        rspec_section rspec_simple_job_with_retry "-- ${tests}"
+      fi
 
 rspec-ee unit pg17 single-db:
   extends:

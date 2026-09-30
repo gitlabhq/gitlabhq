@@ -1074,6 +1074,25 @@ Do not put a footnote reference or definition inside a shortcode, like tabs (`{{
 
 The renderer numbers the footnotes and adds a `Footnotes` heading below the table.
 
+#### Footnote indentation
+
+If a footnote definition contains more than one line, indent every line after the first with
+four spaces.
+This applies to lines in the same paragraph and to additional paragraphs or lists.
+
+The indent is required after a blank line.
+Without it, everything after the blank line falls out of the footnote and renders as ordinary
+page text.
+
+For example:
+
+```markdown
+[^rate-limit]: This is the first footnote description sentence.
+    This is the second sentence.
+
+    This is the second paragraph of the same footnote.
+```
+
 #### Footnote numbering
 
 Footnotes are numbered in the order they're first referenced.

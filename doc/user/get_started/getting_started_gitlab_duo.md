@@ -76,7 +76,7 @@ You can choose the development languages you want suggestions for.
 For more information, see:
 
 - [Supported extensions and languages](../project/repository/code_suggestions/supported_extensions.md).
-- [Turn on Code Suggestions](../project/repository/code_suggestions/set_up.md#turn-on-code-suggestions).
+- [Set up Code Suggestions](../project/repository/code_suggestions/set_up.md).
 - [Troubleshoot GitLab for VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md).
 - [Troubleshoot the GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
 - [Troubleshoot GitLab for Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).

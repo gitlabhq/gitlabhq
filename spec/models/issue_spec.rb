@@ -2299,7 +2299,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     let(:match_data) { described_class.link_reference_pattern.match(link_reference_url) }
 
     context 'with issue url' do
-      let(:link_reference_url) { 'http://localhost/namespace/project/-/issues/1' }
+      let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/namespace/project/-/issues/1" }
 
       it 'matches with expected attributes' do
         expect(match_data['namespace']).to eq('namespace')
@@ -2309,7 +2309,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'with incident url' do
-      let(:link_reference_url) { 'http://localhost/namespace1/project1/-/issues/incident/2' }
+      let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/namespace1/project1/-/issues/incident/2" }
 
       it 'matches with expected attributes' do
         expect(match_data['namespace']).to eq('namespace1')

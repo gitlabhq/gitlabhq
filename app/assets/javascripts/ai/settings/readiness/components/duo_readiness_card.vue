@@ -1,19 +1,14 @@
 <script>
 import { GlToggle, GlLink, GlSprintf, GlProgressBar } from '@gitlab/ui';
-import DuoReadinessAgentConfigRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_agent_config_row.vue';
-import DuoReadinessPlatformRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_platform_row.vue';
-import DuoReadinessRunnerRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_runner_row.vue';
-import DuoOrbitRow from 'ee_component/pages/projects/shared/permissions/components/duo_orbit_row.vue';
-import DuoMcpRow from 'ee_component/pages/projects/shared/permissions/components/duo_mcp_row.vue';
+import DuoReadinessAgentConfigRow from 'ee_component/ai/settings/readiness/components/duo_readiness_agent_config_row.vue';
+import DuoReadinessPlatformRow from 'ee_component/ai/settings/readiness/components/duo_readiness_platform_row.vue';
+import DuoReadinessRunnerRow from 'ee_component/ai/settings/readiness/components/duo_readiness_runner_row.vue';
+import DuoReadinessOrbitRow from 'ee_component/ai/settings/readiness/components/duo_readiness_orbit_row.vue';
+import DuoReadinessMcpRow from 'ee_component/ai/settings/readiness/components/duo_readiness_mcp_row.vue';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import { n__, s__, sprintf } from '~/locale';
-import {
-  duoFlowHelpPath,
-  STATUS_DONE,
-  STATUS_TODO,
-  STATUS_BLOCKED,
-  STATUS_LOADING,
-} from '../constants';
+import { duoFlowHelpPath } from '~/ai/constants';
+import { STATUS_DONE, STATUS_TODO, STATUS_BLOCKED, STATUS_LOADING } from '../constants';
 import DuoReadinessRow from './duo_readiness_row.vue';
 import DuoLocalSetupSection from './duo_local_setup_section.vue';
 
@@ -31,8 +26,8 @@ export default {
     DuoReadinessPlatformRow,
     DuoReadinessRunnerRow,
     DuoReadinessAgentConfigRow,
-    DuoOrbitRow,
-    DuoMcpRow,
+    DuoReadinessOrbitRow,
+    DuoReadinessMcpRow,
     DuoLocalSetupSection,
   },
   props: {
@@ -396,8 +391,16 @@ export default {
         <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.optionalSubtitle }}</span>
       </div>
       <div class="gl-border gl-overflow-hidden gl-rounded-lg">
-        <duo-orbit-row v-if="showOrbitRow" :orbit="duoOrbit" :project-full-path="projectFullPath" />
-        <duo-mcp-row v-if="showMcpRow" :mcp="duoMcp" :project-full-path="projectFullPath" />
+        <duo-readiness-orbit-row
+          v-if="showOrbitRow"
+          :orbit="duoOrbit"
+          :project-full-path="projectFullPath"
+        />
+        <duo-readiness-mcp-row
+          v-if="showMcpRow"
+          :mcp="duoMcp"
+          :project-full-path="projectFullPath"
+        />
       </div>
     </div>
 

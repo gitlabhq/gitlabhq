@@ -680,7 +680,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
 
     context 'with work item url' do
-      let(:link_reference_url) { 'http://localhost/namespace/project/-/work_items/1' }
+      let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/namespace/project/-/work_items/1" }
 
       it 'matches with expected attributes' do
         expect(match_data['group_or_project_namespace']).to eq('namespace/project')
@@ -688,7 +688,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
 
       context 'when work item exists in a group' do
-        let(:link_reference_url) { 'http://localhost/groups/group/sub_group/-/work_items/1' }
+        let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/groups/group/sub_group/-/work_items/1" }
 
         it 'matches with expected attributes' do
           expect(match_data['group_or_project_namespace']).to eq('group/sub_group')

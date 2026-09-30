@@ -18,6 +18,7 @@ import {
   VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
+import ProjectSettingRow from '~/projects/settings/components/project_setting_row.vue';
 import {
   visibilityLevelDescriptions,
   featureAccessLevelMembers,
@@ -31,7 +32,6 @@ import {
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
-import ProjectSettingRow from './project_setting_row.vue';
 import CiCatalogSettings from './ci_catalog_settings.vue';
 import BotAccessSettings from './bot_access_settings.vue';
 

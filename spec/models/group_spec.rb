@@ -4679,6 +4679,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when a root group has just been created' do
+      let_it_be(:new_group) { create(:group) }
+
+      it 'is enabled without the owner opting in' do
+        expect(new_group.mcp_server_enabled?).to be true
+      end
+    end
+
     context 'when group is a subgroup' do
       let(:group) { build(:group, parent: build(:group)) }
 
@@ -4708,11 +4716,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   describe '.with_mcp_server_enabled', feature_category: :mcp_server do
     let_it_be_with_refind(:group_on) { create(:group) }
     let_it_be_with_refind(:group_off) { create(:group) }
-    let_it_be(:group_nil) { create(:group) }
+    let_it_be_with_refind(:group_nil) { create(:group) }
 
     before do
       group_on.namespace_settings.update!(mcp_server_enabled: true)
       group_off.namespace_settings.update!(mcp_server_enabled: false)
+      group_nil.namespace_settings.update!(mcp_server_enabled: nil)
     end
 
     it 'returns only groups with mcp_server_enabled = true' do

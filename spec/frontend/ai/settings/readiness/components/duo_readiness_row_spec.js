@@ -1,6 +1,6 @@
 import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import DuoReadinessRow from '~/pages/projects/shared/permissions/components/duo_readiness_row.vue';
+import DuoReadinessRow from '~/ai/settings/readiness/components/duo_readiness_row.vue';
 
 describe('DuoReadinessRow', () => {
   let wrapper;

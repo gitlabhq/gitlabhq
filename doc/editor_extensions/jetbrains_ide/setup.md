@@ -71,20 +71,51 @@ Prerequisites:
 - For agents, you have [foundational agents turned on](../../user/duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)
   and [custom agents enabled](../../user/duo_agent_platform/agents/custom.md#enable-an-agent), as
   needed.
+- For Code Suggestions, you meet the [additional prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
 - Your project is in a [group namespace](../../user/namespace/_index.md).
 - You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
   set or have a project open that has GitLab Duo access.
 
-To enable GitLab Duo features:
+To turn GitLab Duo features on or off:
 
 1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
-1. Find the feature you want to enable and select the checkbox.
+1. Find the feature you want to modify and select or clear the checkbox.
+1. Select **OK** or **Save**.
 1. Restart your IDE, if prompted.
 
-For GitLab Duo Code Suggestions, [review the additional prerequisites and setup steps](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
+When Code Suggestions is on, you can also
+[add support for more languages](../../user/project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages).
 
 To approve Agentic Chat tools once per session instead of individually,
 see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).
+
+### Add a custom certificate for Code Suggestions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v2.10.0) in GitLab Duo plugin for JetBrains IDEs 2.10.0 during the GitLab 17.2 release.
+
+{{< /history >}}
+
+GitLab Duo attempts to detect [trusted root certificates](https://www.jetbrains.com/help/idea/ssl-certificates.html)
+without configuration on your part. If needed, configure your JetBrains IDE to allow the GitLab Duo plugin
+to use a custom SSL certificate when connecting to your GitLab instance.
+
+To use a custom SSL certificate with GitLab Duo:
+
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Under **Connection**, enter the **URL to GitLab instance**.
+1. To verify your connection, select **Verify setup**.
+1. Select **OK** or **Save**.
+
+The GitLab Duo plugin displays a message if your IDE detects a non-trusted SSL certificate.
+Review the SSL certificate details and confirm the certificate details match the certificate
+that displays when you connect to GitLab in your browser.
+
+To review certificates you've already accepted:
+
+1. In your JetBrains IDE, go to **Settings** > **Appearance & Behavior** > **System Settings** > **Server Certificates**.
+1. Select a certificate to view it.
 
 ### Connect GitLab Duo directly
 

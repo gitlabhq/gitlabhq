@@ -287,10 +287,10 @@ To add a new system-defined work item type to GitLab:
 1. Include the definition in `WorkItems::TypesFramework::SystemDefined::Type` so it's loaded at application startup.
 1. Add to visibility constants. Add the base type to frontend and backend constants that control where the type appears in the UI and APIs.
 
-For specific implementation details, reach out to the Plan Project Management team in `#g_project-management` on Slack.
+For specific implementation details, reach out to the Work Items team in `#g_work_items` on Slack.
 
 > [!warning]
-> The following example MRs use the legacy database-backed approach and may not reflect the current implementation. For up-to-date guidance on adding system-defined types, contact the Plan Project Management team in [#g_project-management](https://gitlab.slack.com/archives/g_project-management) on Slack.
+> The following example MRs use the legacy database-backed approach and may not reflect the current implementation. For up-to-date guidance on adding system-defined types, contact the Work Items team in [#g_work_items](https://gitlab.slack.com/archives/g_work_items) on Slack.
 
 **Historical reference MRs:**
 

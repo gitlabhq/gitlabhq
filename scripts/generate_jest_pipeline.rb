@@ -24,9 +24,6 @@ class GenerateJestPipeline
   # (jest-with-fixtures in .gitlab/ci/frontend.gitlab-ci.yml), so cap the
   # fixture pass there too.
   MAX_FIXTURE_PARALLEL = 2
-  # Shard count (parallel:) of rspec-all frontend_fixture in
-  # .gitlab/ci/frontend.gitlab-ci.yml; a spec enforces the match.
-  FIXTURE_SHARD_COUNT = 8
 
   def initialize(pipeline_template_path:, jest_files_path: nil, generated_pipeline_path: nil, max_parallel: nil)
     @pipeline_template_path = pipeline_template_path.to_s
@@ -87,7 +84,6 @@ class GenerateJestPipeline
     {
       parallelism: parallelism,
       fixture_parallelism: fixture_parallelism,
-      fixture_shard_count: FIXTURE_SHARD_COUNT,
       repo_from_artifacts: ENV['CI_FETCH_REPO_GIT_STRATEGY'] == 'none'
     }
   end

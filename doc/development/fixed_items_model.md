@@ -392,8 +392,8 @@ let(:provider) { Security::StaticTrainingProvider.find(1) }
 ## Contribute
 
 The `FixedItemsModel` implementation is part of the `activerecord-gitlab` gem.
-For questions or changes, reach out to the Project Management group in the
-Plan stage through [`#g_project-management`](https://gitlab.enterprise.slack.com/archives/g_project-management)
+For questions or changes, reach out to the Work Items group in the
+Plan stage through [`#g_work_items`](https://gitlab.enterprise.slack.com/archives/g_work_items)
 or [`#s_plan`](https://gitlab.enterprise.slack.com/archives/s_plan) on Slack.
 
 ### Key files

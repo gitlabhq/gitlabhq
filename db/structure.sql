@@ -25648,7 +25648,7 @@ CREATE TABLE namespace_settings (
     lock_duo_custom_flows_enabled boolean DEFAULT false NOT NULL,
     duo_custom_agents_enabled boolean,
     lock_duo_custom_agents_enabled boolean DEFAULT false NOT NULL,
-    mcp_server_enabled boolean,
+    mcp_server_enabled boolean DEFAULT true,
     duo_external_agents_enabled boolean,
     lock_duo_external_agents_enabled boolean DEFAULT false NOT NULL,
     enable_duo_code_review_by_default smallint DEFAULT 0 NOT NULL,

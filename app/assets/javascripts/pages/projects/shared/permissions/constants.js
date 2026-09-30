@@ -51,40 +51,7 @@ export const modelExperimentsHelpPath = helpPagePath(
 
 export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/_index.md');
 
-export const duoHelpPath = helpPagePath('user/gitlab_duo/_index');
-export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/_index.md');
-export const duoContextExclusionHelpPath = helpPagePath('user/gitlab_duo/context', {
-  anchor: 'exclude-context-from-code-review',
-});
-export const duoFlowHelpPath = helpPagePath('user/duo_agent_platform/flows/_index.md');
-
 export const pipelineExecutionPoliciesHelpPath = helpPagePath(
   'user/application_security/policies/pipeline_execution_policies',
   { anchor: 'content-type' },
 );
-
-// Values that can appear in the Gitlab Duo settings `visibleSettings` allowlist.
-// ALL_SETTINGS renders every Duo setting; named identifiers limit rendering to
-// just the named settings (e.g. Security Managers, who may update only the SAST
-// Vulnerability Resolution setting).
-export const ALL_SETTINGS = 'all';
-export const DUO_SAST_VR_WORKFLOW_ENABLED = 'duoSastVrWorkflowEnabled';
-export const DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED = 'duoSastFalsePositiveDetectionEnabled';
-export const DUO_SECRET_DETECTION_FP_ENABLED = 'duoSecretDetectionFpEnabled';
-export const DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED = 'duoVulnerabilityContextAnalysisEnabled';
-
-export const STATUS_DONE = 'done';
-export const STATUS_TODO = 'todo';
-export const STATUS_BLOCKED = 'blocked';
-export const STATUS_ERROR = 'error';
-export const STATUS_LOADING = 'loading';
-
-export const RUNNER_TYPE_TO_TAB = {
-  instance_type: 'instance',
-  group_type: 'group',
-  project_type: 'assigned',
-};
-
-// The instance tab doubles as the fallback: with no qualifying runner it is the
-// documented place to register one.
-export const DEFAULT_RUNNERS_TAB = 'instance';

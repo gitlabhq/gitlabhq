@@ -41,6 +41,36 @@ RSpec.describe Projects::MergeRequests::ContentController, feature_category: :co
 
         expect { do_request }.to change { merge_request.reload.open? }.from(true).to(false)
       end
+
+      context 'with coverage data' do
+        let(:merge_request) { create(:merge_request, target_project: project, source_project: project, head_pipeline: head_pipeline) }
+        let!(:base_pipeline) { create(:ci_empty_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.diff_base_sha) }
+        let!(:head_pipeline) { create(:ci_empty_pipeline, project: project) }
+        let!(:rspec_base) { create(:ci_build, name: 'rspec', coverage: 93.1, pipeline: base_pipeline) }
+        let!(:rspec_head) { create(:ci_build, name: 'rspec', coverage: 97.1, pipeline: head_pipeline) }
+
+        it 'renders the pipeline coverage delta', :aggregate_failures do
+          do_request
+
+          expect(response).to match_response_schema('entities/merge_request_poll_cached_widget')
+          expect(json_response['pipeline_coverage_delta']).to eq('4.00')
+        end
+
+        context 'when the base pipeline lookup times out' do
+          before do
+            controller.instance_variable_set(:@merge_request, merge_request)
+            allow(merge_request).to receive(:base_pipeline).and_raise(ActiveRecord::QueryCanceled)
+          end
+
+          it 'renders the widget without the pipeline coverage delta', :aggregate_failures do
+            do_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('entities/merge_request_poll_cached_widget')
+            expect(json_response['pipeline_coverage_delta']).to be_nil
+          end
+        end
+      end
     end
 
     describe 'GET widget' do
@@ -70,20 +100,6 @@ RSpec.describe Projects::MergeRequests::ContentController, feature_category: :co
 
           expect(response).to match_response_schema('entities/merge_request_poll_widget')
           expect(response.headers['Poll-Interval']).to eq('300000')
-        end
-      end
-
-      context 'with coverage data' do
-        let(:merge_request) { create(:merge_request, target_project: project, source_project: project, head_pipeline: head_pipeline) }
-        let!(:base_pipeline) { create(:ci_empty_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.diff_base_sha) }
-        let!(:head_pipeline) { create(:ci_empty_pipeline, project: project) }
-        let!(:rspec_base) { create(:ci_build, name: 'rspec', coverage: 93.1, pipeline: base_pipeline) }
-        let!(:rspec_head) { create(:ci_build, name: 'rspec', coverage: 97.1, pipeline: head_pipeline) }
-
-        it 'renders widget MR entity as json' do
-          do_request(:widget)
-
-          expect(response).to match_response_schema('entities/merge_request_poll_widget')
         end
       end
     end

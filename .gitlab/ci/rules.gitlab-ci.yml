@@ -1826,6 +1826,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - !reference [".allow-on-tier-3", rules]
     - <<: *if-default-refs
       changes: *permissions-patterns
 
@@ -2951,8 +2952,6 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
-    - <<: *if-default-refs
-      changes: *frontend-graphql-patterns
 
 .rails:rules:only-run-system-if-medium-runners-available:
   rules:
@@ -3097,6 +3096,23 @@
       when: never
     - !reference [".rails:rules:graphql-query-documents", rules]
 
+# Runs only integration specs matching the changed GraphQL query file; see tooling/ci/graphql_query_document_specs.rb.
+.rails:rules:graphql-document-integration:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION == "true"'
+    - <<: *if-default-refs
+      changes: *frontend-graphql-patterns
+
+.rails:rules:graphql-document-integration-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:graphql-document-integration", rules]
+
 .rails:rules:ee-only-integration:
   rules:
     - <<: *if-not-ee
@@ -3106,8 +3122,6 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
-    - <<: *if-default-refs
-      changes: *frontend-graphql-patterns
 
 .rails:rules:ee-only-system:
   rules:
@@ -3152,6 +3166,7 @@
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
     - !reference ['.rails:rules:ee-and-foss-migration', rules]
+    - !reference ['.rails:rules:graphql-document-integration', rules]
 
 .rails:rules:rspec-ci-config-validation:
   rules:

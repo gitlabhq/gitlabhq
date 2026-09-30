@@ -10,7 +10,7 @@ import {
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { __, s__ } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { duoContextExclusionHelpPath } from '../constants';
+import { duoContextExclusionHelpPath } from '~/ai/constants';
 import ManageExclusionsDrawer from './manage_exclusions_drawer.vue';
 
 export default {

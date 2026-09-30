@@ -1,6 +1,6 @@
 import { GlDrawer, GlAccordion, GlAccordionItem } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import ManageExclusionsDrawer from '~/pages/projects/shared/permissions/components/manage_exclusions_drawer.vue';
+import ManageExclusionsDrawer from '~/ai/settings/components/manage_exclusions_drawer.vue';
 
 const defaultProps = {
   open: true,

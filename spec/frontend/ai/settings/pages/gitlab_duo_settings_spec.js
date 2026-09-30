@@ -1,9 +1,9 @@
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import GitlabDuoSettings from '~/pages/projects/shared/permissions/components/gitlab_duo_settings.vue';
-import ExclusionSettings from '~/pages/projects/shared/permissions/components/exclusion_settings.vue';
-import DuoLocalSetupSection from '~/pages/projects/shared/permissions/components/duo_local_setup_section.vue';
-import { ALL_SETTINGS } from '~/pages/projects/shared/permissions/constants';
+import GitlabDuoSettings from '~/ai/settings/pages/gitlab_duo_settings.vue';
+import ExclusionSettings from '~/ai/settings/components/exclusion_settings.vue';
+import DuoLocalSetupSection from '~/ai/settings/readiness/components/duo_local_setup_section.vue';
+import { ALL_SETTINGS } from '~/ai/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 const defaultProps = {

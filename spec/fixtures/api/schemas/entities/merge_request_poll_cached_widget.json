@@ -38,6 +38,7 @@
       ]
     },
     "diverged_commits_count": { "type": "integer" },
+    "pipeline_coverage_delta": { "type": ["string", "null"], "format": "float" },
     "target_branch_commits_path": { "type": "string" },
     "target_branch_tree_path": { "type": "string" },
     "merged_commit_path": { "type": ["string", "null"] },

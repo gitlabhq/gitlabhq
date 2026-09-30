@@ -20,6 +20,7 @@ Prerequisites:
   - The GitLab Duo Code Suggestions feature requires GitLab version 16.8 or later.
 - You have [Neovim](https://neovim.io/) version 0.9 or later.
 - You have [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/) installed. NPM is required for the Code Suggestions install.
+- For Code Suggestions, you meet the [additional prerequisites](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
 
 To install the extension, follow the installation steps for your chosen plugin manager:
 
@@ -92,6 +93,8 @@ A full list of environment variables is available in the extension's help text a
 
 ## Configure the extension
 
+Code Suggestions is on by default but you need to configure additional settings to start using it.
+
 To configure this extension:
 
 1. Configure your desired file types. For example, because this plugin supports Ruby, it adds a `FileType ruby` auto-command.
@@ -139,6 +142,34 @@ with Code Suggestions:
 
 When working in a supported file type, open the Omni Completion menu by pressing <kbd>Control</kbd>+<kbd>x</kbd>
 then <kbd>Control</kbd>+<kbd>o</kbd>.
+
+Code Suggestions provides a Language Server Protocol (LSP) server, to support the built-in
+<kbd>Control</kbd>+<kbd>x</kbd>, <kbd>Control</kbd>+<kbd>o</kbd> Omni Completion key mapping:
+
+| Mode     | Key mappings                          | Type      | Description |
+|----------|---------------------------------------|-----------|-------------|
+| `INSERT` | <kbd>Control</kbd>+<kbd>x</kbd>, <kbd>Control</kbd>+<kbd>o</kbd> | Built-in | Requests completions from GitLab Duo Code Suggestions through the language server. |
+| `NORMAL` | `<Plug>(GitLabToggleCodeSuggestions)` | `<Plug>`  | Toggles Code Suggestions on or off for the current buffer. Requires [configuration](#configure-plug-key-mappings). |
+
+### Turn Code Suggestions on or off
+
+Code Suggestions is on by default.
+
+To turn Code Suggestions on or off:
+
+1. Go to the [Neovim `defaults.lua` settings file](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/lua/gitlab/config/defaults.lua).
+1. Under `code_suggestions`, set the `enabled` flag to `true` or `false`.
+
+   For example, to turn suggestions off:
+
+   ```lua
+   code_suggestions = {
+   ...
+    enabled = false,
+   ```
+
+To turn Code Suggestions on or off for a single buffer rather than globally,
+[configure `<Plug>` key mappings](#configure-plug-key-mappings).
 
 ## Configure `<Plug>` key mappings
 

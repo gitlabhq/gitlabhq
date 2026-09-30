@@ -1,6 +1,6 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import DuoLocalSetupSection from '~/pages/projects/shared/permissions/components/duo_local_setup_section.vue';
+import DuoLocalSetupSection from '~/ai/settings/readiness/components/duo_local_setup_section.vue';
 
 describe('DuoLocalSetupSection', () => {
   let wrapper;

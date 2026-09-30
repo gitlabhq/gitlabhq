@@ -83,7 +83,7 @@ RSpec.describe 'graphql queries', feature_category: :api do
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_used_count.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/duo_pipelines_rate.query.graphql
     app/assets/javascripts/analytics/dashboards/ai_impact/graphql/finished_pipelines_using_dap.query.graphql
-    app/assets/javascripts/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql
+    app/assets/javascripts/ai/settings/graphql/mutations/auto_remediation_profile_attach.mutation.graphql
   ]
   # rubocop:enable Layout/LineLength
 

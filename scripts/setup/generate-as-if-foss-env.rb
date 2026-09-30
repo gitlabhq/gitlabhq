@@ -50,6 +50,7 @@ class GenerateAsIfFossEnv
     /^rspec migration/ => 'ENABLE_RSPEC_MIGRATION',
     /^rspec background_migration/ => 'ENABLE_RSPEC_BACKGROUND_MIGRATION',
     /^rspec integration/ => 'ENABLE_RSPEC_INTEGRATION',
+    /^rspec graphql-document-integration/ => 'ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION',
     /^rspec system/ => 'ENABLE_RSPEC_SYSTEM',
     /^rspec #{PG_JOB} praefect\b/ => 'ENABLE_RSPEC_PRAEFECT',
     /^rspec #{PG_JOB} single-db\b/ => 'ENABLE_RSPEC_SINGLE_DB',

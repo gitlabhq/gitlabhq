@@ -32,6 +32,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
 
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
     it { expect(setting.seat_assignment_model_enabled).to be(false) }
+    it { expect(setting.mcp_server_enabled).to be(true) }
   end
 
   describe 'scopes' do

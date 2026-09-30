@@ -32,7 +32,7 @@ RSpec.describe WikiPage, feature_category: :wiki do
       subject(:match_data) { described_class.link_reference_pattern.match(link_reference_url) }
 
       context 'with project wiki page url' do
-        let(:link_reference_url) { 'http://localhost/namespace/project/-/wikis/foobar/qux' }
+        let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/namespace/project/-/wikis/foobar/qux" }
 
         it 'matches with expected attributes' do
           expect(match_data['group_or_project_namespace']).to eq('namespace/project')
@@ -41,7 +41,7 @@ RSpec.describe WikiPage, feature_category: :wiki do
       end
 
       context 'with group wiki page url' do
-        let(:link_reference_url) { 'http://localhost/groups/namespace/subgroup/-/wikis/foobar/qux' }
+        let(:link_reference_url) { "#{Gitlab.config.gitlab.url}/groups/namespace/subgroup/-/wikis/foobar/qux" }
 
         it 'matches with expected attributes' do
           expect(match_data['group_or_project_namespace']).to eq('namespace/subgroup')
