@@ -22,6 +22,7 @@ import { getOperationFinishedLink } from './apollo/operation_finished_link';
 import { persistenceMapper } from './apollo/persistence_mapper';
 import { sentryBreadcrumbLink } from './apollo/sentry_breadcrumb_link';
 import { correlationIdLink } from './apollo/correlation_id_link';
+import { createEtagFetch } from './apollo/etag_fetch';
 
 export const ERROR_POLICY_ALL = 'all';
 export const ERROR_POLICY_NONE = 'none';
@@ -226,9 +227,9 @@ function createApolloClient(resolvers = {}, config = {}) {
     Apollo Client issue: https://github.com/apollographql/apollo-feature-requests/issues/182
   */
 
-  const fetchIntervention = (url, options) => {
+  const fetchIntervention = createEtagFetch((url, options) => {
     return fetch(stripWhitespaceFromQuery(url, uri), options);
-  };
+  });
 
   // Lets a link tag its own request for the logs by appending `context.requestTag` to the query
   // string — `json.path` has its query string stripped by Lograge, but `json.params` keeps it.

@@ -5,6 +5,8 @@ class Ability
     # Given a list of users and a project this method returns the users that can
     # read the given project.
     def users_that_can_read_project(users, project)
+      preload_max_access_levels(users, project)
+
       DeclarativePolicy.subject_scope do
         users.select { |u| allowed?(u, :read_project, project) }
       end
@@ -28,12 +30,16 @@ class Ability
 
     # A list of users that can read confidential notes in a project
     def users_that_can_read_internal_notes(users, note_parent)
+      preload_max_access_levels(users, note_parent)
+
       DeclarativePolicy.subject_scope do
         users.select { |u| allowed?(u, :read_internal_note, note_parent) }
       end
     end
 
     def users_that_can_read_confidential_issues(users, container)
+      preload_max_access_levels(users, container)
+
       DeclarativePolicy.subject_scope do
         users.select { |u| allowed?(u, :read_confidential_issues, container) }
       end
@@ -166,6 +172,15 @@ class Ability
     end
 
     private
+
+    # Project abilities resolve membership through ProjectTeam#max_member_access_for_user, which
+    # reads from a request-scoped store. Filling that store up front collapses the per-user lookups
+    # into one query, and skips users already cached so repeated bulk checks add no queries.
+    def preload_max_access_levels(users, container)
+      return unless container.is_a?(Project)
+
+      container.team.max_member_access_for_user_ids(users.map(&:id))
+    end
 
     def ability_forgetting?
       ::Gitlab::SafeRequestStore[:ability_forgetting]

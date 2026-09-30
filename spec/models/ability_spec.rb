@@ -43,6 +43,20 @@ RSpec.describe Ability, feature_category: :system_access do
   end
 
   describe '.users_that_can_read_project' do
+    it 'looks up membership for all users in a single query', :request_store do
+      project = create(:project, :private)
+      users = create_list(:user, 3)
+      users.each { |user| project.add_guest(user) }
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        expect(described_class.users_that_can_read_project(users, project)).to match_array(users)
+      end
+
+      membership_queries = recorder.log.count { |query| query.include?('project_authorizations') }
+
+      expect(membership_queries).to eq(1)
+    end
+
     context 'using a public project' do
       it 'returns all the users' do
         project = create(:project, :public)
@@ -84,11 +98,11 @@ RSpec.describe Ability, feature_category: :system_access do
       end
 
       it 'returns external users if they are project members' do
-        user1 = build(:user, external: true)
-        user2 = build(:user, external: true)
+        user1 = create(:user, external: true)
+        user2 = create(:user, external: true)
         users = [user1, user2]
 
-        expect(project.team).to receive(:members).at_least(:once).and_return([user1])
+        project.add_guest(user1)
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])
@@ -133,11 +147,11 @@ RSpec.describe Ability, feature_category: :system_access do
       end
 
       it 'returns external users if they are project members' do
-        user1 = build(:user, external: true)
-        user2 = build(:user, external: true)
+        user1 = create(:user, external: true)
+        user2 = create(:user, external: true)
         users = [user1, user2]
 
-        expect(project.team).to receive(:members).at_least(:once).and_return([user1])
+        project.add_guest(user1)
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])

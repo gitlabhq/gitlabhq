@@ -5,6 +5,8 @@ module API
     module Handlers
       # See: https://modelcontextprotocol.io/specification/2025-06-18/schema#listtoolsrequest
       class ListTools
+        include ::Gitlab::InternalEventsTracking
+
         def initialize(manager)
           @manager = manager
         end
@@ -30,6 +32,15 @@ module API
 
             build_tool_data(name, tool, tool_name_prefix, toolsets_enabled)
           end
+
+          track_internal_event('list_mcp_tools', user: current_user)
+          logger.conditional_info(
+            current_user,
+            message: 'MCP tools list',
+            event_name: 'tools_list',
+            ai_component: 'mcp_server',
+            tool_count: tools.size
+          )
 
           { tools: tools }
         end

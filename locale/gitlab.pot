@@ -28761,10 +28761,10 @@ msgstr ""
 msgid "DatadogIntegration|Tags"
 msgstr ""
 
-msgid "DatadogIntegration|When enabled, pipeline job logs are collected by Datadog and displayed along with pipeline execution traces. This requires CI Visibility to be enabled. Note that pipeline job logs are priced like regular Datadog logs. Learn more %{link_start}here%{link_end}."
+msgid "DatadogIntegration|When enabled, pipeline job logs are collected by Datadog and displayed along with pipeline execution traces. This requires CI Visibility to be enabled. Collecting and analyzing logs is free; storing logs long-term is an optional paid feature in Datadog. Learn more %{link_start}here%{link_end}."
 msgstr ""
 
-msgid "DatadogIntegration|When enabled, pipelines and jobs are collected, and Datadog will display pipeline execution traces. Note that CI Visibility is priced per committers, see our %{link_start}pricing page%{link_end}."
+msgid "DatadogIntegration|When enabled, pipelines and jobs are collected, and Datadog will display pipeline execution traces. Enabling CI Visibility also turns on Pipeline Job logs collection, which you can adjust once the integration is saved. Note that CI Visibility is priced per committers, see our %{link_start}pricing page%{link_end}."
 msgstr ""
 
 msgid "DatadogIntegration|have an invalid format"

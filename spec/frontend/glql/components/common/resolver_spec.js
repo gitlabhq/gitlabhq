@@ -183,6 +183,25 @@ describe('Resolver', () => {
     });
   });
 
+  // The tag lets a dashboard panel drop everything it cached, comparison and pages included.
+  describe('result cache tag', () => {
+    it('tags the main query, the comparison and further pages with the GLQL source', async () => {
+      mockUtils({ totalCount: MOCK_ISSUES.nodes.length + 1 });
+      createWrapper({ comparison: { query: 'assignee = "bar"' } });
+      await waitForPromises();
+
+      execute.mockResolvedValue({ count: MOCK_ISSUES.nodes.length + 1, ...MOCK_ISSUES_PAGE_2 });
+      findPagination().vm.$emit('load-more');
+      await waitForPromises();
+
+      expect(execute.mock.calls).toEqual([
+        ['query {}', expect.anything(), expect.objectContaining({ tag: 'assignee = "foo"' })],
+        ['query {}', expect.anything(), expect.objectContaining({ tag: 'assignee = "foo"' })],
+        ['query {}', expect.anything(), expect.objectContaining({ tag: 'assignee = "foo"' })],
+      ]);
+    });
+  });
+
   describe('when the component is destroyed', () => {
     beforeEach(async () => {
       mockUtils();

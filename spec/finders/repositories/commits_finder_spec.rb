@@ -374,6 +374,27 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
         end
       end
 
+      context 'with a commit that carries trailers' do
+        # The tip of this ref carries a Signed-off-by trailer in its message.
+        let(:ref_name) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+        let(:signed_off_by) { 'Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>' }
+        let(:params) { { ref_name: ref_name, per_page: 1 } }
+
+        context 'when trailers is requested' do
+          let(:params) { super().merge(trailers: true) }
+
+          it 'parses the commit trailers' do
+            expect(commits.first.trailers).to eq('Signed-off-by' => signed_off_by)
+          end
+        end
+
+        context 'when trailers is not requested' do
+          it 'returns no trailers' do
+            expect(commits.first.trailers).to eq({})
+          end
+        end
+      end
+
       context 'when per_page is specified' do
         let(:params) { { per_page: 5 } }
 
@@ -399,31 +420,12 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
       it_behaves_like 'returns empty when repository does not exist'
 
       context 'with parameter validation' do
-        using RSpec::Parameterized::TableSyntax
+        context 'when follow is given' do
+          let(:params) { { follow: true } }
 
-        where(:param_name, :param_value) do
-          'trailers'     | true
-          'follow'       | true
-        end
-
-        with_them do
-          let(:params) { { param_name.to_sym => param_value } }
-
-          it "raises UnsupportedKeysetParamError for unsupported param" do
+          it 'raises UnsupportedKeysetParamError' do
             expect { commits }.to raise_error(described_class::UnsupportedKeysetParamError) do |error|
               expect(error).to be_a(ArgumentError)
-              expect(error.message).to include("'#{param_name}'")
-              expect(error.message).to include(described_class::KEYSET_PARAM_ERROR_SUFFIX)
-            end
-          end
-        end
-
-        context 'when multiple unsupported params are given' do
-          let(:params) { { trailers: true, follow: true } }
-
-          it 'raises UnsupportedKeysetParamError listing all unsupported params' do
-            expect { commits }.to raise_error(described_class::UnsupportedKeysetParamError) do |error|
-              expect(error.message).to include("'trailers'")
               expect(error.message).to include("'follow'")
               expect(error.message).to include(described_class::KEYSET_PARAM_ERROR_SUFFIX)
             end
@@ -432,6 +434,14 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
 
         context 'when first_parent is given' do
           let(:params) { { first_parent: true } }
+
+          it 'does not raise an error' do
+            expect { commits }.not_to raise_error
+          end
+        end
+
+        context 'when trailers is given' do
+          let(:params) { { trailers: true } }
 
           it 'does not raise an error' do
             expect { commits }.not_to raise_error

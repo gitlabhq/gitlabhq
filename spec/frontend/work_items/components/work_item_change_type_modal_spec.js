@@ -12,7 +12,9 @@ import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.muta
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
 import {
   WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEM_WIDGETS_NAME_MAP,
 } from '~/work_items/constants';
@@ -136,17 +138,12 @@ describe('WorkItemChangeTypeModal component', () => {
   });
 
   describe('work item type change tests', () => {
-    it.each`
-      scenario                                    | widgets                                                      | hasSubepicsFeature | btnDisabled | parentType
-      ${'epic parent with subepics enabled'}      | ${workItemWithEpicParentQueryResponse.data.workItem.widgets} | ${true}            | ${false}    | ${''}
-      ${'epic parent with subepics disabled'}     | ${workItemWithEpicParentQueryResponse.data.workItem.widgets} | ${false}           | ${true}     | ${'epic'}
-      ${'non-epic parent with subepics enabled'}  | ${workItemQueryResponse.data.workItem.widgets}               | ${true}            | ${true}     | ${'issue'}
-      ${'non-epic parent with subepics disabled'} | ${workItemQueryResponse.data.workItem.widgets}               | ${false}           | ${true}     | ${'issue'}
-    `('$scenario', async ({ widgets, hasSubepicsFeature, btnDisabled, parentType }) => {
+    it('does not warn or disable the button when converting to a non-epic type, even with a parent and no subepics feature', async () => {
       createComponent({
+        workItemType: WORK_ITEM_TYPE_NAME_INCIDENT,
         hasParent: true,
-        widgets,
-        hasSubepicsFeature,
+        widgets: workItemQueryResponse.data.workItem.widgets,
+        hasSubepicsFeature: false,
       });
 
       await waitForPromises();
@@ -155,14 +152,95 @@ describe('WorkItemChangeTypeModal component', () => {
 
       await nextTick();
 
-      const hasWarning = parentType !== '';
-      expect(findWarningAlert().exists()).toBe(hasWarning);
-      if (hasWarning) {
-        const warningText = `Parent item type ${parentType} is not supported on issue. Remove the parent item to change type.`;
-        expect(findWarningAlert().text()).toBe(warningText);
-      }
-      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(btnDisabled);
+      expect(findWarningAlert().exists()).toBe(false);
+      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
     });
+
+    it.each`
+      scenario                                    | widgets                                                      | hasSubepicsFeature | btnDisabled | parentType
+      ${'epic parent with subepics enabled'}      | ${workItemWithEpicParentQueryResponse.data.workItem.widgets} | ${true}            | ${false}    | ${''}
+      ${'epic parent with subepics disabled'}     | ${workItemWithEpicParentQueryResponse.data.workItem.widgets} | ${false}           | ${true}     | ${'epic'}
+      ${'non-epic parent with subepics enabled'}  | ${workItemQueryResponse.data.workItem.widgets}               | ${true}            | ${false}    | ${''}
+      ${'non-epic parent with subepics disabled'} | ${workItemQueryResponse.data.workItem.widgets}               | ${false}           | ${true}     | ${'issue'}
+    `(
+      'when promoting to Epic with $scenario',
+      async ({ widgets, hasSubepicsFeature, btnDisabled, parentType }) => {
+        createComponent({
+          workItemType: WORK_ITEM_TYPE_NAME_INCIDENT,
+          hasParent: true,
+          widgets,
+          hasSubepicsFeature,
+        });
+
+        await waitForPromises();
+
+        findGlFormSelect().vm.$emit('change', epicTypeId);
+
+        await nextTick();
+
+        const hasWarning = parentType !== '';
+        expect(findWarningAlert().exists()).toBe(hasWarning);
+        if (hasWarning) {
+          const warningText = `Parent item type ${parentType} is not supported on epic. Remove the parent item to change type.`;
+          expect(findWarningAlert().text()).toBe(warningText);
+        }
+        expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(btnDisabled);
+      },
+    );
+
+    it.each`
+      targetTypeId   | targetType
+      ${issueTypeId} | ${'issue'}
+      ${epicTypeId}  | ${'epic'}
+    `(
+      'warns and disables the button when converting a Task with a parent to $targetType, even with subepics feature enabled',
+      async ({ targetTypeId, targetType }) => {
+        createComponent({
+          workItemType: WORK_ITEM_TYPE_NAME_TASK,
+          hasParent: true,
+          widgets: workItemQueryResponse.data.workItem.widgets,
+          hasSubepicsFeature: true,
+        });
+
+        await waitForPromises();
+
+        findGlFormSelect().vm.$emit('change', targetTypeId);
+
+        await nextTick();
+
+        expect(findWarningAlert().text()).toBe(
+          `Parent item type issue is not supported on ${targetType}. Remove the parent item to change type.`,
+        );
+        expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
+      },
+    );
+
+    it.each`
+      targetTypeId   | targetType
+      ${issueTypeId} | ${'issue'}
+      ${epicTypeId}  | ${'epic'}
+    `(
+      'warns and disables the button when converting a Key Result with a parent to $targetType, even with subepics feature enabled',
+      async ({ targetTypeId, targetType }) => {
+        createComponent({
+          workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          hasParent: true,
+          widgets: workItemQueryResponse.data.workItem.widgets,
+          hasSubepicsFeature: true,
+        });
+
+        await waitForPromises();
+
+        findGlFormSelect().vm.$emit('change', targetTypeId);
+
+        await nextTick();
+
+        expect(findWarningAlert().text()).toBe(
+          `Parent item type issue is not supported on ${targetType}. Remove the parent item to change type.`,
+        );
+        expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
+      },
+    );
   });
 
   it('does not allow to change type and disables `Change type` button when the work item has child items', async () => {

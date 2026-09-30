@@ -1,16 +1,18 @@
 import { assign } from 'lodash-es';
 import { gql } from '@apollo/client/core';
-import createDefaultClient from '~/lib/graphql';
+import createDefaultClient, { fetchPolicies } from '~/lib/graphql';
 import { EXECUTION_QUEUE_DASHBOARD, EXECUTION_QUEUE_DEFAULT } from '../constants';
+import ResultCache from '../utils/result_cache';
 import TaskQueue from '../utils/task_queue';
 import { extractGroupOrProject } from '../utils/common';
 
 // Embedded blocks run one at a time, a readiness commitment from the GLQL beta review
 // (https://gitlab.com/gitlab-org/gitlab/-/issues/517546): popular descriptions with many
 // blocks hit Postgres from every viewer. Dashboards have few viewers and bounded panels.
-const CONCURRENCY_LIMITS = {
-  [EXECUTION_QUEUE_DEFAULT]: 1,
-  [EXECUTION_QUEUE_DASHBOARD]: 6,
+// Only dashboards cache results: their panels remount on every tab switch and filter change.
+const QUEUES = {
+  [EXECUTION_QUEUE_DEFAULT]: { concurrency: 1, cache: false },
+  [EXECUTION_QUEUE_DASHBOARD]: { concurrency: 8, cache: true },
 };
 
 export const resolveToScalar = (obj) => {
@@ -29,61 +31,133 @@ const isSubquery = (value) => typeof value === 'string' && value.startsWith('que
 
 export default class Executor {
   #client;
+  #results;
   static taskQueues = {};
+  static sharedContexts = {};
 
-  static taskQueue(name = EXECUTION_QUEUE_DEFAULT) {
-    // Unknown names share the default queue rather than silently getting a queue of their own.
-    const queue = Object.hasOwn(CONCURRENCY_LIMITS, name) ? name : EXECUTION_QUEUE_DEFAULT;
+  // Unknown names share the default queue rather than silently getting a queue of their own.
+  static queueName(name = EXECUTION_QUEUE_DEFAULT) {
+    return Object.hasOwn(QUEUES, name) ? name : EXECUTION_QUEUE_DEFAULT;
+  }
+
+  static taskQueue(name) {
+    const queue = Executor.queueName(name);
 
     if (!Executor.taskQueues[queue]) {
-      Executor.taskQueues[queue] = new TaskQueue(CONCURRENCY_LIMITS[queue]);
+      Executor.taskQueues[queue] = new TaskQueue(QUEUES[queue].concurrency);
     }
 
     return Executor.taskQueues[queue];
   }
 
-  init(client) {
+  // One client per queue and endpoint path (which carries the page's group or project), so a
+  // request no longer leaks a client. Apollo's own cache stays off: it keys rows by field and
+  // arguments, but GLQL selects metrics and dimensions, so panels would overwrite each other's
+  // rows. Queues that cache get a result cache keyed by the compiled query instead.
+  static shared(name, { create = true } = {}) {
+    const queue = Executor.queueName(name);
     const searchParams = new URLSearchParams(extractGroupOrProject());
+    const config = { path: `/api/glql?${searchParams}`, fetchPolicy: fetchPolicies.NO_CACHE };
+    const key = `${queue} ${config.path}`;
 
-    this.#client = client || createDefaultClient({}, { path: `/api/glql?${searchParams}` });
+    if (!Executor.sharedContexts[key] && create) {
+      Executor.sharedContexts[key] = {
+        client: createDefaultClient({}, config),
+        results: QUEUES[queue].cache ? new ResultCache() : undefined,
+      };
+    }
+
+    return Executor.sharedContexts[key];
+  }
+
+  init(client, { results } = {}) {
+    this.#client = client;
+    this.#results = results;
 
     return this;
   }
 
-  async execute(query, variables = {}, { queue, signal } = {}) {
+  async execute(query, variables = {}, options = {}) {
     return this.#enqueue(
       query,
       assign(
         ...(await Promise.all(
           Object.entries(variables).map(async ([key, { type, value }]) => ({
-            [key]: isSubquery(value) ? await this.#executeSubquery(value, type) : value,
+            [key]: isSubquery(value) ? await this.#executeSubquery(value, type, options) : value,
           })),
         )),
       ),
-      { queue, signal },
+      options,
     );
   }
 
-  async #executeSubquery(query, variableType) {
-    return transformGIDToString(resolveToScalar(await this.#execute(query)), variableType);
+  // Queued, cancelled and cached like the query it feeds, so a panel whose variables come from a
+  // subquery costs no request on remount either.
+  async #executeSubquery(query, variableType, options) {
+    const data = await this.#enqueue(query, {}, options);
+
+    return transformGIDToString(resolveToScalar(data), variableType);
   }
 
-  async #execute(query, variables = {}) {
+  async #execute(query, variables = {}, context = {}) {
     const { data } = await this.#client.query({
       query: gql`
         ${query}
       `,
       variables,
+      context,
     });
 
     return data;
   }
 
-  async #enqueue(query, variables, { queue, signal } = {}) {
-    return Executor.taskQueue(queue).enqueue(() => this.#execute(query, variables), { signal });
+  async #enqueue(query, variables, { queue, signal, tag } = {}) {
+    // The query compiles asynchronously, so the resolver may already be destroyed: a cache hit
+    // must not revive it.
+    if (signal?.aborted) throw signal.reason;
+
+    const key = `${query}\n${JSON.stringify(variables)}`;
+    const cached = this.#results?.read(key, tag);
+
+    if (cached) return cached;
+
+    // Claimed before waiting for a slot, so a reload meanwhile also drops the identical request
+    // that this one would otherwise join.
+    this.#results?.claim(key, tag);
+
+    // Tasks wrap their outcome: the queue holds a slot until the returned value settles, and
+    // joining a request another panel already started must not cost a second slot.
+    const { result } = await Executor.taskQueue(queue).enqueue(
+      async () => {
+        // An identical request may have started while this one waited for a slot.
+        const meanwhile = this.#results?.read(key, tag);
+        if (meanwhile) return { result: meanwhile };
+
+        if (!this.#results) return { result: await this.#execute(query, variables) };
+
+        // Cached while pending, so a reload that forgets it also drops a request already running.
+        // Apollo's deduplication is off because it would join a new request to that dropped one.
+        const request = this.#execute(query, variables, { queryDeduplication: false });
+        this.#results.set(key, request, tag);
+        request.catch(() => this.#results.delete(key, request));
+
+        return { result: await request };
+      },
+      { signal },
+    );
+
+    return result;
   }
 }
 
 export const execute = async (query, variables = {}, options = {}) => {
-  return new Executor().init().execute(query, variables, options);
+  const { client, results } = Executor.shared(options.queue);
+
+  return new Executor().init(client, { results }).execute(query, variables, options);
+};
+
+// Drops the cached results of every request that carried `tag`, so they are fetched again.
+// Before the first request there is nothing to drop, and no client worth creating.
+export const forget = (tag, queue) => {
+  Executor.shared(queue, { create: false })?.results?.forget(tag);
 };

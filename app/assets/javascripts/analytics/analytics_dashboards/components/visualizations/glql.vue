@@ -5,6 +5,7 @@ import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getPanelElement } from '~/lib/utils/panels';
 import { EXECUTION_QUEUE_DASHBOARD } from '~/glql/constants';
+import { forget } from '~/glql/core/executor';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import ViewSourceModal from '~/glql/components/common/view_source_modal.vue';
 import { copyQuerySource } from '~/glql/utils/common';
@@ -224,14 +225,18 @@ export default {
       actions.push({ text: __('Reload'), action: () => this.reload() });
       this.$emit('set-actions', this.showActions ? actions : []);
     },
+    // The error state's Retry. Nothing in the resolver key changes, so only a key bump re-runs
+    // the query, and the cached result has to go first or the new resolver would read it back.
     retry() {
+      forget(this.data, EXECUTION_QUEUE_DASHBOARD);
       this.resetState();
       this.retryCount += 1;
     },
-    // The panel re-fetches its data source, but that yields the same query string, which
-    // alone would never remount the resolver: bump the key too so the query actually re-runs.
+    // The panel shows a loading state while it re-fetches its data source, which destroys this
+    // visualization and mounts a fresh one, so a key bump here would never mount. Dropping the
+    // cached result is what makes that fresh one query again.
     reload() {
-      this.retry();
+      forget(this.data, EXECUTION_QUEUE_DASHBOARD);
       this.$emit('reload');
     },
     viewSource() {

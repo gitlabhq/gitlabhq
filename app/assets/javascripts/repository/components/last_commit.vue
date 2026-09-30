@@ -96,8 +96,7 @@ export default {
               if (ciPipelineStatusUpdated) {
                 const updatedData = cloneDeep(previousData);
                 const pipeline =
-                  updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
-                    ?.edges[0]?.node || {};
+                  updatedData.project?.repository?.lastCommit?.pipelines?.edges[0]?.node || {};
 
                 pipeline.detailedStatus = ciPipelineStatusUpdated.detailedStatus;
 

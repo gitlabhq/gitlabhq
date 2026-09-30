@@ -206,7 +206,8 @@ class Repository
     literal_pathspec: false,
     first_parent: false,
     order: nil,
-    follow: false
+    follow: false,
+    trailers: false
   )
     return empty_commit_collection_with_next_cursor unless exists? && has_visible_content? && ref.present?
 
@@ -223,7 +224,8 @@ class Repository
       literal_pathspec: literal_pathspec,
       first_parent: first_parent,
       order: order,
-      follow: follow
+      follow: follow,
+      trailers: trailers
     )
 
     Repositories::CommitCollectionWithNextCursor.new(

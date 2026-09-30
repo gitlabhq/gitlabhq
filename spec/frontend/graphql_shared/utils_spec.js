@@ -187,16 +187,26 @@ describe('setupQueryPollingByVisibility', () => {
 });
 
 describe('etagQueryHeaders', () => {
-  it('returns headers necessary for etag caching', () => {
+  const headers = {
+    'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': 'myFeature',
+    'X-GITLAB-GRAPHQL-RESOURCE-ETAG': 'myResource',
+    'X-Requested-With': 'XMLHttpRequest',
+  };
+
+  it('returns headers necessary for etag caching with a GET request', () => {
     expect(etagQueryHeaders('myFeature', 'myResource')).toEqual({
-      fetchOptions: {
-        method: 'GET',
-      },
-      headers: {
-        'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': 'myFeature',
-        'X-GITLAB-GRAPHQL-RESOURCE-ETAG': 'myResource',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
+      fetchOptions: { method: 'GET' },
+      headers,
+    });
+  });
+
+  describe('when etagCachingPostRequests is enabled', () => {
+    beforeEach(() => {
+      window.gon = { features: { etagCachingPostRequests: true } };
+    });
+
+    it('returns headers without forcing a GET request', () => {
+      expect(etagQueryHeaders('myFeature', 'myResource')).toEqual({ headers });
     });
   });
 });

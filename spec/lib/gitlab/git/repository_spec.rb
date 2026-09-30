@@ -3656,6 +3656,24 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    describe 'trailers' do
+      # The tip of this ref carries a Signed-off-by trailer in its message.
+      let(:ref) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+      let(:signed_off_by) { 'Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>' }
+
+      it 'returns no trailers by default' do
+        commit = repository.list_commits(ref: ref, pagination_params: { limit: 1 }).first
+
+        expect(commit.trailers).to eq({})
+      end
+
+      it 'parses the commit trailers when trailers is requested' do
+        commit = repository.list_commits(ref: ref, pagination_params: { limit: 1 }, trailers: true).first
+
+        expect(commit.trailers).to eq('Signed-off-by' => signed_off_by)
+      end
+    end
+
     describe 'when storage is broken', :broken_storage do
       let(:broken_repository) { create(:project, :broken_storage).repository }
 

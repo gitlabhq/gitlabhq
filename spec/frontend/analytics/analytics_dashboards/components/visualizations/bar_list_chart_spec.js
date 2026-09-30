@@ -51,6 +51,27 @@ describe('BarListChart', () => {
     });
   });
 
+  describe('category labels', () => {
+    const categoryTooltip = () => chartOptions().yAxis.tooltip;
+    const tooltipFor = (value, { truncated }) =>
+      categoryTooltip().formatter({ value, isTruncated: () => truncated });
+
+    beforeEach(() => createWrapper());
+
+    it('enables axis label tooltips without series tooltips', () => {
+      expect(chartOptions().tooltip).toEqual({ show: true, trigger: 'none' });
+      expect(categoryTooltip().show).toBe(true);
+    });
+
+    it('shows the full label when it is truncated', () => {
+      expect(tooltipFor('<b>name</b>', { truncated: true })).toBe('&lt;b&gt;name&lt;/b&gt;');
+    });
+
+    it('shows nothing when the label fits', () => {
+      expect(tooltipFor('Chat', { truncated: false })).toBe('');
+    });
+  });
+
   describe('height', () => {
     // The chart has to size itself: the wrappers between it and a dashboard
     // panel body are all auto-height, so a percentage height collapses.

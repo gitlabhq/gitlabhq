@@ -39,23 +39,15 @@ module Gitlab
           values.is_a?(Array) && values.all? { |value| validate_string(value) }
         end
 
-        def validate_array_of_strings_or_regexps(values)
-          values.is_a?(Array) && values.all? { |value| validate_string_or_regexp(value) }
-        end
-
         def validate_variables(variables)
-          variables.is_a?(Hash) && variables.flatten.all? { |value| validate_alphanumeric(value) }
+          variables.is_a?(Hash) && variables.flatten.all? { |value| Validators::AlphanumericValidator.validate(value) }
         end
 
         def validate_array_value_variables(variables)
           variables.is_a?(Hash) &&
-            variables.keys.all? { |value| validate_alphanumeric(value) } &&
+            variables.keys.all? { |value| Validators::AlphanumericValidator.validate(value) } &&
             variables.values.all? { |v| !v.nil? } &&
-            variables.values.flatten(1).all? { |value| validate_alphanumeric(value) }
-        end
-
-        def validate_alphanumeric(value)
-          validate_string(value) || validate_integer(value)
+            variables.values.flatten(1).all? { |value| Validators::AlphanumericValidator.validate(value) }
         end
 
         def validate_integer(value)
@@ -64,21 +56,6 @@ module Gitlab
 
         def validate_string(value)
           value.is_a?(String) || value.is_a?(Symbol)
-        end
-
-        def validate_regexp(value)
-          Gitlab::UntrustedRegexp::RubySyntax.valid?(value)
-        end
-
-        def validate_string_or_regexp(value)
-          return true if value.is_a?(Symbol)
-          return false unless value.is_a?(String)
-
-          if Gitlab::UntrustedRegexp::RubySyntax.matches_syntax?(value)
-            validate_regexp(value)
-          else
-            true
-          end
         end
 
         def validate_boolean(value)

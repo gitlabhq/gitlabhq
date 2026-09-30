@@ -338,6 +338,7 @@ module Gitlab
         request.skip = params[:skip].to_i if params[:skip].present?
         request.first_parent = !!params[:first_parent]
         request.follow = !!params[:follow]
+        request.trailers = !!params[:trailers]
 
         if params[:commit_message_patterns]
           request.commit_message_patterns += encode_repeated(Array.wrap(params[:commit_message_patterns]))

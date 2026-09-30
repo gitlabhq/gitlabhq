@@ -41,8 +41,6 @@ constants:
   app/models/wiki.rb:
   - TITLE_ORDER
   - CREATED_AT_ORDER
-  app/services/ci/resource_groups/assign_resource_from_resource_group_service.rb:
-  - RESPAWN_WAIT_TIME
   app/services/clusters/kubernetes.rb:
   - KNATIVE_SERVING_NAMESPACE
   - ISTIO_SYSTEM_NAMESPACE

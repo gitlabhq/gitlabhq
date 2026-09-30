@@ -24,7 +24,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   it 'has one sourced pipeline' do
-    expect(bridge).to have_one(:sourced_pipeline)
+    expect(build_stubbed(:ci_bridge)).to have_one(:sourced_pipeline)
   end
 
   it_behaves_like 'a retryable job'
@@ -34,11 +34,15 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   it 'has one downstream pipeline' do
+    bridge = build_stubbed(:ci_bridge)
+
     expect(bridge).to have_one(:sourced_pipeline)
     expect(bridge).to have_one(:downstream_pipeline)
   end
 
   describe 'no-op methods for compatibility with Ci::Build' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     it 'returns an empty array job_artifacts' do
       expect(bridge.job_artifacts).to eq(Ci::JobArtifact.none)
     end
@@ -188,6 +192,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#tags' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     it 'only has a bridge tag' do
       expect(bridge.tags).to eq [:bridge]
     end
@@ -195,6 +201,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
   describe '#detailed_status' do
     let_it_be(:user) { create(:user) }
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
     let(:status) { bridge.detailed_status(user) }
 
     it 'returns detailed status object' do
@@ -279,7 +286,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
       invalid_statuses.each do |status|
         it "does not transition from #{status} to canceling" do
-          bridge = create(:ci_bridge, status: status)
+          bridge = build_stubbed(:ci_bridge, status: status)
 
           expect { bridge.start_cancel! }
             .to raise_error(StateMachines::InvalidTransition)
@@ -302,7 +309,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
       invalid_statuses.each do |status|
         it "does not transition from #{status} to canceling" do
-          bridge = create(:ci_bridge, status: status)
+          bridge = build_stubbed(:ci_bridge, status: status)
 
           expect { bridge.finish_cancel! }
             .to raise_error(StateMachines::InvalidTransition)
@@ -332,7 +339,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       it 'raises error when the status is failed' do
-        bridge.status = :failed
+        bridge = build_stubbed(:ci_bridge, status: :failed)
 
         expect { bridge.enqueue! }.to raise_error(StateMachines::InvalidTransition)
       end
@@ -493,6 +500,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#has_strategy' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     subject { bridge.has_strategy? }
 
     context 'when bridge has no strategy' do
@@ -513,6 +522,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#mirrored?' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     subject { bridge.mirrored? }
 
     context 'when bridge has `strategy: mirror`' do
@@ -527,6 +538,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#dependent?' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     subject { bridge.dependent? }
 
     context 'when bridge has strategy depend' do
@@ -541,6 +554,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#yaml_variables' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     it 'returns YAML variables' do
       expect(bridge.yaml_variables)
         .to include(key: 'BRIDGE', value: 'cross', public: true)
@@ -861,6 +876,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   it_behaves_like 'a triggerable processable', :ci_bridge
 
   describe '#pipeline_variables' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     it 'returns the pipeline variables' do
       expect(bridge.pipeline_variables).to eq(bridge.pipeline.variables)
     end
@@ -880,6 +897,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
 
     context 'when pipeline is not on a schedule' do
+      let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
       it 'returns empty array' do
         expect(bridge.pipeline_schedule_variables).to eq([])
       end
@@ -939,6 +958,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#triggers_child_pipeline?' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     subject { bridge.triggers_child_pipeline? }
 
     context 'when bridge defines a downstream YAML' do
@@ -967,6 +988,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#yaml_for_downstream' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     subject { bridge.yaml_for_downstream }
 
     context 'when bridge defines a downstream YAML' do
@@ -1029,6 +1052,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#downstream_project_path' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     context 'when trigger is defined' do
       context 'when using variable expansion' do
         let(:options) { { trigger: { project: 'my/$BRIDGE/project' } } }
@@ -1051,6 +1076,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#target_ref' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     context 'when trigger is defined' do
       it 'returns a ref name' do
         expect(bridge.target_ref).to eq 'master'
@@ -1138,6 +1165,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#can_auto_cancel_pipeline_on_job_failure?' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     subject { bridge.can_auto_cancel_pipeline_on_job_failure? }
 
     it { is_expected.to be true }
@@ -1256,6 +1285,8 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#deployment_job?' do
+    let(:bridge) { build_stubbed(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline) }
+
     subject { bridge.deployment_job? }
 
     it { is_expected.to be(false) }

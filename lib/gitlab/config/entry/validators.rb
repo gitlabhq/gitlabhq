@@ -100,8 +100,6 @@ module Gitlab
         end
 
         class ArrayOfHashesValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
-
           def validate_each(record, attribute, value)
             unless validate_array_of_hashes(value)
               record.errors.add(attribute, 'should be an array of hashes')

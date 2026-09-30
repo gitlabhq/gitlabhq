@@ -1,7 +1,7 @@
 <script>
 import { GlChart, GlChartLegend } from '@gitlab/ui/src/charts';
 import { colorFromDefaultPalette } from '@gitlab/ui/src/utils/charts/theme';
-import { merge } from 'lodash-es';
+import { escape, merge } from 'lodash-es';
 import { formatNumber } from '~/locale';
 import { formatCountCompact } from '~/glql/utils/value_format';
 import {
@@ -281,6 +281,8 @@ export default {
           : undefined,
         // Stacked bars always plot shares of the track; `scale` applies to one dimension only.
         xAxis: this.stacked ? { type: 'value', show: false, min: 0, max: 100 } : this.valueAxis,
+        // Axis label tooltips need a root tooltip; `none` keeps the bars from getting their own.
+        tooltip: { show: true, trigger: 'none' },
         yAxis: {
           type: 'category',
           data: this.categories,
@@ -291,6 +293,11 @@ export default {
             fontSize: CATEGORY_LABEL_SIZE,
             width: LABEL_COLUMN_WIDTH - LABEL_GAP * 2,
             overflow: 'truncate',
+          },
+          // The tooltip renders HTML, so the label is escaped.
+          tooltip: {
+            show: true,
+            formatter: ({ value, isTruncated }) => (isTruncated() ? escape(value) : ''),
           },
         },
         series: this.stacked

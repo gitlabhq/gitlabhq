@@ -530,7 +530,6 @@ export default {
     'app/assets/javascripts/repository/mutations/sync_fork.mutation.graphql',
     'app/assets/javascripts/repository/queries/application_info.query.graphql',
     'app/assets/javascripts/repository/queries/blob_controls.query.graphql',
-    'app/assets/javascripts/repository/queries/commits.query.graphql',
     'app/assets/javascripts/repository/queries/fork_details.query.graphql',
     'app/assets/javascripts/repository/queries/open_mr_count.query.graphql',
     'app/assets/javascripts/repository/queries/open_mrs.query.graphql',

@@ -105,7 +105,13 @@ module Deployments
     end
 
     def merge_requests_by_head_commit_sha(commits)
-      merge_request_diffs = MergeRequestDiff.by_head_commit_sha(commits)
+      # Scope the diff lookup to the project. This drops commit SHAs shared by
+      # forks, and the extra project_id predicate lowers the subquery's row
+      # estimate enough that the planner uses the partial index
+      # index_merge_requests_for_latest_diffs_with_state_merged instead of
+      # scanning every merged MR in the project.
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/628637.
+      merge_request_diffs = MergeRequestDiff.by_head_commit_sha(commits).by_project_id(project.id)
 
       project.merge_requests.merged.by_latest_merge_request_diffs(merge_request_diffs)
     end

@@ -133,6 +133,8 @@ module Gitlab
       push_frontend_feature_flag(:markdown_sortable_table_columns, current_user)
       # Needed for globally-rendered components such as work item reference popovers.
       push_frontend_feature_flag(:work_item_features_field, current_user)
+      # eTag-cached GraphQL queries are polled from many pages, so the flag must be global.
+      push_frontend_feature_flag(:etag_caching_post_requests, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

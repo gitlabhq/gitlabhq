@@ -49,7 +49,8 @@ Each GitLab version comes with a specific `gitlab-zoekt-indexer` and `gitlab-zoe
 
 | GitLab version | `gitlab-zoekt-indexer` version | `gitlab-zoekt` chart version |
 |----------------|--------------------------------|------------------------------|
-| 19.1           | 1.16.1                         | 4.1.0                        |
+| 19.4           | 1.19.0                         | 4.1.0                        |
+| 19.1 to 19.3   | 1.16.1                         | 4.1.0                        |
 | 19.0           | 1.14.2                         | 4.0.0                        |
 | 18.11          | 1.13.1                         | 3.11.0                       |
 | 18.10          | 1.11.2                         | 3.10.0                       |

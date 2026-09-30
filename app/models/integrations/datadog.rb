@@ -79,7 +79,7 @@ module Integrations
         docs_link = ActionController::Base.helpers.link_to('', CI_VISIBILITY_PRICING, target: '_blank', rel: 'noopener noreferrer')
         tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
 
-        safe_format(s_('DatadogIntegration|When enabled, pipelines and jobs are collected, and Datadog will display pipeline execution traces. Note that CI Visibility is priced per committers, see our %{link_start}pricing page%{link_end}.'), tag_pair_docs_link)
+        safe_format(s_('DatadogIntegration|When enabled, pipelines and jobs are collected, and Datadog will display pipeline execution traces. Enabling CI Visibility also turns on Pipeline Job logs collection, which you can adjust once the integration is saved. Note that CI Visibility is priced per committers, see our %{link_start}pricing page%{link_end}.'), tag_pair_docs_link)
       end
 
     field :archive_trace_events,
@@ -92,7 +92,7 @@ module Integrations
         docs_link = ActionController::Base.helpers.link_to('', CI_LOGS_DOCS, target: '_blank', rel: 'noopener noreferrer')
         tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
 
-        safe_format(s_('DatadogIntegration|When enabled, pipeline job logs are collected by Datadog and displayed along with pipeline execution traces. This requires CI Visibility to be enabled. Note that pipeline job logs are priced like regular Datadog logs. Learn more %{link_start}here%{link_end}.'), tag_pair_docs_link)
+        safe_format(s_('DatadogIntegration|When enabled, pipeline job logs are collected by Datadog and displayed along with pipeline execution traces. This requires CI Visibility to be enabled. Collecting and analyzing logs is free; storing logs long-term is an optional paid feature in Datadog. Learn more %{link_start}here%{link_end}.'), tag_pair_docs_link)
       end
 
     field :datadog_service,
@@ -135,6 +135,7 @@ module Integrations
       end
 
     before_validation :strip_properties
+    before_validation :set_initial_log_pulling_defaults, if: :initial_log_pulling_setup?
 
     with_options if: :activated? do
       validates :api_key, presence: true, format: { with: /\A\w+\z/ }
@@ -151,6 +152,7 @@ module Integrations
       super
 
       self.datadog_site ||= DEFAULT_DOMAIN
+      set_initial_log_pulling_defaults if initial_log_pulling_setup?
 
       # Previous versions of the integration don't have the datadog_ci_visibility boolean stored in the configuration.
       # Since the previous default was for this to be enabled, we want this attribute to be initialized to true
@@ -160,6 +162,14 @@ module Integrations
       end
     end
 
+    override :form_fields
+    def form_fields
+      return super unless new_record?
+
+      super.reject { |field| field[:name] == 'archive_trace_events' }
+    end
+
+    attribute :archive_trace_events, default: true
     attribute :pipeline_events, default: false
     attribute :job_events, default: false
     before_save :update_pipeline_events
@@ -247,6 +257,18 @@ module Integrations
       # https://docs.datadoghq.com/getting_started/site/ is confusing for internal URLs.
       # US3 needs to keep a prefix but other datacenters cannot have the listed "app" prefix
       datadog_site.delete_prefix("app.")
+    end
+
+    def set_initial_log_pulling_defaults
+      self.datadog_ci_visibility = true if datadog_ci_visibility.nil?
+      self.archive_trace_events = false unless datadog_ci_visibility
+    end
+
+    def initial_log_pulling_setup?
+      # archive_trace_events is hidden from the form for new records, so it can't
+      # be set by the user yet - keep it in sync with datadog_ci_visibility right
+      # up until the integration is first saved, regardless of activation state.
+      new_record?
     end
 
     def hook_data(data, object_kind)

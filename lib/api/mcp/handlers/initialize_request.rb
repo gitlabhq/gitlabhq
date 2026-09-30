@@ -5,6 +5,8 @@ module API
     module Handlers
       # See: https://modelcontextprotocol.io/specification/2025-06-18/schema#initializerequest
       class InitializeRequest < Base
+        include ::Gitlab::InternalEventsTracking
+
         # Revisions that keep the `initialize` handshake.
         # See: https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning#terminology
         HANDSHAKE_PROTOCOL_VERSIONS = %w[
@@ -37,8 +39,16 @@ module API
               "Supported: #{SUPPORTED_PROTOCOL_VERSIONS.join(', ')}"
           end
 
+          negotiated_version = negotiated_protocol_version(client_version)
+          track_internal_event(
+            'initialize_mcp_connection',
+            user: current_user,
+            additional_properties: { protocol_version: negotiated_version }
+          )
+          log_initialize(client_version, negotiated_version)
+
           {
-            protocolVersion: negotiated_protocol_version(client_version),
+            protocolVersion: negotiated_version,
             capabilities: {
               tools: { listChanged: false }
             },
@@ -50,6 +60,17 @@ module API
         end
 
         private
+
+        def log_initialize(client_version, negotiated_version)
+          ::Gitlab::Mcp::Logger.build.conditional_info(
+            current_user,
+            message: 'MCP initialize',
+            event_name: 'initialize',
+            ai_component: 'mcp_server',
+            requested_protocol_version: client_version,
+            protocol_version: negotiated_version
+          )
+        end
 
         # A stateless revision has no `initialize` handshake, so a client that reaches this
         # handler is speaking a handshake revision even when it asks for a newer one. Answering

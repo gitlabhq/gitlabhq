@@ -1197,7 +1197,8 @@ module Gitlab
         literal_pathspec: false,
         first_parent: false,
         order: nil,
-        follow: false
+        follow: false,
+        trailers: false
       )
         # rubocop:enable Metrics/ParameterLists
         pagination_params[:limit] ||= 1000
@@ -1216,7 +1217,8 @@ module Gitlab
             literal_pathspec: literal_pathspec,
             first_parent: first_parent,
             order: order,
-            follow: follow
+            follow: follow,
+            trailers: trailers
           )
         end
       end

@@ -276,11 +276,13 @@ Lists the GitLab Duo agents and flows enabled in a project, so you can discover 
 available instead of guessing a flow name. Which agents and flows a project offers is
 configured per project, and their IDs differ between projects.
 
-Each entry includes `can_start_session`, which is `true` only for a flow you have permission to
-run. Agents and external agents are listed for discovery and are never startable, and a flow you
-cannot execute, or whose version is unreleased or still a draft, is listed as not startable too.
-Only startable entries carry the `ai_catalog_item_consumer_id` that `start_duo_session` takes;
-every other entry has it set to `null`. Descriptions might be truncated.
+Each entry includes `can_start_session`, which is `true` for a flow you have permission to run,
+and for a foundational chat agent the instance has a flow configuration for when you can run
+sessions in CI in the project. GitLab Duo itself, other agents, and external agents are listed for
+discovery and are never startable, and a flow you cannot execute, or whose version is unreleased or
+still a draft, is listed as not startable too. Only startable flows carry the
+`ai_catalog_item_consumer_id` that `start_duo_session` takes; a foundational chat agent is started
+by passing its `workflow_definition` as `agent`. Descriptions might be truncated.
 
 The list covers the agents, flows and external agents configured in the project, plus the
 foundational chat agents. The chat agents are a fixed list rather than part of the paginated
@@ -321,18 +323,26 @@ Which Duo flows can I run in gitlab-org/gitlab?
 
 {{< /history >}}
 
-Starts a GitLab Duo Agent Platform session that runs a flow from the AI Catalog, and returns the
-session ID. Only catalog flows can be started this way, because only those sessions can later be
-answered with `send_duo_session_input`.
+Starts a GitLab Duo Agent Platform session and returns the session ID. Name what to run with at
+most one of `flow`, for a GitLab flow, `flow_item_id`, for a custom flow from the AI Catalog,
+`ai_catalog_item_consumer_id`, for a flow configured in the project, or `agent`, for one of the
+instance's foundational agents. When none is given, the session runs the `developer/v1` flow.
 
 The session runs in a CI job that can push commits and open merge requests. The response includes a
 suggested polling delay; use `get_duo_session` with the returned `workflow_id` to follow progress.
 
 | Parameter                     | Type    | Required | Description |
 |-------------------------------|---------|----------|-------------|
-| `project_id`                  | string  | Yes      | ID or full path of the project the flow runs in. |
-| `ai_catalog_item_consumer_id` | integer | Yes      | ID of the AI Catalog item consumer that configures which flow to run. Use `list_duo_agents_and_flows` to find it. |
 | `goal`                        | string  | Yes      | What the agent should do. This is the prompt the flow starts from. |
+| `project_id`                  | string  | No       | ID or full path of the project the flow runs in. Provide this or `url`. |
+| `url`                         | string  | No       | GitLab URL of the project the flow runs in. Provide this or `project_id`. |
+| `flow`                        | string  | No       | Reference of a GitLab flow to run, such as `developer/v1`. Defaults to `developer/v1`. |
+| `flow_item_id`                | integer | No       | AI Catalog item ID of a custom flow. The latest released version is run. |
+| `ai_catalog_item_consumer_id` | integer | No       | ID of the AI Catalog item consumer that configures which flow to run. Use `list_duo_agents_and_flows` to find it. |
+| `agent`                       | string  | No       | Reference of a foundational agent to run, such as `analytics_agent/v1`. GitLab Duo itself cannot be started. |
+
+A foundational agent runs only when the instance publishes a flow configuration for it. When it
+does not, the session starts and then fails in CI with `Failed to load flow`.
 
 Example:
 
@@ -410,8 +420,9 @@ Check the status of Duo session 42
 {{< /history >}}
 
 Answers a GitLab Duo Agent Platform session that is waiting for input: approves or rejects a
-pending plan or tool call, or replies to a question the agent asked. A session accepts input once
-its last CI job has finished, whether it is waiting with status `input_required`,
+pending plan or tool call, or replies to a question the agent asked. Works for sessions started
+from `ai_catalog_item_consumer_id` and for those started from `agent`. A session accepts input
+once its last CI job has finished, whether it is waiting with status `input_required`,
 `plan_approval_required`, or `tool_call_approval_required`.
 
 The session continues in a CI job. The response includes a suggested polling delay; use

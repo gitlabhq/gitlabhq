@@ -11,6 +11,8 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import eventHub from '~/repository/event_hub';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import pipelineStatusUpdatedSubscription from '~/repository/subscriptions/pipeline_status_updated.subscription.graphql';
+import projectPathQuery from '~/repository/queries/project_path.query.graphql';
+import refQuery from '~/repository/queries/ref.query.graphql';
 import { FORK_UPDATED_EVENT } from '~/repository/constants';
 import { mockPipelineStatusUpdatedResponse, createCommitData } from '../mock_data';
 
@@ -48,6 +50,15 @@ describe('Repository last commit component', () => {
       [pipelineStatusUpdatedSubscription, pipelineSubscriptionHandler],
     ]);
 
+    apolloProvider.clients.defaultClient.cache.writeQuery({
+      query: projectPathQuery,
+      data: { projectPath: 'gitlab-org/gitlab' },
+    });
+    apolloProvider.clients.defaultClient.cache.writeQuery({
+      query: refQuery,
+      data: { ref: 'main', escapedRef: 'main' },
+    });
+
     wrapper = shallowMountExtended(LastCommit, {
       apolloProvider,
       propsData: { currentPath, historyUrl: '/history' },
@@ -79,7 +90,7 @@ describe('Repository last commit component', () => {
 
     await waitForPromises();
 
-    const commit = { ...commitData.project?.repository.paginatedTree.nodes[0].lastCommit };
+    const { pipelines, ...commit } = commitData.data.project.repository.lastCommit;
 
     expect(findCommitInfo().props().commit).toMatchObject(commit);
   });
@@ -197,6 +208,17 @@ describe('Repository last commit component', () => {
 
       expect(subscriptionHandler).toHaveBeenCalledWith({
         pipelineId: 'gid://gitlab/Ci::Pipeline/167',
+      });
+    });
+
+    it('updates the pipeline status when the subscription pushes a new status', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findPipelineStatus().props('status')).toMatchObject({
+        icon: 'status_success',
+        text: 'Passed',
       });
     });
 

@@ -13,7 +13,6 @@ import ForkInfo from './components/fork_info.vue';
 import LastCommit from './components/last_commit.vue';
 
 import apolloProvider from './graphql';
-import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import refsQuery from './queries/ref.query.graphql';
@@ -44,13 +43,6 @@ export default function setupVueRepositoryList() {
   const router = createRouter(projectPath, escapedRef, fullName);
 
   initFileTreeBrowser(router, { projectPath, ref, refType });
-
-  apolloProvider.clients.defaultClient.cache.writeQuery({
-    query: commitsQuery,
-    data: {
-      commits: [],
-    },
-  });
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
     query: projectPathQuery,

@@ -7,10 +7,14 @@ import GlqlVisualization from '~/analytics/analytics_dashboards/components/visua
 import PanelState from '~/analytics/shared/components/panel_state.vue';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
 import GlqlViewSourceModal from '~/glql/components/common/view_source_modal.vue';
+import { forget } from '~/glql/core/executor';
 import { copyGLQLContents } from '~/glql/utils/copy_as_gfm';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/glql/core/executor', () => ({
+  forget: jest.fn(),
+}));
 jest.mock('~/glql/utils/copy_as_gfm', () => ({
   copyGLQLContents: jest.fn(),
 }));
@@ -121,6 +125,42 @@ describe('GlqlVisualization', () => {
         expect(findResolver().exists()).toBe(false);
         expect(findViewportObserver().exists()).toBe(true);
       });
+    });
+  });
+
+  // Dashboard results are cached per page, so a remount alone would render the cached result.
+  describe('cached results', () => {
+    const query = 'type = Issue AND state = opened';
+
+    beforeEach(async () => {
+      await createWrapper({ data: query, filters: { groups: ['gitlab-org'] } });
+    });
+
+    it('are dropped for this panel on "Reload"', async () => {
+      findResolver().vm.$emit('change', { data: undefined });
+      await nextTick();
+
+      findAction('Reload').action();
+
+      expect(forget).toHaveBeenCalledWith(query, 'glql-queue-dashboard');
+    });
+
+    it('are dropped for this panel on retry after an error', async () => {
+      findResolver().vm.$emit('change', { error: { networkError: { statusCode: 503 } } });
+      await nextTick();
+
+      findPanelState().vm.$emit('retry');
+
+      expect(forget).toHaveBeenCalledWith(query, 'glql-queue-dashboard');
+    });
+
+    it('are kept when the query or the filters change', async () => {
+      wrapper.setProps({ data: 'type = Issue AND state = closed' });
+      await nextTick();
+      wrapper.setProps({ filters: { groups: ['gitlab-com'] } });
+      await nextTick();
+
+      expect(forget).not.toHaveBeenCalled();
     });
   });
 
@@ -604,16 +644,6 @@ describe('GlqlVisualization', () => {
       findAction('Reload').action();
 
       expect(wrapper.emitted('reload')).toEqual([[]]);
-    });
-
-    // The panel re-fetch yields the same query string, so only a remount re-runs the query.
-    it('remounts the resolver when "Reload" is triggered', async () => {
-      const original = findResolver().vm;
-
-      findAction('Reload').action();
-      await nextTick();
-
-      expect(findResolver().vm).not.toBe(original);
     });
 
     describe('when the panel opts out with showActions: false', () => {

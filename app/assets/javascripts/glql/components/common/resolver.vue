@@ -215,10 +215,12 @@ export default {
         }
 
         // Started before the comparison, so the main query is queued first, and awaited only once
-        // the comparison is underway, so both run at once.
+        // the comparison is underway, so both run at once. Every request carries the source as
+        // its tag, so a panel reload can drop all of them from the dashboard result cache.
         const mainRequest = execute(query, variables, {
           queue: this.queue,
           signal: this.abortController.signal,
+          tag: this.glqlQuery,
         });
         const comparisonRequest = this.fetchComparison();
         const executionResult = await mainRequest;
@@ -265,6 +267,7 @@ export default {
         const executionResult = await execute(query, variables, {
           queue: this.queue,
           signal: this.abortController.signal,
+          tag: this.glqlQuery,
         });
         const result = await transform(executionResult, { fields, mode, source });
 
@@ -282,6 +285,7 @@ export default {
       const executionResult = await execute(this.query, this.variables, {
         queue: this.queue,
         signal: this.abortController.signal,
+        tag: this.glqlQuery,
       });
 
       const data = await transform(executionResult, {

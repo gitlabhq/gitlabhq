@@ -53,9 +53,8 @@ Prerequisites:
 To view AI audit events for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. Select **Settings** > **GitLab Duo**.
-1. Select **Change governance**.
-1. Select the **Agent artifacts** tab.
+1. In the left sidebar, select **Settings** > **Governance**.
+1. Select the **Audit events** tab.
 
 The tab displays a list of agent sessions. Each row shows:
 
@@ -107,11 +106,29 @@ Prerequisites:
 
 ### Enable storage for a group
 
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. In the **Data and privacy** section, select **Store AI audit events**.
 1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed and GitLab Dedicated" >}}
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **GitLab Duo** section.
+1. In the **Data and privacy** section, select **Store AI audit events**.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Enable storage for a project
 

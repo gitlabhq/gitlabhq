@@ -23,11 +23,6 @@ class ProjectPolicy < BasePolicy
   desc "Project-based pipeline visibility enabled"
   condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
 
-  # For guest access we use #team_member? so we can use
-  # project.members, which gets cached in subject scope.
-  # This is safe because team_access_level is guaranteed
-  # by ProjectAuthorization's validation to be at minimum
-  # GUEST
   desc "User has guest access"
   condition(:guest) { team_member? }
 
@@ -326,10 +321,6 @@ class ProjectPolicy < BasePolicy
   rule { (~anonymous & public_project) | internal_access }.policy do
     enable(*Authz::Role.get(:public_authenticated).permissions(:project))
   end
-
-  # This is needed separate from the role YAML due to the
-  # Ability.users_that_can_read_project method
-  rule { guest }.enable :read_project
 
   rule { admin }.policy do
     enable(*Authz::Role.get(:admin).permissions(:project))
@@ -1005,30 +996,7 @@ class ProjectPolicy < BasePolicy
   private
 
   def team_member?
-    return false if @user.nil?
-    return false unless user_is_user?
-
-    greedy_load_subject = false
-
-    # when scoping by subject, we want to be greedy
-    # and load *all* the members with one query.
-    greedy_load_subject ||= DeclarativePolicy.preferred_scope == :subject
-
-    # in this case we're likely to have loaded #members already
-    # anyways, and #member? would fail with an error
-    greedy_load_subject ||= !@user.persisted?
-
-    if greedy_load_subject
-      # We want to load all the members with one query. Calling #include? on
-      # project.team.members will perform a separate query for each user, unless
-      # project.team.members was loaded before somewhere else. Calling #to_a
-      # ensures it's always loaded before checking for membership.
-      project.team.members.to_a.include?(user)
-    else
-      # otherwise we just make a specific query for
-      # this particular user.
-      team_access_level >= Gitlab::Access::GUEST
-    end
+    team_access_level >= Gitlab::Access::GUEST
   end
 
   def project_group_member?

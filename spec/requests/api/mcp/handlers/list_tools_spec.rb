@@ -406,7 +406,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
 
       context 'when the header names a tool by one of its aliases' do
-        let(:mcp_logger) { instance_double(Gitlab::Mcp::Logger, warn: nil) }
+        let(:mcp_logger) { instance_double(Gitlab::Mcp::Logger, warn: nil, conditional_info: nil) }
 
         before do
           allow(Gitlab::Mcp::Logger).to receive(:build).and_return(mcp_logger)
