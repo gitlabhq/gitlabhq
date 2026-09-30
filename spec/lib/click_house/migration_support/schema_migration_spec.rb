@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe ClickHouse::MigrationSupport::SchemaMigration, feature_category: :database do
   let(:connection) { instance_double(ClickHouse::Connection) }

@@ -67,6 +67,11 @@ export default {
       required: false,
       default: false,
     },
+    boldTitle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     asyncCount: {
       type: Object,
       required: false,
@@ -115,6 +120,12 @@ export default {
     showExpanded() {
       return !this.isIconOnly && this.isExpanded;
     },
+    // A headerless section has no toggle to reveal its items, so keep the
+    // collapse open regardless of the (stale) expanded state carried over from
+    // the expanded sidebar.
+    collapseVisible() {
+      return this.headerless || this.isExpanded;
+    },
     showFlyout() {
       return (
         !this.headerless &&
@@ -140,8 +151,23 @@ export default {
         this.keepFlyoutClosed = false;
       }
     },
+    headerless(newHeaderless) {
+      // A headerless section is force-expanded, so isExpanded may have been
+      // initialized to true regardless of the real (cookie-backed) state. When
+      // the header reappears, re-sync to the actual expanded prop so the group
+      // honors its own collapse state instead of staying stuck open.
+      if (!newHeaderless) {
+        this.isExpanded = Boolean(this.expanded || this.item.is_active);
+      }
+    },
   },
   methods: {
+    onCollapseInput(visible) {
+      // Ignore the forced-open state of a headerless section so its stale
+      // expanded state (from the expanded sidebar) is preserved.
+      if (this.headerless) return;
+      this.isExpanded = visible;
+    },
     handleClick() {
       if (this.isIconOnly) {
         this.isMouseOverSection = !this.isMouseOverSection; // Allows touch devices to open the flyout menus by touch
@@ -229,7 +255,10 @@ export default {
       @pointerover="handlePointerover"
       @pointerleave="handlePointerleave"
     >
-      <span class="gl-truncate-end menu-section-button-label">
+      <span
+        class="gl-truncate-end menu-section-button-label"
+        :class="{ 'gl-font-bold': boldTitle }"
+      >
         {{ item.title }}
       </span>
     </gl-nav-item>
@@ -252,11 +281,12 @@ export default {
     <gl-collapse
       v-if="!disclosure"
       :id="itemId"
-      v-model="isExpanded"
+      :visible="collapseVisible"
       :class="{ 'gl-hidden': isIconOnly && !headerless }"
       class="gl-m-0 gl-list-none gl-p-0 gl-transition-[height] gl-duration-medium gl-ease-ease"
       data-testid="menu-section"
       :data-qa-section-name="item.title"
+      @input="onCollapseInput"
     >
       <slot>
         <ul :aria-label="item.title" class="gl-m-0 gl-list-none gl-p-0">

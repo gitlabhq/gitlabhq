@@ -98,7 +98,7 @@ export default {
     <gl-tabs
       v-else
       class="-gl-mx-5"
-      nav-class="gl-flex-nowrap gl-whitespace-nowrap gl-overflow-x-auto gl-min-w-0 gl-px-2"
+      nav-class="gl-flex-nowrap gl-whitespace-nowrap gl-overflow-x-auto gl-overflow-y-hidden gl-min-w-0 gl-px-2"
       content-class="gl-px-5 !gl-pb-0 !gl-pt-4"
     >
       <gl-tab>

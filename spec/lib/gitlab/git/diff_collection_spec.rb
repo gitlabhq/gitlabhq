@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_management do
+  using RSpec::Parameterized::TableSyntax
+
   before do
     stub_const('MutatingConstantIterator', Class.new)
 
@@ -43,6 +45,7 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
   let(:max_lines) { 100 }
   let(:limits) { true }
   let(:expanded) { true }
+  let(:skip_charset_detection) { true }
 
   shared_examples 'overflow stuff' do
     it 'returns the expected overflow values' do
@@ -59,7 +62,8 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
       max_files: max_files,
       max_lines: max_lines,
       limits: limits,
-      expanded: expanded
+      expanded: expanded,
+      skip_charset_detection: skip_charset_detection
     )
   end
 
@@ -739,6 +743,115 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
         end
 
         expect(diff.diff).to eq('')
+      end
+    end
+
+    context 'when deciding whether to expand diffs' do
+      let(:text_patch) { "@@ -1 +1 @@\n-a\n+b\n" }
+      let(:binary_patch) { "\x00\x01\x02\x03".b * 64 }
+      let(:binary_notice_patch) { "Binary files a/img.png and b/img.png differ\n" }
+      let(:iterator) { Array.new(file_count) { { diff: public_send(patch).dup } } }
+
+      # Expansion is allowed when limits are off or expanded is set; otherwise only a single non-binary file expands.
+      where(:expanded, :limits, :file_count, :patch, :expected) do
+        true  | true  | 2 | :binary_patch        | true
+        false | false | 2 | :binary_notice_patch | true
+        false | true  | 1 | :text_patch          | true
+        false | true  | 1 | :binary_patch        | false
+        false | true  | 1 | :binary_notice_patch | false
+        false | true  | 2 | :text_patch          | false
+        false | true  | 2 | :binary_patch        | false
+      end
+
+      with_them do
+        it 'expands the expected files' do
+          expect(subject.to_a.map(&:expanded?)).to all(be(expected))
+        end
+
+        context 'when skip_charset_detection is false' do
+          let(:skip_charset_detection) { false }
+
+          it 'expands the same files' do
+            expect(subject.to_a.map(&:expanded?)).to all(be(expected))
+          end
+        end
+      end
+
+      context 'when scanning patches for binary content' do
+        let(:expanded) { false }
+        let(:patch) { :text_patch }
+        let(:file_count) { 2 }
+
+        it 'skips every patch of a multi-file collection' do
+          expect(subject).not_to receive(:detect_binary?)
+
+          expect(subject.to_a.map(&:expanded?)).to all(be(false))
+        end
+
+        context 'with a single file' do
+          let(:file_count) { 1 }
+
+          it 'scans the patch once' do
+            expect(subject).to receive(:detect_binary?).once.and_call_original
+
+            expect(subject.to_a.map(&:expanded?)).to eq([true])
+          end
+        end
+
+        context 'when expansion is already allowed' do
+          let(:expanded) { true }
+
+          it 'skips every patch' do
+            expect(subject).not_to receive(:detect_binary?)
+
+            expect(subject.to_a.map(&:expanded?)).to all(be(true))
+          end
+        end
+
+        context 'when skip_charset_detection is false' do
+          let(:skip_charset_detection) { false }
+
+          it 'scans every patch' do
+            expect(subject).to receive(:detect_binary?).twice.and_call_original
+
+            expect(subject.to_a.map(&:expanded?)).to all(be(false))
+          end
+        end
+
+        context 'when skip_charset_detection is not passed' do
+          subject { described_class.new(iterator, expanded: expanded) }
+
+          it 'scans every patch' do
+            expect(subject).to receive(:detect_binary?).twice.and_call_original
+
+            expect(subject.to_a.map(&:expanded?)).to all(be(false))
+          end
+        end
+      end
+
+      context 'when building each diff' do
+        let(:patch) { :text_patch }
+        let(:file_count) { 2 }
+
+        it 'tells the diff to skip charset detection' do
+          expect(Gitlab::Git::Diff).to receive(:new)
+            .with(anything, hash_including(skip_charset_detection: true)).twice.and_call_original
+          expect(CharlockHolmes::EncodingDetector).not_to receive(:new)
+
+          expect(subject.to_a.map(&:diff)).to all(eq(text_patch))
+        end
+
+        context 'when skip_charset_detection is false' do
+          let(:skip_charset_detection) { false }
+
+          it 'lets the diff scan its patch' do
+            expect(Gitlab::Git::Diff).to receive(:new)
+              .with(anything, hash_including(skip_charset_detection: false)).twice.and_call_original
+            expect(CharlockHolmes::EncodingDetector).to receive(:new).at_least(:twice).and_call_original
+
+            expect(subject.to_a.map(&:diff)).to all(eq(text_patch))
+          end
+        end
       end
     end
 

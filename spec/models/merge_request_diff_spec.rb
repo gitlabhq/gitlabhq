@@ -1222,10 +1222,38 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
       end
 
+      context 'when the diff is the fallback for an unsaved merge request' do
+        let(:merge_request_diff) { build(:merge_request).merge_request_diff }
+
+        it 'returns an empty DiffCollection' do
+          expect(merge_request_diff.merge_request).to be_nil
+          expect(merge_request_diff.raw_diffs).to be_empty
+        end
+      end
+
       context 'when the raw diffs exist' do
         it 'returns the diffs' do
           expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
           expect(diff_with_commits.raw_diffs).not_to be_empty
+        end
+
+        it 'skips charset detection when the flag is enabled for the project' do
+          stub_feature_flags(diff_skip_redundant_charset_detection: diff_with_commits.project)
+
+          expect(Gitlab::Git::DiffCollection).to receive(:new)
+            .with(anything, hash_including(skip_charset_detection: true)).and_call_original
+
+          diff_with_commits.raw_diffs
+        end
+
+        it 'does not skip charset detection when the flag is enabled for another project' do
+          merge_request_diff = diff_with_commits
+          stub_feature_flags(diff_skip_redundant_charset_detection: build_stubbed(:project))
+
+          expect(Gitlab::Git::DiffCollection).to receive(:new)
+            .with(anything, hash_including(skip_charset_detection: false)).and_call_original
+
+          merge_request_diff.raw_diffs
         end
 
         context 'when the :paths option is set' do

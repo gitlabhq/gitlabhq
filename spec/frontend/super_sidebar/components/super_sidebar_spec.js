@@ -10,7 +10,14 @@ import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
+import SidebarPreferences from '~/super_sidebar/components/sidebar_preferences.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
+import {
+  SIDEBAR_NAV_MODE_PINNED_ONLY,
+  SIDEBAR_NAV_MODE_ALL_CATEGORIES,
+  SIDEBAR_NAV_MODE_GROUPED_PINS,
+  SIDEBAR_NAV_MODE_STORAGE_KEY,
+} from '~/super_sidebar/constants';
 import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
 import ManageOrganizationButton from '~/super_sidebar/components/manage_organization_button.vue';
 import { sidebarState } from '~/super_sidebar/state';
@@ -55,6 +62,7 @@ describe('SuperSidebar component', () => {
   const findManageOrganizationButton = () => wrapper.findComponent(ManageOrganizationButton);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findContextHeader = () => wrapper.find('#super-sidebar-context-header');
+  const findPreferences = () => wrapper.findComponent(SidebarPreferences);
 
   const createWrapper = ({
     provide = {},
@@ -202,10 +210,114 @@ describe('SuperSidebar component', () => {
       expect(wrapper.text()).toContain('Your work');
     });
 
+    it('puts the labelling id on the title text only, not the whole header', () => {
+      // The non-static items list is labelled by this id. Keeping it on the
+      // title span (not the container that also holds the preferences dropdown)
+      // stops "Customize sidebar" leaking into that computed accessible name.
+      createWrapper();
+
+      const title = wrapper.find('#super-sidebar-context-header-title');
+
+      expect(title.exists()).toBe(true);
+      expect(title.text()).toBe('Your work');
+    });
+
     it('does not render a context header if it does not exist', () => {
       createWrapper({ sidebarData: { ...mockSidebarData, current_context_header: null } });
 
       expect(findContextHeader().exists()).toBe(false);
+    });
+
+    describe('sidebar preferences', () => {
+      // The preferences are persisted to localStorage, so clear it between
+      // tests to stop opted-in state leaking into later examples.
+      afterEach(() => {
+        localStorage.clear();
+      });
+
+      const createPinnablePanel = (provide = {}) =>
+        createWrapper({
+          sidebarData: { ...mockSidebarData, panel_type: 'project' },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: true }, ...provide },
+        });
+
+      it('renders the control in the context header for a pinnable panel with the flag on', () => {
+        createPinnablePanel();
+
+        expect(findPreferences().exists()).toBe(true);
+      });
+
+      it('does not render the control when unpinned items are shown', () => {
+        createWrapper({
+          sidebarData: { ...mockSidebarData, panel_type: 'project' },
+          provide: { glFeatures: { hideUnpinnedSidebarItems: false } },
+        });
+
+        expect(findPreferences().exists()).toBe(false);
+      });
+
+      it('does not render the control on a non-pinnable panel', () => {
+        createPinnablePanel();
+        // your_work is the default mock panel_type and is not pinnable
+        createWrapper({ provide: { glFeatures: { hideUnpinnedSidebarItems: true } } });
+
+        expect(findPreferences().exists()).toBe(false);
+      });
+
+      it('seeds the mode from localStorage', () => {
+        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+        createPinnablePanel();
+
+        expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+      });
+
+      it('defaults to pinned-only when localStorage holds an unknown value', () => {
+        localStorage.setItem(SIDEBAR_NAV_MODE_STORAGE_KEY, 'nonsense');
+        createPinnablePanel();
+
+        expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_PINNED_ONLY);
+      });
+
+      describe('when a mode is selected', () => {
+        it('persists the all-categories mode and forwards booleans to the menu', async () => {
+          createPinnablePanel();
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          await nextTick();
+
+          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe(
+            SIDEBAR_NAV_MODE_ALL_CATEGORIES,
+          );
+          expect(findPreferences().props('mode')).toBe(SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          expect(findSidebarMenu().props('showOldCategories')).toBe(true);
+          expect(findSidebarMenu().props('groupPinned')).toBe(false);
+        });
+
+        it('persists the grouped-pins mode and forwards booleans to the menu', async () => {
+          createPinnablePanel();
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_GROUPED_PINS);
+          await nextTick();
+
+          expect(localStorage.getItem(SIDEBAR_NAV_MODE_STORAGE_KEY)).toBe(
+            SIDEBAR_NAV_MODE_GROUPED_PINS,
+          );
+          expect(findSidebarMenu().props('groupPinned')).toBe(true);
+          expect(findSidebarMenu().props('showOldCategories')).toBe(false);
+        });
+
+        // A single mode makes the two views mutually exclusive by construction:
+        // switching directly from one to the other cannot leave both enabled.
+        it('switches cleanly between modes without leaving both views enabled', async () => {
+          createPinnablePanel();
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_GROUPED_PINS);
+          await nextTick();
+
+          findPreferences().vm.$emit('select', SIDEBAR_NAV_MODE_ALL_CATEGORIES);
+          await nextTick();
+
+          expect(findSidebarMenu().props('showOldCategories')).toBe(true);
+          expect(findSidebarMenu().props('groupPinned')).toBe(false);
+        });
+      });
     });
 
     describe('item access tracking', () => {

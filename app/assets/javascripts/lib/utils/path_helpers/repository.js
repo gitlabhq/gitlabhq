@@ -1171,62 +1171,6 @@ export const projectRawPath = /*#__PURE__*/ (projectFullPath, ...args) => {
 /**
  * Generates the Rails route:
  *
- * - href: `/:project_full_path/-/blame_page/*id`
- * - Path helper: `project_blame_page_path`
- * - URL helper: `project_blame_page_url`
- * - controller#action: `projects/blame#page`
- *
- * @param {string} projectFullPath
- * @param {any} id
- * @param {object | undefined} options
- * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
- * @returns {string} route path
- */
-export const projectBlamePagePath = /*#__PURE__*/ (projectFullPath, ...args) => {
-  const _organizationNamespaceProjectBlamePagePath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"blame_page"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]]]]]]]);
-  const _namespaceProjectBlamePagePath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"blame_page"],[2,[7,"/"],[5,[3,"id"]]]]]]]]]]]);
-
-  const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
-  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
-
-  if (organizationPath) {
-    return _organizationNamespaceProjectBlamePagePath(organizationPath, namespacePath, projectPath, ...routeArgs);
-  }
-
-  return _namespaceProjectBlamePagePath(namespacePath, projectPath, ...routeArgs);
-};
-
-/**
- * Generates the Rails route:
- *
- * - href: `/:project_full_path/-/blame/*id/streaming`
- * - Path helper: `project_blame_streaming_path`
- * - URL helper: `project_blame_streaming_url`
- * - controller#action: `projects/blame#streaming`
- *
- * @param {string} projectFullPath
- * @param {any} id
- * @param {object | undefined} options
- * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
- * @returns {string} route path
- */
-export const projectBlameStreamingPath = /*#__PURE__*/ (projectFullPath, ...args) => {
-  const _organizationNamespaceProjectBlameStreamingPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"blame"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"streaming"]]]]]]]]]]]]]]]]);
-  const _namespaceProjectBlameStreamingPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"blame"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[6,"streaming"]]]]]]]]]]]]);
-
-  const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
-  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
-
-  if (organizationPath) {
-    return _organizationNamespaceProjectBlameStreamingPath(organizationPath, namespacePath, projectPath, ...routeArgs);
-  }
-
-  return _namespaceProjectBlameStreamingPath(namespacePath, projectPath, ...routeArgs);
-};
-
-/**
- * Generates the Rails route:
- *
  * - href: `/:project_full_path/-/blame/*id`
  * - Path helper: `project_blame_path`
  * - URL helper: `project_blame_url`

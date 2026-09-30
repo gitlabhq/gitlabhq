@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
-import { GlChart } from '@gitlab/ui/src/charts';
+import * as echarts from 'echarts';
+import { GlChart, GlChartLegend } from '@gitlab/ui/src/charts';
 import {
   GL_COLOR_DATA_BLUE_500,
   GL_COLOR_NEUTRAL_400,
@@ -19,6 +20,8 @@ describe('BarListChart', () => {
   ];
 
   const findChart = () => wrapper.findComponent(GlChart);
+  const findLegend = () => wrapper.findComponent(GlChartLegend);
+  const chartHeight = () => wrapper.findByTestId('chart-container').element.style.height;
   const chartOptions = () => findChart().props('options');
   const firstSeries = () => chartOptions().series[0];
   const labelAt = (dataIndex) => firstSeries().label.formatter({ dataIndex });
@@ -54,11 +57,11 @@ describe('BarListChart', () => {
     it('sizes itself from the row count rather than filling its container', () => {
       createWrapper();
 
-      expect(wrapper.element.style.height).toBe('100px');
+      expect(chartHeight()).toBe('100px');
 
       createWrapper({ data: [...rows, ...rows] });
 
-      expect(wrapper.element.style.height).toBe('184px');
+      expect(chartHeight()).toBe('184px');
     });
   });
 
@@ -451,9 +454,11 @@ describe('BarListChart', () => {
       expect(lastSeries().label.formatter({ dataIndex: 1 })).toBe('80');
     });
 
-    it('shows a legend and reserves space for it', () => {
-      expect(chartOptions().legend.show).toBe(true);
-      expect(wrapper.element.style.height).toBe(`${2 * 28 + 16 + 32}px`);
+    // The legend is DOM below the chart, so the canvas keeps its own height
+    // and the legend grows the component instead.
+    it('renders the legend below the chart rather than inside it', () => {
+      expect(chartOptions().legend.show).toBe(false);
+      expect(chartHeight()).toBe(`${2 * 28 + 16}px`);
     });
 
     it('shows no legend for single-dimension rows', () => {
@@ -462,21 +467,98 @@ describe('BarListChart', () => {
       expect(chartOptions().legend).toBeUndefined();
     });
 
+    // One dimension has no segments, so it has no series to hide and paging
+    // to another window of rows leaves nothing behind.
+    it('keeps single-dimension rows out of the hidden-series bookkeeping', async () => {
+      createWrapper();
+      await wrapper.setProps({ data: [rows[1], rows[2]] });
+
+      expect(chartOptions().legend).toBeUndefined();
+      expect(chartOptions().yAxis.data).toEqual(['Other (6)', 'Software Dev']);
+    });
+
     describe('legend interaction', () => {
       let onLegendChange;
 
       beforeEach(() => {
-        findChart().vm.$emit('created', {
+        const dom = document.createElement('div');
+        const chart = {
+          getDom: () => dom,
           on: (event, handler) => {
             onLegendChange = handler;
           },
-        });
+          off: () => {},
+        };
+        jest.spyOn(echarts, 'getInstanceByDom').mockReturnValue(chart);
+        findChart().vm.$emit('created', chart);
       });
 
       const hide = async (selected) => {
         onLegendChange({ selected });
         await nextTick();
       };
+
+      // Merge mode keeps series the new option no longer lists, so the
+      // component replaces the series component outright on every draw.
+      it('replaces the series rather than merging them', () => {
+        const setOption = jest.fn();
+        findChart().vm.$emit('updated', { setOption });
+
+        expect(setOption).toHaveBeenCalledWith(
+          { series: chartOptions().series },
+          { replaceMerge: ['series'] },
+        );
+      });
+
+      // The legend tracks hidden entries by position, so it has to be rebuilt
+      // whenever the series list changes, in step with hiddenSeries clearing.
+      it('rebuilds the legend only when the series list changes', async () => {
+        const before = findLegend().vm;
+
+        await wrapper.setProps({ data: [...stackedRows] });
+        expect(findLegend().vm).toBe(before);
+
+        await wrapper.setProps({
+          data: [
+            {
+              name: 'Sonnet',
+              value: 20,
+              share: 100,
+              segments: [{ name: 'Ops', value: 20, share: 100 }],
+            },
+          ],
+        });
+        expect(findLegend().vm).not.toBe(before);
+      });
+
+      // One series named "A,B" and two named "A" and "B" join to the same
+      // string, so the key has to survive a dimension value containing a comma.
+      it('rebuilds the legend when series names differ only by where a comma falls', async () => {
+        const rowWith = (names) => [
+          {
+            name: 'Sonnet',
+            value: 10,
+            share: 100,
+            segments: names.map((n) => ({ name: n, value: 10, share: 100 })),
+          },
+        ];
+
+        await wrapper.setProps({ data: rowWith(['A,B']) });
+        const before = findLegend().vm;
+
+        await wrapper.setProps({ data: rowWith(['A', 'B']) });
+
+        expect(findLegend().vm).not.toBe(before);
+      });
+
+      it('hands the legend one entry per series, coloured to match the bars', () => {
+        const colors = chartOptions().series.map(({ itemStyle }) => itemStyle.color);
+
+        expect(findLegend().props('seriesInfo')).toEqual([
+          { name: 'Chat', type: 'bar', color: colors[0] },
+          { name: 'Dev', type: 'bar', color: colors[1] },
+        ]);
+      });
 
       it('rescales the remaining segments to the visible total', async () => {
         await hide({ Chat: false, Dev: true });
@@ -497,13 +579,31 @@ describe('BarListChart', () => {
         expect(chartOptions().legend.selected).toEqual({ Chat: false, Dev: true });
       });
 
-      // setOption merges, so without an explicit true ECharts would keep the
-      // series deselected while the component recomputes as if it were visible.
-      it('re-selects every series when the data changes', async () => {
+      // Folding or unfolding a segment replaces the data without changing which
+      // series exist, so a reader's hidden series have to survive it.
+      it('keeps a series hidden when the data still has it', async () => {
         await hide({ Chat: false, Dev: true });
         await wrapper.setProps({ data: [...stackedRows] });
 
-        expect(chartOptions().legend.selected).toEqual({ Chat: true, Dev: true });
+        expect(chartOptions().legend.selected).toEqual({ Chat: false, Dev: true });
+      });
+
+      // setOption merges, so without an explicit true ECharts would keep the
+      // series deselected while the component recomputes as if it were visible.
+      it('drops a hidden series the new data no longer has', async () => {
+        await hide({ Chat: false, Dev: true });
+        await wrapper.setProps({
+          data: [
+            {
+              name: 'Sonnet',
+              value: 20,
+              share: 100,
+              segments: [{ name: 'Dev', value: 20, share: 100 }],
+            },
+          ],
+        });
+
+        expect(chartOptions().legend.selected).toEqual({ Dev: true });
       });
 
       it('moves the row labels to the last visible series when the last one hides', async () => {

@@ -162,9 +162,12 @@ module Gitlab
           text.start_with?(BINARY_NOTICE_PATTERN)
         end
       end
-      def initialize(raw_diff, expanded: true, replace_invalid_utf8_chars: true, generated: nil)
+      def initialize(
+        raw_diff, expanded: true, replace_invalid_utf8_chars: true, generated: nil, skip_charset_detection: false
+      )
         @expanded = expanded
         @generated = generated
+        @skip_charset_detection = skip_charset_detection
 
         case raw_diff
         when Hash
@@ -285,7 +288,11 @@ module Gitlab
       end
 
       def diff_should_be_converted?
-        !detect_binary?(@diff) || !@diff&.valid_encoding?
+        return false if @diff.nil?
+        # encode_utf8 returns valid UTF-8 untouched, so the charset scan cannot change the outcome.
+        return false if @skip_charset_detection && valid_utf8?(@diff)
+
+        !detect_binary?(@diff) || !@diff.valid_encoding?
       end
 
       def init_from_hash(hash)

@@ -1,5 +1,6 @@
 <script>
-import { GlChart } from '@gitlab/ui/src/charts';
+import { GlChart, GlChartLegend } from '@gitlab/ui/src/charts';
+import { colorFromDefaultPalette } from '@gitlab/ui/src/utils/charts/theme';
 import { merge } from 'lodash-es';
 import { formatNumber } from '~/locale';
 import { formatCountCompact } from '~/glql/utils/value_format';
@@ -94,6 +95,7 @@ export default {
   name: 'BarListChart',
   components: {
     GlChart,
+    GlChartLegend,
   },
   props: {
     /**
@@ -145,6 +147,8 @@ export default {
   },
   data() {
     return {
+      // Held for GlChartLegend, which drives the chart through it.
+      chartInstance: null,
       // Series hidden via the legend. Stacked shares and labels rescale to the
       // visible total, so hiding a dominant series keeps the rest readable.
       hiddenSeries: [],
@@ -188,10 +192,11 @@ export default {
       const visible = this.seriesNames.filter((name) => !this.hiddenSeries.includes(name));
       const lastVisible = visible[visible.length - 1];
       const grand = this.visibleGrandTotal;
-      return this.seriesNames.map((name) => ({
+      return this.seriesNames.map((name, index) => ({
         type: 'bar',
         stack: 'row',
         name,
+        itemStyle: { color: colorFromDefaultPalette(index) },
         barWidth: BAR_HEIGHT,
         showBackground: true,
         backgroundStyle: { color: 'var(--gl-background-color-subtle)' },
@@ -215,8 +220,18 @@ export default {
         formatCountCompact(value, { lowercaseThousands: true }),
       );
     },
-    legendHeight() {
-      return this.stacked ? 32 : 0;
+    // Compared by value, so paging to rows with the same series leaves the
+    // reader's hidden series alone. Stringified rather than joined, because a
+    // dimension value may itself contain the separator.
+    seriesKey() {
+      return JSON.stringify(this.seriesNames);
+    },
+    seriesInfo() {
+      return this.seriesNames.map((name, index) => ({
+        name,
+        type: 'bar',
+        color: colorFromDefaultPalette(index),
+      }));
     },
     categories() {
       return this.rows.map(({ name }) => name);
@@ -239,24 +254,23 @@ export default {
       return this.valueLabels === VALUE_LABELS_VALUE;
     },
     chartHeight() {
-      return this.rows.length * ROW_HEIGHT + GRID_VERTICAL_PADDING * 2 + this.legendHeight;
+      return this.rows.length * ROW_HEIGHT + GRID_VERTICAL_PADDING * 2;
     },
     fullOptions() {
       const base = {
+        // The legend renders below the chart in the DOM, so the canvas
+        // reserves no room for it.
         grid: {
           top: GRID_VERTICAL_PADDING,
-          bottom: GRID_VERTICAL_PADDING + this.legendHeight,
+          bottom: GRID_VERTICAL_PADDING,
           left: LABEL_COLUMN_WIDTH,
           right: this.hasTrends ? VALUE_WITH_TREND_COLUMN_WIDTH : VALUE_COLUMN_WIDTH,
         },
         legend: this.stacked
           ? {
-              show: true,
-              bottom: 0,
-              icon: 'circle',
-              itemWidth: 10,
-              itemHeight: 10,
-              textStyle: { color: 'var(--gl-chart-axis-text-color)', fontSize: VALUE_LABEL_SIZE },
+              // Hidden, not absent: GlChartLegend toggles series through this
+              // component, so it still has to carry the selection state.
+              show: false,
               // GlChart applies options in merge mode, where ECharts keeps its own
               // selection state, so every series is pinned explicitly — re-selecting
               // any a data change un-hid.
@@ -339,12 +353,24 @@ export default {
     },
   },
   watch: {
-    data() {
+    // GlChartLegend tracks its hidden entries by position while this tracks
+    // them by name, so a changed series list has to clear both at once or the
+    // legend ends up greying an entry whose bars are still drawn. The same key
+    // remounts the legend, resetting its half.
+    seriesKey() {
       this.hiddenSeries = [];
     },
   },
   methods: {
+    // GlChart calls setOption in merge mode, which merges series by index and
+    // leaves the previous tail on the chart when the list gets shorter.
+    // Replacing the series component drops them without remounting the chart,
+    // so hidden series and the legend's own state survive a fold or unfold.
+    onChartUpdated(chart) {
+      chart.setOption({ series: this.fullOptions.series }, { replaceMerge: ['series'] });
+    },
     onChartCreated(chart) {
+      this.chartInstance = chart;
       chart.on('legendselectchanged', ({ selected }) => {
         this.hiddenSeries = Object.keys(selected).filter((name) => !selected[name]);
       });
@@ -366,17 +392,28 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="gl-chart-h-auto gl-relative gl-flex gl-flex-col"
-    :style="{ height: `${chartHeight}px` }"
-  >
-    <gl-chart
-      :options="fullOptions"
-      height="auto"
-      responsive
-      class="gl-grow gl-overflow-hidden"
-      data-testid="bar-list-chart"
-      @created="onChartCreated"
+  <div>
+    <div
+      class="gl-chart-h-auto gl-relative gl-flex gl-flex-col"
+      :style="{ height: `${chartHeight}px` }"
+      data-testid="chart-container"
+    >
+      <gl-chart
+        :options="fullOptions"
+        height="auto"
+        responsive
+        class="gl-grow gl-overflow-hidden"
+        data-testid="bar-list-chart"
+        @created="onChartCreated"
+        @updated="onChartUpdated"
+      />
+    </div>
+    <gl-chart-legend
+      v-if="stacked && chartInstance"
+      :key="seriesKey"
+      :chart="chartInstance"
+      :series-info="seriesInfo"
+      class="gl-mt-3"
     />
   </div>
 </template>

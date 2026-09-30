@@ -6,7 +6,7 @@ title: Coverage-guided fuzz testing (deprecated)
 description: Coverage-guided fuzzing, random inputs, and unexpected behavior.
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-12-31' -->
 
 {{< details >}}
 

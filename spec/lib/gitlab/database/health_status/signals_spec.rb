@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::HealthStatus::Signals, feature_category: :database do
   shared_examples 'health status signal' do |subclass, stop_signal, log_signal|

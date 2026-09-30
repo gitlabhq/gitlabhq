@@ -18,6 +18,7 @@ import {
   HIDDEN_NAV_ITEM_CLASS,
   PANEL_TYPES,
   PANELS_WITH_PINS,
+  PANELS_WITH_HIDEABLE_UNPINNED_ITEMS,
   PINNED_NAV_STORAGE_KEY,
   MAX_OPEN_WORK_ITEMS_COUNT,
   SETTINGS_DISCLOSURE_PORTAL_NAME,
@@ -83,6 +84,20 @@ export default {
       default: '',
     },
     showFeatureLibraryShimmer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    // User opt-in (persisted by SuperSidebar) to fall back to the full nav
+    // categories while hide_unpinned_sidebar_items is enabled.
+    showOldCategories: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    // User opt-in (persisted by SuperSidebar) to group pinned items under
+    // their parent category.
+    groupPinned: {
       type: Boolean,
       required: false,
       default: false,
@@ -201,6 +216,17 @@ export default {
         .map((id) => this.flatPinnableItems.find((item) => item.id === id))
         .filter(Boolean);
     },
+    // Pinned items grouped under their parent category, in nonStaticItems order.
+    // Each group keeps only the categories that contain at least one pinned
+    // item, and pins within a group keep the user's pin order.
+    pinnedGroups() {
+      return this.nonStaticItems
+        .map((section) => ({
+          ...section,
+          items: this.pinnedItems.filter((pin) => section.items.some((item) => item.id === pin.id)),
+        }))
+        .filter((section) => section.items.length > 0);
+    },
     isPinnablePanel() {
       return PANELS_WITH_PINS.includes(this.panelType);
     },
@@ -213,17 +239,33 @@ export default {
     showUnpinnedItems() {
       return (
         !this.glFeatures.hideUnpinnedSidebarItems ||
-        !PANELS_WITH_PINS.filter((p) => p !== 'organization').includes(this.panelType)
+        !PANELS_WITH_HIDEABLE_UNPINNED_ITEMS.includes(this.panelType)
       );
     },
     showFeatureLibrary() {
       return this.isPinnablePanel && this.panelType !== 'organization';
     },
+    // True when the flag hides unpinned items but the user opted back into the
+    // full category list. Drives section rendering only; the pinned area keeps
+    // the new design (keyed off showUnpinnedItems).
+    showFullNav() {
+      return !this.showUnpinnedItems && this.showOldCategories;
+    },
+    // Group pins by category only while pins are the primary nav (unpinned
+    // items hidden), the user opted in, and the full category fallback is off.
+    showGroupedPins() {
+      return (
+        !this.showUnpinnedItems &&
+        !this.showOldCategories &&
+        this.groupPinned &&
+        this.pinnedGroups.length > 0
+      );
+    },
     showEmptyPinsHint() {
       return !this.showUnpinnedItems && this.pinnedItems.length === 0 && !this.isIconOnly;
     },
     sectionsToRender() {
-      if (!this.showUnpinnedItems) {
+      if (!this.showUnpinnedItems && !this.showOldCategories) {
         return this.nonStaticItems.filter((item) => item.id === SETTINGS_MENU_ITEM_ID);
       }
       return this.nonStaticItems;
@@ -383,8 +425,10 @@ export default {
     },
     // Derive from showUnpinnedItems (not the raw flag) so the organization
     // panel, which is exempt from unpinned-hiding, keeps its in-place section.
+    // When the user opted back into the full categories, settings renders
+    // inline like the old design rather than in the disclosure portal.
     settingsAsDisclosure(navItem) {
-      return !this.showUnpinnedItems && this.isSettingsSection(navItem);
+      return !this.showUnpinnedItems && !this.showOldCategories && this.isSettingsSection(navItem);
     },
     decideFlyoutState() {
       this.showFlyoutMenus = GlBreakpointInstance.windowWidth() >= breakpoints.md;
@@ -394,6 +438,11 @@ export default {
       sessionStorage.removeItem(PINNED_NAV_STORAGE_KEY);
       return wasPinnedNav === 'true';
     },
+    // Only force-expand the group that holds the pin the user just navigated to,
+    // so a pinned-nav click doesn't clobber other groups' collapse state.
+    groupWasPinnedNav(group) {
+      return this.wasPinnedNav && group.items.some((item) => item.is_active);
+    },
   },
 };
 </script>
@@ -402,7 +451,7 @@ export default {
   <div
     class="gl-relative gl-px-3 gl-py-2"
     :class="{
-      'gl-flex gl-h-full gl-flex-col': !showUnpinnedItems,
+      'gl-flex gl-h-full gl-flex-col': !showUnpinnedItems && !showFullNav,
     }"
   >
     <ul
@@ -420,8 +469,44 @@ export default {
         class="gl-font-bold"
       />
     </ul>
+    <!-- Wrapper carries the pinned-section id so SPA active-nav highlighting
+         (see updateActiveNavigation) still finds items split across groups;
+         an id can't be repeated on each group. -->
+    <div
+      v-if="isPinnablePanel && showGroupedPins"
+      id="super-sidebar-pinned-section"
+      class="gl-contents"
+    >
+      <template v-for="(group, index) in pinnedGroups">
+        <!-- Collapsed sidebar has no category icon to show, so drop the headers
+             and separate each category's flattened icons with a divider. -->
+        <hr
+          v-if="isIconOnly && index > 0"
+          :key="`${group.id}-separator`"
+          aria-hidden="true"
+          class="gl-border-t gl-mx-3 gl-my-2 gl-border-strong"
+        />
+        <pinned-section
+          :key="group.id"
+          :supports-pins="supportsPins"
+          :items="group.items"
+          :group-item="group"
+          :headerless="isIconOnly"
+          :has-flyout="showFlyoutMenus"
+          :was-pinned-nav="groupWasPinnedNav(group)"
+          :async-count="asyncCount"
+          :class="{
+            'gl-mt-3': !isIconOnly && index > 0,
+            'gl-mt-2': !isIconOnly && index === 0,
+            'gl-mb-2': !isIconOnly && index === pinnedGroups.length - 1,
+          }"
+          @pin-remove="destroyPin"
+          @pin-reorder="movePin"
+        />
+      </template>
+    </div>
     <pinned-section
-      v-if="isPinnablePanel"
+      v-else-if="isPinnablePanel"
       id="super-sidebar-pinned-section"
       ref="pinnedSectionButton"
       :supports-pins="supportsPins"
@@ -491,17 +576,17 @@ export default {
       @pin-toggle="onModalPinToggle"
     />
     <hr
-      v-if="isPinnablePanel && showUnpinnedItems"
+      v-if="isPinnablePanel && (showUnpinnedItems || showFullNav)"
       aria-hidden="true"
       class="gl-mx-3 gl-my-4"
       data-testid="main-menu-separator"
     />
     <ul
       id="super-sidebar-non-static-section"
-      aria-labelledby="super-sidebar-context-header"
+      aria-labelledby="super-sidebar-context-header-title"
       class="gl-mb-0 gl-list-none gl-p-0"
       :class="{
-        'gl-mt-auto': !showUnpinnedItems,
+        'gl-mt-auto': !showUnpinnedItems && !showFullNav,
       }"
       data-testid="non-static-items-section"
     >

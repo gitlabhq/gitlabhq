@@ -35,7 +35,7 @@ For instance runners on GitLab.com, GitLab Self-Managed, and self-hosted instanc
 - You can view your usage in the [instance runner usage dashboard](instance_runner_compute_minutes.md#view-usage).
 - When a quota is enabled:
   - You receive notifications when approaching your quota limits.
-  - Enforcement measures are applied when you exceed your quota.
+  - [Enforcement measures](instance_runner_compute_minutes.md#enforcement) are applied when you exceed your quota.
 
 For GitLab.com:
 
@@ -45,9 +45,7 @@ For GitLab.com:
 - You can [purchase additional compute minutes](../../subscriptions/gitlab_com/compute_minutes.md)
   if you need more.
 
-## Compute minute usage
-
-### Compute usage calculation
+## Compute usage calculation
 
 Your compute minute usage for each job is calculated using this formula:
 
@@ -55,11 +53,12 @@ Your compute minute usage for each job is calculated using this formula:
 Job duration / 60 * Cost factor
 ```
 
-- **Job duration**: The time, in seconds, that a job took to run, not including time spent in the `created` or `pending` statuses.
-- **Cost factor**: A number based on the [runner type](#cost-factors) and
-  [project type](#cost-factors).
+- Job duration: The time, in seconds, that a job took to run, not including time spent in the `created` or `pending` statuses.
+- Cost factor: A number based on the [runner type](#cost-factors-of-hosted-runners-for-gitlabcom) and
+  [project type](#project-type-discounts).
 
 The resulting compute minutes are added to the usage count for the job's top-level namespace.
+If a compute quota is enabled, this count is measured against the quota.
 
 For example, if a user `alice` runs a pipeline:
 
@@ -77,13 +76,17 @@ consume compute minutes, even when using [`strategy:depend`](../yaml/_index.md#t
 to wait for the [downstream pipeline](downstream_pipelines.md) status.
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
 
-Usage is tracked on a monthly basis. On the first day of the month the usage is `0` for that month for all namespaces.
+Usage resets to `0` for all namespaces on the first day of each month.
+If a compute quota is enabled, the quota also resets to its full monthly allocation.
+On GitLab.com, [purchased compute minutes](../../subscriptions/gitlab_com/compute_minutes.md#monthly-rollover-of-purchased-compute-minutes)
+are used only after the monthly quota runs out. They roll over to the next month if unused.
 
-### Cost factors
+## Cost factors
 
-The rate at which compute minutes are consumed varies based on the runner type and project settings.
+The cost factor is a multiplier that sets how quickly a job uses compute minutes.
+It is not a monetary price. The rate varies based on the runner type and project settings.
 
-#### Cost factors of hosted runners for GitLab.com
+### Cost factors of hosted runners for GitLab.com
 
 GitLab-hosted runners have different cost factors depending on the runner type
 (Linux, Windows, macOS) and the virtual machine configuration:
@@ -99,22 +102,24 @@ GitLab-hosted runners have different cost factors depending on the runner type
 | Linux Arm64                | `small`                | `1`                     |
 | Linux Arm64                | `medium`               | `2`                     |
 | Linux Arm64                | `large`                | `3`                     |
-| macOS M1                   | `medium`               | `6` (**Status**: Beta)  |
-| macOS M2 Pro               | `large`                | `12` (**Status**: Beta) |
-| Windows                    | `medium`               | `1` (**Status**: Beta)  |
+| macOS M1                   | `medium`               | `6` (Beta)              |
+| macOS M2 Pro               | `large`                | `12` (Beta)             |
+| Windows                    | `medium`               | `1` (Beta)              |
 
 These cost factors apply to hosted runners for GitLab.com.
+
+### Project type discounts
 
 Certain discounts apply based on the project type:
 
 | Project type | Cost factor | Compute minutes used |
 |--------------|-------------|---------------------|
-| Standard projects | [Based on runner type](#cost-factors-of-hosted-runners-for-gitlabcom) | 1 minute per (job duration / 60 × cost factor) |
-| Public projects in [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source) | `0.5` | 1 minute per 2 minutes of job time |
-| Public forks of [GitLab Open Source program projects](../../subscriptions/community_programs.md#gitlab-for-open-source) | `0.008` | 1 minute per 125 minutes of job time |
-| [Community contributions to GitLab projects](#community-contributions-to-gitlab-projects) | Dynamic discount | See the following section |
+| Standard projects | Based on runner type | 1 minute per (job duration / 60 × cost factor) |
+| Public projects in the [GitLab for Open Source](../../subscriptions/community_programs.md#gitlab-for-open-source) program | `0.5` | 1 minute per 2 minutes of job time |
+| Public forks of projects in the GitLab for Open Source program | `0.008` | 1 minute per 125 minutes of job time |
+| Community contributions | Dynamic discount | See the following section |
 
-#### Community contributions to GitLab projects
+### Community contributions
 
 Community contributors can use up to 300,000 minutes on instance runners when contributing to open source projects
 maintained by GitLab. The maximum of 300,000 minutes would only be possible if you contribute exclusively to projects
@@ -139,9 +144,9 @@ For this reduced cost factor:
 - The merge request target project must be the fork's parent project.
 - The pipeline must be a merge request, merged results, or merge train pipeline.
 
-### Reduce compute minute usage
+## Reduce compute minute usage
 
-If your project consumes too many compute minutes, try these strategies to reduce your usage:
+If you are approaching or exceeding your compute quota, try these strategies to reduce your usage:
 
 - If you are using project mirrors, ensure that [pipelines for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
   is disabled.

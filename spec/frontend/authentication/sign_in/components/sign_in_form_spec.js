@@ -1,4 +1,4 @@
-import { GlFormFields, GlButton } from '@gitlab/ui';
+import { GlFormFields, GlButton, GlFormPasswordInput, GlFormInput } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import htmlSessionsNew from 'test_fixtures/sessions/new.html';
@@ -7,7 +7,6 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SignInForm from '~/authentication/sign_in/components/sign_in_form.vue';
-import PasswordInput from '~/authentication/password/components/password_input.vue';
 import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -92,7 +91,7 @@ describe('SignInForm', () => {
 
   const findLoginField = () => wrapper.findByLabelText('Username or primary email');
   const findPasswordField = () => wrapper.findByLabelText('Password');
-  const findPasswordInputComponent = () => wrapper.findComponent(PasswordInput);
+  const findPasswordInputComponent = () => wrapper.findComponent(GlFormPasswordInput);
   const findRememberMeCheckbox = () => wrapper.findByLabelText('Remember me');
   const findPasskeysForm = () => wrapper.findByTestId('passkey-form');
   const findSignInForm = () => wrapper.findByTestId('sign-in-form');
@@ -204,7 +203,19 @@ describe('SignInForm', () => {
     await submitForm();
 
     expect(wrapper.text()).toContain('Password is required.');
-    expect(findPasswordInputComponent().props('state')).toBe(false);
+    expect(findPasswordInputComponent().findComponent(GlFormInput).props('state')).toBe(false);
+  });
+
+  it('propagates the typed password value to the form', async () => {
+    createComponent();
+
+    await findPasswordField().setValue('hunter2');
+
+    expect(findPasswordField().element.value).toBe('hunter2');
+
+    await submitForm();
+
+    expect(wrapper.text()).not.toContain('Password is required.');
   });
 
   it('renders remember me checkbox', () => {

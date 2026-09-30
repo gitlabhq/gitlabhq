@@ -92,7 +92,7 @@ describe('ExploreAnalyticsDashboardDetails', () => {
   const filtersLoaderStub = filtersLoaderStubFor();
 
   const filtersLayoutStub = {
-    props: ['filters'],
+    props: ['filters', 'filtersClass'],
     template: '<div><slot name="filters" /></div>',
   };
 
@@ -149,9 +149,8 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       expect(findDashboardLayout().classes()).toContain('explore-analytics-dashboard');
     });
 
-    // The page styles stick the wrapper `:has()` this class, so it must stay on the bar.
-    it('marks the filter bar with the class the sticky styles target', () => {
-      expect(findDashboardFilters().classes()).toContain('explore-dashboard-filters');
+    it('marks the filters wrapper with the class the sticky styles target', () => {
+      expect(findDashboardLayout().props('filtersClass')).toBe('explore-dashboard-filters');
     });
 
     // A remount would reset the scroll position, defeating the sticky filter bar.

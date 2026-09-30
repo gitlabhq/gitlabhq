@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Perform fuzz testing in GitLab (deprecated)'
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2026-08-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-12-31' -->
 
 {{< details >}}
 

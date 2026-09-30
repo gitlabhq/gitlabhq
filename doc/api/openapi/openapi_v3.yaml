@@ -62461,7 +62461,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a1dcb407f1f7"
+              "$ref": "#/components/schemas/RequestBody_198bcb5c2abf"
     delete:
       operationId: deleteApiV4FeaturesName
       summary: Delete a feature
@@ -122330,7 +122330,7 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_a1dcb407f1f7:
+    RequestBody_198bcb5c2abf:
       type: object
       properties:
         value:
@@ -122343,9 +122343,13 @@ components:
             of time"
         key:
           type: string
-          description: "`percentage_of_actors` or `percentage_of_time` (default).
-            Mutually exclusive with `feature_group`, `user`, `group`, `namespace`,
-            `project`, `organization`, `repository`, `runner`, `endpoint`."
+          enum:
+          - percentage_of_actors
+          - percentage_of_time
+          description: Rollout strategy for a percentage `value`. Omit it to apply
+            the percentage to time. Mutually exclusive with `feature_group`, `user`,
+            `group`, `namespace`, `project`, `organization`, `repository`, `runner`,
+            `endpoint`.
           nullable: true
         feature_group:
           type: string

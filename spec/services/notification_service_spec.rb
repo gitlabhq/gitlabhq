@@ -367,7 +367,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   describe 'GpgKeys' do
     describe '#new_gpg_key' do
       let(:key_options) { {} }
-      let(:key) { create(:gpg_key, key_options) }
+      let(:key) { build_stubbed(:gpg_key, key_options) }
 
       subject { notification.new_gpg_key(key) }
 
@@ -1674,7 +1674,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe '#new_mentions_in_note' do
-        let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: "Hello @#{u_mentioned.to_reference}") }
+        let(:note_attributes) { { author: author, noteable: issue, project_id: issue.project_id, note: "Hello @#{u_mentioned.to_reference}" } }
+        let(:note) { create(:note_on_issue, note_attributes) }
 
         it 'sends email to newly mentioned users' do
           expect do
@@ -1704,6 +1705,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         context 'when the author is blocked' do
           let(:blocked_author) { blocked_user }
+          let(:note) { build_stubbed(:note_on_issue, note_attributes) }
 
           it 'does not send any notification' do
             expect do
@@ -1714,6 +1716,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         context 'when the author is a ghost' do
           let(:ghost_author) { ghost_user }
+          let(:note) { build_stubbed(:note_on_issue, note_attributes) }
 
           it 'does not send any notification' do
             expect do
@@ -1723,6 +1726,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
 
         context 'when the note has no noteable_type' do
+          let(:note) { build_stubbed(:note_on_issue, note_attributes) }
+
           it 'returns true without sending notifications' do
             allow(note).to receive(:noteable_type).and_return(nil)
 

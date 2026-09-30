@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'gitlab:mcp namespace rake tasks', :silence_stdout, feature_category: :mcp_server do
   let(:task_name) { 'gitlab:mcp:verify_setup' }

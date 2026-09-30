@@ -128,7 +128,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/lib/gitlab/doctor/reset_tokens_spec.rb'
     - 'spec/lib/gitlab/error_tracking/processor/sanitize_error_message_processor_spec.rb'
     - 'spec/lib/gitlab/experiment_feature_rollout_spec.rb'
-    - 'spec/lib/gitlab/git/blame_pagination_spec.rb'
     - 'spec/lib/gitlab/github_gists_import/importer/gist_importer_spec.rb'
     - 'spec/lib/gitlab/github_gists_import/importer/gists_importer_spec.rb'
     - 'spec/lib/gitlab/github_gists_import/representation/gist_spec.rb'

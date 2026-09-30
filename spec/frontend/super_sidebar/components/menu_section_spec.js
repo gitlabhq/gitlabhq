@@ -116,6 +116,55 @@ describe('MenuSection component', () => {
         expect(findCollapse().classes()).not.toContain('gl-hidden');
       });
     });
+
+    describe('when headerless and not expanded', () => {
+      // Regression: a category collapsed in the expanded sidebar carried a
+      // stale `expanded: false` into icon-only mode, where a headerless section
+      // has no toggle to reopen it, so its pinned icons vanished.
+      it('keeps the collapse open because there is no header to reopen it', () => {
+        createWrapper({ title: 'Pinned' }, { expanded: false, headerless: true });
+
+        expect(findCollapse().props('visible')).toBe(true);
+      });
+    });
+
+    describe('when first mounted headerless then the header reappears', () => {
+      // Regression: a section first mounted headerless (sidebar loads icon-only)
+      // force-expanded isExpanded, so when the header reappeared it stayed open
+      // regardless of its real collapse state.
+      it('re-syncs to the collapsed expanded prop when the header reappears', async () => {
+        createWrapper({ title: 'Pinned' }, { expanded: false, headerless: true });
+        expect(findCollapse().props('visible')).toBe(true);
+
+        await wrapper.setProps({ headerless: false });
+
+        expect(findCollapse().props('visible')).toBe(false);
+      });
+
+      it('honors an expanded prop of true when the header reappears', async () => {
+        createWrapper({ title: 'Pinned' }, { expanded: true, headerless: true });
+
+        await wrapper.setProps({ headerless: false });
+
+        expect(findCollapse().props('visible')).toBe(true);
+      });
+    });
+  });
+
+  describe('boldTitle prop', () => {
+    const findTitleLabel = () => wrapper.find('.menu-section-button-label');
+
+    it('renders the title in a heavier font weight when true', () => {
+      createWrapper({ title: 'Asdf' }, { boldTitle: true });
+
+      expect(findTitleLabel().classes()).toContain('gl-font-bold');
+    });
+
+    it('does not add the heavier font weight by default', () => {
+      createWrapper({ title: 'Asdf' });
+
+      expect(findTitleLabel().classes()).not.toContain('gl-font-bold');
+    });
   });
 
   describe('flyout behavior', () => {

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :markdown do
   let(:valid_entry) do

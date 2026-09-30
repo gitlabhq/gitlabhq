@@ -467,16 +467,6 @@
     "dottedExample": "/john.doe/bar/john.doe/-/blame/john.doe/bar"
   },
   {
-    "template": "/*namespace_id/:project_id/-/blame/*id/streaming",
-    "example": "/foo/bar/foo/-/blame/foo/bar/streaming",
-    "dottedExample": "/john.doe/bar/john.doe/-/blame/john.doe/bar/streaming"
-  },
-  {
-    "template": "/*namespace_id/:project_id/-/blame_page/*id",
-    "example": "/foo/bar/foo/-/blame_page/foo/bar",
-    "dottedExample": "/john.doe/bar/john.doe/-/blame_page/john.doe/bar"
-  },
-  {
     "template": "/*namespace_id/:project_id/-/blob/*id",
     "example": "/foo/bar/foo/-/blob/foo/bar",
     "dottedExample": "/john.doe/bar/john.doe/-/blob/john.doe/bar"
@@ -19392,16 +19382,6 @@
     "template": "/o/:organization_path/*namespace_id/:project_id/-/blame/*id",
     "example": "/o/foo/foo/bar/foo/-/blame/foo/bar",
     "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/blame/john.doe/bar"
-  },
-  {
-    "template": "/o/:organization_path/*namespace_id/:project_id/-/blame/*id/streaming",
-    "example": "/o/foo/foo/bar/foo/-/blame/foo/bar/streaming",
-    "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/blame/john.doe/bar/streaming"
-  },
-  {
-    "template": "/o/:organization_path/*namespace_id/:project_id/-/blame_page/*id",
-    "example": "/o/foo/foo/bar/foo/-/blame_page/foo/bar",
-    "dottedExample": "/o/john.doe/john.doe/bar/john.doe/-/blame_page/john.doe/bar"
   },
   {
     "template": "/o/:organization_path/*namespace_id/:project_id/-/blob/*id",

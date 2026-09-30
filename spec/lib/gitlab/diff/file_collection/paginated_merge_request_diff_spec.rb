@@ -30,6 +30,25 @@ RSpec.describe Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff, feature_
       expect(diff_files).to be_a(Gitlab::Git::DiffCollection)
     end
 
+    it 'skips charset detection when the flag is enabled for the project' do
+      stub_feature_flags(diff_skip_redundant_charset_detection: diffable.project)
+
+      expect(Gitlab::Git::DiffCollection).to receive(:new)
+        .with(anything, hash_including(skip_charset_detection: true)).and_call_original
+
+      diff_files
+    end
+
+    it 'does not skip charset detection when the flag is enabled for another project' do
+      diffable
+      stub_feature_flags(diff_skip_redundant_charset_detection: build_stubbed(:project))
+
+      expect(Gitlab::Git::DiffCollection).to receive(:new)
+        .with(anything, hash_including(skip_charset_detection: false)).and_call_original
+
+      diff_files
+    end
+
     context 'when first page' do
       it 'returns correct diff files' do
         expect(diff_files.map(&:new_path)).to eq(expected_batch_files)

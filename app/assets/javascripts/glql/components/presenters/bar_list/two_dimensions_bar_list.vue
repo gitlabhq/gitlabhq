@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import { buildStackedByDimension, dimensionLabelFormatter } from '../../../utils/chart_data';
@@ -10,6 +11,7 @@ export default {
   name: 'TwoDimensionsBarList',
   components: {
     BarListChart,
+    GlButton,
   },
   props: {
     data: {
@@ -42,6 +44,11 @@ export default {
       type: Number,
     },
   },
+  data() {
+    return {
+      seriesExpanded: false,
+    };
+  },
   computed: {
     stacked() {
       return buildStackedByDimension({
@@ -56,7 +63,7 @@ export default {
     series() {
       const ranked = [...this.stacked.bars].sort((a, b) => sum(b.data) - sum(a.data));
 
-      return foldTail(ranked, this.maxSeries, (folded) => ({
+      return foldTail(ranked, this.seriesExpanded ? Infinity : this.maxSeries, (folded) => ({
         name: sprintf(s__('Glql|Other (%{count})'), { count: folded.length }),
         data: this.stacked.groups.map((_, index) => sum(folded.map((bar) => bar.data[index] ?? 0))),
       }));
@@ -84,6 +91,23 @@ export default {
     rows() {
       return pageOf(this.allRows, this.page, this.pageSize);
     },
+    // Mirrors foldTail's rule so the control appears only when a tail is
+    // actually hidden, and stays put once it is expanded.
+    canExpand() {
+      return this.stacked.bars.length > this.maxSeries + 1;
+    },
+    toggleLabel() {
+      return this.seriesExpanded
+        ? s__('Glql|Show fewer')
+        : sprintf(s__('Glql|Show all (%{count})'), { count: this.stacked.bars.length });
+    },
+  },
+  watch: {
+    // A new result set should not inherit the previous one's expanded state,
+    // matching how the chart resets its hidden series.
+    data() {
+      this.seriesExpanded = false;
+    },
   },
   methods: {
     shareOf(value) {
@@ -93,5 +117,19 @@ export default {
 };
 </script>
 <template>
-  <bar-list-chart :data="rows" />
+  <div>
+    <bar-list-chart :data="rows" />
+    <gl-button
+      v-if="canExpand"
+      category="tertiary"
+      variant="link"
+      size="small"
+      class="gl-mb-3 gl-mt-4"
+      :icon="seriesExpanded ? 'chevron-up' : 'chevron-down'"
+      :aria-expanded="seriesExpanded.toString()"
+      @click="seriesExpanded = !seriesExpanded"
+    >
+      {{ toggleLabel }}
+    </gl-button>
+  </div>
 </template>

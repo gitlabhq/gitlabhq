@@ -1,6 +1,10 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/super_sidebar/constants';
+import {
+  FREQUENT_ITEMS,
+  FIFTEEN_MINUTES_IN_MS,
+  SIDEBAR_PINNED_GROUPS_EXPANDED_STORAGE_KEY,
+} from '~/super_sidebar/constants';
 import axios from '~/lib/utils/axios_utils';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
@@ -122,6 +126,26 @@ export const trackContextAccess = (username, context) => {
   }
 
   return localStorage.setItem(storageKey, JSON.stringify(storedItems));
+};
+
+const readPinnedGroupCollapseStates = () => {
+  if (!AccessorUtilities.canUseLocalStorage()) return {};
+
+  try {
+    return JSON.parse(localStorage.getItem(SIDEBAR_PINNED_GROUPS_EXPANDED_STORAGE_KEY)) || {};
+  } catch {
+    return {};
+  }
+};
+
+// Expanded unless explicitly collapsed, matching the sidebar's default.
+export const isPinnedGroupExpanded = (key) => readPinnedGroupCollapseStates()[key] !== false;
+
+export const setPinnedGroupExpanded = (key, expanded) => {
+  if (!AccessorUtilities.canUseLocalStorage()) return;
+
+  const states = { ...readPinnedGroupCollapseStates(), [key]: expanded };
+  localStorage.setItem(SIDEBAR_PINNED_GROUPS_EXPANDED_STORAGE_KEY, JSON.stringify(states));
 };
 
 export const ariaCurrent = (isActive) => (isActive ? 'page' : null);

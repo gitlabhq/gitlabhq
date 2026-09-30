@@ -375,7 +375,7 @@ export default {
               @keydown.meta.enter="submitReview"
               @keydown.ctrl.enter="submitReview"
             >
-              <template v-if="canSummarize" #header-buttons>
+              <template v-if="canSummarize && draftsCount > 0" #header-buttons>
                 <markdown-header-divider class="gl-ml-2" />
                 <summarize-my-review
                   :id="getNoteableData.id"

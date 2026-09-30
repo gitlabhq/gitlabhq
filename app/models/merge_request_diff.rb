@@ -458,6 +458,11 @@ class MergeRequestDiff < ApplicationRecord
     real_size.presence || raw_diffs.size
   end
 
+  # Uses project_id so it loads nothing and works on the unsaved fallback diff.
+  def skip_charset_detection?
+    Feature.enabled?(:diff_skip_redundant_charset_detection, Project.actor_from_id(project_id))
+  end
+
   def lines_count
     strong_memoize(:lines_count) do
       raw_diffs(limits: false).line_count
@@ -1008,7 +1013,9 @@ class MergeRequestDiff < ApplicationRecord
         collection = collection.where('old_path IN (?) OR new_path IN (?)', paths, paths)
       end
 
-      Gitlab::Git::DiffCollection.new(collection.map(&:to_hash), options)
+      Gitlab::Git::DiffCollection.new(
+        collection.map(&:to_hash), options.merge(skip_charset_detection: skip_charset_detection?)
+      )
     end
   end
 

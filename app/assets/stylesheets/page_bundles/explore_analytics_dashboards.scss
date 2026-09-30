@@ -4,11 +4,7 @@
 // viewport when stuck, so the bar only sticks once it lays out as a row.
 @include media-breakpoint-up(md) {
   .explore-analytics-dashboard {
-    // GlDashboardLayout renders the wrapper around the filters slot, so match
-    // it through our own class on the slotted filters. Remove once the wrapper
-    // offers a hook: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3660
-    // stylelint-disable-next-line gitlab/no-has -- scoped to this dashboard's filters wrapper
-    :has(> .explore-dashboard-filters) {
+    .explore-dashboard-filters {
       position: sticky;
       top: $calc-application-header-height;
       z-index: 1;

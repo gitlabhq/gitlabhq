@@ -40831,6 +40831,12 @@ msgstr ""
 msgid "Glql|Regular (5–24)"
 msgstr ""
 
+msgid "Glql|Show all (%{count})"
+msgstr ""
+
+msgid "Glql|Show fewer"
+msgstr ""
+
 msgid "Glql|Unknown description placeholder: `%{placeholder}`."
 msgstr ""
 
@@ -53931,6 +53937,9 @@ msgstr ""
 msgid "Navigation|Admin"
 msgstr ""
 
+msgid "Navigation|All categories"
+msgstr ""
+
 msgid "Navigation|Analyze"
 msgstr ""
 
@@ -53949,10 +53958,19 @@ msgstr ""
 msgid "Navigation|Current page"
 msgstr ""
 
+msgid "Navigation|Customize sidebar"
+msgstr ""
+
 msgid "Navigation|Deploy"
 msgstr ""
 
+msgid "Navigation|Everything"
+msgstr ""
+
 msgid "Navigation|Expand sidebar"
+msgstr ""
+
+msgid "Navigation|Flat"
 msgstr ""
 
 msgid "Navigation|Frequently visited groups"
@@ -53982,6 +54000,9 @@ msgstr ""
 msgid "Navigation|Operate"
 msgstr ""
 
+msgid "Navigation|Organized"
+msgstr ""
+
 msgid "Navigation|Pin %{title}"
 msgstr ""
 
@@ -53992,6 +54013,12 @@ msgid "Navigation|Pin item"
 msgstr ""
 
 msgid "Navigation|Pinned"
+msgstr ""
+
+msgid "Navigation|Pinned in categories"
+msgstr ""
+
+msgid "Navigation|Pinned only"
 msgstr ""
 
 msgid "Navigation|Plan"
@@ -88291,6 +88318,9 @@ msgstr ""
 msgid "UsageBilling|Blocked usage"
 msgstr ""
 
+msgid "UsageBilling|Bulk update"
+msgstr ""
+
 msgid "UsageBilling|Cancel"
 msgstr ""
 
@@ -98524,9 +98554,6 @@ msgid "commit %{commit_id}"
 msgstr ""
 
 msgid "commit message"
-msgstr ""
-
-msgid "committed"
 msgstr ""
 
 msgid "complete"

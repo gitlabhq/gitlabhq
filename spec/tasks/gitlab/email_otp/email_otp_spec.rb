@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'gitlab:email_otp tasks', :silence_stdout, feature_category: :system_access do
   include StubENV

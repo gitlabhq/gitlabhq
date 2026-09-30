@@ -84,6 +84,9 @@ export default {
   apollo: {
     mergeRequestsMetadata: {
       query: mergeRequestsWidgetMetadataQuery,
+      skip() {
+        return !this.showCountCards;
+      },
       variables() {
         return {
           duoCodeReviewBotUsername: this.duoCodeReviewBotUsername,
@@ -99,6 +102,9 @@ export default {
     },
     workItemsMetadata: {
       query: workItemsWidgetMetadataQuery,
+      skip() {
+        return !this.showCountCards;
+      },
       variables() {
         return { username: gon?.current_username || null };
       },
@@ -112,6 +118,9 @@ export default {
     },
   },
   computed: {
+    showCountCards() {
+      return !this.glFeatures.homepageMergeRequestsWidget;
+    },
     shouldShowPickUpWidget() {
       if (!this.lastPushEvent?.create_mr_path) return false;
 
@@ -199,6 +208,7 @@ export default {
     <div class="gl-grid gl-grid-cols-1 gl-gap-6 @md/panel:gl-grid-cols-3">
       <section class="gl-flex gl-flex-col gl-gap-6 @md/panel:gl-col-span-2">
         <base-widget
+          v-if="showCountCards"
           class="gl-grid gl-grid-cols-2 gl-gap-5 @lg/panel:gl-grid-cols-4"
           :apply-default-styling="false"
           @visible="handleUserCountsVisible"

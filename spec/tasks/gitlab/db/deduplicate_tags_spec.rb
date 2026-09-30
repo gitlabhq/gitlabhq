@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe 'gitlab:db:deduplicate_tags', :silence_stdout, feature_category: :runner_core do
   before(:all) do

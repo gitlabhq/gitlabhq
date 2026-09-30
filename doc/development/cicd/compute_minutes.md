@@ -24,7 +24,7 @@ When a job finishes on an instance type runner, we store two metrics aggregated 
 
 We also store this aggregated usage at the project level for the current month.
 
-[`CI compute minute usage`](../../ci/pipelines/compute_minutes.md#compute-minute-usage) is calculated using the formula: `Job duration / 60 * Cost factor`, where duration is the `running` time for the job in seconds. Some discounts are applied based on the project type on GitLab.com, which would not apply to Dedicated instances.
+[`CI compute minute usage`](../../ci/pipelines/compute_minutes.md#compute-usage-calculation) is calculated using the formula: `Job duration / 60 * Cost factor`, where duration is the `running` time for the job in seconds. Some discounts are applied based on the project type on GitLab.com, which would not apply to Dedicated instances.
 
 When the monthly quota is consumed and no additional packs are available, GitLab drops the running build after providing a grace period of n minutes. Once the quota is exceeded, new builds from the namespace can no longer be picked up by instance runners.
 

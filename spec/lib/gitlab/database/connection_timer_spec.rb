@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::ConnectionTimer, feature_category: :database do
   let(:current_clock_value) { 1234.56 }

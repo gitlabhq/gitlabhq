@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::Capture::StorageConnectors::Gcs, feature_category: :database do
   let(:connector) { described_class.new(settings) }

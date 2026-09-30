@@ -86,12 +86,9 @@ in your terminal.
 - Previous navigation instructions removed in GitLab 18.7.
 - New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
 - Ability to retry the previous question [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21289) in GitLab 19.5 with a [flag](../../administration/feature_flags/_index.md) named `agentic_manual_retry_for_duo_chat_responses`. Disabled by default.
+- Ability to retry the previous question [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/601522) in GitLab 19.5. Feature flag `agentic_manual_retry_for_duo_chat_responses` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Prerequisites:
 

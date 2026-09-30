@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe SystemCheck::SimpleExecutor, :silence_stdout do
   before do

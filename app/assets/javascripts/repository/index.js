@@ -10,7 +10,6 @@ import initFileTreeBrowser from '~/repository/file_tree_browser';
 import initHeaderApp from './init_header_app';
 import repositoryPathMixin from './mixins/repository_path';
 import RepositoryApp from './components/app.vue';
-import RepositoryBreadcrumbs from './components/header_area/breadcrumbs.vue';
 import ForkInfo from './components/fork_info.vue';
 import LastCommit from './components/last_commit.vue';
 
@@ -20,7 +19,6 @@ import projectPathQuery from './queries/project_path.query.graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
-import { updateFormAction } from './utils/dom';
 import { generateHistoryUrl } from './utils/url_utility';
 
 Vue.use(Vuex);
@@ -151,66 +149,6 @@ export default function setupVueRepositoryList() {
   initHeaderApp({ router });
   initLastCommitApp();
   initForkInfo();
-
-  const breadcrumbEl = document.getElementById('js-repo-breadcrumb');
-
-  if (breadcrumbEl) {
-    const {
-      canCollaborate,
-      canEditTree,
-      canPushCode,
-      canPushToBranch,
-      selectedBranch,
-      newBranchPath,
-      newTagPath,
-      newBlobPath,
-      forkNewBlobPath,
-      forkNewDirectoryPath,
-      forkUploadBlobPath,
-      uploadPath,
-      newDirPath,
-    } = breadcrumbEl.dataset;
-
-    router.afterEach(({ params: { path } }) => {
-      updateFormAction('.js-create-dir-form', newDirPath, path);
-    });
-
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: breadcrumbEl,
-      name: 'RepositoryBreadcrumbsRoot',
-      router,
-      apolloProvider,
-      mixins: [repositoryPathMixin],
-      computed: {
-        currentRefType() {
-          return this.$route.query.ref_type;
-        },
-      },
-      render(h) {
-        return h(RepositoryBreadcrumbs, {
-          props: {
-            currentPath: this.computedPath,
-            refType: this.currentRefType,
-            canCollaborate: parseBoolean(canCollaborate),
-            canPushToBranch: parseBoolean(canPushToBranch),
-            canEditTree: parseBoolean(canEditTree),
-            canPushCode: parseBoolean(canPushCode),
-            originalBranch: ref,
-            selectedBranch,
-            newBranchPath,
-            newTagPath,
-            newBlobPath,
-            forkNewBlobPath,
-            forkNewDirectoryPath,
-            forkUploadBlobPath,
-            uploadPath,
-            newDirPath,
-          },
-        });
-      },
-    });
-  }
 
   initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link'), router });
 

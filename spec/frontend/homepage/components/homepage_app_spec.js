@@ -100,6 +100,7 @@ describe('HomepageApp', () => {
       workItemsDataWithItems,
     ),
     assignedWorkItemsCount = 5,
+    glFeatures = { homepagePipelinesWidget: true, homepageMergeRequestsWidget: false },
   } = {}) {
     userCounts.assigned_issues = assignedWorkItemsCount;
 
@@ -111,7 +112,7 @@ describe('HomepageApp', () => {
       apolloProvider: mockApollo,
       provide: {
         duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME,
-        glFeatures: { homepagePipelinesWidget: true },
+        glFeatures,
       },
       propsData: {
         reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
@@ -281,7 +282,7 @@ describe('HomepageApp', () => {
       const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
       beforeEach(async () => {
-        createWrapper();
+        createWrapper({}, { glFeatures: { homepageMergeRequestsWidget: false } });
         await waitForPromises();
       });
 
@@ -407,11 +408,62 @@ describe('HomepageApp', () => {
     expect(findMergeRequestsWidget().exists()).toBe(true);
   });
 
+  describe('when the homepage_merge_requests_widget flag is enabled', () => {
+    it('replaces the user items count widgets with the merge requests widget', () => {
+      createWrapper({}, { glFeatures: { homepageMergeRequestsWidget: true } });
+
+      expect(findMergeRequestsWidget().exists()).toBe(true);
+      expect(findReviewRequestedWidget().exists()).toBe(false);
+      expect(findAssignedMergeRequestsWidget().exists()).toBe(false);
+      expect(findAssignedWorkItemsWidget().exists()).toBe(false);
+      expect(findAuthoredWorkItemsWidget().exists()).toBe(false);
+    });
+
+    it('does not run the queries that only feed the count widgets', async () => {
+      const mergeRequestsHandler = jest.fn().mockResolvedValue(mergeRequestsDataWithItems);
+      const workItemsHandler = jest.fn().mockResolvedValue(workItemsDataWithItems);
+
+      createApolloWrapper({
+        mergeRequestsWidgetMetadataQueryHandler: mergeRequestsHandler,
+        workItemsWidgetMetadataQueryHandler: workItemsHandler,
+        glFeatures: { homepageMergeRequestsWidget: true },
+      });
+
+      await waitForPromises();
+
+      expect(mergeRequestsHandler).not.toHaveBeenCalled();
+      expect(workItemsHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when the homepage_merge_requests_widget flag is absent from glFeatures', () => {
+    it('shows the count widgets and still runs their queries', async () => {
+      const mergeRequestsHandler = jest.fn().mockResolvedValue(mergeRequestsDataWithItems);
+      const workItemsHandler = jest.fn().mockResolvedValue(workItemsDataWithItems);
+
+      createApolloWrapper({
+        mergeRequestsWidgetMetadataQueryHandler: mergeRequestsHandler,
+        workItemsWidgetMetadataQueryHandler: workItemsHandler,
+        glFeatures: {},
+      });
+
+      await waitForPromises();
+
+      expect(findReviewRequestedWidget().exists()).toBe(true);
+      expect(mergeRequestsHandler).toHaveBeenCalledTimes(1);
+      expect(workItemsHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('when the homepage_merge_requests_widget flag is disabled', () => {
-    it('does not render the MergeRequestsWidget component', () => {
+    it('keeps the user items count widgets and does not render the merge requests widget', () => {
       createWrapper({}, { glFeatures: { homepageMergeRequestsWidget: false } });
 
       expect(findMergeRequestsWidget().exists()).toBe(false);
+      expect(findReviewRequestedWidget().exists()).toBe(true);
+      expect(findAssignedMergeRequestsWidget().exists()).toBe(true);
+      expect(findAssignedWorkItemsWidget().exists()).toBe(true);
+      expect(findAuthoredWorkItemsWidget().exists()).toBe(true);
     });
   });
 

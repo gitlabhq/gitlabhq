@@ -20,6 +20,7 @@ module Gitlab
             #
             offset_index = collection.first&.index
             options = diff_options.dup
+            options[:skip_charset_detection] = merge_request_diff.skip_charset_detection?
 
             collection =
               if offset_index && offset_index > 0

@@ -94,9 +94,11 @@ describe('MergeRequestsWidget', () => {
     // second line (.gl-tab-nav-item sets no white-space of its own), and that is
     // what pushes the content past the nav so overflow-x-auto has something to
     // scroll. gl-min-w-0 lets the nav shrink, since .gl-tabs-nav is a gl-grow item.
+    // gl-overflow-y-hidden is needed because overflow-x-auto makes the y axis
+    // compute to auto as well, which shows a stray vertical scrollbar.
     it('scrolls the tab bar horizontally rather than wrapping', () => {
       expect(findTabsNav().props('navClass')).toBe(
-        'gl-flex-nowrap gl-whitespace-nowrap gl-overflow-x-auto gl-min-w-0 gl-px-2',
+        'gl-flex-nowrap gl-whitespace-nowrap gl-overflow-x-auto gl-overflow-y-hidden gl-min-w-0 gl-px-2',
       );
     });
 

@@ -1,3 +1,5 @@
+import { nextTick } from 'vue';
+import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoDimensionsBarList from '~/glql/components/presenters/bar_list/two_dimensions_bar_list.vue';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
@@ -95,6 +97,72 @@ describe('TwoDimensionsBarList', () => {
     createComponent({ maxSeries: 2 });
 
     expect(rows()[0].segments.map(({ name }) => name)).toEqual(['ruby', 'python', 'go']);
+  });
+
+  describe('the expand control', () => {
+    const findToggle = () => wrapper.findComponent(GlButton);
+
+    it('names the full count of secondary values', () => {
+      createComponent({ maxSeries: 1 });
+
+      expect(findToggle().text()).toBe('Show all (3)');
+    });
+
+    // Rendered as a string: Vue drops an attribute bound to boolean false.
+    it('reports its expanded state to assistive technology', async () => {
+      createComponent({ maxSeries: 1 });
+
+      expect(findToggle().attributes('aria-expanded')).toBe('false');
+
+      findToggle().vm.$emit('click');
+      await nextTick();
+
+      expect(findToggle().attributes('aria-expanded')).toBe('true');
+    });
+
+    it('unfolds every segment when clicked, and folds back', async () => {
+      createComponent({ maxSeries: 1 });
+
+      findToggle().vm.$emit('click');
+      await nextTick();
+
+      expect(rows()[0].segments.map(({ name }) => name)).toEqual(['ruby', 'python', 'go']);
+      expect(findToggle().text()).toBe('Show fewer');
+
+      findToggle().vm.$emit('click');
+      await nextTick();
+
+      expect(rows()[0].segments.map(({ name }) => name)).toEqual(['ruby', 'Other (2)']);
+    });
+
+    it('folds back when the data changes', async () => {
+      createComponent({ maxSeries: 1 });
+      findToggle().vm.$emit('click');
+      await nextTick();
+
+      await wrapper.setProps({ data: { ...TWO_DIM_DATA } });
+
+      expect(rows()[0].segments.map(({ name }) => name)).toEqual(['ruby', 'Other (2)']);
+    });
+
+    // A remount would reset the series a reader had hidden from the legend.
+    it('keeps the same chart instance across a toggle', async () => {
+      createComponent({ maxSeries: 1 });
+      const before = findChart().vm;
+
+      findToggle().vm.$emit('click');
+      await nextTick();
+
+      expect(findChart().vm).toBe(before);
+    });
+
+    // A lone extra value stays inline rather than folding, so there is
+    // nothing the control could reveal.
+    it('stays hidden when no segment is folded', () => {
+      createComponent({ maxSeries: 2 });
+
+      expect(findToggle().exists()).toBe(false);
+    });
   });
 
   // Two raw buckets with the same formatted label stay separate segments,

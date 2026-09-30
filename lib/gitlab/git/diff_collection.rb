@@ -41,6 +41,8 @@ module Gitlab
         @enforce_limits = !!options.fetch(:limits, true)
         @expanded = !!options.fetch(:expanded, true)
         @offset_index = options.fetch(:offset_index, 0)
+        # Set by MergeRequestDiff callers, since the flag is rolled out per project.
+        @skip_charset_detection = options.fetch(:skip_charset_detection, false)
 
         @line_count = 0
         @byte_count = 0
@@ -161,14 +163,30 @@ module Gitlab
       end
 
       def expand_diff?(raw)
+        return legacy_expand_diff?(raw) unless @skip_charset_detection
+
+        return true if !@enforce_limits || @expanded
+        return false unless @iterator.size == 1
+
+        # A single file auto-expands unless it is binary, so only then is the scan worth running.
+        !binary_patch?(raw)
+      end
+
+      # Scans every patch, even where the result cannot change the answer.
+      def legacy_expand_diff?(raw)
         # For binary files only check @enforce_limits and @expanded,
         # for non-binary files also auto-expand when it's a single file diff
         allow_expansion = !@enforce_limits || @expanded
-        diff_content = raw.is_a?(Hash) ? raw[:diff] : raw.patch
 
-        return allow_expansion if detect_binary?(diff_content) || Gitlab::Git::Diff.has_binary_notice?(diff_content)
+        return allow_expansion if binary_patch?(raw)
 
         @iterator.size == 1 || allow_expansion
+      end
+
+      def binary_patch?(raw)
+        diff_content = raw.is_a?(Hash) ? raw[:diff] : raw.patch
+
+        detect_binary?(diff_content) || Gitlab::Git::Diff.has_binary_notice?(diff_content)
       end
 
       def each_gitaly_patch
@@ -216,7 +234,7 @@ module Gitlab
           end
 
           expand_diff = expand_diff?(raw)
-          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff)
+          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff, skip_charset_detection: @skip_charset_detection)
 
           if !expand_diff && over_safe_limits?(i) && diff.line_count > 0
             diff.collapse!

@@ -274,6 +274,7 @@ export default {
       <gl-dashboard-layout
         :key="activeViewIndex"
         class="explore-analytics-dashboard"
+        filters-class="explore-dashboard-filters"
         :config="layoutConfig(config)"
         :cell-height="cellHeight"
         :min-cell-height="minCellHeight"
@@ -297,7 +298,6 @@ export default {
           </gl-tabs>
           <dashboard-filters
             :key="filtersKey"
-            class="explore-dashboard-filters"
             :dashboard-filters="config.filters"
             :scope-paths="scopePaths"
             :date-range-filter="filters"

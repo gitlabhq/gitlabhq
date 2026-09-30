@@ -1129,18 +1129,6 @@ About the v3 folder structure:
   Sharding large deltas the way snapshots are sharded is tracked in
   [issue 608196](https://gitlab.com/gitlab-org/gitlab/-/issues/608196).
 
-### Change note
-
-The directory for package metadata changed with the release of 16.2 from `vendor/package_metadata_db` to `vendor/package_metadata/licenses`. If this directory already exists on the instance and dependency scanning needs to be added then you need to take the following steps.
-
-1. Rename the licenses directory: `mv vendor/package_metadata_db vendor/package_metadata/licenses`.
-1. Update any automation scripts or commands saved to change `vendor/package_metadata_db` to `vendor/package_metadata/licenses`.
-1. Update any cron entries to change `vendor/package_metadata_db` to `vendor/package_metadata/licenses`.
-
-   ```shell
-   sed -i '.bckup' -e 's#vendor/package_metadata_db#vendor/package_metadata/licenses#g' [FILE ...]
-   ```
-
 ### Instances installed with the Helm chart
 
 These procedures write to the Rails directory of a Linux package installation.

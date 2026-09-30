@@ -59,7 +59,10 @@ module API
         requires :value,
           types: [String, Integer],
           desc: '`true` or `false` to enable/disable, or an integer for percentage of time'
-        optional :key, type: String, desc: '`percentage_of_actors` or `percentage_of_time` (default)'
+        optional :key,
+          type: String,
+          values: %w[percentage_of_actors percentage_of_time],
+          desc: 'Rollout strategy for a percentage `value`. Omit it to apply the percentage to time'
         optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username or comma-separated multiple usernames'
         optional :group,

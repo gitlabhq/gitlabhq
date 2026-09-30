@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::Capture::Tasks, feature_category: :database do
   # Reset singleton between tests

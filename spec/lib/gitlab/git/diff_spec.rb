@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe Gitlab::Git::Diff, feature_category: :source_code_management do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:repository, freeze: false) { project.repository }
 
@@ -286,6 +288,81 @@ DIFF
 
       it 'is not a binary' do
         expect(diff).not_to have_binary_notice
+      end
+    end
+
+    context 'when the diff is already valid UTF-8' do
+      where(:description, :raw) do
+        'ascii'             | "@@ -1 +1 @@\n-a\n+b\n"
+        'multibyte'         | "@@ -1 +1 @@\n-Grüße\n+日本語 🎉\n"
+        'byte order mark'   | "\uFEFF@@ -1 +1 @@\n-a\n+b\n"
+        'NUL byte'          | "@@ -1 +1 @@\n-a\n+b\u0000c\n"
+        'empty'             | ""
+      end
+
+      with_them do
+        let(:diff) { described_class.new(@raw_diff_hash.merge(diff: raw), skip_charset_detection: true) }
+
+        it 'returns the patch untouched without scanning it' do
+          expect(CharlockHolmes::EncodingDetector).not_to receive(:new)
+
+          expect(diff.diff).to eq(raw)
+        end
+
+        context 'when skip_charset_detection is not set' do
+          let(:diff) { described_class.new(@raw_diff_hash.merge(diff: raw)) }
+
+          it 'scans the patch and still returns it untouched' do
+            expect(CharlockHolmes::EncodingDetector).to receive(:new).and_call_original
+
+            expect(diff.diff).to eq(raw)
+          end
+        end
+      end
+    end
+
+    context 'when the diff is nil' do
+      let(:diff) { described_class.new(@raw_diff_hash.merge(diff: nil)) }
+
+      it 'stays nil without being scanned' do
+        expect(CharlockHolmes::EncodingDetector).not_to receive(:new)
+
+        expect(diff.diff).to be_nil
+      end
+
+      context 'when skip_charset_detection is set' do
+        let(:diff) { described_class.new(@raw_diff_hash.merge(diff: nil), skip_charset_detection: true) }
+
+        it 'stays nil without being scanned' do
+          expect(CharlockHolmes::EncodingDetector).not_to receive(:new)
+
+          expect(diff.diff).to be_nil
+        end
+      end
+    end
+
+    context 'when the diff is binary' do
+      let(:raw) { "\x00\x01\x02\x03".b * 64 }
+      let(:diff) { described_class.new(@raw_diff_hash.merge(diff: raw), skip_charset_detection: true) }
+
+      it 'scans the patch and does not convert it' do
+        expect(CharlockHolmes::EncodingDetector).to receive(:new).and_call_original
+        expect(Gitlab::EncodingHelper).not_to receive(:encode_utf8_with_replacement_character)
+
+        expect(diff.diff).to eq(raw)
+      end
+    end
+
+    context 'when the diff is tagged UTF-8 but is not valid UTF-8' do
+      let(:raw) { "@@ -1 +1 @@\n-a\n+\xAE\n" }
+      let(:diff) { described_class.new(@raw_diff_hash.merge(diff: raw), skip_charset_detection: true) }
+
+      it 'scans the patch and converts it', :aggregate_failures do
+        expect(raw).not_to be_valid_encoding
+        expect(CharlockHolmes::EncodingDetector).to receive(:new).at_least(:once).and_call_original
+
+        expect(diff.diff).to be_valid_encoding
+        expect(diff.diff).not_to eq(raw)
       end
     end
 

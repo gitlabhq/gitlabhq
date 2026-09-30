@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe API::Mcp::Handlers::InitializeRequest, feature_category: :mcp_server do
   it 'falls back to a version it supports' do

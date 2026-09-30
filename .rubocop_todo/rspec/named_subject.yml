@@ -1495,7 +1495,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/gfm/reference_rewriter_spec.rb'
     - 'spec/lib/gitlab/git/attributes_at_ref_parser_spec.rb'
     - 'spec/lib/gitlab/git/attributes_parser_spec.rb'
-    - 'spec/lib/gitlab/git/blame_pagination_spec.rb'
     - 'spec/lib/gitlab/git/blob_spec.rb'
     - 'spec/lib/gitlab/git/branch_spec.rb'
     - 'spec/lib/gitlab/git/changes_spec.rb'

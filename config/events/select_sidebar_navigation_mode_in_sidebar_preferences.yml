@@ -1,0 +1,22 @@
+---
+description: Tracks when a user selects a sidebar navigation mode from the sidebar
+  preferences (one of "pinned_only", "grouped_pins", or "all_categories").
+internal_events: true
+action: select_sidebar_navigation_mode_in_sidebar_preferences
+identifiers:
+- user
+product_group: engagement
+product_categories:
+- navigation
+milestone: '19.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253007
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: The panel type the mode was changed in (e.g. "project", "group").
+  property:
+    description: The selected navigation mode ("pinned_only", "grouped_pins", or
+      "all_categories").

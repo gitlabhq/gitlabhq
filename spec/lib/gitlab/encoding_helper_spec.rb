@@ -139,6 +139,32 @@ RSpec.describe Gitlab::EncodingHelper, feature_category: :shared do
     end
   end
 
+  describe '#encode_utf8_with_replacement_character' do
+    # Gitlab::Git::Diff skips charset detection for valid UTF-8 because this
+    # method leaves it untouched. Changing that breaks the fast path.
+    where(:description, :input) do
+      'ascii'                       | "@@ -1 +1 @@\n-a\n+b\n"
+      'multibyte'                   | "Grüße 日本語 🎉\n"
+      'byte order mark'             | "\uFEFFwith bom\n"
+      'NUL byte'                    | "text\u0000with nul\n"
+      'replacement character'       | "already \uFFFD replaced\n"
+      'unfrozen string'             | +"unfrozen\n"
+      'empty string'                | ""
+    end
+
+    with_them do
+      it 'returns valid UTF-8 unchanged', :aggregate_failures do
+        expect(input.encoding).to eq(Encoding::UTF_8)
+        expect(input).to be_valid_encoding
+
+        result = ext_class.encode_utf8_with_replacement_character(input)
+
+        expect(result.bytes).to eq(input.bytes)
+        expect(result.encoding).to eq(Encoding::UTF_8)
+      end
+    end
+  end
+
   describe '#encode_utf8' do
     [
       ["nil", nil, nil],

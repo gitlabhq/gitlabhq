@@ -1112,11 +1112,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     describe "#default_branch_protection_settings" do
       let(:default_branch_protection_defaults) { {} }
       let(:namespace_setting) do
-        create(:namespace_settings, default_branch_protection_defaults: default_branch_protection_defaults)
+        build_stubbed(:namespace_settings, default_branch_protection_defaults: default_branch_protection_defaults)
       end
 
-      let(:namespace) { create(:namespace, namespace_settings: namespace_setting) }
-      let(:group) { create(:group, namespace_settings: namespace_setting) }
+      let(:namespace) { build_stubbed(:namespace, namespace_settings: namespace_setting) }
+      let(:group) { build_stubbed(:group, namespace_settings: namespace_setting) }
 
       before do
         stub_application_setting(default_branch_protection_defaults: Gitlab::Access::BranchProtection.protected_against_developer_pushes)
@@ -1637,10 +1637,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#visibility_level_field' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
   end
 
   describe '#to_param' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     it { expect(namespace.to_param).to eq(namespace.full_path) }
   end
 
@@ -1659,7 +1663,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   describe '#any_project_has_container_registry_tags?' do
     subject { namespace.any_project_has_container_registry_tags? }
 
-    let(:project) { create(:project, namespace: namespace) }
+    let(:namespace) { build_stubbed(:namespace) }
+    let(:project) { build_stubbed(:project, namespace: namespace) }
 
     it 'returns true if there is a project with container registry tags' do
       expect(namespace).to receive(:first_project_with_container_registry_tags).and_return(project)
@@ -1729,13 +1734,15 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#container_repositories_size_cache_key' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     it 'returns the correct cache key' do
       expect(namespace.container_repositories_size_cache_key).to eq "namespaces:#{namespace.id}:container_repositories_size"
     end
   end
 
   describe '#container_repositories_size', :clean_gitlab_redis_cache do
-    let(:project_namespace) { create(:namespace) }
+    let(:project_namespace) { build_stubbed(:namespace) }
 
     subject { project_namespace.container_repositories_size }
 
@@ -1800,8 +1807,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     context 'for a sub-group' do
-      let(:parent_namespace) { create(:group) }
-      let(:project_namespace) { create(:group, parent: parent_namespace) }
+      let(:parent_namespace) { build_stubbed(:group) }
+      let(:project_namespace) { build_stubbed(:group, parent: parent_namespace) }
 
       it { is_expected.to be_nil }
     end
@@ -2268,9 +2275,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe "#default_branch_protection" do
-    let(:namespace) { create(:namespace) }
+    let(:namespace) { build_stubbed(:namespace) }
     let(:default_branch_protection) { nil }
-    let(:group) { create(:group, default_branch_protection: default_branch_protection) }
+    let(:group) { build_stubbed(:group, default_branch_protection: default_branch_protection) }
 
     before do
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
@@ -2330,6 +2337,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#user_ids_for_project_authorizations' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     it 'returns the user IDs for which to refresh authorizations' do
       expect(namespace.user_ids_for_project_authorizations)
         .to eq([namespace.owner_id])
@@ -2841,7 +2850,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     let(:instance_autodevops_status) { Gitlab::CurrentSettings.auto_devops_enabled? }
 
     context 'when namespace.auto_devops_enabled is not set' do
-      let(:group) { create(:group) }
+      let(:group) { build_stubbed(:group) }
 
       it 'returns the config values using the instance setting' do
         expect(group.first_auto_devops_config).to eq({ scope: :instance, status: instance_autodevops_status })
@@ -2866,7 +2875,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     context 'when namespace.auto_devops_enable is set' do
-      let(:group) { create(:group, auto_devops_enabled: false) }
+      let(:group) { build_stubbed(:group, auto_devops_enabled: false) }
 
       it 'returns the correct config values' do
         expect(group.first_auto_devops_config).to eq({ scope: :group, status: false })
@@ -2885,7 +2894,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     context 'when type is a group' do
-      let(:namespace) { create(:group) }
+      let(:namespace) { build_stubbed(:group) }
 
       it { is_expected.to be_falsy }
     end
@@ -2909,7 +2918,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     context 'when type is a group' do
-      let(:namespace) { create(:group) }
+      let(:namespace) { build_stubbed(:group) }
 
       it { is_expected.to be_falsy }
     end
@@ -2947,7 +2956,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#has_parent?' do
     it 'returns true when the group has a parent' do
-      group = create(:group, :nested)
+      group = build_stubbed(:group, :nested)
 
       expect(group.has_parent?).to be_truthy
     end
@@ -2960,7 +2969,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     it 'returns false when the group has no parent' do
-      group = create(:group, parent: nil)
+      group = build_stubbed(:group, parent: nil)
 
       expect(group.has_parent?).to be_falsy
     end
@@ -3169,6 +3178,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#root?' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     subject { namespace.root? }
 
     context 'when is subgroup' do
@@ -3350,7 +3361,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     context 'nested group' do
-      let(:nested_group) { create(:group, :nested) }
+      let(:nested_group) { build_stubbed(:group, :nested) }
 
       it { expect(nested_group.web_url).to include("groups/#{nested_group.full_path}") }
     end
@@ -3515,6 +3526,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#allowed_work_item_types' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     it 'returns an array of base types from the provider' do
       expect(namespace.allowed_work_item_types).to be_an(Array)
       expect(namespace.allowed_work_item_types).to all(be_a(String))
@@ -3522,6 +3535,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#allowed_work_item_type?' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     it 'returns true when the type is allowed' do
       expect(namespace.allowed_work_item_type?(:issue)).to be(true).or(be(false))
     end
@@ -3583,6 +3598,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#supports_work_items?' do
+    let(:namespace) { build_stubbed(:namespace) }
+
     it 'returns a boolean' do
       expect(namespace.supports_work_items?).to be(true).or(be(false))
     end

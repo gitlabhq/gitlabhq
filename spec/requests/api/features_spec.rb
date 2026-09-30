@@ -255,6 +255,31 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
       end
     end
 
+    describe 'invalid key parameter' do
+      shared_examples 'rejects the key' do
+        it 'returns an error instead of silently ignoring the key' do
+          post api("/features/#{feature_name}", admin, admin_mode: true),
+            params: { value: value, key: 'percentage_of_actor' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to match(/key does not have a valid value/)
+          expect(Feature.persisted_name?(feature_name)).to be(false)
+        end
+      end
+
+      context 'with a boolean value' do
+        let(:value) { 'true' }
+
+        it_behaves_like 'rejects the key'
+      end
+
+      context 'with a percentage value' do
+        let(:value) { '50' }
+
+        it_behaves_like 'rejects the key'
+      end
+    end
+
     describe 'mutually exclusive parameters' do
       shared_examples 'fails to set the feature flag' do
         before do

@@ -1,7 +1,7 @@
+import { GlFormPasswordInput } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import GlFieldErrors from '~/gl_field_errors';
-import PasswordInput from './components/password_input.vue';
 
 export const initPasswordInput = () => {
   document.querySelectorAll('.js-password').forEach((el) => {
@@ -31,19 +31,26 @@ export const initPasswordInput = () => {
       el,
       name: 'PasswordInputRoot',
       render(createElement) {
-        return createElement(PasswordInput, {
-          props: {
-            title,
-            id,
-            minimumPasswordLength,
-            testid,
-            trackActionForErrors,
-            autocomplete,
-            name,
-            required: requiredAttr,
-            disabled: disabledAttr,
-          },
-        });
+        // Without this wrapper GlFieldErrors injects the validation message
+        // between the input and its reveal toggle, inside the field box.
+        return createElement('div', { staticClass: 'gl-field-error-anchor' }, [
+          createElement(GlFormPasswordInput, {
+            props: {
+              disabled: disabledAttr,
+              inputClass: 'js-password-complexity-validation js-track-error',
+            },
+            attrs: {
+              id,
+              name,
+              title,
+              required: requiredAttr,
+              autocomplete: autocomplete || 'current-password',
+              minlength: minimumPasswordLength,
+              'data-testid': testid,
+              'data-track-action-for-errors': trackActionForErrors,
+            },
+          }),
+        ]);
       },
     });
 

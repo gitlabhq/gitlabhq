@@ -96,6 +96,7 @@ attributes:
 | `status` | string | Current flow status. One of `created`, `running`, `paused`, `finished`, `failed`, `stopped`, `input_required`, `plan_approval_required`, or `tool_call_approval_required`. |
 | `summary` | string | Short text summary of the workflow. |
 | `title` | string | Title of the session. |
+| `web_url` | string | URL of the session in the GitLab UI. `null` if the session is not for a project. |
 | `workflow_definition` | string | Flow type identifier. |
 | `workload` | object | Information about the workload. |
 | `workload.id` | string | ID of the workload. |
@@ -173,6 +174,7 @@ Example response:
 ```json
 {
   "id": 1,
+  "web_url": "https://gitlab.example.com/group/project/-/automate/agent-sessions/1",
   "project_id": 5,
   "namespace_id": null,
   "agent_privileges": [1, 2, 3, 4, 5, 6],
