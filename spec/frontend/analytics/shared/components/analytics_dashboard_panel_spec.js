@@ -327,6 +327,19 @@ describe('AnalyticsDashboardPanel', () => {
   });
 
   describe('when the data has been fetched', () => {
+    describe('and the panel has a load priority', () => {
+      beforeEach(() => {
+        mockFetch.mockResolvedValue([{ name: 'foo' }]);
+        createWrapper({ props: { loadPriority: 3 } });
+        return waitForPromises();
+      });
+
+      // Like `filters`, only visualizations that declare the prop read it; the rest see it in `$attrs`.
+      it('passes it to the visualization', () => {
+        expect(findVisualization().vm.$attrs['load-priority']).toBe(3);
+      });
+    });
+
     describe('and there is data', () => {
       const mockData = [{ name: 'foo' }];
 

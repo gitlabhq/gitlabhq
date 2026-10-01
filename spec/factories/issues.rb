@@ -36,16 +36,14 @@ FactoryBot.define do
     end
 
     trait :with_alert do
-      after(:create) do |issue|
-        create(:alert_management_alert, project: issue.project, issue: issue)
+      alert_management_alert do
+        association(:alert_management_alert, strategy: :build, project: project, issue: instance)
       end
     end
 
     trait :closed_as_duplicate do
       closed
-      after(:create) do |issue|
-        issue.update!(duplicated_to: create(:issue, project: issue.project))
-      end
+      duplicated_to { association(:issue, project: project) }
     end
 
     after(:build) do |issue, evaluator|
@@ -100,8 +98,8 @@ FactoryBot.define do
       # in app code. This is a trait to avoid creating escalation
       # status records in specs which do not need them.
       trait :with_escalation_status do
-        after(:create) do |incident|
-          create(:incident_management_issuable_escalation_status, issue: incident)
+        incident_management_issuable_escalation_status do
+          association(:incident_management_issuable_escalation_status, strategy: :build, issue: instance)
         end
       end
     end

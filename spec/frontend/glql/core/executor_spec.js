@@ -153,6 +153,33 @@ describe('Executor', () => {
 
       expect(sentRequests()).toEqual(['first', 'dashboard', 'second']);
     });
+
+    it('runs waiting requests lowest priority first', async () => {
+      const variablesFor = (name) => ({ name: { type: 'String', value: name } });
+      const sentRequests = () => queryFn.mock.calls.map(([{ variables }]) => variables.name);
+      let releaseFirst;
+
+      queryFn.mockReset();
+      queryFn.mockReturnValueOnce(
+        new Promise((resolve) => {
+          releaseFirst = resolve;
+        }),
+      );
+      queryFn.mockResolvedValue({ data: MOCK_QUERY_RESPONSE });
+
+      const query = 'query { issues { nodes { id } } }';
+      const requests = [
+        executor.execute(query, variablesFor('first')),
+        executor.execute(query, variablesFor('later'), { priority: 2 }),
+        executor.execute(query, variablesFor('sooner'), { priority: 1 }),
+      ];
+      await waitForPromises();
+
+      releaseFirst({ data: MOCK_QUERY_RESPONSE });
+      await Promise.all(requests);
+
+      expect(sentRequests()).toEqual(['first', 'sooner', 'later']);
+    });
   });
 
   describe('clients', () => {

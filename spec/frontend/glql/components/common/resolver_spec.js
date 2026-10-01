@@ -151,7 +151,7 @@ describe('Resolver', () => {
       expect(execute).toHaveBeenCalledWith(
         'query {}',
         expect.anything(),
-        expect.objectContaining({ queue: 'glql-queue-default' }),
+        expect.objectContaining({ queue: 'glql-queue-default', priority: 0 }),
       );
     });
 
@@ -166,9 +166,13 @@ describe('Resolver', () => {
       );
     });
 
-    it('runs the comparison query and further pages on the same queue', async () => {
+    it('runs the comparison query and further pages on the same queue and priority', async () => {
       mockUtils({ totalCount: MOCK_ISSUES.nodes.length + 1 });
-      createWrapper({ queue: 'glql-queue-dashboard', comparison: { query: 'assignee = "bar"' } });
+      createWrapper({
+        queue: 'glql-queue-dashboard',
+        priority: 7,
+        comparison: { query: 'assignee = "bar"' },
+      });
       await waitForPromises();
 
       execute.mockResolvedValue({ count: MOCK_ISSUES.nodes.length + 1, ...MOCK_ISSUES_PAGE_2 });
@@ -176,9 +180,21 @@ describe('Resolver', () => {
       await waitForPromises();
 
       expect(execute.mock.calls).toEqual([
-        ['query {}', expect.anything(), expect.objectContaining({ queue: 'glql-queue-dashboard' })],
-        ['query {}', expect.anything(), expect.objectContaining({ queue: 'glql-queue-dashboard' })],
-        ['query {}', expect.anything(), expect.objectContaining({ queue: 'glql-queue-dashboard' })],
+        [
+          'query {}',
+          expect.anything(),
+          expect.objectContaining({ queue: 'glql-queue-dashboard', priority: 7 }),
+        ],
+        [
+          'query {}',
+          expect.anything(),
+          expect.objectContaining({ queue: 'glql-queue-dashboard', priority: 7 }),
+        ],
+        [
+          'query {}',
+          expect.anything(),
+          expect.objectContaining({ queue: 'glql-queue-dashboard', priority: 7 }),
+        ],
       ]);
     });
   });

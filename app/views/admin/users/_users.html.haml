@@ -1,7 +1,7 @@
 - add_page_specific_style 'page_bundles/search'
 
 .gl-flex.gl-items-start.gl-flex-wrap.gl-gap-4.gl-py-4.gl-border-0{ class: "@md/panel:gl-flex-nowrap", data: { testid: "filtered-search-block" } }
-  #js-admin-users-filter-app
+  #js-admin-users-filter-app{ data: { show_filter_tokens: show_users_filter_tokens?.to_s } }
   .gl-shrink-0
     = gl_redirect_listbox_tag admin_users_sort_options(request.query_parameters), @sort,  data: { placement: 'right' }
 

@@ -3,11 +3,12 @@
 module Ci
   class PipelineArtifactUploader < GitlabUploader
     include ObjectStorage::Concern
+    include Gitlab::Encryption::DbKeyBaseLockboxKeys
 
     storage_location :artifacts
 
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)
-    encrypt(key: :encryption_key)
+    encrypt(key: :encryption_key, previous_versions: :previous_encryption_key_versions)
 
     alias_method :lockbox_encrypt, :encrypt
 
@@ -43,11 +44,15 @@ module Ci
     end
 
     def encryption_key
-      OpenSSL::HMAC.digest(
-        'SHA256',
-        Gitlab::Application.credentials.db_key_base,
-        "pipeline_artifact:#{model.project_id}"
-      )
+      db_key_base_lockbox_key(encryption_key_context)
+    end
+
+    def previous_encryption_key_versions
+      db_key_base_lockbox_previous_versions(encryption_key_context)
+    end
+
+    def encryption_key_context
+      "pipeline_artifact:#{model.project_id}"
     end
   end
 end

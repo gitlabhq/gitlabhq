@@ -350,6 +350,7 @@ export default {
             :visualization="panel.visualization"
             :query-overrides="panel.queryOverrides"
             :views="panel.views"
+            :load-priority="panel.loadPriority"
             :filters="utcFilters"
             :data-testid="panelTestId(panel)"
             @select-dashboard-view="selectDashboardView"

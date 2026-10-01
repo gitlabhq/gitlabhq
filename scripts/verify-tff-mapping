@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'test_file_finder'
+require_relative 'lib/migration_example_finder'
 
 # These tests run a sanity check on the mapping file `tests.yml`
 # used with the `test_file_finder` gem (`tff`) to identify matching test files.
@@ -21,6 +22,11 @@ specs_for_all_models = %w[
   spec/models/every_model_spec.rb
   spec/lib/gitlab/import_export/model_configuration_spec.rb
 ].freeze
+
+migration_examples = MigrationExampleFinder.new(root_path)
+
+plain_spec_migration, plain_spec = migration_examples.newest_with_spec(timestamped: false)
+timestamped_spec_migration, timestamped_spec = migration_examples.newest_with_spec(timestamped: true)
 
 tests = [
   {
@@ -131,21 +137,15 @@ tests = [
     ]
   },
 
-  {
+  plain_spec_migration && {
     explanation: 'Migration should map to its non-timestamped spec + the ClickHouse siphon tables spec (db/ change)',
-    changed_file: 'db/migrate/20251020001530_cleanup_duplicate_work_item_type_custom_lifecycles.rb',
-    expected: %w[
-      spec/migrations/cleanup_duplicate_work_item_type_custom_lifecycles_spec.rb
-      spec/db/clickhouse_siphon_tables_spec.rb
-    ]
+    changed_file: plain_spec_migration,
+    expected: [plain_spec, 'spec/db/clickhouse_siphon_tables_spec.rb']
   },
-  {
+  timestamped_spec_migration && {
     explanation: 'Migration should map to its timestamped spec + the ClickHouse siphon tables spec (db/ change)',
-    changed_file: 'db/post_migrate/20251027104235_queue_backfill_missing_namespace_details.rb',
-    expected: %w[
-      spec/migrations/20251027104235_queue_backfill_missing_namespace_details_spec.rb
-      spec/db/clickhouse_siphon_tables_spec.rb
-    ]
+    changed_file: timestamped_spec_migration,
+    expected: [timestamped_spec, 'spec/db/clickhouse_siphon_tables_spec.rb']
   },
   {
     explanation: 'FOSS views should map to respective spec',
@@ -790,7 +790,7 @@ tests = [
       spec/cells/claims/organizations/organization_spec.rb
     ]
   }
-]
+].compact
 
 class MappingTest
   def initialize(explanation:, changed_file:, expected:, strategy:)

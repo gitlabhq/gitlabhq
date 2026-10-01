@@ -50,6 +50,48 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
       end
     end
 
+    context 'for planning_view_boards feature flags' do
+      let_it_be(:subgroup) { create(:group, :private, parent: group) }
+      let(:current_user) { developer }
+      let(:work_items_path) do
+        url_for(controller: 'groups/work_items', action: :index, group_id: subgroup.full_path)
+      end
+
+      before do
+        stub_feature_flags(planning_view_boards: false, planning_view_boards_group: false)
+      end
+
+      it 'pushes the flag as false when both flags are disabled' do
+        get work_items_path
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
+      end
+
+      it 'pushes the flag as true when enabled for the user' do
+        stub_feature_flags(planning_view_boards: current_user)
+
+        get work_items_path
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+      end
+
+      it 'pushes the flag as true when enabled for the root group' do
+        stub_feature_flags(planning_view_boards_group: group)
+
+        get work_items_path
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+      end
+
+      it 'pushes the flag as false when enabled for a different root group' do
+        stub_feature_flags(planning_view_boards_group: create(:group))
+
+        get work_items_path
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
+      end
+    end
+
     context 'when the user cannot read the group' do
       let(:current_user) { create(:user) }
 

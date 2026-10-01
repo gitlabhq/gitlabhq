@@ -9,7 +9,7 @@ import {
   GRID_HEIGHT_COMPACT_CELL_HEIGHT,
   GRID_HEIGHT_COMPACT_MIN_CELL_HEIGHT,
 } from '../constants';
-import { convertToDashboardGraphQLId, getUniquePanelId } from '../utils';
+import { assignLoadPriority, convertToDashboardGraphQLId, getUniquePanelId } from '../utils';
 import getDashboardQuery from '../graphql/get_dashboard.query.graphql';
 import getSystemDashboardQuery from '../graphql/get_system_dashboard.query.graphql';
 
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     assignPanelIds(panels = []) {
-      return panels.map(({ id, ...panel }) => ({
+      const withIds = panels.map(({ id, ...panel }) => ({
         ...panel,
         // A section spans the dashboard, so its config omits a width. The grid
         // layout requires one, so fill it in here.
@@ -85,6 +85,10 @@ export default {
           : {}),
         id: getUniquePanelId(),
       }));
+
+      // The grid slot drops `gridAttributes`, so each panel gets its load priority here, while
+      // the position is still known.
+      return assignLoadPriority(withIds);
     },
   },
   apollo: {

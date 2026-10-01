@@ -5,9 +5,11 @@ module Gitlab
     module IframeProviders
       class Provider
         ID_FORMAT = /\A[a-z][a-z0-9_]*\z/
-        KEYS = %w[name matches requires src sandbox require_activation].freeze
+        HOSTNAME_FORMAT = /\A[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\z/i
+        KEYS = %w[name matches requires src additional_csp_hosts sandbox require_activation].freeze
 
-        attr_reader :id, :name, :matches, :requires, :src, :src_origin, :sandbox, :require_activation
+        attr_reader :id, :name, :matches, :requires, :src, :src_origin, :additional_csp_hosts, :sandbox,
+          :require_activation
 
         class << self
           def from_config(id, entry)
@@ -21,6 +23,7 @@ module Gitlab
             requires = parse_requires(id, entry.fetch('requires', {}))
             src = parse_src(id, entry['src'], matches, requires)
             sandbox = parse_sandbox(id, entry['sandbox'], src)
+            additional_csp_hosts = parse_additional_csp_hosts(id, entry.fetch('additional_csp_hosts', []), sandbox)
 
             new(
               id: id,
@@ -28,7 +31,7 @@ module Gitlab
               matches: matches,
               requires: requires,
               src: src,
-              src_origin: Addressable::URI.parse(src).origin,
+              additional_csp_hosts: additional_csp_hosts,
               sandbox: sandbox,
               require_activation: parse_require_activation(id, entry.fetch('require_activation', true))
             )
@@ -98,6 +101,20 @@ module Gitlab
             sandbox
           end
 
+          def parse_additional_csp_hosts(id, hosts, sandbox)
+            valid = hosts.is_a?(Array) && hosts.all? { |host| host.is_a?(String) && host.match?(HOSTNAME_FORMAT) }
+            fail!(id, "'additional_csp_hosts' must be a list of hostnames") unless valid
+
+            hosts = hosts.map(&:downcase)
+
+            if sandbox.include?('allow-same-origin') && hosts.any? { |host| hosted_by_instance?(host) }
+              fail!(id, "'additional_csp_hosts' must not include hosts served by this GitLab instance " \
+                "when 'allow-same-origin' is set")
+            end
+
+            hosts
+          end
+
           def parse_require_activation(id, require_activation)
             fail!(id, "'require_activation' must be a boolean") unless [true, false].include?(require_activation)
 
@@ -111,15 +128,20 @@ module Gitlab
           end
         end
 
-        def initialize(id:, name:, matches:, requires:, src:, src_origin:, sandbox:, require_activation:)
+        def initialize(id:, name:, matches:, requires:, src:, additional_csp_hosts:, sandbox:, require_activation:)
           @id = id
           @name = name
           @matches = matches
           @requires = requires
           @src = src
-          @src_origin = src_origin
+          @src_origin = Addressable::URI.parse(src).origin
+          @additional_csp_hosts = additional_csp_hosts
           @sandbox = sandbox
           @require_activation = require_activation
+        end
+
+        def frame_src_origins
+          [src_origin, *additional_csp_hosts.map { |host| "https://#{host}" }]
         end
 
         def match(uri)

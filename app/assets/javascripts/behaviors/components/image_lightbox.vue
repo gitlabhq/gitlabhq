@@ -2,6 +2,7 @@
 import { GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { safeDecodeURIComponent } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
 export default {
@@ -60,6 +61,7 @@ export default {
         const lastPart = pathParts[pathParts.length - 1];
 
         [filename] = lastPart.split('?');
+        filename = safeDecodeURIComponent(filename);
       } catch (e) {
         filename = 'image.png';
       }
@@ -270,9 +272,12 @@ export default {
     class="image-lightbox gl-fixed gl-left-0 gl-top-0 gl-z-[1040] gl-flex gl-h-full gl-w-full gl-flex-col gl-overflow-hidden gl-bg-default"
   >
     <div
-      class="js-image-lightbox-toolbar gl-flex gl-w-full gl-items-center gl-justify-end gl-gap-3 gl-bg-overlap gl-p-3"
+      class="js-image-lightbox-toolbar gl-flex gl-w-full gl-items-center gl-justify-between gl-gap-3 gl-bg-overlap gl-p-3"
       @click.self="close"
     >
+      <span class="gl-min-w-0 gl-grow gl-truncate gl-pl-3 gl-text-sm" :title="imageFilename">{{
+        imageFilename
+      }}</span>
       <div class="gl-flex gl-gap-2">
         <clipboard-button
           category="tertiary"

@@ -34,6 +34,7 @@ describe('ImageLightbox', () => {
   const findPrevButton = () => wrapper.findComponent('[icon="chevron-lg-left"]');
   const findNextButton = () => wrapper.findComponent('[icon="chevron-lg-right"]');
   const findImage = () => wrapper.find('img');
+  const findFilenameLabel = () => wrapper.find('.js-image-lightbox-toolbar span');
   const findErrorIcon = () => wrapper.findComponent(GlIcon);
   const findLightboxContainer = () => wrapper.find('#lightbox');
 
@@ -281,6 +282,42 @@ describe('ImageLightbox', () => {
           expect(findDownloadButton().attributes('download')).toBe('relative-image.gif');
         });
       });
+    });
+  });
+
+  describe('filename label', () => {
+    it('renders the current image filename', () => {
+      createComponent({ visible: true, startingImage: 0 });
+
+      expect(findFilenameLabel().text()).toBe('image1.jpg');
+    });
+
+    it('updates the filename when navigating between images', async () => {
+      createComponent({ visible: true, startingImage: 0 });
+
+      findNextButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findFilenameLabel().text()).toBe('image2.png');
+    });
+
+    it('decodes percent-encoded filenames', () => {
+      createComponent({
+        visible: true,
+        images: [{ imageSrc: 'https://example.com/my%20image.png', imageAlt: 'Test' }],
+      });
+
+      expect(findFilenameLabel().text()).toBe('my image.png');
+    });
+
+    it('falls back to the raw filename when it contains malformed percent-encoding', () => {
+      createComponent({
+        visible: true,
+        images: [{ imageSrc: 'https://example.com/100%.png', imageAlt: 'Test' }],
+      });
+
+      expect(findFilenameLabel().text()).toBe('100%.png');
+      expect(findDownloadButton().attributes('download')).toBe('100%.png');
     });
   });
 

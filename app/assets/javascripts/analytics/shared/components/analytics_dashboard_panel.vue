@@ -83,6 +83,13 @@ export default {
       required: false,
       default: null,
     },
+    // The panel's index in the dashboard's reading order. Visualizations that queue their
+    // requests load in this order, so a view fills top to bottom.
+    loadPriority: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   emits: ['select-dashboard-view'],
   data() {
@@ -411,6 +418,7 @@ export default {
         :namespace="namespace"
         :is-project="isProject"
         :filters="filters"
+        :load-priority="loadPriority"
         @set-alerts="setAlerts"
         @set-actions="setActions"
         @reload="fetchData"

@@ -84,17 +84,6 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
     end
   end
 
-  describe 'Redirect after sign in', type: :request do
-    let_it_be(:public_project) { create(:project, :public) }
-
-    it 'stores the create form path so the user returns to it after signing in' do
-      get new_project_work_item_path(public_project, type: 'Issue')
-
-      expect(response).to redirect_to(new_user_session_path)
-      expect(session['user_return_to']).to eq(new_project_work_item_path(public_project, type: 'Issue'))
-    end
-  end
-
   describe 'POST authorize' do
     subject do
       post(:authorize, params: { namespace_id: project.namespace, project_id: project, file: file })

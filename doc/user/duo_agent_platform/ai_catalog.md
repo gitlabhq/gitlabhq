@@ -74,6 +74,57 @@ On GitLab Self-Managed, the following agents are not displayed in the AI Catalog
 
 To view available flows, select the **Flows** tab.
 
+To determine which project manages an item, select the item and see the **Managed by** field.
+
+## Location of item definitions
+
+Item definitions are stored in the AI Catalog instead of the repository.
+Each item you create has a project that manages it,
+which you select when you create the item. You cannot change the project after you create the item.
+
+Members of the managing project who have the Maintainer or Owner role can edit the item.
+The managing project also determines who can view a private or restricted item.
+A single project can manage many items.
+Items that GitLab provides, such as foundational agents and GitLab-managed external agents,
+have no managing project.
+
+To change an item, edit it in the AI Catalog. You do not need a commit or a merge request.
+For more information, see [Edit an agent](agents/custom.md#edit-an-agent) or [Edit a flow](flows/custom.md#edit-a-flow).
+
+When you save a change to the item's configuration, version pinning determines which projects and groups use the new version:
+
+- Projects that do not pin a version, such as the managing project, use the new version immediately.
+- Projects and groups pinned to an earlier version keep that version until you update the pin.
+
+A change to the item's name, description, or visibility applies to the item directly
+and does not create a version.
+For more information, see [Version pinning](#version-pinning).
+
+### Use a merge request to update the definition
+
+You can store agent and flow definitions in a repository and review changes to them
+in merge requests. The [AI Catalog CI/CD component](https://gitlab.com/explore/catalog/components/ai-catalog)
+publishes the definitions in the `agents/` and `flows/` directories to the AI Catalog.
+You can configure both directory names. The component runs in tag pipelines.
+To add the component and change the directory names, see [Quick Start](https://gitlab.com/components/ai-catalog#quick-start) and [Input Parameters](https://gitlab.com/components/ai-catalog#input-parameters) in the component README.
+
+To update an item definition, complete the following steps:
+
+1. Open a merge request with your changes to the definition file.
+1. After the merge request merges, [create a tag](../project/repository/tags/_index.md#create-a-tag) from the default branch. The tag pipeline publishes the change to the AI Catalog.
+
+When you create the tag, the component completes the following actions for each item:
+
+1. Hashes the definition file and compares it with the hash in `.ai-catalog-mapping.json`
+   from the last sync.
+1. Skips the item if the file has not changed.
+1. If the file has changed, overwrites the item's name, description, and visibility in the
+   AI Catalog, and adds a new version if the definition differs.
+
+The component compares against the repository file, not the AI Catalog, so it does not
+detect edits made in the AI Catalog editor. Those edits stay in place until the repository
+file changes. The next publish then overwrites them.
+
 ## Agent and flow versions
 
 {{< history >}}
@@ -124,9 +175,9 @@ Version pinning means:
 This approach provides stability and predictability for your AI-powered workflows.
 
 When you enable an AI Catalog item in the project that manages the item, GitLab does not pin a version.
-Instead, the manager project always uses the latest version of the item.
+Instead, that project always uses the latest version of the item.
 
-If you enabled an agent or flow in its manager project before GitLab 18.10, your configuration remains at the pinned version.
+If you enabled an agent or flow in the project that manages it before GitLab 18.10, your configuration remains at the pinned version.
 
 After you update to the latest version for the first time, GitLab automatically uses the latest version from then onwards.
 

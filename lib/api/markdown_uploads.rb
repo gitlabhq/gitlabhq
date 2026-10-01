@@ -11,7 +11,12 @@ module API
       filename: ::API::NO_SLASH_URL_PART_REGEX
     )
 
-    allow_access_with_scope :ai_workflows, if: ->(request) { request.post? }
+    # Reads are opt-in per route: listing and ID lookup allow upload enumeration.
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.post? ||
+        ((request.get? || request.head?) &&
+          request.env[Grape::Env::API_ENDPOINT]&.route_setting(:ai_workflows_download).present?)
+    end
 
     before { authenticate_non_get! }
 
@@ -134,6 +139,7 @@ module API
         requires :filename, type: String, file_path: true, desc: 'The filename of a project upload'
       end
       route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :project
+      route_setting :ai_workflows_download, true
       get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :read_upload, user_project
 
@@ -311,6 +317,7 @@ module API
         requires :filename, type: String, file_path: true, desc: 'The filename of a group upload'
       end
       route_setting :authorization, permissions: :read_markdown_upload, boundary_type: :group
+      route_setting :ai_workflows_download, true
       get ':id/uploads/:secret/:filename', requirements: FILENAME_QUERY_PARAM_REQUIREMENTS do
         authorize! :read_upload, user_group
 

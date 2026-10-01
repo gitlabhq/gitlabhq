@@ -15246,6 +15246,7 @@ CREATE TABLE ascp_security_contexts (
     authentication_model text,
     authorization_model text,
     data_sensitivity text,
+    security_boundary text[] DEFAULT '{}'::text[] NOT NULL,
     CONSTRAINT check_341adadf79 CHECK ((char_length(authentication_model) <= 1024)),
     CONSTRAINT check_551286ee26 CHECK ((char_length(summary) <= 4096)),
     CONSTRAINT check_75ecfb66c4 CHECK ((char_length(data_sensitivity) <= 255)),

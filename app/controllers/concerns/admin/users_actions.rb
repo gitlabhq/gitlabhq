@@ -17,6 +17,7 @@ module Admin
       before_action :set_shared_view_parameters, only: [:show]
 
       helper_method :show_invite_organization_user_button?
+      helper_method :show_users_filter_tokens?
     end
 
     def index
@@ -69,6 +70,10 @@ module Admin
     # admin area. Overridden there.
     def show_invite_organization_user_button?
       false
+    end
+
+    def show_users_filter_tokens?
+      true
     end
 
     def user

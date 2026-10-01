@@ -15,6 +15,7 @@ import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_das
 import { createAlert } from '~/alert';
 import getDashboardQuery from '~/explore/analytics_dashboards/graphql/get_dashboard.query.graphql';
 import {
+  mockCustomDashboard,
   mockDashboardResponse,
   mockDashboardWithPanelViewsResponse,
   mockPanelWithViews,
@@ -98,10 +99,12 @@ describe('ExploreAnalyticsDashboardDetails', () => {
 
   const panelLayoutStub = {
     props: ['config'],
+    // Like GlDashboardLayout, hands the slot a panel without its `gridAttributes`.
+    methods: { slotPanel: ({ gridAttributes, ...panel }) => panel },
     template: `
         <div>
           <slot name="filters" />
-          <slot name="panel" v-if="config.panels.length" :panel="config.panels[0]" />
+          <slot name="panel" v-if="config.panels.length" :panel="slotPanel(config.panels[0])" />
         </div>
       `,
   };
@@ -1192,6 +1195,43 @@ describe('ExploreAnalyticsDashboardDetails', () => {
         views: mockPanelWithViews.views,
         filters: { groups: ['gitlab-org'], projects: [] },
       });
+    });
+  });
+
+  describe('panel load priority', () => {
+    // The first configured panel sits below the second, so its priority proves the order
+    // comes from the grid position rather than the config order.
+    const below = {
+      ...mockPanelWithViews,
+      title: 'Below',
+      gridAttributes: { xPos: 0, yPos: 1, width: 3, height: 1 },
+    };
+    const top = {
+      ...mockPanelWithViews,
+      title: 'Top',
+      gridAttributes: { xPos: 0, yPos: 0, width: 3, height: 1 },
+    };
+
+    beforeEach(async () => {
+      createComponent({
+        requestHandlers: mockResolvedQuery({
+          customDashboard: {
+            ...mockCustomDashboard,
+            config: { ...mockCustomDashboard.config, panels: [below, top] },
+          },
+        }),
+        stubs: { GlDashboardLayout: panelLayoutStub },
+      });
+
+      await waitForPromises();
+      await selectGroup();
+    });
+
+    it('passes each panel its reading-order priority', () => {
+      const panel = wrapper.findComponent(AnalyticsDashboardPanel);
+
+      expect(panel.props('title')).toBe('Below');
+      expect(panel.props('loadPriority')).toBe(1);
     });
   });
 

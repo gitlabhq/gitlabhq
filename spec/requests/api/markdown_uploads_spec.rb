@@ -154,7 +154,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     context 'when authenticated with a token that has the ai_workflows scope' do
       let_it_be(:oauth_token) { create(:oauth_access_token, user: project_maintainer, scopes: [:ai_workflows]) }
 
-      it 'does not allow listing uploads (POST-only scope)' do
+      it 'does not allow listing uploads' do
         get api(path, oauth_access_token: oauth_token)
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -193,6 +193,16 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       let(:user) { project_maintainer }
       let(:request) do
         get api(path, personal_access_token: pat)
+      end
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: project_maintainer, scopes: [:ai_workflows]) }
+
+      it 'does not allow downloading by ID' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -239,6 +249,33 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         get api(path, non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+      let!(:upload) { create(:upload, :issuable_upload, :with_file, model: project, filename: 'test.jpg') }
+
+      it 'returns the uploaded file' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'allows HEAD requests' do
+        head api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when the user does not have access to the project' do
+        let_it_be(:oauth_token) { create(:oauth_access_token, user: non_member, scopes: [:ai_workflows]) }
+
+        it 'returns 404' do
+          get api(path, oauth_access_token: oauth_token)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
@@ -294,6 +331,18 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
     let_it_be(:upload) { create(:upload, :issuable_upload, model: project) }
 
     let(:path) { "/projects/#{project.id}/uploads/#{upload.secret}/#{upload.filename}" }
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: project_maintainer, scopes: [:ai_workflows]) }
+
+      it 'does not allow deleting the upload' do
+        expect do
+          delete api(path, oauth_access_token: oauth_token)
+        end.not_to change { Upload.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
 
     it 'deletes the given upload' do
       expect do
@@ -410,6 +459,16 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect_paginated_array_response(uploads.reverse.map(&:id))
     end
 
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: group_maintainer, scopes: [:ai_workflows]) }
+
+      it 'does not allow listing uploads' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     it_behaves_like 'an unauthorized request' do
       subject(:make_request) { get api(path, user) }
     end
@@ -434,6 +493,16 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.headers['Content-Disposition'])
         .to eq(%(attachment; filename="test.jpg"; filename*=UTF-8''test.jpg))
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: group_maintainer, scopes: [:ai_workflows]) }
+
+      it 'does not allow downloading by ID' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
 
     context 'when the upload does not exist' do
@@ -488,6 +557,33 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
         get api(path, non_member)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+      let!(:upload) { create(:upload, :namespace_upload, :with_file, model: group, filename: 'test.jpg') }
+
+      it 'returns the uploaded file' do
+        get api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'allows HEAD requests' do
+        head api(path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when the user does not have access to the group' do
+        let_it_be(:oauth_token) { create(:oauth_access_token, user: non_member, scopes: [:ai_workflows]) }
+
+        it 'returns 404' do
+          get api(path, oauth_access_token: oauth_token)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
@@ -550,6 +646,18 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       end.to change { Upload.count }.by(-1)
 
       expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let_it_be(:oauth_token) { create(:oauth_access_token, user: group_maintainer, scopes: [:ai_workflows]) }
+
+      it 'does not allow deleting the upload' do
+        expect do
+          delete api(path, oauth_access_token: oauth_token)
+        end.not_to change { Upload.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
 
     it_behaves_like 'an unauthorized request' do

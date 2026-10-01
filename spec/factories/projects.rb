@@ -254,9 +254,7 @@ FactoryBot.define do
     end
 
     trait :jira_dvcs_server do
-      before(:create) do |project|
-        create(:project_feature_usage, :dvcs_server, project: project)
-      end
+      feature_usage { association(:project_feature_usage, :dvcs_server, strategy: :build, project: instance) }
     end
 
     trait :archived do

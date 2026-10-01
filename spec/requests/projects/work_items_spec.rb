@@ -88,6 +88,17 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
     end
   end
 
+  describe 'Redirect after sign in' do
+    let_it_be(:public_project) { create(:project, :public) }
+
+    it 'stores the create form path so the user returns to it after signing in' do
+      get new_project_work_item_path(public_project, type: 'Issue')
+
+      expect(response).to redirect_to(new_user_session_path)
+      expect(session['user_return_to']).to eq(new_project_work_item_path(public_project, type: 'Issue'))
+    end
+  end
+
   describe 'GET /:namespace/:project/-/work_items' do
     context 'when the user can read the project' do
       before do
@@ -125,6 +136,48 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to have_pushed_frontend_feature_flags(workItemsClientSideBoards: false)
         end
+      end
+    end
+
+    context 'for planning_view_boards feature flags' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be(:nested_project) { create(:project, group: subgroup) }
+      let(:current_user) { create(:user, developer_of: nested_project) }
+
+      before do
+        sign_in(current_user)
+        stub_feature_flags(planning_view_boards: false, planning_view_boards_group: false)
+      end
+
+      it 'pushes the flag as false when both flags are disabled' do
+        get project_work_items_url(nested_project)
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
+      end
+
+      it 'pushes the flag as true when enabled for the user' do
+        stub_feature_flags(planning_view_boards: current_user)
+
+        get project_work_items_url(nested_project)
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+      end
+
+      it 'pushes the flag as true when enabled for the root group' do
+        stub_feature_flags(planning_view_boards_group: root_group)
+
+        get project_work_items_url(nested_project)
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+      end
+
+      it 'pushes the flag as false when enabled for a different root group' do
+        stub_feature_flags(planning_view_boards_group: create(:group))
+
+        get project_work_items_url(nested_project)
+
+        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
       end
     end
 

@@ -2,9 +2,9 @@
 import { GlFilteredSearch } from '@gitlab/ui';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import {
-  getStandardTokenConfigs,
-  getFilterTokenConfigs,
   ACCESS_LEVEL_OPTIONS,
+  getFilterTokenConfigs,
+  getStandardTokenConfigs,
 } from 'ee_else_ce/admin/users/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
@@ -15,13 +15,26 @@ export default {
   name: 'AdminUsersFilterApp',
   components: { GlFilteredSearch },
   mixins: [glLicensedFeaturesMixin(), glFeatureFlagsMixin(), glAbilitiesMixin()],
+  props: {
+    showFilterTokens: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
   data() {
-    const filterTokenConfigs = getFilterTokenConfigs(ACCESS_LEVEL_OPTIONS);
-    const standardTokenConfigs = getStandardTokenConfigs({
-      ...this.glLicensedFeatures,
-      ...this.glFeatures,
-      ...this.glAbilities,
-    });
+    let filterTokenConfigs = [];
+    let standardTokenConfigs = [];
+
+    if (this.showFilterTokens) {
+      filterTokenConfigs = getFilterTokenConfigs(ACCESS_LEVEL_OPTIONS);
+      standardTokenConfigs = getStandardTokenConfigs({
+        ...this.glLicensedFeatures,
+        ...this.glFeatures,
+        ...this.glAbilities,
+      });
+    }
+
     const { tokenValues, sort } = initializeValuesFromQuery(
       filterTokenConfigs,
       standardTokenConfigs,

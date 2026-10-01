@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Terraform::StateUploader, feature_category: :deployment_management do
+  include DbKeyBaseHelpers
+
   subject { state_version.file }
 
   let(:state_version) { create(:terraform_state_version) }
@@ -109,6 +111,39 @@ RSpec.describe Terraform::StateUploader, feature_category: :deployment_managemen
       it 'decrypts the file when reading' do
         expect(subject.read).to eq(fixture_file('terraform/terraform.tfstate'))
       end
+    end
+  end
+
+  describe 'db_key_base rotation' do
+    let_it_be_with_reload(:state) { create(:terraform_state) }
+    let_it_be(:build) { create(:ci_build, project: state.project) }
+
+    let(:old_key) { Settings.db_key_base_keys.last }
+    let(:new_key) { SecureRandom.hex(64) }
+    let(:content) { fixture_file('terraform/terraform.tfstate') }
+
+    before do
+      allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
+      stub_application_setting(terraform_state_encryption_enabled: true)
+    end
+
+    def create_state_version
+      create(:terraform_state_version, terraform_state: state, build: build)
+    end
+
+    it 'reads files encrypted with the previous key' do
+      state_version = create_state_version
+      stub_db_key_base_keys(old_key, new_key)
+
+      expect(Terraform::StateVersion.find(state_version.id).file.read).to eq(content)
+    end
+
+    it 'encrypts new files with the current key' do
+      stub_db_key_base_keys(old_key, new_key)
+      state_version = create_state_version
+      stub_db_key_base_keys(new_key)
+
+      expect(Terraform::StateVersion.find(state_version.id).file.read).to eq(content)
     end
   end
 

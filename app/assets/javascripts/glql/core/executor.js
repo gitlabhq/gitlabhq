@@ -111,7 +111,7 @@ export default class Executor {
     return data;
   }
 
-  async #enqueue(query, variables, { queue, signal, tag } = {}) {
+  async #enqueue(query, variables, { queue, signal, tag, priority } = {}) {
     // The query compiles asynchronously, so the resolver may already be destroyed: a cache hit
     // must not revive it.
     if (signal?.aborted) throw signal.reason;
@@ -143,7 +143,7 @@ export default class Executor {
 
         return { result: await request };
       },
-      { signal },
+      { signal, priority },
     );
 
     return result;

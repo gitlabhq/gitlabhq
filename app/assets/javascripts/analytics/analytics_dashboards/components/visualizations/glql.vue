@@ -4,6 +4,7 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getPanelElement } from '~/lib/utils/panels';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { EXECUTION_QUEUE_DASHBOARD } from '~/glql/constants';
 import { forget } from '~/glql/core/executor';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
@@ -57,6 +58,7 @@ export default {
     PanelState,
     ViewSourceModal,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     data: {
       type: String,
@@ -83,6 +85,14 @@ export default {
       required: false,
       default: () => ({}),
     },
+    // The panel's index in the dashboard's reading order, from the panel component. With the
+    // flag on it becomes the request priority, so a view fills top to bottom and a panel's later
+    // pages and comparison never wait behind the panels below it.
+    loadPriority: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   emits: ['set-actions', 'reload'],
   data() {
@@ -97,10 +107,16 @@ export default {
     };
   },
   computed: {
-    // Panels mount all at once, so without this every panel on the view queues its queries
-    // before the ones on screen can finish.
+    readingOrderEnabled() {
+      return Boolean(this.glFeatures.glqlDashboardPanelsInReadingOrder);
+    },
+    // Without the flag, panels defer until near the viewport so the ones on screen finish first.
+    // With it, every panel queues at once and `requestPriority` keeps that visible-first order.
     waitingForViewport() {
-      return !this.nearViewport;
+      return !this.readingOrderEnabled && !this.nearViewport;
+    },
+    requestPriority() {
+      return this.readingOrderEnabled ? this.loadPriority : 0;
     },
     showEmptyState() {
       return this.resolverResult?.data?.nodes?.length === 0;
@@ -286,6 +302,7 @@ export default {
       :comparison="comparison"
       :scope="scope"
       :queue="$options.EXECUTION_QUEUE_DASHBOARD"
+      :priority="requestPriority"
       :bindings="bindings"
       tracking-event-name="render_analytics_dashboard_glql_panel"
       @change="handleResolverChange"

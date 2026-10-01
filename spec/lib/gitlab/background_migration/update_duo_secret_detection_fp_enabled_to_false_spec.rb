@@ -10,7 +10,7 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateDuoSecretDetectionFpEnabledToF
   let(:ai_catalog_items) { table(:ai_catalog_items) }
   let(:enabled_foundational_flows) { table(:enabled_foundational_flows) }
 
-  let(:schema_migrations) { table(:schema_migrations) }
+  let(:schema_migrations) { table(:schema_migrations, primary_key: :version) }
   let(:flip_finished_at) { Time.zone.parse('2026-05-01 00:00:00 UTC') }
   let(:cutoff) { flip_finished_at }
   let(:before_cutoff) { cutoff - 1.day }
@@ -33,11 +33,14 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateDuoSecretDetectionFpEnabledToF
   end
 
   # The cutoff is read from schema_migrations.finished_at for the 18.11 default-flip migration
-  # (described_class#cutoff). The row already exists in the test DB; pin it deterministically.
+  # (described_class#cutoff). Squashing removes that migration along with its
+  # schema_migrations entry, so create the row rather than assuming it is present.
   before do
-    schema_migrations
-      .where(version: described_class::DEFAULT_FLIP_MIGRATION_VERSION)
-      .update_all(finished_at: flip_finished_at)
+    schema_migrations.where(version: described_class::DEFAULT_FLIP_MIGRATION_VERSION).delete_all
+    schema_migrations.create!(
+      version: described_class::DEFAULT_FLIP_MIGRATION_VERSION,
+      finished_at: flip_finished_at
+    )
   end
 
   describe '#perform' do

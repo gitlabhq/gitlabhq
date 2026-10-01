@@ -213,6 +213,29 @@ describe('DashboardLoader', () => {
       expect(getSlotProp('config').panels[0].gridAttributes).toEqual(normalPanel.gridAttributes);
     });
 
+    it('numbers the panels in reading order', async () => {
+      const lower = { ...normalPanel, gridAttributes: { ...normalPanel.gridAttributes, yPos: 5 } };
+      await createWithConfig({ panels: [lower, normalPanel] });
+
+      expect(getSlotProp('config').panels.map(({ loadPriority }) => loadPriority)).toEqual([1, 0]);
+    });
+
+    it('restarts the numbering for each view', async () => {
+      const lower = { ...normalPanel, gridAttributes: { ...normalPanel.gridAttributes, yPos: 5 } };
+      await createWithConfig({
+        panels: [],
+        views: [
+          { title: 'First', panels: [normalPanel] },
+          { title: 'Second', panels: [lower, normalPanel] },
+        ],
+      });
+
+      const { views } = getSlotProp('config');
+
+      expect(views[0].panels.map(({ loadPriority }) => loadPriority)).toEqual([0]);
+      expect(views[1].panels.map(({ loadPriority }) => loadPriority)).toEqual([1, 0]);
+    });
+
     it('fills in the width for a section inside a view', async () => {
       await createWithConfig({ views: [{ title: 'Overview', panels: [sectionPanel] }] });
 

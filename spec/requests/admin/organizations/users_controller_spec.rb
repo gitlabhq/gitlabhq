@@ -43,6 +43,21 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
         expect(response.body).to include(organization_admin_cohorts_path(organization))
       end
 
+      it 'renders the search bar without filter tokens' do
+        request
+
+        expect(response.body).to include('data-show-filter-tokens="false"')
+      end
+
+      it 'ignores the filter param' do
+        blocked_member = create(:user, :blocked, organization: organization, username: 'blocked-member')
+
+        get organization_admin_users_path(organization), params: { filter: 'blocked' }
+
+        expect(response.body).to include(user.username)
+        expect(response.body).to include(blocked_member.username)
+      end
+
       context 'when the user cannot create an organization user' do
         before do
           allow(organization_owner).to receive(:can?).and_call_original

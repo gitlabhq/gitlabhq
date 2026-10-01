@@ -70,6 +70,15 @@ export default {
       default: EXECUTION_QUEUE_DEFAULT,
     },
     /**
+     * Order among requests waiting on the queue: lower runs first, equal keeps arrival order.
+     * Dashboard panels pass their grid position so a view fills top to bottom.
+     */
+    priority: {
+      required: false,
+      type: Number,
+      default: 0,
+    },
+    /**
      * Control bindings, each names a query field and the value to inject into it.
      * The compiler rewrites the query's filters from these, so the caller never templates the
      * query text. Only dashboard panels set this.
@@ -219,6 +228,7 @@ export default {
         // its tag, so a panel reload can drop all of them from the dashboard result cache.
         const mainRequest = execute(query, variables, {
           queue: this.queue,
+          priority: this.priority,
           signal: this.abortController.signal,
           tag: this.glqlQuery,
         });
@@ -266,6 +276,7 @@ export default {
         );
         const executionResult = await execute(query, variables, {
           queue: this.queue,
+          priority: this.priority,
           signal: this.abortController.signal,
           tag: this.glqlQuery,
         });
@@ -284,6 +295,7 @@ export default {
     async fetchNextPage() {
       const executionResult = await execute(this.query, this.variables, {
         queue: this.queue,
+        priority: this.priority,
         signal: this.abortController.signal,
         tag: this.glqlQuery,
       });

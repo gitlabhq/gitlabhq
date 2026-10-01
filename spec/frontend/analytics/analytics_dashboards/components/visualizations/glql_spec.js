@@ -24,10 +24,14 @@ describe('GlqlVisualization', () => {
   let wrapper;
 
   // Panels near the viewport appear as soon as their observer mounts, as they do on screen.
-  const createWrapper = async (props = {}, { attachTo, nearViewport = true } = {}) => {
+  const createWrapper = async (
+    props = {},
+    { attachTo, nearViewport = true, glFeatures = {} } = {},
+  ) => {
     wrapper = shallowMountExtended(GlqlVisualization, {
       propsData: props,
       attachTo,
+      provide: { glFeatures },
       stubs: nearViewport
         ? {
             GlIntersectionObserver: stubComponent(GlIntersectionObserver, {
@@ -64,6 +68,7 @@ describe('GlqlVisualization', () => {
       trackingEventName: 'render_analytics_dashboard_glql_panel',
       scope: null,
       queue: 'glql-queue-dashboard',
+      priority: 0,
       bindings: [],
     });
   });
@@ -161,6 +166,37 @@ describe('GlqlVisualization', () => {
       await nextTick();
 
       expect(forget).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when the glqlDashboardPanelsInReadingOrder feature flag is enabled', () => {
+    const glFeatures = { glqlDashboardPanelsInReadingOrder: true };
+
+    it('mounts the resolver without waiting for the viewport', async () => {
+      await createWrapper(
+        { data: 'type = Issue AND state = opened' },
+        { nearViewport: false, glFeatures },
+      );
+
+      expect(findResolver().exists()).toBe(true);
+      expect(findViewportObserver().exists()).toBe(false);
+    });
+
+    it('passes the panel load priority to the resolver', async () => {
+      await createWrapper(
+        { data: 'type = Issue AND state = opened', loadPriority: 27 },
+        { glFeatures },
+      );
+
+      expect(findResolver().props('priority')).toBe(27);
+    });
+  });
+
+  describe('when the glqlDashboardPanelsInReadingOrder feature flag is disabled', () => {
+    it('ignores the panel load priority', async () => {
+      await createWrapper({ data: 'type = Issue AND state = opened', loadPriority: 27 });
+
+      expect(findResolver().props('priority')).toBe(0);
     });
   });
 

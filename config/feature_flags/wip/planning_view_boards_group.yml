@@ -1,0 +1,10 @@
+---
+name: planning_view_boards_group
+description: A new boards experience on the work items page, enabled per top-level group
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21748
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258454
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/601128
+milestone: '19.5'
+group: group::planning views
+type: wip
+default_enabled: false

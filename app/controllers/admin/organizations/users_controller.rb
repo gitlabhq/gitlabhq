@@ -66,6 +66,11 @@ module Admin
         super.member_of_organization(::Current.organization)
       end
 
+      override :safe_params
+      def safe_params
+        super.except(:filter)
+      end
+
       override :user
       def user
         @user ||= find_routable!(
@@ -84,6 +89,11 @@ module Admin
       override :show_invite_organization_user_button?
       def show_invite_organization_user_button?
         current_user.can?(:create_organization_user, ::Current.organization.organization_users.new)
+      end
+
+      override :show_users_filter_tokens?
+      def show_users_filter_tokens?
+        false
       end
     end
   end

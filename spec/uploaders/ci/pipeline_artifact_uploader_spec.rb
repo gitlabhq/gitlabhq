@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integration do
+  include DbKeyBaseHelpers
+
   let(:pipeline_artifact) { create(:ci_pipeline_artifact) }
   let(:uploader) { described_class.new(pipeline_artifact, :file) }
 
@@ -83,6 +85,33 @@ RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integ
     end
   end
 
+  describe 'db_key_base rotation' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    let(:old_key) { Settings.db_key_base_keys.last }
+    let(:new_key) { SecureRandom.hex(64) }
+    let(:content) { [{ key: 'TEST_VAR', value: 'test_value', variable_type: 'env_var', raw: false }].to_json }
+
+    def create_pipeline_artifact
+      create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+    end
+
+    it 'reads files encrypted with the previous key' do
+      pipeline_artifact = create_pipeline_artifact
+      stub_db_key_base_keys(old_key, new_key)
+
+      expect(Ci::PipelineArtifact.find(pipeline_artifact.id).file.read).to eq(content)
+    end
+
+    it 'encrypts new files with the current key' do
+      stub_db_key_base_keys(old_key, new_key)
+      pipeline_artifact = create_pipeline_artifact
+      stub_db_key_base_keys(new_key)
+
+      expect(Ci::PipelineArtifact.find(pipeline_artifact.id).file.read).to eq(content)
+    end
+  end
+
   describe '#encryption_key' do
     let(:pipeline_artifact) { create(:ci_pipeline_artifact) }
     let(:uploader) { described_class.new(pipeline_artifact, :file) }
@@ -92,6 +121,13 @@ RSpec.describe Ci::PipelineArtifactUploader, feature_category: :continuous_integ
       key2 = uploader.send(:encryption_key)
 
       expect(key1).to eq(key2)
+    end
+
+    it 'derives the key from db_key_base and the project id' do
+      expect(uploader.send(:encryption_key)).to eq(
+        OpenSSL::HMAC.digest('SHA256', Gitlab::Application.credentials.db_key_base,
+          "pipeline_artifact:#{pipeline_artifact.project_id}")
+      )
     end
 
     it 'generates different keys for different projects' do

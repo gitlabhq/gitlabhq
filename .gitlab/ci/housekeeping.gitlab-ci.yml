@@ -63,3 +63,6 @@ housekeeper:squash-migrations:
     - !reference [".housekeeping:rules:scheduled", rules]
   variables:
     KEEP: "Keeps::SquashMigrations"
+    # Runs only at required stops, so an approved but stale MR still needs the
+    # new squash.
+    EXTRA_FLAGS: "--push-when-approved"

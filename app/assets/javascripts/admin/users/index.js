@@ -43,11 +43,22 @@ const initApp = ({ el, component, userPropKey, name, props = {}, provide = {} })
 };
 
 export const initAdminUsersFilterApp = () => {
+  const el = document.querySelector('#js-admin-users-filter-app');
+
+  if (!el) {
+    return false;
+  }
+
   return new Vue({
-    el: document.querySelector('#js-admin-users-filter-app'),
+    el,
     name: 'AdminUsersFilterAppRoot',
     apolloProvider,
-    render: (createElement) => createElement(AdminUsersFilterApp),
+    render: (createElement) =>
+      createElement(AdminUsersFilterApp, {
+        props: {
+          showFilterTokens: parseBoolean(el.dataset.showFilterTokens),
+        },
+      }),
   });
 };
 

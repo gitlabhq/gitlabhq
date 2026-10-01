@@ -67,7 +67,7 @@ const toPiece = (panel) => ({
   wide: (panel.gridAttributes?.width ?? GRID_COLUMNS) >= WIDE_PANEL_MIN_WIDTH,
 });
 
-const byReadingOrder = (a, b) =>
+export const byReadingOrder = (a, b) =>
   (a.gridAttributes?.yPos ?? 0) - (b.gridAttributes?.yPos ?? 0) ||
   (a.gridAttributes?.xPos ?? 0) - (b.gridAttributes?.xPos ?? 0);
 

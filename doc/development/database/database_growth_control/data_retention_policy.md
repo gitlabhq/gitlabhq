@@ -51,10 +51,11 @@ Excludes the table from data retention. This attribute is not set by default, wh
 
 To exclude a table, set `exclude.reason` to one of the below allowed reasons.
 
-- `indefinite_retention`: the data must be retained indefinitely, for example for compliance or audit
-  purposes or a core entity table (such as `organizations`) that does not accumulate
-  rows that can be aged out. This reason is a stopgap. The goal is to eventually move indefinitely retained data out of the hot OLTP database into cold
-  storage, so tables that use this reason are expected to be revisited in future.
+- `indefinite_retention`: the data must remain in Postgres indefinitely because archival does not
+  cover its organizational needs, for example a core entity table (such as `organizations`) that
+  does not accumulate rows that can be aged out.
+- `needs_archival`: the data cannot be deleted from OLTP because it must first be moved to an
+  archival system. Record the archival needs and justification in the `work_item`.
 - `technical_complexity`: the table is larger than the 50 GB soft limit and cannot be partitioned, so
   `drop_partition` is not achievable. You must justify the specific technical constraints that make partitioning impossible in the
   `work_item`. These will be reviewed async to find common patterns and build tools/framework to solve the complexity.
@@ -111,8 +112,10 @@ flowchart TD
     accTitle: Data retention policy decision tree
     A{"Is the data naturally deleted<br>by the feature lifecycle?"}
     A -->|Yes| B(["transient_data<br>(no-op, handled by the feature lifecycle)"])
-    A -->|No| G{"Can the data be deleted?"}
-    G -->|No| I(["none<br>(set exclude.reason: indefinite_retention)"])
+    A -->|No| G{"Can the data be deleted<br>without archival?"}
+    G -->|No| L{"Is there a concrete plan or pipeline<br>to archive this data?"}
+    L -->|Yes| M(["none<br>(set exclude.reason: needs_archival)"])
+    L -->|No| I(["none<br>(set exclude.reason: indefinite_retention)"])
     G -->|Yes| C{"Is the table larger than 50 GB?"}
     C -->|Yes| J{"Is partitioning possible?"}
     J -->|Yes| D(["drop_partition"])

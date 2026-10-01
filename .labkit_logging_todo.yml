@@ -1486,6 +1486,14 @@ offenses:
   callsite: ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb
   deprecated_field: gitlab_host
   standard_field: Labkit::Fields::HTTP_HOST
+- logger_class: Gitlab::Llm::Logger
+  callsite: ee/spec/lib/gitlab/llm/logger_spec.rb
+  deprecated_field: class
+  standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::Llm::Logger
+  callsite: ee/spec/lib/gitlab/llm/logger_spec.rb
+  deprecated_field: user_id
+  standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: lib/api/ci/helpers/runner.rb
   deprecated_field: class

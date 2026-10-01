@@ -12133,6 +12133,9 @@ msgstr ""
 msgid "ApprovalRule|Add approvers"
 msgstr ""
 
+msgid "ApprovalRule|An error occurred while updating the required approvals."
+msgstr ""
+
 msgid "ApprovalRule|Approval rules"
 msgstr ""
 
@@ -12164,6 +12167,9 @@ msgid "ApprovalRule|New"
 msgstr ""
 
 msgid "ApprovalRule|Previously existing"
+msgstr ""
+
+msgid "ApprovalRule|Required approvals updated."
 msgstr ""
 
 msgid "ApprovalRule|Required number of approvals"

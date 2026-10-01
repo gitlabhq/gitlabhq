@@ -9,9 +9,11 @@ export default class TaskQueue {
 
   // A task whose `signal` is aborted while it waits is rejected without running. A task that has
   // already started runs to completion, so it keeps its slot for as long as the server works on it.
-  enqueue(task, { signal } = {}) {
+  // Waiting tasks run lowest `priority` first; equal priorities keep their arrival order.
+  enqueue(task, { signal, priority = 0 } = {}) {
     return new Promise((resolve, reject) => {
-      this.#queue.push({
+      const entry = {
+        priority,
         signal,
         reject,
         run: async () => {
@@ -24,7 +26,9 @@ export default class TaskQueue {
             this.processQueue();
           }
         },
-      });
+      };
+      const index = this.#queue.findIndex((waiting) => waiting.priority > priority);
+      this.#queue.splice(index === -1 ? this.#queue.length : index, 0, entry);
 
       this.processQueue();
     });

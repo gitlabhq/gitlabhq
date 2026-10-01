@@ -69,6 +69,34 @@ describe('TaskQueue', () => {
       await expect(errorPromise).rejects.toThrow('Task failed');
     });
 
+    describe('priority', () => {
+      it('runs waiting tasks lowest priority first, in arrival order within a priority', async () => {
+        let releaseRunning;
+        const running = new Promise((resolve) => {
+          releaseRunning = resolve;
+        });
+        const order = [];
+        const record = (name) => () => {
+          order.push(name);
+          return Promise.resolve(name);
+        };
+
+        taskQueue.enqueue(() => running);
+        taskQueue.enqueue(() => running);
+        const waiting = [
+          taskQueue.enqueue(record('later'), { priority: 5 }),
+          taskQueue.enqueue(record('first'), { priority: 1 }),
+          taskQueue.enqueue(record('default')),
+          taskQueue.enqueue(record('second'), { priority: 1 }),
+        ];
+
+        releaseRunning();
+        await Promise.all(waiting);
+
+        expect(order).toEqual(['default', 'first', 'second', 'later']);
+      });
+    });
+
     describe('when a waiting task is aborted', () => {
       let releaseRunning;
       let runningTasks;

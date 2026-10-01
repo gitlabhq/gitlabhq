@@ -362,10 +362,12 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
         response.headers['Content-Security-Policy'][/frame-src [^;]*/]
       end
 
+      let(:iframe_rendering_allowlist) { %w[youtube] }
+
       before do
         stub_application_setting(
           iframe_rendering_enabled: iframe_rendering_enabled,
-          iframe_rendering_allowlist: %w[youtube])
+          iframe_rendering_allowlist: iframe_rendering_allowlist)
       end
 
       context 'when disabled' do
@@ -386,6 +388,18 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
 
           expect(frame_src).to include('https://www.youtube.com')
           expect(frame_src).not_to include('https://embed.figma.com')
+          expect(frame_src).not_to include('https://www.figma.com')
+        end
+
+        context 'with a provider that has additional CSP hosts' do
+          let(:iframe_rendering_allowlist) { %w[figma] }
+
+          it 'adds them to frame-src alongside the src origin' do
+            get root_path
+
+            expect(frame_src).to include('https://embed.figma.com')
+            expect(frame_src).to include('https://www.figma.com')
+          end
         end
       end
     end

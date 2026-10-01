@@ -1,8 +1,18 @@
 import { uniqueId } from 'lodash-es';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ANALYTICS_CUSTOM_DASHBOARD } from '~/graphql_shared/constants';
+import { byReadingOrder } from '~/vue_shared/components/dashboards_list/dashboard_preview_layout';
 
 export const getUniquePanelId = () => uniqueId('panel-');
+
+// GlDashboardLayout drops `gridAttributes` from the panel it hands to its slot, so the reading-order
+// index is computed here, while the position is still known. Client-only: serializePanelsForMutation
+// strips it again before a dashboard is saved.
+export const assignLoadPriority = (panels = []) => {
+  const order = new Map([...panels].sort(byReadingOrder).map((panel, index) => [panel, index]));
+
+  return panels.map((panel) => ({ ...panel, loadPriority: order.get(panel) }));
+};
 
 /**
  * Extracts the numeric database ID from an Analytics Custom Dashboard GraphQL global ID.
