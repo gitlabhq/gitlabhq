@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :oauth_access_grant do
-    resource_owner_id { create(:user).id }
+    resource_owner factory: :user
     application
     organization
     token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }

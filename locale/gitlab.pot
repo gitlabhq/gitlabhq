@@ -2587,6 +2587,9 @@ msgstr ""
 msgid "AICatalog|Access level"
 msgstr ""
 
+msgid "AICatalog|Add"
+msgstr ""
+
 msgid "AICatalog|Add GitLab-managed external agents to the instance's AI Catalog."
 msgstr ""
 
@@ -12837,6 +12840,9 @@ msgid "ArtifactRegistry|Columns"
 msgstr ""
 
 msgid "ArtifactRegistry|Connection"
+msgstr ""
+
+msgid "ArtifactRegistry|Connection status for %{name}: %{verdict}"
 msgstr ""
 
 msgid "ArtifactRegistry|Connection successful."

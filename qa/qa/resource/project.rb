@@ -448,6 +448,11 @@ module QA
         auto_paginated_response(request_url(api_commits_path, per_page: '100'), attempts: attempts)
       end
 
+      # @return [Hash] the created commit comment
+      def comment_on_commit(sha:, note:)
+        api_post_to("#{api_commits_path}/#{sha}/comments", note: note)
+      end
+
       def merge_requests(auto_paginate: false, attempts: 0)
         return parse_body(api_get_from(api_merge_requests_path)) unless auto_paginate
 

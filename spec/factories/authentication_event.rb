@@ -7,7 +7,7 @@ FactoryBot.define do
     user_name { 'Jane Doe' }
     ip_address { '127.0.0.1' }
     result { :failed }
-    organization_id { create(:common_organization).id }
+    organization { association(:common_organization) }
 
     trait :successful do
       result { :success }

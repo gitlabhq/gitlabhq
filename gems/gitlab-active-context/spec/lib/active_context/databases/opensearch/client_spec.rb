@@ -2,17 +2,17 @@
 
 RSpec.describe ActiveContext::Databases::Opensearch::Client do
   let(:options) { { url: 'http://localhost:9200' } }
-  let(:user) { double }
-  let(:collection) { double }
 
   subject(:client) { described_class.new(options) }
 
   describe '#search' do
+    let(:user) { double }
+    let(:collection) { double }
     let(:opensearch_client) { instance_double(OpenSearch::Client) }
     let(:search_response) do
-      { 'hits' => { 'total' => 5,
-                    'hits' => [{ '_source' => { 'id' => 1 } }, { '_source' => { 'id' => 2 } },
-                      { '_source' => { 'id' => 3 } }] } }
+      hits = [1, 2, 3].map { |id| { '_source' => { 'id' => id } } }
+
+      { 'hits' => { 'hits' => hits } }
     end
 
     let(:query) { ActiveContext::Query.filter(project_id: 1) }
@@ -23,7 +23,7 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
       allow(collection).to receive_messages(collection_name: 'test', redact_unauthorized_results!: [[], []])
     end
 
-    it 'calls search on the Opensearch client without _source by default' do
+    it 'calls search on the OpenSearch client without _source by default' do
       expect(opensearch_client).to receive(:search).with(
         index: 'test',
         body: hash_not_including(:_source)
@@ -55,8 +55,9 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
 
   describe '#client' do
     it 'returns an instance of OpenSearch::Client' do
-      expect(OpenSearch::Client).to receive(:new).with(client.send(:opensearch_config))
-      client.client
+      expect(OpenSearch::Client).to receive(:new).with(client.send(:opensearch_config)).and_call_original
+
+      expect(client.client).to be_a(OpenSearch::Client)
     end
 
     it 'memoizes the OpenSearch::Client instance' do
@@ -65,6 +66,26 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
       raw_client = client.client
 
       expect(client.client).to be(raw_client)
+    end
+
+    context 'when client_adapter option is set' do
+      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: 'net_http' } }
+
+      it 'uses the given adapter' do
+        transport_options = client.client.transport.transport.options
+
+        expect(transport_options).to include(adapter: :net_http)
+      end
+    end
+
+    context 'when client_adapter option is nil' do
+      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: nil } }
+
+      it 'falls back to the DEFAULT_ADAPTER' do
+        transport_options = client.client.transport.transport.options
+
+        expect(transport_options).to include(adapter: described_class::DEFAULT_ADAPTER)
+      end
     end
 
     context 'when AWS is enabled' do
@@ -97,9 +118,9 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
   end
 
   describe '#opensearch_config' do
-    let(:options) { { url: 'http://localhost:9200', client_request_timeout: 45, retry_on_failure: 5, debug: true } }
+    let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, retry_on_failure: 3, debug: true } }
 
-    it 'returns expected configuration hash' do
+    it 'returns the expected configuration hash' do
       config = client.send(:opensearch_config)
 
       expect(config).to include(
@@ -107,35 +128,15 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
         urls: options[:url],
         transport_options: {
           request: {
-            timeout: 45,
+            timeout: 30,
             open_timeout: described_class::OPEN_TIMEOUT
           }
         },
         randomize_hosts: true,
-        retry_on_failure: 5,
+        retry_on_failure: 3,
         log: true,
         debug: true
       )
-    end
-
-    context 'when adapter is set in elasticsearch_config' do
-      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: 'net_http' } }
-
-      it 'uses the adapter from elasticsearch_config' do
-        options = client.client.transport.transport.options
-
-        expect(options).to include(adapter: :net_http)
-      end
-    end
-
-    context 'when client_adapter in elasticsearch_config is null' do
-      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: nil } }
-
-      it 'falls back to the DEFAULT_ADAPTER' do
-        options = client.client.transport.transport.options
-
-        expect(options).to include(adapter: described_class::DEFAULT_ADAPTER)
-      end
     end
   end
 
@@ -150,8 +151,9 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
         }
       end
 
-      it 'returns static credentials' do
+      it 'returns static credentials', :aggregate_failures do
         credentials = client.aws_credentials
+
         expect(credentials).to be_a(Aws::Credentials)
         expect(credentials.access_key_id).to eq('access_key')
         expect(credentials.secret_access_key).to eq('secret_key')
@@ -160,24 +162,24 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
 
     context 'when static credentials are not provided' do
       let(:options) { { url: 'http://localhost:9200', aws: true } }
-      let(:mock_provider) { instance_double(Aws::Credentials, set?: true) }
-      let(:mock_chain) { instance_double(Aws::CredentialProviderChain, resolve: mock_provider) }
+      let(:credentials) { instance_double(Aws::Credentials, set?: true) }
+      let(:chain) { instance_double(Aws::CredentialProviderChain, resolve: credentials) }
 
       before do
-        allow(Aws::CredentialProviderChain).to receive(:new).and_return(mock_chain)
+        allow(Aws::CredentialProviderChain).to receive(:new).and_return(chain)
       end
 
       it 'uses the AWS credential provider chain' do
-        expect(client.aws_credentials).to eq(mock_provider)
+        expect(client.aws_credentials).to eq(credentials)
       end
     end
 
     context 'when no valid credentials are found' do
       let(:options) { { url: 'http://localhost:9200', aws: true } }
-      let(:mock_chain) { instance_double(Aws::CredentialProviderChain, resolve: nil) }
+      let(:chain) { instance_double(Aws::CredentialProviderChain, resolve: nil) }
 
       before do
-        allow(Aws::CredentialProviderChain).to receive(:new).and_return(mock_chain)
+        allow(Aws::CredentialProviderChain).to receive(:new).and_return(chain)
       end
 
       it 'returns nil' do

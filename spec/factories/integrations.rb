@@ -184,14 +184,15 @@ FactoryBot.define do
       zentao_product_xid { '3' }
     end
 
-    after(:build) do |integration, evaluator|
-      if evaluator.create_data
-        integration.zentao_tracker_data = build(:zentao_tracker_data,
-          integration: integration,
-          url: evaluator.url,
-          api_url: evaluator.api_url,
-          api_token: evaluator.api_token,
-          zentao_product_xid: evaluator.zentao_product_xid
+    zentao_tracker_data do
+      if create_data
+        association(:zentao_tracker_data,
+          strategy: :build,
+          integration: instance,
+          url: url,
+          api_url: api_url,
+          api_token: api_token,
+          zentao_product_xid: zentao_product_xid
         )
       end
     end

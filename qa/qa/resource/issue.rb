@@ -73,6 +73,18 @@ module QA
         api_put_to(api_put_path, state_event: "close")
       end
 
+      # @param labels [Array<String>] label titles replacing the current set
+      # @return [Hash]
+      def set_labels(labels)
+        api_put_to(api_put_path, labels: labels.join(','))
+        @labels = labels
+      end
+
+      # @return [Hash]
+      def award_emoji_on_note(note_id:, name:)
+        api_post_to("#{api_comments_path}/#{note_id}/award_emoji", name: name)
+      end
+
       def set_issue_assignees(assignee_ids:)
         put_body = { assignee_ids: assignee_ids }
         response = put Runtime::API::Request.new(api_client, api_put_path).url, put_body

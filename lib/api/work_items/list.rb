@@ -8,6 +8,9 @@ module API
       feature_category :portfolio_management
       urgency :low
 
+      # Intentionally no check_work_item_rest_api_feature_flag! here: these endpoints back the work items list page,
+      # which must keep working when the work_item_rest_api flag is off.
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243015
       helpers ::API::Helpers::WorkItems::ListParams
       helpers ::API::Helpers::WorkItems::Authorization
       helpers ::API::Helpers::WorkItems::Preloads
