@@ -1320,6 +1320,20 @@ describe('WorkItemDetail component', () => {
 
       expect(findStickyHeader().exists()).toBe(true);
     });
+    describe('when content is passed for the sticky header', () => {
+      beforeEach(async () => {
+        createComponent({
+          scopedSlots: {
+            'sticky-header-append': '<span data-testid="sticky-header-extra">Extra</span>',
+          },
+        });
+        await mockApollo.resolveAll();
+      });
+
+      it('renders it inside the sticky header', () => {
+        expect(findStickyHeader().find('[data-testid="sticky-header-extra"]').exists()).toBe(true);
+      });
+    });
   });
 
   describe('edit button for work item title and description', () => {

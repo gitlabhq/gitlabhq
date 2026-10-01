@@ -21,6 +21,7 @@ module Gitlab
       ATTRIBUTES = %i[
         datacontenttype
         dataschema
+        gitlab_composite_actor_id
         gitlab_organization_id
         gitlab_user_id
         gitlab_user_username
@@ -61,6 +62,13 @@ module Gitlab
           if current_user
             attrs[:gitlab_user_id] = current_user.id
             attrs[:gitlab_user_username] = current_user.username
+          end
+
+          # A service account authenticated with a composite identity (for example, a
+          # running flow) performed this action, whichever user the event is attributed to.
+          composite_identity = ::Gitlab::Auth::Identity.currently_linked
+          if composite_identity&.link_context == :authentication
+            attrs[:gitlab_composite_actor_id] = composite_identity.primary_user.id
           end
 
           attrs[:gitlab_organization_id] = organization.id if organization
@@ -199,6 +207,7 @@ module Gitlab
             'id' => { 'type' => 'string' },
             'gitlab_user_id' => { 'type' => 'number' },
             'gitlab_user_username' => { 'type' => 'string' },
+            'gitlab_composite_actor_id' => { 'type' => 'number' },
             'gitlab_organization_id' => { 'type' => 'number' },
             'time' => { 'type' => 'string', 'format' => 'date-time' },
             'datacontenttype' => { 'type' => 'string' },

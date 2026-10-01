@@ -220,6 +220,7 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
       expect(schema['properties']['gitlab_user_id']['type']).to eq('number')
       expect(schema['properties']['gitlab_user_username']['type']).to eq('string')
       expect(schema['properties']['gitlab_organization_id']['type']).to eq('number')
+      expect(schema['properties']['gitlab_composite_actor_id']['type']).to eq('number')
       expect(schema['properties']['time']['type']).to eq('string')
       expect(schema['properties']['time']['format']).to eq('date-time')
       expect(schema['properties']['datacontenttype']['type']).to eq('string')
@@ -390,6 +391,49 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
       )
 
       expect(cloud_event.event_data).to eq({})
+    end
+
+    describe 'gitlab_composite_actor_id', :request_store do
+      let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+
+      let(:test_class) do
+        Class.new(described_class) do
+          event_category 'merge_requests'
+          event_type 'assigned_reviewers'
+
+          def data_schema
+            {}
+          end
+        end
+      end
+
+      subject(:data) do
+        test_class.build_cloud_event(source: source, subject: subject_path, current_user: user).data
+      end
+
+      it 'is not set without a linked composite identity' do
+        expect(data).not_to have_key(:gitlab_composite_actor_id)
+      end
+
+      it 'is the service account when the user is scoped by an authentication link' do
+        ::Gitlab::Auth::Identity.fabricate(service_account).link!(user, context: :authentication)
+
+        expect(data[:gitlab_user_id]).to eq(user.id)
+        expect(data[:gitlab_composite_actor_id]).to eq(service_account.id)
+      end
+
+      it 'is the service account when the event is attributed to another user' do
+        ::Gitlab::Auth::Identity.fabricate(service_account).link!(create(:user), context: :authentication)
+
+        expect(data[:gitlab_user_id]).to eq(user.id)
+        expect(data[:gitlab_composite_actor_id]).to eq(service_account.id)
+      end
+
+      it 'is not set when the user is scoped by a permission check link' do
+        ::Gitlab::Auth::Identity.fabricate(service_account).link!(user, context: :permission_check)
+
+        expect(data).not_to have_key(:gitlab_composite_actor_id)
+      end
     end
 
     context 'without current_user' do

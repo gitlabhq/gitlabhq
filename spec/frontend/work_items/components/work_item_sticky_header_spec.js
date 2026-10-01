@@ -73,6 +73,18 @@ describe('WorkItemStickyHeader', () => {
     expect(findWorkItemTitle().exists()).toBe(true);
   });
 
+  describe('when content is passed to the append slot', () => {
+    beforeEach(() => {
+      createComponent({
+        slots: { append: '<span data-testid="sticky-header-extra">Extra</span>' },
+      });
+    });
+
+    it('renders it', () => {
+      expect(wrapper.findByTestId('sticky-header-extra').exists()).toBe(true);
+    });
+  });
+
   it('has title with the link to the top', () => {
     createComponent();
     expect(findWorkItemTitle().attributes('href')).toBe('#top');

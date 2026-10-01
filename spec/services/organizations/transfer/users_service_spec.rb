@@ -1188,7 +1188,6 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             "Ai::Catalog::McpServerBlock",
             "Ai::Catalog::McpServersUser",
             "Ai::Conversation::Thread",
-            "Ai::EventsCount",
             "Ai::UsageEvent",
             "Analytics::CustomDashboards::DashboardVersion",
             "LDAPKey",

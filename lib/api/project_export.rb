@@ -11,7 +11,7 @@ module API
     VALID_EXPORT_RELATIONS = Gitlab::ImportExport::Reader.new(shared: nil).project_relation_names.map(&:to_s).freeze
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: { id: %r{[^/]+} } do
       resource do
@@ -84,14 +84,14 @@ module API
           tags ['project_import']
         end
         params do
-          optional :description, type: String, desc: 'Override the project description'
-          optional :upload, type: Hash, desc: 'Object that contains information on the upload' do
-            optional :url, type: String, desc: 'The URL to upload the project'
+          optional :description, type: String, desc: 'Overrides the project description.'
+          optional :upload, type: Hash, desc: 'Details for uploading the exported project to a web server.' do
+            optional :url, type: String, desc: 'URL to upload the exported project to.'
             optional :http_method, type: String, default: 'PUT', values: %w[PUT POST],
-              desc: 'HTTP method to upload the exported project'
+              desc: 'HTTP method to upload the exported project.'
           end
           optional :excluded_relations, type: Array[String],
-            desc: 'List of project relation names to exclude from the export (e.g. ["merge_requests", "issues"])'
+            desc: 'Project relation names to exclude from the export, for example `merge_requests` and `issues`.'
         end
         route_setting :authorization, permissions: :create_project_export, boundary_type: :project
         post ':id/export' do
@@ -187,9 +187,10 @@ module API
           produces %w[application/octet-stream application/gzip application/json]
         end
         params do
-          requires :relation, type: String, project_portable: true, desc: 'Project relation name'
+          requires :relation, type: String, project_portable: true, desc: 'Name of the project top-level relation to ' \
+                                                                      'download or view.'
           optional :batched, type: Boolean, desc: 'Whether to download in batches'
-          optional :batch_number, type: Integer, desc: 'Batch number to download'
+          optional :batch_number, type: Integer, desc: 'Number of the export batch to download.'
 
           all_or_none_of :batched, :batch_number
         end
@@ -246,7 +247,7 @@ module API
           tags ['project_import']
         end
         params do
-          optional :relation, type: String, desc: 'Project relation name'
+          optional :relation, type: String, desc: 'Name of the project top-level relation to download or view.'
         end
         route_setting :authorization, permissions: :read_project_relation_export, boundary_type: :project
         get ':id/export_relations/status' do

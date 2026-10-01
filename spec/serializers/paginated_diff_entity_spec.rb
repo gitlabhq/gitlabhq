@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe PaginatedDiffEntity, feature_category: :code_review_workflow do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:merge_request) { create(:merge_request) }
+
   let(:request) { double('request', current_user: user) }
-  let(:merge_request) { create(:merge_request) }
   let(:diff_batch) { merge_request.merge_request_diff.diffs_in_batch(2, 3, diff_options: nil) }
   let(:options) do
     {

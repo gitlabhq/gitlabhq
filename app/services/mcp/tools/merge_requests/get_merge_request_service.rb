@@ -33,7 +33,8 @@ module Mcp
                   'text or detail=none for summary counts only. conflicts returns raw conflict file content ' \
                   '(Git conflict markers), only when the merge request cannot be merged and the caller can ' \
                   'push to the source branch. diffs, notes, commits, and pipelines support pagination ' \
-                  '(diffs_*, notes_*, commits_*, pipelines_*). ' \
+                  '(diffs_*, notes_*, commits_*, pipelines_*); for the newest notes, use notes_last ' \
+                  'without notes_first or notes_after. ' \
                   'approvals returns approved and approvedBy on every tier. approvalsRequired, approvalsLeft, and ' \
                   'the rule breakdown in approvalState need GitLab Premium or Ultimate; otherwise ' \
                   'these keys are present but zeroed or empty, not omitted.',
@@ -57,6 +58,7 @@ module Mcp
               ),
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(
                 items: 'notes',
+                params: %i[first after last before],
                 prefix: 'notes_',
                 applies_to: 'notes is in include'
               ),

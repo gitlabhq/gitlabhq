@@ -1007,7 +1007,11 @@ export default {
             :is-drawer="isDetailPanel"
             :work-item="workItem"
             :archived="workItem.archived"
-          />
+          >
+            <template v-if="glSlots()['sticky-header-append']" #append>
+              <slot name="sticky-header-append" :work-item="workItem"></slot>
+            </template>
+          </work-item-sticky-header>
         </template>
 
         <template #heading-wrapper>

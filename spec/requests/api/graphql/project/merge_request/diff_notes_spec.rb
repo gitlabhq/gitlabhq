@@ -64,6 +64,62 @@ RSpec.describe 'getting notes for a merge request', feature_category: :code_revi
     end
   end
 
+  context 'discussions of threaded notes on a merge request' do
+    let_it_be(:project) { noteable.project }
+    let_it_be(:user) { create(:user, developer_of: project) }
+
+    let(:query) do
+      noteable_query(
+        <<~NOTES
+        notes {
+          nodes {
+            id
+            discussion {
+              id resolvable resolved
+              resolvedBy { id username }
+              notes { nodes { id } }
+            }
+          }
+        }
+        NOTES
+      )
+    end
+
+    def create_threads(count)
+      create_list(:discussion_note_on_merge_request, count, noteable: noteable, project: project).each do |note|
+        create(:discussion_note_on_merge_request, noteable: noteable, project: project,
+          in_reply_to: note, resolved_at: Time.current, resolved_by: user)
+      end
+    end
+
+    it 'avoids N+1 queries when resolving discussions', :request_store, :use_sql_query_cache do
+      create_threads(1)
+      post_graphql(query, current_user: user)
+      expect_graphql_errors_to_be_empty
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_graphql(query, current_user: user) }
+
+      create_threads(3)
+
+      expect { post_graphql(query, current_user: user) }.to issue_same_number_of_queries_as(control)
+    end
+
+    it 'returns each note with its whole thread' do
+      first_note = create_threads(1).first
+      post_graphql(query, current_user: user)
+
+      nodes = noteable_data['notes']['nodes']
+      expect(nodes.size).to eq(2)
+      expect(nodes.pluck('discussion').uniq).to contain_exactly(
+        a_hash_including(
+          'id' => first_note.discussion.to_global_id.to_s,
+          'resolvable' => true,
+          'notes' => { 'nodes' => match_array(nodes.map { |node| { 'id' => node['id'] } }) }
+        )
+      )
+    end
+  end
+
   context 'diff notes on a merge request' do
     let(:project) { noteable.project }
     let!(:note) { create(:diff_note_on_merge_request, noteable: noteable, project: project) }

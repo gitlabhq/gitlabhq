@@ -27,9 +27,9 @@ module API
           optional :confidential,
             type: Boolean,
             default: true,
-            desc: 'If `true`, the application can securely store client credentials, such as the ' \
-              'client secret. Non-confidential applications, such as native mobile apps and ' \
-              'Single Page Apps might expose client credentials. If unset, defaults to `true`.'
+            desc: 'If `true`, the application can securely store client credentials, such as the client secret. ' \
+              'Non-confidential applications (such as native mobile apps and Single Page Apps) might expose ' \
+              'client credentials.'
         end
         route_setting :authorization, permissions: :create_oauth_application, boundary_type: :user
         post do
@@ -65,7 +65,7 @@ module API
           tags ['applications']
         end
         params do
-          requires :id, type: Integer, desc: 'ID of the application. Differs from the `application_id`.'
+          requires :id, type: Integer, desc: 'ID of the application. Differs from `application_id`.'
         end
         route_setting :authorization, permissions: :read_oauth_application, boundary_type: :user
         get ':id' do
@@ -83,7 +83,7 @@ module API
           tags ['applications']
         end
         params do
-          requires :id, type: Integer, desc: 'ID of the application. Differs from the `application_id`.'
+          requires :id, type: Integer, desc: 'ID of the application. Differs from `application_id`.'
         end
         route_setting :authorization, permissions: :delete_oauth_application, boundary_type: :user
         delete ':id' do
@@ -111,7 +111,7 @@ module API
           tags ['applications']
         end
         params do
-          requires :id, type: Integer, desc: 'ID of the application. Differs from the `application_id`.'
+          requires :id, type: Integer, desc: 'ID of the application. Differs from `application_id`.'
           optional :name, type: String, desc: 'Name of the application.'
           optional :scopes, type: String,
             desc: 'Scopes available to the application. Separate multiple scopes with a space.',

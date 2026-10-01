@@ -28,8 +28,8 @@ module API
             requires :name, type: String,
               desc: 'Register models under this name.'
             optional :description, type: String,
-              desc: 'Optional description for registered model.'
-            optional :tags, type: Array, desc: 'Additional metadata for registered model.'
+              desc: 'Description of the registered model.'
+            optional :tags, type: Array, desc: 'Additional metadata for the registered model.'
           end
           route_setting :authorization, permissions: :create_ml_model, boundary_type: :project
           post 'create', urgency: :low do
@@ -59,7 +59,7 @@ module API
             # The name param is actually required, however it is listed as optional here
             # we can send a custom error response required by MLFlow
             optional :name, type: String, default: '',
-              desc: 'Registered model unique name identifier, in reference to the project'
+              desc: 'Name of the registered model.'
           end
           route_setting :authorization, permissions: :read_ml_model, boundary_type: :project
           get 'get', urgency: :low do
@@ -78,9 +78,9 @@ module API
             # The name param is actually required, however it is listed as optional here
             # we can send a custom error response required by MLFlow
             optional :name, type: String,
-              desc: 'Registered model unique name identifier, in reference to the project'
+              desc: 'Name of the registered model.'
             optional :description, type: String,
-              desc: 'Optional description for registered model.'
+              desc: 'Description of the registered model.'
           end
           route_setting :authorization, permissions: :update_ml_model, boundary_type: :project
           patch 'update', urgency: :low do
@@ -99,7 +99,7 @@ module API
             # The name param is actually required, however it is listed as optional here
             # we can send a custom error response required by MLFlow
             optional :name, type: String,
-              desc: 'Registered model unique name identifier, in reference to the project'
+              desc: 'Name of the registered model.'
           end
           route_setting :authorization, permissions: :read_ml_model, boundary_type: :project
           post 'get-latest-versions', urgency: :low do
@@ -120,7 +120,7 @@ module API
             # The name param is actually required, however it is listed as optional here
             # we can send a custom error response required by MLFlow
             optional :name, type: String,
-              desc: 'Registered model unique name identifier, in reference to the project'
+              desc: 'Name of the registered model.'
           end
           route_setting :authorization, permissions: :delete_ml_model, boundary_type: :project
           delete 'delete', urgency: :low do
@@ -145,10 +145,10 @@ module API
           params do
             optional :filter,
               type: String,
-              desc: "Filter to search models. must be in the format `name='value'`. Only filtering by name is supported"
+              desc: "Filter for the model search, in the format `name='value'`. Only filtering by name is supported."
             optional :max_results,
               type: Integer,
-              desc: 'Maximum number of models desired. Default is 200. Max threshold is 1000.',
+              desc: 'Maximum number of models to fetch in a page. The maximum is 1000.',
               default: 200
             optional :order_by,
               type: String,
@@ -158,7 +158,7 @@ module API
               default: 'name ASC'
             optional :page_token,
               type: String,
-              desc: 'Token for pagination'
+              desc: 'Token for pagination.'
           end
           route_setting :authorization, permissions: :read_ml_model, boundary_type: :project
           get 'search', urgency: :low do
@@ -184,9 +184,9 @@ module API
 
           params do
             optional :name, type: String,
-              desc: 'The name of the model'
+              desc: 'Name of the registered model.'
             optional :alias, type: String,
-              desc: 'The alias of the model, e.g. the Semantic Version `1.0.0`'
+              desc: 'Alias of the model version, for example `1.0.0`.'
           end
           desc 'Gets a Model Version by alias' do
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#get-model-version-by-alias'

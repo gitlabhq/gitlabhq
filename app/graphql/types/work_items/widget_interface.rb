@@ -37,7 +37,8 @@ module Types
         ::WorkItems::Widgets::CrmContacts => ::Types::WorkItems::Widgets::CrmContactsType,
         ::WorkItems::Widgets::EmailParticipants => ::Types::WorkItems::Widgets::EmailParticipantsType,
         ::WorkItems::Widgets::LinkedResources => ::Types::WorkItems::Widgets::LinkedResourcesType,
-        ::WorkItems::Widgets::ErrorTracking => ::Types::WorkItems::Widgets::ErrorTrackingType
+        ::WorkItems::Widgets::ErrorTracking => ::Types::WorkItems::Widgets::ErrorTrackingType,
+        ::WorkItems::Widgets::Severity => ::Types::WorkItems::Widgets::SeverityType
       }.freeze
 
       def self.type_mappings

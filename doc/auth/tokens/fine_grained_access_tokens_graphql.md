@@ -970,6 +970,15 @@ Grants the ability to update Geo registries.
 
 ### GitLab Orbit resources
 
+#### Orbit
+
+Grants the ability to read Orbit data the token owner can access in GitLab. Group and project selections do not limit it.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | User | Field | `Group.orbit` |
+| Read | User | Field | `Project.orbit` |
+
 #### Orbit Setting
 
 Grants the ability to update Orbit settings.

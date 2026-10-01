@@ -25,6 +25,12 @@ module MergeRequests
       pipeline_creation_request = job['args'][3]&.dig('pipeline_creation_request')
       next unless pipeline_creation_request
 
+      Ci::PipelineCreation::ExperienceReporter.report_error(
+        source: :merge_request_event,
+        started_at: pipeline_creation_request['started_at'],
+        project_id: job['args'][0]
+      )
+
       error_message = 'Cannot create a pipeline for this merge request after multiple retries.'
 
       ::Ci::PipelineCreation::Requests.failed(pipeline_creation_request, error_message)
@@ -78,6 +84,12 @@ module MergeRequests
       )
 
       after_perform(merge_request)
+
+      Ci::PipelineCreation::ExperienceReporter.report(
+        pipeline: result.payload,
+        source: :merge_request_event,
+        started_at: pipeline_creation_request&.dig(:started_at)
+      )
     end
 
     private

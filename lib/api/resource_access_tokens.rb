@@ -22,7 +22,7 @@ module API
           success code: 200, model: Entities::ResourceAccessToken
         end
         params do
-          requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
+          requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}."
           use :access_token_params
         end
         route_setting :authorization, permissions: :read_resource_access_token, boundary_type: source_type.to_sym
@@ -53,8 +53,8 @@ module API
           success code: 200, model: Entities::ResourceAccessToken
         end
         params do
-          requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
-          requires :token_id, type: String, desc: "The ID of the token"
+          requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}."
+          requires :token_id, type: String, desc: 'ID of the token.'
         end
         route_setting :authorization, permissions: :read_resource_access_token, boundary_type: source_type.to_sym
         get ":id/access_tokens/:token_id" do
@@ -80,8 +80,8 @@ module API
           ]
         end
         params do
-          requires :id, type: String, desc: "The #{source_type} ID"
-          requires :token_id, type: String, desc: "The ID of the token"
+          requires :id, type: String, desc: "ID or URL-encoded path of the #{source_type}."
+          requires :token_id, type: String, desc: 'ID of the token.'
         end
         route_setting :authorization, permissions: :delete_resource_access_token, boundary_type: source_type.to_sym
         delete ':id/access_tokens/:token_id' do
@@ -111,16 +111,16 @@ module API
           use :create_personal_access_token_params
           requires :id,
             type: String,
-            desc: "The #{source_type} ID",
+            desc: "ID or URL-encoded path of the #{source_type}.",
             documentation: { example: '2' }
           requires :scopes,
             type: Array[String],
             values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s),
-            desc: "The permissions of the token",
+            desc: 'List of [scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/) available to the token.',
             documentation: { example: %w[api read_repository] }
           optional :expires_at,
             type: Date,
-            desc: "The expiration date of the token. If 'Require personal access token expiry' is enabled, you must provide a valid value, if not, the token will never expire.",
+            desc: 'Date when the access token expires. If omitted, the token does not expire, which is accepted only when [token expiry is not enforced](https://docs.gitlab.com/user/profile/personal_access_tokens/#access-token-expiration).',
             documentation: {
               example: '2026-02-14'
             }
@@ -161,11 +161,11 @@ module API
           success code: 200, model: Entities::ResourceAccessTokenWithToken
         end
         params do
-          requires :id, type: String, desc: "The #{source_type} ID"
-          requires :token_id, type: String, desc: "The ID of the token"
+          requires :id, type: String, desc: "ID or URL-encoded path of the #{source_type}."
+          requires :token_id, type: String, desc: 'ID of the token.'
           optional :expires_at,
             type: Date,
-            desc: "The expiration date of the token",
+            desc: 'Date when the access token expires. If omitted, the new token expires one week after rotation when [token expiry is enforced](https://docs.gitlab.com/user/profile/personal_access_tokens/#access-token-expiration), and does not expire otherwise.',
             documentation: { example: '2021-01-31' }
         end
         route_setting :authorization, permissions: :rotate_resource_access_token, boundary_type: source_type.to_sym

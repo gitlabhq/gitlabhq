@@ -917,7 +917,7 @@ GEM
     gitlab-kas-grpc (19.4.0.pre.rc1)
       google-protobuf (>= 3.25, < 5.0)
       grpc (~> 1.81)
-    gitlab-labkit (5.2.1)
+    gitlab-labkit (5.3.0)
       actionpack (>= 5.0.0, < 8.2.0)
       activesupport (>= 5.0.0, < 8.2.0)
       google-protobuf (>= 3.25, < 5.0)
@@ -947,7 +947,7 @@ GEM
       wikicloth (= 0.8.1)
     gitlab-net-dns (0.15.0)
       logger
-    gitlab-orbit-proto (0.130.0)
+    gitlab-orbit-proto (0.135.0)
       grpc (~> 1.0)
     gitlab-rspec-metrics-exporter (0.2.0)
       logger (>= 1.4, < 2.0)
@@ -2558,13 +2558,13 @@ DEPENDENCIES
   gitlab-http!
   gitlab-iam-grpc!
   gitlab-kas-grpc (~> 19.4.0.pre.rc1)
-  gitlab-labkit (~> 5.2.1)
+  gitlab-labkit (~> 5.3.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 1.1.0)
   gitlab-markup (~> 2.1.0)
   gitlab-mfe!
   gitlab-net-dns (~> 0.15.0)
-  gitlab-orbit-proto (~> 0.130.0)
+  gitlab-orbit-proto (~> 0.135.0)
   gitlab-policy-store!
   gitlab-rspec!
   gitlab-rspec-metrics-exporter (~> 0.2.0)
@@ -3082,13 +3082,13 @@ CHECKSUMS
   gitlab-http (0.1.0)
   gitlab-iam-grpc (0.1.0)
   gitlab-kas-grpc (19.4.0.pre.rc1) sha256=ebe94f6a8611d43ab1f09967bb997185a1745716caa429a4f359387a79ec8a91
-  gitlab-labkit (5.2.1) sha256=2808b3acd943a96d9a41381a64668b83b6cdc7720bb23e9198c72dab960ea86f
+  gitlab-labkit (5.3.0) sha256=a212a58bdc5920d007b9110ece956617623a582096633bb9d7eec3cddd75d832
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f
   gitlab-mfe (0.1.0)
   gitlab-net-dns (0.15.0) sha256=d229aae205055b86b2ad166981257eb589ce6d6a146aa79b3ea2b1e5d9741f46
-  gitlab-orbit-proto (0.130.0) sha256=63ffa41c9a939b4d0eadf7d46c154f1b2f00e6e51488a03b1e6fe34c1db7b449
+  gitlab-orbit-proto (0.135.0) sha256=71531e8c50f1d0221e437b831858ec7d17070ff949ecad1134bfdcfe703b9ae9
   gitlab-policy-store (0.1.0)
   gitlab-rspec (0.1.0)
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63

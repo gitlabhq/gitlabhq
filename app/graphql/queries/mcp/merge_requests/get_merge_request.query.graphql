@@ -13,6 +13,8 @@ query getMergeRequest(
   $includeConflicts: Boolean = false
   $notesAfter: String
   $notesFirst: Int
+  $notesBefore: String
+  $notesLast: Int
   $diffsAfter: String
   $diffsFirst: Int
   $commitsAfter: String
@@ -145,9 +147,14 @@ query getMergeRequest(
           }
         }
       }
-      notes(after: $notesAfter, first: $notesFirst) @include(if: $includeNotes) {
+      resolvedDiscussionsCount @include(if: $includeNotes)
+      resolvableDiscussionsCount @include(if: $includeNotes)
+      notes(after: $notesAfter, before: $notesBefore, first: $notesFirst, last: $notesLast)
+        @include(if: $includeNotes) {
         pageInfo {
           hasNextPage
+          hasPreviousPage
+          startCursor
           endCursor
         }
         count
@@ -163,6 +170,22 @@ query getMergeRequest(
             id
             username
             name
+          }
+          position {
+            newPath
+            oldPath
+            newLine
+            oldLine
+          }
+          discussion {
+            id
+            resolvable
+            resolved
+            resolvedBy {
+              id
+              username
+              name
+            }
           }
         }
       }

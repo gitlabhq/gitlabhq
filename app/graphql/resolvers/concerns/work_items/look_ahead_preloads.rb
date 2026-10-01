@@ -42,6 +42,7 @@ module WorkItems
         [:widgets, :milestone] => { milestone: [:project, :group] },
         [:widgets, :parent] => :work_item_parent,
         [:widgets, :participants] => WorkItem.participant_includes,
+        [:widgets, :severity] => :issuable_severity,
         [:widgets, :start_date] => :dates_source,
         [:widgets, :subscribed] => WorkItem.participant_includes
       }
@@ -63,6 +64,7 @@ module WorkItems
         [:features, :milestone, :milestone] => { milestone: [:project, :group] },
         [:features, :notifications, :subscribed] => WorkItem.participant_includes,
         [:features, :participants, :participants] => WorkItem.participant_includes,
+        [:features, :severity, :severity] => :issuable_severity,
         [:features, :start_and_due_date] => :dates_source
       }
     end

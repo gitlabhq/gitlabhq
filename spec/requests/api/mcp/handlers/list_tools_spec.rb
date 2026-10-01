@@ -344,19 +344,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         expect(unannotated_tool).to be_present
         expect(unannotated_tool['annotations']).to eq({ 'toolset' => 'meta' })
       end
-
-      context 'when the mcp_toolsets feature flag is disabled' do
-        before do
-          stub_feature_flags(mcp_toolsets: false)
-        end
-
-        it 'omits the annotations key rather than returning an empty object', :aggregate_failures do
-          post_list_tools
-
-          expect(unannotated_tool).to be_present
-          expect(unannotated_tool).not_to have_key('annotations')
-        end
-      end
     end
 
     context 'when x-gitlab-enabled-mcp-server-tools header is present' do
@@ -556,30 +543,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
               "Expected OPT_IN tool '#{name}' (toolset :#{tool.toolset}) to be excluded"
           end
         end
-      end
-    end
-
-    context 'when mcp_toolsets feature flag is disabled' do
-      before do
-        stub_feature_flags(mcp_toolsets: false)
-      end
-
-      it 'ignores the toolsets header and returns all tools' do
-        post api('/mcp', user, oauth_access_token: access_token),
-          params: params,
-          headers: { 'X-Gitlab-Enabled-Mcp-Server-Toolsets' => 'ci' }
-
-        tool_names = json_response['result']['tools'].pluck('name')
-        expect(tool_names).to include('get_merge_request', 'get_work_item', 'get_pipeline')
-      end
-
-      it 'omits the toolset annotation', :aggregate_failures do
-        post_list_tools
-
-        annotations = json_response['result']['tools'].filter_map { |tool| tool['annotations'] }
-
-        expect(annotations).to be_present
-        expect(annotations.flat_map(&:keys)).not_to include('toolset')
       end
     end
 

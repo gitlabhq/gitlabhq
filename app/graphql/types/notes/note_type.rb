@@ -108,6 +108,17 @@ module Types
       def position
         object.position if object.position.is_a?(Gitlab::Diff::Position)
       end
+
+      def discussion
+        noteable = object.noteable
+        return object.to_discussion unless noteable && object.part_of_discussion?
+
+        lazy_discussion = BatchLoader::GraphQL.for(object.discussion_id).batch(key: noteable) do |ids, loader, args|
+          args[:key].notes.with_discussion_ids(ids).discussions.each { |d| loader.call(d.id, d) }
+        end
+
+        Gitlab::Graphql::Lazy.with_value(lazy_discussion) { |discussion| discussion || object.to_discussion }
+      end
     end
   end
 end

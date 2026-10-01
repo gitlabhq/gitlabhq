@@ -36,11 +36,11 @@ Helmチャートを使用してデプロイされたセカンダリサイトか�
 
 バンドルされたNGINX Ingressを使用している間は、両方の機能フラグを有効にしたままにしないでください。そうしないと、ユーザーはGeoセカンダリ経由でのSSHフェッチやプッシュを完了できない場合があります。
 
-技術的な詳細については、[GeoプロキシGitフェッチエラー: fatal: the remote end hung up unexpectedly](https://gitlab.com/gitlab-org/gitlab/-/work_items/454707)を参照してください。
+技術的な詳細については、[Geo proxied git fetch error: fatal: the remote end hung up unexpectedly](https://gitlab.com/gitlab-org/gitlab/-/work_items/454707)を参照してください。
 
 ## エラー: GeoセカンダリでSSH経由でプッシュする際に`Net::ReadTimeout` {#error-netreadtimeout-when-pushing-through-ssh-on-a-geo-secondary}
 
-GeoセカンダリサイトでSSH経由で大きなリポジトリをプッシュする際に、タイムアウトが発生する場合があります。これは、Railsがプッシュをプライマリにプロキシし、60秒のデフォルトタイムアウトがあるためです。[このGeoイシューで説明されています](https://gitlab.com/gitlab-org/gitlab/-/issues/7405)。
+GeoセカンダリサイトでSSH経由で大きなリポジトリをプッシュする際に、タイムアウトが発生する場合があります。これは、Railsがプッシュをプライマリにプロキシし、60秒のデフォルトタイムアウトがあるためです。[このGeoイシューで説明されています](https://gitlab.com/gitlab-org/gitlab/-/issues/7405)。この問題は、`geo_proxy_push_ssh_to_primary`機能フラグが無効になっている場合にのみ発生します。
 
 現在の回避策は次のとおりです:
 

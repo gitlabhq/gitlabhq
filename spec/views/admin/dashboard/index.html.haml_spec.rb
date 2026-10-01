@@ -14,9 +14,9 @@ RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_ca
     counts = Admin::DashboardController::COUNTED_ITEMS.index_with { 100 }
 
     assign(:counts, counts)
-    assign(:projects, create_list(:project, 1))
-    assign(:users, create_list(:user, 1))
-    assign(:groups, create_list(:group, 1))
+    assign(:projects, build_stubbed_list(:project, 1))
+    assign(:users, build_stubbed_list(:user, 1))
+    assign(:groups, build_stubbed_list(:group, 1))
 
     allow(Gitlab::Kas).to receive(:enabled?).and_return(kas_enabled)
     allow(view).to receive_messages(

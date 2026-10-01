@@ -95,7 +95,6 @@ type:AiInstanceUsageEvent
 type:AiMessage
 type:AiMessageExtras
 type:AiMetrics
-type:AiMetricsBasic
 type:AiModelSelectionNamespaceFeatureSetting
 type:AiModelSelectionOfferedModel
 type:AiNamespaceSettings
@@ -906,7 +905,6 @@ type:X509Signature
 type:agentPlatformMetrics
 type:codeReviewMetrics
 type:codeSuggestionMetrics
-type:codeSuggestionMetricsBasic
 type:duoChatMetrics
 type:mcpMetrics
 type:troubleshootJobMetrics

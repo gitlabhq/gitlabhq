@@ -43,7 +43,7 @@ in a single container.
 
 Prerequisites:
 
-- Install a Docker container engine, like [Docker](https://docs.docker.com/engine/install/#server).
+- Install a Docker container engine, like [Docker](https://docs.docker.com/engine/install/).
 - Use a valid hostname that is accessible in your network. Do not use `localhost`.
 - Ensure you have approximately 340 MB (compressed) for the `linux/amd64` architecture and
   a minimum of 512 MB of RAM.

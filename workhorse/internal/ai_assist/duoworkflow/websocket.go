@@ -119,6 +119,7 @@ const (
 	capabilityScheduleNotification capability = "schedule_notification"
 	capabilityGrepFixedStrings     capability = "grep_fixed_strings"
 	capabilityReadFileImage        capability = "read_file_image"
+	capabilityAutoMode             capability = "auto_mode"
 
 	// Server capabilities
 	capabilityAdvancedSearch          capability = "advanced_search"
@@ -149,6 +150,7 @@ var ClientCapabilities = []capability{
 	capabilityScheduleNotification,
 	capabilityGrepFixedStrings,
 	capabilityReadFileImage,
+	capabilityAutoMode,
 }
 
 // ServerCapabilities defines the list of allowed server capabilities that

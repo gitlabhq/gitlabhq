@@ -99,7 +99,7 @@ The service must support:
 Services known to work include:
 
 - [Google Memorystore](https://cloud.google.com/memorystore)
-- [Amazon ElastiCache for Valkey](https://aws.amazon.com/elasticache/valkey/)
+- [Amazon ElastiCache for Valkey](https://aws.amazon.com/elasticache/)
 
 > [!note]
 > On AWS, use ElastiCache for Valkey 7.2. ElastiCache for Redis 7.2 is not available on AWS.

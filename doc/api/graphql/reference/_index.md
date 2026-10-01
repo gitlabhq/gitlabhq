@@ -35899,17 +35899,6 @@ Arguments:
 | <a id="aimetrics-codesuggestions-idenames"></a>`ideNames` | [`[String!]`](#string) | Filter code suggestion metrics by one or more IDE names. |
 | <a id="aimetrics-codesuggestions-languages"></a>`languages` | [`[String!]`](#string) | Filter code suggestion metrics by one or more languages. |
 
-### `AiMetricsBasic`
-
-AI-related metrics with three months of data retention.
-Premium and Ultimate only.
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aimetricsbasic-codesuggestions"></a>`codeSuggestions` | [`codeSuggestionMetricsBasic`](#codesuggestionmetricsbasic) | Code Suggestions metrics. |
-
 ### `AiModelSelectionAllowList`
 
 Model selection allowlist for an AI feature.
@@ -43050,7 +43039,13 @@ Fields:
 | <a id="dependencyfirewallactivitysummary-allowed"></a>`allowed` | [`Int!`](#int) | Total allowed (pass-through) enforcement events in the window. |
 | <a id="dependencyfirewallactivitysummary-blocked"></a>`blocked` | [`Int!`](#int) | Total blocked enforcement events in the window. |
 | <a id="dependencyfirewallactivitysummary-blockingrules"></a>`blockingRules` | [`Int!`](#int) | Number of active rules in enforce (blocking) mode. |
+| <a id="dependencyfirewallactivitysummary-licenserisksprevented"></a>`licenseRisksPrevented` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of distinct package versions blocked by license rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| <a id="dependencyfirewallactivitysummary-licenseriskswarnedonly"></a>`licenseRisksWarnedOnly` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of distinct package versions warned but never blocked by license rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| <a id="dependencyfirewallactivitysummary-maliciouspackagesprevented"></a>`maliciousPackagesPrevented` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of distinct package versions blocked by malicious-package rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| <a id="dependencyfirewallactivitysummary-maliciouspackageswarnedonly"></a>`maliciousPackagesWarnedOnly` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of distinct package versions warned but never blocked by malicious-package rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
 | <a id="dependencyfirewallactivitysummary-totaltriggers"></a>`totalTriggers` | [`Int!`](#int) | Total enforcement events (blocked + warned + allowed) in the window. |
+| <a id="dependencyfirewallactivitysummary-vulnerabilitiesprevented"></a>`vulnerabilitiesPrevented` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of distinct package versions blocked by vulnerability or risk-severity rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| <a id="dependencyfirewallactivitysummary-vulnerabilitiespreventedbyseverity"></a>`vulnerabilitiesPreventedBySeverity` {{< icon name="warning-solid" >}} | [`[DependencyFirewallSeverityCount!]`](#dependencyfirewallseveritycount) | Introduced in GitLab 19.5. Status: Experiment. Breakdown of prevented packages by their highest carried severity. Sums to the prevented total. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
 | <a id="dependencyfirewallactivitysummary-warned"></a>`warned` | [`Int!`](#int) | Total warned enforcement events in the window. |
 | <a id="dependencyfirewallactivitysummary-warningrules"></a>`warningRules` | [`Int!`](#int) | Number of active rules in warn mode. |
 
@@ -43095,6 +43090,17 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="dependencyfirewallrulelastmodified-at"></a>`at` | [`Time`](#time) | Timestamp of when the policy was last modified. |
 | <a id="dependencyfirewallrulelastmodified-by"></a>`by` | [`UserCore`](#usercore) | User who last modified the policy. |
+
+### `DependencyFirewallSeverityCount`
+
+Count of distinct prevented packages at one severity level.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyfirewallseveritycount-count"></a>`count` | [`Int!`](#int) | Number of distinct packages whose highest carried severity matches the severity field. |
+| <a id="dependencyfirewallseveritycount-severity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | Severity level of the count. |
 
 ### `DependencyListExportPartUploadRegistry`
 
@@ -47557,6 +47563,7 @@ Fields:
 | <a id="group-metadata"></a>`metadata` {{< icon name="warning-solid" >}} | [`NamespaceMetadata`](#namespacemetadata) | Introduced in GitLab 18.6. Status: Experiment. Metadata information for the namespace. |
 | <a id="group-name"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="group-namespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
+| <a id="group-orbit"></a>`orbit` {{< icon name="warning-solid" >}} | [`OrbitNamespace`](#orbitnamespace) | Introduced in GitLab 19.5. Status: Experiment. Orbit data of the group. Returns null when Orbit is not available to the current user. |
 | <a id="group-orbittrial"></a>`orbitTrial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can only be resolved for one group in any single request. |
 | <a id="group-organizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.1. Status: Experiment. Path for editing group at the organization level. |
 | <a id="group-packagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -47719,26 +47726,6 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="group-aimetrics-enddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
 | <a id="group-aimetrics-startdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
-
-##### `Group.aiMetricsBasic`
-
-{{< details >}}
-
-- Introduced in GitLab 18.5.
-- Status: Experiment.
-
-{{< /details >}}
-
-AI-related metrics with three months of data retention.
-
-Returns [`AiMetricsBasic`](#aimetricsbasic).
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="group-aimetricsbasic-enddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
-| <a id="group-aimetricsbasic-startdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
 ##### `Group.aiUserMetrics`
 
@@ -55783,6 +55770,84 @@ Fields:
 | <a id="oncallrotationactiveperiodtype-endtime"></a>`endTime` | [`String`](#string) | End of the rotation active period. |
 | <a id="oncallrotationactiveperiodtype-starttime"></a>`startTime` | [`String`](#string) | Start of the rotation active period. |
 
+### `OrbitIndexingDomain`
+
+Indexing status of one Orbit domain.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitindexingdomain-name"></a>`name` | [`String!`](#string) | Name of the domain. |
+| <a id="orbitindexingdomain-phase"></a>`phase` | [`OrbitIndexingPhase`](#orbitindexingphase) | Indexing phase of the domain. |
+
+### `OrbitIndexingProjects`
+
+Indexing progress of the projects in a group or project.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitindexingprojects-gaps"></a>`gaps` | [`Int`](#int) | Number of projects that are not indexed. |
+| <a id="orbitindexingprojects-indexed"></a>`indexed` | [`Int`](#int) | Number of indexed projects. |
+| <a id="orbitindexingprojects-totalknown"></a>`totalKnown` | [`Int`](#int) | Number of projects known to Orbit. |
+
+### `OrbitIndexingStatus`
+
+Indexing status of a group or project in Orbit.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitindexingstatus-domains"></a>`domains` | [`[OrbitIndexingDomain!]`](#orbitindexingdomain) | Indexing status of each domain. |
+| <a id="orbitindexingstatus-phase"></a>`phase` | [`OrbitIndexingPhase`](#orbitindexingphase) | Indexing phase of the group or project. |
+| <a id="orbitindexingstatus-projects"></a>`projects` | [`OrbitIndexingProjects`](#orbitindexingprojects) | Indexing progress of the projects in the group or project. |
+
+### `OrbitItemCountDomain`
+
+Number of indexed items in one Orbit domain.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbititemcountdomain-entities"></a>`entities` | [`[OrbitItemCountEntity!]`](#orbititemcountentity) | Number of indexed items of each entity in the domain. |
+| <a id="orbititemcountdomain-name"></a>`name` | [`String!`](#string) | Name of the domain. |
+
+### `OrbitItemCountEntity`
+
+Number of indexed items of one Orbit entity.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbititemcountentity-count"></a>`count` | [`BigInt`](#bigint) | Number of indexed items of the entity. |
+| <a id="orbititemcountentity-name"></a>`name` | [`String!`](#string) | Name of the entity. |
+
+### `OrbitItemCounts`
+
+Number of indexed items of a group or project in Orbit.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbititemcounts-domains"></a>`domains` | [`[OrbitItemCountDomain!]`](#orbititemcountdomain) | Number of indexed items in each domain. |
+
+### `OrbitNamespace`
+
+Orbit data of a group or project.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitnamespace-indexingstatus"></a>`indexingStatus` | [`OrbitIndexingStatus`](#orbitindexingstatus) | Indexing status of the group or project. |
+| <a id="orbitnamespace-itemcounts"></a>`itemCounts` | [`OrbitItemCounts`](#orbititemcounts) | Number of indexed items in the group or project. This field can be resolved for only one group or project in any single request. |
+
 ### `OrbitTrial`
 
 Orbit trial of a top-level group, as reported by CustomersDot.
@@ -58077,6 +58142,7 @@ Fields:
 | <a id="project-onlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="project-openissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
 | <a id="project-openmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
+| <a id="project-orbit"></a>`orbit` {{< icon name="warning-solid" >}} | [`OrbitNamespace`](#orbitnamespace) | Introduced in GitLab 19.5. Status: Experiment. Orbit data of the project. Returns null when Orbit is not available to the current user. |
 | <a id="project-organizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 16.11. Status: Experiment. Path for editing project at the organization level. |
 | <a id="project-packagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="project-packagesprotectionrules"></a>`packagesProtectionRules` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Introduced in GitLab 16.6. Status: Experiment. Packages protection rules for the project. |
@@ -58280,26 +58346,6 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="project-aimetrics-enddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
 | <a id="project-aimetrics-startdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
-
-##### `Project.aiMetricsBasic`
-
-{{< details >}}
-
-- Introduced in GitLab 18.5.
-- Status: Experiment.
-
-{{< /details >}}
-
-AI-related metrics with three months of data retention.
-
-Returns [`AiMetricsBasic`](#aimetricsbasic).
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="project-aimetricsbasic-enddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
-| <a id="project-aimetricsbasic-startdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
 ##### `Project.aiUserMetrics`
 
@@ -58999,7 +59045,7 @@ Arguments:
 
 {{< /details >}}
 
-Aggregate dependency firewall activity totals for the project. Available behind the `dependency_firewall_phase1` feature flag.
+Aggregate dependency firewall activity totals for the project. Available behind the `dependency_firewall_phase1` feature flag. This field can be resolved for only one project in any single request.
 
 Returns [`DependencyFirewallActivitySummary`](#dependencyfirewallactivitysummary).
 
@@ -67031,6 +67077,7 @@ Fields:
 | <a id="workitemfeatures-participants"></a>`participants` | [`WorkItemWidgetParticipants`](#workitemwidgetparticipants) | Participants widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-progress"></a>`progress` | [`WorkItemWidgetProgress`](#workitemwidgetprogress) | Progress widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-requirementlegacy"></a>`requirementLegacy` | [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy) | Requirement legacy widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatures-severity"></a>`severity` | [`WorkItemWidgetSeverity`](#workitemwidgetseverity) | Severity widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-startandduedate"></a>`startAndDueDate` | [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate) | Start and due date widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-status"></a>`status` | [`WorkItemWidgetStatus`](#workitemwidgetstatus) | Status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | <a id="workitemfeatures-testreports"></a>`testReports` | [`WorkItemWidgetTestReports`](#workitemwidgettestreports) | Test reports widget of the work item. Returns `null` if the widget is not available for the work item. |
@@ -67910,6 +67957,17 @@ Fields:
 | <a id="workitemwidgetrequirementlegacy-legacyiid"></a>`legacyIid` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 15.9. Use Work Item IID instead. |
 | <a id="workitemwidgetrequirementlegacy-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetSeverity`
+
+Represents the severity widget.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetseverity-severity"></a>`severity` | [`IssuableSeverity`](#issuableseverity) | Severity of the work item. |
+| <a id="workitemwidgetseverity-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetStartAndDueDate`
 
 Represents a start and due date widget.
@@ -68280,18 +68338,6 @@ Fields:
 | <a id="codesuggestionmetrics-languages"></a>`languages` | [`[String!]`](#string) | List of languages with at least one suggestion shown or accepted. |
 | <a id="codesuggestionmetrics-showncount"></a>`shownCount` | [`Int`](#int) | Total count of code suggestions shown. |
 | <a id="codesuggestionmetrics-shownlinesofcode"></a>`shownLinesOfCode` | [`Int`](#int) | Sum of lines of code from code suggestions shown. |
-
-### `codeSuggestionMetricsBasic`
-
-AI-related metrics with three months of data retention.
-Premium and Ultimate only.
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="codesuggestionmetricsbasic-acceptedcount"></a>`acceptedCount` | [`Int`](#int) | Total count of code suggestions accepted. |
-| <a id="codesuggestionmetricsbasic-showncount"></a>`shownCount` | [`Int`](#int) | Total count of code suggestions shown. |
 
 ### `codeSuggestionsUserMetrics`
 
@@ -72740,6 +72786,18 @@ Enum defining the type of OpenTelemetry metric.
 | <a id="opentelemetrymetrictype-histogram_type"></a>`HISTOGRAM_TYPE` | Histogram Type type. |
 | <a id="opentelemetrymetrictype-sum_type"></a>`SUM_TYPE` | Sum Type type. |
 
+### `OrbitIndexingPhase`
+
+Indexing phase of Orbit data.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="orbitindexingphase-error"></a>`ERROR` | Indexing failed. |
+| <a id="orbitindexingphase-not_started"></a>`NOT_STARTED` | Indexing has not started. |
+| <a id="orbitindexingphase-ready"></a>`READY` | Indexing is complete. |
+| <a id="orbitindexingphase-syncing"></a>`SYNCING` | Indexing is in progress. |
+| <a id="orbitindexingphase-unknown"></a>`UNKNOWN` | Indexing phase is unknown. |
+
 ### `OrbitTrialState`
 
 State of the Orbit trial for a top-level group.
@@ -74958,6 +75016,7 @@ Type of a work item widget.
 | <a id="workitemwidgettype-participants"></a>`PARTICIPANTS` | Participants widget. |
 | <a id="workitemwidgettype-progress"></a>`PROGRESS` | Progress widget. |
 | <a id="workitemwidgettype-requirement_legacy"></a>`REQUIREMENT_LEGACY` | Requirement Legacy widget. |
+| <a id="workitemwidgettype-severity"></a>`SEVERITY` | Severity widget. |
 | <a id="workitemwidgettype-start_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
 | <a id="workitemwidgettype-status"></a>`STATUS` | Status widget. |
 | <a id="workitemwidgettype-test_reports"></a>`TEST_REPORTS` | Test Reports widget. |
@@ -78809,6 +78868,7 @@ Implementations:
 - [`WorkItemWidgetParticipants`](#workitemwidgetparticipants)
 - [`WorkItemWidgetProgress`](#workitemwidgetprogress)
 - [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy)
+- [`WorkItemWidgetSeverity`](#workitemwidgetseverity)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
 - [`WorkItemWidgetStatus`](#workitemwidgetstatus)
 - [`WorkItemWidgetTestReports`](#workitemwidgettestreports)

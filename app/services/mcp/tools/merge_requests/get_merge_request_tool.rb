@@ -33,8 +33,7 @@ module Mcp
             includeDiscussions: facets.include?('discussions'),
             includeApprovals: facets.include?('approvals'),
             includeConflicts: facets.include?('conflicts'),
-            notesAfter: params[:notes_after],
-            notesFirst: params[:notes_first],
+            **notes_pagination_variables(facets),
             diffsAfter: params[:diffs_after],
             diffsFirst: params[:diffs_first],
             commitsAfter: params[:commits_after],
@@ -51,6 +50,26 @@ module Mcp
         end
 
         private
+
+        def notes_pagination_variables(facets)
+          return {} unless facets.include?('notes')
+
+          backward = params[:notes_last].present? || params[:notes_before].present?
+          forward = params[:notes_first].present? || params[:notes_after].present?
+
+          if backward && forward
+            raise ArgumentError, 'Provide notes_first/notes_after or notes_last/notes_before, not both directions'
+          end
+
+          if backward
+            {
+              notesLast: params[:notes_last] || Mcp::Tools::Concerns::CursorPagination::MAX_PAGE_SIZE,
+              notesBefore: params[:notes_before]
+            }
+          else
+            { notesFirst: params[:notes_first], notesAfter: params[:notes_after] }
+          end
+        end
 
         def resolve_target
           @resolve_target ||=

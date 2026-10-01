@@ -242,6 +242,8 @@ Only the base merge request is returned unless you request associated data with 
 | `diffs_first`       | integer | No       | Number of files to return after the cursor, up to 100. Applies only when `include` is `["diffs"]` and `detail` is `full_patch`. |
 | `notes_after`       | string  | No       | Cursor for forward pagination of notes. Applies only when `include` is `["notes"]`. |
 | `notes_first`       | integer | No       | Number of notes to return after the cursor, up to 100. Applies only when `include` is `["notes"]`. |
+| `notes_before`      | string  | No       | Cursor for backward pagination of notes. Applies only when `include` is `["notes"]`. |
+| `notes_last`        | integer | No       | Number of notes to return before the cursor, up to 100. Applies only when `include` is `["notes"]`. |
 | `commits_after`     | string  | No       | Cursor for forward pagination of commits. Applies only when `include` is `["commits"]`. |
 | `commits_first`     | integer | No       | Number of commits to return after the cursor, up to 100. Applies only when `include` is `["commits"]`. |
 | `pipelines_after`   | string  | No       | Cursor for forward pagination of pipelines. Applies only when `include` is `["pipelines"]`. |
@@ -253,6 +255,12 @@ deletions. To get patch text, set `detail` to `full_patch`.
 The `commits` and `pipelines` facets return up to 100 entries per call. Each response carries
 `pageInfo.hasNextPage` and `pageInfo.endCursor`. Pass that cursor back as `commits_after` or
 `pipelines_after` to read the next page.
+
+The `notes` facet also pages backward with `notes_last` and `notes_before`. To read the newest
+notes, pass `notes_last` without `notes_first` or `notes_after`. Mixing both directions in one
+call returns an error. Each note returns its `position` (the file and line of a diff comment) and
+its `discussion` (the thread it belongs to, and whether the thread is resolved). The response also
+includes `resolvedDiscussionsCount` and `resolvableDiscussionsCount`.
 
 The `conflicts` facet returns raw conflict file content, including Git conflict markers. It is
 available only when the merge request cannot be merged and you can push to the source branch, and

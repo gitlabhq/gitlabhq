@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'admin/application_settings/_ci_cd' do
   include RenderedHtml
 
-  let_it_be(:admin) { create(:admin) }
   let_it_be(:application_setting) { build(:application_setting) }
 
   let_it_be(:limits_attributes) do
@@ -26,6 +25,7 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
 
   let_it_be(:default_plan_limits) { create(:plan_limits, :default_plan, **limits_attributes) }
 
+  let(:admin) { build_stubbed(:admin) }
   let(:page) { rendered_html }
 
   before do

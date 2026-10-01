@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe TriggerVariableEntity do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+
   let(:request) { double('request') }
-  let(:user) { create(:user) }
   let(:variable) { { key: 'TEST_KEY', value: 'TEST_VALUE' } }
 
   subject { described_class.new(variable, request: request).as_json }

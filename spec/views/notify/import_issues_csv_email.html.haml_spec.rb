@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'notify/import_issues_csv_email.html.haml' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:user) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project) }
   let(:correct_results) { { success: 3, parse_error: false } }
   let(:errored_results) { { success: 3, error_lines: [5, 6, 7], parse_error: false } }
   let(:parse_error_results) { { success: 0, parse_error: true } }
@@ -76,8 +76,8 @@ Please make sure it has the correct format: a delimited text file that uses a co
     end
 
     context 'with a project in a group' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:project) { create(:project, group: group) }
+      let(:group) { build_stubbed(:group) }
+      let(:project) { build_stubbed(:project, group: group) }
 
       it 'renders with group clause error' do
         render

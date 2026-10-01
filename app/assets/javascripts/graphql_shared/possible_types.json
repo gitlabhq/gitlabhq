@@ -481,6 +481,7 @@
     "WorkItemWidgetParticipants",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
+    "WorkItemWidgetSeverity",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",

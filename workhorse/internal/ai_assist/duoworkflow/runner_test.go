@@ -1452,6 +1452,11 @@ func Test_intersectClientCapabilities(t *testing.T) {
 			fromClient: []string{"read_file_chunked", "read_file_image"},
 			expected:   []string{"read_file_chunked", "read_file_image"},
 		},
+		{
+			name:       "auto_mode capability passes through",
+			fromClient: []string{"shell_command", "auto_mode"},
+			expected:   []string{"shell_command", "auto_mode"},
+		},
 	}
 
 	for _, tt := range tests {

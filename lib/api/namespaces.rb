@@ -32,10 +32,10 @@ module API
         tags NAMESPACES_TAGS
       end
       params do
-        optional :search, type: String, desc: 'Returns a list of namespaces the user is authorized to view based on the search criteria'
-        optional :owned_only, type: Boolean, desc: 'In GitLab 14.2 and later, returns a list of owned namespaces only'
-        optional :top_level_only, type: Boolean, default: false, desc: 'Only include top level namespaces'
-        optional :full_path_search, type: Boolean, default: false, desc: 'If `true`, the `search` parameter is matched against the full path of the namespaces'
+        optional :search, type: String, desc: 'Return only namespaces that contain the specified value in their name or path.'
+        optional :owned_only, type: Boolean, desc: 'If `true`, returns only namespaces owned by the current user.'
+        optional :top_level_only, type: Boolean, default: false, desc: 'If `true`, returns only top-level namespaces.'
+        optional :full_path_search, type: Boolean, default: false, desc: 'If `true`, the `search` parameter is matched against the full path of the namespaces.'
 
         use :pagination
         use :optional_list_params_ee
@@ -73,7 +73,7 @@ module API
         tags NAMESPACES_TAGS
       end
       params do
-        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the namespace'
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the namespace.'
       end
       route_setting :authorization, permissions: :read_namespace, boundary_type: :user
       get ':id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :groups_and_projects, urgency: :low do
@@ -91,8 +91,8 @@ module API
         tags NAMESPACES_TAGS
       end
       params do
-        requires :id, type: String, desc: "Namespace’s path"
-        optional :parent_id, type: Integer, desc: 'The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered.'
+        requires :id, type: String, desc: 'Path of the namespace.'
+        optional :parent_id, type: Integer, desc: 'ID of the parent namespace. If omitted, only top-level namespaces are considered.'
       end
       route_setting :authorization, permissions: :read_namespace, boundary_type: :user
       get ':id/exists', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :groups_and_projects, urgency: :low do

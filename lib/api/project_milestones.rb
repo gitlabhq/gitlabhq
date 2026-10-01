@@ -16,7 +16,7 @@ module API
     urgency :low
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all project milestones' do
@@ -40,7 +40,7 @@ module API
         tags ['milestones']
       end
       params do
-        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        requires :milestone_id, type: Integer, desc: 'ID of the project milestone.'
       end
       route_setting :authorization, permissions: :read_milestone, boundary_type: :project
       get ":id/milestones/:milestone_id" do
@@ -102,7 +102,7 @@ module API
         tags ['milestones']
       end
       params do
-        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        requires :milestone_id, type: Integer, desc: 'ID of the project milestone.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_milestone_issue, boundary_type: :project
@@ -118,7 +118,7 @@ module API
         tags ['milestones']
       end
       params do
-        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        requires :milestone_id, type: Integer, desc: 'ID of the project milestone.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_milestone_merge_request, boundary_type: :project

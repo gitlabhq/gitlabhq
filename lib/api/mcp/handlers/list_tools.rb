@@ -19,7 +19,6 @@ module API
         #   and allowed_toolsets are given, the result is their union.
         def invoke(current_user, allowed_tools: nil, allowed_toolsets: nil, tool_name_prefix: nil)
           tools_hash = manager.list_tools
-          toolsets_enabled = ::Feature.enabled?(:mcp_toolsets, current_user)
 
           allowed_tools = resolve_aliases(allowed_tools)
           warn_unknown_tools(allowed_tools, tools_hash)
@@ -30,7 +29,7 @@ module API
             next nil unless tool_available?(tool, current_user)
             next nil if tool.unlisted?
 
-            build_tool_data(name, tool, tool_name_prefix, toolsets_enabled)
+            build_tool_data(name, tool, tool_name_prefix)
           end
 
           track_internal_event('list_mcp_tools', user: current_user)
@@ -75,7 +74,7 @@ module API
           result
         end
 
-        def build_tool_data(name, tool, tool_name_prefix, toolsets_enabled)
+        def build_tool_data(name, tool, tool_name_prefix)
           tool_data = {
             name: "#{tool_name_prefix}#{name}",
             description: tool.description,
@@ -84,9 +83,7 @@ module API
 
           tool_data[:icons] = [tool.icons.first] if tool.try(:icons).present?
 
-          tool_annotations = tool.try(:annotations) || {}
-          tool_annotations = tool_annotations.merge(toolset: tool.toolset.to_s) if toolsets_enabled
-          tool_data[:annotations] = tool_annotations if tool_annotations.present?
+          tool_data[:annotations] = (tool.try(:annotations) || {}).merge(toolset: tool.toolset.to_s)
 
           tool_data
         end

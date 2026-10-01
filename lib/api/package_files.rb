@@ -30,8 +30,8 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project'
-      requires :package_id, type: Integer, desc: 'ID of a package'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+      requires :package_id, type: Integer, desc: 'ID of the package.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all package files' do
@@ -46,12 +46,12 @@ module API
           type: String,
           values: %w[id created_at file_name],
           default: 'id',
-          desc: 'Return package files ordered by `id`, `created_at` or `file_name`'
+          desc: 'Sort results by the specified field.'
         optional :sort,
           type: String,
           values: %w[asc desc],
           default: 'asc',
-          desc: 'Return package files sorted in `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_package, boundary_type: :project,
@@ -75,7 +75,7 @@ module API
         tags PACKAGE_FILES_TAGS
       end
       params do
-        requires :package_file_id, type: Integer, desc: 'ID of a package file'
+        requires :package_file_id, type: Integer, desc: 'ID of the package file.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :delete_package, boundary_type: :project,
@@ -129,7 +129,7 @@ module API
         tags PACKAGE_FILES_TAGS
       end
       params do
-        requires :package_file_id, type: Integer, desc: 'ID of a package file'
+        requires :package_file_id, type: Integer, desc: 'ID of the package file.'
         optional :download_mode, type: String, values: %w[proxy direct],
           desc: 'Requested download transfer mode (`proxy` or `direct`). Only honored when allowed by the ' \
             'object storage configuration.'

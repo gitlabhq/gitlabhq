@@ -11,9 +11,9 @@ module API
       end
 
       params :create_file_params do
-        optional :files, type: Array, desc: 'An array of files' do
-          requires :file_path, type: String, file_path: true, allow_blank: false, desc: 'The path of a snippet file'
-          requires :content, type: String, allow_blank: false, desc: 'The content of a snippet file'
+        optional :files, type: Array, desc: 'Array of files for the snippet.' do
+          requires :file_path, type: String, file_path: true, allow_blank: false, desc: 'Path of the snippet file.'
+          requires :content, type: String, allow_blank: false, desc: 'Content of the snippet file.'
         end
 
         optional :content, type: String, allow_blank: false, desc: 'The content of a snippet'
@@ -28,14 +28,14 @@ module API
       end
 
       params :update_file_params do |options|
-        optional :files, type: Array, desc: 'An array of files to update' do
+        optional :files, type: Array, desc: 'Array of files to update for the snippet. Required when the snippet has multiple files.' do
           requires :action,
             type: String,
             values: SnippetInputAction::ACTIONS.map(&:to_s),
             desc: "The type of action to perform on the file, must be one of: #{SnippetInputAction::ACTIONS.join(', ')}"
-          optional :content, type: String, desc: 'The content of a snippet'
-          optional :file_path, file_path: true, type: String, desc: 'The file path of a snippet file'
-          optional :previous_path, file_path: true, type: String, desc: 'The previous path of a snippet file'
+          optional :content, type: String, desc: 'Content of the snippet file.'
+          optional :file_path, file_path: true, type: String, desc: 'Path of the snippet file.'
+          optional :previous_path, file_path: true, type: String, desc: 'Previous path of the snippet file.'
         end
 
         mutually_exclusive :files, :content

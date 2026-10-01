@@ -8,8 +8,21 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
+  # Only the push path of this worker is in the create_pipeline_from_commit SLI. The GraphQL
+  # pipelineCreate mutation also enqueues it (source merge_request_event with mergeRequestIid,
+  # else api/web), and those API creations are out of scope.
+  EXPERIENCE_SOURCE = 'push'
+
   sidekiq_retries_exhausted do |job, exception|
-    project_id, _user_id, ref, _source, _execute_options, creation_params = job['args']
+    project_id, _user_id, ref, source, _execute_options, creation_params = job['args']
+
+    if report_experience?(source)
+      Ci::PipelineCreation::ExperienceReporter.report_error(
+        source: source,
+        started_at: creation_params.to_h.dig('pipeline_creation_request', 'started_at'),
+        project_id: project_id
+      )
+    end
 
     new.perform_failure(project_id, ref, exception, creation_params.to_h)
   end
@@ -27,6 +40,10 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
   # Retried via Sidekiq (retry: 3) so the pipeline self-heals once Gitaly is consistent.
   TransientGitalyReadError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
+  def self.report_experience?(source)
+    source.to_s == EXPERIENCE_SOURCE
+  end
+
   def perform(project_id, user_id, ref, source, execute_options = {}, creation_params = {})
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464671')
 
@@ -43,9 +60,18 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
       .new(project, user, **creation_params)
       .execute(source, **execute_options)
 
+    raise_transient_gitaly_read_error!(response, project, **creation_params) if response.error?
+
+    if self.class.report_experience?(source)
+      Ci::PipelineCreation::ExperienceReporter.report(
+        pipeline: response.payload,
+        source: source,
+        started_at: creation_params.with_indifferent_access.dig(:pipeline_creation_request, :started_at)
+      )
+    end
+
     return unless response.error?
 
-    raise_transient_gitaly_read_error!(response, project, **creation_params)
     log_pipeline_errors(response.message, project, **creation_params)
   end
 

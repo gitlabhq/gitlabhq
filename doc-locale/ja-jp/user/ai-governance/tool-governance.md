@@ -80,7 +80,7 @@ GitLab MCPサーバーによって公開されるツールは、GitLab Duo Agent
 
 `destructiveHint: true`と`readOnlyHint: true`の両方を宣言するツールは、削除として分類されます。カテゴリは表示されている順序で解決されるため、最も制限の厳しい宣言が優先されます。タブ上のツールは、GitLabエディション、ライセンス、および有効な機能によっても異なります。これらがMCPサーバーが公開するツールを決定するためです。
 
-多くの機能は、GitLab Duo Agent PlatformツールとMCPサーバーツールの両方として存在します。2つのツールが異なる名前を持っていても、1つのモードが両方を管理します。例えば、`get_work_item_notes`のモードを設定すると、MCPサーバーツール`get_workitem_notes`にも適用されます。GitLab Duo Agent Platformツールでモードを設定します。MCPサーバーツールを個別に検索して設定する必要はありません。
+多くの機能は、GitLab Duo Agent PlatformツールとMCPサーバーツールの両方として存在します。2つのツールが異なる名前を持っていても、1つのモードが両方を管理します。例えば、`create_merge_request`のモードを設定すると、MCPサーバーツールである`save_merge_request`にも適用されます。GitLab Duo Agent Platformツールでモードを設定します。MCPサーバーツールを個別に検索して設定する必要はありません。
 
 モードを設定しない場合、動作は変更されません。読み取り専用のMCPツールは事前に承認されたままです。書き込みおよび削除のMCPツールは、引き続き承認を求めます。
 

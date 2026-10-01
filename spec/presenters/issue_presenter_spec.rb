@@ -13,8 +13,8 @@ RSpec.describe IssuePresenter do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:task) { create(:issue, :task, project: project) }
-  let_it_be(:non_member) { create(:user) }
 
+  let(:non_member) { build_stubbed(:user) }
   let(:presented_issue) { issue }
   let(:presenter) { described_class.new(presented_issue, current_user: user) }
   let(:obfuscated_email) { 'an*****@e*****.c**' }
@@ -72,7 +72,7 @@ RSpec.describe IssuePresenter do
     end
 
     context 'for group-level issue' do
-      let(:presented_issue) { create(:issue, :group_level, namespace: group) }
+      let(:presented_issue) { build_stubbed(:issue, :group_level, namespace: group) }
 
       it 'returns false when email notifications are enabled for group' do
         is_expected.to be(false)
@@ -104,7 +104,7 @@ RSpec.describe IssuePresenter do
     end
 
     context 'when issue is group-level' do
-      let(:presented_issue) { create(:issue, :group_level, namespace: group) }
+      let(:presented_issue) { build_stubbed(:issue, :group_level, namespace: group) }
 
       it 'returns true when email notifications are enabled for the group' do
         is_expected.to be(true)
@@ -129,7 +129,7 @@ RSpec.describe IssuePresenter do
 
     context 'when issue is a service desk issue' do
       let(:service_desk_issue) do
-        create(:issue, project: project, author: create(:support_bot), service_desk_reply_to: email)
+        build_stubbed(:issue, project: project, author: build_stubbed(:support_bot), service_desk_reply_to: email)
       end
 
       let(:user) { nil }
@@ -167,7 +167,7 @@ RSpec.describe IssuePresenter do
   end
 
   describe '#issue_email_participants' do
-    let(:participants_issue) { create(:issue, project: project) }
+    let_it_be_with_reload(:participants_issue) { create(:issue, project: project) }
 
     subject { described_class.new(participants_issue, current_user: user).issue_email_participants }
 

@@ -15,7 +15,7 @@ description: セキュリティダッシュボード、脆弱性の傾向、プ�
 
 {{< history >}}
 
-- 高度な検索機能を備えた新しいダッシュボードがGitLab 18.6で[導入され](https://gitlab.com/gitlab-org/gitlab/-/issues/570504)、`project_security_dashboard_new`および`group_security_dashboard_new`という名前の[機能フラグ](../../../administration/feature_flags/_index.md)が設定されました。これらのフラグはデフォルトで無効になっています。
+- GitLab 18.6で高度な検索機能を備えた新しいダッシュボードが`project_security_dashboard_new`および`group_security_dashboard_new`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/570504)されました。これらのフラグはデフォルトで無効になっています。
 - 高度な検索機能を備えた新しいダッシュボードが、GitLab 18.7の[GitLab.com、GitLab Self-Managed、GitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574)になりました。
 - 高度な検索機能を備えた新しいダッシュボードが、GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661)されました。機能フラグ`project_security_dashboard_new`および`group_security_dashboard_new`は削除されました。
 
@@ -31,7 +31,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 
 {{< history >}}
 
-- [高度な脆弱性管理](../vulnerability_report/_index.md#advanced-vulnerability-management)を使用する新しいダッシュボードがGitLab 18.6で[導入され](https://gitlab.com/gitlab-org/gitlab/-/issues/570504)、`project_security_dashboard_new`および`group_security_dashboard_new`という名前の[機能フラグ](../../../administration/feature_flags/_index.md)が設定されました。これらのフラグはデフォルトで無効になっています。
+- GitLab 18.6で[高度な脆弱性管理](../vulnerability_report/_index.md#advanced-vulnerability-management)を使用する新しいダッシュボードが`project_security_dashboard_new`および`group_security_dashboard_new`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/570504)されました。これらのフラグはデフォルトで無効になっています。
 - 新しいダッシュボードは、GitLab 18.7の[GitLab Self-ManagedおよびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574)になりました。
 - 新しいダッシュボードは、GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661)になりました。機能フラグ`project_security_dashboard_new`および`group_security_dashboard_new`は削除されました。
 
@@ -45,24 +45,31 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 
 ### 前提条件 {#prerequisites}
 
-プロジェクトまたはグループのセキュリティダッシュボードを表示するには、以下が必要です:
+プロジェクト、グループ、または組織のセキュリティダッシュボードを表示するには、以下が必要です:
 
-- グループまたはプロジェクトのデベロッパーロール以上。
+- グループまたはプロジェクトのセキュリティマネージャー、デベロッパー、メンテナー、またはオーナーロール。
+- 組織のオーナーロール。
 - プロジェクトに少なくとも1つの[セキュリティスキャナー](../detect/_index.md)が設定されていること。
 - プロジェクトの[デフォルトブランチ](../../project/repository/branches/default.md)でセキュリティスキャンが正常に実行されていること。
 - プロジェクトで少なくとも1つの検出された脆弱性。
 - [高度な脆弱性管理](../vulnerability_report/_index.md#advanced-vulnerability-management)（[高度な検索](../../search/advanced_search.md)が有効）。
 
 > [!note]
-> セキュリティダッシュボードには、[デフォルトブランチ](../../project/repository/branches/default.md)で最も最近完了したパイプラインからのスキャン結果が表示されます。ダッシュボードは、デフォルトブランチで実行された完了済みのパイプラインの結果で更新されます。他のマージされていないブランチからのパイプラインで検出された脆弱性は含まれません。
+> セキュリティダッシュボードには、[デフォルトブランチ](../../project/repository/branches/default.md)で最後に完了したパイプラインのスキャン結果が表示されます。ダッシュボードは、デフォルトブランチで実行された完了済みのパイプラインの結果で更新されます。他のマージされていないブランチからのパイプラインで検出された脆弱性は含まれません。
 
 ### セキュリティダッシュボードを表示する {#viewing-the-security-dashboard}
 
+{{< history >}}
+
+- GitLab 19.3で組織セキュリティダッシュボードが`organization_security_dashboard`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245508)されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
 セキュリティダッシュボードには、デフォルトブランチで検出された脆弱性からのデータを使用して構築された、フィルター可能なチャートとパネルが表示されます。チャートとパネルには、オープンな（トリアージが必要、または確認済みステータスの）脆弱性のみが含まれ、検出されなくなったものは除外されます。
 
-プロジェクトまたはグループのセキュリティダッシュボードを表示できます。各ダッシュボードは、セキュリティ対策状況に対する独自の視点を提供します。
+プロジェクト、グループ、または組織のセキュリティダッシュボードを表示できます。各ダッシュボードは、セキュリティ対策状況に対する独自の視点を提供します。
 
-両方のダッシュボードには、次のものが含まれます:
+3種類のダッシュボードにはすべて以下が含まれます:
 
 - [チャート](#charts)
   - [時間経過による脆弱性の推移](#vulnerabilities-over-time)
@@ -70,14 +77,19 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
   - [Risk score](#risk-score-panel)
   - [経過時間ごとの脆弱性](#vulnerabilities-by-age)
   - [CWEトップ10](#top-10-cwes)
-  - [SASTトリアージと修復ファネル](#sast-triage-and-remediation-funnel)
 - [ダッシュボード全体のフィルター](#filter-the-entire-dashboard)
-- [PDF形式でエクスポート](#export-as-pdf)
 
-セキュリティダッシュボードを表示するには、次の手順に従います:
+[SASTトリアージおよび修正ファネル](#sast-triage-and-remediation-funnel)チャートと[PDFとしてエクスポート](#export-as-pdf)オプションは、プロジェクトおよびグループのダッシュボードでのみ利用できます。
 
-1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左サイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
+プロジェクトまたはグループのセキュリティダッシュボードを表示するには:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
+1. 左側のサイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
+
+組織セキュリティダッシュボードを表示するには:
+
+1. トップバーで、**検索または移動先**を選択し、組織を検索します。
+1. 左側のサイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
 
 ### プロジェクトセキュリティダッシュボード {#project-security-dashboard}
 
@@ -105,13 +117,35 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 - [**CWEトップ10**](#top-10-cwes)チャートは、最も一般的な10個のCWEを表示します。
 - [**SASTトリアージと修復ファネル**](#sast-triage-and-remediation-funnel)チャートは、致命的および高レベルのSAST脆弱性が検出から修正までどのように進捗するかを、GitLab Duoが処理するステージを含めて示します。
 
+### 組織セキュリティダッシュボード {#organization-security-dashboard}
+
+{{< history >}}
+
+- GitLab 19.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245508)され、[機能フラグ](../../../administration/feature_flags/_index.md) `organization_security_dashboard`とともに提供されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+
+組織セキュリティダッシュボードは、組織内のすべてのプロジェクトのデフォルトブランチで見つかった脆弱性の概要を提供します。ダッシュボードには以下が含まれます:
+
+- [時間経過による脆弱性の推移](#vulnerabilities-over-time): 最大90日間の履歴を持つチャートです。
+- [重大度パネル](#vulnerability-severity-panel): 重大度別にオープンな脆弱性を示すパネルです。
+- [リスクスコア](#risk-score-panel): 総リスクと各プロジェクトのリスクを示すパネルです。
+- [経過時間ごとの脆弱性](#vulnerabilities-by-age): 経過時間別にオープンな脆弱性をグループ化したチャートです。
+- [CWEトップ10](#top-10-cwes): 最も一般的な10個のCWEを表示するチャートです。
+
+> [!note]
+> [SASTトリアージおよび修正ファネル](#sast-triage-and-remediation-funnel)チャートと[PDFとしてエクスポート](#export-as-pdf)オプションは、組織セキュリティダッシュボードでは利用できません。
+
 ### チャート {#charts}
 
 セキュリティダッシュボードには、プロジェクトとグループの脆弱性を理解し、それらに対処するのに役立つチャートがいくつか含まれています。
 
 #### 時間経過による脆弱性の推移 {#vulnerabilities-over-time}
 
-**時間経過による脆弱性の推移**チャートは、プロジェクトとグループのダッシュボードの両方で使用できます。30日、60日、または90日の期間にわたるオープンな脆弱性の傾向を示しています。デフォルトの範囲は30日間です。GitLabは365日間脆弱性データを保持します。
+**時間経過による脆弱性の推移**チャートは、プロジェクト、グループ、組織のダッシュボードで利用できます。これは、30日間、60日間、または90日間のオープンな脆弱性の推移を示します。デフォルトの範囲は30日間です。GitLabは365日間脆弱性データを保持します。
 
 チャートを使用して、脆弱性がいつ導入されたか、および時間の経過とともにどのように変化するかを特定します。
 
@@ -119,7 +153,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 
 1. データポイントの上にカーソルを合わせると、その日の脆弱性の数が表示されます。
 1. **期間選択セレクター**を使用して、表示期間を30日、60日、または90日に切り替えることができます。
-1. 範囲ハンドル（{{< icon name="scroll-handle" >}}）をドラッグして、特定の期間を拡大します。
+1. 範囲ハンドル（{{< icon name="scroll-handle" >}}）をドラッグして、特定の期間を拡大表示します。
 1. ドロップダウンを使用して、**重大度**（例: **致命的**、**高**、**中**）でフィルタリングします
 1. 次のいずれかのオプションでデータをグループ化するには、次のボタンを使用します:
    - **重大度**: 致命的、高、中、低、情報、不明。
@@ -150,7 +184,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
   - GitLab 18.7の[GitLab.com、GitLab Self-Managed、GitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574)になりました。
   - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661)になりました。機能フラグ`security_dashboard_risk_score`は削除されました。
 - プロジェクトダッシュボードのリスクスコアチャート:
-  - GitLab 18.11で[一般提供開始](https://gitlab.com/gitlab-org/gitlab/-/work_items/591112)。
+  - GitLab 18.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/591112)になりました。
 
 {{< /history >}}
 
@@ -184,11 +218,11 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 {{< history >}}
 
 - プロジェクトダッシュボードの経過時間ごとの脆弱性チャート:
-  - GitLab 18.11で[一般提供開始](https://gitlab.com/gitlab-org/gitlab/-/work_items/590979)。
+  - GitLab 18.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/590979)になりました。
 
 {{< /history >}}
 
-**経過時間ごとの脆弱性**チャートは、グループおよびプロジェクトのダッシュボードで利用できます。最初に検出されてから経過した時間に基づいて、未解決の脆弱性の分布を示します。重大度またはレポートタイプ別に脆弱性をグループ化して、修正アクティビティが必要な場所を特定できます。
+**経過時間ごとの脆弱性**チャートは、プロジェクト、グループ、組織のダッシュボードで利用できます。これは、最初に検出されてからの時間に基づいた未解決の脆弱性の分布を示します。重大度またはレポートタイプ別に脆弱性をグループ化して、修正アクティビティが必要な場所を特定できます。
 
 詳細を表示するには、次の手順に従います:
 
@@ -200,7 +234,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 
 ![経過時間ごとの脆弱性](img/vulnerabilities_by_age_chart_v18_9.png)
 
-#### 上位10個のCWE {#top-10-cwes}
+#### CWEトップ10 {#top-10-cwes}
 
 {{< history >}}
 
@@ -209,7 +243,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 
 {{< /history >}}
 
-**CWEトップ10**チャートは、グループおよびプロジェクトのダッシュボードで利用できます。これは、グループまたはプロジェクトのオープンな脆弱性に関連付けられている、最も一般的な10個のCWE識別子を表示します。
+**CWEトップ10**チャートは、プロジェクト、グループ、組織のダッシュボードで利用できます。これは、プロジェクト、グループ、または組織内のオープンな脆弱性に関連する最も一般的な10個のCWE識別子を示します。
 
 詳細を表示するには、次の手順に従います:
 
@@ -222,7 +256,8 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 
 {{< history >}}
 
-- GitLab 19.3で[導入され](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239423)、`security_dashboard_agentic_adoption`という名前の[機能フラグ](../../../administration/feature_flags/_index.md)が設定されました。デフォルトでは有効になっています。
+- GitLab 19.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239423)され、[機能フラグ](../../../administration/feature_flags/_index.md) `security_dashboard_agentic_adoption`とともに提供されました。デフォルトでは有効になっています。
+- GitLab 19.4で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253438)になりました。機能フラグ`security_dashboard_agentic_adoption`は削除されました。
 
 {{< /history >}}
 
@@ -259,11 +294,11 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 使用可能なダッシュボードフィルターは次のとおりです:
 
 - **レポートの種類**: SAST、DAST、依存関係スキャンなどのスキャナーでフィルタリングします。
-- **プロジェクト**: 結果を特定のプロジェクトに限定します。グループセキュリティダッシュボードでのみ使用できます。
+- **プロジェクト**: 結果を特定のプロジェクトに限定します。グループおよび組織セキュリティダッシュボードで利用可能です。
 
 グループセキュリティダッシュボードでは、以下でフィルタリングすることもできます:
 
-- **セキュリティ属性**: プロジェクトに適用されているセキュリティ属性でフィルタリングします。これには、ビジネスインパクト、アプリケーション、ビジネスユニット、インターネット公開、場所のカテゴリが含まれます。これらのフィルターは、包括的（**次のいずれか** 演算子を使用）または排他的（**次のいずれでもない** 演算子を使用）にできます。セキュリティ属性を設定し、プロジェクトに適用するには、[セキュリティ属性](../attributes/_index.md)を参照してください。
+- **セキュリティ属性**: プロジェクトに適用されているセキュリティ属性でフィルタリングします。これには、ビジネスインパクト、アプリケーション、ビジネスユニット、インターネット公開、場所のカテゴリが含まれます。これらのフィルターは、包括的（**次のいずれか**演算子を使用）または排他的（**次のいずれでもない**演算子を使用）にできます。セキュリティ属性を設定し、プロジェクトに適用するには、[セキュリティ属性](../attributes/_index.md)を参照してください。
 
 ダッシュボードフィルターの動作:
 
@@ -281,7 +316,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 
 {{< history >}}
 
-- GitLab 18.10で[導入され](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224664)、`new_security_dashboard_pdf_export`という名前の[機能フラグ](../../../administration/feature_flags/_index.md)が設定されました。デフォルトでは無効になっています。
+- GitLab 18.10で`new_security_dashboard_pdf_export`[機能フラグ](../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224664)されました。デフォルトでは無効になっています。
 - GitLab 18.11で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/589201)になりました。
 - GitLab 19.0で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/589201)になりました。機能フラグ`new_security_dashboard_pdf_export`は削除されました。
 
@@ -292,7 +327,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 ダッシュボードをPDFとしてエクスポートするには:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
-1. 左サイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
+1. 左側のサイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
 1. オプション。フィルターを適用して、エクスポートに含まれるデータをカスタマイズします。
 1. **PDF形式でエクスポート**を選択します。
 
@@ -326,7 +361,7 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 - プロジェクト内で少なくとも1件の脆弱性が検出されていること。
 
 > [!note]
-> セキュリティダッシュボードには、[デフォルトブランチ](../../project/repository/branches/default.md)で最も最近完了したパイプラインからのスキャン結果が表示されます。ダッシュボードは、デフォルトブランチで実行された完了済みパイプラインの結果で更新されます。これらには、マージされていない他のブランチのパイプラインで発見された脆弱性は含まれません。
+> セキュリティダッシュボードには、[デフォルトブランチ](../../project/repository/branches/default.md)で最後に完了したパイプラインのスキャン結果が表示されます。ダッシュボードは、デフォルトブランチで実行された完了済みパイプラインの結果で更新されます。これらには、マージされていない他のブランチのパイプラインで発見された脆弱性は含まれません。
 
 ## レガシーセキュリティダッシュボードの表示 {#viewing-the-legacy-security-dashboard}
 
@@ -339,12 +374,12 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 プロジェクトのセキュリティダッシュボードを表示するには、次の手順に従います:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左サイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
+1. 左側のサイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
 1. 必要なものを絞り込んで検索します。
    - 重大度でチャートを絞り込むには、凡例名を選択します。
    - 特定の期間を表示するには、時間範囲ハンドル（{{< icon name="scroll-handle" >}}）を使用します。
-   - チャートの特定の領域を表示するには、左端のアイコン（{{< icon name="marquee-selection" >}}）を選択し、チャート全体をドラッグします。
-   - 元の範囲にリセットするには、**Remove Selection**（{{< icon name="redo" >}}）を選択します。
+   - チャートの特定領域を表示するには、一番左のアイコン（{{< icon name="marquee-selection" >}}）を選択し、チャート上をドラッグします。
+   - 元の範囲にリセットするには、**選択を解除**（{{< icon name="redo" >}}）を選択します。
 
 ![プロジェクトセキュリティダッシュボード](img/project_security_dashboard_v16_6.png)
 
@@ -353,8 +388,8 @@ GitLab 18.6では、[高度な脆弱性管理](../vulnerability_report/_index.md
 プロジェクトセキュリティダッシュボードから脆弱性チャートの画像をダウンロードして、ドキュメントやプレゼンテーションなどに使用できます。脆弱性チャートのイメージをダウンロードするには、次の手順に従います:
 
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-1. 左サイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
-1. **Save chart as an image**（{{< icon name="download" >}}）を選択します。
+1. 左側のサイドバーで、**安全** > **セキュリティダッシュボード**を選択します。
+1. **チャートを画像として保存**（{{< icon name="download" >}}）を選択します。
 
 SVG形式でイメージをダウンロードするように求められます。
 
@@ -376,7 +411,7 @@ SVG形式でイメージをダウンロードするように求められます�
 グループのセキュリティダッシュボードを表示するには:
 
 1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
-1. 左サイドバーで、**セキュリティ** > **セキュリティダッシュボード**を選択します。
+1. 左側のサイドバーで、**セキュリティ** > **セキュリティダッシュボード**を選択します。
 1. **時間経過による脆弱性の推移**グラフの上にカーソルを合わせると、脆弱性に関する詳細が表示されます。
    - 脆弱性の傾向を、30日、60日、または90日の期間で表示できます（デフォルトは90日です）。
    - 90日を超える集計データを表示するには、[`VulnerabilitiesCountByDay` GraphQL API](../../../api/graphql/reference/_index.md#vulnerabilitiescountbyday)を使用します。GitLabは365日間データを保持します。

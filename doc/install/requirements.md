@@ -117,7 +117,7 @@ For the following versions of GitLab, use these PostgreSQL versions:
 
 | GitLab version | Helm chart version | Minimum PostgreSQL version | Maximum PostgreSQL version |
 | -------------- | ------------------ | -------------------------- | -------------------------- |
-| 19.x           | 10.x               | 17.x                       | 17.x                       |
+| 19.x           | 10.x               | 17.x                       | 18.x ([tested against GitLab 18.7 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209519)) |
 | 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 17.x ([tested against GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/521159)) |
 | 17.x           | 8.x                | [14.14](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 16.x ([tested against GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)) |
 | 16.x           | 7.x                | 13.6                       | 15.x ([tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)) |

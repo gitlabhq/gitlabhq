@@ -62,7 +62,7 @@ Docker image with your preferred version:
 
 ```Docker
 # Install srt sandboxing with cache clearing and verification
-ARG SANDBOX_RUNTIME_VERSION=0.0.63
+ARG SANDBOX_RUNTIME_VERSION=0.0.77
 RUN npm cache clean --force && \
     npm install -g @anthropic-ai/sandbox-runtime@${SANDBOX_RUNTIME_VERSION} && \
     test -s "$(npm root -g)/@anthropic-ai/sandbox-runtime/package.json" && \
@@ -128,22 +128,26 @@ Prerequisites:
 - GitLab 18.9 or later.
 - Access to an online machine to build the image and download artifacts.
 
+Executor images `v0.0.11` and later include the GitLab Duo CLI in `/usr/local/bin/duo`,
+so flows do not download it at runtime. Build a custom image only if your GitLab version
+requests an earlier tag, or if you need a different GitLab Duo CLI version.
+
 To configure flows for an offline environment:
 
 1. On an online machine, download the GitLab Duo CLI binary from the
    [GitLab package registry](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/packages):
 
    ```shell
-   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.8.0/duo-linux-x64" \
+   curl --location "https://gitlab.com/api/v4/projects/46519181/packages/generic/duo-cli/9.25.0/duo-linux-x64" \
      --output duo-linux-x64
    ```
 
 1. Build a custom image that includes the binary:
 
    ```dockerfile
-   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.6
-   COPY duo-linux-x64 /usr/bin/duo
-   RUN chmod +x /usr/bin/duo
+   FROM registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.19
+   COPY duo-linux-x64 /usr/local/bin/duo
+   RUN chmod +x /usr/local/bin/duo
    ```
 
 1. Transfer the image to your offline environment.
@@ -293,8 +297,8 @@ The following table lists the current pinned versions:
 | Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                     |
 | `npm`                                 | Bundled with Node.js 20                                  |
 | `@gitlab/duo-cli`                     | 9.25.0                                                   |
-| `glab` (GitLab CLI)                   | 1.107.0                                                  |
-| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.63 (via npm)                                         |
+| `glab` (GitLab CLI)                   | 1.119.0                                                  |
+| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.77 (via npm)                                         |
 | `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, userns-based sandboxing) |
 | `socat`                               | AlmaLinux 9 EPEL                                         |
 | `rg` (ripgrep)                        | AlmaLinux 9 EPEL                                         |

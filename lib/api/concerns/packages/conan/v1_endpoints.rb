@@ -42,13 +42,14 @@ module API
 
             params do
               requires :package_name, type: String, regexp: SharedEndpoints::PACKAGE_COMPONENT_REGEX,
-                desc: 'Package name', documentation: { example: 'my-package' }
+                desc: 'Name of the package.', documentation: { example: 'my-package' }
               requires :package_version, type: String, regexp: SharedEndpoints::PACKAGE_COMPONENT_REGEX,
-                desc: 'Package version', documentation: { example: '1.0' }
+                desc: 'Version of the package.', documentation: { example: '1.0' }
               requires :package_username, type: String, regexp: SharedEndpoints::CONAN_REVISION_USER_CHANNEL_REGEX,
-                desc: 'Package username', documentation: { example: 'my-group+my-project' }
+                desc: 'Conan username of the package. This is the `+`-separated full path of the ' \
+                  'project.', documentation: { example: 'my-group+my-project' }
               requires :package_channel, type: String, regexp: SharedEndpoints::CONAN_REVISION_USER_CHANNEL_REGEX,
-                desc: 'Package channel', documentation: { example: 'stable' }
+                desc: 'Channel of the package.', documentation: { example: 'stable' }
             end
             namespace 'conans/:package_name/:package_version/:package_username/:package_channel',
               requirements: SharedEndpoints::PACKAGE_REQUIREMENTS do
@@ -74,7 +75,8 @@ module API
               end
 
               params do
-                requires :conan_package_reference, type: String, desc: 'Conan package ID',
+                requires :conan_package_reference, type: String, desc: 'Reference hash of the Conan package. Conan ' \
+                                                                   'generates this value.',
                   documentation: { example: '103f6067a947f366ef91fc1b7da351c588d1827f' }
               end
 
@@ -138,7 +140,8 @@ module API
                 tags %w[packages_conan]
               end
               params do
-                requires :conan_package_reference, type: String, desc: 'Conan package ID',
+                requires :conan_package_reference, type: String, desc: 'Reference hash of the Conan package. Conan ' \
+                                                                   'generates this value.',
                   documentation: { example: '103f6067a947f366ef91fc1b7da351c588d1827f' }
               end
 
@@ -191,7 +194,8 @@ module API
               end
 
               params do
-                requires :conan_package_reference, type: String, desc: 'Conan package ID',
+                requires :conan_package_reference, type: String, desc: 'Reference hash of the Conan package. Conan ' \
+                                                                   'generates this value.',
                   documentation: { example: '103f6067a947f366ef91fc1b7da351c588d1827f' }
               end
 
@@ -245,7 +249,8 @@ module API
               end
 
               params do
-                requires :conan_package_reference, type: String, desc: 'Conan package ID',
+                requires :conan_package_reference, type: String, desc: 'Reference hash of the Conan package. Conan ' \
+                                                                   'generates this value.',
                   documentation: { example: '103f6067a947f366ef91fc1b7da351c588d1827f' }
               end
 
@@ -313,15 +318,17 @@ module API
 
             params do
               requires :package_name, type: String, regexp: SharedEndpoints::PACKAGE_COMPONENT_REGEX,
-                desc: 'Package name', documentation: { example: 'my-package' }
+                desc: 'Name of the package.', documentation: { example: 'my-package' }
               requires :package_version, type: String, regexp: SharedEndpoints::PACKAGE_COMPONENT_REGEX,
-                desc: 'Package version', documentation: { example: '1.0' }
+                desc: 'Version of the package.', documentation: { example: '1.0' }
               requires :package_username, type: String, regexp: SharedEndpoints::CONAN_REVISION_USER_CHANNEL_REGEX,
-                desc: 'Package username', documentation: { example: 'my-group+my-project' }
+                desc: 'Conan username of the package. This is the `+`-separated full path of the ' \
+                  'project.', documentation: { example: 'my-group+my-project' }
               requires :package_channel, type: String, regexp: SharedEndpoints::CONAN_REVISION_USER_CHANNEL_REGEX,
-                desc: 'Package channel', documentation: { example: 'stable' }
+                desc: 'Channel of the package.', documentation: { example: 'stable' }
               requires :recipe_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex,
-                desc: 'Conan Recipe Revision', documentation: { example: '0' }
+                desc: 'Revision of the recipe. GitLab does not yet support Conan revisions, so the default value of ' \
+                  '`0` is always used.', documentation: { example: '0' }
             end
             namespace 'files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision',
               requirements: SharedEndpoints::PACKAGE_REQUIREMENTS do
@@ -334,7 +341,8 @@ module API
               end
 
               params do
-                requires :file_name, type: String, desc: 'Package file name', values: SharedEndpoints::CONAN_FILES,
+                requires :file_name, type: String, desc: 'Name of the package ' \
+                                                     'file.', values: SharedEndpoints::CONAN_FILES,
                   documentation: { example: 'conanfile.py' }
               end
 
@@ -412,11 +420,15 @@ module API
               end
 
               params do
-                requires :conan_package_reference, type: String, desc: 'Conan Package ID',
+                requires :conan_package_reference, type: String, desc: 'Reference hash of the Conan package. Conan ' \
+                                                                   'generates this value.',
                   documentation: { example: '103f6067a947f366ef91fc1b7da351c588d1827f' }
-                requires :package_revision, type: String, desc: 'Conan Package Revision',
+                requires :package_revision, type: String, desc: 'Revision of the package. GitLab does not yet ' \
+                                                            'support Conan revisions, so the default value of ' \
+                                                            '`0` is always used.',
                   documentation: { example: '0' }
-                requires :file_name, type: String, desc: 'Package file name', values: SharedEndpoints::CONAN_FILES,
+                requires :file_name, type: String, desc: 'Name of the package ' \
+                                                     'file.', values: SharedEndpoints::CONAN_FILES,
                   documentation: { example: 'conaninfo.txt' }
               end
               namespace 'package/:conan_package_reference/:package_revision/:file_name',

@@ -237663,6 +237663,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetSeverity",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetStartAndDueDate",
               "ofType": null
             },
@@ -240433,6 +240438,47 @@
         },
         {
           "kind": "OBJECT",
+          "name": "WorkItemWidgetSeverity",
+          "description": "Represents the severity widget",
+          "fields": [
+            {
+              "name": "severity",
+              "description": "Severity of the work item.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "IssuableSeverity",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "WorkItemWidgetStartAndDueDate",
           "description": "Represents a start and due date widget",
           "fields": [
@@ -241001,6 +241047,12 @@
             {
               "name": "STATUS",
               "description": "Status widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SEVERITY",
+              "description": "Severity widget.",
               "isDeprecated": false,
               "deprecationReason": null
             },

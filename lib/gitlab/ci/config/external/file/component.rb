@@ -95,7 +95,6 @@ module Gitlab
                   address: location,
                   current_user: context.user,
                   logger: context.logger,
-                  requesting_project: context.project,
                   pipeline_policy_context: context.pipeline_policy_context
                 ).execute
               end

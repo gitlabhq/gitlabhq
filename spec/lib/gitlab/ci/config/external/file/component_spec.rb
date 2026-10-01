@@ -48,7 +48,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         address: params[:component],
         current_user: context.user,
         logger: context.logger,
-        requesting_project: context.project,
         pipeline_policy_context: context.pipeline_policy_context
       ).and_return(fetch_service)
 

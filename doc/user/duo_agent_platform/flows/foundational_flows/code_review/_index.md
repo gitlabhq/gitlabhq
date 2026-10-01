@@ -267,6 +267,68 @@ After you enable automatic reviews, you can specify rules to exclude specific me
 For information on how credit usage is attributed for automatic reviews, see
 [determine which code review feature runs](../../../../project/merge_requests/duo_in_merge_requests.md#determine-which-review-feature-runs).
 
+### Start a new review on push
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254523) in GitLab 19.5.
+
+{{< /history >}}
+
+GitLab Duo starts a new review when a user pushes to the source branch of a merge request and all of
+the following are true:
+
+- Automatic reviews are turned on for the project.
+- The merge request is open and not a draft.
+- GitLab Duo is already a reviewer on the merge request.
+- The push changes the diff.
+
+A push that does not change the diff, such as a rebase with no content change, does not start a new
+review.
+If a GitLab Duo review is in progress when the push occurs, GitLab stops that review and starts a
+new one.
+
+You can turn off automatic reviews after pushes for a project or group.
+
+{{< tabs >}}
+
+{{< tab title="Project" >}}
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- Automatic reviews are turned on.
+
+To change this setting for a project:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Settings** > **Merge requests**.
+1. In the **GitLab Duo Code Review** section, select or clear **Start a new review on push**.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="Group" >}}
+
+Prerequisites:
+
+- The Owner role for the group.
+- Automatic reviews are turned on.
+
+To change this setting for a group:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Merge requests** section.
+1. In the **GitLab Duo Code Review** section, select or clear **Start a new review on push**.
+1. Select **Save changes**.
+
+Settings cascade from group to project. More specific settings override broader ones.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Exclude merge requests for a project
 
 {{< history >}}

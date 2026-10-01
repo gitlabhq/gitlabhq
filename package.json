@@ -8,7 +8,7 @@
     "dev-server": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" node scripts/frontend/webpack_dev_server.js",
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "lint-docs": "scripts/lint-doc.sh",
-    "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives",
+    "internal:eslint": "eslint --cache --concurrency auto --max-warnings 0 --report-unused-disable-directives",
     "internal:stylelint": "stylelint -q --rd '{ee/,}app/assets/{stylesheets/**/*.{css,scss},builds/tailwind.css}'",
     "prejest": "yarn check-dependencies",
     "build:css": "node scripts/frontend/build_css.mjs",

@@ -17,7 +17,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Validate existing CI/CD configuration' do
@@ -29,16 +29,15 @@ module API
         ]
       end
       params do
-        optional :sha, type: String, desc: 'Deprecated: Use content_ref instead'
-        optional :content_ref, type: String, desc: "The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the HEAD of the project's default branch"
+        optional :sha, type: String, desc: "Commit SHA, branch, or tag that the CI/CD configuration content is taken from. Defaults to the head of the project's default branch. Deprecated. Use `content_ref` instead."
+        optional :content_ref, type: String, desc: "Commit SHA, branch, or tag that the CI/CD configuration content is taken from. Defaults to the head of the project's default branch."
         mutually_exclusive :sha, :content_ref
 
-        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check. This is false by default'
-        optional :include_jobs, type: Boolean, desc: 'If the list of jobs that would exist in a static check or pipeline
-        simulation should be included in the response. This is false by default'
+        optional :dry_run, type: Boolean, default: false, desc: 'If `true`, runs a [pipeline creation simulation](https://docs.gitlab.com/ci/yaml/lint/#simulate-a-pipeline). If `false`, runs only a static check.'
+        optional :include_jobs, type: Boolean, desc: 'If `true`, includes the list of jobs that would exist in a static check or pipeline simulation.'
 
-        optional :ref, type: String, desc: 'Deprecated: Use dry_run_ref instead'
-        optional :dry_run_ref, type: String, desc: 'Branch or tag used as context when executing a dry run. Defaults to the default branch of the project. Only used when dry_run is true'
+        optional :ref, type: String, desc: "If `dry_run` is `true`, sets the branch or tag to use to validate the CI/CD YAML configuration. Defaults to the project's default branch. Deprecated. Use `dry_run_ref` instead."
+        optional :dry_run_ref, type: String, desc: "If `dry_run` is `true`, sets the branch or tag to use to validate the CI/CD YAML configuration. Defaults to the project's default branch."
         mutually_exclusive :ref, :dry_run_ref
       end
 
@@ -66,7 +65,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Validate a CI/CD configuration' do
@@ -75,11 +74,10 @@ module API
         tags %w[ci_lint]
       end
       params do
-        requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
-        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check. This is false by default'
-        optional :include_jobs, type: Boolean, desc: 'If the list of jobs that would exist in a static check or pipeline
-        simulation should be included in the response. This is false by default'
-        optional :ref, type: String, desc: 'When dry_run is true, sets the branch or tag to use. Defaults to the project’s default branch when not set'
+        requires :content, type: String, desc: 'CI/CD configuration content.'
+        optional :dry_run, type: Boolean, default: false, desc: 'If `true`, runs a [pipeline creation simulation](https://docs.gitlab.com/ci/yaml/lint/#simulate-a-pipeline). If `false`, runs only a static check.'
+        optional :include_jobs, type: Boolean, desc: 'If `true`, includes the list of jobs that would exist in a static check or pipeline simulation.'
+        optional :ref, type: String, desc: "If `dry_run` is `true`, sets the branch or tag to use to validate the CI/CD YAML configuration. Defaults to the project's default branch."
       end
 
       route_setting :authorization, permissions: :validate_ci_config, boundary_type: :project

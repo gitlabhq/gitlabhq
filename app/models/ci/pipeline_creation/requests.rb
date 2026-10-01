@@ -13,6 +13,8 @@
 #       "id": "CREATION_ID"
 #       "user_initiated": BOOLEAN <- only present for merge request pipeline creations; a missing
 #                                    flag must be treated as user-initiated
+#       "started_at": FLOAT <- epoch seconds when the request was recorded; start anchor for the
+#                              create_pipeline_from_commit user-experience SLI
 #     }
 #   }
 # }
@@ -61,7 +63,7 @@ module Ci
 
         def start_for_project(project)
           request_id = generate_id
-          request = { 'key' => request_key(project, request_id), 'id' => request_id }
+          request = { 'key' => request_key(project, request_id), 'id' => request_id, 'started_at' => Time.current.to_f }
 
           hset(request, IN_PROGRESS)
 
@@ -72,7 +74,8 @@ module Ci
           request = {
             'key' => merge_request_key(merge_request),
             'id' => generate_id,
-            'user_initiated' => user_initiated
+            'user_initiated' => user_initiated,
+            'started_at' => Time.current.to_f
           }
 
           hset(request, IN_PROGRESS)
@@ -131,7 +134,8 @@ module Ci
                   'pipeline_id' => pipeline_id,
                   'error' => error,
                   'id' => request['id'],
-                  'user_initiated' => request['user_initiated']
+                  'user_initiated' => request['user_initiated'],
+                  'started_at' => request['started_at']
                 }.compact.to_json
               )
 

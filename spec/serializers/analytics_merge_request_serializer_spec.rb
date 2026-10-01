@@ -9,8 +9,8 @@ RSpec.describe AnalyticsMergeRequestSerializer do
       .represent(resource)
   end
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, name: 'my project') }
+  let(:user) { build_stubbed(:user) }
+  let(:project) { build_stubbed(:project, name: 'my project') }
   let(:resource) do
     {
       total_time: "172802.724419",
@@ -21,7 +21,7 @@ RSpec.describe AnalyticsMergeRequestSerializer do
       created_at: "2016-11-12 15:04:02.948604",
       author: user,
       project_path: project.path,
-      namespace_path: project.namespace.route.path
+      namespace_path: project.namespace.full_path
     }
   end
 

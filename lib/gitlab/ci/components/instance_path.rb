@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include ::Gitlab::LoopHelpers
 
-        attr_reader :reference, :logger
+        attr_reader :reference, :logger, :pipeline_policy_context
 
         SHORTHAND_SEMVER_PATTERN = /^\d+(\.\d+)?$/
         LATEST = '~latest'
@@ -20,9 +20,10 @@ module Gitlab
           "#{Gitlab.config.gitlab.server_fqdn}/"
         end
 
-        def initialize(address:, logger: nil)
+        def initialize(address:, logger: nil, pipeline_policy_context: nil)
           @full_path, @reference = address.to_s.split('@', 2)
           @logger = logger
+          @pipeline_policy_context = pipeline_policy_context
         end
 
         def fetch_content!(current_user:)

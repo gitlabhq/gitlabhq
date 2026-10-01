@@ -216,8 +216,9 @@ still passes validation for an optional `enum` parameter.
   `<facet>_after`, and add `<facet>_last`/`<facet>_before` when reading from the end matters
   (for example the newest notes). Build these parameters with
   `Mcp::Tools::Concerns::CursorPagination.input_schema_params`, which enforces the shared bounds.
-  Return the connection's `pageInfo` alongside the nodes. See the `notes` facet of
-  `get_merge_request` (forward-only) and of `get_work_item` (bidirectional) for worked examples.
+  Return the connection's `pageInfo` alongside the nodes. See the `commits` facet of
+  `get_merge_request` (forward-only) and the `notes` facets of `get_merge_request` and
+  `get_work_item` (bidirectional) for worked examples.
 - Add a `detail` enum (`none`/`stats`/`full_patch`) on diff-bearing reads where the diff dominates
   the payload (for example the `diff` facet of `get_commit` and the `diffs` facet of
   `get_merge_request`). Do not retrofit `detail` where a better-suited knob already exists: file
@@ -246,8 +247,9 @@ gaining cursor stability, and misleads the caller about the guarantees the endpo
   (`byte_offset`/`byte_limit`). Return a `system_instruction` telling the caller how to fetch the
   next window.
 - Facet-scoped pagination on a `get_` reader is prefixed with the facet name (for example
-  `notes_page`/`notes_per_page` on `get_merge_request`, `comments_page`/`comments_per_page` on
-  `get_commit`) and follows the scheme of the endpoint backing that facet.
+  `notes_first`/`notes_after`/`notes_last`/`notes_before` on `get_merge_request`,
+  `notes_first`/`notes_after` on `get_commit`) and follows the scheme of the endpoint backing that
+  facet.
 
 **Output IDs (GraphQL-backed tools):** unwrap GIDs to numeric integers in `process_result` for
 resources that tools address by their global numeric ID — groups, projects, and pipelines — so

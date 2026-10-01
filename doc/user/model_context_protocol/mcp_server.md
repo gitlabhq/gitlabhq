@@ -21,7 +21,7 @@ title: GitLab MCP server
 - Support for `2025-03-26` and `2025-06-18` MCP protocol specifications [added](https://gitlab.com/gitlab-org/gitlab/-/issues/581459) in GitLab 18.7.
 - Support for the `2025-11-25` MCP protocol specification [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216219) in GitLab 18.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/590729) to a separate setting and [moved](https://gitlab.com/groups/gitlab-org/-/work_items/21183) from GitLab Premium to GitLab Free in GitLab 19.2.
-- Toolset selection [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/607755) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `mcp_toolsets`. Disabled by default.
+- Toolset selection [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/607755) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -117,9 +117,6 @@ The prefix is truncated to the first 32 characters if it exceeds this limit.
 ```
 
 ### Select tool groups (toolsets)
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 To limit the tools returned by the GitLab MCP server to specific groups, configure the
 `X-Gitlab-Enabled-Mcp-Server-Toolsets` HTTP header with a comma-separated list of toolset names.

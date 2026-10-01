@@ -138,7 +138,7 @@ for the section. For example:
 
 {{</* history */>}}
 
- - `widget_message` [introduced](https://link-to-issue) in GitLab 14.3.
+ - `widget_message` [introduced](https://work-item-link) in GitLab 14.3.
 
 {{</* /history */>}}
 ```
@@ -158,7 +158,7 @@ To deprecate an attribute:
    ```markdown
    {{</* history */>}}
 
-   - `widget_name` [deprecated](https://link-to-issue) in GitLab 14.7.
+   - `widget_name` [deprecated](https://work-item-link) in GitLab 14.7.
 
    {{</* /history */>}}
    ```
@@ -168,7 +168,7 @@ To deprecate an attribute:
    ```markdown
    | Attribute     | Type   | Required | Description |
    |---------------|--------|----------|-------------|
-   | `widget_name` | string | No       | [Deprecated](https://link-to-issue) in GitLab 14.7. Use `widget_id` instead. The name of the widget. |
+   | `widget_name` | string | No       | [Deprecated](https://work-item-link) in GitLab 14.7. Use `widget_id` instead. The name of the widget. |
    ```
 
 To widely announce a deprecation, [update the REST API deprecations page](../../api/rest/deprecations.md).

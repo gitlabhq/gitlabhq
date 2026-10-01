@@ -25470,29 +25470,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "OBJECT",
-          "name": "AiMetricsBasic",
-          "description": "AI-related metrics with three months of data retention.\nPremium and Ultimate only.\n",
-          "fields": [
-            {
-              "name": "codeSuggestions",
-              "description": "Code Suggestions metrics.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "codeSuggestionMetricsBasic",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "SCALAR",
           "name": "AiModelID",
           "description": "A `AiModelID` is a global ID. It is encoded as a string.\n\nAn example `AiModelID` is: `\"gid://gitlab/Ai::Model/1\"`.",
@@ -134820,6 +134797,54 @@
               "deprecationReason": null
             },
             {
+              "name": "licenseRisksPrevented",
+              "description": "Number of distinct package versions blocked by license rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "licenseRisksWarnedOnly",
+              "description": "Number of distinct package versions warned but never blocked by license rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "maliciousPackagesPrevented",
+              "description": "Number of distinct package versions blocked by malicious-package rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "maliciousPackagesWarnedOnly",
+              "description": "Number of distinct package versions warned but never blocked by malicious-package rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "totalTriggers",
               "description": "Total enforcement events (blocked + warned + allowed) in the window.",
               "args": [],
@@ -134834,6 +134859,38 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "vulnerabilitiesPrevented",
+              "description": "Number of distinct package versions blocked by vulnerability or risk-severity rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "vulnerabilitiesPreventedBySeverity",
+              "description": "Breakdown of prevented packages by their highest carried severity. Sums to the prevented total. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "DependencyFirewallSeverityCount",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "warned",
@@ -135143,6 +135200,49 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DependencyFirewallSeverityCount",
+          "description": "Count of distinct prevented packages at one severity level.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of distinct packages whose highest carried severity matches the severity field.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "severity",
+              "description": "Severity level of the count.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "VulnerabilitySeverity",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -181168,43 +181268,6 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 16.11."
             },
             {
-              "name": "aiMetricsBasic",
-              "description": "AI-related metrics with three months of data retention. Introduced in GitLab 18.5: Status: Experiment.",
-              "args": [
-                {
-                  "name": "startDate",
-                  "description": "Date range to start from. Default is the beginning of current month.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Date",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "Date range to end at. Default is the end of current month.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Date",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "AiMetricsBasic",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.5."
-            },
-            {
               "name": "aiSettings",
               "description": "AI settings for the namespace. Introduced in GitLab 18.8: Status: Experiment.",
               "args": [],
@@ -189070,6 +189133,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "orbit",
+              "description": "Orbit data of the group. Returns null when Orbit is not available to the current user. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitNamespace",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "orbitTrial",
@@ -299619,6 +299694,340 @@
         },
         {
           "kind": "OBJECT",
+          "name": "OrbitIndexingDomain",
+          "description": "Indexing status of one Orbit domain.",
+          "fields": [
+            {
+              "name": "name",
+              "description": "Name of the domain.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "phase",
+              "description": "Indexing phase of the domain.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "OrbitIndexingPhase",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "OrbitIndexingPhase",
+          "description": "Indexing phase of Orbit data.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NOT_STARTED",
+              "description": "Indexing has not started.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SYNCING",
+              "description": "Indexing is in progress.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "READY",
+              "description": "Indexing is complete.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ERROR",
+              "description": "Indexing failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNKNOWN",
+              "description": "Indexing phase is unknown.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OrbitIndexingProjects",
+          "description": "Indexing progress of the projects in a group or project.",
+          "fields": [
+            {
+              "name": "gaps",
+              "description": "Number of projects that are not indexed.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "indexed",
+              "description": "Number of indexed projects.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalKnown",
+              "description": "Number of projects known to Orbit.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OrbitIndexingStatus",
+          "description": "Indexing status of a group or project in Orbit.",
+          "fields": [
+            {
+              "name": "domains",
+              "description": "Indexing status of each domain.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "OrbitIndexingDomain",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "phase",
+              "description": "Indexing phase of the group or project.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "OrbitIndexingPhase",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "projects",
+              "description": "Indexing progress of the projects in the group or project.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitIndexingProjects",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OrbitItemCountDomain",
+          "description": "Number of indexed items in one Orbit domain.",
+          "fields": [
+            {
+              "name": "entities",
+              "description": "Number of indexed items of each entity in the domain.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "OrbitItemCountEntity",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the domain.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OrbitItemCountEntity",
+          "description": "Number of indexed items of one Orbit entity.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of indexed items of the entity.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the entity.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OrbitItemCounts",
+          "description": "Number of indexed items of a group or project in Orbit.",
+          "fields": [
+            {
+              "name": "domains",
+              "description": "Number of indexed items in each domain.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "OrbitItemCountDomain",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "OrbitNamespace",
+          "description": "Orbit data of a group or project.",
+          "fields": [
+            {
+              "name": "indexingStatus",
+              "description": "Indexing status of the group or project.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitIndexingStatus",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "itemCounts",
+              "description": "Number of indexed items in the group or project. This field can be resolved for only one group or project in any single request.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitItemCounts",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "OrbitTrial",
           "description": "Orbit trial of a top-level group, as reported by CustomersDot.",
           "fields": [
@@ -326167,43 +326576,6 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 16.11."
             },
             {
-              "name": "aiMetricsBasic",
-              "description": "AI-related metrics with three months of data retention. Introduced in GitLab 18.5: Status: Experiment.",
-              "args": [
-                {
-                  "name": "startDate",
-                  "description": "Date range to start from. Default is the beginning of current month.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Date",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "endDate",
-                  "description": "Date range to end at. Default is the end of current month.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Date",
-                    "ofType": null
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "AiMetricsBasic",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.5."
-            },
-            {
               "name": "aiUsageData",
               "description": "AI-related data. Introduced in GitLab 17.5: Status: Experiment.",
               "args": [],
@@ -330044,7 +330416,7 @@
             },
             {
               "name": "dependencyFirewallActivitySummary",
-              "description": "Aggregate dependency firewall activity totals for the project. Available behind the `dependency_firewall_phase1` feature flag. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Aggregate dependency firewall activity totals for the project. Available behind the `dependency_firewall_phase1` feature flag. This field can be resolved for only one project in any single request. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "from",
@@ -336896,6 +337268,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "orbit",
+              "description": "Orbit data of the project. Returns null when Orbit is not available to the current user. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrbitNamespace",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "organizationEditPath",
@@ -458413,6 +458797,18 @@
               "deprecationReason": null
             },
             {
+              "name": "severity",
+              "description": "Severity widget of the work item. Returns `null` if the widget is not available for the work item.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "WorkItemWidgetSeverity",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "startAndDueDate",
               "description": "Start and due date widget of the work item. Returns `null` if the widget is not available for the work item.",
               "args": [],
@@ -465176,6 +465572,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetSeverity",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetStartAndDueDate",
               "ofType": null
             },
@@ -469698,6 +470099,47 @@
         },
         {
           "kind": "OBJECT",
+          "name": "WorkItemWidgetSeverity",
+          "description": "Represents the severity widget",
+          "fields": [
+            {
+              "name": "severity",
+              "description": "Severity of the work item.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "IssuableSeverity",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "WorkItemWidgetStartAndDueDate",
           "description": "Represents a start and due date widget",
           "fields": [
@@ -470497,6 +470939,12 @@
             {
               "name": "STATUS",
               "description": "Status widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SEVERITY",
+              "description": "Severity widget.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -475936,41 +476384,6 @@
             {
               "name": "shownLinesOfCode",
               "description": "Sum of lines of code from code suggestions shown.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "codeSuggestionMetricsBasic",
-          "description": "AI-related metrics with three months of data retention.\nPremium and Ultimate only.\n",
-          "fields": [
-            {
-              "name": "acceptedCount",
-              "description": "Total count of code suggestions accepted.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "shownCount",
-              "description": "Total count of code suggestions shown.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

@@ -63,7 +63,8 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
               'text or detail=none for summary counts only. conflicts returns raw conflict file content ' \
               '(Git conflict markers), only when the merge request cannot be merged and the caller can ' \
               'push to the source branch. diffs, notes, commits, and pipelines support pagination ' \
-              '(diffs_*, notes_*, commits_*, pipelines_*). ' \
+              '(diffs_*, notes_*, commits_*, pipelines_*); for the newest notes, use notes_last ' \
+              'without notes_first or notes_after. ' \
               'approvals returns approved and approvedBy on every tier. approvalsRequired, approvalsLeft, and ' \
               'the rule breakdown in approvalState need GitLab Premium or Ultimate; otherwise ' \
               'these keys are present but zeroed or empty, not omitted.',
@@ -104,6 +105,18 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestService, feature_catego
               'Applies only when notes is in include.',
             minimum: 1,
             maximum: 100
+          },
+          notes_last: {
+            type: 'integer',
+            description: 'Number of notes to return before the cursor (backward pagination). Max 100. ' \
+              'Applies only when notes is in include.',
+            minimum: 1,
+            maximum: 100
+          },
+          notes_before: {
+            type: 'string',
+            description: 'Cursor for backward pagination of notes. ' \
+              'Use pageInfo.startCursor from a previous response. Applies only when notes is in include.'
           },
           commits_after: {
             type: 'string',

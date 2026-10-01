@@ -25,6 +25,7 @@ module WorkItems
                 notes
                 notifications
                 participants
+                severity
                 time_tracking
               ]
             end

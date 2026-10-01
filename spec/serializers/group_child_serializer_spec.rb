@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupChildSerializer do
   let(:request) { double('request') }
   let(:response) { double('response') }
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
 
   subject(:serializer) { described_class.new(current_user: user) }
 
@@ -21,15 +21,15 @@ RSpec.describe GroupChildSerializer do
     end
 
     context 'with a hierarchy' do
-      let(:parent) { create(:group) }
+      let(:parent) { build_stubbed(:group) }
 
       subject(:serializer) do
         described_class.new(current_user: user).expand_hierarchy(parent)
       end
 
       it 'expands the subgroups' do
-        subgroup = create(:group, parent: parent)
-        subsub_group = create(:group, parent: subgroup)
+        subgroup = build_stubbed(:group, parent: parent)
+        subsub_group = build_stubbed(:group, parent: subgroup)
 
         json = serializer.represent([subgroup, subsub_group]).first
         subsub_group_json = json[:children].first
@@ -40,9 +40,9 @@ RSpec.describe GroupChildSerializer do
       end
 
       it 'can render a nested tree' do
-        subgroup1 = create(:group, parent: parent)
-        subsub_group1 = create(:group, parent: subgroup1)
-        subgroup2 = create(:group, parent: parent)
+        subgroup1 = build_stubbed(:group, parent: parent)
+        subsub_group1 = build_stubbed(:group, parent: subgroup1)
+        subgroup2 = build_stubbed(:group, parent: parent)
 
         json = serializer.represent([subgroup1, subsub_group1, subgroup1, subgroup2])
         subgroup1_json = json.first
@@ -59,7 +59,7 @@ RSpec.describe GroupChildSerializer do
         end
 
         it 'can render a tree' do
-          subgroup = create(:group, parent: parent)
+          subgroup = build_stubbed(:group, parent: parent)
 
           json = serializer.represent([parent, subgroup])
           parent_json = json.first

@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ReviewAppSetupEntity do
-  let_it_be(:user) { create(:admin) }
-
-  let(:project) { create(:project) }
+  let(:user) { build_stubbed(:admin) }
+  let(:project) { build_stubbed(:project) }
   let(:presenter) { ProjectPresenter.new(project, current_user: user) }
   let(:entity) { described_class.new(presenter) }
   let(:request) { double('request') }

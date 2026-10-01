@@ -110,9 +110,10 @@ module API
               end
 
               params do
-                requires :q, type: String, desc: 'Search query', documentation: { example: 'Hello*' }
+                requires :q, type: String, desc: 'Search query. Use `*` as a ' \
+                                             'wildcard.', documentation: { example: 'Hello*' }
                 optional :ignorecase, type: ::Grape::API::Boolean,
-                  desc: 'Ignore case when searching (case-insensitive search)',
+                  desc: 'If `true`, ignores case when searching.',
                   documentation: { example: false }
               end
 
@@ -144,10 +145,11 @@ module API
                 end
               end
               params do
-                requires :package_name, type: String, desc: 'The package name'
-                requires :package_version, type: String, desc: 'The package version'
-                requires :package_username, type: String, desc: 'The package username'
-                requires :package_channel, type: String, desc: 'The package channel'
+                requires :package_name, type: String, desc: 'Name of the package.'
+                requires :package_version, type: String, desc: 'Version of the package.'
+                requires :package_username, type: String, desc: 'Conan username of the package. This is the ' \
+                                                            '`+`-separated full path of the project.'
+                requires :package_channel, type: String, desc: 'Channel of the package.'
               end
 
               namespace ':package_name/:package_version/:package_username/:package_channel/search',

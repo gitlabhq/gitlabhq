@@ -2402,8 +2402,8 @@ We cannot guarantee future feature work, and promises
 like these can raise legal issues. Instead, say that an issue exists.
 For example:
 
-- Support for improvements is proposed in `[issue <issue_number>](https://link-to-issue)`.
-- You cannot do this thing, but `[issue 12345](https://link-to-issue)` proposes to change this behavior.
+- Support for improvements is proposed in `[issue <issue_number>](https://work-item-link)`.
+- You cannot do this thing, but `[issue 12345](https://work-item-link)` proposes to change this behavior.
 
 You can say that we plan to remove a feature.
 

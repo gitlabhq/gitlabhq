@@ -27,22 +27,22 @@ module API
 
             helpers do
               params :optional_distribution_params do
-                optional :suite, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Suite', documentation: { example: 'unstable' }
-                optional :origin, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Origin', documentation: { example: 'Grep' }
-                optional :label, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Label', documentation: { example: 'grep.be' }
-                optional :version, type: String, regexp: Gitlab::Regex.debian_version_regex, desc: 'The Debian Version', documentation: { example: '12' }
-                optional :description, type: String, desc: 'The Debian Description', documentation: { example: 'My description' }
-                optional :valid_time_duration_seconds, type: Integer, desc: 'The duration before the Release file should be considered expired by the client', documentation: { example: 604800 }
+                optional :suite, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Suite of the Debian distribution.', documentation: { example: 'unstable' }
+                optional :origin, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Origin of the Debian distribution.', documentation: { example: 'Grep' }
+                optional :label, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Label of the Debian distribution.', documentation: { example: 'grep.be' }
+                optional :version, type: String, regexp: Gitlab::Regex.debian_version_regex, desc: 'Version of the Debian distribution.', documentation: { example: '12' }
+                optional :description, type: String, desc: 'Description of the Debian distribution.', documentation: { example: 'My description' }
+                optional :valid_time_duration_seconds, type: Integer, desc: 'Duration, in seconds, before the Release file is considered expired by the client.', documentation: { example: 604800 }
 
                 optional :components, type: Array[String],
                   coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                   regexp: Gitlab::Regex.debian_component_regex,
-                  desc: 'The list of Components',
+                  desc: 'List of components of the Debian distribution.',
                   documentation: { example: %w[main] }
                 optional :architectures, type: Array[String],
                   coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                   regexp: Gitlab::Regex.debian_architecture_regex,
-                  desc: 'The list of Architectures',
+                  desc: 'List of architectures of the Debian distribution.',
                   documentation: { example: %w[amd64] }
               end
             end
@@ -78,7 +78,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Codename of the Debian distribution.', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             route_setting :authorization, permissions: :create_debian_distribution, boundary_type: resource_type
@@ -110,7 +110,7 @@ module API
 
             params do
               use :pagination
-              optional :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
+              optional :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Codename of the Debian distribution.', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             route_setting :authorization, permissions: :read_debian_distribution, boundary_type: resource_type
@@ -136,7 +136,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Codename of the Debian distribution.', documentation: { example: 'sid' }
             end
             route_setting :authorization, permissions: :read_debian_distribution, boundary_type: resource_type
             get '/:codename' do
@@ -158,7 +158,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Codename of the Debian distribution.', documentation: { example: 'sid' }
             end
             route_setting :authorization, permissions: :read_debian_distribution, boundary_type: resource_type
             get '/:codename/key.asc' do
@@ -185,7 +185,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Codename of the Debian distribution.', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             route_setting :authorization, permissions: :update_debian_distribution, boundary_type: resource_type
@@ -217,7 +217,7 @@ module API
             end
 
             params do
-              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'Codename of the Debian distribution.', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
             route_setting :authorization, permissions: :delete_debian_distribution, boundary_type: resource_type

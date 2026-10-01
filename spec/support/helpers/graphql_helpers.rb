@@ -483,6 +483,7 @@ module GraphqlHelpers
     'conflictFiles', # FieldCallCount limit
     'isEnabledInManagedByProject',
     'linkedWorkItems', # FieldCallCount limit
+    'itemCounts', # FieldCallCount limit
     'unprotectedBranches' # FieldCallCount limit
   ].freeze
 

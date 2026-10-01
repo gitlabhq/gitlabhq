@@ -438,7 +438,7 @@ gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
 # Mobile push notifications via APNs (GitLab mobile app prototype)
 gem 'apnotic', '~> 1.8', require: false, feature_category: :notifications
 
-gem 'gitlab-labkit', '~> 5.2.1', feature_category: :error_budgets
+gem 'gitlab-labkit', '~> 5.3.0', feature_category: :error_budgets
 gem 'thrift', '~> 0.22.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # I18n
@@ -684,7 +684,7 @@ gem 'gitaly', '~> 19.4.0', feature_category: :gitaly
 gem 'gitlab-kas-grpc', '~> 19.4.0-rc1', feature_category: :deployment_management
 
 # Knowledge Graph GRPC protocol definitions
-gem 'gitlab-orbit-proto', '~> 0.130.0', feature_category: :knowledge_graph
+gem 'gitlab-orbit-proto', '~> 0.135.0', feature_category: :knowledge_graph
 
 gem 'grpc', '~> 1.81.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

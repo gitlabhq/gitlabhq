@@ -8249,7 +8249,7 @@ msgstr ""
 msgid "AgentPlan|A workplan breaks down your work item into a step-by-step implementation guide for GitLab Duo to execute. Create one manually or let Duo generate it for you."
 msgstr ""
 
-msgid "AgentPlan|All questions answered"
+msgid "AgentPlan|All questions resolved"
 msgstr ""
 
 msgid "AgentPlan|Are you sure you want to delete this workplan? This action cannot be undone."
@@ -8305,6 +8305,9 @@ msgstr ""
 msgid "AgentPlan|More options"
 msgstr ""
 
+msgid "AgentPlan|Next open question"
+msgstr ""
+
 msgid "AgentPlan|No workplan"
 msgstr ""
 
@@ -8315,6 +8318,9 @@ msgid "AgentPlan|Not yet created"
 msgstr ""
 
 msgid "AgentPlan|Preparing to generate..."
+msgstr ""
+
+msgid "AgentPlan|Previous open question"
 msgstr ""
 
 msgid "AgentPlan|Ready for review"
@@ -58032,6 +58038,9 @@ msgstr ""
 msgid "Optional approvals"
 msgstr ""
 
+msgid "Optional."
+msgstr ""
+
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
 msgstr ""
 
@@ -74831,6 +74840,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{strongStart}Run customized GitLab security templates%{strongEnd} across my projects."
 msgstr ""
 
+msgid "SecurityOrchestration|%{thresholdStart}%{thresholdEnd} or more %{severityStart}%{severityEnd} %{suffixStart}vulnerabilities%{suffixEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|%{type}: %{boldStart}%{value}%{boldEnd}"
 msgstr ""
 
@@ -74858,7 +74870,16 @@ msgstr ""
 msgid "SecurityOrchestration|A formal exception record will be created and linked to this merge request"
 msgstr ""
 
+msgid "SecurityOrchestration|A listed user or access token is allowed through, and the audit event records the bypass."
+msgstr ""
+
 msgid "SecurityOrchestration|A new project will be created to be used to store security policies. If a project already exists with security policies, link it via the policy list page."
+msgstr ""
+
+msgid "SecurityOrchestration|A policy normally applies only where it is defined. The dependency firewall lets one policy cover a tree."
+msgstr ""
+
+msgid "SecurityOrchestration|A request made with one of these personal access tokens is allowed through."
 msgstr ""
 
 msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxCount} actions per policy. Remove or separate out actions across multiple policies to reduce the number of actions in one policy."
@@ -74880,6 +74901,9 @@ msgid "SecurityOrchestration|API request"
 msgstr ""
 
 msgid "SecurityOrchestration|Acceptable risk"
+msgstr ""
+
+msgid "SecurityOrchestration|Access tokens"
 msgstr ""
 
 msgid "SecurityOrchestration|Access tokens (%{count})"
@@ -75112,10 +75136,19 @@ msgstr ""
 msgid "SecurityOrchestration|Block merge requests when malware is detected"
 msgstr ""
 
+msgid "SecurityOrchestration|Block packages declaring"
+msgstr ""
+
+msgid "SecurityOrchestration|Block packages that have"
+msgstr ""
+
 msgid "SecurityOrchestration|Blocks dependency and container packages flagged as malware."
 msgstr ""
 
 msgid "SecurityOrchestration|Blocks known malware"
+msgstr ""
+
+msgid "SecurityOrchestration|Blocks the download or build when a violation is detected. The request is denied and a blocked audit event is recorded. Applies to every rule in this policy."
 msgstr ""
 
 msgid "SecurityOrchestration|Branch exceptions (%{count})"
@@ -75161,9 +75194,6 @@ msgid "SecurityOrchestration|ChatOps command"
 msgstr ""
 
 msgid "SecurityOrchestration|Choose a project"
-msgstr ""
-
-msgid "SecurityOrchestration|Choose a rule type"
 msgstr ""
 
 msgid "SecurityOrchestration|Choose an action"
@@ -75442,6 +75472,12 @@ msgstr ""
 msgid "SecurityOrchestration|Except for: %{exceptions}."
 msgstr ""
 
+msgid "SecurityOrchestration|Except these packages"
+msgstr ""
+
+msgid "SecurityOrchestration|Except these vulnerabilities"
+msgstr ""
+
 msgid "SecurityOrchestration|Exception Bypass (pre-approved)"
 msgstr ""
 
@@ -75526,6 +75562,9 @@ msgstr ""
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
 msgstr ""
 
+msgid "SecurityOrchestration|For service accounts that must publish or download internal packages, or for emergency access during an incident."
+msgstr ""
+
 msgid "SecurityOrchestration|Global Settings"
 msgstr ""
 
@@ -75551,6 +75590,9 @@ msgid "SecurityOrchestration|High"
 msgstr ""
 
 msgid "SecurityOrchestration|How do I link a group to the policy?"
+msgstr ""
+
+msgid "SecurityOrchestration|How should it act?"
 msgstr ""
 
 msgid "SecurityOrchestration|If any of the following occur:"
@@ -75613,16 +75655,13 @@ msgstr ""
 msgid "SecurityOrchestration|Key"
 msgstr ""
 
+msgid "SecurityOrchestration|Known vulnerabilities"
+msgstr ""
+
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
-msgid "SecurityOrchestration|License"
-msgstr ""
-
 msgid "SecurityOrchestration|License override details"
-msgstr ""
-
-msgid "SecurityOrchestration|License rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Licenses"
@@ -75646,10 +75685,7 @@ msgstr ""
 msgid "SecurityOrchestration|Low"
 msgstr ""
 
-msgid "SecurityOrchestration|Malicious package"
-msgstr ""
-
-msgid "SecurityOrchestration|Malicious package rule"
+msgid "SecurityOrchestration|Malicious packages"
 msgstr ""
 
 msgid "SecurityOrchestration|Malware blocking is available but turned off."
@@ -75818,6 +75854,12 @@ msgid_plural "SecurityOrchestration|On runners with the tags:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityOrchestration|One package URL per entry. Omit the version to except every version of the package."
+msgstr ""
+
+msgid "SecurityOrchestration|One vulnerability identifier per entry, as it appears in the advisory database."
+msgstr ""
+
 msgid "SecurityOrchestration|Only allowed in warn mode."
 msgstr ""
 
@@ -75852,9 +75894,6 @@ msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
 msgid "SecurityOrchestration|Package (purl)"
-msgstr ""
-
-msgid "SecurityOrchestration|Package URLs (PURLs), separated by commas"
 msgstr ""
 
 msgid "SecurityOrchestration|Pipeline execution"
@@ -75897,6 +75936,9 @@ msgid "SecurityOrchestration|Policy contains %{linkStart}deprecated syntax%{link
 msgstr ""
 
 msgid "SecurityOrchestration|Policy definition"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy details"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy editor"
@@ -75970,6 +76012,9 @@ msgstr[1] ""
 msgid "SecurityOrchestration|Recommended selection"
 msgstr ""
 
+msgid "SecurityOrchestration|Records what would have been blocked without failing the build. The request is allowed and a warned audit event is recorded. Applies to every rule in this policy."
+msgstr ""
+
 msgid "SecurityOrchestration|Release Security"
 msgstr ""
 
@@ -75997,13 +76042,7 @@ msgstr ""
 msgid "SecurityOrchestration|Results of most recent test"
 msgstr ""
 
-msgid "SecurityOrchestration|Risk severity"
-msgstr ""
-
 msgid "SecurityOrchestration|Risk severity is %{severity} with a risk score of more than %{threshold}."
-msgstr ""
-
-msgid "SecurityOrchestration|Risk severity rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Roles"
@@ -76150,6 +76189,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security teams will be notified of this exception"
 msgstr ""
 
+msgid "SecurityOrchestration|Select"
+msgstr ""
+
 msgid "SecurityOrchestration|Select a cadence"
 msgstr ""
 
@@ -76162,7 +76204,13 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Select a severity to finish this rule."
+msgstr ""
+
 msgid "SecurityOrchestration|Select a variable"
+msgstr ""
+
+msgid "SecurityOrchestration|Select at least one license to finish this rule."
 msgstr ""
 
 msgid "SecurityOrchestration|Select attributes"
@@ -76253,6 +76301,9 @@ msgid "SecurityOrchestration|Settings from outside of the policy cannot override
 msgstr ""
 
 msgid "SecurityOrchestration|Several merge request approval policy criteria have been deprecated. Policies using these criteria will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to replace or remove the deprecated criteria."
+msgstr ""
+
+msgid "SecurityOrchestration|Severity"
 msgstr ""
 
 msgid "SecurityOrchestration|Severity and status settings will apply to all scan rules"
@@ -76453,9 +76504,6 @@ msgstr ""
 msgid "SecurityOrchestration|This policy has no rules to match merge requests against. Add rules for this policy to take effect."
 msgstr ""
 
-msgid "SecurityOrchestration|This policy has no rules yet. Add at least one rule below for it to take effect."
-msgstr ""
-
 msgid "SecurityOrchestration|This policy has no rules, so branch-level settings will not be applied. Only project approval settings will take effect."
 msgstr ""
 
@@ -76474,6 +76522,9 @@ msgstr ""
 msgid "SecurityOrchestration|This project"
 msgstr ""
 
+msgid "SecurityOrchestration|This rule is an allow list. New license rules can only deny; to change this rule back to a deny list, edit the policy YAML directly."
+msgstr ""
+
 msgid "SecurityOrchestration|This schedule uses a format rule mode cannot display, like a range, step, or minute offset. The YAML is valid and the policy still runs. Switch to YAML mode to change the schedule."
 msgstr ""
 
@@ -76486,7 +76537,7 @@ msgstr ""
 msgid "SecurityOrchestration|This will disconnect your top-level compliance and security policy group, and all the frameworks it shares, from all other top-level groups."
 msgstr ""
 
-msgid "SecurityOrchestration|Threshold"
+msgid "SecurityOrchestration|Three kinds of rule, all in one policy."
 msgstr ""
 
 msgid "SecurityOrchestration|Timezone is invalid"
@@ -76522,9 +76573,6 @@ msgstr ""
 msgid "SecurityOrchestration|Unlinking a security policy project will stop enforcing all policies from the linked project on this namespace. The policy project and its policies will not be deleted. Save to confirm this action."
 msgstr ""
 
-msgid "SecurityOrchestration|Unrecognized rule type. Switch to YAML mode to edit this rule."
-msgstr ""
-
 msgid "SecurityOrchestration|Update security policies"
 msgstr ""
 
@@ -76553,6 +76601,9 @@ msgid "SecurityOrchestration|Use this compliance and security policy group to cr
 msgstr ""
 
 msgid "SecurityOrchestration|Used in tests"
+msgstr ""
+
+msgid "SecurityOrchestration|Users"
 msgstr ""
 
 msgid "SecurityOrchestration|Users and Groups (%{count})"
@@ -76600,12 +76651,6 @@ msgstr ""
 msgid "SecurityOrchestration|Vulnerabilities have EPSS score less than %{value}."
 msgstr ""
 
-msgid "SecurityOrchestration|Vulnerability"
-msgstr ""
-
-msgid "SecurityOrchestration|Vulnerability IDs (such as CVEs) or package URLs (PURLs), separated by commas"
-msgstr ""
-
 msgid "SecurityOrchestration|Vulnerability IDs (such as CVEs), separated by commas"
 msgstr ""
 
@@ -76618,16 +76663,13 @@ msgstr ""
 msgid "SecurityOrchestration|Vulnerability age requires previously existing vulnerability states (detected, confirmed, resolved, or dismissed)"
 msgstr ""
 
-msgid "SecurityOrchestration|Vulnerability count thresholds"
+msgid "SecurityOrchestration|Vulnerability count threshold"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability management"
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability management policy"
-msgstr ""
-
-msgid "SecurityOrchestration|Vulnerability rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Warn"
@@ -76649,6 +76691,12 @@ msgid "SecurityOrchestration|What does an example message look like?"
 msgstr ""
 
 msgid "SecurityOrchestration|What is linked group?"
+msgstr ""
+
+msgid "SecurityOrchestration|What should it look for?"
+msgstr ""
+
+msgid "SecurityOrchestration|What this policy is for"
 msgstr ""
 
 msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request %{targeting}%{branches}%{branchExceptionsString}%{criteriaApply}"
@@ -76675,6 +76723,12 @@ msgstr ""
 msgid "SecurityOrchestration|When the following scanners find any vulnerabilities in an open merge request %{targeting}%{branches}%{branchExceptionsString}%{criteriaApply}"
 msgstr ""
 
+msgid "SecurityOrchestration|Which groups and projects should it apply to?"
+msgstr ""
+
+msgid "SecurityOrchestration|Who can bypass it?"
+msgstr ""
+
 msgid "SecurityOrchestration|With the %{template} security job template"
 msgstr ""
 
@@ -76695,11 +76749,6 @@ msgstr ""
 
 msgid "SecurityOrchestration|You can add a maximum of 3 criteria."
 msgstr ""
-
-msgid "SecurityOrchestration|You can add up to %d rule"
-msgid_plural "SecurityOrchestration|You can add up to %d rules"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "SecurityOrchestration|You can select this option only once."
 msgstr ""
@@ -76921,9 +76970,6 @@ msgid "SecurityOrchestration|less than"
 msgstr ""
 
 msgid "SecurityOrchestration|license scan"
-msgstr ""
-
-msgid "SecurityOrchestration|licenses"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"

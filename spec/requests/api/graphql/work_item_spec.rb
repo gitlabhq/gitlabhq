@@ -913,6 +913,48 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
         end
       end
 
+      describe 'severity widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetSeverity {
+                severity
+              }
+            }
+            features {
+              severity {
+                severity
+              }
+            }
+          GRAPHQL
+        end
+
+        context 'when work item is an incident' do
+          let_it_be(:incident_type) { build(:work_item_system_defined_type, :incident) }
+          let_it_be(:work_item, freeze: false) do
+            create(:work_item, project: project, work_item_type: incident_type)
+          end
+
+          let_it_be(:issuable_severity) { create(:issuable_severity, issue: work_item, severity: :high) }
+
+          it 'returns widget information' do
+            expect(work_item_data['widgets']).to include(
+              hash_including('type' => 'SEVERITY', 'severity' => 'HIGH')
+            )
+            expect(work_item_data['features']).to include('severity' => { 'severity' => 'HIGH' })
+          end
+        end
+
+        context 'when work item is not an incident' do
+          it 'does not return the widget' do
+            expect(work_item_data['widgets']).not_to include(hash_including('type' => 'SEVERITY'))
+            expect(work_item_data['features']).to include('severity' => nil)
+          end
+        end
+      end
+
       context 'when filtering' do
         context 'when selecting widgets' do
           let(:work_item_fields) do

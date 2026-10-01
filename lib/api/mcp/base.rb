@@ -90,9 +90,10 @@ module API
           'MCP server disabled for this instance'
         end
 
-        # Returns the allowed MCP tool names for this request, as set by the Duo Workflow
-        # executor via the `x-gitlab-enabled-mcp-server-tools` header.
-        # Returns nil when the header is absent or blank (no restriction -- all tools allowed).
+        # Allowed MCP tool names, as set by the Duo Workflow executor.
+        #
+        # @return [Array<String>, nil] names from the `X-Gitlab-Enabled-Mcp-Server-Tools` header,
+        #   or nil when the header is absent or lists no names
         def enabled_mcp_server_tools
           header_value = headers['X-Gitlab-Enabled-Mcp-Server-Tools']
           return if header_value.blank?
@@ -217,14 +218,8 @@ module API
                 tool_name_prefix: mcp_server_tool_name_prefix)
             when 'tools/list'
               allowed_tools = enabled_mcp_server_tools
-              toolsets_enabled = Feature.enabled?(:mcp_toolsets, current_user)
-
-              if toolsets_enabled
-                allowed_toolsets = ::Mcp::Tools::Toolsets.parse(
-                  headers['X-Gitlab-Enabled-Mcp-Server-Toolsets']
-                )
-                allowed_toolsets = ::Mcp::Tools::Toolsets.defaults if allowed_toolsets.blank? && allowed_tools.blank?
-              end
+              allowed_toolsets = ::Mcp::Tools::Toolsets.parse(headers['X-Gitlab-Enabled-Mcp-Server-Toolsets'])
+              allowed_toolsets = ::Mcp::Tools::Toolsets.defaults if allowed_toolsets.blank? && allowed_tools.blank?
 
               Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke(current_user,
                 allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets,

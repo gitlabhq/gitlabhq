@@ -118,8 +118,9 @@ GitLab Duo CLIでは、現在のモードが`>`プロンプトの下に表示し
 {{< history >}}
 
 - GitLab 19.0リリース時に、GitLab Duo CLI 8.90.0で設定パネルが[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.90.0)されました。
-- GitLab 19.4リリース中に、GitLab Duo CLI 19.11.0で、新しいセッションで作業アイテムを表示する設定が[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0)されました。
-- GitLab 19.4リリース中に、GitLab Duo CLI 19.11.0で、テーマを調整する設定が[導入](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0)されました。
+- 新しいセッションで作業アイテムを表示する設定は、GitLab Duo CLI 9.11.0で、GitLab 19.4リリース時に[導入されました](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0)。
+- テーマを調整する設定は、GitLab Duo CLI 9.11.0で、GitLab 19.4リリース時に[導入されました](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.11.0)。
+- 提案されたプロンプトを`/goal`セッションとして実行する設定は、GitLab Duo CLI 9.24.0で、GitLab 19.5リリース時に[導入されました](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.24.0)。
 
 {{< /history >}}
 
@@ -139,7 +140,8 @@ GitLab Duo CLIでは、現在のモードが`>`プロンプトの下に表示し
 | **Telemetry**            | GitLab Duoの改善に役立てるため、匿名の使用状況データを送信します。                                                  |
 | **Enable global skills** | （実験的機能）`~/.agents/skills/`と`~/.gitlab/duo/skills/`から[ユーザーレベルのAgent Skills](../duo_agent_platform/customize/agent_skills.md#create-user-level-skills)を検出します。変更を有効にするには再起動が必要です。 |
 | **Notifications**        | [システム通知](#system-notifications)（`auto`または`disabled`）を制御します。                     |
-| **新しいセッションで作業アイテムを表示** | 新しいセッションを開始すると、開いている作業アイテムが表示されます。|
+| **セッション開始時に作業アイテムを表示** | 新しいセッションを開始すると、開いている作業アイテムが表示されます。 |
+| **提案されたプロンプトを/goalセッションとして実行** | 提案されたプロンプトを、通常のチャットメッセージではなく`/goal`セッションとして実行します。変更を有効にするには再起動が必要です。 |
 | **テーマ**        | テーマ設定を変更します。オプションには、`auto`、`dark`、`light`、`dark high contrast`、および`light high contrast`があります。 |
 
 ### システム通知 {#system-notifications}
@@ -343,7 +345,7 @@ GitLab Duo CLIをローカルまたはリモートのMCPサーバーに接続す
 
 ## 関連トピック {#related-topics}
 
-- [GitLab Duo CLIの完全なリファレンス](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
+- [GitLab Duo CLI完全参照](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/cli-reference.md)
 - [エディタ拡張機能のセキュリティに関する考慮事項](../../editor_extensions/security_considerations.md)
 - [GitLab CLI](https://docs.gitlab.com/cli/)
 - [GitLab Duo Agent Platformをカスタマイズする](../duo_agent_platform/customize/_index.md)

@@ -2185,7 +2185,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         {
           'pipeline_creation_request' => {
             'key' => Ci::PipelineCreation::Requests.request_key(project, 'test-id'),
-            'id' => 'test-id'
+            'id' => 'test-id',
+            'started_at' => a_kind_of(Numeric)
           }
         }
       )

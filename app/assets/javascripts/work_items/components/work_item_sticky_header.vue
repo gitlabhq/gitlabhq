@@ -94,5 +94,6 @@ export default {
     <gl-link v-else :class="$options.TITLE_CLASS" href="#top" :title="workItem.title">
       <span v-safe-html:[$options.titleInLinkSafeHtmlConfig]="workItem.titleHtml"></span>
     </gl-link>
+    <slot name="append"></slot>
   </div>
 </template>
