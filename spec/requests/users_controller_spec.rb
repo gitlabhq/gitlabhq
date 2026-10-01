@@ -31,6 +31,24 @@ RSpec.describe UsersController, feature_category: :user_management do
       context 'when logged out' do
         it_behaves_like 'renders the show template'
       end
+
+      it 'pushes the contribution_music_easter_egg feature flag' do
+        get user_url user.username
+
+        expect(response.body).to have_pushed_frontend_feature_flags(contributionMusicEasterEgg: true)
+      end
+
+      context 'when the contribution_music_easter_egg flag is disabled' do
+        before do
+          stub_feature_flags(contribution_music_easter_egg: false)
+        end
+
+        it 'pushes the flag as disabled' do
+          get user_url user.username
+
+          expect(response.body).to have_pushed_frontend_feature_flags(contributionMusicEasterEgg: false)
+        end
+      end
     end
 
     context 'when public visibility level is restricted' do

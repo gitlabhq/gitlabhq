@@ -227,6 +227,42 @@ To verify container registry replication is working, on the secondary site:
 
 You can monitor the synchronization process on each Geo site from the primary site's **Geo Nodes** dashboard in your browser.
 
+## Garbage collection on Geo sites
+
+Garbage collection on the primary site does not free storage on the secondary site.
+Each site must clean up its own container registry storage. When you delete a tag
+on the primary site, the deletion is replicated to the secondary site. However, the
+image layers remain in storage on both sites until garbage collection removes them.
+
+How you run garbage collection depends on your registry configuration.
+
+### Garbage collection with the container registry metadata database
+
+Each site has its own registry metadata database, and the registry runs
+[online garbage collection](../../packages/container_registry_metadata_database.md#online-garbage-collection-monitoring)
+on each site automatically. You do not need to run garbage collection manually.
+
+### Garbage collection without the metadata database, with separate storage for each site
+
+Run [garbage collection](../../packages/container_registry.md#container-registry-garbage-collection)
+on each site. The secondary site cannot replicate container images while garbage
+collection runs, and Geo retries the failed synchronizations after it completes.
+
+### Garbage collection without the metadata database, with shared storage
+
+> [!warning]
+> Using shared storage is not recommended. A wrong configuration may result in data loss.
+
+When you have shared storage, both sites read and write the same storage bucket, so the
+primary site owns all registry blobs. The secondary site must not touch them: do not run
+garbage collection on the secondary site, as it could delete images that were recently
+pushed to the primary site, and replication would copy blobs onto themselves.
+
+In short:
+
+1. On the secondary site, [disable the container registry replication](#disable-container-registry-replication).
+1. On the primary site, run [garbage collection](../../packages/container_registry.md#container-registry-garbage-collection).
+
 ## Troubleshooting
 
 ### Confirm that container registry replication is enabled
@@ -295,7 +331,7 @@ and the secondary site detects the mismatch, which can take up to the
 [reverification interval](../disaster_recovery/background_verification.md#repository-re-verification).
 To resync sooner, either select **Resync all** as described in
 [Manually trigger a container registry sync event](#manually-trigger-a-container-registry-sync-event),
-or [reverify all container repositories on the primary site](troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
+or [reverify all container repositories on the primary site](resync_reverify.md#reverify-one-component-on-all-sites).
 The targeted `gitlab:geo:reverify_container_repositories_since` task described in
 [Repository not resynced after downtime](#repository-not-resynced-after-downtime)
 does not apply here.
@@ -415,6 +451,6 @@ the outage and `geo_container_repository_force_primary_checksumming` to have rem
 If registry notifications were misconfigured for a period of time, for example due to user
 error, tag pushes during that period are not recorded, so Geo has no way to determine which
 container repositories changed. In this situation, the recommended action is to
-[reverify all container repositories on the primary site](troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
+[reverify all container repositories on the primary site](resync_reverify.md#reverify-one-component-on-all-sites).
 The primary site recalculates all checksums, and secondary sites then resync only the
 repositories whose content changed.

@@ -125,7 +125,7 @@ export default {
 </script>
 
 <template>
-  <div :class="{ 'gl-bg-green-50': isNewlyAdded }" role="row">
+  <div :class="{ 'gl-bg-feedback-success': isNewlyAdded }" role="row">
     <div role="cell" class="gl-flex gl-flex-col gl-items-start gl-gap-2">
       <status-badge :merge-request="mergeRequest" :list-id="listId" />
       <span v-if="reviewerUpdatedAt" class="gl-text-sm gl-text-subtle">

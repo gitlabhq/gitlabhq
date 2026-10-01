@@ -36,8 +36,8 @@ module API
         is_array true
       end
       params do
-        optional :created_after, type: DateTime, desc: 'Return snippets created after the specified time'
-        optional :created_before, type: DateTime, desc: 'Return snippets created before the specified time'
+        optional :created_after, type: DateTime, desc: 'Return snippets created on or after the specified time.'
+        optional :created_before, type: DateTime, desc: 'Return snippets created on or before the specified time.'
 
         use :pagination
       end
@@ -60,8 +60,8 @@ module API
         is_array true
       end
       params do
-        optional :created_after, type: DateTime, desc: 'Return snippets created after the specified time'
-        optional :created_before, type: DateTime, desc: 'Return snippets created before the specified time'
+        optional :created_after, type: DateTime, desc: 'Return snippets created on or after the specified time.'
+        optional :created_before, type: DateTime, desc: 'Return snippets created on or before the specified time.'
 
         use :pagination
       end
@@ -90,8 +90,8 @@ module API
         is_array true
       end
       params do
-        optional :created_after, type: DateTime, desc: 'Return snippets created after the specified time'
-        optional :created_before, type: DateTime, desc: 'Return snippets created before the specified time'
+        optional :created_after, type: DateTime, desc: 'Return snippets created on or after the specified time.'
+        optional :created_before, type: DateTime, desc: 'Return snippets created on or before the specified time.'
 
         use :pagination
         use :optional_list_params_ee
@@ -114,7 +114,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a snippet'
+        requires :id, type: Integer, desc: 'ID of the snippet.'
       end
       route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get ':id' do
@@ -136,12 +136,12 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :title, type: String, allow_blank: false, desc: 'The title of a snippet'
-        optional :description, type: String, desc: 'The description of a snippet'
+        requires :title, type: String, allow_blank: false, desc: 'Title of the snippet.'
+        optional :description, type: String, desc: 'Description of the snippet.'
         optional :visibility, type: String,
           values: Gitlab::VisibilityLevel.string_values,
           default: 'internal',
-          desc: 'The visibility of the snippet'
+          desc: 'Visibility level for the snippet. On GitLab.com, the `internal` value is not available.'
 
         use :create_file_params
       end
@@ -182,14 +182,14 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a snippet'
+        requires :id, type: Integer, desc: 'ID of the snippet.'
         optional :content, type: String, allow_blank: false, desc: 'The content of a snippet'
-        optional :description, type: String, desc: 'The description of a snippet'
+        optional :description, type: String, desc: 'Description of the snippet.'
         optional :file_name, type: String, desc: 'The name of a snippet file'
-        optional :title, type: String, allow_blank: false, desc: 'The title of a snippet'
+        optional :title, type: String, allow_blank: false, desc: 'Title of the snippet.'
         optional :visibility, type: String,
           values: Gitlab::VisibilityLevel.string_values,
-          desc: 'The visibility of the snippet'
+          desc: 'Visibility level for the snippet. On GitLab.com, the `internal` value is not available.'
 
         use :update_file_params
         use :minimum_update_params
@@ -235,7 +235,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a snippet'
+        requires :id, type: Integer, desc: 'ID of the snippet.'
       end
       route_setting :authorization, permissions: :delete_snippet, boundary_type: :user
       delete ':id' do
@@ -265,7 +265,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a snippet'
+        requires :id, type: Integer, desc: 'ID of the snippet.'
       end
       route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get ":id/raw" do
@@ -305,7 +305,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of a snippet'
+        requires :id, type: Integer, desc: 'ID of the snippet.'
       end
       route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance,
         assignable_when: [:admin]

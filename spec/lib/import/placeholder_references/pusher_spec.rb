@@ -6,7 +6,7 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
   include Import::UserMappingHelper
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:group_project, freeze: false) { create(:project, namespace: group, import_type: 'github') }
+  let_it_be_with_reload(:group_project) { create(:project, namespace: group, import_type: 'github') }
 
   let_it_be(:user) { create(:user, :with_namespace) }
   let_it_be(:personal_project, freeze: false) { create(:project, namespace: user.namespace, import_type: 'github') }
@@ -90,9 +90,8 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
     # gitlab-org/gitlab#628379: user mapping is now always on except for
     # Bitbucket Server with the bitbucket_server_user_mapping FF disabled.
     context 'when user mapping is disabled (Bitbucket Server with FF off)' do
-      let(:project) { create(:project, namespace: group, import_type: 'bitbucket_server') }
-
       before do
+        group_project.update!(import_type: 'bitbucket_server')
         stub_feature_flags(bitbucket_server_user_mapping: false)
       end
 
@@ -292,6 +291,44 @@ RSpec.describe Import::PlaceholderReferences::Pusher, :clean_gitlab_redis_shared
 
       it 'returns false' do
         expect(pusher.user_mapping_enabled?(project)).to be false
+      end
+    end
+
+    context 'when the import is GitHub' do
+      it 'returns true without reading import_data' do
+        expect(project).not_to receive(:import_data)
+
+        expect(pusher.user_mapping_enabled?(project)).to be true
+      end
+
+      it 'pushes a reference when import_data is nil' do
+        record = create(:note, project: project)
+        allow(project).to receive(:import_data).and_return(nil)
+
+        expect { pusher.push_reference(project, record, attribute, import_source_user_identifier) }
+          .to change { store.count }.by(1)
+      end
+    end
+
+    context 'when the import is not GitHub' do
+      before do
+        group_project.update!(import_type: 'bitbucket_server')
+      end
+
+      it 'follows import_data.user_mapping_enabled?' do
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
+
+        expect(pusher.user_mapping_enabled?(project)).to be false
+
+        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(true)
+
+        expect(pusher.user_mapping_enabled?(project)).to be true
+      end
+
+      it 'returns true when import_data is nil' do
+        allow(project).to receive(:import_data).and_return(nil)
+
+        expect(pusher.user_mapping_enabled?(project)).to be true
       end
     end
   end

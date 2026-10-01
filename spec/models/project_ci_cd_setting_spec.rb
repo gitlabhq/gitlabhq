@@ -31,11 +31,12 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       expect(subject.errors[:id_token_sub_claim_components]).to include("is too short (minimum is 1 character)")
     end
 
-    it 'validates id_token_sub_claim_components requires project_path or project_id as the first element' do
+    it 'validates id_token_sub_claim_components requires a project component as the first element' do
       subject.id_token_sub_claim_components = ['ref']
       expect(subject).not_to be_valid
       expect(subject.errors[:id_token_sub_claim_components])
-        .to include("project_path or project_id must be the first element of the sub claim")
+        .to include("the first element of the sub claim must be one of: " \
+          "project_path, project_id, job_project_path, job_project_id, source_project_path, source_project_id")
     end
 
     it 'is valid when project_path is the first element' do
@@ -45,6 +46,23 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
 
     it 'is valid when project_id is the first element' do
       subject.id_token_sub_claim_components = %w[project_id ref_type ref]
+      expect(subject).to be_valid
+    end
+
+    context 'with a job or source project component as the first element' do
+      where(:leading_component) { %w[job_project_path job_project_id source_project_path source_project_id] }
+
+      with_them do
+        it 'is valid' do
+          subject.id_token_sub_claim_components = [leading_component, 'ref_type', 'ref']
+          expect(subject).to be_valid
+        end
+      end
+    end
+
+    it 'is valid when job and source project components are not the first element' do
+      subject.id_token_sub_claim_components =
+        %w[project_id job_project_path job_project_id source_project_path source_project_id]
       expect(subject).to be_valid
     end
 

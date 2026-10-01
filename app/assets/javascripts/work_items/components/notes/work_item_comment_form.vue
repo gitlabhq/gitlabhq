@@ -1,9 +1,9 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { i18n, STATE_CLOSED, STATE_OPEN, LINKED_CATEGORIES_MAP } from '~/work_items/constants';

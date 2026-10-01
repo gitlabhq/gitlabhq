@@ -314,7 +314,10 @@ export default {
       return {
         primary: {
           text: this.submitButtonText,
-          attributes: { 'data-testid': 'wiki-confirm-message' },
+          attributes: {
+            variant: 'confirm',
+            'data-testid': 'wiki-confirm-message',
+          },
         },
         cancel: { text: this.$options.i18n.cancel },
       };

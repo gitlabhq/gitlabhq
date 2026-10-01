@@ -3,7 +3,7 @@ import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapActions, mapState } from 'pinia';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { createAlert } from '~/alert';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';

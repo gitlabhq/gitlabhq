@@ -206,9 +206,9 @@ export default {
     dropdownIcon() {
       let icon;
 
-      if (this.selectedRef.includes(`refs/${TAG_REF_TYPE}`)) {
+      if (this.selectedRef.startsWith(`refs/${TAG_REF_TYPE}/`)) {
         icon = TAG_REF_TYPE_ICON;
-      } else if (this.selectedRef.includes(`refs/${BRANCH_REF_TYPE}`)) {
+      } else if (this.selectedRef.startsWith(`refs/${BRANCH_REF_TYPE}/`)) {
         icon = BRANCH_REF_TYPE_ICON;
       }
 

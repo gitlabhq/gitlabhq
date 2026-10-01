@@ -2715,6 +2715,25 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="query-securityscanprofile-id"></a>`id` | [`SecurityScanProfileID!`](#securityscanprofileid) | Global ID of the security scan profile. |
 
+### `Query.securityScanProfileVariables`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Configuration variables a security scan profile of the given type can set.
+
+Returns [`[SecurityScanProfileVariable!]`](#securityscanprofilevariable).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-securityscanprofilevariables-scantype"></a>`scanType` | [`SecurityScanProfileType!`](#securityscanprofiletype) | Scan profile type to return the configuration variables for. |
+
 ### `Query.selfManagedAddOnEligibleUsers`
 
 {{< details >}}
@@ -17129,6 +17148,31 @@ Fields:
 | <a id="mutation-secretsmanagerinstanceenableaddon-entitlement"></a>`entitlement` | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Instance-level Secrets Manager entitlement state after enabling the add-on. Null when enabling failed; see errors for the reason. |
 | <a id="mutation-secretsmanagerinstanceenableaddon-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.secretsManagerInstanceRefreshEntitlement`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `SecretsManagerInstanceRefreshEntitlementInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerinstancerefreshentitlement-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerinstancerefreshentitlement-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-secretsmanagerinstancerefreshentitlement-entitlement"></a>`entitlement` | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Instance-wide Secrets Manager entitlement state as the subscription service reports it now. Null when refreshing failed; see errors for the reason. |
+| <a id="mutation-secretsmanagerinstancerefreshentitlement-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.secretsManagerInstanceStartTrial`
 
 {{< details >}}
@@ -17153,6 +17197,32 @@ Fields:
 | <a id="mutation-secretsmanagerinstancestarttrial-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-secretsmanagerinstancestarttrial-entitlement"></a>`entitlement` | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Instance-wide Secrets Manager entitlement state after starting the trial. Null when the post-trial state cannot be resolved; query `secretsManagerInstanceEntitlement` instead. |
 | <a id="mutation-secretsmanagerinstancestarttrial-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.secretsManagerRefreshEntitlement`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `SecretsManagerRefreshEntitlementInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerrefreshentitlement-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-secretsmanagerrefreshentitlement-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the top-level group to refresh the Secrets Manager entitlement for. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-secretsmanagerrefreshentitlement-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-secretsmanagerrefreshentitlement-entitlement"></a>`entitlement` | [`SecretsManagerEntitlement`](#secretsmanagerentitlement) | Secrets Manager entitlement state as the subscription service reports it now. Null when the subscription service could not be reached; see errors. |
+| <a id="mutation-secretsmanagerrefreshentitlement-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.secretsManagerStartTrial`
 
@@ -22553,6 +22623,43 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="aifoundationalchatagentedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aifoundationalchatagentedge-node"></a>`node` | [`AiFoundationalChatAgent`](#aifoundationalchatagent) | The item at the end of the edge. |
+
+#### `AiGovernanceSessionConnection`
+
+The connection type for [`AiGovernanceSession`](#aigovernancesession).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancesessionconnection-edges"></a>`edges` | [`[AiGovernanceSessionEdge]`](#aigovernancesessionedge) | A list of edges. |
+| <a id="aigovernancesessionconnection-nodes"></a>`nodes` | [`[AiGovernanceSession]`](#aigovernancesession) | A list of nodes. |
+| <a id="aigovernancesessionconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `AiGovernanceSessionConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancesessionconnection-count-limit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
+#### `AiGovernanceSessionEdge`
+
+The edge type for [`AiGovernanceSession`](#aigovernancesession).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancesessionedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aigovernancesessionedge-node"></a>`node` | [`AiGovernanceSession`](#aigovernancesession) | The item at the end of the edge. |
 
 #### `AiInstanceUsageEventConnection`
 
@@ -35760,6 +35867,25 @@ Fields:
 | <a id="aigovernanceprojectactivity-project"></a>`project` | [`Project`](#project) | Project the sessions ran in. Resolves to null when the current user cannot read the project. |
 | <a id="aigovernanceprojectactivity-sessioncount"></a>`sessionCount` | [`Int`](#int) | Number of AI sessions in the project in the selected timeframe. |
 
+### `AiGovernanceSession`
+
+AI session recorded for AI governance, from GitLab Duo or an external agent.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancesession-agenttype"></a>`agentType` | [`String`](#string) | Type of the agent that ran the session, for example `claude-code`. Values differ between sources. |
+| <a id="aigovernancesession-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo. |
+| <a id="aigovernancesession-flowtype"></a>`flowType` | [`String`](#string) | Flow type of the session, for example `chat`. Values differ between sources. |
+| <a id="aigovernancesession-id"></a>`id` | [`AiGovernanceSessionID!`](#aigovernancesessionid) | Global ID of the session. |
+| <a id="aigovernancesession-project"></a>`project` | [`Project`](#project) | Project the session belongs to. Null for namespace-scoped sessions, or when the current user cannot read the project. |
+| <a id="aigovernancesession-sessionid"></a>`sessionId` | [`String`](#string) | ID of the session in its source. For GitLab Duo sessions, the Duo workflow ID. For other sources, the session ID from the external agent. |
+| <a id="aigovernancesession-sessionstartedat"></a>`sessionStartedAt` | [`Time!`](#time) | Timestamp of when the session started. |
+| <a id="aigovernancesession-source"></a>`source` | [`AiGovernanceSessionSource!`](#aigovernancesessionsource) | Source that recorded the session. |
+| <a id="aigovernancesession-triggeredby"></a>`triggeredBy` | [`UserCore`](#usercore) | User who initiated the session. |
+| <a id="aigovernancesession-webpath"></a>`webPath` | [`String`](#string) | Path of the session page. Null for sessions from sources other than GitLab Duo, and for GitLab Duo sessions without a project. |
+
 ### `AiGovernanceSessionDistribution`
 
 Number of AI sessions for one flow type or agent type.
@@ -47707,6 +47833,35 @@ Arguments:
 | <a id="group-aigovernancemetrics-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Agent class to segment the metrics by. Defaults to ALL. |
 | <a id="group-aigovernancemetrics-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the metrics. Defaults to LAST_7_DAYS. |
 
+##### `Group.aiGovernanceSessions`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+AI sessions for the group, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled.
+
+Returns [`AiGovernanceSessionConnection`](#aigovernancesessionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="group-aigovernancesessions-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Filter sessions by agent class. Defaults to all agent classes. |
+| <a id="group-aigovernancesessions-flowtype"></a>`flowType` | [`String`](#string) | Filter by flow type. |
+| <a id="group-aigovernancesessions-not"></a>`not` | [`AiGovernanceSessionNegatedFilterInput`](#aigovernancesessionnegatedfilterinput) | Negated filter conditions. |
+| <a id="group-aigovernancesessions-projectpath"></a>`projectPath` | [`String`](#string) | Filter by project full path. |
+| <a id="group-aigovernancesessions-sessionstartedafter"></a>`sessionStartedAfter` | [`Time`](#time) | Return sessions started at or after the timestamp. |
+| <a id="group-aigovernancesessions-sessionstartedbefore"></a>`sessionStartedBefore` | [`Time`](#time) | Return sessions started at or before the timestamp. |
+| <a id="group-aigovernancesessions-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
+
 ##### `Group.aiMetrics`
 
 {{< details >}}
@@ -58327,6 +58482,34 @@ Arguments:
 | <a id="project-aigovernancemetrics-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Agent class to segment the metrics by. Defaults to ALL. |
 | <a id="project-aigovernancemetrics-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the metrics. Defaults to LAST_7_DAYS. |
 
+##### `Project.aiGovernanceSessions`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+AI sessions for the project, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled.
+
+Returns [`AiGovernanceSessionConnection`](#aigovernancesessionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="project-aigovernancesessions-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Filter sessions by agent class. Defaults to all agent classes. |
+| <a id="project-aigovernancesessions-flowtype"></a>`flowType` | [`String`](#string) | Filter by flow type. |
+| <a id="project-aigovernancesessions-not"></a>`not` | [`AiGovernanceSessionNegatedFilterInput`](#aigovernancesessionnegatedfilterinput) | Negated filter conditions. |
+| <a id="project-aigovernancesessions-sessionstartedafter"></a>`sessionStartedAfter` | [`Time`](#time) | Return sessions started at or after the timestamp. |
+| <a id="project-aigovernancesessions-sessionstartedbefore"></a>`sessionStartedBefore` | [`Time`](#time) | Return sessions started at or before the timestamp. |
+| <a id="project-aigovernancesessions-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
+
 ##### `Project.aiMetrics`
 
 {{< details >}}
@@ -63453,6 +63636,17 @@ Fields:
 | <a id="securityscanfeature-ondemandavailable"></a>`onDemandAvailable` | [`Boolean!`](#boolean) | Whether on-demand scanning is available for the scan type. |
 | <a id="securityscanfeature-securityfeatures"></a>`securityFeatures` | [`SecurityFeature`](#securityfeature) | Additional security features specific to the scan type. |
 | <a id="securityscanfeature-type"></a>`type` | [`String!`](#string) | Type of security scan (e.g., sast, dast, secret_detection). |
+
+### `SecurityScanProfileVariable`
+
+A configuration variable that a scan profile of a given type can set.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofilevariable-envvar"></a>`envVar` | [`String`](#string) | CI/CD variable the configuration field is passed to the scan as. |
+| <a id="securityscanprofilevariable-key"></a>`key` | [`String!`](#string) | Name of the configuration field, as used in the scan profile configuration input. |
 
 ### `SecurityScanners`
 
@@ -68969,6 +69163,16 @@ Time window for AI governance dashboard metrics.
 | <a id="aigovernancemetricstimeframe-last_24_hours"></a>`LAST_24_HOURS` | Last 24 hours, bucketed hourly. |
 | <a id="aigovernancemetricstimeframe-last_30_days"></a>`LAST_30_DAYS` | Last 30 days, bucketed daily. |
 | <a id="aigovernancemetricstimeframe-last_7_days"></a>`LAST_7_DAYS` | Last 7 days, bucketed daily. |
+
+### `AiGovernanceSessionSource`
+
+Source that recorded an AI governance session.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aigovernancesessionsource-claude_code_compliance_api"></a>`CLAUDE_CODE_COMPLIANCE_API` | Claude Code session ingested from the Claude Compliance API. |
+| <a id="aigovernancesessionsource-claude_code_glab"></a>`CLAUDE_CODE_GLAB` | Claude Code session reported through the GitLab CLI. |
+| <a id="aigovernancesessionsource-gitlab_duo"></a>`GITLAB_DUO` | Session run on the GitLab Duo Agent Platform. |
 
 ### `AiMessageRole`
 
@@ -75169,6 +75373,12 @@ A `AiFoundationalChatAgentID` is a global ID. It is encoded as a string.
 
 An example `AiFoundationalChatAgentID` is: `"gid://gitlab/Ai::FoundationalChatAgent/1"`.
 
+### `AiGovernanceSessionID`
+
+A `AiGovernanceSessionID` is a global ID. It is encoded as a string.
+
+An example `AiGovernanceSessionID` is: `"gid://gitlab/Ai::Governance::Session/1"`.
+
 ### `AiModelID`
 
 A `AiModelID` is a global ID. It is encoded as a string.
@@ -79054,6 +79264,18 @@ Arguments:
 | <a id="aigeneratedescriptioninput-content"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="aigeneratedescriptioninput-descriptiontemplatename"></a>`descriptionTemplateName` | [`String`](#string) | Name of the description template to use to generate message off of. |
 | <a id="aigeneratedescriptioninput-resourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiGovernanceSessionNegatedFilterInput`
+
+Negated filter arguments for AI governance sessions.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancesessionnegatedfilterinput-flowtype"></a>`flowType` | [`String`](#string) | Exclude sessions with the flow type. |
+| <a id="aigovernancesessionnegatedfilterinput-projectpath"></a>`projectPath` | [`String`](#string) | Exclude sessions belonging to the project full path. |
+| <a id="aigovernancesessionnegatedfilterinput-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Exclude sessions triggered by the user with the given global ID. |
 
 ### `AiMeasureCommentTemperatureInput`
 

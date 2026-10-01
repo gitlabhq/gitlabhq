@@ -8,8 +8,11 @@ RSpec.describe 'help/instance_configuration', feature_category: :configuration d
     let(:settings) { instance_configuration.settings }
     let(:ssh_settings) { settings[:ssh_algorithms_hashes] }
 
-    before do
+    before_all do
       create(:plan, name: 'premium')
+    end
+
+    before do
       assign(:instance_configuration, instance_configuration)
     end
 

@@ -1995,11 +1995,6 @@ class Project < ApplicationRecord
     import_type == 'bitbucket_server'
   end
 
-  def github_enterprise_import?
-    github_import? &&
-      URI.parse(safe_import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
-  end
-
   # Determine whether any kind of import is in progress.
   # - Full file import
   # - Relation import
@@ -2865,7 +2860,7 @@ class Project < ApplicationRecord
     params[:exported_by_admin] = current_user.can_admin_all_resources?
 
     job_id = Projects::ImportExport::CreateRelationExportsWorker
-                 .perform_async(current_user.id, self.id, after_export_strategy, params.stringify_keys)
+                 .perform_async(current_user.id, self.id, after_export_strategy&.as_json, params.stringify_keys)
 
     if job_id
       Gitlab::AppLogger.info "Export job started for project ID #{self.id} with job ID #{job_id}"

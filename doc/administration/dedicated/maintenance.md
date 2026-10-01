@@ -116,6 +116,9 @@ to resolve any visual inconsistencies.
 > Implementing a caching proxy in your network further reduces the risk of
 > interface inconsistencies during upgrades.
 
+Upgrades to [hosted runners for GitLab Dedicated](hosted_runners.md#upgrades) are also zero-downtime
+and can occur outside your scheduled maintenance window.
+
 ## Emergency maintenance
 
 Emergency maintenance is initiated when your instance requires urgent actions.
@@ -137,6 +140,8 @@ is resolved. The GitLab team:
 To ensure you receive these notifications,
 [review your contact information](configure_instance/users_notifications.md#manage-email-addresses-for-operational-contacts)
 in Switchboard.
+
+To view a history of notifications sent to your instance, see [Notifications](tenant_overview.md#notifications).
 
 ## Related topics
 

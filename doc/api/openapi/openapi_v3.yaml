@@ -4513,7 +4513,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c5f939561e3c"
+              "$ref": "#/components/schemas/RequestBody_5278c57d949a"
   "/api/v4/group_repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4GroupRepositoryStorageMovesRepositoryStorageMoveId
@@ -4536,7 +4536,7 @@ paths:
       parameters:
       - name: repository_storage_move_id
         required: true
-        description: The ID of a group repository storage move
+        description: ID of the group repository storage move.
         schema:
           type: integer
         in: path
@@ -4563,7 +4563,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -4605,7 +4605,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -4614,7 +4614,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_db0654dec4c2"
+              "$ref": "#/components/schemas/RequestBody_534723343126"
   "/api/v4/groups/{id}/repository_storage_moves/{repository_storage_move_id}":
     get:
       operationId: getApiV4GroupsIdRepositoryStorageMovesRepositoryStorageMoveId
@@ -4637,13 +4637,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: repository_storage_move_id
         required: true
-        description: The ID of a group repository storage move
+        description: ID of the group repository storage move.
         schema:
           type: integer
         in: path
@@ -8228,7 +8228,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_81a3be5f3b59"
+              "$ref": "#/components/schemas/RequestBody_dd285917853b"
   "/api/v4/groups/{id}/hooks/{hook_id}":
     get:
       operationId: getApiV4GroupsIdHooksHookId
@@ -8301,7 +8301,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_db133eef4302"
+              "$ref": "#/components/schemas/RequestBody_c3fd50e69938"
     delete:
       operationId: deleteApiV4GroupsIdHooksHookId
       summary: Delete a group hook
@@ -13442,7 +13442,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13450,7 +13450,7 @@ paths:
         in: path
       - name: agent_id
         required: true
-        description: The ID of an agent
+        description: ID of the agent.
         schema:
           type: integer
         in: path
@@ -13476,7 +13476,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13484,7 +13484,7 @@ paths:
         in: path
       - name: agent_id
         required: true
-        description: The ID of an agent
+        description: ID of the agent.
         schema:
           type: integer
         in: path
@@ -13493,7 +13493,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_af72b7508a93"
+              "$ref": "#/components/schemas/RequestBody_7e5bc49207e3"
   "/api/v4/projects/{id}/cluster_agents/{agent_id}/url_configurations/{url_configuration_id}":
     get:
       operationId: getApiV4ProjectsIdClusterAgentsAgentIdUrlConfigurationsUrlConfigurationId
@@ -13517,7 +13517,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13525,13 +13525,13 @@ paths:
         in: path
       - name: agent_id
         required: true
-        description: The ID of an agent
+        description: ID of the agent.
         schema:
           type: integer
         in: path
       - name: url_configuration_id
         required: true
-        description: The ID of the agent url configuration
+        description: ID of the agent URL configuration.
         schema:
           type: integer
         in: path
@@ -13553,7 +13553,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13561,13 +13561,13 @@ paths:
         in: path
       - name: agent_id
         required: true
-        description: The ID of an agent
+        description: ID of the agent.
         schema:
           type: integer
         in: path
       - name: url_configuration_id
         required: true
-        description: The ID of the agent url configuration
+        description: ID of the agent URL configuration.
         schema:
           type: integer
         in: path
@@ -19378,7 +19378,8 @@ paths:
       parameters:
       - name: popular
         required: false
-        description: If passed, returns only popular licenses
+        description: If `true`, returns only popular licenses. If `false`, returns
+          only licenses that aren't popular.
         schema:
           type: boolean
           nullable: true
@@ -19421,20 +19422,20 @@ paths:
       parameters:
       - name: name
         required: true
-        description: The name of the license template
+        description: Name of the license template.
         schema:
           type: string
         in: path
       - name: project
         required: false
-        description: The copyrighted project name
+        description: Name of the copyrighted project.
         schema:
           type: string
           nullable: true
         in: query
       - name: fullname
         required: false
-        description: The full-name of the copyright holder
+        description: Full name of the copyright holder.
         schema:
           type: string
           nullable: true
@@ -21920,7 +21921,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_895e747bc5d3"
+              "$ref": "#/components/schemas/RequestBody_fd9f9062d39b"
   "/api/v4/groups/{id}/notification_settings":
     get:
       operationId: getApiV4GroupsIdNotificationSettings
@@ -21944,7 +21945,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The group ID
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -21970,7 +21971,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The group ID
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -22003,7 +22004,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -22029,7 +22030,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -29911,7 +29912,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -29919,7 +29920,7 @@ paths:
         in: path
       - name: sort
         required: false
-        description: Return tags sorted in updated by `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -29929,7 +29930,8 @@ paths:
         in: query
       - name: order_by
         required: false
-        description: Return tags ordered by `name`, `updated`, `version` fields.
+        description: Sort results by the specified field. Sorting by version uses
+          the semantic version number.
         schema:
           type: string
           enum:
@@ -29940,14 +29942,17 @@ paths:
         in: query
       - name: search
         required: false
-        description: Return list of tags matching the search criteria
+        description: Return only tags matching the search criteria. Use `^term` to
+          find tags that begin with `term`, and `term$` to find tags that end with
+          `term`. No other regular expressions are supported.
         schema:
           type: string
           nullable: true
         in: query
       - name: page_token
         required: false
-        description: Name of tag to start the pagination from
+        description: Name of the tag to start the pagination from. Used for keyset
+          pagination.
         schema:
           type: string
           nullable: true
@@ -29992,7 +29997,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -30003,7 +30008,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b1f0313d6756"
+              "$ref": "#/components/schemas/RequestBody_831b0c4b546c"
   "/api/v4/projects/{id}/repository/tags/{tag_name}":
     get:
       operationId: getApiV4ProjectsIdRepositoryTagsTagName
@@ -30028,7 +30033,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -30036,7 +30041,7 @@ paths:
         in: path
       - name: tag_name
         required: true
-        description: The name of the tag
+        description: Name of the tag.
         schema:
           type: string
         in: path
@@ -30060,7 +30065,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -30068,7 +30073,7 @@ paths:
         in: path
       - name: tag_name
         required: true
-        description: The name of the tag
+        description: Name of the tag.
         schema:
           type: string
         in: path
@@ -30094,7 +30099,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -30102,7 +30107,7 @@ paths:
         in: path
       - name: tag_name
         required: true
-        description: The name of the tag
+        description: Name of the tag.
         schema:
           type: string
         in: path
@@ -30283,7 +30288,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_dbe04ff1d37d"
+              "$ref": "#/components/schemas/RequestBody_489d9fc2b3fb"
   "/api/v4/hooks/{hook_id}":
     get:
       operationId: getApiV4HooksHookId
@@ -30305,7 +30310,7 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the system hook
+        description: ID of the system hook.
         schema:
           type: integer
         in: path
@@ -30331,7 +30336,7 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the system hook
+        description: ID of the system hook.
         schema:
           type: integer
         in: path
@@ -30340,7 +30345,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_894e3528a83b"
+              "$ref": "#/components/schemas/RequestBody_a1cd42091e7a"
     post:
       operationId: postApiV4HooksHookId
       summary: Create a test run
@@ -30382,7 +30387,7 @@ paths:
       parameters:
       - name: hook_id
         required: true
-        description: The ID of the system hook
+        description: ID of the system hook.
         schema:
           type: integer
         in: path
@@ -30529,14 +30534,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: submodule
         required: true
-        description: URL-encoded full path to submodule.
+        description: URL-encoded full path to the submodule, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
@@ -30546,7 +30551,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_de97f243c3aa"
+              "$ref": "#/components/schemas/RequestBody_a9a0d4bcd594"
   "/api/v4/application/statistics":
     get:
       operationId: getApiV4ApplicationStatistics
@@ -30588,7 +30593,7 @@ paths:
       parameters:
       - name: created_after
         required: false
-        description: Return snippets created after the specified time
+        description: Return snippets created on or after the specified time.
         schema:
           type: string
           format: date-time
@@ -30596,7 +30601,7 @@ paths:
         in: query
       - name: created_before
         required: false
-        description: Return snippets created before the specified time
+        description: Return snippets created on or before the specified time.
         schema:
           type: string
           format: date-time
@@ -30642,7 +30647,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_8c8a9d290f78"
+              "$ref": "#/components/schemas/RequestBody_0375094c0235"
   "/api/v4/snippets/public":
     get:
       operationId: getApiV4SnippetsPublic
@@ -30667,7 +30672,7 @@ paths:
       parameters:
       - name: created_after
         required: false
-        description: Return snippets created after the specified time
+        description: Return snippets created on or after the specified time.
         schema:
           type: string
           format: date-time
@@ -30675,7 +30680,7 @@ paths:
         in: query
       - name: created_before
         required: false
-        description: Return snippets created before the specified time
+        description: Return snippets created on or before the specified time.
         schema:
           type: string
           format: date-time
@@ -30722,7 +30727,7 @@ paths:
       parameters:
       - name: created_after
         required: false
-        description: Return snippets created after the specified time
+        description: Return snippets created on or after the specified time.
         schema:
           type: string
           format: date-time
@@ -30730,7 +30735,7 @@ paths:
         in: query
       - name: created_before
         required: false
-        description: Return snippets created before the specified time
+        description: Return snippets created on or before the specified time.
         schema:
           type: string
           format: date-time
@@ -30781,7 +30786,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -30807,7 +30812,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -30816,7 +30821,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e7b07117934b"
+              "$ref": "#/components/schemas/RequestBody_349722c86dc3"
     delete:
       operationId: deleteApiV4SnippetsId
       summary: Delete snippet
@@ -30837,7 +30842,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -30858,7 +30863,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -30916,7 +30921,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -31003,7 +31008,8 @@ paths:
         in: query
       - name: fields
         required: false
-        description: Array of fields you wish to search. Available with advanced search.
+        description: Fields to search. Supports only `issues` and `merge_requests`
+          scopes. Premium and Ultimate only.
         schema:
           type: array
           items:
@@ -31016,16 +31022,18 @@ paths:
         explode: false
       - name: exclude_forks
         required: false
-        description: Excludes forked projects in the search. Available with exact
-          code search. Introduced in GitLab 18.9.
+        description: If `true`, excludes forked projects from the search. If omitted,
+          forks are excluded. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)
+          in GitLab 18.7.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: num_context_lines
         required: false
-        description: Number of context lines around each match. Available with advanced
-          and exact code search. Introduced in GitLab 18.11.
+        description: Number of context lines to include around each match in the results.
+          Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217)
+          in GitLab 18.11.
         schema:
           type: integer
           minimum: 0
@@ -31034,8 +31042,9 @@ paths:
         in: query
       - name: regex
         required: false
-        description: Performs a regex code search. Available with exact code search.
-          Introduced in GitLab 18.9
+        description: If `true`, uses regular expressions to search for code. If omitted,
+          regular expressions are used. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686)
+          in GitLab 18.9.
         schema:
           type: boolean
           nullable: true
@@ -31216,7 +31225,8 @@ paths:
         in: query
       - name: fields
         required: false
-        description: Array of fields you wish to search. Available with advanced search.
+        description: Fields to search. Supports only `issues` and `merge_requests`
+          scopes. Premium and Ultimate only.
         schema:
           type: array
           items:
@@ -31229,16 +31239,18 @@ paths:
         explode: false
       - name: exclude_forks
         required: false
-        description: Excludes forked projects in the search. Available with exact
-          code search. Introduced in GitLab 18.9.
+        description: If `true`, excludes forked projects from the search. If omitted,
+          forks are excluded. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)
+          in GitLab 18.7.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: num_context_lines
         required: false
-        description: Number of context lines around each match. Available with advanced
-          and exact code search. Introduced in GitLab 18.11.
+        description: Number of context lines to include around each match in the results.
+          Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217)
+          in GitLab 18.11.
         schema:
           type: integer
           minimum: 0
@@ -31247,8 +31259,9 @@ paths:
         in: query
       - name: regex
         required: false
-        description: Performs a regex code search. Available with exact code search.
-          Introduced in GitLab 18.9
+        description: If `true`, uses regular expressions to search for code. If omitted,
+          regular expressions are used. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686)
+          in GitLab 18.9.
         schema:
           type: boolean
           nullable: true
@@ -31428,7 +31441,8 @@ paths:
         explode: false
       - name: fields
         required: false
-        description: Array of fields you wish to search. Available with advanced search.
+        description: Fields to search. Supports only `issues` and `merge_requests`
+          scopes. Premium and Ultimate only.
         schema:
           type: array
           items:
@@ -31441,8 +31455,9 @@ paths:
         explode: false
       - name: num_context_lines
         required: false
-        description: Number of context lines around each match. Available with advanced
-          and exact code search. Introduced in GitLab 18.11.
+        description: Number of context lines to include around each match in the results.
+          Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217)
+          in GitLab 18.11.
         schema:
           type: integer
           minimum: 0
@@ -31451,8 +31466,9 @@ paths:
         in: query
       - name: regex
         required: false
-        description: Performs a regex code search. Available with exact code search.
-          Introduced in GitLab 18.9
+        description: If `true`, uses regular expressions to search for code. If omitted,
+          regular expressions are used. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686)
+          in GitLab 18.9.
         schema:
           type: boolean
           nullable: true
@@ -33532,7 +33548,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -33576,7 +33592,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -33587,7 +33603,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_3d5249853ded"
+              "$ref": "#/components/schemas/RequestBody_c5a6f6798583"
   "/api/v4/projects/{id}/remote_mirrors/{mirror_id}":
     get:
       operationId: getApiV4ProjectsIdRemoteMirrorsMirrorId
@@ -33611,7 +33627,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -33619,7 +33635,7 @@ paths:
         in: path
       - name: mirror_id
         required: true
-        description: The ID of a remote mirror
+        description: ID of the remote mirror.
         schema:
           type: string
         in: path
@@ -33646,7 +33662,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -33654,7 +33670,7 @@ paths:
         in: path
       - name: mirror_id
         required: true
-        description: The ID of a remote mirror
+        description: ID of the remote mirror.
         schema:
           type: string
         in: path
@@ -33663,7 +33679,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_3f3be0ae34e7"
+              "$ref": "#/components/schemas/RequestBody_ca385d48c5be"
     delete:
       operationId: deleteApiV4ProjectsIdRemoteMirrorsMirrorId
       summary: Delete a remote mirror from a project
@@ -33682,7 +33698,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -33690,7 +33706,7 @@ paths:
         in: path
       - name: mirror_id
         required: true
-        description: The ID of a remote mirror
+        description: ID of the remote mirror.
         schema:
           type: string
         in: path
@@ -33713,7 +33729,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -33721,7 +33737,7 @@ paths:
         in: path
       - name: mirror_id
         required: true
-        description: The ID of a remote mirror
+        description: ID of the remote mirror.
         schema:
           type: string
         in: path
@@ -33745,7 +33761,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -33753,7 +33769,7 @@ paths:
         in: path
       - name: mirror_id
         required: true
-        description: The ID of a remote mirror
+        description: ID of the remote mirror.
         schema:
           type: string
         in: path
@@ -37986,7 +38002,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38031,7 +38047,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38042,7 +38058,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_16a8972f7926"
+              "$ref": "#/components/schemas/RequestBody_a24670defbc4"
   "/api/v4/projects/{id}/snippets/{snippet_id}":
     get:
       operationId: getApiV4ProjectsIdSnippetsSnippetId
@@ -38064,7 +38080,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38072,7 +38088,7 @@ paths:
         in: path
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -38100,7 +38116,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38108,7 +38124,7 @@ paths:
         in: path
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -38117,7 +38133,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f837b99c4a07"
+              "$ref": "#/components/schemas/RequestBody_dd21360cba68"
     delete:
       operationId: deleteApiV4ProjectsIdSnippetsSnippetId
       summary: Delete a project snippet
@@ -38134,7 +38150,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38142,7 +38158,7 @@ paths:
         in: path
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -38168,7 +38184,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38176,7 +38192,7 @@ paths:
         in: path
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -38202,7 +38218,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38222,7 +38238,7 @@ paths:
         in: path
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -38248,7 +38264,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38256,7 +38272,7 @@ paths:
         in: path
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -39507,7 +39523,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_189100f1ae0e"
+              "$ref": "#/components/schemas/RequestBody_4a939f1a938d"
   "/api/v4/projects/{id}/hooks/{hook_id}":
     get:
       operationId: getApiV4ProjectsIdHooksHookId
@@ -39580,7 +39596,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1197d07af02c"
+              "$ref": "#/components/schemas/RequestBody_8e0037073fa1"
     delete:
       operationId: deleteApiV4ProjectsIdHooksHookId
       summary: Delete a project webhook
@@ -40625,7 +40641,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project.
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40659,7 +40675,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project.
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40670,7 +40686,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_4b5547b1a746"
+              "$ref": "#/components/schemas/RequestBody_45328bbec03d"
   "/api/v4/projects/{id}/registry/protection/tag/rules/{protection_rule_id}":
     patch:
       operationId: patchApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId
@@ -40699,7 +40715,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project.
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40707,7 +40723,7 @@ paths:
         in: path
       - name: protection_rule_id
         required: true
-        description: The ID of the container protection tag rule.
+        description: ID of the container registry protection tag rule.
         schema:
           type: integer
         in: path
@@ -40716,7 +40732,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_564ba4e69f21"
+              "$ref": "#/components/schemas/RequestBody_4be1cb8e4be8"
     delete:
       operationId: deleteApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId
       summary: Delete a container registry protection tag rule
@@ -40738,7 +40754,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project.
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40746,7 +40762,7 @@ paths:
         in: path
       - name: protection_rule_id
         required: true
-        description: The ID of the container protection tag rule.
+        description: ID of the container registry protection tag rule.
         schema:
           type: integer
         in: path
@@ -52700,7 +52716,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -52734,7 +52750,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -52751,7 +52767,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_21bf3c4d7018"
+              "$ref": "#/components/schemas/RequestBody_dc8773ec19ab"
     get:
       operationId: getApiV4ProjectsIdIssuesIssueIidMetricImages
       summary: List all metric images for an incident
@@ -52772,7 +52788,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -52805,7 +52821,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -52813,7 +52829,7 @@ paths:
         in: path
       - name: metric_image_id
         required: true
-        description: The ID of metric image
+        description: ID of the metric image.
         schema:
           type: integer
         in: path
@@ -52828,7 +52844,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f5a9cc5d3923"
+              "$ref": "#/components/schemas/RequestBody_4180af352c13"
     delete:
       operationId: deleteApiV4ProjectsIdIssuesIssueIidMetricImagesMetricImageId
       summary: Delete a metric image from an incident
@@ -52849,7 +52865,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -52857,7 +52873,7 @@ paths:
         in: path
       - name: metric_image_id
         required: true
-        description: The ID of metric image
+        description: ID of the metric image.
         schema:
           type: integer
         in: path
@@ -62388,7 +62404,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -62433,7 +62449,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -62444,7 +62460,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ce92a2241e86"
+              "$ref": "#/components/schemas/RequestBody_94b2eb05ba20"
   "/api/v4/projects/{id}/freeze_periods/{freeze_period_id}":
     get:
       operationId: getApiV4ProjectsIdFreezePeriodsFreezePeriodId
@@ -62469,7 +62485,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -62477,7 +62493,7 @@ paths:
         in: path
       - name: freeze_period_id
         required: true
-        description: The ID of the freeze period
+        description: ID of the freeze period.
         schema:
           type: integer
         in: path
@@ -62504,7 +62520,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -62512,7 +62528,7 @@ paths:
         in: path
       - name: freeze_period_id
         required: true
-        description: The ID of the freeze period
+        description: ID of the freeze period.
         schema:
           type: integer
         in: path
@@ -62521,7 +62537,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_df0c364b6cf9"
+              "$ref": "#/components/schemas/RequestBody_f068356f7fc7"
     delete:
       operationId: deleteApiV4ProjectsIdFreezePeriodsFreezePeriodId
       summary: Delete a freeze period
@@ -62545,7 +62561,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -62553,7 +62569,7 @@ paths:
         in: path
       - name: freeze_period_id
         required: true
-        description: The ID of the freeze period
+        description: ID of the freeze period.
         schema:
           type: integer
         in: path
@@ -62574,14 +62590,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
@@ -62591,7 +62607,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9b6075b1f0e7"
+              "$ref": "#/components/schemas/RequestBody_063c5eb3bcef"
     get:
       operationId: getApiV4ProjectsIdRepositoryFilesFilePathBlame
       summary: Retrieve file blame history from a repository
@@ -62613,21 +62629,21 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
         example: lib%2Fclass%2Erb
       - name: ref
         required: true
-        description: The name of branch, tag or commit
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
           nullable: true
@@ -62635,21 +62651,21 @@ paths:
         example: main
       - name: range
         required: false
-        description: Object that contains the blame range
+        description: Range of lines to return blame information for.
         schema:
           type: object
           nullable: true
         in: query
       - name: range[start]
         required: true
-        description: The first line of the range to blame
+        description: First line number of the range to blame.
         schema:
           type: integer
           minimum: 1
         in: query
       - name: range[end]
         required: true
-        description: The last line of the range to blame
+        description: Last line number of the range to blame.
         schema:
           type: integer
           minimum: 1
@@ -62676,21 +62692,21 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
         example: lib%2Fclass%2Erb
       - name: ref
         required: false
-        description: The name of branch, tag or commit
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
           nullable: true
@@ -62698,7 +62714,8 @@ paths:
         example: main
       - name: lfs
         required: false
-        description: Retrieve binary data for a file that is an lfs pointer
+        description: If `true`, returns the Git LFS file contents instead of the pointer.
+          Ignored if the file isn't tracked by Git LFS.
         schema:
           type: boolean
           default: false
@@ -62720,14 +62737,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
@@ -62737,7 +62754,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9b6075b1f0e7"
+              "$ref": "#/components/schemas/RequestBody_063c5eb3bcef"
     get:
       operationId: getApiV4ProjectsIdRepositoryFilesFilePath
       summary: Retrieve a file from a repository
@@ -62756,21 +62773,21 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
         example: lib%2Fclass%2Erb
       - name: ref
         required: true
-        description: The name of branch, tag or commit
+        description: Commit SHA or name of a repository branch or tag.
         schema:
           type: string
           nullable: true
@@ -62793,14 +62810,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
@@ -62828,14 +62845,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
@@ -62863,22 +62880,22 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: gitlab-org/gitlab
       - name: file_path
         required: true
-        description: The URL-encoded path to the file.
+        description: URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.
         schema:
           type: string
         in: path
         example: lib%2Fclass%2Erb
       - name: branch
         required: true
-        description: Name of the branch to commit into. To create a new branch, also
-          provide `start_branch`.
+        description: Name of the branch to commit the deletion into. Combine with
+          `start_branch` to create a new branch.
         schema:
           type: string
           nullable: true
@@ -62886,7 +62903,7 @@ paths:
         example: main
       - name: commit_message
         required: true
-        description: Commit message
+        description: Commit message.
         schema:
           type: string
           nullable: true
@@ -62894,7 +62911,7 @@ paths:
         example: Initial commit
       - name: start_branch
         required: false
-        description: Name of the branch to start the new commit from
+        description: Name of the base branch to create the branch from.
         schema:
           type: string
           nullable: true
@@ -62902,7 +62919,7 @@ paths:
         example: main
       - name: author_email
         required: false
-        description: The email of the author
+        description: Email address of the commit author.
         schema:
           type: string
           nullable: true
@@ -62910,7 +62927,7 @@ paths:
         example: johndoe@example.com
       - name: author_name
         required: false
-        description: The name of the author
+        description: Name of the commit author.
         schema:
           type: string
           nullable: true
@@ -62918,7 +62935,7 @@ paths:
         example: John Doe
       - name: last_commit_id
         required: false
-        description: Last known file commit id
+        description: Last known file commit ID.
         schema:
           type: string
           nullable: true
@@ -65353,7 +65370,7 @@ paths:
         example: 20
       - name: active
         required: false
-        description: Limit by active status
+        description: If `true`, returns only active deploy tokens.
         schema:
           type: boolean
           nullable: true
@@ -65410,7 +65427,7 @@ paths:
         example: 20
       - name: active
         required: false
-        description: Limit by active status
+        description: If `true`, returns only active deploy tokens.
         schema:
           type: boolean
           nullable: true
@@ -65449,7 +65466,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_b75bc8747728"
+              "$ref": "#/components/schemas/RequestBody_5daed5666141"
   "/api/v4/projects/{id}/deploy_tokens/{token_id}":
     get:
       operationId: getApiV4ProjectsIdDeployTokensTokenId
@@ -65482,7 +65499,7 @@ paths:
         in: path
       - name: token_id
         required: true
-        description: The ID of the deploy token
+        description: ID of the deploy token.
         schema:
           type: integer
         in: path
@@ -65513,7 +65530,7 @@ paths:
         in: path
       - name: token_id
         required: true
-        description: The ID of the deploy token
+        description: ID of the deploy token.
         schema:
           type: integer
         in: path
@@ -65569,7 +65586,7 @@ paths:
         example: 20
       - name: active
         required: false
-        description: Limit by active status
+        description: If `true`, returns only active deploy tokens.
         schema:
           type: boolean
           nullable: true
@@ -65608,7 +65625,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e59b0f0a3dd9"
+              "$ref": "#/components/schemas/RequestBody_7d60bd72a55d"
   "/api/v4/groups/{id}/deploy_tokens/{token_id}":
     get:
       operationId: getApiV4GroupsIdDeployTokensTokenId
@@ -65642,7 +65659,7 @@ paths:
         in: path
       - name: token_id
         required: true
-        description: The ID of the deploy token
+        description: ID of the deploy token.
         schema:
           type: integer
         in: path
@@ -65673,7 +65690,7 @@ paths:
         in: path
       - name: token_id
         required: true
-        description: The ID of the deploy token
+        description: ID of the deploy token.
         schema:
           type: integer
         in: path
@@ -66513,7 +66530,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66547,7 +66564,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66581,7 +66598,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66617,7 +66634,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66667,7 +66684,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66723,7 +66740,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66766,7 +66783,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66815,7 +66832,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66865,7 +66882,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66924,7 +66941,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66989,7 +67006,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66997,7 +67014,7 @@ paths:
         in: path
       - name: file_name
         required: true
-        description: The filename
+        description: Name of the package file.
         schema:
           type: string
           pattern: "^(?:[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[^\\n\\uD800-\\uDFFF])*\\.(deb|udeb|ddeb)$"
@@ -67030,7 +67047,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67038,7 +67055,7 @@ paths:
         in: path
       - name: file_name
         required: true
-        description: The filename
+        description: Name of the package file.
         schema:
           type: string
           pattern: "^(?:[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[^\\n\\uD800-\\uDFFF])*\\.(deb|udeb|ddeb)$"
@@ -79647,7 +79664,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79671,21 +79688,24 @@ paths:
         example: 20
       - name: search
         required: false
-        description: Return list of branches matching the search criteria
+        description: Return branches containing the search string. Use `^term` to
+          find branches that begin with `term`, and `term$` to find branches that
+          end with `term`.
         schema:
           type: string
           nullable: true
         in: query
       - name: regex
         required: false
-        description: Return list of branches matching the regex
+        description: Return branches with names matching an [RE2](https://github.com/google/re2/wiki/Syntax)
+          regular expression. Cannot be used together with `search`.
         schema:
           type: string
           nullable: true
         in: query
       - name: sort
         required: false
-        description: Return list of branches sorted by the given field
+        description: Sort results by the specified field and direction.
         schema:
           type: string
           enum:
@@ -79696,7 +79716,8 @@ paths:
         in: query
       - name: page_token
         required: false
-        description: Name of branch to start the pagination from
+        description: Name of the branch to start the pagination from. Used for keyset
+          pagination.
         schema:
           type: string
           nullable: true
@@ -79721,7 +79742,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79732,7 +79753,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_d82cfa919c7e"
+              "$ref": "#/components/schemas/RequestBody_4b00ccc66329"
   "/api/v4/projects/{id}/repository/branches/{branch}":
     head:
       operationId: headApiV4ProjectsIdRepositoryBranchesBranch
@@ -79749,7 +79770,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79757,7 +79778,7 @@ paths:
         in: path
       - name: branch
         required: true
-        description: The name of the branch
+        description: Name of the branch.
         schema:
           type: string
         in: path
@@ -79781,7 +79802,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79789,7 +79810,7 @@ paths:
         in: path
       - name: branch
         required: true
-        description: The name of the branch
+        description: Name of the branch.
         schema:
           type: string
         in: path
@@ -79809,7 +79830,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79817,7 +79838,7 @@ paths:
         in: path
       - name: branch
         required: true
-        description: The name of the branch
+        description: Name of the branch.
         schema:
           type: string
         in: path
@@ -79841,7 +79862,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79849,7 +79870,7 @@ paths:
         in: path
       - name: branch
         required: true
-        description: The name of the branch
+        description: Name of the branch.
         schema:
           type: string
         in: path
@@ -79858,7 +79879,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1afa24d68534"
+              "$ref": "#/components/schemas/RequestBody_86956f5015e2"
   "/api/v4/projects/{id}/repository/branches/{branch}/unprotect":
     put:
       operationId: putApiV4ProjectsIdRepositoryBranchesBranchUnprotect
@@ -79879,7 +79900,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -79887,7 +79908,7 @@ paths:
         in: path
       - name: branch
         required: true
-        description: The name of the branch
+        description: Name of the branch.
         schema:
           type: string
         in: path
@@ -79909,7 +79930,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -81172,7 +81193,7 @@ paths:
         example: 1
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -81219,7 +81240,7 @@ paths:
         example: 1
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -81257,7 +81278,7 @@ paths:
         example: 1
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -81317,7 +81338,7 @@ paths:
         example: 1
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -81350,7 +81371,7 @@ paths:
         example: 1
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -81404,7 +81425,7 @@ paths:
         example: 1
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -81448,7 +81469,7 @@ paths:
         example: 1
       - name: snippet_id
         required: true
-        description: The ID of a project snippet
+        description: ID of the snippet.
         schema:
           type: integer
         in: path
@@ -103493,25 +103514,27 @@ components:
           type: boolean
           description: Prevent pushes to this branch if it matches an item in CODEOWNERS
           nullable: true
-    RequestBody_c5f939561e3c:
+    RequestBody_5278c57d949a:
       type: object
       properties:
         source_storage_name:
           type: string
-          description: The source storage shard
+          description: Name of the source storage shard.
           minLength: 1
         destination_storage_name:
           type: string
-          description: The destination storage shard
+          description: Name of the destination storage shard. If omitted, the storage
+            is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).
           nullable: true
       required:
       - source_storage_name
-    RequestBody_db0654dec4c2:
+    RequestBody_534723343126:
       type: object
       properties:
         destination_storage_name:
           type: string
-          description: The destination storage shard
+          description: Name of the destination storage shard. If omitted, the storage
+            is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).
           nullable: true
     RequestBody_f581e3cee5eb:
       type: object
@@ -104750,12 +104773,12 @@ components:
             `selective_code_owner_removals`, `require_password_to_approve`, `require_reauthentication_to_approve`
             must be provided.
           nullable: true
-    RequestBody_81a3be5f3b59:
+    RequestBody_dd285917853b:
       type: object
       properties:
         url:
           type: string
-          description: The URL to send the request to
+          description: Webhook URL.
           example: http://example.com/hook
           nullable: true
         name:
@@ -104886,18 +104909,18 @@ components:
           nullable: true
         url_variables:
           type: array
-          description: URL variables for interpolation
+          description: URL variables for interpolation.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the variable
+                description: Name of the variable.
                 example: token
                 nullable: true
               value:
                 type: string
-                description: Value of the variable
+                description: Value of the variable.
                 example: '123'
                 nullable: true
             required:
@@ -104906,18 +104929,18 @@ components:
           nullable: true
         custom_headers:
           type: array
-          description: Custom headers
+          description: Custom headers for the hook.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the header
+                description: Name of the header.
                 example: X-Custom-Header
                 nullable: true
               value:
                 type: string
-                description: Value of the header
+                description: Value of the header.
                 example: value
                 nullable: true
             required:
@@ -104926,12 +104949,12 @@ components:
           nullable: true
       required:
       - url
-    RequestBody_db133eef4302:
+    RequestBody_c3fd50e69938:
       type: object
       properties:
         url:
           type: string
-          description: The URL to send the request to
+          description: Webhook URL.
           nullable: true
         name:
           type: string
@@ -105061,18 +105084,18 @@ components:
           nullable: true
         url_variables:
           type: array
-          description: URL variables for interpolation
+          description: URL variables for interpolation.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the variable
+                description: Name of the variable.
                 example: token
                 nullable: true
               value:
                 type: string
-                description: Value of the variable
+                description: Value of the variable.
                 example: '123'
                 nullable: true
             required:
@@ -105081,18 +105104,18 @@ components:
           nullable: true
         custom_headers:
           type: array
-          description: Custom headers
+          description: Custom headers for the hook.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the header
+                description: Name of the header.
                 example: X-Custom-Header
                 nullable: true
               value:
                 type: string
-                description: Value of the header
+                description: Value of the header.
                 example: value
                 nullable: true
             required:
@@ -106875,28 +106898,30 @@ components:
             `pre_receive_secret_detection_enabled`, `fast_dependency_paths_enabled`
             must be provided.
           nullable: true
-    RequestBody_af72b7508a93:
+    RequestBody_7e5bc49207e3:
       type: object
       properties:
         url:
           type: string
-          description: The url where the receptive agent is listening
+          description: Agent URL for this URL configuration.
           nullable: true
         client_cert:
           type: string
-          description: The client certificate in PEM format for mTLS
+          description: Client certificate in PEM format, used for mTLS authentication.
+            Must be provided with `client_key`.
           nullable: true
         client_key:
           type: string
-          description: The client key in PEM format for mTLS
+          description: Client key in PEM format, used for mTLS authentication. Must
+            be provided with `client_cert`.
           nullable: true
         ca_cert:
           type: string
-          description: The CA certificate in PEM format for TLS validation
+          description: CA certificate in PEM format used to verify the agent endpoint.
           nullable: true
         tls_host:
           type: string
-          description: The host name for TLS validation
+          description: TLS host name to verify the server name in the agent endpoint.
           nullable: true
       required:
       - url
@@ -111448,16 +111473,16 @@ components:
             At least one of `title`, `description`, `start_date`, `due_date`, `state_event`
             must be provided.
           nullable: true
-    RequestBody_895e747bc5d3:
+    RequestBody_fd9f9062d39b:
       type: object
       properties:
         level:
           type: string
-          description: The global notification level
+          description: Global notification level.
           nullable: true
         notification_email:
           type: string
-          description: The email address to send notifications
+          description: Email address where notifications are sent.
           nullable: true
         new_release:
           type: boolean
@@ -112646,77 +112671,81 @@ components:
       - Version
       - Created
       - Path
-    RequestBody_b1f0313d6756:
+    RequestBody_831b0c4b546c:
       type: object
       properties:
         tag_name:
           type: string
-          description: The name of the tag
+          description: Name of the tag.
           example: v.1.0.0
           nullable: true
         ref:
           type: string
-          description: The commit sha or branch name
+          description: Commit SHA or name of the branch or tag to create the tag from.
           example: 2695effb5807a22ff3d138d593fd856244e155e7
           nullable: true
         message:
           type: string
-          description: Specifying a message creates an annotated tag
+          description: Message for the annotated tag. If specified, creates an annotated
+            tag.
           example: Release 1.0.0
           nullable: true
       required:
       - tag_name
       - ref
-    RequestBody_dbe04ff1d37d:
+    RequestBody_489d9fc2b3fb:
       type: object
       properties:
         url:
           type: string
-          description: The URL to send the request to
+          description: Webhook URL.
           example: http://example.com/hook
           nullable: true
         name:
           type: string
-          description: Name of the hook
+          description: Name of the hook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         description:
           type: string
-          description: Description of the hook
+          description: Description of the hook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         token:
           type: string
-          description: Secret token to validate received payloads; this isn't returned
-            in the response
+          description: Secret token used to validate received payloads. Not returned
+            in the response, and changing the hook URL resets it.
           nullable: true
         signing_token:
           type: string
-          description: HMAC signing token used to compute the webhook-signature header.
-            Must be in whsec_<base64> format encoding a 32-byte key. Not returned
-            in the response
+          description: HMAC signing token used to compute the `webhook-signature`
+            header. Must be in `whsec_<base64>` format encoding a 32-byte key, and
+            is not returned in the response. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)
+            in GitLab 19.0.
           nullable: true
         push_events:
           type: boolean
-          description: When true, the hook fires on push events
+          description: If `true`, triggers the system hook on push events.
           nullable: true
         tag_push_events:
           type: boolean
-          description: When true, the hook fires on new tags being pushed
+          description: If `true`, triggers the system hook on tag push events.
           nullable: true
         merge_requests_events:
           type: boolean
-          description: Trigger hook on merge requests events
+          description: If `true`, triggers the system hook on merge request events.
           nullable: true
         repository_update_events:
           type: boolean
-          description: Trigger hook on repository update events
+          description: If `true`, triggers the system hook on repository update events.
           nullable: true
         enable_ssl_verification:
           type: boolean
-          description: Do SSL verification when triggering the hook
+          description: If `true`, verifies the SSL certificate when the hook is triggered.
           nullable: true
         push_events_branch_filter:
           type: string
-          description: Trigger hook on specified branch only
+          description: Filter push events by branch name.
           nullable: true
         branch_filter_strategy:
           type: string
@@ -112724,27 +112753,26 @@ components:
           - wildcard
           - regex
           - all_branches
-          description: Filter push events by branch. Possible values are `wildcard`
-            (default), `regex`, and `all_branches`
+          description: Filter push events by branch. Defaults to `wildcard`.
           nullable: true
         custom_webhook_template:
           type: string
-          description: Custom template for the request payload
+          description: Custom template for the system hook request payload.
           nullable: true
         url_variables:
           type: array
-          description: URL variables for interpolation
+          description: URL variables for interpolation.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the variable
+                description: Name of the variable.
                 example: token
                 nullable: true
               value:
                 type: string
-                description: Value of the variable
+                description: Value of the variable.
                 example: '123'
                 nullable: true
             required:
@@ -112753,18 +112781,18 @@ components:
           nullable: true
         custom_headers:
           type: array
-          description: Custom headers
+          description: Custom headers for the hook.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the header
+                description: Name of the header.
                 example: X-Custom-Header
                 nullable: true
               value:
                 type: string
-                description: Value of the header
+                description: Value of the header.
                 example: value
                 nullable: true
             required:
@@ -112773,55 +112801,58 @@ components:
           nullable: true
       required:
       - url
-    RequestBody_894e3528a83b:
+    RequestBody_a1cd42091e7a:
       type: object
       properties:
         url:
           type: string
-          description: The URL to send the request to
+          description: Webhook URL.
           nullable: true
         name:
           type: string
-          description: Name of the hook
+          description: Name of the hook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         description:
           type: string
-          description: Description of the hook
+          description: Description of the hook. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887)
+            in GitLab 17.1.
           nullable: true
         token:
           type: string
-          description: Secret token to validate received payloads; this isn't returned
-            in the response
+          description: Secret token used to validate received payloads. Not returned
+            in the response, and changing the hook URL resets it.
           nullable: true
         signing_token:
           type: string
-          description: HMAC signing token used to compute the webhook-signature header.
-            Must be in whsec_<base64> format encoding a 32-byte key. Not returned
-            in the response
+          description: HMAC signing token used to compute the `webhook-signature`
+            header. Must be in `whsec_<base64>` format encoding a 32-byte key, and
+            is not returned in the response. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325)
+            in GitLab 19.0.
           nullable: true
         push_events:
           type: boolean
-          description: When true, the hook fires on push events
+          description: If `true`, triggers the system hook on push events.
           nullable: true
         tag_push_events:
           type: boolean
-          description: When true, the hook fires on new tags being pushed
+          description: If `true`, triggers the system hook on tag push events.
           nullable: true
         merge_requests_events:
           type: boolean
-          description: Trigger hook on merge requests events
+          description: If `true`, triggers the system hook on merge request events.
           nullable: true
         repository_update_events:
           type: boolean
-          description: Trigger hook on repository update events
+          description: If `true`, triggers the system hook on repository update events.
           nullable: true
         enable_ssl_verification:
           type: boolean
-          description: Do SSL verification when triggering the hook
+          description: If `true`, verifies the SSL certificate when the hook is triggered.
           nullable: true
         push_events_branch_filter:
           type: string
-          description: Trigger hook on specified branch only
+          description: Filter push events by branch name.
           nullable: true
         branch_filter_strategy:
           type: string
@@ -112829,27 +112860,26 @@ components:
           - wildcard
           - regex
           - all_branches
-          description: Filter push events by branch. Possible values are `wildcard`
-            (default), `regex`, and `all_branches`
+          description: Filter push events by branch. Defaults to `wildcard`.
           nullable: true
         custom_webhook_template:
           type: string
-          description: Custom template for the request payload
+          description: Custom template for the system hook request payload.
           nullable: true
         url_variables:
           type: array
-          description: URL variables for interpolation
+          description: URL variables for interpolation.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the variable
+                description: Name of the variable.
                 example: token
                 nullable: true
               value:
                 type: string
-                description: Value of the variable
+                description: Value of the variable.
                 example: '123'
                 nullable: true
             required:
@@ -112858,18 +112888,18 @@ components:
           nullable: true
         custom_headers:
           type: array
-          description: Custom headers
+          description: Custom headers for the hook.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the header
+                description: Name of the header.
                 example: X-Custom-Header
                 nullable: true
               value:
                 type: string
-                description: Value of the header
+                description: Value of the header.
                 example: value
                 nullable: true
             required:
@@ -112900,12 +112930,12 @@ components:
           nullable: true
       required:
       - ids
-    RequestBody_de97f243c3aa:
+    RequestBody_a9a0d4bcd594:
       type: object
       properties:
         commit_sha:
           type: string
-          description: Commit sha to update the submodule to.
+          description: Full commit SHA to update the submodule to.
           example: ed899a2f4b50b4370feeea94676502b42383c746
           nullable: true
         branch:
@@ -112915,23 +112945,22 @@ components:
           nullable: true
         commit_message:
           type: string
-          description: Commit message. If no message is provided a default one will
-            be set.
+          description: Commit message. If omitted, a default message is used.
           example: Commit message
           nullable: true
       required:
       - commit_sha
       - branch
-    RequestBody_8c8a9d290f78:
+    RequestBody_0375094c0235:
       type: object
       properties:
         title:
           type: string
-          description: The title of a snippet
+          description: Title of the snippet.
           nullable: true
         description:
           type: string
-          description: The description of a snippet
+          description: Description of the snippet.
           nullable: true
         visibility:
           type: string
@@ -112939,7 +112968,8 @@ components:
           - private
           - internal
           - public
-          description: The visibility of the snippet
+          description: Visibility level for the snippet. On GitLab.com, the `internal`
+            value is not available.
           default: internal
         files:
           type: array
@@ -112972,7 +113002,7 @@ components:
       required:
       - title
       - file_name
-    RequestBody_e7b07117934b:
+    RequestBody_349722c86dc3:
       type: object
       properties:
         content:
@@ -112983,7 +113013,7 @@ components:
           nullable: true
         description:
           type: string
-          description: The description of a snippet. At least one of `content`, `description`,
+          description: Description of the snippet. At least one of `content`, `description`,
             `files`, `file_name`, `title`, `visibility` must be provided.
           nullable: true
         file_name:
@@ -112994,7 +113024,7 @@ components:
           nullable: true
         title:
           type: string
-          description: The title of a snippet. At least one of `content`, `description`,
+          description: Title of the snippet. At least one of `content`, `description`,
             `files`, `file_name`, `title`, `visibility` must be provided.
           nullable: true
         visibility:
@@ -113003,8 +113033,9 @@ components:
           - private
           - internal
           - public
-          description: The visibility of the snippet. At least one of `content`, `description`,
-            `files`, `file_name`, `title`, `visibility` must be provided.
+          description: Visibility level for the snippet. On GitLab.com, the `internal`
+            value is not available. At least one of `content`, `description`, `files`,
+            `file_name`, `title`, `visibility` must be provided.
           nullable: true
         files:
           type: array
@@ -113243,28 +113274,28 @@ components:
           description: The commit message to use when committing the changelog
           example: Initial commit
           nullable: true
-    RequestBody_3d5249853ded:
+    RequestBody_c5a6f6798583:
       type: object
       properties:
         url:
           type: string
-          description: The URL for a remote mirror
+          description: Target URL to which the repository is mirrored.
           example: https://*****:*****@example.com/gitlab/example.git
           nullable: true
         enabled:
           type: boolean
-          description: Determines if the mirror is enabled
+          description: If `true`, the mirror is enabled.
           nullable: true
         auth_method:
           type: string
           enum:
           - ssh_public_key
           - password
-          description: Determines the mirror authentication method
+          description: Mirror authentication method.
           nullable: true
         keep_divergent_refs:
           type: boolean
-          description: Determines if divergent refs are kept on the target
+          description: If `true`, divergent refs are kept when mirroring.
           nullable: true
         only_protected_branches:
           type: boolean
@@ -113286,21 +113317,21 @@ components:
           nullable: true
       required:
       - url
-    RequestBody_3f3be0ae34e7:
+    RequestBody_ca385d48c5be:
       type: object
       properties:
         enabled:
           type: boolean
-          description: Determines if the mirror is enabled
+          description: If `true`, the mirror is enabled.
           example: true
           nullable: true
         auth_method:
           type: string
-          description: Determines the mirror authentication method
+          description: Mirror authentication method.
           nullable: true
         keep_divergent_refs:
           type: boolean
-          description: Determines if divergent refs are kept on the target
+          description: If `true`, divergent refs are kept when mirroring.
           nullable: true
         only_protected_branches:
           type: boolean
@@ -115556,16 +115587,16 @@ components:
           nullable: true
       required:
       - namespace
-    RequestBody_16a8972f7926:
+    RequestBody_a24670defbc4:
       type: object
       properties:
         title:
           type: string
-          description: The title of the snippet
+          description: Title of the snippet.
           nullable: true
         description:
           type: string
-          description: The description of a snippet
+          description: Description of the snippet.
           nullable: true
         visibility:
           type: string
@@ -115573,7 +115604,8 @@ components:
           - private
           - internal
           - public
-          description: The visibility of the snippet
+          description: Visibility level for the snippet. On GitLab.com, the `internal`
+            value is not available.
           minLength: 1
         files:
           type: array
@@ -115607,29 +115639,29 @@ components:
       - title
       - visibility
       - file_name
-    RequestBody_f837b99c4a07:
+    RequestBody_dd21360cba68:
       type: object
       properties:
         content:
           type: string
-          description: The content of the snippet. Mutually exclusive with `files`.
-            At least one of `content`, `description`, `files`, `file_name`, `title`,
-            `visibility` must be provided.
+          description: Content of the snippet. Deprecated. Use `files` instead. Mutually
+            exclusive with `files`. At least one of `content`, `description`, `files`,
+            `file_name`, `title`, `visibility` must be provided.
           nullable: true
         description:
           type: string
-          description: The description of a snippet. At least one of `content`, `description`,
+          description: Description of the snippet. At least one of `content`, `description`,
             `files`, `file_name`, `title`, `visibility` must be provided.
           nullable: true
         file_name:
           type: string
-          description: The file name of the snippet. Mutually exclusive with `files`.
-            At least one of `content`, `description`, `files`, `file_name`, `title`,
-            `visibility` must be provided.
+          description: Name of the snippet file. Deprecated. Use `files` instead.
+            Mutually exclusive with `files`. At least one of `content`, `description`,
+            `files`, `file_name`, `title`, `visibility` must be provided.
           nullable: true
         title:
           type: string
-          description: The title of the snippet. At least one of `content`, `description`,
+          description: Title of the snippet. At least one of `content`, `description`,
             `files`, `file_name`, `title`, `visibility` must be provided.
           nullable: true
         visibility:
@@ -115638,8 +115670,9 @@ components:
           - private
           - internal
           - public
-          description: The visibility of the snippet. At least one of `content`, `description`,
-            `files`, `file_name`, `title`, `visibility` must be provided.
+          description: Visibility level for the snippet. On GitLab.com, the `internal`
+            value is not available. At least one of `content`, `description`, `files`,
+            `file_name`, `title`, `visibility` must be provided.
           nullable: true
         files:
           type: array
@@ -117654,12 +117687,12 @@ components:
       - access_key_id
       - secret_access_key
       - path
-    RequestBody_189100f1ae0e:
+    RequestBody_4a939f1a938d:
       type: object
       properties:
         url:
           type: string
-          description: The URL to send the request to
+          description: Webhook URL.
           example: http://example.com/hook
           nullable: true
         name:
@@ -117791,18 +117824,18 @@ components:
           nullable: true
         url_variables:
           type: array
-          description: URL variables for interpolation
+          description: URL variables for interpolation.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the variable
+                description: Name of the variable.
                 example: token
                 nullable: true
               value:
                 type: string
-                description: Value of the variable
+                description: Value of the variable.
                 example: '123'
                 nullable: true
             required:
@@ -117811,18 +117844,18 @@ components:
           nullable: true
         custom_headers:
           type: array
-          description: Custom headers
+          description: Custom headers for the hook.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the header
+                description: Name of the header.
                 example: X-Custom-Header
                 nullable: true
               value:
                 type: string
-                description: Value of the header
+                description: Value of the header.
                 example: value
                 nullable: true
             required:
@@ -117831,12 +117864,12 @@ components:
           nullable: true
       required:
       - url
-    RequestBody_1197d07af02c:
+    RequestBody_8e0037073fa1:
       type: object
       properties:
         url:
           type: string
-          description: The URL to send the request to
+          description: Webhook URL.
           nullable: true
         name:
           type: string
@@ -117967,18 +118000,18 @@ components:
           nullable: true
         url_variables:
           type: array
-          description: URL variables for interpolation
+          description: URL variables for interpolation.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the variable
+                description: Name of the variable.
                 example: token
                 nullable: true
               value:
                 type: string
-                description: Value of the variable
+                description: Value of the variable.
                 example: '123'
                 nullable: true
             required:
@@ -117987,18 +118020,18 @@ components:
           nullable: true
         custom_headers:
           type: array
-          description: Custom headers
+          description: Custom headers for the hook.
           items:
             type: object
             properties:
               key:
                 type: string
-                description: Name of the header
+                description: Name of the header.
                 example: X-Custom-Header
                 nullable: true
               value:
                 type: string
-                description: Value of the header
+                description: Value of the header.
                 example: value
                 nullable: true
             required:
@@ -118138,13 +118171,13 @@ components:
             type: string
           description: List of architectures of the Debian distribution.
           nullable: true
-    RequestBody_4b5547b1a746:
+    RequestBody_45328bbec03d:
       type: object
       properties:
         tag_name_pattern:
           type: string
-          description: Container tag name pattern protected by the protection rule.
-            For example, `v*-release`. Wildcard character `*` allowed.
+          description: Container tag name pattern protected by the protection rule,
+            for example `v*-release`. Wildcard character `*` is allowed.
           nullable: true
         minimum_access_level_for_push:
           type: string
@@ -118153,7 +118186,6 @@ components:
           - owner
           - admin
           description: Minimum GitLab access level required to push container tags.
-            For example, Maintainer, Owner, or Admin.
           minLength: 1
         minimum_access_level_for_delete:
           type: string
@@ -118162,19 +118194,18 @@ components:
           - owner
           - admin
           description: Minimum GitLab access level required to delete container tags.
-            For example, Maintainer, Owner, or Admin.
           minLength: 1
       required:
       - tag_name_pattern
       - minimum_access_level_for_push
       - minimum_access_level_for_delete
-    RequestBody_564ba4e69f21:
+    RequestBody_4be1cb8e4be8:
       type: object
       properties:
         tag_name_pattern:
           type: string
-          description: Container tag name pattern protected by the protection rule.
-            For example, `v*-release`. Wildcard character `*` allowed.
+          description: Container tag name pattern protected by the protection rule,
+            for example `v*-release`. Wildcard character `*` is allowed.
           nullable: true
         minimum_access_level_for_push:
           type: string
@@ -118184,8 +118215,7 @@ components:
           - admin
           - ''
           description: Minimum GitLab access level required to push container tags.
-            For example, Maintainer, Owner, or Admin. To unset the value, use an empty
-            string (`""`).
+            To unset the value, use an empty string (`""`).
           nullable: true
         minimum_access_level_for_delete:
           type: string
@@ -118195,8 +118225,7 @@ components:
           - admin
           - ''
           description: Minimum GitLab access level required to delete container tags.
-            For example, Maintainer, Owner, or Admin. To unset the value, use an empty
-            string (`""`).
+            To unset the value, use an empty string (`""`).
           nullable: true
     RequestBody_cf447c8c53ae:
       type: object
@@ -119871,7 +119900,7 @@ components:
           default: false
       required:
       - to_project_id
-    RequestBody_21bf3c4d7018:
+    RequestBody_dc8773ec19ab:
       type: object
       properties:
         file:
@@ -119881,24 +119910,24 @@ components:
           nullable: true
         url:
           type: string
-          description: The url to view more metric info
+          description: URL to view more metric information.
           nullable: true
         url_text:
           type: string
-          description: A description of the image or URL
+          description: Description of the image or URL.
           nullable: true
       required:
       - file
-    RequestBody_f5a9cc5d3923:
+    RequestBody_4180af352c13:
       type: object
       properties:
         url:
           type: string
-          description: The url to view more metric info
+          description: URL to view more metric information.
           nullable: true
         url_text:
           type: string
-          description: A description of the image or URL
+          description: Description of the image or URL.
           nullable: true
     RequestBody_4090e131595a:
       type: object
@@ -123543,45 +123572,47 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_ce92a2241e86:
+    RequestBody_94b2eb05ba20:
       type: object
       properties:
         freeze_start:
           type: string
-          description: Start of the freeze period in cron format.
+          description: Start of the freeze period in [cron](https://crontab.guru/)
+            format.
           nullable: true
         freeze_end:
           type: string
-          description: End of the freeze period in cron format
+          description: End of the freeze period in [cron](https://crontab.guru/) format.
           nullable: true
         cron_timezone:
           type: string
-          description: The time zone for the cron fields, defaults to UTC if not provided
+          description: Time zone for the cron fields.
           nullable: true
       required:
       - freeze_start
       - freeze_end
-    RequestBody_df0c364b6cf9:
+    RequestBody_f068356f7fc7:
       type: object
       properties:
         freeze_start:
           type: string
-          description: Start of the freeze period in cron format
+          description: Start of the freeze period in [cron](https://crontab.guru/)
+            format.
           nullable: true
         freeze_end:
           type: string
-          description: End of the freeze period in cron format
+          description: End of the freeze period in [cron](https://crontab.guru/) format.
           nullable: true
         cron_timezone:
           type: string
-          description: The time zone for the cron fields
+          description: Time zone for the cron fields.
           nullable: true
-    RequestBody_9b6075b1f0e7:
+    RequestBody_063c5eb3bcef:
       type: object
       properties:
         ref:
           type: string
-          description: The name of branch, tag or commit
+          description: Commit SHA or name of a repository branch or tag.
           example: main
           nullable: true
       required:
@@ -124316,12 +124347,12 @@ components:
           nullable: true
       required:
       - status
-    RequestBody_b75bc8747728:
+    RequestBody_5daed5666141:
       type: object
       properties:
         name:
           type: string
-          description: New deploy token's name
+          description: Name of the deploy token.
           nullable: true
         scopes:
           type: array
@@ -124341,22 +124372,22 @@ components:
         expires_at:
           type: string
           format: date-time
-          description: Expiration date for the deploy token. Does not expire if no
-            value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).
+          description: Date when the deploy token expires. If omitted, the deploy
+            token does not expire.
           nullable: true
         username:
           type: string
-          description: Username for deploy token. Default is `gitlab+deploy-token-{n}`
+          description: Username for the deploy token. Defaults to `gitlab+deploy-token-{n}`.
           nullable: true
       required:
       - name
       - scopes
-    RequestBody_e59b0f0a3dd9:
+    RequestBody_7d60bd72a55d:
       type: object
       properties:
         name:
           type: string
-          description: New deploy token's name
+          description: Name of the deploy token.
           nullable: true
         scopes:
           type: array
@@ -124376,12 +124407,12 @@ components:
         expires_at:
           type: string
           format: date-time
-          description: Expiration date for the deploy token. Does not expire if no
-            value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)
+          description: Date when the deploy token expires. If omitted, the deploy
+            token does not expire.
           nullable: true
         username:
           type: string
-          description: Username for deploy token. Default is `gitlab+deploy-token-{n}`
+          description: Username for the deploy token. Defaults to `gitlab+deploy-token-{n}`.
           nullable: true
       required:
       - name
@@ -126596,30 +126627,30 @@ components:
       required:
       - configuration
       - entities
-    RequestBody_d82cfa919c7e:
+    RequestBody_4b00ccc66329:
       type: object
       properties:
         branch:
           type: string
-          description: The name of the branch
+          description: Name of the branch.
           nullable: true
         ref:
           type: string
-          description: Create branch from commit sha or existing branch
+          description: Branch name or commit SHA to create the branch from.
           nullable: true
       required:
       - branch
       - ref
-    RequestBody_1afa24d68534:
+    RequestBody_86956f5015e2:
       type: object
       properties:
         developers_can_push:
           type: boolean
-          description: Flag if developers can push to that branch
+          description: If `true`, allows developers to push to the branch.
           nullable: true
         developers_can_merge:
           type: boolean
-          description: Flag if developers can merge to that branch
+          description: If `true`, allows developers to merge to the branch.
           nullable: true
     RequestBody_53cb709443f6:
       type: object

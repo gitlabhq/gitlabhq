@@ -135,10 +135,13 @@ FactoryBot.define do
         file_metadatum_trait { :deb }
       end
 
-      after :create do |package_file, evaluator|
-        unless evaluator.without_loaded_metadatum
-          create :debian_file_metadatum, evaluator.file_metadatum_trait, package_file: package_file
-        end
+      # Skip the assignment entirely so the association isn't loaded as nil.
+      after(:build) do |package_file, evaluator|
+        next if evaluator.without_loaded_metadatum
+
+        package_file.debian_file_metadatum = evaluator.association(
+          :debian_file_metadatum, evaluator.file_metadatum_trait, strategy: :build, package_file: package_file
+        )
       end
 
       trait(:unknown) do
@@ -268,14 +271,18 @@ FactoryBot.define do
         description { nil }
       end
 
-      after :create do |package_file, evaluator|
-        unless evaluator.without_loaded_metadatum
-          create :helm_file_metadatum,
-            package_file: package_file,
-            channel: evaluator.channel,
-            description: evaluator.description,
-            project: package_file.project
-        end
+      # Skip the assignment entirely so the association isn't loaded as nil.
+      after(:build) do |package_file, evaluator|
+        next if evaluator.without_loaded_metadatum
+
+        package_file.helm_file_metadatum = evaluator.association(
+          :helm_file_metadatum,
+          strategy: :build,
+          package_file: package_file,
+          channel: evaluator.channel,
+          description: evaluator.description,
+          project: package_file.project
+        )
       end
     end
 

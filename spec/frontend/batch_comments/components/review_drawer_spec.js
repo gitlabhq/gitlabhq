@@ -5,6 +5,7 @@ import { PiniaVuePlugin } from 'pinia';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import ReviewDrawer from '~/batch_comments/components/review_drawer.vue';
@@ -98,6 +99,7 @@ describe('ReviewDrawer', () => {
     wrapper = mountExtended(ReviewDrawer, {
       pinia,
       apolloProvider,
+      stubs: { PreviewItem: stubComponent(PreviewItem) },
     });
   };
 

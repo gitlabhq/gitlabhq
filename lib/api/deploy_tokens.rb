@@ -24,7 +24,7 @@ module API
       end
 
       params :filter_params do
-        optional :active, type: Boolean, desc: 'Limit by active status'
+        optional :active, type: Boolean, desc: 'If `true`, returns only active deploy tokens.'
       end
     end
 
@@ -88,14 +88,14 @@ module API
       end
 
       params do
-        requires :name, type: String, desc: "New deploy token's name"
+        requires :name, type: String, desc: 'Name of the deploy token.'
         requires :scopes,
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
           desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, `write_package_registry`, `read_virtual_registry`, or `write_virtual_registry`.'
-        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).'
-        optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
+        optional :expires_at, type: DateTime, desc: 'Date when the deploy token expires. If omitted, the deploy token does not expire.'
+        optional :username, type: String, desc: 'Username for the deploy token. Defaults to `gitlab+deploy-token-{n}`.'
       end
       desc 'Create a project deploy token' do
         detail 'Creates a project deploy token.'
@@ -132,7 +132,7 @@ module API
         tags deploy_tokens_tags
       end
       params do
-        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
+        requires :token_id, type: Integer, desc: 'ID of the deploy token.'
       end
       route_setting :authorization, permissions: :read_deploy_token, boundary_type: :project
       get ':id/deploy_tokens/:token_id' do
@@ -153,7 +153,7 @@ module API
         tags deploy_tokens_tags
       end
       params do
-        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
+        requires :token_id, type: Integer, desc: 'ID of the deploy token.'
       end
       route_setting :authorization, permissions: :delete_deploy_token, boundary_type: :project
       delete ':id/deploy_tokens/:token_id' do
@@ -200,14 +200,14 @@ module API
       end
 
       params do
-        requires :name, type: String, desc: "New deploy token's name"
+        requires :name, type: String, desc: 'Name of the deploy token.'
         requires :scopes,
           type: Array[String],
           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
           desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`'
-        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
-        optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
+        optional :expires_at, type: DateTime, desc: 'Date when the deploy token expires. If omitted, the deploy token does not expire.'
+        optional :username, type: String, desc: 'Username for the deploy token. Defaults to `gitlab+deploy-token-{n}`.'
       end
       desc 'Create a group deploy token' do
         detail 'Creates a group deploy token.'
@@ -245,7 +245,7 @@ module API
         tags deploy_tokens_tags
       end
       params do
-        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
+        requires :token_id, type: Integer, desc: 'ID of the deploy token.'
       end
       route_setting :authorization, permissions: :read_deploy_token, boundary_type: :group
       get ':id/deploy_tokens/:token_id' do
@@ -266,7 +266,7 @@ module API
         tags deploy_tokens_tags
       end
       params do
-        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
+        requires :token_id, type: Integer, desc: 'ID of the deploy token.'
       end
       route_setting :authorization, permissions: :delete_deploy_token, boundary_type: :group
       delete ':id/deploy_tokens/:token_id' do

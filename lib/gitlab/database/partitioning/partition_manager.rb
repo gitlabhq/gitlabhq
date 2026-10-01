@@ -387,16 +387,21 @@ module Gitlab
           identifier = identifier(partition)
           retention = detached_partition_retention_period
 
-          if above_threshold?(identifier)
-            Postgresql::DetachedPartition.create!(
-              table_name: partition.partition_name,
-              drop_after: retention.from_now.next_occurring(:saturday)
-            )
-          else
-            Postgresql::DetachedPartition.create!(
-              table_name: partition.partition_name,
-              drop_after: retention.from_now
-            )
+          connection.transaction do
+            # A failed concurrent detach keeps its row, so we clean them up before adding a new one
+            Postgresql::DetachedPartition.where(table_name: partition.partition_name).delete_all
+
+            if above_threshold?(identifier)
+              Postgresql::DetachedPartition.create!(
+                table_name: partition.partition_name,
+                drop_after: retention.from_now.next_occurring(:saturday)
+              )
+            else
+              Postgresql::DetachedPartition.create!(
+                table_name: partition.partition_name,
+                drop_after: retention.from_now
+              )
+            end
           end
         end
 

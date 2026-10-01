@@ -215,26 +215,20 @@ export default {
                     class="gl-border-b gl-col-span-full gl-grid gl-grid-cols-subgrid gl-px-5 gl-pb-3"
                     role="row"
                   >
-                    <div class="gl-text-sm gl-font-[700] gl-text-subtle" role="columnheader">
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Status') }}
                     </div>
-                    <div class="gl-text-sm gl-font-[700] gl-text-subtle" role="columnheader">
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Title') }}
                     </div>
-                    <div
-                      class="gl-text-center gl-text-sm gl-font-[700] gl-text-subtle"
-                      role="columnheader"
-                    >
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Assignee') }}
                     </div>
-                    <div
-                      class="gl-text-center gl-text-sm gl-font-[700] gl-text-subtle"
-                      role="columnheader"
-                    >
+                    <div class="gl-text-sm gl-font-bold gl-text-subtle" role="columnheader">
                       {{ __('Reviewers') }}
                     </div>
                     <div
-                      class="gl-text-right gl-text-sm gl-font-[700] gl-text-subtle"
+                      class="gl-text-right gl-text-sm gl-font-bold gl-text-subtle"
                       role="columnheader"
                     >
                       {{ __('Checks') }}

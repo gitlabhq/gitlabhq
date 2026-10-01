@@ -25,10 +25,10 @@ module Gitlab
 
             metrics_upsert(gitlab_user_id)
 
-            if user_mapping_enabled?(project) && !map_to_personal_namespace_owner?(project)
-              push_reference(project, merge_request.metrics, :merged_by_id, merged_by&.id)
-            else
+            if map_to_personal_namespace_owner?(project)
               add_legacy_note!
+            else
+              push_reference(project, merge_request.metrics, :merged_by_id, merged_by&.id)
             end
           end
 

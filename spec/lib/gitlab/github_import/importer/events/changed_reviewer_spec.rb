@@ -166,34 +166,5 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, :clean_g
         it_behaves_like 'do not push placeholder reference'
       end
     end
-
-    context 'when user mapping is disabled' do
-      let(:note_attrs) do
-        {
-          noteable_id: issuable.id,
-          noteable_type: issuable.class.name,
-          project_id: project.id,
-          author_id: review_requester.id,
-          system: true,
-          created_at: issue_event.created_at,
-          updated_at: issue_event.created_at,
-          imported_from: 'github'
-        }.stringify_keys
-      end
-
-      before do
-        project.build_or_assign_import_data(data: {}).save!
-        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-        allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-          allow(finder).to receive(:find).with(github_review_requester['id'], github_review_requester['login'])
-            .and_return(review_requester.id)
-          allow(finder).to receive(:find).with(github_requested_reviewer['id'], github_requested_reviewer['login'])
-            .and_return(requested_reviewer.id)
-        end
-      end
-
-      it_behaves_like 'process review_requested & review_request_removed MR events'
-      it_behaves_like 'do not push placeholder reference'
-    end
   end
 end

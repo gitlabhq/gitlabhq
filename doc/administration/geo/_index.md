@@ -352,6 +352,11 @@ For more information on tuning Geo, see [Tuning Geo](replication/tuning.md).
 
 For more information, see [Pausing and resuming replication](replication/pause_resume_replication.md).
 
+### Resyncing and reverifying data
+
+For more information on manually retrying replication or verification for individual components
+or in bulk, see [Resync and reverify Geo data](replication/resync_reverify.md).
+
 ### Background jobs
 
 For more information on Geo background workers, their queue safety, and recovery mechanisms, see [Geo background jobs](replication/background_jobs.md).

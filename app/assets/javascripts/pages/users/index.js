@@ -3,6 +3,7 @@ import { setCookie } from '~/lib/utils/common_utils';
 import UserCallout from '~/user_callout';
 import { initUserAchievements } from '~/profile';
 import { initUserActionsApp } from '~/users/profile/actions';
+import { initContributionMusic } from '~/easter_eggs/contribution_music';
 import UserTabs from './user_tabs';
 
 function initUserProfile(action) {
@@ -19,6 +20,9 @@ function initUserProfile(action) {
 
 const page = $('body').attr('data-page');
 const action = page.split(':')[1];
+// Before initUserProfile: mounting the Vue activity calendar replaces the
+// element this reads the profile's username from.
+initContributionMusic();
 initUserProfile(action);
 initUserAchievements();
 initUserActionsApp();

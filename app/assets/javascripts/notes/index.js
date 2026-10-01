@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { createAlert } from '~/alert';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { pinia } from '~/pinia/instance';

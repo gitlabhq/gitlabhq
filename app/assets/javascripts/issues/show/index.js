@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import { mapState } from 'pinia';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import initLinkedResources from '~/linked_resources';
 import { pinia } from '~/pinia/instance';
 import { useNotes } from '~/notes/store/legacy_notes';

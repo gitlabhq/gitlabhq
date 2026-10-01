@@ -48,6 +48,7 @@ module Organizations
 
     has_many :organization_users, inverse_of: :organization
     has_many :organization_user_details, inverse_of: :organization
+    has_many :teams, class_name: 'Organizations::Team', inverse_of: :organization
     # if considering disable_joins on the below see:
     # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140343#note_1705047949
     has_many :users, through: :organization_users, inverse_of: :organizations

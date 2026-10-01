@@ -24426,6 +24426,237 @@
         },
         {
           "kind": "OBJECT",
+          "name": "AiGovernanceSession",
+          "description": "AI session recorded for AI governance, from GitLab Duo or an external agent.",
+          "fields": [
+            {
+              "name": "agentType",
+              "description": "Type of the agent that ran the session, for example `claude-code`. Values differ between sources.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "downloadPath",
+              "description": "Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "flowType",
+              "description": "Flow type of the session, for example `chat`. Values differ between sources.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the session.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "AiGovernanceSessionID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "Project the session belongs to. Null for namespace-scoped sessions, or when the current user cannot read the project.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sessionId",
+              "description": "ID of the session in its source. For GitLab Duo sessions, the Duo workflow ID. For other sources, the session ID from the external agent.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sessionStartedAt",
+              "description": "Timestamp of when the session started.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "source",
+              "description": "Source that recorded the session.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "AiGovernanceSessionSource",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "triggeredBy",
+              "description": "User who initiated the session.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webPath",
+              "description": "Path of the session page. Null for sessions from sources other than GitLab Duo, and for GitLab Duo sessions without a project.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceSessionConnection",
+          "description": "The connection type for AiGovernanceSession.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Total count of collection. Returns limit + 1 for counts greater than the limit.",
+              "args": [
+                {
+                  "name": "limit",
+                  "description": "Limit applied to the count query, returns limit + 1. When not provided, returns the exact count.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AiGovernanceSessionEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AiGovernanceSession",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "AiGovernanceSessionDistribution",
           "description": "Number of AI sessions for one flow type or agent type.",
           "fields": [
@@ -24465,6 +24696,131 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceSessionEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceSession",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "AiGovernanceSessionID",
+          "description": "A `AiGovernanceSessionID` is a global ID. It is encoded as a string.\n\nAn example `AiGovernanceSessionID` is: `\"gid://gitlab/Ai::Governance::Session/1\"`.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "AiGovernanceSessionNegatedFilterInput",
+          "description": "Negated filter arguments for AI governance sessions.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "flowType",
+              "description": "Exclude sessions with the flow type.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "projectPath",
+              "description": "Exclude sessions belonging to the project full path.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "triggeredByUserId",
+              "description": "Exclude sessions triggered by the user with the given global ID.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "UserID",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiGovernanceSessionSource",
+          "description": "Source that recorded an AI governance session.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "GITLAB_DUO",
+              "description": "Session run on the GitLab Duo Agent Platform.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CLAUDE_CODE_COMPLIANCE_API",
+              "description": "Claude Code session ingested from the Claude Compliance API.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CLAUDE_CODE_GLAB",
+              "description": "Claude Code session reported through the GitLab CLI.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -181231,6 +181587,151 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "aiGovernanceSessions",
+              "description": "AI sessions for the group, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "flowType",
+                  "description": "Filter by flow type.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "agentClass",
+                  "description": "Filter sessions by agent class. Defaults to all agent classes.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "sessionStartedAfter",
+                  "description": "Return sessions started at or after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "sessionStartedBefore",
+                  "description": "Return sessions started at or before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "triggeredByUserId",
+                  "description": "Filter to sessions triggered by the user with the given global ID.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "UserID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "not",
+                  "description": "Negated filter conditions.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "AiGovernanceSessionNegatedFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectPath",
+                  "description": "Filter by project full path.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceSessionConnection",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "aiMetrics",
               "description": "AI-related metrics. Introduced in GitLab 16.11: Status: Experiment.",
               "args": [
@@ -282110,6 +282611,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "secretsManagerInstanceRefreshEntitlement",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for SecretsManagerInstanceRefreshEntitlement",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SecretsManagerInstanceRefreshEntitlementInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecretsManagerInstanceRefreshEntitlementPayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "secretsManagerInstanceStartTrial",
               "description": null,
               "args": [
@@ -282137,6 +282667,35 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
+            },
+            {
+              "name": "secretsManagerRefreshEntitlement",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for SecretsManagerRefreshEntitlement",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SecretsManagerRefreshEntitlementInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecretsManagerRefreshEntitlementPayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "secretsManagerStartTrial",
@@ -326537,6 +327096,139 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "aiGovernanceSessions",
+              "description": "AI sessions for the project, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "flowType",
+                  "description": "Filter by flow type.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "agentClass",
+                  "description": "Filter sessions by agent class. Defaults to all agent classes.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "sessionStartedAfter",
+                  "description": "Return sessions started at or after the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "sessionStartedBefore",
+                  "description": "Return sessions started at or before the timestamp.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Time",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "triggeredByUserId",
+                  "description": "Filter to sessions triggered by the user with the given global ID.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "UserID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "not",
+                  "description": "Negated filter conditions.",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "AiGovernanceSessionNegatedFilterInput",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "before",
+                  "description": "Returns the elements in the list that come before the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "last",
+                  "description": "Returns the last _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceSessionConnection",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "aiMetrics",
@@ -371251,6 +371943,43 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.7."
             },
             {
+              "name": "securityScanProfileVariables",
+              "description": "Configuration variables a security scan profile of the given type can set. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "scanType",
+                  "description": "Scan profile type to return the configuration variables for.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "SecurityScanProfileType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "SecurityScanProfileVariable",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "selfManagedAddOnEligibleUsers",
               "description": "Users within the self-managed instance who are eligible for add-ons. Introduced in GitLab 16.7: Status: Experiment.",
               "args": [
@@ -388576,6 +389305,88 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "SecretsManagerInstanceRefreshEntitlementInput",
+          "description": "Autogenerated input type of SecretsManagerInstanceRefreshEntitlement",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecretsManagerInstanceRefreshEntitlementPayload",
+          "description": "Autogenerated return type of SecretsManagerInstanceRefreshEntitlement.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "entitlement",
+              "description": "Instance-wide Secrets Manager entitlement state as the subscription service reports it now. Null when refreshing failed; see errors for the reason.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecretsManagerEntitlement",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "SecretsManagerInstanceStartTrialInput",
           "description": "Autogenerated input type of SecretsManagerInstanceStartTrial",
           "fields": null,
@@ -388617,6 +389428,104 @@
             {
               "name": "entitlement",
               "description": "Instance-wide Secrets Manager entitlement state after starting the trial. Null when the post-trial state cannot be resolved; query `secretsManagerInstanceEntitlement` instead.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecretsManagerEntitlement",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecretsManagerRefreshEntitlementInput",
+          "description": "Autogenerated input type of SecretsManagerRefreshEntitlement",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "groupPath",
+              "description": "Full path of the top-level group to refresh the Secrets Manager entitlement for.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecretsManagerRefreshEntitlementPayload",
+          "description": "Autogenerated return type of SecretsManagerRefreshEntitlement.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "entitlement",
+              "description": "Secrets Manager entitlement state as the subscription service reports it now. Null when the subscription service could not be reached; see errors.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -395630,6 +396539,45 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecurityScanProfileVariable",
+          "description": "A configuration variable that a scan profile of a given type can set.",
+          "fields": [
+            {
+              "name": "envVar",
+              "description": "CI/CD variable the configuration field is passed to the scan as.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "key",
+              "description": "Name of the configuration field, as used in the scan profile configuration input.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

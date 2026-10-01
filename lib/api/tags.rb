@@ -24,7 +24,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all project repository tags' do
@@ -41,11 +41,11 @@ module API
       end
       params do
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-          desc: 'Return tags sorted in updated by `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order.'
         optional :order_by, type: String, values: %w[name updated version], default: 'updated',
-          desc: 'Return tags ordered by `name`, `updated`, `version` fields.'
-        optional :search, type: String, desc: 'Return list of tags matching the search criteria'
-        optional :page_token, type: String, desc: 'Name of tag to start the pagination from'
+          desc: 'Sort results by the specified field. Sorting by version uses the semantic version number.'
+        optional :search, type: String, desc: 'Return only tags matching the search criteria. Use `^term` to find tags that begin with `term`, and `term$` to find tags that end with `term`. No other regular expressions are supported.'
+        optional :page_token, type: String, desc: 'Name of the tag to start the pagination from. Used for keyset pagination.'
         use :pagination
       end
       route_setting :authentication, job_token_allowed: true
@@ -87,7 +87,7 @@ module API
         tags %w[tags]
       end
       params do
-        requires :tag_name, type: String, desc: 'The name of the tag'
+        requires :tag_name, type: String, desc: 'Name of the tag.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_repositories,
@@ -112,9 +112,9 @@ module API
         tags %w[tags]
       end
       params do
-        requires :tag_name, type: String, desc: 'The name of the tag', documentation: { example: 'v.1.0.0' }
-        requires :ref, type: String, desc: 'The commit sha or branch name', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
-        optional :message, type: String, desc: 'Specifying a message creates an annotated tag', documentation: { example: 'Release 1.0.0' }
+        requires :tag_name, type: String, desc: 'Name of the tag.', documentation: { example: 'v.1.0.0' }
+        requires :ref, type: String, desc: 'Commit SHA or name of the branch or tag to create the tag from.', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
+        optional :message, type: String, desc: 'Message for the annotated tag. If specified, creates an annotated tag.', documentation: { example: 'Release 1.0.0' }
       end
       route_setting :authorization, permissions: :create_repository_tag, boundary_type: :project
       post ':id/repository/tags', :release_orchestration do
@@ -146,7 +146,7 @@ module API
         tags %w[tags]
       end
       params do
-        requires :tag_name, type: String, desc: 'The name of the tag'
+        requires :tag_name, type: String, desc: 'Name of the tag.'
       end
       route_setting :authorization, permissions: :delete_repository_tag, boundary_type: :project
       delete ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
@@ -174,7 +174,7 @@ module API
         ]
       end
       params do
-        requires :tag_name, type: String, desc: 'The name of the tag'
+        requires :tag_name, type: String, desc: 'Name of the tag.'
       end
       route_setting :authorization, permissions: :read_repository_tag_signature, boundary_type: :project
       get ':id/repository/tags/:tag_name/signature', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do

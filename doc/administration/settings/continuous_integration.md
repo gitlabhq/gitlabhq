@@ -460,7 +460,7 @@ To disable the reclaimed-path JWT restriction:
 
 When enabled, tokens fail to generate in CI/CD jobs with this error:
 
-- `ID token issuance is disabled in CI because this project's path was previously used by a different project.`
+- ``ID token issuance is disabled in CI because a project path in the `sub` claim was previously used by a different project.``
 
 ## Access job log settings
 

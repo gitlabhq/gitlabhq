@@ -543,6 +543,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
 
     it 'reports the same page mode on the Overview and Changes tabs' do
+      # The agentic SAST fallback (default-off flag) adds two CI queries for an MR without
+      # a pipeline, which pushes this request over the query limit.
+      stub_feature_flags(agentic_analyzer_security_ingestion: false)
+
       get project_merge_request_path(project, merge_request)
       overview = response.body
 

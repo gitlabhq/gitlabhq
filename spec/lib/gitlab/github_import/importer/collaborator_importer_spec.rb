@@ -48,12 +48,6 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
   let(:member_finder_relations) { ::Import::ReassignPlaceholderUserRecordsService::PROJECT_FINDER_MEMBER_RELATIONS }
 
   describe '#execute' do
-    before do
-      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-        allow(finder).to receive(:find).with(github_user_id, user.username).and_return(user.id)
-      end
-    end
-
     shared_examples 'role mapping' do |collaborator_role, member_access_level|
       let(:github_role_name) { collaborator_role }
 
@@ -82,21 +76,6 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
         )
 
         expect(project.members.last).to have_attributes(expected_member_attrs)
-      end
-
-      context 'when user contribution mapping is disabled' do
-        before do
-          project.build_or_assign_import_data(data: {})
-          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-        end
-
-        it 'creates expected member' do
-          expect { importer.execute }.to change { project.members.count }
-            .from(0).to(1)
-
-          expected_member_attrs = basic_member_attrs.merge(access_level: member_access_level)
-          expect(project.members.last).to have_attributes(expected_member_attrs)
-        end
       end
     end
 
@@ -168,17 +147,6 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
       it 'skips creating actual member when reassignment is accepted' do
         source_user.accept!
         expect { importer.execute }.not_to change { project.members.count }
-      end
-
-      context 'when user contribution mapping is disabled' do
-        before do
-          project.build_or_assign_import_data(data: {})
-          allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-        end
-
-        it 'skips creating member for the project' do
-          expect { importer.execute }.not_to change { project.members.count }
-        end
       end
     end
 

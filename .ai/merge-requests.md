@@ -4,6 +4,8 @@
 
 Base the description on a template from `.gitlab/merge_request_templates/`. List that directory and choose the most specific template that matches the change; the template names indicate their purpose. When no specific template fits, or when unsure, use `Default.md`. Read the chosen template file and keep all of its sections: fill in each section, or state briefly why it does not apply, rather than deleting it. Treat HTML comments in the template as instructions to follow, then remove them from the final description.
 
+In the "How to set up and validate locally" section, do not include steps to run specs or linters; CI runs them. List only manual steps a reviewer can follow to see the change working, such as enabling a feature flag, running commands in the Rails console, or visiting a page.
+
 If there are related issues, add their URLs to the description of the merge request under the heading `References`.
 
 Add quick commands at the bottom of the description:

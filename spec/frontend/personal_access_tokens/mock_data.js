@@ -259,14 +259,12 @@ export const mockProjects = [
   {
     id: 'gid://gitlab/Project/1',
     name: 'Test Project 1',
-    nameWithNamespace: 'Test / Test Project 1',
     fullPath: 'test-group-1/test-project-1',
     __typename: 'Project',
   },
   {
     id: 'gid://gitlab/Project/2',
     name: 'Test Project 2',
-    nameWithNamespace: 'Test / Test Project 2',
     fullPath: 'test-group-2/test-project-2',
     __typename: 'Project',
   },
@@ -283,6 +281,56 @@ export const mockSearchGroupsAndProjectsQueryResponse = {
         nodes: mockGroups,
       },
     },
+    projectByFullPath: null,
+    groupByFullPath: null,
+  },
+};
+
+export const mockNonMemberProject = {
+  id: 'gid://gitlab/Project/3',
+  name: 'Public Project',
+  fullPath: 'public-group/public-project',
+  __typename: 'Project',
+};
+
+export const mockFullPathProjectQueryResponse = {
+  data: {
+    projects: {
+      nodes: [],
+    },
+    user: {
+      id: 'gid://gitlab/User/123',
+      groups: {
+        nodes: [],
+      },
+    },
+    projectByFullPath: mockNonMemberProject,
+    groupByFullPath: null,
+  },
+};
+
+export const mockNonMemberGroup = {
+  id: 'gid://gitlab/Group/3',
+  name: 'Public Group',
+  fullPath: 'public-group',
+  descendantGroupsCount: 1,
+  projectsCount: 4,
+  __typename: 'Group',
+};
+
+export const mockFullPathGroupQueryResponse = {
+  data: {
+    projects: {
+      nodes: [],
+    },
+    user: {
+      id: 'gid://gitlab/User/123',
+      groups: {
+        nodes: [],
+      },
+    },
+    projectByFullPath: null,
+    groupByFullPath: mockNonMemberGroup,
   },
 };
 

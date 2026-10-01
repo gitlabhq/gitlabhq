@@ -1,0 +1,10 @@
+---
+migration_job_name: BackfillMissedDiffCommitsToPartitioned
+description: Copies deduplicated diff commit rows that BackfillMergeRequestDiffCommitsToPartitioned
+  skipped from merge_request_diff_commits_archived into the partitioned merge_request_diff_commits
+feature_category: code_review_workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255692
+milestone: '19.5'
+queued_migration_version: 20260930150756
+gitlab_schema: gitlab_main_org
+finalized_by: # version of the migration that finalized this BBM

@@ -1,23 +1,32 @@
 <script>
-import { GlBadge, GlSprintf, GlIcon, GlButton } from '@gitlab/ui';
-import { mapState } from 'pinia';
+import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions, mapState } from 'pinia';
+import { createAlert } from '~/alert';
+import { useBatchComments } from '~/batch_comments/store';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
-import {
-  getStartLineNumber,
-  getEndLineNumber,
-  getLineClasses,
-} from '~/notes/components/multiline_comment_utils';
+import NoteForm from '~/notes/components/note_form.vue';
+import NoteHeader from '~/notes/components/note_header.vue';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { updateNoteErrorMessage } from '~/notes/utils';
+import LineRangeHeadline from '~/rapid_diffs/app/discussions/line_range_headline.vue';
 import resolvedStatusMixin from '../mixins/resolved_status';
 
 export default {
   name: 'PreviewItem',
   components: {
     GlBadge,
-    GlIcon,
-    GlSprintf,
     GlButton,
+    LineRangeHeadline,
+    NoteForm,
+    NoteHeader,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [resolvedStatusMixin],
   props: {
@@ -27,51 +36,33 @@ export default {
     },
   },
   emits: ['click'],
+  data() {
+    return {
+      isEditing: false,
+      isDeleting: false,
+    };
+  },
   computed: {
     ...mapState(useNotes, ['getDiscussion']),
-    iconName() {
-      return this.isDiffDiscussion || this.draft.line_code ? 'doc-text' : 'comment';
-    },
     discussion() {
       return this.getDiscussion(this.draft.discussion_id);
     },
     isDiffDiscussion() {
       return this.discussion && this.discussion.diff_discussion;
     },
-    titleText() {
+    filePath() {
       const file = this.discussion ? this.discussion.diff_file : this.draft;
 
-      if (file?.file_path) {
-        return file.file_path;
-      }
-
-      if (this.discussion) {
-        return sprintf(
-          __("%{authorsName}'s thread"),
-          {
-            authorsName: this.discussion.notes.find((note) => !note.system).author.name,
-          },
-          false,
-        );
-      }
-
-      return __('Your new comment');
+      return file?.file_path;
     },
-    // eslint-disable-next-line vue/no-unused-properties -- linePosition() was used prior to a feature flag removal and may be used again.
-    linePosition() {
-      if (this.position?.position_type === IMAGE_DIFF_POSITION_TYPE) {
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        return `${this.position.x}x ${this.position.y}y`;
-      }
-
-      return this.position?.new_line || this.position?.old_line;
-    },
-    content() {
-      const el = document.createElement('div');
-      // eslint-disable-next-line no-unsanitized/property
-      el.innerHTML = this.draft.note_html;
-
-      return el.textContent;
+    threadTitle() {
+      return sprintf(
+        __("Reply to %{authorsName}'s thread"),
+        {
+          authorsName: this.discussion.notes.find((note) => !note.system).author.name,
+        },
+        false,
+      );
     },
     showLinePosition() {
       return this.draft.file_hash || this.isDiffDiscussion;
@@ -79,79 +70,193 @@ export default {
     position() {
       return this.draft.position || this.discussion.position;
     },
-    startLineNumber() {
-      if (this.position?.position_type === IMAGE_DIFF_POSITION_TYPE) {
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        return `${this.position.x}x ${this.position.y}y`;
-      }
-      return getStartLineNumber(this.position?.line_range);
+    imagePositionText() {
+      if (this.position?.position_type !== IMAGE_DIFF_POSITION_TYPE) return null;
+
+      return sprintf(__('Comment on image at %{x}x %{y}y'), this.position);
     },
-    endLineNumber() {
-      return getEndLineNumber(this.position?.line_range);
+    saveButtonTitle() {
+      return this.draft.internal ? __('Save internal note') : __('Save comment');
+    },
+  },
+  watch: {
+    'draft.note_html': {
+      async handler() {
+        await this.$nextTick();
+        renderGFM(this.$refs.noteBody);
+      },
+      immediate: true,
     },
   },
   methods: {
-    getLineClasses(lineNumber) {
-      return getLineClasses(lineNumber);
+    ...mapActions(useBatchComments, ['updateDraft', 'deleteDraft']),
+    async onDelete() {
+      const confirmed = await confirmAction(
+        __('Are you sure you want to delete this pending comment?'),
+        { primaryBtnVariant: 'danger', primaryBtnText: __('Delete comment') },
+      );
+      if (!confirmed) return;
+
+      this.isDeleting = true;
+      await this.deleteDraft(this.draft);
+      this.isDeleting = false;
+    },
+    // eslint-disable-next-line max-params
+    async onFormUpdate(noteText, parentElement, callback, resolveDiscussion) {
+      try {
+        await this.updateDraft({ note: this.draft, noteText, resolveDiscussion });
+        this.stopEditing();
+      } catch (error) {
+        createAlert({
+          message: updateNoteErrorMessage(error),
+          parent: this.$el,
+          captureError: true,
+          error,
+        });
+        callback();
+      }
+    },
+    async onFormCancel(shouldConfirm, isDirty) {
+      if (shouldConfirm && isDirty) {
+        const confirmed = await confirmAction(
+          sprintf(__('Are you sure you want to cancel editing this %{commentType}?'), {
+            commentType: this.draft.internal ? __('internal note') : __('comment'),
+          }),
+          {
+            primaryBtnText: __('Cancel editing'),
+            primaryBtnVariant: 'danger',
+            secondaryBtnVariant: 'default',
+            secondaryBtnText: __('Continue editing'),
+            hideCancel: true,
+          },
+        );
+        if (!confirmed) return;
+      }
+      this.stopEditing();
+    },
+    async stopEditing() {
+      this.isEditing = false;
+      await this.$nextTick();
+      this.$refs.editButton.$el.focus();
     },
   },
   showStaysResolved: false,
+  safeHtmlConfig: {
+    ADD_TAGS: ['use', 'gl-emoji', 'copy-code'],
+  },
 };
 </script>
 
 <template>
-  <div class="pending-review-item gl-relative gl-mb-4 gl-flex gl-gap-3">
-    <div
-      class="review-comment-icon gl-inline-flex gl-items-center gl-justify-center gl-self-baseline gl-rounded-full gl-bg-strong"
-    >
-      <gl-icon class="!gl-shrink-0" :name="iconName" :size="14" />
+  <div class="pending-review-item gl-relative gl-flex gl-gap-3 gl-pb-4">
+    <div class="gl-flex gl-w-6 gl-shrink-0 gl-justify-center gl-pt-5">
+      <div
+        class="system-note-dot gl-relative gl-h-3 gl-w-3 gl-rounded-full gl-border-2 gl-border-solid gl-border-subtle"
+      ></div>
     </div>
-
-    <div class="gl-mt-2 gl-flex gl-flex-col gl-gap-2">
-      <gl-button
-        variant="link"
-        class="!gl-justify-start"
-        data-testid="preview-item-header"
-        @click="$emit('click', draft)"
+    <div class="file-holder gl-min-w-0 gl-grow gl-overflow-hidden gl-border-section">
+      <div v-if="filePath" class="file-title file-title-flex-parent">
+        <gl-button
+          variant="link"
+          class="gl-max-w-full !gl-justify-start !gl-text-default"
+          button-text-classes="!gl-whitespace-normal gl-text-left"
+          data-testid="preview-item-header"
+          @click="$emit('click', draft)"
+        >
+          <strong
+            class="file-title-name gl-break-all"
+            data-testid="review-preview-item-header-text"
+            >{{ filePath }}</strong
+          >
+        </gl-button>
+      </div>
+      <div
+        v-if="showLinePosition && imagePositionText"
+        class="gl-border-b gl-border-section gl-bg-section gl-px-5 gl-py-3 gl-text-subtle"
+        data-testid="preview-item-image-position"
       >
-        <span class="gl-truncate gl-font-semibold" data-testid="review-preview-item-header-text">{{
-          titleText
-        }}</span>
-        <template v-if="showLinePosition">
-          <template v-if="startLineNumber === endLineNumber">
-            :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
-          </template>
-          <gl-sprintf v-else :message="__(':%{startLine} to %{endLine}')">
-            <template #startLine>
-              <span class="gl-mr-2" :class="getLineClasses(startLineNumber)">{{
-                startLineNumber
-              }}</span>
-            </template>
-            <template #endLine>
-              <span class="gl-ml-2" :class="getLineClasses(endLineNumber)">{{
-                endLineNumber
-              }}</span>
-            </template>
-          </gl-sprintf>
-        </template>
-      </gl-button>
-      <div class="gl-flex gl-flex-col gl-gap-2">
-        <p
-          class="gl-mb-0 gl-line-clamp-3 gl-leading-20 gl-text-subtle gl-wrap-anywhere"
-          data-testid="review-preview-item-content"
+        {{ imagePositionText }}
+      </div>
+      <line-range-headline
+        v-else-if="showLinePosition"
+        :line-range="position.line_range"
+        class="gl-border-b gl-border-section gl-bg-section gl-px-5 gl-py-3 gl-text-subtle"
+      />
+      <div
+        v-else-if="discussion"
+        class="gl-border-b gl-border-section gl-bg-section gl-px-5 gl-py-3"
+      >
+        <gl-button
+          variant="link"
+          class="!gl-text-subtle"
+          data-testid="preview-item-header"
+          @click="$emit('click', draft)"
         >
-          {{ content }}
-        </p>
-        <gl-badge
-          v-if="draft.discussion_id && resolvedStatusMessage"
-          class="gl-self-start"
-          data-testid="draft-note-resolution"
-          variant="info"
-          icon="status_success"
-          icon-optically-aligned
-        >
-          {{ resolvedStatusMessage }}
-        </gl-badge>
+          <span data-testid="review-preview-item-header-text">{{ threadTitle }}</span>
+        </gl-button>
+      </div>
+      <div class="gl-bg-section gl-px-3 gl-py-2">
+        <div class="note-header gl-min-h-8 !gl-items-center">
+          <note-header
+            :author="draft.author"
+            :is-internal-note="draft.internal"
+            :show-spinner="false"
+          />
+          <div v-if="draft.current_user.can_edit && !isEditing" class="note-actions">
+            <gl-button
+              ref="editButton"
+              v-gl-tooltip
+              :title="__('Edit comment')"
+              :aria-label="__('Edit comment')"
+              icon="pencil"
+              category="tertiary"
+              class="note-action-button"
+              data-testid="preview-item-edit"
+              @click="isEditing = true"
+            />
+            <gl-button
+              v-gl-tooltip
+              :title="__('Delete comment')"
+              :aria-label="__('Delete comment')"
+              icon="remove"
+              category="tertiary"
+              class="note-action-button"
+              :loading="isDeleting"
+              data-testid="preview-item-delete"
+              @click="onDelete"
+            />
+          </div>
+        </div>
+        <note-form
+          v-if="isEditing"
+          class="gl-px-3 gl-pb-3"
+          :note-body="draft.note"
+          :note-id="draft.id"
+          :note="draft"
+          :discussion="discussion"
+          :resolve-discussion="draft.resolve_discussion"
+          :save-button-title="saveButtonTitle"
+          is-draft
+          @handle-form-update="onFormUpdate"
+          @cancel-form="onFormCancel"
+        />
+        <div v-show="!isEditing" ref="noteBody" class="gl-px-3 gl-pb-3">
+          <div
+            v-safe-html:[$options.safeHtmlConfig]="draft.note_html"
+            class="note-text md"
+            data-testid="review-preview-item-content"
+          ></div>
+          <gl-badge
+            v-if="draft.discussion_id && resolvedStatusMessage"
+            class="gl-mt-3"
+            data-testid="draft-note-resolution"
+            variant="info"
+            icon="status_success"
+            icon-optically-aligned
+          >
+            {{ resolvedStatusMessage }}
+          </gl-badge>
+        </div>
       </div>
     </div>
   </div>

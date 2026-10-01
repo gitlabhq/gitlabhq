@@ -36,7 +36,7 @@ RSpec.describe Organizations::Release, feature_category: :organization do
       end
 
       it 'is disabled when the backing stage flag and every earlier stage flag are off' do
-        stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
+        stub_feature_flags(org_stage_experimental: false, org_stage_internal: false, org_stage_beta: false)
 
         expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
       end
@@ -54,6 +54,31 @@ RSpec.describe Organizations::Release, feature_category: :organization do
         end
 
         it 'stays disabled when only a later stage flag is on' do
+          stub_feature_flags(org_stage_internal: true, org_stage_beta: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
+        end
+      end
+
+      context 'when a feature is at the Internal stage' do
+        before do
+          stub_flag(name: :ui_for_organizations, stage: :internal)
+          stub_feature_flags(org_stage_experimental: false, org_stage_internal: false)
+        end
+
+        it 'is enabled when its own stage flag is on' do
+          stub_feature_flags(org_stage_internal: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
+        end
+
+        it 'is enabled when an earlier stage flag is on' do
+          stub_feature_flags(org_stage_experimental: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
+        end
+
+        it 'stays disabled when only a later stage flag is on' do
           stub_feature_flags(org_stage_beta: true)
 
           expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
@@ -63,11 +88,17 @@ RSpec.describe Organizations::Release, feature_category: :organization do
       context 'when a feature is at the Beta stage' do
         before do
           stub_flag(name: :ui_for_organizations, stage: :beta)
-          stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
+          stub_feature_flags(org_stage_experimental: false, org_stage_internal: false, org_stage_beta: false)
         end
 
         it 'is enabled when an earlier stage flag is on' do
           stub_feature_flags(org_stage_experimental: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
+        end
+
+        it 'is enabled when the Internal stage flag is on' do
+          stub_feature_flags(org_stage_internal: true)
 
           expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
         end
@@ -82,11 +113,19 @@ RSpec.describe Organizations::Release, feature_category: :organization do
       context 'when a feature is at an LA stage' do
         before do
           stub_flag(name: :ui_for_organizations, stage: :la_50)
-          stub_feature_flags(org_stage_experimental: false, org_stage_beta: false, org_stage_la_50: false)
+          stub_feature_flags(
+            org_stage_experimental: false, org_stage_internal: false, org_stage_beta: false, org_stage_la_50: false
+          )
         end
 
         it 'is enabled when an earlier cascading stage flag is on' do
           stub_feature_flags(org_stage_beta: true)
+
+          expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
+        end
+
+        it 'is enabled when the Internal stage flag is on' do
+          stub_feature_flags(org_stage_internal: true)
 
           expect(described_class.enabled?(:ui_for_organizations, actor)).to be(true)
         end
@@ -104,7 +143,9 @@ RSpec.describe Organizations::Release, feature_category: :organization do
         end
 
         it 'checks only the GA stage flag and ignores earlier stages' do
-          stub_feature_flags(org_stage_ga: false, org_stage_experimental: true, org_stage_beta: true)
+          stub_feature_flags(
+            org_stage_ga: false, org_stage_experimental: true, org_stage_internal: true, org_stage_beta: true
+          )
 
           expect(described_class.enabled?(:ui_for_organizations, actor)).to be(false)
         end
@@ -140,7 +181,7 @@ RSpec.describe Organizations::Release, feature_category: :organization do
 
       it 'is false when a flag is given and off for the user, regardless of organization state' do
         stub_flag(name: :ui_for_organizations, stage: :beta)
-        stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
+        stub_feature_flags(org_stage_experimental: false, org_stage_internal: false, org_stage_beta: false)
         user = build_stubbed(:user)
         allow(user).to receive(:has_active_non_default_organization?).and_return(true)
 
@@ -169,7 +210,7 @@ RSpec.describe Organizations::Release, feature_category: :organization do
 
       it 'is false when a flag is given and off for the user' do
         stub_flag(name: :ui_for_organizations, stage: :beta)
-        stub_feature_flags(org_stage_experimental: false, org_stage_beta: false)
+        stub_feature_flags(org_stage_experimental: false, org_stage_internal: false, org_stage_beta: false)
 
         expect(described_class.enrolled?(build_stubbed(:user), flag: :ui_for_organizations)).to be(false)
       end
@@ -179,7 +220,7 @@ RSpec.describe Organizations::Release, feature_category: :organization do
   describe '.stages' do
     it 'returns every stage in progression order' do
       expect(described_class.stages.map(&:key))
-        .to eq(%i[experimental beta la_25 la_50 la_75 la_100 ga])
+        .to eq(%i[experimental internal beta la_25 la_50 la_75 la_100 ga])
     end
 
     # `enabled?` builds each stage flag inline as `:"org_stage_#{key}"`, and the

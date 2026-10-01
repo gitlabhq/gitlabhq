@@ -658,10 +658,12 @@ describe('Ref selector component', () => {
     });
 
     it.each`
-      selectedBranch            | icon
-      ${branchRefTypeMock.name} | ${BRANCH_REF_TYPE_ICON}
-      ${tagRefTypeMock.name}    | ${TAG_REF_TYPE_ICON}
-      ${branches[0].name}       | ${''}
+      selectedBranch                          | icon
+      ${branchRefTypeMock.name}               | ${BRANCH_REF_TYPE_ICON}
+      ${tagRefTypeMock.name}                  | ${TAG_REF_TYPE_ICON}
+      ${branches[0].name}                     | ${''}
+      ${'refs/heads/refs/tags/user_workflow'} | ${BRANCH_REF_TYPE_ICON}
+      ${'refs/tags/refs/heads/user_workflow'} | ${TAG_REF_TYPE_ICON}
     `('renders the correct icon for the selected ref', async ({ selectedBranch, icon }) => {
       createComponent();
       findListbox().vm.$emit('select', selectedBranch);

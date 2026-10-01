@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { DESIGN_MARK_APP_START, DESIGN_MEASURE_BEFORE_APP } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import App from './components/app.vue';

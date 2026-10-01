@@ -207,6 +207,7 @@ group:
   - read_group_stage
   - read_licenses
   - read_namespace_cluster_agent_mapping
+  - read_orbit_trial
   - read_package
   - read_package_within_public_registries
   - read_placeholder_reassignment

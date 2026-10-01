@@ -1,6 +1,6 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeleteBranchButton from '~/branches/components/branch_more_actions.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default function initBranchMoreActions(el) {
   if (!el) {

@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
-import { keyBy } from 'lodash-es';
+import { keyBy, uniqBy } from 'lodash-es';
 import { createAlert } from '~/alert';
 import {
   MINIMUM_SEARCH_LENGTH,
@@ -39,9 +39,13 @@ export default {
     groupsAndProjects: {
       query: getUserGroupsAndProjects,
       variables() {
+        const fullPath = this.searchTerm.trim();
+
         return {
           id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
           search: this.searchTerm,
+          fullPath,
+          hasSearch: fullPath.length > 0,
         };
       },
       skip() {
@@ -49,9 +53,18 @@ export default {
         return length > 0 && length < MINIMUM_SEARCH_LENGTH;
       },
       update(data) {
+        // The exact-path lookup reaches namespaces the membership-scoped search cannot,
+        // and returns one the search already found when the user is a member, so it leads
+        // the list and is de-duplicated against it.
         return {
-          projects: data?.projects?.nodes || [],
-          groups: data?.user?.groups?.nodes || [],
+          projects: uniqBy(
+            [data?.projectByFullPath, ...(data?.projects?.nodes || [])].filter(Boolean),
+            'id',
+          ),
+          groups: uniqBy(
+            [data?.groupByFullPath, ...(data?.user?.groups?.nodes || [])].filter(Boolean),
+            'id',
+          ),
         };
       },
       error(error) {
@@ -143,6 +156,10 @@ export default {
     onSearch(searchTerm) {
       this.searchTerm = searchTerm;
     },
+    srOnlyResultsLabel(count) {
+      // The footer hint is not tied to the search input, so screen readers only hear it here
+      return `${n__('%d result', '%d results', count)}. ${this.$options.i18n.fullPathHint}`;
+    },
     removeNamespace(namespaceId) {
       this.selectedIds = this.selectedIds.filter((item) => item !== namespaceId);
     },
@@ -183,6 +200,9 @@ export default {
     projects: __('Projects'),
     noNamespaces: s__('AccessTokens|No groups or projects added.'),
     searchPlaceholder: __('Search groups or projects'),
+    fullPathHint: s__(
+      "AccessTokens|Enter a full path to find groups or projects you're not a member of.",
+    ),
     addButton: s__('AccessTokens|Add group or project'),
     removeGroup: s__('AccessTokens|Remove group %{name}'),
     removeProject: s__('AccessTokens|Remove project %{name}'),
@@ -205,8 +225,18 @@ export default {
           :search-placeholder="$options.i18n.searchPlaceholder"
           :searching="isLoading"
           :toggle-text="$options.i18n.addButton"
+          :sr-only-results-label="srOnlyResultsLabel"
           @search="onSearch"
-        />
+        >
+          <template #footer>
+            <div
+              class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-subtle"
+              data-testid="full-path-hint"
+            >
+              {{ $options.i18n.fullPathHint }}
+            </div>
+          </template>
+        </gl-collapsible-listbox>
       </template>
 
       <ul

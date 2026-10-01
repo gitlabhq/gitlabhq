@@ -38,9 +38,7 @@ To view the blame for a file:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
-1. Either:
-   - To change the view of the current file, in the file header, select **Blame**.
-   - To open the full blame page, in the upper-right corner, select **Blame**.
+1. In the file header, select **Blame**.
 1. Go to the line you want to see.
 
 When you select **Blame**, this information is displayed:
@@ -57,7 +55,7 @@ To see earlier revisions of a specific line:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
-1. In the upper-right corner, select **Blame**, and go to the line you want to see.
+1. In the file header, select **Blame**, and go to the line you want to see.
 1. Select **View blame prior to this change** ({{< icon name="doc-versions" >}})
    until you've found the changes you're interested in viewing.
 

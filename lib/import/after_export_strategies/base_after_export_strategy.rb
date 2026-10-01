@@ -65,8 +65,15 @@ module Import
         delete_archive_path
       end
 
-      def to_json(_options = {})
-        @options.to_h.merge!(klass: self.class.name).to_json
+      # Sidekiq arguments must be native JSON types, so the enqueue sites pass this Hash
+      # rather than the strategy itself. ProjectExportWorker#build! reads `klass` back and
+      # AfterExportStrategyBuilder rebuilds the strategy from it.
+      def as_json(_options = {})
+        @options.to_h.merge(klass: self.class.name).as_json
+      end
+
+      def to_json(options = {})
+        as_json.to_json(options)
       end
 
       def ensure_export_ready!(current_user, max_retries: 5, base_delay: 1)

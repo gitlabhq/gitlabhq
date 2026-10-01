@@ -2440,6 +2440,11 @@ class MergeRequest < ApplicationRecord
       pipeline_has_report_in_self_or_descendants?(:sast, pipeline)
   end
 
+  # Overridden in EE
+  def agentic_sast_reports?
+    false
+  end
+
   def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)
     service_class = identifier.constantize
 

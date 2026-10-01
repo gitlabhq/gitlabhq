@@ -55,7 +55,7 @@ GitLab skips auto-assignment when:
 - No code owner matches the files changed in the merge request.
 - The merge request author does not have permission to set merge request metadata.
 
-## Assign reviewers with the Recommend Reviewers flow
+## Recommend reviewers with the Recommend Reviewers flow
 
 {{< details >}}
 
@@ -68,14 +68,16 @@ GitLab skips auto-assignment when:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236211) in GitLab 19.0 as a project setting [with a feature flag](../../../../administration/feature_flags/_index.md) named `dap_powered_recommend_reviewers`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/607677) in GitLab 19.4 to use a flow trigger instead of a project setting. Feature flag `dap_powered_recommend_reviewers` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257534) in GitLab 19.5 to create a trigger that runs when a merge request is created.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257235) in GitLab 19.5 to recommend reviewers in the merge request sidebar instead of assigning them.
 
 {{< /history >}}
 
-The Recommend Reviewers flow recommends and assigns reviewers best suited to review your merge
+The Recommend Reviewers flow recommends the reviewers best suited to review your merge
 request.
+It recommends the minimum number of reviewers needed to satisfy each approval rule, and chooses
+reviewers based on availability, workload, and time zone.
 
-Instead of assigning every Code Owner, it assigns the minimum number of reviewers needed to satisfy
-each approval rule, based on availability, workload, and time zone.
+Recommended reviewers appear in the merge request sidebar and you choose which of the reviewers to assign.
 
 This feature runs on the [GitLab Duo Agent Platform](../../../duo_agent_platform/_index.md).
 
@@ -120,10 +122,35 @@ The flow runs when a person with at least the Developer role marks a draft merge
 For more information about creating and editing triggers, see
 [triggers](../../../duo_agent_platform/triggers/_index.md).
 
+### Assign a recommended reviewer
+
+After the flow runs, recommended reviewers appear in the **Recommended** section under
+**Reviewers** in the right sidebar, grouped by approval rule.
+The section appears only when there is at least one recommendation.
+
+To see why the flow recommended a user, and when, hover over the user.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To assign a recommended reviewer to your merge request:
+
+- Under **Recommended**, next to the user you want to assign, select **Add reviewer** ({{< icon name="plus" >}}).
+
+After you assign a reviewer, they no longer appear in the **Recommended** section.
+
+To run the flow again and get new recommendations:
+
+- In the **Recommended** section, select
+**Recommended reviewer actions** ({{< icon name="ellipsis_v" >}}) > **Refresh**.
+
+GitLab removes the recommendations when the merge request is merged or closed.
+
 ### Exceptions
 
 - The person who creates the merge request, or marks it as ready, must have at least the
-  Developer role for the project. The flow does not assign reviewers when the person has a
+  Developer role for the project. The flow does not recommend reviewers when the person has a
   lower role.
 
 ### Reviewer selection
@@ -131,9 +158,9 @@ For more information about creating and editing triggers, see
 The Recommend Reviewers flow reads the required approval rules and the optional approval rules on the merge request.
 An optional approval rule is a rule that requires zero approvals.
 The flow skips an optional **All Members** rule, and optional rules created by merge request approval policies.
-For each required rule, the flow recommends and assigns the minimum number of reviewers needed to satisfy the rule.
-For each remaining optional rule, the flow recommends one reviewer, unless a current reviewer or a reviewer it already recommended for another rule is an eligible approver for that rule.
-It then adds a note to explain the recommendations.
+For each rule that the current reviewers do not already satisfy, the flow recommends the minimum number of reviewers needed to satisfy the rule.
+The flow never recommends a user who is already a reviewer.
+For each recommended reviewer, the flow saves a short reason for the recommendation.
 
 To choose between the eligible approvers for a rule, the flow considers the
 following for each approver:
@@ -149,9 +176,8 @@ target branch. When no role can merge into the target branch, the candidates are
 who can approve. Members who get their access from a parent group or an invited group are not
 candidates, so a project without direct members gets no recommendation for this rule.
 
-The recommendation runs in the background, so the reviewers might take a moment to appear.
-The flow attributes the reviewer assignments and the note to the [service account](../../../duo_agent_platform/flows/foundational_flows/_index.md#service-accounts) that is set up when you turn the flow on for the top-level group.
-They are not attributed to the person who created the merge request or marked it as ready.
+The recommendation runs in the background, so the recommended reviewers might take a moment to appear.
+The flow runs as the [service account](../../../duo_agent_platform/flows/foundational_flows/_index.md#service-accounts) that is set up when you turn the flow on for the top-level group.
 
 ## Related topics
 

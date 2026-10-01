@@ -644,9 +644,6 @@ msgstr ""
 msgid "%{author_link} wrote:"
 msgstr ""
 
-msgid "%{authorsName}'s thread"
-msgstr ""
-
 msgid "%{author} authored %{authoredDate}"
 msgstr ""
 
@@ -2280,9 +2277,6 @@ msgstr ""
 msgid "503|Try refreshing the page, or going back and attempting the action again."
 msgstr ""
 
-msgid ":%{startLine} to %{endLine}"
-msgstr ""
-
 msgid "A %{linkStart}merge train%{linkEnd} is a queued list of merge requests, each waiting to be merged into the target branch."
 msgstr ""
 
@@ -3365,6 +3359,9 @@ msgid "AICatalog|Ready to enable"
 msgstr ""
 
 msgid "AICatalog|Reason for reporting"
+msgstr ""
+
+msgid "AICatalog|Referencing AI Catalog items with include is not available"
 msgstr ""
 
 msgid "AICatalog|Report %{itemName}"
@@ -4655,6 +4652,9 @@ msgid "AccessTokens|Duplicate '%{tokenName}'?"
 msgstr ""
 
 msgid "AccessTokens|Enable DPoP"
+msgstr ""
+
+msgid "AccessTokens|Enter a full path to find groups or projects you're not a member of."
 msgstr ""
 
 msgid "AccessTokens|Error loading groups and projects. Please refresh page."
@@ -8090,6 +8090,9 @@ msgstr ""
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
+msgid "Agent"
+msgstr ""
+
 msgid "Agent Information"
 msgstr ""
 
@@ -8357,6 +8360,9 @@ msgid "AgentPlan|Workplan"
 msgstr ""
 
 msgid "AgentPlan|You are here to help refine a plan for the user from the Work Item context to a Markdown output with key information required for Agent to pick off the work. This plan is for the work item %{workItemUrl}. Use this exact work item as your context, regardless of any other panels or items visible in the UI. The template should have a Why, How, What format with key insights and list of steps. If the issue is lacking details, start by reading the comments. Then, ask clarifying questions to the users in Chat until you are confident. If there are pending questions, please preserve them inside the plan. Then, please proceed with updating the work item 'Workplan' widget with your output. You can erase everything was there before and add your new plan entirely. Don't preserve existing notes if they dont align with what you wrote. If there is enough information but the title or description is lacking, please propose to update it minimally with key insights. Try to preserve anything that is already present, just add on top and dont repeat the full plan. What is important is syncing up enough to preserve the intent and adding data where we had none before."
+msgstr ""
+
+msgid "Agents"
 msgstr ""
 
 msgid "Agents|Cannot be assigned"
@@ -12455,6 +12461,9 @@ msgid "Are you sure you want to delete this deploy key?"
 msgstr ""
 
 msgid "Are you sure you want to delete this one-time password authenticator?"
+msgstr ""
+
+msgid "Are you sure you want to delete this pending comment?"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline? Doing so will expire all pipeline caches and delete all related objects, such as builds, logs, artifacts, and triggers. This action cannot be undone."
@@ -21379,6 +21388,9 @@ msgstr ""
 msgid "Comment is being updated"
 msgstr ""
 
+msgid "Comment on image at %{x}x %{y}y"
+msgstr ""
+
 msgid "Comment on line %{startLine}"
 msgstr ""
 
@@ -25683,6 +25695,205 @@ msgstr ""
 
 msgid "ContributionEvent|…and %{count} more commits. %{linkStart}Compare%{linkEnd}."
 msgstr ""
+
+msgid "ContributionMusic|%{countStart}%{count}%{countEnd} contribution in one year."
+msgid_plural "ContributionMusic|%{countStart}%{count}%{countEnd} contributions in one year."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ContributionMusic|%{linkStart}Watch Transcend on demand%{linkEnd}"
+msgstr ""
+
+msgid "ContributionMusic|%{name}'s contribution song"
+msgstr ""
+
+msgid "ContributionMusic|%{user} and GitLab make beautiful music together."
+msgstr ""
+
+msgid "ContributionMusic|%{user} doesn't have enough contributions in the last year to play."
+msgstr ""
+
+msgid "ContributionMusic|%{user}'s contributions, remixed."
+msgstr ""
+
+msgid "ContributionMusic|%{user}'s year, merged."
+msgstr ""
+
+msgid "ContributionMusic|/ %{key} %{scale} · %{bpm} BPM"
+msgstr ""
+
+msgid "ContributionMusic|A year of shipping."
+msgstr ""
+
+msgid "ContributionMusic|Aeolian (minor)"
+msgstr ""
+
+msgid "ContributionMusic|At Transcend on October 6, see how teams ship at agent speed and prove every step. %{linkStart}Register for the livestream%{linkEnd}"
+msgstr ""
+
+msgid "ContributionMusic|Audio might be turned off in your browser settings or by an extension."
+msgstr ""
+
+msgid "ContributionMusic|Contribution activity for the last 12 months"
+msgstr ""
+
+msgid "ContributionMusic|Could not generate the video."
+msgstr ""
+
+msgid "ContributionMusic|Could not load contribution activity."
+msgstr ""
+
+msgid "ContributionMusic|Dorian"
+msgstr ""
+
+msgid "ContributionMusic|Double harmonic"
+msgstr ""
+
+msgid "ContributionMusic|Download video"
+msgstr ""
+
+msgid "ContributionMusic|Egyptian"
+msgstr ""
+
+msgid "ContributionMusic|Every note in this song is a step %{user} took in GitLab."
+msgstr ""
+
+msgid "ContributionMusic|Every note in this song is a step you took in GitLab."
+msgstr ""
+
+msgid "ContributionMusic|Generate video"
+msgstr ""
+
+msgid "ContributionMusic|Generating"
+msgstr ""
+
+msgid "ContributionMusic|Hear that? Neither do I."
+msgstr ""
+
+msgid "ContributionMusic|Hirajoshi (Japanese)"
+msgstr ""
+
+msgid "ContributionMusic|Hungarian minor"
+msgstr ""
+
+msgid "ContributionMusic|In sen (Japanese)"
+msgstr ""
+
+msgid "ContributionMusic|Ionian (major)"
+msgstr ""
+
+msgid "ContributionMusic|Iwato (Japanese)"
+msgstr ""
+
+msgid "ContributionMusic|Kumoi (Japanese)"
+msgstr ""
+
+msgid "ContributionMusic|Link copied"
+msgstr ""
+
+msgid "ContributionMusic|Locrian"
+msgstr ""
+
+msgid "ContributionMusic|Lydian"
+msgstr ""
+
+msgid "ContributionMusic|Major pentatonic"
+msgstr ""
+
+msgid "ContributionMusic|Minor pentatonic"
+msgstr ""
+
+msgid "ContributionMusic|Mixolydian"
+msgstr ""
+
+msgid "ContributionMusic|Open contribution song player"
+msgstr ""
+
+msgid "ContributionMusic|Pelog (Balinese)"
+msgstr ""
+
+msgid "ContributionMusic|Phrygian"
+msgstr ""
+
+msgid "ContributionMusic|Phrygian dominant"
+msgstr ""
+
+msgid "ContributionMusic|Play contribution song"
+msgstr ""
+
+msgid "ContributionMusic|Play it again"
+msgstr ""
+
+msgid "ContributionMusic|Play your own song"
+msgstr ""
+
+msgid "ContributionMusic|Sign in to play your own song"
+msgstr ""
+
+msgid "ContributionMusic|Stop contribution song"
+msgstr ""
+
+msgid "ContributionMusic|The sound of GitLab"
+msgstr ""
+
+msgid "ContributionMusic|The sound of shipping."
+msgstr ""
+
+msgid "ContributionMusic|The video generates in real time. Keep this tab open until it downloads."
+msgstr ""
+
+msgid "ContributionMusic|There aren't enough contributions in the last year to play."
+msgstr ""
+
+msgid "ContributionMusic|They didn't just show up. They shipped."
+msgstr ""
+
+msgid "ContributionMusic|This browser can't play audio."
+msgstr ""
+
+msgid "ContributionMusic|Transcend is here. %{linkStart}Watch the livestream%{linkEnd}"
+msgstr ""
+
+msgid "ContributionMusic|Video generation stopped because you left this tab. Keep the tab open until the video downloads."
+msgstr ""
+
+msgid "ContributionMusic|We make beautiful music together."
+msgstr ""
+
+msgid "ContributionMusic|We turned it into a song. Key of %{key}. %{scale} scale. %{bpm} BPM. Theirs alone."
+msgstr ""
+
+msgid "ContributionMusic|We turned it into a song. Key of %{key}. %{scale} scale. %{bpm} BPM. Yours alone."
+msgstr ""
+
+msgid "ContributionMusic|Whole tone"
+msgstr ""
+
+msgid "ContributionMusic|Yo (Japanese)"
+msgstr ""
+
+msgid "ContributionMusic|You can also %{linkStart}check out your own song%{linkEnd}."
+msgstr ""
+
+msgid "ContributionMusic|You can also %{linkStart}sign in to check out your own song%{linkEnd}."
+msgstr ""
+
+msgid "ContributionMusic|You didn't just show up. You shipped."
+msgstr ""
+
+msgid "ContributionMusic|Your contribution song"
+msgstr ""
+
+msgid "ContributionMusic|Your contributions, remixed."
+msgstr ""
+
+msgid "ContributionMusic|Your year, merged."
+msgstr ""
+
+msgid "ContributionMusic|contribution · %{dates}"
+msgid_plural "ContributionMusic|contributions · %{dates}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Contributions for %{calendar_date}"
 msgstr ""
@@ -32417,6 +32628,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|%{role} role"
 msgstr ""
 
+msgid "DuoAgentsPlatform|%{title} #%{id}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|(editing)"
 msgstr ""
 
@@ -37821,6 +38035,9 @@ msgid "Filter by test cases that are currently archived."
 msgstr ""
 
 msgid "Filter by test cases that are currently open."
+msgstr ""
+
+msgid "Filter conversations"
 msgstr ""
 
 msgid "Filter list for %{title}"
@@ -47789,7 +48006,7 @@ msgstr ""
 msgid "Job|How this is calculated?"
 msgstr ""
 
-msgid "Job|ID token issuance is disabled in CI because this project's path was previously used by a different project. To restore ID tokens, set `ci_id_token_sub_claim_components` to start with `project_id` (for example, `[\"project_id\", \"ref_type\", \"ref\"]`) and update your cloud trust policy to match."
+msgid "Job|ID token issuance is disabled in CI because a project path in the `sub` claim was previously used by a different project. To restore ID tokens, set `ci_id_token_sub_claim_components` to start with the ID component that matches the path component (`project_id`, `job_project_id`, or `source_project_id`) and update your cloud trust policy to match."
 msgstr ""
 
 msgid "Job|Job artifacts"
@@ -54136,6 +54353,9 @@ msgstr ""
 msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
+msgid "Needs action"
+msgstr ""
+
 msgid "Needs attention"
 msgstr ""
 
@@ -58869,6 +59089,9 @@ msgstr ""
 msgid "Orbit|filterable"
 msgstr ""
 
+msgid "Orbit|must be a top-level group"
+msgstr ""
+
 msgid "Ordered list"
 msgstr ""
 
@@ -59430,6 +59653,9 @@ msgid "OutboundRequests|Resolve IP addresses for outbound requests to prevent DN
 msgstr ""
 
 msgid "OutboundRequests|Webhooks and integrations might not work properly. GitLab Duo will not work unless `cloud.gitlab.com` is in the following allowlist."
+msgstr ""
+
+msgid "Outdated"
 msgstr ""
 
 msgid "OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser."
@@ -60729,6 +60955,9 @@ msgid "Pending sync…"
 msgstr ""
 
 msgid "PendingMembers|There are no pending members left to approve. High five!"
+msgstr ""
+
+msgid "People"
 msgstr ""
 
 msgid "Percent rollout must be an integer number between 0 and 100"
@@ -62444,6 +62673,9 @@ msgid "PlantUML URL"
 msgstr ""
 
 msgid "PlantUML diagram"
+msgstr ""
+
+msgid "Play"
 msgstr ""
 
 msgid "Please %{link_to_register} or %{link_to_sign_in} to comment"
@@ -68513,6 +68745,9 @@ msgid "Reply by email"
 msgstr ""
 
 msgid "Reply internally"
+msgstr ""
+
+msgid "Reply to %{authorsName}'s thread"
 msgstr ""
 
 msgid "Reply to @%{username}"
@@ -94114,6 +94349,9 @@ msgstr ""
 msgid "WorkItemDecisionLog|Enter a summary of the decision"
 msgstr ""
 
+msgid "WorkItemDecisionLog|GitLab Duo raised this question during review of the work item."
+msgstr ""
+
 msgid "WorkItemDecisionLog|Hide context"
 msgstr ""
 
@@ -97682,9 +97920,6 @@ msgstr ""
 msgid "Your new %{accessTokenType} has been created."
 msgstr ""
 
-msgid "Your new comment"
-msgstr ""
-
 msgid "Your passkey did not send a valid JSON response."
 msgstr ""
 
@@ -100185,9 +100420,6 @@ msgstr ""
 msgid "project's path"
 msgstr ""
 
-msgid "project_path or project_id must be the first element of the sub claim"
-msgstr ""
-
 msgid "projects"
 msgstr ""
 
@@ -100519,6 +100751,9 @@ msgid "the correct format."
 msgstr ""
 
 msgid "the custom role's base access level does not match the current access level"
+msgstr ""
+
+msgid "the first element of the sub claim must be one of: %{components}"
 msgstr ""
 
 msgid "the following epics"

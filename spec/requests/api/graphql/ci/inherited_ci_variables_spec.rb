@@ -247,6 +247,36 @@ RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category:
     end
   end
 
+  describe 'the project CI/CD settings page query' do
+    let(:query) do
+      get_graphql_query_as_string('ci/inherited_ci_variables/graphql/queries/inherited_ci_variables.query.graphql')
+    end
+
+    def project_with_inherited_variables(depth:, variables_per_group:)
+      parent = nil
+      groups = Array.new(depth) { parent = create(:group, parent: parent, owners: user) }
+      groups.each { |group| create_list(:ci_group_variable, variables_per_group, group: group) }
+
+      create(:project, group: groups.last, maintainers: user)
+    end
+
+    def run_query(project)
+      run_with_clean_state(query, context: { current_user: user },
+        variables: { 'fullPath' => project.full_path, 'first' => 100 })
+    end
+
+    it 'avoids N+1 queries as variables and ancestor groups are added' do
+      small = project_with_inherited_variables(depth: 2, variables_per_group: 1)
+      large = project_with_inherited_variables(depth: 4, variables_per_group: 3)
+
+      run_query(small)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { run_query(small) }
+
+      expect { run_query(large) }.to issue_same_number_of_queries_as(control)
+    end
+  end
+
   def pagination_info
     graphql_data_at('project', 'inheritedCiVariables', 'pageInfo')
   end

@@ -356,6 +356,7 @@ RSpec.describe MergeRequests::VersionedMergeRequest, feature_category: :code_rev
           complete_or_manual?: true,
           has_self_or_descendant_reports?: true
         )
+        allow(merge_request).to receive(:agentic_sast_reports?).and_return(false)
       end
 
       it 'resolves the head pipeline against the latest diff head' do
@@ -369,12 +370,21 @@ RSpec.describe MergeRequests::VersionedMergeRequest, feature_category: :code_rev
         expect(versioned.has_sast_reports?).to be(false)
       end
 
+      it 'falls back to the agentic SAST reports of the merge request' do
+        allow(merge_request).to receive_messages(head_pipeline: nil, agentic_sast_reports?: true)
+
+        expect(versioned.has_sast_reports?).to be(true)
+      end
+
       context 'when the diff target is not the latest version' do
         before do
           allow(diff_resolver).to receive(:latest?).and_return(false)
         end
 
-        it { expect(versioned.has_sast_reports?).to be(false) }
+        it 'returns false without checking the agentic SAST reports' do
+          expect(versioned.has_sast_reports?).to be(false)
+          expect(merge_request).not_to have_received(:agentic_sast_reports?)
+        end
       end
     end
   end

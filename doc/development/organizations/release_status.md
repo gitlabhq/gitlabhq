@@ -13,7 +13,8 @@ The stage determines who can use a flag and whether it can be disabled.
 | Stage | Audience | Description |
 |-------|----------|-------------|
 | Experimental | Organizations team and selected peers | In flux. Being designed and built. No stability contract. |
-| Beta | GitLab Team Members and opted-in customers | Ready for real world use. No SLA. May change. |
+| Internal | GitLab team members | Used internally by GitLab team members. May change. |
+| Beta | Opted-in customers | Ready for real world use. No SLA. May change. |
 | LA (25%) | Customers, 25% rollout | Trusted as working. Rolled out to 25% of GitLab.com. |
 | LA (50%) | Customers, 50% rollout | Trusted as working. Rolled out to 50% of GitLab.com. |
 | LA (75%) | Customers, 75% rollout | Trusted as working. Rolled out to 75% of GitLab.com. |

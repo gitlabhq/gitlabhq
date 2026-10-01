@@ -1,11 +1,11 @@
 <script>
 import { GlAlert, GlFormCheckbox, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE, TYPENAME_DISCUSSION } from '~/graphql_shared/constants';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import createWikiPageNoteMutation from '~/wikis/wiki_notes/graphql/create_wiki_page_note.mutation.graphql';
 import updateWikiPageMutation from '~/wikis/wiki_notes/graphql/update_wiki_page_note.mutation.graphql';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';

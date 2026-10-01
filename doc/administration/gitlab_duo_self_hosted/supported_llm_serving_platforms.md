@@ -458,10 +458,10 @@ To configure an Amazon Bedrock Mantle model,
 ### Configure Azure OpenAI
 
 [Azure OpenAI](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard&pivots=azure-openai)
-serves models through the [GitLab Duo Chat completions API](../../api/chat.md) and the
-[Azure OpenAI Responses API](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses).
-Most models support the GitLab Duo Chat completions API.
-Some newer models are available only through the Azure OpenAI Responses API.
+serves models through the Chat Completions API and the
+[Responses API](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses).
+Most models support the Chat Completions API.
+Some newer models are available only through the Responses API.
 
 To configure an Azure OpenAI model,
 [add a self-hosted model](configure_duo_features.md#add-a-self-hosted-model) with the following values:
@@ -471,14 +471,14 @@ To configure an Azure OpenAI model,
 - For **Endpoint**, enter the endpoint of your Azure OpenAI resource in the
   `https://<resource-name>.openai.azure.com` format. Do not add a path or an API version.
 - For **Model identifier**, use the `azure/` prefix followed by the name of your deployment
-  (for example, `azure/gpt-4o`). This identifier sends requests to the GitLab Duo Chat completions API.
+  (for example, `azure/gpt-4o`). This identifier sends requests to the Chat Completions API.
   To send requests to the Responses API instead,
-  see [use the Azure OpenAI Responses API](#use-the-azure-openai-responses-api).
+  see [use the Responses API](#use-the-responses-api).
 - For **API key**, enter an API key for your Azure OpenAI resource.
 
-#### Use the Azure OpenAI Responses API
+#### Use the Responses API
 
-For a deployment that is available only through the Azure OpenAI Responses API,
+For a deployment that is available only through the Responses API,
 use the `azure/responses/` prefix.
 For **Model identifier**, enter the prefix followed by the name of your deployment
 (for example, `azure/responses/gpt-5`).

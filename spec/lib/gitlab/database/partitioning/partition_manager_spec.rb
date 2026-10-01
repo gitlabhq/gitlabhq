@@ -641,6 +641,35 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           .to(%w[_test_foo1])
       end
 
+      context 'when an earlier detach attempt failed and left its cleanup records' do
+        # Rows written by earlier attempts on the still-attached partition
+        let!(:stale_records) do
+          Array.new(2) { Postgresql::DetachedPartition.create!(table_name: '_test_foo1', drop_after: 1.day.from_now) }
+        end
+
+        it 'deletes them before creating the new record' do
+          freeze_time do
+            sync_partitions
+
+            expect(Postgresql::DetachedPartition.where(table_name: '_test_foo1'))
+              .to contain_exactly(have_attributes(
+                drop_after: Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR
+              ))
+          end
+        end
+
+        it 'deletes them even when the detach fails again' do
+          allow(connection).to receive(:execute).and_call_original
+          allow(connection).to receive(:execute).with('SELECT 1').and_raise(ActiveRecord::StatementInvalid, 'boom')
+
+          sync_partitions
+
+          records = Postgresql::DetachedPartition.where(table_name: '_test_foo1')
+          expect(records.count).to eq(1)
+          expect(records).not_to include(*stale_records)
+        end
+      end
+
       it 'records the concurrent form as a log field' do
         allow(Gitlab::AppLogger).to receive(:info)
 
@@ -796,6 +825,32 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
       pending_drop = Postgresql::DetachedPartition.find_by!(table_name: "#{partitioned_table_name}_202104")
       expect(pending_drop.drop_after).to eq(Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR)
+    end
+
+    context 'when the partition already has a cleanup record' do
+      # Stands in for a row left by an earlier concurrent detach attempt
+      let!(:stale_record) do
+        Postgresql::DetachedPartition.create!(table_name: "#{partitioned_table_name}_202104", drop_after: 1.day.from_now)
+      end
+
+      it 'deletes it before creating the new record' do
+        subject
+
+        expect(Postgresql::DetachedPartition.where(table_name: "#{partitioned_table_name}_202104"))
+          .to contain_exactly(have_attributes(
+            drop_after: Time.current + described_class::RETAIN_DETACHED_PARTITIONS_FOR
+          ))
+      end
+
+      it 'keeps it when the detach fails' do
+        allow(connection).to receive(:execute).and_call_original
+        allow(connection).to receive(:execute).with(/DETACH PARTITION/).and_raise(ActiveRecord::StatementInvalid, 'boom')
+
+        subject
+
+        # The delete and create share the failed detach's transaction, so both roll back
+        expect(Postgresql::DetachedPartition.all).to contain_exactly(stale_record)
+      end
     end
 
     context 'when the model overrides the detached partition retention period' do

@@ -23,6 +23,10 @@ class ProjectCiCdSetting < ApplicationRecord
   ALLOWED_SUB_CLAIM_COMPONENTS = %w[
     project_path
     project_id
+    job_project_path
+    job_project_id
+    source_project_path
+    source_project_id
     ref_type
     ref
     ref_protected
@@ -30,7 +34,14 @@ class ProjectCiCdSetting < ApplicationRecord
     deployment_tier
   ].freeze
 
-  SUB_CLAIM_LEADING_COMPONENTS = %w[project_path project_id].freeze
+  SUB_CLAIM_LEADING_COMPONENTS = %w[
+    project_path
+    project_id
+    job_project_path
+    job_project_id
+    source_project_path
+    source_project_id
+  ].freeze
 
   enum :pipeline_variables_minimum_override_role, PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
 
@@ -169,7 +180,8 @@ class ProjectCiCdSetting < ApplicationRecord
   def validate_sub_claim_components
     unless SUB_CLAIM_LEADING_COMPONENTS.include?(id_token_sub_claim_components[0])
       errors.add(:id_token_sub_claim_components,
-        _('project_path or project_id must be the first element of the sub claim'))
+        format(_('the first element of the sub claim must be one of: %{components}'),
+          components: SUB_CLAIM_LEADING_COMPONENTS.join(', ')))
     end
 
     id_token_sub_claim_components.each do |component|

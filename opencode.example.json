@@ -1,68 +1,328 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": [
-    "CLAUDE.local.md",
-    ".ai/AGENTS.md"
-  ],
-  "plugin": [
-    "@gitlab/opencode-gitlab-plugin"
+  "plugins": [
+    "opencode-gitlab-plugin@3.0.0"
   ],
   "enabled_providers": [
     "gitlab"
   ],
-  "small_model": "gitlab/duo-chat-haiku-4-5",
+  "agents": {
+    "title": {
+      "model": "gitlab/duo-chat-haiku-4-5"
+    }
+  },
   "share": "disabled",
   "default_agent": "plan",
-  "permission": {
-    "*": "ask",
-    "bash": {
-      "*": "ask",
-      "bundle exec rspec*": "allow",
-      "bundle exec rubocop -A *": "allow",
-      "date*": "allow",
-      "echo*": "allow",
-      "find*": "allow",
-      "git add*": "allow",
-      "git blame*": "allow",
-      "git branch*": "allow",
-      "git diff*": "allow",
-      "git --no-pager diff*": "allow",
-      "git grep*": "allow",
-      "git log*": "allow",
-      "git ls-files*": "allow",
-      "git remote -v": "allow",
-      "git rev-parse*": "allow",
-      "git show*": "allow",
-      "git status*": "allow",
-      "go build*": "allow",
-      "go test*": "allow",
-      "go vet*": "allow",
-      "golangci-lint run*": "allow",
-      "grep*": "allow",
-      "head*": "allow",
-      "ls*": "allow",
-      "markdownlint *": "allow",
-      "npx markdownlint-cli2 *": "allow",
-      "pre-commit *": "allow",
-      "sleep *": "allow",
-      "tail*": "allow",
-      "vale *": "allow",
-      "wc *": "allow",
-      "which*": "allow"
+  "permissions": [
+    {
+      "action": "*",
+      "resource": "*",
+      "effect": "ask"
     },
-    "glob": "allow",
-    "grep": "allow",
-    "knowledge-graph_list_projects": "allow",
-    "knowledge-graph_read_definitions": "allow",
-    "knowledge-graph_search_codebase_definitions": "allow",
-    "lazy-mcp_describe_commands": "allow",
-    "lazy-mcp_invoke_command": "allow",
-    "lazy-mcp_list_commands": "allow",
-    "lazy-mcp_list_servers": "allow",
-    "read": "allow",
-    "task": {
-      "explore": "allow"
+    {
+      "action": "read",
+      "resource": "*",
+      "effect": "allow"
     },
-    "todowrite": "allow"
-  }
+    {
+      "action": "read",
+      "resource": "*.env",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "*.env.*",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "*.env.example",
+      "effect": "allow"
+    },
+    {
+      "action": "glob",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "grep",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "skill",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "subagent",
+      "resource": "explore",
+      "effect": "allow"
+    },
+    {
+      "action": "todowrite",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "bundle exec rspec *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "bundle exec rubocop -A *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "date *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "echo *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git add *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git blame *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git diff *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git --no-pager diff *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git grep *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git log *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git ls-files *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git remote -v",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git rev-parse *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git show *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git status *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "go build *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "go test *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "go vet *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "golangci-lint run *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "grep *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "head *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "ls *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "markdownlint *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "npx markdownlint-cli2 *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "pre-commit *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "sleep *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "tail *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "vale *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "wc *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "which *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -rf *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "curl *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "wget *",
+      "effect": "deny"
+    },
+    {
+      "action": "knowledge-graph_list_projects",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "knowledge-graph_read_definitions",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "knowledge-graph_search_codebase_definitions",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "lazy-mcp_describe_commands",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "lazy-mcp_invoke_command",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "lazy-mcp_list_commands",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "lazy-mcp_list_servers",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "read",
+      "resource": "~/.aws/*",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.config/opencode/*",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.gnupg/*",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.netrc",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.ssh/*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.aws/*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.config/opencode/*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.gnupg/*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.netrc",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.ssh/*",
+      "effect": "deny"
+    }
+  ]
 }

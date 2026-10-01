@@ -26,6 +26,9 @@ class UsersController < ApplicationController
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss, permission: :read_user_activity) }
   before_action :user, except: [:exists]
   before_action :set_legacy_data
+  before_action only: [:show] do
+    push_frontend_feature_flag(:contribution_music_easter_egg, current_user)
+  end
   before_action :authorize_read_user_profile!, only: [
     :calendar, :calendar_activities, :groups, :projects, :contributed, :starred, :snippets, :followers, :following
   ]

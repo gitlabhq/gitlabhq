@@ -189,7 +189,8 @@ module Gitlab
             variables.append(key: 'CI_JOB_GROUP_NAME', value: Gitlab::Utils::Job.group_name(job.name))
             variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
-            variables.append(key: 'CI_JOB_TAGS', value: job.tag_list.to_a.to_s)
+            json_tags = job.tag_list.to_a.map { |tag| Gitlab::Json.generate(tag) }
+            variables.append(key: 'CI_JOB_TAGS', value: "[#{json_tags.join(', ')}]")
 
             if job.pipeline.trigger_id
               variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true')

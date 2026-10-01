@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe 'admin/application_settings/_eks' do
   include RenderedHtml
 
-  let_it_be(:admin) { create(:admin) }
-
+  let(:admin) { build_stubbed(:admin) }
   let(:page) { rendered_html }
 
   before do

@@ -52,11 +52,16 @@ How this works:
 
 ## Approvals do not show
 
-The [`CODEOWNERS` file](_index.md#codeowners-file) must be present in the target branch before the
-merge request is created.
+The [`CODEOWNERS` file](_index.md#codeowners-file) must be present in the target branch.
 
-Code Owner approval rules only update when the merge request is created.
-If you update the `CODEOWNERS` file, close the merge request and create a new one.
+Code Owner approval rules update when:
+
+- You create or update the merge request.
+- You push commits to the source branch.
+- You push an updated `CODEOWNERS` file to a protected target branch.
+
+If approvals still do not show after you change the `CODEOWNERS` file, push a new commit to the
+source branch or edit the merge request to refresh them.
 
 ## Approvals shown as optional
 

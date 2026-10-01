@@ -107,14 +107,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     end
   end
 
-  describe '#user_mapping_enabled?' do
-    # See gitlab-org/gitlab#628379. User contribution mapping is the only
-    # supported mode for GitHub imports.
-    it 'returns true' do
-      expect(settings.user_mapping_enabled?).to be(true)
-    end
-  end
-
   describe '#map_to_personal_namespace_owner?' do
     let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user, :with_namespace) }

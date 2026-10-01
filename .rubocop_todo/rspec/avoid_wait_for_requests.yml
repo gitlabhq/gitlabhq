@@ -171,7 +171,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/boards/sidebar_spec.rb'
     - 'spec/features/boards/user_adds_lists_to_board_spec.rb'
     - 'spec/features/calendar_spec.rb'
-    - 'spec/features/ci/catalog/catalog_releases_spec.rb'
     - 'spec/features/ci/catalog/catalog_settings_spec.rb'
     - 'spec/features/commits_spec.rb'
     - 'spec/features/cycle_analytics_spec.rb'

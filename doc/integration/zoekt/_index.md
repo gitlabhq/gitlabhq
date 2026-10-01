@@ -9,7 +9,6 @@ title: Zoekt
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Limited availability
 
 {{< /details >}}
 
@@ -22,13 +21,9 @@ title: Zoekt
 - Feature flag `zoekt_rollout_worker` [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175666) in GitLab 17.9. Disabled by default.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/17918) from beta to limited availability in GitLab 18.6.
 - Feature flags [`zoekt_cross_namespace_search`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213413) and [`zoekt_rollout_worker`](https://gitlab.com/gitlab-org/gitlab/-/issues/519660) removed in GitLab 18.7.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/9804) in GitLab 19.5.
 
 {{< /history >}}
-
-> [!warning]
-> This feature is in [limited availability](../../policy/development_stages_support.md#limited-availability).
-> For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/work_items/9404).
-> Provide feedback in [issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
 
 Zoekt is an open-source search engine designed specifically to search for code.
 

@@ -211,7 +211,7 @@ module MergeRequests
 
         if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
-          schedule_duo_code_review(merge_request)
+          schedule_duo_code_review(merge_request) if branch_and_project_match?(merge_request)
           source_branch_or_force_pushed_mrs << merge_request
         elsif diff_ids_to_reload.include?(merge_request.merge_request_diff.id)
           merge_request.reload_diff(current_user)

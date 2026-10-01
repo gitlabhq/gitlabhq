@@ -3,7 +3,7 @@ stage: GitLab Dedicated
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Geo synchronization and verification errors
-description: "Troubleshoot Geo synchronization and verification failures, covering manual retry procedures, bulk operations, error diagnosis, and data consistency restoration."
+description: "Troubleshoot Geo synchronization and verification failures, covering error diagnosis and data consistency restoration."
 ---
 
 {{< details >}}
@@ -16,7 +16,7 @@ description: "Troubleshoot Geo synchronization and verification failures, coveri
 If you notice replication or verification failures in `Admin > Geo > Sites` or the [Sync status Rake task](common.md#sync-status-rake-task), you can try to resolve the failures with the following general steps:
 
 1. Geo automatically retries failures. If the failures are new and few in number, or if you suspect the root cause is already resolved, then you can wait to see if the failures go away.
-1. If failures were present for a long time, then many retries have already occurred, and the interval between automatic retries has increased to up to 4 hours depending on the type of failure. If you suspect the root cause is already resolved, you can [manually retry replication or verification](#manually-retry-replication-or-verification) to avoid the wait.
+1. If failures were present for a long time, then many retries have already occurred, and the interval between automatic retries has increased to up to 4 hours depending on the type of failure. If you suspect the root cause is already resolved, you can [manually retry replication or verification](../resync_reverify.md) to avoid the wait.
 1. If the failures persist, use the following sections to try to resolve them.
 
 ## Diagnostic procedures
@@ -25,7 +25,7 @@ Before attempting manual retries, you can use these enhanced diagnostic procedur
 
 ### Model status check
 
-This procedure provides detailed status information for all [Geo data type Model classes](#geo-data-type-model-classes) and helps identify checksumming failures. These failures happen when the checksum of a replicable object could not be computed. They are also sometimes called "primary verification failures".
+This procedure provides detailed status information for all [Geo data type Model classes](../resync_reverify.md#geo-data-type-model-classes) and helps identify checksumming failures. These failures happen when the checksum of a replicable object could not be computed. They are also sometimes called "primary verification failures".
 
 You can view the checksum failures either from the UI or the Rails console.
 
@@ -47,7 +47,7 @@ You can use the following script to output detailed information for each model t
 
 > [!note]
 > The `ModelMapper` class was added in [GitLab 18.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196293).
-> For older versions, you need to manually specify the list of [Geo data type Model classes](#geo-data-type-model-classes).
+> For older versions, you need to manually specify the list of [Geo data type Model classes](../resync_reverify.md#geo-data-type-model-classes).
 
 1. On the primary site, [start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session).
 1. Run the following script to get a comprehensive overview:
@@ -136,339 +136,8 @@ This procedure provides detailed status information for all Geo registry types a
 
 ## Manually retry replication or verification
 
-In [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) in a
-secondary Geo site, you can:
-
-- [Manually resync and reverify individual components](#resync-and-reverify-individual-components)
-- [Manually resync and reverify multiple components](#resync-and-reverify-multiple-components)
-
-### Resync and reverify individual components
-
-On the secondary site, visit **Admin** > **Geo** > **Replication** to force a resync or reverify of individual items.
-
-However, if this doesn't work, you can perform the same action using the Rails console. The
-following sections describe how to use internal application commands in the
-[Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) to cause
-replication or verification for individual records synchronously or asynchronously.
-
-#### Obtaining a Replicator instance
-
-> [!warning]
-> Commands that change data can cause damage if not run correctly or under the right conditions.
-> Always run commands in a test environment first and have a backup instance ready to restore.
-
-Before you can perform any sync or verify operations, you need to obtain a Replicator instance.
-
-First, [start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
-in a primary or secondary site, depending on what you want to do.
-
-Primary site:
-
-- You can checksum a resource
-
-Secondary site:
-
-- You can sync a resource
-- You can checksum a resource and verify that checksum against the primary site's checksum
-
-Next, run one of the following snippets to get a Replicator instance.
-
-##### Given a model record's ID
-
-- Replace `123` with the actual ID.
-- Replace `Packages::PackageFile` with any of the
-  [Geo data type Model classes](#geo-data-type-model-classes).
-
-```ruby
-model_record = Packages::PackageFile.find_by(id: 123)
-replicator = model_record.replicator
-```
-
-##### Given a registry record's ID
-
-- Replace `432` with the actual ID. A Registry record may or may not have the same ID
-  value as the Model record that it tracks.
-- Replace `Geo::PackageFileRegistry` with any of the [Geo Registry classes](#geo-registry-classes).
-
-In a secondary Geo site:
-
-```ruby
-registry_record = Geo::PackageFileRegistry.find_by(id: 432)
-replicator = registry_record.replicator
-```
-
-##### Given an error message in a Registry record's `last_sync_failure`
-
-- Replace `Geo::PackageFileRegistry` with any of the [Geo Registry classes](#geo-registry-classes).
-- Replace `error message here` with the actual error message.
-
-```ruby
-registry = Geo::PackageFileRegistry.find_by("last_sync_failure LIKE '%error message here%'")
-replicator = registry.replicator
-```
-
-##### Given an error message in a Registry record's `verification_failure`
-
-- Replace `Geo::PackageFileRegistry` with any of the [Geo Registry classes](#geo-registry-classes).
-- Replace `error message here` with the actual error message.
-
-```ruby
-registry = Geo::PackageFileRegistry.find_by("verification_failure LIKE '%error message here%'")
-replicator = registry.replicator
-```
-
-#### Performing operations with a Replicator instance
-
-After you have a Replicator instance stored in a `replicator` variable, you can perform many
-operations:
-
-##### Sync in the console
-
-This snippet only works in a secondary site.
-
-This executes the sync code synchronously in the console, so you can observe how long it takes to
-sync a resource, or view a full error backtrace.
-
-```ruby
-replicator.sync
-```
-
-Optionally, make the log level of the console more verbose than the configured log level, and then
-perform a sync:
-
-```ruby
-Rails.logger.level = :debug
-```
-
-##### Checksum or verify in the console
-
-This snippet works in any primary or secondary site.
-
-In a primary site, it checksums the resource and stores the result in the main GitLab
-database. In a secondary site, it checksums the resource, compares it against the checksum in
-the main GitLab database (generated by the primary site), and stores the result in the Geo
-Tracking database.
-
-This executes the checksum and verification code synchronously in the console, so you can observe
-how long it takes, or view a full error backtrace.
-
-```ruby
-replicator.verify
-```
-
-##### Sync in a Sidekiq job
-
-This snippet only works in a secondary site.
-
-It enqueues a job for Sidekiq to perform a [sync](#sync-in-the-console) of the resource.
-
-```ruby
-replicator.enqueue_sync
-```
-
-##### Verify in a Sidekiq job
-
-This snippet works in any primary or secondary site.
-
-It enqueues a job for Sidekiq to perform a
-[checksum or verify](#checksum-or-verify-in-the-console) of the resource.
-
-```ruby
-replicator.verify_async
-```
-
-##### Get a model record
-
-This snippet works in any primary or secondary site.
-
-```ruby
-replicator.model_record
-```
-
-##### Get a registry record
-
-This snippet only works in a secondary site because registry tables are stored in the Geo
-Tracking DB.
-
-```ruby
-replicator.registry
-```
-
-#### Geo data type Model classes
-
-A Geo data type is a specific class of data that is required by one or more GitLab features to store
-relevant data and is replicated by Geo to secondary sites.
-
-- **Blob types**:
-  - `Ci::JobArtifact`
-  - `Ci::PipelineArtifact`
-  - `Ci::SecureFile`
-  - `LfsObject`
-  - `MergeRequestDiff`
-  - `Packages::PackageFile`
-  - `PagesDeployment`
-  - `Terraform::StateVersion`
-  - `Upload`
-  - `DependencyProxy::Manifest`
-  - `DependencyProxy::Blob`
-- **Git Repository types**:
-  - `DesignManagement::Repository`
-  - `ProjectRepository`
-  - `ProjectWikiRepository`
-  - `SnippetRepository`
-  - `GroupWikiRepository`
-- **Other types**:
-  - `ContainerRepository`
-
-The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of
-these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The
-Replicator knows how to replicate or verify the non-PostgreSQL data (file/Git repository/Container
-repository).
-
-#### Geo Registry classes
-
-In the context of GitLab Geo, a **registry record** refers to registry tables in
-the Geo tracking database. Each record tracks a single replicable in the main
-GitLab database, such as an LFS file, or a project Git repository. The Rails
-models that correspond to Geo registry tables that can be queried are:
-
-- **Blob types**:
-  - `Geo::CiSecureFileRegistry`
-  - `Geo::DependencyProxyBlobRegistry`
-  - `Geo::DependencyProxyManifestRegistry`
-  - `Geo::JobArtifactRegistry`
-  - `Geo::LfsObjectRegistry`
-  - `Geo::MergeRequestDiffRegistry`
-  - `Geo::PackageFileRegistry`
-  - `Geo::PagesDeploymentRegistry`
-  - `Geo::PipelineArtifactRegistry`
-  - `Geo::ProjectWikiRepositoryRegistry`
-  - `Geo::SnippetRepositoryRegistry`
-  - `Geo::TerraformStateVersionRegistry`
-  - `Geo::UploadRegistry`
-- **Git Repository types**:
-  - `Geo::DesignManagementRepositoryRegistry`
-  - `Geo::ProjectRepositoryRegistry`
-  - `Geo::ProjectWikiRepositoryRegistry`
-  - `Geo::SnippetRepositoryRegistry`
-  - `Geo::GroupWikiRepositoryRegistry`
-- **Other types**:
-  - `Geo::ContainerRepositoryRegistry`
-
-### Resync and reverify multiple components
-
-When component resources fail to sync or verify, you can trigger bulk actions to re-kick the replication queue.
-These actions reset the retry count and schedule time back to 0, causing the system to process the failed resources
-sooner rather than waiting up to 1 hour.
-
-> [!note]
-> These actions don't immediately process the resources. Instead, they re-queue the background jobs that
-> handle synchronization and verification. The actual replication work happens asynchronously through the standard Geo
-> replication process.
-
-#### How resync and reverification works
-
-When you trigger a resync or reverification action, the system marks matching records as `pending`. The Geo resync and
-reverification background workers pick up these records and process them according to normal queue priority.
-This mechanism allows you to expedite the processing of failed resources without immediately blocking on the operation.
-
-> [!note]
-> It is not possible to reverify a record which is not successfully synced. Only a synced record can be verified.
-
-It is possible to trigger bulk actions from the UI or from the Rails console.
-
-#### From the UI
-
-You can schedule a full resync of all resources of one component from the UI:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Geo** > **Sites**.
-1. Under **Replication details**, select the desired component.
-
-##### Resync resources for the selected component
-
-1. Select **Resync all**: this resets the status of all records for the selected resource, regardless of whether they are already synced or not.
-1. Select **Resync all failed**: this resets all records for which sync failed.
-
-##### Reverify resources for the selected component
-
-1. Select **Reverify all**: this resets the status of all records for the selected resource, regardless of whether they are already verified or not.
-1. Select **Reverify all failed**: this resets all records for which verification failed, but sync is successful.
-
-##### Reverify one component on all sites
-
-If the primary site's checksums are in question, then you need to make the primary site recalculate checksums.
-A "full re-verification" is then achieved, because after each checksum is recalculated on a primary site, events
-are generated which propagate to all secondary sites, causing them to recalculate their checksums and compare values.
-Any mismatch marks the registry as `sync failed`, which causes sync retries to be scheduled.
-
-You can recalculate the primary site's checksum from the UI:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Monitoring** > **Data management**.
-1. Select the desired component in the dropdown list.
-1. Select **Checksum all**.
-
-> [!warning]
-> **Resync all**, **Reverify all** and **Checksum all** trigger an update of all resources, regardless of whether they are already synced or verified.
-> It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
-
-#### From the Rails console
-
-> [!warning]
-> Commands that change data can cause damage if not run correctly or under the right conditions.
-> Always run commands in a test environment first and have a backup instance ready to restore.
-
-The following sections describe how to use internal application commands in the
-[Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) to cause bulk
-replication or verification.
-
-##### Sync all resources of one component that failed to sync
-
-The following script:
-
-- Loops over all failed repositories.
-- Displays the Geo sync and verification metadata, including the reasons for the last failure.
-- Attempts to resync the repository.
-- Reports back if a failure occurs, and why.
-- Might take some time to complete. Each repository check must complete
-  before reporting back the result. If your session times out, take measures
-  to allow the process to continue running such as starting a `screen` session,
-  or running it using [Rails runner](../../../operations/rails_console.md#using-the-rails-runner)
-  and `nohup`.
-
-Run this script on the secondary Geo site.
-
-```ruby
-Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
-   begin
-     puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Last Sync Failure: '#{registry.last_sync_failure}'"
-     registry.replicator.sync
-     puts "Sync initiated for registry ID: #{registry.id}"
-   rescue => e
-     puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Failed: '#{e}'", e.backtrace.join("\n")
-   end
-end; nil
-```
-
-##### Reverify all resources that failed to checksum on the primary site
-
-The system automatically reverifies all resources that failed to checksum on the primary site, but
-it uses a progressive backoff scheme to avoid an excessive volume of failures.
-
-Optionally, for example if you've completed an attempted intervention, you can manually trigger
-reverification sooner:
-
-1. SSH into a GitLab Rails node in the primary site.
-1. Open the [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session).
-1. Replacing `Upload` with any of the [Geo data type Model classes](#geo-data-type-model-classes),
-   mark all resources as `pending verification`:
-
-   ```ruby
-   Upload.verification_state_table_class.where(verification_state: 3).each_batch do |relation|
-     relation.update_all(verification_state: 0)
-   end
-   ```
+For more information on manually retrying replication or verification for individual components
+or in bulk, see [Resync and reverify Geo data](../resync_reverify.md).
 
 ## Errors
 
@@ -533,7 +202,7 @@ The same errors are also reflected in the UI under **Admin** > **Geo** > **Sites
 
 To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an upload is causing those errors which is used as an example below.
 
-1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for uploads it corresponds to `Upload`.
+1. Map the identified inconsistencies to their respective [Geo Model class](../resync_reverify.md#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for uploads it corresponds to `Upload`.
 1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the Geo primary site.
 1. Query all resources where verification failed due to missing files based on the *Geo Model class* of the previous step. Adjust or remove the `limit(20)` to display more results. Observe how the listed resources should match the failed ones shown in the UI:
 
@@ -893,7 +562,7 @@ To resolve this issue:
       ```
 
 1. Wait for Geo to retry the sync automatically, or
-   [manually retry replication](#manually-retry-replication-or-verification).
+   [manually retry replication](../resync_reverify.md).
 
 ### Error: `gitmodulesUrl: disallowed submodule url`
 
@@ -1539,13 +1208,13 @@ curl --header "PRIVATE-TOKEN: <token>" \
 ```
 
 After you increase the timeout, wait for Geo to retry automatically, or
-[manually retry replication](#manually-retry-replication-or-verification).
+[manually retry replication](../resync_reverify.md).
 
 #### Identify and validate timed-out blobs
 
 If blobs continue to fail after you increase the timeout, identify the affected objects
 and confirm the files exist on the primary site. The following examples use LFS objects;
-for other blob types, use the matching [Geo Registry class](#geo-registry-classes) and model.
+for other blob types, use the matching [Geo Registry class](../resync_reverify.md#geo-registry-classes) and model.
 
 1. Identify the affected objects on the secondary site:
 
@@ -1590,7 +1259,7 @@ previous step to locate the file:
 
 After the files are present on the secondary site, mark them as synced and trigger verification.
 The following example uses LFS objects; for other blob types, use the matching
-[Geo Registry class](#geo-registry-classes):
+[Geo Registry class](../resync_reverify.md#geo-registry-classes):
 
 ```ruby
 [lfs_object_id1, lfs_object_id2, lfs_object_id3].each do |lfs_object_id|
@@ -1624,7 +1293,7 @@ end
 Use this procedure only as a last resort, after the supported options
 ([increase the blob download timeout](#increase-the-blob-download-timeout),
 the [API](../../../../api/geo_nodes.md), and the
-[Geo replication details in the Admin area](#from-the-ui)) have not resolved
+[Geo replication details in the Admin area](../resync_reverify.md#from-the-ui)) have not resolved
 the failure. It runs the sync outside the Geo framework, so prefer the
 supported options whenever possible.
 
@@ -1746,7 +1415,7 @@ container repositories use different sync paths and are not covered.
    ```
 
 1. Run the helper for the affected registry record. Replace the registry class
-   with any of the [Geo Registry classes](#geo-registry-classes) and `123` with
+   with any of the [Geo Registry classes](../resync_reverify.md#geo-registry-classes) and `123` with
    the actual registry ID:
 
    ```ruby
@@ -1832,7 +1501,7 @@ A second synchronization error can also be caused by repository check issues:
 Error syncing repository: 13:Received RST_STREAM with error code 2.
 ```
 
-These errors can be observed by [immediately syncing all failed repositories](#sync-all-resources-of-one-component-that-failed-to-sync).
+These errors can be observed by [immediately syncing all failed repositories](../resync_reverify.md#sync-all-resources-of-one-component-that-failed-to-sync).
 
 Removing the malformed objects causing consistency errors involves rewriting the repository history, which is usually not an option.
 

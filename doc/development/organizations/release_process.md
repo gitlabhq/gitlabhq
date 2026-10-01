@@ -3,11 +3,11 @@ title: Organizations release process
 ---
 
 You ship an organization feature by gating it behind an *organization flag* and moving that flag through a fixed ladder of shared *stages*.
-The stages are Experimental, Beta, Limited Availability (LA), and GA.
+The stages are Experimental, Internal, Beta, Limited Availability (LA), and GA.
 
 The model rests on one idea: a feature's audience only ever grows.
 The audience grows along two axes.
-Segment is who can reach the feature, from the Organizations team, to GitLab team members and opted-in customers, to a growing share of customers, to everyone.
+Segment is who can reach the feature, from the Organizations team, to GitLab team members, to opted-in customers, to a growing share of customers, to everyone.
 Platform is where the feature runs, from GitLab.com, to GitLab Self-Managed and GitLab Dedicated at GA.
 Each stage is a point on that growing surface.
 A higher stage widens the audience on one or both axes, and never narrows it.
@@ -60,7 +60,7 @@ The audience only ever grows, so the earlier, smaller audiences are never droppe
 A feature at Beta is therefore enabled for the Experimental audience too, not only the Beta audience.
 
 `Organizations::Release.enabled?` reflects this: it checks the flag's own stage flag and every earlier cascading stage flag.
-Only Experimental and Beta cascade. The LA stages roll out by independent percentage buckets and do not nest, and GA is already on for everyone.
+Experimental, Internal, and Beta cascade. The LA stages roll out by independent percentage buckets and do not nest, and GA is already on for everyone.
 
 ### Expose a flag to the frontend
 
@@ -86,25 +86,30 @@ flags:
 ```
 
 - `name`: the identifier you pass to `Organizations::Release.enabled?`.
-- `stage`: the stage the feature starts at, usually `experimental`. One of `experimental`, `beta`, `la_25`, `la_50`, `la_75`, `la_100`, or `ga`.
+- `stage`: the stage the feature starts at, usually `experimental`. One of `experimental`, `internal`, `beta`, `la_25`, `la_50`, `la_75`, `la_100`, or `ga`.
 
 ## Test your feature
 
-Toggle the organization flag in specs with `stub_organization_release`, which is available in every spec:
+Pin an organization flag in specs with `stub_organization_release`, which is available in every spec:
 
 ```ruby
-stub_organization_release(:ui_for_organizations, enabled: true)
-stub_organization_release(:ui_for_organizations, enabled: false)
+stub_organization_release(ui_for_organizations: true)
+stub_organization_release(ui_for_organizations: false)
 ```
 
-Like regular feature flags, the backing stage flags are enabled by default in tests, so gated code runs unless you disable it with `enabled: false`.
+You can pass several flags in one call, and repeated calls accumulate.
 
-The helper resolves the organization flag through the registry to whichever stage flag currently backs it, then stubs that stage flag.
-Specs do not hard-code a stage, so they keep testing the right flag when the feature advances to another stage.
+The helper stubs `Organizations::Release.enabled?` for each organization flag, the same way `stub_feature_flags` stubs regular flags.
+It leaves the shared `org_stage_*` stage flags untouched.
+This pins one feature independently of its stage and of other features at the same stage, and your specs keep working when the feature advances to another stage.
 
-The helper toggles the backing stage flags, so it enables or disables the whole stage, not just that capability.
-Every organization flag at the same stage flips together, the same as the shared stage flags in production.
-To disable a feature, the helper also clears the earlier cascading stage flags, so the cascade does not leave the feature on.
+Flags you don't stub use the real `enabled?`.
+Like regular feature flags, the stage flags are enabled by default in tests, so gated code runs unless you disable it.
+The typical use is to pin the disabled case.
+
+An unknown flag name raises an error, the same as a mistyped feature flag.
+
+Stage resolution and the cascade are tested in `spec/lib/organizations/release_spec.rb`, which drives the `org_stage_*` flags directly.
 
 ## Advance it through the stages
 
@@ -112,14 +117,15 @@ Advance the feature by raising its `stage` one step at a time. Each change is a 
 
 ```mermaid
 flowchart LR
-    Add["Register flag<br>stage: experimental"] --> beta --> la_25 --> la_50 --> la_75 --> la_100 --> ga --> Stable["Stable<br>remove the flag"]
+    Add["Register flag<br>stage: experimental"] --> internal --> beta --> la_25 --> la_50 --> la_75 --> la_100 --> ga --> Stable["Stable<br>remove the flag"]
 ```
 
 Not every stage is mandatory. The handbook defines the path. In summary:
 
 | Stage | Required? | Notes |
 |-------|-----------|-------|
-| Experimental | Optional | Skip when appropriate. An organization flag can start at Beta. |
+| Experimental | Optional | Skip when appropriate. An organization flag can start at Internal or Beta. |
+| Internal | Optional | Skip when appropriate. An organization flag can go from Experimental straight to Beta. |
 | Beta | Required | Do not skip. |
 | LA 25, 50, 75 | Optional | Intermediate increments can be skipped. |
 | LA 100 | Required before GA | An organization flag reaches LA 100 before GA. |
@@ -146,6 +152,7 @@ Each stage maps to one shared `ops` stage flag, defined in `lib/organizations/re
 | Stage | Stage flag |
 |-------|------------|
 | Experimental | `org_stage_experimental` |
+| Internal | `org_stage_internal` |
 | Beta | `org_stage_beta` |
 | LA 25 to 100 | `org_stage_la_25` to `org_stage_la_100` |
 | GA | `org_stage_ga` (`default_enabled: true`) |
@@ -155,12 +162,15 @@ A stage flag's configuration is the same for every organization flag at that sta
 Because a stage flag is shared, every organization flag at that stage shares its gates, and an actor sees a feature when it matches any gate.
 Flipper combines a stage flag's gates with a logical OR, so one stage flag can serve several audiences at once.
 
-The Experimental and Beta stage flags enable specific actors:
+The Experimental, Internal, and Beta stage flags enable specific actors or feature groups:
 
 ```shell
 /chatops run feature set --group=gitlab-org/organizations org_stage_experimental true
+/chatops run feature set --feature-group=gitlab_team_members org_stage_internal true
 /chatops run feature set --group=a-customer-group org_stage_beta true
 ```
+
+Internal is enabled for the `gitlab_team_members` feature group, and Beta targets customer groups.
 
 The actor is polymorphic.
 A specific-actor gate accepts any type GitLab supports as a feature flag actor (`Feature::SUPPORTED_MODELS`): an organization, a user, a group, and others.

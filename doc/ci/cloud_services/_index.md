@@ -122,6 +122,41 @@ The `sub` field then has the following format:
 
 - `project_id:{id}:ref_type:{type}:ref:{branch_name}`
 
+### Use the project that runs the job as the subject
+
+In a merge request pipeline, the source branch and target branch could be in different projects,
+for example with two projects with a fork relationship. When the source and target are from
+different projects:
+
+- The `project_path` component of the `sub` claim is the path of the source project.
+- The pipeline could [run in the target project](../pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).
+
+In this situation, the `project_path` component does not identify the project that runs the job.
+To bind cloud trust policies to the project that runs the job, use `job_project_path` or `job_project_id`
+as the first component of the `sub` claim. Like `project_id`, `job_project_id` does not change
+when the project is renamed or moved.
+
+> [!warning]
+> With `job_project_path` or `job_project_id`, the `sub` claim does not show that the source branch
+> is in a different project. The `ref` component is the source branch of the merge request,
+> but that branch can have the same name as a branch in the target project, for example `main`.
+>
+> Use these components only if your trust policies can safely grant their cloud access
+> to pipelines for merge requests from a different project.
+>
+> When the source project and the target project are different, merge request pipelines have `ref_protected:false`.
+> So, to exclude these pipelines from a trust policy, add `ref_protected` to the `sub` claim
+> components and require `ref_protected:true` in the policy.
+
+To use one of these components, set `ci_id_token_sub_claim_components` by using the
+[projects API](../../api/projects.md#update-a-project).
+The `sub` field then has one of the following formats:
+
+| `ci_id_token_sub_claim_components`        | `sub` format |
+|-------------------------------------------|--------------|
+| `["job_project_path", "ref_type", "ref"]` | `job_project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` |
+| `["job_project_id", "ref_type", "ref"]`   | `job_project_id:{id}:ref_type:{type}:ref:{branch_name}` |
+
 ## OIDC authorization with your cloud provider
 
 To connect with your cloud provider, see the following tutorials:

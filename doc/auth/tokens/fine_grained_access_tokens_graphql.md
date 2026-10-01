@@ -1979,7 +1979,9 @@ Grants the ability to enable the paid Secrets Manager add-on for a top-level gro
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Enable <sup>1</sup> | Group | Mutation | `SecretsManagerEnableAddOn` |
+| Enable <sup>1</sup> | Group | Mutation | `SecretsManagerRefreshEntitlement` |
 | Enable <sup>1</sup> | Instance | Mutation | `SecretsManagerInstanceEnableAddOn` |
+| Enable <sup>1</sup> | Instance | Mutation | `SecretsManagerInstanceRefreshEntitlement` |
 
 <sup>1</sup> Also requires the `Read Secrets Manager` permission.
 
@@ -2096,6 +2098,7 @@ Grants the ability to read instance metadata.
 | Read | Instance | Type | `GitlabInstanceFeatureFlag` |
 | Read | Instance | Type | `Kas` |
 | Read | Instance | Type | `Metadata` |
+| Read | Instance | Type | `SecurityScanProfileVariable` |
 
 #### Personal Access Token
 

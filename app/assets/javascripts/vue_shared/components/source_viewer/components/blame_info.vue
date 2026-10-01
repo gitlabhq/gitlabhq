@@ -88,7 +88,7 @@ export default {
 };
 </script>
 <template>
-  <div class="blame gl-border-r gl-bg-subtle" :style="{ width: `${containerWidth}px` }">
+  <div class="blame gl-border-r gl-relative gl-bg-subtle" :style="{ width: `${containerWidth}px` }">
     <blame-column-resizer v-model="containerWidth" />
 
     <div class="blame-commit !gl-border-none">

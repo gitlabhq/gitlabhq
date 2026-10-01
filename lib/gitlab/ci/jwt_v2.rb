@@ -11,6 +11,10 @@ module Gitlab
       ADDITIONAL_SUBJECT_CLAIMS = [
         :project_path,
         :project_id,
+        :job_project_path,
+        :job_project_id,
+        :source_project_path,
+        :source_project_id,
         :ref_type,
         :ref,
         :ref_protected,
@@ -18,13 +22,32 @@ module Gitlab
         :deployment_tier
       ].freeze
 
-      PATH_BASED_SUBJECT_CLAIMS = [:project_path].freeze
+      PATH_BASED_SUBJECT_CLAIMS = [:project_path, :job_project_path, :source_project_path].freeze
 
       def self.for_build(
         build, aud:, sub_components: [:project_path, :ref_type,
           :ref], target_audience: nil)
         new(build, ttl: build.timeout_value, aud: aud, sub_components: sub_components,
           target_audience: target_audience).encoded
+      end
+
+      def self.burned_path_in_sub?(build, sub_components)
+        return false unless Gitlab::CurrentSettings.block_jwt_for_reclaimed_paths
+
+        path_claims = sub_components.map(&:to_sym) & PATH_BASED_SUBJECT_CLAIMS
+        return false if path_claims.empty?
+
+        sub_projects = path_claims.map do |claim|
+          claim == :job_project_path ? build.project : source_project_for(build)
+        end
+
+        sub_projects.uniq.any? do |sub_project|
+          ::Authn::BurnedProjectRoute.blocked_for?(
+            organization_id: sub_project.organization_id,
+            path: sub_project.full_path,
+            except_project_id: sub_project.id
+          )
+        end
       end
 
       def initialize(build, ttl:, aud:, sub_components:, target_audience:)
@@ -34,7 +57,7 @@ module Gitlab
         @sub_components = sub_components
         @target_audience = target_audience
 
-        verify_path_not_burned! if path_based_sub?
+        verify_path_not_burned!
 
         @sub = subject_value(sub_components)
       end
@@ -67,27 +90,15 @@ module Gitlab
       end
 
       def sub_claims
-        ci_claims.merge(
-          project_path: source_project.full_path,
-          project_id: source_project.id.to_s
-        ).slice(*ADDITIONAL_SUBJECT_CLAIMS)
+        ci_claims
+          .merge(project_path: source_project.full_path, project_id: source_project.id.to_s)
+          .merge(job_project_claims, source_project_claims)
+          .slice(*ADDITIONAL_SUBJECT_CLAIMS)
       end
       strong_memoize_attr :sub_claims
 
       def verify_path_not_burned!
-        return unless Gitlab::CurrentSettings.block_jwt_for_reclaimed_paths
-
-        return unless ::Authn::BurnedProjectRoute.blocked_for?(
-          organization_id: source_project.organization_id,
-          path: source_project.full_path,
-          except_project_id: source_project.id
-        )
-
-        raise ::Gitlab::Ci::OidcBurnedPathError
-      end
-
-      def path_based_sub?
-        (@sub_components.map(&:to_sym) & PATH_BASED_SUBJECT_CLAIMS).any?
+        raise ::Gitlab::Ci::OidcBurnedPathError if self.class.burned_path_in_sub?(build, @sub_components)
       end
 
       def predefined_claims

@@ -707,6 +707,59 @@ if [[ -f "$GITLAB_YML" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# 5h. Give edit mode and tests their own Redis databases
+#
+#     The cluster pods use Redis DB 0 with gitlabhq_production. Sharing it
+#     lets each side run the other's Sidekiq jobs against the wrong
+#     database, and RSpec's before(:suite) flushdb would wipe the pods'
+#     queues, cron schedule and sessions.
+# ---------------------------------------------------------------------------
+
+REDIS_DEVELOPMENT_DB=1
+REDIS_TEST_DB=2
+
+echo ""
+echo "==> Pointing development at Redis DB $REDIS_DEVELOPMENT_DB and test at DB $REDIS_TEST_DB..."
+
+for file in config/resque.yml config/cable.yml; do
+  file_path="$GITLAB_DIR/$file"
+  if [[ ! -f "$file_path" ]]; then
+    warn "$file not found – skipping Redis DB rewrite"
+    continue
+  fi
+
+  # Only rewrites bare scheme://[auth@]host[:port][/db] URLs, leaving anything
+  # else (query strings, comments) alone. Exits non-zero unless both
+  # development: and test: had a url: rewritten.
+  if awk -v dev="$REDIS_DEVELOPMENT_DB" -v test="$REDIS_TEST_DB" '
+    /^development:/ { db = dev; env = "development" }
+    /^test:/        { db = test; env = "test" }
+    /^[^ ]/ && !/^(development|test):/ { db = "" }
+    db != "" && /^ +url:[[:space:]]+rediss?:\/\/[^\/?#[:space:]]+(\/[0-9]+)?[[:space:]]*$/ {
+      sub(/(\/[0-9]+)?[[:space:]]*$/, "/" db); rewritten[env] = 1
+    }
+    { print }
+    END { exit !(rewritten["development"] && rewritten["test"]) }
+  ' "$file_path" > "$file_path.tmp"; then
+    echo "  ✓ $file"
+  else
+    warn "$file: could not set the Redis DB under both development: and test: (no plain redis:// url: line) – they may still share DB 0 with the cluster pods"
+  fi
+  mv "$file_path.tmp" "$file_path"
+done
+
+WORKHORSE_TOML="$GITLAB_DIR/workhorse/workhorse-config.toml"
+if [[ -f "$WORKHORSE_TOML" ]]; then
+  sed -i.bak -E "s/^DB[[:space:]]*=[[:space:]]*[0-9]+[[:space:]]*$/DB = $REDIS_DEVELOPMENT_DB/" "$WORKHORSE_TOML"
+  rm "$WORKHORSE_TOML.bak"
+  if grep -q "^DB = $REDIS_DEVELOPMENT_DB$" "$WORKHORSE_TOML"; then
+    echo "  ✓ workhorse/workhorse-config.toml"
+  else
+    warn "workhorse/workhorse-config.toml: no DB = line found – edit-mode Workhorse may still use Redis DB 0"
+  fi
+fi
+
+# ---------------------------------------------------------------------------
 # 6. Remove leftover config/vite.gdk.json from earlier versions of this script.
 # ---------------------------------------------------------------------------
 

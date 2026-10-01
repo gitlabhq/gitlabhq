@@ -211,7 +211,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The project ID', documentation: { example: 'gitlab-org/gitlab' }
+      requires :id, type: String, desc: 'ID or URL-encoded path of the project.', documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: FILE_ENDPOINT_REQUIREMENTS do
       desc 'Retrieve file blame metadata' do
@@ -221,9 +221,9 @@ module API
       end
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
-          desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
+          desc: 'Commit SHA or name of a repository branch or tag.', allow_blank: false, documentation: { example: 'main' }
       end
       route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project
       head ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
@@ -240,14 +240,14 @@ module API
       end
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
-          desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
-        optional :range, type: Hash, desc: 'Object that contains the blame range' do
+          desc: 'Commit SHA or name of a repository branch or tag.', allow_blank: false, documentation: { example: 'main' }
+        optional :range, type: Hash, desc: 'Range of lines to return blame information for.' do
           requires :start, type: Integer,
-            desc: 'The first line of the range to blame', values: 1.., allow_blank: false
+            desc: 'First line number of the range to blame.', values: 1.., allow_blank: false
           requires :end, type: Integer,
-            desc: 'The last line of the range to blame', values: 1.., allow_blank: false
+            desc: 'Last line number of the range to blame.', values: 1.., allow_blank: false
         end
       end
       route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project
@@ -269,11 +269,11 @@ module API
       end
       params do
         requires :file_path, type: String, file_path: { allow_initial_path_separator: true },
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
         optional :ref, type: String,
-          desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
+          desc: 'Commit SHA or name of a repository branch or tag.', allow_blank: false, documentation: { example: 'main' }
         optional :lfs, type: Boolean,
-          desc: 'Retrieve binary data for a file that is an lfs pointer',
+          desc: "If `true`, returns the Git LFS file contents instead of the pointer. Ignored if the file isn't tracked by Git LFS.",
           default: false
       end
       route_setting :authentication, job_token_allowed: true
@@ -302,9 +302,9 @@ module API
       end
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
-          desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
+          desc: 'Commit SHA or name of a repository branch or tag.', allow_blank: false, documentation: { example: 'main' }
       end
       route_setting :authorization, permissions: :read_repository_file, boundary_type: :project
       head ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
@@ -321,9 +321,9 @@ module API
       end
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
-          desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
+          desc: 'Commit SHA or name of a repository branch or tag.', allow_blank: false, documentation: { example: 'main' }
       end
       route_setting :authorization, permissions: :read_repository_file, boundary_type: :project
       get ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
@@ -369,7 +369,7 @@ module API
       params do
         requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The file content to be created (generated by Multipart middleware)', documentation: { type: 'file' }
         requires :file_path, type: String, file_path: true,
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
       end
       route_setting :authorization, permissions: :create_repository_file, boundary_type: :project
       post ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
@@ -415,7 +415,7 @@ module API
       params do
         requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The file content to be updated (generated by Multipart middleware)', documentation: { type: 'file' }
         requires :file_path, type: String, file_path: true,
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
       end
       route_setting :authorization, permissions: :update_repository_file, boundary_type: :project
       put ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
@@ -449,20 +449,20 @@ module API
       end
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'URL-encoded full path to the file, for example `lib%2Fclass%2Erb`.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :branch, type: String,
-          desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false,
+          desc: 'Name of the branch to commit the deletion into. Combine with `start_branch` to create a new branch.', allow_blank: false,
           documentation: { example: 'main' }
         requires :commit_message, type: String,
-          allow_blank: false, desc: 'Commit message', documentation: { example: 'Initial commit' }
+          allow_blank: false, desc: 'Commit message.', documentation: { example: 'Initial commit' }
         optional :start_branch, type: String,
-          desc: 'Name of the branch to start the new commit from', documentation: { example: 'main' }
+          desc: 'Name of the base branch to create the branch from.', documentation: { example: 'main' }
         optional :author_email, type: String,
-          desc: 'The email of the author', documentation: { example: 'johndoe@example.com' }
+          desc: 'Email address of the commit author.', documentation: { example: 'johndoe@example.com' }
         optional :author_name, type: String,
-          desc: 'The name of the author', documentation: { example: 'John Doe' }
+          desc: 'Name of the commit author.', documentation: { example: 'John Doe' }
         optional :last_commit_id, type: String,
-          desc: 'Last known file commit id', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
+          desc: 'Last known file commit ID.', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
       end
       route_setting :authorization, permissions: :delete_repository_file, boundary_type: :project
       delete ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do

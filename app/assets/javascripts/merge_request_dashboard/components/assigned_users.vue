@@ -89,7 +89,7 @@ export default {
 </script>
 
 <template>
-  <div class="mr-users-list gl-relative gl-flex gl-justify-center">
+  <div class="mr-users-list gl-relative gl-flex">
     <div v-if="sortedUsers.length" class="gl-flex gl-gap-2">
       <gl-avatar-link
         v-for="user in visibleUsers"
@@ -117,7 +117,7 @@ export default {
               v-gl-tooltip.top.window.hover
               :title="showAllUsersButtonText"
               :aria-label="usersBadgeSrOnlyText"
-              class="!gl-h-[32px] !gl-min-w-[32px] !gl-rounded-full !gl-border-0 !gl-bg-neutral-100 !gl-p-0 !gl-text-sm !gl-text-neutral-700"
+              class="!gl-h-7 !gl-min-w-7 !gl-rounded-full !gl-border-0 !gl-bg-strong !gl-p-0 !gl-text-sm !gl-text-default"
               data-testid="show-all-users"
             >
               +{{ hiddenUsers.length }}

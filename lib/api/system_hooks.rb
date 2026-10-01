@@ -21,22 +21,31 @@ module API
       end
 
       params :hook_parameters do
-        optional :name, type: String, desc: 'Name of the hook'
-        optional :description, type: String, desc: 'Description of the hook'
+        optional :name, type: String, desc: 'Name of the hook. ' \
+                                        '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in ' \
+                                        'GitLab 17.1.'
+        optional :description, type: String,
+          desc: 'Description of the hook. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.'
         optional :token, type: String,
-          desc: "Secret token to validate received payloads; this isn't returned in the response"
+          desc: 'Secret token used to validate received payloads. Not returned in the response, and changing the ' \
+            'hook URL resets it.'
         optional :signing_token, type: String,
-          desc: "HMAC signing token used to compute the webhook-signature header. " \
-            "Must be in whsec_<base64> format encoding a 32-byte key. Not returned in the response"
-        optional :push_events, type: Boolean, desc: 'When true, the hook fires on push events'
-        optional :tag_push_events, type: Boolean, desc: 'When true, the hook fires on new tags being pushed'
-        optional :merge_requests_events, type: Boolean, desc: 'Trigger hook on merge requests events'
-        optional :repository_update_events, type: Boolean, desc: 'Trigger hook on repository update events'
-        optional :enable_ssl_verification, type: Boolean, desc: 'Do SSL verification when triggering the hook'
-        optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
+          desc: 'HMAC signing token used to compute the `webhook-signature` header. Must be in `whsec_<base64>` ' \
+            'format encoding a 32-byte key, and is not returned in the response. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0.'
+        optional :push_events, type: Boolean, desc: 'If `true`, triggers the system hook on push events.'
+        optional :tag_push_events, type: Boolean, desc: 'If `true`, triggers the system hook on tag push events.'
+        optional :merge_requests_events, type: Boolean, desc: 'If `true`, triggers the system hook on merge request ' \
+                                                          'events.'
+        optional :repository_update_events, type: Boolean, desc: 'If `true`, triggers the system hook on repository ' \
+                                                             'update events.'
+        optional :enable_ssl_verification, type: Boolean, desc: 'If `true`, verifies the SSL certificate when the ' \
+                                                            'hook is triggered.'
+        optional :push_events_branch_filter, type: String, desc: 'Filter push events by branch name.'
         optional :branch_filter_strategy, type: String, values: WebHook.branch_filter_strategies.keys,
-          desc: "Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`"
-        optional :custom_webhook_template, type: String, desc: "Custom template for the request payload"
+          desc: 'Filter push events by branch. Defaults to `wildcard`.'
+        optional :custom_webhook_template, type: String, desc: 'Custom template for the system hook request payload.'
         use :url_variables
         use :custom_headers
       end
@@ -69,7 +78,7 @@ module API
         tags system_hooks_tags
       end
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the system hook'
+        requires :hook_id, type: Integer, desc: 'ID of the system hook.'
       end
       route_setting :authorization, permissions: :read_webhook, boundary_type: :instance, assignable_when: [:admin]
       get ":hook_id" do
@@ -115,7 +124,7 @@ module API
       end
       route_setting :authorization, permissions: :update_webhook, boundary_type: :instance, assignable_when: [:admin]
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the system hook'
+        requires :hook_id, type: Integer, desc: 'ID of the system hook.'
         use :optional_url
         use :hook_parameters
       end
@@ -144,7 +153,7 @@ module API
         tags system_hooks_tags
       end
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the system hook'
+        requires :hook_id, type: Integer, desc: 'ID of the system hook.'
       end
       route_setting :authorization, permissions: :delete_webhook, boundary_type: :instance, assignable_when: [:admin]
       delete ":hook_id" do

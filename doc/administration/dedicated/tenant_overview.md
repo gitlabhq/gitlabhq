@@ -118,6 +118,24 @@ displays **No data yet** instead of the list of services.
 > [credit request process](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/service-level-agreement/#credit-request-process)
 > in the SLA for GitLab Dedicated.
 
+## Notifications
+
+You can view a history of all notifications sent about your GitLab Dedicated instance,
+including maintenance, emergency maintenance, incident, and configuration-change notifications.
+Each notification includes a title and the date and time it was sent.
+
+Prerequisites:
+
+- You must have the Admin or Read only role in Switchboard.
+
+To view your notifications:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. In the left sidebar, select **Notifications**.
+
+Select a notification title to view its details.
+To filter notifications by title, enter text in the search box above the notification list.
+
 ## Switchboard customer API
 
 You can retrieve your instance's SLA status programmatically with the Switchboard API.

@@ -127,6 +127,7 @@ organization_foundational_agent_statuses: no_work_needed
 organization_isolations: no_work_needed
 organization_push_rules: no_work_needed
 organization_settings: no_work_needed
+organization_teams: https://gitlab.com/gitlab-org/gitlab/-/issues/630871
 organization_user_details: https://gitlab.com/gitlab-org/gitlab/-/issues/611963
 organization_users: supported
 personal_access_token_granular_scopes: supported

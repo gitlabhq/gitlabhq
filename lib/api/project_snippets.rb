@@ -11,7 +11,7 @@ module API
     feature_category :source_code_management
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers Helpers::SnippetsHelpers
@@ -62,7 +62,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+        requires :snippet_id, type: Integer, desc: 'ID of the snippet.'
       end
       route_setting :authorization, permissions: :read_snippet, boundary_type: :project
       get ":id/snippets/:snippet_id" do
@@ -84,11 +84,11 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :title, type: String, allow_blank: false, desc: 'The title of the snippet'
-        optional :description, type: String, desc: 'The description of a snippet'
+        requires :title, type: String, allow_blank: false, desc: 'Title of the snippet.'
+        optional :description, type: String, desc: 'Description of the snippet.'
         requires :visibility, type: String,
           values: Gitlab::VisibilityLevel.string_values,
-          desc: 'The visibility of the snippet'
+          desc: 'Visibility level for the snippet. On GitLab.com, the `internal` value is not available.'
         use :create_file_params
       end
       route_setting :authorization, permissions: :create_snippet, boundary_type: :project
@@ -125,14 +125,14 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
-        optional :content, type: String, allow_blank: false, desc: 'The content of the snippet'
-        optional :description, type: String, desc: 'The description of a snippet'
-        optional :file_name, type: String, desc: 'The file name of the snippet'
-        optional :title, type: String, allow_blank: false, desc: 'The title of the snippet'
+        requires :snippet_id, type: Integer, desc: 'ID of the snippet.'
+        optional :content, type: String, allow_blank: false, desc: 'Content of the snippet. Deprecated. Use `files` instead.'
+        optional :description, type: String, desc: 'Description of the snippet.'
+        optional :file_name, type: String, desc: 'Name of the snippet file. Deprecated. Use `files` instead.'
+        optional :title, type: String, allow_blank: false, desc: 'Title of the snippet.'
         optional :visibility, type: String,
           values: Gitlab::VisibilityLevel.string_values,
-          desc: 'The visibility of the snippet'
+          desc: 'Visibility level for the snippet. On GitLab.com, the `internal` value is not available.'
 
         use :update_file_params
         use :minimum_update_params
@@ -174,7 +174,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+        requires :snippet_id, type: Integer, desc: 'ID of the snippet.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_snippet, boundary_type: :project
@@ -207,7 +207,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+        requires :snippet_id, type: Integer, desc: 'ID of the snippet.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_snippet, boundary_type: :project
@@ -249,7 +249,7 @@ module API
         tags %w[snippets]
       end
       params do
-        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+        requires :snippet_id, type: Integer, desc: 'ID of the snippet.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance,

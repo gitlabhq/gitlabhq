@@ -114,12 +114,35 @@ RSpec.describe Import::AfterExportStrategies::BaseAfterExportStrategy, feature_c
     end
   end
 
+  describe '#as_json' do
+    it 'returns native JSON types, so Sidekiq can carry it as a job argument' do
+      strategy = described_class.new({ param1: 1 })
+
+      expect([strategy.as_json]).to param_containing_valid_native_json_types
+      expect(strategy.as_json).to eq({ 'param1' => 1, 'klass' => described_class.to_s })
+    end
+
+    it 'does not mutate the attributes it was built with' do
+      params = { param1: 1 }
+
+      described_class.new(params).as_json
+
+      expect(params).to eq({ param1: 1 })
+    end
+  end
+
   describe '#to_json' do
     it 'adds the current strategy class to the serialized attributes' do
       params = { param1: 1 }
       result = params.merge(klass: described_class.to_s).to_json
 
       expect(described_class.new(params).to_json).to eq result
+    end
+
+    it 'serializes the same payload as #as_json' do
+      strategy = described_class.new({ param1: 1 })
+
+      expect(strategy.to_json).to eq(strategy.as_json.to_json)
     end
   end
 

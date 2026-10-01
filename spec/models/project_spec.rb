@@ -5380,30 +5380,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#github_enterprise_import?' do
-    let_it_be(:github_com_project) do
-      build(
-        :project,
-        import_type: 'github',
-        import_url: 'https://api.github.com/user/repo'
-      )
-    end
-
-    let_it_be(:github_enterprise_project) do
-      build(
-        :project,
-        import_type: 'github',
-        import_url: 'https://othergithub.net/user/repo'
-      )
-    end
-
-    it { expect(github_com_project.github_import?).to be true }
-    it { expect(github_com_project.github_enterprise_import?).to be false }
-
-    it { expect(github_enterprise_project.github_import?).to be true }
-    it { expect(github_enterprise_project.github_enterprise_import?).to be true }
-  end
-
   describe '#remove_import_data' do
     let(:import_data) { ProjectImportData.new(data: { 'test' => 'some data' }) }
 
@@ -9703,6 +9679,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         .with(user.id, project.id, nil, { 'exported_by_admin' => false })
 
       project.add_export_job(current_user: user)
+    end
+
+    it 'passes the after export strategy on as native JSON types', :aggregate_failures do
+      after_export_strategy = Import::AfterExportStrategies::WebUploadStrategy.new(url: 'https://example.com/upload')
+
+      expect(Projects::ImportExport::CreateRelationExportsWorker)
+        .to receive(:perform_async) do |_user_id, _project_id, strategy, _params|
+          expect([strategy]).to param_containing_valid_native_json_types
+          expect(strategy).to eq(
+            'url' => 'https://example.com/upload',
+            'http_method' => 'PUT',
+            'klass' => 'Import::AfterExportStrategies::WebUploadStrategy'
+          )
+        end
+
+      project.add_export_job(current_user: user, after_export_strategy: after_export_strategy)
     end
 
     context 'when user is admin', :enable_admin_mode do

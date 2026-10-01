@@ -13,7 +13,7 @@
 #   Organizations::Release.enabled?(:flag_name, actor)
 #
 # To advance or roll back a flag, change its `stage` in a merge request.
-# Valid stages: experimental, beta, la_25, la_50, la_75, la_100, ga.
+# Valid stages: experimental, internal, beta, la_25, la_50, la_75, la_100, ga.
 #
 # The caller passes the feature flag actor (for example an Organization or User,
 # or nil for the instance-wide gate). Pass a consistent actor type at every call

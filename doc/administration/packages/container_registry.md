@@ -1394,6 +1394,9 @@ alone does not delete image layers. It only leaves the underlying image manifest
 To more effectively free up space, the container registry has a garbage collector that can
 delete unreferenced layers and (optionally) untagged manifests.
 
+> [!note]
+> If you use GitLab Geo, see [Garbage collection on Geo sites](../geo/replication/container_registry.md#garbage-collection-on-geo-sites).
+
 To start the garbage collector, run the following `gitlab-ctl` command:
 
 ```shell

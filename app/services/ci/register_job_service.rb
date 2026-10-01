@@ -549,19 +549,9 @@ module Ci
     end
 
     def id_token_burned_project_path?(build)
-      return false unless Gitlab::CurrentSettings.block_jwt_for_reclaimed_paths
       return false unless build.id_tokens?
-      return false unless build.project.ci_id_token_sub_claim_components.include?('project_path')
 
-      burned_project_path?(build)
-    end
-
-    def burned_project_path?(build)
-      ::Authn::BurnedProjectRoute.blocked_for?(
-        organization_id: build.project.organization_id,
-        path: build.project.full_path,
-        except_project_id: build.project.id
-      )
+      Gitlab::Ci::JwtV2.burned_path_in_sub?(build, build.project.ci_id_token_sub_claim_components)
     end
   end
 end

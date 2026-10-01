@@ -81,26 +81,4 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
       expect(merge_request.reviewers.last.id).to eq(user_namespace.owner_id)
     end
   end
-
-  context 'when user contribution mapping is disabled' do
-    before do
-      project.build_or_assign_import_data(data: {}).save!
-      allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-        allow(finder).to receive(:find).with(1, reviewer.username).and_return(reviewer.id)
-        allow(finder).to receive(:find).with(2, 'foo').and_return(nil)
-      end
-    end
-
-    it 'imports unique merge request reviewers that were found' do
-      expect { 2.times { importer.execute } }.not_to raise_error
-
-      expect(merge_request.reviewers.size).to eq(1)
-      expect(merge_request.reviewers.first.id).to eq reviewer.id
-    end
-
-    it 'does not push any placeholder references' do
-      expect(user_references).to be_empty
-    end
-  end
 end

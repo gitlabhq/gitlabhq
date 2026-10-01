@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'admin/application_settings/repository.html.haml' do
   let(:app_settings) { build(:application_setting) }
-  let(:user) { create(:admin) }
+  let(:user) { build_stubbed(:admin) }
 
   before do
     assign(:application_setting, app_settings)

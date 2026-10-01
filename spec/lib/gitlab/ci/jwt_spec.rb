@@ -63,6 +63,13 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
       expect(payload[:job_namespace_path]).to eq(payload[:namespace_path])
     end
 
+    it 'sets the source project related claims same as the job project claims' do
+      expect(payload[:source_project_id]).to eq(payload[:job_project_id])
+      expect(payload[:source_project_path]).to eq(payload[:job_project_path])
+      expect(payload[:source_namespace_id]).to eq(payload[:job_namespace_id])
+      expect(payload[:source_namespace_path]).to eq(payload[:job_namespace_path])
+    end
+
     it_behaves_like 'setting the user_access_level claim' do
       let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
@@ -284,6 +291,53 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
         expect(payload[:job_project_path]).not_to eq(payload[:project_path])
         expect(payload[:job_namespace_id]).not_to eq(payload[:namespace_id])
         expect(payload[:job_namespace_path]).not_to eq(payload[:namespace_path])
+      end
+
+      it 'sets the source_* claims to the source project of the merge request' do
+        expect(payload[:source_project_id]).to eq(forked_project.id.to_s)
+        expect(payload[:source_project_path]).to eq(forked_project.full_path)
+        expect(payload[:source_namespace_id]).to eq(forked_project_namespace.id.to_s)
+        expect(payload[:source_namespace_path]).to eq(forked_project_namespace.full_path)
+      end
+    end
+
+    context 'when the pipeline is for a merge request that targets a forked project' do
+      let_it_be(:source_project_namespace) { build_stubbed(:namespace) }
+      let_it_be(:source_project) { build_stubbed(:project, namespace: source_project_namespace) }
+      let_it_be(:forked_project_namespace) { build_stubbed(:namespace) }
+      let_it_be(:forked_project) { build_stubbed(:project, namespace: forked_project_namespace) }
+
+      let_it_be(:merge_request) do
+        build_stubbed(:merge_request, source_project: source_project, source_branch: 'feature',
+          target_project: forked_project, target_branch: 'master')
+      end
+
+      let_it_be(:pipeline) do
+        build_stubbed(:ci_pipeline, source: :merge_request_event, merge_request: merge_request,
+          project: forked_project, user: user)
+      end
+
+      let_it_be(:build) do
+        build_stubbed(
+          :ci_build,
+          project: forked_project,
+          user: user,
+          pipeline: pipeline
+        )
+      end
+
+      it 'sets the source_* claims to the source project of the merge request' do
+        expect(payload[:source_project_id]).to eq(source_project.id.to_s)
+        expect(payload[:source_project_path]).to eq(source_project.full_path)
+        expect(payload[:source_namespace_id]).to eq(source_project_namespace.id.to_s)
+        expect(payload[:source_namespace_path]).to eq(source_project_namespace.full_path)
+      end
+
+      it 'sets the job_project_* claims to the project running the job' do
+        expect(payload[:job_project_id]).to eq(forked_project.id.to_s)
+        expect(payload[:job_project_path]).to eq(forked_project.full_path)
+        expect(payload[:job_namespace_id]).to eq(forked_project_namespace.id.to_s)
+        expect(payload[:job_namespace_path]).to eq(forked_project_namespace.full_path)
       end
     end
   end

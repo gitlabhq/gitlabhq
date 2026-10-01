@@ -1,5 +1,6 @@
 import { start } from '@gitlab/web-ide';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import Tracking from '~/tracking';
 import { getLineRangeFromHash } from '~/lib/utils/url_utility';

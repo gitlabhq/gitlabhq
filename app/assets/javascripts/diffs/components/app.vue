@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlKeysetPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { debounce, throttle } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import {
   keysFor,
@@ -18,7 +19,7 @@ import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getScrollingElement } from '~/lib/utils/panels';
-import { parseBoolean, handleLocationHash, getCookie } from '~/lib/utils/common_utils';
+import { handleLocationHash, getCookie } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory, getLocationHash } from '~/lib/utils/url_utility';

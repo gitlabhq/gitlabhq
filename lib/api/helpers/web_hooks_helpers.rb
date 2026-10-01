@@ -6,24 +6,24 @@ module API
       extend Grape::API::Helpers
 
       params :requires_url do
-        requires :url, type: String, desc: "The URL to send the request to", documentation: { example: 'http://example.com/hook' }
+        requires :url, type: String, desc: 'Webhook URL.', documentation: { example: 'http://example.com/hook' }
       end
 
       params :optional_url do
-        optional :url, type: String, desc: "The URL to send the request to"
+        optional :url, type: String, desc: 'Webhook URL.'
       end
 
       params :url_variables do
-        optional :url_variables, type: Array, desc: 'URL variables for interpolation' do
-          requires :key, type: String, desc: 'Name of the variable', documentation: { example: 'token' }
-          requires :value, type: String, desc: 'Value of the variable', documentation: { example: '123' }
+        optional :url_variables, type: Array, desc: 'URL variables for interpolation.' do
+          requires :key, type: String, desc: 'Name of the variable.', documentation: { example: 'token' }
+          requires :value, type: String, desc: 'Value of the variable.', documentation: { example: '123' }
         end
       end
 
       params :custom_headers do
-        optional :custom_headers, type: Array, desc: 'Custom headers' do
-          requires :key, type: String, desc: 'Name of the header', documentation: { example: 'X-Custom-Header' }
-          requires :value, type: String, desc: 'Value of the header', documentation: { example: 'value' }
+        optional :custom_headers, type: Array, desc: 'Custom headers for the hook.' do
+          requires :key, type: String, desc: 'Name of the header.', documentation: { example: 'X-Custom-Header' }
+          requires :value, type: String, desc: 'Value of the header.', documentation: { example: 'value' }
         end
       end
 

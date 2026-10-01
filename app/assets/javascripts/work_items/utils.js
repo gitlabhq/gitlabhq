@@ -1,9 +1,9 @@
 import { escapeRegExp, kebabCase, snakeCase, isEmpty, unionBy, union } from 'lodash-es';
 import { ref } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import Tracking from '~/tracking';

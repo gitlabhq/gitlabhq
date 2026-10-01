@@ -109,7 +109,7 @@ Prerequisites:
 
 ## Import all repository data (step two)
 
-This step requires the registry to be shut down or set in `read-only` mode;
+This step requires the registry to be set in `read-only` mode;
 however, you can expect this step to complete around 90% faster than step one.
 Allow enough time for downtime while step two is being executed.
 

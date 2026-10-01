@@ -348,32 +348,33 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     context 'when the parallel request queue is full' do
       let(:location1) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.secret_file1.yml' }
       let(:location2) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.secret_file2.yml' }
+      let(:release_queued_request) { Concurrent::Event.new }
+      let(:queued_response) do
+        # Blocks until released, so the request is guaranteed to still be in progress
+        promise = Concurrent::Promise.new { release_queued_request.wait }
+
+        Gitlab::HTTP_V2::LazyResponse.new(promise, location1, {}, nil)
+      end
 
       before do
         # Makes the parallel queue full easily
         stub_const("Gitlab::Ci::Config::External::Context::MAX_PARALLEL_REMOTE_REQUESTS", 1)
 
-        # Adding a failing promise to the queue
-        promise = Concurrent::Promise.new do
-          sleep 1.1
-          raise Timeout::Error
-        end
-
-        context.execute_remote_parallel_request(
-          Gitlab::HTTP_V2::LazyResponse.new(promise, location1, {}, nil)
-        )
+        context.execute_remote_parallel_request(queued_response)
 
         stub_full_request(location2).to_return(body: remote_file_content)
       end
 
-      it 'waits for the queue' do
+      after do
+        release_queued_request.set
+      end
+
+      it 'waits for the queued request' do
         file2 = described_class.new({ remote: location2 }, context)
 
-        start_at = Time.current
-        file2.preload_content
-        end_at = Time.current
+        expect(queued_response).to receive(:wait).once
 
-        expect(end_at - start_at).to be > 1
+        file2.preload_content
       end
     end
   end

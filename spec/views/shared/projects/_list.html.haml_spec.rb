@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'shared/projects/_list' do
   let_it_be(:user) { build(:user) }
-  let_it_be(:group) { create(:group) }
 
   before do
     allow(view).to receive(:projects).and_return(projects)

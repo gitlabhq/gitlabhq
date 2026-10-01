@@ -1128,6 +1128,10 @@ instructions:
     fileFilters:
       - "spec/**/*_spec.rb"
       - "ee/spec/**/*_spec.rb"
+      - "spec/support/**/*.rb"
+      - "ee/spec/support/**/*.rb"
+      - "spec/factories/**/*.rb"
+      - "ee/spec/factories/**/*.rb"
       - "!spec/migrations/db/**/*_spec.rb"
       - "!ee/spec/migrations/db/**/*.rb"
       - "!ee/db/geo/migrate/**/*.rb"

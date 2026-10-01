@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import MoreActionsDropdown from '~/milestones/components/more_actions_dropdown.vue';
 
 export default function InitMoreActionsDropdown() {

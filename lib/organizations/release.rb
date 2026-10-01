@@ -8,11 +8,12 @@ module Organizations
     UnknownFlagError = Class.new(StandardError)
     UnknownStageError = Class.new(StandardError)
 
-    # Stages are cumulative: Experimental and Beta cascade forward, so a feature
-    # at any later stage is also enabled for their audiences (an LA feature is on
-    # for Experimental and Beta too). LA percentages don't nest and GA is on for
-    # everyone, so neither is a cascade source. Earliest-first; order matters.
-    CASCADING_STAGE_KEYS = %i[experimental beta].freeze
+    # Stages are cumulative: Experimental, Internal, and Beta cascade forward, so
+    # a feature at any later stage is also enabled for their audiences (an LA
+    # feature is on for Experimental, Internal, and Beta too). LA percentages
+    # don't nest and GA is on for everyone, so neither is a cascade source.
+    # Earliest-first; order matters.
+    CASCADING_STAGE_KEYS = %i[experimental internal beta].freeze
 
     class << self
       # True when the actor has the feature's stage flag enabled, or an earlier

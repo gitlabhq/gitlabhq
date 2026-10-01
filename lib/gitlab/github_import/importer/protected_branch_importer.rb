@@ -138,9 +138,7 @@ module Gitlab
             gitlab_user_id_to_github_user_id[gitlab_user_id] = github_user_data.id
           end
 
-          return @allowed_to_push_gitlab_user_ids if user_mapping_enabled?(project)
-
-          @allowed_to_push_gitlab_user_ids &= project_member_ids
+          @allowed_to_push_gitlab_user_ids
         end
 
         # Gets the strictest merge_access_level between GitHub and GitLab
@@ -202,10 +200,6 @@ module Gitlab
 
         def licensed_feature_available?(feature)
           project.licensed_feature_available?(feature)
-        end
-
-        def project_member_ids
-          project.authorized_users.map(&:id)
         end
       end
     end

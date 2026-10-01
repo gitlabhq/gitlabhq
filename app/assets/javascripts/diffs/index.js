@@ -1,8 +1,9 @@
 import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapState } from 'pinia';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
+import { getCookie, removeCookie } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';

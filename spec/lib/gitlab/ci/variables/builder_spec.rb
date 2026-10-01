@@ -215,6 +215,25 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
     it { expect(subject.to_runner_variables).to eq(predefined_variables) }
 
+    context 'when a job has multiple tags' do
+      let(:job) do
+        create(:ci_build, pipeline: pipeline, user: user, tag_list: %w[docker ruby])
+      end
+
+      it 'preserves the existing representation' do
+        expect(subject.to_hash.fetch('CI_JOB_TAGS')).to eq('["docker", "ruby"]')
+      end
+    end
+
+    context 'when a job tag requires JSON escaping' do
+      let(:job_tag) { "prefix\esuffix" }
+      let(:job) { create(:ci_build, pipeline: pipeline, user: user, tag_list: [job_tag]) }
+
+      it 'serializes the tag as valid JSON' do
+        expect(Gitlab::Json::SafeParser.parse(subject.to_hash.fetch('CI_JOB_TAGS'))).to eq([job_tag])
+      end
+    end
+
     context 'variables ordering' do
       def var(name, value)
         { key: name, value: value.to_s, public: true, masked: false }

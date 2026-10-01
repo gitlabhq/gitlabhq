@@ -251,6 +251,14 @@ If you see your job is stuck with the error message `no runners that match all o
 1. Verify if you've selected the correct tag
 1. Confirm if [instance runners are enabled for your project or group](../../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
 
+## Upgrades
+
+GitLab manages upgrades to hosted runners. You do not need to take any action to receive them.
+
+Hosted runner upgrades do not cause downtime and do not interrupt running jobs. Because of this,
+they can occur outside your scheduled [maintenance window](maintenance.md#maintenance-windows).
+The upgrade schedule for your GitLab Dedicated instance does not change.
+
 ## Service level agreement
 
 Hosted runners for GitLab Dedicated are backed by a 99.9% uptime SLA, supported by a

@@ -26408,6 +26408,14 @@ CREATE SEQUENCE operations_user_lists_id_seq
 
 ALTER SEQUENCE operations_user_lists_id_seq OWNED BY operations_user_lists.id;
 
+CREATE TABLE orbit_namespace_enrollments (
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    trial_ended_at timestamp with time zone,
+    source smallint NOT NULL
+);
+
 CREATE TABLE organization_cluster_agent_mappings (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -26561,6 +26569,28 @@ CREATE TABLE organization_settings (
     updated_at timestamp with time zone NOT NULL,
     settings jsonb DEFAULT '{}'::jsonb NOT NULL
 );
+
+CREATE TABLE organization_teams (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    path text NOT NULL,
+    description text,
+    CONSTRAINT check_4babe3cf9d CHECK ((char_length(path) <= 255)),
+    CONSTRAINT check_8cd9bd8cc3 CHECK ((char_length(description) <= 2048)),
+    CONSTRAINT check_dc3f3c2b43 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE organization_teams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_teams_id_seq OWNED BY organization_teams.id;
 
 CREATE TABLE organization_user_details (
     id bigint NOT NULL,
@@ -29533,7 +29563,8 @@ CREATE TABLE project_requirement_compliance_statuses (
     compliance_framework_id bigint NOT NULL,
     pass_count integer DEFAULT 0 NOT NULL,
     fail_count integer DEFAULT 0 NOT NULL,
-    pending_count integer DEFAULT 0 NOT NULL
+    pending_count integer DEFAULT 0 NOT NULL,
+    not_applicable_count integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE project_requirement_compliance_statuses_id_seq
@@ -38046,6 +38077,8 @@ ALTER TABLE ONLY organization_isolations ALTER COLUMN id SET DEFAULT nextval('or
 
 ALTER TABLE ONLY organization_push_rules ALTER COLUMN id SET DEFAULT nextval('organization_push_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_teams ALTER COLUMN id SET DEFAULT nextval('organization_teams_id_seq'::regclass);
+
 ALTER TABLE ONLY organization_user_details ALTER COLUMN id SET DEFAULT nextval('organization_user_details_id_seq'::regclass);
 
 ALTER TABLE ONLY organization_users ALTER COLUMN id SET DEFAULT nextval('organization_users_id_seq'::regclass);
@@ -41885,6 +41918,9 @@ ALTER TABLE ONLY operations_strategies_user_lists
 ALTER TABLE ONLY operations_user_lists
     ADD CONSTRAINT operations_user_lists_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY orbit_namespace_enrollments
+    ADD CONSTRAINT orbit_namespace_enrollments_pkey PRIMARY KEY (namespace_id);
+
 ALTER TABLE ONLY organization_cluster_agent_mappings
     ADD CONSTRAINT organization_cluster_agent_mappings_pkey PRIMARY KEY (id);
 
@@ -41908,6 +41944,9 @@ ALTER TABLE ONLY organization_push_rules
 
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT organization_settings_pkey PRIMARY KEY (organization_id);
+
+ALTER TABLE ONLY organization_teams
+    ADD CONSTRAINT organization_teams_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY organization_user_details
     ADD CONSTRAINT organization_user_details_pkey PRIMARY KEY (id);
@@ -53118,6 +53157,10 @@ CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_references_package_refere
 
 CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_revisions_revision ON packages_conan_package_revisions USING btree (package_id, package_reference_id, revision);
 
+CREATE UNIQUE INDEX uniq_idx_organization_teams_on_org_id_and_lower_name ON organization_teams USING btree (organization_id, lower(name));
+
+CREATE UNIQUE INDEX uniq_idx_organization_teams_on_org_id_and_lower_path ON organization_teams USING btree (organization_id, lower(path));
+
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
 
 CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
@@ -61033,6 +61076,9 @@ ALTER TABLE ONLY work_item_number_field_values
 ALTER TABLE p_ci_build_sources
     ADD CONSTRAINT fk_rails_023578ae70 FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY organization_teams
+    ADD CONSTRAINT fk_rails_0252e16b5d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY automation_rules
     ADD CONSTRAINT fk_rails_025b519b8d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -62493,6 +62539,9 @@ ALTER TABLE ONLY user_preferences
 
 ALTER TABLE ONLY sentry_issues
     ADD CONSTRAINT fk_rails_a6a9612965 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY orbit_namespace_enrollments
+    ADD CONSTRAINT fk_rails_a6d86bcfb1 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_permission_export_uploads
     ADD CONSTRAINT fk_rails_a7130085e3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

@@ -139,42 +139,5 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed, :clean_gitlab_re
         end
       end
     end
-
-    context 'when user mapping is disabled' do
-      let(:mapped_user_id) { user.id }
-      let(:expected_note_attrs) do
-        {
-          noteable_id: issuable.id,
-          noteable_type: issuable.class.name,
-          project_id: project.id,
-          author_id: mapped_user_id,
-          note: "changed title from **{-old-} title** to **{+new+} title**",
-          system: true,
-          created_at: issue_event.created_at,
-          updated_at: issue_event.created_at,
-          imported_from: 'github'
-        }.stringify_keys
-      end
-
-      before do
-        project.build_or_assign_import_data(data: {}).save!
-        allow(project.import_data).to receive(:user_mapping_enabled?).and_return(false)
-        allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
-          allow(finder).to receive(:find).with(1000, 'github_author').and_return(user.id)
-        end
-      end
-
-      context 'with Issue' do
-        it_behaves_like 'import renamed event'
-        it_behaves_like 'do not push placeholder reference'
-      end
-
-      context 'with MergeRequest' do
-        let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
-
-        it_behaves_like 'import renamed event'
-        it_behaves_like 'do not push placeholder reference'
-      end
-    end
   end
 end

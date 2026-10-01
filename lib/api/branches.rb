@@ -28,9 +28,9 @@ module API
 
     helpers do
       params :filter_params do
-        optional :search, type: String, desc: 'Return list of branches matching the search criteria'
-        optional :regex, type: String, desc: 'Return list of branches matching the regex'
-        optional :sort, type: String, desc: 'Return list of branches sorted by the given field', values: %w[name_asc updated_asc updated_desc]
+        optional :search, type: String, desc: 'Return branches containing the search string. Use `^term` to find branches that begin with `term`, and `term$` to find branches that end with `term`.'
+        optional :regex, type: String, desc: 'Return branches with names matching an [RE2](https://github.com/google/re2/wiki/Syntax) regular expression. Cannot be used together with `search`.'
+        optional :sort, type: String, desc: 'Sort results by the specified field and direction.', values: %w[name_asc updated_asc updated_desc]
       end
 
       def build_branches_finder(repository, params)
@@ -47,7 +47,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all repository branches' do
@@ -64,7 +64,7 @@ module API
         use :pagination
         use :filter_params
 
-        optional :page_token, type: String, desc: 'Name of branch to start the pagination from'
+        optional :page_token, type: String, desc: 'Name of the branch to start the pagination from. Used for keyset pagination.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_repositories,
@@ -107,11 +107,11 @@ module API
       end
 
       params do
-        requires :branch, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'Name of the branch.'
       end
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         params do
-          requires :branch, type: String, desc: 'The name of the branch'
+          requires :branch, type: String, desc: 'Name of the branch.'
         end
         desc 'Check if a branch exists' do
           success [{ code: 204, message: 'No Content' }]
@@ -148,9 +148,9 @@ module API
         tags %w[branches]
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
-        optional :developers_can_push, type: Boolean, desc: 'Flag if developers can push to that branch'
-        optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
+        requires :branch, type: String, desc: 'Name of the branch.', allow_blank: false
+        optional :developers_can_push, type: Boolean, desc: 'If `true`, allows developers to push to the branch.'
+        optional :developers_can_merge, type: Boolean, desc: 'If `true`, allows developers to merge to the branch.'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :create_protected_branch, boundary_type: :project
@@ -191,7 +191,7 @@ module API
         tags %w[branches]
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
+        requires :branch, type: String, desc: 'Name of the branch.', allow_blank: false
       end
       # rubocop: disable CodeReuse/ActiveRecord
       route_setting :authorization, permissions: :delete_protected_branch, boundary_type: :project
@@ -215,8 +215,8 @@ module API
         tags %w[branches]
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
-        requires :ref, type: String, desc: 'Create branch from commit sha or existing branch', allow_blank: false
+        requires :branch, type: String, desc: 'Name of the branch.', allow_blank: false
+        requires :ref, type: String, desc: 'Branch name or commit SHA to create the branch from.', allow_blank: false
       end
       route_setting :authorization, permissions: :create_branch, boundary_type: :project
       post ':id/repository/branches' do
@@ -242,7 +242,7 @@ module API
         tags %w[branches]
       end
       params do
-        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
+        requires :branch, type: String, desc: 'Name of the branch.', allow_blank: false
       end
       route_setting :authorization, permissions: :delete_branch, boundary_type: :project
       delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do

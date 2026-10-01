@@ -9,7 +9,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project.'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -50,16 +50,14 @@ module API
         end
         params do
           requires :tag_name_pattern, type: String,
-            desc: 'Container tag name pattern protected by the protection rule. ' \
-              'For example, `v*-release`. Wildcard character `*` allowed.'
+            desc: 'Container tag name pattern protected by the protection rule, for example `v*-release`. Wildcard ' \
+              'character `*` is allowed.'
           requires :minimum_access_level_for_push, type: String,
             values: ContainerRegistry::Protection::TagRule.minimum_access_level_for_pushes.keys,
-            desc: 'Minimum GitLab access level required to push container tags. ' \
-              'For example, Maintainer, Owner, or Admin.'
+            desc: 'Minimum GitLab access level required to push container tags.'
           requires :minimum_access_level_for_delete, type: String,
             values: ContainerRegistry::Protection::TagRule.minimum_access_level_for_deletes.keys,
-            desc: 'Minimum GitLab access level required to delete container tags. ' \
-              'For example, Maintainer, Owner, or Admin.'
+            desc: 'Minimum GitLab access level required to delete container tags.'
         end
         route_setting :authorization, permissions: :create_container_registry_protection_tag_rule,
           boundary_type: :project
@@ -79,7 +77,7 @@ module API
 
         params do
           requires :protection_rule_id, type: Integer,
-            desc: 'The ID of the container protection tag rule.'
+            desc: 'ID of the container registry protection tag rule.'
         end
         resource ':protection_rule_id' do
           desc 'Update a container registry protection tag rule' do
@@ -97,16 +95,16 @@ module API
           end
           params do
             optional :tag_name_pattern, type: String,
-              desc: 'Container tag name pattern protected by the protection rule. ' \
-                'For example, `v*-release`. Wildcard character `*` allowed.'
+              desc: 'Container tag name pattern protected by the protection rule, for example `v*-release`. Wildcard ' \
+                'character `*` is allowed.'
             optional :minimum_access_level_for_push, type: String,
               values: ContainerRegistry::Protection::TagRule.minimum_access_level_for_pushes.keys << "",
-              desc: 'Minimum GitLab access level required to push container tags. ' \
-                'For example, Maintainer, Owner, or Admin. To unset the value, use an empty string (`""`).'
+              desc: 'Minimum GitLab access level required to push container tags. To unset the value, use an empty ' \
+                'string (`""`).'
             optional :minimum_access_level_for_delete, type: String,
               values: ContainerRegistry::Protection::TagRule.minimum_access_level_for_deletes.keys << "",
-              desc: 'Minimum GitLab access level required to delete container tags. ' \
-                'For example, Maintainer, Owner, or Admin. To unset the value, use an empty string (`""`).'
+              desc: 'Minimum GitLab access level required to delete container tags. To unset the value, use an empty ' \
+                'string (`""`).'
           end
           route_setting :authorization, permissions: :update_container_registry_protection_tag_rule,
             boundary_type: :project

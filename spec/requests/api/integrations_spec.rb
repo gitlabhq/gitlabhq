@@ -53,44 +53,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         end
       end
 
-      where(:integration) do
-        # The integrations API supports all project integrations.
-        # You cannot create a GitLab for Slack app. You must install the app from the GitLab UI.
-        unavailable_integration_names = [
-          Integrations::GitlabSlackApplication.to_param,
-          Integrations::JiraCloudApp.to_param,
-          Integrations::Zentao.to_param
-        ]
-
-        names = Integration.available_integration_names(include_instance_specific: false)
-        names.reject { |name| unavailable_integration_names.include?(name) }
-      end
-
-      with_them do
-        integration = params[:integration]
-
-        describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
-          it_behaves_like 'set up an integration', endpoint: endpoint, integration: integration, parent_resource_name: 'project' do
-            let(:parent_resource) { project }
-            let(:integrations_map) { project_integrations_map }
-          end
-        end
-
-        describe "DELETE /projects/:id/#{endpoint}/#{integration.dasherize}" do
-          it_behaves_like 'disable an integration', endpoint: endpoint, integration: integration, parent_resource_name: 'project' do
-            let(:parent_resource) { project }
-            let(:integrations_map) { project_integrations_map }
-          end
-        end
-
-        describe "GET /projects/:id/#{endpoint}/#{integration.dasherize}" do
-          it_behaves_like 'get an integration settings', endpoint: endpoint, integration: integration, parent_resource_name: 'project' do
-            let(:parent_resource) { project }
-            let(:integrations_map) { project_integrations_map }
-          end
-        end
-      end
-
       describe "POST /projects/:id/#{endpoint}/:slug/trigger" do
         describe 'Mattermost integration' do
           let(:integration_name) { 'mattermost_slash_commands' }
@@ -394,6 +356,46 @@ RSpec.describe API::Integrations, feature_category: :integrations do
 
       def assert_secret_fields_filtered(response_keys, integration)
         expect(response_keys).not_to include(*integration.secret_fields) unless integration.secret_fields.empty?
+      end
+    end
+
+    where(:integration) do
+      # The integrations API supports all project integrations.
+      # You cannot create a GitLab for Slack app. You must install the app from the GitLab UI.
+      unavailable_integration_names = [
+        Integrations::GitlabSlackApplication.to_param,
+        Integrations::JiraCloudApp.to_param,
+        Integrations::Zentao.to_param
+      ]
+
+      names = Integration.available_integration_names(include_instance_specific: false)
+      names.reject { |name| unavailable_integration_names.include?(name) }
+    end
+
+    # Only on `integrations`: API::Integrations mounts the same IntegratableOperations for `services`,
+    # varying just the route prefix. The `services` path stays covered by the per-endpoint examples above.
+    with_them do
+      integration = params[:integration]
+
+      describe "PUT /projects/:id/integrations/#{integration.dasherize}" do
+        it_behaves_like 'set up an integration', endpoint: 'integrations', integration: integration, parent_resource_name: 'project' do
+          let(:parent_resource) { project }
+          let(:integrations_map) { project_integrations_map }
+        end
+      end
+
+      describe "DELETE /projects/:id/integrations/#{integration.dasherize}" do
+        it_behaves_like 'disable an integration', endpoint: 'integrations', integration: integration, parent_resource_name: 'project' do
+          let(:parent_resource) { project }
+          let(:integrations_map) { project_integrations_map }
+        end
+      end
+
+      describe "GET /projects/:id/integrations/#{integration.dasherize}" do
+        it_behaves_like 'get an integration settings', endpoint: 'integrations', integration: integration, parent_resource_name: 'project' do
+          let(:parent_resource) { project }
+          let(:integrations_map) { project_integrations_map }
+        end
       end
     end
 

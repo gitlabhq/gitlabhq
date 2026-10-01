@@ -72,7 +72,12 @@ module Import
         ).execute
       end
 
+      # GitHub always maps contributions. import_data can be dropped when an import
+      # is cancelled or fails, so a missing import_data also defaults to mapping.
       def user_mapping_enabled?(project)
+        return true if project.github_import?
+        return true if project.import_data.nil?
+
         project.import_data.user_mapping_enabled?
       end
 

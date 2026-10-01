@@ -238,7 +238,7 @@ has not been imported to the database yet.
 
 To enable prefer mode:
 
-1. In `/etc/gitlab/gitlab.rb`, set `database.enabled` to `"prefer"`
+1. In `/etc/gitlab/gitlab.rb`, set `database.enabled` to `'prefer'`
    instead of `true` or `false`:
 
    ```ruby
@@ -255,19 +255,69 @@ To enable prefer mode:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md).
 
 After you reconfigure GitLab, the registry evaluates which metadata backend to use at startup
-based on lockfiles that track previous writes to the filesystem or database:
+based on lockfiles that track previous writes to the filesystem or database.
 
-- Filesystem lockfile exists: The registry has existing filesystem metadata.
-  It falls back to legacy metadata storage and logs a warning.
-  The registry operates identically to `enabled: false` until you complete
-  a [metadata import](#enable-the-database-for-existing-registries).
-- Database lockfile exists: The registry already uses the database.
-  It connects to the database normally, identical to `enabled: true`.
-- Neither lockfile exists: The registry is a fresh installation.
-  It requires a configured and reachable database to start
-  and does not fall back to legacy storage.
-- Both lockfiles exist: The registry refuses to start. This indicates a
-  configuration error that you must resolve manually.
+#### Prefer mode lockfile workflow
+
+The registry writes lockfiles at startup and the metadata import writes one when it completes,
+but a push never writes one.
+
+A registry using legacy metadata writes `filesystem-in-use` when it starts against storage that
+already contains metadata.
+A registry using the metadata database writes `database-in-use` at startup, regardless of what
+storage holds.
+The [metadata import](#enable-the-database-for-existing-registries) also writes `database-in-use`
+when it completes.
+
+The following table shows the outcome for each lockfile state under `enabled: false` and
+`enabled: 'prefer'`.
+It assumes storage holds a complete catalog and the configured database is reachable, holds the
+registry schema, and contains no repository rows.
+
+| Lockfile in storage | `enabled` | Registry starts | Catalog served |
+|---------------------|-----------|-----------------|----------------|
+| None | `false` | Yes, uses legacy metadata and writes `filesystem-in-use` | Complete |
+| `filesystem-in-use` | `'prefer'` | Yes, falls back to legacy metadata | Complete |
+| None | `'prefer'` | Yes, adopts the database and writes `database-in-use` | Empty, with `200 OK` |
+| `database-in-use` | `false` | No, `registry metadata database in use` | None |
+| Both | `'prefer'` | No, `database-in-use and filesystem-in-use lockfiles present` | None |
+| `filesystem-in-use` | `false` | Yes, uses legacy metadata | Complete |
+
+The last row of the table is intended for a site that has not yet served a push from the database.
+On a site that has, the registry starts and serves a catalog missing everything pushed after the
+import ran.
+For more information, see [Revert to object storage metadata](#revert-to-object-storage-metadata).
+
+Only the third row fails without reporting an error.
+The others either serve the complete catalog or refuse to start and name the reason.
+
+A missing lockfile does not always mean the storage is empty.
+Any registry that has not restarted after its storage was first populated has no lockfile.
+This includes a Geo secondary site filled through its registry API by replication.
+It also includes storage restored from a snapshot or mirrored from another site, unless the copy
+included a lockfile.
+
+If the database is not usable (for example, the server accepts connections but rejects the
+configured credentials), the registry does not start and `gitlab-ctl reconfigure` also fails at
+the registry database migration.
+For more information on how to avoid both the empty catalog and the failure to start, see
+[Existing installations](#existing-installations).
+
+Emptying or recreating storage does not clear the lockfiles.
+The `lockfiles` directory is a sibling of `v2/` rather than inside it.
+Deleting `v2/blobs` and `v2/repositories` to reclaim space leaves `filesystem-in-use` in place.
+The registry then falls back to legacy metadata again at the next start against storage that is now
+empty.
+In that state, pushes succeed and tags appear, while the metadata database stays empty, which can
+read as an unfinished import.
+If you intend to move to the metadata database and nothing was pushed after the storage was
+emptied, remove the lockfile.
+Stop the registry, delete `filesystem-in-use` from the directory described in
+[Check lockfiles on disk](#check-lockfiles-on-disk), and start the registry.
+If anything was pushed after the storage was emptied, run the
+[metadata import](#enable-the-database-for-existing-registries) instead, because removing the
+lockfile leaves those images out of the catalog.
+If you want to stay on legacy metadata, keep the lockfile.
 
 The fallback decision occurs once at startup and does not change while the
 registry is running. There is no automatic retry or reconnection to the
@@ -285,8 +335,8 @@ and restart the registry.
 
 In GitLab 19.0 and later, the metadata database is enabled by default in prefer mode for new installations:
 
-- Linux package (Omnibus) installations: `registry['database']['enabled']` defaults to `"prefer"` when the setting is not specified in `/etc/gitlab/gitlab.rb`. For more information, see [issue 9396](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9396).
-- Self-compiled installations: `database.enabled` defaults to `"prefer"` when the setting is not specified in the registry configuration file.
+- Linux package (Omnibus) installations: `registry['database']['enabled']` defaults to `'prefer'` when the setting is not specified in `/etc/gitlab/gitlab.rb`. For more information, see [issue 9396](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9396).
+- Self-compiled installations: `database.enabled` defaults to `'prefer'` when the setting is not specified in the registry configuration file.
 
 After upgrading, check which backend the registry uses. For the procedure, see [Verify which metadata backend is active](#verify-which-metadata-backend-is-active).
 
@@ -294,12 +344,12 @@ After upgrading, check which backend the registry uses. For the procedure, see [
 
 On a new GitLab 19.0 or later installation, the registry starts in prefer mode. If a reachable metadata database is configured, the registry uses it. Without a reachable database, the registry fails to start.
 
-To keep a new installation on filesystem metadata, set the database mode to `"false"` before the first registry start:
+To keep a new installation on filesystem metadata, set the database mode to `false` before the first registry start:
 
 - For Linux package (Omnibus) installations, in `/etc/gitlab/gitlab.rb`:
 
   ```ruby
-  registry['database']['enabled'] = "false"
+  registry['database']['enabled'] = false
   ```
 
 - For self-compiled installations, in `/home/git/gitlab/config/gitlab.yml`:
@@ -316,6 +366,22 @@ Upgrading an existing installation to GitLab 19.0 or later preserves the current
 
 An existing prefer-mode installation with filesystem metadata continues to use filesystem metadata after the upgrade. To switch to the database, complete a [metadata import](#enable-the-database-for-existing-registries).
 
+If `registry['database']['enabled']` is not set in `/etc/gitlab/gitlab.rb`, the upgrade
+leaves the setting unspecified, and the registry starts in prefer mode. Before upgrading such a site,
+confirm the lockfile is present. For the procedure, see
+[check lockfiles on disk](#check-lockfiles-on-disk).
+
+If the registry uses legacy metadata and `filesystem-in-use` is absent, restart the
+registry once before you upgrade:
+
+```shell
+sudo gitlab-ctl restart registry
+```
+
+The restart writes the lockfile, so prefer mode falls back to legacy metadata correctly.
+Without the restart, the registry finds no lockfile and takes the no-lockfile path described in
+[Prefer mode](#prefer-mode).
+
 #### Metadata database backups
 
 When the registry uses the metadata database, include the registry database in your backups. For the procedure, see [Backup with metadata database](#backup-with-metadata-database).
@@ -331,10 +397,32 @@ use one of the following methods.
 
 #### Check the registry API response header
 
+The registry requires authentication on the `/v2/` endpoint. The endpoint answers an unauthenticated
+request with `401 Unauthorized` and none of the `gitlab-container-registry-*` headers, so
+the check produces no output rather than an answer.
+
+To check the registry API response header:
+
+1. Get a token for the registry. The registry accepts only a JWT issued by GitLab.
+   Request one from the
+   [registry token endpoint](../../api/container_registry.md#obtain-token-from-gitlab).
+   Authenticate with a personal access token that has at least the `read_registry` scope.
+   You do not need to be an administrator. This request does not need a `scope` parameter,
+   because `/v2/` requires a valid token rather than access to a repository:
+
+   ```shell
+   token=$(curl --silent --user "<username>:<personal-access-token>" \
+     "https://gitlab.example.com/jwt/auth?service=container_registry" \
+     | grep --only-matching '"token":"[^"]*"' | cut --delimiter='"' --fields=4)
+   ```
+
+   If the personal access token has no registry scope, the endpoint returns a `403 Forbidden`
+   status code and an empty token.
+
 1. Send a request to the registry `/v2/` endpoint:
 
    ```shell
-   curl --silent --head "https://registry.example.com/v2/" | grep --ignore-case gitlab-container-registry-database-enabled
+   curl --silent --head --header "Authorization: Bearer ${token}" "https://registry.example.com/v2/" | grep --ignore-case gitlab-container-registry-database-enabled
    ```
 
 1. Inspect the
@@ -342,6 +430,18 @@ use one of the following methods.
 
    - A value of `true` means the registry is using the metadata database.
    - A value of `false` means it is using legacy filesystem storage.
+   - No output means the header was absent, so the command answered nothing rather than `false`.
+     An absent header does not mean the metadata database is disabled.
+     Confirm the response status before you act on the result:
+
+     ```shell
+     curl --silent --output /dev/null --write-out '%{http_code}\n' --header "Authorization: Bearer ${token}" "https://registry.example.com/v2/"
+     ```
+
+     A `401` means the request was not authenticated, either because `token` is empty or
+     because the token was rejected. If you cannot authenticate, use
+     [Check lockfiles on disk](#check-lockfiles-on-disk) or
+     [Check registry logs](#check-registry-logs) instead.
 
 #### Check lockfiles on disk
 
@@ -1020,6 +1120,11 @@ You can revert your registry to use object storage metadata after completing a m
 To revert to object storage metadata:
 
 1. Restore a [backup](../backup_restore/backup_gitlab.md#container-registry) taken before the migration.
+1. If the registry uses object storage, delete `database-in-use` from the location described in
+   [Check lockfiles on disk](#check-lockfiles-on-disk).
+   Restoring the backup does not remove this lockfile from object storage.
+   While the lockfile exists, a registry with `'enabled' => false` does not start and logs
+   `registry metadata database in use, please enable the database`.
 1. Add the following configuration to your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby

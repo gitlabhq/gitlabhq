@@ -10,8 +10,9 @@ import {
   GlTooltipDirective,
   GlAnimatedChevronLgRightDownIcon,
 } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { getBoardListTitleId, isListDraggable } from '~/boards/boards_util';
-import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { n__, s__ } from '~/locale';

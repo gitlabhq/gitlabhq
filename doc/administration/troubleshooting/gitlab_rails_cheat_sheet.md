@@ -76,25 +76,25 @@ This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_trou
 
 ### Reverify all uploads (or any SSF data type which is verified)
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-multiple-components).
+Moved to [Resync and reverify Geo data](../geo/replication/resync_reverify.md#resync-and-reverify-multiple-components).
 
 ### Artifacts
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
+Moved to [Resync and reverify Geo data](../geo/replication/resync_reverify.md).
 
 ### Repository verification failures
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
+Moved to [Resync and reverify Geo data](../geo/replication/resync_reverify.md).
 
 ### Resync repositories
 
-Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
+Moved to [Resync and reverify Geo data](../geo/replication/resync_reverify.md).
 
-Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
+Moved to [Resync and reverify Geo data](../geo/replication/resync_reverify.md).
 
 ### Blob types
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
+Moved to [Resync and reverify Geo data](../geo/replication/resync_reverify.md).
 
 ## Generate Service Ping
 

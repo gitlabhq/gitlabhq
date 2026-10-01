@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
 
 export function initJiraIssuesImportStatusRoot() {

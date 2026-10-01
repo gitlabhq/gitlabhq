@@ -545,6 +545,7 @@ namespaces:
 - observability_metrics_issues_connections.namespace_id
 - observability_project_o11y_settings.namespace_id
 - onboarding_progresses.namespace_id
+- orbit_namespace_enrollments.namespace_id
 - p_ai_active_context_code_enabled_namespaces.namespace_id
 - packages_debian_group_architectures.group_id
 - packages_debian_group_component_files.group_id
@@ -807,6 +808,7 @@ organizations:
 - organization_isolations.organization_id
 - organization_push_rules.organization_id
 - organization_settings.organization_id
+- organization_teams.organization_id
 - organization_user_details.organization_id
 - organization_users.organization_id
 - personal_access_token_granular_scopes.organization_id

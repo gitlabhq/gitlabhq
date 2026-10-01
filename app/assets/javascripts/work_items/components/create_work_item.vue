@@ -11,10 +11,11 @@ import {
   GlSprintf,
   GlIcon,
 } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { clearDraft } from '~/lib/utils/autosave';
-import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
+import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__, sprintf, __ } from '~/locale';

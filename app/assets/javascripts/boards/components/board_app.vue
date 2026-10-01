@@ -1,7 +1,8 @@
 <script>
 import { omit } from 'lodash-es';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { historyPushState, parseBoolean } from '~/lib/utils/common_utils';
+import { historyPushState } from '~/lib/utils/common_utils';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';

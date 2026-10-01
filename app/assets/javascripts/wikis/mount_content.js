@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createApolloClient from '~/lib/graphql';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';

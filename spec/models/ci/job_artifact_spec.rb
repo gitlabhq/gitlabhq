@@ -851,7 +851,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     let(:file_final_path) { nil }
 
     let(:artifact) do
-      create(
+      build_stubbed(
         :ci_job_artifact,
         :archive,
         :remote_store,
@@ -938,7 +938,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
 
     context 'when object storage is disabled but artifact was previously stored in object storage' do
       let(:artifact) do
-        artifact = create(
+        artifact = build_stubbed(
           :ci_job_artifact,
           :archive,
           :remote_store,
@@ -975,7 +975,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
 
       context 'when the RuntimeError is storage configuration error' do
         let(:artifact) do
-          create(:ci_job_artifact, :archive, :remote_store)
+          build_stubbed(:ci_job_artifact, :archive, :remote_store)
         end
 
         before do
