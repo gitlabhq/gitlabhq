@@ -3,18 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::PipelineEntity, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, guests: user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, name: 'Build pipeline') }
 
   let(:request) { double('request') }
 
   let(:entity) do
     described_class.represent(pipeline, request: request)
-  end
-
-  before_all do
-    project.add_guest(user)
   end
 
   before do
@@ -57,7 +53,7 @@ RSpec.describe MergeRequests::PipelineEntity, feature_category: :continuous_inte
 
     describe 'artifacts' do
       let_it_be(:build_with_artifact) { create(:ci_build, :codequality_report, pipeline: pipeline) }
-      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, project: project, child_of: pipeline) }
       let_it_be(:child_build_with_artifact) { create(:ci_build, :test_reports, pipeline: child_pipeline) }
 
       it 'gets artifacts from itself and child pipelines' do

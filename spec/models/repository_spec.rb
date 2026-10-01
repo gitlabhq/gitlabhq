@@ -13,7 +13,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }
-  let(:broken_repository) { create(:project, :broken_storage).repository }
+  let(:broken_repository) { build_stubbed(:project, repository_storage: 'broken').repository }
   let(:git_user) { Gitlab::Git::User.from_gitlab(user) }
   let(:message) { 'Test message' }
 
@@ -1712,7 +1712,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#fetch_ref' do
-    let(:broken_repository) { create(:project, :broken_storage).repository }
+    let(:broken_repository) { build_stubbed(:project, repository_storage: 'broken').repository }
 
     describe 'when storage is broken', :broken_storage do
       it 'raises a storage error' do

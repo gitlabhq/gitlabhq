@@ -1,0 +1,174 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6137,7 +6137,11 @@
+     const res = (
+       // local registration
+       // check instance[type] first which is resolved for options API
+-      resolve(instance[type] || Component[type], name) || // global registration
++      resolveLocal(
++        instance[type] || Component[type],
++        name,
++        type
++      ) || // global registration
+       resolve(instance.appContext[type], name)
+     );
+     if (!res && maybeSelfReference) {
+@@ -6152,8 +6156,40 @@
+   } else {
+     warn$1(
+       `resolve${capitalize(type.slice(0, -1))} can only be used in render() or setup().`
++    );
++  }
++}
++/*! GitLab: a component definition may be shared with a Vue 2 realm (an SFC with
++ * no Vue imports is not duplicated by the Vue 3 infection mechanism). After a late
++ * global `Vue.mixin()` Vue 2 re-merges its constructor options and writes the merged
++ * `components`/`directives`/`filters` back onto that shared object. Those registries
++ * inherit Vue 2's global assets (`show`, `model`, `Transition`, ...) through their
++ * prototype, and because Vue 2's extend() iterates inherited keys, the next re-merge
++ * copies them onto the object as own properties identical to the prototype's value.
++ * Vue 3 and compat never build a local registry with a prototype chain, so one that
++ * has it is a Vue 2 artifact: only own entries that differ from what the prototype
++ * yields are the component's own declarations; everything else is a Vue 2 global and
++ * is skipped so that it never shadows the app-level Vue 3 registration. Warn once per
++ * such registry in development, since the Vue 2 hooks and methods written back
++ * alongside still reach this instance.
++ * Remove once GitLab runs on a single Vue version.
++ * See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256620#note_3903912326
++ */
++const warnedForeignRegistries = /* @__PURE__ */ new WeakSet();
++function resolveLocal(registry, name, type) {
++  if (!registry) return void 0;
++  const proto = Object.getPrototypeOf(registry);
++  if (proto === null || proto === Object.prototype) {
++    return resolve(registry, name);
++  }
++  if (!warnedForeignRegistries.has(registry)) {
++    warnedForeignRegistries.add(registry);
++    warn$1(
++      `The "${type}" registry of this component inherits from another registry. A Vue 2 realm re-merged this shared component definition; its Vue 2 hooks and methods may leak into this Vue 3 instance.`
+     );
+   }
++  const declared = (key) => hasOwn(registry, key) && registry[key] !== proto[key] ? registry[key] : void 0;
++  return declared(name) || declared(camelize(name)) || declared(capitalize(camelize(name)));
+ }
+ function resolve(registry, name) {
+   return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+diff --git a/node_modules/@vue/compat/dist/vue.esm-bundler.js b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.esm-bundler.js
+@@ -6118,7 +6118,11 @@
+     const res = (
+       // local registration
+       // check instance[type] first which is resolved for options API
+-      resolve(instance[type] || Component[type], name) || // global registration
++      resolveLocal(
++        instance[type] || Component[type],
++        name,
++        type
++      ) || // global registration
+       resolve(instance.appContext[type], name)
+     );
+     if (!res && maybeSelfReference) {
+@@ -6133,8 +6137,40 @@
+   } else if (!!(process.env.NODE_ENV !== "production")) {
+     warn$1(
+       `resolve${capitalize(type.slice(0, -1))} can only be used in render() or setup().`
++    );
++  }
++}
++/*! GitLab: a component definition may be shared with a Vue 2 realm (an SFC with
++ * no Vue imports is not duplicated by the Vue 3 infection mechanism). After a late
++ * global `Vue.mixin()` Vue 2 re-merges its constructor options and writes the merged
++ * `components`/`directives`/`filters` back onto that shared object. Those registries
++ * inherit Vue 2's global assets (`show`, `model`, `Transition`, ...) through their
++ * prototype, and because Vue 2's extend() iterates inherited keys, the next re-merge
++ * copies them onto the object as own properties identical to the prototype's value.
++ * Vue 3 and compat never build a local registry with a prototype chain, so one that
++ * has it is a Vue 2 artifact: only own entries that differ from what the prototype
++ * yields are the component's own declarations; everything else is a Vue 2 global and
++ * is skipped so that it never shadows the app-level Vue 3 registration. Warn once per
++ * such registry in development, since the Vue 2 hooks and methods written back
++ * alongside still reach this instance.
++ * Remove once GitLab runs on a single Vue version.
++ * See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256620#note_3903912326
++ */
++const warnedForeignRegistries = /* @__PURE__ */ new WeakSet();
++function resolveLocal(registry, name, type) {
++  if (!registry) return void 0;
++  const proto = Object.getPrototypeOf(registry);
++  if (proto === null || proto === Object.prototype) {
++    return resolve(registry, name);
++  }
++  if (!!(process.env.NODE_ENV !== "production") && !warnedForeignRegistries.has(registry)) {
++    warnedForeignRegistries.add(registry);
++    warn$1(
++      `The "${type}" registry of this component inherits from another registry. A Vue 2 realm re-merged this shared component definition; its Vue 2 hooks and methods may leak into this Vue 3 instance.`
+     );
+   }
++  const declared = (key) => hasOwn(registry, key) && registry[key] !== proto[key] ? registry[key] : void 0;
++  return declared(name) || declared(camelize(name)) || declared(capitalize(camelize(name)));
+ }
+ function resolve(registry, name) {
+   return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index aaaaaaa..bbbbbbb 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6045,7 +6045,11 @@
+     const res = (
+       // local registration
+       // check instance[type] first which is resolved for options API
+-      resolve(instance[type] || Component[type], name) || // global registration
++      resolveLocal(
++        instance[type] || Component[type],
++        name,
++        type
++      ) || // global registration
+       resolve(instance.appContext[type], name)
+     );
+     if (!res && maybeSelfReference) {
+@@ -6060,8 +6064,40 @@
+   } else if (!!(process.env.NODE_ENV !== "production")) {
+     warn$1(
+       `resolve${capitalize(type.slice(0, -1))} can only be used in render() or setup().`
++    );
++  }
++}
++/*! GitLab: a component definition may be shared with a Vue 2 realm (an SFC with
++ * no Vue imports is not duplicated by the Vue 3 infection mechanism). After a late
++ * global `Vue.mixin()` Vue 2 re-merges its constructor options and writes the merged
++ * `components`/`directives`/`filters` back onto that shared object. Those registries
++ * inherit Vue 2's global assets (`show`, `model`, `Transition`, ...) through their
++ * prototype, and because Vue 2's extend() iterates inherited keys, the next re-merge
++ * copies them onto the object as own properties identical to the prototype's value.
++ * Vue 3 and compat never build a local registry with a prototype chain, so one that
++ * has it is a Vue 2 artifact: only own entries that differ from what the prototype
++ * yields are the component's own declarations; everything else is a Vue 2 global and
++ * is skipped so that it never shadows the app-level Vue 3 registration. Warn once per
++ * such registry in development, since the Vue 2 hooks and methods written back
++ * alongside still reach this instance.
++ * Remove once GitLab runs on a single Vue version.
++ * See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256620#note_3903912326
++ */
++const warnedForeignRegistries = /* @__PURE__ */ new WeakSet();
++function resolveLocal(registry, name, type) {
++  if (!registry) return void 0;
++  const proto = Object.getPrototypeOf(registry);
++  if (proto === null || proto === Object.prototype) {
++    return resolve(registry, name);
++  }
++  if (!!(process.env.NODE_ENV !== "production") && !warnedForeignRegistries.has(registry)) {
++    warnedForeignRegistries.add(registry);
++    warn$1(
++      `The "${type}" registry of this component inherits from another registry. A Vue 2 realm re-merged this shared component definition; its Vue 2 hooks and methods may leak into this Vue 3 instance.`
+     );
+   }
++  const declared = (key) => hasOwn(registry, key) && registry[key] !== proto[key] ? registry[key] : void 0;
++  return declared(name) || declared(camelize(name)) || declared(capitalize(camelize(name)));
+ }
+ function resolve(registry, name) {
+   return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);

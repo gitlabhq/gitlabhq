@@ -735,6 +735,34 @@ With all denormalizations, there are trade-offs. The Siphon-based hierarchy deno
 
 In development, consistency issues might appear more often as record creation might happen very close to the project or group creation. In these cases, the eventual consistency enforcement should resolve the problems in seconds or minutes (configurable).
 
+## Updating rows
+
+Avoid `ALTER TABLE ... UPDATE` (mutations) or any other statement that modifies ClickHouse rows in place on Siphon tables.
+In-place changes can affect the data correctness of the Siphon data synchronization.
+
+To change rows, reinsert them with a higher `_siphon_replicated_at` value (add one microsecond).
+`ReplacingMergeTree` keeps the row with the highest `_siphon_replicated_at`, so the reinserted row wins.
+One microsecond is small enough that a later change replicated by Siphon still wins, which prevents concurrent modification issues.
+
+For tables that use the `Null` engine pattern, read the rows from the storage table and insert them into the `Null` table.
+The materialized views run again and recompute the denormalized columns.
+The column list must include every column of the `Null` table, which you can read from `system.columns`.
+
+The query does not need deduplication or a `_siphon_deleted` filter.
+Every version moves forward by the same microsecond, so the latest version still wins and deleted rows stay deleted.
+
+```sql
+-- Abbreviated: list every column of siphon_merge_requests in both clauses
+INSERT INTO siphon_merge_requests (id, title, traversal_path, ..., _siphon_replicated_at, _siphon_deleted)
+SELECT id, title, traversal_path, ..., addMicroseconds(_siphon_replicated_at, 1) AS _siphon_replicated_at, _siphon_deleted
+FROM merge_requests
+WHERE id IN (1, 2, 3)
+```
+
+Alternatively, you can update the affected rows in PostgreSQL, for example from a
+[post-deployment migration](../post_deployment_migrations.md), you can touch the records (bump `updated_at`).
+Siphon replicates the change like any other update.
+
 ## Table Partitioning
 
 ClickHouse [partitioning](https://clickhouse.com/docs/engines/table-engines/mergetree-family/custom-partitioning-key) is a data management tool intended for data lifecycle operations (like dropping old data), rather than a primary tool for query optimization.

@@ -181,6 +181,16 @@ export default {
       required: false,
       default: true,
     },
+    hasWorkItems: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    hasWorkItemsLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: [
     'set-error',
@@ -1081,10 +1091,17 @@ export default {
       />
     </template>
     <gl-loading-icon
-      v-if="(isLoading && groupValues.length === 0) || countsPending"
+      v-if="
+        (isLoading && groupValues.length === 0) ||
+        (hasWorkItemsLoading && !hasWorkItems) ||
+        (hasWorkItems && countsPending)
+      "
       size="lg"
       class="gl-m-auto"
     />
+    <div v-else-if="!hasWorkItems" class="gl-w-full gl-self-start">
+      <slot name="empty-state"></slot>
+    </div>
     <gl-empty-state
       v-else-if="needsGroupSelection"
       class="gl-m-auto"

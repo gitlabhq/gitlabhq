@@ -256,9 +256,10 @@ RSpec.describe BlobPresenter, feature_category: :source_code_management do
   end
 
   context 'environment has been deployed' do
-    let(:external_url) { "https://some.environment" }
-    let(:environment) { create(:environment, project: project, external_url: external_url) }
-    let!(:deployment) { create(:deployment, :success, environment: environment, project: project, sha: blob.commit_id) }
+    let_it_be(:external_url) { "https://some.environment" }
+    let_it_be(:commit_id) { project.repository.blob_at('HEAD', 'files/ruby/regex.rb').commit_id }
+    let_it_be(:environment) { create(:environment, project: project, external_url: external_url) }
+    let_it_be(:deployment) { create(:deployment, :success, environment: environment, project: project, sha: commit_id) }
 
     before do
       allow(project).to receive(:public_path_for_source_path).with(path, blob.commit_id).and_return(path)
@@ -273,9 +274,11 @@ RSpec.describe BlobPresenter, feature_category: :source_code_management do
     end
 
     describe 'chooses the latest deployed environment for #environment_formatted_external_url and #environment_external_url_for_route_map' do
-      let(:another_external_url) { "https://another.environment" }
-      let(:another_environment) { create(:environment, project: project, external_url: another_external_url) }
-      let!(:another_deployment) { create(:deployment, :success, environment: another_environment, project: project, sha: blob.commit_id) }
+      let_it_be(:another_external_url) { "https://another.environment" }
+      let_it_be(:another_environment) { create(:environment, project: project, external_url: another_external_url) }
+      let_it_be(:another_deployment) do
+        create(:deployment, :success, environment: another_environment, project: project, sha: commit_id)
+      end
 
       it { expect(presenter.environment_formatted_external_url).to eq("another.environment") }
       it { expect(presenter.environment_external_url_for_route_map).to eq("#{another_external_url}/#{path}") }

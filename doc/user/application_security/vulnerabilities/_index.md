@@ -366,8 +366,11 @@ stateDiagram
 
 {{< /history >}}
 
-A vulnerability may be no longer detected because of changes made deliberately to remediate it or
-as a side effect of other changes. When a security scan runs and a vulnerability is no longer
+A vulnerability might be no longer detected because of changes made deliberately to remediate it or
+as a side effect of other changes. The vulnerability might also be no longer detected
+because the analyzer that reported it no longer scans its language. For an example, see
+[vulnerability changes](../sast/gitlab_advanced_sast.md#vulnerability-changes).
+When a security scan runs and a vulnerability is no longer
 detected in the default branch, the scanner adds **No longer detected** to the record's activity log
 but the record's status does not change. Instead, you should check and confirm the
 vulnerability has been resolved and if so,

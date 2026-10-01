@@ -131,3 +131,5 @@ columns:
   type: Nullable(Int64)
 - name: trigger_event_type
   type: Nullable(Int16)
+- name: parent_workflow_id
+  type: Nullable(Int64)

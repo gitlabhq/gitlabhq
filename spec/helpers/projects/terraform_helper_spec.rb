@@ -56,7 +56,7 @@ RSpec.describe Projects::TerraformHelper do
   end
 
   describe '#show_period_in_terraform_state_name_alert?' do
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     context 'when user dismissed' do
       it 'returns false' do

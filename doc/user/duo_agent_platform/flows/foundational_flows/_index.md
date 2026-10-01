@@ -145,6 +145,7 @@ Prerequisites:
 {{< history >}}
 
 - Full image reference for image registry [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594208) in GitLab 19.0.
+- Registry path prefix for image registry [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/630865) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -162,8 +163,10 @@ Prerequisites:
 1. Under **Flow execution**, select the **Allow flow execution** and **Allow foundational flows** checkboxes.
 1. Optional. In the **Image registry** text box, enter one of the following:
 
-   - A registry hostname to use the default image from that registry.
+   - A registry hostname to use the default image from that registry (for example, `registry.example.com`).
+   - A registry path prefix that ends in `/` to use the default image from that path, such as a proxy cache project (for example, `harbor.example.com/proxy/`).
    - A full image reference to override the image entirely (for example, `registry.example.com/group/project/image:tag`).
+     Any other value that includes a path is used as a full image reference.
 
    Leave blank to use the default `registry.gitlab.com`.
 1. Select **Save changes**.

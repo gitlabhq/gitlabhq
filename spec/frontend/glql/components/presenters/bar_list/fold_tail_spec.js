@@ -1,4 +1,4 @@
-import { foldTail } from '~/glql/components/presenters/bar_list/fold_tail';
+import { foldSeries, foldTail } from '~/glql/components/presenters/bar_list/fold_tail';
 
 describe('foldTail', () => {
   const toOther = (folded) => ({ name: `Other (${folded.length})`, folded });
@@ -36,5 +36,34 @@ describe('foldTail', () => {
     const items = [];
 
     expect(foldTail(items, 2, toOther)).toBe(items);
+  });
+});
+
+describe('foldSeries', () => {
+  const groups = ['u0', 'u1'];
+  const bars = [
+    { name: 'go', data: [1, 0] },
+    { name: 'ruby', data: [12, 6] },
+    { name: 'rust', data: [2, 0] },
+  ];
+
+  it('ranks series by total and sums the tail into Other per group', () => {
+    expect(foldSeries({ bars, groups, max: 1 })).toEqual([
+      { name: 'ruby', data: [12, 6] },
+      { name: 'Other (2)', data: [3, 0] },
+    ]);
+  });
+
+  it('gives a group with no folded values the missing value', () => {
+    const sparse = [
+      { name: 'ruby', data: [12, 6] },
+      { name: 'go', data: [1, '-'] },
+      { name: 'rust', data: [2, '-'] },
+    ];
+
+    expect(foldSeries({ bars: sparse, groups, max: 1, missingValue: '-' })[1]).toEqual({
+      name: 'Other (2)',
+      data: [3, '-'],
+    });
   });
 });

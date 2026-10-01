@@ -480,7 +480,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/notify/autodevops_disabled_email.text.erb_spec.rb'
     - 'spec/views/notify/change_in_merge_request_draft_status_email.html.haml_spec.rb'
     - 'spec/views/notify/change_in_merge_request_draft_status_email.text.erb_spec.rb'
-    - 'spec/views/notify/changed_milestone_email.html.haml_spec.rb'
     - 'spec/views/notify/import_issues_csv_email.html.haml_spec.rb'
     - 'spec/views/notify/push_to_merge_request_email.text.haml_spec.rb'
     - 'spec/views/profiles/notifications/show.html.haml_spec.rb'

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class DraftNote < ApplicationRecord
   include DiffPositionableNote
   include Gitlab::Utils::StrongMemoize

@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import { GlAlert, GlModal, GlTable } from '@gitlab/ui';
+import { GlAlert, GlLink, GlModal, GlTable } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -72,13 +72,15 @@ describe('CodeDropdownClientsApp', () => {
   });
 
   describe('rendering', () => {
-    it('describes the setting without linking to the schemes documentation', () => {
+    it('describes the setting and links to the documentation', () => {
       createComponent();
 
       const description = wrapper.findByTestId('crud-description');
 
       expect(description.text()).toContain('add only clients you trust');
-      expect(description.find('a').exists()).toBe(false);
+      expect(description.findComponent(GlLink).attributes('href')).toBe(
+        '/help/administration/settings/code-dropdown-custom-clients',
+      );
     });
 
     it('renders the empty state and no table', () => {

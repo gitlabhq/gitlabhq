@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'notify/changed_milestone_email.html.haml' do
-  let(:milestone) { create(:milestone, title: 'some-milestone') }
+RSpec.describe 'notify/changed_milestone_email.html.haml', feature_category: :team_planning do
+  let(:milestone) { build_stubbed(:milestone, title: 'some-milestone', group: build_stubbed(:group)) }
   let(:milestone_link) { milestone_url(milestone) }
 
   before do
@@ -22,7 +22,7 @@ RSpec.describe 'notify/changed_milestone_email.html.haml' do
 
   context 'when milestone has start and due dates' do
     before do
-      milestone.update!(start_date: '2018-01-01', due_date: '2018-12-31')
+      milestone.assign_attributes(start_date: '2018-01-01', due_date: '2018-12-31')
     end
 
     it 'renders with date range' do

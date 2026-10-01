@@ -55,6 +55,57 @@ describe('TwoDimensionsColumnChart', () => {
     expect(findChart().props('bars')[1]).toEqual({ name: 'python', data: [6, '-'] });
   });
 
+  describe('with maxSeries', () => {
+    const nodes = [
+      { user: 'u0', language: 'go', totalCount: 1 },
+      { user: 'u0', language: 'ruby', totalCount: 12 },
+      { user: 'u0', language: 'python', totalCount: 6 },
+      { user: 'u0', language: 'rust', totalCount: 2 },
+      { user: 'u2', language: 'ruby', totalCount: 6 },
+      { user: 'u2', language: 'python', totalCount: 5 },
+      { user: 'u2', language: 'rust', totalCount: 3 },
+    ];
+
+    it('keeps the biggest series and folds the rest into Other, skipping empty cells', () => {
+      createComponent({ data: { nodes }, maxSeries: 2 });
+
+      expect(findChart().props('bars')).toEqual([
+        { name: 'ruby', data: [12, 6] },
+        { name: 'python', data: [6, 5] },
+        { name: 'Other (2)', data: [3, 3] },
+      ]);
+    });
+
+    it('keeps a cell empty when none of the folded series have a value there', () => {
+      createComponent({
+        data: {
+          nodes: [
+            { user: 'u0', language: 'ruby', totalCount: 12 },
+            { user: 'u0', language: 'go', totalCount: 1 },
+            { user: 'u0', language: 'rust', totalCount: 2 },
+            { user: 'u2', language: 'ruby', totalCount: 6 },
+          ],
+        },
+        maxSeries: 1,
+      });
+
+      expect(findChart().props('bars')).toEqual([
+        { name: 'ruby', data: [12, 6] },
+        { name: 'Other (2)', data: [3, '-'] },
+      ]);
+    });
+
+    it('leaves a single series past the limit as-is', () => {
+      createComponent({ data: { nodes }, maxSeries: 3 });
+
+      expect(
+        findChart()
+          .props('bars')
+          .map(({ name }) => name),
+      ).toEqual(['ruby', 'python', 'rust', 'go']);
+    });
+  });
+
   it('labels the axes from both dimensions and the metric', () => {
     expect(findChart().props('xAxisTitle')).toBe('User by Language');
     expect(findChart().props('yAxisTitle')).toBe('Total count');

@@ -68,7 +68,7 @@ export default {
   <gl-disclosure-dropdown
     v-if="stack && stack.length"
     :items="dropdownItems"
-    class="gl-ml-2"
+    class="gl-ml-2 gl-self-center"
     fluid-width
   >
     <template #header>
@@ -85,7 +85,6 @@ export default {
         size="small"
         :aria-label="toggleLabel"
         :title="__('Stacked merge requests')"
-        class="merge-request-stack-toggle"
       >
         <gl-icon name="container-image" />
         <span>{{ toggleText }}</span>

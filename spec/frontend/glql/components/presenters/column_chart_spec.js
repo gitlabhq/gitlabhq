@@ -103,7 +103,24 @@ describe('ColumnChartPresenter', () => {
         primaryDimension,
         secondaryDimension,
         metric,
+        maxSeries: null,
       });
+    });
+
+    it.each`
+      maxSeries    | expected
+      ${4}         | ${4}
+      ${'4'}       | ${4}
+      ${0}         | ${null}
+      ${'several'} | ${null}
+    `('forwards maxSeries $maxSeries as $expected', ({ maxSeries, expected }) => {
+      createComponent({
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        data: MOCK_AGGREGATED_DATA_TWO_DIMS,
+        displayConfig: { maxSeries },
+      });
+
+      expect(findTwoDim().props('maxSeries')).toBe(expected);
     });
   });
 

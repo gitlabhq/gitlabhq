@@ -50,7 +50,7 @@ export default {
        the spare rows become spacing from the panel above. Not justify-end: a block taller than the
        cell then overflows downward, where gridstack scrolls it, instead of off the clipped top. -->
   <div class="gl-flex gl-h-full gl-flex-col gl-px-0">
-    <div class="gl-border-t gl-mt-auto gl-pt-4" data-testid="section-header-divider">
+    <div class="gl-mt-auto gl-pt-4" data-testid="section-header-divider">
       <div class="gl-flex gl-items-center gl-gap-2">
         <h3 class="gl-heading-4 gl-m-0" data-testid="section-header-title">{{ title }}</h3>
         <template v-if="hasTooltip">

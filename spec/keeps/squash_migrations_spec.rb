@@ -84,12 +84,12 @@ RSpec.describe Keeps::SquashMigrations, feature_category: :database do
       allow(keep).to receive(:reviewer).and_return('test-reviewer')
     end
 
-    shared_examples 'squashes migrations correctly' do |_milestone, target_branch|
+    shared_examples 'squashes migrations correctly' do |_milestone, target_tag|
       it 'creates change with correct attributes', :aggregate_failures do
         actual_change = keep.make_change!(change)
 
         expect(actual_change).to be_a(Gitlab::Housekeeper::Change)
-        expect(change.title).to eq("Squash database migrations up to origin/#{target_branch}")
+        expect(change.title).to eq("Squash database migrations up to #{target_tag}")
         expect(change.labels).to match_array([
           'type::maintenance',
           'database',
@@ -98,35 +98,36 @@ RSpec.describe Keeps::SquashMigrations, feature_category: :database do
           'maintenance::refactor'
         ])
         expect(change.changed_files).to match_array(modified_files)
-        expect(change.description).to include(target_branch)
+        expect(change.description).to include(target_tag)
         expect(change.description).to include('db/init_structure.sql')
       end
 
-      it 'fetches the squash branch' do
+      it 'fetches only the release tag' do
         keep.make_change!(change)
 
         expect(Gitlab::Housekeeper::Shell).to have_received(:execute)
-          .with('git', 'fetch', 'origin', target_branch, '--depth=1', '--filter=tree:0')
+          .with('git', 'fetch', 'origin', "refs/tags/#{target_tag}:refs/tags/#{target_tag}",
+            '--depth=1', '--filter=tree:0')
       end
 
-      it 'runs the squash rake task with correct branch' do
+      it 'runs the squash rake task against the release tag' do
         keep.make_change!(change)
 
         expect(Gitlab::Housekeeper::Shell).to have_received(:execute)
-          .with('bundle', 'exec', 'rake', "gitlab:db:squash[origin/#{target_branch}]")
+          .with('bundle', 'exec', 'rake', "gitlab:db:squash[#{target_tag}]")
       end
     end
 
     context 'when squashing migrations for version 18.8' do
       let(:current_milestone) { '18.8' }
 
-      include_examples 'squashes migrations correctly', '18.8', '18-2-stable-ee'
+      include_examples 'squashes migrations correctly', '18.8', 'v18.2.0-ee'
     end
 
     context 'when squashing migrations for version 18.2' do
       let(:current_milestone) { '18.2' }
 
-      it_behaves_like 'squashes migrations correctly', '18.2', '17-8-stable-ee'
+      it_behaves_like 'squashes migrations correctly', '18.2', 'v17.8.0-ee'
     end
   end
 end

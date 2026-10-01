@@ -31,10 +31,11 @@ GitLab Advanced SAST is a static application security testing (SAST) analyzer th
 cross-function and cross-file taint analysis to detect complex vulnerabilities with fewer false
 positives than traditional SAST.
 
-GitLab Advanced SAST is an opt-in feature. When enabled, GitLab Advanced SAST scans all supported
-language files using its predefined ruleset, while the SAST analyzer continues to scan other
-files. Both analyzers can run in parallel. SAST and GitLab Advanced SAST do not have complete
-parity - each analyzer detects some vulnerabilities the other does not. An automated
+When you enable GitLab Advanced SAST, it scans all supported language files with
+its predefined ruleset. The Semgrep-based SAST analyzer
+[stops scanning some languages](#supported-languages) and keeps reporting on the rest.
+SAST and GitLab Advanced SAST do not have complete parity.
+Each analyzer detects some vulnerabilities the other does not. An automated
 [transition process](#transitioning-from-semgrep-to-gitlab-advanced-sast) deduplicates findings when
 both analyzers detect the same vulnerability.
 
@@ -66,6 +67,8 @@ Prerequisites:
 
 - The Maintainer or Owner role for the project.
 - Turn on the standard SAST analyzer. For details, see [SAST prerequisites](_index.md#getting-started).
+- If an auto-resolve policy applies to the project and has Semgrep vulnerabilities, first
+  [review existing Semgrep vulnerabilities](#review-existing-semgrep-vulnerabilities).
 - For GitLab Self-Managed, use a supported GitLab version:
   - Minimum version: GitLab 17.1 or later
   - Recommended version: GitLab 17.4 or later (includes code-flow view, vulnerability deduplication, and updated templates)
@@ -211,6 +214,9 @@ twice. For Kotlin these are CWE-89, CWE-78, CWE-22, CWE-79, CWE-327, and CWE-295
 it is the Keychain accessibility check (CWE-922). Use `GITLAB_ADVANCED_SAST_EXT_DEDUP_LANGUAGES` to
 change or turn off this behavior. For Dart and Rust, `semgrep-sast` does not run, because the SAST
 template does not route `.dart` or `.rs` files to it.
+
+For the other languages on this list, except C/C++, `semgrep-sast` stops scanning their files when
+GitLab Advanced SAST is enabled.
 
 ### PHP known issues
 
@@ -812,7 +818,8 @@ higher level (for example, for a group), set `GITLAB_ADVANCED_SAST_ENABLED` (or
 
 After you are confident in GitLab Advanced SAST results for one project, extend it to additional
 projects and groups. You should create a shared CI/CD configuration that includes GitLab Advanced
-SAST and enforce it across the desired groups and projects.
+SAST and enforce it across the desired groups and projects. First, see the
+[prerequisites](#turn-on-gitlab-advanced-sast) for each project.
 
 For more details, see [Security configuration](../detect/security_configuration.md).
 
@@ -836,21 +843,92 @@ see [GitLab Advanced SAST CWE coverage](advanced_sast_coverage.md).
 
 When you migrate from Semgrep to GitLab Advanced SAST, an automated transition process deduplicates vulnerabilities. This process links previously detected Semgrep vulnerabilities with corresponding GitLab Advanced SAST findings, replacing them when a match is found.
 
+> [!warning]
+> Existing Semgrep vulnerabilities that the transition process does not match can be marked
+> **No longer detected**. An [auto-resolve policy](../policies/vulnerability_management_policy.md)
+> can then resolve these vulnerabilities even though the code has not changed.
+> For more information, see [vulnerability changes](#vulnerability-changes).
+> To review these vulnerabilities first, see [review existing Semgrep vulnerabilities](#review-existing-semgrep-vulnerabilities).
+
+### Review existing Semgrep vulnerabilities
+
+If auto-resolve policies apply to a project with existing Semgrep vulnerabilities,
+review those vulnerabilities before the policies resolve them.
+
+Prerequisites:
+
+- [Permissions to manage auto-resolve policies](../policies/_index.md#required-permissions).
+
+1. On the project's **Secure** > **Policies** page, find every relevant auto-resolve policy.
+   In the [`policy_scope`](../policies/_index.md#configure-the-policy-scope) of each policy,
+   add the project to `projects: excluding`, then merge the changes in the security policy projects.
+   Do not set `enabled: false`. Otherwise, the policy is turned off for every project in its scope.
+
+   If a policy scope uses `match_mode: any`, do not exclude the project. The project stays in scope
+   if another condition matches it, and the exclusion can apply the policy to other projects. Instead,
+   change the scope so that no condition matches the project. For more information, see
+   [understanding `match_mode`](../policies/_index.md#understanding-match_mode).
+
+1. In the project's `.gitlab-ci.yml` file, enable GitLab Advanced SAST.
+   If you enable it in a scan execution policy instead, GitLab Advanced SAST applies
+   to every project in that policy's scope, so exclude each project in the previous step.
+1. Run a pipeline on the default branch. Wait until **Security reports last updated** in the
+   project's [vulnerability report](../vulnerability_report/_index.md) shows that pipeline.
+1. In the vulnerability report, set the **Scanner** filter to **Semgrep**. If the pipeline ran the
+   `semgrep-sast` job, also set the **Activity** filter to **No longer detected**. If it did not,
+   no vulnerabilities have been marked. A later pipeline that runs the job marks these vulnerabilities,
+   and the policies resolve them after the next step.
+   Review each vulnerability:
+   - If GitLab Advanced SAST reports the same weakness, resolve the Semgrep vulnerability.
+     For more information, see [resolve duplicate vulnerabilities](#resolve-duplicate-vulnerabilities).
+   - If neither analyzer reports the weakness, check whether it's still in the code. If it is,
+     keep the project excluded from the policies while the vulnerability stays open. If it is not,
+     leave the vulnerability for the policies to resolve after the next step.
+1. Undo the previous scope changes and merge them.
+
+### Find vulnerabilities an auto-resolve policy already resolved
+
+If auto-resolve policies ran before you reviewed the vulnerabilities,
+find the vulnerabilities they resolved:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
+1. In the filter bar, set the following:
+   - **Scanner** to **Semgrep**.
+   - **Activity** to **No longer detected**.
+   - **Status** to **Resolved**.
+
+Each of these vulnerabilities has a note from the **GitLab Security Policy Bot** that names the
+policy and the pipeline.
+
+Semgrep no longer reports these vulnerabilities. If you reopen a vulnerability, the policies resolve it again on
+the next default branch scan that runs the Semgrep job. Before you change the status, exclude the
+project from every relevant auto-resolve policy.
+
+### Conditions for deduplication
+
 After enabling Advanced SAST scanning in the default branch when a scan runs and detects
 vulnerabilities, it checks whether any of them should replace existing Semgrep vulnerabilities based
 on the following conditions.
-
-### Conditions for deduplication
 
 1. **Matching Identifier**:
    - At least one of the GitLab Advanced SAST vulnerability's identifiers (excluding CWE and OWASP) must match the **primary identifier** of an existing Semgrep vulnerability.
    - The primary identifier is the first identifier in the vulnerability's identifiers array in the [SAST report](_index.md#download-a-sast-report).
    - For example, if a GitLab Advanced SAST vulnerability has identifiers including `bandit.B506` and a Semgrep vulnerability's primary identifier is also `bandit.B506`, this condition is met.
+   - Not every GitLab Advanced SAST rule carries a Semgrep identifier. If no GitLab Advanced SAST
+     rule lists a Semgrep vulnerability's primary identifier, that vulnerability is never converted
+     even when both analyzers report the same line.
 
 1. **Matching Location**:
    - The vulnerabilities must be associated with the **same location** in the code. This is determined using one of the following fields in a vulnerability in the [SAST report](_index.md#download-a-sast-report):
      - Tracking field (if present)
      - Location field (if the Tracking field is absent)
+   - When GitLab Advanced SAST reports the same weakness on a different line,
+     the locations do not match. For example, GitLab Advanced SAST might report
+     the sink rather than the start of the statement.
+     In that case, both vulnerabilities remain. The GitLab Advanced SAST finding
+     is reported, and the Semgrep vulnerability is not converted. For more information, see
+     [resolve duplicate vulnerabilities](#resolve-duplicate-vulnerabilities).
 
 ### Vulnerability changes
 
@@ -860,7 +938,16 @@ When the conditions are met, the existing Semgrep vulnerability is converted int
 - Any additional identifiers present in the GitLab Advanced SAST vulnerability are added to the existing vulnerability.
 - All other details of the vulnerability remain unchanged.
 
-When the conditions are not met, the existing Semgrep vulnerabilities persist in the vulnerability dashboard even if the underlying code issues have been fixed. To mark these fixed vulnerabilities as resolved in GitLab, you must either manually resolve them in the vulnerability dashboard, or run the Semgrep analyzer again.
+When the conditions are not met, the Semgrep vulnerability is not converted.
+What happens to the vulnerability next depends on whether the Semgrep job still runs:
+
+- If the project still has files Semgrep scans, including Java properties and Spring configuration
+  files, the Semgrep job runs. Semgrep vulnerabilities in languages `semgrep-sast` stops
+  scanning are marked **No longer detected** on the next default branch scan. Their status changes
+  only if a vulnerability management policy changes it.
+- If the project has no such files, the Semgrep job does not run. Semgrep vulnerabilities keep
+  their status until a later pipeline runs the Semgrep job (for example, after a file Semgrep scans is
+  added). That pipeline marks these vulnerabilities **No longer detected**.
 
 ### Resolve duplicate vulnerabilities
 

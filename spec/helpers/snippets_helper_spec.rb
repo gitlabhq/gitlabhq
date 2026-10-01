@@ -138,7 +138,7 @@ RSpec.describe SnippetsHelper, feature_category: :source_code_management do
 
   describe '#snippet_report_abuse_path' do
     let(:snippet) { public_personal_snippet }
-    let(:current_user) { create(:user) }
+    let(:current_user) { build_stubbed(:user) }
 
     subject { snippet_report_abuse_path(snippet) }
 

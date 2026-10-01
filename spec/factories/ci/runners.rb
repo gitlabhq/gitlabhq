@@ -112,8 +112,14 @@ FactoryBot.define do
 
       organization_id { association(:common_organization, strategy: :create).id }
 
-      # Skip the project presence validation instead of creating a throwaway project.
-      to_create { |runner| runner.save!(validate: false) }
+      # Tolerate only the missing project instead of creating a throwaway one, so other validation errors still raise.
+      to_create do |runner|
+        runner.validate
+        runner.errors.delete(:runner, Ci::Runner::NO_PROJECTS_ERROR_MESSAGE)
+        raise ActiveRecord::RecordInvalid, runner if runner.errors.any?
+
+        runner.save!(validate: false)
+      end
 
       after(:create) do |runner, _evaluator|
         runner.clear_memoization(:owner)

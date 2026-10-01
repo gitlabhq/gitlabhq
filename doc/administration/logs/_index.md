@@ -266,6 +266,34 @@ additionally log `openbao_calls` and `openbao_duration_s`, which correspond to:
 - `openbao_calls`: Total number of calls to OpenBao
 - `openbao_duration_s`: Total time taken by OpenBao calls
 
+[In GitLab 19.5 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256645), requests that
+the LabKit rate limiter evaluates also log `rate_limit_state`. The field is added to the
+per-request structured logs, including `production_json.log` and `api_json.log`.
+The field is an array of strings with the format `<limiter>:<rule>:<result>`.
+The array has an entry for each rate limit rule that counted the request or ended the check. For example:
+
+```json
+"rate_limit_state": ["rack_request:unauthenticated_api:log"]
+```
+
+`<result>` is one of:
+
+- `allow`: The request did not exceed the limit of the rule.
+- `log`: The request exceeded the limit of a rule that only logs, like a throttle in
+  [dry run mode](../settings/user_and_ip_rate_limits.md#try-out-throttling-settings-before-enforcing-them).
+  GitLab does not block the request.
+- `block`: The request exceeded the limit of a rule that can block requests.
+  This result does not always mean that GitLab rejected the request.
+- `banned`: The request exceeded the limit of a rule that bans the client.
+- `skip`: A rule ended the rate limit check without counting the request
+  (for example, because the request bypassed the rate limiter).
+
+Requests that produce no LabKit rule result do not log `rate_limit_state`.
+A missing field means that no rule produced a result for the request, not that telemetry failed.
+
+The legacy `Rack::Attack` rate limiter does not log `rate_limit_state`.
+For its events, see [`auth.log`](#authlog).
+
 ActionCable connection and subscription events are also logged to this file and they follow the
 previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.
 The ActionCable connection or channel class is used as the `controller`.

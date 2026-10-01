@@ -63,6 +63,24 @@ TwoDimensions.args = {
   fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
 };
 
+const LANGUAGES = ['ruby', 'python', 'go', 'javascript', 'rust', 'java', 'kotlin'];
+
+// Seven languages over a cap of three: the legend shows three plus `Other (4)`.
+export const TwoDimensionsWithMaxSeries = Template.bind({});
+TwoDimensionsWithMaxSeries.args = {
+  ...TwoDimensions.args,
+  data: {
+    nodes: ['user-0', 'user-1', 'user-2'].flatMap((user, userIndex) =>
+      LANGUAGES.map((language, index) => ({
+        user,
+        language,
+        totalCount: (LANGUAGES.length - index) * (3 - userIndex),
+      })),
+    ),
+  },
+  displayConfig: { maxSeries: 3 },
+};
+
 export const Loading = Template.bind({});
 Loading.args = {
   ...Default.args,

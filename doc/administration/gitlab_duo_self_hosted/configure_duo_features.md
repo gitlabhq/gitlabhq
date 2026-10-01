@@ -223,7 +223,8 @@ To add a self-hosted model:
      | [Gemini Enterprise Agent Platform](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude) | `vertex_ai/<model ID of the model>` | `vertex_ai/claude-sonnet-4-6@default` |
      | [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)                                                             | `anthropic/<model ID of the model>`                     | `anthropic/claude-opus-4-6` |
      | [OpenAI](https://developers.openai.com/api/docs/models)                                                                | `openai/<model ID of the model>`                        | `openai/gpt-5` |
-     | Azure OpenAI                                                          | `azure/<model ID of the model>`                         | `azure/gpt-35-turbo` |
+     | [Azure OpenAI](supported_llm_serving_platforms.md#configure-azure-openai) | `azure/<deployment name>` | `azure/gpt-4o` |
+     | [Azure OpenAI Responses API](supported_llm_serving_platforms.md#use-the-azure-openai-responses-api) | `azure/responses/<deployment name>` | `azure/responses/gpt-5` |
 
 1. Select **Add self-hosted model**.
 

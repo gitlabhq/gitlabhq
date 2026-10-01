@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Clusters::ClusterPresenter, feature_category: :deployment_management do
   include Gitlab::Routing.url_helpers
 
-  let(:cluster) { create(:cluster, :provided_by_gcp, :project) }
-  let(:user) { create(:user) }
+  let(:cluster) { build_stubbed(:cluster, :provided_by_gcp, :project) }
+  let(:user) { build_stubbed(:user) }
 
   subject(:presenter) do
     described_class.new(cluster, current_user: user)
@@ -31,7 +31,7 @@ RSpec.describe Clusters::ClusterPresenter, feature_category: :deployment_managem
   end
 
   describe '#provider_label' do
-    let(:cluster) { create(:cluster, provider_type: provider_type) }
+    let(:cluster) { build_stubbed(:cluster, provider_type: provider_type) }
 
     subject { described_class.new(cluster).provider_label }
 
@@ -49,19 +49,19 @@ RSpec.describe Clusters::ClusterPresenter, feature_category: :deployment_managem
   end
 
   describe '#provider_management_url' do
-    let(:cluster) { provider.cluster }
+    let(:provider) { cluster.provider }
 
     subject { described_class.new(cluster).provider_management_url }
 
     context 'AWS provider' do
-      let(:provider) { create(:cluster_provider_aws) }
+      let(:cluster) { build_stubbed(:cluster, :provided_by_aws) }
 
       it { is_expected.to include(provider.region) }
       it { is_expected.to include(cluster.name) }
     end
 
     context 'GCP provider' do
-      let(:provider) { create(:cluster_provider_gcp) }
+      let(:cluster) { build_stubbed(:cluster, :provided_by_gcp) }
 
       it { is_expected.to include(provider.zone) }
       it { is_expected.to include(cluster.name) }
@@ -79,13 +79,13 @@ RSpec.describe Clusters::ClusterPresenter, feature_category: :deployment_managem
 
     context 'group_type cluster' do
       let(:group) { cluster.group }
-      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+      let(:cluster) { build_stubbed(:cluster, :provided_by_gcp, :group) }
 
       it { is_expected.to eq(group_cluster_path(group, cluster)) }
     end
 
     context 'instance_type cluster' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+      let(:cluster) { build_stubbed(:cluster, :provided_by_gcp, :instance) }
 
       it { is_expected.to eq(admin_cluster_path(cluster)) }
     end
@@ -109,11 +109,12 @@ RSpec.describe Clusters::ClusterPresenter, feature_category: :deployment_managem
 
   describe '#agent_migration_for_display' do
     shared_examples 'cluster agent migration' do |cluster_type|
-      let(:cluster) { create(:cluster, cluster_type) }
+      let_it_be_with_reload(:cluster) { create(:cluster, cluster_type) }
+
       let(:presenter) { described_class.new(cluster, current_user: user) }
 
       context 'when migration exists' do
-        let!(:migration) { create(:cluster_agent_migration, cluster: cluster) }
+        let!(:migration) { create(:cluster_agent_migration, cluster: cluster, project: nil) }
 
         it 'returns existing migration' do
           expect(presenter.agent_migration_for_display).to eq(migration)

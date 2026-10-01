@@ -57,22 +57,18 @@ RSpec.describe Ci::DropPipelineService, feature_category: :continuous_integratio
     end
 
     it 'avoids N+1 queries when reading data' do
-      control_count = ActiveRecord::QueryRecorder.new do
-        drop_pipeline!(cancelable_pipeline)
-      end.count
+      control = ActiveRecord::QueryRecorder.new { drop_pipeline!(cancelable_pipeline) }
 
-      writes_per_build = 2
-      load_balancer_queries = 3
-      expected_reads_count = control_count - writes_per_build
-      savepoints = 1
+      # The control run dropped these, so recreate the same mix plus five builds.
+      create_list(:ci_build, 6, :running, pipeline: cancelable_pipeline)
+      create(:commit_status, :running, pipeline: cancelable_pipeline)
 
-      create_list(:ci_build, 5, :running, pipeline: cancelable_pipeline)
+      # Dropping a build is a savepoint, a job definition instance read, the status
+      # update, the runner session delete and the savepoint release.
+      queries_per_build = 5
 
-      expect do
-        drop_pipeline!(cancelable_pipeline)
-      end.not_to exceed_query_limit(
-        expected_reads_count + (5 * writes_per_build) + load_balancer_queries + (5 * savepoints)
-      )
+      expect { drop_pipeline!(cancelable_pipeline) }
+        .not_to exceed_query_limit(control).with_threshold(5 * queries_per_build)
     end
   end
 end

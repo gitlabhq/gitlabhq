@@ -467,6 +467,15 @@ Ensure your `model identifier` has the format `bedrock/<region>.<model-id>`, whe
 
 For example: `bedrock/us.meta.llama3-3-70b-instruct-v1:0`. Update your model configuration to use the correct format.
 
+## Azure OpenAI deployment rejects requests from the GitLab Duo Chat completions API
+
+Some Azure OpenAI deployments are available only through the Azure OpenAI Responses API.
+With a model identifier in the `azure/<deployment name>` format, the AI Gateway sends requests
+to the GitLab Duo Chat completions API. These deployments then reject the requests.
+
+To resolve this issue, change the model identifier to the `azure/responses/<deployment name>` format.
+For more information, see [use the Azure OpenAI Responses API](supported_llm_serving_platforms.md#use-the-azure-openai-responses-api).
+
 ## Feature not accessible or feature button not visible
 
 If a feature is not working or a feature button (for example, **`/troubleshoot`**) is not visible:

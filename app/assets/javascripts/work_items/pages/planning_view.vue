@@ -328,6 +328,7 @@ export default {
       filterTokens: [],
       workItemsCount: 0,
       hasWorkItems: false,
+      hasWorkItemsFailed: false,
       pageParams: {},
       listPageInfo: {},
       state: STATUS_OPEN,
@@ -391,15 +392,20 @@ export default {
         };
       },
       update(data) {
+        this.hasWorkItemsFailed = false;
         return data?.namespace?.workItems.nodes.length > 0 || false;
       },
       result({ data }) {
+        // Runs with no data after an error; throwing here stops vue-apollo resubscribing,
+        // so later refetches would never land.
+        if (!data) return;
         const namespaceId = data.namespace?.id;
         this.namespaceId = namespaceId;
         this.subscribeToWorkItemChanges(namespaceId);
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
+        this.hasWorkItemsFailed = true;
         Sentry.captureException(error);
       },
     },
@@ -552,6 +558,9 @@ export default {
     },
     isTableView() {
       return this.viewMode === VIEW_MODE_TABLE && this.isPlanningViewTableEnabled;
+    },
+    hasWorkItemsLoading() {
+      return this.$apollo.queries.hasWorkItems.loading;
     },
     // `afterCursor` alone answers forward pagination. Backward pagination needs `hasPreviousPage`
     // too: paging next then back to page 1 leaves a real `beforeCursor` set (see
@@ -2052,6 +2061,7 @@ export default {
     },
     handleBoardWorkItemCreated() {
       this.$apollo.queries.workItemsCount.refetch();
+      this.$apollo.queries.hasWorkItems.refetch();
     },
     // `cause` is set only by the realtime paths below, so a user-driven refetch (creating an
     // item, changing filters, ...) stays untagged in the request logs.
@@ -2688,6 +2698,8 @@ export default {
       :has-active-filters="hasActiveFilters"
       :preselected-work-item-type="preselectedWorkItemType"
       :can-create-work-item="showProjectNewWorkItem"
+      :has-work-items="hasWorkItems || hasWorkItemsFailed"
+      :has-work-items-loading="hasWorkItemsLoading"
       @set-error="($evt) => (error = $evt)"
       @set-active-item="handleSetActiveItem"
       @toggle-collapse="handleToggleGroupCollapse"
@@ -2695,7 +2707,35 @@ export default {
       @hide-group="handleHideGroup"
       @work-item-created="handleBoardWorkItemCreated"
       @open-group-by-settings="openGroupByDisplaySettings"
-    />
+    >
+      <template #empty-state>
+        <empty-state-without-any-issues
+          :show-new-issue-dropdown="showGroupNewWorkItem"
+          :has-projects="hasProjects"
+        >
+          <template #new-issue-button>
+            <create-work-item-modal
+              v-if="showProjectNewWorkItem"
+              :always-show-work-item-type-select="!isEpicsList"
+              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
+              :full-path="rootPageFullPath"
+              :is-group="isGroup"
+              :preselected-work-item-type="preselectedWorkItemType"
+              :show-project-selector="!hasEpicsFeature"
+              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
+              @work-item-created="handleWorkItemCreated"
+            />
+            <new-resource-dropdown
+              v-if="showGroupNewWorkItem"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
+            />
+          </template>
+        </empty-state-without-any-issues>
+      </template>
+    </board-view>
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"
       :page="displayDrawerPage"

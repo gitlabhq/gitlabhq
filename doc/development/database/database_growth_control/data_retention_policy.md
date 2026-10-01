@@ -113,9 +113,7 @@ flowchart TD
     A{"Is the data naturally deleted<br>by the feature lifecycle?"}
     A -->|Yes| B(["transient_data<br>(no-op, handled by the feature lifecycle)"])
     A -->|No| G{"Can the data be deleted<br>without archival?"}
-    G -->|No| L{"Is there a concrete plan or pipeline<br>to archive this data?"}
-    L -->|Yes| M(["none<br>(set exclude.reason: needs_archival)"])
-    L -->|No| I(["none<br>(set exclude.reason: indefinite_retention)"])
+    G -->|No| M(["none<br>(set exclude.reason: needs_archival)"])
     G -->|Yes| C{"Is the table larger than 50 GB?"}
     C -->|Yes| J{"Is partitioning possible?"}
     J -->|Yes| D(["drop_partition"])

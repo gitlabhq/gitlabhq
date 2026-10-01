@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::PagesHelper do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   before do
     stub_config(pages: {
@@ -17,9 +16,7 @@ RSpec.describe Projects::PagesHelper do
   end
 
   context 'when the user have permission' do
-    before do
-      project.add_maintainer(user)
-    end
+    let_it_be(:project) { create(:project, maintainers: user) }
 
     context 'on custom domain' do
       using RSpec::Parameterized::TableSyntax
@@ -65,9 +62,7 @@ RSpec.describe Projects::PagesHelper do
   end
 
   context 'when the user does not have permission' do
-    before do
-      project.add_guest(user)
-    end
+    let_it_be(:project) { create(:project, guests: user) }
 
     it 'validates user cannot create domain' do
       expect(can_create_pages_custom_domains?(user, project)).to be false

@@ -258,6 +258,12 @@ At application startup, the allowlist is logged in [`auth.log`](../logs/_index.m
 
 ## Try out throttling settings before enforcing them
 
+{{< history >}}
+
+- Logging the rate limit state of the LabKit rate limiter to per-request structured logs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256645) in GitLab 19.5.
+
+{{< /history >}}
+
 You can try out throttling settings by setting the `GITLAB_THROTTLE_DRY_RUN` environment variable to
 a comma-separated list of throttle names.
 
@@ -290,10 +296,22 @@ non-protected paths by setting
 
 To enable dry run mode for all throttles, the variable can be set to `*`.
 
-Setting a throttle to dry run mode logs a message to the
-[`auth.log`](../logs/_index.md#authlog) when it would hit the limit, while letting the
-request continue. The log message contains an `env` field set to `track`. The `matched`
-field contains the name of the throttle that was hit.
+In dry run mode, GitLab does not block requests that would hit the limit of a throttle.
+These requests continue to be processed as usual.
+Where GitLab logs these requests depends on the rate limiter that evaluates them:
+
+- Legacy `Rack::Attack` rate limiter: GitLab logs a message to [`auth.log`](../logs/_index.md#authlog)
+  and [`auth_json.log`](../logs/_index.md#auth_jsonlog) when a request would hit the limit.
+  The log message contains an `env` field set to `track`.
+  The `matched` field contains the name of the throttle that was hit.
+- LabKit rate limiter: GitLab does not emit a separate `auth.log` or `auth_json.log` message
+  for this event. Instead, GitLab adds the rate limit state to the `rate_limit_state` field of the
+  [per-request structured logs](../logs/_index.md#production_jsonlog), including `production_json.log` and `api_json.log`.
+  Each entry has the format `<limiter>:<rule>:<result>`.
+  When a request would hit the limit of a throttle in dry run mode, the result is `log`
+  (for example, `["rack_request:unauthenticated_api:log"]` for a request that returns a `200` status code).
+  To confirm that dry run mode works with this rate limiter, check the `rate_limit_state` field,
+  not the `env` field in `auth.log`.
 
 It is important to set the environment variable before enabling
 the rate limiting in the settings. The settings in the **Admin** area

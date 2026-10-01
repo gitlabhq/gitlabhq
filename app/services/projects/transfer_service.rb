@@ -467,7 +467,7 @@ module Projects
     end
 
     def update_pending_builds
-      ::Ci::PendingBuilds::UpdateProjectWorker.perform_async(project.id, pending_builds_params)
+      ::Ci::PendingBuilds::UpdateProjectWorker.perform_async(project.id, pending_builds_params.stringify_keys)
     end
 
     def pending_builds_params

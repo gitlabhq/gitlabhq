@@ -88,10 +88,13 @@ module Ci
     AVAILABLE_STATUSES_INCL_DEPRECATED = (DEPRECATED_STATUSES + AVAILABLE_STATUSES).freeze
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES_INCL_DEPRECATED).freeze
 
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level
+      maximum_timeout_human_readable].freeze
     MINUTES_COST_FACTOR_FIELDS = %i[public_projects_minutes_cost_factor private_projects_minutes_cost_factor].freeze
 
     TAG_LIST_MAX_LENGTH = 50
+
+    NO_PROJECTS_ERROR_MESSAGE = 'needs to be assigned to at least one project'
 
     has_many :runner_managers, inverse_of: :runner,
       foreign_key: [:runner_id, :runner_type], primary_key: [:id, :runner_type]
@@ -413,7 +416,7 @@ module Ci
     end
     strong_memoize_attr :runner_matcher
 
-    def assign_to(project, current_user = nil)
+    def assign_to(project, _current_user = nil)
       if instance_type?
         raise ArgumentError, 'Transitioning an instance runner to a project runner is not supported'
       elsif group_type?
@@ -705,10 +708,10 @@ module Ci
           'can not be empty when runner is not allowed to pick untagged jobs')
       end
 
-      if tag_list_changed? && tag_list.count > TAG_LIST_MAX_LENGTH
-        errors.add(:tags_list,
-          "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
-      end
+      return unless tag_list_changed? && tag_list.count > TAG_LIST_MAX_LENGTH
+
+      errors.add(:tags_list,
+        "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
     end
 
     def no_organization_id
@@ -724,7 +727,7 @@ module Ci
     end
 
     def any_project
-      errors.add(:runner, 'needs to be assigned to at least one project') if runner_projects.empty?
+      errors.add(:runner, NO_PROJECTS_ERROR_MESSAGE) if runner_projects.empty?
     end
 
     def exactly_one_group
@@ -738,9 +741,9 @@ module Ci
     def organization_id_matches_owner
       return unless owner
 
-      if organization_id != owner.organization_id
-        errors.add(:organization_id, 'must match the organization of the parent group/project')
-      end
+      return if organization_id == owner.organization_id
+
+      errors.add(:organization_id, 'must match the organization of the parent group/project')
     end
 
     def legacy_partition_id_prefix_in_16_bit_encode

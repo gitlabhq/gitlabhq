@@ -26,6 +26,9 @@ module Gitlab
         DiffViewer::Image
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
+      # An LFS pointer's first line, as the first line of a hunk (added, removed or context).
+      LFS_POINTER_PATCH_PATTERN = /\A@@ [^\n]*\n[ +-]version #{Regexp.escape(Gitlab::Git::LfsPointerFile::VERSION)}\n/
+
       def self.file_hash(path)
         Digest::SHA1.hexdigest(path)
       end
@@ -440,6 +443,19 @@ module Gitlab
 
       def ai_reviewable?
         diffable? && text?
+      end
+
+      # Like `ai_reviewable?`, but decided from the patch alone so no blobs are loaded.
+      # Git already replaced binary patches with a notice; the NUL and LFS checks keep
+      # PDFs and LFS pointers out, which the blob-based check excludes too.
+      def ai_reviewable_patch?
+        return false unless diffable_by_attribute? && !has_binary_notice?
+
+        patch = diff.diff.to_s
+        return false if patch.include?("\0")
+
+        # Without LFS, pointers are plain text files, as they are for `Blob#stored_externally?`.
+        !(repository.lfs_enabled? && patch.match?(LFS_POINTER_PATCH_PATTERN))
       end
 
       def modified_file?

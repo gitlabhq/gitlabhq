@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Evidences::EvidenceEntity do
-  let_it_be_with_reload(:project) { create(:project) }
-
-  let(:release) { create(:release, project: project) }
+  let(:project) { build_stubbed(:project) }
+  let(:release) { build_stubbed(:release, project: project) }
   let(:evidence) { build(:evidence, release: release) }
   let(:schema_file) { 'evidences/evidence' }
 
@@ -16,8 +15,8 @@ RSpec.describe Evidences::EvidenceEntity do
   end
 
   context 'when a release is associated to a milestone' do
-    let(:milestone) { create(:milestone, project: project) }
-    let(:release) { create(:release, project: project, milestones: [milestone]) }
+    let(:milestone) { build_stubbed(:milestone, project: project) }
+    let(:release) { build_stubbed(:release, project: project, milestones: [milestone]) }
 
     context 'when a milestone has no issue associated with it' do
       it 'creates a valid JSON object' do
@@ -27,7 +26,7 @@ RSpec.describe Evidences::EvidenceEntity do
     end
 
     context 'when a milestone has no description' do
-      let(:milestone) { create(:milestone, project: project, description: nil) }
+      let(:milestone) { build_stubbed(:milestone, project: project, description: nil) }
 
       it 'creates a valid JSON object' do
         expect(subject[:release][:milestones].first[:description]).to be_nil
@@ -36,7 +35,7 @@ RSpec.describe Evidences::EvidenceEntity do
     end
 
     context 'when a milestone has no due_date' do
-      let(:milestone) { create(:milestone, project: project, due_date: nil) }
+      let(:milestone) { build_stubbed(:milestone, project: project, due_date: nil) }
 
       it 'creates a valid JSON object' do
         expect(subject[:release][:milestones].first[:due_date]).to be_nil
@@ -46,11 +45,8 @@ RSpec.describe Evidences::EvidenceEntity do
 
     context 'when a milestone has an issue' do
       context 'when the issue has no description' do
-        let(:issue) { create(:issue, project: project, description: nil, state: 'closed') }
-
-        before do
-          milestone.issues << issue
-        end
+        let(:issue) { build_stubbed(:issue, project: project, description: nil, state: 'closed') }
+        let(:milestone) { build_stubbed(:milestone, project: project, issues: [issue]) }
 
         it 'creates a valid JSON object' do
           expect(subject[:release][:milestones].first[:issues].first[:title]).to be_present

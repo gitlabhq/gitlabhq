@@ -136,3 +136,26 @@ A non-human user such as a bot user, service account user, or another flow, cann
 
 This restriction applies to all [trigger event types](#trigger-event-types).
 For example, a flow cannot trigger another flow by mentioning the service account in a comment.
+
+## GitLab Credits consumption for triggered flows
+
+A flow started by a trigger runs as the trigger's [service account](../../profile/service_accounts.md),
+which makes the service account the billing subject for the flow's GitLab Credits consumption.
+The human user who performed the triggering action provides the delegated authorization
+context for the flow to run, but is not the billing subject.
+
+Service accounts are non-human subjects and they do not receive included credits.
+Their consumption is billed at the namespace from the Monthly Commitment Pool and
+On-Demand credits. For more information about these types of credits, see [GitLab Credits](../../../subscriptions/gitlab_credits.md).
+
+For example, a trigger runs a flow when a merge request receives all required approvals,
+and the merge request requires three approvals. When the third approver approves the merge request,
+the trigger runs the flow as the configured service account, and the credit consumption is
+attributed to the service account rather than to the third approver.
+
+This attribution applies to every trigger event type. For example, it also applies to flows
+triggered by a pipeline state change, a work item status change, or a mention.
+
+In the [GitLab Credits dashboard](../../../subscriptions/gitlab_credits_dashboard.md), this
+credit consumption displays in the **Usage by user** tab as a row for the service account
+with an **Automated flow** badge. It does not display under the human user who triggered the flow.

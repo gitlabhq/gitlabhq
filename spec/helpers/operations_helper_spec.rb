@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe OperationsHelper do
   include Gitlab::Routing
 
-  let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project) }
+
+  let(:user) { build_stubbed(:user) }
 
   before do
     helper.instance_variable_set(:@project, project)

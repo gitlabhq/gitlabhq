@@ -2731,7 +2731,7 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
 
       wheels do
         Array.new(wheels_count) do
-          association(:wheel, car: instance)
+          association(:wheel, strategy: :build, car: instance)
         end
       end
     end
@@ -2744,6 +2744,46 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
   end
   ```
 
+- For a `has_many` or `has_one` child that references an unsaved parent,
+  use `association(:child, strategy: :build, parent: instance)`.
+  `instance` is the parent that FactoryBot is building.
+  Without `strategy: :build`, the `association` call uses the parent's strategy.
+  Under `create`, it can save the child while FactoryBot is still assigning the parent's attributes.
+  Verify that saving the parent also saves the children.
+
+  Before creating a join record in a factory callback, check whether assigning the association already builds it.
+  Creating another join record can duplicate the relationship or unexpectedly save the parent during `build`.
+  For association setup that requires a saved parent, keep `after(:create)`.
+  Add a comment that explains why.
+- Define association defaults as factory attributes so caller-supplied values replace the defaults.
+  These values include an existing record, an empty collection (`[]`), and `nil` where the model allows it.
+  When setting up defaults, do not append to, replace, or modify associations supplied by the caller.
+  FactoryBot skips the attribute block when the caller overrides it.
+  For the `car` factory in the previous example:
+
+  ```ruby
+  build(:car, wheels: []) # Skips the wheels attribute block, so no default wheels are built.
+  ```
+
+  Convert a raw foreign key attribute, such as `organization_id { create(:organization).id }`,
+  to an association only when the model declares that association.
+  If the model stores only the ID, for example because the referenced table is in a different
+  database, keep the ID attribute.
+  For this example, passing `organization_id:` skips the `organization` default
+  because FactoryBot treats the names as aliases.
+- When you change how a factory sets up associations, check each supported build strategy and explicit overrides.
+  Existing specs might exercise only `create` or the default associations.
+  Verify that:
+
+  - Each supported strategy (`build`, `build_stubbed`, or `create`) produces the expected associations.
+  - `build` followed by `save!` saves the parent and its associated records, where supported.
+  - Caller overrides take precedence over defaults.
+  - Association setup does not persist records unexpectedly under `build` or `build_stubbed`.
+  - `create` saves the expected associated records without duplicates.
+  - Persisted relationships are correct after `reload`.
+
+  Add a spec in `spec/factories_specs/` for custom logic that callers rely on.
+  Small mechanical conversions don't need their own spec.
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
   For example, use `build(:commit, project: project)` for a commit object.

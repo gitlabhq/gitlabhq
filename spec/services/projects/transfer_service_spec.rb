@@ -362,6 +362,14 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       end
 
       it 'updates pending builds for the project', :aggregate_failures do
+        expect(::Ci::PendingBuilds::UpdateProjectWorker).to receive(:perform_async).with(
+          project.id,
+          {
+            'namespace_traversal_ids' => group.traversal_ids,
+            'namespace_id' => group.id
+          }
+        ).and_call_original
+
         execute_transfer
 
         pending_build.reload

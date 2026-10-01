@@ -16,16 +16,23 @@ module Boards
       keys = fields.keys
       columns = fields.values_at(*keys)
 
-      results = item_model
-        .where(id: collection_ids)
+      results = metadata_collection
         .pluck(*columns)
         .flatten
+
+      # Aggregates always return a row when run, so no row means Rails skipped a query that could not match anything.
+      # Zero is only a safe fallback because every metadata field is a COUNT or a COALESCE'd SUM.
+      results = Array.new(keys.size, 0) if results.empty?
 
       Hash[keys.zip(results)]
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
+
+    def metadata_collection
+      item_model.id_in(collection_ids)
+    end
 
     def collection_ids
       @collection_ids ||= init_collection.select(item_model.arel_table[:id])

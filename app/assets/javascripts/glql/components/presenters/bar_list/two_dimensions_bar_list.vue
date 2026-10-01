@@ -3,7 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import { buildStackedByDimension, dimensionLabelFormatter } from '../../../utils/chart_data';
-import { foldTail, pageOf } from './fold_tail';
+import { foldSeries, pageOf } from './fold_tail';
 
 const sum = (values) => values.reduce((total, value) => total + value, 0);
 
@@ -61,12 +61,11 @@ export default {
     // One stacked segment per secondary value, ranked by total; values beyond
     // the maxSeries biggest fold into an Other segment.
     series() {
-      const ranked = [...this.stacked.bars].sort((a, b) => sum(b.data) - sum(a.data));
-
-      return foldTail(ranked, this.seriesExpanded ? Infinity : this.maxSeries, (folded) => ({
-        name: sprintf(s__('Glql|Other (%{count})'), { count: folded.length }),
-        data: this.stacked.groups.map((_, index) => sum(folded.map((bar) => bar.data[index] ?? 0))),
-      }));
+      return foldSeries({
+        bars: this.stacked.bars,
+        groups: this.stacked.groups,
+        max: this.seriesExpanded ? Infinity : this.maxSeries,
+      });
     },
     grandTotal() {
       return sum(this.series.map((bar) => sum(bar.data)));

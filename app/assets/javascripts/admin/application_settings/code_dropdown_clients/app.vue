@@ -1,6 +1,7 @@
 <script>
-import { GlAlert, GlButton, GlModal, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlModal, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { updateApplicationSettings } from '~/rest_api';
 import { logError } from '~/lib/logger';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -22,7 +23,7 @@ const buildEntry = (entry = {}) => {
 
 export default {
   name: 'CodeDropdownClientsApp',
-  components: { GlAlert, GlButton, GlModal, GlTable, CrudComponent, ClientForm },
+  components: { GlAlert, GlButton, GlLink, GlModal, GlTable, CrudComponent, ClientForm },
   directives: { GlTooltip: GlTooltipDirective },
   props: {
     initialClients: {
@@ -166,7 +167,9 @@ export default {
     editClient: s__('CodeDropdownClients|Edit client'),
     deleteClient: s__('CodeDropdownClients|Delete client'),
     empty: s__('CodeDropdownClients|No clients have been added.'),
+    learnMore: __('Learn more'),
   },
+  helpPath: helpPagePath('administration/settings/code-dropdown-custom-clients'),
   deleteModalActions: {
     primary: { text: s__('CodeDropdownClients|Delete client'), attributes: { variant: 'danger' } },
     cancel: { text: __('Cancel') },
@@ -207,6 +210,7 @@ export default {
     >
       <template #description>
         {{ $options.i18n.description }}
+        <gl-link :href="$options.helpPath" target="_blank">{{ $options.i18n.learnMore }}</gl-link>
       </template>
 
       <template #actions="{ showForm }">

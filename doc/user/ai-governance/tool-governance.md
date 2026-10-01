@@ -18,6 +18,7 @@ title: Agent tool governance
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20466) in GitLab 19.1 as a [beta](../../policy/development_stages_support.md) with a [feature flag](../../administration/feature_flags/_index.md) named `gitlab_duo_governance_settings`. Enabled by default.
 - Enforcement for background flows, such as the Duo Developer foundational flow, added in GitLab 19.3 behind a [feature flag](../../administration/feature_flags/_index.md) named `duo_workflow_background_tool_governance`. Disabled by default.
 - Feature flag `gitlab_duo_governance_settings` removed in GitLab 19.4.
+- Default for local file reads [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256385) from Always Ask to Always Allow in GitLab 19.5.
 
 {{< /history >}}
 
@@ -79,7 +80,7 @@ Background access
 | Classification | Mode |
 |------|------|
 | Read (GitLab resources) | Always Allow |
-| Read (local files) | Always Ask |
+| Read (local files) | Always Allow |
 | Read (agent session) | Always Allow |
 | Write | Always Ask |
 | Delete | Always Ask |

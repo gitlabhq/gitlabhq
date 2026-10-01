@@ -280,6 +280,8 @@ const boardViewStub = {
     'detailPanelEnabled',
     'preselectedWorkItemType',
     'canCreateWorkItem',
+    'hasWorkItems',
+    'hasWorkItemsLoading',
   ],
   template: '<div />',
 };
@@ -3179,6 +3181,114 @@ describe('planning-view', () => {
         await waitForPromises();
 
         expect(findBoardView().props('preselectedWorkItemType')).toBe('Issue');
+      });
+
+      describe('when the board view is shown', () => {
+        beforeEach(async () => {
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('passes hasWorkItems and its loading state to the board view', () => {
+          expect(findBoardView().props()).toMatchObject({
+            hasWorkItems: true,
+            hasWorkItemsLoading: false,
+          });
+        });
+
+        describe('when the board emits work-item-created', () => {
+          beforeEach(async () => {
+            defaultHasWorkItemsHandler.mockClear();
+
+            findBoardView().vm.$emit('work-item-created', {});
+            await waitForPromises();
+          });
+
+          it('refetches hasWorkItems so the columns replace the empty state', () => {
+            expect(defaultHasWorkItemsHandler).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+
+      describe('when hasWorkItems fails and a refetch then finds no work items', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            // vue-apollo retries once after an error, so both the first request and the retry fail.
+            hasWorkItemsHandler: jest
+              .fn()
+              .mockRejectedValueOnce(new Error('Network error'))
+              .mockRejectedValueOnce(new Error('Network error'))
+              .mockResolvedValue({
+                data: { namespace: { id: 'namespace', workItems: { nodes: [] } } },
+              }),
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: boardViewStub,
+            },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('keeps the columns while the failure stands, then shows the empty state', async () => {
+          expect(findBoardView().props('hasWorkItems')).toBe(true);
+
+          findBoardView().vm.$emit('work-item-created', {});
+          await waitForPromises();
+
+          expect(findBoardView().props('hasWorkItems')).toBe(false);
+        });
+      });
+
+      describe('when the board view is shown for a namespace with no work items', () => {
+        const findBoardEmptyStateModal = () =>
+          findEmptyStateWithoutAnyIssues().findComponent(CreateWorkItemModal);
+
+        beforeEach(async () => {
+          await mountComponent({
+            hasWorkItemsHandler: emptyHasWorkItemsHandler,
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: {
+              WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+              BoardView: stubComponent(boardViewStub, {
+                template: '<div><slot name="empty-state"></slot></div>',
+              }),
+            },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('fills the board empty state with the list empty state', () => {
+          expect(findBoardView().props('hasWorkItems')).toBe(false);
+          expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+            hasProjects: true,
+            showNewIssueDropdown: false,
+          });
+        });
+
+        it('offers the list create modal with the board create source', () => {
+          expect(findBoardEmptyStateModal().props()).toMatchObject({
+            creationContext: CREATION_CONTEXT_LIST_ROUTE,
+            createSource: 'work_item_board',
+          });
+        });
+
+        describe('when an item is created from the empty state', () => {
+          beforeEach(async () => {
+            emptyHasWorkItemsHandler.mockClear();
+            defaultCountsOnlyHandler.mockClear();
+
+            findBoardEmptyStateModal().vm.$emit('work-item-created', {});
+            await waitForPromises();
+          });
+
+          it('refetches hasWorkItems and the counts so the columns replace the empty state', () => {
+            expect(emptyHasWorkItemsHandler).toHaveBeenCalledTimes(1);
+            expect(defaultCountsOnlyHandler).toHaveBeenCalledTimes(1);
+          });
+        });
       });
 
       describe('when the board asks for the group by settings', () => {

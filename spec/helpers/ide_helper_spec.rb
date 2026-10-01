@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe IdeHelper, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project) }
-  let_it_be(:user) { project.creator }
-
   let_it_be(:disabled_vscode_settings) { { enabled: false } }
   let_it_be(:enabled_vscode_settings) do
     { enabled: true,
       vscode_settings: { service_url: 'https://example.com', item_url: 'https://example.com', resource_url_template: 'https://example.com' } }
   end
+
+  let(:project) { build_stubbed(:project) }
+  let(:user) { build_stubbed(:user) }
 
   before do
     allow(helper).to receive_messages(
@@ -138,7 +138,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
   end
 
   describe '#show_web_ide_oauth_callback_mismatch_callout?' do
-    let_it_be_with_reload(:oauth_application) { create(:oauth_application, owner: nil) }
+    let(:oauth_application) { build_stubbed(:oauth_application, owner: nil) }
 
     it 'returns false if no Web IDE OAuth application found' do
       expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
@@ -157,7 +157,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
   end
 
   describe '#web_ide_oauth_application_id' do
-    let_it_be_with_reload(:oauth_application) { create(:oauth_application, owner: nil) }
+    let(:oauth_application) { build_stubbed(:oauth_application, owner: nil) }
 
     it 'returns Web IDE OAuth application ID' do
       stub_application_setting({ web_ide_oauth_application: oauth_application })

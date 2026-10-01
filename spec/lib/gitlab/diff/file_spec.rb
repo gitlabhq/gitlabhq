@@ -1392,6 +1392,82 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
     end
   end
 
+  describe '#ai_reviewable_patch?' do
+    let(:patch) { "@@ -1,2 +1,2 @@\n-old\n+new\n context\n" }
+    let(:diff) do
+      Gitlab::Git::Diff.new({ diff: patch, new_path: 'file.txt', old_path: 'file.txt',
+                              a_mode: '100644', b_mode: '100644' })
+    end
+
+    subject(:ai_reviewable_patch?) { diff_file.ai_reviewable_patch? }
+
+    it { is_expected.to be(true) }
+
+    it 'does not load blobs' do
+      expect(diff_file).not_to receive(:old_blob)
+      expect(diff_file).not_to receive(:new_blob)
+
+      ai_reviewable_patch?
+    end
+
+    context 'when not diffable by .gitattributes' do
+      before do
+        allow(diff_file).to receive(:diffable_by_attribute?).and_return(false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when git replaced the patch with a binary notice' do
+      let(:patch) { "Binary files a/file.txt and b/file.txt differ\n" }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the patch contains a NUL byte' do
+      let(:patch) { "@@ -0,0 +1,2 @@\n+%PDF-1.5\n+binary\0content\n" }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'with an LFS pointer patch' do
+      let(:patch) do
+        "@@ -0,0 +1,3 @@\n+version https://git-lfs.github.com/spec/v1\n+oid sha256:#{'a' * 64}\n+size 1024\n"
+      end
+
+      before do
+        stub_lfs_setting(enabled: true)
+      end
+
+      it { is_expected.to be(false) }
+
+      context 'when the patch changes the pointer' do
+        let(:patch) do
+          "@@ -1,3 +1,3 @@\n version https://git-lfs.github.com/spec/v1\n" \
+            "-oid sha256:#{'a' * 64}\n+oid sha256:#{'b' * 64}\n-size 1024\n+size 2048\n"
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when LFS is disabled' do
+        before do
+          stub_lfs_setting(enabled: false)
+        end
+
+        it 'treats the pointer as a text file' do
+          is_expected.to be(true)
+        end
+      end
+    end
+
+    context 'when a text file mentions the LFS spec after its first line' do
+      let(:patch) { "@@ -1,2 +1,2 @@\n # Notes\n-old\n+version https://git-lfs.github.com/spec/v1\n" }
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '#diffable_text?' do
     subject(:diffable_text?) { diff_file.diffable_text? }
 

@@ -480,7 +480,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
           context 'when build is authorized as' do
             let(:authorization) { authorize_ci_project }
 
-            shared_examples 'can download LFS only from own projects' do |renew_authorization:|
+            shared_examples 'can download LFS only from own projects' do
               context 'for own project' do
                 let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
@@ -488,7 +488,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                   authorize_download
                 end
 
-                it_behaves_like 'an authorized request', renew_authorization: renew_authorization
+                it_behaves_like 'an authorized request', renew_authorization: false
               end
 
               context 'for other project' do
@@ -505,19 +505,19 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it_behaves_like 'can download LFS only from own projects', renew_authorization: true
+              it_behaves_like 'can download LFS only from own projects'
             end
 
             context 'regular user' do
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it_behaves_like 'can download LFS only from own projects', renew_authorization: true
+              it_behaves_like 'can download LFS only from own projects'
             end
 
             context 'does not have user' do
               let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-              it_behaves_like 'can download LFS only from own projects', renew_authorization: false
+              it_behaves_like 'can download LFS only from own projects'
             end
           end
 
@@ -692,6 +692,18 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
                 context 'tries to push to own project' do
                   it_behaves_like 'LFS http 403 response'
+                end
+
+                context 'tries to push to own project that allows job token pushes' do
+                  let(:project) { create(:project, :public) }
+
+                  before do
+                    project.ci_push_repository_for_job_token_allowed = true
+                    project.save!
+                    project.add_developer(user)
+                  end
+
+                  it_behaves_like 'pushes new LFS objects', renew_authorization: false
                 end
 
                 context 'tries to push to other project' do

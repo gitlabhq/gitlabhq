@@ -263,12 +263,17 @@ If a GPG key becomes compromised, revoke it. Revoking a key changes both future 
 - Past commits signed by this key are marked as unverified.
 - Future commits signed by this key are marked as unverified.
 
+Revoking a key in GitLab is not the same as revoking one of the key's user IDs
+with GnuPG.
+If you revoke a user ID, only the commits that use that user ID's
+email address as the committer email are marked as unverified.
+
 To revoke a GPG key:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the left sidebar, select **Access** > **GPG keys**.
-1. Select **Revoke** next to the GPG key you want to delete.
+1. Select **Revoke** next to the GPG key you want to revoke.
 
 ## Remove a GPG key
 

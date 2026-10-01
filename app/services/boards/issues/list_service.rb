@@ -19,6 +19,12 @@ module Boards
 
       private
 
+      # Aggregates the filtered issues directly instead of re-selecting them by id, which doubles the
+      # page reads. Safe because board filters only add EXISTS conditions or joins with at most one row per issue.
+      def metadata_collection
+        init_collection
+      end
+
       def order(items)
         return items.order_closed_at_desc if list&.closed?
 

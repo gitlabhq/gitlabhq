@@ -33,6 +33,12 @@ export default {
     },
   },
   emits: { error: null },
+  computed: {
+    maxSeries() {
+      const maxSeries = Number(this.displayConfig.maxSeries);
+      return Number.isInteger(maxSeries) && maxSeries > 0 ? maxSeries : null;
+    },
+  },
 };
 </script>
 
@@ -58,6 +64,7 @@ export default {
         :primary-dimension="dimensions[0]"
         :secondary-dimension="dimensions[1]"
         :metric="metric"
+        :max-series="maxSeries"
       />
     </template>
   </dimension-routed-chart>

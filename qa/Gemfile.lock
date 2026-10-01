@@ -143,7 +143,7 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-qa (15.8.0)
+    gitlab-qa (15.9.0)
       activesupport (>= 6.1, < 8)
       ffi (~> 1.17)
       gitlab (~> 4.19)
@@ -427,7 +427,7 @@ DEPENDENCIES
   faraday-retry (~> 2.4)
   fog-google (~> 1.29, >= 1.29.4)
   gitlab-orchestrator!
-  gitlab-qa (~> 15, >= 15.8.0)
+  gitlab-qa (~> 15, >= 15.9.0)
   gitlab-rspec-metrics-exporter (~> 0.2.0)
   gitlab-utils!
   gitlab_quality-test_tooling (~> 3.21.4)
@@ -502,7 +502,7 @@ CHECKSUMS
   formatador (0.3.0) sha256=65c37ec773f3fc7faa02cd5efd9599dc72970af5ebca8041a3e5dbcf5b70f956
   gitlab (4.19.0) sha256=3f645e3e195dbc24f0834fbf83e8ccfb2056d8e9712b01a640aad418a6949679
   gitlab-orchestrator (0.0.1)
-  gitlab-qa (15.8.0) sha256=2111f7f04e400491867550aad1f18ccca7eaf266dce62939f8dd564299a25666
+  gitlab-qa (15.9.0) sha256=3be28a4e2209ba47c942179ebb295a68b8e4eb15ebbea3b5bf3c16c1c615c870
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63
   gitlab-utils (0.2.0)
   gitlab_quality-test_tooling (3.21.4) sha256=c94c2d57cf749846daf831e1541280d6a226507d9bc63a55224f7d37abf5dda5
@@ -622,4 +622,4 @@ CHECKSUMS
   zeitwerk (2.8.3) sha256=2c85125a8467ce069e20123d1e709a08955c9d29c118c25b46b7b7fafdbb92e5
 
 BUNDLED WITH
-  4.0.18
+  4.0.19

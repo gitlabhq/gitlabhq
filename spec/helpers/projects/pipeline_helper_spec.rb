@@ -6,9 +6,10 @@ RSpec.describe Projects::PipelineHelper do
   include Ci::BuildsHelper
 
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :small_repo, owners: user) }
-  let_it_be_with_reload(:raw_pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
-  let_it_be(:pipeline, freeze: false) { Ci::PipelinePresenter.new(raw_pipeline, current_user: user) }
+  let_it_be_with_reload(:project) { create(:project, owners: user) }
+  let_it_be_with_reload(:raw_pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+
+  let(:pipeline) { Ci::PipelinePresenter.new(raw_pipeline, current_user: user) }
 
   describe '#js_pipeline_tabs_data' do
     subject(:pipeline_tabs_data) { helper.js_pipeline_tabs_data(project, pipeline, user) }

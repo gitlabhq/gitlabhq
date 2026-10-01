@@ -2,10 +2,6 @@
 # Cop supports --autocorrect.
 Layout/EmptyLineAfterMagicComment:
   Exclude:
-    - 'app/models/concerns/enums/ci/commit_status.rb'
-    - 'app/models/draft_note.rb'
-    - 'app/services/ci/pipeline_artifacts/coverage_report_service.rb'
-    - 'app/services/ci/pipeline_artifacts/create_code_quality_mr_diff_report_service.rb'
     - 'ee/app/controllers/groups/two_factor_auths_controller.rb'
     - 'ee/app/finders/status_page/incidents_finder.rb'
     - 'ee/app/models/geo/ci_secure_file_state.rb'

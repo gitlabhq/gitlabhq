@@ -16,10 +16,10 @@ module Keeps
     end
 
     def make_change!(change)
-      fetch_squash_branch
+      fetch_squash_ref
       run_squash_task
 
-      change.title = "Squash database migrations up to #{squash_remote_branch}"
+      change.title = "Squash database migrations up to #{squash_ref}"
       change.description = build_description
       change.labels = labels
       change.reviewers = reviewer('maintainer::database')
@@ -49,24 +49,24 @@ module Keeps
       end
     end
 
-    def fetch_squash_branch
+    def fetch_squash_ref
       Gitlab::Housekeeper::Shell.execute(
-        'git', 'fetch', 'origin', squash_local_branch, '--depth=1', '--filter=tree:0'
+        'git', 'fetch', 'origin', "refs/tags/#{squash_ref}:refs/tags/#{squash_ref}", '--depth=1', '--filter=tree:0'
       )
     end
 
     def run_squash_task
-      Gitlab::Housekeeper::Shell.execute('bundle', 'exec', 'rake', "gitlab:db:squash[#{squash_remote_branch}]")
+      Gitlab::Housekeeper::Shell.execute('bundle', 'exec', 'rake', "gitlab:db:squash[#{squash_ref}]")
     end
 
     def build_description
       <<~MARKDOWN
         ## What does this MR do and why?
 
-        This MR removes database migrations up to #{squash_remote_branch} and squashes them into `db/init_structure.sql` and
+        This MR removes database migrations up to #{squash_ref} and squashes them into `db/init_structure.sql` and
         removes associated specs and rubocop todos.
 
-        The changes were mainly created by running `bundle exec rake gitlab:db:squash[#{squash_remote_branch}]`.
+        The changes were mainly created by running `bundle exec rake gitlab:db:squash[#{squash_ref}]`.
       MARKDOWN
     end
 
@@ -99,12 +99,11 @@ module Keeps
       @milestones_helper ||= ::Keeps::Helpers::Milestones.new
     end
 
-    def squash_local_branch
-      @squash_local_branch ||= "#{target_squash_stop.tr('.', '-')}-stable-ee"
-    end
-
-    def squash_remote_branch
-      @squash_remote_branch ||= "origin/#{squash_local_branch}"
+    # Use the .0 release, not the stable branch. Backports keep landing on the
+    # branch after it is cut, so its tip carries migrations newer than the stop
+    # that an instance on .0 has not run yet.
+    def squash_ref
+      @squash_ref ||= "v#{target_squash_stop}.0-ee"
     end
 
     def reviewer(role)

@@ -20861,6 +20861,7 @@ CREATE TABLE duo_workflows_workflows (
     source_link text,
     trigger_flow_schedule_id bigint,
     trigger_event_type smallint,
+    parent_workflow_id bigint,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
@@ -20871,6 +20872,7 @@ CREATE TABLE duo_workflows_workflows (
     CONSTRAINT check_9903236764 CHECK ((char_length(idempotency_key) <= 255)),
     CONSTRAINT check_9c1be2907a CHECK ((char_length(jsonl_sha256) <= 64)),
     CONSTRAINT check_dd9b64c4fb CHECK ((char_length(source_link) <= 2048)),
+    CONSTRAINT check_duo_workflows_workflows_parent_workflow_id_flow CHECK (((parent_workflow_id IS NULL) OR (trigger_source = 4))),
     CONSTRAINT check_e39af3a04c CHECK ((char_length(model_metadata_json) <= 1024)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255)),
     CONSTRAINT check_workflows_single_noteable CHECK ((num_nonnulls(issue_id, merge_request_id) <= 1))
@@ -48696,6 +48698,8 @@ CREATE INDEX index_duo_workflows_workflows_on_merge_request_id ON duo_workflows_
 
 CREATE INDEX index_duo_workflows_workflows_on_namespace_created_at ON duo_workflows_workflows USING btree (namespace_id, created_at DESC) WHERE (namespace_id IS NOT NULL);
 
+CREATE INDEX index_duo_workflows_workflows_on_parent_workflow_id ON duo_workflows_workflows USING btree (parent_workflow_id) WHERE (parent_workflow_id IS NOT NULL);
+
 CREATE INDEX index_duo_workflows_workflows_on_project_created_at ON duo_workflows_workflows USING btree (project_id, created_at DESC) WHERE (project_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_duo_workflows_workflows_on_project_user_idempotency_key ON duo_workflows_workflows USING btree (project_id, user_id, idempotency_key) WHERE ((idempotency_key IS NOT NULL) AND (project_id IS NOT NULL));
@@ -60522,6 +60526,9 @@ ALTER TABLE p_duo_workflows_checkpoint_headers
 
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT fk_duo_workflows_workflows_ai_catalog_item_id FOREIGN KEY (ai_catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY duo_workflows_workflows
+    ADD CONSTRAINT fk_duo_workflows_workflows_parent_workflow_id FOREIGN KEY (parent_workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT fk_duo_workflows_workflows_service_account_id FOREIGN KEY (service_account_id) REFERENCES users(id) ON DELETE SET NULL NOT VALID;
