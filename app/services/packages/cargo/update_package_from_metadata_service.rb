@@ -7,6 +7,8 @@ module Packages
       include ExclusiveLeaseGuard
 
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
+      # `2` tells Cargo the entry may use `dep:` feature syntax.
+      INDEX_FORMAT_VERSION = 2
       INVALID_METADATA_ERROR_MESSAGE = 'package name, version and/or index content not found in metadata'
       PROTECTED_PACKAGE_ERROR_MESSAGE = 'Package Protected'
       DUPLICATE_PACKAGE_ERROR_MESSAGE = 'Package already exists'
@@ -46,7 +48,7 @@ module Packages
       end
 
       def valid_metadata?
-        fields = [package_name, package_version, package_index_content]
+        fields = [package_name, package_version, publish_metadata]
         fields.all?(&:present?)
       end
 
@@ -83,16 +85,62 @@ module Packages
       end
 
       def package_name
-        package_index_content[:name]
+        publish_metadata[:name]
       end
 
       def package_version
-        package_index_content[:vers]
+        publish_metadata[:vers]
       end
 
+      # What the client uploads is the crate manifest, not an index entry: it
+      # carries authorship and documentation keys the index schema rejects, and
+      # omits `cksum`, which only the server can compute. Translate rather than
+      # store verbatim.
+      # https://doc.rust-lang.org/cargo/reference/registry-index.html#json-schema
       def package_index_content
+        content = {
+          name: package_name,
+          vers: package_version,
+          deps: index_deps,
+          cksum: crate_sha256,
+          features: publish_metadata[:features] || {},
+          yanked: false,
+          links: publish_metadata[:links],
+          v: INDEX_FORMAT_VERSION
+        }
+
+        content[:rust_version] = publish_metadata[:rust_version] if publish_metadata[:rust_version].present?
+
+        content
+      end
+      strong_memoize_attr :package_index_content
+
+      # The manifest names a dependency's range `version_req`; the index calls
+      # it `req`. A renamed dependency splits in two: `name` holds the alias and
+      # `package` the crate it points at.
+      def index_deps
+        Array(publish_metadata[:deps]).map do |dep|
+          dep = dep.dup
+          dep[:req] = dep.delete(:version_req) if dep.key?(:version_req)
+          explicit_name = dep.delete(:explicit_name_in_toml)
+
+          if explicit_name.present?
+            dep[:package] = dep[:name]
+            dep[:name] = explicit_name
+          end
+
+          dep
+        end
+      end
+
+      def publish_metadata
         metadata[:index_content]
       end
+
+      def crate_sha256
+        Digest::SHA256.hexdigest(crate_data)
+      end
+      strong_memoize_attr :crate_sha256
 
       def crate_data
         metadata[:crate_data]
@@ -123,8 +171,6 @@ module Packages
       end
 
       def replace_uploaded_file_with_extracted_crate
-        sha256 = Digest::SHA256.hexdigest(crate_data)
-
         file = CarrierWaveStringFile.new_file(
           file_content: crate_data,
           filename: package_filename,
@@ -134,7 +180,7 @@ module Packages
         @package_file.update!(
           file: file,
           file_name: package_filename,
-          file_sha256: sha256,
+          file_sha256: crate_sha256,
           size: crate_data.bytesize
         )
       end

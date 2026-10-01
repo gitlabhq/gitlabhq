@@ -131,10 +131,6 @@ methods:
 scopes:
   ee/app/models/govern/policy.rb:
     - for_lifecycle_state: Will be used by the enabled filter on the policy store list endpoint, landing in a stacked follow-up MR
-  ee/app/models/security/dependency_firewall_prevented_package.rb:
-    - for_rule_types: Used by the prevented-stats collectors landing in a stacked follow-up MR of the 627538 series
-    - blocked_since: Used by the prevented-stats collectors landing in a stacked follow-up MR of the 627538 series
-    - warned_only_since: Used by the prevented-stats collectors landing in a stacked follow-up MR of the 627538 series
 constants:
   app/models/concerns/enums/security.rb:
     - FLOW_BACKED_SCAN_TYPES: Used by stacked merge requests that consume this constant

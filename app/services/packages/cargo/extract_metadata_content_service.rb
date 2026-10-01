@@ -20,12 +20,25 @@ module Packages
         ServiceResponse.error(message: "Failed to extract metadata: #{e.message}")
       end
 
+      # The metadata is length-prefixed at the front of the publish body, so a
+      # request-time check can read it without pulling the crate (up to
+      # MAX_CRATE_BYTE_SIZE) into memory the way #execute does. Rewinds on the
+      # way out because the caller still has to upload the same IO.
+      def execute_index_only
+        ServiceResponse.success(payload: { index_content: read_index_content })
+      rescue JSON::ParserError => e
+        ServiceResponse.error(message: "Invalid JSON metadata: #{e.message}")
+      rescue EOFError, StandardError => e
+        ServiceResponse.error(message: "Failed to extract metadata: #{e.message}")
+      ensure
+        @cargo_file_content&.rewind
+      end
+
       private
 
       # Reference: https://doc.rust-lang.org/cargo/reference/registry-web-api.html#publish
       def extract_metadata
-        index_length = read_length('JSON')
-        index_content = read_json(length: index_length)
+        index_content = read_index_content
 
         crate_length = read_length('crate')
         raise ArgumentError, "Crate size exceeds maximum allowed" if crate_length > MAX_CRATE_BYTE_SIZE
@@ -48,6 +61,10 @@ module Packages
         raise ArgumentError, "#{label} length must be positive" if length <= 0
 
         length
+      end
+
+      def read_index_content
+        read_json(length: read_length('JSON'))
       end
 
       def read_json(length:)

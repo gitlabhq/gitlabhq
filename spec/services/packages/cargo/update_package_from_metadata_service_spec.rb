@@ -16,13 +16,32 @@ RSpec.describe Packages::Cargo::UpdatePackageFromMetadataService, :clean_gitlab_
   let(:package_name) { 'test-crate' }
   let(:package_version) { '1.0.0' }
   let(:package_filename) { "#{package_name}-#{package_version}.crate" }
+  # The shape the Cargo client actually uploads: manifest keys, a dependency
+  # range under `version_req`, and no `cksum`.
   let(:index_content) do
     {
       name: package_name,
       vers: package_version,
-      deps: [{ name: 'dep_1', req: '^0.6' }],
-      cksum: 'checksum',
-      v: 2
+      deps: [{ name: 'dep_1', version_req: '^0.6', explicit_name_in_toml: nil }],
+      features: { 'default' => [] },
+      authors: [],
+      description: 'a test crate',
+      license: 'MIT',
+      links: nil,
+      rust_version: nil
+    }
+  end
+
+  let(:expected_index_content) do
+    {
+      'name' => package_name,
+      'vers' => package_version,
+      'deps' => [{ 'name' => 'dep_1', 'req' => '^0.6' }],
+      'cksum' => Digest::SHA256.hexdigest(crate_data),
+      'features' => { 'default' => [] },
+      'yanked' => false,
+      'links' => nil,
+      'v' => 2
     }
   end
 
@@ -108,7 +127,46 @@ RSpec.describe Packages::Cargo::UpdatePackageFromMetadataService, :clean_gitlab_
         expect(Packages::PackageFile.find(package_file.id).file.size).to eq(crate_data.bytesize)
 
         metadatum = package.cargo_metadatum
-        expect(metadatum.index_content).to eq(index_content.deep_stringify_keys)
+        expect(metadatum.index_content).to eq(expected_index_content)
+      end
+
+      it 'stores an index entry the schema accepts' do
+        execute_service
+
+        expect(package.reload.cargo_metadatum).to be_valid
+      end
+
+      context 'when the manifest renames a dependency' do
+        let(:index_content) do
+          super().merge(deps: [{ name: 'real-crate', version_req: '^1.0', explicit_name_in_toml: 'alias' }])
+        end
+
+        it 'moves the real crate name to `package` and the alias to `name`' do
+          execute_service
+
+          expect(package.reload.cargo_metadatum.index_content['deps'])
+            .to eq([{ 'name' => 'alias', 'req' => '^1.0', 'package' => 'real-crate' }])
+        end
+      end
+
+      context 'when a dependency already uses the index `req` key' do
+        let(:index_content) { super().merge(deps: [{ name: 'dep_1', req: '^0.6' }]) }
+
+        it 'keeps it as is' do
+          execute_service
+
+          expect(package.reload.cargo_metadatum.index_content['deps']).to eq([{ 'name' => 'dep_1', 'req' => '^0.6' }])
+        end
+      end
+
+      context 'when the manifest declares a minimum Rust version' do
+        let(:index_content) { super().merge(rust_version: '1.75') }
+
+        it 'carries it into the index entry' do
+          execute_service
+
+          expect(package.reload.cargo_metadatum.index_content).to include('rust_version' => '1.75')
+        end
       end
 
       it_behaves_like 'taking the lease'
@@ -123,7 +181,7 @@ RSpec.describe Packages::Cargo::UpdatePackageFromMetadataService, :clean_gitlab_
 
       let!(:existing_metadatum) do
         create(:cargo_metadatum, package: existing_package, project: project,
-          index_content: index_content.deep_stringify_keys)
+          index_content: expected_index_content)
       end
 
       it_behaves_like 'raising an error',

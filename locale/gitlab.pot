@@ -3784,6 +3784,9 @@ msgstr ""
 msgid "AICatalog|must be a service account"
 msgstr ""
 
+msgid "AICatalog|must be a version of the dependency item"
+msgstr ""
+
 msgid "AICatalog|must be enabled in the same organization"
 msgstr ""
 

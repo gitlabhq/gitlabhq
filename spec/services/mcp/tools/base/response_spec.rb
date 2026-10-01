@@ -136,6 +136,19 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
       end
     end
 
+    context 'with a reason' do
+      it 'records the reason alongside the error' do
+        result = described_class.error('Project not found', reason: :unauthorized)
+
+        expect(result).to eq({
+          content: [{ type: 'text', text: 'Project not found' }],
+          structuredContent: {},
+          isError: true,
+          reason: :unauthorized
+        })
+      end
+    end
+
     context 'with nil details' do
       it 'returns an error response with empty structured content' do
         result = described_class.error('Error message', nil)
@@ -164,7 +177,8 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
               message: 'Too many requests'
             }
           },
-          isError: true
+          isError: true,
+          reason: :error
         })
       end
     end
@@ -205,6 +219,43 @@ RSpec.describe Mcp::Tools::Base::Response, feature_category: :mcp_server do
 
     it 'is recognised as an error result' do
       expect(described_class.error?(described_class.rate_limited_error('Too many requests'))).to be(true)
+    end
+  end
+
+  describe '.error_reason' do
+    it 'returns the recorded reason' do
+      result = described_class.error('Bad input', reason: :bad_request)
+
+      expect(described_class.error_reason(result)).to eq(:bad_request)
+    end
+
+    it 'defaults to :error when no reason was recorded' do
+      expect(described_class.error_reason(described_class.error('Boom'))).to eq(:error)
+    end
+
+    it 'falls back to :error for a reason outside the known set' do
+      result = described_class.error('Boom', reason: :bad_requst)
+
+      expect(described_class.error_reason(result)).to eq(:error)
+    end
+  end
+
+  describe '.reason_for_http_status' do
+    {
+      400 => :bad_request,
+      401 => :unauthorized,
+      403 => :unauthorized,
+      404 => :not_found,
+      408 => :error,
+      422 => :bad_request,
+      429 => :error,
+      '404' => :not_found,
+      500 => :error,
+      503 => :error
+    }.each do |status, reason|
+      it "maps #{status} to #{reason}" do
+        expect(described_class.reason_for_http_status(status)).to eq(reason)
+      end
     end
   end
 

@@ -4,9 +4,6 @@ module API
   module Mcp
     module Handlers
       class CallTool
-        TOOL_STATUS_DONE = 'done'
-        TOOL_STATUS_FAIL = 'fail'
-
         class ToolResponseError < StandardError
           attr_reader :result
 
@@ -61,7 +58,7 @@ module API
         rescue ToolResponseError => e
           track_finish_event(tool_name, session_id, current_user, success: false, error: e, params: params)
           log_tool_call(tool_name, session_id, current_user, params, error: e, duration_s: duration_since(start))
-          e.result
+          e.result.except(:reason)
         rescue StandardError => error
           track_finish_event(tool_name, session_id, current_user, success: false, error: error, params: params)
           log_tool_call(tool_name, session_id, current_user, params, error: error, duration_s: duration_since(start))
@@ -74,7 +71,7 @@ module API
           expanded = { arguments: filter_parameters(arguments) }
           error_fields = {}
 
-          if error
+          if error && !error.is_a?(ToolResponseError)
             error_fields[::Labkit::Fields::ERROR_TYPE] = error.class.name
             expanded[::Labkit::Fields::ERROR_MESSAGE] = error.message
           end
@@ -87,7 +84,7 @@ module API
             tool_name: tool_name,
             **canonical_tool_name_field(tool_name),
             session_id: session_id,
-            tool_status: error ? TOOL_STATUS_FAIL : TOOL_STATUS_DONE,
+            tool_status: tool_status(error),
             ::Labkit::Fields::DURATION_S => duration_s,
             argument_keys: arguments.keys,
             namespace: tool_call_namespace(params),
@@ -101,6 +98,15 @@ module API
           return {} if canonical_name == tool_name
 
           { canonical_tool_name: canonical_name }
+        end
+
+        def tool_status(error)
+          case error
+          when nil then 'ok'
+          when ToolResponseError then ::Mcp::Tools::Base::Response.error_reason(error.result).to_s
+          when ::Mcp::Tools::Manager::ToolNotFoundError then 'not_found'
+          else 'error'
+          end
         end
 
         def filter_parameters(arguments)

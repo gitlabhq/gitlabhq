@@ -314,7 +314,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       it 'returns error response with mutation errors' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Title cannot be blank')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Title cannot be blank',
+          reason: :bad_request)
         expect(result).to eq(error_response)
       end
     end
@@ -341,7 +342,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         result = tool.execute
 
         expect(::Mcp::Tools::Base::Response).to have_received(:error)
-          .with('Title cannot be blank, Description is too short')
+          .with('Title cannot be blank, Description is too short', reason: :bad_request)
         expect(result).to eq(error_response)
       end
     end
@@ -387,7 +388,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
       it 'returns error response' do
         result = tool.execute
 
-        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data')
+        expect(::Mcp::Tools::Base::Response).to have_received(:error).with('Operation returned no data',
+          reason: :not_found)
         expect(result).to eq(error_response)
       end
     end

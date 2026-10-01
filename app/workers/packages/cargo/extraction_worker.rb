@@ -14,6 +14,9 @@ module Packages
       deduplicate :until_executed
 
       def perform(package_file_id, params = {})
+        # Sidekiq serializes arguments to JSON, so the keys arrive as strings.
+        params = params.to_h.symbolize_keys
+
         package_file = ::Packages::PackageFile.not_processing.find_by_id(package_file_id)
         return unless package_file
 

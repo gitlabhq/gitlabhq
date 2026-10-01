@@ -133,7 +133,8 @@ RSpec.describe Mcp::Tools::GetServerVersionService, feature_category: :mcp_serve
         expect(result).to eq({
           content: [{ type: 'text', text: "Mcp::Tools::GetServerVersionService: current_user is not set" }],
           structuredContent: {},
-          isError: true
+          isError: true,
+          reason: :unauthorized
         })
       end
     end

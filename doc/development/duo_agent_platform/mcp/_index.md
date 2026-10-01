@@ -764,6 +764,38 @@ governance from rename aliases
 ([work item 609451](https://gitlab.com/gitlab-org/gitlab/-/work_items/609451)), keep
 every alias in place.
 
+### Categorizing tool errors
+
+`Response.error` takes an optional `reason:` symbol, which is recorded as `tool_status`
+in `mcp.log`. Pass one whenever the tool knows why it failed, so the failure mode is
+visible in structured logs without expanded logging turned on.
+
+```ruby
+::Mcp::Tools::Base::Response.error(
+  'Work item not found or inaccessible.', reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+)
+```
+
+| `Reason` constant | Use for |
+| --- | --- |
+| `BAD_REQUEST` | The agent sent missing, malformed, or invalid arguments. |
+| `UNAUTHORIZED` | The user lacks access. Keep the message vague so it does not reveal whether the resource exists; the reason records the truth. |
+| `NOT_FOUND` | The resource genuinely does not exist, or a GraphQL query resolved with null data and cannot tell absence from invisibility. |
+| `ERROR` | A backend or downstream failure. This is the default when no reason is given. |
+
+Only these four values are recorded; `Response::Reason::ALL` is the allow-list, and
+anything else falls back to `ERROR`. The reason is stripped from the response before it reaches
+the agent, so adding one never changes what the agent sees.
+
+Tools that resolve a project or group through `ResourceFinder#find_project!` or
+`#find_group!` get this for free: those raise `ResourceNotFoundError` when the resource
+does not exist and `ResourceForbiddenError` when it exists but the user cannot see it,
+and the base services categorize each. Both carry the same message, so the agent cannot
+tell them apart.
+
+Do not pass a reason for a response that merely failed to find an expected key in an
+otherwise successful payload. That is a malformed response, which is what `ERROR` means.
+
 ### Gating a tool's availability
 
 Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.

@@ -423,6 +423,36 @@ RSpec.describe Mcp::Tools::Repositories::GetRepositoryFileService, feature_categ
           "not found or inaccessible")
         expect(missing_msg).to eq("Tool execution failed: Project 'no-group/no-project' not found or inaccessible")
       end
+
+      it 'separates the two in the log even though the wording matches', :aggregate_failures do
+        private_result = call({ 'project_id' => private_project.full_path,
+                                'file_path' => 'README.md', 'ref' => 'master' })
+        missing_result = call({ 'project_id' => 'no-group/no-project',
+                                'file_path' => 'README.md', 'ref' => 'master' })
+
+        expect(private_result[:reason]).to eq(:unauthorized)
+        expect(missing_result[:reason]).to eq(:not_found)
+      end
+    end
+
+    context 'when the caller can see the project but not its code' do
+      let_it_be(:guest_project) { create(:project, :repository, :private) }
+      let_it_be(:guest) { create(:user, guest_of: guest_project) }
+
+      before do
+        service.set_cred(current_user: guest)
+      end
+
+      it 'reports a denial without reaching error tracking', :aggregate_failures do
+        expect(::Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        result = call({ 'project_id' => guest_project.full_path, 'file_path' => 'README.md', 'ref' => 'master' })
+
+        expect(result[:isError]).to be true
+        expect(result[:reason]).to eq(:unauthorized)
+        expect(error_text(result))
+          .to eq("Tool execution failed: Project '#{guest_project.full_path}' not found or inaccessible")
+      end
     end
 
     context 'when current_user is not set' do

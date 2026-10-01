@@ -43,8 +43,11 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
         request
 
         expect(response).to have_gitlab_http_status(:ok)
-        expected_url = URI.join(Gitlab.config.gitlab.url,
-          "#{api_v4_projects_packages_path(id: project.id)}/packages/cargo").to_s
+        # Spelled out rather than rebuilt from the route helper: the helper
+        # already ends in `/packages`, and deriving it here hid a doubled
+        # segment that Cargo followed to a 404.
+        expected_url =
+          "#{Gitlab.config.gitlab.url}/api/v4/projects/#{project.id}/packages/cargo"
         expect(json_response).to match(
           "dl" => expected_url,
           "api" => expected_url,
@@ -797,6 +800,261 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'returning response status', :forbidden
+    end
+  end
+
+  describe 'PUT /api/v4/projects/:id/packages/cargo/api/v1/crates/new' do
+    include_context 'workhorse headers'
+
+    # Cargo publish format: [4-byte LE JSON length][JSON][4-byte LE crate length][crate]
+    def build_cargo_publish_body(index_content:, crate_data:)
+      json_bytes = Gitlab::Json.dump(index_content).b
+
+      [json_bytes.bytesize].pack('L<') + json_bytes + [crate_data.bytesize].pack('L<') + crate_data
+    end
+
+    # PackagesManagerApiSpecHelpers#temp_file writes in text mode, which cannot
+    # represent the binary publish body.
+    def upload_body(content)
+      upload_path = ::Packages::PackageFileUploader.workhorse_local_upload_path
+      file_path = File.join(upload_path, 'cargo-publish-body')
+
+      FileUtils.mkdir_p(upload_path)
+      File.binwrite(file_path, content)
+
+      UploadedFile.new(file_path, filename: File.basename(file_path))
+    end
+
+    let_it_be(:crate_data) do
+      File.binread(Rails.root.join('spec/fixtures/packages/cargo/test-crate-1.0.0.crate'))
+    end
+
+    # Mirrors what `cargo publish` uploads: manifest keys, no `cksum`, and
+    # `rust_version` present but null when the manifest omits it.
+    let(:index_content) do
+      {
+        name: 'test-crate',
+        vers: '1.0.0',
+        deps: [],
+        features: {},
+        authors: [],
+        description: 'a test crate',
+        documentation: nil,
+        homepage: nil,
+        readme: nil,
+        readme_file: nil,
+        keywords: [],
+        categories: [],
+        license: 'MIT',
+        license_file: nil,
+        repository: nil,
+        badges: {},
+        links: nil,
+        rust_version: nil
+      }
+    end
+
+    let(:url) { "/projects/#{project.id}/packages/cargo/api/v1/crates/new" }
+    let(:base_headers) { { 'Authorization' => "Bearer #{personal_access_token.token}" } }
+    let(:headers) { base_headers.merge(workhorse_headers) }
+    let(:file) do
+      upload_body(build_cargo_publish_body(index_content: index_content, crate_data: crate_data))
+    end
+
+    subject(:request) do
+      workhorse_finalize(
+        api(url),
+        method: :put,
+        file_key: :file,
+        params: { file: file },
+        headers: headers,
+        send_rewritten_field: true
+      )
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_cargo_package do
+      let(:boundary_object) { project }
+      let(:base_headers) { { 'Authorization' => "Bearer #{pat.token}" } }
+
+      before_all do
+        project.add_developer(user)
+      end
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:headers) { build_token_auth_header(target_job.token).merge(workhorse_headers) }
+    end
+
+    context 'with a developer' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'creates a processing package and enqueues extraction', :aggregate_failures do
+        expect { request }
+          .to change { ::Packages::Cargo::Package.for_projects(project).count }.by(1)
+          .and change { ::Packages::PackageFile.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq(
+          'warnings' => { 'invalid_categories' => [], 'invalid_badges' => [], 'other' => [] }
+        )
+
+        package = ::Packages::Cargo::Package.for_projects(project).last
+
+        expect(package.name).to eq(::Packages::Cargo::TEMPORARY_PACKAGE_NAME)
+        expect(package.status).to eq('processing')
+        expect(package.package_files.last).to have_attributes(file_name: 'package.crate', status: 'default')
+        expect(::Packages::Cargo::ExtractionWorker.jobs.last['args'])
+          .to eq([package.package_files.last.id, { 'user_id' => user.id }])
+      end
+
+      it 'promotes the package once the worker runs', :aggregate_failures, :sidekiq_inline do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        package = ::Packages::Cargo::Package.for_projects(project).last
+
+        expect(package).to have_attributes(name: 'test-crate', version: '1.0.0', status: 'default')
+        expect(package.cargo_metadatum.index_content).to eq(
+          'name' => 'test-crate',
+          'vers' => '1.0.0',
+          'deps' => [],
+          'cksum' => Digest::SHA256.hexdigest(crate_data),
+          'features' => {},
+          'yanked' => false,
+          'links' => nil,
+          'v' => 2
+        )
+        expect(package.package_files.last.file_name).to eq('test-crate-1.0.0.crate')
+      end
+
+      context 'when the file is larger than the plan limit' do
+        before do
+          project.actual_limits.update!(cargo_max_file_size: 1)
+        end
+
+        it_behaves_like 'returning response status with message', status: :bad_request,
+          message: '400 Bad request - File is too large'
+      end
+
+      context 'when the crate name is protected' do
+        let_it_be(:protection_rule) do
+          create(:package_protection_rule, project: project, package_type: :cargo,
+            package_name_pattern: 'test-crate', minimum_access_level_for_push: :owner)
+        end
+
+        it 'refuses with a 400 and creates nothing', :aggregate_failures do
+          expect { request }
+            .to not_change { ::Packages::Cargo::Package.for_projects(project).count }
+            .and not_change { ::Packages::PackageFile.count }
+            .and not_change { ::Packages::Cargo::ExtractionWorker.jobs.size }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response).to eq('message' => '400 Bad request - Package protected.')
+        end
+      end
+
+      context 'when ObjectStorage::RemoteStoreError is raised' do
+        before do
+          allow_next_instance_of(::Packages::Cargo::CreateTemporaryPackageService) do |service|
+            allow(service).to receive(:execute).and_raise(ObjectStorage::RemoteStoreError)
+          end
+        end
+
+        it 'tracks the exception and returns forbidden' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            an_instance_of(ObjectStorage::RemoteStoreError),
+            extra: { project_id: project.id }
+          )
+
+          request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      describe 'package event tracking' do
+        let(:snowplow_gitlab_standard_context) do
+          { project: project, namespace: group, property: 'i_package_cargo_user', user: user }
+        end
+
+        it_behaves_like 'a package tracking event', described_class.name, 'push_package'
+      end
+    end
+
+    context 'with a reporter' do
+      before_all do
+        project.add_reporter(user)
+      end
+
+      it_behaves_like 'returning response status', :forbidden
+    end
+
+    context 'with a deploy token' do
+      let(:base_headers) { { 'Authorization' => "Bearer #{deploy_token.token}" } }
+
+      it 'enqueues extraction with the deploy token as the actor', :aggregate_failures do
+        expect { request }.to change { ::Packages::Cargo::Package.for_projects(project).count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(::Packages::Cargo::ExtractionWorker.jobs.last['args'].last)
+          .to eq({ 'deploy_token_id' => deploy_token.id })
+      end
+    end
+
+    context 'without write permissions deploy token' do
+      let(:base_headers) { { 'Authorization' => "Bearer #{deploy_token_without_permission.token}" } }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it_behaves_like 'returning response status', :not_found
+    end
+
+    context 'with unauthenticated user' do
+      let(:headers) { workhorse_headers }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+
+    context 'with a guest' do
+      before_all do
+        project.add_guest(user)
+      end
+
+      it_behaves_like 'returning response status', :forbidden
+    end
+
+    context 'without workhorse headers' do
+      let(:headers) { base_headers }
+
+      before_all do
+        project.add_developer(user)
+      end
+
+      it_behaves_like 'returning response status', :forbidden
+    end
+
+    # No 'when package feature is disabled' example here: with packages off the
+    # multipart middleware rejects the upload path with a 400 before the
+    # endpoint runs. The other cargo routes cover that gate.
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(package_registry_cargo_support: false)
+      end
+
+      it_behaves_like 'returning response status', :not_found
     end
   end
 end

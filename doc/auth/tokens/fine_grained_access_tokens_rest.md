@@ -1682,6 +1682,7 @@ Grants the ability to create, delete, read, and update packages.
 | Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | Create | Project | `PUT` | `/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
 | Create | Project | `PUT` | `/packages/npm/-/package/*package_name/dist-tags/:tag` |
+| Create | Project | `PUT` | `/projects/:id/packages/cargo/api/v1/crates/new` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` |
 | Create | Project | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` |

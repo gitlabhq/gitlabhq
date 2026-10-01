@@ -6,14 +6,17 @@ module Mcp
       module ResourceFinder
         include Gitlab::ResourceLookup
 
+        ResourceNotFoundError = Class.new(StandardError)
+        ResourceForbiddenError = Class.new(StandardError)
+
         private
 
         def find_project!(project_id, ability: :read_project)
           project = find_project(project_id)
+          message = "Project '#{project_id}' not found or inaccessible"
 
-          unless project && Ability.allowed?(current_user, ability, project)
-            raise StandardError, "Project '#{project_id}' not found or inaccessible"
-          end
+          raise ResourceNotFoundError, message unless project
+          raise ResourceForbiddenError, message unless Ability.allowed?(current_user, ability, project)
 
           project
         end
@@ -26,10 +29,10 @@ module Mcp
 
         def find_group!(group_id, ability: :read_group)
           group = lookup_group(decode_identifier(group_id))
+          message = "Group '#{group_id}' not found or inaccessible"
 
-          unless group && Ability.allowed?(current_user, ability, group)
-            raise StandardError, "Group '#{group_id}' not found or inaccessible"
-          end
+          raise ResourceNotFoundError, message unless group
+          raise ResourceForbiddenError, message unless Ability.allowed?(current_user, ability, group)
 
           group
         end

@@ -8,6 +8,15 @@ module Mcp
         TEXT_CONTENT = 'text'
         RATE_LIMITED_ERROR_TYPE = 'rate_limited'
 
+        module Reason
+          BAD_REQUEST = :bad_request
+          UNAUTHORIZED = :unauthorized
+          NOT_FOUND = :not_found
+          ERROR = :error
+
+          ALL = [BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, ERROR].freeze
+        end
+
         def self.success(formatted_content, data = nil)
           {
             content: formatted_content,
@@ -16,12 +25,29 @@ module Mcp
           }
         end
 
-        def self.error(message, details = nil)
-          {
+        def self.error(message, details = nil, reason: nil)
+          result = {
             content: [{ type: TEXT_CONTENT, text: message.to_s }],
             structuredContent: details.nil? ? {} : { error: details },
             isError: true
           }
+          result[:reason] = reason if reason.present?
+          result
+        end
+
+        def self.error_reason(result)
+          reason = result[:reason]
+          Reason::ALL.include?(reason) ? reason : Reason::ERROR
+        end
+
+        def self.reason_for_http_status(status)
+          case status.to_i
+          when 401, 403 then Reason::UNAUTHORIZED
+          when 404 then Reason::NOT_FOUND
+          when 408, 429 then Reason::ERROR
+          when 400..499 then Reason::BAD_REQUEST
+          else Reason::ERROR
+          end
         end
 
         def self.rate_limited_error(message, retry_after: nil, limit: nil)
@@ -30,11 +56,7 @@ module Mcp
           details[:limit] = limit.to_s if limit.present?
           details[:message] = message.to_s
 
-          {
-            content: [{ type: TEXT_CONTENT, text: rate_limited_text(retry_after, limit) }],
-            structuredContent: { error: details },
-            isError: true
-          }
+          error(rate_limited_text(retry_after, limit), details, reason: Reason::ERROR)
         end
 
         def self.error?(result)

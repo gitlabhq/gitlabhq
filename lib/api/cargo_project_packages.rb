@@ -41,7 +41,7 @@ module API
             Gitlab.config.gitlab.url,
             File.join(
               api_v4_projects_packages_path(id: user_project_with_read_package.id),
-              "/packages/cargo"
+              "/cargo"
             )
           )
         end
@@ -270,6 +270,49 @@ module API
             has_length: true,
             maximum_size: user_project_with_read_package.actual_limits.cargo_max_file_size
           )
+        end
+
+        desc 'Publish a Cargo crate' do
+          detail 'Receives the cargo publish body and extracts the crate asynchronously'
+          success code: 200
+          failure [
+            { code: 400, message: 'Bad Request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[packages_cargo]
+        end
+        params do
+          requires :file, type: ::API::Validations::Types::WorkhorseFile,
+            desc: 'The cargo publish body, uploaded by workhorse', documentation: { type: 'file' }
+        end
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, permissions: :upload_cargo_package, boundary_type: :project,
+          job_token_policies: :admin_packages
+        put 'api/v1/crates/new' do
+          project = user_project_with_read_package
+
+          authorize_upload!(project)
+
+          bad_request!('File is too large') if
+            project.actual_limits.exceeded?(:cargo_max_file_size, params[:file].size)
+
+          response = ::Packages::Cargo::CreateTemporaryPackageService.new(
+            project, current_user, declared_params.merge(build: current_authenticated_job)
+          ).execute
+
+          bad_request!(response.message) if response.error?
+
+          track_package_event('push_package', :cargo, project: project, namespace: project.namespace)
+
+          # The cargo client deserializes this body and fails on anything it
+          # cannot parse, so the empty warnings object is required.
+          { warnings: { invalid_categories: [], invalid_badges: [], other: [] } }
+        rescue ObjectStorage::RemoteStoreError => e
+          Gitlab::ErrorTracking.track_exception(e, extra: { project_id: project.id })
+
+          forbidden!
         end
       end
     end

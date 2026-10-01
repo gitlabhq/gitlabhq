@@ -17,7 +17,7 @@ module Mcp
           if access_token.present?
             super
           else
-            Response.error("ApiService: access token is not set")
+            Response.error("ApiService: access token is not set", reason: Response::Reason::UNAUTHORIZED)
           end
         end
 
@@ -78,7 +78,9 @@ module Mcp
 
             error_payload = parsed_response.nil? ? nil : parsed_response
 
-            ::Mcp::Tools::Base::Response.error(message, error_payload)
+            ::Mcp::Tools::Base::Response.error(
+              message, error_payload, reason: ::Mcp::Tools::Base::Response.reason_for_http_status(response.code)
+            )
           end
         rescue JSON::ParserError, Gitlab::Json::ParserError => e
           ::Mcp::Tools::Base::Response.error('Invalid JSON response', { message: e.message })

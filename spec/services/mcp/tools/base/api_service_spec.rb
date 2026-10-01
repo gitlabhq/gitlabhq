@@ -166,7 +166,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
           structuredContent: {},
-          isError: true
+          isError: true,
+          reason: :error
         })
       end
     end
@@ -186,7 +187,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
           structuredContent: { error: { 'not_message' => 'value' } },
-          isError: true
+          isError: true,
+          reason: :error
         })
       end
     end
@@ -230,7 +232,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'Bad request' }],
           structuredContent: { error: { 'message' => 'Bad request' } },
-          isError: true
+          isError: true,
+          reason: :bad_request
         })
       end
     end
@@ -246,7 +249,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
         expect(result).to eq({
           content: [{ type: 'text', text: 'HTTP 500' }],
           structuredContent: { error: {} },
-          isError: true
+          isError: true,
+          reason: :error
         })
       end
     end
@@ -333,7 +337,8 @@ RSpec.describe Mcp::Tools::Base::ApiService, feature_category: :mcp_server do
       expect(result).to eq({
         content: [{ text: "ApiService: access token is not set", type: "text" }],
         structuredContent: {},
-        isError: true
+        isError: true,
+        reason: :unauthorized
       })
     end
   end

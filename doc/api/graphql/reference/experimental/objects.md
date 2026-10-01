@@ -2380,6 +2380,21 @@ Summary of a repository that is an upstream of a virtual Artifact Registry repos
 | `id` | [`ID!`](scalars.md#id) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>ID of the upstream repository in Artifact Registry. |
 | `kind` | [`ArtifactRegistryUpstreamRepositoryKind`](enums.md#artifactregistryupstreamrepositorykind) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>How the upstream repository sources its artifacts. Artifact Registry returns `hosted` or `remote` by contract; a value outside those resolves `null` alongside a top-level error rather than a badge. |
 | `name` | [`String!`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Name of the upstream repository. |
+| `settings` | [`ArtifactRegistryUpstreamRepositorySummarySettings`](#artifactregistryupstreamrepositorysummarysettings) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Upstream configuration of a remote upstream repository. Null on a hosted upstream, and when the current user cannot read the upstream repository. |
+| `sizeBytes` | [`BigInt`](scalars.md#bigint) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Storage the upstream repository occupies, in bytes. Buffered, so it can lag. Null when the current user cannot read the upstream repository. |
+| `userPermissions` | [`ArtifactRegistryRepositoryPermissions!`](#artifactregistryrepositorypermissions) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Permissions Artifact Registry grants the current user on the upstream repository. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. `upstreamRepositories` returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. |
+| `visibility` | [`ArtifactRegistryRepositoryVisibility`](enums.md#artifactregistryrepositoryvisibility) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Who can read the upstream repository. Null when the current user cannot read the upstream repository. A value outside this enum resolves `null` alongside a top-level error. |
+
+## `ArtifactRegistryUpstreamRepositorySummarySettings`
+
+Settings a remote upstream repository shows in the upstream list of a virtual Artifact Registry repository.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `lastHealthStatus` | [`ArtifactRegistryHealthStatus`](enums.md#artifactregistryhealthstatus) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Health verdict the most recent probe of the upstream stored. `UNKNOWN` before the first probe, and for a status this schema does not recognize. |
+| `url` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Base URL of the upstream registry, in the canonical form Artifact Registry stores. |
 
 ## `ArtifactRegistryVersion`
 

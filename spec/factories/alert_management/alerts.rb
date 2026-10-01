@@ -17,15 +17,11 @@ FactoryBot.define do
     end
 
     trait :with_incident do
-      after(:create) do |alert|
-        create(:incident, alert_management_alert: alert, project: alert.project)
-      end
+      issue { association(:incident, project: project) }
     end
 
-    trait :with_assignee do |alert|
-      after(:create) do |alert|
-        alert.alert_assignees.create!(assignee: create(:user))
-      end
+    trait :with_assignee do
+      assignees { [association(:user)] }
     end
 
     trait :with_fingerprint do

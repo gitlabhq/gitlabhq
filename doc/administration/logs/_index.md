@@ -1242,6 +1242,19 @@ The `mcp.log` file logs information related to the
 MCP server availability denials, with a `denial_reason` field that explains why a request was
 refused.
 
+Tool calls are logged with a `tool_status` field that records how the call ended:
+
+| `tool_status` | Field description |
+| --- | --- |
+| `ok` | The tool ran successfully. |
+| `bad_request` | The agent sent missing, malformed, or invalid arguments. |
+| `unauthorized` | The user lacks access to the resource. The message returned to the agent might say the resource was not found. |
+| `not_found` | The resource does not exist, or could not be distinguished from one the user cannot see. |
+| `error` | A backend or downstream failure, or a failure the tool could not categorize. |
+
+When a tool raises an unexpected exception, it is reported to the error tracking service.
+`error_type` is recorded only for unknown tool names, with `not_found`.
+
 The log file is located at:
 
 - In the `/var/log/gitlab/gitlab-rails/mcp.log` file on Linux package installations.

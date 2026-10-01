@@ -31,6 +31,10 @@ Three questions the agent must answer **from the contract alone**:
      ids to act on, `pageInfo` to paginate, counts for an at-a-glance answer.
    - Errors return a legible `Response.error("…")` the agent can act on (not a raw
      exception/stack trace) — including not-found and permission-denied.
+   - Every error passes a `reason:` when the tool knows why it failed (`:bad_request`,
+     `:unauthorized`, `:not_found`; `:error` is the default). It is stripped before the
+     agent sees the response and only sets `tool_status` in `mcp.log`. See
+     [Categorizing tool errors](../../../../doc/development/duo_agent_platform/mcp/_index.md#categorizing-tool-errors).
    - It isn't needlessly verbose: every returned field costs the agent tokens, so drop
      what it won't use.
    - **Don't silently truncate or transform a returned value.** If you shorten a field (a

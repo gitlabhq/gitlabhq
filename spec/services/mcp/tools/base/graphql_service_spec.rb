@@ -119,6 +119,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
 
         expect(result).to be_a(Hash)
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:unauthorized)
         expect(result[:content].first[:text]).to include('current_user is not set')
       end
     end

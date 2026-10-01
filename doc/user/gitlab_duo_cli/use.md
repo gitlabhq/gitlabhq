@@ -16,7 +16,7 @@ title: Use the GitLab Duo CLI
 You can use the GitLab Duo CLI in two modes:
 
 - Interactive mode: Provides a chat experience similar to GitLab Duo Chat in the GitLab UI or in
-  editor extensions. Supports build and plan modes.
+  editor extensions. Supports build, plan, and auto modes.
 - Headless mode: Enables non-interactive use in runners, scripts, and other automated workflows.
 
 ## Prerequisites
@@ -71,14 +71,15 @@ The GitLab Duo CLI stops the current operation and returns to the prompt.
 
 Use the <kbd>↑</kbd> key to view your prompt history, or <kbd>Control</kbd>+<kbd>R</kbd> to search it.
 
-### Switch between build and plan modes
+### Switch modes
 
-In interactive mode, you can switch the GitLab Duo CLI between two modes as you work:
+In interactive mode, you can switch the GitLab Duo CLI between modes as you work:
 
 | Mode                 | Permissions | How it works                                                                  |
 |----------------------|-------------|-------------------------------------------------------------------------------|
 | Build mode (default) | Read-write  | GitLab Duo can execute tasks and make changes to your project.               |
 | Plan mode            | Read-only   | GitLab Duo can analyze your project and create plans without making changes. |
+| Auto mode (beta)     | Read-write  | GitLab Duo can use tools without asking for approval first. For more information, see [auto mode](#auto-mode). |
 
 For example, start by discussing a problem with GitLab Duo in plan mode. When you're ready, switch
 to build mode and instruct GitLab Duo to implement the plan.
@@ -197,6 +198,126 @@ Your options are:
 > To use the **Approve for session** option,
 > your administrator must turn it on for your group or instance.
 > For more information, see [tool approvals](../gitlab_duo_chat/agentic_chat.md#tool-approvals).
+
+### Auto mode
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618088) in GitLab 19.5 as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../../administration/feature_flags/_index.md) named `duo_auto_mode`. Disabled by default.
+  - Introduced in [GitLab Duo CLI](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.22.0) 9.22.0.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/629172) in GitLab 19.5.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+In auto mode, GitLab Duo uses tools without asking for approval.
+Where your settings allow it, GitLab Duo can perform the following actions:
+
+- Run any shell command, including commands that delete files or change your system.
+- Run `git` commands, including commits and pushes.
+- Create or update issues, merge requests, and other GitLab resources.
+- Run MCP tools and start flows.
+
+Auto mode does not override [agent tool governance](../ai-governance/tool-governance.md).
+Tools set to **Always Deny** stay blocked.
+
+> [!warning]
+> GitLab Duo can make mistakes.
+> Any content that GitLab Duo reads, such as files, issues, merge requests, or web pages,
+> might contain malicious instructions used for prompt injection.
+> To limit the risk:
+>
+> - Use auto mode only in repositories you trust and on branches you can discard.
+> - Do not use auto mode on devices or in shells that contain sensitive credentials.
+> - Stay in the session and review all changes before merging.
+> - Switch back to build mode when you do not need auto mode.
+>
+> For more information, see [security considerations for editor extensions](../../editor_extensions/security_considerations.md).
+
+#### Turn on auto mode
+
+The **Auto mode** setting is off by default.
+Auto mode must be turned on for your group or project before you can use it.
+Subgroups and projects inherit the setting from their parent group.
+
+{{< tabs >}}
+
+{{< tab title="Group" >}}
+
+Prerequisites:
+
+- The Owner role for the group.
+
+To turn on auto mode for a group:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. From the **Auto mode** dropdown list, select one of the following options:
+   - **On by default**: Auto mode is available. Subgroups and projects can turn it off.
+   - **Off by default**: Auto mode is not available. Subgroups and projects can turn it on.
+   - **Always off**: Auto mode is not available. Subgroups and projects cannot turn it on.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="Project" >}}
+
+If a parent group has set auto mode to **Always off**, the project setting is locked and cannot be turned on.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To turn on auto mode for a project:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. Turn on the **Auto mode** toggle.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+#### Use auto mode
+
+Prerequisites:
+
+- GitLab Duo CLI 9.22.0 or later.
+- Auto mode turned on for your project.
+
+To use auto mode:
+
+1. Start or restart the GitLab Duo CLI in your project to pick up the setting.
+1. Press <kbd>Tab</kbd> until the mode under the `>` prompt shows `auto`.
+1. Enter your prompt. Auto mode applies from that prompt onward.
+
+To stop using auto mode, press <kbd>Tab</kbd> to switch to another mode.
+The change applies to your next prompt.
+
+Auto mode does not persist between sessions.
+Each new or resumed session, including a session you start with `/new`, starts in build mode.
+
+#### Troubleshooting auto mode
+
+If `auto` does not appear when you press <kbd>Tab</kbd>:
+
+1. Confirm that the **Auto mode** setting is turned on for your project.
+1. Confirm that no parent group is set to **Always off**.
+1. Restart the GitLab Duo CLI.
 
 ## Headless mode
 

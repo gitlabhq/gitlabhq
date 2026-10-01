@@ -112,7 +112,7 @@ graph TB
    ↓
 4. Format response
    ├─ Success: Response.success(message, payload)
-   └─ Error: Response.error(message)
+   └─ Error: Response.error(message, reason: ...)
    ↓
 5. Return to MCP Client
 ```
@@ -214,12 +214,18 @@ module Mcp
 
           operation_data = result.dig('data', operation_name)
 
-          return ::Mcp::Tools::Base::Response.error("Operation returned no data") if operation_data.nil?
+          if operation_data.nil?
+            return ::Mcp::Tools::Base::Response.error(
+              "Operation returned no data", reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+            )
+          end
 
           operation_errors = operation_data['errors']
           if operation_errors&.any?
             error_messages = extract_error_messages(operation_errors)
-            return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
+            return ::Mcp::Tools::Base::Response.error(
+              error_messages.join(', '), reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
+            )
           end
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(operation_data) }]
@@ -326,7 +332,11 @@ module Mcp
 
         override :execute
         def execute(request: nil, params: nil)
-          return Response.error("#{self.class.name}: current_user is not set") unless current_user.present?
+          unless current_user.present?
+            return Response.error(
+              "#{self.class.name}: current_user is not set", reason: Response::Reason::UNAUTHORIZED
+            )
+          end
 
           super
         end
@@ -673,15 +683,16 @@ resource enumeration, see
 
 1. **Service-level errors** (GraphqlService):
    - Missing `current_user`
-   - Returns: `Response.error(message)`
+   - Returns: `Response.error(message, reason: Response::Reason::UNAUTHORIZED)`
 1. **GraphQL-level errors** (syntax, validation):
    - Invalid GraphQL syntax
    - Type mismatches
-   - Returns: `Response.error(joined_messages)`
+   - Returns: `Response.error(joined_messages)`, which defaults to the `error` reason because this
+     branch mixes denials with query and argument validation failures
 1. **Mutation-level errors** (business logic):
    - Validation failures (e.g., empty title)
    - State conflicts
-   - Returns: `Response.error(joined_messages)`
+   - Returns: `Response.error(joined_messages, reason: Response::Reason::BAD_REQUEST)`
 
 **Error Propagation**:
 

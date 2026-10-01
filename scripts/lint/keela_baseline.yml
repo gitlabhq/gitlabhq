@@ -92,8 +92,6 @@ constants:
   - NPMJS_REGISTRY_URL
   ee/app/services/ai/amazon_q/amazon_q_trigger_service.rb:
   - REVIEW_FINDING_KEYWORDS
-  ee/app/services/ai/catalog/flows/flow_helper.rb:
-  - MAX_STEPS_ERROR
   ee/app/services/ai/file_exclusion_service.rb:
   - INVALID_PATH
   ee/app/services/compliance_management/compliance_framework/compliance_requirements_controls/update_service.rb:

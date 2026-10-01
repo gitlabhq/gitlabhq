@@ -80,12 +80,18 @@ module Mcp
 
           operation_data = result.dig('data', operation_name)
 
-          return ::Mcp::Tools::Base::Response.error("Operation returned no data") if operation_data.nil?
+          if operation_data.nil?
+            return ::Mcp::Tools::Base::Response.error(
+              "Operation returned no data", reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+            )
+          end
 
           operation_errors = operation_data['errors']
           if operation_errors&.any?
             error_messages = extract_error_messages(operation_errors)
-            return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
+            return ::Mcp::Tools::Base::Response.error(
+              error_messages.join(', '), reason: ::Mcp::Tools::Base::Response::Reason::BAD_REQUEST
+            )
           end
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(operation_data) }]

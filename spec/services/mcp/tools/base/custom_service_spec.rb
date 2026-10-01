@@ -148,7 +148,8 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
           expect(result).to eq({
             content: [{ text: ": current_user is not set", type: "text" }],
             structuredContent: {},
-            isError: true
+            isError: true,
+            reason: :unauthorized
           })
         end
       end
@@ -166,6 +167,7 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
             result = service.execute(request: nil, params: arguments)
 
             expect(result[:isError]).to be true
+            expect(result[:reason]).to eq(:unauthorized)
             expect(result[:content].first[:text])
               .to eq("Tool execution failed: #{service_name}: not found or access denied")
           end
@@ -175,7 +177,7 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
           let(:current_user) { create(:user) }
           let(:arguments) { { arguments: { project_id: project.id.to_s } } }
 
-          it 'returns a uniform not-found error without revealing the project exists' do
+          it 'logs the denial while telling the agent only that it was not found' do
             result = service.execute(request: nil, params: arguments)
 
             expect(result).to eq({
@@ -183,7 +185,35 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
                 { text: "Tool execution failed: Project '#{project.id}' not found or inaccessible", type: "text" }
               ],
               structuredContent: {},
-              isError: true
+              isError: true,
+              reason: :unauthorized
+            })
+          end
+
+          it 'does not report an expected denial to error tracking' do
+            expect(::Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+            service.execute(request: nil, params: arguments)
+          end
+        end
+
+        context 'when the project does not exist' do
+          let(:current_user) { create(:user) }
+          let(:arguments) { { arguments: { project_id: non_existing_record_id.to_s } } }
+
+          it 'reports not_found, with the same message a denial produces' do
+            result = service.execute(request: nil, params: arguments)
+
+            expect(result).to eq({
+              content: [
+                {
+                  text: "Tool execution failed: Project '#{non_existing_record_id}' not found or inaccessible",
+                  type: "text"
+                }
+              ],
+              structuredContent: {},
+              isError: true,
+              reason: :not_found
             })
           end
         end

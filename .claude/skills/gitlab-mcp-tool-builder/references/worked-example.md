@@ -52,7 +52,8 @@ class GetMergeRequestNotesTool < Mcp::Tools::GraphqlTool
       after: params[:after], before: params[:before],
       first: params[:first], last: params[:last] }.compact
   end
-  # resolve_target + a process_result that maps null project/mergeRequest → Response.error(not found)
+  # resolve_target + a process_result mapping null project/mergeRequest →
+  #   Response.error("... not found or inaccessible", reason: Response::Reason::NOT_FOUND)
 end
 ```
 

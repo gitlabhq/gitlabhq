@@ -36,8 +36,13 @@ module Mcp
           validate_arguments!(args)
           perform(args)
         rescue ArgumentError => e
-          Response.error("Validation error: #{e.message}")
+          Response.error("Validation error: #{e.message}", reason: Response::Reason::BAD_REQUEST)
+        rescue Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::NOT_FOUND)
+        rescue Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError, ::Gitlab::Access::AccessDeniedError => e
+          Response.error("Tool execution failed: #{e.message}", reason: Response::Reason::UNAUTHORIZED)
         rescue StandardError => e
+          ::Gitlab::ErrorTracking.track_exception(e, mcp_tool: name)
           Response.error("Tool execution failed: #{e.message}")
         end
 

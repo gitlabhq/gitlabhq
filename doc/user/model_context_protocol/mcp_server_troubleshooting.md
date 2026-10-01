@@ -40,8 +40,11 @@ To find the cause, read the message in the response body. Administrators can als
   [turned on](../group/access_and_permissions.md#allow-access-to-the-mcp-server).
 
 > [!note]
-> `404` errors returned in a tool call, for example `404 Project Not Found`, are not logged
-> in `mcp.log`. Instead, these errors appear in the JSON-RPC response body with `isError: true`.
+> `404` errors returned by a REST-backed tool call, for example `404 Project Not Found`,
+> appear in the JSON-RPC response body with `isError: true`, and in `mcp.log` with
+> `tool_status` set to `not_found`. Other tool call failures also appear in the response
+> body with `isError: true`, and in `mcp.log` with a `tool_status` that describes what
+> happened.
 
 ## Error: `Server's protocol version is not supported: 2025-06-18`
 

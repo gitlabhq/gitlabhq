@@ -122,6 +122,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         expect(json_response['result']['isError']).to be_truthy
         expect(json_response['result']['content'].first['text']).to include('iid is missing')
       end
+
+      it 'does not expose the internal reason to the client' do
+        expect(json_response['result'].keys).not_to include('reason')
+      end
     end
 
     context 'when a tool receives an unknown argument' do

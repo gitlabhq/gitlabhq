@@ -160,8 +160,9 @@ Same two-class shape; a mutation just changes a few specifics:
   (a create/reply is typically non-destructive; a delete/close is destructive).
 - **Check the payload `errors`.** Mutations return validation failures *in-band*
   under `data.<root>.errors`, not as a thrown exception — select `errors` in the
-  query and inspect it in `process_result`, returning `::Mcp::Tools::Response.error`
-  when present. Otherwise the tool reports "success" on a no-op.
+  query and inspect it in `process_result`, returning
+  `::Mcp::Tools::Response.error(msg, reason: Response::Reason::BAD_REQUEST)` when present. Otherwise the
+  tool reports "success" on a no-op.
 - **Specs:** in the CE `list_tools_spec`, add the tool to the **`write_tools`** list
   (not `read_only_tools`); the EE entry's annotations must match the Service.
 - **Safety:** mirror existing write tools — reject quick actions in free-text bodies

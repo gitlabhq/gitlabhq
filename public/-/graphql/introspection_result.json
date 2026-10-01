@@ -44843,6 +44843,30 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "settings",
+              "description": "Upstream configuration of a remote upstream repository. Null on a hosted upstream, and when the current user cannot read the upstream repository. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryUpstreamRepositorySummarySettings",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "sizeBytes",
+              "description": "Storage the upstream repository occupies, in bytes. Buffered, so it can lag. Null when the current user cannot read the upstream repository. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "userPermissions",
               "description": "Permissions Artifact Registry grants the current user on the upstream repository. Advisory, because Artifact Registry authorizes every request on its own. Every permission is `false` when Artifact Registry returned no verdicts. `upstreamRepositories` returns `null` when the `artifact_registry_ui` feature flag is disabled, so this block is not reached. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
@@ -44854,6 +44878,53 @@
                   "name": "ArtifactRegistryRepositoryPermissions",
                   "ofType": null
                 }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "visibility",
+              "description": "Who can read the upstream repository. Null when the current user cannot read the upstream repository. A value outside this enum resolves `null` alongside a top-level error. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ArtifactRegistryRepositoryVisibility",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryUpstreamRepositorySummarySettings",
+          "description": "Settings a remote upstream repository shows in the upstream list of a virtual Artifact Registry repository.",
+          "fields": [
+            {
+              "name": "lastHealthStatus",
+              "description": "Health verdict the most recent probe of the upstream stored. `UNKNOWN` before the first probe, and for a status this schema does not recognize. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ArtifactRegistryHealthStatus",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "url",
+              "description": "Base URL of the upstream registry, in the canonical form Artifact Registry stores. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."

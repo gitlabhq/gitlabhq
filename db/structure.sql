@@ -12863,7 +12863,8 @@ CREATE TABLE ai_catalog_item_version_dependencies (
     id bigint NOT NULL,
     ai_catalog_item_version_id bigint NOT NULL,
     dependency_id bigint NOT NULL,
-    organization_id bigint NOT NULL
+    organization_id bigint NOT NULL,
+    dependency_version_id bigint
 );
 
 CREATE SEQUENCE ai_catalog_item_version_dependencies_id_seq
@@ -45836,6 +45837,8 @@ CREATE INDEX idx_ai_audit_events_on_project_id_created_at ON ONLY ai_audit_event
 
 CREATE INDEX idx_ai_audit_events_on_workflow_id_created_at_id ON ONLY ai_audit_events USING btree (workflow_id, created_at DESC, id DESC);
 
+CREATE INDEX idx_ai_catalog_dependencies_on_dep_version_id_and_dep_id ON ai_catalog_item_version_dependencies USING btree (dependency_version_id, dependency_id);
+
 CREATE INDEX idx_ai_catalog_item_stars_on_organization_id ON ai_catalog_item_stars USING btree (organization_id);
 
 CREATE UNIQUE INDEX idx_ai_catalog_item_version_dependencies_version_and_dependency ON ai_catalog_item_version_dependencies USING btree (ai_catalog_item_version_id, dependency_id, organization_id);
@@ -47123,6 +47126,8 @@ CREATE INDEX index_ai_catalog_item_stars_on_user_id ON ai_catalog_item_stars USI
 CREATE INDEX index_ai_catalog_item_version_dependencies_on_dependency_id ON ai_catalog_item_version_dependencies USING btree (dependency_id);
 
 CREATE INDEX index_ai_catalog_item_version_dependencies_on_organization_id ON ai_catalog_item_version_dependencies USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_ai_catalog_item_versions_on_ai_catalog_item_id_and_id ON ai_catalog_item_versions USING btree (ai_catalog_item_id, id);
 
 CREATE INDEX index_ai_catalog_item_versions_on_created_by_id ON ai_catalog_item_versions USING btree (created_by_id);
 
@@ -59901,6 +59906,9 @@ ALTER TABLE ONLY merge_requests_approval_rules_projects
 
 ALTER TABLE ONLY abuse_report_upload_states
     ADD CONSTRAINT fk_af411f8958 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_item_version_dependencies
+    ADD CONSTRAINT fk_ai_catalog_dependency_pinned_version FOREIGN KEY (dependency_id, dependency_version_id) REFERENCES ai_catalog_item_versions(ai_catalog_item_id, id);
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_analytics_cycle_analytics_group_stages_group_value_stream_id FOREIGN KEY (group_value_stream_id) REFERENCES analytics_cycle_analytics_group_value_streams(id) ON DELETE CASCADE;

@@ -221,10 +221,11 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
     context 'with missing required field' do
       let(:arguments) { { arguments: { optional_field: 123 } } }
 
-      it 'returns validation error' do
+      it 'returns validation error', :aggregate_failures do
         result = test_service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
+        expect(result[:reason]).to eq(:bad_request)
         expect(result[:content].first[:text]).to eq('Validation error: required_field is missing')
       end
     end
@@ -271,6 +272,13 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to eq('Tool execution failed: Something went wrong')
+      end
+
+      it 'reports the exception, which the response no longer carries into the log' do
+        expect(::Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(an_instance_of(StandardError), mcp_tool: service_name)
+
+        test_service.execute(request: nil, params: arguments)
       end
     end
 

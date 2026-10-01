@@ -50,7 +50,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
             ai_component: 'mcp_server',
             tool_name: tool_name,
             session_id: '1',
-            tool_status: 'done',
+            tool_status: 'ok',
             argument_keys: ['param'],
             expanded: { arguments: { 'param' => 'value' } }
           )
@@ -101,7 +101,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
           current_user,
           hash_including(
             tool_name: tool_name,
-            tool_status: 'fail',
+            tool_status: 'error',
             ::Labkit::Fields::ERROR_TYPE => 'StandardError',
             expanded: hash_including(::Labkit::Fields::ERROR_MESSAGE => 'boom')
           )
@@ -131,7 +131,8 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
         {
           content: [{ type: 'text', text: 'Validation error: labels is invalid' }],
           structuredContent: {},
-          isError: true
+          isError: true,
+          reason: :bad_request
         }
       end
 
@@ -142,26 +143,44 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
         allow(tool).to receive(:execute).and_return(error_result)
       end
 
-      it 'returns the error result without raising' do
+      it 'returns the error result to the agent without the internal reason' do
         result = handler.invoke(request, params, current_user)
 
-        expect(result).to eq(error_result)
+        expect(result).to eq(error_result.except(:reason))
       end
 
-      it 'logs the tool call as a failure with the error message', :aggregate_failures do
+      it 'logs the reason as tool_status and omits the exception fields', :aggregate_failures do
         handler.invoke(request, params, current_user)
 
         expect(logger).to have_received(:conditional_info).with(
           current_user,
-          hash_including(
-            tool_name: tool_name,
-            tool_status: 'fail',
-            ::Labkit::Fields::ERROR_TYPE => 'API::Mcp::Handlers::CallTool::ToolResponseError',
-            expanded: hash_including(
-              ::Labkit::Fields::ERROR_MESSAGE => 'Validation error: labels is invalid'
-            )
-          )
+          hash_including(tool_name: tool_name, tool_status: 'bad_request')
         )
+        expect(logger).to have_received(:conditional_info).with(
+          current_user, hash_excluding(::Labkit::Fields::ERROR_TYPE)
+        )
+        expect(logger).to have_received(:conditional_info).with(
+          current_user,
+          hash_including(expanded: hash_excluding(::Labkit::Fields::ERROR_MESSAGE))
+        )
+      end
+
+      context 'when the error response carries no reason' do
+        let(:error_result) do
+          {
+            content: [{ type: 'text', text: 'Something broke' }],
+            structuredContent: {},
+            isError: true
+          }
+        end
+
+        it 'falls back to the generic error status' do
+          handler.invoke(request, params, current_user)
+
+          expect(logger).to have_received(:conditional_info).with(
+            current_user, hash_including(tool_status: 'error')
+          )
+        end
       end
     end
 
@@ -223,7 +242,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
           current_user,
           hash_including(
             tool_name: tool_name,
-            tool_status: 'fail',
+            tool_status: 'not_found',
             ::Labkit::Fields::ERROR_TYPE => 'Mcp::Tools::Manager::ToolNotFoundError'
           )
         )

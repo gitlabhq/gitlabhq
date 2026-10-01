@@ -17,6 +17,7 @@ FactoryBot.define do
 
     ref { pipeline.ref }
 
+    # Setting `runner_manager` also builds the `Ci::RunnerManagerBuild` record, so don't create one here.
     runner_manager { nil }
 
     transient do
@@ -39,10 +40,7 @@ FactoryBot.define do
     end
 
     after(:build) do |build, evaluator|
-      if evaluator.runner_manager
-        build.runner = evaluator.runner_manager.runner
-        create(:ci_runner_machine_build, build: build, runner_manager: evaluator.runner_manager)
-      end
+      build.runner = evaluator.runner_manager.runner if evaluator.runner_manager
     end
 
     after(:stub, :build) do |build, evaluator|

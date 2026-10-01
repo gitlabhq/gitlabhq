@@ -3,6 +3,53 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Cargo::ExtractMetadataContentService, feature_category: :package_registry do
+  describe '#execute_index_only' do
+    subject(:result) { service.execute_index_only }
+
+    def build_body(index_content:, crate_data:)
+      json_bytes = Gitlab::Json.dump(index_content)
+      StringIO.new(
+        [json_bytes.bytesize].pack('L<') + json_bytes + [crate_data.bytesize].pack('L<') + crate_data
+      )
+    end
+
+    let(:cargo_file_content) { build_body(index_content: { name: 'test-crate', vers: '1.0.0' }, crate_data: 'x' * 64) }
+    let(:service) { described_class.new(cargo_file_content) }
+
+    it 'reads the metadata and rewinds the body for the caller', :aggregate_failures do
+      expect(result).to be_success
+      expect(result.payload[:index_content]).to include(name: 'test-crate', vers: '1.0.0')
+      expect(result.payload).not_to have_key(:crate_data)
+      expect(cargo_file_content.pos).to eq(0)
+    end
+
+    context 'when the body is not in the publish format' do
+      let(:cargo_file_content) { StringIO.new('not a cargo publish body') }
+
+      it 'returns an error and still rewinds', :aggregate_failures do
+        expect(result).to be_error
+        expect(cargo_file_content.pos).to eq(0)
+      end
+    end
+
+    context 'when the metadata is not valid JSON' do
+      let(:cargo_file_content) { StringIO.new("#{[8].pack('L<')}not json") }
+
+      it 'returns an invalid JSON error', :aggregate_failures do
+        expect(result).to be_error
+        expect(result.message).to start_with('Invalid JSON metadata')
+      end
+    end
+
+    context 'when there is no body' do
+      let(:cargo_file_content) { nil }
+
+      it 'returns an error' do
+        expect(result).to be_error
+      end
+    end
+  end
+
   describe '#execute' do
     subject(:result) { service.execute }
 

@@ -13082,6 +13082,12 @@
     "dottedExample": "/api/v4/projects/john.doe/packages/cargo/john.doe1/john.doe2/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/packages/cargo/api/v1/crates/new",
+    "example": "/api/v4/projects/foo/packages/cargo/api/v1/crates/new",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/packages/cargo/api/v1/crates/new"
+  },
+  {
     "template": "/api/:version/projects/:id/packages/cargo/api/v1/crates/new/authorize",
     "example": "/api/v4/projects/foo/packages/cargo/api/v1/crates/new/authorize",
     "acceptsFormat": true,

@@ -72009,6 +72009,39 @@ paths:
         schema:
           type: string
         in: path
+  "/api/v4/projects/{id}/packages/cargo/api/v1/crates/new":
+    put:
+      operationId: putApiV4ProjectsIdPackagesCargoApiV1CratesNew
+      summary: Publish a Cargo crate
+      description: Receives the cargo publish body and extracts the crate asynchronously
+      tags:
+      - 'Packages: Cargo'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_65a5f59ec39b"
   "/api/v4/projects/{id}/cluster_agents":
     get:
       operationId: getApiV4ProjectsIdClusterAgents
@@ -124514,6 +124547,16 @@ components:
           default: false
       required:
       - branch
+    RequestBody_65a5f59ec39b:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The cargo publish body, uploaded by workhorse
+          nullable: true
+      required:
+      - file
     RequestBody_d7d09437c857:
       type: object
       properties:

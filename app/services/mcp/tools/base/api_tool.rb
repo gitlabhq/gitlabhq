@@ -167,14 +167,18 @@ module Mcp
                 parsed_response['error'] || parsed_response['message'] || "HTTP #{status}"
               end
 
-            ::Mcp::Tools::Base::Response.error(message, parsed_response)
+            ::Mcp::Tools::Base::Response.error(
+              message, parsed_response, reason: ::Mcp::Tools::Base::Response.reason_for_http_status(status)
+            )
           else
             formatted_content = [{ type: 'text', text: body }]
             ::Mcp::Tools::Base::Response.success(formatted_content, parsed_response)
           end
         rescue JSON::ParserError
           if status >= 400
-            ::Mcp::Tools::Base::Response.error("HTTP #{status}", { body: body })
+            ::Mcp::Tools::Base::Response.error(
+              "HTTP #{status}", { body: body }, reason: ::Mcp::Tools::Base::Response.reason_for_http_status(status)
+            )
           else
             # Plain text response (e.g. job trace); return as-is
             formatted_content = [{ type: 'text', text: body }]
