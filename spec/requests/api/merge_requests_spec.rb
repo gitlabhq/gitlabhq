@@ -5413,4 +5413,76 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
     include_examples 'time tracking endpoints', 'merge_request'
   end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of get_merge_request_commits' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_merge_request_commits').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The ID or URL-encoded path of the project.'
+          },
+          'merge_request_iid' => {
+            type: 'integer',
+            description: 'The internal ID of the merge request.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          }
+        },
+        required: %w[id merge_request_iid],
+        additionalProperties: false
+      })
+    end
+
+    it 'locks the full input schema of get_merge_request_diffs' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_merge_request_diffs').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The ID or URL-encoded path of the project.'
+          },
+          'merge_request_iid' => {
+            type: 'integer',
+            description: 'The internal ID of the merge request.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          }
+        },
+        required: %w[id merge_request_iid],
+        additionalProperties: false
+      })
+    end
+
+    it 'locks the full input schema of get_merge_request_pipelines' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_merge_request_pipelines').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The ID or URL-encoded path of the project.'
+          },
+          'merge_request_iid' => {
+            type: 'integer',
+            description: 'The internal ID of the merge request.'
+          }
+        },
+        required: %w[id merge_request_iid],
+        additionalProperties: false
+      })
+    end
+  end
 end

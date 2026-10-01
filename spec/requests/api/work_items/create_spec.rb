@@ -312,6 +312,18 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
       end
     end
 
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'creates a work item and returns 201' do
+        post api(api_request_path, oauth_access_token: oauth_token),
+          params: { title: 'New task', work_item_type_name: 'task' }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['title']).to eq('New task')
+      end
+    end
+
     context 'with created_at param' do
       let_it_be(:owner) { create(:user) }
 

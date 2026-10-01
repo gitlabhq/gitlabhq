@@ -189,6 +189,22 @@ describe('HighlightMixin', () => {
     );
   });
 
+  describe('extension matching', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it.each`
+      name             | language
+      ${'lower.4dm'}   | ${'4d'}
+      ${'upper.4DM'}   | ${'4d'}
+      ${'lower.gleam'} | ${'gleam'}
+      ${'upper.GLEAM'} | ${'gleam'}
+    `('matches $name case-insensitively and sets language to $language', ({ name, language }) => {
+      createComponent({ language: 'plaintext', name });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({ language });
+    });
+  });
+
   describe('Gleam language handling', () => {
     beforeEach(() => workerMock.postMessage.mockClear());
 

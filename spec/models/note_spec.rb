@@ -897,8 +897,8 @@ RSpec.describe Note, feature_category: :team_planning do
       let(:noteable) { create(:commit, project: project, author: user1) }
 
       context 'if user is the noteable author' do
-        let(:note) { create(:discussion_note_on_commit, commit_id: noteable.id, project: project, author: user1) }
-        let(:diff_note) { create(:diff_note_on_commit, commit_id: noteable.id, project: project, author: user1) }
+        let(:note) { build_stubbed(:discussion_note_on_commit, commit_id: noteable.id, project: project, author: user1) }
+        let(:diff_note) { build_stubbed(:diff_note_on_commit, commit_id: noteable.id, project: project, author: user1) }
 
         it 'returns true' do
           expect(note.noteable_author?(noteable)).to be true
@@ -907,8 +907,8 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'if user is not the noteable author' do
-        let(:note) { create(:discussion_note_on_commit, commit_id: noteable.id, project: project, author: user2) }
-        let(:diff_note) { create(:diff_note_on_commit, commit_id: noteable.id, project: project, author: user2) }
+        let(:note) { build_stubbed(:discussion_note_on_commit, commit_id: noteable.id, project: project, author: user2) }
+        let(:diff_note) { build_stubbed(:diff_note_on_commit, commit_id: noteable.id, project: project, author: user2) }
 
         it 'returns false' do
           expect(note.noteable_author?(noteable)).to be false
@@ -918,10 +918,10 @@ RSpec.describe Note, feature_category: :team_planning do
     end
 
     context 'when note is on issue' do
-      let(:noteable) { create(:issue, project: project, author: user1) }
+      let(:noteable) { build_stubbed(:issue, project: project, author: user1) }
 
       context 'if user is the noteable author' do
-        let(:note) { create(:note, noteable: noteable, author: user1, project: project) }
+        let(:note) { build_stubbed(:note, noteable: noteable, author: user1, project: project) }
 
         it 'returns true' do
           expect(note.noteable_author?(noteable)).to be true
@@ -929,7 +929,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'if user is not the noteable author' do
-        let(:note) { create(:note, noteable: noteable, author: user2, project: project) }
+        let(:note) { build_stubbed(:note, noteable: noteable, author: user2, project: project) }
 
         it 'returns false' do
           expect(note.noteable_author?(noteable)).to be false
@@ -1029,7 +1029,7 @@ RSpec.describe Note, feature_category: :team_planning do
     context 'when note is not confidential' do
       context 'when include_noteable is set to true' do
         it 'is true when a noteable is confidential' do
-          issue = create(:issue, :confidential)
+          issue = build_stubbed(:issue, :confidential)
           note = build(:note, noteable: issue, project: issue.project)
 
           expect(note.confidential?(include_noteable: true)).to be_truthy
@@ -1038,7 +1038,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
       context 'when include_noteable is not set to true' do
         it 'is false when a noteable is confidential' do
-          issue = create(:issue, :confidential)
+          issue = build_stubbed(:issue, :confidential)
           note = build(:note, noteable: issue, project: issue.project)
 
           expect(note.confidential?).to be_falsey
@@ -1046,7 +1046,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       it 'is false when a noteable is not confidential' do
-        issue = create(:issue, confidential: false)
+        issue = build_stubbed(:issue, confidential: false)
         note = build(:note, noteable: issue, project: issue.project)
 
         expect(note.confidential?).to be_falsy
@@ -1061,7 +1061,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
     context 'when note is confidential' do
       it 'is true even when a noteable is not confidential' do
-        issue = create(:issue, confidential: false)
+        issue = build_stubbed(:issue, confidential: false)
         note = build(:note, :confidential, noteable: issue, project: issue.project)
 
         expect(note.confidential?).to be_truthy
@@ -1341,8 +1341,12 @@ RSpec.describe Note, feature_category: :team_planning do
     end
 
     context 'with a system note' do
-      let(:issue)     { create(:issue, project: create(:project, :repository)) }
-      let(:note)      { create(:system_note, note: "test", noteable: issue, project: issue.project) }
+      let(:issue)     { build_stubbed(:issue, project: build_stubbed(:project)) }
+      let(:note)      { build_stubbed(:system_note, note: "test", noteable: issue, project: issue.project) }
+
+      before do
+        allow(note).to receive(:system_note_metadata).and_return(metadata)
+      end
 
       shared_examples 'system_note_metadata includes note action' do
         it 'delegates to the cross-reference regex' do
@@ -1353,30 +1357,30 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'with :label action' do
-        let!(:metadata) { create(:system_note_metadata, note: note, action: :label) }
+        let(:metadata) { build_stubbed(:system_note_metadata, note: note, action: :label) }
 
         it_behaves_like 'system_note_metadata includes note action'
 
         it { expect(note.system_note_with_references?).to be_falsy }
 
         context 'with cross reference label note' do
-          let(:label) { create(:label, project: issue.project) }
-          let(:note) { create(:system_note, note: "added #{label.to_reference} label", noteable: issue, project: issue.project) }
+          let(:label) { build_stubbed(:label, project: issue.project) }
+          let(:note) { build_stubbed(:system_note, note: "added #{label.to_reference} label", noteable: issue, project: issue.project) }
 
           it { expect(note.system_note_with_references?).to be_truthy }
         end
       end
 
       context 'with :milestone action' do
-        let!(:metadata) { create(:system_note_metadata, note: note, action: :milestone) }
+        let(:metadata) { build_stubbed(:system_note_metadata, note: note, action: :milestone) }
 
         it_behaves_like 'system_note_metadata includes note action'
 
         it { expect(note.system_note_with_references?).to be_falsy }
 
         context 'with cross reference milestone note' do
-          let(:milestone) { create(:milestone, project: issue.project) }
-          let(:note) { create(:system_note, note: "added #{milestone.to_reference} milestone", noteable: issue, project: issue.project) }
+          let(:milestone) { build_stubbed(:milestone, project: issue.project) }
+          let(:note) { build_stubbed(:system_note, note: "added #{milestone.to_reference} milestone", noteable: issue, project: issue.project) }
 
           it { expect(note.system_note_with_references?).to be_truthy }
         end
@@ -1461,8 +1465,8 @@ RSpec.describe Note, feature_category: :team_planning do
   describe '#check_for_spam' do
     let_it_be(:project, freeze: false) { create(:project, :public) }
     let_it_be(:group)   { create(:group, :public) }
-    let(:issue)     { create(:issue, project: project) }
-    let(:note)      { create(:note, note: "test", noteable: issue, project: project) }
+    let(:issue)     { build_stubbed(:issue, project: project) }
+    let(:note)      { build_stubbed(:note, note: "test", noteable: issue, project: project) }
     let(:note_text) { 'content changed' }
 
     subject do
@@ -2046,14 +2050,14 @@ RSpec.describe Note, feature_category: :team_planning do
 
   describe '#parent' do
     it 'returns project for project notes' do
-      project = create(:project)
-      note = create(:note_on_issue, project: project)
+      project = build_stubbed(:project)
+      note = build_stubbed(:note_on_issue, project: project)
 
       expect(note.resource_parent).to eq(project)
     end
 
     it 'returns nil for personal snippet note' do
-      note = create(:note_on_personal_snippet)
+      note = build_stubbed(:note_on_personal_snippet)
 
       expect(note.resource_parent).to be_nil
     end

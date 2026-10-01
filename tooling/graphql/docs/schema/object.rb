@@ -3,6 +3,7 @@
 require_relative 'item'
 require_relative 'field'
 require_relative 'factory'
+require_relative 'interface'
 
 module Tooling
   module Graphql
@@ -24,10 +25,10 @@ module Tooling
             end
           end
 
-          # The interfaces this object type implements, sorted by name.
+          # The interfaces this object type implements.
           # Returns an empty array for objects that implement no interfaces.
           def implemented_interfaces
-            item.interfaces.map(&:graphql_name).sort
+            item.interfaces.map { |interface| Interface.new(interface, with_fields: false) }.sort_by(&:name)
           end
 
           # True when this object type is a Relay edge type.

@@ -1517,6 +1517,17 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: owner, scopes: [:ai_workflows]) }
+
+      it 'is rejected, since DELETE is not an ai_workflows-scoped verb' do
+        delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+      end
+    end
+
     context 'when the user is project owner' do
       it 'deletes the issue if an admin requests it' do
         delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", owner)

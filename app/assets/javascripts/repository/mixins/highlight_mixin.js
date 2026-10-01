@@ -51,7 +51,9 @@ export default {
       let { language } = blob;
 
       const fileExtensionOverride = name
-        ? Object.keys(FILE_EXTENSION_MAPPING_HLJS).find((extension) => name.endsWith(extension))
+        ? Object.keys(FILE_EXTENSION_MAPPING_HLJS).find((extension) =>
+            name.toLowerCase().endsWith(extension.toLowerCase()),
+          )
         : undefined;
 
       if (fileExtensionOverride) {

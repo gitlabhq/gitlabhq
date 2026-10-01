@@ -238,6 +238,13 @@ span.idiff {
     border-radius: $gl-border-radius-lg-inner $gl-border-radius-lg-inner 0 0;
   }
 
+  // Sibling snippet file headers are sticky with the same z-index, so lift the one
+  // with an open dropdown (like the table of contents) above the next file's header.
+  // stylelint-disable-next-line gitlab/no-has -- scoped to snippet file headers
+  .snippet-file-content &:has(button[aria-expanded='true']) {
+    z-index: 5;
+  }
+
   .file-header-content {
     padding-right: 30px;
   }

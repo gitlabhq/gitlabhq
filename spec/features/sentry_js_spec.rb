@@ -12,8 +12,10 @@ RSpec.describe 'Sentry', feature_category: :observability do
   end
 
   it 'loads sentry if sentry settings are enabled', :js do
-    allow(Gitlab::CurrentSettings).to receive(:sentry_enabled).and_return(true)
-    allow(Gitlab::CurrentSettings).to receive(:sentry_clientside_dsn).and_return('https://mockdsn@example.com/1')
+    allow(Gitlab::CurrentSettings).to receive_messages(
+      sentry_enabled: true,
+      sentry_clientside_dsn: 'https://mockdsn@example.com/1'
+    )
 
     visit new_user_session_path
 

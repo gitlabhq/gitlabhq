@@ -11,8 +11,7 @@ RSpec.describe QA::Support::Page::Logging do
     allow(QA::Runtime::Logger).to receive(:logger).and_return(logger)
 
     allow(Capybara).to receive(:current_session).and_return(page)
-    allow(page).to receive(:find).and_return(page)
-    allow(page).to receive(:current_url).and_return('http://current-url')
+    allow(page).to receive_messages(find: page, current_url: 'http://current-url')
     allow(page).to receive(:has_css?).with(any_args).and_return(true)
     allow(subject).to receive(:wait_for_requests).and_return(true)
 
@@ -89,8 +88,7 @@ RSpec.describe QA::Support::Page::Logging do
   end
 
   it 'logs click_element with a page' do
-    allow(page_class).to receive(:validate_elements_present!).and_return(true)
-    allow(page_class).to receive(:to_s).and_return('QA::Page::TestPage')
+    allow(page_class).to receive_messages(validate_elements_present!: true, to_s: 'QA::Page::TestPage')
 
     expect { subject.click_element(:element, page_class) }
       .to output(/clicking :element and ensuring QA::Page::TestPage is present/).to_stdout_from_any_process

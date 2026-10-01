@@ -22,6 +22,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -171,6 +172,40 @@ describe('Tree List', () => {
         href: 'http://test.host/group/project/-/blob/main/dir_1/file.txt?ref_type=heads',
       },
       level: 0,
+    });
+  });
+
+  describe('with a relative URL root', () => {
+    useConfigurePathHelpers('/gitlab');
+
+    beforeEach(() => createComponent());
+
+    it('includes the relative URL root in file row hrefs', () => {
+      const fileRows = findFileRows();
+
+      expect(fileRows.at(0).props('file').href).toBe(
+        'http://test.host/gitlab/group/project/-/tree/main/dir_1/dir_2?ref_type=heads',
+      );
+      expect(fileRows.at(1).props('file').href).toBe(
+        'http://test.host/gitlab/group/project/-/blob/main/dir_1/file.txt?ref_type=heads',
+      );
+    });
+  });
+
+  describe('under an organization-scoped URL', () => {
+    beforeEach(() => {
+      window.gon.organization_path = 'my-org';
+      return createComponent();
+    });
+
+    afterEach(() => {
+      delete window.gon.organization_path;
+    });
+
+    it('matches the router base in file row hrefs', () => {
+      expect(findFileRows().at(1).props('file').href).toBe(
+        'http://test.host/o/my-org/group/project/-/blob/main/dir_1/file.txt?ref_type=heads',
+      );
     });
   });
 

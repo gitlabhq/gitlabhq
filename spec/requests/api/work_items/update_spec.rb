@@ -391,6 +391,17 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'updates the work item and returns 200' do
+        patch api(api_request_path, oauth_access_token: oauth_token), params: { title: 'Updated title' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(work_item.reload.title).to eq('Updated title')
+      end
+    end
+
     context 'with add_label_ids limit validation' do
       it 'returns 400 when more than 30 label IDs are provided' do
         patch api(api_request_path, user), params: {

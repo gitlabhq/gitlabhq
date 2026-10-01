@@ -207,8 +207,7 @@ RSpec.describe ::CachingArrayResolver do
 
   def resolve_users(admin:, resolver: caching_resolver)
     args = { is_admin: admin }
-    allow(resolver).to receive(:has_max_page_size?).and_return(true)
-    allow(resolver).to receive(:max_page_size).and_return(max_page_size)
+    allow(resolver).to receive_messages(has_max_page_size?: true, max_page_size: max_page_size)
     resolve(resolver, args: args, ctx: context, schema: schema, arg_style: :internal)
   end
 end

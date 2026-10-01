@@ -1,0 +1,21 @@
+# @feature_category: notifications
+query homepageTodosWidgetCounts($limit: Int!) {
+  currentUser {
+    id
+    reviewRequested: todos(state: [pending], action: [review_requested]) {
+      count(limit: $limit)
+    }
+    assigned: todos(state: [pending], action: [assigned]) {
+      count(limit: $limit)
+    }
+    buildFailed: todos(state: [pending], action: [build_failed]) {
+      count(limit: $limit)
+    }
+    unmergeable: todos(state: [pending], action: [unmergeable]) {
+      count(limit: $limit)
+    }
+    reviewSubmitted: todos(state: [pending], action: [review_submitted]) {
+      count(limit: $limit)
+    }
+  }
+}

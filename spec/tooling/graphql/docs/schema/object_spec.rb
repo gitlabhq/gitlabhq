@@ -64,8 +64,9 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Object, feature_category: :api do
         end
       end
 
-      it 'returns the interface names sorted alphabetically' do
-        expect(object.implemented_interfaces).to eq(%w[AlphaInterface ZebraInterface])
+      it 'returns the interfaces wrapped and sorted alphabetically', :aggregate_failures do
+        expect(object.implemented_interfaces).to all(be_a(Tooling::Graphql::Docs::Schema::Interface))
+        expect(object.implemented_interfaces.map(&:name)).to eq(%w[AlphaInterface ZebraInterface])
       end
     end
   end
@@ -165,8 +166,8 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Object, feature_category: :api do
 
       subject(:object) { described_class.new(interface_type.connection_type) }
 
-      it 'wraps the node type as TempUndocumented' do
-        expect(object.node_type).to be_a(Tooling::Graphql::Docs::Schema::TempUndocumented)
+      it 'wraps the node type as an Interface' do
+        expect(object.node_type).to be_a(Tooling::Graphql::Docs::Schema::Interface)
       end
     end
   end

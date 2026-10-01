@@ -140,6 +140,18 @@ RSpec.describe API::WorkItems::Delete, feature_category: :portfolio_management d
         delete api(api_request_path, personal_access_token: pat)
       end
     end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: owner, scopes: [:ai_workflows]) }
+
+      it 'returns 403 and keeps the work item' do
+        delete api(api_request_path, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['error']).to eq('insufficient_scope')
+        expect(WorkItem.find_by_id(work_item.id)).to be_present
+      end
+    end
   end
 
   describe 'DELETE /groups/:id/-/work_items/:work_item_iid' do

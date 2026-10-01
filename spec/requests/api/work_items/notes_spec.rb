@@ -331,6 +331,16 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
         post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
       end
     end
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'creates a note and returns 201' do
+        post api(api_request_path, oauth_access_token: oauth_token), params: { body: 'hi!' }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
   end
 
   describe 'POST /namespaces/:id/-/work_items/:work_item_iid/notes' do

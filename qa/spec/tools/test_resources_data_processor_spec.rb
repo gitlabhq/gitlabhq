@@ -45,10 +45,9 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
 
       let(:group_resource) do
         group = instance_double(QA::Resource::Group, 'Group Resource')
-        allow(group).to receive(:class).and_return(QA::Resource::Group)
 
-        # Start with nil
-        allow(group).to receive(:api_fabrication_http_method).and_return(nil)
+        # Start with nil api_fabrication_http_method
+        allow(group).to receive_messages(class: QA::Resource::Group, api_fabrication_http_method: nil)
 
         allow(group).to receive(:api_delete_path) do
           # After this call, simulate that the method gets set to :get
@@ -106,8 +105,7 @@ RSpec.describe QA::Tools::TestResourceDataProcessor do
       let(:resources_file) { Pathname.new(file_path) }
 
       before do
-        allow(QA::Runtime::Env).to receive(:running_in_ci?).and_return(ci)
-        allow(QA::Runtime::Env).to receive(:rspec_retried?).and_return(rspec_retried)
+        allow(QA::Runtime::Env).to receive_messages(running_in_ci?: ci, rspec_retried?: rspec_retried)
         allow(QA::Runtime::Path).to receive(:qa_root).and_return('root')
         allow(::Gitlab::QA::Runtime::Env).to receive(:retry_failed_specs?).and_return(retry_failed_specs)
         allow(File).to receive(:write)

@@ -810,7 +810,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | Action                                                                | Guest | Planner | Reporter | Security Manager | Developer | Maintainer | Owner |
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :--------------: | :-------: | :--------: | :---: |
 | View project code[^project-repositories-guest-role-limited]                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) project code[^project-repositories-guest-role-limited], [^project-repositories-users-planner-role]                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) project code[^project-repositories-guest-role-limited]                  |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) commits and comments[^project-repositories-guest-role-limited]          |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | Pull project code[^branch-protected-depends]                                        |   ✓   |    ✓    |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
 | View commit status                                                    |       |         |    ✓     |        ✓         |     ✓     |     ✓      |   ✓   |
@@ -839,7 +839,6 @@ Project permissions for [repository](project/repository/_index.md) features incl
     or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
     or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
     that role to the users. In GitLab 18.7 and later, users with the Planner role can view private repository content.
-[^project-repositories-users-planner-role]: Users with the Planner role cannot use exact code search in private projects. For more information, see [issue 602978](https://gitlab.com/gitlab-org/gitlab/-/work_items/602978).
 [^branch-protected-depends]: If the [branch is protected](project/repository/branches/protected.md), this depends on the
     access given to Developers and Maintainers.
 [^project-repositories-guest-role-limited-2]: On GitLab Self-Managed, users with the Guest role are able to perform this action only on public

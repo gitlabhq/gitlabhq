@@ -1861,4 +1861,96 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of get_pipeline_jobs' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_pipeline_jobs').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The project ID or URL-encoded path'
+          },
+          'pipeline_id' => {
+            type: 'integer',
+            description: 'The pipeline ID'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          }
+        },
+        required: %w[id pipeline_id],
+        additionalProperties: false
+      })
+    end
+
+    it 'locks the full input schema of list_pipelines' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'list_pipelines').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The project ID or URL-encoded path'
+          },
+          'ref' => {
+            type: 'string',
+            description: 'The ref of pipelines'
+          },
+          'status' => {
+            type: 'string',
+            description: 'The status of pipelines',
+            enum: %w[
+              created waiting_for_resource preparing waiting_for_callback pending running success failed canceling
+              canceled skipped manual scheduled
+            ]
+          },
+          'source' => {
+            type: 'string',
+            description: 'The source of pipelines',
+            enum: %w[
+              unknown push web trigger schedule api external pipeline chat webide merge_request_event
+              external_pull_request_event parent_pipeline ondemand_dast_scan ondemand_dast_validation
+              security_orchestration_policy container_registry_push duo_workflow pipeline_execution_policy_schedule
+              dependency_management_security_update
+            ]
+          },
+          'created_after' => {
+            type: 'string',
+            description: 'Return pipelines created after the specified datetime. Format: ISO 8601 ' \
+              'YYYY-MM-DDTHH:MM:SSZ'
+          },
+          'created_before' => {
+            type: 'string',
+            description: 'Return pipelines created before the specified datetime. Format: ISO 8601 ' \
+              'YYYY-MM-DDTHH:MM:SSZ'
+          },
+          'order_by' => {
+            type: 'string',
+            description: 'Order pipelines',
+            enum: %w[id status ref updated_at user_id]
+          },
+          'sort' => {
+            type: 'string',
+            description: 'Sort pipelines',
+            enum: %w[asc desc]
+          },
+          'page' => {
+            type: 'integer',
+            description: 'Page number of results to retrieve.'
+          },
+          'per_page' => {
+            type: 'integer',
+            description: 'Number of items to list per page.'
+          }
+        },
+        required: %w[id],
+        additionalProperties: false
+      })
+    end
+  end
 end

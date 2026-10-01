@@ -136,7 +136,7 @@ export default {
       'fileTreeBrowserIsExpanded',
     ]),
     isTreeView() {
-      return !['blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name);
+      return !this.$route.name?.startsWith('blobPath');
     },
     isProjectOverview() {
       return this.$route.name === 'projectRoot';
@@ -195,9 +195,7 @@ export default {
       return keysFor(START_SEARCH_PROJECT_FILE)[0];
     },
     showBlobControls() {
-      return (
-        this.$route.params.path && ['blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name)
-      );
+      return this.$route.params.path && this.$route.name?.startsWith('blobPath');
     },
     showFileTreeBrowserToggle() {
       return !this.isProjectOverview && !this.fileTreeBrowserIsExpanded;

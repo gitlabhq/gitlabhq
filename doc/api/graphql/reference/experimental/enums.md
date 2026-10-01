@@ -56,10 +56,10 @@ Access configured on a granular scope.
 
 | Value | Description |
 | ----- | ----------- |
-| `ALL_MEMBERSHIPS` | Grants access to resources belonging to all groups and projects the user is a member of. |
+| `ALL_MEMBERSHIPS` | Grants access to resources belonging to all groups and projects the user can access. |
 | `INSTANCE` | Grants access to standalone instance-level resources. |
 | `PERSONAL_PROJECTS` | Grants access to resources belonging to all personal projects of a user. |
-| `SELECTED_MEMBERSHIPS` | Grants access to resources belonging to selected groups and projects the user is a member of. |
+| `SELECTED_MEMBERSHIPS` | Grants access to resources belonging to selected groups and projects the user can access. |
 | `USER` | Grants access to standalone user-level resources. |
 
 ## `AccessTokenSort`
@@ -397,6 +397,15 @@ Possible event types for flow triggers.
 | `PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
 | `SCHEDULED` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Flow trigger scheduled event. |
 | `WORK_ITEM` | Flow trigger work_item event. |
+
+## `AiFlowsMetadataClientType`
+
+Client surface requesting Duo Agent Platform flow metadata.
+
+| Value | Description |
+| ----- | ----------- |
+| `CLI` | Duo CLI client. |
+| `IDE` | IDE extension client (for example, VS Code or JetBrains). |
 
 ## `AiGovernanceAgentClass`
 
@@ -848,6 +857,7 @@ Enum for types of analyzers.
 | Value | Description |
 | ----- | ----------- |
 | `API_FUZZING` | Api fuzzing analyzer. |
+| `BUSINESS_LOGIC` | Business logic analyzer. |
 | `CLUSTER_IMAGE_SCANNING` | Cluster image scanning analyzer. |
 | `CONTAINER_SCANNING` | Any kind of container scanning. |
 | `CONTAINER_SCANNING_FOR_REGISTRY` | Container scanning for registry. Managed via project security settings. |
@@ -869,6 +879,7 @@ Analyzer types that can appear in project and group analyzer statuses.
 | Value | Description |
 | ----- | ----------- |
 | `API_FUZZING` | Api fuzzing analyzer. |
+| `BUSINESS_LOGIC` | Business logic analyzer. |
 | `CLUSTER_IMAGE_SCANNING` | Cluster image scanning analyzer. |
 | `CONTAINER_SCANNING` | Any kind of container scanning. |
 | `CONTAINER_SCANNING_FOR_REGISTRY` | Container scanning for registry. Managed via project security settings. |
@@ -2659,6 +2670,15 @@ Type of link between a GitLab Duo Agent Platform session and a work item.
 | `CREATED` | Link of type `created` between a session and a work item. |
 | `SOURCE` | Link of type `source` between a session and a work item. |
 
+## `DuoWorkflowsModelHosting`
+
+Where a model used by GitLab Duo Agent Platform flows is hosted.
+
+| Value | Description |
+| ----- | ----------- |
+| `GITLAB` | Model served through GitLab-managed infrastructure. |
+| `SELF_HOSTED` | Model configured as a self-hosted model on the instance. |
+
 ## `DuoWorkflowsWorkflowSort`
 
 Values for sorting Duo Workflows.
@@ -3442,6 +3462,7 @@ Licensed features that can be checked for availability on a namespace or project
 | `BOARD_STATUS_LISTS` | Board status lists feature. |
 | `BRANCH_RULE_SQUASH_OPTIONS` | Branch rule squash options feature. |
 | `BUILT_IN_PROJECT_TEMPLATES_ENABLED` | Built in project templates enabled feature. |
+| `BUSINESS_LOGIC` | Business logic feature. |
 | `CI_CD_CATALOG_PUBLISH_RESTRICTION` | Ci cd catalog publish restriction feature. |
 | `CI_CD_PROJECTS` | Ci cd projects feature. |
 | `CI_COMPONENT_USAGES_IN_PROJECTS` | Ci component usages in projects feature. |
@@ -3516,6 +3537,7 @@ Licensed features that can be checked for availability on a namespace or project
 | `GENERATE_DESCRIPTION` | Generate description feature. |
 | `GENERATE_TEST_FILE` | Generate test file feature. |
 | `GENERIC_ALERT_FINGERPRINTING` | Generic alert fingerprinting feature. |
+| `GITHUB_CONTINUOUS_SYNC` | Github continuous sync feature. |
 | `GITHUB_INTEGRATION` | Github integration feature. |
 | `GIT_TWO_FACTOR_ENFORCEMENT` | Git two factor enforcement feature. |
 | `GLAB_ASK_GIT_COMMAND` | Glab ask git command feature. |
@@ -5262,6 +5284,7 @@ Template type for predefined security categories.
 | Value | Description |
 | ----- | ----------- |
 | `API_FUZZING` | API FUZZING scan report. |
+| `BUSINESS_LOGIC` | BUSINESS LOGIC scan report. |
 | `CLUSTER_IMAGE_SCANNING` | CLUSTER IMAGE SCANNING scan report. |
 | `CONTAINER_SCANNING` | CONTAINER SCANNING scan report. |
 | `COVERAGE_FUZZING` | COVERAGE FUZZING scan report. |
@@ -5314,6 +5337,7 @@ Scan profile type.
 
 | Value | Description |
 | ----- | ----------- |
+| `BUSINESS_LOGIC` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Business logic. |
 | `CONTAINER_SCANNING` | Container scanning. |
 | `DEPENDENCY_SCANNING` | Dependency scanning. |
 | `DEPENDENCY_SCANNING_POST_PROCESSING` | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Dependency scanning post processing. |
@@ -5338,6 +5362,7 @@ The type of the security scanner.
 | Value | Description |
 | ----- | ----------- |
 | `API_FUZZING` | API fuzzing scanner. |
+| `BUSINESS_LOGIC` | Business logic scanner. |
 | `CLUSTER_IMAGE_SCANNING` | Cluster image scanning scanner. |
 | `CONTAINER_SCANNING` | Container scanning scanner. |
 | `COVERAGE_FUZZING` | Coverage fuzzing scanner. |

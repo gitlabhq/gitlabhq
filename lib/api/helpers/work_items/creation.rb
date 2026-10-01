@@ -11,7 +11,8 @@ module API
           work_item_type = resolve_work_item_type(resource_parent)
           not_found!('Work item type') unless work_item_type
 
-          create_params = build_create_work_item_params(work_item_type)
+          validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
+          create_params = build_create_work_item_params(work_item_type).merge(scope_validator: validator)
           widget_params = extract_feature_params(work_item_type, resource_parent)
           validate_supported_widgets!(work_item_type, resource_parent, widget_params)
 
@@ -21,6 +22,8 @@ module API
             params: create_params,
             widget_params: widget_params
           ).execute
+        rescue QuickActions::InterpretService::QuickActionsNotAllowedError => e
+          forbidden!(e.message)
         end
 
         def render_work_item_creation(result)

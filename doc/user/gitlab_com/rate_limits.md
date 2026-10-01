@@ -263,5 +263,6 @@ Users then get
 
 - [GitLab.com settings](_index.md)
 - [Rate limits](../../rate_limits/_index.md)
+- [GitLab MCP server rate limits](../model_context_protocol/mcp_server.md#rate-limits)
 - [Rate limits on Git operations](../../rate_limits/git.md)
 - [REST API authentication](../../api/rest/authentication.md)

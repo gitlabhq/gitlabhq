@@ -3,6 +3,7 @@
 require_relative 'schema/directive'
 require_relative 'schema/enum'
 require_relative 'schema/input_object'
+require_relative 'schema/interface'
 require_relative 'schema/object'
 require_relative 'schema/scalar'
 
@@ -15,13 +16,14 @@ module Tooling
         # fields section rather than repeated on the objects page.
         STANDARD_EDGE_FIELDS = %w[cursor node].freeze
 
-        attr_reader :directives, :enums, :input_objects, :objects, :scalars
+        attr_reader :directives, :enums, :input_objects, :interfaces, :objects, :scalars
 
         def initialize(schema)
           @schema = schema
           @directives = []
           @enums = []
           @input_objects = []
+          @interfaces = []
           @objects = []
           @scalars = []
         end
@@ -49,6 +51,10 @@ module Tooling
             @enums << Schema::Enum.new(type) if type.kind.enum?
             @input_objects << Schema::InputObject.new(type) if type.kind.input_object?
             @scalars << Schema::Scalar.new(type) if type.kind.scalar?
+
+            if type.kind.interface?
+              @interfaces << Schema::Interface.new(type, implementations: schema.possible_types(type))
+            end
           end
         end
 

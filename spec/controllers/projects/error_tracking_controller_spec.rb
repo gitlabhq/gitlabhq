@@ -98,10 +98,10 @@ RSpec.describe Projects::ErrorTrackingController do
 
         context 'when service result is successful' do
           before do
-            allow(list_issues_service).to receive(:execute)
-              .and_return(status: :success, issues: [error], pagination: {})
-            allow(list_issues_service).to receive(:external_url)
-              .and_return(external_url)
+            allow(list_issues_service).to receive_messages(
+              execute: { status: :success, issues: [error], pagination: {} },
+              external_url: external_url
+            )
 
             get :index, params: params
           end
@@ -131,10 +131,10 @@ RSpec.describe Projects::ErrorTrackingController do
 
         context 'when service result is successful' do
           before do
-            allow(list_issues_service).to receive(:execute)
-              .and_return(status: :success, issues: [error], pagination: {})
-            allow(list_issues_service).to receive(:external_url)
-              .and_return(external_url)
+            allow(list_issues_service).to receive_messages(
+              execute: { status: :success, issues: [error], pagination: {} },
+              external_url: external_url
+            )
           end
 
           let(:error) { build(:error_tracking_sentry_error) }

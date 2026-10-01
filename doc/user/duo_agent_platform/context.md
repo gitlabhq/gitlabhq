@@ -114,3 +114,19 @@ To specify content that GitLab Duo excludes:
 1. Specify which project files and directories are excluded from GitLab Duo context, and select **Save exclusions**.
 1. Optional. To delete an existing exclusion, select **Delete** ({{< icon name="remove" >}}) for the appropriate exclusion.
 1. Select **Save changes**.
+
+### Known issues
+
+The following are known issues for context exclusions in the [GitLab MCP server](../model_context_protocol/mcp_server.md):
+
+- The `get_merge_request` tool might return commit diffs that include
+  content from excluded files.
+  The GitLab MCP server does not check for exclusions when it fetches diffs.
+- The `add_commit` tool has a `move` action that
+  copies a file from one path to another. If the source file is excluded, the exclusion
+  check is not applied to the source path. An agent with push access could move an
+  excluded file to a non-excluded path and then read its content.
+
+These known issues are tracked in
+[issue 628141](https://gitlab.com/gitlab-org/gitlab/-/work_items/628141).
+To ensure protection of sensitive information, review which tools and permissions are granted to MCP clients that access sensitive projects.

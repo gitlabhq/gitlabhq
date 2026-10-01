@@ -80,6 +80,62 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       field :scalar_field, GraphQL::Types::String, null: true, description: 'A scalar field.'
     end
 
+    # A second implementor of ExampleInterface, declared after Object so the
+    # implementations list is sorted alphabetically (not by declaration order).
+    spec_alpha_implementor = Class.new(::Types::BaseObject) do
+      graphql_name 'AlphaImplementor'
+      description 'Another implementor of the interface.'
+
+      implements spec_interface
+
+      field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+    end
+
+    # An interface with a connection field, to prove the connection note links
+    # across to the objects page from the interfaces page.
+    spec_connection_interface = Module.new do
+      include ::Types::BaseInterface
+      graphql_name 'ConnectionInterface'
+      description 'An interface with a connection field.'
+
+      field :related, spec_object.connection_type, null: true, description: 'Related objects.'
+    end
+
+    spec_connection_interface_implementor = Class.new(::Types::BaseObject) do
+      graphql_name 'ConnectionInterfaceImplementor'
+
+      implements spec_connection_interface
+
+      field :related, spec_object.connection_type, null: true, description: 'Related objects.'
+    end
+
+    # An interface with no description, to prove the section renders straight
+    # from the heading to the implementations without a blank description line.
+    spec_interface_without_description = Module.new do
+      include ::Types::BaseInterface
+      graphql_name 'InterfaceWithoutDescription'
+
+      field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+    end
+
+    spec_interface_without_description_implementor = Class.new(::Types::BaseObject) do
+      graphql_name 'InterfaceWithoutDescriptionImplementor'
+
+      implements spec_interface_without_description
+
+      field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+    end
+
+    # An interface that nothing implements, to prove the implementations section
+    # is omitted when there are none.
+    spec_interface_without_implementations = Module.new do
+      include ::Types::BaseInterface
+      graphql_name 'InterfaceWithoutImplementations'
+      description 'An interface without implementations.'
+
+      field :id, GraphQL::Types::ID, null: true, description: 'ID.'
+    end
+
     # Add a connection field to the object so field descriptions render the
     # connection note. Defined after the connection type exists.
     spec_object.field :related, spec_object.connection_type, null: true, description: 'Related objects.' do
@@ -88,6 +144,9 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
     Class.new(GraphQL::Schema) do
       directive(spec_directive)
+
+      orphan_types spec_alpha_implementor, spec_connection_interface_implementor,
+        spec_interface_without_description_implementor
 
       query(Class.new(::Types::BaseObject) do
         graphql_name 'Query'
@@ -101,6 +160,8 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           description: 'A connection with an extra field.'
         field :interfaces, spec_interface.connection_type, null: true,
           description: 'A connection over an interface node.'
+        field :interface_without_implementations, spec_interface_without_implementations, null: true,
+          description: 'A field returning an interface with no implementations.'
         field :input_field, spec_scalar do
           argument :input, spec_input_object, required: false, description: 'An input.'
         end
@@ -124,7 +185,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           An object.
 
-          **Implements:** `ExampleInterface`
+          **Implements:** [`ExampleInterface`](interfaces.md#exampleinterface)
 
           ### Fields {.no_toc}
 
@@ -148,7 +209,8 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     end
 
     it 'omits the pagination arguments from a connection field arguments block' do
-      related_row = doc[/^\| `related` \|.*$/]
+      section = doc[/## `Object`.*?(?=\n## )/m]
+      related_row = section[/^\| `related` \|.*$/]
 
       expect(related_row).to include('Arguments for `related`')
       expect(related_row).not_to match(/<dt>`(before|after|first|last)`/)
@@ -195,12 +257,12 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       )
     end
 
-    it 'renders a connection over an interface node with the node unlinked' do
+    it 'renders a connection over an interface node linking to the interfaces page' do
       expect(doc).to include(
         <<~MD
           ## `ExampleInterfaceConnection`
 
-          Paginated collection of `ExampleInterface`. See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+          Paginated collection of [`ExampleInterface`](interfaces.md#exampleinterface). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
         MD
       )
     end
@@ -225,6 +287,73 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           A scalar.
         MD
       )
+    end
+
+    it 'does not include introspection types' do
+      expect(doc).not_to include('__')
+    end
+  end
+
+  describe 'the interfaces page' do
+    subject(:doc) { page('interfaces.md').doc }
+
+    it 'renders the interface with its implementations and fields' do
+      expect(doc).to include(
+        <<~MD
+          ## `ExampleInterface`
+
+          An interface.
+
+          ### Implementations {.no_toc}
+
+          - [`AlphaImplementor`](objects.md#alphaimplementor)
+          - [`Object`](objects.md#object)
+
+          ### Fields {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `id` | [`ID`](scalars.md#id) | ID. |
+        MD
+      )
+    end
+
+    it 'lists implementations in alphabetical order' do
+      section = doc[/## `ExampleInterface`.*?(?=\n## |\z)/m]
+
+      expect(section.scan(/^- \[`(\w+)`\]/).flatten).to eq(%w[AlphaImplementor Object])
+    end
+
+    it 'renders an interface without a description' do
+      expect(doc).to include(
+        <<~MD
+          ## `InterfaceWithoutDescription`
+
+          ### Implementations {.no_toc}
+        MD
+      )
+    end
+
+    it 'omits the implementations section for an interface without implementations' do
+      expect(doc).to include(
+        <<~MD
+          ## `InterfaceWithoutImplementations`
+
+          An interface without implementations.
+
+          ### Fields {.no_toc}
+        MD
+      )
+    end
+
+    it 'links a connection field note across to the objects page' do
+      section = doc[/## `ConnectionInterface`.*?(?=\n## )/m]
+
+      expect(section).to include('[connection](objects.md#connections-and-pagination)')
+    end
+
+    it 'lists interfaces in alphabetical order' do
+      expect(doc.scan(/^## `(\w+)`/).flatten).to eq(doc.scan(/^## `(\w+)`/).flatten.sort)
     end
 
     it 'does not include introspection types' do

@@ -14,26 +14,52 @@ RSpec.describe Mcp::Tools::Repositories::GetRepositoryFileService, feature_categ
     end
   end
 
-  describe '#input_schema' do
-    subject(:schema) { service.input_schema }
-
-    it 'requires no arguments up front' do
-      expect(schema[:required]).to eq([])
+  describe 'input schema' do
+    it 'locks the full input schema for version 0.1.0' do
+      expect(service.input_schema).to eq({
+        type: 'object',
+        required: [],
+        properties: {
+          url: {
+            type: 'string',
+            description: 'GitLab URL of the file, for example ' \
+              'https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/user.rb. Provide this, ' \
+              'or project_id, file_path, and ref.'
+          },
+          project_id: {
+            type: 'string',
+            description: 'ID or full path of the project. Required if url is not provided. If url is also ' \
+              'provided, both must refer to the same project.'
+          },
+          file_path: {
+            type: 'string',
+            description: 'Path of the file relative to the repository root, for example app/models/user.rb. ' \
+              'Required if url is not provided.'
+          },
+          ref: {
+            type: 'string',
+            description: 'Branch name, tag name, or commit SHA. Use HEAD for the default branch. Required if url ' \
+              'is not provided.'
+          },
+          offset: {
+            type: 'integer',
+            description: 'Zero-indexed line number to start reading from. Omit to start at the beginning of the ' \
+              'file.',
+            minimum: 0
+          },
+          limit: {
+            type: 'integer',
+            description: 'Maximum number of lines to return. The maximum is 2000.',
+            minimum: 1,
+            maximum: 2000
+          }
+        },
+        additionalProperties: false
+      })
     end
+  end
 
-    it 'rejects unknown arguments' do
-      expect(schema[:additionalProperties]).to be false
-    end
-
-    it 'declares project_id as a string' do
-      expect(schema[:properties][:project_id][:type]).to eq('string')
-    end
-
-    it 'bounds offset and limit' do
-      expect(schema[:properties][:offset]).to include(type: 'integer', minimum: 0)
-      expect(schema[:properties][:limit]).to include(type: 'integer', minimum: 1, maximum: described_class::MAX_LIMIT)
-    end
-
+  describe '#description' do
     it 'tells the model this is not the local filesystem' do
       expect(service.description).to include('not the local filesystem')
       expect(service.description).to include('committed at ref')

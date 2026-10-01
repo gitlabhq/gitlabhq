@@ -951,4 +951,51 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
     post api("/projects/#{issue.project.id}/issues/#{issue.iid}/clone", current_user),
       params: { to_project_id: target_project.id }
   end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of create_issue', unless: Gitlab.ee? do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'create_issue').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The ID or URL-encoded path of the project'
+          },
+          'title' => {
+            type: 'string',
+            description: 'The title of an issue'
+          },
+          'description' => {
+            type: 'string',
+            description: 'The description of an issue'
+          },
+          'assignee_ids' => {
+            type: 'array',
+            items: {
+              type: 'integer'
+            },
+            description: 'The array of user IDs to assign issue'
+          },
+          'milestone_id' => {
+            type: 'integer',
+            description: 'The ID of a milestone to assign issue'
+          },
+          'milestone' => {
+            type: 'string',
+            description: 'The title of a project or ancestor-group milestone to assign the issue to.'
+          },
+          'labels' => {
+            type: 'string',
+            description: 'Comma-separated list of label names'
+          },
+          'confidential' => {
+            type: 'boolean',
+            description: 'Boolean parameter if the issue should be confidential'
+          }
+        },
+        required: %w[id title],
+        additionalProperties: false
+      })
+    end
+  end
 end

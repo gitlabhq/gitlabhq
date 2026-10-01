@@ -31,40 +31,81 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
   end
 
   describe '#input_schema' do
-    let(:schema) { service.input_schema }
-
-    it 'exposes the expected input schema', unless: Gitlab.ee? do
-      expect(schema).to match(
+    it 'locks the full input schema for version 0.1.0', unless: Gitlab.ee? do
+      expect(service.input_schema).to eq({
         type: 'object',
-        additionalProperties: false,
-        required: %w[scope search],
         properties: {
           scope: {
             type: 'string',
-            description: a_string_including(
-              'GitLab instance: projects, groups, work_items, merge_requests, milestones, users, snippet_titles',
-              'Group: projects, groups, work_items, merge_requests, milestones, users',
-              'Project: blobs, work_items, merge_requests, wiki_blobs, commits, notes, milestones, users',
-              'Use "work_items" to search for issues, tasks, epics, and other work items'
-            )
+            description: 'Specify the type of content to search for. Available content types vary by search ' \
+              "context:\n" \
+              "\n" \
+              '- GitLab instance: projects, groups, work_items, merge_requests, milestones, users, ' \
+              "snippet_titles\n" \
+              "- Group: projects, groups, work_items, merge_requests, milestones, users\n" \
+              '- Project: blobs, work_items, merge_requests, wiki_blobs, commits, notes, milestones, ' \
+              "users\n" \
+              "\n" \
+              "Examples:\n" \
+              "- Use \"work_items\" to search for issues, tasks, epics, and other work items\n" \
+              "- Use \"merge_requests\" to search for merge requests\n" \
+              "- Use \"blobs\" to search code files\n" \
+              "- Use \"notes\" to search comments across different content\n" \
+              '- Use "commits" to search commit messages'
           },
-          search: { type: 'string', description: 'The term to search for' },
-          group_id: { type: 'string', description: a_string_including('within a group') },
-          project_id: { type: 'string', description: a_string_including('within a project') },
+          search: {
+            type: 'string',
+            description: 'The term to search for'
+          },
+          group_id: {
+            type: 'string',
+            description: 'Provide to search within a group. The ID or full path of the group'
+          },
+          project_id: {
+            type: 'string',
+            description: 'Provide to search within a project. The ID or full path of the project'
+          },
           state: {
             type: 'string',
-            description: a_string_including(
-              'Work items:',
+            description: "Filter results by state. Available states:\n" \
+              "- Work items: opened, closed\n" \
+              "- Merge requests: opened, closed, merged, locked\n" \
+              "\n" \
               'Only applies to work_items and merge_requests scopes.'
-            )
           },
-          confidential: { type: 'boolean', description: a_string_including('confidentiality') },
-          order_by: { type: 'string', description: a_string_including('created_at') },
-          sort: { type: 'string', description: a_string_including('asc, desc') },
-          per_page: { type: 'integer', minimum: 1, description: a_string_including('per page') },
-          page: { type: 'integer', minimum: 1, description: a_string_including('Page number') }
-        }
-      )
+          confidential: {
+            type: 'boolean',
+            description: 'Filter results by confidentiality. Available for work_items scope; other scopes are ' \
+              'ignored.'
+          },
+          order_by: {
+            type: 'string',
+            description: "Specify how to order search results.\n" \
+              "- Allowed values: created_at only\n" \
+              "- Default behavior:\n  " \
+              "* Basic search: sorted by created_at descending\n  " \
+              '* Advanced search: sorted by relevance'
+          },
+          sort: {
+            type: 'string',
+            description: "Specify the sort direction for results. Works with order_by parameter\n" \
+              "- Allowed values: asc, desc\n" \
+              '- Default: desc'
+          },
+          per_page: {
+            type: 'integer',
+            description: 'Number of items to list per page. (default: 20)',
+            minimum: 1
+          },
+          page: {
+            type: 'integer',
+            description: 'Page number to retrieve. (default: 1)',
+            minimum: 1
+          }
+        },
+        required: %w[scope search],
+        additionalProperties: false
+      })
     end
   end
 

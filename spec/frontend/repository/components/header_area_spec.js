@@ -356,9 +356,22 @@ describe('HeaderArea', () => {
         expect(findBlobControls().exists()).toBe(false);
       });
 
-      it('should not render blob controls when route name is not blobPathDecoded', () => {
+      it.each`
+        routeName
+        ${'blobPath'}
+        ${'blobPathDecoded'}
+        ${'blobPathEncoded'}
+        ${'blobPathEncodedSlashes'}
+      `('should render blob controls when route name is $routeName', ({ routeName }) => {
         wrapper = createComponent({
-          route: { name: 'blobPath', params: { path: '/some/file.js' } },
+          route: { name: routeName, params: { path: '/some/file.js' } },
+        });
+        expect(findBlobControls().exists()).toBe(true);
+      });
+
+      it('should not render blob controls for non-blob routes', () => {
+        wrapper = createComponent({
+          route: { name: 'treePathDecoded', params: { path: 'some/dir' } },
         });
         expect(findBlobControls().exists()).toBe(false);
       });

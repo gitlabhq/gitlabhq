@@ -32,6 +32,20 @@ module Gitlab
 
         connection.execute('RESET transaction_timeout')
       end
+
+      def self.current(connection)
+        return unless supported?(connection)
+
+        connection.select_value('SHOW transaction_timeout')
+      end
+
+      # Unlike RESET, this keeps a value database.yml set for the session
+      # instead of falling back to the cluster default.
+      def self.restore(connection, previous)
+        return unless previous && supported?(connection)
+
+        connection.execute("SET transaction_timeout TO #{connection.quote(previous)}")
+      end
     end
   end
 end

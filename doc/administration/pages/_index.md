@@ -17,7 +17,7 @@ GitLab Pages provides static site hosting for GitLab projects and groups.
 Server administrators must configure Pages before users can access this feature.
 As an administrator, you can use GitLab Pages to:
 
-- Host static websites securely with [custom domains](#custom-domains) and SSL/TLS certificates.
+- Host static websites securely with [custom domains](#configure-custom-domains) and SSL/TLS certificates.
 - Turn on authentication to control access to Pages sites through GitLab permissions.
 - Scale deployments using object storage or network storage in multi-node environments.
 - Monitor and manage traffic with rate limiting and custom headers.
@@ -35,13 +35,13 @@ For user documentation, see [GitLab Pages](../../user/project/pages/_index.md).
 
 GitLab Pages uses the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a basic HTTP server
 written in Go that can listen on an external IP address and provide support for
-[custom domains](#custom-domains) and custom certificates. It supports dynamic certificates through
+[custom domains](#configure-custom-domains) and custom certificates. It supports dynamic certificates through
 Server Name Indication (SNI) and exposes pages using HTTP2 by default.
 
 For more information, see the [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md).
 
-When used with [custom domains](#custom-domains), the Pages daemon must listen on
-ports `80` or `443`. This is not required for [wildcard domains](#wildcard-domains).
+When used with [custom domains](#configure-custom-domains), the Pages daemon must listen on
+ports `80` or `443`. This is not required for [wildcard domains](#configure-wildcard-domains).
 
 You can run the Pages daemon:
 
@@ -65,17 +65,16 @@ This section describes the prerequisites for configuring GitLab Pages.
 > If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall,
 > your GitLab Pages websites are only accessible to devices and users with access to the private network.
 
-### Wildcard domains
-
-Each site gets its own subdomain (for example, `<namespace>.example.io/<project_slug>`).
-This subdomain requires a wildcard DNS record (`*.example.io`) and is the recommended setup for most instances.
-
-Before configuring Pages for wildcard domains, you must:
+Before configuring GitLab Pages, you must:
 
 1. Have a domain for Pages that is not a subdomain of your GitLab instance domain.
 
+   > [!warning]
+   > You should run GitLab Pages under a different hostname than GitLab to
+   > prevent XSS attacks.
+
    | GitLab domain        | Pages domain        | Does it work? |
-   | -------------------- | ------------------- | ------------- |
+   |----------------------|---------------------|---------------|
    | `example.com`        | `example.io`        | {{< yes >}}   |
    | `example.com`        | `pages.example.com` | {{< no >}}[^pages-domain-cookies] |
    | `gitlab.example.com` | `pages.example.com` | {{< yes >}}   |
@@ -83,34 +82,8 @@ Before configuring Pages for wildcard domains, you must:
    [^pages-domain-cookies]: If the Pages domain is a subdomain of your GitLab instance domain,
        all deployed Pages sites can access GitLab session cookies.
 
-1. Configure a wildcard DNS record.
-1. Optional. Have a wildcard certificate for that domain if you decide to
-   serve Pages under HTTPS.
 1. Optional but recommended. Turn on [instance runners](../../ci/runners/_index.md)
    so that your users do not have to bring their own.
-1. For custom domains, have a secondary IP.
-
-### Single-domain sites
-
-All sites share one domain, with the namespace and project slug as path segments
-(for example, `example.io/<namespace>/<project_slug>`).
-This domain requires only a single DNS `A` record.
-
-Before configuring Pages for single-domain sites, you must:
-
-1. Have a domain for Pages that is not a subdomain of your GitLab instance domain.
-
-   | GitLab domain        | Pages domain        | Supported |
-   | -------------------- | ------------------- | --------- |
-   | `example.com`        | `example.io`        | {{< yes >}} |
-   | `example.com`        | `pages.example.com` | {{< no >}}[^pages-domain-cookies] |
-   | `gitlab.example.com` | `pages.example.com` | {{< yes >}} |
-
-1. Configure a DNS record.
-1. Optional. If you decide to serve Pages under HTTPS, have a TLS certificate for that domain.
-1. Optional but recommended. Turn on [instance runners](../../ci/runners/_index.md)
-   so that your users do not have to bring their own.
-1. For custom domains, have a secondary IP.
 
 ### Add the domain to the Public Suffix List
 
@@ -127,7 +100,12 @@ For example, if your domain is `example.io`, you should
 request that `example.io` is added to the Public Suffix List. GitLab.com
 added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/230).
 
-### DNS configuration
+## Configure wildcard domains
+
+Each site gets its own subdomain (for example, `<namespace>.example.io/<project_slug>`).
+This subdomain requires a wildcard DNS record (`*.example.io`) and is the recommended setup for most instances.
+
+### DNS configuration for wildcard domains
 
 GitLab Pages runs on its own virtual host. In your DNS server or provider, add a
 [wildcard DNS `A` record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the host
@@ -142,7 +120,116 @@ Where `example.io` is the domain GitLab Pages is served from,
 `192.0.2.1` is the IPv4 address of your GitLab instance, and `2001:db8::1` is the
 IPv6 address. If you do not have IPv6, you can omit the `AAAA` record.
 
-#### DNS configuration for single-domain sites
+### Wildcard domains without TLS
+
+This configuration is the minimum setup to use GitLab Pages and serves as the foundation for all
+other setups. In this configuration:
+
+- NGINX proxies all requests to the GitLab Pages daemon.
+- The GitLab Pages daemon does not listen directly to the public internet.
+
+Prerequisites:
+
+- You have configured [wildcard DNS](#dns-configuration-for-wildcard-domains).
+
+To configure GitLab Pages to use wildcard domains:
+
+1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   external_url "http://example.com" # external_url here is only for reference
+   pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+The resulting URL scheme is `http://<namespace>.example.io/<project_slug>`.
+
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://www.youtube.com/watch?v=dD8c7WNcc6s) video.
+<!-- Video published on 2017-02-22 -->
+
+### Wildcard domains with TLS support
+
+NGINX proxies all requests to the daemon. The Pages daemon does not listen to the public internet.
+
+Only one wildcard can be assigned to an instance.
+
+Prerequisites:
+
+- You have configured [wildcard DNS](#dns-configuration-for-wildcard-domains).
+- You have a TLS certificate. It can be a wildcard certificate or any other type meeting the
+  [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manually-add-ssltls-certificates).
+
+To configure wildcard domains with TLS support:
+
+1. Place the wildcard TLS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
+1. In `/etc/gitlab/gitlab.rb`, specify the following configuration:
+
+   ```ruby
+   external_url "https://example.com" # external_url here is only for reference
+   pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
+
+   pages_nginx['redirect_http_to_https'] = true
+   ```
+
+1. If your certificate and key are not named `example.io.crt` and `example.io.key`, add the full
+   paths:
+
+   ```ruby
+   pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
+   pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+1. If you're using [access control](#access-control), update the redirect URI in the GitLab Pages
+   [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
+   to use the HTTPS protocol.
+
+The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
+
+> [!warning]
+> GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
+> Before you reconfigure, remove the `gitlab_pages` section from
+> `/etc/gitlab/gitlab-secrets.json`, then run `gitlab-ctl reconfigure`. For more information, see
+> [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
+
+### Wildcard domains with TLS-terminating load balancer
+
+Use this setup when installing a [GitLab POC on Amazon Web Services](../../install/aws/_index.md).
+This setup includes a TLS-terminating [classic load balancer](../../install/aws/_index.md#load-balancer)
+that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
+
+Prerequisites:
+
+- Configured [wildcard DNS](#dns-configuration-for-wildcard-domains).
+- A TLS-terminating load balancer.
+
+To configure wildcard domains with a TLS-terminating load balancer:
+
+1. In `/etc/gitlab/gitlab.rb`, specify the following configuration:
+
+   ```ruby
+   external_url "https://example.com" # external_url here is only for reference
+   pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
+
+   pages_nginx['enable'] = true
+   pages_nginx['listen_port'] = 80
+   pages_nginx['listen_https'] = false
+   pages_nginx['redirect_http_to_https'] = true
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
+
+## Configure single-domain sites
+
+All sites share one domain, with the namespace and project slug as path segments
+(for example, `example.io/<namespace>/<project_slug>`).
+This domain requires only a single DNS `A` record.
+
+### DNS configuration for single-domain sites
 
 {{< history >}}
 
@@ -173,65 +260,7 @@ To configure GitLab Pages DNS for single-domain sites without wildcard DNS:
 
    `example.io` is the domain GitLab Pages is served from.
 
-#### DNS configuration for custom domains
-
-If you need custom domain support, all subdomains of the Pages root domain must point to the
-secondary IP dedicated to the Pages daemon. Without this configuration, users cannot use `CNAME`
-records to point their [custom domains](#custom-domains) to their GitLab Pages.
-
-For example:
-
-```plaintext
-example.com   1800 IN A    192.0.2.1
-*.example.io. 1800 IN A    192.0.2.2
-```
-
-This example contains:
-
-- `example.com`: The GitLab domain.
-- `example.io`: The domain GitLab Pages is served from.
-- `192.0.2.1`: The primary IP of your GitLab instance.
-- `192.0.2.2`: The secondary IP dedicated to GitLab Pages. It must differ from the primary IP.
-
-> [!note]
-> Do not use the GitLab domain to serve user pages. For more information, see the
-> [security section](#security).
-
-## Configuration
-
-You can set up GitLab Pages in several ways. The following examples are listed from the simplest
-setup to the most advanced.
-
-### Wildcard domains
-
-This configuration is the minimum setup to use GitLab Pages and serves as the foundation for all
-other setups. In this configuration:
-
-- NGINX proxies all requests to the GitLab Pages daemon.
-- The GitLab Pages daemon does not listen directly to the public internet.
-
-Prerequisites:
-
-- You have configured [wildcard DNS](#dns-configuration).
-
-To configure GitLab Pages to use wildcard domains:
-
-1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   external_url "http://example.com" # external_url here is only for reference
-   pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-The resulting URL scheme is `http://<namespace>.example.io/<project_slug>`.
-
-<i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://www.youtube.com/watch?v=dD8c7WNcc6s) video.
-<!-- Video published on 2017-02-22 -->
-
-### Single-domain sites
+### Single-domain sites without TLS
 
 {{< history >}}
 
@@ -271,51 +300,6 @@ The resulting URL scheme is `http://example.io/<namespace>/<project_slug>`.
 > GitLab Pages supports only one URL scheme at a time: wildcard domains or single-domain sites.
 > If you turn on `namespace_in_path`, existing GitLab Pages websites are accessible only as
 > single-domain sites.
-
-### Wildcard domains with TLS support
-
-NGINX proxies all requests to the daemon. The Pages daemon does not listen to the public internet.
-
-Only one wildcard can be assigned to an instance.
-
-Prerequisites:
-
-- You have configured [wildcard DNS](#dns-configuration).
-- You have a TLS certificate. It can be a wildcard certificate or any other type meeting the
-  [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manually-add-ssltls-certificates).
-
-To configure wildcard domains with TLS support:
-
-1. Place the wildcard TLS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
-1. In `/etc/gitlab/gitlab.rb`, specify the following configuration:
-
-   ```ruby
-   external_url "https://example.com" # external_url here is only for reference
-   pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
-
-   pages_nginx['redirect_http_to_https'] = true
-   ```
-
-1. If your certificate and key are not named `example.io.crt` and `example.io.key`, add the full
-   paths:
-
-   ```ruby
-   pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
-   pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-1. If you're using [access control](#access-control), update the redirect URI in the GitLab Pages
-   [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
-   to use the HTTPS protocol.
-
-The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
-
-> [!warning]
-> GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
-> Before you reconfigure, remove the `gitlab_pages` section from
-> `/etc/gitlab/gitlab-secrets.json`, then run `gitlab-ctl reconfigure`. For more information, see
-> [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
 ### Single-domain sites with TLS support
 
@@ -379,36 +363,150 @@ The resulting URL scheme is `https://example.io/<namespace>/<project_slug>`.
 > If you turn on `namespace_in_path`, existing GitLab Pages websites
 > are accessible only as single-domain sites.
 
-### Wildcard domains with TLS-terminating load balancer
+## Configure custom domains
 
-Use this setup when installing a [GitLab POC on Amazon Web Services](../../install/aws/_index.md).
-This setup includes a TLS-terminating [classic load balancer](../../install/aws/_index.md#load-balancer)
-that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
+By default, GitLab Pages sites are served on a subdomain of the Pages root domain, for example, `namespace.example.io/project`.
+To configure a custom domain for a Pages site, add a `CNAME` DNS record that points your own domain (for example, `example-custom-site-here.com`) to GitLab Pages.
+
+If you only need the default `*.example.io` subdomain URLs, you don't need to configure custom domain support.
+
+You can configure custom domains with or without TLS certificates. In either case, you need a
+secondary IP. If you have both IPv6 and IPv4 addresses, you can use them both.
+
+### DNS configuration for custom domains
+
+If you need custom domain support, all subdomains of the Pages root domain must point to the
+secondary IP dedicated to the Pages daemon. Without this configuration, users cannot use `CNAME`
+records to point their custom domains to their GitLab Pages.
+
+For example:
+
+```plaintext
+example.com   1800 IN A    192.0.2.1
+*.example.io. 1800 IN A    192.0.2.2
+```
+
+This example contains:
+
+- `example.com`: The GitLab domain.
+- `example.io`: The domain GitLab Pages is served from.
+- `192.0.2.1`: The primary IP of your GitLab instance.
+- `192.0.2.2`: The secondary IP dedicated to GitLab Pages. It must differ from the primary IP.
+
+> [!note]
+> Do not use the GitLab domain to serve user pages. For more information, see the
+> [prerequisites](#prerequisites).
+
+### Custom domains without TLS
+
+In this configuration, the Pages daemon is running and NGINX proxies requests to it, but the daemon
+can also receive requests from the public internet. Custom domains are supported without TLS.
 
 Prerequisites:
 
-- Configured [wildcard DNS](#dns-configuration).
-- A TLS-terminating load balancer.
+- Configured [wildcard DNS](#dns-configuration-for-wildcard-domains).
+- A secondary IP.
 
-To configure wildcard domains with a TLS-terminating load balancer:
+To configure custom domains:
 
+1. In `/etc/gitlab/gitlab.rb`, specify the following configuration:
+
+   ```ruby
+   external_url "http://example.com" # external_url here is only for reference
+   pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
+   nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
+   pages_nginx['enable'] = false
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
+   gitlab_pages['custom_domain_mode'] = 'http' # Enable custom domain
+   ```
+
+   If you do not have IPv6, omit the IPv6 address.
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+The resulting URL schemes are `http://<namespace>.example.io/<project_slug>` and `http://custom-domain.com`.
+
+### Custom domains with TLS support
+
+In this configuration, the Pages daemon is running and NGINX proxies requests to it, but the daemon
+can also receive requests from the public internet. Custom domains and TLS are supported.
+
+Prerequisites:
+
+- Configured [wildcard DNS](#dns-configuration-for-wildcard-domains).
+- A TLS certificate. It can be a wildcard certificate or any other type meeting the
+  [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manually-add-ssltls-certificates).
+- A secondary IP.
+
+To configure custom domains with TLS support:
+
+1. Place the wildcard TLS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
 1. In `/etc/gitlab/gitlab.rb`, specify the following configuration:
 
    ```ruby
    external_url "https://example.com" # external_url here is only for reference
    pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
+   nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
+   pages_nginx['enable'] = false
+   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
+   gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443'] # The secondary IPs for the GitLab Pages daemon
+   gitlab_pages['custom_domain_mode'] = 'https' # Enable custom domain
+   # Redirect pages from HTTP to HTTPS
+   gitlab_pages['redirect_http'] = true
+   ```
 
-   pages_nginx['enable'] = true
-   pages_nginx['listen_port'] = 80
-   pages_nginx['listen_https'] = false
-   pages_nginx['redirect_http_to_https'] = true
+   If you do not have IPv6, omit the IPv6 address.
+
+1. If your certificate and key are not named `example.io.crt` and `example.io.key`, add the full
+   paths:
+
+   ```ruby
+   gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
+   gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+1. If you're using access control, edit the redirect URI in the GitLab Pages
+   [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application) to use the HTTPS protocol.
 
-The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
+### Custom domain verification
 
-### Global settings
+To prevent malicious users from hijacking domains that do not belong to them,
+GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md).
+When adding a custom domain, users must prove they own it by
+adding a GitLab-controlled verification code to the DNS records for that domain.
+
+> [!warning]
+> Turning off domain verification is unsafe and can lead to various vulnerabilities. If you turn it
+> off, ensure that the Pages root domain itself does not point to the secondary IP, or add the root
+> domain as a custom domain to a project. Otherwise, any user can add this domain as a custom domain
+> to their project.
+
+If your user base is private or otherwise trusted, you can turn off the
+verification requirement:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Preferences**.
+1. Expand **Pages**.
+1. Clear the **Require users to prove ownership of custom domains** checkbox.
+   This setting is turned on by default.
+
+### Let's Encrypt integration
+
+[GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
+lets users add Let's Encrypt SSL certificates for GitLab Pages
+sites served under a custom domain.
+
+To turn it on:
+
+1. Choose an email address to receive notifications about expiring domains.
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Preferences**.
+1. Expand **Pages**.
+1. Enter the email address for receiving notifications and accept the Terms of Service for Let's Encrypt.
+1. Select **Save changes**.
+
+## Global settings
 
 The following table explains all configuration settings known to Pages in a Linux package installation.
 These options can be adjusted in `/etc/gitlab/gitlab.rb`,
@@ -486,7 +584,7 @@ For more information, see
 | `pages_domain_removal_cron_worker`      | Not applicable                                        | Schedule for removing unverified custom GitLab Pages domains. |
 | `pages_path`                            | `GITLAB-RAILS/shared/pages`                           | The directory on disk where pages are stored. |
 | **`pages_nginx[]`**                     | Not applicable                                        |             |
-| `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](#custom-domains). |
+| `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](#configure-custom-domains). |
 | `FF_CONFIGURABLE_ROOT_DIR`              | Not applicable                                        | Feature flag to [customize the default folder](../../user/project/pages/introduction.md#customize-the-default-folder) (turned on by default). |
 | `FF_ENABLE_PLACEHOLDERS`                | Not applicable                                        | Feature flag for rewrites (turned on by default). For more information, see [rewrites](../../user/project/pages/redirects.md#rewrites). |
 | `rate_limit_source_ip`                  | Not applicable                                        | Rate limit per source IP in number of requests per second. Set to `0` to turn off this feature. |
@@ -507,124 +605,6 @@ For more information, see
     configuration. Without this setting, the external Sidekiq node cannot process deploy jobs.
 
 ## Advanced configuration
-
-In addition to wildcard domains, you can configure GitLab Pages to work with custom domains, with
-or without TLS certificates. In either case, you need a secondary IP. If you have both IPv6 and
-IPv4 addresses, you can use them both.
-
-### Custom domains
-
-By default, GitLab Pages sites are served on a subdomain of the Pages root domain, for example, `namespace.example.io/project`.
-To configure a custom domain for a Pages site, add a `CNAME` DNS record that points your own domain (for example, `example-custom-site-here.com`) to GitLab Pages.
-
-If you only need the default `*.example.io` subdomain URLs, you don't need to configure custom domain support.
-
-In this configuration, the Pages daemon is running and NGINX proxies requests to it, but the daemon
-can also receive requests from the public internet. Custom domains are supported without TLS.
-
-Prerequisites:
-
-- Configured [wildcard DNS](#dns-configuration).
-- A secondary IP.
-
-To configure custom domains:
-
-1. In `/etc/gitlab/gitlab.rb`, specify the following configuration:
-
-   ```ruby
-   external_url "http://example.com" # external_url here is only for reference
-   pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
-   nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
-   pages_nginx['enable'] = false
-   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
-   gitlab_pages['custom_domain_mode'] = 'http' # Enable custom domain
-   ```
-
-   If you do not have IPv6, omit the IPv6 address.
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-The resulting URL schemes are `http://<namespace>.example.io/<project_slug>` and `http://custom-domain.com`.
-
-### Custom domains with TLS support
-
-In this configuration, the Pages daemon is running and NGINX proxies requests to it, but the daemon
-can also receive requests from the public internet. Custom domains and TLS are supported.
-
-Prerequisites:
-
-- Configured [wildcard DNS](#dns-configuration).
-- A TLS certificate. It can be a wildcard certificate or any other type meeting the
-  [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manually-add-ssltls-certificates).
-- A secondary IP.
-
-To configure custom domains with TLS support:
-
-1. Place the wildcard TLS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
-1. In `/etc/gitlab/gitlab.rb`, specify the following configuration:
-
-   ```ruby
-   external_url "https://example.com" # external_url here is only for reference
-   pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
-   nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
-   pages_nginx['enable'] = false
-   gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
-   gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443'] # The secondary IPs for the GitLab Pages daemon
-   gitlab_pages['custom_domain_mode'] = 'https' # Enable custom domain
-   # Redirect pages from HTTP to HTTPS
-   gitlab_pages['redirect_http'] = true
-   ```
-
-   If you do not have IPv6, omit the IPv6 address.
-
-1. If your certificate and key are not named `example.io.crt` and `example.io.key`, add the full
-   paths:
-
-   ```ruby
-   gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
-   gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-1. If you're using access control, edit the redirect URI in the GitLab Pages
-   [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application) to use the HTTPS protocol.
-
-### Custom domain verification
-
-To prevent malicious users from hijacking domains that do not belong to them,
-GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md).
-When adding a custom domain, users must prove they own it by
-adding a GitLab-controlled verification code to the DNS records for that domain.
-
-> [!warning]
-> Turning off domain verification is unsafe and can lead to various vulnerabilities. If you turn it
-> off, ensure that the Pages root domain itself does not point to the secondary IP, or add the root
-> domain as a custom domain to a project. Otherwise, any user can add this domain as a custom domain
-> to their project.
-
-If your user base is private or otherwise trusted, you can turn off the
-verification requirement:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Preferences**.
-1. Expand **Pages**.
-1. Clear the **Require users to prove ownership of custom domains** checkbox.
-   This setting is turned on by default.
-
-### Let's Encrypt integration
-
-[GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
-lets users add Let's Encrypt SSL certificates for GitLab Pages
-sites served under a custom domain.
-
-To turn it on:
-
-1. Choose an email address to receive notifications about expiring domains.
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Preferences**.
-1. Expand **Pages**.
-1. Enter the email address for receiving notifications and accept the Terms of Service for Let's Encrypt.
-1. Select **Save changes**.
 
 ### Access control
 
@@ -1143,7 +1123,7 @@ To configure GitLab Pages on a separate server:
 
 1. To turn on custom domains for individual GitLab Pages sites, set up the **Pages server** using either:
 
-   - [Custom domains](#custom-domains).
+   - [Custom domains without TLS](#custom-domains-without-tls).
    - [Custom domains with TLS support](#custom-domains-with-tls-support).
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the **GitLab server**
@@ -1339,11 +1319,6 @@ stored every time a Pages site is updated.
 
 GitLab Pages is part of the [regular backup](../backup_restore/_index.md), so there is no
 separate backup to configure.
-
-## Security
-
-You should strongly consider running GitLab Pages under a different hostname
-than GitLab to prevent XSS attacks.
 
 ## Related topics
 

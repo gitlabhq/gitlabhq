@@ -527,6 +527,11 @@ msgid_plural "%d templates found"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d to-do item"
+msgid_plural "%d to-do items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d unsaved change"
 msgid_plural "%d unsaved changes"
 msgstr[0] ""
@@ -58597,9 +58602,6 @@ msgstr ""
 msgid "Orbit|GitLab Orbit is in beta."
 msgstr ""
 
-msgid "Orbit|GitLab Orbit is not yet available for this namespace. Please try again later."
-msgstr ""
-
 msgid "Orbit|GitLab Orbit is turned off in GitLab Duo."
 msgstr ""
 
@@ -71820,6 +71822,12 @@ msgstr ""
 msgid "ScanProfiles|Add variable"
 msgstr ""
 
+msgid "ScanProfiles|Advanced SAST incremental scanning"
+msgstr ""
+
+msgid "ScanProfiles|Advanced SAST partial scanning"
+msgstr ""
+
 msgid "ScanProfiles|Advanced configuration"
 msgstr ""
 
@@ -71829,10 +71837,25 @@ msgstr ""
 msgid "ScanProfiles|All vulnerabilities"
 msgstr ""
 
+msgid "ScanProfiles|Analyzer image registry"
+msgstr ""
+
+msgid "ScanProfiles|Analyzer image tag"
+msgstr ""
+
 msgid "ScanProfiles|Analyzer settings for %{trigger}"
 msgstr ""
 
+msgid "ScanProfiles|Analyzers that should not run for this profile."
+msgstr ""
+
+msgid "ScanProfiles|Analyzers to skip"
+msgstr ""
+
 msgid "ScanProfiles|Apply profile"
+msgstr ""
+
+msgid "ScanProfiles|Apply to all enabled triggers"
 msgstr ""
 
 msgid "ScanProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
@@ -71845,6 +71868,9 @@ msgid "ScanProfiles|Changes to “%{profileName}” saved"
 msgstr ""
 
 msgid "ScanProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage."
+msgstr ""
+
+msgid "ScanProfiles|Controls GitLab Advanced SAST diff-based scanning."
 msgstr ""
 
 msgid "ScanProfiles|Create new profile"
@@ -71874,7 +71900,16 @@ msgstr ""
 msgid "ScanProfiles|Differs by trigger"
 msgstr ""
 
+msgid "ScanProfiles|Disabled"
+msgstr ""
+
 msgid "ScanProfiles|Enable a trigger that supports configuration to add a variable."
+msgstr ""
+
+msgid "ScanProfiles|Enabled"
+msgstr ""
+
+msgid "ScanProfiles|FIPS"
 msgstr ""
 
 msgid "ScanProfiles|Full repository"
@@ -71886,13 +71921,25 @@ msgstr ""
 msgid "ScanProfiles|General details"
 msgstr ""
 
+msgid "ScanProfiles|Git reference of the remote ruleset configuration to use."
+msgstr ""
+
 msgid "ScanProfiles|GitLab"
 msgstr ""
 
 msgid "ScanProfiles|GitLab-managed profiles can't be edited or deleted. Duplicate this profile to make a customized version."
 msgstr ""
 
+msgid "ScanProfiles|Historic scan"
+msgstr ""
+
+msgid "ScanProfiles|Image variant"
+msgstr ""
+
 msgid "ScanProfiles|Information about this configuration profile."
+msgstr ""
+
+msgid "ScanProfiles|Log options"
 msgstr ""
 
 msgid "ScanProfiles|Managed by"
@@ -71919,10 +71966,28 @@ msgstr ""
 msgid "ScanProfiles|On"
 msgstr ""
 
+msgid "ScanProfiles|Options passed to git log to control the commit range scanned."
+msgstr ""
+
+msgid "ScanProfiles|Paths left out of the scan."
+msgstr ""
+
+msgid "ScanProfiles|Paths to exclude"
+msgstr ""
+
+msgid "ScanProfiles|Pin the analyzer image to a specific tag."
+msgstr ""
+
 msgid "ScanProfiles|Profile actions"
 msgstr ""
 
+msgid "ScanProfiles|Pull analyzer images from your own container registry instead of GitLab's public one."
+msgstr ""
+
 msgid "ScanProfiles|Results:"
+msgstr ""
+
+msgid "ScanProfiles|Ruleset Git reference"
 msgstr ""
 
 msgid "ScanProfiles|Save changes"
@@ -71932,6 +71997,9 @@ msgid "ScanProfiles|Scan all Git push events and block pushes with detected secr
 msgstr ""
 
 msgid "ScanProfiles|Scan profile details"
+msgstr ""
+
+msgid "ScanProfiles|Scan the full Git history instead of only the current state."
 msgstr ""
 
 msgid "ScanProfiles|Scan triggers"
@@ -71973,6 +72041,9 @@ msgstr ""
 msgid "ScanProfiles|Value"
 msgstr ""
 
+msgid "ScanProfiles|Value by trigger"
+msgstr ""
+
 msgid "ScanProfiles|Variable"
 msgstr ""
 
@@ -71989,6 +72060,12 @@ msgid "ScanProfiles|What are configuration profiles?"
 msgstr ""
 
 msgid "ScanProfiles|When and how scans are run."
+msgstr ""
+
+msgid "ScanProfiles|Whether GitLab Advanced SAST incremental scanning is enabled."
+msgstr ""
+
+msgid "ScanProfiles|Which build of the analyzer image to pull."
 msgstr ""
 
 msgid "ScanProfiles|You are about to delete “%{profileName}”. Are you sure you want to proceed?"
@@ -86306,16 +86383,10 @@ msgstr ""
 msgid "Todos|All"
 msgstr ""
 
-msgid "Todos|All your pending to-do items across GitLab."
-msgstr ""
-
 msgid "Todos|Approval required"
 msgstr ""
 
 msgid "Todos|Assigned"
-msgstr ""
-
-msgid "Todos|Assignments"
 msgstr ""
 
 msgid "Todos|At"
@@ -86345,13 +86416,7 @@ msgstr ""
 msgid "Todos|Due today"
 msgstr ""
 
-msgid "Todos|Everything"
-msgstr ""
-
 msgid "Todos|Failed adding todo. Try again later."
-msgstr ""
-
-msgid "Todos|Failed builds"
 msgstr ""
 
 msgid "Todos|Failed to retry transfer. Please try again."
@@ -86396,12 +86461,6 @@ msgstr ""
 msgid "Todos|It's how you always know what to work on next."
 msgstr ""
 
-msgid "Todos|Items assigned to you."
-msgstr ""
-
-msgid "Todos|Items where you were mentioned (@username)."
-msgstr ""
-
 msgid "Todos|Label priority"
 msgstr ""
 
@@ -86434,22 +86493,13 @@ msgstr ""
 msgid "Todos|Mentioned"
 msgstr ""
 
-msgid "Todos|Mentions"
-msgstr ""
-
 msgid "Todos|Merge request"
 msgstr ""
 
-msgid "Todos|Merge requests that cannot be merged due to conflicts or other issues."
-msgstr ""
-
-msgid "Todos|Merge requests that require your review or approval."
-msgstr ""
-
-msgid "Todos|Merge requests with failed pipelines."
-msgstr ""
-
 msgid "Todos|Merge train removed"
+msgstr ""
+
+msgid "Todos|More than %{count} to-do items"
 msgstr ""
 
 msgid "Todos|Not sure where to go next? Take a look at your %{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd} or %{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}."
@@ -86489,9 +86539,6 @@ msgid "Todos|Removed snooze from 1 to-do"
 msgid_plural "Todos|Removed snooze from %d to-dos"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Todos|Requested reviews"
-msgstr ""
 
 msgid "Todos|Restored 1 to-do"
 msgid_plural "Todos|Restored %d to-dos"
@@ -86588,9 +86635,6 @@ msgid "Todos|Undo"
 msgstr ""
 
 msgid "Todos|Unmergeable"
-msgstr ""
-
-msgid "Todos|Unmergeable changes"
 msgstr ""
 
 msgid "Todos|Until a specific time and date"

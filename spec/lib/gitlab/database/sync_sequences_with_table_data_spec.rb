@@ -50,11 +50,70 @@ RSpec.describe Gitlab::Database::SyncSequencesWithTableData, :delete, feature_ca
         expect(next_value_of('_test_shared_id_seq')).to eq(1501)
       end
 
-      it 'disables and resets the transaction timeout around the sync' do
+      it 'disables and restores the transaction timeout around the sync' do
         expect(Gitlab::Database::TransactionTimeout).to receive(:disable).at_least(:once).ordered
-        expect(Gitlab::Database::TransactionTimeout).to receive(:reset).at_least(:once).ordered
+        expect(Gitlab::Database::TransactionTimeout).to receive(:restore).at_least(:once).ordered
 
         sync!('_test_shared_id_seq')
+      end
+
+      it 'restores the statement_timeout of the connection afterwards' do
+        connection.execute("SET statement_timeout TO '15s'")
+
+        sync!('_test_shared_id_seq')
+
+        expect(connection.select_value('SHOW statement_timeout')).to eq('15s')
+      end
+
+      it 'restores the statement_timeout of the connection when the sync raises' do
+        connection.execute("SET statement_timeout TO '15s'")
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:fetch_sequences_with_consumers).and_raise(StandardError, 'boom')
+        end
+
+        expect { described_class.new(logger: logger, only_sequences: ['_test_shared_id_seq']).execute }
+          .to raise_error(StandardError, 'boom')
+        expect(connection.select_value('SHOW statement_timeout')).to eq('15s')
+      end
+
+      context 'with a PostgreSQL 17 or later connection' do
+        before do
+          skip 'transaction_timeout requires PostgreSQL 17 or later' unless
+            Gitlab::Database::TransactionTimeout.supported?(connection)
+
+          connection.execute("SET transaction_timeout TO '1h'")
+        end
+
+        after do
+          connection.execute('RESET transaction_timeout')
+        end
+
+        it 'restores the transaction_timeout of the connection afterwards' do
+          sync!('_test_shared_id_seq')
+
+          expect(connection.select_value('SHOW transaction_timeout')).to eq('1h')
+        end
+
+        it 'restores the transaction_timeout of the connection when the sync raises' do
+          allow_next_instance_of(described_class) do |instance|
+            allow(instance).to receive(:fetch_sequences_with_consumers).and_raise(StandardError, 'boom')
+          end
+
+          expect { described_class.new(logger: logger, only_sequences: ['_test_shared_id_seq']).execute }
+            .to raise_error(StandardError, 'boom')
+          expect(connection.select_value('SHOW transaction_timeout')).to eq('1h')
+        end
+      end
+
+      it 'does not touch the statement_timeout when reading it fails' do
+        allow(connection).to receive(:select_value).and_call_original
+        allow(connection).to receive(:select_value).with('SHOW statement_timeout')
+          .and_raise(ActiveRecord::StatementInvalid, 'boom')
+        allow(connection).to receive(:execute).and_call_original
+
+        expect(connection).not_to receive(:execute).with(/statement_timeout/)
+        expect { described_class.new(logger: logger, only_sequences: ['_test_shared_id_seq']).execute }
+          .to raise_error(ActiveRecord::StatementInvalid, 'boom')
       end
 
       it 'advances the sequence past the max of the owner table when it is higher', :aggregate_failures do

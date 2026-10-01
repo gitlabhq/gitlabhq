@@ -328,8 +328,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         errors.add(:base, 'Error 2')
 
         allow_next_found_instance_of(DraftNote) do |instance|
-          allow(instance).to receive(:update).and_return(false)
-          allow(instance).to receive(:errors).and_return(errors)
+          allow(instance).to receive_messages(update: false, errors: errors)
         end
       end
 

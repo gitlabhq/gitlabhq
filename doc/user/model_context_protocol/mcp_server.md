@@ -716,6 +716,51 @@ PKCE defends against authorization code interception for public clients.
 To enforce PKCE, verify that your MCP client sends `code_challenge` and `code_challenge_method` parameters during the OAuth flow.
 GitLab accepts PKCE parameters for pre-registered applications, but does not require them.
 
+## Rate limits
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/629883) in GitLab 19.5 [with feature flags](../../administration/feature_flags/_index.md) named `rate_limiter_mcp_limits_free_info`, `rate_limiter_mcp_limits_free_enforce`, `rate_limiter_mcp_limits_premium_info`, `rate_limiter_mcp_limits_premium_enforce`, `rate_limiter_mcp_limits_ultimate_info`, and `rate_limiter_mcp_limits_ultimate_enforce`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Requests to the MCP server endpoint, `POST /api/v4/mcp`, are limited for each user by the plan of
+their namespace:
+
+| Plan     | Limit            |
+| -------- | ---------------- |
+| Free     | 60 each minute   |
+| Premium  | 600 each minute  |
+| Ultimate | 600 each minute  |
+
+These limits apply for each user, not for each client or token. A user who connects several MCP
+clients shares one allowance across all of them.
+
+MCP server requests also count toward the
+[GitLab.com rate limits](../gitlab_com/rate_limits.md) that apply to all traffic, so a request can
+reach either limit. The MCP server limit is the lower of the two for every plan.
+
+When you exceed the limit, GitLab returns `429 Too Many Requests` with the
+[standard rate limit headers](../../administration/settings/user_and_ip_rate_limits.md#response-headers),
+including `Retry-After` and `RateLimit-Reset`. `RateLimit-Name` identifies which limit you reached.
+
+A rate limit on the GitLab API endpoint behind a tool is reported differently. For that case, see
+[the `rate_limited` tool result](mcp_server_troubleshooting.md#error-rate_limited-tool-result).
+
+On GitLab Self-Managed and GitLab Dedicated, an administrator sets a single MCP server limit for
+the instance. For more information, see
+[user and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md).
+
 ## Supported MCP protocol versions
 
 The GitLab MCP server negotiates the protocol version in the `initialize` request.

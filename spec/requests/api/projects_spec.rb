@@ -7286,4 +7286,45 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     let(:other_attributable) { project2 }
     let(:boundary_type) { project }
   end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of fork_repository' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'fork_repository').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The ID or URL-encoded path of the project'
+          },
+          'namespace_id' => {
+            type: 'integer',
+            description: 'The ID of the namespace that the project will be forked into'
+          },
+          'namespace_path' => {
+            type: 'string',
+            description: 'The path of the namespace that the project will be forked into'
+          },
+          'name' => {
+            type: 'string',
+            description: 'The name that will be assigned to the fork'
+          },
+          'path' => {
+            type: 'string',
+            description: 'The path that will be assigned to the fork'
+          },
+          'description' => {
+            type: 'string',
+            description: 'The description that will be assigned to the fork'
+          },
+          'visibility' => {
+            type: 'string',
+            description: 'The visibility of the fork',
+            enum: %w[private internal public]
+          }
+        },
+        required: %w[id],
+        additionalProperties: false
+      })
+    end
+  end
 end

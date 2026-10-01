@@ -58,8 +58,7 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
   shared_context 'valid JWT token' do
     before do
       allow_next_instance_of(Atlassian::JiraConnect::Jwt::Asymmetric) do |asymmetric_jwt|
-        allow(asymmetric_jwt).to receive(:valid?).and_return(true)
-        allow(asymmetric_jwt).to receive(:iss_claim).and_return(client_key)
+        allow(asymmetric_jwt).to receive_messages(valid?: true, iss_claim: client_key)
       end
     end
   end

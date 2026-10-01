@@ -1079,4 +1079,24 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'MCP tool input schemas', feature_category: :mcp_server do
+    it 'locks the full input schema of get_issue' do
+      expect(Mcp::Tools::Manager.new.get_tool(name: 'get_issue').input_schema).to eq({
+        type: 'object',
+        properties: {
+          'id' => {
+            type: 'string',
+            description: 'The ID or URL-encoded path of the project'
+          },
+          'issue_iid' => {
+            type: 'integer',
+            description: 'The internal ID of a project issue'
+          }
+        },
+        required: %w[id issue_iid],
+        additionalProperties: false
+      })
+    end
+  end
 end

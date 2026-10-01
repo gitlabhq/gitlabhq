@@ -17,3 +17,8 @@
     @apply gl-hidden;
   }
 }
+
+.homepage-todos-widget [role='tablist'] {
+  overflow-x: auto;
+  overflow-y: hidden;
+}

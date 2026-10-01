@@ -14,8 +14,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
     allow_next_instance_of(Project) do |project|
       allow(project).to receive(:present).with(current_user: user).and_return(presenter)
     end
-    allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
-    allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    allow(::Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
   end
 
   it 'shows activation checkbox' do
@@ -45,8 +44,10 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
 
   context 'when service_desk_email is enabled' do
     before do
-      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?).and_return(true)
-      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:address_for_key).and_return('address-suffix@example.com')
+      allow(::Gitlab::Email::ServiceDeskEmail).to receive_messages(
+        enabled?: true,
+        address_for_key: 'address-suffix@example.com'
+      )
 
       visit edit_project_path(project)
     end

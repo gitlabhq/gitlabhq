@@ -1,19 +1,20 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlCollapsibleListbox } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlSkeletonLoader, GlTab, GlTabs } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TodosWidget from '~/homepage/components/todos_widget.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
+import getTodosCountsQuery from '~/homepage/graphql/queries/todos_widget_counts.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   EVENT_FILTER_TODOS_ON_HOMEPAGE,
-  EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE,
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_TODO_ITEMS,
   TRACKING_PROPERTY_ALL_TODOS,
@@ -26,21 +27,75 @@ jest.mock('~/sentry/sentry_browser_wrapper', () => ({
   captureException: jest.fn(),
 }));
 
+const todoCount = (count) => ({ count, __typename: 'TodoConnection' });
+
+const countsResponse = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      reviewRequested: todoCount(1),
+      assigned: todoCount(6),
+      buildFailed: todoCount(0),
+      unmergeable: todoCount(0),
+      reviewSubmitted: todoCount(2),
+      __typename: 'CurrentUser',
+    },
+  },
+};
+
+const emptyTodosResponse = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      todos: {
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: null,
+          endCursor: null,
+          __typename: 'PageInfo',
+        },
+        __typename: 'TodoConnection',
+      },
+      __typename: 'CurrentUser',
+    },
+  },
+};
+
+// Indices into FILTER_OPTIONS, which drives both the tab order and the query.
+const TAB_REVIEW_REQUESTED = 1;
+const TAB_ASSIGNED = 2;
+const TAB_BUILD_FAILED = 3;
+
 describe('TodosWidget', () => {
   let wrapper;
 
   const todosQuerySuccessHandler = jest.fn().mockResolvedValue(todosResponse);
   const todosQueryErrorHandler = jest.fn().mockRejectedValue(new Error('GraphQL Error'));
+  const countsQuerySuccessHandler = jest.fn().mockResolvedValue(countsResponse);
 
-  const createComponent = ({ todosQueryHandler = todosQuerySuccessHandler } = {}) => {
-    const mockApollo = createMockApollo([[getTodosQuery, todosQueryHandler]]);
+  const createComponent = ({
+    todosQueryHandler = todosQuerySuccessHandler,
+    countsQueryHandler = countsQuerySuccessHandler,
+  } = {}) => {
+    const mockApollo = createMockApollo([
+      [getTodosQuery, todosQueryHandler],
+      [getTodosCountsQuery, countsQueryHandler],
+    ]);
 
-    wrapper = shallowMountExtended(TodosWidget, {
+    // Tabs are mounted for real so `lazy` renders only the active panel, which
+    // is what makes an empty tabpanel detectable here.
+    wrapper = mountExtended(TodosWidget, {
       apolloProvider: mockApollo,
+      stubs: {
+        TodoItem: stubComponent(TodoItem),
+      },
     });
   };
 
-  const findFilterDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findTabs = () => wrapper.findComponent(GlTabs);
+  const findTabCounts = () => wrapper.findAllByTestId('tab-count');
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findEmptyState = () => wrapper.findByText('All your to-do items are done.');
@@ -48,6 +103,8 @@ describe('TodosWidget', () => {
   const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findErrorMessage = () =>
     wrapper.findByText('Your to-do items are not available. Please refresh the page to try again.');
+
+  const selectTab = (index) => findTabs().vm.$emit('input', index);
 
   describe('rendering', () => {
     it('shows a link to all todos', () => {
@@ -58,29 +115,54 @@ describe('TodosWidget', () => {
       expect(link.text()).toBe('All to-do items');
       expect(link.attributes('href')).toBe('/dashboard/todos');
     });
+
+    it('renders a tab per filter option', () => {
+      createComponent();
+
+      expect(wrapper.findAllComponents(GlTab)).toHaveLength(6);
+    });
+  });
+
+  describe('tab panels', () => {
+    const findActiveTab = () => wrapper.find('.gl-tab-nav-item-active');
+    const findActivePanel = () => wrapper.find(`#${findActiveTab().attributes('aria-controls')}`);
+    const findPopulatedPanels = () =>
+      wrapper
+        .findAll('[role="tabpanel"]')
+        .wrappers.filter((panel) => panel.findAllComponents(TodoItem).length > 0);
+
+    it('renders the list inside the panel the active tab controls', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findActivePanel().attributes('role')).toBe('tabpanel');
+      expect(findActivePanel().findAllComponents(TodoItem).length).toBeGreaterThan(0);
+    });
+
+    it('only renders content for the active tab', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findPopulatedPanels()).toHaveLength(1);
+    });
+
+    it('moves the list into the newly selected tab panel', async () => {
+      createComponent();
+      await waitForPromises();
+
+      // Click the real tab rather than emitting, so BTabs drives the activation.
+      await wrapper.findAll('.gl-tab-nav-item').at(TAB_ASSIGNED).trigger('click');
+      await waitForPromises();
+
+      expect(findActiveTab().text()).toContain('Assigned');
+      expect(findActivePanel().findAllComponents(TodoItem).length).toBeGreaterThan(0);
+      expect(findPopulatedPanels()).toHaveLength(1);
+    });
   });
 
   describe('empty state', () => {
     it('shows empty state when there are no todos', async () => {
-      const emptyResponse = {
-        data: {
-          currentUser: {
-            id: 'user-1',
-            todos: {
-              nodes: [],
-              pageInfo: {
-                hasNextPage: false,
-                hasPreviousPage: false,
-                startCursor: null,
-                endCursor: null,
-              },
-            },
-          },
-        },
-      };
-
-      const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ todosQueryHandler: emptyQueryHandler });
+      createComponent({ todosQueryHandler: jest.fn().mockResolvedValue(emptyTodosResponse) });
       await waitForPromises();
 
       expect(findEmptyState().exists()).toBe(true);
@@ -138,25 +220,7 @@ describe('TodosWidget', () => {
     });
 
     it('handles empty todos response gracefully', async () => {
-      const emptyResponse = {
-        data: {
-          currentUser: {
-            id: 'user-1',
-            todos: {
-              nodes: [],
-              pageInfo: {
-                hasNextPage: false,
-                hasPreviousPage: false,
-                startCursor: null,
-                endCursor: null,
-              },
-            },
-          },
-        },
-      };
-
-      const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ todosQueryHandler: emptyQueryHandler });
+      createComponent({ todosQueryHandler: jest.fn().mockResolvedValue(emptyTodosResponse) });
       await waitForPromises();
 
       expect(wrapper.vm.todos).toEqual([]);
@@ -173,10 +237,66 @@ describe('TodosWidget', () => {
         expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
       });
 
-      it('shows an error and hides the filters dropdown when query fails', () => {
-        expect(findFilterDropdown().exists()).toBe(false);
+      it('shows an error and hides the tabs when query fails', () => {
+        expect(findTabs().exists()).toBe(false);
         expect(findErrorMessage().exists()).toBe(true);
       });
+    });
+  });
+
+  describe('tab counts', () => {
+    it('renders no badges until the counts resolve', () => {
+      createComponent();
+
+      expect(findTabCounts()).toHaveLength(0);
+    });
+
+    it('renders a badge per reason tab, capped at 5+, and none on All', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findTabCounts().wrappers.map((badge) => badge.text())).toEqual([
+        '1',
+        '5+',
+        '0',
+        '0',
+        '2',
+      ]);
+    });
+
+    it('describes exact counts to screen readers', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('1 to-do item');
+      expect(wrapper.text()).toContain('0 to-do items');
+    });
+
+    it('does not read the sentinel value aloud for a capped count', async () => {
+      createComponent();
+      await waitForPromises();
+
+      // The limited count returns 6, which must not surface as "6 to-do items".
+      expect(wrapper.text()).toContain('More than 5 to-do items');
+      expect(wrapper.text()).not.toContain('6 to-do items');
+    });
+
+    it('asks the backend to stop counting at the badge cap', () => {
+      createComponent();
+
+      expect(countsQuerySuccessHandler).toHaveBeenCalledWith({ limit: 5 });
+    });
+
+    it('keeps the list usable when only the counts query fails', async () => {
+      createComponent({
+        countsQueryHandler: jest.fn().mockRejectedValue(new Error('GraphQL Error')),
+      });
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+      expect(findTabCounts()).toHaveLength(0);
+      expect(findErrorMessage().exists()).toBe(false);
+      expect(findTodoItems().length).toBeGreaterThan(0);
     });
   });
 
@@ -196,8 +316,9 @@ describe('TodosWidget', () => {
       );
     });
 
-    it('refetches todos when a todo item changes', async () => {
+    it('refetches todos and counts when a todo item changes', async () => {
       todosQuerySuccessHandler.mockClear();
+      countsQuerySuccessHandler.mockClear();
 
       const firstTodoItem = findFirstTodoItem();
       expect(firstTodoItem.exists()).toBe(true);
@@ -206,18 +327,13 @@ describe('TodosWidget', () => {
       await waitForPromises();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+      expect(countsQuerySuccessHandler).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('filter functionality', () => {
     const findFilteredEmptyState = () =>
       wrapper.findByText('Sorry, your filter produced no results');
-
-    it('renders filter dropdown', () => {
-      createComponent();
-
-      expect(findFilterDropdown().exists()).toBe(true);
-    });
 
     it('queries without action parameter when no filter is set', () => {
       createComponent();
@@ -229,11 +345,11 @@ describe('TodosWidget', () => {
       });
     });
 
-    it('queries with action parameter when filter is set', async () => {
+    it('queries with action parameter when a tab is selected', async () => {
       createComponent();
       todosQuerySuccessHandler.mockClear();
 
-      await findFilterDropdown().vm.$emit('select', 'assigned');
+      await selectTab(TAB_ASSIGNED);
       await waitForPromises();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
@@ -243,47 +359,50 @@ describe('TodosWidget', () => {
       });
     });
 
-    it('queries with multiple actions for semicolon-separated filter', async () => {
+    it('queries with the review_submitted action for the last tab', async () => {
       createComponent();
       todosQuerySuccessHandler.mockClear();
 
-      await findFilterDropdown().vm.$emit('select', 'mentioned;directly_addressed');
+      await selectTab(5);
       await waitForPromises();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
         first: 15,
         state: ['pending'],
-        action: ['mentioned', 'directly_addressed'],
+        action: ['review_submitted'],
       });
     });
 
+    it('shows the skeleton instead of the previous tab items while switching', async () => {
+      createComponent();
+      await waitForPromises();
+      expect(findTodoItems().length).toBeGreaterThan(0);
+
+      await selectTab(TAB_BUILD_FAILED);
+
+      expect(findTodoItems()).toHaveLength(0);
+      expect(wrapper.findAllComponents(GlSkeletonLoader).length).toBeGreaterThan(0);
+    });
+
+    it('ignores a negative tab index', async () => {
+      createComponent();
+      await waitForPromises();
+      todosQuerySuccessHandler.mockClear();
+
+      await selectTab(-1);
+
+      expect(wrapper.vm.activeTabIndex).toBe(0);
+      expect(todosQuerySuccessHandler).not.toHaveBeenCalled();
+    });
+
     it('shows filtered empty state when no todos match filter', async () => {
-      const emptyResponse = {
-        data: {
-          currentUser: {
-            id: 'user-1',
-            todos: {
-              nodes: [],
-              pageInfo: {
-                hasNextPage: false,
-                hasPreviousPage: false,
-                startCursor: null,
-                endCursor: null,
-              },
-            },
-          },
-        },
-      };
-
-      const queryHandler = jest.fn((value) => {
-        if (value.action) {
-          return emptyResponse;
-        }
-        return todosResponse;
-      });
+      const queryHandler = jest.fn((variables) =>
+        variables.action ? emptyTodosResponse : todosResponse,
+      );
       createComponent({ todosQueryHandler: queryHandler });
+      await waitForPromises();
 
-      await findFilterDropdown().vm.$emit('select', 'build_failed');
+      await selectTab(TAB_BUILD_FAILED);
       await waitForPromises();
 
       expect(findFilteredEmptyState().exists()).toBe(true);
@@ -298,12 +417,15 @@ describe('TodosWidget', () => {
     });
 
     it('refreshes on becoming visible again', async () => {
-      const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.todos, 'refetch');
+      const todosRefetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.todos, 'refetch');
+      const countsRefetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.counts, 'refetch');
       findBaseWidget().vm.$emit('visible');
       await waitForPromises();
 
-      expect(refetchSpy).toHaveBeenCalled();
-      refetchSpy.mockRestore();
+      expect(todosRefetchSpy).toHaveBeenCalled();
+      expect(countsRefetchSpy).toHaveBeenCalled();
+      todosRefetchSpy.mockRestore();
+      countsRefetchSpy.mockRestore();
     });
   });
 
@@ -468,34 +590,46 @@ describe('TodosWidget', () => {
       );
     });
 
-    it('tracks opening the filter dropdown', () => {
+    it('does not track the initial tab, which GlTabs emits on mount', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findFilterDropdown().vm.$emit('shown');
+      selectTab(0);
 
-      expect(trackEventSpy).toHaveBeenCalledWith(
-        EVENT_OPEN_TODOS_FILTER_DROPDOWN_ON_HOMEPAGE,
-        {},
+      expect(trackEventSpy).not.toHaveBeenCalledWith(
+        EVENT_FILTER_TODOS_ON_HOMEPAGE,
+        expect.anything(),
         undefined,
       );
     });
 
     it.each`
-      filterValue                       | expectedValue
-      ${null}                           | ${'everything'}
-      ${'assigned'}                     | ${'assigned'}
-      ${'mentioned;directly_addressed'} | ${'mentioned'}
-      ${'build_failed'}                 | ${'build_failed'}
-      ${'unmergeable'}                  | ${'unmergeable'}
-      ${'review_requested'}             | ${'review_requested'}
-    `('tracks selecting the $expectedValue filter', ({ filterValue, expectedValue }) => {
+      tabIndex | expectedValue
+      ${1}     | ${'review_requested'}
+      ${2}     | ${'assigned'}
+      ${3}     | ${'build_failed'}
+      ${4}     | ${'unmergeable'}
+      ${5}     | ${'review_submitted'}
+    `('tracks selecting the $expectedValue tab', ({ tabIndex, expectedValue }) => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-      findFilterDropdown().vm.$emit('select', filterValue);
+      selectTab(tabIndex);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         EVENT_FILTER_TODOS_ON_HOMEPAGE,
         { property: expectedValue },
+        undefined,
+      );
+    });
+
+    it('tracks returning to the everything tab', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await selectTab(TAB_REVIEW_REQUESTED);
+      selectTab(0);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_FILTER_TODOS_ON_HOMEPAGE,
+        { property: 'everything' },
         undefined,
       );
     });

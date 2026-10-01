@@ -8,8 +8,7 @@ RSpec.describe 'Cluster agent registration', :js, feature_category: :deployment_
   let_it_be(:token) { Devise.friendly_token }
 
   before do
-    allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
-    allow(Gitlab::Kas).to receive(:internal_url).and_return('kas.example.internal')
+    allow(Gitlab::Kas).to receive_messages(enabled?: true, internal_url: 'kas.example.internal')
 
     allow(Devise).to receive(:friendly_token).and_return(token)
 

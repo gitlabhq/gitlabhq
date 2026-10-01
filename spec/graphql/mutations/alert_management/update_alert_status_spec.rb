@@ -52,10 +52,7 @@ RSpec.describe Mutations::AlertManagement::UpdateAlertStatus, feature_category: 
             allow(finder).to receive(:execute).and_return([alert])
           end
 
-          allow(alert).to receive(:save).and_return(false)
-          allow(alert).to receive(:errors).and_return(
-            double(full_messages: %w[foo bar], :[] => nil)
-          )
+          allow(alert).to receive_messages(save: false, errors: double(full_messages: %w[foo bar], :[] => nil))
           expect(resolve).to eq(
             alert: alert,
             errors: ['foo and bar']

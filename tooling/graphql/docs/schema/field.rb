@@ -4,6 +4,7 @@ require_relative 'item'
 require_relative 'argument'
 require_relative 'concerns/deprecable'
 require_relative 'concerns/typeable'
+require_relative 'factory'
 
 module Tooling
   module Graphql

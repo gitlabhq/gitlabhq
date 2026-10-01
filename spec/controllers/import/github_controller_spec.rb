@@ -142,8 +142,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     before do
       allow_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |proxy|
         if client_auth_success
-          allow(proxy).to receive(:repos).and_return({ repos: provider_repos })
-          allow(proxy).to receive(:client).and_return(client_stub)
+          allow(proxy).to receive_messages(repos: { repos: provider_repos }, client: client_stub)
           allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
             allow(instance).to receive(:for).with('example/repo').and_return('owned')
           end

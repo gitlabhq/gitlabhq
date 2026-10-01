@@ -71,8 +71,7 @@ RSpec.describe "User browses artifacts", feature_category: :job_artifacts do
     let(:txt_entry) { job.artifacts_metadata_entry("other_artifacts_0.1.2/doc_sample.txt") }
 
     before do
-      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
-      allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+      allow(Gitlab.config.pages).to receive_messages(enabled: true, artifacts_server: true)
     end
 
     context "when the project is public" do

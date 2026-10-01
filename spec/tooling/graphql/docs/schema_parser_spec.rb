@@ -23,8 +23,17 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
       argument :my_arg, GraphQL::Types::String, required: false
     end
 
+    interface_type = Module.new do
+      include ::Types::BaseInterface
+      graphql_name 'GraphQLInterface'
+
+      field :interface_field, GraphQL::Types::Boolean, null: true
+    end
+
     object_type = Class.new(::Types::BaseObject) do
       graphql_name 'GraphQLObject'
+
+      implements interface_type
 
       field :object_field, GraphQL::Types::Boolean
     end
@@ -43,6 +52,7 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
         field :scalar_field, scalar_type
         field :object_field, object_type
         field :objects, object_type.connection_type, null: true, description: 'A connection.'
+        field :interface_field, interface_type, null: true
         field :input_field, scalar_type do
           argument :input, input_object_type, required: false
         end
@@ -114,6 +124,24 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
 
       it 'includes connection types' do
         expect(objects.map(&:name)).to include('GraphQLObjectConnection')
+      end
+    end
+
+    describe '@interfaces' do
+      subject(:interfaces) { result.interfaces }
+
+      it 'contains an array of interface types' do
+        expect(interfaces).to all(be_a(Tooling::Graphql::Docs::Schema::Interface))
+      end
+
+      it 'contains the interface type in the schema' do
+        expect(interfaces.map(&:name)).to include('GraphQLInterface')
+      end
+
+      it 'resolves the interface implementations' do
+        interface = interfaces.find { |type| type.name == 'GraphQLInterface' }
+
+        expect(interface.implementations.map(&:name)).to include('GraphQLObject')
       end
     end
 

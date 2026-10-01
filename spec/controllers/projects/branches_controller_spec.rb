@@ -10,8 +10,7 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
   before do
     project.add_developer(developer)
 
-    allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
-    allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
+    allow(project).to receive_messages(branches: ['master', 'foo/bar/baz'], tags: ['v1.0.0', 'v2.0.0'])
     controller.instance_variable_set(:@project, project)
   end
 

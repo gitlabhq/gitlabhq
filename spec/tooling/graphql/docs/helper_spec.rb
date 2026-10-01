@@ -7,6 +7,7 @@ require Rails.root.join('tooling/graphql/docs/schema/enum')
 require Rails.root.join('tooling/graphql/docs/schema/scalar')
 require Rails.root.join('tooling/graphql/docs/schema/field')
 require Rails.root.join('tooling/graphql/docs/schema/object')
+require Rails.root.join('tooling/graphql/docs/schema/interface')
 require Rails.root.join('tooling/graphql/docs/schema/temp_undocumented')
 
 RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
@@ -60,10 +61,27 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
     end
 
     it 'returns an unlinked type signature for a TempUndocumented type' do
-      temp = Tooling::Graphql::Docs::Schema::TempUndocumented.new(fake_graphql_type.new('SomeObject', nil))
-      item = item_struct.new(temp, 'SomeObject')
+      temp = Tooling::Graphql::Docs::Schema::TempUndocumented.new(fake_graphql_type.new('SomeUnion', nil))
+      item = item_struct.new(temp, 'SomeUnion')
 
-      expect(helper.type(item)).to eq('`SomeObject`')
+      expect(helper.type(item)).to eq('`SomeUnion`')
+    end
+  end
+
+  describe '#item_link' do
+    let(:fake_graphql_type) { Struct.new(:graphql_name, :description) }
+
+    it 'links to the item on its page' do
+      scalar = Tooling::Graphql::Docs::Schema::Scalar.new(fake_graphql_type.new('String', nil))
+
+      expect(helper.item_link(scalar)).to eq('[`String`](scalars.md#string)')
+    end
+
+    it 'links to a bare anchor when the item is on the current page' do
+      helper.instance_variable_set(:@page, 'scalars.md')
+      scalar = Tooling::Graphql::Docs::Schema::Scalar.new(fake_graphql_type.new('String', nil))
+
+      expect(helper.item_link(scalar)).to eq('[`String`](#string)')
     end
   end
 
@@ -118,7 +136,7 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
       end
     end
 
-    context 'when the node type has no docs page yet' do
+    context 'when the node type is an interface' do
       let(:interface_type) do
         Module.new do
           include Types::BaseInterface
@@ -132,9 +150,63 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
         Tooling::Graphql::Docs::Schema::Object.new(interface_type.connection_type)
       end
 
+      before do
+        helper.instance_variable_set(:@page, 'objects.md')
+      end
+
+      it 'links to the node type on the interfaces page' do
+        expect(helper.connection_summary(connection))
+          .to start_with('Paginated collection of [`InterfaceNode`](interfaces.md#interfacenode).')
+      end
+    end
+
+    context 'when the node type has no docs page yet' do
+      let(:member_type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'UnionMember'
+
+          field :id, GraphQL::Types::ID, null: true
+        end
+      end
+
+      let(:union_type) do
+        member = member_type
+
+        Class.new(Types::BaseUnion) do
+          graphql_name 'UnionNode'
+          possible_types member
+        end
+      end
+
+      let(:connection) do
+        Tooling::Graphql::Docs::Schema::Object.new(union_type.connection_type)
+      end
+
       it 'renders the node type unlinked' do
         expect(helper.connection_summary(connection))
-          .to start_with('Paginated collection of `InterfaceNode`.')
+          .to start_with('Paginated collection of `UnionNode`.')
+      end
+    end
+  end
+
+  describe '#connection_note' do
+    context 'when rendered on the objects page' do
+      before do
+        helper.instance_variable_set(:@page, 'objects.md')
+      end
+
+      it 'links to a bare anchor' do
+        expect(helper.connection_note).to include('[connection](#connections-and-pagination)')
+      end
+    end
+
+    context 'when rendered on another page' do
+      before do
+        helper.instance_variable_set(:@page, 'interfaces.md')
+      end
+
+      it 'links across to the objects page' do
+        expect(helper.connection_note).to include('[connection](objects.md#connections-and-pagination)')
       end
     end
   end

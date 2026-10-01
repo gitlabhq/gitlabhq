@@ -33,7 +33,7 @@ To set up Pages with a custom domain, complete the following steps.
 
 ### Prerequisites
 
-- An administrator has configured the server for [GitLab Pages custom domains](../../../../administration/pages/_index.md#advanced-configuration).
+- An administrator has configured the server for [GitLab Pages custom domains](../../../../administration/pages/_index.md#configure-custom-domains).
 - A GitLab Pages website up and running, served under the default Pages domain
   (`*.gitlab.io`, for GitLab.com).
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.

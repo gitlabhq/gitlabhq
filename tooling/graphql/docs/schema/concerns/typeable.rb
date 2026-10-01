@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../factory'
-
 module Tooling
   module Graphql
     module Docs
       module Schema
+        # Mixed into schema items that have a GraphQL type (fields, arguments).
+        # Exposes the wrapped `type` and its `type_signature`.
         module Typeable
           attr_reader :type, :type_signature
 

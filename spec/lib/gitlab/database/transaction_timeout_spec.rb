@@ -85,6 +85,28 @@ RSpec.describe Gitlab::Database::TransactionTimeout, feature_category: :database
         described_class.reset(connection)
       end
     end
+
+    describe '.current' do
+      it 'reads the transaction_timeout of the session' do
+        expect(connection).to receive(:select_value).with('SHOW transaction_timeout').and_return('30min')
+
+        expect(described_class.current(connection)).to eq('30min')
+      end
+    end
+
+    describe '.restore' do
+      it 'sets transaction_timeout back to the given value' do
+        expect(connection).to receive(:execute).with("SET transaction_timeout TO '30min'")
+
+        described_class.restore(connection, '30min')
+      end
+
+      it 'does nothing when there is no value to restore' do
+        expect(connection).not_to receive(:execute)
+
+        described_class.restore(connection, nil)
+      end
+    end
   end
 
   context 'when the database is older than PostgreSQL 17' do
@@ -102,7 +124,12 @@ RSpec.describe Gitlab::Database::TransactionTimeout, feature_category: :database
         described_class.disable(connection)
         described_class.disable(connection, local: true)
         described_class.reset(connection)
+        described_class.restore(connection, '1h')
       end.not_to change { connection.select_value('SHOW transaction_timeout') }
+    end
+
+    it 'reports no current value' do
+      expect(described_class.current(connection)).to be_nil
     end
   end
 
@@ -123,6 +150,13 @@ RSpec.describe Gitlab::Database::TransactionTimeout, feature_category: :database
 
     it 'sets the given duration for the session' do
       expect { described_class.set(connection, 2.hours) }.to change { current_timeout }.from('1h').to('2h')
+    end
+
+    it 'restores the value it read before disabling' do
+      previous = described_class.current(connection)
+      described_class.disable(connection)
+
+      expect { described_class.restore(connection, previous) }.to change { current_timeout }.from('0').to('1h')
     end
 
     it 'outlives the session deadline after a local set inside a transaction' do

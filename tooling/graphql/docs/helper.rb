@@ -39,6 +39,11 @@ module Tooling
           "[`#{item.type_signature}`](#{docs_link(item.type)})"
         end
 
+        # A linked reference to a schema item, in the form [`Name`](page.md#name).
+        def item_link(item)
+          "[`#{item.name}`](#{docs_link(item)})"
+        end
+
         def default_arg_value(argument)
           return unless argument.default_value?
 
@@ -46,7 +51,7 @@ module Tooling
         end
 
         def connection_note
-          'This field is a [connection](#connections-and-pagination) and accepts the ' \
+          "This field is a [connection](#{connections_link}) and accepts the " \
             'four standard pagination arguments: `before`, `after`, `first`, `last`.'
         end
 
@@ -57,14 +62,21 @@ module Tooling
           "#{parts.join("\n\n")}\n"
         end
 
+        # Renders the full body for an interface section (below the ## heading).
+        def render_interface_body(interface)
+          "#{interface_body_parts(interface).join("\n\n")}\n"
+        end
+
         # Summary for a connection object, linking to the node type and the
-        # standard connection fields section.
+        # standard connection fields section. A node without a docs page yet (or
+        # without a resolvable type, such as a subclassed connection) is rendered
+        # unlinked.
         def connection_summary(object)
           node = object.node_type
           node_link = if node.nil? || node.is_a?(Schema::TempUndocumented)
                         "`#{node&.name}`"
                       else
-                        "[`#{node.name}`](#{docs_link(node)})"
+                        item_link(node)
                       end
 
           "Paginated collection of #{node_link}. " \
@@ -124,15 +136,37 @@ module Tooling
           interfaces = type.implemented_interfaces
 
           if interfaces.present?
-            # TODO: Link to abstract_types.md when that page ships. For now the
-            # implemented interfaces are rendered unlinked.
-            # See https://gitlab.com/gitlab-org/gitlab/-/issues/593121.
-            links = interfaces.map { |iface| "`#{iface}`" }.join(', ')
+            links = interfaces.map { |interface| item_link(interface) }.join(', ')
             parts << "**Implements:** #{links}"
           end
 
           parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: type.fields)}"
           parts
+        end
+
+        def interface_body_parts(interface)
+          parts = []
+          desc = description(interface)
+          parts << desc if desc.present?
+
+          implementations = interface.implementations
+
+          if implementations.present?
+            links = implementations.map { |implementation| "- #{item_link(implementation)}" }
+            parts << "### Implementations {.no_toc}\n\n#{links.join("\n")}"
+          end
+
+          parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: interface.fields)}"
+          parts
+        end
+
+        # Anchor for the connections section, which lives on the objects page.
+        # Same-page links can be bare anchors.
+        def connections_link
+          anchor = '#connections-and-pagination'
+          return anchor if current_page == 'objects.md'
+
+          "objects.md#{anchor}"
         end
 
         def docs_link(item)

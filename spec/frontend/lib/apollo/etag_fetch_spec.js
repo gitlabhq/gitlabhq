@@ -107,6 +107,31 @@ describe('createEtagFetch', () => {
 
         expect(fetchFn.mock.calls[1][1].headers['If-None-Match']).toBeUndefined();
       });
+
+      describe('200 with a new eTag', () => {
+        const NEW_DATA = JSON.stringify({ data: { project: { id: '2' } } });
+
+        beforeEach(async () => {
+          fetchFn.mockResolvedValueOnce(mockResponse({ etag: 'W/"2"', body: NEW_DATA }));
+          await etagFetch(URL, etagOptions());
+        });
+
+        it('sends the new eTag as If-None-Match on the next request', async () => {
+          fetchFn.mockResolvedValueOnce(mockResponse({ status: 304 }));
+
+          await etagFetch(URL, etagOptions());
+
+          expect(fetchFn.mock.calls[2][1].headers['If-None-Match']).toBe('W/"2"');
+        });
+
+        it('replays the new body on a 304', async () => {
+          fetchFn.mockResolvedValueOnce(mockResponse({ status: 304 }));
+
+          const response = await etagFetch(URL, etagOptions());
+
+          expect(await response.text()).toBe(NEW_DATA);
+        });
+      });
     });
   });
 });
