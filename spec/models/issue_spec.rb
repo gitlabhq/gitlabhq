@@ -885,7 +885,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       context 'when cross-project in same namespace' do
         let(:another_project) do
-          create(:project, namespace: project.namespace)
+          build(:project, namespace: project.namespace)
         end
 
         it 'returns a cross-project reference' do
@@ -2160,7 +2160,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     let_it_be(:project) { create(:project) }
     let_it_be(:labels) { create_list(:label, 3, project: project) }
 
-    let(:issue) { create(:issue, project: project, labels: labels.first(2)) }
+    let(:issue) { build(:issue, project: project, labels: labels.first(2)) }
 
     before do
       stub_const('Issue::MAX_NUMBER_OF_LABELS', 2)

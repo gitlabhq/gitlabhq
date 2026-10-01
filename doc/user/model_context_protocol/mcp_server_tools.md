@@ -323,31 +323,48 @@ Which Duo flows can I run in gitlab-org/gitlab?
 
 {{< /history >}}
 
-Starts a GitLab Duo Agent Platform session and returns the session ID. Name what to run with at
-most one of `flow`, for a GitLab flow, `flow_item_id`, for a custom flow from the AI Catalog,
-`ai_catalog_item_consumer_id`, for a flow configured in the project, or `agent`, for one of the
-instance's foundational agents. When none is given, the session runs the `developer/v1` flow.
+Starts an asynchronous GitLab Duo Agent Platform session to accomplish a goal in a project.
+Returns a `workflow_id` immediately. Use `get_duo_session` with that ID to track progress and retrieve the final result.
 
-The session runs in a CI job that can push commits and open merge requests. The response includes a
-suggested polling delay; use `get_duo_session` with the returned `workflow_id` to follow progress.
+The session runs in a CI job that can push commits and open merge requests.
+
+Provide exactly one of `url` or `project_id`. Provide at most one of `flow`, `flow_item_id`,
+`ai_catalog_item_consumer_id`, or `agent`.
 
 | Parameter                     | Type    | Required | Description |
 |-------------------------------|---------|----------|-------------|
-| `goal`                        | string  | Yes      | What the agent should do. This is the prompt the flow starts from. |
-| `project_id`                  | string  | No       | ID or full path of the project the flow runs in. Provide this or `url`. |
-| `url`                         | string  | No       | GitLab URL of the project the flow runs in. Provide this or `project_id`. |
-| `flow`                        | string  | No       | Reference of a GitLab flow to run, such as `developer/v1`. Defaults to `developer/v1`. |
-| `flow_item_id`                | integer | No       | AI Catalog item ID of a custom flow. The latest released version is run. |
-| `ai_catalog_item_consumer_id` | integer | No       | ID of the AI Catalog item consumer that configures which flow to run. Use `list_duo_agents_and_flows` to find it. |
-| `agent`                       | string  | No       | Reference of a foundational agent to run, such as `analytics_agent/v1`. GitLab Duo itself cannot be started. |
+| `url`                         | string  | No       | Full GitLab URL of the project (for example, `https://gitlab.com/group/project`). Do not use with `project_id`. |
+| `project_id`                  | string  | No       | Numeric ID or full path of the project (for example, `gitlab-org/gitlab`). Do not use with `url`. |
+| `goal`                        | string  | Yes      | Natural-language goal for the session (for example, `Fix the flaky spec in issue #1234 and open a merge request`). |
+| `flow`                        | string  | No       | Foundational flow reference (for example, `developer/v1`, `fix_pipeline/v1`). Defaults to `developer/v1` when no flow or agent is supplied. Do not use with `flow_item_id`, `ai_catalog_item_consumer_id`, or `agent`. |
+| `flow_item_id`                | integer | No       | AI Catalog item ID of a custom flow enabled in the project. The latest released version is run. Do not use with `flow`, `ai_catalog_item_consumer_id`, or `agent`. |
+| `ai_catalog_item_consumer_id` | integer | No       | ID of the AI Catalog item consumer that configures which flow to run. Use `list_duo_agents_and_flows` to find it. Do not use with `flow`, `flow_item_id`, or `agent`. |
+| `agent`                       | string  | No       | Reference of a foundational agent to run (for example, `analytics_agent/v1`). GitLab Duo itself cannot be started. Do not use with `flow`, `flow_item_id`, or `ai_catalog_item_consumer_id`. |
+
+The flow must be enabled for the project, or for an ancestor group of the project. If the flow is
+not enabled, the tool returns an error.
+
+A flow in beta runs only when beta and experimental features are turned on. For more information, see [turn on beta and experimental features](../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features).
+A flow behind a feature flag runs only when that flag is enabled. If a flow doesn't meet these
+conditions, the tool returns an error.
+
+Some flows expect the goal in a specific format. For example, `code_review/v1` expects the goal
+to identify a merge request. The tool checks the goal before it starts the session.
+
+To start a foundational flow, use `flow`. If you pass a foundational flow's AI Catalog item ID to
+`flow_item_id`, the tool returns an error that names the `flow` value to use instead.
+If you pass a foundational agent's reference to `flow`, the tool returns an error that names the
+`agent` value to use instead.
 
 A foundational agent runs only when the instance publishes a flow configuration for it. When it
 does not, the session starts and then fails in CI with `Failed to load flow`.
 
+The response includes `poll_after_seconds` as a hint for how long to wait before calling `get_duo_session`.
+
 Example:
 
 ```plaintext
-Run the Developer flow in project 42 to add tests for the parser
+Fix the flaky spec in issue #1234 and open an MR in gitlab-org/gitlab
 ```
 
 ## `list_duo_sessions`
