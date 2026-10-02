@@ -180,6 +180,7 @@ group:
   - set_issue_updated_at
   - set_note_created_at
   - set_show_diff_preview_in_email
+  - start_orbit_trial
   - start_secrets_manager_trial
   - unban_group_member
   - update_ai_domain_settings

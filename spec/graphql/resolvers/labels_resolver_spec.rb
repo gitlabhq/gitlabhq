@@ -123,6 +123,24 @@ RSpec.describe Resolvers::LabelsResolver do
 
         specify { expect(subject).to match_array(instance_exec(&expected_labels)) }
       end
+
+      context 'with fuzzy_search' do
+        subject { resolve_labels(project, search_term: 'prjct', fuzzy_search: true) }
+
+        it 'matches the searched characters in order' do
+          expect(subject).to match_array([label1, label2])
+        end
+
+        context 'when the fuzzy_label_search flag is disabled' do
+          before do
+            stub_feature_flags(fuzzy_label_search: false)
+          end
+
+          it 'ignores fuzzy_search' do
+            expect(subject).to be_empty
+          end
+        end
+      end
     end
   end
 

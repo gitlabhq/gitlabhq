@@ -77,7 +77,7 @@ RSpec.describe DiffViewer::Base do
 
     context 'when diff is expanded' do
       before do
-        allow(diff_file).to receive_messages(collapsed?: false, raw_size: 1025.kilobytes)
+        allow(diff_file).to receive_messages(collapsed?: false, expanded?: true, raw_size: 1025.kilobytes)
       end
 
       it 'returns false even when large' do

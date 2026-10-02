@@ -134,8 +134,6 @@ scopes:
   ee/app/models/govern/policy.rb:
     - for_lifecycle_state: Will be used by the enabled filter on the policy store list endpoint, landing in a stacked follow-up MR
 constants:
-  app/models/concerns/enums/security.rb:
-    - FLOW_BACKED_SCAN_TYPES: Used by stacked merge requests that consume this constant
   app/services/mcp/tools/toolsets.rb:
     - ALWAYS_ON: Used by Manager#tools_in_toolsets to always include meta tools
     - DEFAULT: Referenced in specs and consumed by API::Mcp::Base in a stacked MR

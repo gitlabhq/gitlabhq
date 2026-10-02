@@ -130,23 +130,40 @@ module UsersHelper
   def user_badges_in_admin_section(user, authorization_context = nil)
     [].tap do |badges|
       badges << blocked_user_badge(user) if user.blocked?
-      badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin
 
-      if authorization_context&.owner_user_ids&.include?(user.id)
-        badges << {
-          text: s_('AdminUsers|Organization admin'),
-          variant: 'success'
-        }
+      if instance_admin_context?(authorization_context)
+        badges.concat(instance_user_badges(user))
+      else
+        badges.concat(organization_user_badges(user, authorization_context))
       end
 
       badges << { text: s_('AdminUsers|Bot'), variant: 'neutral' } if user.bot?
       badges << { text: s_('AdminUsers|Deactivated'), variant: 'danger' } if user.deactivated?
-      badges << { text: s_('AdminUsers|External'), variant: 'neutral' } if user.external?
-      badges << { text: s_("AdminUsers|It's you!"), variant: 'neutral' } if current_user == user
       badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?
       badges << { text: s_("UserMapping|Placeholder"), variant: 'neutral' } if user.placeholder?
       badges << { text: s_('AdminUsers|LDAP'), variant: 'info' } if user.ldap_user?
+      badges << { text: s_("AdminUsers|It's you!"), variant: 'neutral' } if current_user == user
     end
+  end
+
+  def instance_admin_context?(authorization_context)
+    !authorization_context.is_a?(::Organizations::Organization)
+  end
+
+  def instance_user_badges(user)
+    return [] unless can?(current_user, :read_admin_users, :global)
+
+    [].tap do |badges|
+      badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin -- This case requires a direct check
+      badges << { text: s_('AdminUsers|External'), variant: 'neutral' } if user.external?
+    end
+  end
+
+  def organization_user_badges(user, organization)
+    return [] unless can?(current_user, :read_admin_users, organization)
+    return [] unless organization.owner_user_ids.include?(user.id)
+
+    [{ text: s_('AdminUsers|Organization admin'), variant: 'success' }]
   end
 
   def work_information(user, with_schema_markup: false)

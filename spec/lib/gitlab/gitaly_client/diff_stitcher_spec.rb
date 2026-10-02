@@ -65,7 +65,7 @@ RSpec.describe Gitlab::GitalyClient::DiffStitcher do
   end
 
   let(:diff_msgs) { [msg_1, msg_2, msg_3, msg_4] }
-  let(:stitcher) { described_class.new(diff_msgs) }
+  let(:stitcher) { described_class.new(diff_msgs, lookahead: true) }
 
   describe 'enumeration' do
     it 'combines segregated diff messages together' do
@@ -79,23 +79,73 @@ RSpec.describe Gitlab::GitalyClient::DiffStitcher do
     end
   end
 
-  describe '#size' do
-    it 'returns the count of enumerated diffs' do
-      # Before enumeration, size is 0
-      expect(stitcher.size).to eq(0)
-
-      # After enumeration, size is 3
-      expect(stitcher).to all(be_present)
-      expect(stitcher.size).to eq(3)
+  describe '#single_file?' do
+    def single_file_per_yield
+      stitcher.map { stitcher.single_file? }
     end
 
-    it 'accumulates diff count across enumerations' do
-      expect(stitcher).to all(be_present)
-      expect(stitcher.size).to eq(3)
+    it 'is false for every patch of a multi-patch stream' do
+      expect(single_file_per_yield).to eq([false, false, false])
+    end
 
-      # Second enumeration adds to the count
-      expect(stitcher).to all(be_present)
-      expect(stitcher.size).to eq(6)
+    context 'with a single patch in the stream' do
+      let(:diff_msgs) { [msg_1] }
+
+      it 'is true when that patch is yielded' do
+        expect(single_file_per_yield).to eq([true])
+      end
+    end
+
+    context 'when the look-ahead is disabled' do
+      let(:stitcher) { described_class.new(diff_msgs, lookahead: false) }
+
+      # Without the look-ahead the count is of patches seen so far, which is
+      # why the first file of a multi-file diff used to auto-expand.
+      it 'reports the first patch of a multi-patch stream as single' do
+        expect(single_file_per_yield).to eq([true, false, false])
+      end
+
+      context 'with a single patch in the stream' do
+        let(:diff_msgs) { [msg_1] }
+
+        it 'is true' do
+          expect(single_file_per_yield).to eq([true])
+        end
+      end
+    end
+  end
+
+  describe 'holding each patch until the next arrives' do
+    # The real response is consumed once, unlike the Array the other examples
+    # wrap, so a held patch that got dropped would be lost rather than re-read.
+    let(:consumed_once) do
+      remaining = diff_msgs.dup
+      stream = Object.new
+      stream.define_singleton_method(:each) do |&block|
+        block.call(remaining.shift) while remaining.any?
+      end
+      stream
+    end
+
+    it 'yields every patch exactly once, in order' do
+      expect(stitcher.map(&:to_path)).to eq([diff_1.to_path, diff_2.to_path, diff_3.to_path])
+    end
+
+    it 'does not lose the held patch when a consumer stops early' do
+      stitcher = described_class.new(consumed_once, lookahead: true)
+
+      first = stitcher.first # stops iterating after one patch
+
+      expect([first.to_path] + stitcher.map(&:to_path))
+        .to eq([diff_1.to_path, diff_2.to_path, diff_3.to_path])
+    end
+
+    context 'when the look-ahead is disabled' do
+      it 'still yields every patch exactly once, in order' do
+        stitcher = described_class.new(consumed_once, lookahead: false)
+
+        expect(stitcher.map(&:to_path)).to eq([diff_1.to_path, diff_2.to_path, diff_3.to_path])
+      end
     end
   end
 end

@@ -12916,6 +12916,12 @@ msgstr ""
 msgid "ArtifactRegistry|Columns"
 msgstr ""
 
+msgid "ArtifactRegistry|Configure your client to use this remote repository. Images will appear here as you pull them."
+msgstr ""
+
+msgid "ArtifactRegistry|Configure your client to use this remote repository. Packages will appear here as you pull them."
+msgstr ""
+
 msgid "ArtifactRegistry|Connection"
 msgstr ""
 
@@ -13713,10 +13719,16 @@ msgstr ""
 msgid "ArtifactRegistry|The token lasts 15 minutes by default, and up to 12 hours if you request a longer duration. Run the command again before it expires."
 msgstr ""
 
+msgid "ArtifactRegistry|There are no images cached in this repository yet"
+msgstr ""
+
 msgid "ArtifactRegistry|There are no images in this repository yet"
 msgstr ""
 
 msgid "ArtifactRegistry|There are no manifests in this image yet"
+msgstr ""
+
+msgid "ArtifactRegistry|There are no packages cached in this repository yet"
 msgstr ""
 
 msgid "ArtifactRegistry|There are no packages in this repository yet"
@@ -34355,8 +34367,10 @@ msgstr ""
 msgid "DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch"
 msgstr ""
 
-msgid "DuoSlack|%{count} more actions are not shown here."
-msgstr ""
+msgid "DuoSlack|%{count} more action is not shown here."
+msgid_plural "DuoSlack|%{count} more actions are not shown here."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DuoSlack|*Feedback submitted.* Thanks for helping us improve GitLab Duo."
 msgstr ""
@@ -58714,7 +58728,13 @@ msgstr ""
 msgid "Orbit|GitLab Orbit is in beta."
 msgstr ""
 
+msgid "Orbit|GitLab Orbit is not available right now. Try again later."
+msgstr ""
+
 msgid "Orbit|GitLab Orbit is turned off in GitLab Duo."
+msgstr ""
+
+msgid "Orbit|GitLab Orbit needs an active trial for this group."
 msgstr ""
 
 msgid "Orbit|GitLab status"
@@ -59041,6 +59061,12 @@ msgstr ""
 msgid "Orbit|Templates"
 msgstr ""
 
+msgid "Orbit|This group cannot be indexed."
+msgstr ""
+
+msgid "Orbit|This group is not eligible for a GitLab Orbit trial."
+msgstr ""
+
 msgid "Orbit|This top-level group is excluded from indexing"
 msgstr ""
 
@@ -59179,10 +59205,16 @@ msgstr ""
 msgid "Orbit|WorkItem"
 msgstr ""
 
+msgid "Orbit|You don't have permission to start an Orbit trial for this group."
+msgstr ""
+
 msgid "Orbit|You don't have permission to update Orbit for this namespace."
 msgstr ""
 
 msgid "Orbit|You must have the Owner role in a top-level group to turn on GitLab Orbit. Ask an owner to turn on GitLab Orbit."
+msgstr ""
+
+msgid "Orbit|Your GitLab Orbit trial has ended."
 msgstr ""
 
 msgid "Orbit|Zoom"

@@ -247,7 +247,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
   end
 
-  describe '#user_badges_in_admin_section' do
+  describe '#user_badges_in_admin_section', :enable_admin_mode do
     before do
       allow(helper).to receive(:current_user).and_return(admin)
     end
@@ -278,6 +278,28 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       let(:user) { build_stubbed(:admin) }
 
       it { is_expected.to match_array([{ text: s_("AdminUsers|Admin"), variant: "success" }]) }
+
+      context 'when the viewer is not an instance admin' do
+        before do
+          allow(helper).to receive(:current_user).and_return(create(:user))
+        end
+
+        it 'does not expose the instance Admin badge' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when the viewer is an organization admin' do
+        before do
+          organization = create(:organization)
+          allow(helper).to receive(:current_user)
+            .and_return(create(:organization_owner, organization: organization).user)
+        end
+
+        it 'does not expose the instance Admin badge without an organization context' do
+          is_expected.to be_empty
+        end
+      end
     end
 
     context 'when an organization admin' do
@@ -285,6 +307,69 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       let(:authorization_context) { create(:organization, owners: user) }
 
       it { is_expected.to match_array([{ text: s_("AdminUsers|Organization admin"), variant: "success" }]) }
+
+      context 'when the viewer cannot read admin users in the organization' do
+        before do
+          allow(helper).to receive(:current_user).and_return(create(:user))
+        end
+
+        it 'does not expose the Organization admin badge' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    context 'in the organization admin area' do
+      let(:authorization_context) { create(:organization) }
+
+      context 'with an instance admin user' do
+        let(:user) { create(:admin) }
+
+        it 'does not expose the instance Admin badge' do
+          is_expected.not_to include({ text: s_("AdminUsers|Admin"), variant: "success" })
+        end
+      end
+
+      context 'with an external user' do
+        let(:user) { create(:user, external: true) }
+
+        it 'does not expose the External badge' do
+          is_expected.not_to include({ text: s_("AdminUsers|External"), variant: "neutral" })
+        end
+      end
+
+      context 'with a placeholder user' do
+        let(:user) { create(:user, :placeholder) }
+
+        it 'still exposes the Placeholder badge' do
+          is_expected.to include({ text: s_("UserMapping|Placeholder"), variant: "neutral" })
+        end
+      end
+
+      context 'with an LDAP user' do
+        let(:user) { create(:omniauth_user, provider: "ldapmain") }
+
+        it 'still exposes the LDAP badge' do
+          is_expected.to include({ text: 'LDAP', variant: 'info' })
+        end
+      end
+
+      context 'with a blocked user' do
+        let(:user) { create(:user, state: 'blocked') }
+
+        it 'still exposes the Blocked badge' do
+          is_expected.to include({ text: s_("AdminUsers|Blocked"), variant: "danger" })
+        end
+      end
+
+      context 'with an organization owner' do
+        let(:user) { create(:user) }
+        let(:authorization_context) { create(:organization, owners: user) }
+
+        it 'exposes only the Organization admin badge' do
+          is_expected.to match_array([{ text: s_("AdminUsers|Organization admin"), variant: "success" }])
+        end
+      end
     end
 
     context 'with a bot' do

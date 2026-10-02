@@ -110,6 +110,7 @@ Validity checks support the following secret types:
 - GitHub personal access tokens (classic)
 - Google Cloud API keys
 - Heroku API keys
+- npm access tokens
 - OpenAI admin API keys
 - OpenAI project API keys
 - OpenAI service account keys
@@ -151,6 +152,7 @@ The supported URLs are:
 - `https://api.openai.com/v1/organization/admin_api_keys`
 - `https://api.sendgrid.com/v3/scopes`
 - `https://api.stripe.com/v1/balance`
+- `https://registry.npmjs.org/-/whoami`
 - `https://sts.amazonaws.com/`
 - `https://www.googleapis.com/discovery/v1/apis`
 

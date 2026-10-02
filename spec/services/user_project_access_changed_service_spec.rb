@@ -163,6 +163,19 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
 
         execute
       end
+
+      context 'without delay' do
+        subject(:execute) { described_class.new(user_ids).execute(priority: priority, delay: false) }
+
+        it 'enqueues the refresh immediately' do
+          expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).not_to receive(:bulk_perform_in)
+          expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
+            receive(:bulk_perform_async).with(user_ids.map { |id| [id] })
+          )
+
+          execute
+        end
+      end
     end
   end
 

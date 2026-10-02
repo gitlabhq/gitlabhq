@@ -115,6 +115,50 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       expect(ret).to be_kind_of(Gitlab::GitalyClient::DiffStitcher)
     end
 
+    it 'enables the stitcher look-ahead' do
+      expect(Gitlab::GitalyClient::DiffStitcher)
+        .to receive(:new).with(anything, lookahead: true).and_call_original
+
+      client.diff_from_parent(commit)
+    end
+
+    context 'when diff_stitcher_single_file_lookahead is disabled' do
+      before do
+        stub_feature_flags(diff_stitcher_single_file_lookahead: false)
+      end
+
+      it 'disables the stitcher look-ahead' do
+        expect(Gitlab::GitalyClient::DiffStitcher)
+          .to receive(:new).with(anything, lookahead: false).and_call_original
+
+        client.diff_from_parent(commit)
+      end
+    end
+
+    context 'when the repository container cannot be a flag actor' do
+      let(:repository) { project.wiki.repository }
+
+      it 'falls back to the global flag state instead of raising' do
+        expect(Gitlab::GitalyClient::DiffStitcher)
+          .to receive(:new).with(anything, lookahead: true).and_call_original
+
+        expect { client.diff_from_parent(commit) }.not_to raise_error
+      end
+
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(diff_stitcher_single_file_lookahead: false)
+        end
+
+        it 'disables the look-ahead' do
+          expect(Gitlab::GitalyClient::DiffStitcher)
+            .to receive(:new).with(anything, lookahead: false).and_call_original
+
+          expect { client.diff_from_parent(commit) }.not_to raise_error
+        end
+      end
+    end
+
     it 'encodes paths correctly' do
       expect { client.diff_from_parent(commit, paths: ['encoding/test.txt', 'encoding/テスト.txt', nil]) }.not_to raise_error
     end

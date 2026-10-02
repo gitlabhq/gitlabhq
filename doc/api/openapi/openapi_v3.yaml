@@ -3854,6 +3854,7 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/postApiV4AiDuoWorkflowsWorkflowsWorkflowIdResumeRequest"
+      x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/{workflow_id}/restart":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsWorkflowIdRestart
@@ -3886,6 +3887,7 @@ paths:
           type: string
         in: path
         example: '1'
+      x-gitlab-lifecycle: experiment
   "/api/v4/ai/llm/git_command":
     post:
       operationId: postApiV4AiLlmGitCommand

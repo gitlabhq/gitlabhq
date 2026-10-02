@@ -162,25 +162,30 @@ module Gitlab
         @collapsed_safe_files || @collapsed_safe_lines || @collapsed_safe_bytes
       end
 
-      def expand_diff?(raw)
-        return legacy_expand_diff?(raw) unless @skip_charset_detection
+      # An explicit `gitlab-generated` marking is a request to collapse, so it
+      # takes precedence over auto-expanding a lone file. A caller asking for
+      # expansion outright still wins over both.
+      def expand_diff?(raw, generated: false)
+        return legacy_expand_diff?(raw, generated: generated) unless @skip_charset_detection
 
         return true if !@enforce_limits || @expanded
-        return false unless @iterator.size == 1
+        return false if generated
+        return false unless single_file_diff?
 
         # A single file auto-expands unless it is binary, so only then is the scan worth running.
         !binary_patch?(raw)
       end
 
       # Scans every patch, even where the result cannot change the answer.
-      def legacy_expand_diff?(raw)
+      def legacy_expand_diff?(raw, generated: false)
         # For binary files only check @enforce_limits and @expanded,
         # for non-binary files also auto-expand when it's a single file diff
         allow_expansion = !@enforce_limits || @expanded
 
         return allow_expansion if binary_patch?(raw)
+        return allow_expansion if generated
 
-        @iterator.size == 1 || allow_expansion
+        single_file_diff? || allow_expansion
       end
 
       def binary_patch?(raw)
@@ -189,14 +194,24 @@ module Gitlab
         detect_binary?(diff_content) || Gitlab::Git::Diff.has_binary_notice?(diff_content)
       end
 
+      def single_file_diff?
+        # DiffStitcher consumes a stream it cannot count up front, so the stitcher
+        # answers this itself; the serialized path iterates an Array.
+        return @iterator.single_file? if @iterator.is_a?(Gitlab::GitalyClient::DiffStitcher)
+
+        @iterator.size == 1
+      end
+
       def each_gitaly_patch
         @iterator.each_with_index do |raw, iterator_index|
           @empty = false
 
-          options = { expanded: expand_diff?(raw) }
           path = raw.to_path
           path = raw.from_path if path.nil? || path.empty?
-          options[:generated] = @generated_files.include?(path) if @generated_files
+          generated = @generated_files.include?(path) if @generated_files
+
+          options = { expanded: expand_diff?(raw, generated: !!generated) }
+          options[:generated] = generated unless generated.nil?
 
           diff = Gitlab::Git::Diff.new(raw, **options)
 
@@ -233,7 +248,7 @@ module Gitlab
             break
           end
 
-          expand_diff = expand_diff?(raw)
+          expand_diff = expand_diff?(raw, generated: !!raw[:generated])
           diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff, skip_charset_detection: @skip_charset_detection)
 
           if !expand_diff && over_safe_limits?(i) && diff.line_count > 0

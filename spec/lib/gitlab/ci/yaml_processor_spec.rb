@@ -2158,6 +2158,21 @@ module Gitlab
             ])
         end
 
+        it 'returns cache files when ten files are given' do
+          files = Array.new(10) { |i| "file#{i}" }
+          config = YAML.dump(
+            rspec: {
+              cache: { paths: ['binaries/'], key: { files: files } },
+              script: 'rspec'
+            }
+          )
+
+          config_processor = described_class.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
+
+          expect(rspec_build[:cache].first[:key]).to eq({ files: files })
+        end
+
         it 'returns cache files with prefix' do
           config = YAML.dump(
             rspec: {
@@ -3585,6 +3600,34 @@ module Gitlab
           let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: [] } } } }) }
 
           it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config requires at least 1 item'
+        end
+
+        context 'returns errors if job cache:key:files has more than ten items' do
+          let(:files) { Array.new(11) { |i| "file#{i}" } }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: files } } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config has too many items (maximum is 10)'
+        end
+
+        context 'returns errors if job cache:key:files has more than two items and the flag is disabled' do
+          let(:files) { Array.new(3) { |i| "file#{i}" } }
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: files } } } }) }
+
+          before do
+            stub_feature_flags(increase_ci_cache_key_files_limit: false)
+          end
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config has too many items (maximum is 2)'
+        end
+
+        context 'returns errors if job cache:key:files_commits has more than two items' do
+          let(:files) { Array.new(3) { |i| "file#{i}" } }
+          let(:config) do
+            YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files_commits: files } } } })
+          end
+
+          it_behaves_like 'returns errors',
+            'jobs:rspec:cache:key:files_commits config has too many items (maximum is 2)'
         end
 
         context 'returns errors if job uses both cache:key:files and cache:key:files_commits' do

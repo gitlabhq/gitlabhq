@@ -244,7 +244,14 @@ module Gitlab
           applied = checkpoints.filter_map do |name, checkpoint|
             path = manifest.principles_path(name)
             full_path = Workspace.safe_join(path)
-            updated = checkpoint.apply(File.read(full_path)) if File.exist?(full_path)
+
+            unless File.exist?(full_path)
+              warn Rainbow("  WARNING: #{name}: distilled file no longer exists on #{ctx.base_branch}; " \
+                'skipping its metadata update').yellow
+              next
+            end
+
+            updated = checkpoint.apply(File.read(full_path))
 
             unless updated
               warn Rainbow("  WARNING: #{name}: distilled file changed on #{ctx.base_branch} since it was " \
@@ -895,7 +902,14 @@ module Gitlab
           author_entries = affected.slice(*changed_principles.keys)
           authors = reviewer_resolver.ssot_authors(author_entries)
           reviewer_ids = authors.filter_map { |author| author[:id] }
-          fallback_reviewer = reviewer_resolver.owner_team_reviewer(team) if reviewer_ids.empty?
+          existing_mr = open_mr_for(branch, ctx)
+
+          if reviewer_ids.empty?
+            fallback_reviewer = reviewer_resolver.owner_team_reviewer(
+              team, current_reviewer_ids: mr_reviewer_ids(existing_mr)
+            )
+          end
+
           outcome = ping_outcome(authors, fallback_reviewer)
           ping_line = ping_line_for(outcome, authors, fallback_reviewer, team)
 
@@ -928,7 +942,8 @@ module Gitlab
           DESC
 
           reviewer_ids = [fallback_reviewer[:id]] if reviewer_ids.empty? && fallback_reviewer
-          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids)
+          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids,
+            existing_mr: existing_mr)
         end
 
         # Opens/updates the tooling MR carrying the regenerated global routing tables. Routed to the broad `/.ai/`
@@ -963,7 +978,11 @@ module Gitlab
         def create_metadata_mr(branch, principle_names, affected, ctx, title)
           default_branch = workflow.default_branch
           teams = manifest.group_principles_by_team(principle_names).keys
-          reviewer_ids = teams.filter_map { |team| reviewer_resolver.owner_team_reviewer(team)&.dig(:id) }
+          existing_mr = open_mr_for(branch, ctx)
+          current_reviewer_ids = mr_reviewer_ids(existing_mr)
+          reviewer_ids = teams.filter_map do |team|
+            reviewer_resolver.owner_team_reviewer(team, current_reviewer_ids: current_reviewer_ids)&.dig(:id)
+          end
           sections = principle_names.map do |name|
             principle_diff_section(name, affected[name], default_branch)
           end.join("\n\n")
@@ -987,7 +1006,8 @@ module Gitlab
         #{sections}
           DESC
 
-          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids)
+          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids,
+            existing_mr: existing_mr)
         end
 
         # Opens/updates the dedicated reconcile MR carrying only the Duo review-instruction fence update, projected from
@@ -1130,8 +1150,7 @@ module Gitlab
               'as reviewer.'
           when :fallback
             'No documentation author could be resolved for these changes, so ' \
-              'review was routed to the least-loaded available member of the ' \
-              'owning team.'
+              'review was routed to one available member of the owning team.'
           when :team_only
             'No individual could be resolved for these changes, so this merge ' \
               'request is routed to the owning team, which approves through ' \
@@ -1173,9 +1192,10 @@ module Gitlab
         # Branch adoption lets this find an open MR across scheduled runs, while a same-day fresh branch stays
         # idempotent.
         # Either way the MR is updated in place rather than failing on a 409.
-        def submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: [])
+        # Pass `existing_mr` when the caller already looked it up; nil means no open MR.
+        def submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: [], existing_mr: :lookup)
           encoded_project = URI.encode_www_form_component(ctx.project_id)
-          existing_mr = find_open_mr(encoded_project, branch, ctx.api_token)
+          existing_mr = find_open_mr(encoded_project, branch, ctx.api_token) if existing_mr == :lookup
           body = mr_body(ctx, title, description)
           # Assign the MR to its author (the service account) and tag the current milestone so Danger's "no assignee" /
           # "no milestone" warnings don't fire on every weekly auto-MR. Both are best-effort: a lookup failure logs and
@@ -1184,8 +1204,7 @@ module Gitlab
           body[:assignee_id] = assignee_id if assignee_id
           milestone_id = current_milestone_id(encoded_project, ctx.api_token)
           body[:milestone_id] = milestone_id if milestone_id
-          existing_reviewer_ids = existing_mr.to_h.fetch('reviewers', []).filter_map { |reviewer| reviewer['id']&.to_i }
-          merged_reviewer_ids = (existing_reviewer_ids + reviewer_ids).uniq
+          merged_reviewer_ids = (mr_reviewer_ids(existing_mr) + reviewer_ids).uniq
           body[:reviewer_ids] = merged_reviewer_ids if merged_reviewer_ids.any?
 
           response, action = submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
@@ -1205,6 +1224,14 @@ module Gitlab
           response_body = JSON.parse(response.body)
           warn_if_reviewers_dropped(body[:reviewer_ids], response_body['reviewers'])
           puts "\n#{Rainbow("MR #{action}: #{response_body['web_url']}").green}"
+        end
+
+        def open_mr_for(branch, ctx)
+          find_open_mr(URI.encode_www_form_component(ctx.project_id), branch, ctx.api_token)
+        end
+
+        def mr_reviewer_ids(merge_request)
+          merge_request.to_h.fetch('reviewers', []).filter_map { |reviewer| reviewer['id']&.to_i }
         end
 
         def mr_body(ctx, title, description)

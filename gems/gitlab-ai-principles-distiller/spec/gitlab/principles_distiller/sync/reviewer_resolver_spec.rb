@@ -565,6 +565,27 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::ReviewerResolver do
       expect(reviewer).to eq(username: 'ada', id: 3, review_count: 1)
     end
 
+    context 'when a member is already a reviewer' do
+      subject(:reviewer) { resolver.owner_team_reviewer(team, current_reviewer_ids: [2]) }
+
+      it 'keeps that member instead of a less-loaded one' do
+        allow(workflow).to receive(:query_graphql).and_return(
+          'group' => {
+            'groupMembers' => {
+              'nodes' => [
+                { 'user' => { 'id' => 'gid://gitlab/User/2', 'username' => 'grace', 'bot' => false,
+                              'state' => 'active', 'reviewRequestedMergeRequests' => { 'count' => 3 } } },
+                { 'user' => { 'id' => 'gid://gitlab/User/3', 'username' => 'ada', 'bot' => false,
+                              'state' => 'active', 'reviewRequestedMergeRequests' => { 'count' => 1 } } }
+              ]
+            }
+          }
+        )
+
+        expect(reviewer).to eq(username: 'grace', id: 2, review_count: 3)
+      end
+    end
+
     it 'does not choose a bot-suffixed member as the fallback reviewer' do
       allow(workflow).to receive(:query_graphql).and_return(
         'group' => {

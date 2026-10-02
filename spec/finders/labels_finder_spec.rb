@@ -340,6 +340,43 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
       end
     end
 
+    context 'when searching fuzzily' do
+      let_it_be(:zebra_car) { create(:label, project: project_1, title: 'Zebra car') }
+      let_it_be(:cellar) { create(:label, project: project_1, title: 'Cellar') }
+
+      let(:params) { { project_id: project_1.id, search: 'car', search_in: [:title], fuzzy_search: true } }
+
+      it 'returns labels containing the searched characters in order' do
+        finder = described_class.new(user, params)
+
+        expect(finder.execute).to include(zebra_car, cellar)
+      end
+
+      it 'orders contiguous matches before subsequence-only matches' do
+        finder = described_class.new(user, params)
+
+        expect(finder.execute.first).to eq(zebra_car)
+      end
+
+      it 'keeps a contiguous match that sorts late alphabetically when results are truncated' do
+        finder = described_class.new(user, params)
+
+        expect(finder.execute.limit(1)).to contain_exactly(zebra_car)
+      end
+
+      it 'still sorts alphabetically when an explicit sort is given' do
+        finder = described_class.new(user, params.merge(sort: 'name_asc'))
+
+        expect(finder.execute.first).to eq(cellar)
+      end
+
+      it 'does not match a subsequence when fuzzy search is not requested' do
+        finder = described_class.new(user, params.except(:fuzzy_search))
+
+        expect(finder.execute).to contain_exactly(zebra_car)
+      end
+    end
+
     context 'filter by subscription' do
       it 'returns labels user subscribed to' do
         project_label_1.subscribe(user)

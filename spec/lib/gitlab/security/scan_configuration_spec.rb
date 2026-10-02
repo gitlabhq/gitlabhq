@@ -105,7 +105,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
           short_name: 'Business Logic',
           description: 'Detect business-logic vulnerabilities (BOLA/IDOR, missing authorization, mass assignment) ' \
             'with the agentic Business Logic Security Analyzer.',
-          help_path: '/help/user/application_security/_index.md',
+          help_path: '/help/user/application_security/business_logic_scanning/_index.md',
           type: 'business_logic',
           required_permission_to_configure: :configure_security_scanner
         },

@@ -1,0 +1,10 @@
+---
+name: fuzzy_label_search
+description: Match label searches fuzzily and order contiguous matches first when fuzzySearch is passed
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255424
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631596
+milestone: '19.5'
+group: group::work items
+type: gitlab_com_derisk
+default_enabled: false

@@ -1,0 +1,10 @@
+---
+name: increase_ci_cache_key_files_limit
+description: Raises the maximum number of paths or patterns in cache:key:files from 2 to 10.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/301161
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257060
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631277
+milestone: '19.5'
+group: group::pipeline authoring
+type: beta
+default_enabled: false

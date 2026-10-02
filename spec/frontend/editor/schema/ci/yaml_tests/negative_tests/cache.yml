@@ -7,6 +7,36 @@ cache-key-files-not-an-array:
       - vendor/ruby
       - node_modules
 
+cache-key-files-more-than-ten:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - file1
+        - file2
+        - file3
+        - file4
+        - file5
+        - file6
+        - file7
+        - file8
+        - file9
+        - file10
+        - file11
+    paths:
+      - vendor/ruby
+
+cache-key-files-commits-more-than-two:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files_commits:
+        - Gemfile.lock
+        - package.json
+        - yarn.lock
+    paths:
+      - vendor/ruby
+
 cache-key-prefix-array:
   script: echo "This job uses a cache."
   cache:

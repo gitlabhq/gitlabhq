@@ -14,7 +14,9 @@ class UserProjectAccessChangedService
     @user_ids = Array.wrap(user_ids)
   end
 
-  def execute(priority: HIGH_PRIORITY)
+  # @param delay [Boolean] when false, a medium priority refresh is enqueued immediately and unbatched
+  #   instead of after MEDIUM_DELAY
+  def execute(priority: HIGH_PRIORITY, delay: true)
     return if @user_ids.empty?
 
     bulk_args = @user_ids.map { |id| [id] }
@@ -24,7 +26,11 @@ class UserProjectAccessChangedService
       AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
       ::User.sticking.bulk_stick(:user, @user_ids)
     when MEDIUM_PRIORITY
-      AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
+      if delay
+        AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
+      else
+        AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext -- same as the delayed path, the user ID argument identifies each job
+      end
     when LOW_PRIORITY
       execute_low_priority_refresh
     end

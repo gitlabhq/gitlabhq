@@ -101,6 +101,18 @@
   }
 }
 
+// Session pill status icon in Duo Chat
+@include keyframes(session-pill-pulse) {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
 // Panel header
 .panel-header-inner {
   @apply gl-relative;

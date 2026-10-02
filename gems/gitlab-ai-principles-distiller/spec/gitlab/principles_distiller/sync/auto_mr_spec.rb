@@ -1024,10 +1024,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       it 'explains that review was routed to an individual, not a group', :aggregate_failures do
         body = capture_post_body
 
-        # owner_team_reviewer picks one least-loaded member, so describing this
+        # owner_team_reviewer picks one member, so describing this
         # as a group ping would misstate what happened.
         expect(body[:description]).to include('No documentation author could be resolved')
-        expect(body[:description]).to include('least-loaded available member')
+        expect(body[:description]).to include('one available member of the owning team')
         expect(body[:description]).not_to include('you changed the SSOT documentation')
         expect(body[:description]).to include('reviewed and merged')
       end
@@ -1057,6 +1057,24 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(body[:description]).to include('you changed the SSOT documentation')
         expect(body[:description]).to include('a member of the owning team was assigned')
         expect(body[:description]).to include('reviewed and merged')
+      end
+    end
+
+    context 'when the team MR is already open with a reviewer' do
+      before do
+        allow(sync).to receive(:find_open_mr).and_return('iid' => 5, 'reviewers' => [{ 'id' => 1 }])
+        allow(reviewer_resolver).to receive(:owner_team_reviewer).and_return(username: 'ada', id: 1, review_count: 0)
+        allow(sync.workflow).to receive(:put_json).and_return(mock_response)
+      end
+
+      it 'looks up the MR once and lets the resolver keep the current reviewer', :aggregate_failures do
+        create_branch_and_mr
+
+        expect(sync).to have_received(:find_open_mr).with(anything, a_string_ending_with('-qa'), anything).once
+        expect(reviewer_resolver).to have_received(:owner_team_reviewer)
+          .with('@abdwdd @alexpooley', current_reviewer_ids: [1])
+        team_mr_body = hash_including(title: a_string_starting_with('qa: '), reviewer_ids: [1])
+        expect(sync.workflow).to have_received(:put_json).with(anything, hash_including(body: team_mr_body))
       end
     end
 
@@ -1565,6 +1583,26 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       end
     end
 
+    context 'when the metadata MR is already open with a reviewer' do
+      let(:existing_mr) { { 'iid' => 5, 'reviewers' => [{ 'id' => 41 }] } }
+
+      before do
+        allow(sync).to receive(:find_open_mr).and_return(existing_mr)
+        allow(sync.workflow).to receive(:put_json) do |_url, body:, **|
+          bodies << body
+          instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '200')
+        end
+      end
+
+      it 'looks up the MR once and lets the resolver keep its current reviewer', :aggregate_failures do
+        create_branch_and_mr
+
+        expect(sync).to have_received(:find_open_mr).once
+        expect(resolver).to have_received(:owner_team_reviewer).with('@org/qa', current_reviewer_ids: [41])
+        expect(bodies.first[:reviewer_ids]).to eq([41])
+      end
+    end
+
     context 'when no owner-team member resolves' do
       before do
         allow(resolver).to receive(:owner_team_reviewer).and_return(nil)
@@ -1590,6 +1628,19 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect { create_branch_and_mr }.to output(/qa: distilled file changed on master/).to_stderr
 
         expect(File.read(path_for('qa'))).to eq(merged)
+        expect(titles).to be_empty
+      end
+    end
+
+    # A merged team or tooling MR removed the principle, so there is nothing to checkpoint.
+    context 'when the distilled file was deleted on the base branch' do
+      before do
+        File.delete(path_for('qa'))
+      end
+
+      it 'warns that the file no longer exists and opens no metadata MR', :aggregate_failures do
+        expect { create_branch_and_mr }.to output(/qa: distilled file no longer exists on master/).to_stderr
+
         expect(titles).to be_empty
       end
     end

@@ -29,19 +29,50 @@ module BaseLabel # rubocop:disable Gitlab/BoundedContexts -- existing Label modu
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query, **options)
-      # make sure we prevent passing in disallowed columns
-      search_in = case options[:search_in]
-                  when [:title]
-                    [:title]
-                  when [:description]
-                    [:description]
-                  else
-                    [:title, :description]
-                  end
+      search_in = searchable_columns(options[:search_in])
 
       return fuzzy_search(query, search_in) unless options[:fuzzy_search]
 
       subsequence_search(query, search_in)
+    end
+
+    # Orders labels so those containing the query as a contiguous substring come before fuzzy-only matches.
+    # Used by {LabelsFinder#sort} when fuzzy search is on, in place of the default alphabetical order.
+    #
+    # @param query [String] the user's search term
+    # @param options [Hash] search options
+    # @option options [Array<Symbol>] :search_in `[:title]` searches titles, `[:description]` searches
+    #   descriptions, any other value (including nil) searches both
+    # @return [ActiveRecord::Relation] labels ordered by contiguous match, then title, then id; also
+    #   projects a `contiguous` column into the SELECT
+    def self.order_contiguous_matches_first(query, **options)
+      columns = searchable_columns(options[:search_in])
+      contiguous = columns.map { |column| fuzzy_arel_match(column, query) }.reduce(:or)
+      contiguous = Arel::Nodes::Case.new.when(Arel::Nodes::Grouping.new(contiguous)).then(1).else(0)
+
+      order = Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'contiguous',
+            column_expression: contiguous,
+            order_expression: contiguous.desc,
+            order_direction: :desc,
+            nullable: :not_nullable,
+            add_to_projections: true
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'title',
+            column_expression: arel_table[:title],
+            order_expression: arel_table[:title].asc,
+            nullable: :nulls_last
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id',
+            order_expression: arel_table[:id].asc
+          )
+        ])
+
+      order.apply_cursor_conditions(reorder(order))
     end
 
     # Matches labels containing the characters of `query` in order, but not
@@ -53,6 +84,18 @@ module BaseLabel # rubocop:disable Gitlab/BoundedContexts -- existing Label modu
       where(columns.map { |column| arel_table[column].matches(pattern) }.reduce(:or))
     end
     private_class_method :subsequence_search
+
+    def self.searchable_columns(search_in)
+      case search_in
+      when [:title]
+        [:title]
+      when [:description]
+        [:description]
+      else
+        [:title, :description]
+      end
+    end
+    private_class_method :searchable_columns
 
     # Override Gitlab::SQL::Pattern.min_chars_for_partial_matching as
     # label queries are never global, and so will not use a trigram

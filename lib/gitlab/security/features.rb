@@ -22,8 +22,9 @@ module Gitlab
             short_name: _('Business Logic'),
             description: _('Detect business-logic vulnerabilities (BOLA/IDOR, missing ' \
               'authorization, mass assignment) with the agentic Business Logic Security Analyzer.'),
-            # No dedicated doc page yet; link the application security overview until one exists.
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/_index.md'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/business_logic_scanning/_index.md'
+            ),
             type: 'business_logic',
             required_permission_to_configure: :configure_security_scanner
           },

@@ -10,9 +10,11 @@ module API
 
       helpers do
         def current_plan(name)
-          plan = ::Admin::PlansFinder.new({ name: name }).execute
+          plan = ::GitlabSubscriptions::SystemDefined::Plan.find_by(name: name) # rubocop:disable CodeReuse/ActiveRecord -- fixed items model, no query
 
-          not_found!('Plan') unless plan
+          # Saving limits needs a plans row to fill plan_limits.plan_id, which is NOT NULL.
+          # Remove this check once https://gitlab.com/gitlab-org/gitlab/-/work_items/600314 relaxes that.
+          not_found!('Plan') unless plan && ::Plan.by_plan_name_uid(plan.id).exists?
           plan
         end
       end
@@ -27,7 +29,8 @@ module API
         tags PLAN_LIMITS_TAGS
       end
       params do
-        optional :plan_name, type: String, values: Plan.all_plans, default: Plan::DEFAULT,
+        optional :plan_name, type: String, values: ::GitlabSubscriptions::SystemDefined::Plan.all_plans,
+          default: ::GitlabSubscriptions::SystemDefined::Plan::DEFAULT,
           desc: 'Name of the plan to get the limits from. Default: default.'
       end
       route_setting :authorization, permissions: :read_plan_limit, boundary_type: :instance, assignable_when: [:admin]
@@ -49,7 +52,8 @@ module API
         tags PLAN_LIMITS_TAGS
       end
       params do
-        requires :plan_name, type: String, values: Plan.all_plans, desc: 'Name of the plan to update'
+        requires :plan_name, type: String, values: ::GitlabSubscriptions::SystemDefined::Plan.all_plans,
+          desc: 'Name of the plan to update'
 
         optional :cargo_max_file_size, type: Integer, desc: 'Maximum Cargo package file size in bytes'
         optional :ci_instance_level_variables, type: Integer,

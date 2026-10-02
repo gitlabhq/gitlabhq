@@ -7,6 +7,7 @@ module Types
       description 'A user with access to the organization.'
 
       include ::UsersHelper
+      include ::Gitlab::Allowable
 
       authorize :read_organization_user
       authorize_granular_token permissions: :read_organization_user, boundary: :instance, boundary_type: :instance
@@ -44,7 +45,7 @@ module Types
         experiment: { milestone: '16.4' }
 
       def badges
-        user_badges_in_admin_section(organization_user.user)
+        user_badges_in_admin_section(organization_user.user, organization_user.organization)
       end
     end
   end

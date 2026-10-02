@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Cache do
   using RSpec::Parameterized::TableSyntax
@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
 
   describe 'validations' do
     before do
-      entry.compose!
+      Gitlab::Ci::Config::FeatureFlags.with_actor(nil) { entry.compose! }
     end
 
     context 'when entry config value is correct' do

@@ -156,12 +156,27 @@ RSpec.describe 'getting organization information', feature_category: :organizati
         organization_user_nodes = graphql_data_at(:organization, :organizationUsers, :nodes)
         expected_attributes = {
           "accessLevel" => { "integerValue" => 50, "stringValue" => "OWNER" },
-          "badges" => [{ "text" => "It's you!", "variant" => 'neutral' }],
+          "badges" => [
+            { "text" => "Organization admin", "variant" => 'success' },
+            { "text" => "It's you!", "variant" => 'neutral' }
+          ],
           "id" => organization_owner.to_global_id.to_s,
           "isLastOwner" => true,
           "user" => { "id" => user.to_global_id.to_s }
         }
         expect(organization_user_nodes).to include(expected_attributes)
+      end
+
+      it 'does not expose instance admin badges to an organization owner' do
+        admin_member = create(:organization_user, organization: organization, user: create(:admin)).user
+
+        request_organization
+
+        admin_node = graphql_data_at(:organization, :organizationUsers, :nodes).find do |node|
+          node["user"]["id"] == admin_member.to_global_id.to_s
+        end
+
+        expect(admin_node["badges"]).not_to include({ "text" => "Admin", "variant" => 'success' })
       end
 
       it 'avoids N+1 queries for all the fields' do

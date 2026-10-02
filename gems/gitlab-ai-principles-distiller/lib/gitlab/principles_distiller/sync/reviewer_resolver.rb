@@ -60,11 +60,13 @@ module Gitlab
 
         # Resolves one available owner-team member when no SSOT author can be found.
         # Best-effort: CODEOWNERS remains the approval authority, so a failed lookup must not block publication.
-        def owner_team_reviewer(team)
+        # Prefers a member already in `current_reviewer_ids`, so a reused MR does not gain a new reviewer every run.
+        def owner_team_reviewer(team, current_reviewer_ids: [])
           group_handles, user_handles = team.to_s.split.partition { |handle| handle.include?('/') }
           members = group_handles.flat_map { |handle| group_members(handle) }
           members.concat(user_members(user_handles))
-          members.min_by { |member| [member[:review_count], member[:username]] }
+          members.find { |member| current_reviewer_ids.include?(member[:id]) } ||
+            members.min_by { |member| [member[:review_count], member[:username]] }
         end
 
         private

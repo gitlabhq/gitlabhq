@@ -2244,6 +2244,15 @@ cache-job:
 
 ##### `cache:key:files`
 
+{{< history >}}
+
+- File path limit [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/301161) to 10 in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `increase_ci_cache_key_files_limit`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
 Use `cache:key:files` to generate a new cache key when the content of the specified files change.
 If the content remains unchanged, the cache key remains consistent across branches and pipelines.
 You can reuse caches and rebuild them less often, which speeds up subsequent pipeline runs.
@@ -2253,7 +2262,7 @@ You can reuse caches and rebuild them less often, which speeds up subsequent pip
 
 **Supported values**:
 
-- An array of up to two file paths or patterns.
+- An array of up to 10 file paths or patterns.
 
 CI/CD variables are not supported.
 
@@ -2284,7 +2293,7 @@ use the new cache, instead of rebuilding the dependencies.
 - The cache `key` is a SHA computed from the content of the listed files. If a file doesn't exist, it's ignored in the key calculation.
   If none of the specified files exist, the fallback key is `default`.
 - Wildcard patterns like `**/package.json` can be used.
-- A maximum of two files can be specified. For updates on increasing the number of allowed paths or patterns, see [issue 301161](https://gitlab.com/gitlab-org/gitlab/-/work_items/301161).
+- A maximum of 10 files can be specified.
 
 ---
 

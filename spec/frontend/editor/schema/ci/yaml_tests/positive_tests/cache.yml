@@ -81,6 +81,24 @@ cache-key-files:
       - vendor/ruby
       - node_modules
 
+cache-key-files-ten:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - file1
+        - file2
+        - file3
+        - file4
+        - file5
+        - file6
+        - file7
+        - file8
+        - file9
+        - file10
+    paths:
+      - vendor/ruby
+
 # valide cache:key:prefix
 cache-key-prefix-string:
   script: echo "This job uses a cache."

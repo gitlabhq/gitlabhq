@@ -992,6 +992,14 @@ Grants the ability to update Orbit settings.
 | Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceCreate` |
 | Update | Instance | Mutation | `KnowledgeGraphExcludedNamespaceDestroy` |
 
+#### Orbit Trial
+
+Grants the ability to start an Orbit trial for a top-level group.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Start | Group | Mutation | `OrbitStartTrial` |
+
 ### Groups resources
 
 #### Achievement

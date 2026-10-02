@@ -42,6 +42,63 @@ RSpec.describe Gitlab::Ci::Config::Entry::Key, feature_category: :pipeline_compo
           end
         end
 
+        context 'when the two file keywords have different limits' do
+          let(:config) { { keyword => paths } }
+
+          before do
+            Gitlab::Ci::Config::FeatureFlags.with_actor(nil) { entry.compose! }
+          end
+
+          context 'with ten files' do
+            let(:paths) { Array.new(10) { |i| "file#{i}" } }
+
+            context 'when using files' do
+              let(:keyword) { :files }
+
+              it { expect(entry).to be_valid }
+            end
+
+            context 'when using files_commits' do
+              let(:keyword) { :files_commits }
+
+              it 'is invalid' do
+                expect(entry).not_to be_valid
+                expect(entry.errors)
+                  .to include(a_string_matching(/files_commits config has too many items \(maximum is 2\)/))
+              end
+            end
+          end
+
+          context 'with eleven files' do
+            let(:paths) { Array.new(11) { |i| "file#{i}" } }
+
+            context 'when using files' do
+              let(:keyword) { :files }
+
+              it 'is invalid' do
+                expect(entry).not_to be_valid
+                expect(entry.errors)
+                  .to include(a_string_matching(/files config has too many items \(maximum is 10\)/))
+              end
+            end
+          end
+        end
+
+        context 'when the increase_ci_cache_key_files_limit feature flag is disabled' do
+          let(:config) { { files: %w[file1 file2 file3] } }
+
+          before do
+            stub_feature_flags(increase_ci_cache_key_files_limit: false)
+            Gitlab::Ci::Config::FeatureFlags.with_actor(nil) { entry.compose! }
+          end
+
+          it 'is invalid' do
+            expect(entry).not_to be_valid
+            expect(entry.errors)
+              .to include(a_string_matching(/files config has too many items \(maximum is 2\)/))
+          end
+        end
+
         context 'when using both files and files_commits' do
           let(:config) { { files: ['yarn.lock'], files_commits: ['package.json'] } }
 

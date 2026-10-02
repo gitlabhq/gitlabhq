@@ -174,6 +174,39 @@ are named `Triage and Remediation (Conservative)`, `Triage and Remediation (Stan
 - [Secret false positive detection](../vulnerabilities/secret_false_positive_detection.md)
 - [Dependency scanning auto-remediation](../remediate/dependency_scanning_auto_remediation.md)
 
+### Business logic profile
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257199) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `bl_security_analyzer`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the
+> history.
+
+The business logic profile uses an AI agent to find business logic vulnerabilities, like missing
+authorization, broken object-level access, and mass assignment. When you attach the profile to a project,
+the scan turns on for that project.
+
+When a merge request's head pipeline succeeds, the scan runs on the files the merge request adds or
+modifies. It does not run on default branch pipelines. To cover the default branch,
+[start a scan from GitLab Duo Chat](../business_logic_scanning/_index.md#start-a-scan-from-gitlab-duo-chat).
+If the project has no CI/CD pipelines, no merge request scans run.
+
+Turn on **Allow flow execution**, **Allow foundational flows**, and the **Business Logic Security Scan** flow
+[for the top-level group](../../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+
+For more information about prerequisites and what the scan finds, see
+[business logic scanning](../business_logic_scanning/_index.md).
+
 ### View details about a profile
 
 To view technical details about the secret detection profile:

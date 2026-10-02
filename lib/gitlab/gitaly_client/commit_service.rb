@@ -683,7 +683,16 @@ module Gitlab
 
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = gitaly_client_call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout)
-        GitalyClient::DiffStitcher.new(response)
+        GitalyClient::DiffStitcher.new(response, lookahead: single_file_lookahead?)
+      end
+
+      # Wikis and snippets are repository containers but cannot be flag actors,
+      # so they follow the flag's global state rather than raising.
+      def single_file_lookahead?
+        container = @repository.container
+        container = nil unless container.respond_to?(:flipper_id)
+
+        Feature.enabled?(:diff_stitcher_single_file_lookahead, container)
       end
 
       def diff_from_parent_request_params(commit, options = {})
