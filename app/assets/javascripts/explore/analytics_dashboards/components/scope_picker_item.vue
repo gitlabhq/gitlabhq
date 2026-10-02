@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlFormCheckbox,
+  GlIcon,
+  GlLoadingIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import {
   SCOPE_PICKER_ITEM_TYPE_GROUP,
@@ -10,6 +17,7 @@ import {
 export default {
   name: 'AnalyticsDashboardScopePickerItem',
   components: {
+    GlBadge,
     GlButton,
     GlFormCheckbox,
     GlIcon,
@@ -78,6 +86,11 @@ export default {
       required: false,
       default: false,
     },
+    restricted: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['toggle-expanded', 'load-more'],
   computed: {
@@ -94,6 +107,13 @@ export default {
       // Not escaped by sprintf: Vue escapes the interpolation, so escaping here as well would
       // render a group called "Sales & Marketing" as `Sales &amp; Marketing`.
       return sprintf(s__('AnalyticsDashboards|in %{name}'), { name: this.parentName }, false);
+    },
+    restrictedLabel() {
+      return this.isGroup
+        ? s__(
+            "AnalyticsDashboards|This group has restricted access, so you can't select it. You can select available projects and subgroups listed below it instead.",
+          )
+        : s__("AnalyticsDashboards|This project has restricted access, so you can't select it.");
     },
     expandLabel() {
       const template = this.expanded
@@ -169,14 +189,27 @@ export default {
         </span>
       </gl-form-checkbox>
 
+      <span v-if="restricted" class="gl-sr-only">{{ restrictedLabel }}</span>
+
       <!-- Outside the button on purpose: GlButton's loading state also marks it disabled, which
            drops its click listener, so the row could not be collapsed while its children load. -->
       <gl-loading-icon v-if="expanding" class="gl-ml-auto gl-shrink-0 gl-pl-3" />
 
+      <!-- A disabled listbox option puts pointer-events: none on its content, so opt the badge back
+           in for its tooltip. -->
+      <gl-badge
+        v-if="restricted"
+        v-gl-tooltip.bottom.viewport
+        class="gl-pointer-events-auto gl-ml-auto gl-shrink-0"
+        :title="restrictedLabel"
+      >
+        {{ s__('AnalyticsDashboards|Restricted') }}
+      </gl-badge>
+
       <!-- Allowed to shrink and truncate rather than crowding out the name it is qualifying, and
            capped so a long parent cannot take the row. The tooltip still carries the full path. -->
       <span
-        v-if="parentName"
+        v-else-if="parentName"
         v-gl-tooltip
         :title="value"
         class="gl-ml-auto gl-min-w-0 gl-max-w-1/2 gl-truncate gl-pl-3 gl-text-sm gl-text-subtle"

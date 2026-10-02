@@ -248,6 +248,7 @@ Retry interval for failed namespaces:                           1d
 Number of replicas per namespace:                               1
 Maximum number of projects for legacy search:                   1000
 Maximum number of process restarts within 15 minutes for nodes: 3
+Number of pending indices to start indexing per node:           1
 
 Nodes
 # Number of Zoekt nodes and their status

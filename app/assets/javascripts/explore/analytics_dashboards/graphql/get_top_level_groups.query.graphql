@@ -1,7 +1,8 @@
 # @feature_category: custom_dashboards_foundation
 
-# The scope picker's starting point. `allAvailable: false` limits this to groups the user
-# belongs to.
+# The scope picker's starting point. `allAvailable: false` still includes the ancestors of any
+# project the user belongs to, so the picker disables groups missing a permission the dashboard
+# requires.
 query getAnalyticsDashboardTopLevelGroups($after: String) {
   groups(topLevelOnly: true, allAvailable: false, sort: "name_asc", first: 20, after: $after) {
     nodes {
@@ -11,6 +12,9 @@ query getAnalyticsDashboardTopLevelGroups($after: String) {
       fullPath
       projectsCount
       descendantGroupsCount
+      userPermissions {
+        readProAiAnalytics @gl_introduced(version: "19.5.0")
+      }
     }
     pageInfo {
       hasNextPage

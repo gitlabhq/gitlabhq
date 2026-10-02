@@ -50,8 +50,12 @@ If the secondary site is not able to reconnect, use the following steps to remov
        SELECT pg_drop_replication_slot('<name_of_inactive_slot>');
        ```
 
-    1. [Re-initiate the replication process](../../setup/database.md#step-3-initiate-the-replication-process),
-       which recreates the replication slot correctly.
+    1. [Re-initiate the replication process (non-Patroni database)](../../setup/database.md#step-3-initiate-the-replication-process),
+       which re-creates the replication slot correctly.
+
+       > [!note]
+       > Replication slots for Patroni-managed databases are not re-created when you initiate the replication process on the secondary.
+       > You must first configure them with the [`patroni['replication_slots']` setting on the primary](../../setup/database.md#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site).
 
 - If you are no longer using the slot (for example, you no longer have Geo enabled), follow the steps [to remove that Geo site](../remove_geo_site.md).
 

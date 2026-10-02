@@ -1,4 +1,4 @@
-import { GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlBadge, GlButton, GlFormCheckbox, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import {
@@ -32,6 +32,8 @@ describe('ScopePickerItem', () => {
   const findParentName = () => wrapper.findByTestId('scope-picker-item-parent');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findLoadMoreButton = () => wrapper.findComponentByTestId('scope-picker-load-more-button');
+  const findRestrictedBadge = () => wrapper.findComponent(GlBadge);
+  const findScreenReaderText = () => wrapper.find('.gl-sr-only');
 
   describe('default', () => {
     beforeEach(() => createWrapper());
@@ -64,6 +66,11 @@ describe('ScopePickerItem', () => {
 
     it('does not indent the item', () => {
       expect(findItem().classes()).not.toContain('gl-pl-5');
+    });
+
+    it('does not mark the item as inaccessible', () => {
+      expect(findRestrictedBadge().exists()).toBe(false);
+      expect(findScreenReaderText().exists()).toBe(false);
     });
   });
 
@@ -158,6 +165,49 @@ describe('ScopePickerItem', () => {
 
         expect(wrapper.emitted('toggle-expanded')).toHaveLength(1);
       });
+    });
+  });
+
+  describe.each`
+    itemType                          | message
+    ${SCOPE_PICKER_ITEM_TYPE_GROUP}   | ${"This group has restricted access, so you can't select it. You can select available projects and subgroups listed below it instead."}
+    ${SCOPE_PICKER_ITEM_TYPE_PROJECT} | ${"This project has restricted access, so you can't select it."}
+  `('when the user lacks access to an item with itemType=$itemType', ({ itemType, message }) => {
+    beforeEach(() => createWrapper({ itemType, disabled: true, restricted: true }));
+
+    it('renders a restricted badge outside the checkbox', () => {
+      expect(findRestrictedBadge().exists()).toBe(true);
+      expect(findRestrictedBadge().text()).toBe('Restricted');
+      expect(findCheckbox().findComponent(GlBadge).exists()).toBe(false);
+    });
+
+    it('explains the restriction in a tooltip', () => {
+      expect(findRestrictedBadge().attributes('title')).toBe(message);
+    });
+
+    it('lets the badge respond to hover on a disabled row', () => {
+      expect(findRestrictedBadge().classes()).toContain('gl-pointer-events-auto');
+    });
+
+    it('gives the same explanation to assistive tech, outside the hidden checkbox', () => {
+      expect(findScreenReaderText().text()).toBe(message);
+      expect(findCheckbox().find('.gl-sr-only').exists()).toBe(false);
+    });
+  });
+
+  describe('when the user lacks access to a namespace that sits below the group it is listed under', () => {
+    beforeEach(() =>
+      createWrapper({
+        itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT,
+        parentName: 'Tools',
+        disabled: true,
+        restricted: true,
+      }),
+    );
+
+    it('shows the restricted badge in place of the parent name', () => {
+      expect(findRestrictedBadge().exists()).toBe(true);
+      expect(findParentName().exists()).toBe(false);
     });
   });
 

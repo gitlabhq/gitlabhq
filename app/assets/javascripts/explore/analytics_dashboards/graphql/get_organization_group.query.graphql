@@ -13,6 +13,9 @@ query getAnalyticsDashboardOrganizationGroup($ids: [ID!]) {
         name
         fullName
         fullPath
+        userPermissions {
+          readProAiAnalytics @gl_introduced(version: "19.5.0")
+        }
       }
     }
   }

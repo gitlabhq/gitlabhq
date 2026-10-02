@@ -137,7 +137,6 @@ Gitlab/Authz/PermissionCheck:
     - 'app/helpers/boards_helper.rb'
     - 'app/helpers/ci/runners_helper.rb'
     - 'app/helpers/clusters_helper.rb'
-    - 'app/helpers/deploy_tokens_helper.rb'
     - 'app/helpers/environment_helper.rb'
     - 'app/helpers/groups/group_members_helper.rb'
     - 'app/helpers/groups_helper.rb'

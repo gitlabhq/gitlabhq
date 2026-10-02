@@ -33,6 +33,8 @@ describe('Work Item Note Actions', () => {
   const findMaxAccessLevelBadge = () => wrapper.findByTestId('max-access-level-badge');
   const findContributorBadge = () => wrapper.findByTestId('contributor-badge');
   const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
+  const findCompactActionsGroup = () => wrapper.findByTestId('compact-actions-group');
+  const findEditNoteAction = () => wrapper.findComponentByTestId('edit-note-action');
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -74,7 +76,10 @@ describe('Work Item Note Actions', () => {
         EmojiPicker,
         ViewSessionButton: stubComponent({
           name: 'ViewSessionButton',
-          props: { sessionId: { type: Number, required: true } },
+          props: {
+            sessionId: { type: Number, required: true },
+            asDropdownItem: { type: Boolean, required: false, default: false },
+          },
         }),
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: { close: showSpy },
@@ -148,6 +153,12 @@ describe('Work Item Note Actions', () => {
       expect(findEditButton().exists()).toBe(true);
     });
 
+    it('is only shown inline above the sm breakpoint', () => {
+      createComponent();
+
+      expect(findEditButton().classes()).toContain('note-hidden-xs');
+    });
+
     it('is hidden when `showEdit` prop is false', () => {
       createComponent({ showEdit: false });
 
@@ -159,6 +170,61 @@ describe('Work Item Note Actions', () => {
       findEditButton().vm.$emit('click');
 
       expect(wrapper.emitted('start-editing')).toEqual([[]]);
+    });
+  });
+
+  describe('compact actions in the overflow menu', () => {
+    it('is not rendered when there is no session and the user cannot edit', () => {
+      createComponent({ showEdit: false, duoSessionId: null });
+
+      expect(findCompactActionsGroup().exists()).toBe(false);
+    });
+
+    it.each`
+      showEdit | duoSessionId
+      ${true}  | ${null}
+      ${false} | ${42}
+      ${true}  | ${42}
+    `(
+      'is rendered and hidden above the sm breakpoint when showEdit=$showEdit and duoSessionId=$duoSessionId',
+      ({ showEdit, duoSessionId }) => {
+        createComponent({ showEdit, duoSessionId });
+
+        expect(findCompactActionsGroup().exists()).toBe(true);
+        expect(findCompactActionsGroup().classes()).toContain('note-only-xs');
+      },
+    );
+
+    describe('edit action', () => {
+      it('is rendered when `showEdit` prop is true', () => {
+        createComponent({ showEdit: true });
+
+        expect(findEditNoteAction().exists()).toBe(true);
+      });
+
+      it('is not rendered when `showEdit` prop is false', () => {
+        createComponent({ showEdit: false });
+
+        expect(findEditNoteAction().exists()).toBe(false);
+      });
+
+      it('is tracked the same as the inline edit button', () => {
+        createComponent({ showEdit: true });
+
+        expect(findEditNoteAction().attributes()).toMatchObject({
+          'data-track-action': 'click_button',
+          'data-track-label': 'edit_button',
+        });
+      });
+
+      it('emits `start-editing` and closes the dropdown when clicked', () => {
+        createComponent({ showEdit: true });
+
+        findEditNoteAction().vm.$emit('action');
+
+        expect(wrapper.emitted('start-editing')).toEqual([[]]);
+        expect(showSpy).toHaveBeenCalled();
+      });
     });
   });
 
@@ -281,7 +347,8 @@ describe('Work Item Note Actions', () => {
   });
 
   describe('view session button', () => {
-    const findViewSessionButton = () => wrapper.findComponent({ name: 'ViewSessionButton' });
+    const findViewSessionButton = () => wrapper.findComponentByTestId('view-session-button');
+    const findViewSessionAction = () => wrapper.findComponentByTestId('view-session-action');
 
     describe('when the note has no linked session', () => {
       beforeEach(() => {
@@ -290,6 +357,10 @@ describe('Work Item Note Actions', () => {
 
       it('does not render the view session button', () => {
         expect(findViewSessionButton().exists()).toBe(false);
+      });
+
+      it('does not render the view session overflow menu item', () => {
+        expect(findViewSessionAction().exists()).toBe(false);
       });
     });
 
@@ -304,6 +375,18 @@ describe('Work Item Note Actions', () => {
 
       it('passes the session id to the view session button', () => {
         expect(findViewSessionButton().props('sessionId')).toBe(42);
+      });
+
+      it('only shows the inline button above the sm breakpoint', () => {
+        expect(findViewSessionButton().props('asDropdownItem')).toBe(false);
+        expect(findViewSessionButton().classes()).toContain('note-hidden-xs');
+      });
+
+      it('renders the view session overflow menu item with the session id', () => {
+        expect(findViewSessionAction().props()).toEqual({
+          sessionId: 42,
+          asDropdownItem: true,
+        });
       });
     });
   });

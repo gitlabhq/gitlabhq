@@ -6,7 +6,7 @@ describe('DashboardFilters', () => {
 
   const ScopePickerStub = {
     name: 'ScopePicker',
-    props: { initialPaths: Array, multiSelect: Boolean },
+    props: { initialPaths: Array, multiSelect: Boolean, requirePermissions: Array },
     template: '<div />',
   };
   const DateRangeFilterStub = {
@@ -110,6 +110,14 @@ describe('DashboardFilters', () => {
       expect(findScopePicker().props('multiSelect')).toBe(true);
     });
 
+    it('hands the YAML requirePermissions to the scope picker', () => {
+      createComponent({
+        props: { dashboardFilters: { scope: { requirePermissions: ['readProAiAnalytics'] } } },
+      });
+
+      expect(findScopePicker().props('requirePermissions')).toEqual(['readProAiAnalytics']);
+    });
+
     it('falls back to the built-in defaults when the YAML omits the filters section', () => {
       createComponent({ props: { dashboardFilters: {} } });
 
@@ -118,6 +126,7 @@ describe('DashboardFilters', () => {
       expect(findDateRangeFilter().props('dateRangeLimit')).toBe(0);
       expect(findScopePicker().exists()).toBe(true);
       expect(findScopePicker().props('multiSelect')).toBe(false);
+      expect(findScopePicker().props('requirePermissions')).toEqual([]);
     });
   });
 

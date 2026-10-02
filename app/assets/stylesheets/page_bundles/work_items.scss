@@ -508,6 +508,12 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
         @apply gl-hidden
       }
     }
+
+    @include gl-container-width-up(sm, panel) {
+      .note-only-xs {
+        @apply gl-hidden
+      }
+    }
   }
 }
 

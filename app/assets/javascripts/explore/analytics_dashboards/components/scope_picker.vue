@@ -52,6 +52,14 @@ export default {
       required: false,
       default: false,
     },
+    // Permission keys the user needs on a group or project to select it.
+    // Set by `filters.scope.requirePermissions` in the dashboard config:
+    // ee/app/validators/json_schemas/analytics_dashboard.json
+    requirePermissions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   emits: ['change', 'error', 'ready'],
   data() {
@@ -118,7 +126,12 @@ export default {
       variables() {
         return { ids: this.frecentGroup ? [this.frecentGroup.id] : [] };
       },
-      update: ({ organization }) => organization?.groups?.nodes?.[0] ?? null,
+      update({ organization }) {
+        const group = organization?.groups?.nodes?.[0];
+
+        // A default the dashboard cannot read would only fill every panel with errors.
+        return group && !this.isRestricted(group) ? group : null;
+      },
       result() {
         this.selectResolvedNamespace(this.validatedFrecentGroup);
         this.completeInitialLoad();
@@ -258,10 +271,17 @@ export default {
       this.committedPaths = namespaces.map(({ fullPath }) => fullPath);
       this.$emit('change', namespaces);
     },
-    asNamespace({ id, name, fullName, fullPath, __typename }) {
-      return { id, name, fullName, fullPath, type: __typename };
+    asNamespace({ id, name, fullName, fullPath, __typename, userPermissions }) {
+      return {
+        id,
+        name,
+        fullName,
+        fullPath,
+        type: __typename,
+        restricted: this.isRestricted({ userPermissions }),
+      };
     },
-    asItem({ name, fullPath, type }) {
+    asItem({ name, fullPath, type, restricted }) {
       const { isLoading, projects } = this.subgroupProjects[fullPath] ?? {};
 
       return {
@@ -271,7 +291,8 @@ export default {
         // A selected group covers everything beneath it, so those rows read as selected as well.
         selected: this.isSelected(fullPath) || this.hasSelectedAncestor(fullPath),
         indeterminate: this.hasSelectedDescendant(fullPath),
-        disabled: !this.isSelectable(fullPath),
+        disabled: restricted || !this.isSelectable(fullPath),
+        restricted,
         expanded: this.isExpanded(fullPath),
         // Only the first page leaves the row with nothing to show, so later pages report on the
         // Load more button they were asked for from instead.
@@ -336,6 +357,10 @@ export default {
       }
 
       return items;
+    },
+    isRestricted({ userPermissions }) {
+      // Only an explicit `false` restricts: a field is null on a backend that predates it.
+      return this.requirePermissions.some((permission) => userPermissions?.[permission] === false);
     },
     isExpanded(fullPath) {
       return this.expandedPaths.includes(fullPath);
@@ -506,10 +531,12 @@ export default {
       const results = await Promise.allSettled(paths.map(this.fetchScopeNamespace));
       const failures = results.filter(({ status }) => status === 'rejected');
 
-      // Paths that resolve to nothing (deleted, or no access) are dropped.
+      // Paths that resolve to nothing (deleted, or no access) are dropped, as are namespaces
+      // missing a permission the dashboard requires.
       const restored = results
         .filter(({ value }) => value)
-        .map(({ value }) => this.asNamespace(value));
+        .map(({ value }) => this.asNamespace(value))
+        .filter(({ restricted }) => !restricted);
 
       // Requests go out in batches, so one rejected lookup must not sink the paths
       // that resolved in other requests. Still log the failures to sentry.

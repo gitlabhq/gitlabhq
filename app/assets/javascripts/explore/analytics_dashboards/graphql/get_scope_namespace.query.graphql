@@ -6,6 +6,9 @@ query getAnalyticsDashboardScopeNamespace($fullPath: ID!, $fullPaths: [String!])
     name
     fullName
     fullPath
+    userPermissions {
+      readProAiAnalytics @gl_introduced(version: "19.5.0")
+    }
   }
   projects(fullPaths: $fullPaths) {
     nodes {
@@ -13,6 +16,9 @@ query getAnalyticsDashboardScopeNamespace($fullPath: ID!, $fullPaths: [String!])
       name
       fullName: nameWithNamespace
       fullPath
+      userPermissions {
+        readProAiAnalytics @gl_introduced(version: "19.5.0")
+      }
     }
   }
 }

@@ -257,7 +257,8 @@ export default {
     <view-session-button
       v-if="duoSessionId"
       :session-id="duoSessionId"
-      class="note-action-button"
+      class="note-action-button note-hidden-xs"
+      data-testid="view-session-button"
     />
     <gl-button
       v-if="canResolve"
@@ -289,6 +290,7 @@ export default {
       data-track-label="edit_button"
       category="tertiary"
       icon="pencil"
+      class="note-hidden-xs"
       :title="$options.i18n.editButtonText"
       :aria-label="$options.i18n.editButtonText"
       @click="$emit('start-editing')"
@@ -304,6 +306,30 @@ export default {
       category="tertiary"
       no-caret
     >
+      <!-- Below md, View session and Edit move here from the header to prevent crowding -->
+      <gl-disclosure-dropdown-group
+        v-if="duoSessionId || showEdit"
+        class="note-only-xs"
+        data-testid="compact-actions-group"
+      >
+        <view-session-button
+          v-if="duoSessionId"
+          :session-id="duoSessionId"
+          as-dropdown-item
+          data-testid="view-session-action"
+        />
+        <gl-disclosure-dropdown-item
+          v-if="showEdit"
+          data-testid="edit-note-action"
+          data-track-action="click_button"
+          data-track-label="edit_button"
+          @action="emitEvent('start-editing')"
+        >
+          <template #list-item>
+            {{ $options.i18n.editButtonText }}
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
       <gl-disclosure-dropdown-item
         data-testid="copy-link-action"
         :data-clipboard-text="noteUrl"

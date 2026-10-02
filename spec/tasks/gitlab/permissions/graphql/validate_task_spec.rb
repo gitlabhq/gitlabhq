@@ -413,15 +413,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       allow(Authz::PermissionGroups::Assignable).to receive(:available_permissions)
         .and_return([:read_project, :update_project, :create_issue, :read_something])
       allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
-
-      # Skip test coverage validation by default -- tested separately below
-      allow(task).to receive(:register_test_coverage).with(any_args)
-      mock_scanner = instance_double(Tasks::Gitlab::Permissions::Graphql::SpecPermissionScanner,
-        insufficient_test_coverage: [])
-      allow(task).to receive_messages(
-        class_source_path: 'app/graphql/types/test_type.rb',
-        spec_permission_scanner: mock_scanner
-      )
+      allow(task).to receive(:class_source_path).and_return('app/graphql/types/test_type.rb')
     end
 
     context 'when there are no directives' do
@@ -1134,88 +1126,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, :silence_stdou
       end
 
       it 'validates all directives and completes successfully' do
-        expect { run }.to output(/GraphQL permissions are valid/).to_stdout
-      end
-    end
-
-    context 'when a permission has insufficient test coverage' do
-      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project) }
-      let(:type) { mock_type('ProjectType', directive: directive) }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
-
-      let(:mock_scanner) do
-        instance_double(
-          Tasks::Gitlab::Permissions::Graphql::SpecPermissionScanner,
-          insufficient_test_coverage: [{
-            permission: 'read_project',
-            endpoint_count: 1,
-            test_count: 0,
-            endpoints: [{
-              kind: 'type', name: 'ProjectType',
-              source: 'app/graphql/types/test_type.rb', permission: :read_project
-            }]
-          }]
-        )
-      end
-
-      before do
-        allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
-          .with(:read_project).and_return([mock_assignable])
-        allow(task).to receive(:register_test_coverage).and_call_original
-        allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
-        allow(mock_scanner).to receive(:add_endpoint)
-      end
-
-      it 'registers the declaration for coverage tracking' do
-        expect(mock_scanner).to receive(:add_endpoint).with(
-          endpoint_id: 'type:ProjectType project',
-          permission: :read_project,
-          details: hash_including(kind: 'type', name: 'ProjectType')
-        )
-
-        expect { run }.to raise_error(SystemExit)
-      end
-
-      it 'returns an error with declaration details' do
-        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
-          #######################################################################
-          #
-          #  The following permissions have fewer tests than GraphQL types/mutations/fields using them.
-          #  Each declaration should have its own `it_behaves_like 'authorizing granular token permissions for GraphQL'`
-          #  test per boundary type. Add test coverage.
-          #  Learn more: https://docs.gitlab.com/development/permissions/granular_access/graphql_implementation_guide/#step-6-add-authorization-tests
-          #
-          #    - read_project: 1 declaration, 0 tests
-          #        [type] ProjectType (app/graphql/types/test_type.rb)
-          #
-          #######################################################################
-        OUTPUT
-      end
-    end
-
-    context 'when a permission has sufficient test coverage' do
-      let(:directive) { mock_directive(permissions: :read_project, boundary_type: :project) }
-      let(:type) { mock_type('ProjectType', directive: directive) }
-      let(:mock_assignable) { instance_double(Authz::PermissionGroups::Assignable, boundaries: %w[project]) }
-
-      let(:mock_scanner) do
-        instance_double(
-          Tasks::Gitlab::Permissions::Graphql::SpecPermissionScanner,
-          insufficient_test_coverage: []
-        )
-      end
-
-      before do
-        allow(GitlabSchema).to receive(:types).and_return({ 'ProjectType' => type, 'Mutation' => empty_mutation_type })
-        allow(Authz::PermissionGroups::Assignable).to receive(:available_for_permission)
-          .with(:read_project).and_return([mock_assignable])
-        allow(task).to receive(:register_test_coverage).and_call_original
-        allow(task).to receive(:spec_permission_scanner).and_return(mock_scanner)
-        allow(mock_scanner).to receive(:add_endpoint)
-      end
-
-      it 'completes successfully' do
         expect { run }.to output(/GraphQL permissions are valid/).to_stdout
       end
     end

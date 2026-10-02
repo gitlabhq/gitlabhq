@@ -6016,9 +6016,6 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Assists developers by generating and completing code in real-time. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Available models"
-msgstr ""
-
 msgid "AdminAIPoweredFeatures|Available models can only be configured when using a GitLab-managed model."
 msgstr ""
 
@@ -6032,6 +6029,9 @@ msgid "AdminAIPoweredFeatures|Code Suggestions"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Compatible models"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Configure available models"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Default model"
@@ -8524,6 +8524,9 @@ msgid_plural "AiGovernance|%{count} flagged skills"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AiGovernance|%{value}, set as an override"
+msgstr ""
+
 msgid "AiGovernance|AI Governance"
 msgstr ""
 
@@ -8587,6 +8590,9 @@ msgstr ""
 msgid "AiGovernance|Date range"
 msgstr ""
 
+msgid "AiGovernance|Default"
+msgstr ""
+
 msgid "AiGovernance|Destroy"
 msgstr ""
 
@@ -8618,6 +8624,9 @@ msgid "AiGovernance|Failed to update the MCP server. Try again."
 msgstr ""
 
 msgid "AiGovernance|Failed to update tool rule. Please try again."
+msgstr ""
+
+msgid "AiGovernance|Inherit"
 msgstr ""
 
 msgid "AiGovernance|Inherited from group"
@@ -8671,6 +8680,9 @@ msgstr ""
 msgid "AiGovernance|No recent project exposure."
 msgstr ""
 
+msgid "AiGovernance|No rule"
+msgstr ""
+
 msgid "AiGovernance|No skills have been flagged by SkillGuard."
 msgstr ""
 
@@ -8680,6 +8692,9 @@ msgstr ""
 msgid "AiGovernance|None"
 msgstr ""
 
+msgid "AiGovernance|Override"
+msgstr ""
+
 msgid "AiGovernance|Overrides group"
 msgstr ""
 
@@ -8687,6 +8702,9 @@ msgid "AiGovernance|Projects with the most active agent sessions"
 msgstr ""
 
 msgid "AiGovernance|Read"
+msgstr ""
+
+msgid "AiGovernance|Rules"
 msgstr ""
 
 msgid "AiGovernance|Runs on GitLab as a service account, without waiting for anyone."
@@ -8747,6 +8765,9 @@ msgid "AiGovernance|Type"
 msgstr ""
 
 msgid "AiGovernance|Usage rankings are always based on the last 30 days."
+msgstr ""
+
+msgid "AiGovernance|Uses %{value}"
 msgstr ""
 
 msgid "AiGovernance|View MCP registry"
@@ -11475,6 +11496,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Reset filters"
 msgstr ""
 
+msgid "AnalyticsDashboards|Restricted"
+msgstr ""
+
 msgid "AnalyticsDashboards|Root Cause Analysis"
 msgstr ""
 
@@ -11494,6 +11518,12 @@ msgid "AnalyticsDashboards|Settings"
 msgstr ""
 
 msgid "AnalyticsDashboards|Start building your dashboard"
+msgstr ""
+
+msgid "AnalyticsDashboards|This group has restricted access, so you can't select it. You can select available projects and subgroups listed below it instead."
+msgstr ""
+
+msgid "AnalyticsDashboards|This project has restricted access, so you can't select it."
 msgstr ""
 
 msgid "AnalyticsDashboards|This table doesn't include GitLab Duo Agent Platform events."
@@ -56052,6 +56082,9 @@ msgid "Number of namespaces per indexing rollout"
 msgstr ""
 
 msgid "Number of parallel processes per indexing task"
+msgstr ""
+
+msgid "Number of pending indices to start indexing per node"
 msgstr ""
 
 msgid "Number of projects"

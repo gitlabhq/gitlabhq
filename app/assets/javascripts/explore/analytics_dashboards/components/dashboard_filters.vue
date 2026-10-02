@@ -47,6 +47,9 @@ export default {
     scopeMultiSelect() {
       return this.scopeConfig.multiSelect === true;
     },
+    scopeRequirePermissions() {
+      return this.scopeConfig.requirePermissions ?? [];
+    },
     dateRangeConfig() {
       return this.dashboardFilters?.dateRange ?? {};
     },
@@ -86,6 +89,7 @@ export default {
     >
       <scope-picker
         :multi-select="scopeMultiSelect"
+        :require-permissions="scopeRequirePermissions"
         :initial-paths="scopePaths"
         @change="$emit('set-scope', $event)"
         @ready="$emit('ready')"

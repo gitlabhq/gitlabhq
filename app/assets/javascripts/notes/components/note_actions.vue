@@ -392,7 +392,7 @@ export default {
     <view-session-button
       v-if="duoSessionId"
       :session-id="duoSessionId"
-      class="note-action-button"
+      class="note-action-button gl-hidden @sm/panel:gl-inline-flex"
     />
     <gl-button
       v-if="canResolve"
@@ -435,7 +435,7 @@ export default {
       :aria-label="editAriaLabel"
       icon="pencil"
       category="tertiary"
-      class="note-action-button js-note-edit"
+      class="note-action-button js-note-edit gl-hidden @sm/panel:gl-inline-flex"
       @click="onEdit"
     />
     <gl-button
@@ -461,6 +461,25 @@ export default {
         no-caret
         :toggle-aria-label="moreActionsAriaLabel"
       >
+        <gl-disclosure-dropdown-group
+          v-if="duoSessionId || canEdit"
+          class="@sm/panel:gl-hidden"
+          data-testid="compact-actions-group"
+        >
+          <view-session-button
+            v-if="duoSessionId"
+            :session-id="duoSessionId"
+            as-dropdown-item
+            data-testid="view-session-action"
+          />
+          <gl-disclosure-dropdown-item
+            v-if="canEdit"
+            data-testid="edit-note-action"
+            @action="onEdit"
+          >
+            <template #list-item> {{ $options.i18n.editCommentLabel }} </template>
+          </gl-disclosure-dropdown-item>
+        </gl-disclosure-dropdown-group>
         <gl-disclosure-dropdown-item
           v-if="noteUrl"
           class="js-btn-copy-note-link"

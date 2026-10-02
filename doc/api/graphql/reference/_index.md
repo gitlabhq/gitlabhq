@@ -6874,7 +6874,7 @@ Arguments:
 | <a id="mutation-bulkupdateaitoolrules-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-bulkupdateaitoolrules-fullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the root namespace to update tool rules for. |
 | <a id="mutation-bulkupdateaitoolrules-projectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project to update tool rules for. When provided, rules can only be stricter than the namespace rule. |
-| <a id="mutation-bulkupdateaitoolrules-toolrules"></a>`toolRules` | [`[BulkToolRuleInput!]!`](#bulktoolruleinput) | Tool rules to update (maximum 100 entries). |
+| <a id="mutation-bulkupdateaitoolrules-toolrules"></a>`toolRules` | [`[BulkToolRuleInput!]!`](#bulktoolruleinput) | Tool rules to update (maximum 100 entries). Each entry replaces the whole rule, so a partial entry clears the access types it omits. |
 
 Fields:
 
@@ -18831,6 +18831,7 @@ Arguments:
 | <a id="mutation-updateaitoolrule-localaccess"></a>`localAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for local or IDE surface. |
 | <a id="mutation-updateaitoolrule-projectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project to update the tool rule for. When provided, creates a project-level rule that can only be stricter than the namespace rule. |
 | <a id="mutation-updateaitoolrule-toolid"></a>`toolId` | [`String!`](#string) | Tool name string identifying the tool to update. For example, "create_issue". |
+| <a id="mutation-updateaitoolrule-unsetaccesstypes"></a>`unsetAccessTypes` {{< icon name="warning-solid" >}} | [`[AiToolAccessType!]`](#aitoolaccesstype) | Introduced in GitLab 19.5. Status: Experiment. Access types to clear so they fall back to their defaults. The rule is deleted when every access type is unset. |
 | <a id="mutation-updateaitoolrule-webaccess"></a>`webAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for web surface. |
 
 Fields:
@@ -36141,13 +36142,27 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aitoolrule-actiontype"></a>`actionType` | [`AiToolActionType!`](#aitoolactiontype) | Action type categorisation for the tool. |
-| <a id="aitoolrule-backgroundaccess"></a>`backgroundAccess` {{< icon name="warning-solid" >}} | [`AiBackgroundToolPermission`](#aibackgroundtoolpermission) | Introduced in GitLab 19.3. Status: Experiment. Permission mode for the background-flow surface. Null means no rule is set and the value falls back to the default privileged group. |
+| <a id="aitoolrule-backgroundaccess"></a>`backgroundAccess` {{< icon name="warning-solid" >}} | [`AiBackgroundToolPermission`](#aibackgroundtoolpermission) | Introduced in GitLab 19.3. Status: Experiment. Effective permission mode for the background-flow surface, after applying group and project rules and the default. |
 | <a id="aitoolrule-category"></a>`category` | [`String!`](#string) | Display category for the tool. For example, GitLab Read, Files, and Commands. |
+| <a id="aitoolrule-configuredaccess"></a>`configuredAccess` {{< icon name="warning-solid" >}} | [`AiToolRuleAccess!`](#aitoolruleaccess) | Introduced in GitLab 19.5. Status: Experiment. Permission modes set at the requested scope: the project when a project path is given, otherwise the namespace. A null mode is not set at that scope. |
+| <a id="aitoolrule-defaultaccess"></a>`defaultAccess` {{< icon name="warning-solid" >}} | [`AiToolRuleAccess!`](#aitoolruleaccess) | Introduced in GitLab 19.5. Status: Experiment. Permission modes that apply when no rule is set. |
 | <a id="aitoolrule-id"></a>`id` | [`ID!`](#id) | Tool name. Used as stable identifier. Always the tool name string and never a database ID. |
-| <a id="aitoolrule-localaccess"></a>`localAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for local or IDE surface. Null means no rule is set and the value falls back to the default privileged group. |
+| <a id="aitoolrule-localaccess"></a>`localAccess` | [`AiToolPermission`](#aitoolpermission) | Effective permission mode for local or IDE surface, after applying group and project rules and the default. |
 | <a id="aitoolrule-name"></a>`name` | [`String!`](#string) | Name of the tool as registered in the tool registry. |
 | <a id="aitoolrule-source"></a>`source` | [`AiToolSource!`](#aitoolsource) | Source of the tool. Either "gitlab" or "mcp". |
-| <a id="aitoolrule-webaccess"></a>`webAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for web surface. Null means no rule is set and the value falls back to the default privileged group. |
+| <a id="aitoolrule-webaccess"></a>`webAccess` | [`AiToolPermission`](#aitoolpermission) | Effective permission mode for web surface, after applying group and project rules and the default. |
+
+### `AiToolRuleAccess`
+
+Permission modes of an AI tool rule for each surface.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aitoolruleaccess-backgroundaccess"></a>`backgroundAccess` | [`AiBackgroundToolPermission`](#aibackgroundtoolpermission) | Permission mode for the background-flow surface. |
+| <a id="aitoolruleaccess-localaccess"></a>`localAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for the local or IDE surface. |
+| <a id="aitoolruleaccess-webaccess"></a>`webAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for the web surface. |
 
 ### `AiUsageData`
 
@@ -69245,6 +69260,16 @@ GitLab release state of the model.
 | <a id="aiselfhostedmodelreleasestate-beta"></a>`BETA` | Beta status. |
 | <a id="aiselfhostedmodelreleasestate-experimental"></a>`EXPERIMENTAL` | Experimental status. |
 | <a id="aiselfhostedmodelreleasestate-ga"></a>`GA` | GA status. |
+
+### `AiToolAccessType`
+
+Access type of an AI tool rule.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aitoolaccesstype-background_access"></a>`BACKGROUND_ACCESS` | Background-flow surface access. |
+| <a id="aitoolaccesstype-local_access"></a>`LOCAL_ACCESS` | Local or IDE surface access. |
+| <a id="aitoolaccesstype-web_access"></a>`WEB_ACCESS` | Web surface access. |
 
 ### `AiToolActionType`
 

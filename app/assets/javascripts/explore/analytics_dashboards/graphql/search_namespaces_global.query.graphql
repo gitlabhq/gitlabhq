@@ -19,6 +19,9 @@ query searchAnalyticsDashboardNamespacesGlobal($search: String!) {
       name
       fullName
       fullPath
+      userPermissions {
+        readProAiAnalytics @gl_introduced(version: "19.5.0")
+      }
       # Aliased so both result types expose their parent under the same key.
       namespace: parent {
         id
@@ -39,6 +42,9 @@ query searchAnalyticsDashboardNamespacesGlobal($search: String!) {
       name
       fullName: nameWithNamespace
       fullPath
+      userPermissions {
+        readProAiAnalytics @gl_introduced(version: "19.5.0")
+      }
       namespace {
         id
         name

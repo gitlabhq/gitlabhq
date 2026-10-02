@@ -406,4 +406,12 @@
       @apply gl-hidden;
     }
   }
+
+  // Complement of .note-hidden-xs. Hides rather than sets display, so the
+  // element keeps its own display value.
+  @container note-container (width > #{$breakpoint-sm}) {
+    .note-only-xs {
+      @apply gl-hidden;
+    }
+  }
 }

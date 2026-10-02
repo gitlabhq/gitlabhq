@@ -38,7 +38,12 @@ describe('noteActions', () => {
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
   const findTimelineButton = () => wrapper.findComponent(TimelineEventButton);
   const findReportAbuseButton = () => wrapper.findComponent(`[data-testid="report-abuse-button"]`);
-  const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
+  const findBorderedDropdownGroups = () =>
+    wrapper.findAllComponents(GlDisclosureDropdownGroup).filter((group) => group.props('bordered'));
+  const findCompactActionsGroup = () => wrapper.find('[data-testid="compact-actions-group"]');
+  const findEditMenuItem = () => wrapper.findComponent('[data-testid="edit-note-action"]');
+  const findViewSessionMenuItem = () =>
+    wrapper.findComponent('[data-testid="view-session-action"]');
   const findFeedbackButton = () => wrapper.find('[data-testid="amazon-q-feedback-button"]');
   const findDeleteButton = () => wrapper.find('.js-note-delete');
   const findEditButton = () => wrapper.find('.js-note-edit');
@@ -70,7 +75,10 @@ describe('noteActions', () => {
       stubs: {
         ViewSessionButton: stubComponent({
           name: 'ViewSessionButton',
-          props: { sessionId: { type: Number, required: true } },
+          props: {
+            sessionId: { type: Number, required: true },
+            asDropdownItem: { type: Boolean, required: false, default: false },
+          },
         }),
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: {
@@ -150,27 +158,27 @@ describe('noteActions', () => {
 
     describe('actions dropdown group', () => {
       it('should render the dropdown group when canReportAsAbuse is true', async () => {
-        wrapper.setProps({ canReportAsAbuse: true });
+        wrapper.setProps({ canReportAsAbuse: true, canEdit: false });
         await nextTick();
-        expect(findDisclosureDropdownGroup().exists()).toBe(true);
+        expect(findBorderedDropdownGroups()).toHaveLength(1);
       });
 
       it('should render the dropdown group when canEdit is true', async () => {
-        wrapper.setProps({ canEdit: true });
+        wrapper.setProps({ canReportAsAbuse: false, canEdit: true });
         await nextTick();
-        expect(findDisclosureDropdownGroup().exists()).toBe(true);
+        expect(findBorderedDropdownGroups()).toHaveLength(1);
       });
 
       it('should render the dropdown group when both canReportAsAbuse and canEdit are true', async () => {
         wrapper.setProps({ canReportAsAbuse: true, canEdit: true });
         await nextTick();
-        expect(findDisclosureDropdownGroup().exists()).toBe(true);
+        expect(findBorderedDropdownGroups()).toHaveLength(1);
       });
 
       it('should not render the dropdown group when neither canReportAsAbuse nor canEdit is true', async () => {
         wrapper.setProps({ canReportAsAbuse: false, canEdit: false });
         await nextTick();
-        expect(findDisclosureDropdownGroup().exists()).toBe(false);
+        expect(findBorderedDropdownGroups()).toHaveLength(0);
       });
     });
 
@@ -768,6 +776,70 @@ describe('noteActions', () => {
       it('passes the session id to the view session button', () => {
         expect(findViewSessionButton().props('sessionId')).toBe(42);
       });
+    });
+  });
+
+  describe('narrow-width actions', () => {
+    beforeEach(() => {
+      useNotes().setUserData(userDataMock);
+    });
+
+    it('hides the inline view session and edit buttons below the panel sm breakpoint', () => {
+      wrapper = mountNoteActions({ ...props, canEdit: true, duoSessionId: 42 });
+
+      const inlineViewSessionButton = wrapper
+        .findAllComponents({ name: 'ViewSessionButton' })
+        .filter((button) => !button.props('asDropdownItem'))
+        .at(0);
+
+      expect(inlineViewSessionButton.classes()).toEqual(
+        expect.arrayContaining(['gl-hidden', '@sm/panel:gl-inline-flex']),
+      );
+      expect(findEditButton().classes()).toEqual(
+        expect.arrayContaining(['js-note-edit', 'gl-hidden', '@sm/panel:gl-inline-flex']),
+      );
+    });
+
+    it('renders the actions group first in the overflow menu, hidden at the panel sm breakpoint', () => {
+      wrapper = mountNoteActions({ ...props, canEdit: true, duoSessionId: 42 });
+
+      expect(findCompactActionsGroup().classes()).toContain('@sm/panel:gl-hidden');
+      expect(wrapper.findAllComponents(GlDisclosureDropdownGroup).at(0).element).toBe(
+        findCompactActionsGroup().element,
+      );
+    });
+
+    it('renders the view session menu item when the note has a linked session', () => {
+      wrapper = mountNoteActions({ ...props, canEdit: false, duoSessionId: 42 });
+
+      expect(findViewSessionMenuItem().props()).toMatchObject({
+        sessionId: 42,
+        asDropdownItem: true,
+      });
+      expect(findEditMenuItem().exists()).toBe(false);
+    });
+
+    it('renders only the edit menu item when there is no linked session', () => {
+      wrapper = mountNoteActions({ ...props, canEdit: true });
+
+      expect(findCompactActionsGroup().exists()).toBe(true);
+      expect(findViewSessionMenuItem().exists()).toBe(false);
+      expect(findEditMenuItem().text()).toBe('Edit comment');
+    });
+
+    it('does not render the actions group without a linked session or edit permission', () => {
+      wrapper = mountNoteActions({ ...props, canEdit: false });
+
+      expect(findCompactActionsGroup().exists()).toBe(false);
+    });
+
+    it('emits `handle-edit` from the edit menu item, like the inline button', () => {
+      wrapper = mountNoteActions({ ...props, canEdit: true });
+
+      findEditMenuItem().vm.$emit('action');
+      wrapper.findComponent('.js-note-edit').vm.$emit('click');
+
+      expect(wrapper.emitted('handle-edit')).toEqual([[], []]);
     });
   });
 });

@@ -409,8 +409,5 @@ IO.popen('pbcopy', 'w') { |f| f.puts "curl \"http://#{Gitlab.host_with_port}/api
    - A permission in a decorator is not part of any assignable permission.
    - The decorator's boundary types don't match the assignable permission's `boundaries`.
    - A skip reason is not defined in `lib/tasks/gitlab/permissions/routes/skip_reasons.rb`.
-   - An endpoint's permission has no authorization test. Each endpoint declaration needs its own
-     test per boundary type. Routes generated from a single declaration (for example, a shared
-     concern mounted at both instance and project level) count as one endpoint.
    - The `assignable_when` conditions do not match the tags on the code using the permission.
    - The generated reference documentation is out of date.

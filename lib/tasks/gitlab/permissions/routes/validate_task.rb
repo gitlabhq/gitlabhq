@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'spec_permission_scanner'
-
 module Tasks
   module Gitlab
     module Permissions
@@ -17,8 +15,7 @@ module Tasks
               boundary_mismatch: [],
               missing_authorization: [],
               invalid_skip_reason: [],
-              invalid_condition: [],
-              insufficient_tests: []
+              invalid_condition: []
             }
             @source_locations = {}.compare_by_identity
           end
@@ -29,8 +26,6 @@ module Tasks
 
           def validate!
             routes.each { |route| validate_route(route) }
-
-            violations[:insufficient_tests] = spec_permission_scanner.insufficient_test_coverage
 
             super
           end
@@ -72,10 +67,6 @@ module Tasks
               validate_permission_defined(route, permission)
               validate_boundary_defined(route, permission, boundary_types)
               validate_assignable_permission(route, permission, boundary_types)
-
-              unless authorization[:skip_granular_token_authorization]
-                register_test_coverage(route, permission, boundary_types)
-              end
             end
 
             validate_skip_reason(route, authorization)
@@ -166,31 +157,6 @@ module Tasks
             )
           end
 
-          # Routes generated from the same endpoint declaration (for example a shared
-          # concern mounted at both instance and project level, or an endpoint defined
-          # in a loop) share one decorator and one code path, so they are counted as a
-          # single endpoint per boundary type.
-          def register_test_coverage(route, permission, boundary_types)
-            location = @source_locations[route]
-            return unless location
-
-            source_file = relative_path(location.first)
-            scanner = spec_permission_scanner
-
-            scanner.add_endpoint(
-              endpoint_id: "#{source_file}:#{location.last} #{boundary_types.sort.join(',')}",
-              permission: permission,
-              details: base_error(route).merge(
-                permission: permission,
-                spec_file: scanner.derive_spec_path(source_file)
-              )
-            )
-          end
-
-          def spec_permission_scanner
-            @spec_permission_scanner ||= SpecPermissionScanner.new
-          end
-
           def format_all_errors
             out = format_route_errors(:undefined_permission)
             out += format_route_errors(:missing_boundary)
@@ -198,8 +164,7 @@ module Tasks
             out += format_boundary_mismatch_errors
             out += format_route_errors(:missing_authorization)
             out += format_invalid_skip_reason_errors
-            out += format_invalid_condition_errors
-            out + format_insufficient_test_errors
+            out + format_invalid_condition_errors
           end
 
           def format_route_errors(kind)
@@ -255,22 +220,6 @@ module Tasks
             "#{out}\n"
           end
 
-          def format_insufficient_test_errors
-            return '' if violations[:insufficient_tests].empty?
-
-            out = "#{error_messages[:insufficient_tests]}\n\n"
-
-            violations[:insufficient_tests].each do |v|
-              out += "  - #{v[:permission]}: #{v[:endpoint_count]} endpoints, #{v[:test_count]} tests\n"
-              v[:endpoints].each do |route|
-                out += "      #{route[:method]} #{route[:path]} (#{route[:source]})\n"
-                out += "        Suggested spec: #{route[:spec_file]}\n"
-              end
-            end
-
-            "#{out}\n"
-          end
-
           def error_messages
             {
               undefined_permission: <<~MSG.chomp,
@@ -302,16 +251,10 @@ module Tasks
                 The following API routes use a missing or invalid skip_granular_token_authorization reason.
                 Use one of: #{VALID_SKIP_REASONS.map { |r| ":#{r}" }.join(', ')}
               MSG
-              invalid_condition: <<~MSG.chomp,
+              invalid_condition: <<~MSG.chomp
                 The following API routes use an unknown assignable_when condition.
                 Use one of: #{::Authz::PermissionGroups::AssignableCondition::EVALUATORS.keys.map { |c| ":#{c}" }.join(', ')}
                 #{assignable_permissions_link(anchor: 'conditionally-assignable-permissions')}
-              MSG
-              insufficient_tests: <<~MSG.chomp
-                The following permissions have fewer tests than endpoints using them.
-                Each endpoint declaration should have its own `it_behaves_like 'authorizing granular token permissions'`
-                test per boundary type. Add test coverage.
-                #{implementation_guide_link(anchor: 'step-6-add-authorization-tests')}
               MSG
             }
           end

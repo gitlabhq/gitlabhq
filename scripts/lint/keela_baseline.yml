@@ -399,8 +399,6 @@ methods:
   - hierarchy_members_with_inactive
   app/models/group_custom_attribute.rb:
   - self.declarative_policy_class
-  app/models/group_group_link.rb:
-  - self.default_access
   app/models/hooks/web_hook_log.rb:
   - self.delete_batch_for
   app/models/import/source_user_placeholder_reference.rb:
@@ -663,8 +661,6 @@ scopes:
   - project_provisioned
   ee/app/models/ai/duo_workflows/event.rb:
   - with_correlation_id
-  ee/app/models/ai/tool_rule.rb:
-  - for_tool_names
   ee/app/models/approval_merge_request_rule.rb:
   - for_checks_that_can_be_refreshed
   ee/app/models/concerns/geo/verifiable_model.rb:

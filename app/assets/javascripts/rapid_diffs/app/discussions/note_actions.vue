@@ -236,7 +236,11 @@ export default {
       {{ __('Contributor') }}
     </user-access-role-badge>
     <span class="@max-sm/discussion:gl-flex-1"></span>
-    <view-session-button v-if="duoSessionId" :session-id="duoSessionId" />
+    <view-session-button
+      v-if="duoSessionId"
+      :session-id="duoSessionId"
+      class="@max-sm/discussion:gl-hidden"
+    />
     <gl-button
       v-if="canResolve"
       v-gl-tooltip
@@ -263,6 +267,7 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
+      class="@max-sm/discussion:gl-hidden"
       @click="$emit('start-editing')"
     />
     <gl-button
@@ -285,6 +290,25 @@ export default {
         placement="bottom-end"
         no-caret
       >
+        <gl-disclosure-dropdown-group
+          v-if="duoSessionId || canEdit"
+          class="@sm/discussion:gl-hidden"
+          data-testid="compact-actions-group"
+        >
+          <view-session-button
+            v-if="duoSessionId"
+            :session-id="duoSessionId"
+            as-dropdown-item
+            data-testid="view-session-action"
+          />
+          <gl-disclosure-dropdown-item
+            v-if="canEdit"
+            data-testid="edit-note-action"
+            @action="$emit('start-editing')"
+          >
+            <template #list-item>{{ $options.i18n.editCommentLabel }}</template>
+          </gl-disclosure-dropdown-item>
+        </gl-disclosure-dropdown-group>
         <gl-disclosure-dropdown-item v-if="noteUrl" @action="onCopyUrl">
           <template #list-item>{{ __('Copy link') }}</template>
         </gl-disclosure-dropdown-item>

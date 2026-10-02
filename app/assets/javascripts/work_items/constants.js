@@ -54,6 +54,8 @@ export const WIDGET_TYPE_CRM_CONTACTS = 'CRM_CONTACTS';
 export const WIDGET_TYPE_EMAIL_PARTICIPANTS = 'EMAIL_PARTICIPANTS';
 export const WIDGET_TYPE_CUSTOM_FIELDS = 'CUSTOM_FIELDS';
 export const WIDGET_TYPE_VULNERABILITIES = 'VULNERABILITIES';
+// Value intentionally kept as 'AGENT_PLAN': it's derived from the backend widget class
+// WorkItems::Widgets::AgentPlan; rename tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/612831
 export const WIDGET_TYPE_WORKPLAN = 'AGENT_PLAN';
 export const WIDGET_TYPE_DECISION_LOG = 'DECISION_LOG';
 

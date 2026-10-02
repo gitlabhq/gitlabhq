@@ -20,10 +20,13 @@ module Authz
       requeue_abandoned
 
       users_processed = 0
+      queue_lag_s = nil
 
       result = loop_with_runtime_limit(MAX_RUNTIME) do
         batch = Authz::ProjectAuthorizationReverification.claim_batch
         break :complete if batch.empty?
+
+        queue_lag_s ||= lag_seconds(batch)
 
         batch.each do |reverification|
           users_processed += 1 if process(reverification)
@@ -35,9 +38,16 @@ module Authz
 
       log_extra_metadata_on_done(:users_processed, users_processed)
       log_extra_metadata_on_done(:queue_drained, queue_drained)
+      log_extra_metadata_on_done(:queue_lag_s, queue_lag_s || 0)
     end
 
     private
+
+    def lag_seconds(batch)
+      processed_at = batch.map(&:enqueued_at).min + Authz::ProjectAuthorizationReverification::MIN_AGE
+
+      (Time.current - processed_at).round
+    end
 
     def process(reverification)
       refresh_authorizations(reverification.user)

@@ -67,6 +67,7 @@ Prerequisites:
 
 - [Dependency scanning](../dependency_scanning/_index.md) must be enabled
   and producing results.
+  The scan must run, and the results must be reported on the default branch.
 - The project must use a
   [supported package manager](#supported-package-managers).
 - A dependency scanning auto-remediation profile must be attached to the project. For

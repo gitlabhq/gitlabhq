@@ -1207,7 +1207,6 @@
   - "{,ee/}app/policies/{,**/}*.rb"
   - "{,ee/}app/graphql/{,**/}*.rb"
   - "{,ee/}lib/{,**/}api/{,**/}*.rb"
-  - "{,ee/}spec/support/shared_examples/{,**/}*.rb"
   - "doc/api/graphql/reference/_index.md"
   - "doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md"
   - "tooling/authz/permissions/docs/templates/*"
@@ -3090,6 +3089,7 @@
     - !reference [".rails:rules:graphql-query-documents", rules]
 
 # Runs only integration specs matching the changed GraphQL query file; see tooling/ci/graphql_query_document_specs.rb.
+# MR only: default branch pipelines already run the full integration suite.
 .rails:rules:graphql-document-integration:
   rules:
     - <<: *if-fork-merge-request
@@ -3097,7 +3097,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_GRAPHQL_DOCUMENT_INTEGRATION == "true"'
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *frontend-graphql-patterns
 
 .rails:rules:graphql-document-integration-ee:

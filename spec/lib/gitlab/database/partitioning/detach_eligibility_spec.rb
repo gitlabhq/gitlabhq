@@ -73,6 +73,38 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
         expect(blocker.reason).to eq(:partition_pending_detach)
       end
     end
+
+    context 'when the caller intends to detach concurrently' do
+      subject(:check) do
+        described_class.new(partition, connection: connection, detach_concurrently: true)
+      end
+
+      it 'reports the partition itself rather than a pending sibling' do
+        expect(check.detachable?).to be(false)
+        expect(blocker.reason).to eq(:partition_pending_detach)
+      end
+    end
+  end
+
+  context 'when another partition of the parent is awaiting FINALIZE' do
+    before do
+      mark_pending_detach("#{referenced_table}_101")
+    end
+
+    it_behaves_like 'a detachable partition'
+
+    context 'when the caller intends to detach concurrently' do
+      subject(:check) do
+        described_class.new(partition, connection: connection, detach_concurrently: true)
+      end
+
+      it 'informs that the other partition is awaiting FINALIZE' do
+        expect(check.detachable?).to be(false)
+        expect(blocker.reason).to eq(:sibling_pending_detach)
+        expect(blocker.level).to eq(:info)
+        expect(blocker.details).to eq(pending_detach_partition: "#{dynamic_schema}.#{referenced_table}_101")
+      end
+    end
   end
 
   context 'when the parent table has a DEFAULT partition' do
@@ -101,11 +133,9 @@ RSpec.describe Gitlab::Database::Partitioning::DetachEligibility, feature_catego
           mark_pending_detach("#{referenced_table}_100")
         end
 
-        # The DEFAULT partition never resolves, so it must not hide behind a blocker that clears
-        # itself once the dropper runs
-        it 'reports the DEFAULT partition rather than the pending detach' do
+        it 'reports the pending detach rather than the DEFAULT partition' do
           expect(check.detachable?).to be(false)
-          expect(blocker.reason).to eq(:parent_has_default_partition)
+          expect(blocker.reason).to eq(:partition_pending_detach)
         end
       end
     end

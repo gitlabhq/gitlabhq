@@ -38,12 +38,22 @@ describe('ScopePicker', () => {
   const groupFullPath = 'gitlab-org';
   const closeListbox = jest.fn();
 
+  const groupPermissions = (readProAiAnalytics = true) => ({
+    __typename: 'GroupPermissions',
+    readProAiAnalytics,
+  });
+  const projectPermissions = (readProAiAnalytics = true) => ({
+    __typename: 'ProjectPermissions',
+    readProAiAnalytics,
+  });
+
   const mockGroup = {
     __typename: TYPENAME_GROUP,
     id: 'gid://gitlab/Group/1',
     name: 'GitLab.org',
     fullName: 'GitLab.org',
     fullPath: groupFullPath,
+    userPermissions: groupPermissions(),
   };
 
   const mockProject = (id, name, path) => ({
@@ -52,6 +62,7 @@ describe('ScopePicker', () => {
     name,
     fullName: `GitLab.org / ${name}`,
     fullPath: `${groupFullPath}/${path}`,
+    userPermissions: projectPermissions(),
   });
 
   const mockSubgroup = ({ id, name, path, projectsCount = 0, descendantGroupsCount = 0 }) => ({
@@ -60,6 +71,7 @@ describe('ScopePicker', () => {
     name,
     fullName: `GitLab.org / ${name}`,
     fullPath: `${groupFullPath}/${path}`,
+    userPermissions: groupPermissions(),
     projectsCount,
     descendantGroupsCount,
   });
@@ -102,6 +114,7 @@ describe('ScopePicker', () => {
     name,
     fullName: name,
     fullPath: path,
+    userPermissions: groupPermissions(),
     projectsCount,
     descendantGroupsCount,
   });
@@ -123,6 +136,7 @@ describe('ScopePicker', () => {
       name: 'Time Machine',
       fullName: 'Capsule Corp / Time Machine',
       fullPath: 'capsule-corp/time-machine',
+      userPermissions: projectPermissions(),
       namespace: {
         __typename: TYPENAME_GROUP,
         id: mockCapsuleCorp.id,
@@ -137,6 +151,7 @@ describe('ScopePicker', () => {
       name: 'Gravity Chamber',
       fullName: 'Capsule Corp / Research / Gravity Chamber',
       fullPath: 'capsule-corp/research/gravity-chamber',
+      userPermissions: projectPermissions(),
       namespace: {
         __typename: TYPENAME_GROUP,
         id: 'gid://gitlab/Group/23',
@@ -158,6 +173,7 @@ describe('ScopePicker', () => {
     name: 'Dragon Radar',
     fullName: 'Capsule Corp / Dragon Radar',
     fullPath: 'capsule-corp/dragon-radar',
+    userPermissions: projectPermissions(),
     namespace: {
       __typename: TYPENAME_GROUP,
       id: mockCapsuleCorp.id,
@@ -173,6 +189,7 @@ describe('ScopePicker', () => {
     name: 'Design system',
     fullName: 'GitLab.org / Frontend / Design system',
     fullPath: `${groupFullPath}/frontend/design-system`,
+    userPermissions: groupPermissions(),
     namespace: {
       __typename: TYPENAME_GROUP,
       id: mockFrontend.id,
@@ -219,6 +236,7 @@ describe('ScopePicker', () => {
     name: 'Runner',
     fullName: 'GitLab.org / Runner',
     fullPath: `${groupFullPath}/runner`,
+    userPermissions: projectPermissions(),
   };
 
   const respondWithScopeNamespace = ({ group = null, projects = [] } = {}) =>
@@ -302,6 +320,7 @@ describe('ScopePicker', () => {
     fullName,
     fullPath,
     type: __typename,
+    restricted: false,
   });
 
   // The real listbox takes either grouped sections or a flat option list, rendering its
@@ -1592,12 +1611,13 @@ describe('ScopePicker', () => {
   });
 
   describe('a default derived from the most frecent group', () => {
-    const asFrecentGroup = ({ id, name, fullName, fullPath }) => ({
+    const asFrecentGroup = ({ id, name, fullName, fullPath, userPermissions }) => ({
       __typename: TYPENAME_GROUP,
       id,
       name,
       fullName,
       fullPath,
+      userPermissions,
     });
 
     const mockFrecentGroups = [asFrecentGroup(mockAcme), asFrecentGroup(mockCapsuleCorp)];
@@ -1804,6 +1824,212 @@ describe('ScopePicker', () => {
 
       it('emits ready', () => {
         expectReadyOnce();
+      });
+    });
+  });
+
+  describe('required permissions', () => {
+    const requirePermissions = ['readProAiAnalytics'];
+
+    const lockedGroup = { ...mockCapsuleCorp, userPermissions: groupPermissions(false) };
+    // A backend that predates the field returns it as null.
+    const unknownGroup = { ...mockAcme, userPermissions: groupPermissions(null) };
+    const [openProject] = mockCapsuleProjects;
+    const lockedProject = {
+      ...mockCapsuleProjects[1],
+      userPermissions: projectPermissions(false),
+    };
+
+    const createWrapperWithMixedPermissions = (props = {}) =>
+      createWrapper({
+        topLevelGroupsHandler: respondWithTopLevelGroups([lockedGroup, unknownGroup]),
+        subgroupHandler: respondWithSubgroupProjects([openProject, lockedProject]),
+        props,
+      });
+
+    describe('when the dashboard requires none', () => {
+      beforeEach(async () => {
+        createWrapperWithMixedPermissions();
+        await waitForPromises();
+      });
+
+      it('locks nothing, whatever the namespace grants', () => {
+        expect(findItemFor(lockedGroup).props()).toMatchObject({
+          disabled: false,
+          restricted: false,
+        });
+      });
+    });
+
+    describe('when the dashboard requires one and the group tree is browsed', () => {
+      beforeEach(async () => {
+        createWrapperWithMixedPermissions({ requirePermissions });
+        await waitForPromises();
+      });
+
+      it('locks a group that denies one', () => {
+        expect(findItemFor(lockedGroup).props()).toMatchObject({
+          disabled: true,
+          restricted: true,
+        });
+      });
+
+      it('still lets a locked group expand, so the projects beneath it stay reachable', () => {
+        expect(findItemFor(lockedGroup).props('expandable')).toBe(true);
+      });
+
+      it('leaves a group whose permission is unknown selectable', () => {
+        expect(findItemFor(unknownGroup).props()).toMatchObject({
+          disabled: false,
+          restricted: false,
+        });
+      });
+
+      describe('once a locked group is expanded', () => {
+        beforeEach(async () => {
+          await toggleExpanded(lockedGroup);
+          await waitForPromises();
+        });
+
+        it('leaves a project that grants it selectable', () => {
+          expect(findItemFor(openProject).props()).toMatchObject({
+            disabled: false,
+            restricted: false,
+          });
+        });
+
+        it('locks a project that denies it', () => {
+          expect(findItemFor(lockedProject).props()).toMatchObject({
+            disabled: true,
+            restricted: true,
+          });
+        });
+      });
+    });
+
+    describe('when searching', () => {
+      const lockedResult = { ...mockDeepSubgroup, userPermissions: groupPermissions(false) };
+
+      beforeEach(async () => {
+        createWrapper({
+          globalSearchHandler: respondWithGlobalSearch({
+            groups: [lockedResult],
+            projects: [mockDeepProject],
+          }),
+          props: { requirePermissions },
+        });
+        await waitForPromises();
+        await search('design');
+      });
+
+      it('locks a result that denies one', () => {
+        expect(findItemFor(lockedResult).props()).toMatchObject({
+          disabled: true,
+          restricted: true,
+        });
+      });
+
+      it('leaves a result that grants them selectable', () => {
+        expect(findItemFor(mockDeepProject).props()).toMatchObject({
+          disabled: false,
+          restricted: false,
+        });
+      });
+    });
+
+    describe('when the `scope` URL param names a namespace that denies one', () => {
+      beforeEach(async () => {
+        createWrapper({
+          scopeNamespaceHandler: respondWithScopeNamespace({ group: lockedGroup }),
+          props: { requirePermissions, initialPaths: [lockedGroup.fullPath] },
+        });
+        await waitForPromises();
+      });
+
+      it('drops it rather than selecting it', () => {
+        expectEmptyState();
+        expect(wrapper.emitted('change')).toBeUndefined();
+      });
+
+      it('emits no error, nothing having failed', () => {
+        expect(wrapper.emitted('error')).toBeUndefined();
+      });
+    });
+
+    describe('when the `scope` URL param names one namespace that grants them and one that does not', () => {
+      beforeEach(async () => {
+        createWrapper({
+          scopeNamespaceHandler: respondWithScopeNamespaces({
+            [openProject.fullPath]: openProject,
+            [lockedProject.fullPath]: lockedProject,
+          }),
+          props: {
+            requirePermissions,
+            multiSelect: true,
+            initialPaths: [openProject.fullPath, lockedProject.fullPath],
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('restores only the one that grants them', () => {
+        expect(findSelectedPaths()).toEqual([openProject.fullPath]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(openProject)]]]);
+      });
+    });
+
+    describe('when the `scope` URL param names a namespace whose permission is unknown', () => {
+      beforeEach(async () => {
+        createWrapper({
+          scopeNamespaceHandler: respondWithScopeNamespace({ group: unknownGroup }),
+          props: { requirePermissions, initialPaths: [unknownGroup.fullPath] },
+        });
+        await waitForPromises();
+      });
+
+      it('restores it', () => {
+        expect(findSelectedPaths()).toEqual([unknownGroup.fullPath]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(unknownGroup)]]]);
+      });
+    });
+
+    describe('when the most frecent group denies one', () => {
+      beforeEach(async () => {
+        createWrapper({
+          frecentGroupsHandler: respondWithFrecentGroups([mockAcme]),
+          organizationGroupHandler: respondWithOrganizationGroup([
+            { ...mockAcme, userPermissions: groupPermissions(false) },
+          ]),
+          props: { requirePermissions },
+        });
+        await waitForPromises();
+      });
+
+      it('does not derive a default from it', () => {
+        expectEmptyState();
+        expect(wrapper.emitted('change')).toBeUndefined();
+      });
+
+      it('still emits ready', () => {
+        expectReadyOnce();
+      });
+    });
+
+    describe('when the permission of the most frecent group is unknown', () => {
+      beforeEach(async () => {
+        createWrapper({
+          frecentGroupsHandler: respondWithFrecentGroups([mockAcme]),
+          organizationGroupHandler: respondWithOrganizationGroup([
+            { ...mockAcme, userPermissions: groupPermissions(null) },
+          ]),
+          props: { requirePermissions },
+        });
+        await waitForPromises();
+      });
+
+      it('derives the default from it', () => {
+        expect(findListbox().props('selected')).toEqual([mockAcme.fullPath]);
+        expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockAcme)]]]);
       });
     });
   });

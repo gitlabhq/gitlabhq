@@ -17,6 +17,9 @@ query getAnalyticsDashboardSubgroupProjects($fullPath: ID!, $after: String) {
         name
         fullName: nameWithNamespace
         fullPath
+        userPermissions {
+          readProAiAnalytics @gl_introduced(version: "19.5.0")
+        }
         namespace {
           id
           name

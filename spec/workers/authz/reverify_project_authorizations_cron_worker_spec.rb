@@ -30,7 +30,7 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
     end
 
     context 'when a queued user is missing a project authorization' do
-      let_it_be(:reverification) do
+      let_it_be_with_reload(:reverification) do
         create(:project_authorization_reverification, :to_be_processed, user: user)
       end
 
@@ -55,10 +55,19 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
       end
 
       it 'logs the number of users processed' do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, true)
+        freeze_time do
+          reverification.update!(enqueued_at: 70.minutes.ago)
 
-        perform
+          allow_next_instance_of(Users::RefreshAuthorizedProjectsService) do |service|
+            allow(service).to receive(:execute) { travel(5.minutes) }
+          end
+
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, true)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_lag_s, 600)
+
+          perform
+        end
       end
     end
 
@@ -144,7 +153,7 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
     end
 
     context 'when the runtime limit is reached before the queue is drained' do
-      let_it_be(:reverification) do
+      let_it_be_with_reload(:reverification) do
         create(:project_authorization_reverification, :to_be_processed, user: user)
       end
 
@@ -155,10 +164,15 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
       end
 
       it 'finishes the claimed batch and reports the queue as not drained' do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, false)
+        freeze_time do
+          reverification.update!(enqueued_at: 70.minutes.ago)
 
-        expect { perform }.to change { queued? }.from(true).to(false)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 1)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, false)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_lag_s, 600)
+
+          expect { perform }.to change { queued? }.from(true).to(false)
+        end
       end
     end
 
@@ -166,6 +180,7 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
       it 'reports an empty queue as drained' do
         expect(worker).to receive(:log_extra_metadata_on_done).with(:users_processed, 0)
         expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_drained, true)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:queue_lag_s, 0)
 
         perform
       end

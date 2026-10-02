@@ -28426,6 +28426,35 @@
         },
         {
           "kind": "ENUM",
+          "name": "AiToolAccessType",
+          "description": "Access type of an AI tool rule",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "WEB_ACCESS",
+              "description": "Web surface access.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LOCAL_ACCESS",
+              "description": "Local or IDE surface access.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "BACKGROUND_ACCESS",
+              "description": "Background-flow surface access.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "AiToolActionType",
           "description": "Action type categorisation for an AI tool",
           "fields": null,
@@ -28505,7 +28534,7 @@
             },
             {
               "name": "backgroundAccess",
-              "description": "Permission mode for the background-flow surface. Null means no rule is set and the value falls back to the default privileged group. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Effective permission mode for the background-flow surface, after applying group and project rules and the default. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -28532,6 +28561,38 @@
               "deprecationReason": null
             },
             {
+              "name": "configuredAccess",
+              "description": "Permission modes set at the requested scope: the project when a project path is given, otherwise the namespace. A null mode is not set at that scope. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AiToolRuleAccess",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "defaultAccess",
+              "description": "Permission modes that apply when no rule is set. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AiToolRuleAccess",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "id",
               "description": "Tool name. Used as stable identifier. Always the tool name string and never a database ID.",
               "args": [],
@@ -28549,7 +28610,7 @@
             },
             {
               "name": "localAccess",
-              "description": "Permission mode for local or IDE surface. Null means no rule is set and the value falls back to the default privileged group.",
+              "description": "Effective permission mode for local or IDE surface, after applying group and project rules and the default.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -28593,7 +28654,54 @@
             },
             {
               "name": "webAccess",
-              "description": "Permission mode for web surface. Null means no rule is set and the value falls back to the default privileged group.",
+              "description": "Effective permission mode for web surface, after applying group and project rules and the default.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "AiToolPermission",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiToolRuleAccess",
+          "description": "Permission modes of an AI tool rule for each surface",
+          "fields": [
+            {
+              "name": "backgroundAccess",
+              "description": "Permission mode for the background-flow surface.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "AiBackgroundToolPermission",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "localAccess",
+              "description": "Permission mode for the local or IDE surface.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "AiToolPermission",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webAccess",
+              "description": "Permission mode for the web surface.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -66183,7 +66291,7 @@
             },
             {
               "name": "toolRules",
-              "description": "Tool rules to update (maximum 100 entries).",
+              "description": "Tool rules to update (maximum 100 entries). Each entry replaces the whole rule, so a partial entry clears the access types it omits.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -416479,6 +416587,26 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "unsetAccessTypes",
+              "description": "Access types to clear so they fall back to their defaults. The rule is deleted when every access type is unset. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "AiToolAccessType",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "webAccess",

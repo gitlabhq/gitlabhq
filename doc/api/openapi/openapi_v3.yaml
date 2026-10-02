@@ -20140,7 +20140,7 @@ paths:
       operationId: putApiV4ApplicationSettings
       summary: Update application settings
       description: Updates the current application settings for this GitLab instance.
-        At least one of 678 related parameters must be provided.
+        At least one of 679 related parameters must be provided.
       tags:
       - Instance
       responses:
@@ -20161,7 +20161,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_fd840dcb55b9"
+              "$ref": "#/components/schemas/RequestBody_9c18f33b5f66"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -93159,6 +93159,8 @@ components:
           type: string
         zoekt_max_restarts_15m:
           type: string
+        zoekt_initial_indexing_limit:
+          type: string
         orbit_auto_index_root_namespace:
           type: string
         orbit_dap_enabled_by_default:
@@ -108282,7 +108284,7 @@ components:
           description: Name of the destination storage shard. If not provided, the
             storage is selected [automatically based on storage weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored).
           nullable: true
-    RequestBody_fd840dcb55b9:
+    RequestBody_9c18f33b5f66:
       type: object
       properties:
         admin_mode:
@@ -111330,6 +111332,9 @@ components:
           type: string
           nullable: true
         zoekt_max_restarts_15m:
+          type: string
+          nullable: true
+        zoekt_initial_indexing_limit:
           type: string
           nullable: true
         orbit_auto_index_root_namespace:

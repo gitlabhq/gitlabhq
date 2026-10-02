@@ -153,13 +153,13 @@ To select a model for Agentic Chat:
 1. In the left sidebar, select **Settings** > **GitLab Duo**.
 1. Under **Model selection**, select **Manage models**.
 1. Go to the **GitLab Duo Agentic Chat** section.
-1. From the dropdown list, select a model.
+1. From the **Default model** dropdown list, select a model.
    This model is pinned by default and cannot be changed
    by users unless you selected the GitLab default model.
    In that case, all GitLab-managed models are available to users.
 1. Optional. To restrict Agentic Chat to specific models:
 
-   1. Under **Available models**, select **Configure**.
+   1. Under the **Default model** dropdown list, select **Configure**.
    1. In the **Available models: Agentic Chat** dialog, select the
       **Restrict to specific models** checkbox.
    1. Select the models you want Agentic Chat to use.

@@ -67,6 +67,11 @@ RSpec.describe 'graphql queries', feature_category: :api do
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_dashboards.query.graphql
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_dashboard.query.graphql
     app/assets/javascripts/explore/analytics_dashboards/graphql/get_system_dashboard.query.graphql
+    app/assets/javascripts/explore/analytics_dashboards/graphql/get_organization_group.query.graphql
+    app/assets/javascripts/explore/analytics_dashboards/graphql/get_scope_namespace.query.graphql
+    app/assets/javascripts/explore/analytics_dashboards/graphql/get_subgroup_projects.query.graphql
+    app/assets/javascripts/explore/analytics_dashboards/graphql/get_top_level_groups.query.graphql
+    app/assets/javascripts/explore/analytics_dashboards/graphql/search_namespaces_global.query.graphql
     app/assets/javascripts/analytics/dashboards/graphql/dora_metrics_by_project.query.graphql
     app/assets/javascripts/analytics/dashboards/graphql/vulnerabilities.query.graphql
     app/assets/javascripts/analytics/dashboards/graphql/contributor_count.query.graphql
