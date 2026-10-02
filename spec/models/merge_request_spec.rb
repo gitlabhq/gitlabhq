@@ -7262,6 +7262,48 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.pipeline_coverage_delta).to be_nil
       end
     end
+
+    context 'when the head pipeline has no coverage information' do
+      it 'does not look up the base pipeline' do
+        create_build(source_pipeline, nil, 'test:1')
+        create_build(target_pipeline, 50, 'test:2')
+
+        expect(merge_request).not_to receive(:base_pipeline)
+        expect(merge_request.pipeline_coverage_delta).to be_nil
+      end
+    end
+
+    context 'when the head pipeline has coverage information' do
+      it 'looks up the base pipeline under a fast read statement timeout on the CI database' do
+        create_build(source_pipeline, 60.2, 'test:1')
+        statement_timeout = nil
+
+        allow(merge_request).to receive(:base_pipeline) do
+          statement_timeout = Ci::Pipeline.connection.select_value('SHOW statement_timeout')
+          target_pipeline
+        end
+
+        merge_request.pipeline_coverage_delta
+
+        expect(statement_timeout).to eq('4500ms')
+      end
+
+      it 'logs the error and returns nil when the base pipeline lookup times out' do
+        create_build(source_pipeline, 60.2, 'test:1')
+        allow(merge_request).to receive(:base_pipeline).and_raise(ActiveRecord::QueryCanceled)
+
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
+          .with(an_instance_of(ActiveRecord::QueryCanceled), { merge_request_id: merge_request.id })
+        expect(merge_request.pipeline_coverage_delta).to be_nil
+      end
+
+      it 'does not rescue other errors from the base pipeline lookup' do
+        create_build(source_pipeline, 60.2, 'test:1')
+        allow(merge_request).to receive(:base_pipeline).and_raise(NoMethodError)
+
+        expect { merge_request.pipeline_coverage_delta }.to raise_error(NoMethodError)
+      end
+    end
   end
 
   describe '#comparison_base_pipeline' do

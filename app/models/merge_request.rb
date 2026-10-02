@@ -2581,10 +2581,20 @@ class MergeRequest < ApplicationRecord
     !has_commits?
   end
 
+  # Skip the base pipeline lookup when there is no head coverage to compare against, since
+  # that lookup can be slow on branches with many pipelines on the same commit.
   def pipeline_coverage_delta
-    if base_pipeline&.coverage && head_pipeline&.coverage
-      head_pipeline.coverage - base_pipeline.coverage
+    head_coverage = head_pipeline&.coverage
+    return unless head_coverage
+
+    base_coverage = ::Ci::ApplicationRecord.with_fast_read_statement_timeout do # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- this is called outside a transaction
+      base_pipeline&.coverage
     end
+
+    head_coverage - base_coverage if base_coverage
+  rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- used with fast_read_statement_timeout so a slow lookup doesn't fail the widget
+    Gitlab::ErrorTracking.log_exception(e, { merge_request_id: id })
+    nil
   end
 
   def comparison_base_pipeline(service_class)

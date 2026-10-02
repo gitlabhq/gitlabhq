@@ -293,6 +293,14 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
     end
   end
 
+  describe 'pipeline_coverage_delta' do
+    it 'returns the formatted coverage delta' do
+      allow(resource).to receive(:pipeline_coverage_delta).and_return(35.0)
+
+      expect(subject[:pipeline_coverage_delta]).to eq('35.00')
+    end
+  end
+
   describe 'ci related paths' do
     using RSpec::Parameterized::TableSyntax
 

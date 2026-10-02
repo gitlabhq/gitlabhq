@@ -58,6 +58,10 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     MergeRequests::PipelineEntity.represent(merge_request.merge_pipeline, options)
   end
 
+  expose :pipeline_coverage_delta do |merge_request|
+    presenter(merge_request).pipeline_coverage_delta
+  end
+
   # Paths
   #
   expose :target_branch_commits_path do |merge_request|
