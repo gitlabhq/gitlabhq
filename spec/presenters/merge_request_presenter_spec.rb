@@ -677,6 +677,12 @@ RSpec.describe MergeRequestPresenter do
       it 'formats coverage into 2 decimal points' do
         expect(subject).to eq('35.00')
       end
+
+      it 'computes the coverage delta once' do
+        subject
+
+        expect(resource).to have_received(:pipeline_coverage_delta).once
+      end
     end
 
     context 'when merge request does not have pipeline coverage delta' do

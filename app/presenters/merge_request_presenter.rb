@@ -241,9 +241,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   delegator_override :pipeline_coverage_delta
   def pipeline_coverage_delta
-    return unless merge_request.pipeline_coverage_delta.present?
+    delta = merge_request.pipeline_coverage_delta
+    return unless delta
 
-    '%.2f' % merge_request.pipeline_coverage_delta
+    format('%.2f', delta)
   end
 
   def jenkins_integration_active

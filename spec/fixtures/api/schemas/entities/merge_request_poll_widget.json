@@ -85,13 +85,6 @@
         "null"
       ]
     },
-    "pipeline_coverage_delta": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "format": "float"
-    },
     "builds_with_coverage": {
       "type": [
         "array",

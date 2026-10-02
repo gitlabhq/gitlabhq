@@ -223,6 +223,14 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
     end
   end
 
+  describe 'pipeline_coverage_delta' do
+    it 'does not compute the coverage delta on every poll' do
+      expect(resource).not_to receive(:pipeline_coverage_delta)
+
+      subject
+    end
+  end
+
   describe '#jenkins_integration_active' do
     let_it_be_with_reload(:project_with_integration) { create :project, :repository }
     let_it_be_with_reload(:integration) { create(:jenkins_integration, push_events: true, project: project_with_integration) }
