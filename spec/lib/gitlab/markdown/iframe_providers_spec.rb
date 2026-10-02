@@ -226,6 +226,24 @@ RSpec.describe Gitlab::Markdown::IframeProviders, feature_category: :markdown do
       end
     end
 
+    context 'with captures that expand to dot segments' do
+      where(:url) do
+        [
+          'https://youtu.be/..',
+          'https://youtu.be/.',
+          'https://youtu.be/%2e%2e',
+          'https://www.youtube.com/watch?v=..',
+          'https://www.youtube.com/embed/..',
+          'https://www.figma.com/design/..',
+          'https://embed.figma.com/design/.'
+        ]
+      end
+
+      with_them do
+        it { expect(match(url)).to be_nil }
+      end
+    end
+
     context 'with URLs that never match' do
       where(:url) do
         [

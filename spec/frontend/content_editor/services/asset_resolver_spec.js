@@ -33,6 +33,18 @@ describe('content_editor/services/asset_resolver', () => {
         '/group1/project1/-/wikis/test-file.png',
       );
     });
+
+    describe('when the URL contains Markdown link syntax', () => {
+      it('escapes it as the serializer does', async () => {
+        renderMarkdown.mockResolvedValue({});
+
+        await assetResolver.resolveUrl('test-file.png)[x](https://example.com/"x")');
+
+        expect(renderMarkdown).toHaveBeenCalledWith(
+          '[link](test-file.png\\)[x]\\(https://example.com/\\"x\\"\\))',
+        );
+      });
+    });
   });
 
   describe('resolveIframeSrc', () => {
@@ -55,6 +67,20 @@ describe('content_editor/services/asset_resolver', () => {
       expect(await assetResolver.resolveIframeSrc('https://example.com/image.png')).toEqual({
         src: 'https://example.com/image.png',
         providerId: null,
+      });
+    });
+
+    describe('when the URL contains Markdown link syntax', () => {
+      it('escapes it as the serializer does', async () => {
+        renderMarkdown.mockResolvedValue({});
+
+        await assetResolver.resolveIframeSrc(
+          'https://www.youtube.com/watch?v=abc)![x](https://example.com/"x")',
+        );
+
+        expect(renderMarkdown).toHaveBeenCalledWith(
+          '![image](https://www.youtube.com/watch?v=abc\\)![x]\\(https://example.com/\\"x\\"\\))',
+        );
       });
     });
 

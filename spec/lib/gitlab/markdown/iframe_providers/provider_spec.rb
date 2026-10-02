@@ -310,6 +310,23 @@ RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :m
       expect(match('https://www.example.com//abc')).to be_nil
     end
 
+    it 'returns nil when a capture expands to a dot segment', :aggregate_failures do
+      expect(match('https://www.example.com/video/..')).to be_nil
+      expect(match('https://www.example.com/video/.')).to be_nil
+      expect(match('https://www.example.com/video/%2e%2e')).to be_nil
+      expect(match('https://example.com/view?kind=video&id=..')).to be_nil
+    end
+
+    it 'returns nil when adjacent captures expand to a dot segment' do
+      provider = from_config(requires: {}, src: 'https://embed.example.com/{kind}{id}')
+
+      expect(provider.match(Addressable::URI.parse('https://www.example.com/./.'))).to be_nil
+    end
+
+    it 'expands a capture containing dots that is not a dot segment' do
+      expect(match('https://www.example.com/video/a..b')).to eq('https://embed.example.com/video/a..b?host=gitlab')
+    end
+
     it 'returns nil when a requirement is not met' do
       expect(match('https://www.example.com/image/abc')).to be_nil
       expect(match('https://example.com/view?id=abc&kind=image')).to be_nil

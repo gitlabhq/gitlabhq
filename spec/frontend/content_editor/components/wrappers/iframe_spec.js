@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { iframeProviders, YOUTUBE_SANDBOX } from 'helpers/iframe_providers';
+import { iframeProviders, YOUTUBE_SANDBOX, FIGMA_SANDBOX } from 'helpers/iframe_providers';
 import IframeWrapper from '~/content_editor/components/wrappers/iframe.vue';
 
 describe('content/components/wrappers/iframe', () => {
@@ -47,6 +47,15 @@ describe('content/components/wrappers/iframe', () => {
     expect(findIframe().attributes('sandbox')).toBe(YOUTUBE_SANDBOX);
   });
 
+  it("applies the node's provider sandbox", () => {
+    createWrapper({
+      src: 'https://embed.figma.com/design/abc?embed-host=gitlab',
+      providerId: 'figma',
+    });
+
+    expect(findIframe().attributes('sandbox')).toBe(FIGMA_SANDBOX);
+  });
+
   it('sets referrerpolicy to strict-origin-when-cross-origin', () => {
     createWrapper({ src: 'https://www.youtube.com/embed/abc123' });
 
@@ -75,13 +84,14 @@ describe('content/components/wrappers/iframe', () => {
     expect(wrapper.vm.iframeStyle).toEqual({
       aspectRatio: '560 / 315',
       height: 'auto',
+      maxHeight: '80vh',
     });
   });
 
-  it('computes empty style when dimensions are auto', () => {
+  it('sets a maximum height when dimensions are auto', () => {
     createWrapper({ src: 'https://www.youtube.com/embed/abc123' });
 
-    expect(wrapper.vm.iframeStyle).toEqual({});
+    expect(wrapper.vm.iframeStyle).toEqual({ maxHeight: '80vh' });
   });
 
   it('applies full-width classes when no explicit dimensions are set', () => {

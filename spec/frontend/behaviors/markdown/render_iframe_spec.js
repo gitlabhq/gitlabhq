@@ -1,5 +1,5 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { iframeProviders, YOUTUBE_SANDBOX } from 'helpers/iframe_providers';
+import { iframeProviders, YOUTUBE_SANDBOX, FIGMA_SANDBOX } from 'helpers/iframe_providers';
 import renderIframes from '~/behaviors/markdown/render_iframe';
 import {
   YOUTUBE_EMBED_URL,
@@ -50,6 +50,18 @@ describe('Embedded iframe renderer', () => {
     renderAllIframes();
 
     expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)[0].getAttribute('sandbox')).toBe(YOUTUBE_SANDBOX);
+  });
+
+  it("applies the matched provider's sandbox", () => {
+    const figmaEmbedUrl = 'https://embed.figma.com/design/abc?embed-host=gitlab';
+    setHTMLFixture(fixtureDefault);
+    const img = document.querySelector('img');
+    img.src = figmaEmbedUrl;
+    img.dataset.iframeProviderId = 'figma';
+
+    renderAllIframes();
+
+    expect(findEmbeddedIframes(figmaEmbedUrl)[0].getAttribute('sandbox')).toBe(FIGMA_SANDBOX);
   });
 
   describe('when the provider is no longer enabled', () => {
@@ -128,6 +140,7 @@ describe('Embedded iframe renderer', () => {
 
       const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
       expect(iframe.style.maxWidth).toBe('100%');
+      expect(iframe.style.maxHeight).toBe('80vh');
       expect(iframe.style.aspectRatio).toBe('560 / 315');
       expect(iframe.style.height).toBe('auto');
     });
@@ -141,6 +154,7 @@ describe('Embedded iframe renderer', () => {
       expect(iframe.getAttribute('width')).toBe('560');
       expect(iframe.getAttribute('height')).toBeNull();
       expect(iframe.style.maxWidth).toBe('100%');
+      expect(iframe.style.maxHeight).toBe('80vh');
       expect(iframe.style.aspectRatio).toBeUndefined();
       expect(iframe.style.height).toBe('');
     });
@@ -163,6 +177,7 @@ describe('Embedded iframe renderer', () => {
       const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
       expect(iframe.classList.contains('gl-w-full')).toBe(true);
       expect(iframe.classList.contains('gl-h-full')).toBe(true);
+      expect(iframe.style.maxHeight).toBe('80vh');
       expect(iframe.getAttribute('width')).toBeNull();
       expect(iframe.getAttribute('height')).toBeNull();
     });

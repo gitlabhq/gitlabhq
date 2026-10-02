@@ -309,21 +309,22 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
       );
       expect(contentEditor.resolveUrl).not.toHaveBeenCalled();
 
-      const { src, canonicalSrc } = tiptapEditor.getAttributes('iframe');
+      const { src, canonicalSrc, providerId } = tiptapEditor.getAttributes('iframe');
       expect(src).toBe('https://www.youtube.com/embed/xyz');
       expect(canonicalSrc).toBe('https://www.youtube.com/watch?v=xyz');
+      expect(providerId).toBe('youtube');
     });
 
     it('adopts the provider the edited URL resolves to', async () => {
       contentEditor.resolveIframeSrc.mockResolvedValue({
-        src: 'https://embed.figma.com/design/xyz',
+        src: 'https://embed.figma.com/design/xyz?embed-host=gitlab',
         providerId: 'figma',
       });
 
       await editEmbedUrl('https://www.figma.com/design/xyz');
 
       const { src, providerId } = tiptapEditor.getAttributes('iframe');
-      expect(src).toBe('https://embed.figma.com/design/xyz');
+      expect(src).toBe('https://embed.figma.com/design/xyz?embed-host=gitlab');
       expect(providerId).toBe('figma');
     });
 
@@ -362,7 +363,7 @@ describe('content_editor/components/bubble_menus/media_bubble_menu', () => {
 
       it("leaves the node untouched when the resolved src belongs to another provider's origin", async () => {
         contentEditor.resolveIframeSrc.mockResolvedValue({
-          src: 'https://embed.figma.com/design/xyz',
+          src: 'https://embed.figma.com/design/xyz?embed-host=gitlab',
           providerId: 'youtube',
         });
 

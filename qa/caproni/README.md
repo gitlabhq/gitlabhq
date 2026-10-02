@@ -4,10 +4,12 @@ This deploys a CNG build of the GitLab commit under test onto a job-local
 [k3d](https://k3d.io) cluster inside `docker:dind`, using
 [Caproni](https://gitlab-org.gitlab.io/caproni/) and runs the E2E suite against it.
 
-This adds three non-blocking jobs to the existing `test-on-cng` child pipeline, each with
+This adds four non-blocking jobs to the existing `test-on-cng` child pipeline, each with
 `allow_failure: true`, all running whenever the orchestrator-deployed jobs run:
 
 - `cng-instance-caproni` runs `Test::Instance::All` over 10 parallel shards
+- `cng-relative-url-caproni` runs `Test::Instance::Smoke` against an instance served under
+  a `/relative` subpath
 - `cng-registry-caproni` runs `Test::Integration::Registry`
 - `cng-oauth-caproni` runs `Test::Integration::OAuth` (see [GitHub OAuth](#github-oauth-opt-in) for why it executes nothing yet)
 
@@ -26,26 +28,28 @@ names the upstream issue that would retire it. They are not the intended pattern
 |---|---|
 | `caproni.yaml` | The whole rig: cluster, deployers, edge and CNG image pinning |
 | `caproni.github-oauth.yaml` | Opt-in fragment: the `gitlab-oauth-github` secret and `global.appConfig.omniauth` values |
+| `caproni.relative-url.yaml` | Opt-in fragment: serves the instance under `QA_RELATIVE_URL_ROOT` |
 | `values/gitlab.yaml` | Chart values, ported from the orchestrator's Ruby |
 | `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled |
 | `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
 | `manifests/github-oauth/` | Kustomization the fragment applies between namespace creation and the Helm install; its `provider.yaml` is generated from the fragment's `files:` |
 | `scripts/install-caproni.sh` | Fetches and checksum-verifies the Caproni binary at `CAPRONI_VERSION` |
 | `scripts/cng-image-tags.sh` | Resolves `*_TAG` / `*_VERSION` into image tags |
+| `scripts/write_local_config.rb` | Generates `caproni.local.yaml`: the CI domain, plus the fragments a job opts into |
 | `scripts/seed_admin_token.rb` | Seeds the admin PAT the E2E suite authenticates with |
 | `scripts/save-cluster-logs.sh` | Pod and event log bundle for failure diagnosis |
 
-The CI job lives in
+The CI jobs live in
 [`.gitlab/ci/test-on-cng/caproni.gitlab-ci.yml`](../../.gitlab/ci/test-on-cng/caproni.gitlab-ci.yml),
 and `CAPRONI_VERSION` and `K3D_VERSION` in
 [`.gitlab/ci/qa-common/variables.gitlab-ci.yml`](../../.gitlab/ci/qa-common/variables.gitlab-ci.yml).
 
-`seed_admin_token.rb` is covered by `qa/spec/caproni/seed_admin_token_spec.rb`, which
-`qa:rspec-internal` runs. Locally it needs the internal options file, because `qa/.rspec`
-points the default path at the E2E suite:
+The Ruby scripts are covered by specs in `qa/spec/caproni/`, which `qa:rspec-internal`
+runs. Locally they need the internal options file, because `qa/.rspec` points the default
+path at the E2E suite:
 
 ```shell
-cd qa && bundle exec rspec -O .rspec_internal spec/caproni/seed_admin_token_spec.rb
+cd qa && bundle exec rspec -O .rspec_internal spec/caproni/
 ```
 
 The configuration lives in this repository, rather than in `gitlab-org/gitlab-caproni`,
@@ -145,6 +149,27 @@ To opt in:
 **Note:** this doesn't test anything yet. The only `:oauth` spec is quarantined
 ([issue 24015](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24015)),
 so the job deploys but runs zero examples.
+
+## Relative URL root (opt-in)
+
+`caproni.relative-url.yaml` sets the chart value `global.appConfig.relativeUrlRoot`
+from the `QA_RELATIVE_URL_ROOT` environment variable, appended as a `dynamic_overrides`
+entry. It's a separate fragment because the rig's other jobs are served at the domain
+root.
+
+To opt in:
+
+1. Export `QA_RELATIVE_URL_ROOT` (for example, `/relative`).
+2. Add this to `caproni.local.yaml`:
+
+   ```yaml
+   extends:
+     - caproni.relative-url.yaml
+   ```
+3. Run `caproni up`.
+
+`cng-relative-url-caproni` does this automatically in CI, setting `QA_RELATIVE_URL_ROOT`
+to `/relative`.
 
 ## Known gaps
 

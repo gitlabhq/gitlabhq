@@ -19,6 +19,7 @@ import CodeBlockHighlight from './code_block_highlight';
 import CodeSuggestion from './code_suggestion';
 import Diagram from './diagram';
 import Frontmatter from './frontmatter';
+import Iframe from './iframe';
 import { loadingPlugin, findLoader } from './loading';
 
 const TEXT_FORMAT = 'text/plain';
@@ -39,6 +40,14 @@ function buildPasteSchema(schema) {
   pasteSchemaSpec.marks = OrderedMap.from(pasteSchemaSpec.marks).remove('span');
   pasteSchemaSpec.nodes = OrderedMap.from(pasteSchemaSpec.nodes).remove('div').remove('pre');
   return new Schema(pasteSchemaSpec);
+}
+
+function buildClipboardParser(schema) {
+  const { rules } = ProseMirrorDOMParser.fromSchema(schema);
+  return new ProseMirrorDOMParser(
+    schema,
+    rules.filter((rule) => rule.node !== Iframe.name),
+  );
 }
 
 // Blocks a paste merges into when the caret already sits in the same kind of
@@ -97,7 +106,7 @@ function parseHTML(schema, html) {
   const startTag = '<body>';
   const endTag = '</body>';
   const { body } = parser.parseFromString(startTag + html + endTag, 'text/html');
-  return { document: ProseMirrorDOMParser.fromSchema(schema).parse(body) };
+  return { document: buildClipboardParser(schema).parse(body) };
 }
 
 // The editor's HTML clipboard payload carries HTML comments as <comment> elements (see the
@@ -111,7 +120,7 @@ function parseHTMLSlice(schema, html) {
     `<body>${sanitizeClipboardHTML(html)}</body>`,
     'text/html',
   );
-  return ProseMirrorDOMParser.fromSchema(schema).parseSlice(body);
+  return buildClipboardParser(schema).parseSlice(body);
 }
 
 function hasTableCells(html) {
@@ -403,6 +412,7 @@ export default Extension.create({
       new Plugin({
         key: new PluginKey('copyPaste'),
         props: {
+          clipboardParser: buildClipboardParser(this.editor.schema),
           handleDOMEvents: {
             copy: handleCutAndCopy,
             cut: (view, event) => {

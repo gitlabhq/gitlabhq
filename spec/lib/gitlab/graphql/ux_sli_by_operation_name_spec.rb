@@ -1,23 +1,22 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'labkit/rspec/matchers'
 
 RSpec.describe Gitlab::Graphql::UxSliByOperationName, feature_category: :vulnerability_management do
   describe '#track' do
     subject(:track) { described_class.new(operation_name).track { :result } }
 
-    let(:experience_id) { :test_experience }
-
     before do
-      allow(described_class).to receive(:operation_ux_sli_map).and_return('knownOperation' => experience_id)
+      allow(described_class).to receive(:operation_ux_sli_map).and_return('knownOperation' => :test_experience)
     end
 
     context 'when operation_name is nil' do
       let(:operation_name) { nil }
 
       it 'does not start a user experience SLI' do
-        expect { track }.not_to start_user_experience(experience_id)
+        expect(Labkit::UserExperienceSli).not_to receive(:start)
+
+        track
       end
 
       it 'returns the value from the block' do
@@ -33,7 +32,9 @@ RSpec.describe Gitlab::Graphql::UxSliByOperationName, feature_category: :vulnera
       let(:operation_name) { 'unknownOperation' }
 
       it 'does not start a user experience SLI' do
-        expect { track }.not_to start_user_experience(experience_id)
+        expect(Labkit::UserExperienceSli).not_to receive(:start)
+
+        track
       end
 
       it 'returns the value from the block' do

@@ -15,21 +15,21 @@ export default {
     };
   },
   computed: {
-    sandbox() {
-      return iframeProviderFor(this.node.attrs.src, this.node.attrs.providerId).sandbox;
-    },
     hasExplicitDimensions() {
       return this.resizeWidth !== 'auto' || this.resizeHeight !== 'auto';
     },
+    iframeProvider() {
+      return iframeProviderFor(this.node.attrs.src, this.node.attrs.providerId);
+    },
     iframeStyle() {
+      const style = { maxHeight: '80vh' };
+
       if (this.resizeWidth !== 'auto' && this.resizeHeight !== 'auto') {
-        return {
-          aspectRatio: `${this.resizeWidth} / ${this.resizeHeight}`,
-          height: 'auto',
-        };
+        style.aspectRatio = `${this.resizeWidth} / ${this.resizeHeight}`;
+        style.height = 'auto';
       }
 
-      return {};
+      return style;
     },
   },
   watch: {
@@ -111,7 +111,7 @@ export default {
     <iframe
       ref="iframe"
       :src="node.attrs.src"
-      :sandbox="sandbox"
+      :sandbox="iframeProvider.sandbox"
       allowfullscreen="true"
       referrerpolicy="strict-origin-when-cross-origin"
       :width="resizeWidth"

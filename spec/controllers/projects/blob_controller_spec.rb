@@ -47,9 +47,9 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         context 'and the file is valid' do
           let(:path) { 'README.md' }
 
-          it 'renders the blob with a signature container', :aggregate_failures do
+          it 'renders the blob without a signature container', :aggregate_failures do
             expect(response).to have_gitlab_http_status(:ok)
-            expect(response.body).to have_css('.js-signature-container')
+            expect(response.body).not_to have_css('.js-signature-container')
           end
 
           context 'and the ref_type is valid' do
@@ -122,7 +122,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       end
     end
 
-    context 'when the last commit for the file path is unavailable' do
+    context 'when rendering the blob page' do
       let(:id) { 'master/README.md' }
       let(:repository) { project.repository }
 
@@ -132,13 +132,12 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         end
       end
 
-      it 'renders the blob without a signature container', :aggregate_failures do
-        expect(repository).to receive(:last_commit_for_path).and_return(nil)
+      it 'does not look up the last commit for the file path' do
+        expect(repository).not_to receive(:last_commit_for_path)
 
         request
 
         expect(response).to be_ok
-        expect(response.body).not_to have_css('.js-signature-container')
       end
     end
 

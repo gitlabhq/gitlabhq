@@ -7,6 +7,7 @@ module Gitlab
         ID_FORMAT = /\A[a-z][a-z0-9_]*\z/
         HOSTNAME_FORMAT = /\A[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\z/i
         KEYS = %w[name matches requires src additional_csp_hosts sandbox require_activation].freeze
+        DOT_SEGMENTS = %w[. ..].freeze
 
         attr_reader :id, :name, :matches, :requires, :src, :src_origin, :additional_csp_hosts, :sandbox,
           :require_activation
@@ -149,7 +150,8 @@ module Gitlab
             captures = rule.match(uri)
             next unless captures && satisfies_requires?(captures)
 
-            return expand_src(captures)
+            expanded = expand_src(captures)
+            return expanded unless dot_segments?(expanded)
           end
 
           nil
@@ -167,6 +169,10 @@ module Gitlab
               captures.fetch(::Regexp.last_match(1)),
               Addressable::URI::CharacterClasses::UNRESERVED)
           end
+        end
+
+        def dot_segments?(url)
+          Addressable::URI.parse(url).path.split('/').intersect?(DOT_SEGMENTS)
         end
       end
     end

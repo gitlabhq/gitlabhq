@@ -1,6 +1,7 @@
 import { builders } from 'prosemirror-test-builder';
 import { CellSelection } from '@tiptap/pm/tables';
 import { GapCursor } from '@tiptap/pm/gapcursor';
+import { iframeProviders } from 'helpers/iframe_providers';
 import CopyPaste from '~/content_editor/extensions/copy_paste';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import Loading, { findAllLoaders } from '~/content_editor/extensions/loading';
@@ -18,6 +19,8 @@ import ListItem from '~/content_editor/extensions/list_item';
 import TaskList from '~/content_editor/extensions/task_list';
 import TaskItem from '~/content_editor/extensions/task_item';
 import Italic from '~/content_editor/extensions/italic';
+import Iframe from '~/content_editor/extensions/iframe';
+import Image from '~/content_editor/extensions/image';
 import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TableRow from '~/content_editor/extensions/table_row';
@@ -90,6 +93,8 @@ describe('content_editor/extensions/copy_paste', () => {
         TableCell,
         TableRow,
         TableHeader,
+        Image,
+        Iframe,
         CopyPaste.configure({ renderMarkdown, eventHub, serializer: new MarkdownSerializer() }),
       ],
     });
@@ -1372,6 +1377,127 @@ describe('content_editor/extensions/copy_paste', () => {
         await waitForPromises();
 
         expect(findAllLoaders(tiptapEditor.state)).toHaveLength(0);
+      });
+    });
+  });
+
+  describe('when pasting an iframe embed', () => {
+    const buildEmbed = () => {
+      const container = document.createElement('span');
+      container.classList.add('media-container', 'img-container');
+
+      const img = document.createElement('img');
+      img.classList.add('js-render-iframe');
+      img.setAttribute('src', 'https://www.youtube.com/embed/abc123');
+      img.dataset.iframeCanonicalSrc = 'https://www.youtube.com/watch?v=abc123';
+      img.dataset.iframeProviderId = 'youtube';
+      container.appendChild(img);
+
+      return container;
+    };
+
+    const buildParagraphWithEmbed = () => {
+      const paragraph = document.createElement('p');
+      paragraph.appendChild(buildEmbed());
+      return paragraph;
+    };
+
+    const buildTableWithEmbed = () => {
+      const table = document.createElement('table');
+      const row = table.insertRow();
+      row.insertCell().appendChild(buildEmbed());
+      row.insertCell().textContent = 'Y';
+      return table;
+    };
+
+    const findNodeTypes = () => {
+      const types = [];
+      tiptapEditor.state.doc.descendants((node) => {
+        types.push(node.type.name);
+      });
+      return types;
+    };
+
+    beforeEach(() => {
+      window.gon = {
+        iframe_rendering_providers: iframeProviders(),
+        features: { allowIframesInMarkdown: true },
+      };
+    });
+
+    describe('when the clipboard carries GFM', () => {
+      it('pastes an iframe node rendered by the backend', async () => {
+        await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html', 'text/x-gfm'],
+            data: {
+              'text/plain': 'https://www.youtube.com/watch?v=abc123',
+              'text/html': buildParagraphWithEmbed().outerHTML,
+              'text/x-gfm': '![](https://www.youtube.com/watch?v=abc123)',
+            },
+          }),
+        );
+        await resolveRenderMarkdownPromiseAndWait(buildParagraphWithEmbed().outerHTML);
+
+        expect(findNodeTypes()).toContain('iframe');
+      });
+    });
+
+    describe('when the clipboard carries only HTML', () => {
+      it('pastes an image node rather than an iframe node', async () => {
+        await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'https://www.youtube.com/embed/abc123',
+              'text/html': buildParagraphWithEmbed().outerHTML,
+            },
+          }),
+        );
+        await waitForPromises();
+
+        expect(findNodeTypes()).toContain('image');
+        expect(findNodeTypes()).not.toContain('iframe');
+      });
+    });
+
+    describe('when table HTML is pasted into a table', () => {
+      beforeEach(() => {
+        tiptapEditor.commands.insertContent(
+          '<table><tr><td>A</td><td>B</td></tr><tr><td>C</td><td>D</td></tr></table>',
+        );
+        tiptapEditor.commands.setTextSelection(4);
+      });
+
+      it('pastes an image node rather than an iframe node', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html': buildTableWithEmbed().outerHTML,
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(findNodeTypes()).toContain('image');
+        expect(findNodeTypes()).not.toContain('iframe');
+      });
+    });
+
+    describe('when ProseMirror parses the clipboard itself', () => {
+      it('parses an image node rather than an iframe node', () => {
+        const parser = tiptapEditor.view.someProp('clipboardParser');
+        const slice = parser.parseSlice(buildParagraphWithEmbed());
+
+        const types = [];
+        slice.content.descendants((node) => {
+          types.push(node.type.name);
+        });
+
+        expect(types).toContain('image');
+        expect(types).not.toContain('iframe');
       });
     });
   });

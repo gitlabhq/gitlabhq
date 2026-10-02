@@ -454933,7 +454933,7 @@
           "fields": [
             {
               "name": "answered",
-              "description": "Whether someone whose role is above Guest has replied in the thread. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Indicates the thread the question was asked in is resolved. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -457930,6 +457930,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "NoteID",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "selectedOptionContent",
+              "description": "Content of a custom option, added as the only selected option of the decision while every existing option is deselected. Incompatible with selectedOptionIds.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null,
@@ -466619,7 +466631,7 @@
             },
             {
               "name": "openQuestionsCount",
-              "description": "Number of questions asked by workplan flows that nobody above Guest has replied to, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Number of questions asked by workplan flows whose thread is not resolved, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

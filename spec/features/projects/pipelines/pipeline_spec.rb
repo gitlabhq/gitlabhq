@@ -84,7 +84,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       end
 
       expect(page).to have_content('Retry')
-      expect(page).to have_content('Cancel pipeline')
+      expect(page).to have_button('Cancel the running pipeline')
       expect(page).not_to have_button('Delete')
       expect(page).not_to have_content('retried')
 
@@ -491,7 +491,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
       context 'when retrying' do
         before do
-          within_testid('pipeline-header') do
+          within('.js-panel-actions-portal-target') do
             click_button 'Retry'
           end
         end
@@ -500,6 +500,9 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           :aggregate_failures do
           within_testid('pipeline-header') do
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
+          end
+
+          within('.js-panel-actions-portal-target') do
             expect(page).not_to have_content('Retry')
           end
         end
@@ -509,11 +512,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     context 'canceling jobs' do
       before do
         visit_pipeline
-        click_on 'Cancel pipeline'
+        click_on 'Cancel the running pipeline'
       end
 
-      it 'does not show a "Cancel pipeline" button', :sidekiq_inline do
-        expect(page).not_to have_content('Cancel pipeline')
+      it 'does not show a "Cancel" button', :sidekiq_inline do
+        expect(page).not_to have_button('Cancel the running pipeline')
       end
     end
 
@@ -725,7 +728,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         expect(page).to have_content('test')
         expect(page).to have_content('deploy')
         expect(page).to have_content('Retry')
-        expect(page).to have_content('Cancel pipeline')
+        expect(page).to have_button('Cancel the running pipeline')
         expect(page).to have_selector('[data-testid="ci-job-item"]')
       end
     end
@@ -978,7 +981,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
       expect(page).to have_content(build_running.id)
       expect(page).to have_content(build_external.id)
       expect(page).to have_content('Retry')
-      expect(page).to have_content('Cancel pipeline')
+      expect(page).to have_button('Cancel the running pipeline')
       expect(page).to have_button('Run')
 
       expect(page).to have_link('Pipeline')
@@ -1010,11 +1013,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     context 'canceling jobs' do
       context 'when canceling' do
         before do
-          click_on 'Cancel pipeline'
+          click_on 'Cancel the running pipeline'
         end
 
-        it 'does not show a "Cancel pipeline" button', :sidekiq_might_not_need_inline do
-          expect(page).not_to have_content('Cancel pipeline')
+        it 'does not show a "Cancel" button', :sidekiq_might_not_need_inline do
+          expect(page).not_to have_button('Cancel the running pipeline')
         end
       end
     end

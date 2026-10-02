@@ -55,7 +55,6 @@ export default {
       mediaType: undefined,
       mediaSrc: undefined,
       mediaCanonicalSrc: undefined,
-      mediaProviderId: undefined,
       mediaAlt: undefined,
 
       isEditing: false,
@@ -116,18 +115,18 @@ export default {
 
       const position = this.tiptapEditor.state.selection.from;
 
-      if (this.isIframe) {
-        const { src, providerId } = await this.contentEditor.resolveIframeSrc(
-          this.mediaCanonicalSrc,
-        );
+      let providerId;
 
-        this.mediaSrc = src;
-        this.mediaProviderId = providerId;
+      if (this.isIframe) {
+        const resolved = await this.contentEditor.resolveIframeSrc(this.mediaCanonicalSrc);
+
+        this.mediaSrc = resolved.src;
+        providerId = resolved.providerId;
       } else {
         this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
       }
 
-      if (this.isIframe && !isIframeSrcAllowed(this.mediaSrc, this.mediaProviderId)) {
+      if (this.isIframe && !isIframeSrcAllowed(this.mediaSrc, providerId)) {
         this.isUpdating = false;
         this.endEditingMedia();
         return;
@@ -139,7 +138,7 @@ export default {
         canonicalSrc: this.mediaCanonicalSrc,
       };
 
-      if (this.isIframe) attrs.providerId = this.mediaProviderId;
+      if (this.isIframe) attrs.providerId = providerId;
 
       this.tiptapEditor.chain().focus().updateAttributes(this.mediaType, attrs).run();
 
@@ -157,13 +156,10 @@ export default {
 
       this.isUpdating = true;
 
-      const { src, alt, canonicalSrc, providerId, uploading } = this.tiptapEditor.getAttributes(
-        this.mediaType,
-      );
+      const { src, alt, canonicalSrc, uploading } = this.tiptapEditor.getAttributes(this.mediaType);
 
       this.mediaAlt = alt;
       this.mediaCanonicalSrc = canonicalSrc || src;
-      this.mediaProviderId = providerId;
 
       this.uploading = uploading;
 
@@ -184,7 +180,6 @@ export default {
     resetMediaInfo() {
       this.mediaAlt = null;
       this.mediaCanonicalSrc = null;
-      this.mediaProviderId = null;
       this.uploading = false;
 
       this.uploadProgress = 0;

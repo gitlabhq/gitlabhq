@@ -48,8 +48,8 @@ largest or most frequently updated tables can still need a lower per-table value
 ## Recommended autovacuum settings
 
 GitLab Linux package installations ship autovacuum defaults that suit most workloads. Change these
-settings when monitoring shows that autovacuum cannot keep up with dead tuples.
-The goal is to let autovacuum reclaim dead tuples as fast as your workload creates them,
+settings when [monitoring](#monitor-autovacuum) shows that autovacuum cannot keep up with dead
+tuples. The goal is to let autovacuum reclaim dead tuples as fast as your workload creates them,
 without starving the database of I/O.
 
 The changes with the largest impact are usually raising `autovacuum_vacuum_cost_limit`, raising
@@ -105,8 +105,9 @@ is common for very large, frequently updated tables:
 ALTER TABLE <table_name> SET (autovacuum_vacuum_scale_factor = 0.01);
 ```
 
-Per-table settings override the cluster-wide values for that table only. Use monitoring to find
-which tables fall behind, and test changes in a non-production environment first.
+Per-table settings override the cluster-wide values for that table only. Use
+[monitoring](#monitor-autovacuum) to find which tables fall behind, and test changes in a
+non-production environment first.
 
 ### Settings to avoid
 
@@ -123,3 +124,174 @@ Avoid these configurations:
   per-table value instead.
 - Relying on `-1` inheritance for `autovacuum_vacuum_cost_limit`. The effective value then lives in
   another setting, where you can overlook it. Set it explicitly.
+
+## Monitor autovacuum
+
+### Database diagnostics page
+
+{{< history >}}
+
+- Vacuum activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239928) in GitLab 19.2.
+- Autovacuum settings and findings [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242428) in GitLab 19.4.
+- Per-table overrides and scale factor risk [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245561) in GitLab 19.5.
+
+{{< /history >}}
+
+The Database diagnostics page shows vacuum activity and autovacuum settings for each database.
+
+Prerequisites:
+
+- You must have administrator access.
+
+To view the page:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Monitoring** > **Database diagnostics**.
+
+Two sections of the page relate to autovacuum. Each section has one card for each database in the
+installation.
+
+The **Vacuum information** section contains the **Vacuum activity** panel. This panel has one row
+for each vacuum running right now. The columns are Table, Type, Running for, Phase, Heap scanned,
+Indexes processed, Dead tuples, Index passes, and Delay time. A row can carry these badges:
+
+- **Anti-wraparound**: the vacuum is preventing transaction ID wraparound. This vacuum does not
+  auto-cancel. Do not terminate it. If you do, the database can shut down to protect data.
+- **Long-running**: the vacuum has run for more than 6 hours. Large tables can take this long,
+  but a vacuum that never completes can be blocked or starved of resources.
+- **Memory pressure**: the vacuum needed more than one index pass. The dead-tuple store filled up
+  before the heap scan completed. Raise `maintenance_work_mem` or `autovacuum_work_mem`.
+
+The **Autovacuum configuration** section contains these panels:
+
+- **Effective settings**: the autovacuum settings the database actually uses, read from
+  `pg_settings`. A **Status** column marks each misconfiguration the checks find. When
+  `autovacuum_vacuum_cost_limit` is `-1`, the panel also shows the effective limit it inherits
+  from `vacuum_cost_limit`.
+- **Per-table overrides**: tables that set an autovacuum parameter in their storage parameters.
+  The panel shows the size, estimated row count, and overrides of each table. A table that
+  disables autovacuum carries an **Autovacuum disabled** badge. The panel lists up to 50 tables,
+  with the tables that disable autovacuum first. The panel is hidden when no table has overrides.
+- **Scale factor risk**: large tables where the scale factor in effect is still high. The panel
+  is hidden when the check finds no such table.
+
+Some findings concern a table, not a single setting. These findings appear as alerts above the
+panels. For the conditions behind each finding, see [Autovacuum findings](#autovacuum-findings).
+
+> [!note]
+> The **Vacuum activity** panel needs PostgreSQL 17 or later. On earlier versions, the panel is
+> empty. The Delay time column needs PostgreSQL 18 or later. The Type and Running for columns, and
+> the **Anti-wraparound** badge, need a database role that can read the activity of other
+> backends. Grant the role membership in `pg_monitor`. Without this membership, the progress
+> columns still work, but the Type, Running for, and Anti-wraparound fields show `Not available`.
+
+Both sections read from the primary database, because autovacuum runs only there.
+
+### Report diagnostics on the console
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251254) in GitLab 19.4.
+- Tasks for a single check [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251735) in GitLab 19.4.
+- Menu removed for a single check [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257133) in GitLab 19.5.
+
+{{< /history >}}
+
+Use the Rake task when you have no access to the UI, or when you want the report from a script.
+
+For Linux package installations:
+
+```shell
+sudo gitlab-rake gitlab:db:diagnostics
+```
+
+By default, the task reports on every database. To select databases, pass their names:
+
+```shell
+sudo gitlab-rake "gitlab:db:diagnostics[main,ci]"
+```
+
+To run the autovacuum check only, use its own task. It accepts the same database names:
+
+```shell
+sudo gitlab-rake "gitlab:db:diagnostics:autovacuum_settings[main,ci]"
+```
+
+The report prints a summary first, then a section for each check. The **Autovacuum settings**
+section lists the findings, the effective settings, the per-table overrides, and the scale factor
+risks for each database.
+
+The task exits with status `1` when it finds an error, so a monitoring job can use the exit code.
+
+In a terminal, the task shows a menu to open each section when it runs more than one check. When
+it runs one check, or when you pipe or redirect the output, the task prints the whole report.
+
+> [!note]
+> The Rake task reports settings only. It does not show vacuum activity. Vacuum activity is
+> available only on the [Database diagnostics page](#database-diagnostics-page).
+
+### Autovacuum findings
+
+The Database diagnostics page and the Rake task use the same checks. Both report the same
+findings. The first five findings each concern one setting and appear in the **Status** column of
+the **Effective settings** panel. The last two concern tables and appear as alerts.
+
+| Finding             | Setting                          | Severity | Reported when                                                                                                                                                                                                                                                                                                                                             | Action                                                                                                                                                                                                                  |
+|---------------------|----------------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Disabled            | `autovacuum`                     | Error    | `autovacuum` is `off`. Dead tuples are never reclaimed automatically. This risks bloat and eventually transaction ID wraparound.                                                                                                                                                                                                                          | Turn autovacuum on. See [Settings to avoid](#settings-to-avoid).                                                                                                                                                        |
+| Throttling disabled | `autovacuum_vacuum_cost_delay`   | Error    | The cost delay is `0`. Autovacuum then runs at full speed. This can cause write storms and replication lag.                                                                                                                                                                                                                                               | Set a non-zero delay. See [Settings to avoid](#settings-to-avoid).                                                                                                                                                      |
+| Low                 | `autovacuum_max_workers`         | Warning  | Fewer than three workers are configured. This can be too few for a large or decomposed database.                                                                                                                                                                                                                                                          | Raise the worker count. See [Cluster-wide settings](#cluster-wide-settings).                                                                                                                                            |
+| Low                 | `autovacuum_vacuum_cost_limit`   | Warning  | The effective limit is `200` or less. That limit is likely too low for modern storage. The check uses the value inherited from `vacuum_cost_limit` when the setting is `-1`. Linux package installations ship `-1` by default. The PostgreSQL default for `vacuum_cost_limit` is `200`. This finding therefore appears on a default Linux package installation. | Set the limit explicitly. See [Cluster-wide settings](#cluster-wide-settings).                                                                                                                                          |
+| Inherited           | `autovacuum_work_mem`            | Warning  | The setting is `-1`. Each worker inherits `maintenance_work_mem`.                                                                                                                                                                                                                                                                                         | Set it explicitly to bound the memory each worker uses. Linux package installations cannot set this parameter in `gitlab.rb`; tune `maintenance_work_mem` instead. See [Cluster-wide settings](#cluster-wide-settings). |
+| Tables disabled     | Per-table `autovacuum_enabled`   | Error    | One or more tables set `autovacuum_enabled = false` in their storage parameters. Their dead tuples are never reclaimed automatically. The **Per-table overrides** panel marks each such table.                                                                                                                                                            | Turn autovacuum back on for each table with `ALTER TABLE <table_name> RESET (autovacuum_enabled);`.                                                                                                                     |
+| Scale factor risk   | `autovacuum_vacuum_scale_factor` | Warning  | The cluster-wide scale factor is `0.1` or more, and one of the 20 largest tables is 10 GiB or more with a scale factor in effect of `0.1` or more. Linux package installations ship `0.02`. This finding therefore appears mainly on external PostgreSQL instances that keep the PostgreSQL default of `0.2`.                                             | Lower the cluster-wide scale factor, or set a per-table value on the listed tables. See [Tune large tables individually](#tune-large-tables-individually).                                                              |
+
+The scale factor in effect is the per-table override when set, otherwise the cluster-wide value.
+A per-table `autovacuum_vacuum_threshold` does not exempt a table. The check skips tables with
+autovacuum disabled.
+
+> [!note]
+> The checks report only clear misconfigurations. The checks also use lower thresholds than the
+> values in [Recommended autovacuum settings](#recommended-autovacuum-settings). A setting can
+> pass the checks and still be too low for your workload. For example, three autovacuum workers
+> passes the check, but is low for a host with many vCPUs.
+
+### Check dead tuples and freeze age
+
+Neither the Database diagnostics page nor the Rake task reports per-table dead tuples or freeze
+age. Query the database for that information instead. On Linux package installations, connect
+with:
+
+```shell
+sudo gitlab-psql
+```
+
+To find the tables with the most dead tuples, and when autovacuum last processed them:
+
+```sql
+SELECT schemaname, relname, n_live_tup, n_dead_tup, last_autovacuum, last_autoanalyze
+FROM pg_stat_user_tables
+WHERE n_dead_tup > 0
+ORDER BY n_dead_tup DESC
+LIMIT 20;
+```
+
+A rising `n_dead_tup` count, with `last_autovacuum` old or empty, means autovacuum cannot keep up
+with that table.
+
+To find the freeze age of each table:
+
+```sql
+SELECT n.nspname AS schema_name, c.relname AS table_name, age(c.relfrozenxid) AS xid_age
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relkind IN ('r', 'm')
+  AND n.nspname NOT IN ('pg_catalog', 'information_schema')
+ORDER BY xid_age DESC
+LIMIT 20;
+```
+
+`xid_age` counts the transactions that ran after PostgreSQL last froze the table. Compare it
+against `autovacuum_freeze_max_age`. The **Effective settings** panel reports this value. When a
+table passes this value, PostgreSQL starts an anti-wraparound autovacuum on it. A freeze age that
+keeps rising means autovacuum cannot freeze rows fast enough.

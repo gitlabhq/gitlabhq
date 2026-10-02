@@ -111,6 +111,7 @@ describe('Pipeline header', () => {
       },
       stubs: {
         GlSprintf,
+        PanelActionsPortal: { template: '<div><slot /></div>' },
         TimeAgoTooltip: {
           props: ['time'],
           template: '<span>{{time}}</span>',

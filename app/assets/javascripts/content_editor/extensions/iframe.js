@@ -23,9 +23,7 @@ export default Node.create({
         default: null,
         parseHTML: (element) => {
           const img = element.querySelector('img.js-render-iframe');
-          return (
-            img.dataset.iframeCanonicalSrc || img.dataset.canonicalSrc || img.getAttribute('src')
-          );
+          return img.dataset.iframeCanonicalSrc;
         },
       },
       providerId: {

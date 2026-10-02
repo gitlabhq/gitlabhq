@@ -61,22 +61,32 @@ describe('content_editor/extensions/iframe', () => {
       expect(tiptapEditor.state.doc.toJSON()).toEqual(expected.toJSON());
     });
 
-    it('falls back to src when data-iframe-canonical-src is not present', () => {
+    it('does not provide a canonical source when it is absent', () => {
       tiptapEditor.commands.setContent(
-        mediaContainer('https://embed.figma.com/design/abc', 'figma'),
+        mediaContainer('https://embed.figma.com/design/abc?embed-host=gitlab', 'figma'),
       );
 
       const expected = doc(
         p(
           iframe({
-            src: 'https://embed.figma.com/design/abc',
-            canonicalSrc: 'https://embed.figma.com/design/abc',
+            src: 'https://embed.figma.com/design/abc?embed-host=gitlab',
+            canonicalSrc: null,
             providerId: 'figma',
           }),
         ),
       );
 
       expect(tiptapEditor.state.doc.toJSON()).toEqual(expected.toJSON());
+    });
+
+    it('keeps the provider when re-parsing its own rendered HTML', () => {
+      tiptapEditor.commands.setContent(mediaContainer('https://www.youtube.com/embed/abc123'));
+      tiptapEditor.commands.setContent(tiptapEditor.getHTML());
+
+      expect(tiptapEditor.getJSON().content[0].content[0]).toMatchObject({
+        type: 'iframe',
+        attrs: { providerId: 'youtube' },
+      });
     });
 
     it('does not parse a regular img as an iframe node', () => {
@@ -115,7 +125,7 @@ describe('content_editor/extensions/iframe', () => {
       ${"a host suffixed onto the provider's domain"} | ${'https://www.youtube.com.evil.example/embed/abc'}
       ${"the provider's domain in the query string"}  | ${'https://evil.example.com/embed?u=www.youtube.com'}
       ${"the provider's domain in the userinfo"}      | ${'https://www.youtube.com@evil.example.com/embed'}
-      ${"another provider's origin"}                  | ${'https://embed.figma.com/design/abc'}
+      ${"another provider's origin"}                  | ${'https://embed.figma.com/design/abc?embed-host=gitlab'}
     `('parses $description as an image node rather than an iframe node', ({ src }) => {
       const nodeTypes = parsedNodeTypes(mediaContainer(src));
 

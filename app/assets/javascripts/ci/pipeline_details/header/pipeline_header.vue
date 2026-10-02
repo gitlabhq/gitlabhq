@@ -7,6 +7,7 @@ import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, n__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import PanelActionsPortal from '~/vue_shared/components/panel_actions_portal.vue';
 import { buildFixPipelineContext, reportToSentry } from '~/ci/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -46,6 +47,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     PageHeading,
+    PanelActionsPortal,
     HeaderActions,
     HeaderBadges,
     TimeAgoTooltip,
@@ -422,10 +424,13 @@ export default {
     <gl-alert
       v-if="hasError"
       class="gl-mb-4"
-      :title="failure.text"
+      :title="failureMessages.length > 0 ? failure.text : ''"
       :variant="failure.variant"
       :dismissible="false"
     >
+      <div v-if="failureMessages.length === 0">
+        {{ failure.text }}
+      </div>
       <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
         {{ failureMessage }}
       </div>
@@ -532,31 +537,31 @@ export default {
       </template>
 
       <template #actions>
-        <duo-workflow-action
-          v-if="showFixPipelineButton"
-          class="gl-self-start"
-          :project-path="paths.fullProject"
-          workflow-definition="fix_pipeline/v1"
-          :goal="pipelinePath"
-          size="medium"
-          :source-branch="sourceBranch"
-          :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
-          :additional-context="getAdditionalContext"
-          :source="$options.SOURCE"
-        >
-          {{ __('Fix pipeline with Duo') }}
-        </duo-workflow-action>
-        <header-actions
-          v-if="pipeline.id"
-          class="gl-self-start"
-          :pipeline="pipeline"
-          :is-retrying="isRetrying"
-          :is-canceling="isCanceling"
-          :is-deleting="isDeleting"
-          @retry-pipeline="retryPipeline($event)"
-          @cancel-pipeline="cancelPipeline($event)"
-          @delete-pipeline="deletePipeline($event)"
-        />
+        <panel-actions-portal>
+          <duo-workflow-action
+            v-if="showFixPipelineButton"
+            :project-path="paths.fullProject"
+            workflow-definition="fix_pipeline/v1"
+            :goal="pipelinePath"
+            size="medium"
+            :source-branch="sourceBranch"
+            :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
+            :additional-context="getAdditionalContext"
+            :source="$options.SOURCE"
+          >
+            {{ __('Fix pipeline with Duo') }}
+          </duo-workflow-action>
+          <header-actions
+            v-if="pipeline.id"
+            :pipeline="pipeline"
+            :is-retrying="isRetrying"
+            :is-canceling="isCanceling"
+            :is-deleting="isDeleting"
+            @retry-pipeline="retryPipeline($event)"
+            @cancel-pipeline="cancelPipeline($event)"
+            @delete-pipeline="deletePipeline($event)"
+          />
+        </panel-actions-portal>
       </template>
     </page-heading>
 

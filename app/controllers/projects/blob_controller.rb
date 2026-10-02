@@ -348,7 +348,6 @@ class Projects::BlobController < Projects::ApplicationController
       current_user,
       environment_params
     ).execute.last
-    @last_commit = @repository.last_commit_for_path(commit.id, blob.path, literal_pathspec: true)
     @code_navigation_path = Gitlab::CodeNavigationPath.new(@project, blob.commit_id).full_json_path_for(blob.path)
 
     render 'show'

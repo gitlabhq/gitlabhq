@@ -10,18 +10,8 @@
       if [ -f "${cached_chart}" ]; then export GITLAB_CHART_PACKAGE="${cached_chart}"; fi
     # nip.io, not /etc/hosts: sibling dind containers have their own hosts file
     - GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
-    # BASE_DOMAIN is set here since base config wins over env vars
-    # QA_SCENARIO also acts as the OAuth switch, so we don't need a separate variable
-    - |
-      {
-        echo "variables:"
-        echo "  BASE_DOMAIN: ${GITLAB_DOMAIN}"
-        if [ "${QA_SCENARIO}" = "Test::Integration::OAuth" ]; then
-          echo "extends:"
-          echo "  - caproni.github-oauth.yaml"
-        fi
-      } > $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
-      cat $CI_PROJECT_DIR/qa/caproni/caproni.local.yaml
+    - export GITLAB_DOMAIN
+    - $CI_PROJECT_DIR/qa/caproni/scripts/write_local_config.rb
     - |
       section_start "caproni_up" "Deploying CNG with Caproni"
       # --debug not LOG_LEVEL: the env var corrupts k3d JSON output
@@ -31,7 +21,7 @@
         --selector="app=webservice" pods --timeout=600s
       section_end "caproni_up"
     - $CI_PROJECT_DIR/qa/caproni/scripts/seed_admin_token.rb
-    - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
+    - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}${QA_RELATIVE_URL_ROOT}"
     # Read back, not pre-created: Caproni has no pre-install hook
     - |
       export GITLAB_ADMIN_PASSWORD="$(caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} \
@@ -123,6 +113,14 @@ cng-instance-caproni:
   variables:
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
+
+cng-relative-url-caproni:
+  extends: .caproni-test
+  variables:
+    QA_SCENARIO: Test::Instance::Smoke
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 4
+    QA_RELATIVE_URL_ROOT: "/relative"
 
 cng-registry-caproni:
   extends: .caproni-test

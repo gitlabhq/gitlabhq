@@ -65,10 +65,10 @@ export default {
 
 <template>
   <div>
-    <div class="gl-flex gl-items-start gl-gap-3">
+    <div class="gl-flex gl-items-center gl-gap-3">
       <gl-button
         v-if="canRetryPipeline"
-        v-gl-tooltip
+        v-gl-tooltip.bottom
         :aria-label="$options.BUTTON_TOOLTIP_RETRY"
         :title="$options.BUTTON_TOOLTIP_RETRY"
         :loading="isRetrying"
@@ -82,7 +82,7 @@ export default {
 
       <gl-button
         v-if="canCancelPipeline"
-        v-gl-tooltip
+        v-gl-tooltip.bottom
         :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
         :title="$options.BUTTON_TOOLTIP_CANCEL"
         :loading="isCanceling"
@@ -91,21 +91,22 @@ export default {
         data-testid="cancel-pipeline"
         @click="$emit('cancel-pipeline', pipeline.id)"
       >
-        {{ __('Cancel pipeline') }}
+        {{ __('Cancel') }}
       </gl-button>
 
       <gl-button
         v-if="pipeline.userPermissions.destroyPipeline"
-        v-gl-tooltip
+        v-gl-tooltip.bottom
         v-gl-modal="$options.modal.id"
         :aria-label="$options.BUTTON_TOOLTIP_DELETE"
         :title="$options.BUTTON_TOOLTIP_DELETE"
         :loading="isDeleting"
         :disabled="isDeleting"
+        category="tertiary"
+        size="small"
+        icon="remove"
         data-testid="delete-pipeline"
-      >
-        {{ __('Delete') }}
-      </gl-button>
+      />
     </div>
 
     <gl-modal

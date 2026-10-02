@@ -52,6 +52,7 @@ function renderIframeEl(el) {
     allowfullscreen: 'true',
     referrerpolicy: 'strict-origin-when-cross-origin',
   });
+  iframeEl.style.maxHeight = '80vh';
 
   if (hasExplicitDimensions) {
     if (width) iframeEl.setAttribute('width', width);

@@ -4,6 +4,24 @@ require 'spec_helper'
 require 'labkit/rspec/matchers'
 
 RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
+  describe '.idempotency_arguments' do
+    it 'excludes pipeline_creation_request and falls back to the two-argument key' do
+      args = [123, 456, { 'pipeline_creation_request' => { 'key' => 'k', 'id' => 'uuid-1' } }]
+
+      expect(described_class.idempotency_arguments(args)).to eq([123, 456])
+    end
+
+    it 'preserves the two-argument key for the legacy invocation' do
+      expect(described_class.idempotency_arguments([123, 456])).to eq([123, 456])
+    end
+
+    it 'keeps other params in the dedup key' do
+      args = [123, 456, { 'foo' => 'bar' }]
+
+      expect(described_class.idempotency_arguments(args)).to eq([123, 456, { 'foo' => 'bar' }])
+    end
+  end
+
   describe '#perform' do
     let(:worker) { described_class.new }
 
@@ -150,11 +168,36 @@ RSpec.describe NewMergeRequestWorker, feature_category: :code_review_workflow do
 
           context 'when the merge request is not prepared' do
             it 'calls the create service' do
-              expect_next_instance_of(MergeRequests::AfterCreateService, project: merge_request.target_project, current_user: user) do |service|
+              expect_next_instance_of(MergeRequests::AfterCreateService,
+                hash_including(project: merge_request.target_project, current_user: user)) do |service|
                 expect(service).to receive(:execute).with(merge_request).and_call_original
               end
 
               worker.perform(merge_request.id, user.id)
+            end
+
+            context 'with params' do
+              let(:pipeline_creation_request) { { 'key' => 'test-key', 'id' => 'test-id' } }
+              let(:params) { { 'pipeline_creation_request' => pipeline_creation_request } }
+
+              it 'forwards symbolized params to AfterCreateService' do
+                expect_next_instance_of(MergeRequests::AfterCreateService,
+                  hash_including(params: { pipeline_creation_request: pipeline_creation_request })) do |service|
+                  expect(service).to receive(:execute).with(merge_request).and_call_original
+                end
+
+                worker.perform(merge_request.id, user.id, params)
+              end
+            end
+
+            context 'with nil params' do
+              it 'calls AfterCreateService with empty params' do
+                expect_next_instance_of(MergeRequests::AfterCreateService, hash_including(params: {})) do |service|
+                  expect(service).to receive(:execute).with(merge_request).and_call_original
+                end
+
+                worker.perform(merge_request.id, user.id, nil)
+              end
             end
           end
         end

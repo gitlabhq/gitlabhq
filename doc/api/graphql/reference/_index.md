@@ -21014,6 +21014,7 @@ Arguments:
 | <a id="mutation-workitemdecisionresolve-id"></a>`id` | [`WorkItemsDecisionID!`](#workitemsdecisionid) | Global ID of the decision. |
 | <a id="mutation-workitemdecisionresolve-resolutionrationale"></a>`resolutionRationale` | [`String`](#string) | Reasoning for the resolution. |
 | <a id="mutation-workitemdecisionresolve-resolvingnoteid"></a>`resolvingNoteId` | [`NoteID`](#noteid) | Global ID of the comment that resolved the decision. |
+| <a id="mutation-workitemdecisionresolve-selectedoptioncontent"></a>`selectedOptionContent` | [`String`](#string) | Content of a custom option, added as the only selected option of the decision while every existing option is deselected. Incompatible with selectedOptionIds. |
 | <a id="mutation-workitemdecisionresolve-selectedoptionids"></a>`selectedOptionIds` | [`[WorkItemsDecisionOptionID!]`](#workitemsdecisionoptionid) | Global IDs of the selected options. Maximum of 5 options. |
 
 Fields:
@@ -67168,7 +67169,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemagentplanquestion-answered"></a>`answered` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether someone whose role is above Guest has replied in the thread. |
+| <a id="workitemagentplanquestion-answered"></a>`answered` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the thread the question was asked in is resolved. |
 | <a id="workitemagentplanquestion-discussionid"></a>`discussionId` {{< icon name="warning-solid" >}} | [`DiscussionID!`](#discussionid) | Introduced in GitLab 19.5. Status: Experiment. Global ID of the thread the question was asked in. |
 | <a id="workitemagentplanquestion-noteid"></a>`noteId` {{< icon name="warning-solid" >}} | [`NoteID!`](#noteid) | Introduced in GitLab 19.5. Status: Experiment. Global ID of the comment that asked the question. |
 
@@ -67571,7 +67572,7 @@ Fields:
 | <a id="workitemwidgetagentplan-content"></a>`content` | [`String`](#string) | Content of the agent plan. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-contenthtml"></a>`contentHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `content`. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-generationstatus"></a>`generationStatus` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanGenerationStatus`](#workitemagentplangenerationstatus) | Introduced in GitLab 19.4. Status: Experiment. Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `duo_workplan_async_flow` feature flag. |
-| <a id="workitemwidgetagentplan-openquestionscount"></a>`openQuestionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of questions asked by workplan flows that nobody above Guest has replied to, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgetagentplan-openquestionscount"></a>`openQuestionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of questions asked by workplan flows whose thread is not resolved, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-questions"></a>`questions` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanQuestionConnection`](#workitemagentplanquestionconnection) | Introduced in GitLab 19.5. Status: Experiment. Questions asked by workplan flows, across every run on the work item, oldest first. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
 | <a id="workitemwidgetagentplan-readinessscorefeedback"></a>`readinessScoreFeedback` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Markdown feedback explaining the readiness score. Null when no feedback is available. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |

@@ -18089,9 +18089,6 @@ msgstr ""
 msgid "Cancel editing the comment line range"
 msgstr ""
 
-msgid "Cancel pipeline"
-msgstr ""
-
 msgid "Cancel the running pipeline"
 msgstr ""
 
@@ -78917,6 +78914,12 @@ msgid "Selected for all items."
 msgstr ""
 
 msgid "Selected for some items."
+msgstr ""
+
+msgid "Selected option content can't be blank"
+msgstr ""
+
+msgid "Selected options and selected option content cannot be provided together"
 msgstr ""
 
 msgid "Selected options can only be updated on resolved decisions"
