@@ -30,7 +30,7 @@ DAST의 경우 `registry.gitlab.com`에서 다음 기본 DAST 분석기 이미�
 
 - `registry.gitlab.com/security-products/dast:latest`
 
-Docker 이미지를 로컬 오프라인 Docker 레지스트리로 가져오는 프로세스는 **네트워크 보안 정책**에 따라 다릅니다. IT 직원에게 외부 리소스를 가져오거나 일시적으로 액세스할 수 있는 승인된 프로세스를 확인하도록 요청하세요. 이 스캐너는 [정기적으로 업데이트되며](../../../detect/vulnerability_scanner_maintenance.md), 새로운 정의가 나오면 자체적으로 가끔 업데이트할 수 있습니다.
+Docker 이미지를 로컬 오프라인 Docker 레지스트리로 가져오는 프로세스는 사용자의 네트워크 보안 정책에 따라 달라집니다. IT 직원에게 외부 리소스를 가져오거나 일시적으로 액세스할 수 있는 승인된 프로세스를 확인하도록 요청하세요. 이 스캐너는 [정기적으로 업데이트되며](../../../detect/vulnerability_scanner_maintenance.md), 새로운 정의가 나오면 자체적으로 가끔 업데이트할 수 있습니다.
 
 Docker 이미지를 파일로 저장하고 전송하는 방법에 대한 자세한 내용은 Docker 문서에서 [`docker save`](https://docs.docker.com/reference/cli/docker/image/save/), [`docker load`](https://docs.docker.com/reference/cli/docker/image/load/), [`docker export`](https://docs.docker.com/reference/cli/docker/container/export/) 및 [`docker import`](https://docs.docker.com/reference/cli/docker/image/import/)를 참조하세요.
 

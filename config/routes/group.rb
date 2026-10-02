@@ -200,7 +200,6 @@ constraints(Namespaces::GroupUrlConstraint.new) do
     resource :import_history, only: [:show]
 
     namespace :observability do
-      resource :o11y_service_settings, only: [:update, :edit, :destroy]
       resource :setup, only: [:show], controller: 'setup'
       resource :access_requests, only: [:create]
       # Backend-for-frontend per-user SigNoz session exchange (gated by the

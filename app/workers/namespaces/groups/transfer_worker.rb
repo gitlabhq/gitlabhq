@@ -57,7 +57,12 @@ module Namespaces
 
         if transfer_successful
           transfer_succeeded = true
+          scheduled_at = group.state_metadata&.dig('transfer_scheduled_at')
           group.complete_transfer!
+          ::Gitlab::Metrics::Transfers.observe_end_to_end_transfer_duration(
+            scheduled_at: scheduled_at,
+            namespace_type: 'group'
+          )
           resolve_transfer_failure_todo(group, user, worker_name: self.class.name, group_id: group.id)
 
         else

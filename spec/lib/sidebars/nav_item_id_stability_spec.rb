@@ -86,7 +86,6 @@ KNOWN_STABLE_CE_IDS = %i[
   monitor
   new_issue
   notification_channels
-  o11y_settings
   observability_alerts
   observability_dashboard
   organization_admin_dashboard

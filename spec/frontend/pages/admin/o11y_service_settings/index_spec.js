@@ -2,14 +2,14 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import initSettingsPanels from '~/settings_panels';
 import { initSimpleApp } from '~/helpers/init_simple_app_helper';
-import SearchBox from '~/pages/experimental/o11y_service_settings/search_box.vue';
+import SearchBox from '~/pages/admin/o11y_service_settings/search_box.vue';
 
 jest.mock('~/settings_panels');
 jest.mock('~/helpers/init_simple_app_helper', () => ({
   initSimpleApp: jest.fn(),
 }));
 
-describe('experimental/o11y_service_settings/index', () => {
+describe('admin/o11y_service_settings/index', () => {
   const mountSelector = '#js-o11y-service-settings-search';
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('experimental/o11y_service_settings/index', () => {
       value: 'loading',
     });
 
-    await import('~/pages/experimental/o11y_service_settings/index');
+    await import('~/pages/admin/o11y_service_settings/index');
 
     const event = new Event('DOMContentLoaded');
     document.dispatchEvent(event);

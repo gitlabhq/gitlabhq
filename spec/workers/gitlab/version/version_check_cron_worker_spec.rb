@@ -7,13 +7,63 @@ RSpec.describe Gitlab::Version::VersionCheckCronWorker, feature_category: :servi
   let(:response) { double }
   let(:version_info) { { 'version' => '1.0.0' } }
   let(:encoded_data) { Base64.urlsafe_encode64({ version: Gitlab::VERSION }.to_json) }
-  let(:version_url) { "https://version.gitlab.com/check.json?gitlab_info=#{encoded_data}" }
+  let(:check_path) { "/check.json?gitlab_info=#{encoded_data}" }
+  let(:production_url) { "#{Gitlab::TelemetryEndpoint::PRODUCTION_URL}#{check_path}" }
+
+  # The test environment is not production, so the default destination is staging.
+  let(:version_url) { "#{Gitlab::TelemetryEndpoint::STAGING_URL}#{check_path}" }
+
+  # A redirected destination is typically local, so the request must be allowed to
+  # reach one. Asserted on every stub below: dropping it breaks this whole file.
+  let(:http_options) { { allow_local_requests: true } }
 
   before do
-    allow(Gitlab::HTTP).to receive(:try_get).with(version_url).and_return(response)
+    allow(Gitlab::HTTP).to receive(:try_get).with(version_url, http_options).and_return(response)
   end
 
   describe '#perform' do
+    describe 'destination host' do
+      before do
+        allow(response).to receive_messages(body: version_info.to_json, code: 200)
+      end
+
+      it 'requests the staging Versions Application outside production' do
+        expect(Gitlab::HTTP).to receive(:try_get).with(version_url, http_options).and_return(response)
+        expect(Gitlab::HTTP).not_to receive(:try_get).with(production_url, http_options)
+
+        worker.perform
+      end
+
+      context 'when running in production' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it 'requests version.gitlab.com' do
+          expect(Gitlab::HTTP).to receive(:try_get).with(production_url, http_options).and_return(response)
+          expect(Gitlab::HTTP).not_to receive(:try_get).with(version_url, http_options)
+
+          worker.perform
+        end
+      end
+
+      # Gitlab::TelemetryEndpoint resolves the destination and is specced
+      # separately; this only proves the worker requests whatever it returns.
+      context 'when the destination is overridden' do
+        let(:destination) { 'http://localhost:3000' }
+
+        it 'requests Gitlab::TelemetryEndpoint.version_check_url' do
+          allow(Gitlab::TelemetryEndpoint).to receive(:version_check_url).and_return(destination)
+
+          expect(Gitlab::HTTP).to receive(:try_get).with("#{destination}#{check_path}",
+            http_options).and_return(response)
+          expect(Gitlab::HTTP).not_to receive(:try_get).with(version_url, http_options)
+
+          worker.perform
+        end
+      end
+    end
+
     context 'when request is successful' do
       before do
         allow(response).to receive_messages(body: version_info.to_json, code: 200)
@@ -51,7 +101,7 @@ RSpec.describe Gitlab::Version::VersionCheckCronWorker, feature_category: :servi
 
     context 'when response is not present' do
       before do
-        allow(Gitlab::HTTP).to receive(:try_get).with(version_url).and_return(nil)
+        allow(Gitlab::HTTP).to receive(:try_get).with(version_url, http_options).and_return(nil)
       end
 
       it 'logs an error' do

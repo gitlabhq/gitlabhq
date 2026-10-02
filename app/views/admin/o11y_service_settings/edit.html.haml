@@ -1,4 +1,4 @@
-- add_to_breadcrumbs s_('Observability|O11y service settings'), experimental_o11y_service_settings_path
+- add_to_breadcrumbs s_('Observability|O11y service settings'), admin_o11y_service_settings_path
 - breadcrumb_title s_('Observability|Edit O11y service settings')
 
 %h1.gl-sr-only= @breadcrumb_title
@@ -11,7 +11,7 @@
   - c.with_description do
     = s_('Observability|Update your o11y service connection settings.')
   - c.with_body do
-    = gitlab_ui_form_for @o11y_service_settings, url: experimental_o11y_service_setting_path(@o11y_service_settings), method: :patch, authenticity_token: true do |f|
+    = gitlab_ui_form_for @o11y_service_settings, url: admin_o11y_service_setting_path(@o11y_service_settings), method: :patch, authenticity_token: true do |f|
       = form_errors(@o11y_service_settings)
 
       .row
@@ -31,4 +31,4 @@
 
       .form-group.gl-form-group
         = f.submit _('Save changes'), pajamas_button: true
-        = link_to s_('Observability|Delete'), experimental_o11y_service_setting_path(@o11y_service_settings), method: :delete, class: 'btn btn-danger', data: { confirm: s_('Observability|Are you sure you want to delete this O11y service setting?') }, style: 'margin-left: 10px;'
+        = link_to s_('Observability|Delete'), admin_o11y_service_setting_path(@o11y_service_settings), method: :delete, class: 'btn btn-danger', data: { confirm: s_('Observability|Are you sure you want to delete this O11y service setting?') }, style: 'margin-left: 10px;'

@@ -6,11 +6,10 @@ RSpec.describe EmailsHelper, feature_category: :shared do
   include EmailsHelperTestHelper
   include NotifyHelper
 
-  describe '#notification_email_marker', :freeze_time, feature_category: :notifications do
-    subject(:marker) { Nokogiri::HTML.fragment(helper.notification_email_marker(target_url, **options)).at_css('span') }
+  describe '#notification_email_marker', feature_category: :notifications do
+    subject(:marker) { Nokogiri::HTML.fragment(helper.notification_email_marker(target_url)).at_css('span') }
 
     let(:target_url) { 'https://gitlab.example.com/group/project/-/merge_requests/1' }
-    let(:options) { {} }
 
     it 'renders a hidden span with a random marker', :aggregate_failures do
       expect(marker.text).to match(/\ANotification message regarding #{Regexp.escape(target_url)} at \h{32}\z/)
@@ -18,14 +17,6 @@ RSpec.describe EmailsHelper, feature_category: :shared do
       expect(marker.text).not_to eq(
         Nokogiri::HTML.fragment(helper.notification_email_marker(target_url)).at_css('span').text
       )
-    end
-
-    context 'when random is false' do
-      let(:options) { { random: false } }
-
-      it 'uses the current timestamp' do
-        expect(marker.text).to eq("Notification message regarding #{target_url} at #{Time.current.to_i}")
-      end
     end
   end
 

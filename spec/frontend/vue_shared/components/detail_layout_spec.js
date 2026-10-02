@@ -2,6 +2,8 @@ import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
+import { useMockResizeObserver } from 'helpers/mock_dom_observer';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 
 describe('DetailLayout', () => {
@@ -70,6 +72,7 @@ describe('DetailLayout', () => {
     const SPACE_VAR = '--detail-layout-sidebar-space';
     let scrollContainer;
     let sidebarTopSpy;
+    const { trigger: triggerResize } = useMockResizeObserver();
 
     const getSpace = () => findSidebar().element.style.getPropertyValue(SPACE_VAR);
 
@@ -80,7 +83,12 @@ describe('DetailLayout', () => {
       setSidebarTop(sidebarTop);
     };
 
-    const mountInScrollContainer = ({ containerTop = 0, sidebarTop = 0, loading = false } = {}) => {
+    const mountInScrollContainer = ({
+      containerTop = 0,
+      sidebarTop = 0,
+      scrollTop = 0,
+      loading = false,
+    } = {}) => {
       scrollContainer = document.createElement('div');
       scrollContainer.className = 'panel-content-inner';
       document.body.appendChild(scrollContainer);
@@ -92,6 +100,7 @@ describe('DetailLayout', () => {
       scrollContainer.appendChild(wrapper.element);
 
       jest.spyOn(scrollContainer, 'getBoundingClientRect').mockReturnValue({ top: containerTop });
+      Object.defineProperty(scrollContainer, 'scrollTop', { value: scrollTop, configurable: true });
       if (!loading) spyOnSidebar(sidebarTop);
     };
 
@@ -122,16 +131,15 @@ describe('DetailLayout', () => {
       expect(getSpace()).toBe('0px');
     });
 
-    it('re-measures live on scroll so the height tracks the sidebar position', async () => {
+    it('re-measures live on scroll so the cap tracks the sidebar position', async () => {
       mountInScrollContainer({ containerTop: 0, sidebarTop: 120 });
       await flush();
       expect(getSpace()).toBe('120px');
 
-      // The sidebar has scrolled up and pinned below the sticky header.
-      setSidebarTop(32);
+      setSidebarTop(40);
       await scroll();
 
-      expect(getSpace()).toBe('32px');
+      expect(getSpace()).toBe('40px');
     });
 
     it('re-measures on resize', async () => {
@@ -143,6 +151,79 @@ describe('DetailLayout', () => {
       await flush();
 
       expect(getSpace()).toBe('80px');
+    });
+
+    it('re-measures when the layout content resizes', async () => {
+      mountInScrollContainer({ containerTop: 0, sidebarTop: 120 });
+      await flush();
+      expect(getSpace()).toBe('120px');
+
+      setSidebarTop(80);
+      triggerResize(wrapper.element);
+      await flush();
+
+      expect(getSpace()).toBe('80px');
+    });
+
+    it('re-measures when the sticky header sticks or unsticks', async () => {
+      mountInScrollContainer({ containerTop: 0, sidebarTop: 12 });
+      await flush();
+      expect(getSpace()).toBe('12px');
+
+      setSidebarTop(45);
+      wrapper.findComponent(BaseLayout).vm.$emit('sticky-change', true);
+      await flush();
+
+      expect(getSpace()).toBe('45px');
+    });
+
+    describe('when the sidebar is sticky', () => {
+      const STICKY_HEADER_HEIGHT = 21;
+      const SPACING = 12;
+      const STUCK_TOP = STICKY_HEADER_HEIGHT + SPACING;
+
+      const mountSticky = ({ gridTop, staleSidebarTop }) => {
+        mountInScrollContainer({ containerTop: 0, sidebarTop: staleSidebarTop });
+
+        const sidebarEl = findSidebar().element;
+        const realGetComputedStyle = window.getComputedStyle;
+        jest.spyOn(window, 'getComputedStyle').mockImplementation((el, ...args) => {
+          if (el === sidebarEl) {
+            return {
+              position: 'sticky',
+              top: `${STUCK_TOP}px`,
+              marginTop: `-${SPACING}px`,
+            };
+          }
+          return realGetComputedStyle(el, ...args);
+        });
+
+        jest
+          .spyOn(findContainer().element, 'getBoundingClientRect')
+          .mockReturnValue({ top: gridTop });
+      };
+
+      it('uses the stuck position instead of a stale sidebar rect', async () => {
+        mountSticky({ gridTop: -5000, staleSidebarTop: 22.5 });
+        await scroll();
+
+        expect(getSpace()).toBe(`${STUCK_TOP}px`);
+      });
+
+      it('does not subtract the negative top margin from the stuck position', async () => {
+        mountSticky({ gridTop: -2000, staleSidebarTop: STICKY_HEADER_HEIGHT });
+        await scroll();
+
+        expect(getSpace()).toBe('33px');
+      });
+
+      it('uses the natural position when not stuck', async () => {
+        // Grid top 132px minus the 12px negative margin puts the sidebar at 120px.
+        mountSticky({ gridTop: 132, staleSidebarTop: 0 });
+        await scroll();
+
+        expect(getSpace()).toBe('120px');
+      });
     });
 
     it('wires up the scroll sync once the sidebar renders after loading completes', async () => {

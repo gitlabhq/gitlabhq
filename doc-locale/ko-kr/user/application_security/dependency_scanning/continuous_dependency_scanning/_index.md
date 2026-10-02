@@ -13,13 +13,20 @@ description: GitLab이 CI/CD 파이프라인 외부에서 애플리케이션 종
 
 {{< /details >}}
 
-종속성 검사를 위한 지속적인 취약성 스캐닝(CVS)은 새 파이프라인을 실행할 필요 없이 최신 [보안 권고사항](#security-advisories)의 정보와 비교하여 프로젝트의 종속성의 구성 요소 이름과 버전을 조회하여 보안 취약성을 찾습니다. 파이프라인은 CycloneDX SBOM을 통해 프로젝트 구성 요소를 등록하기 위해 기본 브랜치에서 최소한 한 번은 실행되어야 합니다. 그 후 CVS는 종속성이 변경될 때까지 추가 파이프라인 실행 없이 권고사항이 게시되면 실행됩니다.
+종속성 검사용 지속적 취약성 검사(CVS)는 새 파이프라인을 실행할 필요 없이 프로젝트의 종속성에서 보안 취약성을 찾습니다. CVS는 구성 요소 이름과 버전을 두 가지 소스와 비교합니다:
 
-[새로운 취약성이 발생할 수 있습니다](#checking-new-vulnerabilities). 지속적인 취약성 스캐닝이 [지원되는 패키지 유형](#supported-package-types)이 포함된 모든 프로젝트에서 스캔을 트리거할 때입니다.
+- 최신 [보안 권고](#security-advisories)는 알려진 취약성이 있는 패키지 버전을 식별합니다.
+- [GitLab 악성코드 권고](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories)는 악의적인 것으로 알려진 패키지 버전을 식별합니다.
+
+파이프라인은 CycloneDX SBOM을 통해 프로젝트 구성 요소를 등록하기 위해 기본 브랜치에서 최소한 한 번은 실행되어야 합니다. 그 후 CVS는 종속성이 변경될 때까지 추가 파이프라인 실행 없이 권고사항이 게시되면 실행됩니다.
+
+CVS는 GitLab이 악성코드 권고 데이터베이스를 업데이트할 때 보안 권고의 경우와 동일한 방식으로 종속성을 다시 평가합니다. CVS가 이미 종속성에 있는 패키지를 악의적인 것으로 식별하면 결과를 생성합니다.
+
+GitLab은 결과를 생성할 때 알림을 제공하지 않으며, 지속적 취약성 검사가 [지원되는 패키지 유형](#supported-package-types)의 구성 요소를 포함하는 프로젝트를 검사할 때마다 [새 취약성이 발생할 수 있습니다](#checking-new-vulnerabilities). [취약성 보고서](../../vulnerability_report/_index.md) 또는 [종속성 목록](../../dependency_list/_index.md)을 확인하여 이를 볼 수 있습니다.
 
 종속성 검사를 위한 지속적인 취약성 스캐닝으로 만든 취약성은 스캐너 이름으로 `GitLab SBoM Vulnerability Scanner`을 사용하고 취약성 유형으로 `Dependency Scanning`을 사용합니다.
 
-CI/CD 기반 보안 스캔과 달리 지속적인 취약성 스캐닝은 CI/CD 파이프라인 대신 백그라운드 작업(Sidekiq)을 통해 실행되며 보안 보고서 아티팩트가 생성되지 않습니다.
+CI/CD 기반 보안 검사와 달리 지속적 취약성 검사는 CI/CD 파이프라인이 아니라 백그라운드 작업(Sidekiq)을 통해 실행되며 보안 보고서 아티팩트가 생성되지 않습니다.
 
 ## 전제 조건 {#prerequisites}
 
@@ -83,11 +90,11 @@ GitLab은 GitLab과 호환되는 보고서를 생성할 수 있는 보안 분석
 
 지속적인 취약성 스캐닝으로 감지된 새로운 취약성은 [취약성 보고서](../../vulnerability_report/_index.md)에 표시됩니다. 그러나 영향을 받는 SBOM 구성 요소가 감지된 파이프라인에는 나열되지 않습니다.
 
-취약성은 [보안 권고사항](#security-advisories)이 추가되거나 업데이트된 후에 생성되며, 코드베이스가 변경되지 않으면 해당 취약성이 프로젝트에 추가되는 데 몇 시간이 걸릴 수 있습니다. 지난 14일 이내에 게시된 권고사항만 지속적인 취약성 스캐닝에 고려됩니다.
+[보안 권고](#security-advisories)가 추가되거나 업데이트된 후에 취약성이 생성됩니다. 코드베이스가 변경되지 않으면 해당 취약성이 프로젝트에 추가되는 데 몇 시간이 걸릴 수 있습니다. 지난 14일 이내에 게시된 권고사항만 지속적인 취약성 스캐닝에 고려됩니다.
 
 ## 더 이상 취약성이 감지되지 않을 때 {#when-vulnerabilities-are-no-longer-detected}
 
-지속적인 취약성 스캐닝은 새 권고사항이 게시될 때 자동으로 취약성을 생성하지만 취약성이 프로젝트에 더 이상 없을 때를 알 수 없습니다. 이를 위해 GitLab은 여전히 기본 브랜치의 파이프라인에서 [종속성 검사](../_index.md) 스캔을 실행하고 최신 정보를 포함하는 해당 보안 보고서 아티팩트를 생성해야 합니다. 이러한 보고서가 처리되고 일부 취약성을 더 이상 포함하지 않으면 지속적인 취약성 스캐닝으로 생성된 경우에도 이러한 보고서는 그렇게 표시됩니다.
+지속적 취약성 검사는 새 권고가 게시되면 자동으로 취약성을 생성하지만 취약성이 더 이상 프로젝트에 없는 시점을 알 수 없습니다. 이렇게 하려면 GitLab은 여전히 기본 브랜치의 파이프라인에서 [종속성 검사](../_index.md) 검사를 실행하고 최신 정보로 생성된 해당 보안 보고서 아티팩트가 필요합니다. 이러한 보고서가 처리되고 일부 취약성을 더 이상 포함하지 않으면 지속적인 취약성 스캐닝으로 생성된 경우에도 이러한 보고서는 그렇게 표시됩니다.
 
 ## 보안 권고사항 {#security-advisories}
 
@@ -101,7 +108,8 @@ GitLab Self-Managed에서는 GitLab 인스턴스의 **운영자** 영역에서 [
 
 보안 권고사항의 현재 데이터 원본은 다음을 포함합니다:
 
-- [GitLab 권고사항 데이터베이스](https://advisories.gitlab.com/) ([`gemnasium-db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) 리포지토리에 호스팅, 레거시 이름)
+- [GitLab 권고 데이터베이스](../../gitlab_advisory_database/_index.md)(레거시 이름인 [`gemnasium-db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) 리포지토리에서 호스팅됨)
+- [GitLab 악성코드 권고](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories), 악의적인 것으로 알려진 패키지의 비공개 데이터베이스
 
 ### 취약성 데이터베이스에 기여 {#contributing-to-the-vulnerability-database}
 

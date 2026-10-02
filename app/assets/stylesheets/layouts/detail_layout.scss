@@ -44,13 +44,10 @@ $detail-layout-gap: 2rem;
       position: sticky;
       top: var(--detail-layout-sidebar-top, var(--layout-sticky-header-height, 0));
       align-self: start;
-      // Fit the sidebar to the visible area. --detail-layout-sidebar-space is
-      // measured live in JS (on scroll and resize) as the distance from the scroll
-      // container's viewport top to the sidebar's current top edge: the page heading
-      // when unscrolled, the sticky header once stuck, and the correct value while
-      // scrolling in between. Subtracting it keeps the sidebar bottom at the viewport
-      // edge in every scroll state, so its own scrollbar can always reach the last item.
-      height: var(
+      // Cap (not force) the height so a short sidebar can't cause a phantom scrollbar.
+      // --detail-layout-sidebar-space is set in detail_layout.vue.
+      min-height: 0;
+      max-height: var(
         --detail-layout-sidebar-height,
         calc(
           var(--panel-content-inner-height, #{$calc-application-viewport-height}) -
@@ -61,8 +58,9 @@ $detail-layout-gap: 2rem;
       overflow-x: hidden;
       overscroll-behavior: contain;
       outline: none;
+      @apply gl-px-3;
       // Adding top spacing and aligning it back to the baseline with the negative margin
-      @apply gl-pt-4;
+      @apply gl-py-4;
       @apply -gl-mt-4;
     }
 

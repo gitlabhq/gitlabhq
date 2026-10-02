@@ -31,8 +31,27 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           .with(namespace_type: 'project', result: 'success')
         expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
           .with(duration_s: kind_of(Numeric), namespace_type: 'project')
+        expect(::Gitlab::Metrics::Transfers).to receive(:observe_end_to_end_transfer_duration)
+          .with(scheduled_at: kind_of(String), namespace_type: 'project')
 
         perform
+      end
+
+      context 'when state_metadata is nil' do
+        it 'observes the end-to-end duration with a nil scheduled_at' do
+          allow(Project).to receive(:find_by_id).with(project.id).and_return(project)
+          allow_next_instance_of(::Projects::TransferService) do |service|
+            allow(service).to receive(:execute) do
+              allow(project_namespace).to receive_messages(state_metadata: nil, complete_transfer!: true)
+              true
+            end
+          end
+
+          expect(::Gitlab::Metrics::Transfers).to receive(:observe_end_to_end_transfer_duration)
+            .with(scheduled_at: nil, namespace_type: 'project').and_call_original
+
+          perform
+        end
       end
 
       context 'when a pending transfer-failed todo exists for the user' do

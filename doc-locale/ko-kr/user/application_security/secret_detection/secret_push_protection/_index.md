@@ -14,8 +14,8 @@ title: 시크릿 푸시 보호
 
 {{< history >}}
 
-- GitLab 16.7에서 [도입](https://gitlab.com/groups/gitlab-org/-/epics/11439)되었으며 GitLab Dedicated 고객을 위한 [실험](../../../../policy/development_stages_support.md)입니다.
-- [변경](https://gitlab.com/groups/gitlab-org/-/epics/12729)되어 GitLab 17.1에서 GitLab.com에서 사용 가능해졌습니다.
+- GitLab 16.7에서 [도입](https://gitlab.com/groups/gitlab-org/-/epics/11439)되었으며 GitLab Dedicated 고객에게 [실험적](../../../../policy/development_stages_support.md)입니다.
+- GitLab 17.1에서 베타로 [변경](https://gitlab.com/groups/gitlab-org/-/epics/12729)되어 GitLab.com에서 사용 가능하게 되었습니다.
 - GitLab 17.2에서 `pre_receive_secret_detection_beta_release` 및 `pre_receive_secret_detection_push_check`라는 [기능 플래그](../../../../administration/feature_flags/_index.md)로 [GitLab Self-Managed에 사용으로 설정](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907)되었습니다.
 - 기능 플래그 `pre_receive_secret_detection_beta_release`이 GitLab 17.4에서 [제거](https://gitlab.com/gitlab-org/gitlab/-/issues/472418)되었습니다.
 - GitLab 17.5에서 [일반 공개](https://gitlab.com/groups/gitlab-org/-/epics/13107)되었습니다.
@@ -42,7 +42,7 @@ title: 시크릿 푸시 보호
 - 시크릿을 포함하는 파일 이름과 라인입니다.
 - 시크릿의 유형입니다.
 
-예를 들어, Git CLI를 사용하여 푸시가 차단되었을 때 반환되는 메시지의 추출본은 다음과 같습니다. GitLab Web IDE를 포함한 다른 클라이언트를 사용할 때는 메시지의 형식이 다르지만 내용은 동일합니다.
+예를 들어, Git CLI를 사용하여 푸시가 차단되면 반환되는 메시지의 추출본은 다음과 같습니다. GitLab Web IDE를 포함한 다른 클라이언트를 사용하는 경우 메시지의 형식이 다르지만 내용은 동일합니다.
 
 ```plain
 remote: PUSH BLOCKED: Secrets detected in code changes
@@ -79,7 +79,7 @@ GitLab Dedicated 및 GitLab Self-Managed 인스턴스에서는 프로젝트에 �
 GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 다음을 수행합니다.
 
 1. 관리자로 GitLab 인스턴스에 로그인합니다.
-1. 오른쪽 위 모서리에서 **관리자**을 선택합니다.
+1. 오른쪽 위 모서리에서 **관리자**를 선택합니다.
 1. 왼쪽 사이드바에서 **설정** > **보안 및 규정 준수**를 선택합니다.
 1. **시크릿 탐지** 아래에서 **시크릿 푸시 보호 허용**을 선택하거나 지웁니다.
 
@@ -100,15 +100,15 @@ GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 �
 
 또한 [API를 사용하여](../../../../api/group_security_settings.md#update-group-security-settings) 그룹의 모든 프로젝트에 대해 시크릿 푸시 보호를 사용으로 설정할 수 있습니다.
 
-## 범위 {#coverage}
+## 보안 범위 {#coverage}
 
 {{< history >}}
 
-- GitLab 17.11에서 차이점만 검사하도록 [변경](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185882)되었습니다.
+- GitLab 17.11에서 diff만 검사하도록 [변경](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185882)되었습니다.
 
 {{< /history >}}
 
-시크릿 푸시 보호는 다음과 같은 경우 시크릿을 차단하지 않습니다:
+시크릿 푸시 보호는 다음과 같은 경우 시크릿을 차단하지 않습니다.
 
 - 커밋을 푸시할 때 시크릿 푸시 보호 건너뛰기 옵션을 사용합니다.
 - 시크릿이 시크릿 푸시 보호에서 제외되어 있습니다.
@@ -123,13 +123,13 @@ GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 �
 - 파일이 리포지토리를 만든 초기 푸시에 포함되어 있습니다.
 - 푸시에 총 350,000줄보다 많은 변경 줄이 포함되어 있습니다.
 
-### 차이점 검사 {#diff-scanning}
+### Diff 검사 {#diff-scanning}
 
 {{< history >}}
 
-- GitLab 17.5에서 `spp_scan_diffs`라는 [기능 플래그](../../../../administration/feature_flags/_index.md)와 함께 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/469161)되었습니다. 기본적으로 사용 중지되어 있습니다.
+- GitLab 17.5에서 `spp_scan_diffs`라는 [기능 플래그](../../../../administration/feature_flags/_index.md)로 [도입](https://gitlab.com/gitlab-org/gitlab/-/issues/469161)되었습니다. 기본적으로 사용 중지됩니다.
 - GitLab 17.6에서 [GitLab.com에 사용](https://gitlab.com/gitlab-org/gitlab/-/issues/480092)으로 설정되었습니다.
-- GitLab 17.10에서 Web IDE 푸시 지원이 [기능 플래그](../../../../administration/feature_flags/_index.md) `secret_checks_for_web_requests`와 함께 [추가](https://gitlab.com/gitlab-org/gitlab/-/issues/491282)되었습니다. 기본적으로 사용 중지되어 있습니다.
+- GitLab 17.10에서 Web IDE 푸시 지원이 `secret_checks_for_web_requests`라는 [기능 플래그](../../../../administration/feature_flags/_index.md)로 [추가](https://gitlab.com/gitlab-org/gitlab/-/issues/491282)되었습니다. 기본적으로 사용 중지됩니다.
 - GitLab 17.11에서 [일반 공개](https://gitlab.com/gitlab-org/gitlab/-/issues/525627)되었습니다. `spp_scan_diffs` 기능 플래그가 제거되었습니다.
 - GitLab 17.11에서 `secret_checks_for_web_requests` 기능 플래그가 [제거](https://gitlab.com/gitlab-org/gitlab/-/issues/525629)되었습니다.
 
@@ -142,14 +142,16 @@ GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 �
 {{< history >}}
 
 - GitLab 19.3에서 [도입](https://gitlab.com/gitlab-org/gitlab/-/work_items/604787)되었습니다.
+- 차단된 푸시 이벤트가 GitLab 19.4에서 [도입됨](https://gitlab.com/gitlab-org/gitlab/-/work_items/601632).
 
 {{< /history >}}
 
-[감사 이벤트](../../../compliance/audit_event_types.md#secret-detection)는 다음과 같은 경우에 기록됩니다.
+[감사 이벤트](../../../compliance/audit_event_types.md#secret-detection)는 다음과 같은 경우에 로그됩니다.
 
+- 시크릿 푸시 보호는 변경 사항에서 시크릿을 감지하면 푸시를 차단합니다.
 - 푸시에 [너무 많은 변경된 경로](#push-size-threshold)가 포함되어 있기 때문에 시크릿 푸시 보호를 건너뜁니다.
 - 푸시가 [너무 많은 줄을 변경](#push-size-threshold)하기 때문에 시크릿 푸시 보호를 건너뜁니다.
-- 시크릿 푸시 보호 검사 시간 초과가 발생하고 GitLab이 푸시를 수락합니다.
+- 시크릿 푸시 보호 검사 시간 초과가 발생하고 GitLab에서 푸시를 수락합니다.
 - 시크릿 푸시 보호에 규칙 집합 구문 분석 또는 컴파일 오류가 발생합니다.
 - 검사에 잘못된 입력을 받았기 때문에 시크릿 푸시 보호를 건너뜁니다.
 - 시크릿 푸시 보호에 예기치 않은 검사 오류가 발생합니다.
@@ -162,27 +164,27 @@ GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 �
 
 시크릿 푸시 보호에서는 다양한 범주의 시크릿을 식별할 수 있습니다.
 
-- API 키 및 토큰: 서비스 특정 인증 자격 증명
+- API 키 및 토큰: 서비스별 인증 자격 증명
 - 데이터베이스 연결 문자열: 포함된 자격 증명이 있는 URL
 - 개인 키: 인증 또는 암호화를 위한 암호화 키
-- 일반 고엔트로피 문자열: 무작위로 생성된 시크릿으로 보이는 패턴
+- 일반적인 엔트로피가 높은 문자열: 무작위로 생성된 시크릿으로 보이는 패턴
 
 푸시가 차단되면 시크릿 푸시 보호는 탐지된 시크릿을 찾아 해결할 수 있도록 자세한 정보를 제공합니다.
 
 - 커밋 ID: 시크릿을 포함하는 특정 커밋입니다. Git 기록의 변경 사항을 추적하는 데 유용합니다.
-- 파일 경로 및 라인 번호: 빠른 탐색을 위한 탐지된 패턴의 정확한 위치입니다.
+- 파일 경로 및 줄 번호: 빠른 탐색을 위한 탐지된 패턴의 정확한 위치입니다.
 - 시크릿 유형: 탐지된 패턴의 분류입니다. 예를 들어 `GitLab Personal Access Token` 또는 `AWS Access Key`입니다.
 
 ### 일반적인 탐지 범주 {#common-detection-categories}
 
-모든 탐지에 대해 즉시 조치가 필요한 것은 아닙니다. 결과를 평가할 때 다음을 고려하세요:
+모든 탐지에 대해 즉시 조치가 필요한 것은 아닙니다. 결과를 평가할 때 다음을 고려하세요.
 
-- 정탐: 회전되고 제거해야 하는 정당한 시크릿입니다. 예를 들어 다음과 같습니다.
+- 정탐: 회전되고 제거해야 하는 정당한 시크릿입니다. 예를 들어:
   - 유효한 API 키 또는 토큰
   - 프로덕션 데이터베이스 자격 증명
   - 개인 암호화 키
-  - 무단 액세스를 허용할 수 있는 모든 자격 증명
-- 오탐: 실제 시크릿이 아닌 탐지된 패턴입니다. 예를 들어 다음과 같습니다.
+  - 권한이 없는 액세스를 부여할 수 있는 모든 자격 증명
+- 오탐: 실제 시크릿이 아닌 탐지된 패턴입니다. 예를 들어:
   - 시크릿과 유사하지만 실제 가치가 없는 테스트 데이터
   - 구성 템플릿의 자리 표시자 값
   - 설명서의 예제 자격 증명
@@ -200,7 +202,7 @@ GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 �
 
 오탐을 줄이려면 다음과 같이 합니다.
 
-- [제외 구성](../exclusions.md)을 전략적으로 수행합니다.
+- [제외 구성](../exclusions.md)을 전략적으로 설정합니다.
   - 테스트 디렉터리, 설명서 및 타사 종속성에 대한 경로 기반 제외를 만듭니다.
   - 특히 코드베이스에 대해 알려진 오탐 패턴에 대한 패턴 기반 제외를 사용합니다.
   - 제외 규칙을 문서화하고 정기적으로 검토합니다.
@@ -217,7 +219,7 @@ GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 �
 - 큰 바이너리 자산이 있는 리포지토리에 대해 파일 크기 제한을 고려하세요.
 - 시크릿을 포함할 가능성이 낮은 디렉터리에 대해 [제외를 구현](../exclusions.md#add-an-exclusion)합니다.
 
-### 기존 워크플로와의 통합 {#integration-with-existing-workflows}
+### 기존 워크플로와 통합 {#integration-with-existing-workflows}
 
 시크릿 푸시 보호가 기존 개발 관행을 보완하는지 확인합니다.
 
@@ -229,42 +231,42 @@ GitLab 인스턴스에서 시크릿 푸시 보호의 사용을 허용하려면 �
 
 시크릿 푸시 보호를 규모에 맞게 배포하려면 신중한 계획과 단계적 구현이 필요합니다.
 
-1. 기능을 테스트하고 개발자 워크플로에 미치는 영향을 파악하기 위해 활발한 개발이 진행되는 비중요 프로젝트 2-3개를 선택합니다.
+1. 기능을 테스트하고 개발자 워크플로에 미치는 영향을 파악하기 위해 활발한 개발이 진행되는 중요성이 낮은 프로젝트 2-3개를 선택합니다.
 1. 선택된 테스트 프로젝트에 시크릿 푸시 보호를 활성화하고 개발자 피드백을 모니터링합니다.
 1. 차단된 푸시 처리 프로세스를 문서화하고 개발 팀을 새로운 워크플로에 대해 교육합니다.
 1. 파일럿 단계 동안 탐지된 시크릿 수, 오탐 비율 및 개발자 경험 피드백을 추적합니다.
 
-더 광범위한 배포 전에 충분한 데이터를 수집하고 필요한 워크플로 조정을 식별하기 위해 파일럿 단계를 2-4주 동안 실행해야 합니다.
+더 광범위한 배포 전에 충분한 데이터를 수집하고 필요한 워크플로 조정을 식별하기 위해 파일럿 단계를 2~4주 동안 실행해야 합니다.
 
-파일럿을 완료한 후 확대된 롤아웃을 위해 다음 단계를 고려하세요:
+파일럿을 완료한 후 확대된 롤아웃을 위해 다음 단계를 고려하세요.
 
-1. 초기 채택자(3-6주)
+1. 초기 채택자(3~6주)
    - 활성 프로젝트의 10-20%에서 사용으로 설정되어 보안에 민감한 리포지토리를 우선시합니다.
    - 강력한 보안 인식과 지원이 있는 팀에 집중합니다.
    - 성능 영향 및 개발자 경험을 모니터링합니다.
    - 실제 사용을 기반으로 프로세스를 개선합니다.
-1. 광범위한 배포(7-12주)
+1. 광범위한 배포(7~12주)
    - 남은 프로젝트 전체에서 배치 단위로 점진적으로 사용으로 설정합니다.
    - 개발 팀에 지속적인 지원 및 교육을 제공합니다.
    - 시스템 성능을 모니터링하고 필요한 경우 인프라를 확장합니다.
    - 사용 패턴을 기반으로 제외 규칙 최적화를 계속합니다.
-1. 전체 범위(13-16주)
+1. 전체 범위(13~16주)
    - 남은 모든 프로젝트에서 시크릿 푸시 보호를 사용으로 설정합니다.
-   - 지속적인 유지 관리 및 검토 프로세스를 설정합니다.
+   - 지속적인 유지 관리 및 검토 프로세스를 수립합니다.
    - 제외 규칙 및 탐지된 패턴의 정기적인 감사를 구현합니다.
 
 ## 차단된 푸시 해결 {#resolve-a-blocked-push}
 
 시크릿 푸시 보호로 푸시가 차단되면 다음 중 하나를 수행할 수 있습니다.
 
-- [시크릿 제거](../remove_secrets_tutorial.md)합니다.
+- [시크릿을 제거](../remove_secrets_tutorial.md)합니다.
 - 시크릿 푸시 보호를 건너뜁니다.
 
 ### 시크릿 푸시 보호 건너뛰기 {#skip-secret-push-protection}
 
 경우에 따라 시크릿 푸시 보호를 건너뛰어야 할 수도 있습니다. 예를 들어 개발자가 테스트를 위해 자리 표시자 시크릿을 커밋해야 하거나 사용자가 Git 작업 시간 초과로 인해 시크릿 푸시 보호를 건너뛰어야 할 수 있습니다.
 
-시크릿 푸시 보호를 건너뛰면 감사 이벤트가 기록됩니다. 감사 이벤트 세부 정보에는:
+시크릿 푸시 보호를 건너뛰면 감사 이벤트가 기록됩니다. 감사 이벤트 세부 정보에는 다음이 포함됩니다.
 
 - 사용한 건너뛰기 방법입니다.
 - GitLab 계정 이름입니다.
@@ -312,4 +314,4 @@ GitLab 17.10 이전에는 `spp_scan_diffs` 기능 플래그를 사용으로 설�
 
 ### 검사되지 않은 파일 {#file-was-not-scanned}
 
-일부 파일은 검사에서 제외됩니다. 자세한 내용은 [범위](#coverage)를 참고하세요.
+일부 파일은 검사에서 제외됩니다. 자세한 내용은 [보안 범위](#coverage)를 참고하세요.

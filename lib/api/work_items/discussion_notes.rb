@@ -26,6 +26,12 @@ module API
             desc: 'Number of notes to return per page (maximum 100).'
         end
 
+        params :work_item_discussion_note_params do
+          requires :work_item_iid, type: Integer, desc: 'The internal ID of the work item'
+          requires :discussion_id, type: String, desc: 'The ID of a discussion'
+          requires :note_id, type: Integer, desc: 'The ID of a note'
+        end
+
         def render_discussion_notes_for(parent_work_item)
           authorize_work_item_feature!(parent_work_item)
           authorize! :read_note, parent_work_item
@@ -47,6 +53,17 @@ module API
           end
 
           present notes, with: ::API::Entities::Note, current_user: current_user
+        end
+
+        def render_discussion_note_for(parent_work_item)
+          authorize_work_item_feature!(parent_work_item)
+          authorize! :read_note, parent_work_item
+
+          # Scoped to the work item's notes and the discussion, so a note id from another thread 404s.
+          note = build_discussion_notes_relation(parent_work_item, params[:discussion_id]).find_by_id(params[:note_id])
+          not_found!('Note') unless note&.readable_by?(current_user)
+
+          present note, with: ::API::Entities::Note, current_user: current_user
         end
       end
 
@@ -78,6 +95,28 @@ module API
           get ':work_item_iid/discussions/:discussion_id/notes' do
             render_discussion_notes_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
           end
+
+          desc 'Get a note in a discussion on a work item.' do
+            detail 'Get a single note from a discussion thread on a work item in a namespace. ' \
+              'Project and group namespaces are supported.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_discussion_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+
+          get ':work_item_iid/discussions/:discussion_id/notes/:note_id' do
+            render_discussion_note_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
+          end
         end
       end
 
@@ -108,6 +147,27 @@ module API
           get ':work_item_iid/discussions/:discussion_id/notes' do
             render_discussion_notes_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
           end
+
+          desc 'Get a note in a discussion on a work item in a project.' do
+            detail 'Get a single note from a discussion thread on a work item in a project.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_discussion_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundary_type: :project
+
+          get ':work_item_iid/discussions/:discussion_id/notes/:note_id' do
+            render_discussion_note_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
+          end
         end
       end
 
@@ -137,6 +197,27 @@ module API
 
           get ':work_item_iid/discussions/:discussion_id/notes' do
             render_discussion_notes_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
+          end
+
+          desc 'Get a note in a discussion on a work item in a group.' do
+            detail 'Get a single note from a discussion thread on a work item in a group.'
+            hidden true
+            success ::API::Entities::Note
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_discussion_note_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :read_work_item,
+            boundary_type: :group
+
+          get ':work_item_iid/discussions/:discussion_id/notes/:note_id' do
+            render_discussion_note_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
           end
         end
       end

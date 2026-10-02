@@ -153455,6 +153455,12 @@
               "description": "Session initiated from an IDE extension.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "FLOW_TRIGGER",
+              "description": "Session initiated by a flow trigger.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

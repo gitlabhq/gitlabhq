@@ -61,6 +61,32 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
         expect(group_o11y_setting).to be_invalid
         expect(group_o11y_setting.errors[:o11y_service_url]).to include('is too long (maximum is 255 characters)')
       end
+
+      ssrf_urls = [
+        'https://webhook.site#.gitlab-o11y.com',
+        'https://attacker.com#.gitlab-o11y.com',
+        'https://user:pass@attacker.com'
+      ]
+
+      %i[o11y_service_url o11y_otel_url o11y_mcp_url].each do |attribute|
+        ssrf_urls.each do |ssrf_url|
+          it "is invalid when #{attribute} has fragment/userinfo url #{ssrf_url}" do
+            group_o11y_setting.write_attribute(attribute, ssrf_url)
+            expect(group_o11y_setting).to be_invalid
+            expect(group_o11y_setting.errors[attribute]).to include('is invalid')
+          end
+        end
+
+        it "is invalid when #{attribute} cannot be parsed" do
+          group_o11y_setting.write_attribute(attribute, 'https://example.com')
+          allow(Addressable::URI).to receive(:parse).and_call_original
+          allow(Addressable::URI).to receive(:parse).with('https://example.com')
+                                       .and_raise(Addressable::URI::InvalidURIError)
+
+          expect(group_o11y_setting).to be_invalid
+          expect(group_o11y_setting.errors[attribute]).to include('is invalid')
+        end
+      end
     end
 
     context 'when url is valid' do

@@ -1,5 +1,5 @@
 - breadcrumb_title s_('Observability|O11y service settings')
-- @breadcrumb_link = experimental_o11y_service_settings_path
+- @breadcrumb_link = admin_o11y_service_settings_path
 
 %h1.gl-sr-only= @breadcrumb_title
 
@@ -11,7 +11,7 @@
   - c.with_description do
     = s_('Observability|Configure your o11y service connection settings.')
   - c.with_body do
-    = gitlab_ui_form_for @o11y_service_settings, url: experimental_o11y_service_settings_path, method: :post, authenticity_token: true do |f|
+    = gitlab_ui_form_for @o11y_service_settings, url: admin_o11y_service_settings_path, method: :post, authenticity_token: true do |f|
       = form_errors(@o11y_service_settings)
 
       .row

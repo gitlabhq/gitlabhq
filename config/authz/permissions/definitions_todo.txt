@@ -214,7 +214,6 @@ decline_terms
 delete_admin_role
 delete_group_link
 delete_group_stage
-delete_o11y_settings
 delete_pipl_user
 delete_project_secrets
 delete_project_subscription
@@ -617,7 +616,6 @@ update_issue_link
 update_max_artifacts_size
 update_max_pages_size
 update_name
-update_o11y_settings
 update_owned_user_achievement
 update_package
 update_pages

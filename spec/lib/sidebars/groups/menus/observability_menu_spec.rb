@@ -13,7 +13,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
 
   shared_context 'with observability sass features enabled and setting persisted' do
     before do
-      stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
+      stub_feature_flags(observability_sass_features: group)
       stub_member_access_level(group, developer: user)
       allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
         Observability::GroupO11ySetting, persisted?: true))
@@ -29,7 +29,6 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
 
       context 'when observability_group_o11y_setting is persisted' do
         before do
-          stub_feature_flags(o11y_settings_access: false)
           stub_member_access_level(group, developer: user)
           allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
             Observability::GroupO11ySetting, persisted?: true))
@@ -59,7 +58,6 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
 
       context 'when observability_group_o11y_setting is not persisted' do
         before do
-          stub_feature_flags(o11y_settings_access: false)
           stub_member_access_level(group, developer: user)
           allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
             Observability::GroupO11ySetting, persisted?: false))
@@ -73,51 +71,9 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       end
     end
 
-    context 'when o11y_settings_access feature flag is enabled' do
+    context 'when observability_sass_features feature flag is disabled' do
       before do
-        stub_feature_flags(observability_sass_features: false, o11y_settings_access: user)
-      end
-
-      it 'adds the o11y settings menu item' do
-        expected_menu_items = [:o11y_settings, :setup]
-
-        expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
-      end
-    end
-
-    context 'when both feature flags are enabled' do
-      before do
-        stub_feature_flags(observability_sass_features: group, o11y_settings_access: user)
-        allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
-          Observability::GroupO11ySetting, persisted?: true))
-      end
-
-      it 'adds all menu items including o11y settings' do
-        expected_menu_items = [
-          :services,
-          :traces_explorer,
-          :logs_explorer,
-          :metrics_explorer,
-          :infrastructure_monitoring,
-          :dashboard,
-          :messaging_queues,
-          :api_monitoring,
-          :alerts,
-          :exceptions,
-          :service_map,
-          :notification_channels,
-          :api_keys,
-          :o11y_settings,
-          :setup
-        ]
-
-        expect(observability_menu.renderable_items.map(&:item_id)).to match_array(expected_menu_items)
-      end
-    end
-
-    context 'when both feature flags are disabled' do
-      before do
-        stub_feature_flags(observability_sass_features: false, o11y_settings_access: false)
+        stub_feature_flags(observability_sass_features: false)
       end
 
       it 'returns false and does not add any menu items' do
@@ -137,7 +93,8 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       subject(:observability_menu) { described_class.new(context) }
 
       before do
-        stub_feature_flags(observability_sass_features: group, o11y_settings_access: user)
+        stub_feature_flags(observability_sass_features: group)
+        stub_member_access_level(group, developer: user)
         allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
           Observability::GroupO11ySetting, persisted?: true))
       end
@@ -155,7 +112,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       subject(:observability_menu) { described_class.new(context) }
 
       before do
-        stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
+        stub_feature_flags(observability_sass_features: group)
         allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
           Observability::GroupO11ySetting, persisted?: true))
       end
@@ -262,41 +219,11 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
 
       expect(item.container_html_options[:class]).not_to include('js-observability-nav')
     end
-
-    context 'when o11y_settings_access is enabled' do
-      before do
-        stub_feature_flags(observability_sass_features: group, o11y_settings_access: user)
-        observability_menu.configure_menu_items
-      end
-
-      it 'does not include js-observability-nav on o11y_settings menu item' do
-        item = observability_menu.renderable_items.find { |i| i.item_id == :o11y_settings }
-
-        expect(item.container_html_options[:class]).not_to include('js-observability-nav')
-      end
-    end
-  end
-
-  describe '#o11y_settings_menu_item' do
-    context 'when o11y_settings_access feature flag is enabled' do
-      before do
-        stub_feature_flags(observability_sass_features: false, o11y_settings_access: user)
-        observability_menu.configure_menu_items
-      end
-
-      it 'has the right link for o11y settings menu item' do
-        menu_items = observability_menu.renderable_items
-        o11y_settings_item = menu_items.find { |i| i.item_id == :o11y_settings }
-
-        expect(o11y_settings_item).not_to be_nil
-        expect(o11y_settings_item.link).to include('o11y_service_settings')
-      end
-    end
   end
 
   describe 'Feature Library metadata' do
     before do
-      stub_feature_flags(observability_sass_features: group, o11y_settings_access: user)
+      stub_feature_flags(observability_sass_features: group)
       allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
         Observability::GroupO11ySetting, persisted?: true))
     end

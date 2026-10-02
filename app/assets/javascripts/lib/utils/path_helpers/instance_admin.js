@@ -1016,6 +1016,60 @@ export const adminDeployKeyPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format
 /**
  * Generates the Rails route:
  *
+ * - href: `/admin/o11y_service_settings(.:format)`
+ * - Path helper: `admin_o11y_service_settings_path`
+ * - URL helper: `admin_o11y_service_settings_url`
+ * - controller#action: `admin/o11y_service_settings#index`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const adminO11yServiceSettingsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[1,[2,[8,"."],[3,"format"]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/admin/o11y_service_settings/new(.:format)`
+ * - Path helper: `new_admin_o11y_service_setting_path`
+ * - URL helper: `new_admin_o11y_service_setting_url`
+ * - controller#action: `admin/o11y_service_settings#new`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const newAdminO11yServiceSettingPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[2,[7,"/"],[2,[6,"new"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/admin/o11y_service_settings/:id/edit(.:format)`
+ * - Path helper: `edit_admin_o11y_service_setting_path`
+ * - URL helper: `edit_admin_o11y_service_setting_url`
+ * - controller#action: `admin/o11y_service_settings#edit`
+ *
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const editAdminO11yServiceSettingPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/admin/o11y_service_settings/:id(.:format)`
+ * - Path helper: `admin_o11y_service_setting_path`
+ * - URL helper: `admin_o11y_service_setting_url`
+ * - controller#action: `admin/o11y_service_settings#update`
+ *
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const adminO11yServiceSettingPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/admin/ssh_certificates(.:format)`
  * - Path helper: `admin_ssh_certificates_path`
  * - URL helper: `admin_ssh_certificates_url`

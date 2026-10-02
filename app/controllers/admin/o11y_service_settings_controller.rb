@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-module Experimental
-  class O11yServiceSettingsController < ApplicationController
+module Admin
+  class O11yServiceSettingsController < Admin::ApplicationController
     include Gitlab::Utils::StrongMemoize
     include StrongPaginationParams
-
-    before_action :authenticate_user!
-    before_action :authorize_experimental_access!
 
     feature_category :observability
     urgency :low
@@ -53,7 +50,7 @@ module Experimental
           s_('Observability|Observability settings for namespace %{namespace_name} created successfully.'),
           namespace_name: namespace.name
         )
-        redirect_to new_experimental_o11y_service_setting_url
+        redirect_to new_admin_o11y_service_setting_url
       else
         flash[:alert] = s_('Observability|Failed to create O11y service settings')
         render :new, status: :unprocessable_entity
@@ -77,7 +74,7 @@ module Experimental
           s_('Observability|Observability settings for namespace %{namespace_name} updated successfully.'),
           namespace_name: @o11y_service_settings.namespace&.name || s_('Observability|Unknown namespace')
         )
-        redirect_to experimental_o11y_service_settings_path
+        redirect_to admin_o11y_service_settings_path
       else
         flash[:alert] = s_('Observability|Failed to update O11y service settings')
         render :edit, status: :unprocessable_entity
@@ -98,14 +95,10 @@ module Experimental
         flash[:alert] = s_('Observability|Failed to delete O11y service settings')
       end
 
-      redirect_to experimental_o11y_service_settings_path, status: :see_other
+      redirect_to admin_o11y_service_settings_path, status: :see_other
     end
 
     private
-
-    def authorize_experimental_access!
-      render_404 unless ::Feature.enabled?(:experimental_group_o11y_settings_access, current_user)
-    end
 
     def find_o11y_service_setting
       Observability::GroupO11ySetting.find_by_id(params.permit(:id)[:id])

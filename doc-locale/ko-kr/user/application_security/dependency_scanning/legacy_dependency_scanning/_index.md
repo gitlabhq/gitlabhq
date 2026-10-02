@@ -524,7 +524,7 @@ gemnasium-dependency_scanning:
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, FIPS 모드에서는 `"false"` | 취약한 의 자동 을 활성화합니다. FIPS 모드에서는 지원되지 않습니다. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | 자동 타임아웃입니다. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | 공급된 JavaScript (패키지 관리자에서 관리하지 않는 )에서 을 감지할 수 있도록 합니다. 이 기능을 사용하려면 JavaScript 잠금 파일이 에 있어야 하며, 그렇지 않으면 가 실행되지 않고 공급된 파일이 스캔되지 않습니다.<br>는 [Retire.js](https://github.com/RetireJS/retire.js) 를 사용하여 제한된 집합을 감지합니다. 감지되는 에 대한 세부 정보는 [Retire.js](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json)를 참조하세요. |
-| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | `"false"`로 설정하면 개발 및 해당 이 보고되지 않습니다. Composer, Maven, npm, pnpm, Pipenv 또는 Poetry를 사용하는 만 지원됩니다. |
+| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | `"false"`로 설정하면 개발 및 해당 이 보고되지 않습니다. Composer, Maven, npm, pnpm, Pipenv 또는 Poetry를 사용하는 프로젝트만 지원됩니다. |
 | `GOOS`                               | `gemnasium`        | `"linux"`                    | Go 코드를 컴파일할 운영 체제입니다. |
 | `GOARCH`                             | `gemnasium`        | `"amd64"`                    | Go 코드를 컴파일할 프로세서의 아키텍처입니다. |
 | `GOFLAGS`                            | `gemnasium`        |                              | `go build` 도구에 전달되는 입니다. |
@@ -564,7 +564,7 @@ dependency_scanning:
     HTTPS_PROXY: $HTTPS_PROXY
 ```
 
-모든 가 테스트되지 않았으므로 일부는 작동하고 다른 것은 작동하지 않을 수 있습니다. 작동하지 않는 것이 필요한 경우 [기능 요청 제출](https://gitlab.com/gitlab-org/gitlab/-/issues/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)하거나 코드에 기여하여 사용하도록 설정하세요.
+모든 가 테스트되지 않았으므로 일부는 작동하고 다른 것은 작동하지 않을 수 있습니다. 작동하지 않는 기능이 필요한 경우 [기능 요청을 제출](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?description_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)하거나 코드에 기여하여 사용할 수 있도록 할 수 있습니다.
 
 ### 사용자 정의 TLS 인증 기관(CA) {#custom-tls-certificate-authority}
 
@@ -655,7 +655,7 @@ FIPS 지원 이미지는 RedHat의 UBI 마이크로를 기반으로 합니다. `
 
 전제 조건:
 
-- 관리자 액세스 권한.
+- 관리자 액세스 권한이 있어야 합니다.
 - `docker` 또는 `kubernetes` 를 가진 GitLab 
 - 분석기 이미지의 로컬 
 - [GitLab 권고 데이터베이스](https://gitlab.com/gitlab-org/security-products/gemnasium-db)에 대한 액세스
@@ -676,7 +676,7 @@ FIPS 지원 이미지는 RedHat의 UBI 마이크로를 기반으로 합니다. `
    registry.gitlab.com/security-products/gemnasium-python:6-fips
    ```
 
-   Docker 이미지를 로컬 오프라인 Docker 레지스트리로 가져오는 프로세스는 **네트워크 보안 정책**에 따라 다릅니다. 외부 리소스를 가져오거나 일시적으로 액세스할 수 있는 승인된 프로세스에 대해서는 IT 담당자에게 문의하세요. 이 는 [정기적으로 업데이트](../../detect/vulnerability_scanner_maintenance.md)되며 정기적으로 다운로드할 수 있습니다.
+   Docker 이미지를 로컬 오프라인 Docker 레지스트리로 가져오는 프로세스는 사용자의 네트워크 보안 정책에 따라 달라집니다. 외부 리소스를 가져오거나 일시적으로 액세스할 수 있는 승인된 프로세스에 대해서는 IT 담당자에게 문의하세요. 이러한 스캐너는 [주기적으로 업데이트](../../detect/vulnerability_scanner_maintenance.md)되며, 정기적으로 다운로드할 수 있습니다.
 1. 로컬 분석기를 사용하도록 GitLab CI/CD를 구성합니다.
 
    CI/CD 변수 `SECURE_ANALYZERS_PREFIX`의 값을 로컬 Docker 레지스트리로 설정하세요. 이 예에서는 `docker-registry.example.com`입니다.
@@ -1079,7 +1079,7 @@ GitLab은 빌드 파일이 감지된 디렉토리에서만 하나의 빌드를 �
 
   여러 지원 안 함. 여러 이 있을 때 `Retire.js`은 디렉토리 트리를 알파벳순으로 탐색하는 동안 발견된 첫 번째 을 분석합니다.
 
-`gemnasium` 분석기 스캔은 JavaScript 에 대해 공급된 (즉, 에 확인되었지만 관리자에서 관리하지 않는 것)를 지원합니다.
+`gemnasium` 분석기는 JavaScript 프로젝트에서 벤더된 라이브러리(즉, 프로젝트에 체크인되었지만 패키지 관리자로 관리되지 않는 라이브러리)를 스캔합니다.
 
 ### Go {#go}
 

@@ -148,7 +148,6 @@ group:
   - create_vulnerability_export
   - create_wiki
   - delete_custom_dashboard
-  - delete_o11y_settings
   - destroy_saved_replies
   - duo_workflow
   - read_advanced_dependency_management
@@ -171,5 +170,4 @@ group:
   - read_vulnerability_statistics
   - resolve_note
   - update_custom_dashboard
-  - update_o11y_settings
   - update_saved_replies

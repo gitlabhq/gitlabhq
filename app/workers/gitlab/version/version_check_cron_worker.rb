@@ -19,7 +19,10 @@ module Gitlab
       urgency :low
 
       def perform
-        response = Gitlab::HTTP.try_get(url)
+        # A redirected destination is typically local, and .try_get would swallow the
+        # resulting BlockedUrlError as a nil response. ServicePing::SubmitService
+        # allows local requests for the same reason.
+        response = Gitlab::HTTP.try_get(url, allow_local_requests: true)
 
         if response.present? && response.code == 200
           result = Gitlab::Json.parse(response.body)
@@ -48,7 +51,7 @@ module Gitlab
       end
 
       def host
-        'https://version.gitlab.com'
+        Gitlab::TelemetryEndpoint.version_check_url
       end
     end
   end

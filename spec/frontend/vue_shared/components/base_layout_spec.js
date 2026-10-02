@@ -288,6 +288,21 @@ describe('BaseLayout', () => {
 
         expect(getVar(LIVE_VAR)).toBe('');
       });
+
+      it('emits sticky-change after the live var is set and after it is removed', async () => {
+        await mountWithStickyHeader();
+
+        findIntersectionObserver().vm.$emit('disappear');
+        await waitForPromises();
+
+        expect(getVar(LIVE_VAR)).toBe(`${HEIGHT}px`);
+        expect(wrapper.emitted('sticky-change')).toEqual([[true]]);
+
+        findIntersectionObserver().vm.$emit('appear');
+        await waitForPromises();
+
+        expect(wrapper.emitted('sticky-change')).toEqual([[true], [false]]);
+      });
     });
   });
 });

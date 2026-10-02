@@ -1,6 +1,6 @@
 ---
-source_checksum: cfd7a3bf6cbc9236
-distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
+source_checksum: 516f24cac6abd57b
+distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -93,7 +93,9 @@ distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
 - Place the `Description` column as the right-most column when possible.
 - DO NOT realign an entire table when only changing a few rows (to keep diffs readable).
 - Use `{{< no >}}` and `{{< yes >}}` shortcodes for feature availability tables; DO NOT use these in API docs or inline text.
-- Use `<sup>` tags for table footnotes; place footnotes below the table under `**Footnotes**:` as an ordered list.
+- Use `[^label]` Markdown footnote syntax for table footnotes, with no space before the reference and a comma and space between multiple references (`[^a], [^b]`); place definitions directly below the table; indent continuation lines with four spaces.
+- DO NOT put a footnote reference or definition inside a shortcode, such as tabs.
+- Treat footnote labels as page-wide: reuse a label only to share one footnote, and DO NOT define the same label twice (the renderer silently keeps only the first definition).
 
 ### Links
 

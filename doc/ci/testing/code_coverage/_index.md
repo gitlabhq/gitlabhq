@@ -13,16 +13,47 @@ title: Code coverage
 
 {{< /details >}}
 
-To track code coverage in merge requests, you can display a percentage in the MR widget,
-annotate individual lines in the MR diff, or both. Each output requires a separate keyword.
+Use coverage reporting and coverage visualization to track code coverage. The two mechanisms
+read different inputs, produce different outputs, and don't share configuration.
 Configuring one does not enable the other.
 
-| Output                                                                           | Keyword |
-| -------------------------------------------------------------------------------- | ------- |
-| Show a coverage percentage in the MR widget, pipeline list, and analytics graphs | [`coverage`](../../yaml/_index.md#coverage) |
-| Show line-by-line annotations in the MR diff                                     | [`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report) |
+Coverage reporting shows a percentage in the MR widget, the pipeline list, and analytics graphs.
+Coverage visualization shows line-by-line annotations in the MR diff. To get both, configure both
+keywords ([`coverage`](../../yaml/_index.md#coverage) and
+[`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report)).
 
-To get both outputs, configure both keywords.
+## Where coverage appears
+
+Use this table to find the keyword for the coverage output you want. The `coverage` keyword
+powers every output except diff annotations.
+
+| Surface                                                 | Where to find it                             | Keyword                             | Tier |
+| ------------------------------------------------------- | -------------------------------------------- | ----------------------------------- | ---- |
+| Coverage percentage and delta against the target branch | MR widget                                    | `coverage`                          | Free |
+| Line-by-line annotations                                | MR diff, changed files only                  | `artifacts:reports:coverage_report` | Free |
+| Per-job coverage percentage                             | Pipeline and job lists                       | `coverage`                          | Free |
+| Coverage badge                                          | Anywhere you embed the badge URL             | `coverage`                          | Free |
+| Coverage history and CSV export                         | **Analyze > Repository analytics** (project) | `coverage`                          | Free |
+| Group coverage history and CSV export                   | **Analyze > Repository analytics** (group)   | `coverage`                          | Premium and Ultimate |
+| `Coverage-Check` approval rule                          | **Settings > Merge requests**                | `coverage`                          | Premium and Ultimate |
+
+## Choose an approach
+
+The two mechanisms read different inputs and behave differently.
+
+|                 | Coverage reporting                               | Coverage visualization                    |
+|-----------------|--------------------------------------------------|-------------------------------------------|
+| Keyword         | `coverage`                                       | `artifacts:reports:coverage_report`       |
+| Input           | A regular expression matched against the job log | A Cobertura or JaCoCo XML artifact        |
+| Produces        | A single number per job                          | Per-line annotations on changed files     |
+| Available       | When the job completes                           | After the whole pipeline completes        |
+| Child pipelines | Not recorded                                     | Recorded                                  |
+| Fails by        | Showing no percentage                            | Silently skipping annotations             |
+
+Because the two mechanisms read different inputs, they can disagree.
+The percentage in the MR widget is whatever your regex matched in the log.
+The annotations come from the XML report. If your test command computes these on different bases,
+the widget and the diff describe different things. Generate both from the same test run.
 
 ## Coverage reporting
 

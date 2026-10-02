@@ -111,15 +111,92 @@ RSpec.describe Gitlab::TelemetryEndpoint, feature_category: :service_ping do
         end
       end
     end
+
+    it 'is unaffected by GITLAB_VERSION_CHECK_URL' do
+      stub_env(described_class::VERSION_CHECK_ENV_VAR, 'http://localhost:4000')
+
+      expect(service_ping_url).to eq(described_class::STAGING_URL)
+    end
+  end
+
+  describe '.version_check_url' do
+    subject(:version_check_url) { described_class.version_check_url }
+
+    context 'when GITLAB_VERSION_CHECK_URL is not set' do
+      it { is_expected.to eq(described_class::STAGING_URL) }
+
+      context 'when running in production' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it { is_expected.to eq(described_class::PRODUCTION_URL) }
+      end
+    end
+
+    context 'when GITLAB_VERSION_CHECK_URL is set' do
+      before do
+        stub_env(described_class::VERSION_CHECK_ENV_VAR, 'http://localhost:3000')
+      end
+
+      it { is_expected.to eq('http://localhost:3000') }
+
+      # Unlike Service Ping, which a licence can oblige an instance to send.
+      context 'when the licence forces Service Ping on' do
+        before do
+          allow(ServicePing::ServicePingSettings).to receive(:license_operational_metric_enabled?).and_return(true)
+        end
+
+        it { is_expected.to eq('http://localhost:3000') }
+      end
+
+      it 'does not consult the licence' do
+        expect(ServicePing::ServicePingSettings).not_to receive(:license_operational_metric_enabled?)
+
+        expect(version_check_url).to eq('http://localhost:3000')
+      end
+    end
+
+    context 'when GITLAB_VERSION_CHECK_URL is invalid' do
+      before do
+        stub_env(described_class::VERSION_CHECK_ENV_VAR, 'http://localhost:3000/version')
+      end
+
+      it { is_expected.to eq(described_class::STAGING_URL) }
+    end
+
+    it 'is unaffected by GITLAB_SERVICE_PING_URL' do
+      stub_env(described_class::SERVICE_PING_ENV_VAR, 'http://localhost:4000')
+
+      expect(version_check_url).to eq(described_class::STAGING_URL)
+    end
   end
 
   describe '.log_configuration' do
     subject(:log_configuration) { described_class.log_configuration }
 
-    context 'when GITLAB_SERVICE_PING_URL is not set' do
+    context 'when neither variable is set' do
       it 'logs nothing' do
         expect(Gitlab::AppLogger).not_to receive(:warn)
         expect(Gitlab::AppLogger).not_to receive(:error)
+
+        log_configuration
+      end
+    end
+
+    context 'when GITLAB_VERSION_CHECK_URL is set' do
+      before do
+        stub_env(described_class::VERSION_CHECK_ENV_VAR, 'http://localhost:3000')
+      end
+
+      it 'warns with the destination' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: a_string_including('is set to http://localhost:3000') &
+            a_string_including('the version check is sent there') &
+            a_string_including("instead of #{described_class::STAGING_URL}"),
+          telemetry_endpoint_env_var: described_class::VERSION_CHECK_ENV_VAR,
+          telemetry_endpoint_url: 'http://localhost:3000'
+        )
 
         log_configuration
       end

@@ -25,6 +25,7 @@ module Sidebars
         add_menu(Sidebars::Admin::Menus::CiCdMenu.new(context))
         add_menu(Sidebars::Admin::Menus::AnalyticsMenu.new(context))
         add_menu(Sidebars::Admin::Menus::MonitoringMenu.new(context))
+        add_menu(Sidebars::Admin::Menus::ObservabilityMenu.new(context))
         add_menu(Sidebars::Admin::Menus::MessagesMenu.new(context))
         add_menu(Sidebars::Admin::Menus::SystemHooksMenu.new(context)) if system_hooks?
         add_menu(Sidebars::Admin::Menus::ApplicationsMenu.new(context))

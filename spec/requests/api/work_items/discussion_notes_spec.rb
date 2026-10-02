@@ -29,6 +29,25 @@ RSpec.describe API::WorkItems::DiscussionNotes, feature_category: :portfolio_man
     end
   end
 
+  shared_examples 'a project work item discussion note endpoint' do
+    let(:api_request_path) { discussion_note_path.call(comment.discussion_id, comment.id) }
+
+    it_behaves_like 'a work item discussion note endpoint'
+
+    it_behaves_like 'authorizing granular token permissions', :read_work_item do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(api_request_path, personal_access_token: pat)
+      end
+    end
+
+    it 'returns not_found when the user cannot read the work item' do
+      get api(api_request_path, non_member)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   describe 'GET /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes' do
     let(:api_request_path) do
       "/projects/#{project.id}/-/work_items/#{work_item.iid}/discussions/#{comment.discussion_id}/notes"
@@ -44,5 +63,26 @@ RSpec.describe API::WorkItems::DiscussionNotes, feature_category: :portfolio_man
     end
 
     it_behaves_like 'a project work item discussion notes endpoint'
+  end
+
+  describe 'GET /projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id' do
+    let(:discussion_note_path) do
+      ->(discussion_id, note_id, work_item_iid: work_item.iid) do
+        "/projects/#{project.id}/-/work_items/#{work_item_iid}/discussions/#{discussion_id}/notes/#{note_id}"
+      end
+    end
+
+    it_behaves_like 'a project work item discussion note endpoint'
+  end
+
+  describe 'GET /namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id' do
+    let(:discussion_note_path) do
+      ->(discussion_id, note_id, work_item_iid: work_item.iid) do
+        "/namespaces/#{CGI.escape(project.project_namespace.full_path)}/-/work_items/#{work_item_iid}/discussions/" \
+          "#{discussion_id}/notes/#{note_id}"
+      end
+    end
+
+    it_behaves_like 'a project work item discussion note endpoint'
   end
 end

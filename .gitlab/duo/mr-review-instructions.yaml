@@ -29,6 +29,16 @@ instructions:
          - Flag direct references to `EE::` namespaced classes in CE code
          - This prevents FOSS build failures
          - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md
+  - name: Code Comments
+    fileFilters:
+      - "**/*"
+    instructions: |
+      1. Prefer self-documenting code over comments (descriptive names, small single-purpose methods, extracted variables)
+      2. Flag comments that describe *what* or *how* the code works - suggest removing them or restructuring the code instead
+      3. Comments that explain *why* (workarounds, edge cases, constraints) are fine - suggest shortening them if they exceed a few lines
+      4. Do not flag required documentation comments in any language: documentation tags (YARD `@param`/`@return`, JSDoc tags) plus a one-line summary of the method, class, or module; linter directives with justifications such as `rubocop:disable` or `eslint-disable`; magic comments such as `frozen_string_literal`
+      5. Flag comments that describe future work (`TODO`, "to be removed") without a full issue URL; linter directives such as `rubocop:todo` are exempt as required documentation comments
+      - Reference: https://docs.gitlab.com/development/code_comments/
   - name: Ruby Code Quality
     fileFilters:
       - "**/*.rb"
@@ -55,8 +65,7 @@ instructions:
         - Verify the query returns expected records (not zero rows)
         - Check that maximum query execution time is under 100ms
         - Ensure the query plan reflects the complete query as executed by the database, including all chained scopes, pagination, ordering, and any other modifiers - not a partial or simplified version of the query
-      11. Flag comments that only describe what code does (e.g., "# Loop through users") rather than why. Suggest removing these comments and using better naming or method extraction instead
-      12. For ActiveRecord callbacks (before_validation, before_save, after_save, etc.):
+      11. For ActiveRecord callbacks (before_validation, before_save, after_save, etc.):
           - Verify callbacks only modify data on the current model, not associated records
           - Question if callback logic should be in a service layer instead
           - Ask: "Why use this callback instead of explicit method calls in the service/controller?"
@@ -64,7 +73,7 @@ instructions:
           - Flag bulk operations on associated records in callbacks (performance concern as associations grow)
           - Acceptable uses: data normalization on current model only (trimming whitespace, setting defaults)
           - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/backend/ruby_style_guide.md#avoid-activerecord-callbacks
-      13. To exclude records already loaded in memory, prefer `collection.excluding(record)` (alias `without`) over a hand-written `where.not(id: record)`.
+      12. To exclude records already loaded in memory, prefer `collection.excluding(record)` (alias `without`) over a hand-written `where.not(id: record)`.
           - Do not pass a relation to `excluding`; for query results use `where.not(id: relation)`, which runs as a single subquery.
           - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/backend/ruby_style_guide.md#prefer-excluding-for-records-already-loaded-in-memory
 
@@ -782,8 +791,8 @@ instructions:
   # <<< end generated: authentication-testing
 
   # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
-  # source_checksum: cfd7a3bf6cbc9236
+  # distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
+  # source_checksum: 516f24cac6abd57b
   - name: Documentation
     fileFilters:
       - "doc/**/*.md"
@@ -873,7 +882,9 @@ instructions:
       - Place the `Description` column as the right-most column when possible.
       - DO NOT realign an entire table when only changing a few rows (to keep diffs readable).
       - Use `{{< no >}}` and `{{< yes >}}` shortcodes for feature availability tables; DO NOT use these in API docs or inline text.
-      - Use `<sup>` tags for table footnotes; place footnotes below the table under `**Footnotes**:` as an ordered list.
+      - Use `[^label]` Markdown footnote syntax for table footnotes, with no space before the reference and a comma and space between multiple references (`[^a], [^b]`); place definitions directly below the table; indent continuation lines with four spaces.
+      - DO NOT put a footnote reference or definition inside a shortcode, such as tabs.
+      - Treat footnote labels as page-wide: reuse a label only to share one footnote, and DO NOT define the same label twice (the renderer silently keeps only the first definition).
 
       ### Links
 

@@ -866,4 +866,45 @@ describe('tooltipContentFromParams', () => {
       'tuple missing num': { value: 0, color: '#ccc' },
     });
   });
+
+  describe('row order', () => {
+    const mockStackedSeriesData = [
+      { seriesName: 'bottom', seriesIndex: 0, stack: 'mock-stack', value: 2 },
+      { seriesName: 'middle', seriesIndex: 1, stack: 'mock-stack', value: 3 },
+      { seriesName: 'top', seriesIndex: 2, stack: 'mock-stack', value: 1 },
+    ];
+
+    it('lists stacked series from the largest value down', () => {
+      const content = tooltipContentFromParams({ seriesData: mockStackedSeriesData });
+
+      expect(Object.keys(content)).toEqual(['middle', 'bottom', 'top']);
+    });
+
+    it('keeps series order for unstacked series', () => {
+      const seriesData = mockStackedSeriesData.map(({ stack, ...series }) => series);
+      const content = tooltipContentFromParams({ seriesData });
+
+      expect(Object.keys(content)).toEqual(['bottom', 'middle', 'top']);
+    });
+
+    it('keeps unstacked series in place between stacked ones', () => {
+      const seriesData = [
+        { seriesName: 'stacked small', seriesIndex: 0, stack: 'mock-stack', value: 1 },
+        { seriesName: 'unstacked', seriesIndex: 1, value: 5 },
+        { seriesName: 'stacked large', seriesIndex: 2, stack: 'mock-stack', value: 3 },
+      ];
+      const content = tooltipContentFromParams({ seriesData });
+
+      expect(Object.keys(content)).toEqual(['stacked large', 'stacked small', 'unstacked']);
+    });
+
+    it('keeps series order for bar charts', () => {
+      const content = tooltipContentFromParams(
+        { seriesData: mockStackedSeriesData },
+        DISPLAY_TYPES.BAR_CHART,
+      );
+
+      expect(Object.keys(content)).toEqual(['bottom', 'middle', 'top']);
+    });
+  });
 });

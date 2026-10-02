@@ -108,7 +108,6 @@ permissions:
   - update_label
   - update_max_artifacts_size
   - update_note
-  - update_o11y_settings
   - update_runner
   - update_runners_registration_token
   - update_saved_replies

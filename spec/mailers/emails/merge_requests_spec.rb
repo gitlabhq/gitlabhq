@@ -46,16 +46,6 @@ RSpec.describe Emails::MergeRequests do
         expect(footer_marker).not_to eq(marker_for(other_email))
         expect(email.text_part.body.decoded).not_to include('Notification message regarding')
       end
-
-      context 'when randomize_notification_email_marker is disabled' do
-        before do
-          stub_feature_flags(randomize_notification_email_marker: false)
-        end
-
-        it 'does not add a marker' do
-          expect(footer_marker).to be_nil
-        end
-      end
     end
   end
 
@@ -224,16 +214,6 @@ RSpec.describe Emails::MergeRequests do
         expect(footer_marker).to match(/at \h{32}\z/)
         expect(footer_marker).not_to eq(other_marker)
         expect(email.text_part.body.decoded).not_to include('Notification message regarding')
-      end
-
-      context 'when randomize_notification_email_marker is disabled' do
-        before do
-          stub_feature_flags(randomize_notification_email_marker: false)
-        end
-
-        it 'preserves the timestamp marker' do
-          expect(footer_marker).to eq("Notification message regarding #{target_url} at #{Time.current.to_i}")
-        end
       end
     end
   end

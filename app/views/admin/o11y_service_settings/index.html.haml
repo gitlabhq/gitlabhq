@@ -4,7 +4,7 @@
 = render ::Layouts::PageHeadingComponent.new(s_('Observability|O11y service settings')) do |c|
   - c.with_actions do
     .gl-flex.gl-align-items-center.gl-gap-3
-      = link_button_to new_experimental_o11y_service_setting_path, variant: :confirm do
+      = link_button_to new_admin_o11y_service_setting_path, variant: :confirm do
         = s_('Observability|New O11y service setting')
 
 - if @o11y_service_settings.any?
@@ -14,7 +14,7 @@
     - c.with_description do
       = s_('Observability|Manage your o11y service connection settings.')
     - c.with_body do
-      #js-o11y-service-settings-search{ data: { view_model: { initialValue: params[:group_id].to_s, searchUrl: experimental_o11y_service_settings_path }.to_json } }
+      #js-o11y-service-settings-search{ data: { view_model: { initialValue: params[:group_id].to_s, searchUrl: admin_o11y_service_settings_path }.to_json } }
 
       %table.table.gl-table
         %thead
@@ -34,8 +34,8 @@
               %td{ class: '!gl-align-middle' }= setting.o11y_service_user_email
               %td{ class: '!gl-align-middle' }= setting.created_at.strftime('%Y-%m-%d %H:%M')
               %td{ class: '!gl-align-middle' }
-                = link_to s_('Observability|Edit'), edit_experimental_o11y_service_setting_path(setting), class: 'btn btn-sm btn-default'
-                = link_to s_('Observability|Delete'), experimental_o11y_service_setting_path(setting), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: s_('Observability|Are you sure you want to delete this O11y service setting?') }
+                = link_to s_('Observability|Edit'), edit_admin_o11y_service_setting_path(setting), class: 'btn btn-sm btn-default'
+                = link_to s_('Observability|Delete'), admin_o11y_service_setting_path(setting), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: s_('Observability|Are you sure you want to delete this O11y service setting?') }
 
       .gl-flex.gl-justify-center.gl-align-items-center.gl-gap-3.gl-flex-wrap-nowrap
         = paginate @o11y_service_settings, theme: 'gitlab'

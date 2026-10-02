@@ -56,6 +56,7 @@ export default {
       default: true,
     },
   },
+  emits: ['sticky-change'],
   data() {
     return {
       isStuck: false,
@@ -71,9 +72,11 @@ export default {
         if (isStuck) {
           this.$nextTick(() => {
             this.syncStickyHeaderHeight();
+            this.$emit('sticky-change', true);
           });
         } else {
           document.documentElement.style.removeProperty('--layout-sticky-header-height');
+          this.$emit('sticky-change', false);
         }
       },
     },

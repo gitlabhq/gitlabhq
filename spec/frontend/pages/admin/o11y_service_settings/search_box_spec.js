@@ -1,7 +1,7 @@
 import { GlSearchBoxByClick } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
-import SearchBox from '~/pages/experimental/o11y_service_settings/search_box.vue';
+import SearchBox from '~/pages/admin/o11y_service_settings/search_box.vue';
 
 jest.mock('~/lib/utils/url_utility', () => {
   const urlUtils = jest.requireActual('~/lib/utils/url_utility');
@@ -14,7 +14,7 @@ jest.mock('~/lib/utils/url_utility', () => {
 describe('O11yServiceSettingsSearchBox', () => {
   let wrapper;
   const defaultProps = {
-    searchUrl: '/experimental/o11y_service_settings',
+    searchUrl: '/admin/o11y_service_settings',
   };
 
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByClick);
@@ -44,16 +44,16 @@ describe('O11yServiceSettingsSearchBox', () => {
       await findSearchBox().vm.$emit('input', '12345');
       await findSearchBox().vm.$emit('submit');
 
-      expect(visitUrl).toHaveBeenCalledWith('/experimental/o11y_service_settings?group_id=12345');
+      expect(visitUrl).toHaveBeenCalledWith('/admin/o11y_service_settings?group_id=12345');
     });
 
     it('uses & separator when URL has existing params', async () => {
-      createComponent({ searchUrl: '/experimental/o11y_service_settings?other=value' });
+      createComponent({ searchUrl: '/admin/o11y_service_settings?other=value' });
       await findSearchBox().vm.$emit('input', '12345');
       await findSearchBox().vm.$emit('submit');
 
       expect(visitUrl).toHaveBeenCalledWith(
-        '/experimental/o11y_service_settings?other=value&group_id=12345',
+        '/admin/o11y_service_settings?other=value&group_id=12345',
       );
     });
 
@@ -61,7 +61,7 @@ describe('O11yServiceSettingsSearchBox', () => {
       createComponent();
       await findSearchBox().vm.$emit('submit');
 
-      expect(visitUrl).toHaveBeenCalledWith('/experimental/o11y_service_settings');
+      expect(visitUrl).toHaveBeenCalledWith('/admin/o11y_service_settings');
     });
 
     it('encodes special characters in search term', async () => {
@@ -70,7 +70,7 @@ describe('O11yServiceSettingsSearchBox', () => {
       await findSearchBox().vm.$emit('submit');
 
       expect(visitUrl).toHaveBeenCalledWith(
-        '/experimental/o11y_service_settings?group_id=test%20%26%20value',
+        '/admin/o11y_service_settings?group_id=test%20%26%20value',
       );
     });
   });
@@ -81,7 +81,7 @@ describe('O11yServiceSettingsSearchBox', () => {
       await findSearchBox().vm.$emit('clear');
 
       expect(findSearchBox().props('value')).toBe('');
-      expect(visitUrl).toHaveBeenCalledWith('/experimental/o11y_service_settings');
+      expect(visitUrl).toHaveBeenCalledWith('/admin/o11y_service_settings');
     });
   });
 });

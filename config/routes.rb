@@ -288,10 +288,6 @@ InitializerConnections.warn_if_database_connection do
         if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
           mount Coverband::Reporters::Web.new, at: '/coverage'
         end
-
-        namespace :experimental do
-          resources :o11y_service_settings, only: [:index, :new, :create, :edit, :update, :destroy]
-        end
       end
       # End of the /-/ scope.
 

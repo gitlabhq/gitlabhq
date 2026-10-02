@@ -14,11 +14,6 @@ module Sidebars
         def sprite_icon
           'eye'
         end
-
-        override :configure_menu_items
-        def configure_menu_items
-          add_item(::Sidebars::NilMenuItem.new(item_id: :o11y_settings))
-        end
       end
     end
   end

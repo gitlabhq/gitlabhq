@@ -11,6 +11,7 @@ module Gitlab
   # address the two separately.
   module TelemetryEndpoint
     SERVICE_PING_ENV_VAR = 'GITLAB_SERVICE_PING_URL'
+    VERSION_CHECK_ENV_VAR = 'GITLAB_VERSION_CHECK_URL'
 
     PRODUCTION_URL = 'https://version.gitlab.com'
     STAGING_URL = 'https://gitlab-org-gitlab-services-version-gitlab-com-staging.version-staging.gitlab.org'
@@ -20,6 +21,13 @@ module Gitlab
         return default_url if override_forbidden?
 
         override(SERVICE_PING_ENV_VAR) || default_url
+      end
+
+      # No licence condition, unlike .service_ping_url: asking which version is
+      # current is not a reporting obligation, and gating it would read the
+      # licence, and so the database, for nothing.
+      def version_check_url
+        override(VERSION_CHECK_ENV_VAR) || default_url
       end
 
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/233615 for details
@@ -32,6 +40,7 @@ module Gitlab
       # the licence can actually refuse the override.
       def log_configuration
         log_override(SERVICE_PING_ENV_VAR, service_ping_consequence)
+        log_override(VERSION_CHECK_ENV_VAR, 'the version check is sent there')
       end
 
       private

@@ -269,6 +269,7 @@ group:
   - read_runner_usage
   - read_runners
   - read_secrets_manager
+  - read_secrets_manager_entitlement
   - read_secrets_permission
   - read_security_configuration
   - read_work_item_setting

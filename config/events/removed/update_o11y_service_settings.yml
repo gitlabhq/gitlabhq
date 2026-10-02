@@ -1,7 +1,7 @@
 ---
-description: Tracks when a user views the group Observability service settings page.
+description: Tracks when a user successfully saves changes to the group Observability service settings.
 internal_events: true
-action: visit_o11y_service_settings_page
+action: update_o11y_service_settings
 identifiers:
 - namespace
 - user
@@ -14,3 +14,6 @@ tiers:
 - free
 - premium
 - ultimate
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255784
+milestone_removed: '19.5'

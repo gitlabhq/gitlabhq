@@ -110,17 +110,12 @@ RSpec.describe Namespaces::TransferLogging, feature_category: :groups_and_projec
         instance.build_transfer_log_payload(
           message: 'Test',
           duration_s: 1.5,
-          queue_wait_s: 0.3,
           retry_count: 2
         )
       end
 
       it 'includes duration_s' do
         expect(payload['duration_s']).to eq(1.5)
-      end
-
-      it 'includes queue_wait_s' do
-        expect(payload['queue_wait_s']).to eq(0.3)
       end
 
       it 'includes retry_count' do

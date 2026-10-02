@@ -59,7 +59,12 @@ module Projects
 
       if result
         transfer_succeeded = true
+        scheduled_at = project_namespace.state_metadata&.dig('transfer_scheduled_at')
         project_namespace.complete_transfer!
+        ::Gitlab::Metrics::Transfers.observe_end_to_end_transfer_duration(
+          scheduled_at: scheduled_at,
+          namespace_type: 'project'
+        )
         resolve_transfer_failure_todo(project, user, worker_name: self.class.name, gl_project_id: project.id)
 
       else

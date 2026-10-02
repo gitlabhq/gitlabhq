@@ -71337,6 +71337,7 @@ Where a Duo Workflow session was initiated from.
 | <a id="duoworkflowsourcetype-duo_cli_interactive"></a>`DUO_CLI_INTERACTIVE` | Session initiated from GitLab Duo CLI in interactive mode. |
 | <a id="duoworkflowsourcetype-duo_cli_run"></a>`DUO_CLI_RUN` | Session initiated from GitLab Duo CLI in run mode. |
 | <a id="duoworkflowsourcetype-fix_pipeline"></a>`FIX_PIPELINE` | Session initiated from fixing a failed pipeline. |
+| <a id="duoworkflowsourcetype-flow_trigger"></a>`FLOW_TRIGGER` | Session initiated by a flow trigger. |
 | <a id="duoworkflowsourcetype-ide_extension"></a>`IDE_EXTENSION` | Session initiated from an IDE extension. |
 | <a id="duoworkflowsourcetype-mcp"></a>`MCP` | Session initiated from MCP. |
 | <a id="duoworkflowsourcetype-merge_request_code_conflict"></a>`MERGE_REQUEST_CODE_CONFLICT` | Session initiated from resolving a merge request conflict. |

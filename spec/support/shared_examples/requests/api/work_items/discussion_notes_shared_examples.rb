@@ -176,3 +176,89 @@ RSpec.shared_examples 'a work item discussion notes endpoint' do
     end
   end
 end
+
+# Shared behaviour for the single note in a work item discussion endpoint. The including
+# context must define the same lets as above, plus:
+#   - `discussion_note_path` a lambda `->(discussion_id, note_id, work_item_iid: work_item.iid)`
+#                            building the endpoint path
+RSpec.shared_examples 'a work item discussion note endpoint' do
+  it 'returns the note', :aggregate_failures do
+    get api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => comment.id, 'body' => comment.note, 'system' => false)
+    expect(json_response).to include('author', 'noteable_id', 'noteable_type')
+  end
+
+  it 'returns a reply in a multi-note discussion thread', :aggregate_failures do
+    root = create(:discussion_note_on_work_item, noteable: work_item, author: user, **note_params)
+    reply = create(:discussion_note_on_work_item, noteable: work_item, author: user, in_reply_to: root, **note_params)
+
+    get api(discussion_note_path.call(root.discussion_id, reply.id), user)
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => reply.id)
+  end
+
+  it 'returns 404 when the work item does not exist' do
+    get api(discussion_note_path.call(comment.discussion_id, comment.id, work_item_iid: non_existing_record_iid), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the discussion does not exist' do
+    get api(discussion_note_path.call('nonexistent', comment.id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the note does not exist' do
+    get api(discussion_note_path.call(comment.discussion_id, non_existing_record_id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the note belongs to a different discussion on the same work item' do
+    other_note = create(:note, noteable: work_item, author: user, **note_params)
+
+    get api(discussion_note_path.call(comment.discussion_id, other_note.id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the note belongs to a different work item' do
+    other_work_item = create(:work_item, work_item.work_item_type.base_type, author: user, **note_params)
+    other_note = create(:note, noteable: other_work_item, author: user, **note_params)
+
+    get api(discussion_note_path.call(other_note.discussion_id, other_note.id), user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns not_found when the feature flag is disabled' do
+    stub_feature_flags(work_item_rest_api: false)
+
+    get api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns unauthorized when no token is provided' do
+    get api(api_request_path)
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+
+  context 'when the note is not readable by the current user' do
+    let(:guest) { create(:user, guest_of: container) }
+    let(:internal_note) do
+      create(:note, :confidential, noteable: work_item, author: user, note: 'Internal-only note', **note_params)
+    end
+
+    it 'returns 404' do
+      get api(discussion_note_path.call(internal_note.discussion_id, internal_note.id), guest)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+end

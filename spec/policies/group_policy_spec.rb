@@ -386,7 +386,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     let(:destroy_abilities) do
       %i[
         delete_custom_emoji
-        delete_o11y_settings
         destroy_deploy_token
         destroy_epic
         destroy_issue

@@ -142,7 +142,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { archived & ~group_scheduled_for_deletion }.policy do
     prevent :delete_custom_emoji
-    prevent :delete_o11y_settings
     prevent :destroy_issue
     prevent :destroy_package
     prevent :destroy_upload

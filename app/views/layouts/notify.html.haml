@@ -41,7 +41,7 @@
             #{link_to _('View it on GitLab'), @target_url}.
           %br
           = notification_reason_text(reason: @reason, show_manage_notifications_link: !@labels_url, show_help_link: true, manage_label_subscriptions_url: @labels_url, unsubscribe_url: @unsubscribe_url, format: :html)
-          = notification_email_marker(@target_url, random: Feature.enabled?(:randomize_notification_email_marker, @project))
+          = notification_email_marker(@target_url)
 
           = email_action @target_url
 

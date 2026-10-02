@@ -2,7 +2,7 @@
 
 module DraftNotes
   class CreateService < DraftNotes::BaseService
-    attr_accessor :in_draft_mode, :in_reply_to_discussion_id
+    attr_accessor :in_reply_to_discussion_id
 
     def initialize(merge_request, current_user, params = nil)
       @in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)

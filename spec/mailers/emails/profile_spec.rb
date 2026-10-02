@@ -134,16 +134,6 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it 'uses a random marker' do
         expect(footer_marker).to match(/\ANotification message regarding #{Regexp.escape(user_url(key.user))} at \h{32}\z/)
       end
-
-      context 'when randomize_notification_email_marker is disabled' do
-        before do
-          stub_feature_flags(randomize_notification_email_marker: false)
-        end
-
-        it 'does not add a marker' do
-          expect(footer_marker).to be_nil
-        end
-      end
     end
   end
 
@@ -635,7 +625,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
-  describe 'notification footer without a project', :freeze_time, feature_category: :notifications do
+  describe 'notification footer without a project', feature_category: :notifications do
     subject(:footer_marker) do
       Nokogiri::HTML((email.html_part || email).body.decoded)
         .at_css('.footer span:contains("Notification message regarding")').text.strip
@@ -645,28 +635,8 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     let(:email) { Notify.ssh_key_expiring_soon_email(user, ['aa:bb:cc:dd:ee:zz']) }
     let(:marker_prefix) { "Notification message regarding #{user_settings_ssh_keys_url} at " }
 
-    it 'uses a random marker when globally enabled' do
+    it 'uses a random marker' do
       expect(footer_marker).to match(/\A#{Regexp.escape(marker_prefix)}\h{32}\z/)
-    end
-
-    context 'when randomize_notification_email_marker is disabled' do
-      before do
-        stub_feature_flags(randomize_notification_email_marker: false)
-      end
-
-      it 'preserves the timestamp marker' do
-        expect(footer_marker).to eq("#{marker_prefix}#{Time.current.to_i}")
-      end
-    end
-
-    context 'when enabled for 100 percent of actors' do
-      before do
-        Feature.enable_percentage_of_actors(:randomize_notification_email_marker, 100)
-      end
-
-      it 'preserves the timestamp marker' do
-        expect(footer_marker).to eq("#{marker_prefix}#{Time.current.to_i}")
-      end
     end
   end
 

@@ -3116,58 +3116,6 @@ export const groupImportHistoryPath = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
- * - href: `/groups/*group_id/-/observability/o11y_service_settings/edit(.:format)`
- * - Path helper: `edit_group_observability_o11y_service_settings_path`
- * - URL helper: `edit_group_observability_o11y_service_settings_url`
- * - controller#action: `groups/observability/o11y_service_settings#edit`
- *
- * @param {any} groupId
- * @param {object | undefined} options
- * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
- * @returns {string} route path
- */
-export const editGroupObservabilityO11yServiceSettingsPath = /*#__PURE__*/ (...args) => {
-  const _editOrganizationGroupObservabilityO11yServiceSettingsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
-  const _editGroupObservabilityO11yServiceSettingsPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[2,[7,"/"],[2,[6,"edit"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
-
-  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
-
-  if (organizationPath) {
-    return _editOrganizationGroupObservabilityO11yServiceSettingsPath(organizationPath, ...routeArgs);
-  }
-
-  return _editGroupObservabilityO11yServiceSettingsPath(...routeArgs);
-};
-
-/**
- * Generates the Rails route:
- *
- * - href: `/groups/*group_id/-/observability/o11y_service_settings(.:format)`
- * - Path helper: `group_observability_o11y_service_settings_path`
- * - URL helper: `group_observability_o11y_service_settings_url`
- * - controller#action: `groups/observability/o11y_service_settings#update`
- *
- * @param {any} groupId
- * @param {object | undefined} options
- * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
- * @returns {string} route path
- */
-export const groupObservabilityO11yServiceSettingsPath = /*#__PURE__*/ (...args) => {
-  const _organizationGroupObservabilityO11yServiceSettingsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
-  const _groupObservabilityO11yServiceSettingsPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"o11y_service_settings"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-
-  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
-
-  if (organizationPath) {
-    return _organizationGroupObservabilityO11yServiceSettingsPath(organizationPath, ...routeArgs);
-  }
-
-  return _groupObservabilityO11yServiceSettingsPath(...routeArgs);
-};
-
-/**
- * Generates the Rails route:
- *
  * - href: `/groups/*group_id/-/observability/setup(.:format)`
  * - Path helper: `group_observability_setup_path`
  * - URL helper: `group_observability_setup_url`

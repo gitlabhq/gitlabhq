@@ -8,6 +8,7 @@ module Observability
       o11y_service_url: 'O11y service name'
     }.freeze
     SETUP_WINDOW = 5.minutes
+    URL_ATTRIBUTES = %i[o11y_service_url o11y_otel_url o11y_mcp_url].freeze
 
     belongs_to :namespace, foreign_key: :group_id, inverse_of: :observability_group_o11y_setting
     # Deprecated aliases retained until Part 2 (issue #119) lands and call sites are
@@ -21,6 +22,7 @@ module Observability
     validates :o11y_mcp_url, length: { maximum: 255 },
       addressable_url: { message: 'is invalid' }, allow_blank: true
     validate :validate_email_format
+    validate :validate_url_hosts
     encrypts :o11y_service_password, :o11y_service_post_message_encryption_key
     validates :o11y_service_password, length: { maximum: 510 },
       json_schema: {
@@ -94,6 +96,25 @@ module Observability
       return if ValidateEmail.valid?(o11y_service_user_email)
 
       errors.add(:o11y_service_user_email, I18n.t(:invalid, scope: 'valid_email.validations.email'))
+    end
+
+    # Rejects fragment (`#`) or userinfo (`@`) components, which let a crafted
+    # value make the parsed host resolve to a different host than the URL string
+    # appears to reference, enabling SSRF/credential exfiltration.
+    def validate_url_hosts
+      URL_ATTRIBUTES.each { |attribute| validate_url_host(attribute) }
+    end
+
+    def validate_url_host(attribute)
+      value = read_attribute(attribute)
+      return if value.blank?
+
+      uri = Addressable::URI.parse(value)
+      return if uri.fragment.blank? && uri.userinfo.blank?
+
+      errors.add(attribute, 'is invalid')
+    rescue Addressable::URI::InvalidURIError
+      errors.add(attribute, 'is invalid')
     end
 
     # Returns the group-level GITLAB_OBSERVABILITY_EXPORT CI variable.

@@ -116,10 +116,8 @@ RSpec.shared_context 'GroupPolicy context' do
         create_custom_emoji
         create_observability_access_request
         create_package
-        delete_o11y_settings
         read_cluster
         read_observability_portal
-        update_o11y_settings
       ]
     ).uniq
   end

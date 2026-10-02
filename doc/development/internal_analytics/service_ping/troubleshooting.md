@@ -45,6 +45,15 @@ To set up Service Ping locally, you must:
 > default destination is the staging Versions Application, which does not satisfy that requirement
 > either.
 
+`GITLAB_SERVICE_PING_URL` covers Service Ping only.
+The version check, which is the `Gitlab::Version::VersionCheckCronWorker` cron job that calls
+`/check.json`, reads `GITLAB_VERSION_CHECK_URL`.
+The same rules and the same default apply, except that the license never forces the default.
+Set both variables to exercise a local Versions Application end to end.
+
+Seat Link is unaffected by either variable, because Seat Link reports to the Customers Portal
+through `Gitlab::SubscriptionPortal::Client`.
+
 ### Test local setup
 
 1. Using the `gitlab` Rails console, manually trigger Service Ping:

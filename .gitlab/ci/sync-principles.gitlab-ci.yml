@@ -134,7 +134,7 @@ ai-principles-reconcile-fences:
     # from system gems).
     BUNDLE_PATH: vendor
   before_script:
-    - apk add --no-cache build-base git
+    - apk add --no-cache git
     # Audit-trail visibility: log the identity making the calls (the
     # service account; see access request #43931).
     - echo "Identity:${GITLAB_USER_LOGIN:-<unset>} (job triggered from $CI_PIPELINE_SOURCE)"

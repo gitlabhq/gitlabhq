@@ -10,8 +10,6 @@ attributes:
   - redacted_description_html
   app/models/supply_chain/slsa/provenance_statement.rb:
   - invocation_id
-  app/services/draft_notes/create_service.rb:
-  - in_draft_mode
   ee/app/models/iteration.rb:
   - skip_future_date_validation
   ee/app/services/epics/transfer_service.rb:

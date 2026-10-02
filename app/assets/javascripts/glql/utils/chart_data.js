@@ -219,16 +219,30 @@ export const tooltipTitleFromParams = (
   return axisName ? `${title} (${axisName})` : title;
 };
 
+const toTooltipContent = (rows) =>
+  Object.fromEntries(rows.map(({ seriesName, value, color }) => [seriesName, { value, color }]));
+
+// Within each stack, list the largest value first. Bar charts and unstacked
+// series keep series order.
 export const tooltipContentFromParams = (params, displayType = DISPLAY_TYPES.COLUMN_CHART) => {
   if (!params?.seriesData) return {};
   const valueIndex = displayType === DISPLAY_TYPES.BAR_CHART ? 0 : 1;
-  return Object.fromEntries(
-    params.seriesData.map(({ seriesName, value, color, borderColor }) => [
+  const rows = params.seriesData.map(
+    ({ seriesName, value, color, borderColor, stack, seriesIndex }) => ({
       seriesName,
-      {
-        value: (Array.isArray(value) ? value[valueIndex] : value) ?? 0,
-        color: borderColor ?? color,
-      },
-    ]),
+      groupKey: stack ?? seriesIndex,
+      value: (Array.isArray(value) ? value[valueIndex] : value) ?? 0,
+      color: borderColor ?? color,
+    }),
   );
+  if (displayType === DISPLAY_TYPES.BAR_CHART) return toTooltipContent(rows);
+
+  // A Map keeps first-seen group order; a plain object would put numeric
+  // seriesIndex keys ahead of named stacks.
+  const stacks = new Map();
+  rows.forEach((row) => stacks.set(row.groupKey, [...(stacks.get(row.groupKey) ?? []), row]));
+  const ordered = [...stacks.values()].flatMap((stack) =>
+    stack.toSorted((a, b) => b.value - a.value),
+  );
+  return toTooltipContent(ordered);
 };

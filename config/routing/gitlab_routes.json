@@ -4356,28 +4356,6 @@
     "example": "/-/experiment"
   },
   {
-    "template": "/-/experimental/o11y_service_settings",
-    "example": "/-/experimental/o11y_service_settings",
-    "acceptsFormat": true
-  },
-  {
-    "template": "/-/experimental/o11y_service_settings/:id",
-    "example": "/-/experimental/o11y_service_settings/foo",
-    "acceptsFormat": true,
-    "dottedExample": "/-/experimental/o11y_service_settings/john.doe"
-  },
-  {
-    "template": "/-/experimental/o11y_service_settings/:id/edit",
-    "example": "/-/experimental/o11y_service_settings/foo/edit",
-    "acceptsFormat": true,
-    "dottedExample": "/-/experimental/o11y_service_settings/john.doe/edit"
-  },
-  {
-    "template": "/-/experimental/o11y_service_settings/new",
-    "example": "/-/experimental/o11y_service_settings/new",
-    "acceptsFormat": true
-  },
-  {
     "template": "/-/external_redirect",
     "example": "/-/external_redirect",
     "acceptsFormat": true
@@ -6484,6 +6462,28 @@
     "acceptsFormat": true
   },
   {
+    "template": "/admin/o11y_service_settings",
+    "example": "/admin/o11y_service_settings",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/admin/o11y_service_settings/:id",
+    "example": "/admin/o11y_service_settings/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/admin/o11y_service_settings/john.doe"
+  },
+  {
+    "template": "/admin/o11y_service_settings/:id/edit",
+    "example": "/admin/o11y_service_settings/foo/edit",
+    "acceptsFormat": true,
+    "dottedExample": "/admin/o11y_service_settings/john.doe/edit"
+  },
+  {
+    "template": "/admin/o11y_service_settings/new",
+    "example": "/admin/o11y_service_settings/new",
+    "acceptsFormat": true
+  },
+  {
     "template": "/admin/orbit",
     "example": "/admin/orbit",
     "acceptsFormat": true
@@ -8155,6 +8155,12 @@
     "example": "/api/v4/groups/foo/-/work_items/foo/discussions/foo/notes",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/groups/john.doe/-/work_items/john.doe/discussions/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/groups/foo/-/work_items/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/groups/john.doe/-/work_items/john.doe/discussions/john.doe/notes/john.doe"
   },
   {
     "template": "/api/:version/groups/:id/-/work_items/:work_item_iid/email_participants",
@@ -10372,6 +10378,12 @@
     "dottedExample": "/api/v4/namespaces/john.doe/-/work_items/john.doe/discussions/john.doe/notes"
   },
   {
+    "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/namespaces/foo/-/work_items/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/namespaces/john.doe/-/work_items/john.doe/discussions/john.doe/notes/john.doe"
+  },
+  {
     "template": "/api/:version/namespaces/:id/-/work_items/:work_item_iid/email_participants",
     "example": "/api/v4/namespaces/foo/-/work_items/foo/email_participants",
     "acceptsFormat": true,
@@ -10914,6 +10926,12 @@
     "example": "/api/v4/projects/foo/-/work_items/foo/discussions/foo/notes",
     "acceptsFormat": true,
     "dottedExample": "/api/v4/projects/john.doe/-/work_items/john.doe/discussions/john.doe/notes"
+  },
+  {
+    "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id",
+    "example": "/api/v4/projects/foo/-/work_items/foo/discussions/foo/notes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/-/work_items/john.doe/discussions/john.doe/notes/john.doe"
   },
   {
     "template": "/api/:version/projects/:id/-/work_items/:work_item_iid/email_participants",
@@ -17462,18 +17480,6 @@
     "dottedExample": "/groups/john.doe/bar/-/observability/access_requests"
   },
   {
-    "template": "/groups/*group_id/-/observability/o11y_service_settings",
-    "example": "/groups/foo/bar/-/observability/o11y_service_settings",
-    "acceptsFormat": true,
-    "dottedExample": "/groups/john.doe/bar/-/observability/o11y_service_settings"
-  },
-  {
-    "template": "/groups/*group_id/-/observability/o11y_service_settings/edit",
-    "example": "/groups/foo/bar/-/observability/o11y_service_settings/edit",
-    "acceptsFormat": true,
-    "dottedExample": "/groups/john.doe/bar/-/observability/o11y_service_settings/edit"
-  },
-  {
     "template": "/groups/*group_id/-/observability/session",
     "example": "/groups/foo/bar/-/observability/session",
     "acceptsFormat": true,
@@ -23342,30 +23348,6 @@
     "dottedExample": "/o/john.doe/-/diagram-proxy/john.doe"
   },
   {
-    "template": "/o/:organization_path/-/experimental/o11y_service_settings",
-    "example": "/o/foo/-/experimental/o11y_service_settings",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/-/experimental/o11y_service_settings"
-  },
-  {
-    "template": "/o/:organization_path/-/experimental/o11y_service_settings/:id",
-    "example": "/o/foo/-/experimental/o11y_service_settings/foo",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/-/experimental/o11y_service_settings/john.doe"
-  },
-  {
-    "template": "/o/:organization_path/-/experimental/o11y_service_settings/:id/edit",
-    "example": "/o/foo/-/experimental/o11y_service_settings/foo/edit",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/-/experimental/o11y_service_settings/john.doe/edit"
-  },
-  {
-    "template": "/o/:organization_path/-/experimental/o11y_service_settings/new",
-    "example": "/o/foo/-/experimental/o11y_service_settings/new",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/-/experimental/o11y_service_settings/new"
-  },
-  {
     "template": "/o/:organization_path/-/external_redirect",
     "example": "/o/foo/-/external_redirect",
     "acceptsFormat": true,
@@ -26083,18 +26065,6 @@
     "example": "/o/foo/groups/foo/bar/-/observability/access_requests",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/groups/john.doe/bar/-/observability/access_requests"
-  },
-  {
-    "template": "/o/:organization_path/groups/*group_id/-/observability/o11y_service_settings",
-    "example": "/o/foo/groups/foo/bar/-/observability/o11y_service_settings",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/observability/o11y_service_settings"
-  },
-  {
-    "template": "/o/:organization_path/groups/*group_id/-/observability/o11y_service_settings/edit",
-    "example": "/o/foo/groups/foo/bar/-/observability/o11y_service_settings/edit",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/observability/o11y_service_settings/edit"
   },
   {
     "template": "/o/:organization_path/groups/*group_id/-/observability/session",

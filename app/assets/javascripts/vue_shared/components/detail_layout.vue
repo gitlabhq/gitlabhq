@@ -30,6 +30,7 @@ export default {
     cancelAnimationFrame(this.syncFrame);
     this.scrollContainer?.removeEventListener('scroll', this.scheduleSyncSidebarSpace);
     window.removeEventListener('resize', this.scheduleSyncSidebarSpace);
+    this.contentResizeObserver?.disconnect();
   },
   methods: {
     setupSidebarSync() {
@@ -42,7 +43,19 @@ export default {
       this.scrollContainer.addEventListener('scroll', this.scheduleSyncSidebarSpace, {
         passive: true,
       });
+
+      // Re-measure when content above the sidebar changes height after mount.
+      this.contentResizeObserver?.disconnect();
+      if (typeof ResizeObserver !== 'undefined') {
+        this.contentResizeObserver = new ResizeObserver(this.scheduleSyncSidebarSpace);
+        this.contentResizeObserver.observe(this.$el);
+      }
+
       this.syncSidebarSpace();
+    },
+    onStickyChange() {
+      // The sticky header height moves the stuck sidebar without a scroll event.
+      this.scheduleSyncSidebarSpace();
     },
     scheduleSyncSidebarSpace() {
       // Coalesce bursts of scroll/resize events into one measurement per frame.
@@ -53,14 +66,27 @@ export default {
       const { sidebar } = this.$refs;
       if (!sidebar || !this.scrollContainer) return;
 
-      // Live distance from the scroll container's viewport top to the sidebar's
-      // current top edge: the page heading when unscrolled, the sticky header once
-      // stuck, and the correct in-between value while scrolling. Subtracting it from
-      // the container height keeps the sidebar bottom at the viewport edge in every
-      // scroll state, so its own scrollbar can always reach the last item.
-      const space =
-        sidebar.getBoundingClientRect().top - this.scrollContainer.getBoundingClientRect().top;
+      const space = this.measureSidebarSpace(sidebar);
       sidebar.style.setProperty('--detail-layout-sidebar-space', `${Math.max(space, 0)}px`);
+    },
+    measureSidebarSpace(sidebar) {
+      const container = this.scrollContainer;
+      const containerRect = container.getBoundingClientRect();
+      const style = window.getComputedStyle(sidebar);
+
+      if (style.position !== 'sticky') {
+        return sidebar.getBoundingClientRect().top - containerRect.top;
+      }
+
+      // Derived from the layout, not the sidebar's own rect, which can be stale mid-scroll.
+      // The sticky inset applies to the border box, so the margin only affects naturalTop.
+      const scrollportTop = containerRect.top + container.clientTop;
+      const marginTop = parseFloat(style.marginTop) || 0;
+      const inset = parseFloat(style.top);
+      const naturalTop = sidebar.parentElement.getBoundingClientRect().top + marginTop;
+      const stuckTop = Number.isNaN(inset) ? -Infinity : scrollportTop + inset;
+
+      return Math.max(naturalTop, stuckTop) - scrollportTop;
     },
   },
 };
@@ -74,6 +100,7 @@ export default {
     :page-heading-sr-only="pageHeadingSrOnly"
     :loading="loading"
     :animate-sticky-header="animateStickyHeader"
+    @sticky-change="onStickyChange"
   >
     <template v-for="(_, name) in glSlots()" #[name]="slotProps">
       <slot :name="name" v-bind="slotProps || {}"></slot>

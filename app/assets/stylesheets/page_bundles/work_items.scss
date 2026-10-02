@@ -134,7 +134,7 @@ $work-item-overview-gap-width: 2rem;
     padding-inline: $gl-spacing-scale-3;
   }
 
-  .work-item-overview-right-sidebar {
+  .work-item-overview .work-item-overview-right-sidebar {
     margin-top: 0;
     grid-row-start: 1;
     grid-column-start: 2;
