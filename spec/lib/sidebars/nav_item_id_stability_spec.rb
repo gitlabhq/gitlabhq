@@ -150,6 +150,7 @@ KNOWN_STABLE_EE_IDS = %i[
   geo_nodes
   geo_settings
   get_started
+  governance
   group_epic_list
   group_wiki
   insights

@@ -53,7 +53,7 @@ Prerequisites:
 To view AI audit events for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. In the left sidebar, select **Settings** > **Governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. Select the **Audit events** tab.
 
 The tab displays a list of agent sessions. Each row shows:

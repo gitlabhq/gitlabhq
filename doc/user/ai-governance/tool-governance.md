@@ -178,7 +178,7 @@ Prerequisites:
 To configure tool governance rules for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. In the left sidebar, select **Settings** > **Governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. For each tool, select a mode from the **Mode** dropdown list: **Always Allow**, **Always Ask**, or **Always Deny**.
 1. Select **Save changes**.
 
@@ -266,7 +266,7 @@ Prerequisites:
 To block an MCP server for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. In the left sidebar, select **Settings** > **Governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. Select the **MCP Registry** tab.
 1. Find the MCP server you want to block and select **Block**.
 

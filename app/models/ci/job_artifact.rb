@@ -150,10 +150,6 @@ module Ci
       sum(:size)
     end
 
-    def self.artifacts_size_for(project)
-      where(project: project).sum(:size)
-    end
-
     def self.pluck_job_id
       pluck(:job_id)
     end

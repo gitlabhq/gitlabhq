@@ -310,7 +310,6 @@ methods:
   app/models/ci/build.rb:
   - artifacts_expire_in
   app/models/ci/job_artifact.rb:
-  - self.artifacts_size_for
   - self.archived_trace_exists_for?
   app/models/ci/job_token/allowlist.rb:
   - project_link_traversal_ids

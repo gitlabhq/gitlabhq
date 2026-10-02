@@ -3786,6 +3786,9 @@ msgstr ""
 msgid "AICatalog|is restricted and cannot be used outside the owning project's top-level group"
 msgstr ""
 
+msgid "AICatalog|may only contain lowercase letters, numbers, and single hyphens"
+msgstr ""
+
 msgid "AICatalog|must be a service account"
 msgstr ""
 
@@ -3805,6 +3808,9 @@ msgid "AICatalog|must be the same service account as the top-level group"
 msgstr ""
 
 msgid "AICatalog|must belong to this project's top-level group"
+msgstr ""
+
+msgid "AICatalog|must match the skill directory name"
 msgstr ""
 
 msgid "AICatalog|unable to validate definition"
@@ -8633,6 +8639,9 @@ msgid "AiGovernance|MCP server"
 msgstr ""
 
 msgid "AiGovernance|MCP servers"
+msgstr ""
+
+msgid "AiGovernance|Monitor and control AI agent activity across your group"
 msgstr ""
 
 msgid "AiGovernance|Most active developers using agents"

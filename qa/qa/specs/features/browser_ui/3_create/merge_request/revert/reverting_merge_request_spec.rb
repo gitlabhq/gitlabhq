@@ -9,11 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can be reverted', :smoke,
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/36477',
-          type: 'flaky'
-        } do
+      it 'can be reverted', :smoke do
         revertible_merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|

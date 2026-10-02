@@ -467,4 +467,3 @@ RSpec/AvoidWaitForRequests:
     - 'spec/support/shared_examples/features/work_items/work_items_shared_examples.rb'
     - 'spec/support/shared_examples/protected_tags/access_control_ce_shared_examples.rb'
     - 'spec/support/shared_examples/quick_actions/merge_request/time_tracking_quick_action_shared_examples.rb'
-    - 'spec/support/shared_examples/views/pagination_shared_examples.rb'

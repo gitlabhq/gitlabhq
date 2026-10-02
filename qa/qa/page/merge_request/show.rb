@@ -515,6 +515,7 @@ module QA
 
         # Waits up 10 seconds and returns false if the Revert button is not enabled
         def revertible?
+          close_dap_panel_if_exists(wait: 3)
           has_element?('revert-button', disabled: false, wait: 10)
         end
 
@@ -656,6 +657,7 @@ module QA
           # reload page since the cherry-pick button can render after the merged status text
           # https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37617 (transient issue)
           retry_on_exception(reload: true, sleep_interval: 2, message: "Retry cherry-pick button click") do
+            close_dap_panel_if_exists(wait: 3)
             click_element('cherry-pick-button', Page::Component::CommitModal)
           end
           submit_commit
@@ -665,6 +667,7 @@ module QA
           # reload page when the revert modal occasionally doesn't appear in ee:large-setup job
           # https://gitlab.com/gitlab-org/gitlab/-/issues/386623 (transient issue)
           retry_on_exception(reload: true) do
+            close_dap_panel_if_exists(wait: 3)
             click_element('revert-button', Page::Component::CommitModal)
           end
           submit_commit
@@ -711,7 +714,7 @@ module QA
         end
 
         # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
-        def close_dap_panel_if_exists; end
+        def close_dap_panel_if_exists(wait: 0.5); end
 
         private
 

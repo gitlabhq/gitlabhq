@@ -44,8 +44,7 @@ The dashboard shows data for GitLab Duo Agent Platform (DAP) agents only, scoped
 ## View the dashboard
 
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. Select **Settings** > **GitLab Duo**.
-1. Select **Change governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. Select the **Dashboard** tab.
 
 ## Key performance indicator (KPI) tiles

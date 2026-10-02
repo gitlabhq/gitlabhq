@@ -1302,11 +1302,12 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
         properties: {
           'id' => {
             type: 'string',
-            description: 'The ID or URL-encoded path of the project'
+            description: 'ID or URL-encoded path of the project.'
           },
           'search' => {
             type: 'string',
-            description: 'Return list of branches matching the search criteria'
+            description: 'Return branches containing the search string. Use `^term` to find branches ' \
+              'that begin with `term`, and `term$` to find branches that end with `term`.'
           },
           'page' => {
             type: 'integer',

@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$comment": "Patterns are paired with `not: {pattern: \\n}` because JsonSchemaValidator evaluates them as Ruby regexps, where ^ and $ match at any line break. Rejecting newlines keeps the anchors meaning start and end of string under both Ruby and ECMA regexp semantics, and matches Gitlab::PathTraversal, which treats a newline in a path as a traversal attempt.",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Path to the skill's SKILL.md file. The parent directory is the skill, so consumers can resolve co-located resources such as references/ alongside it.",
+      "pattern": "^skills/[a-z0-9]+(-[a-z0-9]+)*/SKILL\\.md$",
+      "not": {
+        "pattern": "\\n"
+      }
+    },
+    "git_ref": {
+      "type": "string",
+      "description": "Branch the skill was published from. Always the project's default branch.",
+      "minLength": 1,
+      "maxLength": 255,
+      "not": {
+        "pattern": "\\n"
+      }
+    },
+    "blob_sha": {
+      "type": "string",
+      "description": "Git object ID of the SKILL.md blob. Content-addressed, so it doubles as provenance and as the change-detection key. Deliberately not the commit SHA: the commit moves on every unrelated push, which would mint a new item version on every publish.",
+      "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$",
+      "not": {
+        "pattern": "\\n"
+      }
+    },
+    "commit_sha": {
+      "type": "string",
+      "description": "Commit that last changed SKILL.md. Provenance only, never a change-detection key: change detection compares blob_sha, so recording the commit does not mint a version on unrelated pushes.",
+      "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$",
+      "not": {
+        "pattern": "\\n"
+      }
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Git author name from that commit. Recorded because git attribution is a name and an email, which need not correspond to a GitLab user. When they do, the version's created_by is set as well and takes precedence.",
+      "maxLength": 255
+    },
+    "license": {
+      "type": "string",
+      "description": "Optional Agent Skills specification field, cached from the front matter so the catalog can show it without reading the blob.",
+      "maxLength": 255
+    },
+    "compatibility": {
+      "type": "string",
+      "description": "Optional Agent Skills specification field describing environment requirements.",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "allowed_tools": {
+      "type": "string",
+      "description": "Optional Agent Skills specification field, spelled allowed-tools in front matter and renamed here to match the snake_case of the rest of the definition. Experimental in the specification.",
+      "maxLength": 1024
+    }
+  },
+  "required": [
+    "path",
+    "git_ref",
+    "blob_sha"
+  ],
+  "additionalProperties": false
+}
