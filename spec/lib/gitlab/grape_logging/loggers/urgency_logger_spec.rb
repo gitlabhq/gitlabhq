@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape_logging'
 
 RSpec.describe Gitlab::GrapeLogging::Loggers::UrgencyLogger do
   def endpoint(options, namespace: '')

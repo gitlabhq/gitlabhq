@@ -13,7 +13,7 @@ title: Troubleshooting OpenBao
 
 {{< /details >}}
 
-For recovery key tasks and break-glass root tokens, see [recovery key management](recovery_key.md).
+For recovery key tasks and root token generation, see [recovery key management](recovery_key.md).
 For Geo failover, see
 [Geo disaster recovery](../geo/disaster_recovery/_index.md#step-4-optional-promote-the-openbao-ha-cluster).
 

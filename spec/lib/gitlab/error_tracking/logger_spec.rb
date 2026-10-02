@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 're2'
 
 RSpec.describe Gitlab::ErrorTracking::Logger do
   describe '.capture_exception' do

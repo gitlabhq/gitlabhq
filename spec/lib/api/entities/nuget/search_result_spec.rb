@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape_entity'
 
 RSpec.describe API::Entities::Nuget::SearchResult, feature_category: :package_registry do
   let(:search_result) do

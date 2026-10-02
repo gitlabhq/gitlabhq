@@ -252,7 +252,23 @@ to the same `environment` line:
     volumes = ["/path/to/your/ca-bundle.crt:/etc/gitlab-runner/certs/ca.crt:ro"]
 ```
 
-If the GitLab Duo CLI runs in the Anthropic Sandbox Runtime (SRT), runner `environment` variables might not reach it. If TLS errors persist after this change, in your `agent-config.yml`, in the `setup_script`, set `NODE_EXTRA_CA_CERTS` instead. The `setup_script` runs inside the container and is not filtered by the sandbox.
+The GitLab Duo CLI runs inside the Anthropic Sandbox Runtime (SRT), which starts with an
+empty environment. When the following certificate and proxy variables are set in the job,
+they are forwarded into the sandbox:
+
+- `NODE_EXTRA_CA_CERTS`
+- `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY`
+- The lowercase equivalents `http_proxy`, `https_proxy`, and `no_proxy`
+
+Set these variables in the runner's `environment` directive, or export them in the
+`setup_script` of your `agent-config.yml` file. Other variables are not forwarded.
+
+These variables apply to all Node.js network traffic in the sandbox, not only to
+connections to your GitLab instance. `NODE_EXTRA_CA_CERTS` points to a file, so mount the
+CA certificate into the container as shown earlier.
+
+`NODE_TLS_REJECT_UNAUTHORIZED` is not forwarded, because setting it to `0` turns off TLS
+verification. Use `NODE_EXTRA_CA_CERTS` instead.
 
 The `GIT_SSL_CAINFO` variable addresses Git operations that occur before the GitLab Duo CLI starts. For GitLab Duo CLI certificate configuration, see [certificate errors](../gitlab_duo_cli/use.md#certificate-errors).
 

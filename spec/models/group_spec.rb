@@ -993,6 +993,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'returns groups without integration' do
       expect(described_class.without_integration(instance_integration)).to contain_exactly(another_group)
     end
+
+    it 'excludes groups belonging to a different organization than an instance-level integration' do
+      create(:group, organization: organization)
+
+      expect(described_class.without_integration(instance_integration)).to contain_exactly(another_group)
+    end
   end
 
   describe '.groups_user_can' do

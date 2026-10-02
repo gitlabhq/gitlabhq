@@ -118,10 +118,8 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       expect(transformed[:relation_key]).to eq('test')
     end
 
-    context 'when importer_user_mapping is enabled' do
+    context 'when creating source users for each user reference' do
       before do
-        allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
-
         stub_const("#{described_class}::IGNORE_PLACEHOLDER_USER_CREATION", {})
       end
 
@@ -303,35 +301,6 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       subject.transform(context, data)
     end
 
-    # See gitlab-org/gitlab#628379: the legacy user-resolution mapper is only
-    # reachable when an import is explicitly in legacy mode; no production
-    # caller creates imports in that state.
-    context 'when the import is in legacy mode' do
-      before do
-        allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
-      end
-
-      it 'calls relation factory with the legacy UsersMapper' do
-        expect(Gitlab::ImportExport::Group::RelationFactory)
-        .to receive(:create)
-        .with(
-          relation_index: 1,
-          relation_sym: :test,
-          relation_hash: hash,
-          importable: group,
-          members_mapper: instance_of(BulkImports::UsersMapper),
-          object_builder: Gitlab::ImportExport::Group::ObjectBuilder,
-          user: user,
-          excluded_keys: nil,
-          import_source: Import::SOURCE_DIRECT_TRANSFER,
-          original_users_map: {},
-          rewrite_mentions: false
-        ).and_return(double(assign_attributes: nil))
-
-        subject.transform(context, data)
-      end
-    end
-
     context 'when bulk import is an offline transfer' do
       before do
         allow(bulk_import).to receive(:import_source).and_return(Import::SOURCE_OFFLINE_TRANSFER)
@@ -378,7 +347,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           expect(saver).to receive(:execute)
         end
 
-        subject.load(nil, [object])
+        subject.load(nil, [object, {}])
       end
 
       context 'when object is invalid' do
@@ -391,7 +360,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
             allow(saver).to receive(:invalid_subrelations).and_return(object.priorities)
           end
 
-          subject.load(context, [object])
+          subject.load(context, [object, {}])
 
           failure = entity.failures.first
 
@@ -413,7 +382,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
             allow(saver).to receive_messages(invalid_subrelations: [], failed_subrelations: [failed_record])
           end
 
-          subject.load(context, [label])
+          subject.load(context, [label, {}])
 
           failure = entity.failures.first
 
@@ -431,7 +400,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
 
         expect(object).to receive(:save!)
 
-        subject.load(nil, [object])
+        subject.load(nil, [object, {}])
       end
 
       context 'when object is invalid' do
@@ -441,7 +410,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           expect(object).to receive(:invalid?).and_return(true)
           expect(Gitlab::Import::Errors).to receive(:merge_nested_errors).with(object)
 
-          expect { subject.load(nil, [object]) }.to raise_error(ActiveRecord::RecordInvalid)
+          expect { subject.load(nil, [object, {}]) }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end
@@ -452,9 +421,8 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
       end
     end
 
-    context 'when importer_user_mapping is enabled' do
+    context 'when pushing placeholder references for user reference attributes' do
       before do
-        allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
         allow(subject).to receive(:relation_definition).and_return(
           { "notes" => { "events" => {}, "system_note_metadata" => {} } }
         )

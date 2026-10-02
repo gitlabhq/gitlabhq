@@ -6,14 +6,14 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   include KubernetesHelpers
   include Gitlab::Routing.url_helpers
 
+  let_it_be(:user)    { create(:user) }
+  let_it_be(:project) { create(:project, :repository, developers: user) }
+  let_it_be_with_refind(:environment) { create(:environment, project: project) }
+
   let(:request) { double('request', current_user: user, project: project) }
   let(:entity) do
     described_class.new(environment, request: request)
   end
-
-  let_it_be(:user)    { create(:user) }
-  let_it_be(:project) { create(:project, :repository, developers: user) }
-  let_it_be_with_refind(:environment) { create(:environment, project: project) }
 
   before do
     allow(request).to receive_messages(current_user: user, project: project)
@@ -87,14 +87,14 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   end
 
   context 'with deployment platform' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project) }
     let(:environment) { create(:environment, project: project) }
 
     context 'when deployment platform is a cluster' do
       before do
         create(
           :cluster,
-          :provided_by_gcp,
+          :provided_by_user,
           :project,
           environment_scope: '*',
           projects: [project]
@@ -109,7 +109,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   end
 
   context 'with auto_stop_in' do
-    let(:environment) { create(:environment, :will_auto_stop, project: project) }
+    let(:environment) { build_stubbed(:environment, :will_auto_stop, project: project) }
 
     it 'exposes auto stop related information' do
       project.add_maintainer(user)
@@ -129,7 +129,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
   end
 
   context 'with deployment service not ready' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it 'does not expose rollout_status' do
       expect(subject).not_to include(:rollout_status)

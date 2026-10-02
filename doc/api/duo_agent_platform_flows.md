@@ -282,7 +282,8 @@ GitLab Duo Agent Platform, GitLab returns [`403 Forbidden`](rest/troubleshooting
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/1/trace.jsonl"
 ```
 
@@ -296,7 +297,8 @@ Example response (each line is a separate JSON object):
 You can pipe the output into `jq` to filter entries by type:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/1/trace.jsonl" \
   | jq 'select(.message_type == "ai")'
 ```
@@ -326,7 +328,8 @@ attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/ai/duo_workflows/workflows/agent_privileges"
 ```
 

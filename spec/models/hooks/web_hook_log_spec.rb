@@ -72,6 +72,47 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
     end
   end
 
+  describe '.insert_log!' do
+    let_it_be(:hook) { create(:project_hook) }
+
+    let(:attributes) do
+      {
+        web_hook: hook,
+        url: 'http://test:123@example.com',
+        interpolated_url: 'http://example.com',
+        request_headers: { 'Header' => 'value' },
+        request_data: { 'user' => { 'email' => 'user@example.com' } },
+        response_status: '200'
+      }
+    end
+
+    subject(:insert_log) { described_class.insert_log!(attributes) }
+
+    it 'inserts the log with the same normalization as #save' do
+      expect { insert_log }.to change { described_class.count }.by(1)
+
+      expect(described_class.last).to have_attributes(
+        url: 'http://*****:*****@example.com',
+        url_hash: Gitlab::CryptoHelper.sha256('http://example.com'),
+        request_headers: { 'Header' => 'value' },
+        request_data: { 'user' => { 'email' => _('[REDACTED]') } },
+        project_id: hook.project_id,
+        created_at: Time.current
+      )
+    end
+
+    context 'when the web hook is missing' do
+      before do
+        attributes.delete(:web_hook)
+      end
+
+      it 'raises without inserting' do
+        expect { insert_log }.to raise_error(ActiveRecord::RecordInvalid)
+          .and not_change { described_class.count }
+      end
+    end
+  end
+
   describe '#save' do
     let(:hook) { build(:project_hook) }
 

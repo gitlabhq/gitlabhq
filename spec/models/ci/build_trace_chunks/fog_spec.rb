@@ -238,65 +238,38 @@ RSpec.describe Ci::BuildTraceChunks::Fog, feature_category: :continuous_integrat
   end
 
   describe '#connection' do
-    context 'when the connection cache feature flag is enabled' do
-      it 'reuses a single connection across data store instances' do
-        first = described_class.new.send(:connection)
-        second = described_class.new.send(:connection)
+    it 'reuses a single connection across data store instances' do
+      first = described_class.new.send(:connection)
+      second = described_class.new.send(:connection)
 
-        expect(first).not_to be_nil
-        expect(second).to equal(first)
-        expect(described_class.connections.size).to eq(1)
-      end
-
-      it 'builds the Fog connection only once' do
-        expect(::Fog::Storage).to receive(:new).once.and_call_original
-
-        3.times { described_class.new.send(:connection) }
-      end
-
-      it 'caches a distinct connection per credentials set and reuses it per set' do
-        conn_a = connection_with(connection_params.merge(aws_access_key_id: 'key-a'))
-        conn_b = connection_with(connection_params.merge(aws_access_key_id: 'key-b'))
-
-        expect(conn_b).not_to equal(conn_a)
-        expect(described_class.connections.size).to eq(2)
-
-        # The same credentials return the originally cached connection.
-        expect(connection_with(connection_params.merge(aws_access_key_id: 'key-a'))).to equal(conn_a)
-        expect(described_class.connections.size).to eq(2)
-      end
-
-      def connection_with(credentials)
-        object_store = double(connection: double(to_hash: credentials)) # rubocop:disable RSpec/VerifiedDoubles -- lightweight config stub
-        config = instance_double(ObjectStorage::Config, use_iam_profile?: false)
-        described_class.new.tap do |store|
-          allow(store).to receive_messages(object_store: object_store, object_store_config: config)
-        end.send(:connection)
-      end
+      expect(first).not_to be_nil
+      expect(second).to equal(first)
+      expect(described_class.connections.size).to eq(1)
     end
 
-    context 'when the connection cache feature flag is disabled' do
-      before do
-        stub_feature_flags(cache_ci_build_trace_chunk_fog_connection: false)
-      end
+    it 'builds the Fog connection only once' do
+      expect(::Fog::Storage).to receive(:new).once.and_call_original
 
-      it 'does not populate the process-level cache' do
-        expect(data_store.send(:connection)).not_to be_nil
-        expect(described_class.connections).to be_empty
-      end
+      3.times { described_class.new.send(:connection) }
     end
 
-    context 'when the connection uses an IAM instance profile' do
-      before do
-        allow_next_instance_of(ObjectStorage::Config) do |config|
-          allow(config).to receive(:use_iam_profile?).and_return(true)
-        end
-      end
+    it 'caches a distinct connection per credentials set and reuses it per set' do
+      conn_a = connection_with(connection_params.merge(aws_access_key_id: 'key-a'))
+      conn_b = connection_with(connection_params.merge(aws_access_key_id: 'key-b'))
 
-      it 'does not use the process-level cache to avoid the fog-aws credential refresh race' do
-        expect(data_store.send(:connection)).not_to be_nil
-        expect(described_class.connections).to be_empty
-      end
+      expect(conn_b).not_to equal(conn_a)
+      expect(described_class.connections.size).to eq(2)
+
+      # The same credentials return the originally cached connection.
+      expect(connection_with(connection_params.merge(aws_access_key_id: 'key-a'))).to equal(conn_a)
+      expect(described_class.connections.size).to eq(2)
+    end
+
+    def connection_with(credentials)
+      object_store = double(connection: double(to_hash: credentials)) # rubocop:disable RSpec/VerifiedDoubles -- lightweight config stub
+      described_class.new.tap do |store|
+        allow(store).to receive(:object_store).and_return(object_store)
+      end.send(:connection)
     end
 
     context 'when object storage is disabled' do

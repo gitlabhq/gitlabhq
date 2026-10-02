@@ -190,6 +190,15 @@ module API
             .reorder(order_options_with_tie_breaker) # rubocop:disable CodeReuse/ActiveRecord -- needed for stable ordering on `order_by` + `sort`
         end
 
+        def build_discussion_notes_relation(parent_work_item, discussion_id)
+          # Sort by id because keyset pagination needs a column with unique values, and created_at can repeat.
+          # IDs increase in creation order, so this still returns the thread oldest first.
+          parent_work_item.notes
+            .with_discussion_ids(discussion_id)
+            .preload(NOTE_REFERENCE_PRELOADS) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+            .reorder(id: :asc) # rubocop:disable CodeReuse/ActiveRecord -- keyset pagination needs a unique sort column
+        end
+
         # Bulk-fetches Subscription rows for the given work items and current user so the
         # notifications feature entity can read each work item's subscribed state from memory
         # rather than triggering one query per item.

@@ -1758,10 +1758,6 @@ offenses:
   callsite: lib/gitlab/import/import_failure_service.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
-- logger_class: Import::Framework::Logger
-  callsite: lib/gitlab/import/placeholder_user_creator.rb
-  deprecated_field: user_id
-  standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::Export::Logger
   callsite: lib/gitlab/import_export/json/streaming_serializer.rb
   deprecated_field: project_path

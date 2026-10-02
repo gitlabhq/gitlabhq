@@ -206,6 +206,19 @@ RSpec.describe Admin::Organizations::UsersController, feature_category: :organiz
         expect(response).to redirect_to(organization_admin_user_path(organization, user))
         expect(organization_user.reload.access_level).to eq('owner')
       end
+
+      context 'when the owner role sync is available' do
+        before do
+          allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+        end
+
+        it 'enqueues GrantOwnerRoleWorker with the signed-in owner as the acting user' do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).to receive(:perform_async)
+            .with(organization.id, user.id, organization_owner.id)
+
+          request
+        end
+      end
     end
 
     context 'when user is a regular user' do

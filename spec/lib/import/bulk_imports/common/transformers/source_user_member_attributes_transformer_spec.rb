@@ -53,12 +53,6 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       )
     end
 
-    let(:importer_user_mapping_enabled) { true }
-
-    before do
-      allow(context).to receive(:importer_user_mapping_enabled?).and_return(importer_user_mapping_enabled)
-    end
-
     context 'when an import source user exists and is mapped to a user' do
       let(:data) { member_data(source_user_id: reassigned_import_source_user.source_user_identifier) }
 
@@ -86,18 +80,6 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
           expect(subject.transform(context, data)).to be_nil
         end
       end
-
-      context 'when importer_user_mapping is disabled' do
-        let(:importer_user_mapping_enabled) { false }
-
-        it 'does not create an import source user' do
-          expect { subject.transform(context, data) }.not_to change { Import::SourceUser.count }
-        end
-
-        it 'does not transform the data' do
-          expect(subject.transform(context, { id: 1 })).to eq({ id: 1 })
-        end
-      end
     end
 
     context 'when an import source user does not exist' do
@@ -122,18 +104,6 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
           group: entity.group,
           project: entity.project
         )
-      end
-
-      context 'when importer_user_mapping is disabled' do
-        let(:importer_user_mapping_enabled) { false }
-
-        it 'does not create an import source user' do
-          expect { subject.transform(context, data) }.not_to change { Import::SourceUser.count }
-        end
-
-        it 'does not transform the data' do
-          expect(subject.transform(context, { id: 1 })).to eq({ id: 1 })
-        end
       end
     end
 

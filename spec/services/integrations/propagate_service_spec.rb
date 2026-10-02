@@ -54,6 +54,36 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
       end
     end
 
+    context 'with a project in a different organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:project_in_other_org) { create(:project, group: create(:group, organization: other_organization)) }
+
+      it 'does not call PropagateIntegrationProjectWorker for the project' do
+        expect(PropagateIntegrationProjectWorker).not_to receive(:perform_async)
+          .with(instance_integration.id, project_in_other_org.id, anything)
+
+        described_class.new(instance_integration).execute
+      end
+    end
+
+    context 'with a group in a different organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+
+      before do
+        # Excludes the ambient `group` from the batch so it can't combine with
+        # group_in_other_org's id range and mask a failure to filter by organization.
+        create(:jira_integration, :group, group: group)
+      end
+
+      it 'does not call PropagateIntegrationGroupWorker for the group' do
+        expect(PropagateIntegrationGroupWorker).not_to receive(:perform_async)
+          .with(instance_integration.id, group_in_other_org.id, anything)
+
+        described_class.new(instance_integration).execute
+      end
+    end
+
     context 'for a group-level integration' do
       let_it_be(:group_integration) { create(:jira_integration, :group, group: group) }
       let_it_be(:subgroup) { create(:group, parent: group) }

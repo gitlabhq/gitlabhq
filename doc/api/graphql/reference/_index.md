@@ -20774,7 +20774,7 @@ Arguments:
 | <a id="mutation-workitembulkupdate-assigneeswidget"></a>`assigneesWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Introduced in GitLab 18.2. Status: Experiment. Input for assignees widget. |
 | <a id="mutation-workitembulkupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-workitembulkupdate-confidential"></a>`confidential` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.2. Status: Experiment. Sets the work item confidentiality. |
-| <a id="mutation-workitembulkupdate-fullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project or group (Premium and Ultimate only) containing the work items that will be updated. User paths are not supported. |
+| <a id="mutation-workitembulkupdate-fullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project or group containing the work items that will be updated. User paths are not supported. |
 | <a id="mutation-workitembulkupdate-healthstatuswidget"></a>`healthStatusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Introduced in GitLab 18.2. Status: Experiment. Input for health status widget. |
 | <a id="mutation-workitembulkupdate-hierarchywidget"></a>`hierarchyWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Introduced in GitLab 18.2. Status: Experiment. Input for hierarchy widget. |
 | <a id="mutation-workitembulkupdate-ids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the work items that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
@@ -36637,6 +36637,8 @@ Arguments:
 | <a id="analytics-duoworkflows-flowtypesusedfrom"></a>`flowTypesUsedFrom` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. Start of the range. |
 | <a id="analytics-duoworkflows-flowtypesusedto"></a>`flowTypesUsedTo` | [`Int`](#int) | Filter by the number of distinct flow types the user ran in the selected period. End of the range. |
 | <a id="analytics-duoworkflows-groupid"></a>`groupId` | [`[String!]`](#string) | Filter by one or many group Global IDs, including flows from their descendants. |
+| <a id="analytics-duoworkflows-modelused"></a>`modelUsed` | [`[String!]`](#string) | Filter by one or many models. |
+| <a id="analytics-duoworkflows-modelusednot"></a>`modelUsedNot` | [`[String!]`](#string) | Exclude one or many models. Flows with no attributed model are stored as an empty string, so pass one to exclude them. Maximum is 100. |
 | <a id="analytics-duoworkflows-projectid"></a>`projectId` | [`[String!]`](#string) | Filter by one or many project Global IDs. |
 | <a id="analytics-duoworkflows-projectidnot"></a>`projectIdNot` | [`[String!]`](#string) | Exclude one or many project Global IDs. Flows created at namespace level are excluded as well. Maximum is 100. |
 | <a id="analytics-duoworkflows-status"></a>`status` | [`[String!]`](#string) | Filter by one or many flow statuses (created, running, finished, failed, ...). |

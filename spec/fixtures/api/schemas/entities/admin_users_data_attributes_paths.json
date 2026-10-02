@@ -13,6 +13,9 @@
     "unblock": {
       "type": "string"
     },
+    "resync_ldap": {
+      "type": "string"
+    },
     "block": {
       "type": "string"
     },
@@ -52,6 +55,7 @@
     "approve",
     "reject",
     "unblock",
+    "resync_ldap",
     "block",
     "deactivate",
     "activate",

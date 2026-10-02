@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'action_dispatch'
 
 RSpec.describe Gitlab::Logging::JsonMetadataHelper, feature_category: :observability do
   let(:helper_class) do

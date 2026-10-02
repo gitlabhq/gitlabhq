@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe API::Mcp::Handlers::InitializeRequest, feature_category: :mcp_server do
   let_it_be(:current_user) { create(:user) }
@@ -28,7 +28,9 @@ RSpec.describe API::Mcp::Handlers::InitializeRequest, feature_category: :mcp_ser
         .and increment_usage_metrics(
           'counts.count_total_initialize_mcp_connection_weekly',
           'counts.count_total_initialize_mcp_connection_monthly',
-          'counts.count_total_initialize_mcp_connection'
+          'counts.count_total_initialize_mcp_connection',
+          'redis_hll_counters.count_distinct_user_id_from_initialize_mcp_connection_weekly',
+          'redis_hll_counters.count_distinct_user_id_from_initialize_mcp_connection_monthly'
         )
     end
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'loofah'
 
 RSpec.describe Gitlab::Sanitizers::SVG do
   let(:scrubber) { Gitlab::Sanitizers::SVG::Scrubber.new }

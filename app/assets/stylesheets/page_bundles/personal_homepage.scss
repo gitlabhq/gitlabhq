@@ -7,18 +7,12 @@
   @apply gl-fill-icon-subtle #{!important};
 }
 
-.homepage-merge-requests-widget {
-  container-type: inline-size;
-  container-name: homepage-merge-requests-widget;
-}
-
-@container homepage-merge-requests-widget (width < 18rem) {
-  .homepage-merge-requests-widget-tab-count {
-    @apply gl-hidden;
-  }
-}
-
-.homepage-todos-widget [role='tablist'] {
+// .gl-tabs-nav is a flex-grow item, so min-width must be 0 for it to shrink below
+// its content; without that, overflow-x has nothing to scroll and the wrapper wraps.
+.homepage-todos-widget [role='tablist'],
+.homepage-merge-requests-widget [role='tablist'] {
+  min-width: 0;
   overflow-x: auto;
   overflow-y: hidden;
+  white-space: nowrap;
 }

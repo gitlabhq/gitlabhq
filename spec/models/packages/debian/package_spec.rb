@@ -15,11 +15,6 @@ RSpec.describe Packages::Debian::Package, feature_category: :package_registry do
     end
   end
 
-  describe 'delegates' do
-    it { is_expected.to delegate_method(:codename).to(:distribution).with_prefix(:distribution) }
-    it { is_expected.to delegate_method(:suite).to(:distribution).with_prefix(:distribution) }
-  end
-
   describe '.with_codename' do
     let_it_be(:publication) { create(:debian_publication) }
 

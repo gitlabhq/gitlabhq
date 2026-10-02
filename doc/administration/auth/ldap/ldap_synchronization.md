@@ -193,6 +193,10 @@ A blocked user is unblocked when they sign in with LDAP if all of the following 
 - All the access check conditions are true.
 - The LDAP server is available when the user signs in.
 
+An administrator can trigger this check for one user without waiting for the user to sign in or
+for the next scheduled sync. For more information, see
+[Resync a user blocked by LDAP](../../moderate_users.md#resync-a-user-blocked-by-ldap).
+
 All users are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
 
 > [!note]

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../../support/shared_examples/metrics_instrumentation_shared_examples'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::HostnameMetric do
   let(:expected_value) { Gitlab.config.gitlab.host }

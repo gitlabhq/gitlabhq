@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSkeletonLoader, GlTab, GlTabs } from '@gitlab/ui';
+import { GlSkeletonLoader, GlTab } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -29,7 +29,6 @@ describe('MergeRequestsWidget', () => {
     template: '<li><slot name="title" /><slot /></li>',
   });
 
-  const findTabsNav = () => wrapper.findComponent(GlTabs);
   const findTabs = () => wrapper.findAllComponents(GlTab);
   const findLists = () => wrapper.findAllComponents(MergeRequestsWidgetList);
   const findAssignedList = () =>
@@ -85,23 +84,6 @@ describe('MergeRequestsWidget', () => {
       expect(findTabs()).toHaveLength(2);
     });
 
-    // The card is narrow, and the two labels plus their count badges overflow it at
-    // small widths. The nav scrolls horizontally instead of wrapping onto two lines,
-    // matching how the merge request page tabs behave.
-    // The two labels plus their count badges overflow the narrow card, so the nav
-    // scrolls horizontally, the way the merge request page tabs do. Every class is
-    // load-bearing: gl-whitespace-nowrap stops the label itself breaking onto a
-    // second line (.gl-tab-nav-item sets no white-space of its own), and that is
-    // what pushes the content past the nav so overflow-x-auto has something to
-    // scroll. gl-min-w-0 lets the nav shrink, since .gl-tabs-nav is a gl-grow item.
-    // gl-overflow-y-hidden is needed because overflow-x-auto makes the y axis
-    // compute to auto as well, which shows a stray vertical scrollbar.
-    it('scrolls the tab bar horizontally rather than wrapping', () => {
-      expect(findTabsNav().props('navClass')).toBe(
-        'gl-flex-nowrap gl-whitespace-nowrap gl-overflow-x-auto gl-overflow-y-hidden gl-min-w-0 gl-px-2',
-      );
-    });
-
     it('renders both tab titles', () => {
       expect(wrapper.text()).toContain('Assigned to you');
       expect(wrapper.text()).toContain('Review requested');
@@ -110,12 +92,6 @@ describe('MergeRequestsWidget', () => {
     it('renders the total count on each tab', () => {
       expect(findTabCounts().at(0).text()).toBe('2');
       expect(findTabCounts().at(1).text()).toBe('2');
-    });
-
-    // The count is hidden by page_bundles/personal_homepage.scss once the card is too
-    // narrow for the labels plus counts; the screen reader text stays either way.
-    it('marks the counts so they can be hidden on a narrow card', () => {
-      expect(findTabCounts().at(0).classes()).toContain('homepage-merge-requests-widget-tab-count');
     });
 
     it('renders a list per tab', () => {

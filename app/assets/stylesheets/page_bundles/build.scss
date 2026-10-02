@@ -107,7 +107,7 @@
 .job-log {
   font-family: $monospace-font;
   padding: $gl-padding-8 $input-horizontal-padding;
-  margin: 0 0 $gl-padding-8;
+  margin: 0;
   font-size: $code-font-size-fixed;
   word-break: break-all;
   word-wrap: break-word;
@@ -235,17 +235,6 @@
   .arrow {
     left: $highlight-extra-x-padding;
   }
-}
-
-.rca-bar-component {
-  bottom: $calc-application-footer-height; // Note: this should be removed once paneled architecture is in GA
-}
-
-.rca-bar-component.rca-bar-component-fullscreen {
-  left: 0;
-  width: 100%;
-  padding-left: .5rem;
-  transition: left 0.3s ease, width 0.3s ease, padding 0.3s ease;
 }
 
 .loader-animation {

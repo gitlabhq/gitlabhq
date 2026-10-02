@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import ReadyToMerge from '~/vue_merge_request_widget/components/states/new_ready_to_merge.vue';
+import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 
 let wrapper;
 
@@ -14,7 +14,7 @@ function factory({ canMerge }) {
   });
 }
 
-describe('New ready to merge state component', () => {
+describe('Ready to merge state component', () => {
   it.each`
     canMerge
     ${true}

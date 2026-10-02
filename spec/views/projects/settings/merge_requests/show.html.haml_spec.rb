@@ -6,8 +6,8 @@ RSpec.describe 'projects/settings/merge_requests/show', feature_category: :code_
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 
-  let(:project) { create(:project) }
-  let(:user) { create(:admin) }
+  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be(:user) { create(:admin) }
 
   before do
     assign(:project, project)

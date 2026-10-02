@@ -90,7 +90,6 @@ RSpec.describe Authz::Role, feature_category: :permissions do
   let(:ee_permissions) do
     %i[
       read_issue_analytics
-      bulk_admin_epic
       create_vulnerability_feedback
       destroy_vulnerability_feedback
       update_vulnerability_feedback
@@ -211,10 +210,6 @@ RSpec.describe Authz::Role, feature_category: :permissions do
   # :read_package directly (config/authz/roles/reporter.yml).
   # guest & allow_guest_plus_roles_to_pull_packages_enabled
   let(:package_pull_grants) { [:read_package] }
-
-  # Held by planner and above (admin_epic is a planner.yml/reporter.yml own permission).
-  # EE: can?(:admin_epic) & bulk_edit_feature_available
-  let(:epic_admin_grants) { [:bulk_admin_epic] }
 
   # Held by developer and above (read_cluster is a developer.yml own permission).
   # EE: can?(:read_cluster) & cluster_deployments_available
@@ -503,7 +498,7 @@ RSpec.describe Authz::Role, feature_category: :permissions do
 
       it_behaves_like 'a role that does not enable unexpected permissions' do
         let(:permissions_granted_outside_role_definition) do
-          common_group_grants + member_group_grants + package_pull_grants + epic_admin_grants
+          common_group_grants + member_group_grants + package_pull_grants
         end
       end
     end
@@ -533,7 +528,7 @@ RSpec.describe Authz::Role, feature_category: :permissions do
 
       it_behaves_like 'a role that does not enable unexpected permissions' do
         let(:permissions_granted_outside_role_definition) do
-          common_group_grants + member_group_grants + epic_admin_grants
+          common_group_grants + member_group_grants
         end
       end
     end
@@ -572,7 +567,7 @@ RSpec.describe Authz::Role, feature_category: :permissions do
 
       it_behaves_like 'a role that does not enable unexpected permissions' do
         let(:permissions_granted_outside_role_definition) do
-          common_group_grants + member_group_grants + epic_admin_grants
+          common_group_grants + member_group_grants
         end
       end
     end
@@ -603,7 +598,7 @@ RSpec.describe Authz::Role, feature_category: :permissions do
 
       it_behaves_like 'a role that does not enable unexpected permissions' do
         let(:permissions_granted_outside_role_definition) do
-          common_group_grants + member_group_grants + epic_admin_grants + cluster_read_grants
+          common_group_grants + member_group_grants + cluster_read_grants
         end
       end
     end
@@ -644,7 +639,7 @@ RSpec.describe Authz::Role, feature_category: :permissions do
 
       it_behaves_like 'a role that does not enable unexpected permissions' do
         let(:permissions_granted_outside_role_definition) do
-          common_group_grants + member_group_grants + epic_admin_grants + cluster_read_grants
+          common_group_grants + member_group_grants + cluster_read_grants
         end
       end
     end
@@ -677,7 +672,7 @@ RSpec.describe Authz::Role, feature_category: :permissions do
       it_behaves_like 'a role that does not enable unexpected permissions' do
         # On top of the common group grants, an owner's admin capabilities cascade into these.
         let(:permissions_granted_outside_role_definition) do
-          common_group_grants + member_group_grants + epic_admin_grants + cluster_read_grants + [
+          common_group_grants + member_group_grants + cluster_read_grants + [
             # can?(:admin_runners)
             :admin_group_or_admin_runners,
 

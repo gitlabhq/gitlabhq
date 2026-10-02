@@ -51,6 +51,46 @@ Read carefully the major version upgrade steps of your external database platfor
 > Leaving DDL disabled for more than a few days can degrade performance. Enabling the flag
 > also pauses background migrations, so GitLab upgrades fail while the flag is enabled.
 
+## Verify PostgreSQL extensions after a major version upgrade
+
+A major version upgrade replaces the PostgreSQL server binaries, but it does not
+update the extensions installed in your databases. After the upgrade:
+
+- Extensions you never installed stay missing, even if a newer GitLab version requires them.
+- Installed extensions stay at the version from the previous server release until you update them.
+
+After you complete a major version upgrade:
+
+1. Connect to the GitLab database as a superuser.
+
+1. Confirm all [required extensions](../../install/requirements.md#extensions) are present:
+
+   ```sql
+   SELECT extname, extversion FROM pg_extension ORDER BY extname;
+   ```
+
+   If an extension is missing, install it. For instructions, see
+   [Manage PostgreSQL extensions](extensions.md).
+
+1. List any extension that is behind the version available on the new server:
+
+   ```sql
+   SELECT extname, extversion AS installed, default_version AS available
+   FROM pg_extension
+   JOIN pg_available_extensions ON name = extname
+   WHERE extversion <> default_version;
+   ```
+
+1. Update each extension the previous query returned:
+
+   ```sql
+   ALTER EXTENSION <extension_name> UPDATE;
+   ```
+
+Repeat these steps for every GitLab database on the upgraded instance, including the
+[container registry database](external.md#container-registry-metadata-database)
+if you use one.
+
 ## Always `ANALYZE` your database after a major version upgrade
 
 It is mandatory to run the [`ANALYZE` operation](https://www.postgresql.org/docs/16/sql-analyze.html)

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'labkit/context'
 
 RSpec.describe Gitlab::AppJsonLogger do
   subject { described_class.new('/dev/null') }

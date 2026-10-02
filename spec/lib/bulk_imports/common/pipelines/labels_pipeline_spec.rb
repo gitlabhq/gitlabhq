@@ -55,7 +55,7 @@ RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline, feature_category:
 
         expect(label).to receive(:save!)
 
-        subject.load(context, label)
+        subject.load(context, [label, {}])
       end
     end
 

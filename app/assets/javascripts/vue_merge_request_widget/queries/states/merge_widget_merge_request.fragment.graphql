@@ -1,4 +1,4 @@
-fragment ReadyToMergeMergeRequest on MergeRequest {
+fragment MergeWidgetMergeRequest on MergeRequest {
   id
   autoMergeEnabled
   shouldRemoveSourceBranch

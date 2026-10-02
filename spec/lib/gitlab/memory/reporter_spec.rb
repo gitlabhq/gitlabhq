@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'prometheus/client'
 
 RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures, feature_category: :durability_metrics do
   let(:fake_report) do

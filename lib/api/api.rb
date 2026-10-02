@@ -419,6 +419,7 @@ module API
         mount ::API::WorkItems::CurrentUserTodos
         mount ::API::WorkItems::Notes
         mount ::API::WorkItems::Discussions
+        mount ::API::WorkItems::DiscussionNotes
         mount ::API::WorkItems::EmailParticipants
         mount ::API::Wikis
 

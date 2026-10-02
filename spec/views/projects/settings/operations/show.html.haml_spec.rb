@@ -10,14 +10,11 @@ RSpec.describe 'projects/settings/operations/show' do
     create(:project_error_tracking_setting, project: project)
   end
 
-  let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
-
   before do
     assign :project, project
 
     allow(view).to receive_messages(
       error_tracking_setting: error_tracking_setting,
-      prometheus_integration: prometheus_integration,
       current_user: user
     )
   end

@@ -1,6 +1,6 @@
 ---
-source_checksum: 6d094e82d43b84c6
-distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
+source_checksum: 2c81f66673174f68
+distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -96,6 +96,11 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 
 - For tools with distinct functionality that should remain separate from API exposure, define a standalone class inheriting from `Base::CustomService`.
 
+### Error Categorization
+
+- Pass a `reason:` symbol to `Response.error` whenever the tool knows why it failed; use `BAD_REQUEST` for missing or invalid arguments, `UNAUTHORIZED` for access failures (keep the message vague to avoid resource enumeration), `NOT_FOUND` for genuinely absent resources or null GraphQL data, and `ERROR` (the default) for backend failures. DO NOT pass a reason when a response merely failed to find an expected key in an otherwise successful payload.
+- Rely on `ResourceFinder#find_project!` and `#find_group!` to categorize project and group lookup failures (`ResourceNotFoundError` → `NOT_FOUND`, `ResourceForbiddenError` → `UNAUTHORIZED`); DO NOT add a separate `reason:` for those failures.
+
 ### Development Environment and Debugging
 
 - Enable and configure HTTPS in GDK, install `node` and `mcp-remote` globally (not the GDK-bundled version), and connect an AI assistant to the MCP server before developing MCP tools.
@@ -110,3 +115,4 @@ For the full picture, see:
 
 - doc/development/duo_agent_platform/mcp/_index.md
 - doc/development/duo_agent_platform/mcp/graphql_integration.md
+

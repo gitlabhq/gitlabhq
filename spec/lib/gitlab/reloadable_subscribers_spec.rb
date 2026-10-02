@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 're2'
 
 RSpec.describe Gitlab::ReloadableSubscribers, feature_category: :observability do
   let(:dir) { Dir.mktmpdir }

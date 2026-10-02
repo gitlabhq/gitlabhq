@@ -2,7 +2,8 @@
 
 # rubocop:disable RSpec/VariableDefinition, RSpec/VariableName
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../support/helpers/fixture_helpers'
 require 'mail'
 require_relative '../../config/initializers/mail_encoding_patch'
 

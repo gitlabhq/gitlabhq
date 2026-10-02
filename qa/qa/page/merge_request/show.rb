@@ -118,7 +118,7 @@ module QA
           element 'standard-rebase-button'
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
+        view 'app/assets/javascripts/vue_merge_request_widget/components/merge_widget.vue' do
           element 'merge-button'
           element 'merge-immediately-dropdown'
           element 'merge-immediately-button'
@@ -133,7 +133,7 @@ module QA
           element 'squash-checkbox'
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
+        view 'app/assets/javascripts/vue_merge_request_widget/components/merge_widget.vue' do
           element 'widget_edit_commit_message'
         end
 

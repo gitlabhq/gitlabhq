@@ -7426,9 +7426,6 @@ msgstr ""
 msgid "AdminUsers|Cannot sign in or access instance information"
 msgstr ""
 
-msgid "AdminUsers|Cannot unblock LDAP blocked users"
-msgstr ""
-
 msgid "AdminUsers|Change access"
 msgstr ""
 
@@ -7532,6 +7529,9 @@ msgid "AdminUsers|Full access to all groups, projects, users, features, and the 
 msgstr ""
 
 msgid "AdminUsers|Full read and write access."
+msgstr ""
+
+msgid "AdminUsers|GitLab will recheck this user against LDAP right now and unblock them if LDAP allows it again."
 msgstr ""
 
 msgid "AdminUsers|Group Managed Account"
@@ -7676,6 +7676,12 @@ msgid "AdminUsers|Reset link will be generated and sent to the user. User will b
 msgstr ""
 
 msgid "AdminUsers|Restore user access to the account, including web, Git and API."
+msgstr ""
+
+msgid "AdminUsers|Resync %{username} with LDAP?"
+msgstr ""
+
+msgid "AdminUsers|Resync with LDAP"
 msgstr ""
 
 msgid "AdminUsers|Review and set Admin area access with a custom admin role."
@@ -11530,6 +11536,9 @@ msgid "AnalyticsDashboards|This table doesn't include GitLab Duo Agent Platform 
 msgstr ""
 
 msgid "AnalyticsDashboards|Untitled"
+msgstr ""
+
+msgid "AnalyticsDashboards|View GitLab Credits dashboard"
 msgstr ""
 
 msgid "AnalyticsDashboards|View analytics dashboards"
@@ -34352,16 +34361,19 @@ msgstr ""
 msgid "DuoSlack|Answer shortened to fit in Slack. The full answer is in the GitLab session."
 msgstr ""
 
-msgid "DuoSlack|Approve and continue"
+msgid "DuoSlack|Approve"
+msgstr ""
+
+msgid "DuoSlack|Approved"
+msgstr ""
+
+msgid "DuoSlack|Approved by %{user}. GitLab Duo is continuing."
 msgstr ""
 
 msgid "DuoSlack|Approved. GitLab Duo is continuing."
 msgstr ""
 
 msgid "DuoSlack|Cancel"
-msgstr ""
-
-msgid "DuoSlack|Choose whether to approve or deny."
 msgstr ""
 
 msgid "DuoSlack|Close"
@@ -34373,10 +34385,16 @@ msgstr ""
 msgid "DuoSlack|Could not set up the workspace project. Check that you have access to the namespace and permission to create projects."
 msgstr ""
 
+msgid "DuoSlack|Denied"
+msgstr ""
+
+msgid "DuoSlack|Denied by %{user}. GitLab Duo is continuing without running these actions."
+msgstr ""
+
 msgid "DuoSlack|Denied. GitLab Duo is continuing without running these actions."
 msgstr ""
 
-msgid "DuoSlack|Deny and continue without running these actions"
+msgid "DuoSlack|Deny"
 msgstr ""
 
 msgid "DuoSlack|Didn't do what I asked"
@@ -34388,15 +34406,13 @@ msgstr ""
 msgid "DuoSlack|Failed to start the GitLab Duo session. Try again."
 msgstr ""
 
+msgid "DuoSlack|Full request"
+msgstr ""
+
 msgid "DuoSlack|GitLab Duo needs your approval to run: %{tool_names}"
 msgstr ""
 
-msgid "DuoSlack|GitLab Duo wants to run %{count} action. Review it and choose whether to continue."
-msgid_plural "DuoSlack|GitLab Duo wants to run %{count} actions. Review them and choose whether to continue."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "DuoSlack|GitLab Duo wants to run the %{tool_name} tool."
+msgid "DuoSlack|GitLab Duo wants to run this tool."
 msgstr ""
 
 msgid "DuoSlack|Helpful"
@@ -34423,6 +34439,12 @@ msgstr ""
 msgid "DuoSlack|Only the person who started this session can respond to this request."
 msgstr ""
 
+msgid "DuoSlack|Only the person who started this session can view this request."
+msgstr ""
+
+msgid "DuoSlack|Open the session in GitLab"
+msgstr ""
+
 msgid "DuoSlack|Other"
 msgstr ""
 
@@ -34432,10 +34454,7 @@ msgstr ""
 msgid "DuoSlack|Plan complete"
 msgstr ""
 
-msgid "DuoSlack|Review"
-msgstr ""
-
-msgid "DuoSlack|Review Duo actions"
+msgid "DuoSlack|Run %{tool_names}"
 msgstr ""
 
 msgid "DuoSlack|Set your default Duo namespace in your GitLab preferences (%{preferences_url}) to use Duo from Slack."
@@ -34462,6 +34481,12 @@ msgstr ""
 msgid "DuoSlack|The %{flow_name} flow is not turned on for your namespace. Ask a group owner to turn it on in the GitLab Duo Agent Platform settings."
 msgstr ""
 
+msgid "DuoSlack|The arguments are cut to fit this message."
+msgstr ""
+
+msgid "DuoSlack|The request is too large to show here in full. %{link}."
+msgstr ""
+
 msgid "DuoSlack|The session was stopped before it finished."
 msgstr ""
 
@@ -34480,13 +34505,22 @@ msgstr ""
 msgid "DuoSlack|This request can no longer be answered."
 msgstr ""
 
+msgid "DuoSlack|View full request"
+msgstr ""
+
 msgid "DuoSlack|View your session in GitLab (only visible to you)"
+msgstr ""
+
+msgid "DuoSlack|Waiting for %{requester}"
 msgstr ""
 
 msgid "DuoSlack|Waiting for approval"
 msgstr ""
 
 msgid "DuoSlack|Waiting for approval (%{done}/%{total} done)"
+msgstr ""
+
+msgid "DuoSlack|Waiting for the person who started this session"
 msgstr ""
 
 msgid "DuoSlack|What did you expect to happen?"
@@ -34507,7 +34541,7 @@ msgstr ""
 msgid "DuoSlack|Your Slack account is not connected to a GitLab account, so you cannot respond to this request."
 msgstr ""
 
-msgid "DuoSlack|Your decision"
+msgid "DuoSlack|Your Slack account is not connected to a GitLab account, so you cannot view this request."
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
@@ -41992,9 +42026,6 @@ msgstr ""
 msgid "Group wikis"
 msgstr ""
 
-msgid "Group work item bulk edit is a licensed feature not available for this group."
-msgstr ""
-
 msgid "Group your merge requests by %{boldStart}workflow%{boldEnd} or your %{boldStart}role%{boldEnd}, and manage label visibility."
 msgstr ""
 
@@ -48798,6 +48829,9 @@ msgid "LDAP"
 msgstr ""
 
 msgid "LDAP Synchronization"
+msgstr ""
+
+msgid "LDAP is not enabled for this instance."
 msgstr ""
 
 msgid "LDAP settings"
@@ -73626,6 +73660,9 @@ msgstr ""
 msgid "SecretsManager|Contact your subscription owner or visit the %{linkStart}Customer Portal%{linkEnd} to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing. After your subscription owner has completed this task, you can enable GitLab Secrets Manager with GitLab Credits."
 msgstr ""
 
+msgid "SecretsManager|Couldn't verify the current billing status. Please try again later."
+msgstr ""
+
 msgid "SecretsManager|Credits are drawn from your Monthly Commitment Pool first. When that pool is exhausted, usage continues and is billed as on-demand credits."
 msgstr ""
 
@@ -74937,9 +74974,6 @@ msgstr ""
 msgid "SecurityInventory|Advanced SAST (SAST)"
 msgstr ""
 
-msgid "SecurityInventory|All scanners"
-msgstr ""
-
 msgid "SecurityInventory|An error has occurred while applying the scan profile."
 msgstr ""
 
@@ -74950,6 +74984,9 @@ msgid "SecurityInventory|An error occurred while fetching subgroups and projects
 msgstr ""
 
 msgid "SecurityInventory|An error occurred while fetching subgroups. Please try again."
+msgstr ""
+
+msgid "SecurityInventory|Any scanner"
 msgstr ""
 
 msgid "SecurityInventory|Any secret detection"
@@ -82603,6 +82640,9 @@ msgstr ""
 msgid "Successfully synced %{synced_timeago}."
 msgstr ""
 
+msgid "Successfully synchronized with LDAP. User is now unblocked."
+msgstr ""
+
 msgid "Successfully trusted"
 msgstr ""
 
@@ -85750,10 +85790,10 @@ msgstr ""
 msgid "This user"
 msgstr ""
 
-msgid "This user cannot be unlocked manually from GitLab"
+msgid "This user does not have a one-time password authenticator registered."
 msgstr ""
 
-msgid "This user does not have a one-time password authenticator registered."
+msgid "This user does not have an LDAP identity."
 msgstr ""
 
 msgid "This user has an unconfirmed email address (%{email}). You may force a confirmation."
@@ -85787,6 +85827,9 @@ msgid "This user is the author of this %{workItemType}."
 msgstr ""
 
 msgid "This user is the author of this page."
+msgstr ""
+
+msgid "This user's LDAP provider (%{provider}) is no longer configured on this instance."
 msgstr ""
 
 msgid "This value is not valid."
@@ -90027,6 +90070,9 @@ msgid "User is not allowed to resolve thread"
 msgstr ""
 
 msgid "User is pending deprovisioning. Please wait for the user to be deprovisioned and try again later."
+msgstr ""
+
+msgid "User is still blocked according to LDAP."
 msgstr ""
 
 msgid "User key"

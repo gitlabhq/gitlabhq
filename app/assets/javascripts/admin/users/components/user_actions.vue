@@ -2,7 +2,6 @@
 import {
   GlButton,
   GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -18,7 +17,6 @@ export default {
   components: {
     GlButton,
     GlDisclosureDropdown,
-    GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
     ...Actions,
   },
@@ -86,9 +84,6 @@ export default {
     },
   },
   methods: {
-    isLdapAction(action) {
-      return action === 'ldapBlocked';
-    },
     getActionComponent(action) {
       return Actions[capitalizeFirstCharacter(action)];
     },
@@ -137,13 +132,6 @@ export default {
           >
             {{ $options.i18n[action] }}
           </component>
-          <gl-disclosure-dropdown-item
-            v-else-if="isLdapAction(action)"
-            :key="action"
-            :data-testid="action"
-          >
-            {{ $options.i18n[action] }}
-          </gl-disclosure-dropdown-item>
         </template>
 
         <gl-disclosure-dropdown-group v-if="hasBorderedActions" bordered>

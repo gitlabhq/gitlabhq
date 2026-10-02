@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'pg_query'
+require_relative '../../../../../support/helpers/prevent_set_operator_mismatch_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzers::PreventSetOperatorMismatch::CommonTableExpressions,
   feature_category: :cell do

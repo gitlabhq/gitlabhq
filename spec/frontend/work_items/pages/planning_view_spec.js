@@ -395,7 +395,6 @@ const mountComponent = async ({
       canAdminIssue: true,
       canBulkAdminEpic: true,
       canCreateProjects: true,
-      hasGroupBulkEditFeature: true,
       hasIterationsFeature: false,
       hasProjects: true,
       getWorkItemTypeConfiguration: jest
@@ -2545,19 +2544,19 @@ describe('planning-view', () => {
 
       describe('when group', () => {
         it.each`
-          canAdminIssue | hasGroupBulkEditFeature | renders
-          ${true}       | ${true}                 | ${true}
-          ${true}       | ${false}                | ${false}
-          ${false}      | ${true}                 | ${false}
-          ${false}      | ${false}                | ${false}
+          canAdminIssue | hasProjects | renders
+          ${true}       | ${true}     | ${true}
+          ${true}       | ${false}    | ${true}
+          ${false}      | ${true}     | ${false}
+          ${false}      | ${false}    | ${false}
         `(
-          'renders=$renders when canAdminIssue=$canAdminIssue and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
-          async ({ canAdminIssue, hasGroupBulkEditFeature, renders }) => {
+          'renders=$renders when canAdminIssue=$canAdminIssue and hasProjects=$hasProjects',
+          async ({ canAdminIssue, hasProjects, renders }) => {
             await mountComponent({
               provide: {
                 isGroup: true,
                 canAdminIssue,
-                hasGroupBulkEditFeature,
+                hasProjects,
                 hasEpicsFeature: true,
               },
             });
@@ -2575,7 +2574,6 @@ describe('planning-view', () => {
               canAdminIssue: true,
               hasProjects: true,
               hasEpicsFeature: false,
-              hasGroupBulkEditFeature: false,
             },
           });
 
@@ -2589,7 +2587,19 @@ describe('planning-view', () => {
               canAdminIssue: false,
               hasProjects: true,
               hasEpicsFeature: false,
-              hasGroupBulkEditFeature: false,
+            },
+          });
+
+          expect(findBulkEditStartButton().exists()).toBe(false);
+        });
+
+        it('does not allow bulk editing when group has no projects', async () => {
+          await mountComponent({
+            provide: {
+              isGroup: true,
+              canAdminIssue: true,
+              hasProjects: false,
+              hasEpicsFeature: false,
             },
           });
 

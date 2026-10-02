@@ -277,6 +277,17 @@ The response is:
 This resource has been moved permanently to https://gitlab.example.com/api/v4/projects/81
 ```
 
+The API redirects only `GET` requests. If you send a `POST`, `PUT`, `PATCH`, or `DELETE` request
+that uses the old path of a moved project, most endpoints return `405 Method Not Allowed`:
+
+```json
+{
+  "message": "Non GET methods are not allowed for moved projects"
+}
+```
+
+For these requests, use the project ID or the current path of the project.
+
 ## Pagination
 
 GitLab supports the following pagination methods:

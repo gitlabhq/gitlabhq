@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 're2'
+require 'grpc'
 
 RSpec.describe 'config/initializers/topology_service_claim_warmup', feature_category: :cell do
   let(:load_initializer) do

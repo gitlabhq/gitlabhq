@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'action_dispatch'
+require 'grape_logging'
 
 RSpec.describe Gitlab::GrapeLogging::Loggers::JsonMetadataLogger, feature_category: :api do
   subject(:route) { described_class.new }

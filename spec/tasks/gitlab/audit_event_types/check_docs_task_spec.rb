@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../support/shared_examples/lib/gitlab/documentation_generators_shared_examples'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/check_docs_task'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/compile_docs_task'
 

@@ -294,14 +294,6 @@ export default {
     jobConfirmationMessage() {
       return this.job.status?.action?.confirmation_message;
     },
-    jobFailed() {
-      const failedGroups = ['failed', 'failed-with-warnings'];
-
-      return failedGroups.includes(this.job.status.group);
-    },
-    displayStickyFooter() {
-      return this.jobFailed && this.glAbilities.troubleshootJobWithAi;
-    },
     showJobForm() {
       return (
         this.showUpdateVariablesState ||
@@ -477,6 +469,11 @@ export default {
 
       <template v-if="hasHeaderJob" #actions>
         <panel-actions-portal>
+          <root-cause-analysis-button
+            :job-id="job.id"
+            :job-status-group="job.status.group"
+            :can-troubleshoot-job="glAbilities.troubleshootJobWithAi"
+          />
           <sidebar-header
             v-if="job.id"
             :rest-job="job"
@@ -599,23 +596,6 @@ export default {
         />
 
         <log :search-results="searchResults" />
-
-        <nav
-          v-if="displayStickyFooter"
-          :class="[
-            'rca-bar-component gl-sticky gl-z-200 gl-bg-default gl-py-3',
-            { 'rca-bar-component-fullscreen': fullScreenEnabled },
-          ]"
-          data-testid="rca-bar-component"
-        >
-          <div class="gl-flex gl-w-full">
-            <root-cause-analysis-button
-              :job-id="job.id"
-              :job-status-group="job.status.group"
-              :can-troubleshoot-job="glAbilities.troubleshootJobWithAi"
-            />
-          </div>
-        </nav>
       </div>
       <!-- EO job log -->
 

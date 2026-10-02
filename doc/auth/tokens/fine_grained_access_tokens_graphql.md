@@ -109,15 +109,18 @@ Grants the ability to create, delete, read, and update policies in the policy st
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
-| Create | Group | Mutation | `GovernPolicyCreate` |
-| Create | Instance | Mutation | `GovernPolicyCreate` |
+| Create <sup>1</sup> | Group | Mutation | `GovernPolicyCreate` |
+| Create <sup>1</sup> | Instance | Mutation | `GovernPolicyCreate` |
 | Delete | Group | Mutation | `GovernPolicyDelete` |
 | Delete | Instance | Mutation | `GovernPolicyDelete` |
 | Read | Group | Type | `GovernPolicyEvaluation` |
-| Read | Instance | Type | `GovernPolicy` |
+| Read | Group | Field | `PolicyStore.policies` |
 | Read | Instance | Type | `GovernPolicyEvaluation` |
-| Update | Group | Mutation | `GovernPolicyUpdate` |
-| Update | Instance | Mutation | `GovernPolicyUpdate` |
+| Read | Instance | Field | `PolicyStore.policies` |
+| Update <sup>1</sup> | Group | Mutation | `GovernPolicyUpdate` |
+| Update <sup>1</sup> | Instance | Mutation | `GovernPolicyUpdate` |
+
+<sup>1</sup> Also requires the `Read Policy Store Policy` permission.
 
 #### Secret
 

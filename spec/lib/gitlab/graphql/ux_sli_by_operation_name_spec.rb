@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'labkit/metrics'
+require 'labkit/user_experience_sli'
 
 RSpec.describe Gitlab::Graphql::UxSliByOperationName, feature_category: :vulnerability_management do
   describe '#track' do

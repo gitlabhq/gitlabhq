@@ -1,0 +1,10 @@
+---
+name: web_hook_log_insert_without_transaction
+description: Write web hook logs with a single INSERT instead of a create! transaction
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631749
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259143
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631776
+milestone: '19.5'
+group: group::webhooks
+type: gitlab_com_derisk
+default_enabled: false

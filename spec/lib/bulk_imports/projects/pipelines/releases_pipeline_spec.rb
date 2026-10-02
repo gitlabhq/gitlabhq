@@ -22,6 +22,16 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
   let_it_be(:tracker, freeze: false) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context, freeze: false) { BulkImports::Pipeline::Context.new(tracker) }
 
+  let_it_be(:source_user, freeze: false) do
+    create(:import_source_user,
+      import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+      namespace: group,
+      source_user_identifier: 101,
+      source_hostname: bulk_import.configuration.url,
+      placeholder_user: create(:user, :import_user)
+    )
+  end
+
   let(:attributes) { {} }
   let(:release) do
     {
@@ -32,7 +42,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
       'updated_at' => '2019-12-26T10:17:14.621Z',
       'released_at' => '2019-12-26T10:17:14.615Z',
       'sha' => '901de3a8bd5573f4a049b1457d28bc1592ba6bf9',
-      'author_id' => user.id
+      'author_id' => 101
     }.merge(attributes)
   end
 
@@ -51,11 +61,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
       end
 
       allow(pipeline).to receive(:set_source_objects_counter)
-
-      # These specs assert against the legacy user-resolution path. They predate
-      # contribution mapping being always-on and would otherwise exercise the
-      # full SourceUsersMapper stack.
-      allow(context).to receive(:importer_user_mapping_enabled?).and_return(false)
     end
 
     it 'imports release into destination project' do
@@ -73,7 +78,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
         expect(imported_release.updated_at.to_s).to eq('2019-12-26 10:17:14 UTC')
         expect(imported_release.released_at.to_s).to eq('2019-12-26 10:17:14 UTC')
         expect(imported_release.sha).to eq(release['sha'])
-        expect(imported_release.author_id).to eq(release['author_id'])
+        expect(imported_release.author_id).to eq(source_user.placeholder_user_id)
       end
     end
 

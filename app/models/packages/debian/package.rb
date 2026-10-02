@@ -11,8 +11,6 @@ module Packages
 
       accepts_nested_attributes_for :publication
 
-      delegate :codename, :suite, to: :distribution, prefix: :distribution
-
       validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :version?
       validates :name, inclusion: { in: [Packages::Debian::INCOMING_PACKAGE_NAME] }, unless: :version?
 

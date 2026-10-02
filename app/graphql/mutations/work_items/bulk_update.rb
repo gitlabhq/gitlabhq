@@ -47,8 +47,8 @@ module Mutations
 
       argument :full_path, GraphQL::Types::ID,
         required: true,
-        description: 'Full path of the project or group (Premium and Ultimate only) containing the work items that ' \
-          'will be updated. User paths are not supported.'
+        description: 'Full path of the project or group containing the work items that will be updated. ' \
+          'User paths are not supported.'
 
       argument :labels_widget,
         ::Types::WorkItems::Widgets::LabelsUpdateInputType,
@@ -107,9 +107,11 @@ module Mutations
         end
       end
 
-      def find_parent_by_full_path(full_path, model = ::Project)
-        # Note: Group support is added in the EE module. For CE, we only support bulk edit for projects
-        ::Gitlab::Graphql::Loaders::FullPathModelLoader.new(model, full_path).find.sync
+      def find_parent_by_full_path(full_path)
+        namespace = ::Gitlab::Graphql::Loaders::FullPathModelLoader.new(::Namespace, full_path).find.sync
+        return if namespace.nil? || namespace.is_a?(::Namespaces::UserNamespace)
+
+        namespace.owner_entity
       end
     end
   end

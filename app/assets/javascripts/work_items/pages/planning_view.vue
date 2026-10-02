@@ -288,7 +288,6 @@ export default {
     'isGroupIssuesList',
     'isServiceDeskSupported',
     'workItemType',
-    'hasGroupBulkEditFeature',
     'hasEpicsFeature',
     'hasQualityManagementFeature',
     'hasProjects',
@@ -704,9 +703,8 @@ export default {
       if (!this.isGroup) {
         return this.canAdminIssue;
       }
-      // Groups require EE bulk edit feature, or CE planning view with projects
-      const hasCEBulkEdit = this.hasProjects && !this.hasEpicsFeature;
-      return this.canAdminIssue && (this.hasGroupBulkEditFeature || hasCEBulkEdit);
+      // Without epics, a group only has project-level work items to edit
+      return this.canAdminIssue && (this.hasEpicsFeature || this.hasProjects);
     },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens, {

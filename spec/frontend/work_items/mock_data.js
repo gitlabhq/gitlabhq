@@ -10404,7 +10404,6 @@ export const mockMetadataQueryResponse = {
         hasLinkedItemsEpicsFeature: true,
         hasWorkItemStatusFeature: true,
         hasBlockedIssuesFeature: true,
-        hasGroupBulkEditFeature: true,
         hasCustomFieldsFeature: true,
         hasDuoRemoteFlowsFeature: true,
         hasProjects: true,

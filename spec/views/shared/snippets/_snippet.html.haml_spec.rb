@@ -50,8 +50,6 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
   end
 
   context 'for snippet with statistics' do
-    let_it_be_with_reload(:snippet) { create(:project_snippet) }
-
     it 'renders correct file count and tooltip' do
       snippet.statistics.file_count = 3
 
@@ -105,7 +103,7 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
     end
 
     context 'when the author of the snippet is banned' do
-      let_it_be(:banned_user) { create(:user, :banned) }
+      let_it_be(:banned_user) { create(:user, state: 'banned') }
       let_it_be_with_reload(:snippet) { create(:project_snippet, author: banned_user) }
 
       before do

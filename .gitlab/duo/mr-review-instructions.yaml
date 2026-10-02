@@ -735,6 +735,10 @@ instructions:
       - "ee/spec/services/ee/personal_access_tokens/**/*_spec.rb"
       - "ee/spec/services/namespaces/service_accounts/**/*_spec.rb"
       - "ee/spec/services/users/service_accounts/**/*_spec.rb"
+      - "spec/requests/api/mcp/**/*_spec.rb"
+      - "ee/spec/requests/api/mcp/**/*_spec.rb"
+      - "spec/requests/labkit_rack_rate_limit_spec.rb"
+      - "ee/spec/requests/labkit_rack_rate_limit_spec.rb"
     instructions: |
       ### Token Edge Cases
 
@@ -1640,8 +1644,8 @@ instructions:
   # <<< end generated: cicd-internals
 
   # >>> generated: mcp-server — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
-  # source_checksum: 6d094e82d43b84c6
+  # distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
+  # source_checksum: 2c81f66673174f68
   - name: MCP Server
     fileFilters:
       - "app/services/mcp/**/*.rb"
@@ -1769,6 +1773,11 @@ instructions:
       ### Custom Tool Implementation
 
       - For tools with distinct functionality that should remain separate from API exposure, define a standalone class inheriting from `Base::CustomService`.
+
+      ### Error Categorization
+
+      - Pass a `reason:` symbol to `Response.error` whenever the tool knows why it failed; use `BAD_REQUEST` for missing or invalid arguments, `UNAUTHORIZED` for access failures (keep the message vague to avoid resource enumeration), `NOT_FOUND` for genuinely absent resources or null GraphQL data, and `ERROR` (the default) for backend failures. DO NOT pass a reason when a response merely failed to find an expected key in an otherwise successful payload.
+      - Rely on `ResourceFinder#find_project!` and `#find_group!` to categorize project and group lookup failures (`ResourceNotFoundError` → `NOT_FOUND`, `ResourceForbiddenError` → `UNAUTHORIZED`); DO NOT add a separate `reason:` for those failures.
 
       ### Development Environment and Debugging
 

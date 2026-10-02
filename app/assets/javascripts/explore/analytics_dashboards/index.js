@@ -16,9 +16,8 @@ export default () => {
     return false;
   }
 
-  const { exploreAnalyticsDashboardsPath, dataSourceClickhouse } = convertObjectPropsToCamelCase(
-    el.dataset,
-  );
+  const { exploreAnalyticsDashboardsPath, dataSourceClickhouse, gitlabCreditsDashboardPath } =
+    convertObjectPropsToCamelCase(el.dataset);
   const { groupFullPath, projectFullPath } = document.body.dataset;
 
   Vue.use(VueApollo);
@@ -50,6 +49,7 @@ export default () => {
       defaultGroupFullPath: groupFullPath ?? null,
       defaultProjectFullPath: projectFullPath ?? null,
       dataSourceClickhouse: parseBoolean(dataSourceClickhouse),
+      gitlabCreditsDashboardPath,
     },
     component: App,
   });

@@ -41,6 +41,7 @@ export default {
       default: __('Help'),
     },
   },
+  emits: ['shown'],
   computed: {
     composedAriaLabel() {
       if (this.ariaLabel !== __('Help')) {
@@ -74,7 +75,7 @@ export default {
       :icon="icon"
       :aria-label="composedAriaLabel"
     />
-    <gl-popover :target="targetFn" v-bind="options">
+    <gl-popover :target="targetFn" v-bind="options" @shown="$emit('shown')">
       <template v-if="options.title" #title>
         <span v-safe-html="options.title"></span>
       </template>

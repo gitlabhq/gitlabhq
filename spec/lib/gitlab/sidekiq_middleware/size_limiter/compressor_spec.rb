@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 're2'
+require 'sidekiq'
 
 RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Compressor do
   using RSpec::Parameterized::TableSyntax

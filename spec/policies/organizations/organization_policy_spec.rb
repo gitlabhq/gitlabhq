@@ -42,6 +42,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { is_expected.to be_allowed(:read_artifact_registry) }
       it { expect_allowed(:transfer_group) }
       it { expect_allowed(:access_organization_admin_area) }
+      it { expect_allowed(:update_integration) }
     end
 
     context 'when admin mode is disabled' do
@@ -49,6 +50,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { is_expected.to be_disallowed(:restore_organization) }
       it { is_expected.to be_disallowed(:access_organization_admin_area) }
       it { expect_disallowed(:transfer_group) }
+      it { expect_disallowed(:update_integration) }
       it { is_expected.to be_disallowed(:read_artifact_registry) }
 
       context 'when the organization is private' do
@@ -78,6 +80,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:read_organization_user) }
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }
+    it { expect_disallowed(:update_integration) }
   end
 
   context 'when the user is an owner of the organization' do
@@ -95,6 +98,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_allowed(:read_artifact_registry) }
     it { expect_allowed(:transfer_group) }
     it { expect_allowed(:access_organization_admin_area) }
+    it { expect_allowed(:update_integration) }
   end
 
   context 'when the user is not part of the organization' do
@@ -106,6 +110,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:read_artifact_registry) }
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }
+    it { expect_disallowed(:update_integration) }
 
     context 'when the organization is private' do
       it { is_expected.to be_disallowed(:read_organization) }

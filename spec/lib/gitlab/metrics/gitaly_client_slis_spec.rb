@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grpc'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Gitlab::Metrics::GitalyClientSlis, feature_category: :gitaly do
   describe '.initialize_slis!' do

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'global_id'
 
 RSpec.describe Gitlab::Database::Aggregation::DefinitionsCollector, feature_category: :value_stream_management do
   let(:dummy_definition_class) do

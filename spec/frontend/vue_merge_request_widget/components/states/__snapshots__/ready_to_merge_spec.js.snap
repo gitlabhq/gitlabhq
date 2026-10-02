@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`New ready to merge state component renders permission text if canMerge (false) is false 1`] = `
+exports[`Ready to merge state component renders permission text if canMerge (false) is false 1`] = `
 <div
   class="media mr-widget-body"
 >
@@ -15,7 +15,7 @@ exports[`New ready to merge state component renders permission text if canMerge 
 </div>
 `;
 
-exports[`New ready to merge state component renders permission text if canMerge (true) is false 1`] = `
+exports[`Ready to merge state component renders permission text if canMerge (true) is false 1`] = `
 <div
   class="media mr-widget-body"
 >

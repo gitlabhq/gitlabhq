@@ -85,7 +85,7 @@ export default {
     data-testid="homepage-merge-requests-widget"
     @visible="reload"
   >
-    <h2 class="gl-heading-4 gl-mb-3">{{ $options.i18n.title }}</h2>
+    <h2 class="gl-heading-4 gl-mb-2">{{ $options.i18n.title }}</h2>
 
     <p v-if="hasError" class="gl-mb-0" data-testid="error-message">
       {{ $options.i18n.errorText }}
@@ -95,17 +95,12 @@ export default {
       <gl-skeleton-loader v-for="i in $options.N_SKELETON_ROWS" :key="i" :lines="3" />
     </div>
 
-    <gl-tabs
-      v-else
-      class="-gl-mx-5"
-      nav-class="gl-flex-nowrap gl-whitespace-nowrap gl-overflow-x-auto gl-overflow-y-hidden gl-min-w-0 gl-px-2"
-      content-class="gl-px-5 !gl-pb-0 !gl-pt-4"
-    >
+    <gl-tabs v-else nav-class="gl-flex-nowrap" content-class="!gl-pb-0">
       <gl-tab>
         <template #title>
           {{ $options.i18n.assignedTabTitle }}
           <gl-badge
-            class="homepage-merge-requests-widget-tab-count gl-ml-2"
+            class="gl-tab-counter-badge"
             variant="neutral"
             aria-hidden="true"
             data-testid="tab-count"
@@ -125,7 +120,7 @@ export default {
         <template #title>
           {{ $options.i18n.reviewRequestedTabTitle }}
           <gl-badge
-            class="homepage-merge-requests-widget-tab-count gl-ml-2"
+            class="gl-tab-counter-badge"
             variant="neutral"
             aria-hidden="true"
             data-testid="tab-count"

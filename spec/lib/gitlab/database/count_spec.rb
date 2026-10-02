@@ -136,6 +136,11 @@ RSpec.describe Gitlab::Database::Count, feature_category: :database do
 
         expect(subject).to eq({})
       end
+
+      it 'validates scopes before falling back' do
+        expect { described_class.approximate_counts_for_organization([::Identity], organization) }
+          .to raise_error(ArgumentError, /Identity does not respond to :in_organization/)
+      end
     end
 
     context 'when counting a model times out' do

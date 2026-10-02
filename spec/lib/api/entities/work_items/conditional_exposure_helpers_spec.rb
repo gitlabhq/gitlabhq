@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape_entity'
 
 RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_category: :team_planning do
   describe '.expose_field' do

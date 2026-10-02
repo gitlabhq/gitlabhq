@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../support/memory_instrumentation_helper'
 
 RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_metrics do
   include MemoryInstrumentationHelper

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../support/shared_examples/lib/gitlab/malicious_regexp_shared_examples'
 
 RSpec.describe Gitlab::RouteMap do
   describe '#initialize' do

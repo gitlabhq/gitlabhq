@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.16.0
+version: 1.17.0
 license: MIT
 compatibility: opencode
 metadata:
@@ -330,6 +330,13 @@ what you promised. Restart the app first (`gdk restart rails-web`) so the new to
 `Manager` memoizes `GRAPHQL_TOOLS`.
 
 - **Request spec** (canonical): pattern in `spec/requests/api/mcp/handlers/call_tool_spec.rb`.
+- **In specs, authenticate the way clients do: an OAuth token with the `mcp` scope.** MCP
+  clients register through dynamic client registration and send `Authorization: Bearer`, so
+  use `create(:oauth_access_token, user: user, scopes: [:mcp])`. A personal access token is
+  the wrong shape either way. The factory default `[:api]` is refused outright, since
+  `lib/api/mcp/base.rb` requires the `mcp` or `granular` scope. And `scopes: [:mcp]` passes
+  model validation but is missing from `Gitlab::Auth.available_scopes_for`, so no user can
+  create one through the UI or the self-serve token API.
 - **Don't hardcode the GDK URL, and don't assume port 3000.** Puma may bind a UNIX socket
   (`config/puma.rb`), so `127.0.0.1:3000` can be refused; the app is reachable through nginx at
   whatever `Gitlab.config.gitlab.url` reports (e.g. `https://gdk.test:3443`). Derive it.
@@ -339,8 +346,10 @@ what you promised. Restart the app first (`gdk restart rails-web`) so the new to
   ```ruby
   require 'net/http'; require 'json'
   base  = URI("#{Gitlab.config.gitlab.url}/api/v4/mcp")
+  # A console can mint an mcp-scope PAT even though the UI cannot offer one. Fine for
+  # smoke-testing a tool; specs still want the OAuth token above.
   token = User.find_by_username('root').personal_access_tokens.create!(
-    name: 'mcp-verify', scopes: [:api, :mcp], expires_at: 7.days.from_now)
+    name: 'mcp-verify', scopes: [:mcp], expires_at: 7.days.from_now)
   token.set_token('someknownvalue'); token.save! # token.revoke! when done
   def rpc(base, tok, body)
     req = Net::HTTP::Post.new(base)

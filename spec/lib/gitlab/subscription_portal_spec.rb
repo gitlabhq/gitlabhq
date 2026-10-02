@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../support/helpers/subscription_portal_helper'
 
 RSpec.describe ::Gitlab::SubscriptionPortal do
   using RSpec::Parameterized::TableSyntax

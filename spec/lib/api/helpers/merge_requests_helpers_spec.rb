@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape'
 
 RSpec.describe API::Helpers::MergeRequestsHelpers, feature_category: :code_review_workflow do
   let(:helper_class) do

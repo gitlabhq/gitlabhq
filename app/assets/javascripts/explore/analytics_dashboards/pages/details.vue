@@ -286,6 +286,13 @@ export default {
         :min-cell-height="minCellHeight"
         :filters="utcFilters"
       >
+        <template v-if="glSlots()['description-append']" #description>
+          <p data-testid="description" class="gl-mb-0">
+            {{ config.description }}
+            <slot name="description-append"></slot>
+          </p>
+        </template>
+
         <template v-if="glSlots().actions" #actions>
           <slot name="actions" :is-system-dashboard="isSystemDashboard"></slot>
         </template>

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'diff_match_patch'
 
 RSpec.describe Gitlab::Diff::InlineDiff, feature_category: :source_code_management do
   describe '#inline_diffs' do

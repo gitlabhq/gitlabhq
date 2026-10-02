@@ -2298,6 +2298,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2314,6 +2315,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2397,6 +2399,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid/linked_items` |
@@ -2450,6 +2453,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/current_user_todos` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/email_participants` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/feature_flags` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid/linked_items` |

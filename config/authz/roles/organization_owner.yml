@@ -13,5 +13,6 @@ organization:
   - read_admin_users
   - read_organization_user
   - transfer_group
+  - update_integration
   - update_organization
   - update_organization_user

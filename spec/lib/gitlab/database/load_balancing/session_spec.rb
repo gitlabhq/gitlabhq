@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'pg'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Session, feature_category: :database do
   describe '#use_primary?' do

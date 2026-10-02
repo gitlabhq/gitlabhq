@@ -249,9 +249,6 @@ delegations:
   - lock_require_sha_for_merge?
   app/models/packages/conan/package.rb:
   - conan_recipe_path
-  app/models/packages/debian/package.rb:
-  - distribution_codename
-  - distribution_suite
   app/models/packages/package_file.rb:
   - debian_file_type
   - debian_component

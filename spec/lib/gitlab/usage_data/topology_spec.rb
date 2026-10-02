@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../support/helpers/usage_data_helpers'
 
 RSpec.describe Gitlab::UsageData::Topology do
   include UsageDataHelpers

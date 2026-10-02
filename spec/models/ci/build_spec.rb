@@ -1122,7 +1122,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let_it_be(:pipeline) { create(:ci_pipeline, locked: :unlocked) }
 
       context 'artifacts archive does not exist' do
-        let(:build) { create(:ci_build, pipeline: pipeline) }
+        let(:build) { build_stubbed(:ci_build, pipeline: pipeline) }
 
         it { is_expected.to be_falsy }
       end

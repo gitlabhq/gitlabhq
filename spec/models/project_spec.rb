@@ -3620,6 +3620,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(described_class.without_integration(instance_integration)).to contain_exactly(project_4)
     end
+
+    it 'excludes projects belonging to a different organization than an instance-level integration' do
+      instance_integration = create(:jira_integration, :instance)
+      project_in_same_org = create(:project, group: create(:group, organization: instance_integration.organization))
+      create(:project, group: create(:group, organization: create(:organization)))
+
+      expect(described_class.without_integration(instance_integration)).to contain_exactly(project_in_same_org)
+    end
   end
 
   describe '.without_integration_excluding_ancestor_archived_check' do

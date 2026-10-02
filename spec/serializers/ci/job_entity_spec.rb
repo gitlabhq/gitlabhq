@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
-  let(:user) { create(:user) }
-  let(:job) { create(:ci_build, :running) }
-  let(:project) { job.project }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, developers: user) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be_with_reload(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
   let(:request) { double('request') }
 
   let(:entity) do
@@ -15,8 +17,6 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   before do
     stub_not_protect_default_branch
     allow(request).to receive(:current_user).and_return(user)
-
-    project.add_developer(user)
   end
 
   subject { entity.as_json }
@@ -78,7 +78,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
     end
 
     it 'does not contain source when job is not a Ci::Build' do
-      generic_status = create(:generic_commit_status)
+      generic_status = create(:generic_commit_status, pipeline: pipeline)
       entity = described_class.new(generic_status, request: request, enable_source: true)
       expect(entity.as_json).not_to include(:source)
     end
@@ -137,12 +137,12 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is a manual action' do
-    let(:job) { create(:ci_build, :manual) }
+    let(:project) { create(:project, developers: user) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:job) { create(:ci_build, :manual, pipeline: pipeline) }
 
     context 'when user is allowed to trigger action' do
       before do
-        project.add_developer(user)
-
         create(:protected_branch, :developers_can_merge, name: job.ref, project: job.project)
       end
 
@@ -173,7 +173,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is scheduled' do
-    let(:job) { create(:ci_build, :scheduled) }
+    let_it_be(:job) { create(:ci_build, :scheduled, pipeline: pipeline) }
 
     it 'contains path to unschedule action' do
       expect(subject).to include(:unschedule_path)
@@ -186,8 +186,6 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is running' do
-    let_it_be(:job) { create(:ci_build, :running) }
-
     it 'contains started_at' do
       expect(subject[:started]).to be_truthy
       expect(subject[:started_at]).to eq(job.started_at)
@@ -195,7 +193,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is generic commit status' do
-    let(:job) { create(:generic_commit_status, target_url: 'http://google.com') }
+    let_it_be(:job) { create(:generic_commit_status, target_url: 'http://google.com', pipeline: pipeline) }
 
     it 'contains paths to target action' do
       expect(subject).to include(:build_path)
@@ -216,7 +214,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job failed' do
-    let(:job) { create(:ci_build, :api_failure) }
+    let_it_be(:job) { create(:ci_build, :api_failure, pipeline: pipeline) }
 
     it 'contains details' do
       expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
@@ -240,7 +238,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is allowed to fail' do
-    let(:job) { create(:ci_build, :allowed_to_fail, :api_failure) }
+    let_it_be(:job) { create(:ci_build, :allowed_to_fail, :api_failure, pipeline: pipeline) }
 
     it 'contains details' do
       expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
@@ -264,7 +262,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when the job failed with a script failure' do
-    let(:job) { create(:ci_build, :failed, :script_failure) }
+    let(:job) { create(:ci_build, :failed, :script_failure, pipeline: pipeline) }
 
     it 'does not include callout message or recoverable keys' do
       expect(subject).not_to include('callout_message')
@@ -272,16 +270,8 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
     end
   end
 
-  context 'when job failed and is recoverable' do
-    let(:job) { create(:ci_build, :api_failure) }
-
-    it 'states it is recoverable' do
-      expect(subject[:recoverable]).to be_truthy
-    end
-  end
-
   context 'when job passed' do
-    let(:job) { create(:ci_build, :success) }
+    let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
     it 'does not include callout message or recoverable keys' do
       expect(subject).not_to include('callout_message')
@@ -290,7 +280,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is a bridge' do
-    let(:job) { create(:ci_bridge) }
+    let(:job) { create(:ci_bridge, pipeline: pipeline) }
 
     it 'does not include build path' do
       expect(subject).not_to include(:build_path)
@@ -302,8 +292,8 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when the job has a supply chain attestation' do
-    let!(:job) { create(:ci_build, :success) }
-    let!(:attestation) { create(:supply_chain_attestation, build: job) }
+    let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
+    let!(:attestation) { create(:supply_chain_attestation, build: job, project: project) }
 
     it 'includes the supply_chain_attestation_status' do
       expect(subject).to include(:supply_chain_attestation_status)

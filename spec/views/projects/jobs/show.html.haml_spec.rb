@@ -3,14 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/jobs/show' do
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :small_repo) }
-  let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:builds) { project.builds.present(current_user: user) }
 
-  let_it_be(:pipeline) do
-    create(:ci_pipeline, project: project, sha: project.commit.id)
-  end
+  let(:pipeline) { build_stubbed(:ci_pipeline, project: project, sha: project.commit.id) }
+  let(:user) { build_stubbed(:user) }
+  let(:build) { build_stubbed(:ci_build, pipeline: pipeline) }
+  let(:builds) { project.builds.present(current_user: user) }
 
   before do
     assign(:project, project)
@@ -30,7 +28,7 @@ RSpec.describe 'projects/jobs/show' do
     end
 
     context 'when job is running' do
-      let(:build) { create(:ci_build, :trace_live, :running, pipeline: pipeline) }
+      let(:build) { build_stubbed(:ci_build, :trace_live, :running, pipeline: pipeline) }
 
       it 'does not show retry button' do
         expect(rendered).not_to have_link('Retry')

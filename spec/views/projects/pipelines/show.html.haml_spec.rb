@@ -7,7 +7,8 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+
   let(:presented_pipeline) { pipeline.present(current_user: user) }
 
   before do

@@ -7,7 +7,7 @@ import { I18N_USER_ACTIONS } from '~/admin/users/constants';
 import { generateUserPaths } from '~/admin/users/utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
-import { CONFIRMATION_ACTIONS, DELETE_ACTIONS, LDAP, EDIT } from '../constants';
+import { CONFIRMATION_ACTIONS, DELETE_ACTIONS, EDIT } from '../constants';
 import { users, paths } from '../mock_data';
 
 describe('AdminUserActions component', () => {
@@ -91,22 +91,9 @@ describe('AdminUserActions component', () => {
         });
       });
 
-      describe('when there is a LDAP action', () => {
-        beforeEach(() => {
-          initComponent({ actions: [LDAP] });
-        });
-
-        it('renders the LDAP dropdown footer without a link', () => {
-          const dropdownAction = wrapper.find(`[data-testid="${LDAP}"]`);
-          expect(dropdownAction.exists()).toBe(true);
-          expect(dropdownAction.attributes('href')).toBe(undefined);
-          expect(dropdownAction.text()).toBe(I18N_USER_ACTIONS[LDAP]);
-        });
-      });
-
       describe('when there is a delete action', () => {
         beforeEach(() => {
-          initComponent({ actions: [LDAP, ...DELETE_ACTIONS] });
+          initComponent({ actions: DELETE_ACTIONS });
         });
 
         it('renders a disclosure group', () => {

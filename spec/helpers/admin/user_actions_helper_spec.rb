@@ -59,7 +59,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     context 'the user is blocked by LDAP' do
       let(:user) { build_stubbed(:omniauth_user, state: 'ldap_blocked') }
 
-      it { is_expected.to contain_exactly("edit", "ldap", "delete", "delete_with_contributions") }
+      it { is_expected.to contain_exactly("edit", "resync_ldap", "delete", "delete_with_contributions") }
     end
 
     context 'the user is blocked pending approval' do

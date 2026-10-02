@@ -692,7 +692,7 @@ principles:
     secondary_teams:
       - '@gitlab-com/gl-security/appsec'
     # Scoped to auth-team-owned spec paths (mirrors the Duo fence fileFilters),
-    # not the broad testing-rspec globs, so the checks fire only on auth specs.
+    # plus the MCP and rate-limit specs that turn on a token's scope.
     file_filters:
       - 'spec/controllers/sessions_controller_spec.rb'
       - 'spec/controllers/passwords_controller_spec.rb'
@@ -746,6 +746,10 @@ principles:
       - 'ee/spec/services/ee/personal_access_tokens/**/*_spec.rb'
       - 'ee/spec/services/namespaces/service_accounts/**/*_spec.rb'
       - 'ee/spec/services/users/service_accounts/**/*_spec.rb'
+      - 'spec/requests/api/mcp/**/*_spec.rb'
+      - 'ee/spec/requests/api/mcp/**/*_spec.rb'
+      - 'spec/requests/labkit_rack_rate_limit_spec.rb'
+      - 'ee/spec/requests/labkit_rack_rate_limit_spec.rb'
     baseline: .ai/principles/baselines/authentication-testing.md
     sources:
       - path: doc/development/testing_guide/best_practices.md

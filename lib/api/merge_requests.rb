@@ -937,13 +937,16 @@ module API
       end
 
       desc 'Cancel merge when pipeline succeeds' do
-        detail 'Cancels an automatic merge for a merge request that has been set to merge when the pipeline succeeds.'
-        success Entities::MergeRequest
+        detail 'Cancels an automatic merge for a merge request that has been set to merge when the pipeline ' \
+          'succeeds. This endpoint does not return the merge request. Deprecated in GitLab 19.5. Use ' \
+          'POST /projects/:id/merge_requests/:merge_request_iid/cancel_auto_merge instead.'
+        deprecated true
+        success code: 201, message: 'The status field of the response body is success when an auto-merge was ' \
+                             'canceled, and error when the merge request had none set'
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' },
-          { code: 405, message: 'Method not allowed' },
-          { code: 406, message: 'Not acceptable' }
+          { code: 405, message: 'Method not allowed' }
         ]
         tags %w[merge_requests]
       end

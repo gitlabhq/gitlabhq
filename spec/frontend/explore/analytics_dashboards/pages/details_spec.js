@@ -277,6 +277,37 @@ describe('ExploreAnalyticsDashboardDetails', () => {
     });
   });
 
+  describe('the description-append slot', () => {
+    const config = { title: 'Dashboard', description: 'What this dashboard shows.', panels: [] };
+    const findDescription = () => wrapper.findByTestId('description');
+    // Like GlDashboardLayout, falls back to the plain description when the slot is not filled.
+    const descriptionLayoutStub = {
+      props: ['config'],
+      template: `<div><slot name="description"><p data-testid="description">{{ config.description }}</p></slot></div>`,
+    };
+
+    const createWithDescription = (options) =>
+      createWithFilters(filtersLoaderStubFor(config), {
+        stubs: { GlDashboardLayout: descriptionLayoutStub },
+        ...options,
+      });
+
+    it('renders its content after the description', async () => {
+      await createWithDescription({
+        scopedSlots: { 'description-append': '<a href="/credits">Credits</a>' },
+      });
+
+      expect(findDescription().text()).toMatch(/^What this dashboard shows.\s+Credits$/);
+      expect(findDescription().find('a').attributes('href')).toBe('/credits');
+    });
+
+    it('renders the plain description when the slot is not provided', async () => {
+      await createWithDescription();
+
+      expect(findDescription().text()).toBe('What this dashboard shows.');
+    });
+  });
+
   describe('the filter-actions slot duoPrompts', () => {
     const findPromptsProbe = () => wrapper.findByTestId('duo-prompts-probe');
     const promptsProbeSlot = {

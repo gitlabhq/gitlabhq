@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Admin::UsersController, feature_category: :user_management do
+  include LdapHelpers
+
   let(:user) { create(:user) }
 
   let_it_be_with_reload(:admin) { create(:admin, organizations: [current_organization]) }
@@ -456,19 +458,82 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
     end
   end
 
-  describe 'PUT unblock/:id' do
-    context 'ldap blocked users' do
-      let(:user) { create(:omniauth_user, provider: 'ldapmain') }
-
+  describe 'PUT unblock/:id', :aggregate_failures do
+    context 'ldap blocked users when LDAP is disabled' do
       before do
+        stub_ldap_setting(enabled: false)
         user.ldap_block
       end
 
-      it 'does not unblock user' do
+      it 'does not resync and shows an alert' do
+        expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+
         put :unblock, params: { id: user.username }
-        user.reload
-        expect(user.blocked?).to be_truthy
-        expect(flash[:alert]).to eq _('This user cannot be unlocked manually from GitLab')
+
+        expect(user.reload.ldap_blocked?).to be_truthy
+        expect(flash[:alert]).to eq _('LDAP is not enabled for this instance.')
+      end
+    end
+
+    context 'ldap blocked users without an LDAP identity' do
+      before do
+        stub_ldap_setting(enabled: true)
+        user.ldap_block
+      end
+
+      it 'does not resync and shows an alert' do
+        expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+
+        put :unblock, params: { id: user.username }
+
+        expect(user.reload.ldap_blocked?).to be_truthy
+        expect(flash[:alert]).to eq _('This user does not have an LDAP identity.')
+      end
+    end
+
+    context 'ldap blocked users whose LDAP provider is no longer configured' do
+      let(:user) { create(:omniauth_user, provider: 'ldapold') }
+
+      before do
+        stub_ldap_setting(enabled: true)
+        user.ldap_block
+      end
+
+      it 'does not resync and shows an alert' do
+        expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+
+        put :unblock, params: { id: user.username }
+
+        expect(user.reload.ldap_blocked?).to be_truthy
+        expect(flash[:alert]).to eq format(
+          _("This user's LDAP provider (%{provider}) is no longer configured on this instance."),
+          provider: 'ldapold'
+        )
+      end
+    end
+
+    context 'ldap blocked users with an LDAP identity' do
+      let(:user) { create(:omniauth_user, provider: 'ldapmain') }
+
+      before do
+        stub_ldap_setting(enabled: true)
+        user.ldap_block
+      end
+
+      it 'shows a success notice when LDAP allows access again' do
+        allow(Gitlab::Auth::Ldap::Access).to receive(:allowed?).with(user).and_return(true)
+
+        put :unblock, params: { id: user.username }
+
+        expect(flash[:notice]).to eq _('Successfully synchronized with LDAP. User is now unblocked.')
+      end
+
+      it 'keeps the user blocked when LDAP still denies access' do
+        allow(Gitlab::Auth::Ldap::Access).to receive(:allowed?).with(user).and_return(false)
+
+        put :unblock, params: { id: user.username }
+
+        expect(flash[:alert]).to eq _('User is still blocked according to LDAP.')
       end
     end
 

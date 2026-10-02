@@ -125,6 +125,7 @@ group:
   - admin_milestone
   - admin_value_stream
   - admin_work_item
+  - bulk_admin_epic
   - create_epic
   - create_iteration
   - create_iteration_cadence

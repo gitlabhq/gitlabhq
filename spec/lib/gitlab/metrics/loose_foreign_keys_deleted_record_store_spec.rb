@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'prometheus/client'
 
 RSpec.describe Gitlab::Metrics::LooseForeignKeysDeletedRecordStore, feature_category: :database do
   let(:counter) { instance_double(Prometheus::Client::Counter) }

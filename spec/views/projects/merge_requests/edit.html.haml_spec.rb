@@ -6,15 +6,12 @@ RSpec.describe 'projects/merge_requests/edit.html.haml', feature_category: :code
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
-  let(:forked_project) { fork_project(project, user, repository: true) }
-  let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
-  let(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
+  let_it_be_with_reload(:milestone) { create(:milestone, project: project) }
+  let_it_be_with_reload(:forked_project) { fork_project(project, user, repository: true) }
 
-  let(:closed_merge_request) do
-    project.add_developer(user)
-
+  let_it_be_with_reload(:closed_merge_request) do
     create(:closed_merge_request,
       source_project: forked_project,
       target_project: project,
@@ -23,6 +20,8 @@ RSpec.describe 'projects/merge_requests/edit.html.haml', feature_category: :code
       reviewers: [user],
       milestone: milestone)
   end
+
+  let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
 
   before do
     assign(:project, project)

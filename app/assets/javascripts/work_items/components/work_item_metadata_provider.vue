@@ -22,7 +22,6 @@ export default normalizeRender({
       hasLinkedItemsEpicsFeature: computed(() => this.metadata.hasLinkedItemsEpicsFeature),
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       hasBlockedIssuesFeature: computed(() => this.metadata.hasBlockedIssuesFeature),
-      hasGroupBulkEditFeature: computed(() => this.metadata.hasGroupBulkEditFeature),
       hasCustomFieldsFeature: computed(() => this.metadata.hasCustomFieldsFeature),
       issuesListPath: computed(() => this.metadata.issuesList),
       contributionGuidePath: computed(() => this.metadata.contributionGuidePath),

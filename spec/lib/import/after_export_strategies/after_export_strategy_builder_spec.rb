@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'gitlab/safe_request_store'
 
 RSpec.describe Import::AfterExportStrategies::AfterExportStrategyBuilder, feature_category: :importers do
   let!(:strategies_namespace) { 'Import::AfterExportStrategies' }

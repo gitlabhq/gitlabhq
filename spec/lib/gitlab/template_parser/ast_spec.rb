@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'parslet'
 
 RSpec.describe Gitlab::TemplateParser::AST::Identifier do
   let(:state) { Gitlab::TemplateParser::EvalState.new }

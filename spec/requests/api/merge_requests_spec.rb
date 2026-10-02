@@ -5194,14 +5194,34 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
-    before do
-      ::AutoMergeService.new(merge_request.target_project, user).execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
+    context 'when an auto-merge is set' do
+      let(:merge_request) do
+        create(:merge_request, :simple, :merge_when_checks_pass, author: user, assignees: [user],
+          source_project: project, target_project: project, source_branch: 'markdown', title: 'Test')
+      end
+
+      it 'answers 201 with a success status and cancels the auto-merge' do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to eq('status' => 'success')
+        expect(merge_request.reload.auto_merge_enabled).to be(false)
+      end
     end
 
-    it 'removes the merge_when_pipeline_succeeds status' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+    context 'when no auto-merge is set' do
+      it 'answers 201 with an error status, not 406' do
+        merge_request.update!(auto_merge_enabled: false)
 
-      expect(response).to have_gitlab_http_status(:created)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to eq(
+          'message' => "Can't cancel the automatic merge",
+          'status' => 'error',
+          'http_status' => 406
+        )
+      end
     end
 
     it 'returns 404 if the merge request is not found' do
@@ -5211,6 +5231,10 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     it 'returns 404 if the merge request id is used instead of iid' do
+      # A merge request in another project takes an id first, so this one's id
+      # cannot also be its iid, whatever ran before this example.
+      create(:merge_request)
+
       post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/cancel_merge_when_pipeline_succeeds", user)
 
       expect(response).to have_gitlab_http_status(:not_found)

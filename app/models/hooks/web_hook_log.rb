@@ -23,11 +23,20 @@ class WebHookLog < ApplicationRecord
 
   validates :web_hook, presence: true
 
-  before_save :obfuscate_basic_auth
-  before_save :redact_user_emails
-  before_save :set_url_hash, if: -> { interpolated_url.present? }
+  before_save :prepare_for_storage
 
   scope :by_status_code, ->(status_code) { where(response_status: status_code) }
+
+  # A single autocommit INSERT. `create!` re-encodes the serialized columns in
+  # `changes_applied` after the INSERT, leaving the transaction idle meanwhile.
+  def self.insert_log!(attributes)
+    log = new(attributes)
+    log.validate!
+    log.prepare_for_storage
+    log.created_at = log.updated_at = Time.current
+
+    insert(log.attributes.compact, unique_by: %i[id created_at], returning: false)
+  end
 
   def self.recent(number_of_days = 2)
     if number_of_days > MAX_RECENT_DAYS
@@ -97,6 +106,12 @@ class WebHookLog < ApplicationRecord
     return true if url_hash.nil?
 
     Gitlab::CryptoHelper.sha256(web_hook.interpolated_url) == url_hash
+  end
+
+  def prepare_for_storage
+    obfuscate_basic_auth
+    redact_user_emails
+    set_url_hash if interpolated_url.present?
   end
 
   private

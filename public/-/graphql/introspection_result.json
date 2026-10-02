@@ -35546,6 +35546,46 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "modelUsed",
+                  "description": "Filter by one or many models",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "modelUsedNot",
+                  "description": "Exclude one or many models. Flows with no attributed model are stored as an empty string, so pass one to exclude them. Maximum is 100.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "groupId",
                   "description": "Filter by one or many group Global IDs, including flows from their descendants",
                   "type": {
@@ -455773,7 +455813,7 @@
             },
             {
               "name": "fullPath",
-              "description": "Full path of the project or group (Premium and Ultimate only) containing the work items that will be updated. User paths are not supported.",
+              "description": "Full path of the project or group containing the work items that will be updated. User paths are not supported.",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

@@ -45,6 +45,7 @@ module Organizations
       ).tap do |record|
         record.access_level = home_organization_access_level(user_is_admin: user_is_admin)
         record.save!
+        record.revoke_owner_role if record.saved_change_to_access_level?(from: 'owner', to: 'default')
       end
     end
 
@@ -74,6 +75,14 @@ module Organizations
         unique_by: [:organization_id, :user_id],
         on_duplicate: :skip # Do not change access_level, could make :owner :default
       )
+    end
+
+    # The admin flag is written by sign-in flows and setters with no acting
+    # user, so the demoted user revokes their own tuple (IAM's self-delete rule).
+    def revoke_owner_role
+      return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+      ::Authz::Organizations::RevokeOwnerRoleWorker.perform_async(organization_id, user_id, user_id)
     end
 
     def last_owner?

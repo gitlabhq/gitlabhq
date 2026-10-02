@@ -477,7 +477,8 @@ class Group < Namespace
         .where("#{Integration.table_name}.group_id = namespaces.id")
         .where(type: integration.type)
 
-      where('NOT EXISTS (?)', integrations)
+      scope = where('NOT EXISTS (?)', integrations)
+      integration.instance_level? ? scope.in_organization(integration.organization_id) : scope
     end
 
     def groups_user_can(groups, user, action, same_root: false)

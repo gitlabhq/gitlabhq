@@ -27,7 +27,7 @@ import MergedState from './components/states/mr_widget_merged.vue';
 import MergingState from './components/states/mr_widget_merging.vue';
 import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
 import NothingToMergeState from './components/states/nothing_to_merge.vue';
-import ReadyToMergeState from './components/states/ready_to_merge.vue';
+import ReadyToMergeState from './components/merge_widget.vue';
 import ShaMismatch from './components/states/sha_mismatch.vue';
 import WidgetContainer from './components/widget/app.vue';
 import {
@@ -40,7 +40,7 @@ import {
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import mergeChecksQuery from './queries/merge_checks.query.graphql';
-import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
+import MrWidgetReadyToMerge from './components/states/ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';
 
 export default {

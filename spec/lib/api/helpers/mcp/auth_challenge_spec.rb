@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'grape'
 
 RSpec.describe API::Helpers::Mcp::AuthChallenge, feature_category: :mcp_server do
   let(:request) { instance_double(Grape::Request, path: request_path) }

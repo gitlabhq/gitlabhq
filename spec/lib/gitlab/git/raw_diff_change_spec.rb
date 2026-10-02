@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'gitaly'
 
 RSpec.describe Gitlab::Git::RawDiffChange, feature_category: :source_code_management do
   let(:raw_change) { nil }

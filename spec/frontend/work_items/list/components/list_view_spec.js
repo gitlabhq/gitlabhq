@@ -173,7 +173,6 @@ const mountComponent = ({
       canCreateProjects: true,
       hasBlockedIssuesFeature: false,
       hasEpicsFeature: false,
-      hasGroupBulkEditFeature: true,
       hasIssuableHealthStatusFeature: false,
       hasIssueWeightsFeature: false,
       hasOkrsFeature: false,

@@ -20,6 +20,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
 import JobApp from '~/ci/job_details/job_app.vue';
+import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 import getJobQuery from '~/ci/job_details/graphql/queries/get_job.query.graphql';
 import jobCiStatusUpdatedSubscription from '~/ci/job_details/graphql/subscriptions/job_ci_status_updated.subscription.graphql';
 import JobLog from '~/ci/job_details/components/log/log.vue';
@@ -134,7 +135,7 @@ describe('Job App', () => {
 
   const findDetailLayout = () => wrapper.findComponent(DetailLayout);
   const findArchivedJob = () => wrapper.findByTestId('archived-job');
-  const findStickyFooter = () => wrapper.findByTestId('rca-bar-component');
+  const findRootCauseAnalysisButton = () => wrapper.findComponent(RootCauseAnalysisButton);
 
   beforeEach(() => {
     PanelBreakpointInstance.addResizeListener.mockImplementation((callback) => {
@@ -421,8 +422,11 @@ describe('Job App', () => {
         }));
     });
 
-    describe('sticky footer', () => {
-      it('does not display the sticky footer if troubleshootJobWithAi is false', () =>
+    describe('troubleshoot button', () => {
+      // The actual button only renders in EE; in FOSS the component is a no-op
+      // stub. Here we only assert that job_app mounts it in the actions slot.
+      // The button's own visibility logic is covered by its EE component spec.
+      it('mounts the root cause analysis component in the actions slot', () =>
         setupAndMount({
           jobData: {
             status: {
@@ -436,28 +440,49 @@ describe('Job App', () => {
             tags: [],
           },
         }).then(() => {
-          expect(findStickyFooter().exists()).toBe(false);
+          expect(findRootCauseAnalysisButton().exists()).toBe(true);
         }));
 
-      it('displays the sticky footer if troubleshootJobWithAi is true', () =>
-        setupAndMount({
-          jobData: {
-            status: {
-              group: 'failed',
-              icon: 'status_failed',
+      // The root cause analysis button is an EE-only component; in FOSS it is a
+      // no-op stub without props, so only assert the forwarded prop in EE.
+      (IS_EE ? describe : describe.skip)('in EE', () => {
+        it('passes canTroubleshootJob as false when troubleshootJobWithAi is false', () =>
+          setupAndMount({
+            jobData: {
+              status: {
+                group: 'failed',
+                icon: 'status_failed',
+              },
+              has_trace: true,
+              runners: {
+                available: true,
+              },
+              tags: [],
             },
-            has_trace: true,
-            runners: {
-              available: true,
+          }).then(() => {
+            expect(findRootCauseAnalysisButton().props('canTroubleshootJob')).toBe(false);
+          }));
+
+        it('passes canTroubleshootJob as true when troubleshootJobWithAi is true', () =>
+          setupAndMount({
+            jobData: {
+              status: {
+                group: 'failed',
+                icon: 'status_failed',
+              },
+              has_trace: true,
+              runners: {
+                available: true,
+              },
+              tags: [],
             },
-            tags: [],
-          },
-          abilities: {
-            troubleshootJobWithAi: true,
-          },
-        }).then(() => {
-          expect(findStickyFooter().exists()).toBe(true);
-        }));
+            abilities: {
+              troubleshootJobWithAi: true,
+            },
+          }).then(() => {
+            expect(findRootCauseAnalysisButton().props('canTroubleshootJob')).toBe(true);
+          }));
+      });
     });
 
     describe('environments block', () => {

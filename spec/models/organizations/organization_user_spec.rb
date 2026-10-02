@@ -190,6 +190,69 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
         end
       end
     end
+
+    describe 'Organization Administrator role sync' do
+      before do
+        allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(true)
+      end
+
+      context 'when the record changes from owner to default' do
+        let_it_be(:other_owner) { create(:organization_owner, organization: organization) }
+        let_it_be(:organization_user) { create(:organization_owner, user: user, organization: organization) }
+
+        it 'enqueues RevokeOwnerRoleWorker with the user as the acting user' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).to receive(:perform_async)
+            .with(organization.id, user.id, user.id)
+
+          update_home_organization_record
+        end
+
+        context 'when the owner role sync is unavailable' do
+          before do
+            allow(Authz::Organizations::OwnerRoleSync).to receive(:enabled?).and_return(false)
+          end
+
+          it 'does not enqueue RevokeOwnerRoleWorker' do
+            expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+            update_home_organization_record
+          end
+        end
+      end
+
+      # The grant worker never turns an admin's home organization row into a
+      # tuple, so there is nothing to enqueue when the record becomes owner.
+      context 'when the record changes from default to owner' do
+        let_it_be(:organization_user) { create(:organization_user, user: user, organization: organization) }
+
+        let(:user_is_admin) { true }
+
+        it 'does not enqueue a worker', :aggregate_failures do
+          expect(Authz::Organizations::GrantOwnerRoleWorker).not_to receive(:perform_async)
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+          update_home_organization_record
+        end
+      end
+
+      context 'when the record is already default' do
+        let_it_be(:organization_user) { create(:organization_user, user: user, organization: organization) }
+
+        it 'does not enqueue RevokeOwnerRoleWorker' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+          update_home_organization_record
+        end
+      end
+
+      context 'when the record is created' do
+        it 'does not enqueue RevokeOwnerRoleWorker' do
+          expect(Authz::Organizations::RevokeOwnerRoleWorker).not_to receive(:perform_async)
+
+          update_home_organization_record
+        end
+      end
+    end
   end
 
   describe '.home_organization_access_level' do

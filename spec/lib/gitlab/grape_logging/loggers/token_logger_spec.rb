@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../../app/models/current'
+require 'grape_logging'
 
 RSpec.describe Gitlab::GrapeLogging::Loggers::TokenLogger do
   describe ".parameters" do

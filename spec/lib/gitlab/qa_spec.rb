@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'active_support/security_utils'
 
 RSpec.describe Gitlab::Qa do
   describe '.request?' do

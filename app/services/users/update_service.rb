@@ -210,8 +210,36 @@ module Users
     def after_update(user_exists)
       notify_success(user_exists)
       remove_followers_and_followee!
+      sync_organization_admin_roles
 
       success({ user: @user })
+    end
+
+    # Nested organization_users_attributes rewrite owner rows as a side effect of
+    # saving the user, so no organization-user service hook sees them.
+    def sync_organization_admin_roles
+      return unless ::Authz::Organizations::OwnerRoleSync.enabled?
+
+      organization_users_crossing_owner_boundary.each do |organization_user|
+        worker = if organization_user.owner?
+                   ::Authz::Organizations::GrantOwnerRoleWorker
+                 else
+                   ::Authz::Organizations::RevokeOwnerRoleWorker
+                 end
+
+        worker.perform_async(organization_user.organization_id, @user.id, current_user.id)
+      end
+    end
+
+    # A new membership moves from nil to default, which is not a demotion.
+    def organization_users_crossing_owner_boundary
+      return [] if organization_users_attributes.blank?
+
+      @user.organization_users.select do |organization_user|
+        next false unless organization_user.saved_change_to_access_level?
+
+        organization_user.owner? || organization_user.access_level_before_last_save == 'owner'
+      end
     end
 
     def remove_followers_and_followee!

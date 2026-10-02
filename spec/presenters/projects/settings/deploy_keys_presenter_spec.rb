@@ -51,9 +51,9 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
   end
 
   describe '#enabled_keys' do
-    let!(:deploy_key) { create(:deploy_key, public: true) }
+    let_it_be(:deploy_key) { create(:deploy_key, public: true) }
 
-    let!(:deploy_keys_project) do
+    let_it_be(:deploy_keys_project) do
       create(:deploy_keys_project, project: project, deploy_key: deploy_key)
     end
 
@@ -71,11 +71,9 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
   end
 
   describe '#available_keys/#available_project_keys' do
-    let(:other_deploy_key) { create(:another_deploy_key) }
-
-    before do
-      project_key = create(:deploy_keys_project, deploy_key: other_deploy_key)
-      project_key.project.add_developer(user)
+    let_it_be(:other_deploy_key) { create(:another_deploy_key) }
+    let_it_be(:project_key) do
+      create(:deploy_keys_project, deploy_key: other_deploy_key, project: other_project)
     end
 
     it 'returns the current available_keys' do
@@ -92,17 +90,16 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
   end
 
   context 'prevent N + 1 queries' do
+    before_all do
+      create_records
+    end
+
     before do
       allow(Ability).to receive(:allowed?).and_return(true)
-
-      create_records
-
-      project.add_maintainer(user)
     end
 
     def create_records
-      other_project = create(:project)
-      other_project.add_maintainer(user)
+      other_project = create(:project, maintainers: user)
 
       create(:deploy_keys_project, project: project, deploy_key: create(:deploy_key))
       create(:deploy_keys_project, project: other_project, deploy_key: create(:deploy_key))

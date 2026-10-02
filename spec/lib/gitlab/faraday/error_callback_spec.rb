@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'faraday'
 
 RSpec.describe Gitlab::Faraday::ErrorCallback do
   let(:app) { double(:app) }

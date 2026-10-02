@@ -9,7 +9,6 @@ fragment WorkItemAvailableFeatures on NamespaceAvailableFeatures {
   hasQualityManagementFeature
   hasLinkedItemsEpicsFeature
   hasBlockedIssuesFeature
-  hasGroupBulkEditFeature
   hasCustomFieldsFeature
   hasDuoRemoteFlowsFeature
 }

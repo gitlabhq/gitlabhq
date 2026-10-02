@@ -14,7 +14,7 @@ export const I18N_USER_ACTIONS = {
   reject: s__('AdminUsers|Reject'),
   deactivate: s__('AdminUsers|Deactivate'),
   activate: s__('AdminUsers|Activate'),
-  ldapBlocked: s__('AdminUsers|Cannot unblock LDAP blocked users'),
+  resyncLdap: s__('AdminUsers|Resync with LDAP'),
   delete: s__('AdminUsers|Delete user'),
   deleteWithContributions: s__('AdminUsers|Delete user and contributions'),
   ban: s__('AdminUsers|Ban user'),

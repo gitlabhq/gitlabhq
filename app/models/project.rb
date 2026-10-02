@@ -1414,10 +1414,12 @@ class Project < ApplicationRecord
         .where("#{Integration.table_name}.project_id = projects.id")
         .where(type: integration.type)
 
-      Project
+      scope = Project
         .where('NOT EXISTS (?)', integrations)
         .where(pending_delete: false)
         .non_archived
+
+      integration.instance_level? ? scope.in_organization(integration.organization_id) : scope
     end
 
     def project_features_defaults

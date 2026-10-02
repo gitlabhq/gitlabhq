@@ -28,7 +28,24 @@ module WebHooks
 
       log_data['request_headers']['X-Gitlab-Token'] = _('[REDACTED]') if hook.token?
 
-      WebHookLog.create!(web_hook: hook, **log_data)
+      if Feature.enabled?(:web_hook_log_insert_without_transaction, feature_flag_actor)
+        WebHookLog.insert_log!(web_hook: hook, **log_data)
+      else
+        WebHookLog.create!(web_hook: hook, **log_data)
+      end
+    end
+
+    # "a webhook can be associated with either a group or a project, and so a feature flag for a webhook
+    # might leverage this to roll out a feature for group and project webhooks using the same feature flag."
+    # https://docs.gitlab.com/development/feature_flags/#mixing-actor-types
+    def feature_flag_actor
+      if hook.project_id
+        ::Project.actor_from_id(hook.project_id)
+      elsif hook.group_id
+        ::Group.actor_from_id(hook.group_id)
+      else
+        Feature.current_request
+      end
     end
 
     def mask_response_headers

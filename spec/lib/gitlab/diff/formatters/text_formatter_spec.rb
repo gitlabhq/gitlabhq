@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require_relative '../../../../support/shared_examples/lib/gitlab/position_formatters_shared_examples'
 
 RSpec.describe Gitlab::Diff::Formatters::TextFormatter, feature_category: :code_review_workflow do
   let!(:base) do

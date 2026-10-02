@@ -293,6 +293,7 @@ module UsersHelper
       approve: approve_admin_user_path(:id),
       reject: reject_admin_user_path(:id),
       unblock: unblock_admin_user_path(:id),
+      resync_ldap: unblock_admin_user_path(:id),
       block: block_admin_user_path(:id),
       deactivate: deactivate_admin_user_path(:id),
       activate: activate_admin_user_path(:id),
