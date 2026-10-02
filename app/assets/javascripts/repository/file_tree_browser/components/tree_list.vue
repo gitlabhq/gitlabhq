@@ -7,6 +7,7 @@ import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/fil
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { joinPaths, buildURLwithRefType, visitUrl } from '~/lib/utils/url_utility';
+import { projectPath as projectBasePath } from '~/lib/utils/path_helpers/project';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
 import { getRefType } from '~/repository/utils/ref_type';
@@ -164,6 +165,9 @@ export default {
         .concat(this.processSubmodules({ submodules: contents.submodules, path, level }))
         .concat(this.processFiles({ blobs: contents.blobs, path, level }));
     },
+    buildFileHref(routerPath) {
+      return new URL(joinPaths(projectBasePath(this.projectPath), routerPath), gon.gitlab_url).href;
+    },
     processDirectories({ trees = [], path, level }) {
       const directoryList = [];
 
@@ -182,7 +186,7 @@ export default {
           path: treePath,
           parentPath: path,
           routerPath,
-          href: new URL(joinPaths('/', this.projectPath, routerPath), gon.gitlab_url).href,
+          href: this.buildFileHref(routerPath),
           type: 'tree',
           name: tree.name,
           level,
@@ -226,7 +230,7 @@ export default {
           path: blobPath,
           parentPath: path,
           routerPath,
-          href: new URL(joinPaths('/', this.projectPath, routerPath), gon.gitlab_url).href,
+          href: this.buildFileHref(routerPath),
           name: blob.name,
           mode: blob.mode,
           level,
