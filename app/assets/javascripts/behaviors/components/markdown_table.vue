@@ -62,11 +62,6 @@ export default {
       required: false,
       default: false,
     },
-    isSticky: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -165,26 +160,16 @@ export default {
 };
 </script>
 <template>
-  <div
-    :data-testid="isSticky ? 'table-shadow-overlay' : null"
-    :class="isSticky ? $options.stickyTableWrapperClasses : ''"
-  >
+  <div data-testid="table-shadow-overlay" :class="$options.stickyTableWrapperClasses">
     <!--
     Print scale-to-fit (wikis/utils/print_table_scale.js) measures
     `[data-print-scale-target]` against `[data-print-scale-container]`, which
-    should be the element that scrolls on screen; when sticky headers are enabled,
-    this is the wrapper, otherwise it's the table itself.
+    is the sticky-header wrapper that scrolls on screen.
   -->
-    <div
-      :class="isSticky ? $options.stickyHeaderClasses : ''"
-      :data-sticky-header="isSticky || null"
-      :data-print-scale-container="isSticky || null"
-    >
+    <div :class="$options.stickyHeaderClasses" data-sticky-header data-print-scale-container>
       <table
         data-markdown-table-applied="true"
-        :data-print-scale-container="isSticky ? null : ''"
         data-print-scale-target
-        :class="{ 'gl-my-5': !isSticky }"
         class="gl-min-w-full gl-overflow-y-hidden"
       >
         <thead>
@@ -200,7 +185,6 @@ export default {
               "
               scope="col"
               class="gl-group/markdown-table-header"
-              :class="{ 'gl-relative': canSort && !isSticky }"
             >
               <div class="gl-flex gl-items-center gl-gap-2">
                 <span

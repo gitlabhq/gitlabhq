@@ -20,31 +20,31 @@ module API
       end
       params do
         requires :runner_type, type: String, values: ::Ci::Runner.runner_types.keys,
-          desc: 'Specifies the scope of the runner'
+          desc: 'Scope of the runner.'
         given runner_type: ->(runner_type) { runner_type == 'group_type' } do
           requires :group_id, type: Integer,
-            desc: 'The ID of the group that the runner is created in',
+            desc: 'ID of the group to create the runner in. Required if `runner_type` is `group_type`.',
             documentation: { example: 1 }
         end
         given runner_type: ->(runner_type) { runner_type == 'project_type' } do
           requires :project_id, type: Integer,
-            desc: 'The ID of the project that the runner is created in',
+            desc: 'ID of the project to create the runner in. Required if `runner_type` is `project_type`.',
             documentation: { example: 1 }
         end
-        optional :description, type: String, desc: 'Description of the runner'
+        optional :description, type: String, desc: 'Description of the runner.'
         optional :maintenance_note, type: String,
-          desc: 'Free-form maintenance notes for the runner (1024 characters)'
-        optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs (defaults to false)'
+          desc: 'Free-form maintenance notes for the runner. Limited to 1024 characters.'
+        optional :paused, type: Boolean, desc: 'If `true`, the runner ignores new jobs.'
         optional :locked, type: Boolean, default: false,
           desc: 'Specifies if the runner should be locked for the current project.'
         optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
-          desc: 'The access level of the runner'
+          desc: 'Access level of the runner.'
         optional :run_untagged, type: Boolean, default: true,
           desc: 'Specifies if the runner should handle untagged jobs.'
         optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-          desc: 'A list of runner tags'
+          desc: 'Comma-separated list of runner tags.'
         optional :maximum_timeout, type: Integer,
-          desc: 'Maximum timeout that limits the amount of time (in seconds) that runners can run jobs'
+          desc: 'Maximum time, in seconds, that runners can spend running a job.'
 
         use :create_runner_params_ee
       end

@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
-import LockTooltip from '~/namespaces/cascading_settings/components/lock_tooltip.vue';
+import LockPopover from '~/namespaces/cascading_settings/components/lock_popover.vue';
 
 describe('CascadingLockIcon', () => {
   let wrapper;
@@ -17,7 +17,7 @@ describe('CascadingLockIcon', () => {
     });
   };
 
-  const findLockTooltip = () => wrapper.findComponent(LockTooltip);
+  const findLockPopover = () => wrapper.findComponent(LockPopover);
   const findIcon = () => wrapper.findComponent(GlIcon);
 
   beforeEach(() => {
@@ -32,30 +32,30 @@ describe('CascadingLockIcon', () => {
     wrapper = createComponent();
     expect(findIcon().props()).toMatchObject({
       name: 'lock',
-      ariaLabel: 'Lock tooltip icon',
+      ariaLabel: 'Lock popover icon',
     });
   });
 
-  it('does not render LockTooltip when targetElement is null', () => {
+  it('does not render LockPopover when targetElement is null', () => {
     wrapper = createComponent();
-    expect(findLockTooltip().exists()).toBe(false);
+    expect(findLockPopover().exists()).toBe(false);
   });
 
-  it('renders LockTooltip after mounting', async () => {
+  it('renders LockPopover after mounting', async () => {
     wrapper = createComponent();
     await nextTick();
     await nextTick();
-    expect(findLockTooltip().exists()).toBe(true);
+    expect(findLockPopover().exists()).toBe(true);
   });
 
   it('sets targetElement after mounting', async () => {
     wrapper = createComponent();
     await nextTick();
     await nextTick();
-    expect(findLockTooltip().props().targetElement).not.toBeNull();
+    expect(findLockPopover().props().targetElement).not.toBeNull();
   });
 
-  it('passes correct props to LockTooltip', async () => {
+  it('passes correct props to LockPopover', async () => {
     const ancestorNamespace = { path: '/test', fullName: 'Test' };
     wrapper = createComponent({
       ancestorNamespace,
@@ -66,7 +66,7 @@ describe('CascadingLockIcon', () => {
     await nextTick();
     await nextTick();
 
-    expect(findLockTooltip().props()).toMatchObject({
+    expect(findLockPopover().props()).toMatchObject({
       ancestorNamespace,
       isLockedByAdmin: true,
       isLockedByGroupAncestor: true,

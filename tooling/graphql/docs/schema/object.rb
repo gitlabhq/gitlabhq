@@ -42,8 +42,7 @@ module Tooling
           end
 
           # The wrapped node type for a connection or edge, or nil for ordinary
-          # object types. Node types without a docs page yet wrap to
-          # TempUndocumented, which the renderer shows unlinked.
+          # object types.
           def node_type
             underlying_node_type = graphql_node_type
             return unless underlying_node_type

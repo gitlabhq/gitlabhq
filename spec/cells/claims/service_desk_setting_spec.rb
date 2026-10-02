@@ -35,15 +35,4 @@ RSpec.describe 'Claim for ServiceDeskSetting', feature_category: :cell do
     it_behaves_like 'creating new claims'
     it_behaves_like 'deleting existing claims'
   end
-
-  context 'when project_key_address_slug claims feature is disabled' do
-    subject! { build(:service_desk_setting, project: project, project_key: 'key1') }
-
-    before do
-      stub_feature_flags(cells_claims_service_desk_settings_project_key_address_slugs: false)
-    end
-
-    it_behaves_like 'not creating claims'
-    it_behaves_like 'not deleting claims'
-  end
 end

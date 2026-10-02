@@ -49,7 +49,7 @@ module API
         tags %w[gitlab_pages]
       end
       params do
-        optional :domain, type: String, desc: 'The domain of the GitLab Pages site to filter on.'
+        optional :domain, type: String, desc: 'Domain of the GitLab Pages site to filter on.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_pages_domain, boundary_type: :instance
@@ -65,7 +65,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
@@ -97,7 +97,7 @@ module API
         tags %w[gitlab_pages]
       end
       params do
-        requires :domain, type: String, desc: 'The domain'
+        requires :domain, type: String, desc: 'Custom domain.'
       end
       route_setting :authorization, permissions: :read_pages_domain, boundary_type: :project
       get ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
@@ -112,13 +112,13 @@ module API
         tags %w[gitlab_pages]
       end
       params do
-        requires :domain, type: String, desc: 'The domain'
+        requires :domain, type: String, desc: 'Custom domain.'
         # rubocop:todo Scalability/FileUploads
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
-        optional :certificate, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
-        optional :key, types: [File, String], desc: 'The key', as: :user_provided_key
+        optional :certificate, types: [File, String], desc: 'Certificate in PEM format with intermediates following in most specific to least specific order.', as: :user_provided_certificate
+        optional :key, types: [File, String], desc: 'Certificate key in PEM format.', as: :user_provided_key
         optional :auto_ssl_enabled, allow_blank: false, type: Boolean, default: false,
-          desc: "Enables automatic generation of SSL certificates issued by Let's Encrypt for custom domains."
+          desc: "If `true`, enables [automatic generation](https://docs.gitlab.com/user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration/) of SSL certificates issued by Let's Encrypt for custom domains."
         # rubocop:enable Scalability/FileUploads
         all_or_none_of :user_provided_certificate, :user_provided_key
       end
@@ -143,13 +143,13 @@ module API
         tags %w[gitlab_pages]
       end
       params do
-        requires :domain, type: String, desc: 'The domain'
+        requires :domain, type: String, desc: 'Custom domain.'
         # rubocop:todo Scalability/FileUploads
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
-        optional :certificate, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
-        optional :key, types: [File, String], desc: 'The key', as: :user_provided_key
+        optional :certificate, types: [File, String], desc: 'Certificate in PEM format with intermediates following in most specific to least specific order.', as: :user_provided_certificate
+        optional :key, types: [File, String], desc: 'Certificate key in PEM format.', as: :user_provided_key
         optional :auto_ssl_enabled, allow_blank: true, type: Boolean,
-          desc: "Enables automatic generation of SSL certificates issued by Let's Encrypt for custom domains."
+          desc: "If `true`, enables [automatic generation](https://docs.gitlab.com/user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration/) of SSL certificates issued by Let's Encrypt for custom domains."
         # rubocop:enable Scalability/FileUploads
       end
       route_setting :authorization, permissions: :update_pages_domain, boundary_type: :project
@@ -178,7 +178,7 @@ module API
         tags %w[gitlab_pages]
       end
       params do
-        requires :domain, type: String, desc: 'The domain to verify'
+        requires :domain, type: String, desc: 'Custom domain to verify.'
       end
       route_setting :authorization, permissions: :verify_pages_domain, boundary_type: :project
       put ":id/pages/domains/:domain/verify", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
@@ -200,7 +200,7 @@ module API
         tags %w[gitlab_pages]
       end
       params do
-        requires :domain, type: String, desc: 'The domain'
+        requires :domain, type: String, desc: 'Custom domain.'
       end
       route_setting :authorization, permissions: :delete_pages_domain, boundary_type: :project
       delete ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do

@@ -18308,7 +18308,7 @@ msgstr ""
 msgid "CascadingSettings|Enforce this setting for all groups on this instance."
 msgstr ""
 
-msgid "CascadingSettings|Lock tooltip icon"
+msgid "CascadingSettings|Lock popover icon"
 msgstr ""
 
 msgid "CascadingSettings|Setting cannot be changed"
@@ -26860,9 +26860,6 @@ msgstr ""
 msgid "Created %{timestamp}"
 msgstr ""
 
-msgid "Created Date"
-msgstr ""
-
 msgid "Created On"
 msgstr ""
 
@@ -29749,6 +29746,9 @@ msgstr ""
 msgid "DependencyFirewall|%{blocking} blocking • %{warning} warning"
 msgstr ""
 
+msgid "DependencyFirewall|Active Policies"
+msgstr ""
+
 msgid "DependencyFirewall|Active policy rules"
 msgstr ""
 
@@ -29759,6 +29759,9 @@ msgid "DependencyFirewall|All activity"
 msgstr ""
 
 msgid "DependencyFirewall|Blocked"
+msgstr ""
+
+msgid "DependencyFirewall|Blocking"
 msgstr ""
 
 msgid "DependencyFirewall|By %{name}"
@@ -29785,6 +29788,12 @@ msgstr ""
 msgid "DependencyFirewall|Enforce"
 msgstr ""
 
+msgid "DependencyFirewall|Every package entering %{namespaceName} is evaluated against the policies in effect for its group."
+msgstr ""
+
+msgid "DependencyFirewall|Every package entering %{namespaceName} is evaluated against the policies in effect for its project."
+msgstr ""
+
 msgid "DependencyFirewall|Failed to load dependency firewall activity."
 msgstr ""
 
@@ -29797,13 +29806,22 @@ msgstr ""
 msgid "DependencyFirewall|Last 7 days"
 msgstr ""
 
+msgid "DependencyFirewall|Last Updated"
+msgstr ""
+
 msgid "DependencyFirewall|Last modified"
 msgstr ""
 
 msgid "DependencyFirewall|License compliance rule"
 msgstr ""
 
+msgid "DependencyFirewall|License risks prevented"
+msgstr ""
+
 msgid "DependencyFirewall|Malicious package rule"
+msgstr ""
+
+msgid "DependencyFirewall|Malicious packages prevented"
 msgstr ""
 
 msgid "DependencyFirewall|Mode"
@@ -29818,10 +29836,19 @@ msgstr ""
 msgid "DependencyFirewall|New policy"
 msgstr ""
 
+msgid "DependencyFirewall|No active dependency firewall policies."
+msgstr ""
+
 msgid "DependencyFirewall|No active dependency firewall rules."
 msgstr ""
 
+msgid "DependencyFirewall|Package evaluations"
+msgstr ""
+
 msgid "DependencyFirewall|Policies"
+msgstr ""
+
+msgid "DependencyFirewall|Policy Name"
 msgstr ""
 
 msgid "DependencyFirewall|Protect against malicious and suspicious packages for all projects in this GitLab instance."
@@ -29833,13 +29860,25 @@ msgstr ""
 msgid "DependencyFirewall|Rule"
 msgstr ""
 
+msgid "DependencyFirewall|Scope"
+msgstr ""
+
+msgid "DependencyFirewall|Source"
+msgstr ""
+
 msgid "DependencyFirewall|Time period"
 msgstr ""
 
 msgid "DependencyFirewall|Total triggers"
 msgstr ""
 
+msgid "DependencyFirewall|Unknown mode"
+msgstr ""
+
 msgid "DependencyFirewall|Unknown policy type"
+msgstr ""
+
+msgid "DependencyFirewall|Vulnerabilities prevented"
 msgstr ""
 
 msgid "DependencyFirewall|Vulnerability severity rule"
@@ -29849,6 +29888,12 @@ msgid "DependencyFirewall|Warn"
 msgstr ""
 
 msgid "DependencyFirewall|Warned"
+msgstr ""
+
+msgid "DependencyFirewall|Warned only"
+msgstr ""
+
+msgid "DependencyFirewall|Warning"
 msgstr ""
 
 msgid "DependencyListExport|License Identifiers"
@@ -30299,9 +30344,6 @@ msgid "Deployment approvals is not configured for this environment."
 msgstr ""
 
 msgid "Deployment frequency"
-msgstr ""
-
-msgid "Deployment status"
 msgstr ""
 
 msgid "DeploymentApprovals|Allow pipeline triggerer to approve deployment."
@@ -35673,6 +35715,15 @@ msgstr ""
 msgid "Environments|Environments are places where code gets deployed, such as staging or production. You can create an environment in the UI or in your .gitlab-ci.yml file. You can also enable review apps, which assist with providing an environment to showcase product changes. %{linkStart}Learn more%{linkEnd} about environments."
 msgstr ""
 
+msgid "Environments|Force stop"
+msgstr ""
+
+msgid "Environments|Force stop %{environmentName}"
+msgstr ""
+
+msgid "Environments|Force stop environment"
+msgstr ""
+
 msgid "Environments|Get started with environments"
 msgstr ""
 
@@ -35772,6 +35823,9 @@ msgstr ""
 msgid "Environments|Select which environments to clean up. Protected environments are excluded. Learn more about cleaning up environments."
 msgstr ""
 
+msgid "Environments|Skip the %{actionStopLinkStart}action:stop%{actionStopLinkEnd} job and mark the environment as stopped immediately. Resources deployed to this environment might not be cleaned up."
+msgstr ""
+
 msgid "Environments|Stop"
 msgstr ""
 
@@ -35797,6 +35851,9 @@ msgid "Environments|Synced"
 msgstr ""
 
 msgid "Environments|The description is displayed to anyone who can see this environment."
+msgstr ""
+
+msgid "Environments|The environment %{environmentName} is currently stopping. Force stopping marks it as stopped immediately and moves it to the Stopped tab, without running or waiting for its %{actionStopLinkStart}action:stop%{actionStopLinkEnd} job. Resources deployed to this environment might not be cleaned up."
 msgstr ""
 
 msgid "Environments|The preferred version of your resource is not supported:"
@@ -69869,6 +69926,9 @@ msgstr ""
 msgid "RiskAssessment|Concentration of the change across files"
 msgstr ""
 
+msgid "RiskAssessment|Could not be measured:"
+msgstr ""
+
 msgid "RiskAssessment|Critical risk"
 msgstr ""
 
@@ -69876,6 +69936,9 @@ msgid "RiskAssessment|Cryptography, key management, or credential handling"
 msgstr ""
 
 msgid "RiskAssessment|Database schema, data migration, or database layer"
+msgstr ""
+
+msgid "RiskAssessment|Decrease"
 msgstr ""
 
 msgid "RiskAssessment|Dependency changes"
@@ -69899,7 +69962,16 @@ msgstr ""
 msgid "RiskAssessment|How new the author is to this project"
 msgstr ""
 
+msgid "RiskAssessment|Increase"
+msgstr ""
+
 msgid "RiskAssessment|Low risk"
+msgstr ""
+
+msgid "RiskAssessment|Major decrease"
+msgstr ""
+
+msgid "RiskAssessment|Major increase"
 msgstr ""
 
 msgid "RiskAssessment|Manifest file changed directly"
@@ -69908,7 +69980,16 @@ msgstr ""
 msgid "RiskAssessment|Medium risk"
 msgstr ""
 
+msgid "RiskAssessment|Minor decrease"
+msgstr ""
+
+msgid "RiskAssessment|Minor increase"
+msgstr ""
+
 msgid "RiskAssessment|New commits were pushed after this assessment. It reflects an earlier version of the changes."
+msgstr ""
+
+msgid "RiskAssessment|No change"
 msgstr ""
 
 msgid "RiskAssessment|Number of dependency ecosystems touched"
@@ -69968,7 +70049,13 @@ msgstr ""
 msgid "RiskAssessment|Updating…"
 msgstr ""
 
+msgid "RiskAssessment|What affected the risk score"
+msgstr ""
+
 msgid "RiskAssessment|What contributed to this score"
+msgstr ""
+
+msgid "RiskAssessment|What lowered confidence"
 msgstr ""
 
 msgid "RiskAssessment|diff_sha %{diff_sha} does not match any known revision of this merge request."
@@ -88487,9 +88574,6 @@ msgstr ""
 msgid "Updated %{updatedAt}"
 msgstr ""
 
-msgid "Updated Date"
-msgstr ""
-
 msgid "Updated by %{author}"
 msgstr ""
 
@@ -88734,6 +88818,9 @@ msgstr ""
 msgid "UsageBilling|Active users"
 msgstr ""
 
+msgid "UsageBilling|Add each entry on a separate line: username (without \"@\"), cap (number of credits), enabled (\"true\" or \"false\"). Maximum %{max} entries."
+msgstr ""
+
 msgid "UsageBilling|Add override"
 msgstr ""
 
@@ -88922,7 +89009,31 @@ msgstr ""
 msgid "UsageBilling|Learn more about GitLab Duo"
 msgstr ""
 
+msgid "UsageBilling|Line %{lineNumber}: cap must be a valid number."
+msgstr ""
+
+msgid "UsageBilling|Line %{lineNumber}: cap must not be negative."
+msgstr ""
+
+msgid "UsageBilling|Line %{lineNumber}: cap value is required."
+msgstr ""
+
+msgid "UsageBilling|Line %{lineNumber}: enabled must be \"true\" or \"false\"."
+msgstr ""
+
+msgid "UsageBilling|Line %{lineNumber}: expected 3 comma-separated values (username, cap, enabled)."
+msgstr ""
+
+msgid "UsageBilling|Line %{lineNumber}: username is required."
+msgstr ""
+
+msgid "UsageBilling|Line %{lineNumber}: username must not contain \"@\"."
+msgstr ""
+
 msgid "UsageBilling|Location"
+msgstr ""
+
+msgid "UsageBilling|Maximum %{max} overrides allowed per submission."
 msgstr ""
 
 msgid "UsageBilling|Monthly Committed Pool"
@@ -88988,6 +89099,9 @@ msgstr ""
 msgid "UsageBilling|Overrides"
 msgstr ""
 
+msgid "UsageBilling|Parsed overrides"
+msgstr ""
+
 msgid "UsageBilling|Peak day usage"
 msgstr ""
 
@@ -89049,6 +89163,9 @@ msgid "UsageBilling|Sorting by total credits used displays only users with prior
 msgstr ""
 
 msgid "UsageBilling|Status"
+msgstr ""
+
+msgid "UsageBilling|The CSV input could not be parsed. Please check the format."
 msgstr ""
 
 msgid "UsageBilling|This dashboard displays usage of all GitLab Duo Agent Platform features, including non-billable beta and experiment features. For billable usage only, view the %{linkStart}dashboard in Customers Portal%{linkEnd}."
@@ -99699,9 +99816,6 @@ msgstr ""
 msgid "locked until %{timestamp}"
 msgstr ""
 
-msgid "main"
-msgstr ""
-
 msgid "math|Display anyway"
 msgstr ""
 
@@ -100476,9 +100590,6 @@ msgid "policy"
 msgid_plural "policies"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "prefixed"
-msgstr ""
 
 msgid "previously merged commits"
 msgstr ""

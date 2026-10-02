@@ -1463,6 +1463,138 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
   end
 
+  describe '.create_branch_and_mr with metadata checkpoints' do
+    subject(:create_branch_and_mr) do
+      sync.create_branch_and_mr({}, affected, auto_mr_cfg, checkpoints: checkpoints)
+    end
+
+    let(:body) { "# QA Principles\n\n- Keep me\n" }
+    let(:evaluated) { "---\nsource_checksum: old\ndistilled_at_sha: #{'1' * 40}\n---\n#{body}" }
+    let(:checkpoints) { { 'qa' => checkpoint_for(evaluated) } }
+    let(:bodies) { [] }
+    let(:resolver) { instance_double(described_class::ReviewerResolver) }
+    let(:affected) do
+      %w[qa security].to_h do |name|
+        source = { 'path' => "doc/#{name}.md" }
+        [name, { config: { 'sources' => [source] }, changed_sources: [source] }]
+      end
+    end
+
+    let(:auto_mr_cfg) do
+      { 'branch_prefix' => 'docs-sync/principles', 'title_template' => 'Update AI development principles (%{date})' }
+    end
+
+    def path_for(name)
+      File.join(tmpdir, ".ai/principles/distilled/#{name}.md")
+    end
+
+    def checkpoint_for(content)
+      described_class::MetadataCheckpoint.new(
+        source_checksum: 'new', distilled_at_sha: '2' * 40,
+        original_sha256: described_class::MetadataCheckpoint.fingerprint(content)
+      )
+    end
+
+    def titles
+      bodies.map { |submitted| submitted[:title] }
+    end
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      stub_const('ENV', { 'GITLAB_API_TOKEN' => 'token', 'CI_PROJECT_ID' => 'gitlab-org/gitlab',
+                          'CI_DEFAULT_BRANCH' => 'master', 'CI_PROJECT_PATH' => 'gitlab-org/gitlab' })
+      FileUtils.mkdir_p(File.dirname(path_for('qa')))
+      File.write(path_for('qa'), evaluated)
+      File.write(path_for('security'), evaluated)
+
+      # Git is stubbed, so the "fresh branch" is the tmpdir as written above. No tooling files exist there, so the
+      # tooling MR is skipped and only the metadata MR can be opened.
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, regenerate_static_artifacts: nil,
+        open_mrs_by_author: [], find_open_mr: nil, mr_assignee_id: nil, current_milestone_id: nil,
+        reviewer_resolver: resolver)
+      allow(resolver).to receive(:owner_team_reviewer) do |team|
+        {
+          '@org/qa' => { id: 41, username: 'qa-reviewer' },
+          '@org/appsec' => { id: 42, username: 'appsec-reviewer' }
+        }[team]
+      end
+      allow(sync.workflow).to receive_messages(gitlab_host: 'https://gitlab.com', default_branch: 'master',
+        catalog_project_path: 'gitlab-org/gitlab')
+      allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
+        bodies << body
+        instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '201')
+      end
+      sync.manifest.data = {
+        'principles' => {
+          'qa' => { 'owner_team' => '@org/qa', 'sources' => [{ 'path' => 'doc/qa.md' }] },
+          'security' => { 'owner_team' => '@org/appsec', 'sources' => [{ 'path' => 'doc/security.md' }] }
+        }
+      }
+    end
+
+    it 'opens a metadata MR that changes only the frontmatter', :aggregate_failures do
+      create_branch_and_mr
+
+      expect(File.read(path_for('qa'))).to eq("---\nsource_checksum: new\ndistilled_at_sha: #{'2' * 40}\n---\n#{body}")
+      expect(titles).to contain_exactly(a_string_starting_with('metadata: '))
+    end
+
+    it 'looks up an adoptable metadata branch' do
+      allow(sync).to receive(:prefetch_adopted_branches!)
+
+      create_branch_and_mr
+
+      expect(sync).to have_received(:prefetch_adopted_branches!).with(anything, %w[tooling metadata])
+    end
+
+    # Until the metadata MR merges, every scheduled run re-distills the same principles, so its owners must be told.
+    it 'requests an owner-team reviewer and shows the source changes', :aggregate_failures do
+      create_branch_and_mr
+
+      expect(bodies.first[:reviewer_ids]).to eq([41])
+      expect(bodies.first[:description]).to include('#### `qa`', 'doc/qa.md', '**@org/qa**')
+    end
+
+    context 'with principles owned by several teams' do
+      let(:checkpoints) { { 'qa' => checkpoint_for(evaluated), 'security' => checkpoint_for(evaluated) } }
+
+      it 'requests one reviewer per owning team' do
+        create_branch_and_mr
+
+        expect(bodies.first[:reviewer_ids]).to eq([41, 42])
+      end
+    end
+
+    context 'when no owner-team member resolves' do
+      before do
+        allow(resolver).to receive(:owner_team_reviewer).and_return(nil)
+      end
+
+      it 'still opens the metadata MR without reviewers', :aggregate_failures do
+        create_branch_and_mr
+
+        expect(titles).to contain_exactly(a_string_starting_with('metadata: '))
+        expect(bodies.first).not_to have_key(:reviewer_ids)
+      end
+    end
+
+    # A team MR merged after the run evaluated the file, so the checkpoint would describe a different body.
+    context 'when the distilled file changed on the base branch since it was evaluated' do
+      let(:merged) { evaluated.sub('Keep me', 'Merged change') }
+
+      before do
+        File.write(path_for('qa'), merged)
+      end
+
+      it 'leaves the file untouched and opens no metadata MR', :aggregate_failures do
+        expect { create_branch_and_mr }.to output(/qa: distilled file changed on master/).to_stderr
+
+        expect(File.read(path_for('qa'))).to eq(merged)
+        expect(titles).to be_empty
+      end
+    end
+  end
+
   # Coverage for the decoupled reconcile path: the working tree already holds
   # the fences regenerated by pure projection from merged master (done by
   # Sync#reconcile_duo_instructions_fences), and this helper cuts a fresh branch off

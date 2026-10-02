@@ -1052,7 +1052,7 @@ principles:
 
   webhooks:
     description: Webhook definitions, triggering, and payload building for project, group, and system webhooks
-    group: Import
+    group: Webhooks
     owner_team: '@gitlab-com/create-team/import'
     file_filters:
       # Models

@@ -51,15 +51,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:improved_review_email, project)
   end
 
-  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :reports, :discussions]
 
-  after_action :log_merge_request_show, only: [:show, :diffs]
+  after_action :log_merge_request_show, only: [:show, :diffs, :reports]
 
   feature_category :code_review_workflow, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :diffs, :toggle_award_emoji, :toggle_subscription, :update,
+    :show, :diffs, :reports, :toggle_award_emoji, :toggle_subscription, :update,
     :versions
   ]
 
@@ -77,6 +77,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :diffs,
     :diff_files_metadata,
     :diffs_stats,
+    :reports,
     :commits,
     :bulk_update,
     :edit,
@@ -121,6 +122,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return show_merge_request unless rapid_diffs_page_enabled?
 
     show_rapid_diffs
+  end
+
+  def reports
+    show_merge_request
   end
 
   def commits

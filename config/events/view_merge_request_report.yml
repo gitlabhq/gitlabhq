@@ -16,4 +16,6 @@ product_categories:
 milestone: '19.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230746
 tiers:
+  - free
+  - premium
   - ultimate

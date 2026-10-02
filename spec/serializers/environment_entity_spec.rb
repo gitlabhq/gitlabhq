@@ -135,4 +135,37 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
       expect(subject).not_to include(:rollout_status)
     end
   end
+
+  describe 'can_stop and can_force_stop' do
+    context 'when the environment is available' do
+      it 'allows only a regular stop' do
+        expect(subject).to include(can_stop: true, can_force_stop: false)
+      end
+    end
+
+    context 'when the environment is stopping' do
+      let(:environment) { create(:environment, :stopping, project: project) }
+
+      it 'allows only a forced stop' do
+        expect(subject).to include(can_stop: false, can_force_stop: true)
+      end
+    end
+
+    context 'when the environment is stopped' do
+      let(:environment) { create(:environment, :stopped, project: project) }
+
+      it 'allows neither' do
+        expect(subject).to include(can_stop: false, can_force_stop: false)
+      end
+    end
+
+    context 'when the user cannot stop the environment' do
+      let(:environment) { create(:environment, :stopping, project: project) }
+      let(:user) { create(:user, reporter_of: project) }
+
+      it 'allows neither' do
+        expect(subject).to include(can_stop: false, can_force_stop: false)
+      end
+    end
+  end
 end

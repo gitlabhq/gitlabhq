@@ -19,7 +19,6 @@ class PoolRepository < ApplicationRecord
 
   validates :organization, presence: true
 
-  scope :by_source_project, ->(project) { where(source_project: project) }
   scope :by_disk_path, ->(disk_path) { where(disk_path: disk_path) }
   scope :by_disk_path_and_shard_name, ->(disk_path, shard_name) do
     by_disk_path(disk_path)

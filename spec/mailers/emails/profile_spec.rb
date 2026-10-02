@@ -124,6 +124,27 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     context 'with SSH key that does not exist' do
       it { expect { Notify.new_ssh_key_email('foo') }.not_to raise_error }
     end
+
+    describe 'notification footer without a project', feature_category: :notifications do
+      subject(:footer_marker) do
+        Nokogiri::HTML(Notify.new_ssh_key_email(key.id).html_part.body.decoded)
+          .at_css('.footer span:contains("Notification message regarding")')&.text&.strip
+      end
+
+      it 'uses a random marker' do
+        expect(footer_marker).to match(/\ANotification message regarding #{Regexp.escape(user_url(key.user))} at \h{32}\z/)
+      end
+
+      context 'when randomize_notification_email_marker is disabled' do
+        before do
+          stub_feature_flags(randomize_notification_email_marker: false)
+        end
+
+        it 'does not add a marker' do
+          expect(footer_marker).to be_nil
+        end
+      end
+    end
   end
 
   describe 'user added gpg key' do

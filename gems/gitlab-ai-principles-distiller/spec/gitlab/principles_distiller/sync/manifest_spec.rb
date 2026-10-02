@@ -216,6 +216,79 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Manifest do
         expect { manifest.load }.not_to raise_error
       end
     end
+
+    # The publisher force-pushes its own tooling and metadata branches, so a team branch with the same suffix would be
+    # overwritten.
+    context 'when an explicit team_slug is reserved' do
+      let(:slug) { 'metadata' }
+      let(:manifest_yaml) do
+        <<~YAML
+          principles:
+            qa:
+              owner_team: '@org/qa'
+              team_slug: '#{slug}'
+              sources:
+                - path: doc/qa.md
+        YAML
+      end
+
+      it 'aborts naming the principle' do
+        expect { manifest.load }
+          .to raise_error(SystemExit)
+          .and output(/reserved branch suffix.*: qa/m).to_stderr
+      end
+
+      context 'when the slug normalizes to a reserved suffix' do
+        let(:slug) { ' Tooling! ' }
+
+        it 'rejects the normalized collision' do
+          expect { manifest.load }
+            .to raise_error(SystemExit)
+            .and output(/reserved branch suffix.*: qa/m).to_stderr
+        end
+      end
+    end
+
+    context 'when a derived team_slug is reserved' do
+      let(:manifest_yaml) do
+        <<~YAML
+          principles:
+            ci:
+              owner_team: '@org/tooling'
+              sources:
+                - path: doc/ci.md
+        YAML
+      end
+
+      it 'aborts naming the principle' do
+        expect { manifest.load }
+          .to raise_error(SystemExit)
+          .and output(/reserved branch suffix.*: ci/m).to_stderr
+      end
+    end
+
+    context 'when a shared owner has a safe explicit slug on one principle' do
+      let(:manifest_yaml) do
+        <<~YAML
+          principles:
+            ci:
+              owner_team: '@org/tooling'
+              sources:
+                - path: doc/ci.md
+            qa:
+              owner_team: '@org/tooling'
+              team_slug: developer-tooling
+              sources:
+                - path: doc/qa.md
+        YAML
+      end
+
+      it 'accepts the shared branch slug', :aggregate_failures do
+        expect { manifest.load }.not_to raise_error
+
+        expect(manifest.team_slug('@org/tooling')).to eq('developer-tooling')
+      end
+    end
   end
 
   describe '.source_file_exists?' do

@@ -122,7 +122,7 @@ export default {
     </p>
     <pre
       :class="[
-        'code code-syntax-highlight-theme highlight js-syntax-highlight gl-rounded-base',
+        'code code-syntax-highlight-theme highlight js-syntax-highlight gl-rounded-base gl-p-4',
         { 'gl-rounded-b-none': reviewingDocsPath },
       ]"
       data-testid="how-to-merge-instructions"
@@ -167,7 +167,7 @@ export default {
       {{ $options.i18n.steps.step4.help }}
     </p>
     <pre
-      class="code highlight js-syntax-highlight language-shell gl-rounded-base"
+      class="code highlight js-syntax-highlight language-shell gl-rounded-base gl-p-4"
       data-testid="how-to-merge-instructions"
       >{{ mergeInfo2 }}</pre>
   </gl-modal>

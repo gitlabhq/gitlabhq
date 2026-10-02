@@ -20288,15 +20288,11 @@
           "inputFields": [
             {
               "name": "userId",
-              "description": "Global ID of the user.",
+              "description": "Global ID of the user. Exactly one of `userId` or `username` must be provided.",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "UserID",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "UserID",
+                "ofType": null
               },
               "defaultValue": null
             },

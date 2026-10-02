@@ -58,6 +58,7 @@ module Ci
 
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
+    CREATED_RUNNER_TOKEN_PREFIX_PATTERN = /\A(?:[a-zA-Z0-9]+-)?#{Regexp.escape(CREATED_RUNNER_TOKEN_PREFIX)}/
     REGISTRATION_RUNNER_TOKEN_PREFIX = 'glrtr-'
 
     RUNNER_SHORT_SHA_LENGTH = 8
@@ -491,12 +492,7 @@ module Ci
 
       legacy_partition_prefix = legacy_partition_id_prefix_in_16_bit_encode
       start_index = if authenticated_user_registration_type?
-                      instance_prefix = ::Authn::TokenField::PrefixHelper.instance_prefix
-                      if instance_prefix.present? && token.starts_with?(instance_prefix)
-                        CREATED_RUNNER_TOKEN_PREFIX.length + "#{instance_prefix}-".length
-                      else
-                        CREATED_RUNNER_TOKEN_PREFIX.length
-                      end
+                      (token[CREATED_RUNNER_TOKEN_PREFIX_PATTERN] || CREATED_RUNNER_TOKEN_PREFIX).length
                     elsif token.start_with?(REGISTRATION_RUNNER_TOKEN_PREFIX)
                       REGISTRATION_RUNNER_TOKEN_PREFIX.length
                     else

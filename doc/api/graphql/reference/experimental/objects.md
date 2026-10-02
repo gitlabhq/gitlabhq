@@ -695,7 +695,7 @@ Paginated collection of [`AiCatalogBuiltInTool`](#aicatalogbuiltintool). See [St
 
 ## `AiCatalogCustomAndFoundationalItemConnection`
 
-Paginated collection of `AiCatalogCustomAndFoundationalItem`. See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+Paginated collection of [`AiCatalogCustomAndFoundationalItem`](unions.md#aicatalogcustomandfoundationalitem). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
 
 ## `AiCatalogFlow`
 
@@ -963,10 +963,10 @@ Category of suggested questions for GitLab Duo Chat.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `contextual` | [`Boolean!`](scalars.md#boolean) | Whether the questions are about the resource on the current page. At most one category is contextual, and it is returned first. |
-| `key` | [`String!`](scalars.md#string) | Stable identifier of the category. The type of the current page for contextual categories, for example `merge_request` or `blob`, and the topic for static ones, for example `security`. |
+| `contextual` | [`Boolean!`](scalars.md#boolean) | Indicates whether the questions are about the resource on the current page. At most one category is contextual, and the agent category, when present, is returned before it. |
+| `key` | [`String!`](scalars.md#string) | Stable identifier of the category. `agent` for the agent category, the current page type for contextual categories, for example `merge_request` or `blob`, and the topic for static ones, for example `security`. |
 | `questions` | [`[String!]!`](scalars.md#string) | Suggested questions in the category. |
-| `title` | [`String!`](scalars.md#string) | Display title of the category, for example the reference of the current resource. |
+| `title` | [`String!`](scalars.md#string) | Display title of the category, for example the name of the selected agent or the reference of the current resource. |
 
 ## `AiConversationsThread`
 
@@ -1191,6 +1191,7 @@ Aggregated AI governance dashboard metrics.
 | ---- | ---- | ----------- |
 | `agents` | [`AiGovernanceKpi`](#aigovernancekpi) | Distinct AI agent instances with sessions in the timeframe. Chat conversations are not counted. |
 | `connectedAgents` | [`[AiGovernanceConnectedAgent!]`](#aigovernanceconnectedagent) | Registered external (Connected) agents by type, ordered by registered machines. Empty when `agentClass` is `INTERNAL_DAP`. <br><br> <strong>Arguments for `connectedAgents`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of agent types to return. Defaults to 5, maximum 20.</dd></dl> |
+| `sessionDistribution` | [`[AiGovernanceSessionDistribution!]`](#aigovernancesessiondistribution) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Sessions in the timeframe grouped by flow type for GitLab Duo sessions and by agent type for external sessions, ordered by session count. Returns the top 10. Missing names are reported as `unknown`. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. |
 | `sessions` | [`AiGovernanceKpi`](#aigovernancekpi) | AI sessions in the timeframe, including Duo Chat conversations. |
 | `topProjects` | [`[AiGovernanceProjectActivity!]`](#aigovernanceprojectactivity) | Projects with the most AI sessions in the timeframe, ordered by session count. Sessions attached to a namespace rather than a project are not counted. <br><br> <strong>Arguments for `topProjects`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of projects to return. Defaults to 5, maximum 20.</dd></dl> |
 | `topUsers` | [`[AiGovernanceUserActivity!]`](#aigovernanceuseractivity) | Users with the most AI sessions in the timeframe, ordered by session count. <br><br> <strong>Arguments for `topUsers`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of users to return. Defaults to 5, maximum 20.</dd></dl> |
@@ -1205,6 +1206,48 @@ AI session activity in a single project.
 | ---- | ---- | ----------- |
 | `project` | [`Project`](#project) | Project the sessions ran in. Resolves to null when the current user cannot read the project. |
 | `sessionCount` | [`Int`](scalars.md#int) | Number of AI sessions in the project in the selected timeframe. |
+
+## `AiGovernanceSession`
+
+AI session recorded for AI governance, from GitLab Duo or an external agent.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `agentType` | [`String`](scalars.md#string) | Type of the agent that ran the session, for example `claude-code`. Values differ between sources. |
+| `downloadPath` | [`String`](scalars.md#string) | Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo. |
+| `flowType` | [`String`](scalars.md#string) | Flow type of the session, for example `chat`. Values differ between sources. |
+| `id` | [`AiGovernanceSessionID!`](scalars.md#aigovernancesessionid) | Global ID of the session. |
+| `project` | [`Project`](#project) | Project the session belongs to. Null for namespace-scoped sessions, or when the current user cannot read the project. |
+| `sessionId` | [`String`](scalars.md#string) | ID of the session in its source. For GitLab Duo sessions, the Duo workflow ID. For other sources, the session ID from the external agent. |
+| `sessionStartedAt` | [`Time!`](scalars.md#time) | Timestamp of when the session started. |
+| `source` | [`AiGovernanceSessionSource!`](enums.md#aigovernancesessionsource) | Source that recorded the session. |
+| `triggeredBy` | [`UserCore`](#usercore) | User who initiated the session. |
+| `webPath` | [`String`](scalars.md#string) | Path of the session page. Null for sessions from sources other than GitLab Duo, and for GitLab Duo sessions without a project. |
+
+## `AiGovernanceSessionConnection`
+
+Paginated collection of [`AiGovernanceSession`](#aigovernancesession). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+
+### Extra fields {.no_toc}
+
+This connection has additional fields beyond the [standard connection fields](#standard-connection-fields).
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `count` | [`Int!`](scalars.md#int) | Total count of collection. Returns limit + 1 for counts greater than the limit. <br><br> <strong>Arguments for `count`:</strong> <dl><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Limit applied to the count query, returns limit + 1. When not provided, returns the exact count.</dd></dl> |
+
+## `AiGovernanceSessionDistribution`
+
+Number of AI sessions for one flow type or agent type.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `count` | [`Int!`](scalars.md#int) | Number of sessions in the timeframe. |
+| `name` | [`String!`](scalars.md#string) | Flow type for GitLab Duo sessions, agent type for external sessions. |
 
 ## `AiGovernanceUserActivity`
 
@@ -1301,17 +1344,6 @@ Requires ClickHouse. Premium and Ultimate only.
 | `rootCauseAnalysisUsersCount` | [`Int`](scalars.md#int) | Number of users using troubleshoot within a failed pipeline. |
 | `troubleshoot` | [`troubleshootJobMetrics`](#troubleshootjobmetrics) | Troubleshoot job metrics. |
 
-## `AiMetricsBasic`
-
-AI-related metrics with three months of data retention.
-Premium and Ultimate only.
-
-### Fields {.no_toc}
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `codeSuggestions` | [`codeSuggestionMetricsBasic`](#codesuggestionmetricsbasic) | Code Suggestions metrics. |
-
 ## `AiModelSelectionAllowList`
 
 Model selection allowlist for an AI feature.
@@ -1377,6 +1409,7 @@ Model offered for Model Selection.
 | `modelProvider` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Provider for the model, e.g "OpenAI". |
 | `name` | [`String!`](scalars.md#string) | Humanized name for the offered model, e.g "Chat GPT 4o". |
 | `ref` | [`String!`](scalars.md#string) | Identifier for the offered model. |
+| `requiresPaidCredits` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Whether GitLab Credits must be purchased before the current user can use this model. |
 
 ## `AiModelSelectionOfferedModelConnection`
 
@@ -1918,7 +1951,7 @@ Represents the approval policy.
 | `policyConfigurationId` | [`SecurityOrchestrationPolicyConfigurationID`](scalars.md#securityorchestrationpolicyconfigurationid) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>ID of the policy configuration the policy belongs to. |
 | `policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | `roleApprovers` | [`[MemberAccessLevelName!]`](enums.md#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `updatedAt` | [`Time!`](scalars.md#time) | Timestamp of when the policy YAML was last updated. |
 | `userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
 | `yaml` | [`String!`](scalars.md#string) | YAML definition of the policy. |
@@ -1937,7 +1970,7 @@ Represents policy fields related to the approval policy.
 | `deprecatedProperties` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 16.10.<br/><br/>All deprecated properties in the policy. |
 | `enforcementType` | [`PolicyEnforcementType`](enums.md#policyenforcementtype) | Enforcement type of the policy. Can be "enforce" or "warn". |
 | `roleApprovers` | [`[MemberAccessLevelName!]`](enums.md#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
 
 ## `ApprovalPolicyConnection`
@@ -2251,7 +2284,7 @@ File of an npm version in an Artifact Registry repository.
 
 ## `ArtifactRegistryPackageConnection`
 
-Paginated collection of `ArtifactRegistryPackage`. See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+Paginated collection of [`ArtifactRegistryPackage`](unions.md#artifactregistrypackage). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
 
 ## `ArtifactRegistryRemoteSettings`
 
@@ -2327,7 +2360,7 @@ Repository in Artifact Registry, with the packages or images it holds.
 | `lastUpdatedAt` | [`Time`](scalars.md#time) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Time the repository content last changed. Null when the content never changed. |
 | `manifest` | [`ArtifactRegistryManifestDetails`](#artifactregistrymanifestdetails) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Single container manifest the repository holds, by digest and the ID of the image it belongs to. Can be selected once per operation, counting every selection of the field. `null` while the `artifact_registry_ui` feature flag is off, resolved without a read. Returns `null` for a repository holding packages, for a manifest that is gone, and for a blank or dot-segment image ID or digest, which resolves without a read. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. <br><br> <strong>Arguments for `manifest`:</strong> <dl><dt>`artifactId` ([`ID!`](scalars.md#id))</dt><dd>ID of the image the manifest belongs to, in Artifact Registry.</dd><dt>`digest` ([`String!`](scalars.md#string))</dt><dd>Digest of the manifest in Artifact Registry.</dd></dl> |
 | `name` | [`String!`](scalars.md#string) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Name of the repository, unique within its namespace. |
-| `package` | `ArtifactRegistryPackageDetails` | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Single package the repository holds, by Artifact Registry ID. Can be selected once per operation. Returns `null` for a repository holding images and for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. <br><br> <strong>Arguments for `package`:</strong> <dl><dt>`id` ([`ID!`](scalars.md#id))</dt><dd>ID of the package in Artifact Registry.</dd></dl> |
+| `package` | [`ArtifactRegistryPackageDetails`](unions.md#artifactregistrypackagedetails) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Single package the repository holds, by Artifact Registry ID. Can be selected once per operation. Returns `null` for a repository holding images and for a package that is gone. Also `null` when Artifact Registry rejects the read: silently for a 401, 403, or 404, and alongside a top-level error for a 429, a 5xx, or any other 4xx. <br><br> <strong>Arguments for `package`:</strong> <dl><dt>`id` ([`ID!`](scalars.md#id))</dt><dd>ID of the package in Artifact Registry.</dd></dl> |
 | `packages` | [`ArtifactRegistryPackageConnection`](#artifactregistrypackageconnection) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Packages the repository holds, ordered by name. Can be selected once per operation, so one operation reads packages for one repository. Returns `null` for a virtual repository, for a repository holding images, for a repository that is gone, and when Artifact Registry rejects the read. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `settings` | [`ArtifactRegistryRemoteSettings`](#artifactregistryremotesettings) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Upstream configuration Artifact Registry returned for the repository. Null when it returned none, so null on a hosted or virtual repository. |
 | `sizeBytes` | [`BigInt!`](scalars.md#bigint) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Storage the repository occupies, in bytes. Buffered, so it can lag. |
@@ -2456,7 +2489,7 @@ Single version of a package in an Artifact Registry repository, reached by ID an
 
 ## `ArtifactRegistryVersionFileConnection`
 
-Paginated collection of `ArtifactRegistryVersionFile`. See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+Paginated collection of [`ArtifactRegistryVersionFile`](unions.md#artifactregistryversionfile). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
 
 ## `ArtifactRegistryVersionStatistics`
 
@@ -4152,7 +4185,7 @@ Compute usage data for hosted runners on GitLab Dedicated.
 | `computeMinutesUsage` | [`Float!`](scalars.md#float) | Total compute minutes used across all namespaces. |
 | `durationMinutes` | [`Float!`](scalars.md#float) | Total duration in minutes of runner usage. |
 | `durationSeconds` | [`Int!`](scalars.md#int) | Total duration in seconds of runner usage. Values are rounded down to the nearest integer. |
-| `rootNamespace` | `NamespaceUnion` | Namespace associated with the usage data. Null for instance aggregate data. |
+| `rootNamespace` | [`NamespaceUnion`](unions.md#namespaceunion) | Namespace associated with the usage data. Null for instance aggregate data. |
 
 ## `CiDedicatedHostedRunnerUsageConnection`
 
@@ -4630,7 +4663,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | `direction` | [`String`](scalars.md#string) | Deprecated in GitLab 18.0. Outbound job token scope is being removed. This field can only be INBOUND. |
 | `jobTokenPolicies` | [`[CiJobTokenScopePolicies!]`](enums.md#cijobtokenscopepolicies) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>List of policies for the entry. |
 | `sourceProject` | [`Project!`](#project) | Project that owns the allowlist entry. |
-| `target` | `CiJobTokenScopeTarget` | Group or project allowed by the entry. |
+| `target` | [`CiJobTokenScopeTarget`](unions.md#cijobtokenscopetarget) | Group or project allowed by the entry. |
 
 ## `CiJobTokenScopeAllowlistEntryConnection`
 
@@ -5535,10 +5568,10 @@ Represents finding.
 | `aiResolutionEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.6.<br/><br/>Indicates whether the specific finding can be resolved with AI. |
 | `autoSeverityOverride` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>The severity that will be automatically applied after merge by a severity override policy. Returns `null` if no severity override policy matches. |
 | `description` | [`String`](scalars.md#string) | Description of the vulnerability finding. |
-| `details` | `[VulnerabilityDetail!]!` | Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Details of the vulnerability finding. |
+| `details` | [`[VulnerabilityDetail!]!`](unions.md#vulnerabilitydetail) | Status: Experiment. Introduced in GitLab 17.6.<br/><br/>Details of the vulnerability finding. |
 | `foundByPipelineIid` | [`String`](scalars.md#string) | IID of the pipeline. |
 | `identifiers` | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | Status: Experiment. Introduced in GitLab 16.3.<br/><br/>Identifiers of the vulnerability finding. |
-| `location` | `VulnerabilityLocation` | Status: Experiment. Introduced in GitLab 16.3.<br/><br/>Location of the vulnerability finding. |
+| `location` | [`VulnerabilityLocation`](unions.md#vulnerabilitylocation) | Status: Experiment. Introduced in GitLab 16.3.<br/><br/>Location of the vulnerability finding. |
 | `matchesAutoDismissPolicy` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.9.<br/><br/>Indicates whether the finding matches an auto-dismiss policy. |
 | `scanner` | [`ComparedSecurityReportScanner`](#comparedsecurityreportscanner) | Compared report vulnerability scanner. |
 | `severity` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Severity of the vulnerability finding. |
@@ -5635,7 +5668,7 @@ A security policy scoped to a compliance framework.
 | ---- | ---- | ----------- |
 | `hasActiveProjects` | [`Boolean!`](scalars.md#boolean) | Whether the policy has at least one non-archived assigned project. |
 | `name` | [`String!`](scalars.md#string) | Name of the security policy. |
-| `source` | `SecurityPolicySource` | Source of the security policy. |
+| `source` | [`SecurityPolicySource`](unions.md#securitypolicysource) | Source of the security policy. |
 | `type` | [`String`](scalars.md#string) | Type of the security policy. |
 
 ## `ComplianceFrameworkPolicySummaryConnection`
@@ -6398,7 +6431,7 @@ Represents a control expression.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `expression` | `ExpressionValue!` | Expression details for the control. |
+| `expression` | [`ExpressionValue!`](unions.md#expressionvalue) | Expression details for the control. |
 | `id` | [`ID!`](scalars.md#id) | ID for the control. |
 | `name` | [`String!`](scalars.md#string) | Name of the control. |
 
@@ -6425,7 +6458,7 @@ Represents a vulnerability. The connection type is countable.
 | `dependencies` | [`DependencyConnection!`](#dependencyconnection) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Dependencies for the vulnerability. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `dependencies`:</strong> <dl><dt>`componentIds` ([`[SbomComponentID!]`](scalars.md#sbomcomponentid))</dt><dd>Filter dependencies by component IDs.</dd><dt>`componentNames` ([`[String!]`](scalars.md#string))</dt><dd>Filter dependencies by component names.</dd><dt>`componentVersions` ([`[String!]`](scalars.md#string))</dt><dd>Filter dependencies by component versions.</dd><dt>`licenses` ([`[String!]`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Filter dependencies by SPDX license identifiers.</dd><dt>`malware` ([`Boolean`](scalars.md#boolean))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.</dd><dt>`notComponentVersions` ([`[String!]`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 18.1.<br/><br/>Filter dependencies to exclude the specified component versions.</dd><dt>`packageManagers` ([`[PackageManager!]`](enums.md#packagemanager))</dt><dd>Filter dependencies by package managers.</dd><dt>`policyViolations` ([`[PolicyViolations!]`](enums.md#policyviolations))</dt><dd>Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Filter by security policy violations. Cannot be combined with the `malware` argument.</dd><dt>`sort` ([`DependencySort`](enums.md#dependencysort))</dt><dd>Sort dependencies by given criteria.</dd><dt>`sourceTypes` ([`[SbomSourceType!]`](enums.md#sbomsourcetype))</dt><dd>Filter dependencies by source type.</dd><dt>`trackedRefIds` ([`[SecurityProjectTrackedContextID!]`](scalars.md#securityprojecttrackedcontextid))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled.</dd><dt>`trackedRefsScope` ([`SecurityTrackedRefScope`](enums.md#securitytrackedrefscope))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled.</dd></dl> |
 | `description` | [`String`](scalars.md#string) | Description of the vulnerability. |
 | `descriptionHtml` | [`String`](scalars.md#string) | GitLab Flavored Markdown rendering of `description`. |
-| `details` | `[VulnerabilityDetail!]!` | Details of the vulnerability. |
+| `details` | [`[VulnerabilityDetail!]!`](unions.md#vulnerabilitydetail) | Details of the vulnerability. |
 | `detectedAt` | [`Time!`](scalars.md#time) | Timestamp of when the vulnerability was first detected. |
 | `discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `dismissalReason` | [`VulnerabilityDismissalReason`](enums.md#vulnerabilitydismissalreason) | Reason for dismissal. Returns `null` for states other than `dismissed`. |
@@ -6447,7 +6480,7 @@ Represents a vulnerability. The connection type is countable.
 | `latestNonClosedMergeRequest` | [`MergeRequest`](#mergerequest) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Latest non-closed merge request linked to fix the vulnerability. |
 | `latestSecurityReportFinding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Latest security report finding for the vulnerability. On large projects, the field can time out and return null. Clients should check the top-level errors array for timeout errors, even when the HTTP response status is 200. |
 | `links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
-| `location` | `VulnerabilityLocation` | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
+| `location` | [`VulnerabilityLocation`](unions.md#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | `malware` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. |
 | `mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
 | `mergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests that are linked to fix the vulnerability. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
@@ -7224,7 +7257,13 @@ Aggregate dependency firewall enforcement activity totals for a group or project
 | `allowed` | [`Int!`](scalars.md#int) | Total allowed (pass-through) enforcement events in the window. |
 | `blocked` | [`Int!`](scalars.md#int) | Total blocked enforcement events in the window. |
 | `blockingRules` | [`Int!`](scalars.md#int) | Number of active rules in enforce (blocking) mode. |
+| `licenseRisksPrevented` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Number of distinct package versions blocked by license rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| `licenseRisksWarnedOnly` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Number of distinct package versions warned but never blocked by license rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| `maliciousPackagesPrevented` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Number of distinct package versions blocked by malicious-package rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| `maliciousPackagesWarnedOnly` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Number of distinct package versions warned but never blocked by malicious-package rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
 | `totalTriggers` | [`Int!`](scalars.md#int) | Total enforcement events (blocked + warned + allowed) in the window. |
+| `vulnerabilitiesPrevented` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Number of distinct package versions blocked by vulnerability or risk-severity rules. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
+| `vulnerabilitiesPreventedBySeverity` | [`[DependencyFirewallSeverityCount!]`](#dependencyfirewallseveritycount) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Breakdown of prevented packages by their highest carried severity. Sums to the prevented total. Counts from `from` up to now; `to` does not apply. Null when not available, including for groups. |
 | `warned` | [`Int!`](scalars.md#int) | Total warned enforcement events in the window. |
 | `warningRules` | [`Int!`](scalars.md#int) | Number of active rules in warn mode. |
 
@@ -7236,7 +7275,7 @@ Represents policy fields related to the dependency firewall policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 
 ## `DependencyFirewallRuleActivity`
 
@@ -7255,7 +7294,7 @@ Block and warn enforcement activity for a single dependency firewall policy rule
 | `policyName` | [`String`](scalars.md#string) | Name of the policy the rule belongs to. |
 | `ruleType` | [`DependencyFirewallRuleType`](enums.md#dependencyfirewallruletype) | Type of the rule. |
 | `scope` | [`PolicyScope`](#policyscope) | Scope of the policy the rule belongs to. |
-| `source` | `SecurityPolicySource` | Source of the policy, indicating whether it is inherited from an ancestor group. |
+| `source` | [`SecurityPolicySource`](unions.md#securitypolicysource) | Source of the policy, indicating whether it is inherited from an ancestor group. |
 | `sourceRelationship` | [`SecurityPolicyRelationType`](enums.md#securitypolicyrelationtype) | Where the policy is defined relative to the viewed container. |
 | `warnedCount` | [`Int!`](scalars.md#int) | Number of warned enforcement events for the rule in the window. |
 
@@ -7269,6 +7308,17 @@ When and by whom a dependency firewall policy was last modified.
 | ---- | ---- | ----------- |
 | `at` | [`Time`](scalars.md#time) | Timestamp of when the policy was last modified. |
 | `by` | [`UserCore`](#usercore) | User who last modified the policy. |
+
+## `DependencyFirewallSeverityCount`
+
+Count of distinct prevented packages at one severity level.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `count` | [`Int!`](scalars.md#int) | Number of distinct packages whose highest carried severity matches the severity field. |
+| `severity` | [`VulnerabilitySeverity!`](enums.md#vulnerabilityseverity) | Severity level of the count. |
 
 ## `DependencyListExportPartUploadRegistry`
 
@@ -8155,7 +8205,7 @@ Aggregated summary of changes.
 | ---- | ---- | ----------- |
 | `createdAt` | [`Time!`](scalars.md#time) | Timestamp of the discussion's creation. |
 | `id` | [`DiscussionID!`](scalars.md#discussionid) | ID of the discussion. |
-| `noteable` | `NoteableType` | Object which the discussion belongs to. |
+| `noteable` | [`NoteableType`](unions.md#noteabletype) | Object which the discussion belongs to. |
 | `notes` | [`NoteConnection!`](#noteconnection) | All notes in the discussion. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `replyId` | [`DiscussionID!`](scalars.md#discussionid) | ID used to reply to the discussion. |
 | `resolvable` | [`Boolean!`](scalars.md#boolean) | Indicates if the object can be resolved. |
@@ -8403,6 +8453,7 @@ GitLab Duo Agent Platform session.
 | `aiCatalogItemVersionId` | [`AiCatalogItemVersionID`](scalars.md#aicatalogitemversionid) | Status: Experiment. Introduced in GitLab 18.4.<br/><br/>ID of the AI catalog item version that triggered the workflow. |
 | `allExecutorLogsUrls` | [`[String!]`](scalars.md#string) | List of all the executor logs for the workflow. |
 | `allowAgentToRequestUser` | [`Boolean`](scalars.md#boolean) | Allow the agent to request user input. |
+| `allowClientInjectedMcpTools` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Indicates MCP tools supplied by the client skip the tool call approval gate. Toggled by the `dap_allow_client_injected_mcp_tools` feature flag; returns `false` when it is disabled. |
 | `archived` | [`Boolean`](scalars.md#boolean) | Archived due to retention policy. |
 | `auditEvents` | [`AiAuditEventConnection`](#aiauditeventconnection) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Audit events recorded for the session. Requires `read_agent_artifacts` on the workflow's project or namespace. Returns no events when the `agent_artifacts_page` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `createdAt` | [`Time!`](scalars.md#time) | Timestamp of when the session was created. |
@@ -8583,6 +8634,7 @@ Check permissions for the current user on a Duo workflow.
 | ---- | ---- | ----------- |
 | `deleteDuoWorkflow` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `delete_duo_workflow` on this resource. |
 | `readDuoWorkflow` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_duo_workflow` on this resource. |
+| `restartDuoWorkflow` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `restart_duo_workflow` on this resource. |
 | `resumeDuoWorkflow` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `resume_duo_workflow` on this resource. |
 | `updateDuoWorkflow` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `update_duo_workflow` on this resource. |
 
@@ -9295,7 +9347,7 @@ Representing an event.
 | `id` | [`ID!`](scalars.md#id) | ID of the event. |
 | `project` | [`Project`](#project) | Project of the event. |
 | `pushEventPayload` | [`PushEventPayload`](#pusheventpayload) | Payload of the push event, when the event represents a push. `null` for non-push events. |
-| `target` | `EventTargetType` | Target of the event. |
+| `target` | [`EventTargetType`](unions.md#eventtargettype) | Target of the event. |
 | `updatedAt` | [`Time!`](scalars.md#time) | When the event was updated. |
 
 ## `EventConnection`
@@ -9730,7 +9782,7 @@ Describes a usage event for the subscription.
 | `creditsUsed` | [`Float`](scalars.md#float) | GitLab Credits consumed on the date. |
 | `eventType` | [`String`](scalars.md#string) | Event type. |
 | `flowType` | [`String`](scalars.md#string) | User-friendly display name for the event flow type. |
-| `location` | `GitlabSubscriptionUsageEventLocation` | Event location: project or namespace. |
+| `location` | [`GitlabSubscriptionUsageEventLocation`](unions.md#gitlabsubscriptionusageeventlocation) | Event location: project or namespace. |
 | `locationId` | [`GlobalID`](scalars.md#globalid) | Global ID of the event location. Populated even when the referenced record is deleted or not visible to the user, unlike `location`. When both fields are present, they identify the same record. |
 | `sessionLink` | [`String`](scalars.md#string) | URL of the agent session associated with the event. |
 | `timestamp` | [`ISO8601DateTime`](scalars.md#iso8601datetime) | Date and time of the event. |
@@ -9854,7 +9906,7 @@ Describes any credit usage for a user during a trial.
 
 ## `GoogleCloudArtifactRegistryArtifactConnection`
 
-Paginated collection of `GoogleCloudArtifactRegistryArtifact`. See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+Paginated collection of [`GoogleCloudArtifactRegistryArtifact`](unions.md#googlecloudartifactregistryartifact). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
 
 ## `GoogleCloudArtifactRegistryDockerImage`
 
@@ -10053,8 +10105,8 @@ GPG signature for a signed commit.
 | `aiAuditEventsStorageEnabled` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Indicates whether AI audit events are stored for the group. |
 | `aiDomainSettings` | [`StringConnection`](#stringconnection) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>List of allowed or denied domains for AI features. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiDomainSettings`:</strong> <dl><dt>`domainSettingType` ([`AiDomainSettingType!`](enums.md#aidomainsettingtype))</dt><dd>Type of domain setting to retrieve.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Filter domains by substring match.</dd></dl> |
 | `aiGovernanceMetrics` | [`AiGovernanceMetrics`](#aigovernancemetrics) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled. <br><br> <strong>Arguments for `aiGovernanceMetrics`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Agent class to segment the metrics by. Defaults to ALL.</dd><dt>`timeframe` ([`AiGovernanceMetricsTimeframe`](enums.md#aigovernancemetricstimeframe))</dt><dd>Time window for the metrics. Defaults to LAST_7_DAYS.</dd></dl> |
+| `aiGovernanceSessions` | [`AiGovernanceSessionConnection`](#aigovernancesessionconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>AI sessions for the group, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiGovernanceSessions`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Filter sessions by agent class. Defaults to all agent classes.</dd><dt>`flowType` ([`String`](scalars.md#string))</dt><dd>Filter by flow type.</dd><dt>`not` ([`AiGovernanceSessionNegatedFilterInput`](input_objects.md#aigovernancesessionnegatedfilterinput))</dt><dd>Negated filter conditions.</dd><dt>`projectPath` ([`String`](scalars.md#string))</dt><dd>Filter by project full path.</dd><dt>`sessionStartedAfter` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or after the timestamp.</dd><dt>`sessionStartedBefore` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or before the timestamp.</dd><dt>`triggeredByUserId` ([`UserID`](scalars.md#userid))</dt><dd>Filter to sessions triggered by the user with the given global ID.</dd></dl> |
 | `aiMetrics` | [`AiMetrics`](#aimetrics) | Status: Experiment. Introduced in GitLab 16.11.<br/><br/>AI-related metrics. <br><br> <strong>Arguments for `aiMetrics`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month.</dd></dl> |
-| `aiMetricsBasic` | [`AiMetricsBasic`](#aimetricsbasic) | Status: Experiment. Introduced in GitLab 18.5.<br/><br/>AI-related metrics with three months of data retention. <br><br> <strong>Arguments for `aiMetricsBasic`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month.</dd></dl> |
 | `aiSettings` | [`AiNamespaceSettings`](#ainamespacesettings) | Status: Experiment. Introduced in GitLab 18.8.<br/><br/>AI settings for the namespace. |
 | `aiUsageData` | [`AiUsageData`](#aiusagedata) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>AI-related data. |
 | `aiUserMetrics` | [`AiUserMetricsConnection`](#aiusermetricsconnection) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>AI-related user metrics. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiUserMetrics`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month. ClickHouse needs to be enabled when passing this param.</dd><dt>`sort` ([`AiUserMetricsSort`](enums.md#aiusermetricssort))</dt><dd>Sort AI user metrics.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month. ClickHouse needs to be enabled when passing this param.</dd></dl> |
@@ -10186,6 +10238,8 @@ GPG signature for a signed commit.
 | `milestones` | [`MilestoneConnection`](#milestoneconnection) | Milestones of the group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `milestones`:</strong> <dl><dt>`containingDate` ([`Time`](scalars.md#time))</dt><dd>Date the milestone contains.</dd><dt>`ids` ([`[ID!]`](scalars.md#id))</dt><dd>Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`.</dd><dt>`includeAncestors` ([`Boolean`](scalars.md#boolean))</dt><dd>Include milestones from all parent groups.</dd><dt>`includeDescendants` ([`Boolean`](scalars.md#boolean))</dt><dd>Include milestones from all subgroups and subprojects.</dd><dt>`searchTitle` ([`String`](scalars.md#string))</dt><dd>Search string for the title.</dd><dt>`sort` ([`MilestoneSort`](enums.md#milestonesort))</dt><dd>Sort milestones by the criteria.</dd><dt>`state` ([`MilestoneStateEnum`](enums.md#milestonestateenum))</dt><dd>Filter milestones by state.</dd><dt>`timeframe` ([`Timeframe`](input_objects.md#timeframe))</dt><dd>List items overlapping the given timeframe.</dd><dt>`title` ([`String`](scalars.md#string))</dt><dd>Title of the milestone.</dd></dl> |
 | `name` | [`String`](scalars.md#string) | Name of the group. |
 | `namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
+| `orbit` | [`OrbitNamespace`](#orbitnamespace) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Orbit data of the group. Returns null when Orbit is not available to the current user. |
+| `orbitTrial` | [`OrbitTrial`](#orbittrial) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can only be resolved for one group in any single request. |
 | `organizationEditPath` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 17.1.<br/><br/>Path for editing group at the organization level. |
 | `organizationStateCounts` | [`OrganizationStateCounts`](#organizationstatecounts) | Counts of organizations by status for the group. <br><br> <strong>Arguments for `organizationStateCounts`:</strong> <dl><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search term to find organizations with.</dd><dt>`state` ([`CustomerRelationsOrganizationState`](enums.md#customerrelationsorganizationstate))</dt><dd>State of the organizations to search for.</dd></dl> |
 | `organizations` | [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizationconnection) | Find organizations of this group. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `organizations`:</strong> <dl><dt>`ids` ([`[CustomerRelationsOrganizationID!]`](scalars.md#customerrelationsorganizationid))</dt><dd>Filter organizations by IDs.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search term used to find organizations with.</dd><dt>`sort` ([`OrganizationSort`](enums.md#organizationsort))</dt><dd>Criteria to sort organizations by.</dd><dt>`state` ([`CustomerRelationsOrganizationState`](enums.md#customerrelationsorganizationstate))</dt><dd>State of the organization to search for.</dd></dl> |
@@ -10217,7 +10271,7 @@ GPG signature for a signed commit.
 | `requireTwoFactorAuthentication` | [`Boolean`](scalars.md#boolean) | Indicates if all users in the group are required to set up two-factor authentication. |
 | `rootNamespace` | [`Namespace!`](#namespace) | Top-level namespace of the namespace. |
 | `rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
-| `runnerCloudProvisioning` | `CiRunnerCloudProvisioning` | Status: Experiment. Introduced in GitLab 16.10.<br/><br/>Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance. <br><br> <strong>Arguments for `runnerCloudProvisioning`:</strong> <dl><dt>`cloudProjectId` ([`GoogleCloudProject!`](scalars.md#googlecloudproject))</dt><dd>Identifier of the cloud project.</dd><dt>`provider` ([`CiRunnerCloudProvider!`](enums.md#cirunnercloudprovider))</dt><dd>Identifier of the cloud provider.</dd></dl> |
+| `runnerCloudProvisioning` | [`CiRunnerCloudProvisioning`](unions.md#cirunnercloudprovisioning) | Status: Experiment. Introduced in GitLab 16.10.<br/><br/>Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance. <br><br> <strong>Arguments for `runnerCloudProvisioning`:</strong> <dl><dt>`cloudProjectId` ([`GoogleCloudProject!`](scalars.md#googlecloudproject))</dt><dd>Identifier of the cloud project.</dd><dt>`provider` ([`CiRunnerCloudProvider!`](enums.md#cirunnercloudprovider))</dt><dd>Identifier of the cloud provider.</dd></dl> |
 | `runners` | [`CiRunnerConnection`](#cirunnerconnection) | Find runners visible to the current user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `runners`:</strong> <dl><dt>`active` ([`Boolean`](scalars.md#boolean))</dt><dd>Deprecated in GitLab 14.8. Renamed. Use `paused` instead.</dd><dt>`creatorId` ([`UserID`](scalars.md#userid))</dt><dd>Filter runners by creator ID.</dd><dt>`creatorUsername` ([`String`](scalars.md#string))</dt><dd>Filter runners by creator username.</dd><dt>`membership` ([`CiRunnerMembershipFilter`](enums.md#cirunnermembershipfilter))</dt><dd>Control which runners to include in the results.</dd><dt>`ownerFullPath` ([`String`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 17.8.<br/><br/>Filter runners by owning project or group.</dd><dt>`paused` ([`Boolean`](scalars.md#boolean))</dt><dd>Filter runners by `paused` (true) or `active` (false) status.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Filter by full token or partial text in description field.</dd><dt>`sort` ([`CiRunnerSort`](enums.md#cirunnersort))</dt><dd>Sort order of results.</dd><dt>`status` ([`CiRunnerStatus`](enums.md#cirunnerstatus))</dt><dd>Filter runners by status.</dd><dt>`tagList` ([`[String!]`](scalars.md#string))</dt><dd>Filter by tags associated with the runner (comma-separated or array).</dd><dt>`type` ([`CiRunnerType`](enums.md#cirunnertype))</dt><dd>Filter runners by type.</dd><dt>`upgradeStatus` ([`CiRunnerUpgradeStatus`](enums.md#cirunnerupgradestatus))</dt><dd>Filter by upgrade status.</dd><dt>`versionPrefix` ([`String`](scalars.md#string))</dt><dd>Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'.</dd></dl> |
 | `savedReplies` | [`GroupSavedReplyConnection`](#groupsavedreplyconnection) | Saved replies available to the group. This field can only be resolved for one group in any single request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `savedReplies`:</strong> <dl><dt>`includeAncestorGroups` ([`Boolean`](scalars.md#boolean))</dt><dd>Include saved replies from parent groups.</dd></dl> |
 | `savedReply` | [`GroupSavedReply`](#groupsavedreply) | Saved reply in the group. This field can only be resolved for one group in any single request. <br><br> <strong>Arguments for `savedReply`:</strong> <dl><dt>`id` ([`GroupsSavedReplyID!`](scalars.md#groupssavedreplyid))</dt><dd>Global ID of a saved reply.</dd></dl> |
@@ -10550,6 +10604,8 @@ Limited group data accessible to users without full group read access (e.g. non-
 | `readCrmContact` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_crm_contact` on this resource. |
 | `readCrmOrganization` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_crm_organization` on this resource. |
 | `readGroup` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_group` on this resource. |
+| `readOrbitTrial` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>If `true`, the user can perform `read_orbit_trial` on this resource. |
+| `readProAiAnalytics` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>If `true`, the user can perform `read_pro_ai_analytics` on this resource. |
 | `readRunnerCloudProvisioningInfo` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 18.8.<br/><br/>If `true`, the user can perform `read_runner_cloud_provisioning_info` on this resource. |
 | `readSecurityScanProfiles` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>If `true`, the user can perform `read_security_scan_profiles` on the top-level namespace of this resource. Security scan profiles belong to the top-level namespace, so this ability is evaluated on the root ancestor rather than on this resource. |
 | `removeGroup` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `remove_group` on this resource. |
@@ -11460,7 +11516,7 @@ This connection has additional fields beyond the [standard connection fields](#s
 
 ## `JobNeedUnionConnection`
 
-Paginated collection of `JobNeedUnion`. See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+Paginated collection of [`JobNeedUnion`](unions.md#jobneedunion). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
 
 ## `JobPermissions`
 
@@ -12121,7 +12177,7 @@ Paginated collection of [`MergeAccessLevel`](#mergeaccesslevel). See [Standard c
 | `resourceLabelEvents` | [`MergeRequestResourceLabelEventConnection`](#mergerequestresourcelabeleventconnection) | Label events of the merge request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `retargeted` | [`Boolean`](scalars.md#boolean) | Indicates if merge request was retargeted. |
 | `reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
-| `riskAssessment` | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Risk classification for the merge request. Ultimate only. |
+| `riskAssessment` | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Risk assessment for the merge request. Ultimate only. |
 | `securityAutoFix` | [`Boolean`](scalars.md#boolean) | Deprecated in GitLab 16.11. Security Auto Fix experiment feature was removed. It was always hidden behind `security_auto_fix` feature flag. |
 | `securityReportsUpToDateOnTargetBranch` | [`Boolean!`](scalars.md#boolean) | Indicates if the target branch security reports are out of date. |
 | `shouldBeRebased` | [`Boolean!`](scalars.md#boolean) | Indicates if the merge request will be rebased. |
@@ -12652,24 +12708,24 @@ This connection has additional fields beyond the [standard connection fields](#s
 
 ## `MergeRequestRiskAssessment`
 
-Risk classification for a merge request.
+Risk assessment for a merge request.
 
 ### Fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `assessedAt` | [`Time`](scalars.md#time) | When the classification completed. |
+| `assessedAt` | [`Time`](scalars.md#time) | When the assessment completed. |
 | `confidence` | [`Int`](scalars.md#int) | Confidence in the score, from 0 to 100. Derived from how much of the change could be measured and whether the signals agreed. |
 | `confidenceTier` | [`MergeRequestRiskConfidenceTier`](enums.md#mergerequestriskconfidencetier) | Tier derived from the confidence score. |
 | `contributingSignals` | [`[MergeRequestRiskContributingSignal!]!`](#mergerequestriskcontributingsignal) | What each signal contributed to the score. |
 | `domainTags` | [`[String!]!`](scalars.md#string) | Risk domains the change touches, used to route specialist review. |
-| `duoWorkflowId` | [`Int`](scalars.md#int) | ID of the Duo workflow session that produced the classification. |
+| `duoWorkflowId` | [`Int`](scalars.md#int) | ID of the Duo workflow session that produced the assessment. |
 | `missingSignals` | [`[MergeRequestRiskMissingSignal!]!`](#mergerequestriskmissingsignal) | Signals that could not be measured, which is why confidence may be low. |
 | `rationale` | [`String`](scalars.md#string) | Plain-language explanation of the assessment. |
 | `risk` | [`Int`](scalars.md#int) | Risk score from 0 to 100. |
 | `riskTier` | [`MergeRequestRiskTier`](enums.md#mergerequestrisktier) | Tier derived from the risk score. |
-| `stale` | [`Boolean!`](scalars.md#boolean) | Whether the merge request has changed since it was classified. Classification runs once, so this is a notice rather than a trigger to re-run. |
-| `status` | [`MergeRequestRiskAssessmentStatus!`](enums.md#mergerequestriskassessmentstatus) | Status of the classification. |
+| `stale` | [`Boolean!`](scalars.md#boolean) | Whether the merge request has changed since it was assessed. Assessment runs once, so this is a notice rather than a trigger to re-run. |
+| `status` | [`MergeRequestRiskAssessmentStatus!`](enums.md#mergerequestriskassessmentstatus) | Status of the assessment. |
 
 ## `MergeRequestRiskContributingSignal`
 
@@ -12681,7 +12737,7 @@ Contribution a single signal made to a merge request risk score.
 | ---- | ---- | ----------- |
 | `contribution` | [`Float!`](scalars.md#float) | Points the signal added to the overall score. |
 | `detail` | [`String`](scalars.md#string) | Human-readable explanation of the contribution. |
-| `label` | [`String`](scalars.md#string) | Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from. |
+| `label` | [`String`](scalars.md#string) | Human-readable name of the signal or claim. Null when the key matches neither a registered signal nor a risk domain. |
 | `signal` | [`String!`](scalars.md#string) | Name of the signal or claim. |
 
 ## `MergeRequestRiskMissingSignal`
@@ -12692,7 +12748,7 @@ A signal that could not be measured for a merge request risk assessment.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `label` | [`String`](scalars.md#string) | Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from. |
+| `label` | [`String`](scalars.md#string) | Human-readable name of the signal or claim. Null when the key matches neither a registered signal nor a risk domain. |
 | `signal` | [`String!`](scalars.md#string) | Name of the signal or claim. |
 
 ## `MergeRequestSavedView`
@@ -13608,6 +13664,107 @@ Active period time range for on-call rotation.
 | `endTime` | [`String`](scalars.md#string) | End of the rotation active period. |
 | `startTime` | [`String`](scalars.md#string) | Start of the rotation active period. |
 
+## `OrbitIndexingDomain`
+
+Indexing status of one Orbit domain.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `name` | [`String!`](scalars.md#string) | Name of the domain. |
+| `phase` | [`OrbitIndexingPhase`](enums.md#orbitindexingphase) | Indexing phase of the domain. |
+
+## `OrbitIndexingProjects`
+
+Indexing progress of the projects in a group or project.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `gaps` | [`Int`](scalars.md#int) | Number of projects that are not indexed. |
+| `indexed` | [`Int`](scalars.md#int) | Number of indexed projects. |
+| `totalKnown` | [`Int`](scalars.md#int) | Number of projects known to Orbit. |
+
+## `OrbitIndexingStatus`
+
+Indexing status of a group or project in Orbit.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `domains` | [`[OrbitIndexingDomain!]`](#orbitindexingdomain) | Indexing status of each domain. |
+| `phase` | [`OrbitIndexingPhase`](enums.md#orbitindexingphase) | Indexing phase of the group or project. |
+| `projects` | [`OrbitIndexingProjects`](#orbitindexingprojects) | Indexing progress of the projects in the group or project. |
+
+## `OrbitItemCountDomain`
+
+Number of indexed items in one Orbit domain.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `entities` | [`[OrbitItemCountEntity!]`](#orbititemcountentity) | Number of indexed items of each entity in the domain. |
+| `name` | [`String!`](scalars.md#string) | Name of the domain. |
+
+## `OrbitItemCountEntity`
+
+Number of indexed items of one Orbit entity.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `count` | [`BigInt`](scalars.md#bigint) | Number of indexed items of the entity. |
+| `name` | [`String!`](scalars.md#string) | Name of the entity. |
+
+## `OrbitItemCounts`
+
+Number of indexed items of a group or project in Orbit.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `domains` | [`[OrbitItemCountDomain!]`](#orbititemcountdomain) | Number of indexed items in each domain. |
+
+## `OrbitNamespace`
+
+Orbit data of a group or project.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `indexingStatus` | [`OrbitIndexingStatus`](#orbitindexingstatus) | Indexing status of the group or project. |
+| `itemCounts` | [`OrbitItemCounts`](#orbititemcounts) | Number of indexed items in the group or project. This field can be resolved for only one group or project in any single request. |
+
+## `OrbitTrial`
+
+Orbit trial of a top-level group, as reported by CustomersDot.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `credits` | [`OrbitTrialCredits`](#orbittrialcredits) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Credits of the trial. |
+| `expiresOn` | [`Date`](scalars.md#date) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Last day of the trial, in UTC. Null before a trial starts. |
+| `state` | [`OrbitTrialState!`](enums.md#orbittrialstate) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>State of the trial. |
+
+## `OrbitTrialCredits`
+
+Credits of an Orbit trial.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `remaining` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Number of trial credits remaining. |
+| `total` | [`Float`](scalars.md#float) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Number of credits the trial started with. |
+
 ## `Organization`
 
 ### Fields {.no_toc}
@@ -13777,7 +13934,7 @@ Represents a package with pipelines in the package registry.
 | `_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
 | `createdAt` | [`Time!`](scalars.md#time) | Date of creation. |
 | `id` | [`PackagesPackageID!`](scalars.md#packagespackageid) | ID of the package. |
-| `metadata` | `PackageMetadata` | Package metadata. |
+| `metadata` | [`PackageMetadata`](unions.md#packagemetadata) | Package metadata. |
 | `name` | [`String!`](scalars.md#string) | Name of the package. |
 | `packageType` | [`PackageTypeEnum!`](enums.md#packagetypeenum) | Package type. |
 | `pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
@@ -13801,7 +13958,7 @@ Represents a package in the package registry.
 | `_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
 | `createdAt` | [`Time!`](scalars.md#time) | Date of creation. |
 | `id` | [`PackagesPackageID!`](scalars.md#packagespackageid) | ID of the package. |
-| `metadata` | `PackageMetadata` | Package metadata. |
+| `metadata` | [`PackageMetadata`](unions.md#packagemetadata) | Package metadata. |
 | `name` | [`String!`](scalars.md#string) | Name of the package. |
 | `packageType` | [`PackageTypeEnum!`](enums.md#packagetypeenum) | Package type. |
 | `project` | [`Project!`](#project) | Project where the package is stored. |
@@ -13873,7 +14030,7 @@ Represents a package dependency link.
 | `dependency` | [`PackageDependency`](#packagedependency) | Dependency. |
 | `dependencyType` | [`PackageDependencyType!`](enums.md#packagedependencytype) | Dependency type. |
 | `id` | [`PackagesDependencyLinkID!`](scalars.md#packagesdependencylinkid) | ID of the dependency link. |
-| `metadata` | `DependencyLinkMetadata` | Dependency link metadata. |
+| `metadata` | [`DependencyLinkMetadata`](unions.md#dependencylinkmetadata) | Dependency link metadata. |
 
 ## `PackageDependencyLinkConnection`
 
@@ -13896,7 +14053,7 @@ Represents a package details in the Package Registry.
 | `id` | [`PackagesPackageID!`](scalars.md#packagespackageid) | ID of the package. |
 | `lastDownloadedAt` | [`Time`](scalars.md#time) | Last time that a file of the package was downloaded. |
 | `mavenUrl` | [`String`](scalars.md#string) | Url of the Maven project endpoint. |
-| `metadata` | `PackageMetadata` | Package metadata. |
+| `metadata` | [`PackageMetadata`](unions.md#packagemetadata) | Package metadata. |
 | `name` | [`String!`](scalars.md#string) | Name of the package. |
 | `npmUrl` | [`String`](scalars.md#string) | Url of the NPM project endpoint. |
 | `nugetUrl` | [`String`](scalars.md#string) | Url of the Nuget project endpoint. |
@@ -14485,7 +14642,7 @@ Personal access token.
 | `lastUsedIps` | [`[String!]!`](scalars.md#string) | Five most recent unique IP addresses that authenticated with the personal access token. |
 | `name` | [`String!`](scalars.md#string) | Name of the personal access token. |
 | `revoked` | [`Boolean!`](scalars.md#boolean) | Whether the personal access token has been revoked. |
-| `scopes` | `[PersonalAccessTokenScope!]!` | List of scopes applied to a personal access token. |
+| `scopes` | [`[PersonalAccessTokenScope!]!`](unions.md#personalaccesstokenscope) | List of scopes applied to a personal access token. |
 | `sudo` | [`Boolean!`](scalars.md#boolean) | Whether the personal access token can impersonate other users with sudo. |
 
 ## `PersonalAccessTokenConnection`
@@ -14742,7 +14899,7 @@ Represents the pipeline execution policy.
 | `policyBlobFilePath` | [`String!`](scalars.md#string) | Path to the policy file in the project. |
 | `policyConfigurationId` | [`SecurityOrchestrationPolicyConfigurationID`](scalars.md#securityorchestrationpolicyconfigurationid) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>ID of the policy configuration the policy belongs to. |
 | `policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `updatedAt` | [`Time!`](scalars.md#time) | Timestamp of when the policy YAML was last updated. |
 | `warnings` | [`[String!]!`](scalars.md#string) | Warnings associated with the policy. |
 | `yaml` | [`String!`](scalars.md#string) | YAML definition of the policy. |
@@ -14756,7 +14913,7 @@ Represents policy fields related to the pipeline execution policy.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `policyBlobFilePath` | [`String!`](scalars.md#string) | Path to the policy file in the project. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `warnings` | [`[String!]!`](scalars.md#string) | Warnings associated with the policy. |
 
 ## `PipelineExecutionPolicyConnection`
@@ -14804,7 +14961,7 @@ Represents the pipeline execution schedule policy.
 | `policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | `schedulePipelines` | [`PolicySchedulePipelineConnection`](#policyschedulepipelineconnection) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Pipelines created by this scheduled policy. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `scheduleTimeWindowSeconds` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Time window in seconds from the first schedule of the policy. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `upcomingSchedules` | [`PipelineExecutionProjectScheduleConnection`](#pipelineexecutionprojectscheduleconnection) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Upcoming scheduled runs for this policy. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `updatedAt` | [`Time!`](scalars.md#time) | Timestamp of when the policy YAML was last updated. |
 | `warnings` | [`[String!]!`](scalars.md#string) | Warnings associated with the policy. |
@@ -14824,7 +14981,7 @@ Represents policy fields related to the pipeline execution scheduled policy.
 | ---- | ---- | ----------- |
 | `policyBlobFilePath` | [`String!`](scalars.md#string) | Path to the policy file in the project. |
 | `scheduleTimeWindowSeconds` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Time window in seconds from the first schedule of the policy. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `warnings` | [`[String!]!`](scalars.md#string) | Warnings associated with the policy. |
 
 ## `PipelineManualVariable`
@@ -14977,7 +15134,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | `assets` | [`[AssetType!]`](#assettype) | List of assets associated with the vulnerability. |
 | `description` | [`String`](scalars.md#string) | Description of the vulnerability finding. |
 | `descriptionHtml` | [`String`](scalars.md#string) | GitLab Flavored Markdown rendering of `description`. |
-| `details` | `[VulnerabilityDetail!]!` | Details of the security finding. |
+| `details` | [`[VulnerabilityDetail!]!`](unions.md#vulnerabilitydetail) | Details of the security finding. |
 | `dismissalReason` | [`VulnerabilityDismissalReason`](enums.md#vulnerabilitydismissalreason) | Reason for the dismissal of the security report finding. |
 | `dismissedAt` | [`Time`](scalars.md#time) | Time of the dismissal of the security report finding. |
 | `dismissedBy` | [`UserCore`](#usercore) | User who dismissed the security report finding. |
@@ -14987,7 +15144,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | `identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability finding. |
 | `issueLinks` | [`VulnerabilityIssueLinkConnection`](#vulnerabilityissuelinkconnection) | List of issue links related to the vulnerability. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `links` | [`[VulnerabilityLink!]`](#vulnerabilitylink) | List of links associated with the vulnerability. |
-| `location` | `VulnerabilityLocation` | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
+| `location` | [`VulnerabilityLocation`](unions.md#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | `mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
 | `originalSeverity` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Severity of the vulnerability finding before any overrides. |
 | `project` | [`Project`](#project) | Project on which the vulnerability finding was found. |
@@ -15321,8 +15478,8 @@ Catalogs available when creating a policy in the policy store.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `actions` | [`[PolicyStoreAction!]!`](#policystoreaction) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Actions available when creating a policy in the policy store. |
-| `policies` | [`GovernPolicyConnection`](#governpolicyconnection) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Policies stored in the policy store for the organization or group, paginated forward only. Page with `pageInfo.endCursor` and keep `first` the same between requests; the `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `policies`:</strong> <dl><dt>`ids` ([`[Int!]`](scalars.md#int))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the policies with these IDs. Unknown IDs are ignored; an empty list returns no policies. Maximum is 1000 IDs.</dd><dt>`triggerType` ([`String`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the policies that respond to this trigger. Valid values are the ids in the policy store triggers catalog.</dd></dl> |
-| `policyEvaluations` | [`GovernPolicyEvaluationConnection`](#governpolicyevaluationconnection) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Recorded evaluations of the policies stored in the policy store for the organization, newest first. Returns `null` for groups and when the current user cannot read the policies of the organization. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `policyEvaluations`:</strong> <dl><dt>`evaluatedAfter` ([`Time`](scalars.md#time))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that ran at or after the given timestamp.</dd><dt>`evaluatedBefore` ([`Time`](scalars.md#time))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that ran at or before the given timestamp.</dd><dt>`mode` ([`GovernPolicyEvaluationMode`](enums.md#governpolicyevaluationmode))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that ran in the given enforcement mode.</dd><dt>`policyId` ([`Int`](scalars.md#int))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations of the policy with the given ID.</dd><dt>`verdict` ([`GovernPolicyEvaluationVerdict`](enums.md#governpolicyevaluationverdict))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that produced the given verdict.</dd></dl> |
+| `policies` | [`GovernPolicyConnection`](#governpolicyconnection) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Policies stored in the policy store for the organization or group. Only `first` and `after` are supported; page with `pageInfo.endCursor`. Cursor offsets are capped at 100000, so policies past that window cannot be paged. The `ids` argument cannot be combined with pagination arguments. Returns `null` when the current user cannot read the policies of the container. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `policies`:</strong> <dl><dt>`ids` ([`[Int!]`](scalars.md#int))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the policies with these IDs. Unknown IDs are ignored; an empty list returns no policies. Maximum is 1000 IDs.</dd><dt>`triggerType` ([`String`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the policies that respond to this trigger. Valid values are the ids in the policy store triggers catalog.</dd></dl> |
+| `policyEvaluations` | [`GovernPolicyEvaluationConnection`](#governpolicyevaluationconnection) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Recorded evaluations of the policies stored in the policy store for the organization or group, newest first. For a group, only evaluations of the group's own policies are returned. Returns `null` when the current user cannot read the policies of the container. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `policyEvaluations`:</strong> <dl><dt>`evaluatedAfter` ([`Time`](scalars.md#time))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that ran at or after the given timestamp.</dd><dt>`evaluatedBefore` ([`Time`](scalars.md#time))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that ran at or before the given timestamp.</dd><dt>`mode` ([`GovernPolicyEvaluationMode`](enums.md#governpolicyevaluationmode))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that ran in the given enforcement mode.</dd><dt>`policyId` ([`Int`](scalars.md#int))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations of the policy with the given ID.</dd><dt>`verdict` ([`GovernPolicyEvaluationVerdict`](enums.md#governpolicyevaluationverdict))</dt><dd>Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Return only the evaluations that produced the given verdict.</dd></dl> |
 | `rules` | [`[PolicyStoreRule!]!`](#policystorerule) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Rule kinds available when creating a policy in the policy store. |
 | `triggers` | [`[PolicyStoreTrigger!]!`](#policystoretrigger) | Status: Experiment. Introduced in GitLab 19.4.<br/><br/>Triggers available when creating a policy in the policy store. |
 
@@ -15443,8 +15600,8 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `aiCatalogItems` | [`AiCatalogItemConnection!`](#aicatalogitemconnection) | Status: Experiment. Introduced in GitLab 18.6.<br/><br/>AI Catalog items of the project. This field can be resolved for only one project in any single request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiCatalogItems`:</strong> <dl><dt>`allAvailable` ([`Boolean`](scalars.md#boolean))</dt><dd>Include public items from the AI Catalog.</dd><dt>`enabled` ([`Boolean`](scalars.md#boolean))</dt><dd>Include only items that are enabled or disabled in the project.</dd><dt>`itemTypes` ([`[AiCatalogItemType!]`](enums.md#aicatalogitemtype))</dt><dd>Types of items to retrieve.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search items by name and description.</dd><dt>`sort` ([`AiCatalogItemsSort`](enums.md#aicatalogitemssort))</dt><dd>Sort order of items.</dd></dl> |
 | `aiFlowTriggers` | [`AiFlowTriggerTypeConnection`](#aiflowtriggertypeconnection) | Status: Experiment. Introduced in GitLab 18.3.<br/><br/>AI flow triggers of the project. This field can only be resolved for one project per request. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiFlowTriggers`:</strong> <dl><dt>`ids` ([`[AiFlowTriggerID!]`](scalars.md#aiflowtriggerid))</dt><dd>Filter AI flow triggers by IDs.</dd></dl> |
 | `aiGovernanceMetrics` | [`AiGovernanceMetrics`](#aigovernancemetrics) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled. <br><br> <strong>Arguments for `aiGovernanceMetrics`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Agent class to segment the metrics by. Defaults to ALL.</dd><dt>`timeframe` ([`AiGovernanceMetricsTimeframe`](enums.md#aigovernancemetricstimeframe))</dt><dd>Time window for the metrics. Defaults to LAST_7_DAYS.</dd></dl> |
+| `aiGovernanceSessions` | [`AiGovernanceSessionConnection`](#aigovernancesessionconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>AI sessions for the project, from GitLab Duo and external agents. Returns no sessions when the `ai_governance_sessions_api` feature flag is disabled. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiGovernanceSessions`:</strong> <dl><dt>`agentClass` ([`AiGovernanceAgentClass`](enums.md#aigovernanceagentclass))</dt><dd>Filter sessions by agent class. Defaults to all agent classes.</dd><dt>`flowType` ([`String`](scalars.md#string))</dt><dd>Filter by flow type.</dd><dt>`not` ([`AiGovernanceSessionNegatedFilterInput`](input_objects.md#aigovernancesessionnegatedfilterinput))</dt><dd>Negated filter conditions.</dd><dt>`sessionStartedAfter` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or after the timestamp.</dd><dt>`sessionStartedBefore` ([`Time`](scalars.md#time))</dt><dd>Return sessions started at or before the timestamp.</dd><dt>`triggeredByUserId` ([`UserID`](scalars.md#userid))</dt><dd>Filter to sessions triggered by the user with the given global ID.</dd></dl> |
 | `aiMetrics` | [`AiMetrics`](#aimetrics) | Status: Experiment. Introduced in GitLab 16.11.<br/><br/>AI-related metrics. <br><br> <strong>Arguments for `aiMetrics`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month.</dd></dl> |
-| `aiMetricsBasic` | [`AiMetricsBasic`](#aimetricsbasic) | Status: Experiment. Introduced in GitLab 18.5.<br/><br/>AI-related metrics with three months of data retention. <br><br> <strong>Arguments for `aiMetricsBasic`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month.</dd></dl> |
 | `aiUsageData` | [`AiUsageData`](#aiusagedata) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>AI-related data. |
 | `aiUserMetrics` | [`AiUserMetricsConnection`](#aiusermetricsconnection) | Status: Experiment. Introduced in GitLab 17.5.<br/><br/>AI-related user metrics. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `aiUserMetrics`:</strong> <dl><dt>`endDate` ([`Date`](scalars.md#date))</dt><dd>Date range to end at. Default is the end of current month. ClickHouse needs to be enabled when passing this param.</dd><dt>`sort` ([`AiUserMetricsSort`](enums.md#aiusermetricssort))</dt><dd>Sort AI user metrics.</dd><dt>`startDate` ([`Date`](scalars.md#date))</dt><dd>Date range to start from. Default is the beginning of current month. ClickHouse needs to be enabled when passing this param.</dd></dl> |
 | `aiXrayReports` | [`AiXrayReportConnection!`](#aixrayreportconnection) | Status: Experiment. Introduced in GitLab 17.8.<br/><br/>X-ray reports of the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
@@ -15518,7 +15675,7 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `dastSiteValidations` | [`DastSiteValidationConnection`](#dastsitevalidationconnection) | DAST Site Validations associated with the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `dastSiteValidations`:</strong> <dl><dt>`normalizedTargetUrls` ([`[String!]`](scalars.md#string))</dt><dd>Normalized URL of the target to be scanned.</dd><dt>`status` ([`DastSiteValidationStatusEnum`](enums.md#dastsitevalidationstatusenum))</dt><dd>Status of the site validation.</dd></dl> |
 | `dataTransfer` | [`ProjectDataTransfer`](#projectdatatransfer) | Data transfer data point for a specific period. This is mocked data under a development feature flag. <br><br> <strong>Arguments for `dataTransfer`:</strong> <dl><dt>`from` ([`Date`](scalars.md#date))</dt><dd>Retain egress data for one year. Data for the current month will increase dynamically as egress occurs.</dd><dt>`to` ([`Date`](scalars.md#date))</dt><dd>End date for the data.</dd></dl> |
 | `dependencies` | [`DependencyConnection`](#dependencyconnection) | Software dependencies used by the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `dependencies`:</strong> <dl><dt>`componentIds` ([`[SbomComponentID!]`](scalars.md#sbomcomponentid))</dt><dd>Filter dependencies by component IDs.</dd><dt>`componentNames` ([`[String!]`](scalars.md#string))</dt><dd>Filter dependencies by component names.</dd><dt>`componentVersions` ([`[String!]`](scalars.md#string))</dt><dd>Filter dependencies by component versions.</dd><dt>`licenses` ([`[String!]`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Filter dependencies by SPDX license identifiers.</dd><dt>`malware` ([`Boolean`](scalars.md#boolean))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.</dd><dt>`notComponentVersions` ([`[String!]`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 18.1.<br/><br/>Filter dependencies to exclude the specified component versions.</dd><dt>`packageManagers` ([`[PackageManager!]`](enums.md#packagemanager))</dt><dd>Filter dependencies by package managers.</dd><dt>`policyViolations` ([`[PolicyViolations!]`](enums.md#policyviolations))</dt><dd>Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Filter by security policy violations. Cannot be combined with the `malware` argument.</dd><dt>`sort` ([`DependencySort`](enums.md#dependencysort))</dt><dd>Sort dependencies by given criteria.</dd><dt>`sourceTypes` ([`[SbomSourceType!]`](enums.md#sbomsourcetype))</dt><dd>Filter dependencies by source type.</dd><dt>`trackedRefIds` ([`[SecurityProjectTrackedContextID!]`](scalars.md#securityprojecttrackedcontextid))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled.</dd><dt>`trackedRefsScope` ([`SecurityTrackedRefScope`](enums.md#securitytrackedrefscope))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled.</dd></dl> |
-| `dependencyFirewallActivitySummary` | [`DependencyFirewallActivitySummary`](#dependencyfirewallactivitysummary) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Aggregate dependency firewall activity totals for the project. Available behind the `dependency_firewall_phase1` feature flag. <br><br> <strong>Arguments for `dependencyFirewallActivitySummary`:</strong> <dl><dt>`from` ([`Date`](scalars.md#date))</dt><dd>Start date (inclusive) of the activity window. Defaults to 7 days ago.</dd><dt>`to` ([`Date`](scalars.md#date))</dt><dd>End date (inclusive) of the activity window. Defaults to the current date.</dd></dl> |
+| `dependencyFirewallActivitySummary` | [`DependencyFirewallActivitySummary`](#dependencyfirewallactivitysummary) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Aggregate dependency firewall activity totals for the project. Available behind the `dependency_firewall_phase1` feature flag. This field can be resolved for only one project in any single request. <br><br> <strong>Arguments for `dependencyFirewallActivitySummary`:</strong> <dl><dt>`from` ([`Date`](scalars.md#date))</dt><dd>Start date (inclusive) of the activity window. Defaults to 7 days ago.</dd><dt>`to` ([`Date`](scalars.md#date))</dt><dd>End date (inclusive) of the activity window. Defaults to the current date.</dd></dl> |
 | `dependencyFirewallRuleActivity` | [`[DependencyFirewallRuleActivity!]`](#dependencyfirewallruleactivity) | Status: Experiment. Introduced in GitLab 19.3.<br/><br/>Dependency firewall per-rule block and warn activity for the project. Available behind the `dependency_firewall_phase1` feature flag. <br><br> <strong>Arguments for `dependencyFirewallRuleActivity`:</strong> <dl><dt>`from` ([`Date`](scalars.md#date))</dt><dd>Start date (inclusive) of the activity window. Defaults to 7 days ago.</dd><dt>`to` ([`Date`](scalars.md#date))</dt><dd>End date (inclusive) of the activity window. Defaults to the current date.</dd></dl> |
 | `dependencyPaths` | [`DependencyPathPage`](#dependencypathpage) | Status: Experiment. Introduced in GitLab 17.10.<br/><br/>Ancestor dependency paths for a dependency used by the project. Returns `null` if `dependency_graph_graphql` feature flag is disabled. <br><br> <strong>Arguments for `dependencyPaths`:</strong> <dl><dt>`after` ([`String`](scalars.md#string))</dt><dd>Fetch paths after the cursor.</dd><dt>`before` ([`String`](scalars.md#string))</dt><dd>Fetch paths before the cursor.</dd><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of paths to fetch.</dd><dt>`occurrence` ([`SbomOccurrenceID!`](scalars.md#sbomoccurrenceid))</dt><dd>Dependency path for occurrence.</dd></dl> |
 | `dependencyProxyPackagesSetting` | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. |
@@ -15601,6 +15758,7 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `mergeRequestViolations` | [`ComplianceViolationConnection`](#complianceviolationconnection) | Compliance violations reported on merge requests merged within the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `mergeRequestViolations`:</strong> <dl><dt>`filters` ([`ComplianceViolationProjectInput`](input_objects.md#complianceviolationprojectinput))</dt><dd>Filters applied when retrieving compliance violations.</dd><dt>`sort` ([`ComplianceViolationSort`](enums.md#complianceviolationsort))</dt><dd>List compliance violations by sort order.</dd></dl> |
 | `mergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests of the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `mergeRequests`:</strong> <dl><dt>`approvedBy` ([`[String!]`](scalars.md#string))</dt><dd>Usernames of the approvers.</dd><dt>`approver` ([`[String!]`](scalars.md#string))</dt><dd>Usernames of possible approvers.</dd><dt>`assigneeUsername` ([`String`](scalars.md#string))</dt><dd>Username of the assignee.</dd><dt>`assigneeUsernames` ([`[String!]`](scalars.md#string))</dt><dd>Usernames of users assigned to the merge request.</dd><dt>`assigneeWildcardId` ([`AssigneeWildcardId`](enums.md#assigneewildcardid))</dt><dd>Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername.</dd><dt>`authorUsername` ([`String`](scalars.md#string))</dt><dd>Username of the author.</dd><dt>`blobPath` ([`String`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 17.7.<br/><br/>Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments.</dd><dt>`closedAfter` ([`Time`](scalars.md#time))</dt><dd>Merge requests closed after the date.</dd><dt>`closedBefore` ([`Time`](scalars.md#time))</dt><dd>Merge requests closed before the date.</dd><dt>`createdAfter` ([`Time`](scalars.md#time))</dt><dd>Merge requests created after the timestamp.</dd><dt>`createdBefore` ([`Time`](scalars.md#time))</dt><dd>Merge requests created before the timestamp.</dd><dt>`deployedAfter` ([`Time`](scalars.md#time))</dt><dd>Merge requests deployed after the timestamp.</dd><dt>`deployedBefore` ([`Time`](scalars.md#time))</dt><dd>Merge requests deployed before the timestamp.</dd><dt>`deploymentId` ([`String`](scalars.md#string))</dt><dd>ID of the deployment.</dd><dt>`draft` ([`Boolean`](scalars.md#boolean))</dt><dd>Limit result to draft merge requests.</dd><dt>`environmentName` ([`String`](scalars.md#string))</dt><dd>Environment merge requests have been deployed to.</dd><dt>`ignoredReviewerUsername` ([`String`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 18.0.<br/><br/>Username of the reviewer to ignore when searching by reviewer state.</dd><dt>`iids` ([`[String!]`](scalars.md#string))</dt><dd>Array of IIDs of merge requests, for example `[1, 2]`.</dd><dt>`in` ([`[IssuableSearchableField!]`](enums.md#issuablesearchablefield))</dt><dd>Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'.</dd><dt>`labelName` ([`[String]`](scalars.md#string))</dt><dd>Labels applied to the merge request.</dd><dt>`labels` ([`[String!]`](scalars.md#string))</dt><dd>Deprecated in GitLab 17.1. Use `labelName`.</dd><dt>`mergedAfter` ([`Time`](scalars.md#time))</dt><dd>Merge requests merged after the date.</dd><dt>`mergedBefore` ([`Time`](scalars.md#time))</dt><dd>Merge requests merged before the date.</dd><dt>`mergedBy` ([`String`](scalars.md#string))</dt><dd>Username of the merger.</dd><dt>`milestoneTitle` ([`String`](scalars.md#string))</dt><dd>Title of the milestone. Incompatible with milestoneWildcardId.</dd><dt>`milestoneWildcardId` ([`MilestoneWildcardId`](enums.md#milestonewildcardid))</dt><dd>Filter issues by milestone ID wildcard. Incompatible with milestoneTitle.</dd><dt>`myReactionEmoji` ([`String`](scalars.md#string))</dt><dd>Filter by your reaction emoji.</dd><dt>`not` ([`MergeRequestsResolverNegatedParams`](input_objects.md#mergerequestsresolvernegatedparams))</dt><dd>List of negated arguments. Warning: this argument is experimental and a subject to change in future.</dd><dt>`or` ([`UnionedMergeRequestFilterInput`](input_objects.md#unionedmergerequestfilterinput))</dt><dd>List of arguments with inclusive OR.</dd><dt>`releaseTag` ([`String`](scalars.md#string))</dt><dd>Filter by release tag.</dd><dt>`reviewState` ([`MergeRequestReviewState`](enums.md#mergerequestreviewstate))</dt><dd>Reviewer state of the merge request.</dd><dt>`reviewStates` ([`[MergeRequestReviewState!]`](enums.md#mergerequestreviewstate))</dt><dd>Reviewer states of the merge request.</dd><dt>`reviewerUsername` ([`String`](scalars.md#string))</dt><dd>Username of the reviewer.</dd><dt>`reviewerWildcardId` ([`ReviewerWildcardId`](enums.md#reviewerwildcardid))</dt><dd>Filter by reviewer presence. Incompatible with reviewerUsername.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search query for title or description.</dd><dt>`sort` ([`MergeRequestSort`](enums.md#mergerequestsort))</dt><dd>Sort merge requests by the criteria.</dd><dt>`sourceBranches` ([`[String!]`](scalars.md#string))</dt><dd>Array of source branch names. All resolved merge requests will have one of these branches as their source.</dd><dt>`state` ([`MergeRequestState`](enums.md#mergerequeststate))</dt><dd>Merge request state. If provided, all resolved merge requests will have the state.</dd><dt>`subscribed` ([`SubscriptionStatus`](enums.md#subscriptionstatus))</dt><dd>Merge requests the current user is subscribed to.</dd><dt>`targetBranches` ([`[String!]`](scalars.md#string))</dt><dd>Array of target branch names. All resolved merge requests will have one of these branches as their target.</dd><dt>`updatedAfter` ([`Time`](scalars.md#time))</dt><dd>Merge requests updated after the timestamp.</dd><dt>`updatedBefore` ([`Time`](scalars.md#time))</dt><dd>Merge requests updated before the timestamp.</dd></dl> |
 | `mergeRequestsAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for merge requests access. |
+| `mergeRequestsDefaultTargetSelf` | [`Boolean`](scalars.md#boolean) | Indicates if merge requests of a forked project target the fork itself by default instead of the upstream project. |
 | `mergeRequestsDisableCommittersApproval` | [`Boolean!`](scalars.md#boolean) | Indicates that committers of the given merge request cannot approve. |
 | `mergeRequestsEnabled` | [`Boolean`](scalars.md#boolean) | Indicates if Merge requests are enabled for the current user. |
 | `mergeRequestsFfOnlyEnabled` | [`Boolean`](scalars.md#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
@@ -15620,6 +15778,7 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](scalars.md#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | `openIssuesCount` | [`Int`](scalars.md#int) | Number of open issues for the project. |
 | `openMergeRequestsCount` | [`Int`](scalars.md#int) | Number of open merge requests for the project. |
+| `orbit` | [`OrbitNamespace`](#orbitnamespace) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Orbit data of the project. Returns null when Orbit is not available to the current user. |
 | `organizationEditPath` | [`String`](scalars.md#string) | Status: Experiment. Introduced in GitLab 16.11.<br/><br/>Path for editing project at the organization level. |
 | `packages` | [`PackageConnection`](#packageconnection) | Packages of the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `packages`:</strong> <dl><dt>`includeVersionless` ([`Boolean`](scalars.md#boolean))</dt><dd>Include versionless packages.</dd><dt>`packageName` ([`String`](scalars.md#string))</dt><dd>Search a package by name.</dd><dt>`packageType` ([`PackageTypeEnum`](enums.md#packagetypeenum))</dt><dd>Filter a package by type.</dd><dt>`packageVersion` ([`String`](scalars.md#string))</dt><dd>Filter a package by version. If used in combination with `include_versionless`, then no versionless packages are returned.</dd><dt>`sort` ([`PackageSort`](enums.md#packagesort))</dt><dd>Sort packages by the criteria.</dd><dt>`status` ([`PackageStatus`](enums.md#packagestatus))</dt><dd>Filter a package by status.</dd></dl> |
 | `packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
@@ -15659,7 +15818,7 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `requirementStatesCount` | [`RequirementStatesCount`](#requirementstatescount) | Number of requirements for the project by their state. |
 | `requirements` | [`RequirementConnection`](#requirementconnection) | Find requirements. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `requirements`:</strong> <dl><dt>`authorUsername` ([`[String!]`](scalars.md#string))</dt><dd>Filter requirements by author username.</dd><dt>`iid` ([`ID`](scalars.md#id))</dt><dd>Deprecated in GitLab 15.8. Use work_item_iid instead.</dd><dt>`iids` ([`[ID!]`](scalars.md#id))</dt><dd>Deprecated in GitLab 15.8. Use work_item_iids instead.</dd><dt>`lastTestReportState` ([`RequirementStatusFilter`](enums.md#requirementstatusfilter))</dt><dd>State of latest requirement test report.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Search query for requirement title.</dd><dt>`sort` ([`Sort`](enums.md#sort))</dt><dd>List requirements by sort order.</dd><dt>`state` ([`RequirementState`](enums.md#requirementstate))</dt><dd>Filter requirements by state.</dd><dt>`workItemIid` ([`ID`](scalars.md#id))</dt><dd>IID of the requirement work item, for example, "1".</dd><dt>`workItemIids` ([`[ID!]`](scalars.md#id))</dt><dd>List of IIDs of requirement work items, for example, `[1, 2]`.</dd></dl> |
 | `rootGroup` | [`Group`](#group) | Top-level group of the project. |
-| `runnerCloudProvisioning` | `CiRunnerCloudProvisioning` | Status: Experiment. Introduced in GitLab 16.9.<br/><br/>Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance. <br><br> <strong>Arguments for `runnerCloudProvisioning`:</strong> <dl><dt>`cloudProjectId` ([`GoogleCloudProject!`](scalars.md#googlecloudproject))</dt><dd>Identifier of the cloud project.</dd><dt>`provider` ([`CiRunnerCloudProvider!`](enums.md#cirunnercloudprovider))</dt><dd>Identifier of the cloud provider.</dd></dl> |
+| `runnerCloudProvisioning` | [`CiRunnerCloudProvisioning`](unions.md#cirunnercloudprovisioning) | Status: Experiment. Introduced in GitLab 16.9.<br/><br/>Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance. <br><br> <strong>Arguments for `runnerCloudProvisioning`:</strong> <dl><dt>`cloudProjectId` ([`GoogleCloudProject!`](scalars.md#googlecloudproject))</dt><dd>Identifier of the cloud project.</dd><dt>`provider` ([`CiRunnerCloudProvider!`](enums.md#cirunnercloudprovider))</dt><dd>Identifier of the cloud provider.</dd></dl> |
 | `runners` | [`CiRunnerConnection`](#cirunnerconnection) | Find runners visible to the current user. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `runners`:</strong> <dl><dt>`active` ([`Boolean`](scalars.md#boolean))</dt><dd>Deprecated in GitLab 14.8. Renamed. Use `paused` instead.</dd><dt>`creatorId` ([`UserID`](scalars.md#userid))</dt><dd>Filter runners by creator ID.</dd><dt>`creatorUsername` ([`String`](scalars.md#string))</dt><dd>Filter runners by creator username.</dd><dt>`ownerFullPath` ([`String`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 17.8.<br/><br/>Filter runners by owning project or group.</dd><dt>`paused` ([`Boolean`](scalars.md#boolean))</dt><dd>Filter runners by `paused` (true) or `active` (false) status.</dd><dt>`search` ([`String`](scalars.md#string))</dt><dd>Filter by full token or partial text in description field.</dd><dt>`sort` ([`CiRunnerSort`](enums.md#cirunnersort))</dt><dd>Sort order of results.</dd><dt>`status` ([`CiRunnerStatus`](enums.md#cirunnerstatus))</dt><dd>Filter runners by status.</dd><dt>`tagList` ([`[String!]`](scalars.md#string))</dt><dd>Filter by tags associated with the runner (comma-separated or array).</dd><dt>`type` ([`CiRunnerType`](enums.md#cirunnertype))</dt><dd>Filter runners by type.</dd><dt>`upgradeStatus` ([`CiRunnerUpgradeStatus`](enums.md#cirunnerupgradestatus))</dt><dd>Filter by upgrade status.</dd><dt>`versionPrefix` ([`String`](scalars.md#string))</dt><dd>Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'.</dd></dl> |
 | `sastCiConfiguration` | [`SastCiConfiguration`](#sastciconfiguration) | SAST CI configuration for the project. |
 | `savedReplies` | [`ProjectSavedReplyConnection`](#projectsavedreplyconnection) | Saved replies available to the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
@@ -15695,6 +15854,7 @@ Representation of who is provided access to. For eg: User/Role/MemberRole.
 | `sharedRunnersEnabled` | [`Boolean`](scalars.md#boolean) | Indicates if shared runners are enabled for the project. |
 | `snippets` | [`SnippetConnection`](#snippetconnection) | Snippets of the project. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `snippets`:</strong> <dl><dt>`ids` ([`[SnippetID!]`](scalars.md#snippetid))</dt><dd>Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`.</dd><dt>`visibility` ([`VisibilityScopesEnum`](enums.md#visibilityscopesenum))</dt><dd>Visibility of the snippet.</dd></dl> |
 | `snippetsEnabled` | [`Boolean`](scalars.md#boolean) | Indicates if Snippets are enabled for the current user. |
+| `sourcedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests that have this project as their source, including merge requests targeting other projects. Ordered by ID in descending order. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `sourcedMergeRequests`:</strong> <dl><dt>`sourceBranches` ([`[String!]!`](scalars.md#string))</dt><dd>Array of source branch names (maximum is 100). All resolved merge requests will have one of these branches as their source.</dd><dt>`state` ([`MergeRequestState`](enums.md#mergerequeststate))</dt><dd>Merge request state. If provided, all resolved merge requests will have the state.</dd></dl> |
 | `squashCommitTemplate` | [`String`](scalars.md#string) | Template used to create squash commit message in merge requests. |
 | `squashReadOnly` | [`Boolean!`](scalars.md#boolean) | Indicates if `squashReadOnly` is enabled. |
 | `sshUrlToRepo` | [`String`](scalars.md#string) | URL to connect to the project via SSH. |
@@ -16121,6 +16281,7 @@ Paginated collection of [`ProjectMember`](#projectmember). See [Standard connect
 | `readMergeRequest` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_merge_request` on this resource. |
 | `readPagesContent` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_pages_content` on this resource. |
 | `readPathLocks` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_path_locks` on this resource. |
+| `readProAiAnalytics` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>If `true`, the user can perform `read_pro_ai_analytics` on this resource. |
 | `readProject` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_project` on this resource. |
 | `readProjectComponentUsages` | [`Boolean!`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>If `true`, the user can perform `read_project_component_usages` on this resource. |
 | `readProjectMember` | [`Boolean!`](scalars.md#boolean) | If `true`, the user can perform `read_project_member` on this resource. |
@@ -16791,7 +16952,7 @@ Recent failure history of a test case.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `item` | `RecentlyViewedItemUnion!` | Recently viewed item. |
+| `item` | [`RecentlyViewedItemUnion!`](unions.md#recentlyvieweditemunion) | Recently viewed item. |
 | `viewedAt` | [`Time!`](scalars.md#time) | When the item was last viewed. |
 
 ## `Release`
@@ -16928,6 +17089,7 @@ Paginated collection of [`ReleaseSource`](#releasesource). See [Standard connect
 | `paginatedTree` | [`TreeConnection`](#treeconnection) | Paginated tree of the repository. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `paginatedTree`:</strong> <dl><dt>`path` ([`String`](scalars.md#string))</dt><dd>Path to get the tree for. Default value is the root of the repository.</dd><dt>`recursive` ([`Boolean`](scalars.md#boolean))</dt><dd>Used to get a recursive tree. Default is false.</dd><dt>`ref` ([`String`](scalars.md#string))</dt><dd>Commit ref to get the tree for. Default value is HEAD.</dd><dt>`refType` ([`RefType`](enums.md#reftype))</dt><dd>Type of ref.</dd></dl> |
 | `rootRef` | [`String`](scalars.md#string) | Default branch of the repository. |
 | `tagCount` | [`Int!`](scalars.md#int) | Number of tags in the repository. |
+| `tags` | [`TagConnection`](#tagconnection) | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Tags in the repository. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `tags`:</strong> <dl><dt>`search` ([`String`](scalars.md#string))</dt><dd>Filter tags by name. Supports `^` for prefix, `$` for suffix, and `*` as a wildcard.</dd><dt>`sort` ([`TagSort`](enums.md#tagsort))</dt><dd>Sort tags by the criteria. Defaults to `UPDATED_DESC`.</dd></dl> |
 | `tree` | [`Tree`](#tree) | Tree of the repository. <br><br> <strong>Arguments for `tree`:</strong> <dl><dt>`path` ([`String`](scalars.md#string))</dt><dd>Path to get the tree for. Default value is the root of the repository.</dd><dt>`recursive` ([`Boolean`](scalars.md#boolean))</dt><dd>Used to get a recursive tree. Default is false.</dd><dt>`ref` ([`String`](scalars.md#string))</dt><dd>Commit ref to get the tree for. Default value is HEAD.</dd><dt>`refType` ([`RefType`](enums.md#reftype))</dt><dd>Type of ref.</dd></dl> |
 | `validateCodeownerFile` | [`RepositoryCodeownerValidation`](#repositorycodeownervalidation) | Shows linting errors in the CODEOWNER file of the repository. <br><br> <strong>Arguments for `validateCodeownerFile`:</strong> <dl><dt>`path` ([`String`](scalars.md#string))</dt><dd>Path of a file called CODEOWNERS that should be validated. Default to file in use.</dd><dt>`ref` ([`String`](scalars.md#string))</dt><dd>Ref where code owners file needs to be checked. Defaults to the repository's default branch.</dd></dl> |
 
@@ -17390,7 +17552,7 @@ Represents the scan execution policy.
 | `name` | [`String!`](scalars.md#string) | Name of the policy. |
 | `policyConfigurationId` | [`SecurityOrchestrationPolicyConfigurationID`](scalars.md#securityorchestrationpolicyconfigurationid) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>ID of the policy configuration the policy belongs to. |
 | `policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `updatedAt` | [`Time!`](scalars.md#time) | Timestamp of when the policy YAML was last updated. |
 | `yaml` | [`String!`](scalars.md#string) | YAML definition of the policy. |
 
@@ -17403,7 +17565,7 @@ Represents policy fields related to the scan execution policy.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `deprecatedProperties` | [`[String!]`](scalars.md#string) | Status: Experiment. Introduced in GitLab 17.3.<br/><br/>All deprecated properties in the policy. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 
 ## `ScanExecutionPolicyConnection`
 
@@ -17432,7 +17594,7 @@ A scan profile trigger and its effective configuration.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `configuration` | `ScanProfileConfiguration` | Effective configuration for the trigger. Null for scan types without a typed configuration. |
+| `configuration` | [`ScanProfileConfiguration`](unions.md#scanprofileconfiguration) | Effective configuration for the trigger. Null for scan types without a typed configuration. |
 | `triggerType` | [`ScanProfileTriggerType!`](enums.md#scanprofiletriggertype) | Type of the trigger. |
 
 ## `ScanProfileType`
@@ -17479,7 +17641,7 @@ Represents the scan result policy.
 | `policyConfigurationId` | [`SecurityOrchestrationPolicyConfigurationID`](scalars.md#securityorchestrationpolicyconfigurationid) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>ID of the policy configuration the policy belongs to. |
 | `policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | `roleApprovers` | [`[MemberAccessLevelName!]`](enums.md#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `updatedAt` | [`Time!`](scalars.md#time) | Timestamp of when the policy YAML was last updated. |
 | `userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
 | `yaml` | [`String!`](scalars.md#string) | YAML definition of the policy. |
@@ -17816,7 +17978,7 @@ Represents the security policy.
 | `id` | [`SecurityPolicyID`](scalars.md#securitypolicyid) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>ID of the policy. Returns null if the policy has not been synced to the database yet. |
 | `linkedProjectsCount` | [`Int`](scalars.md#int) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Number of projects linked to this policy. Does not account for policy_scope filtering. |
 | `name` | [`String!`](scalars.md#string) | Name of the policy. |
-| `policyAttributes` | `PolicyAttributesUnion!` | Attributes specific to the policy type. |
+| `policyAttributes` | [`PolicyAttributesUnion!`](unions.md#policyattributesunion) | Attributes specific to the policy type. |
 | `policyConfigurationId` | [`SecurityOrchestrationPolicyConfigurationID`](scalars.md#securityorchestrationpolicyconfigurationid) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>ID of the policy configuration the policy belongs to. |
 | `policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | `testRuns` | [`PolicyScheduleTestRunConnection`](#policyscheduletestrunconnection) | Status: Experiment. Introduced in GitLab 18.10.<br/><br/>Test runs for this security policy. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
@@ -17906,6 +18068,17 @@ Security scan feature configuration.
 | `onDemandAvailable` | [`Boolean!`](scalars.md#boolean) | Whether on-demand scanning is available for the scan type. |
 | `securityFeatures` | [`SecurityFeature`](#securityfeature) | Additional security features specific to the scan type. |
 | `type` | [`String!`](scalars.md#string) | Type of security scan (e.g., sast, dast, secret_detection). |
+
+## `SecurityScanProfileVariable`
+
+A configuration variable that a scan profile of a given type can set.
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `envVar` | [`String`](scalars.md#string) | CI/CD variable the configuration field is passed to the scan as. |
+| `key` | [`String!`](scalars.md#string) | Name of the configuration field, as used in the scan profile configuration input. |
 
 ## `SecurityScanners`
 
@@ -18471,6 +18644,10 @@ Paginated collection of [`Suggestion`](#suggestion). See [Standard connection fi
 | `commit` | [`Commit`](#commit) | Commit for the tag. |
 | `message` | [`String`](scalars.md#string) | Tagging message. |
 | `name` | [`String!`](scalars.md#string) | Name of the tag. |
+
+## `TagConnection`
+
+Paginated collection of [`Tag`](#tag). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
 
 ## `TargetedMessage`
 
@@ -19685,7 +19862,7 @@ Represents a recorded measurement (object count) for the requested group.
 | `duration` | [`String`](scalars.md#string) | Duration of the item on the stage. |
 | `durationInMilliseconds` | [`BigInt`](scalars.md#bigint) | Duration of item on stage in milliseconds. |
 | `endEventTimestamp` | [`Time`](scalars.md#time) | When exited the stage. |
-| `record` | `Issuable` | Item record. |
+| `record` | [`Issuable`](unions.md#issuable) | Item record. |
 
 ## `ValueStreamStageItemsConnection`
 
@@ -19846,7 +20023,7 @@ Represents a vulnerability.
 | `dependencies` | [`DependencyConnection!`](#dependencyconnection) | Status: Experiment. Introduced in GitLab 18.2.<br/><br/>Dependencies for the vulnerability. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. <br><br> <strong>Arguments for `dependencies`:</strong> <dl><dt>`componentIds` ([`[SbomComponentID!]`](scalars.md#sbomcomponentid))</dt><dd>Filter dependencies by component IDs.</dd><dt>`componentNames` ([`[String!]`](scalars.md#string))</dt><dd>Filter dependencies by component names.</dd><dt>`componentVersions` ([`[String!]`](scalars.md#string))</dt><dd>Filter dependencies by component versions.</dd><dt>`licenses` ([`[String!]`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 19.2.<br/><br/>Filter dependencies by SPDX license identifiers.</dd><dt>`malware` ([`Boolean`](scalars.md#boolean))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by malware status. Gated with feature flag `malicious_packages_dependency_list_filtering`. Cannot be combined with `trackedRefsScope: ALL_REFS` or with `trackedRefIds` referring to a non-default-branch ref.</dd><dt>`notComponentVersions` ([`[String!]`](scalars.md#string))</dt><dd>Status: Experiment. Introduced in GitLab 18.1.<br/><br/>Filter dependencies to exclude the specified component versions.</dd><dt>`packageManagers` ([`[PackageManager!]`](enums.md#packagemanager))</dt><dd>Filter dependencies by package managers.</dd><dt>`policyViolations` ([`[PolicyViolations!]`](enums.md#policyviolations))</dt><dd>Status: Experiment. Introduced in GitLab 18.7.<br/><br/>Filter by security policy violations. Cannot be combined with the `malware` argument.</dd><dt>`sort` ([`DependencySort`](enums.md#dependencysort))</dt><dd>Sort dependencies by given criteria.</dd><dt>`sourceTypes` ([`[SbomSourceType!]`](enums.md#sbomsourcetype))</dt><dd>Filter dependencies by source type.</dd><dt>`trackedRefIds` ([`[SecurityProjectTrackedContextID!]`](scalars.md#securityprojecttrackedcontextid))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by tracked ref IDs. Only available when the vulnerabilities_across_contexts feature flag is enabled.</dd><dt>`trackedRefsScope` ([`SecurityTrackedRefScope`](enums.md#securitytrackedrefscope))</dt><dd>Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Filter dependencies by tracked ref scope. Only available when the vulnerabilities_across_contexts feature flag is enabled.</dd></dl> |
 | `description` | [`String`](scalars.md#string) | Description of the vulnerability. |
 | `descriptionHtml` | [`String`](scalars.md#string) | GitLab Flavored Markdown rendering of `description`. |
-| `details` | `[VulnerabilityDetail!]!` | Details of the vulnerability. |
+| `details` | [`[VulnerabilityDetail!]!`](unions.md#vulnerabilitydetail) | Details of the vulnerability. |
 | `detectedAt` | [`Time!`](scalars.md#time) | Timestamp of when the vulnerability was first detected. |
 | `discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
 | `dismissalReason` | [`VulnerabilityDismissalReason`](enums.md#vulnerabilitydismissalreason) | Reason for dismissal. Returns `null` for states other than `dismissed`. |
@@ -19868,7 +20045,7 @@ Represents a vulnerability.
 | `latestNonClosedMergeRequest` | [`MergeRequest`](#mergerequest) | Status: Experiment. Introduced in GitLab 19.1.<br/><br/>Latest non-closed merge request linked to fix the vulnerability. |
 | `latestSecurityReportFinding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Status: Experiment. Introduced in GitLab 18.4.<br/><br/>Latest security report finding for the vulnerability. On large projects, the field can time out and return null. Clients should check the top-level errors array for timeout errors, even when the HTTP response status is 200. |
 | `links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
-| `location` | `VulnerabilityLocation` | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
+| `location` | [`VulnerabilityLocation`](unions.md#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | `malware` | [`Boolean`](scalars.md#boolean) | Status: Experiment. Introduced in GitLab 19.0.<br/><br/>Indicates whether the vulnerability is associated with a malware package. Returns `true` if a malware package is identified. Returns `false` if the package is not a malware package. Returns `null` when malware detection is not enabled for the namespace. |
 | `mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
 | `mergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests that are linked to fix the vulnerability. This field is a [connection](#connections-and-pagination) and accepts the four standard pagination arguments: `before`, `after`, `first`, `last`. |
@@ -20127,7 +20304,7 @@ Represents the vulnerability details list value.
 | ---- | ---- | ----------- |
 | `description` | [`String`](scalars.md#string) | Description of the field. |
 | `fieldName` | [`String`](scalars.md#string) | Name of the field. |
-| `items` | `[VulnerabilityDetail!]!` | List of details. |
+| `items` | [`[VulnerabilityDetail!]!`](unions.md#vulnerabilitydetail) | List of details. |
 | `name` | [`String`](scalars.md#string) | Name of the field. |
 
 ## `VulnerabilityDetailMarkdown`
@@ -20181,7 +20358,7 @@ Represents the vulnerability details named list item.
 | `description` | [`String`](scalars.md#string) | Description of the field. |
 | `fieldName` | [`String`](scalars.md#string) | Name of the field. |
 | `name` | [`String`](scalars.md#string) | Name of the field. |
-| `value` | `VulnerabilityDetail!` | Status: Experiment. Introduced in GitLab 16.1.<br/><br/>Value of the field. |
+| `value` | [`VulnerabilityDetail!`](unions.md#vulnerabilitydetail) | Status: Experiment. Introduced in GitLab 16.1.<br/><br/>Value of the field. |
 
 ## `VulnerabilityDetailRow`
 
@@ -20194,7 +20371,7 @@ Represents an individual row in a table.
 | `description` | [`String`](scalars.md#string) | Description of the field. |
 | `fieldName` | [`String`](scalars.md#string) | Name of the field. |
 | `name` | [`String`](scalars.md#string) | Name of the field. |
-| `row` | `[VulnerabilityDetail!]!` | Value of the field. |
+| `row` | [`[VulnerabilityDetail!]!`](unions.md#vulnerabilitydetail) | Value of the field. |
 
 ## `VulnerabilityDetailTable`
 
@@ -20206,7 +20383,7 @@ Represents the vulnerability details table value.
 | ---- | ---- | ----------- |
 | `description` | [`String`](scalars.md#string) | Description of the field. |
 | `fieldName` | [`String`](scalars.md#string) | Name of the field. |
-| `headers` | `[VulnerabilityDetail!]!` | Table headers. |
+| `headers` | [`[VulnerabilityDetail!]!`](unions.md#vulnerabilitydetail) | Table headers. |
 | `name` | [`String`](scalars.md#string) | Name of the field. |
 | `rows` | [`[VulnerabilityDetailRow!]!`](#vulnerabilitydetailrow) | Table rows. |
 
@@ -20599,7 +20776,7 @@ Represents the vulnerability management policy.
 | `name` | [`String!`](scalars.md#string) | Name of the policy. |
 | `policyConfigurationId` | [`SecurityOrchestrationPolicyConfigurationID`](scalars.md#securityorchestrationpolicyconfigurationid) | Status: Experiment. Introduced in GitLab 18.11.<br/><br/>ID of the policy configuration the policy belongs to. |
 | `policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | `updatedAt` | [`Time!`](scalars.md#time) | Timestamp of when the policy YAML was last updated. |
 | `yaml` | [`String!`](scalars.md#string) | YAML definition of the policy. |
 
@@ -20611,7 +20788,7 @@ Represents policy fields related to the vulnerability management policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `source` | `SecurityPolicySource!` | Source of the policy. Its fields depend on the source type. |
+| `source` | [`SecurityPolicySource!`](unions.md#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 
 ## `VulnerabilityManagementPolicyConnection`
 
@@ -21273,6 +21450,7 @@ Paginated collection of [`WorkItemDescriptionTemplate`](#workitemdescriptiontemp
 | `participants` | [`WorkItemWidgetParticipants`](#workitemwidgetparticipants) | Participants widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `progress` | [`WorkItemWidgetProgress`](#workitemwidgetprogress) | Progress widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `requirementLegacy` | [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy) | Requirement legacy widget of the work item. Returns `null` if the widget is not available for the work item. |
+| `severity` | [`WorkItemWidgetSeverity`](#workitemwidgetseverity) | Severity widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `startAndDueDate` | [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate) | Start and due date widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `status` | [`WorkItemWidgetStatus`](#workitemwidgetstatus) | Status widget of the work item. Returns `null` if the widget is not available for the work item. |
 | `testReports` | [`WorkItemWidgetTestReports`](#workitemwidgettestreports) | Test reports widget of the work item. Returns `null` if the widget is not available for the work item. |
@@ -22117,6 +22295,19 @@ Represents a legacy requirement widget.
 | `legacyIid` | [`Int`](scalars.md#int) | Deprecated in GitLab 15.9. Use Work Item IID instead. |
 | `type` | [`WorkItemWidgetType`](enums.md#workitemwidgettype) | Widget type. |
 
+## `WorkItemWidgetSeverity`
+
+Represents the severity widget.
+
+**Implements:** [`WorkItemWidget`](interfaces.md#workitemwidget)
+
+### Fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `severity` | [`IssuableSeverity`](enums.md#issuableseverity) | Severity of the work item. |
+| `type` | [`WorkItemWidgetType`](enums.md#workitemwidgettype) | Widget type. |
+
 ## `WorkItemWidgetStartAndDueDate`
 
 Represents a start and due date widget.
@@ -22498,18 +22689,6 @@ Requires ClickHouse. Premium and Ultimate only.
 | `languages` | [`[String!]`](scalars.md#string) | List of languages with at least one suggestion shown or accepted. |
 | `shownCount` | [`Int`](scalars.md#int) | Total count of code suggestions shown. |
 | `shownLinesOfCode` | [`Int`](scalars.md#int) | Sum of lines of code from code suggestions shown. |
-
-## `codeSuggestionMetricsBasic`
-
-AI-related metrics with three months of data retention.
-Premium and Ultimate only.
-
-### Fields {.no_toc}
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `acceptedCount` | [`Int`](scalars.md#int) | Total count of code suggestions accepted. |
-| `shownCount` | [`Int`](scalars.md#int) | Total count of code suggestions shown. |
 
 ## `codeSuggestionsUserMetrics`
 

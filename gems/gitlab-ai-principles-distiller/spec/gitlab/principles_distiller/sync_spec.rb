@@ -61,7 +61,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       sync.manifest.data = manifest
 
       allow(sync).to receive_messages(distillation_base_sha: '2' * 40,
-        parallel_distill: { 'qa' => [existing_content, distilled_content] })
+        parallel_distill: { 'qa' => described_class::PrincipleResult.new(
+          original: existing_content, updated: distilled_content) })
     end
 
     it 'passes the same target SHA to distillation and frontmatter' do
@@ -91,24 +92,40 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       expect(written).to include('- doc/development/testing_guide/best_practices.md')
     end
 
-    it 'returns updated principles and no failures', :aggregate_failures do
-      updated, failed = sync.distill_and_write_principles(affected)
+    # Source verification only matters for a checkpoint, so an updated principle must not pay for it or warn about it.
+    context 'when an existing distilled file gets meaningful changes' do
+      before do
+        File.write(File.join(principles_dir, 'qa.md'), "---\nsource_checksum: old\n---\n#{existing_content}")
+        allow(sync).to receive(:parallel_distill).and_call_original
+        allow(sync).to receive(:distill_principle).and_return(distilled_content)
+        allow(sync.workflow).to receive(:checkpoint_sources_match?)
+      end
 
-      expect(updated.keys).to eq(['qa'])
-      expect(failed).to be_empty
+      it 'does not verify checkpoint sources' do
+        sync.distill_and_write_principles(affected)
+
+        expect(sync.workflow).not_to have_received(:checkpoint_sources_match?)
+      end
+    end
+
+    it 'returns updated principles and no failures', :aggregate_failures do
+      result = sync.distill_and_write_principles(affected)
+
+      expect(result.contents.keys).to eq(['qa'])
+      expect(result.failed).to be_empty
     end
 
     context 'when distillation fails' do
       before do
         allow(sync).to receive(:parallel_distill)
-          .and_return({ 'qa' => [nil, nil] })
+          .and_return({ 'qa' => described_class::PrincipleResult.new(original: nil, updated: nil) })
       end
 
       it 'reports failure', :aggregate_failures do
-        updated, failed = sync.distill_and_write_principles(affected)
+        result = sync.distill_and_write_principles(affected)
 
-        expect(updated).to be_empty
-        expect(failed).to eq(['qa'])
+        expect(result.contents).to be_empty
+        expect(result.failed).to eq(['qa'])
       end
 
       it 'writes no file (so its existing source_checksum, if any, is left untouched)' do
@@ -137,24 +154,22 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
       before do
         allow(sync).to receive(:parallel_distill).and_return(
-          'qa' => [existing_content, distilled_content],
-          'other' => [nil, nil]
+          'qa' => described_class::PrincipleResult.new(original: existing_content, updated: distilled_content),
+          'other' => described_class::PrincipleResult.new(original: nil, updated: nil)
         )
       end
 
       it 'writes and reports only the successful principle, leaving the failed one untouched',
         :aggregate_failures do
-        updated, failed = sync.distill_and_write_principles(affected)
+        result = sync.distill_and_write_principles(affected)
 
-        expect(updated.keys).to eq(['qa'])
-        expect(failed).to eq(['other'])
+        expect(result.contents.keys).to eq(['qa'])
+        expect(result.failed).to eq(['other'])
         expect(File.exist?(File.join(principles_dir, 'qa.md'))).to be true
         expect(File.exist?(File.join(principles_dir, 'other.md'))).to be false
       end
     end
 
-    # Regression: a re-distillation that produces the same checklist must be skipped, not emitted as a frontmatter-only
-    # MR (new source_checksum / distilled_at_sha but an identical body).
     # In production `current` is read from disk WITH the auto-generated header and authoritative sources footer intact
     # (strip_frontmatter removes only the YAML block), while `updated` is the raw LLM checklist WITHOUT that footer.
     # The meaningful? gate must therefore compare the fully-assembled body against `current`; hence `existing_on_disk`
@@ -176,21 +191,116 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
       before do
         allow(sync).to receive(:parallel_distill)
-          .and_return({ 'qa' => [existing_on_disk, distilled_content] })
+          .and_return({ 'qa' => described_class::PrincipleResult.new(
+            original: existing_on_disk, updated: distilled_content) })
       end
 
       it 'skips the file', :aggregate_failures do
-        updated, failed = sync.distill_and_write_principles(affected)
+        result = sync.distill_and_write_principles(affected)
 
-        expect(updated).to be_empty
-        expect(failed).to be_empty
+        expect(result.contents).to be_empty
+        expect(result.failed).to be_empty
+      end
+
+      # Without advancing the frontmatter, the next scan would select the same unchanged inputs again.
+      context 'when the distilled file exists on disk' do
+        def path
+          File.join(principles_dir, 'qa.md')
+        end
+
+        def checksum
+          sync.manifest.compute_checksum(manifest.dig('principles', 'qa'))
+        end
+
+        def original
+          "---\nsource_checksum: old\ndistilled_at_sha: #{'1' * 40}\n---\n#{existing_on_disk}"
+        end
+
+        before do
+          File.write(path, original)
+          allow(sync).to receive(:parallel_distill).and_call_original
+          allow(sync).to receive(:distill_principle).and_return(distilled_content)
+          allow(sync.workflow).to receive(:checkpoint_sources_match?).and_return(true)
+        end
+
+        it 'returns a checkpoint for the evaluated file and inputs' do
+          checkpoints = sync.distill_and_write_principles(affected).checkpoints
+
+          expect(checkpoints).to eq(
+            'qa' => described_class::MetadataCheckpoint.new(
+              source_checksum: checksum,
+              distilled_at_sha: '2' * 40,
+              original_sha256: described_class::MetadataCheckpoint.fingerprint(original)
+            )
+          )
+        end
+
+        it 'updates only the frontmatter on disk', :aggregate_failures do
+          sync.distill_and_write_principles(affected)
+
+          written = File.read(path)
+          expect(written).to start_with("---\nsource_checksum: #{checksum}\n")
+          expect(written).to include("distilled_at_sha: #{'2' * 40}\n")
+          expect(written).to end_with("---\n#{existing_on_disk}")
+          expect(sync.manifest.affected_principles).to be_empty
+        end
+
+        context 'when the workflow fails after the snapshot is captured' do
+          before do
+            allow(sync).to receive(:distill_principle).and_return(nil)
+          end
+
+          it 'discards the checkpoint and leaves the file untouched', :aggregate_failures do
+            result = sync.distill_and_write_principles(affected)
+
+            expect(result.checkpoints).to be_empty
+            expect(result.failed).to eq(['qa'])
+            expect(File.read(path)).to eq(original)
+          end
+        end
+
+        context 'when local sources differ from the evaluated revision' do
+          before do
+            allow(sync.workflow).to receive(:checkpoint_sources_match?).and_return(false)
+          end
+
+          it 'leaves the metadata stale for the next scan', :aggregate_failures do
+            result = sync.distill_and_write_principles(affected)
+
+            expect(result.checkpoints).to be_empty
+            expect(result.failed).to be_empty
+            expect(File.read(path)).to eq(original)
+            expect(sync.manifest.affected_principles.keys).to include('qa')
+          end
+        end
+
+        context 'when the distilled file changes while the workflow runs' do
+          def edited
+            original.sub('New code has tests', 'A concurrent edit')
+          end
+
+          before do
+            allow(sync).to receive(:distill_principle) do
+              File.write(path, edited)
+              distilled_content
+            end
+          end
+
+          it 'keeps the initial fingerprint and refuses to stamp the edited file', :aggregate_failures do
+            result = sync.distill_and_write_principles(affected)
+
+            expect(result.checkpoints.fetch('qa').original_sha256)
+              .to eq(described_class::MetadataCheckpoint.fingerprint(original))
+            expect(File.read(path)).to eq(edited)
+          end
+        end
       end
     end
 
     context 'when the distilled file does not exist yet (current is nil)' do
       before do
         allow(sync).to receive(:parallel_distill)
-          .and_return({ 'qa' => [nil, distilled_content] })
+          .and_return({ 'qa' => described_class::PrincipleResult.new(original: nil, updated: distilled_content) })
       end
 
       it 'writes the new file' do
@@ -200,10 +310,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       it 'returns the new principle as updated and reports no failures', :aggregate_failures do
-        updated, failed = sync.distill_and_write_principles(affected)
+        result = sync.distill_and_write_principles(affected)
 
-        expect(updated.keys).to eq(['qa'])
-        expect(failed).to be_empty
+        expect(result.contents.keys).to eq(['qa'])
+        expect(result.failed).to be_empty
       end
     end
   end
@@ -221,7 +331,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
 
     it 'preflights publish configuration' do
-      allow(sync).to receive(:distill).and_return([{}, []])
+      allow(sync).to receive(:distill)
+          .and_return(described_class::DistillResult.new(contents: {}, failed: [], checkpoints: {}))
 
       sync.distill_and_publish(push: true)
 
@@ -237,7 +348,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       let(:options) { { push: true } }
 
       before do
-        allow(sync).to receive(:distill).and_return([{ 'qa' => 'content' }, ['other']])
+        allow(sync).to receive(:distill)
+          .and_return(described_class::DistillResult.new(contents: { 'qa' => 'content' }, failed: ['other'],
+            checkpoints: {}))
         allow(sync).to receive(:create_branch_and_mr)
       end
 
@@ -267,7 +380,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       let(:options) { { push: true } }
 
       before do
-        allow(sync).to receive(:distill).and_return([{}, ['qa']])
+        allow(sync).to receive(:distill)
+          .and_return(described_class::DistillResult.new(contents: {}, failed: ['qa'], checkpoints: {}))
         allow(sync).to receive(:create_branch_and_mr)
       end
 
@@ -283,7 +397,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       let(:options) { { push: true } }
 
       before do
-        allow(sync).to receive(:distill).and_return([{ 'qa' => 'content' }, []])
+        allow(sync).to receive(:distill)
+          .and_return(described_class::DistillResult.new(contents: { 'qa' => 'content' }, failed: [], checkpoints: {}))
         allow(sync).to receive(:create_branch_and_mr)
       end
 
@@ -301,6 +416,24 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=0')
         expect(run_report).to include("AI_PRINCIPLES_FAILED_NAMES=\n")
         expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=1')
+      end
+    end
+
+    context 'with only successful no-change results' do
+      let(:options) { { push: true } }
+      let(:checkpoints) { { 'qa' => instance_double(described_class::MetadataCheckpoint) } }
+
+      before do
+        allow(sync).to receive(:distill)
+          .and_return(described_class::DistillResult.new(contents: {}, failed: [], checkpoints: checkpoints))
+        allow(sync).to receive(:create_branch_and_mr)
+      end
+
+      it 'publishes the metadata update' do
+        sync.distill_and_publish(options)
+
+        expect(sync).to have_received(:create_branch_and_mr)
+          .with({}, affected, anything, failed: [], checkpoints: checkpoints)
       end
     end
 
@@ -390,9 +523,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       subject(:distill_one) { sync.distill_one('qa') }
 
       let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
-      # [contents, failed] as build_distilled_contents returns it.
+      # The DistillResult build_distilled_contents returns.
       # Each context below overrides this to pick the outcome it exercises.
-      let(:distilled) { [{ 'qa' => 'body' }, []] }
+      let(:distilled) { described_class::DistillResult.new(contents: { 'qa' => 'body' }, failed: [], checkpoints: {}) }
 
       before do
         allow(sync.manifest).to receive_messages(load: nil, principle_config: config,
@@ -434,17 +567,36 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       # A clean run that produced no meaningful diff is a healthy outcome and must stay distinct from a failure, or it
       # would reach the Slack alert.
       context 'when the principle has no meaningful changes' do
-        let(:distilled) { [{}, []] }
+        let(:distilled) { described_class::DistillResult.new(contents: {}, failed: [], checkpoints: {}) }
 
         it 'records an unchanged status and exits zero', :aggregate_failures do
           expect { sync.distill_one('qa') }.not_to raise_error
 
           expect(status_of('qa')).to eq(described_class::Artifacts::STATUS_UNCHANGED)
         end
+
+        context 'with a checkpoint' do
+          let(:checkpoint) do
+            described_class::MetadataCheckpoint.new(
+              source_checksum: 'abc', distilled_at_sha: '2' * 40, original_sha256: 'f' * 64
+            )
+          end
+
+          let(:distilled) do
+            described_class::DistillResult.new(contents: {}, failed: [], checkpoints: { 'qa' => checkpoint })
+          end
+
+          it 'records the checkpoint for the collect job' do
+            sync.distill_one('qa')
+
+            expect(JSON.parse(File.read(File.join(artifacts_dir, 'qa.checkpoint.json'))))
+              .to include('source_checksum' => 'abc')
+          end
+        end
       end
 
       context 'when the principle fails after retries' do
-        let(:distilled) { [{}, ['qa']] }
+        let(:distilled) { described_class::DistillResult.new(contents: {}, failed: ['qa'], checkpoints: {}) }
 
         # The status artifact is written BEFORE the non-zero exit, and the CI
         # job declares `artifacts: when: always`.
@@ -620,6 +772,26 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
           expect(sync).not_to have_received(:create_branch_and_mr)
           expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=0')
+        end
+
+        context 'with a checkpoint' do
+          let(:checkpoint) do
+            described_class::MetadataCheckpoint.new(
+              source_checksum: 'abc', distilled_at_sha: '2' * 40, original_sha256: 'f' * 64
+            )
+          end
+
+          before do
+            described_class::Artifacts.new(artifacts_dir)
+              .write('alpha', described_class::Artifacts::STATUS_UNCHANGED, checkpoint: checkpoint)
+          end
+
+          it 'publishes the metadata update' do
+            sync.collect(expected, push: true)
+
+            expect(sync).to have_received(:create_branch_and_mr)
+              .with({}, affected, anything, failed: [], not_run: [], checkpoints: { 'alpha' => checkpoint })
+          end
         end
       end
     end

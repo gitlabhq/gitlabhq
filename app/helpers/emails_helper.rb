@@ -25,6 +25,22 @@ module EmailsHelper
     gmail_goto_action(name, url)
   end
 
+  # Renders a hidden, per-render marker so Gmail does not trim repeated notification content.
+  #
+  # @param target_url [String] URL of the notification target
+  # @param random [Boolean] use a random token instead of the current timestamp
+  # @return [ActiveSupport::SafeBuffer]
+  def notification_email_marker(target_url, random: true)
+    marker = random ? SecureRandom.hex(16) : Time.current.to_i
+
+    content_tag(
+      :span,
+      "Notification message regarding #{target_url} at #{marker}",
+      style: 'color:transparent;font-size:0;display:none;overflow:hidden;opacity:0;' \
+        'width:0;height:0;max-width:0;max-height:0'
+    )
+  end
+
   def action_title(url)
     return unless url
 

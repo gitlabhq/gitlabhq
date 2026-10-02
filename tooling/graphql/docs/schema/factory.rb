@@ -5,7 +5,7 @@ require_relative 'enum'
 require_relative 'input_object'
 require_relative 'object'
 require_relative 'interface'
-require_relative 'temp_undocumented'
+require_relative 'union'
 
 module Tooling
   module Graphql
@@ -13,9 +13,10 @@ module Tooling
       module Schema
         # Builds the docs schema class matching a GraphQL type.
         module Factory
-          # Wraps a GraphQL type in the matching docs schema class. Types without
-          # a docs page yet (unions) wrap to TempUndocumented, which the renderer
-          # shows unlinked. See https://gitlab.com/gitlab-org/gitlab/-/issues/593121.
+          UnknownKindError = Class.new(StandardError)
+
+          # Wraps a GraphQL type in the matching docs schema class. Raises for a
+          # kind without a docs class, so a new kind fails loudly at compile time.
           def self.wrap(graphql_type)
             if graphql_type.kind.scalar?
               Scalar.new(graphql_type)
@@ -27,8 +28,10 @@ module Tooling
               InputObject.new(graphql_type, with_arguments: false)
             elsif graphql_type.kind.interface?
               Interface.new(graphql_type, with_fields: false)
+            elsif graphql_type.kind.union?
+              Union.new(graphql_type)
             else
-              TempUndocumented.new(graphql_type)
+              raise UnknownKindError, "No docs schema class for GraphQL kind #{graphql_type.kind.name}"
             end
           end
         end

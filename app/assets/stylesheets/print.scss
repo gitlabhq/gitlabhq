@@ -31,7 +31,7 @@
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
 
-    // Sticky table headers (editor_sticky_table_headers) fake their top and
+    // Sticky table headers fake their top and
     // bottom borders with inset box-shadows, which browsers omit in print.
     // Restore real borders and remove the shadow.
     // See framework/typography.scss for the non-print declaration.

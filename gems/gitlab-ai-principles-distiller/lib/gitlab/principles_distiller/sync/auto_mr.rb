@@ -12,6 +12,9 @@ module Gitlab
         PUSH_MAX_ATTEMPTS = 3
         PUSH_RETRY_BACKOFF_SECONDS = [5, 15].freeze
 
+        TOOLING_SLUG = 'tooling'
+        METADATA_SLUG = 'metadata'
+
         # The run-invariant publish inputs: identical for every team branch and the tooling branch in a single
         # create_branch_and_mr call.
         PublishContext = Struct.new(
@@ -60,7 +63,10 @@ module Gitlab
         # `failed` (principles that failed distillation, distinct from the per-team publish `failures` below) and
         # `not_run` (principles whose distill job never completed) travel with the rest of the run-invariant inputs via
         # `ctx` (see PublishContext).
-        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: [], not_run: [])
+        #
+        # `checkpoints` (successful no-change distillations) go to a single metadata MR, so the next scan skips those
+        # principles; see publish_metadata_branch.
+        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: [], not_run: [], checkpoints: {})
           project_id = ENV.fetch(Env::CI_PROJECT_ID) do
             abort Rainbow("ERROR: #{Env::CI_PROJECT_ID} env var is required when --push is given").red
           end
@@ -82,7 +88,7 @@ module Gitlab
           )
 
           teams = manifest.group_principles_by_team(distilled_contents.keys)
-          prefetch_publish_inputs!(affected, teams, ctx)
+          prefetch_publish_inputs!(affected, teams, ctx, metadata: checkpoints.any?)
 
           failures = []
 
@@ -96,13 +102,10 @@ module Gitlab
             failures << team
           end
 
-          begin
-            publish_tooling_branch(ctx)
-          rescue StandardError => e
-            warn Rainbow("ERROR: tooling MR failed: #{e.message}").red
-            cleanup_branch(ctx.base_branch, tooling_branch_name(ctx.auto_mr_cfg, ctx.date))
-            failures << 'tooling'
-          end
+          # Before the tooling branch: its regeneration rewrites distilled files in the working tree, and those
+          # unstaged edits would carry over into a branch cut after it.
+          failures << METADATA_SLUG if checkpoints.any? && !publish_metadata_branch_or_warn(checkpoints, affected, ctx)
+          failures << TOOLING_SLUG unless publish_tooling_branch_or_warn(ctx)
 
           return if failures.empty?
 
@@ -209,6 +212,75 @@ module Gitlab
           create_tooling_mr(branch, ctx, title)
         end
 
+        # Like the per-team rescue in create_branch_and_mr: returns false so the caller records the failure and
+        # continues.
+        def publish_tooling_branch_or_warn(ctx)
+          publish_tooling_branch(ctx)
+          true
+        rescue StandardError => e
+          warn Rainbow("ERROR: tooling MR failed: #{e.message}").red
+          cleanup_branch(ctx.base_branch, tooling_branch_name(ctx.auto_mr_cfg, ctx.date))
+          false
+        end
+
+        def publish_metadata_branch_or_warn(checkpoints, affected, ctx)
+          publish_metadata_branch(checkpoints, affected, ctx)
+          true
+        rescue StandardError => e
+          warn Rainbow("ERROR: metadata MR failed: #{e.message}").red
+          cleanup_branch(ctx.base_branch, metadata_branch_name(ctx.auto_mr_cfg, ctx.date))
+          false
+        end
+
+        # Builds, pushes, and opens/updates the metadata MR recording successful no-change distillations.
+        # Only the frontmatter changes; each principle body is preserved byte-for-byte.
+        # A checkpoint whose distilled file changed on the base branch since it was evaluated is skipped, so a merged
+        # team MR or newer metadata is never overwritten; the next scheduled run re-evaluates that principle.
+        def publish_metadata_branch(checkpoints, affected, ctx)
+          branch = metadata_branch_name(ctx.auto_mr_cfg, ctx.date)
+
+          checkout_fresh_branch(branch, ctx.base_branch)
+
+          applied = checkpoints.filter_map do |name, checkpoint|
+            path = manifest.principles_path(name)
+            full_path = Workspace.safe_join(path)
+            updated = checkpoint.apply(File.read(full_path)) if File.exist?(full_path)
+
+            unless updated
+              warn Rainbow("  WARNING: #{name}: distilled file changed on #{ctx.base_branch} since it was " \
+                'evaluated; skipping its metadata update').yellow
+              next
+            end
+
+            File.write(full_path, updated)
+            [name, path]
+          end.to_h
+
+          system('git', '-C', Workspace.path, 'add', '-f', *applied.values, exception: true) if applied.any?
+
+          unless applied.any? && git_has_staged_changes?
+            puts Rainbow('  Distillation metadata already up to date; skipping metadata MR.').faint
+            close_adopted_mr_if_empty(branch, ctx)
+            cleanup_branch(ctx.base_branch, branch)
+            return
+          end
+
+          updated_list = applied.keys.map { |name| "- #{name}" }.join("\n")
+
+          commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
+        Update AI principles distillation metadata
+
+        Records distillations that produced no meaningful changes, so
+        these principles are skipped until their sources change again:
+        #{updated_list}
+
+        This commit was auto-generated by gitlab-ai-principles-distiller.
+          MSG
+
+          title = "#{METADATA_SLUG}: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
+          create_metadata_mr(branch, applied.keys, affected, ctx, title)
+        end
+
         # Builds, pushes, and opens/updates the dedicated reconcile MR carrying ONLY the Duo review-instructions fence
         # update.
         # Called from Sync#reconcile_duo_instructions_fences.
@@ -288,7 +360,11 @@ module Gitlab
         end
 
         def tooling_branch_name(auto_mr_cfg, date)
-          branch_name_for(auto_mr_cfg, date, 'tooling')
+          branch_name_for(auto_mr_cfg, date, TOOLING_SLUG)
+        end
+
+        def metadata_branch_name(auto_mr_cfg, date)
+          branch_name_for(auto_mr_cfg, date, METADATA_SLUG)
         end
 
         # Reuses the source branch of an already-open service-account MR for this slug.
@@ -496,13 +572,15 @@ module Gitlab
           end
         end
 
-        def prefetch_publish_inputs!(affected, teams, ctx)
+        def prefetch_publish_inputs!(affected, teams, ctx, metadata: false)
           # Fetch every prior SHA once up front so each team branch can embed its SSOT diffs without re-fetching.
           prefetch_prior_shas!(affected)
 
           # Resolve adoption for every branch this run will touch, once, before any branch is cut.
-          # `team_slug` is the same key `team_branch_name` derives its suffix from, plus the fixed `tooling` slug.
-          slugs = teams.keys.map { |team| manifest.team_slug(team) } + ['tooling']
+          # `team_slug` is the same key `team_branch_name` derives its suffix from, plus the fixed tooling and metadata
+          # slugs.
+          slugs = teams.keys.map { |team| manifest.team_slug(team) } + [TOOLING_SLUG]
+          slugs << METADATA_SLUG if metadata
           prefetch_adopted_branches!(ctx, slugs)
         end
 
@@ -877,6 +955,39 @@ module Gitlab
           DESC
 
           submit_mr(branch, default_branch, ctx, title, description)
+        end
+
+        # Opens/updates the metadata MR. Approval still routes through each distilled file's CODEOWNERS rule.
+        # Until it merges every run re-distills these principles, so one member of each owning team is requested as
+        # reviewer, matching the team MRs' fallback when no SSOT author resolves.
+        def create_metadata_mr(branch, principle_names, affected, ctx, title)
+          default_branch = workflow.default_branch
+          teams = manifest.group_principles_by_team(principle_names).keys
+          reviewer_ids = teams.filter_map { |team| reviewer_resolver.owner_team_reviewer(team)&.dig(:id) }
+          sections = principle_names.map do |name|
+            principle_diff_section(name, affected[name], default_branch)
+          end.join("\n\n")
+
+          description = <<~DESC
+        ## Summary
+
+        The latest distillation of these principles produced no meaningful
+        changes. This MR updates only their `source_checksum` and
+        `distilled_at_sha` frontmatter, so the next scheduled run skips them
+        until their SSOT sources change again. The principle bodies are
+        unchanged.
+
+        Each owning team approves its files through CODEOWNERS:
+        #{teams.map { |team| "**#{manifest.team_display(team)}**" }.join(', ')}.
+        #{job_line}
+        ### Principles and their source-doc changes
+
+        Please check that these documentation changes need no rule update.
+
+        #{sections}
+          DESC
+
+          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids)
         end
 
         # Opens/updates the dedicated reconcile MR carrying only the Duo review-instruction fence update, projected from

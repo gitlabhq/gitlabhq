@@ -91,6 +91,12 @@ export default {
     shouldShowStopButton() {
       return this.canStopEnvironment && this.environment.isAvailable;
     },
+    shouldShowForceStopButton() {
+      return this.canStopEnvironment && this.environment.state === 'stopping';
+    },
+    shouldShowStopEnvironmentModal() {
+      return this.shouldShowStopButton || this.shouldShowForceStopButton;
+    },
     shouldShowTerminalButton() {
       return this.canAdminEnvironment && this.environment.hasTerminals;
     },
@@ -163,6 +169,15 @@ export default {
           {{ $options.i18n.stopButtonText }}
         </gl-button>
         <gl-button
+          v-if="shouldShowForceStopButton"
+          v-gl-modal-directive="'stop-environment-modal'"
+          data-testid="force-stop-button"
+          icon="stop"
+          variant="danger"
+        >
+          {{ s__('Environments|Force stop') }}
+        </gl-button>
+        <gl-button
           v-if="canDestroyEnvironment"
           v-gl-modal-directive="'delete-environment-modal'"
           data-testid="destroy-button"
@@ -172,7 +187,7 @@ export default {
         </gl-button>
       </div>
       <delete-environment-modal v-if="canDestroyEnvironment" :environment="environment" />
-      <stop-environment-modal v-if="shouldShowStopButton" :environment="environment" />
+      <stop-environment-modal v-if="shouldShowStopEnvironmentModal" :environment="environment" />
     </header>
 
     <gl-truncate-text

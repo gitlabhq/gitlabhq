@@ -37,7 +37,7 @@ keys:
 | `owner_team`   | string           | No       | CODEOWNERS handle of the team that owns the source documentation. The sync groups principles by this value, opens one merge request per team, and routes approval to this team through CODEOWNERS. |
 | `secondary_teams` | list of strings | No      | Additional CODEOWNERS handles for source documentation that spans more than one team. Listed as inline code in a "Request a review from" section so the merge request does not notify these groups. |
 | `fallback_ping_team` | boolean    | No       | Fallback ping behavior when no source-documentation author resolves to a user. When `true` (default), the merge request summary mentions the `owner_team` handle. When `false`, it uses the non-mention team slug so a large group is not notified on every run. |
-| `team_slug`    | string           | No       | Short, URL-safe name used for the per-team branch and merge request title. Defaults to the last path segment of `owner_team`. Set this when the last segment is generic (for example, `approvers`) and would collide across teams. |
+| `team_slug`    | string           | No       | Short, URL-safe name used for the per-team branch and merge request title. Defaults to the last path segment of `owner_team`. Set this when the last segment is generic (for example, `approvers`) and would collide across teams. Cannot be `tooling` or `metadata`, because the sync uses those names for its own merge requests. |
 
 ### Source entry
 

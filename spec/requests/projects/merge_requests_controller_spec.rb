@@ -127,6 +127,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     end
   end
 
+  describe 'GET #reports' do
+    before do
+      sign_in(user)
+    end
+
+    it 'returns ok' do
+      get reports_project_merge_request_path(project, merge_request)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe 'GET #index' do
     let_it_be_with_reload(:public_project) { create(:project, :public) }
 

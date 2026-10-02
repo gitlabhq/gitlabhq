@@ -1819,7 +1819,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the namespace
+        description: ID or URL-encoded path of the namespace.
         schema:
           oneOf:
           - type: string
@@ -1830,7 +1830,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_6ef4e663c0d4"
+              "$ref": "#/components/schemas/RequestBody_81a0c8fbae52"
     put:
       operationId: putApiV4NamespacesIdGitlabSubscription
       summary: Update the subscription for the namespace
@@ -1852,7 +1852,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the namespace
+        description: ID or URL-encoded path of the namespace.
         schema:
           oneOf:
           - type: string
@@ -1863,7 +1863,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_44670369f631"
+              "$ref": "#/components/schemas/RequestBody_0ff933a1f18c"
     get:
       operationId: getApiV4NamespacesIdGitlabSubscription
       summary: Retrieve namespace subscription
@@ -1882,7 +1882,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the namespace
+        description: ID or URL-encoded path of the namespace.
         schema:
           oneOf:
           - type: string
@@ -3205,7 +3205,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9983fc9d3604"
+              "$ref": "#/components/schemas/RequestBody_4a4d5672e0fb"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/code_review/custom_instructions":
     get:
@@ -3228,14 +3228,14 @@ paths:
       parameters:
       - name: project_id
         required: true
-        description: The ID or path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
           nullable: true
         in: query
       - name: merge_request_iid
         required: true
-        description: The IID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
           nullable: true
@@ -4160,7 +4160,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -4171,7 +4171,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5ceb8411e122"
+              "$ref": "#/components/schemas/RequestBody_7bad96861d63"
   "/api/v4/groups/{id}/dependency_list_exports":
     post:
       operationId: postApiV4GroupsIdDependencyListExports
@@ -4191,7 +4191,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -4202,7 +4202,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5fdac33e258d"
+              "$ref": "#/components/schemas/RequestBody_2c59b8b6818d"
   "/api/v4/pipelines/{id}/dependency_list_exports":
     post:
       operationId: postApiV4PipelinesIdDependencyListExports
@@ -4222,7 +4222,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the pipeline
+        description: ID of the pipeline.
         schema:
           oneOf:
           - type: string
@@ -4233,7 +4233,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9a04a1f53e76"
+              "$ref": "#/components/schemas/RequestBody_5fb2d6dc800c"
   "/api/v4/dependency_list_exports/{export_id}":
     get:
       operationId: getApiV4DependencyListExportsExportId
@@ -4251,7 +4251,7 @@ paths:
       parameters:
       - name: export_id
         required: true
-        description: The ID of the dependency list export
+        description: ID of the dependency list export.
         schema:
           oneOf:
           - type: integer
@@ -4277,7 +4277,7 @@ paths:
       parameters:
       - name: export_id
         required: true
-        description: The ID of the dependency list export
+        description: ID of the dependency list export.
         schema:
           oneOf:
           - type: integer
@@ -4701,9 +4701,8 @@ paths:
         example: 5
       - name: state
         required: false
-        description: Return "opened", "upcoming", "current (previously started)",
-          "closed", or "all" iterations. Filtering by `started` state is deprecated
-          starting with 14.1, please use `current` instead.
+        description: Filter iterations by state. Filtering by `started` is deprecated.
+          Use `current` instead.
         schema:
           type: string
           enum:
@@ -4718,7 +4717,7 @@ paths:
         example: opened
       - name: search
         required: false
-        description: The search criteria for the title of the iteration
+        description: Return only iterations with a title matching the provided string.
         schema:
           type: string
           nullable: true
@@ -4726,9 +4725,8 @@ paths:
         example: version
       - name: in
         required: false
-        description: Fields in which fuzzy search should be performed with the query
-          given in the argument `search`. The available options are `title` and `cadence_title`.
-          Defaults to `[title]`
+        description: Fields to search with the `search` query. Possible values are
+          `title` and `cadence_title`.
         schema:
           type: array
           items:
@@ -4744,7 +4742,7 @@ paths:
         - cadence_title
       - name: include_ancestors
         required: false
-        description: Include iterations from parent and its ancestors
+        description: If `true`, includes iterations for the parent group and its ancestors.
         schema:
           type: boolean
           default: true
@@ -4752,7 +4750,7 @@ paths:
         example: false
       - name: include_descendants
         required: false
-        description: Include iterations from parent and its descendants
+        description: If `true`, includes iterations for the parent group and its descendants.
         schema:
           type: boolean
           default: false
@@ -4827,9 +4825,8 @@ paths:
         example: '5'
       - name: state
         required: false
-        description: Return "opened", "upcoming", "current (previously started)",
-          "closed", or "all" iterations. Filtering by `started` state is deprecated
-          starting with 14.1, please use `current` instead.
+        description: Filter iterations by state. Filtering by `started` is deprecated.
+          Use `current` instead.
         schema:
           type: string
           enum:
@@ -4844,7 +4841,7 @@ paths:
         example: opened
       - name: search
         required: false
-        description: The search criteria for the title of the iteration
+        description: Return only iterations with a title matching the provided string.
         schema:
           type: string
           nullable: true
@@ -4852,9 +4849,8 @@ paths:
         example: version
       - name: in
         required: false
-        description: Fields in which fuzzy search should be performed with the query
-          given in the argument `search`. The available options are `title` and `cadence_title`.
-          Defaults to `[title]`
+        description: Fields to search with the `search` query. Possible values are
+          `title` and `cadence_title`.
         schema:
           type: array
           items:
@@ -4870,7 +4866,7 @@ paths:
         - cadence_title
       - name: include_ancestors
         required: false
-        description: Include iterations from parent and its ancestors
+        description: If `true`, includes iterations for the parent group and its ancestors.
         schema:
           type: boolean
           default: true
@@ -4878,7 +4874,7 @@ paths:
         example: false
       - name: include_descendants
         required: false
-        description: Include iterations from parent and its descendants
+        description: If `true`, includes iterations for the parent group and its descendants.
         schema:
           type: boolean
           default: false
@@ -7021,7 +7017,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7029,15 +7025,15 @@ paths:
         in: path
       - name: enable_google_cloud_artifact_registry
         required: false
-        description: If `true`, indicates the Google Artifact Management integration
-          should be enabled
+        description: If `true`, indicates that the Google Artifact Management integration
+          should be enabled.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: google_cloud_artifact_registry_project_id
         required: false
-        description: Google Cloud Project ID for the Artifact Registry
+        description: Project ID for the Google Cloud Artifact Registry.
         schema:
           type: string
           pattern: "^[a-z][a-z0-9\\-]{5,28}[a-z0-9]$"
@@ -7065,7 +7061,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7073,7 +7069,7 @@ paths:
         in: path
       - name: google_cloud_project_id
         required: true
-        description: ID of the Google Cloud project
+        description: ID of the Google Cloud project.
         schema:
           type: string
           pattern: "^[a-z][a-z0-9\\-]{5,28}[a-z0-9]$"
@@ -7866,7 +7862,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7874,7 +7870,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The internal ID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -7911,7 +7907,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7919,7 +7915,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The internal IID of the blocked merge request
+        description: Internal ID of the merge request to be blocked.
         schema:
           type: integer
         in: path
@@ -7928,7 +7924,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_8a1366175171"
+              "$ref": "#/components/schemas/RequestBody_0f70679fc6d6"
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/blocks/{block_id}":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidBlocksBlockId
@@ -7946,7 +7942,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7954,13 +7950,13 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The internal ID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
       - name: block_id
         required: true
-        description: The ID of the merge request dependency
+        description: ID of the merge request block.
         schema:
           type: integer
         in: path
@@ -7980,7 +7976,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7988,13 +7984,13 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The internal ID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
       - name: block_id
         required: true
-        description: The ID of the merge request dependency
+        description: ID of the merge request block.
         schema:
           type: integer
         in: path
@@ -8021,7 +8017,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -8029,7 +8025,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The internal ID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -9008,7 +9004,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -9037,7 +9033,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -9048,7 +9044,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c734b449baa8"
+              "$ref": "#/components/schemas/RequestBody_abb32866d3e6"
   "/api/v4/groups/{id}/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4GroupsIdMemberRolesMemberRoleId
@@ -9068,7 +9064,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -9076,7 +9072,7 @@ paths:
         in: path
       - name: member_role_id
         required: true
-        description: The ID of the Group-Member Role to be deleted
+        description: ID of the member role.
         schema:
           type: integer
         in: path
@@ -9120,7 +9116,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c734b449baa8"
+              "$ref": "#/components/schemas/RequestBody_abb32866d3e6"
   "/api/v4/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4MemberRolesMemberRoleId
@@ -9140,7 +9136,7 @@ paths:
       parameters:
       - name: member_role_id
         required: true
-        description: ID of the member role
+        description: ID of the member role.
         schema:
           type: integer
         in: path
@@ -13085,7 +13081,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -13128,7 +13124,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -13137,7 +13133,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ac1b5013fe8b"
+              "$ref": "#/components/schemas/RequestBody_259008173fcf"
   "/api/v4/groups/{id}/approval_rules/{approval_rule_id}":
     put:
       operationId: putApiV4GroupsIdApprovalRulesApprovalRuleId
@@ -13159,13 +13155,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: approval_rule_id
         required: true
-        description: The ID of an approval rule
+        description: ID of the group approval rule.
         schema:
           type: integer
         in: path
@@ -13174,7 +13170,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9583ed7cca8d"
+              "$ref": "#/components/schemas/RequestBody_2f5808290250"
   "/api/v4/groups/{id}/security_settings":
     put:
       operationId: putApiV4GroupsIdSecuritySettings
@@ -22096,19 +22092,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: order_by
         required: false
-        description: Return notes ordered by `created_at` or `updated_at` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -22118,7 +22114,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return notes sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -22128,7 +22124,7 @@ paths:
         in: query
       - name: activity_filter
         required: false
-        description: The type of notables which are returned.
+        description: Filter notes by activity type.
         schema:
           type: string
           enum:
@@ -22173,13 +22169,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22188,7 +22184,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
+              "$ref": "#/components/schemas/RequestBody_cf8510cf084b"
   "/api/v4/projects/{id}/issues/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdIssuesNoteableIdNotesNoteId
@@ -22210,19 +22206,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22246,19 +22242,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -22267,7 +22263,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c1925678aad5"
+              "$ref": "#/components/schemas/RequestBody_87cf135240ba"
     delete:
       operationId: deleteApiV4ProjectsIdIssuesNoteableIdNotesNoteId
       summary: Delete an issue note
@@ -22288,19 +22284,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -22325,19 +22321,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: order_by
         required: false
-        description: Return notes ordered by `created_at` or `updated_at` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -22347,7 +22343,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return notes sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -22357,7 +22353,7 @@ paths:
         in: query
       - name: activity_filter
         required: false
-        description: The type of notables which are returned.
+        description: Filter notes by activity type.
         schema:
           type: string
           enum:
@@ -22402,13 +22398,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22417,7 +22413,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
+              "$ref": "#/components/schemas/RequestBody_cf8510cf084b"
   "/api/v4/projects/{id}/merge_requests/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsNoteableIdNotesNoteId
@@ -22439,19 +22435,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22475,19 +22471,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -22496,7 +22492,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c1925678aad5"
+              "$ref": "#/components/schemas/RequestBody_87cf135240ba"
     delete:
       operationId: deleteApiV4ProjectsIdMergeRequestsNoteableIdNotesNoteId
       summary: Delete a merge request note
@@ -22517,19 +22513,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -22554,19 +22550,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: order_by
         required: false
-        description: Return notes ordered by `created_at` or `updated_at` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -22576,7 +22572,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return notes sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -22586,7 +22582,7 @@ paths:
         in: query
       - name: activity_filter
         required: false
-        description: The type of notables which are returned.
+        description: Filter notes by activity type.
         schema:
           type: string
           enum:
@@ -22631,13 +22627,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22646,7 +22642,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
+              "$ref": "#/components/schemas/RequestBody_cf8510cf084b"
   "/api/v4/projects/{id}/snippets/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdSnippetsNoteableIdNotesNoteId
@@ -22668,19 +22664,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22704,19 +22700,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -22725,7 +22721,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c1925678aad5"
+              "$ref": "#/components/schemas/RequestBody_87cf135240ba"
     delete:
       operationId: deleteApiV4ProjectsIdSnippetsNoteableIdNotesNoteId
       summary: Delete a snippet note
@@ -22746,19 +22742,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -22783,19 +22779,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: order_by
         required: false
-        description: Return notes ordered by `created_at` or `updated_at` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -22805,7 +22801,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return notes sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -22815,7 +22811,7 @@ paths:
         in: query
       - name: activity_filter
         required: false
-        description: The type of notables which are returned.
+        description: Filter notes by activity type.
         schema:
           type: string
           enum:
@@ -22860,13 +22856,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22875,7 +22871,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
+              "$ref": "#/components/schemas/RequestBody_cf8510cf084b"
   "/api/v4/projects/{id}/wiki_pages/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdWikiPagesNoteableIdNotesNoteId
@@ -22897,19 +22893,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -22933,19 +22929,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -22954,7 +22950,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c1925678aad5"
+              "$ref": "#/components/schemas/RequestBody_87cf135240ba"
     delete:
       operationId: deleteApiV4ProjectsIdWikiPagesNoteableIdNotesNoteId
       summary: Delete a wiki page meta note
@@ -22975,19 +22971,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -23012,19 +23008,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: order_by
         required: false
-        description: Return notes ordered by `created_at` or `updated_at` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -23034,7 +23030,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return notes sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -23044,7 +23040,7 @@ paths:
         in: query
       - name: activity_filter
         required: false
-        description: The type of notables which are returned.
+        description: Filter notes by activity type.
         schema:
           type: string
           enum:
@@ -23089,13 +23085,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -23104,7 +23100,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
+              "$ref": "#/components/schemas/RequestBody_cf8510cf084b"
   "/api/v4/groups/{id}/epics/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4GroupsIdEpicsNoteableIdNotesNoteId
@@ -23126,19 +23122,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -23162,19 +23158,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -23183,7 +23179,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c1925678aad5"
+              "$ref": "#/components/schemas/RequestBody_87cf135240ba"
     delete:
       operationId: deleteApiV4GroupsIdEpicsNoteableIdNotesNoteId
       summary: Delete an epic note
@@ -23204,19 +23200,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -23241,19 +23237,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: order_by
         required: false
-        description: Return notes ordered by `created_at` or `updated_at` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -23263,7 +23259,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return notes sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -23273,7 +23269,7 @@ paths:
         in: query
       - name: activity_filter
         required: false
-        description: The type of notables which are returned.
+        description: Filter notes by activity type.
         schema:
           type: string
           enum:
@@ -23318,13 +23314,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -23333,7 +23329,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
+              "$ref": "#/components/schemas/RequestBody_cf8510cf084b"
   "/api/v4/projects/{id}/vulnerabilities/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4ProjectsIdVulnerabilitiesNoteableIdNotesNoteId
@@ -23355,19 +23351,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -23391,19 +23387,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -23412,7 +23408,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c1925678aad5"
+              "$ref": "#/components/schemas/RequestBody_87cf135240ba"
     delete:
       operationId: deleteApiV4ProjectsIdVulnerabilitiesNoteableIdNotesNoteId
       summary: Delete a vulnerability note
@@ -23433,19 +23429,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -23470,19 +23466,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: order_by
         required: false
-        description: Return notes ordered by `created_at` or `updated_at` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -23492,7 +23488,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return notes sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -23502,7 +23498,7 @@ paths:
         in: query
       - name: activity_filter
         required: false
-        description: The type of notables which are returned.
+        description: Filter notes by activity type.
         schema:
           type: string
           enum:
@@ -23547,13 +23543,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -23562,7 +23558,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_bc09ed866646"
+              "$ref": "#/components/schemas/RequestBody_cf8510cf084b"
   "/api/v4/groups/{id}/wiki_pages/{noteable_id}/notes/{note_id}":
     get:
       operationId: getApiV4GroupsIdWikiPagesNoteableIdNotesNoteId
@@ -23584,19 +23580,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
@@ -23620,19 +23616,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -23641,7 +23637,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c1925678aad5"
+              "$ref": "#/components/schemas/RequestBody_87cf135240ba"
     delete:
       operationId: deleteApiV4GroupsIdWikiPagesNoteableIdNotesNoteId
       summary: Delete a wiki page meta note
@@ -23662,19 +23658,19 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: noteable_id
         required: true
-        description: The ID of the noteable
+        description: ID of the resource the note is attached to.
         schema:
           type: integer
         in: path
       - name: note_id
         required: true
-        description: The ID of a note
+        description: ID of the note.
         schema:
           type: integer
         in: path
@@ -24234,7 +24230,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -24326,7 +24322,7 @@ paths:
         example: 20
       - name: include_descendants
         required: false
-        description: Include milestones from all subgroups and subprojects
+        description: If `true`, includes milestones for the group and its descendants.
         schema:
           type: boolean
           nullable: true
@@ -24351,7 +24347,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -24382,13 +24378,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: milestone_id
         required: true
-        description: The ID of a group milestone
+        description: ID of the group milestone.
         schema:
           type: integer
         in: path
@@ -24412,7 +24408,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -24444,13 +24440,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: milestone_id
         required: true
-        description: The ID of a group milestone
+        description: ID of the group milestone.
         schema:
           type: integer
         in: path
@@ -24475,13 +24471,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: milestone_id
         required: true
-        description: The ID of a group milestone
+        description: ID of the group milestone.
         schema:
           type: integer
         in: path
@@ -24522,13 +24518,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: milestone_id
         required: true
-        description: The ID of a group milestone
+        description: ID of the group milestone.
         schema:
           type: integer
         in: path
@@ -24571,7 +24567,7 @@ paths:
         in: path
       - name: milestone_id
         required: true
-        description: The ID of a group milestone
+        description: ID of the group milestone.
         schema:
           type: integer
         in: path
@@ -28529,7 +28525,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1b5bf1d7a2f9"
+              "$ref": "#/components/schemas/RequestBody_d6a710083295"
   "/api/v4/user_counts":
     get:
       operationId: getApiV4UserCounts
@@ -34968,7 +34964,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -34993,7 +34989,7 @@ paths:
         example: 20
       - name: search
         required: false
-        description: Search for a protected branch by name
+        description: Name or part of the name of protected branches to search for.
         schema:
           type: string
           nullable: true
@@ -35026,7 +35022,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -35038,7 +35034,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e5809d8413db"
+              "$ref": "#/components/schemas/RequestBody_198be6c6a7b6"
   "/api/v4/projects/{id}/protected_branches/{name}":
     get:
       operationId: getApiV4ProjectsIdProtectedBranchesName
@@ -35062,7 +35058,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -35071,7 +35067,7 @@ paths:
         example: gitlab-org/gitlab
       - name: name
         required: true
-        description: The name of the branch or wildcard
+        description: Name of the branch or wildcard.
         schema:
           type: string
         in: path
@@ -35100,7 +35096,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -35109,7 +35105,7 @@ paths:
         example: gitlab-org/gitlab
       - name: name
         required: true
-        description: The name of the branch
+        description: Name of the branch or wildcard.
         schema:
           type: string
         in: path
@@ -35119,7 +35115,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a8db8c5327e1"
+              "$ref": "#/components/schemas/RequestBody_edb344c26fbd"
     delete:
       operationId: deleteApiV4ProjectsIdProtectedBranchesName
       summary: Unprotect repository branches
@@ -35138,7 +35134,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -35147,7 +35143,7 @@ paths:
         example: gitlab-org/gitlab
       - name: name
         required: true
-        description: The name of the protected branch
+        description: Name of the branch or wildcard.
         schema:
           type: string
         in: path
@@ -40170,7 +40166,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41827,7 +41823,7 @@ paths:
       parameters:
       - name: domain
         required: false
-        description: The domain of the GitLab Pages site to filter on.
+        description: Domain of the GitLab Pages site to filter on.
         schema:
           type: string
           nullable: true
@@ -41872,8 +41868,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41916,8 +41911,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41928,7 +41922,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_d7802e9d00c2"
+              "$ref": "#/components/schemas/RequestBody_0e7bcfbf2451"
   "/api/v4/projects/{id}/pages/domains/{domain}":
     get:
       operationId: getApiV4ProjectsIdPagesDomainsDomain
@@ -41951,8 +41945,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41960,7 +41953,7 @@ paths:
         in: path
       - name: domain
         required: true
-        description: The domain
+        description: Custom domain.
         schema:
           type: string
         in: path
@@ -41981,8 +41974,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -41990,7 +41982,7 @@ paths:
         in: path
       - name: domain
         required: true
-        description: The domain
+        description: Custom domain.
         schema:
           type: string
         in: path
@@ -41999,7 +41991,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_91a92702c2d5"
+              "$ref": "#/components/schemas/RequestBody_8e274579f41c"
     delete:
       operationId: deleteApiV4ProjectsIdPagesDomainsDomain
       summary: Delete Pages domain
@@ -42016,8 +42008,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -42025,7 +42016,7 @@ paths:
         in: path
       - name: domain
         required: true
-        description: The domain
+        description: Custom domain.
         schema:
           type: string
         in: path
@@ -42051,8 +42042,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -42060,7 +42050,7 @@ paths:
         in: path
       - name: domain
         required: true
-        description: The domain to verify
+        description: Custom domain to verify.
         schema:
           type: string
         in: path
@@ -44114,7 +44104,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the namespace
+        description: ID or URL-encoded path of the namespace.
         schema:
           oneOf:
           - type: string
@@ -44179,7 +44169,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the namespace
+        description: ID or URL-encoded path of the namespace.
         schema:
           oneOf:
           - type: string
@@ -44213,7 +44203,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the namespace
+        description: ID or URL-encoded path of the namespace.
         schema:
           oneOf:
           - type: string
@@ -65770,7 +65760,7 @@ paths:
         example: 20
       - name: public
         required: false
-        description: Only return deploy keys that are public
+        description: If `true`, returns only deploy keys that are public.
         schema:
           type: boolean
           default: false
@@ -65800,7 +65790,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_59584bbeab9f"
+              "$ref": "#/components/schemas/RequestBody_4dfb115d9d4c"
   "/api/v4/projects/{id}/deploy_keys":
     get:
       operationId: getApiV4ProjectsIdDeployKeys
@@ -65826,8 +65816,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65873,8 +65862,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65885,7 +65873,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5d119def82e6"
+              "$ref": "#/components/schemas/RequestBody_d02b8f9b3d0d"
   "/api/v4/projects/{id}/deploy_keys/{key_id}":
     get:
       operationId: getApiV4ProjectsIdDeployKeysKeyId
@@ -65909,8 +65897,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65918,7 +65905,7 @@ paths:
         in: path
       - name: key_id
         required: true
-        description: The ID of the deploy key
+        description: ID of the deploy key.
         schema:
           type: integer
         in: path
@@ -65946,8 +65933,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65955,7 +65941,7 @@ paths:
         in: path
       - name: key_id
         required: true
-        description: The ID of the deploy key
+        description: ID of the deploy key.
         schema:
           type: integer
         in: path
@@ -65964,7 +65950,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_6306893e37e1"
+              "$ref": "#/components/schemas/RequestBody_a006089dabeb"
     delete:
       operationId: deleteApiV4ProjectsIdDeployKeysKeyId
       summary: Delete a deploy key
@@ -65984,8 +65970,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -65993,7 +65978,7 @@ paths:
         in: path
       - name: key_id
         required: true
-        description: The ID of the deploy key
+        description: ID of the deploy key.
         schema:
           type: integer
         in: path
@@ -66021,8 +66006,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -66030,7 +66014,7 @@ paths:
         in: path
       - name: key_id
         required: true
-        description: The ID of the deploy key
+        description: ID of the deploy key.
         schema:
           type: integer
         in: path
@@ -101997,101 +101981,105 @@ components:
           example: https://gitlab.example.com/root
         requested_at:
           type: string
-    RequestBody_6ef4e663c0d4:
+    RequestBody_81a0c8fbae52:
       type: object
       properties:
         start_date:
           type: string
           format: date
-          description: The date when subscription was started
+          description: Start date of the subscription.
           nullable: true
         end_date:
           type: string
           format: date
-          description: End date of subscription
+          description: End date of the subscription.
           nullable: true
         plan_code:
           type: string
-          description: Subscription tier code
+          description: Subscription tier code.
           nullable: true
         seats:
           type: integer
-          description: Number of seats in subscription
+          description: Number of seats in the subscription.
           nullable: true
         max_seats_used:
           type: integer
-          description: Highest number of active users in the last month
+          description: Highest number of active users in the last month.
           nullable: true
         auto_renew:
           type: boolean
-          description: Whether subscription will auto renew on end date
+          description: If `true`, the subscription automatically renews on its end
+            date.
           nullable: true
         trial:
           type: boolean
-          description: Whether the subscription is a trial
+          description: If `true`, the subscription is a trial.
           nullable: true
         trial_ends_on:
           type: string
           format: date
-          description: End date of trial
+          description: End date of the trial.
           nullable: true
         trial_starts_on:
           type: string
           format: date
-          description: Start date of trial
+          description: Start date of the trial.
           nullable: true
         trial_extension_type:
           type: integer
-          description: Whether the trial was extended or reactivated
+          description: Type of trial extension. `1` means the trial was extended,
+            and `2` means it was reactivated.
           nullable: true
       required:
       - start_date
-    RequestBody_44670369f631:
+    RequestBody_0ff933a1f18c:
       type: object
       properties:
         start_date:
           type: string
           format: date
-          description: Start date of subscription
+          description: Start date of the subscription.
           nullable: true
         end_date:
           type: string
           format: date
-          description: End date of subscription
+          description: End date of the subscription.
           nullable: true
         plan_code:
           type: string
-          description: Subscription tier code
+          description: Subscription tier code.
           nullable: true
         seats:
           type: integer
-          description: Number of seats in subscription
+          description: Number of seats in the subscription.
           nullable: true
         max_seats_used:
           type: integer
-          description: Highest number of active users in the last month
+          description: Highest number of active users in the last month.
           nullable: true
         auto_renew:
           type: boolean
-          description: Whether subscription will auto renew on end date
+          description: If `true`, the subscription automatically renews on its end
+            date.
           nullable: true
         trial:
           type: boolean
-          description: Whether the subscription is a trial
+          description: If `true`, the subscription is a trial.
           nullable: true
         trial_ends_on:
           type: string
           format: date
-          description: End date of trial
+          description: End date of the trial.
           nullable: true
         trial_starts_on:
           type: string
           format: date
-          description: Start date of trial
+          description: Start date of the trial.
           nullable: true
         trial_extension_type:
           type: integer
-          description: Whether the trial was extended or reactivated
+          description: Type of trial extension. `1` means the trial was extended,
+            and `2` means it was reactivated.
           nullable: true
     RequestBody_9d7464959309:
       type: object
@@ -102850,24 +102838,24 @@ components:
       - diff_sha
       - workflow_id
       - claims
-    RequestBody_9983fc9d3604:
+    RequestBody_4a4d5672e0fb:
       type: object
       properties:
         project_id:
           type: string
-          description: The ID or path of the project
+          description: ID or URL-encoded path of the project.
           nullable: true
         merge_request_iid:
           type: integer
-          description: The IID of the merge request
+          description: Internal ID of the merge request.
           nullable: true
         review_output:
           type: string
-          description: The review output from LLM
+          description: Review output from LLM.
           nullable: true
         workflow_id:
           type: integer
-          description: The ID of the Duo Workflow session
+          description: ID of the Duo Workflow session.
           nullable: true
       required:
       - project_id
@@ -103400,12 +103388,13 @@ components:
           type: boolean
           description: If `true`, the user can create groups.
           nullable: true
-    RequestBody_5ceb8411e122:
+    RequestBody_7bad96861d63:
       type: object
       properties:
         send_email:
           type: boolean
-          description: Send an email when the export completes
+          description: If `true`, sends an email notification to the requesting user
+            when the export completes.
           default: false
         export_type:
           type: string
@@ -103413,34 +103402,36 @@ components:
           - dependency_list
           - csv
           - cyclonedx_1_6_json
-          description: File format of the export
+          description: Format of the export.
           default: dependency_list
-    RequestBody_5fdac33e258d:
+    RequestBody_2c59b8b6818d:
       type: object
       properties:
         send_email:
           type: boolean
-          description: Send an email when the export completes
+          description: If `true`, sends an email notification to the requesting user
+            when the export completes.
           default: false
         export_type:
           type: string
           enum:
           - json_array
           - csv
-          description: File format of the export
+          description: Format of the export.
           default: json_array
-    RequestBody_9a04a1f53e76:
+    RequestBody_5fb2d6dc800c:
       type: object
       properties:
         send_email:
           type: boolean
-          description: Send an email when the export completes
+          description: If `true`, sends an email notification to the requesting user
+            when the export completes.
           default: false
         export_type:
           type: string
           enum:
           - sbom
-          description: The type of the export file
+          description: Format of the export.
           default: sbom
     RequestBody_e5809d8413db:
       type: object
@@ -104730,20 +104721,22 @@ components:
           description: The expiration date of the token
           example: '2021-01-31'
           nullable: true
-    RequestBody_8a1366175171:
+    RequestBody_0f70679fc6d6:
       type: object
       properties:
         blocking_merge_request_id:
           type: integer
-          description: The global ID of the blocking merge request. Mutually exclusive
-            with `blocking_merge_request_iid`. Exactly one of `blocking_merge_request_id`,
-            `blocking_merge_request_iid` must be provided.
+          description: Global ID of the blocking merge request. Required if `blocking_merge_request_iid`
+            is not provided. Mutually exclusive with `blocking_merge_request_iid`.
+            Exactly one of `blocking_merge_request_id`, `blocking_merge_request_iid`
+            must be provided.
           nullable: true
         blocking_merge_request_iid:
           type: integer
-          description: The IID of the blocking merge request. Mutually exclusive with
-            `blocking_merge_request_id`. Exactly one of `blocking_merge_request_id`,
-            `blocking_merge_request_iid` must be provided.
+          description: Internal ID of the blocking merge request. Required if `blocking_merge_request_id`
+            is not provided. Mutually exclusive with `blocking_merge_request_id`.
+            Exactly one of `blocking_merge_request_id`, `blocking_merge_request_iid`
+            must be provided.
           nullable: true
         blocking_project_id:
           oneOf:
@@ -104751,8 +104744,9 @@ components:
             nullable: true
           - type: integer
             nullable: true
-          description: The ID or URL-encoded path of the project containing the blocking
-            merge request (defaults to current project)
+          description: ID or URL-encoded path of the project containing the blocking
+            merge request. Required when `blocking_merge_request_iid` refers to a
+            merge request in a different project. Defaults to the current project.
     RequestBody_8e7cd560e3c4:
       type: object
       properties:
@@ -105186,7 +105180,7 @@ components:
           nullable: true
       required:
       - extern_uid
-    RequestBody_c734b449baa8:
+    RequestBody_abb32866d3e6:
       type: object
       properties:
         base_access_level:
@@ -105199,14 +105193,15 @@ components:
           - 30
           - 40
           - 50
-          description: Base Access Level for the configured role
+          description: Base access level for the custom role.
         name:
           type: string
-          description: 'Name for role (default: ''Custom'')'
+          description: Name of the custom role. Defaults to `<base access level> -
+            custom`, for example `Developer - custom`.
           nullable: true
         description:
           type: string
-          description: Description for role
+          description: Description of the custom role.
           nullable: true
         apply_security_scan_profiles:
           type: boolean
@@ -106834,16 +106829,16 @@ components:
       - external_status_check_id
       - sha
       - status
-    RequestBody_ac1b5013fe8b:
+    RequestBody_259008173fcf:
       type: object
       properties:
         name:
           type: string
-          description: The name of the approval rule
+          description: Name of the approval rule. Limited to 1024 characters.
           nullable: true
         approvals_required:
           type: integer
-          description: The number of required approvals for this rule
+          description: Number of required approvals for the rule.
           nullable: true
         rule_type:
           type: string
@@ -106865,16 +106860,16 @@ components:
       required:
       - name
       - approvals_required
-    RequestBody_9583ed7cca8d:
+    RequestBody_2f5808290250:
       type: object
       properties:
         name:
           type: string
-          description: The name of the approval rule
+          description: Name of the approval rule. Limited to 1024 characters.
           nullable: true
         approvals_required:
           type: integer
-          description: The number of required approvals for this rule
+          description: Number of required approvals for the rule.
           nullable: true
         rule_type:
           type: string
@@ -111818,12 +111813,12 @@ components:
           type: boolean
           description: Enable/disable this notification
           nullable: true
-    RequestBody_bc09ed866646:
+    RequestBody_cf8510cf084b:
       type: object
       properties:
         body:
           type: string
-          description: The content of a note
+          description: Content of the note. Limited to 1,000,000 characters.
           nullable: true
         confidential:
           type: boolean
@@ -111835,20 +111830,24 @@ components:
           default: false
         created_at:
           type: string
-          description: The creation date of the note
+          description: Date and time the note was created, in ISO 8601 format such
+            as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner
+            rights.
           nullable: true
         merge_request_diff_head_sha:
           type: string
-          description: The SHA of the head commit
+          description: SHA of the head commit, which ensures the merge request wasn't
+            updated after the API request was sent. Required for the [`/merge`](https://docs.gitlab.com/user/project/quick_actions/#merge)
+            quick action.
           nullable: true
       required:
       - body
-    RequestBody_c1925678aad5:
+    RequestBody_87cf135240ba:
       type: object
       properties:
         body:
           type: string
-          description: The content of a note
+          description: Content of the note. Limited to 1,000,000 characters.
           nullable: true
         confidential:
           type: boolean
@@ -112432,7 +112431,7 @@ components:
           nullable: true
       required:
       - file
-    RequestBody_1b5bf1d7a2f9:
+    RequestBody_d6a710083295:
       type: object
       properties:
         runner_type:
@@ -112441,30 +112440,32 @@ components:
           - instance_type
           - group_type
           - project_type
-          description: Specifies the scope of the runner
+          description: Scope of the runner.
           minLength: 1
         group_id:
           type: integer
-          description: The ID of the group that the runner is created in
+          description: ID of the group to create the runner in. Required if `runner_type`
+            is `group_type`.
           example: 1
           nullable: true
         project_id:
           type: integer
-          description: The ID of the project that the runner is created in
+          description: ID of the project to create the runner in. Required if `runner_type`
+            is `project_type`.
           example: 1
           nullable: true
         description:
           type: string
-          description: Description of the runner
+          description: Description of the runner.
           nullable: true
         maintenance_note:
           type: string
-          description: Free-form maintenance notes for the runner (1024 characters)
+          description: Free-form maintenance notes for the runner. Limited to 1024
+            characters.
           nullable: true
         paused:
           type: boolean
-          description: Specifies if the runner should ignore new jobs (defaults to
-            false)
+          description: If `true`, the runner ignores new jobs.
           nullable: true
         locked:
           type: boolean
@@ -112475,7 +112476,7 @@ components:
           enum:
           - not_protected
           - ref_protected
-          description: The access level of the runner
+          description: Access level of the runner.
           nullable: true
         run_untagged:
           type: boolean
@@ -112485,12 +112486,12 @@ components:
           type: array
           items:
             type: string
-          description: A list of runner tags
+          description: Comma-separated list of runner tags.
           nullable: true
         maximum_timeout:
           type: integer
-          description: Maximum timeout that limits the amount of time (in seconds)
-            that runners can run jobs
+          description: Maximum time, in seconds, that runners can spend running a
+            job.
           nullable: true
         token_expires_at:
           type: string
@@ -113677,6 +113678,117 @@ components:
           nullable: true
       required:
       - name
+    RequestBody_198be6c6a7b6:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the branch or wildcard.
+          example: main
+          nullable: true
+        push_access_level:
+          type: integer
+          enum:
+          - 30
+          - 40
+          - 60
+          - 0
+          description: Access level allowed to push. Defaults to `40` (Maintainer
+            role).
+          nullable: true
+        merge_access_level:
+          type: integer
+          enum:
+          - 30
+          - 40
+          - 60
+          - 0
+          description: Access level allowed to merge. Defaults to `40` (Maintainer
+            role).
+          nullable: true
+        allow_force_push:
+          type: boolean
+          description: If `true`, members who can push to this branch can also force
+            push.
+          default: false
+        allowed_to_push:
+          type: array
+          items:
+            type: object
+          description: Array of users, groups, deploy keys, or access levels allowed
+            to push to protected branches
+          nullable: true
+        unprotect_access_level:
+          type: integer
+          enum:
+          - 30
+          - 40
+          - 60
+          description: 'Access levels allowed to unprotect (defaults: `40`, maintainer
+            access level)'
+          nullable: true
+        allowed_to_merge:
+          type: array
+          items:
+            type: object
+          description: Array of users, groups, or access levels allowed to merge protected
+            branches
+          nullable: true
+        allowed_to_unprotect:
+          type: array
+          items:
+            type: object
+          description: Array of users, groups, or access levels allowed to unprotect
+            protected branches
+          nullable: true
+        code_owner_approval_required:
+          type: boolean
+          description: Prevent pushes to this branch if it matches an item in CODEOWNERS
+          nullable: true
+      required:
+      - name
+    RequestBody_edb344c26fbd:
+      type: object
+      properties:
+        allow_force_push:
+          type: boolean
+          description: If `true`, members who can push to this branch can also force
+            push.
+          nullable: true
+        allowed_to_push:
+          type: array
+          items:
+            type: object
+          description: Array of users, groups, deploy keys, or access levels allowed
+            to push to protected branches
+          nullable: true
+        unprotect_access_level:
+          type: integer
+          enum:
+          - 30
+          - 40
+          - 60
+          description: 'Access levels allowed to unprotect (defaults: `40`, maintainer
+            access level)'
+          nullable: true
+        allowed_to_merge:
+          type: array
+          items:
+            type: object
+          description: Array of users, groups, or access levels allowed to merge protected
+            branches
+          nullable: true
+        allowed_to_unprotect:
+          type: array
+          items:
+            type: object
+          description: Array of users, groups, or access levels allowed to unprotect
+            protected branches
+          nullable: true
+        code_owner_approval_required:
+          type: boolean
+          description: Prevent pushes to this branch if it matches an item in CODEOWNERS
+          nullable: true
     RequestBody_3e5fdcf09320:
       type: object
       properties:
@@ -118451,12 +118563,12 @@ components:
       required:
       - name
       - platform_kubernetes_attributes
-    RequestBody_d7802e9d00c2:
+    RequestBody_0e7bcfbf2451:
       type: object
       properties:
         domain:
           type: string
-          description: The domain
+          description: Custom domain.
           nullable: true
         certificate:
           anyOf:
@@ -118465,7 +118577,8 @@ components:
             nullable: true
           - type: string
             nullable: true
-          description: The certificate
+          description: Certificate in PEM format with intermediates following in most
+            specific to least specific order.
         key:
           anyOf:
           - type: string
@@ -118473,11 +118586,11 @@ components:
             nullable: true
           - type: string
             nullable: true
-          description: The key
+          description: Certificate key in PEM format.
         auto_ssl_enabled:
           type: boolean
-          description: Enables automatic generation of SSL certificates issued by
-            Let's Encrypt for custom domains.
+          description: If `true`, enables [automatic generation](https://docs.gitlab.com/user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration/)
+            of SSL certificates issued by Let's Encrypt for custom domains.
           default: false
         user_provided_certificate:
           type: string
@@ -118487,7 +118600,7 @@ components:
           nullable: true
       required:
       - domain
-    RequestBody_91a92702c2d5:
+    RequestBody_8e274579f41c:
       type: object
       properties:
         certificate:
@@ -118497,7 +118610,8 @@ components:
             nullable: true
           - type: string
             nullable: true
-          description: The certificate
+          description: Certificate in PEM format with intermediates following in most
+            specific to least specific order.
         key:
           anyOf:
           - type: string
@@ -118505,11 +118619,11 @@ components:
             nullable: true
           - type: string
             nullable: true
-          description: The key
+          description: Certificate key in PEM format.
         auto_ssl_enabled:
           type: boolean
-          description: Enables automatic generation of SSL certificates issued by
-            Let's Encrypt for custom domains.
+          description: If `true`, enables [automatic generation](https://docs.gitlab.com/user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration/)
+            of SSL certificates issued by Let's Encrypt for custom domains.
           nullable: true
     RequestBody_8ebf06dd26a6:
       type: object
@@ -124457,60 +124571,62 @@ components:
       required:
       - name
       - scopes
-    RequestBody_59584bbeab9f:
+    RequestBody_4dfb115d9d4c:
       type: object
       properties:
         key:
           type: string
-          description: New deploy key
+          description: Public key value of the deploy key.
           nullable: true
         title:
           type: string
-          description: New deploy key's title
+          description: Title of the deploy key.
           nullable: true
         expires_at:
           type: string
           format: date-time
-          description: The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+          description: Date when the deploy key expires. If omitted, the deploy key
+            does not expire.
           nullable: true
       required:
       - key
       - title
-    RequestBody_5d119def82e6:
+    RequestBody_d02b8f9b3d0d:
       type: object
       properties:
         key:
           type: string
-          description: New deploy key
+          description: Public key value of the deploy key.
           nullable: true
         title:
           type: string
-          description: New deploy key's title
+          description: Title of the deploy key.
           nullable: true
         can_push:
           type: boolean
-          description: Can deploy key push to the project's repository
+          description: If `true`, the deploy key can push to the project's repository.
           nullable: true
         expires_at:
           type: string
           format: date-time
-          description: The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+          description: Date when the deploy key expires. If omitted, the deploy key
+            does not expire.
           nullable: true
       required:
       - key
       - title
-    RequestBody_6306893e37e1:
+    RequestBody_a006089dabeb:
       type: object
       properties:
         title:
           type: string
-          description: New deploy key's title. At least one of `title`, `can_push`
+          description: Title of the deploy key. At least one of `title`, `can_push`
             must be provided.
           nullable: true
         can_push:
           type: boolean
-          description: Can deploy key push to the project's repository. At least one
-            of `title`, `can_push` must be provided.
+          description: If `true`, the deploy key can push to the project's repository.
+            At least one of `title`, `can_push` must be provided.
           nullable: true
     RequestBody_bf3c60bc1c2e:
       type: object

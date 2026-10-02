@@ -34,7 +34,7 @@ module API
       noteable_article = noteable_name.match?(/\A[aeiou]/i) ? 'an' : 'a'
 
       params do
-        requires :id, type: String, desc: "The ID of a #{parent_type}"
+        requires :id, type: String, desc: "ID or URL-encoded path of the #{parent_type}."
       end
       resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all #{noteable_name} notes" do
@@ -43,13 +43,13 @@ module API
           tags ['notes']
         end
         params do
-          requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
+          requires :noteable_id, type: Integer, desc: 'ID of the resource the note is attached to.'
           optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
-            desc: 'Return notes ordered by `created_at` or `updated_at` fields.'
+            desc: 'Sort results by the specified field.'
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
-            desc: 'Return notes sorted in `asc` or `desc` order.'
+            desc: 'Sort results in ascending or descending order.'
           optional :activity_filter, type: String, values: UserPreference::NOTES_FILTERS.stringify_keys.keys, default: 'all_notes',
-            desc: 'The type of notables which are returned.'
+            desc: 'Filter notes by activity type.'
           use :pagination
         end
 
@@ -97,8 +97,8 @@ module API
           tags %w[notes]
         end
         params do
-          requires :note_id, type: Integer, desc: 'The ID of a note'
-          requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
+          requires :note_id, type: Integer, desc: 'ID of the note.'
+          requires :noteable_id, type: Integer, desc: 'ID of the resource the note is attached to.'
         end
         policy = Helpers::NotesHelpers.job_token_policy_for(noteable_type, 'GET')
 
@@ -128,12 +128,12 @@ module API
           tags %w[notes]
         end
         params do
-          requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
-          requires :body, type: String, desc: 'The content of a note'
+          requires :noteable_id, type: Integer, desc: 'ID of the resource the note is attached to.'
+          requires :body, type: String, desc: 'Content of the note. Limited to 1,000,000 characters.'
           optional :confidential, type: Boolean, desc: '[Deprecated in 15.5] Renamed to internal'
           optional :internal, type: Boolean, default: false, desc: 'Internal note flag.'
-          optional :created_at, type: String, desc: 'The creation date of the note'
-          optional :merge_request_diff_head_sha, type: String, desc: 'The SHA of the head commit'
+          optional :created_at, type: String, desc: 'Date and time the note was created, in ISO 8601 format such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights.'
+          optional :merge_request_diff_head_sha, type: String, desc: "SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. Required for the [`/merge`](https://docs.gitlab.com/user/project/quick_actions/#merge) quick action."
         end
 
         route_setting :authorization,
@@ -173,9 +173,9 @@ module API
           tags %w[notes]
         end
         params do
-          requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
-          requires :note_id, type: Integer, desc: 'The ID of a note'
-          optional :body, type: String, allow_blank: false, desc: 'The content of a note'
+          requires :noteable_id, type: Integer, desc: 'ID of the resource the note is attached to.'
+          requires :note_id, type: Integer, desc: 'ID of the note.'
+          optional :body, type: String, allow_blank: false, desc: 'Content of the note. Limited to 1,000,000 characters.'
           optional :confidential, type: Boolean,
             desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
         end
@@ -196,8 +196,8 @@ module API
           tags %w[notes]
         end
         params do
-          requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
-          requires :note_id, type: Integer, desc: 'The ID of a note'
+          requires :noteable_id, type: Integer, desc: 'ID of the resource the note is attached to.'
+          requires :note_id, type: Integer, desc: 'ID of the note.'
         end
 
         route_setting :authorization,

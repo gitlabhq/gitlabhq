@@ -198,4 +198,136 @@ RSpec.describe 'gitlab:background_migrations namespace rake tasks', :suppress_gi
       end
     end
   end
+
+  describe 'wait' do
+    subject(:wait_task) { run_rake_task('gitlab:background_migrations:wait') }
+
+    let(:main_database_name) { Gitlab::Database::MAIN_DATABASE_NAME }
+    let(:model) { Gitlab::Database.database_base_models[main_database_name] }
+    let(:base_models) { { main_database_name => model }.with_indifferent_access }
+
+    before do
+      allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
+      # Stub the pause between polls so the loop runs at test speed without pinning to a specific interval.
+      allow(Kernel).to receive(:sleep)
+    end
+
+    context 'when there are no unfinished batched background migrations' do
+      before do
+        create(:batched_background_migration, :finished)
+        create(:batched_background_migration, :finalized)
+      end
+
+      it 'reports success and finishes' do
+        expect { wait_task }.to output(/All batched background migrations have finished/).to_stdout
+      end
+    end
+
+    context 'when the poll interval is not a valid positive integer' do
+      shared_examples 'a rejected poll interval' do
+        it 'exits with a clear error instead of a raw ArgumentError' do
+          expect { wait_task }.to output(/must be a positive integer/).to_stdout
+            .and raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+        end
+      end
+
+      context 'with a value that is not an integer' do
+        before do
+          stub_env('BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS', 'not-a-number')
+        end
+
+        it_behaves_like 'a rejected poll interval'
+      end
+
+      context 'with a negative integer' do
+        before do
+          stub_env('BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS', '-1')
+        end
+
+        it_behaves_like 'a rejected poll interval'
+      end
+
+      context 'with zero' do
+        before do
+          stub_env('BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS', '0')
+        end
+
+        it_behaves_like 'a rejected poll interval'
+      end
+    end
+
+    context 'when a batched background migration is in a failed state' do
+      let!(:migration) { create(:batched_background_migration, :failed) }
+
+      it 'reports the failed migration and exits with a non-zero status' do
+        expect { wait_task }.to output(/failed state and must be finalized manually/).to_stdout
+          .and raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+      end
+    end
+
+    context 'when batched background migrations are still running' do
+      let(:migration) { create(:batched_background_migration, :active) }
+
+      it 'waits until they finish, then reports success' do
+        allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:unfinished).and_return(
+          [migration], []
+        )
+
+        expect { wait_task }.to output(
+          /Still waiting on 1 batched background migration.*All batched background migrations have finished/m
+        ).to_stdout
+
+        expect(Gitlab::Database::BackgroundMigration::BatchedMigration).to have_received(:unfinished).twice
+      end
+    end
+
+    # This context fakes the models and connections with doubles: the single-database examples above
+    # use the real model for factory persistence, but simulating multiple databases in CI is impractical.
+    context 'with multiple databases' do
+      let(:base_models) { { main: main_model, ci: ci_model } }
+      let(:main_model) { double(:model, connection: main_connection) }
+      let(:ci_model) { double(:model, connection: ci_connection) }
+      let(:main_connection) { double(:connection) }
+      let(:ci_connection) { double(:connection) }
+      let(:failed_migration) { build_stubbed(:batched_background_migration, :failed) }
+      let(:active_migration) { build_stubbed(:batched_background_migration, :active) }
+
+      it 'checks every database and aborts when any has a failed migration' do
+        allow(Gitlab::Database).to receive(:has_database?).with(:main).and_return(true)
+        allow(Gitlab::Database).to receive(:has_database?).with(:ci).and_return(true)
+
+        expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(main_connection).and_yield
+        expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(ci_connection).and_yield
+        expect(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:unfinished)
+          .and_return([], [failed_migration])
+
+        expect { wait_task }.to output(/failed state and must be finalized manually/).to_stdout
+          .and raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+      end
+
+      it 'skips databases that are not configured' do
+        allow(Gitlab::Database).to receive(:has_database?).with(:main).and_return(true)
+        allow(Gitlab::Database).to receive(:has_database?).with(:ci).and_return(false)
+
+        expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(main_connection).and_yield
+        expect(Gitlab::Database::SharedModel).not_to receive(:using_connection).with(ci_connection)
+        expect(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:unfinished).and_return([])
+
+        expect { wait_task }.to output(/All batched background migrations have finished/).to_stdout
+      end
+
+      it 'reports only the databases that still have unfinished migrations' do
+        allow(Gitlab::Database).to receive(:has_database?).and_return(true)
+        allow(Gitlab::Database::SharedModel).to receive(:using_connection).and_yield
+
+        allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:unfinished).and_return(
+          [active_migration], []
+        )
+
+        expect { wait_task }.to output(
+          /Still waiting on 1 batched background migration.*Database: main.*have finished/m
+        ).to_stdout
+      end
+    end
+  end
 end

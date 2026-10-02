@@ -79,12 +79,7 @@ function parseTable(table) {
  *   there is nothing to render.
  */
 export default function renderMarkdownTables(els) {
-  const isSticky = window.gon?.features?.editorStickyTableHeaders;
   const isSortable = window.gon?.features?.markdownSortableTableColumns;
-
-  if (!isSticky && !isSortable) {
-    return null;
-  }
 
   const claimed = [];
 
@@ -115,7 +110,7 @@ export default function renderMarkdownTables(els) {
       const app = new Vue({
         el: table,
         name: 'MarkdownTableRoot',
-        render: (h) => h(MarkdownTable, { props: { fields, items, isSortable, isSticky } }),
+        render: (h) => h(MarkdownTable, { props: { fields, items, isSortable } }),
       });
 
       observeRemoval(table, app);

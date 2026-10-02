@@ -173,8 +173,8 @@ export default {
     visitTab(e) {
       window.mrTabs?.clickTab(e);
     },
-    handleTitleUpdated({ detail: { title } }) {
-      this.titleHtml = escape(title);
+    handleTitleUpdated({ detail: { title, titleHtml } }) {
+      this.titleHtml = titleHtml ? sanitize(titleHtml) : escape(title);
     },
   },
   titleInLinkSafeHtmlConfig,

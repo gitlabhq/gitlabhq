@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 class MergeRequestBasicEntity < Grape::Entity
+  include RequestAwareEntity
+  include MarkupHelper
+
   expose :title
+  expose :title_html do |merge_request|
+    markdown_field(merge_request, :title, current_user: request&.current_user)
+  end
   expose :public_merge_status, as: :merge_status
   expose :merge_error
   expose :state

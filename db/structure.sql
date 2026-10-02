@@ -46719,6 +46719,12 @@ CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_resul
 
 CREATE INDEX idx_sec_inv_filters_traversal_proj_covering_triage ON security_inventory_filters USING btree (traversal_ids, project_id) INCLUDE (has_scanners, has_failed_or_warning, has_stale, sast, dependency_scanning, secret_detection, triage_capabilities_on, triage_capabilities_auto) WHERE (NOT archived);
 
+CREATE INDEX idx_sec_inv_filters_traversal_proj_sast_fp_on ON security_inventory_filters USING btree (traversal_ids, project_id) INCLUDE (triage_capabilities_on, triage_capabilities_auto) WHERE ((NOT archived) AND (((triage_capabilities_on)::integer & 2) > 0));
+
+CREATE INDEX idx_sec_inv_filters_traversal_proj_sbom_ingested_on ON security_inventory_filters USING btree (traversal_ids, project_id) INCLUDE (triage_capabilities_on, triage_capabilities_auto) WHERE ((NOT archived) AND (((triage_capabilities_on)::integer & 1) > 0));
+
+CREATE INDEX idx_sec_inv_filters_traversal_proj_secret_fp_on ON security_inventory_filters USING btree (traversal_ids, project_id) INCLUDE (triage_capabilities_on, triage_capabilities_auto) WHERE ((NOT archived) AND (((triage_capabilities_on)::integer & 8) > 0));
+
 CREATE INDEX idx_sec_inv_filters_traversals_unarchived_proj_severities_sort ON security_inventory_filters USING btree (traversal_ids, project_id, id DESC) WHERE ((NOT archived) AND ((critical > 0) OR (high > 0)));
 
 CREATE INDEX idx_sec_pol_sched_pipes_on_policy_project_id_desc ON security_policy_schedule_pipelines USING btree (security_policy_id, project_id, id DESC);

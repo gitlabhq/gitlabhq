@@ -69,7 +69,7 @@ describe('renderMarkdownTables', () => {
   beforeEach(() => {
     mockMarkdownTableDestroyed.mockClear();
     window.gon = {
-      features: { editorStickyTableHeaders: true, markdownSortableTableColumns: true },
+      features: { markdownSortableTableColumns: true },
     };
   });
 
@@ -79,22 +79,35 @@ describe('renderMarkdownTables', () => {
     delete window.gon;
   });
 
-  describe('when both feature flags are disabled', () => {
-    beforeEach(() => {
-      window.gon.features.editorStickyTableHeaders = false;
-      window.gon.features.markdownSortableTableColumns = false;
-    });
-
-    it('leaves the table untouched', () => {
+  describe('sticky headers', () => {
+    it('mounts inside a sticky-header wrapper', async () => {
       const table = buildTable();
       const container = appendTable(table);
 
-      expect(renderMarkdownTables([table])).toBeNull();
-      expect(container.contains(table)).toBe(true);
+      renderMarkdownTables([table]);
+      await waitForPromises();
+
+      const wrapper = container.querySelector('[data-sticky-header]');
+      expect(wrapper).not.toBeNull();
+      // The component's <table> is a direct child of the wrapper so the
+      // existing `[data-sticky-header] > table` CSS applies.
+      expect(wrapper.querySelector('table').parentElement).toBe(wrapper);
+    });
+
+    it('renders plain (non-sortable) headers when sorting is disabled', async () => {
+      window.gon.features.markdownSortableTableColumns = false;
+      const table = buildTable();
+      const container = appendTable(table);
+
+      renderMarkdownTables([table]);
+      await waitForPromises();
+
+      expect(container.querySelector('[data-sticky-header]')).not.toBeNull();
+      expect(container.querySelector('[data-sort-icon]')).toBeNull();
     });
   });
 
-  describe('when at least one feature flag is enabled', () => {
+  describe('table rendering', () => {
     it('replaces the original table with a mounted Vue component', async () => {
       const table = buildTable();
       const container = appendTable(table);
@@ -380,36 +393,6 @@ describe('renderMarkdownTables', () => {
 
       it('keeps the Vue app mounted', () => {
         expect(mockMarkdownTableDestroyed).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('sticky headers', () => {
-      it('does not add a sticky-header wrapper when sticky is disabled', async () => {
-        window.gon.features.editorStickyTableHeaders = false;
-        const table = buildTable();
-        const container = appendTable(table);
-
-        renderMarkdownTables([table]);
-        await waitForPromises();
-
-        expect(container.querySelector('[data-sticky-header]')).toBeNull();
-      });
-
-      it('mounts inside a sticky-header wrapper when sticky is enabled', async () => {
-        window.gon.features.markdownSortableTableColumns = false;
-        const table = buildTable();
-        const container = appendTable(table);
-
-        renderMarkdownTables([table]);
-        await waitForPromises();
-
-        const wrapper = container.querySelector('[data-sticky-header]');
-        expect(wrapper).not.toBeNull();
-        // The component's <table> is a direct child of the wrapper so the
-        // existing `[data-sticky-header] > table` CSS applies.
-        expect(wrapper.querySelector('table').parentElement).toBe(wrapper);
-        // Sticky-only tables render plain (non-sortable) headers.
-        expect(wrapper.querySelector('[data-sort-icon]')).toBeNull();
       });
     });
   });

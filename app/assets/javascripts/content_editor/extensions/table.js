@@ -22,7 +22,6 @@ export default Table.extend({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const stickyEnabled = window.gon?.features?.editorStickyTableHeaders;
     const tableEl = [
       'table',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
@@ -32,10 +31,6 @@ export default Table.extend({
     // Outer div is needed to set the width and margin-left/margin-right of
     // .immersive .rte-text-box > *, .immersive .placeholder,
     // but keep the table inside left-aligned
-    if (!stickyEnabled) {
-      return ['div', {}, ['div', {}, tableEl]];
-    }
-
     return [
       'div',
       {},

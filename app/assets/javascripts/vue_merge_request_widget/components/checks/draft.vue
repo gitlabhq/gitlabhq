@@ -130,6 +130,7 @@ export default {
                 id: this.mr.issuableId,
                 mergeableDiscussionsState: true,
                 title: this.mr.title,
+                titleHtml: this.mr.title,
                 draft: false,
               },
             },
@@ -139,11 +140,11 @@ export default {
           ({
             data: {
               mergeRequestSetDraft: {
-                mergeRequest: { title },
+                mergeRequest: { title, titleHtml },
               },
             },
           }) => {
-            MergeRequest.toggleDraftStatus(title, true);
+            MergeRequest.toggleDraftStatus(title, true, titleHtml);
           },
         )
         .catch(() =>

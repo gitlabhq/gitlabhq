@@ -136,6 +136,20 @@ describe('Merge requests sticky header component', () => {
 
       expect(findStickyHeaderTitle().text()).toBe('Initial title');
     });
+
+    it('renders the markdown title HTML when provided in the event', async () => {
+      createComponent({ provide: { title: 'Draft: Initial title' } });
+
+      document.dispatchEvent(
+        new CustomEvent(EVENT_MR_TITLE_UPDATED, {
+          detail: { title: 'code title', titleHtml: '<code>code</code> title' },
+        }),
+      );
+      await Vue.nextTick();
+
+      expect(findStickyHeaderTitle().find('code').exists()).toBe(true);
+      expect(findStickyHeaderTitle().text()).toBe('code title');
+    });
   });
 
   describe('rapid diffs toggle', () => {

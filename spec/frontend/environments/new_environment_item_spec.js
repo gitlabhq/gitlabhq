@@ -10,6 +10,7 @@ import EnvironmentActions from '~/environments/components/environment_actions.vu
 import Rollback from '~/environments/components/environment_rollback.vue';
 import ExternalUrl from '~/environments/components/environment_external_url.vue';
 import StopComponent from '~/environments/components/environment_stop.vue';
+import ForceStop from '~/environments/components/environment_force_stop.vue';
 import Pin from '~/environments/components/environment_pin.vue';
 import Terminal from '~/environments/components/environment_terminal_button.vue';
 import Delete from '~/environments/components/environment_delete.vue';
@@ -171,6 +172,36 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       expect(findStopComponent().exists()).toBe(true);
+    });
+  });
+
+  describe('force stop', () => {
+    const findForceStop = () => wrapper.findComponent(ForceStop);
+
+    it('shows the option to force stop a stopping environment if allowed', () => {
+      const stoppingEnvironment = {
+        ...resolvedEnvironment,
+        state: 'stopping',
+        canForceStop: true,
+      };
+
+      wrapper = createWrapper({
+        propsData: { environment: stoppingEnvironment },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expect(findForceStop().props('environment')).toEqual(stoppingEnvironment);
+    });
+
+    it('does not show the option to force stop a stopping environment if not allowed', () => {
+      wrapper = createWrapper({
+        propsData: {
+          environment: { ...resolvedEnvironment, state: 'stopping', canForceStop: false },
+        },
+        apolloProvider: createApolloProvider(),
+      });
+
+      expect(findForceStop().exists()).toBe(false);
     });
   });
 

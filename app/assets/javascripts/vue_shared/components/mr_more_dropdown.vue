@@ -173,7 +173,7 @@ export default {
           params: { format: 'json' },
         })
         .then(({ data }) => {
-          MergeRequest.toggleDraftStatus(data.title, this.draft);
+          MergeRequest.toggleDraftStatus(data.title, this.draft, data.title_html);
         })
         .catch(() => {
           createAlert({

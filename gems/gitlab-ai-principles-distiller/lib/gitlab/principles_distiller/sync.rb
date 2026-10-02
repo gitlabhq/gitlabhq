@@ -23,6 +23,7 @@ require_relative 'sync/auto_mr'
 require_relative 'sync/manifest'
 require_relative 'sync/baseline_rules'
 require_relative 'sync/validator'
+require_relative 'sync/metadata_checkpoint'
 require_relative 'sync/artifacts'
 require_relative 'sync/child_pipeline'
 require_relative 'sync/cli'
@@ -66,6 +67,17 @@ module Gitlab
       CHILD_PIPELINE_PATH = 'tmp/ai-principles-child-pipeline.yml'
       ARTIFACTS_DIR = 'tmp/ai-principles-distilled'
       DistillationRun = Data.define(:affected, :target_sha)
+      # `original` is the distilled file as read before distillation started, so a checkpoint fingerprints exactly what
+      # was evaluated even if the file changes while the workflow runs.
+      PrincipleResult = Data.define(:original, :updated)
+
+      # `contents` maps principle name => assembled file content, `failed` lists principle names, and `checkpoints`
+      # maps principle name => MetadataCheckpoint for successful no-change distillations.
+      DistillResult = Data.define(:contents, :failed, :checkpoints) do
+        def publishable?
+          contents.any? || checkpoints.any?
+        end
+      end
 
       def manifest
         @manifest ||= Manifest.new
@@ -105,29 +117,41 @@ module Gitlab
           return
         end
 
-        contents, failed = distill(affected, options)
-        write_run_report(failed, contents.size)
-        return if contents.empty? && failed.empty?
+        result = distill(affected, options)
+        write_run_report(result.failed, result.contents.size)
+        return if result.failed.empty? && !result.publishable?
 
-        puts "\n#{Rainbow("#{contents.size} principle(s) updated.").green}"
+        puts "\n#{Rainbow("#{result.contents.size} principle(s) updated.").green}" if result.contents.any?
 
         # Publish before checking failures so a failed principle doesn't discard successful ones.
-        publish(contents, affected, push: options[:push], failed: failed) if contents.any?
+        if result.publishable?
+          publish(result.contents, affected, push: options[:push], failed: result.failed,
+            checkpoints: result.checkpoints)
+        end
 
-        abort_on_failures(failed)
+        abort_on_failures(result.failed)
       end
 
       # Writes go straight to the working tree. In --push mode disk writes are deferred (see build_distilled_contents)
       # until after the publish branch is checked out, so the resulting MR diff contains ONLY the distilled files.
       def distill_and_write_principles(affected, rewrite: false)
-        results, failed = build_distilled_contents(affected, rewrite: rewrite)
-        results.each do |name, content|
+        result = build_distilled_contents(affected, rewrite: rewrite)
+        result.contents.each do |name, content|
           path = manifest.principles_path(name)
           File.write(Workspace.safe_join(path), content)
           puts "  #{name}: #{Rainbow("updated and written to #{path}").green}"
         end
 
-        [results, failed]
+        result.checkpoints.each do |name, checkpoint|
+          path = manifest.principles_path(name)
+          updated = checkpoint.apply(File.read(Workspace.safe_join(path)))
+          next unless updated
+
+          File.write(Workspace.safe_join(path), updated)
+          puts "  #{name}: #{Rainbow("metadata updated in #{path}").green}"
+        end
+
+        result
       end
 
       # Read-only guard for the Duo Code Review instruction fences in .gitlab/duo/mr-review-instructions.yaml. Loads the
@@ -300,9 +324,9 @@ module Gitlab
             new_sources: manifest.new_sources_for(name, config)
           }
         }
-        contents, failed = build_distilled_contents(affected)
+        result = build_distilled_contents(affected)
 
-        record_distill_artifact(name, contents[name], failed)
+        record_distill_artifact(name, result.contents[name], result.failed, checkpoint: result.checkpoints[name])
       end
 
       # Stage 3, the fan-in: reconstruct the run from the distill jobs' artifacts and publish. This is the only stage
@@ -325,9 +349,11 @@ module Gitlab
         # ran against the same commit.
         affected = manifest.affected_principles(only: expected)
 
-        if result.contents.any?
-          puts "\n#{Rainbow("#{result.contents.size} principle(s) updated.").green}"
-          publish(result.contents, affected, push: push, failed: result.failed, not_run: result.not_run)
+        puts "\n#{Rainbow("#{result.contents.size} principle(s) updated.").green}" if result.contents.any?
+
+        if result.contents.any? || result.checkpoints.any?
+          publish(result.contents, affected, push: push, failed: result.failed, not_run: result.not_run,
+            checkpoints: result.checkpoints)
         end
 
         # `not_run` is deliberately NOT fatal: a principle whose job never completed has not been shown to be
@@ -366,14 +392,14 @@ module Gitlab
       # Maps the three outcomes of a single-principle distillation onto the artifact contract.
       # `unchanged` is distinct from `failed`: the workflow ran cleanly and produced no meaningful diff, which is a
       # normal, healthy result and must not reach the Slack alert.
-      def record_distill_artifact(name, content, failed)
+      def record_distill_artifact(name, content, failed, checkpoint: nil)
         if failed.include?(name)
           artifacts.write(name, Artifacts::STATUS_FAILED)
           abort "\n#{Rainbow("ERROR: #{name} failed distillation").red}"
         end
 
         if content.nil?
-          artifacts.write(name, Artifacts::STATUS_UNCHANGED)
+          artifacts.write(name, Artifacts::STATUS_UNCHANGED, checkpoint: checkpoint)
           puts "\n#{Rainbow("#{name}: no meaningful changes.").faint}"
           return
         end
@@ -399,16 +425,18 @@ module Gitlab
       end
 
       def distill(affected, options)
-        contents, failed =
+        result =
           if options[:push]
             build_distilled_contents(affected, rewrite: options[:rewrite])
           else
             distill_and_write_principles(affected, rewrite: options[:rewrite])
           end
 
-        puts "\n#{Rainbow('No meaningful principle updates needed.').faint}" if contents.empty? && failed.empty?
+        if result.contents.empty? && result.failed.empty?
+          puts "\n#{Rainbow('No meaningful principle updates needed.').faint}"
+        end
 
-        [contents, failed]
+        result
       end
 
       # Runs after publish (see #run) so a distillation failure still exits non-zero without discarding principles that
@@ -444,7 +472,7 @@ module Gitlab
           'the Slack alert will fall back to a generic message').yellow
       end
 
-      def publish(contents, affected, push:, failed: [], not_run: nil)
+      def publish(contents, affected, push:, failed: [], not_run: nil, checkpoints: {})
         unless push
           puts "\n#{Rainbow('[LOCAL]').cyan} Distillation complete. Pass --push to create a branch and MR."
           return
@@ -452,6 +480,7 @@ module Gitlab
 
         options = { failed: failed }
         options[:not_run] = not_run if not_run
+        options[:checkpoints] = checkpoints if checkpoints.any?
         create_branch_and_mr(contents, affected, manifest.auto_mr_config, **options)
       end
 
@@ -480,8 +509,8 @@ module Gitlab
         manifest.inject_prerequisite_notes
       end
 
-      # Returns [{principle_name => fully_assembled_file_content}, [failed_names]] without writing to disk, so --push
-      # mode can defer writes until after the publish branch is checked out off origin/master.
+      # Returns a DistillResult without writing to disk, so --push mode can defer writes until after the publish branch
+      # is checked out off origin/master.
       def build_distilled_contents(affected, rewrite: false)
         header = '<!-- Auto-generated from docs.gitlab.com by ' \
           "gitlab-ai-principles-distiller — do not edit manually -->\n\n"
@@ -492,9 +521,12 @@ module Gitlab
 
         failed = []
         contents = {}
+        checkpoints = {}
 
         run.affected.each_key do |name|
-          current, updated = results[name]
+          result = results.fetch(name)
+          current = manifest.strip_frontmatter(result.original) if result.original
+          updated = result.updated
 
           if updated.nil?
             failed << name
@@ -513,6 +545,8 @@ module Gitlab
 
           unless Diff.meaningful?(current, assembled)
             puts "  #{name}: #{Rainbow('no meaningful changes').faint}"
+            checkpoint = metadata_checkpoint(name, config, run.target_sha, result.original)
+            checkpoints[name] = checkpoint if checkpoint
             next
           end
 
@@ -526,7 +560,22 @@ module Gitlab
           CONTENT
         end
 
-        [contents, failed]
+        DistillResult.new(contents: contents, failed: failed, checkpoints: checkpoints)
+      end
+
+      def metadata_checkpoint(name, config, target_sha, original)
+        return unless original
+
+        unless workflow.checkpoint_sources_match?(config, target_sha: target_sha)
+          warn Rainbow("  WARNING: #{name}: cannot verify checkpoint sources; leaving metadata unchanged").yellow
+          return
+        end
+
+        MetadataCheckpoint.new(
+          source_checksum: manifest.compute_checksum(config),
+          distilled_at_sha: target_sha,
+          original_sha256: MetadataCheckpoint.fingerprint(original)
+        )
       end
 
       # Concatenate SSOT sources and the baseline for inline-code verification.
@@ -580,10 +629,11 @@ module Gitlab
         run.affected.each_slice(MAX_CONCURRENT_DISTILLATIONS) do |batch|
           threads = batch.map do |name, info|
             Thread.new do
-              current = read_principles_file(name)
+              original = read_principles_file(name)
               updated = distill_principle(name, info[:config], prior_sha: info[:prior_sha], target_sha: run.target_sha,
                 new_sources: info[:new_sources] || [], mutex: mutex, rewrite: rewrite)
-              mutex.synchronize { results[name] = [current, updated] }
+              result = PrincipleResult.new(original: original, updated: updated)
+              mutex.synchronize { results[name] = result }
             end
           end
           threads.each(&:join)
@@ -763,13 +813,11 @@ module Gitlab
         drifted.first(3).each { |unit| log_warn.call(Rainbow("    drifted: #{unit}").faint) }
       end
 
-      # Returns the distilled file content stripped of its YAML frontmatter,
-      # or nil if no file exists yet.
       def read_principles_file(name)
         path = Workspace.safe_join(manifest.principles_path(name))
         return unless File.exist?(path)
 
-        manifest.strip_frontmatter(File.read(path))
+        File.read(path)
       end
     end
   end

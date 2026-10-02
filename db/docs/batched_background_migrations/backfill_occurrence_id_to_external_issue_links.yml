@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillOccurrenceIdToExternalIssueLinks
-description: Backfills occurrence_id from vulnerabilities to external issue links
-feature_category: vulnerability_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213084
-milestone: '18.7'
-queued_migration_version: 20251117160650
-finalized_by: '20260119233047'

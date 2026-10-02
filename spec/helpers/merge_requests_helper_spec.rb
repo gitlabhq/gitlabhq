@@ -287,6 +287,18 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         expect(subject[:isDraft]).to eq('true')
       end
     end
+
+    context 'with the reports tab' do
+      subject { sticky_header_data(project, imported_merge_request) }
+
+      let(:imported_from) { :none }
+
+      it 'includes the reports tab before the changes tab' do
+        expect(subject[:tabs][-2]).to eq(
+          ['reports', _('Reports'), reports_project_merge_request_path(project, imported_merge_request), '-']
+        )
+      end
+    end
   end
 
   describe '#tab_count_display' do

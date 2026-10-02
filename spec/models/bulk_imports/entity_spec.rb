@@ -224,7 +224,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
 
       context 'when source instance and destination instance are not the same' do
         it 'is valid if destination namespace is the source namespace' do
-          group_a = create(:group, path: 'group_a')
+          group_a = build_stubbed(:group, path: 'group_a')
 
           entity = build(
             :bulk_import_entity,
@@ -266,7 +266,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
 
         context 'when source instance and destination instance are not the same' do
           it 'is valid if destination namespace is the source namespace' do
-            group_a = create(:group, path: 'group_a')
+            group_a = build_stubbed(:group, path: 'group_a')
 
             entity = build(
               :bulk_import_entity,
@@ -742,9 +742,9 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
   end
 
   describe '#hashed_import_source' do
-    let(:bulk_import) { create(:bulk_import, :with_configuration) }
+    let(:bulk_import) { build_stubbed(:bulk_import, :with_configuration) }
     let(:entity) do
-      create(:bulk_import_entity, :project_entity, source_full_path: 'group/project', bulk_import: bulk_import)
+      build_stubbed(:bulk_import_entity, :project_entity, source_full_path: 'group/project', bulk_import: bulk_import)
     end
 
     it 'returns a stable hash derived from the source path' do
@@ -754,7 +754,7 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
     end
 
     it 'differs for a different source path' do
-      other_entity = create(
+      other_entity = build_stubbed(
         :bulk_import_entity, :project_entity, source_full_path: 'group/other-project', bulk_import: bulk_import
       )
 
@@ -769,9 +769,9 @@ RSpec.describe BulkImports::Entity, feature_category: :importers do
 
     context 'for an offline entity' do
       it 'uses the offline source_hostname, not the (unset) online configuration' do
-        entity = create(
+        entity = build_stubbed(
           :bulk_import_entity, :project_entity, source_full_path: 'group/project',
-          bulk_import: create(:bulk_import, :with_offline_configuration)
+          bulk_import: build_stubbed(:bulk_import, :with_offline_configuration)
         )
 
         expect(entity.hashed_import_source).not_to be_nil

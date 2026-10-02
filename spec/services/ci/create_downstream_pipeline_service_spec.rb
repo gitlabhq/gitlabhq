@@ -413,6 +413,31 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           expect(subject).to be_success
         end
 
+        shared_examples 'bridge with a strategy' do
+          it 'updates the bridge status to `running`' do
+            expect { subject }.to change { bridge.status }.from('pending').to('running')
+          end
+
+          # Inline so that PipelineBridgeStatusWorker, if wrongly enqueued for the failed
+          # child pipeline, would fail the bridge before the service drops it.
+          context 'when the child pipeline has a config error', :sidekiq_inline do
+            let(:file_content) { YAML.dump(invalid: { yaml: 'error' }) }
+
+            it 'drops the bridge and stores the error messages', :aggregate_failures do
+              expect { subject }.to change { Ci::Pipeline.count }.by(1)
+              expect(subject).to be_error
+              expect(subject.message)
+                .to match_array(["jobs invalid config should implement the script:, run:, or trigger: keyword"])
+
+              expect(pipeline.reload).to be_failed
+              expect(bridge.reload).to be_failed
+              expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
+              expect(bridge.downstream_errors)
+                .to match_array(["jobs invalid config should implement the script:, run:, or trigger: keyword"])
+            end
+          end
+        end
+
         context 'when bridge has strategy: depend' do
           let(:trigger) do
             {
@@ -420,9 +445,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
             }
           end
 
-          it 'updates the bridge status to `running`' do
-            expect { subject }.to change { bridge.status }.from('pending').to('running')
-          end
+          it_behaves_like 'bridge with a strategy'
         end
 
         context 'when bridge has strategy: mirror' do
@@ -432,9 +455,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
             }
           end
 
-          it 'updates the bridge status to `running`' do
-            expect { subject }.to change { bridge.status }.from('pending').to('running')
-          end
+          it_behaves_like 'bridge with a strategy'
         end
 
         context 'when latest sha for the ref changed in the meantime' do

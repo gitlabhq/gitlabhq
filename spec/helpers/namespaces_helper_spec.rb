@@ -54,18 +54,18 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#cascading_namespace_settings_tooltip_data' do
-    it 'returns tooltip data with testid' do
-      allow(helper).to receive(:cascading_namespace_settings_tooltip_raw_data).and_return({ key: 'value' })
-      result = helper.cascading_namespace_settings_tooltip_data(attribute, subgroup1, -> {})
-      expect(result[:tooltip_data]).to eq('{"key":"value"}')
+  describe '#cascading_namespace_settings_popover_data' do
+    it 'returns popover data with testid' do
+      allow(helper).to receive(:cascading_namespace_settings_popover_raw_data).and_return({ key: 'value' })
+      result = helper.cascading_namespace_settings_popover_data(attribute, subgroup1, -> {})
+      expect(result[:popover_data]).to eq('{"key":"value"}')
       expect(result[:testid]).to eq('cascading-settings-lock-icon')
     end
   end
 
-  describe '#cascading_namespace_settings_tooltip_raw_data' do
+  describe '#cascading_namespace_settings_popover_raw_data' do
     subject do
-      helper.cascading_namespace_settings_tooltip_data(
+      helper.cascading_namespace_settings_popover_data(
         attribute,
         subgroup1,
         ->(locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }
@@ -80,7 +80,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
       it 'returns expected hash' do
         expect(subject).to match({
-          tooltip_data: {
+          popover_data: {
             locked_by_application_setting: true,
             locked_by_ancestor: false
           }.to_json,
@@ -98,7 +98,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
       it 'returns expected hash' do
         expect(subject).to match({
-          tooltip_data: {
+          popover_data: {
             locked_by_application_setting: false,
             locked_by_ancestor: true,
             ancestor_namespace: {
@@ -112,13 +112,13 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#project_cascading_namespace_settings_tooltip_data' do
+  describe '#project_cascading_namespace_settings_popover_data' do
     using RSpec::Parameterized::TableSyntax
 
     let(:settings_path_helper) { ->(locked_ancestor) { edit_group_path(locked_ancestor) } }
 
     subject do
-      helper.project_cascading_namespace_settings_tooltip_data(attribute, project, settings_path_helper)
+      helper.project_cascading_namespace_settings_popover_data(attribute, project, settings_path_helper)
     end
 
     shared_examples 'returns correct data' do

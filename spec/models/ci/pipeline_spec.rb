@@ -3287,6 +3287,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         it_behaves_like 'upstream downstream pipeline'
       end
+
+      context 'when the downstream pipeline is not persisted yet' do
+        let(:upstream_pipeline) { create(:ci_pipeline) }
+        let(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, downstream: project) }
+        # `build` is shadowed by `let(:build)` in this describe block
+        let(:downstream_pipeline) { FactoryBot.build(:ci_pipeline, project: project) }
+
+        before do
+          downstream_pipeline.build_source_pipeline(
+            source_pipeline: upstream_pipeline,
+            source_project: upstream_pipeline.project,
+            source_bridge: bridge,
+            project: project
+          )
+        end
+
+        it 'does not schedule the pipeline bridge worker when persisted as failed' do
+          expect(::Ci::PipelineBridgeStatusWorker).not_to receive(:perform_async)
+
+          downstream_pipeline.drop!(:config_error)
+
+          expect(downstream_pipeline).to be_persisted
+        end
+
+        it 'schedules the pipeline bridge worker when persisted as skipped' do
+          expect(::Ci::PipelineBridgeStatusWorker).to receive(:perform_async).with(an_instance_of(Integer))
+
+          downstream_pipeline.skip!
+
+          expect(downstream_pipeline).to be_persisted
+        end
+      end
     end
 
     describe 'merge status subscription trigger' do

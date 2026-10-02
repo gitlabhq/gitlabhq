@@ -119,56 +119,28 @@ describe('content_editor/extensions/table', () => {
       );
     });
 
-    afterEach(() => {
-      delete window.gon;
+    it('wraps table in div with data-sticky-header attribute', () => {
+      tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+      expect(tiptapEditor.getHTML()).toContain('data-sticky-header');
     });
 
-    describe('when feature flag is enabled', () => {
-      beforeEach(() => {
-        window.gon = { features: { editorStickyTableHeaders: true } };
-      });
+    it('wraps table in div with shadow overlay wrapper class', () => {
+      tiptapEditor.commands.setContent(initialDoc.toJSON());
 
-      it('wraps table in div with data-sticky-header attribute', () => {
-        tiptapEditor.commands.setContent(initialDoc.toJSON());
-
-        expect(tiptapEditor.getHTML()).toContain('data-sticky-header');
-      });
-
-      it('wraps table in div with shadow overlay wrapper class', () => {
-        tiptapEditor.commands.setContent(initialDoc.toJSON());
-
-        expect(tiptapEditor.getHTML()).toContain('gl-table-shadow-overlay');
-      });
-
-      it('includes table element', () => {
-        tiptapEditor.commands.setContent(initialDoc.toJSON());
-
-        expect(tiptapEditor.getHTML()).toContain('<table>');
-      });
-
-      it('includes tbody element', () => {
-        tiptapEditor.commands.setContent(initialDoc.toJSON());
-
-        expect(tiptapEditor.getHTML()).toContain('<tbody>');
-      });
+      expect(tiptapEditor.getHTML()).toContain('gl-table-shadow-overlay');
     });
 
-    describe('when feature flag is disabled', () => {
-      beforeEach(() => {
-        window.gon = { features: { editorStickyTableHeaders: false } };
-      });
+    it('includes table element', () => {
+      tiptapEditor.commands.setContent(initialDoc.toJSON());
 
-      it('wraps table in div without data-sticky-header attribute', () => {
-        tiptapEditor.commands.setContent(initialDoc.toJSON());
+      expect(tiptapEditor.getHTML()).toContain('<table>');
+    });
 
-        expect(tiptapEditor.getHTML()).not.toContain('data-sticky-header');
-      });
+    it('includes tbody element', () => {
+      tiptapEditor.commands.setContent(initialDoc.toJSON());
 
-      it('wraps table in div without shadow overlay wrapper class', () => {
-        tiptapEditor.commands.setContent(initialDoc.toJSON());
-
-        expect(tiptapEditor.getHTML()).not.toContain('gl-table-shadow-overlay');
-      });
+      expect(tiptapEditor.getHTML()).toContain('<tbody>');
     });
   });
 });

@@ -34,8 +34,6 @@ module Tooling
         end
 
         def type(item)
-          return "`#{item.type_signature}`" if item.type.is_a?(Schema::TempUndocumented)
-
           "[`#{item.type_signature}`](#{docs_link(item.type)})"
         end
 
@@ -67,17 +65,17 @@ module Tooling
           "#{interface_body_parts(interface).join("\n\n")}\n"
         end
 
+        # Renders the full body for a union section (below the ## heading).
+        def render_union_body(union)
+          "#{union_body_parts(union).join("\n\n")}\n"
+        end
+
         # Summary for a connection object, linking to the node type and the
-        # standard connection fields section. A node without a docs page yet (or
-        # without a resolvable type, such as a subclassed connection) is rendered
-        # unlinked.
+        # standard connection fields section. A node without a resolvable type
+        # (such as a subclassed connection) is rendered unlinked.
         def connection_summary(object)
           node = object.node_type
-          node_link = if node.nil? || node.is_a?(Schema::TempUndocumented)
-                        "`#{node&.name}`"
-                      else
-                        item_link(node)
-                      end
+          node_link = node ? item_link(node) : '``'
 
           "Paginated collection of #{node_link}. " \
             "See [Standard connection fields](#standard-connection-fields) " \
@@ -157,6 +155,21 @@ module Tooling
           end
 
           parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: interface.fields)}"
+          parts
+        end
+
+        def union_body_parts(union)
+          parts = []
+          desc = description(union)
+          parts << desc if desc.present?
+
+          members = union.members
+
+          if members.present?
+            links = members.map { |member| "- #{item_link(member)}" }
+            parts << "### Member types {.no_toc}\n\n#{links.join("\n")}"
+          end
+
           parts
         end
 

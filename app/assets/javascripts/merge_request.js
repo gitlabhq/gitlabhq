@@ -6,6 +6,7 @@ import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
+import { sanitize, titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { getParameterValues, setUrlParams } from './lib/utils/url_utility';
@@ -97,7 +98,7 @@ MergeRequest.prototype.initMRBtnListeners = function () {
           .then(({ data }) => {
             draftToggle.removeAttribute('disabled');
 
-            MergeRequest.toggleDraftStatus(data.title, wipEvent === 'ready');
+            MergeRequest.toggleDraftStatus(data.title, wipEvent === 'ready', data.title_html);
           })
           .catch(() => {
             createAlert({
@@ -146,7 +147,7 @@ MergeRequest.decreaseCounter = function (by = 1) {
   $el.text(addDelimiter(count));
 };
 
-MergeRequest.toggleDraftStatus = function (title, isReady) {
+MergeRequest.toggleDraftStatus = function (title, isReady, titleHtml) {
   if (isReady) {
     toast(__('Marked as ready. Merging is now allowed.'));
   } else {
@@ -155,15 +156,23 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
   const titleEl = document.querySelector(`.merge-request .detail-page-header .title`);
 
   if (titleEl) {
-    titleEl.textContent = title;
+    if (titleHtml) {
+      titleEl.innerHTML = sanitize(titleHtml);
+    } else {
+      titleEl.textContent = title;
+    }
     document.title = title;
   }
 
   const cssStickyTitleEl = document.querySelector('.merge-request-sticky-title');
   if (cssStickyTitleEl) {
-    cssStickyTitleEl.textContent = title;
+    if (titleHtml) {
+      cssStickyTitleEl.innerHTML = sanitize(titleHtml, titleInLinkSafeHtmlConfig);
+    } else {
+      cssStickyTitleEl.textContent = title;
+    }
   }
-  document.dispatchEvent(new CustomEvent(EVENT_MR_TITLE_UPDATED, { detail: { title } }));
+  document.dispatchEvent(new CustomEvent(EVENT_MR_TITLE_UPDATED, { detail: { title, titleHtml } }));
 
   const draftToggles = document.querySelectorAll('.js-draft-toggle-button');
 

@@ -58,15 +58,16 @@ way distillation can.
 
 ### Artifact contract
 
-Each `distill-one` job writes two files under `tmp/ai-principles-distilled/`:
-`<name>.status` (always) and `<name>.md` (only when the status is `updated`).
+Each `distill-one` job writes its files under `tmp/ai-principles-distilled/`:
+`<name>.status` (always), `<name>.md` (only when the status is `updated`), and
+`<name>.checkpoint.json` (only when the status is `unchanged`).
 `collect` reads them against the expected principle list and sorts each
 principle into one of four states:
 
 | Artifact | State |
 |----------|-------|
 | status `updated` + content | Publish it. |
-| status `unchanged` | Ran cleanly, no meaningful diff. Nothing to publish. |
+| status `unchanged` + checkpoint | Ran cleanly, no meaningful diff. Publish only the new `source_checksum` and `distilled_at_sha`. |
 | status `failed` | Failed after retries. Reported, and the run exits non-zero. |
 | no status file | The job never completed. Reported separately, and the run exits zero. |
 
@@ -75,6 +76,11 @@ has not been shown to be undistillable, so reporting it as a distillation
 failure would send an operator chasing a defect that does not exist. Either way
 the principle keeps its committed checksum, so the next scheduled run
 re-attempts it.
+
+Checkpoints are published together in one `metadata` MR, which each run reuses.
+That MR changes only the frontmatter, so the next scan skips the principle
+until its sources change again. A checkpoint is dropped when the distilled file
+on the default branch no longer matches the file that was evaluated.
 
 ## Workspace
 

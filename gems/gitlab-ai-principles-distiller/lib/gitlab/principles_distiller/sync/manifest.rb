@@ -20,6 +20,9 @@ module Gitlab
         CLAUDE_SKILL_PATH = "#{CLAUDE_SKILL_DIR}/SKILL.md".freeze
         AGENTS_SKILL_PATH = '.agents/skills/gitlab-coding-principles/SKILL.md'
         CODEOWNERS_PATH = '.gitlab/CODEOWNERS'
+
+        # Branch suffixes owned by the tooling and metadata MRs, so no team may resolve to them.
+        RESERVED_TEAM_SLUGS = [AutoMr::TOOLING_SLUG, AutoMr::METADATA_SLUG].freeze
         DUO_REVIEW_INSTRUCTIONS_PATH = DuoInstructions::DUO_PATH
 
         # Markers delimiting the gem-managed per-file CODEOWNERS block. The
@@ -708,6 +711,12 @@ module Gitlab
               '(principles sharing an owner_team must agree on the branch slug)'
           end
 
+          reserved = reserved_team_slug_principles
+          if reserved.any?
+            errors << "`team_slug:` resolves to a reserved branch suffix (#{RESERVED_TEAM_SLUGS.join(', ')}): " \
+              "#{reserved.join(', ')} (set an explicit `team_slug:`)"
+          end
+
           return if errors.empty?
 
           abort Rainbow("ERROR: manifest.yml principles #{errors.join('; ')}").red
@@ -726,6 +735,11 @@ module Gitlab
               slugs = configs.filter_map { |config| config['team_slug'] }.uniq
               conflicts[handle] = slugs if slugs.size > 1
             end
+        end
+
+        # A team branch whose suffix equals one of the publisher's own branches would be force-pushed over by it.
+        def reserved_team_slug_principles
+          principles.keys.select { |name| RESERVED_TEAM_SLUGS.include?(team_slug(principle_team(name))) }
         end
 
         def principles_filename(name)

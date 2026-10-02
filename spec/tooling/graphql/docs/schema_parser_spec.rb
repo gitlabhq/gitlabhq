@@ -38,6 +38,12 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
       field :object_field, GraphQL::Types::Boolean
     end
 
+    union_type = Class.new(::Types::BaseUnion) do
+      graphql_name 'GraphQLUnion'
+
+      possible_types object_type
+    end
+
     mutation_type = Class.new(::Mutations::BaseMutation) do
       graphql_name 'GraphQLMutation'
 
@@ -53,6 +59,7 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
         field :object_field, object_type
         field :objects, object_type.connection_type, null: true, description: 'A connection.'
         field :interface_field, interface_type, null: true
+        field :union_field, union_type, null: true
         field :input_field, scalar_type do
           argument :input, input_object_type, required: false
         end
@@ -142,6 +149,22 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
         interface = interfaces.find { |type| type.name == 'GraphQLInterface' }
 
         expect(interface.implementations.map(&:name)).to include('GraphQLObject')
+      end
+    end
+
+    describe '@unions' do
+      subject(:unions) { result.unions }
+
+      it 'contains an array of union types' do
+        expect(unions).to all(be_a(Tooling::Graphql::Docs::Schema::Union))
+      end
+
+      it 'contains the union type in the schema' do
+        expect(unions.map(&:name)).to contain_exactly('GraphQLUnion')
+      end
+
+      it 'resolves the union members' do
+        expect(unions.first.members.map(&:name)).to contain_exactly('GraphQLObject')
       end
     end
 

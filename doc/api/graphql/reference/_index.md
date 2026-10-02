@@ -5534,6 +5534,7 @@ Arguments:
 | <a id="mutation-ascpsecuritycontextcreate-guidelines"></a>`guidelines` | [`[AscpSecurityGuidelineInput!]!`](#ascpsecurityguidelineinput) | List of security guidelines. |
 | <a id="mutation-ascpsecuritycontextcreate-projectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="mutation-ascpsecuritycontextcreate-scanid"></a>`scanId` | [`SecurityAscpScanID!`](#securityascpscanid) | ID of the scan when the security context was created. |
+| <a id="mutation-ascpsecuritycontextcreate-securityboundary"></a>`securityBoundary` | [`[AscpSecurityBoundary!]`](#ascpsecurityboundary) | Security boundaries the component sits on. |
 | <a id="mutation-ascpsecuritycontextcreate-summary"></a>`summary` | [`String`](#string) | High-level threat model summary. |
 
 Fields:
@@ -37571,6 +37572,7 @@ Fields:
 | <a id="ascpsecuritycontext-datasensitivity"></a>`dataSensitivity` | [`String`](#string) | Types of sensitive data handled by the component. |
 | <a id="ascpsecuritycontext-id"></a>`id` | [`SecurityAscpSecurityContextID!`](#securityascpsecuritycontextid) | ID of the security context. |
 | <a id="ascpsecuritycontext-scan"></a>`scan` | [`AscpScan!`](#ascpscan) | Scan when the security context was generated. |
+| <a id="ascpsecuritycontext-securityboundary"></a>`securityBoundary` | [`[AscpSecurityBoundary!]!`](#ascpsecurityboundary) | Security boundaries the component sits on. |
 | <a id="ascpsecuritycontext-securityguidelines"></a>`securityGuidelines` | [`AscpSecurityGuidelineConnection!`](#ascpsecurityguidelineconnection) | Security guidelines for the context. (see [Connections](#connections)) |
 | <a id="ascpsecuritycontext-summary"></a>`summary` | [`String`](#string) | High-level threat model summary. |
 
@@ -54375,7 +54377,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mergerequestriskcontributingsignal-contribution"></a>`contribution` | [`Float!`](#float) | Points the signal added to the overall score. |
 | <a id="mergerequestriskcontributingsignal-detail"></a>`detail` | [`String`](#string) | Human-readable explanation of the contribution. |
-| <a id="mergerequestriskcontributingsignal-label"></a>`label` | [`String`](#string) | Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from. |
+| <a id="mergerequestriskcontributingsignal-label"></a>`label` | [`String`](#string) | Human-readable name of the signal or claim. Null when the key matches neither a registered signal nor a risk domain. |
 | <a id="mergerequestriskcontributingsignal-signal"></a>`signal` | [`String!`](#string) | Name of the signal or claim. |
 
 ### `MergeRequestRiskMissingSignal`
@@ -54386,7 +54388,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestriskmissingsignal-label"></a>`label` | [`String`](#string) | Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from. |
+| <a id="mergerequestriskmissingsignal-label"></a>`label` | [`String`](#string) | Human-readable name of the signal or claim. Null when the key matches neither a registered signal nor a risk domain. |
 | <a id="mergerequestriskmissingsignal-signal"></a>`signal` | [`String!`](#string) | Name of the signal or claim. |
 
 ### `MergeRequestSavedView`
@@ -69800,6 +69802,19 @@ Type of ASCP scan (full or incremental).
 | <a id="ascpscantype-full"></a>`FULL` | Full scan of the entire codebase. |
 | <a id="ascpscantype-incremental"></a>`INCREMENTAL` | Incremental scan based on changes since last scan. |
 
+### `AscpSecurityBoundary`
+
+Security boundaries an ASCP component sits on.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="ascpsecurityboundary-internal_only"></a>`INTERNAL_ONLY` | Internal Only. |
+| <a id="ascpsecurityboundary-isolated"></a>`ISOLATED` | Isolated. |
+| <a id="ascpsecurityboundary-network_access"></a>`NETWORK_ACCESS` | Network Access. |
+| <a id="ascpsecurityboundary-partner_boundary"></a>`PARTNER_BOUNDARY` | Partner Boundary. |
+| <a id="ascpsecurityboundary-trusted_service"></a>`TRUSTED_SERVICE` | Trusted Service. |
+| <a id="ascpsecurityboundary-user_input"></a>`USER_INPUT` | User Input. |
+
 ### `AscpSeverity`
 
 Severity levels for ASCP security guidelines.
@@ -79504,7 +79519,8 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="budgetcapuseroverrideinput-cap"></a>`cap` | [`Float!`](#float) | Budget cap amount for the user. |
 | <a id="budgetcapuseroverrideinput-enabled"></a>`enabled` | [`Boolean!`](#boolean) | Whether the budget cap is enabled for the user. |
-| <a id="budgetcapuseroverrideinput-userid"></a>`userId` | [`UserID!`](#userid) | Global ID of the user. |
+| <a id="budgetcapuseroverrideinput-userid"></a>`userId` | [`UserID`](#userid) | Global ID of the user. Exactly one of `userId` or `username` must be provided. |
+| <a id="budgetcapuseroverrideinput-username"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Username of the user. Exactly one of `userId` or `username` must be provided. |
 
 ### `BulkToolRuleInput`
 

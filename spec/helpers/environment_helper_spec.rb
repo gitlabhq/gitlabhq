@@ -37,6 +37,8 @@ RSpec.describe EnvironmentHelper, feature_category: :environment_management do
         environment_terminal_path: terminal_project_environment_path(project, environment),
         has_terminals: false,
         is_environment_available: true,
+        state: 'available',
+        has_stop_action: false,
         description_html: '<p data-sourcepos="1:1-1:13" dir="auto"><em data-sourcepos="1:1-1:13">description</em></p>',
         auto_stop_at: auto_stop_at,
         graphql_etag_key: environment.etag_cache_key

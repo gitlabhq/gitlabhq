@@ -36,7 +36,7 @@ module API
     end
     params do
       use :pagination
-      optional :public, type: Boolean, default: false, desc: "Only return deploy keys that are public"
+      optional :public, type: Boolean, default: false, desc: 'If `true`, returns only deploy keys that are public.'
     end
     route_setting :authorization, permissions: :read_deploy_key, boundary_type: :instance, assignable_when: [:admin]
     get "deploy_keys" do
@@ -60,9 +60,9 @@ module API
       tags deploy_keys_tags
     end
     params do
-      requires :key, type: String, desc: 'New deploy key'
-      requires :title, type: String, desc: "New deploy key's title"
-      optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+      requires :key, type: String, desc: 'Public key value of the deploy key.'
+      requires :title, type: String, desc: 'Title of the deploy key.'
+      optional :expires_at, type: DateTime, desc: 'Date when the deploy key expires. If omitted, the deploy key does not expire.'
     end
     route_setting :authorization, permissions: :create_deploy_key, boundary_type: :instance, assignable_when: [:admin]
     post "deploy_keys" do
@@ -78,7 +78,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authorize_admin_project }
@@ -115,7 +115,7 @@ module API
         tags deploy_keys_tags
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        requires :key_id, type: Integer, desc: 'ID of the deploy key.'
       end
       route_setting :authorization, permissions: :read_deploy_key, boundary_type: :project
       get ":id/deploy_keys/:key_id" do
@@ -136,10 +136,10 @@ module API
         tags deploy_keys_tags
       end
       params do
-        requires :key, type: String, desc: 'New deploy key'
-        requires :title, type: String, desc: "New deploy key's title"
-        optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
-        optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+        requires :key, type: String, desc: 'Public key value of the deploy key.'
+        requires :title, type: String, desc: 'Title of the deploy key.'
+        optional :can_push, type: Boolean, desc: "If `true`, the deploy key can push to the project's repository."
+        optional :expires_at, type: DateTime, desc: 'Date when the deploy key expires. If omitted, the deploy key does not expire.'
       end
       route_setting :authorization, permissions: :create_deploy_key, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord
@@ -189,9 +189,9 @@ module API
         tags deploy_keys_tags
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the deploy key'
-        optional :title, type: String, desc: "New deploy key's title"
-        optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
+        requires :key_id, type: Integer, desc: 'ID of the deploy key.'
+        optional :title, type: String, desc: 'Title of the deploy key.'
+        optional :can_push, type: Boolean, desc: "If `true`, the deploy key can push to the project's repository."
         at_least_one_of :title, :can_push
       end
       route_setting :authorization, permissions: :update_deploy_key, boundary_type: :project
@@ -231,7 +231,7 @@ module API
         tags deploy_keys_tags
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        requires :key_id, type: Integer, desc: 'ID of the deploy key.'
       end
       route_setting :authorization, permissions: :enable_deploy_key, boundary_type: :project
       post ":id/deploy_keys/:key_id/enable" do
@@ -256,7 +256,7 @@ module API
         tags deploy_keys_tags
       end
       params do
-        requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        requires :key_id, type: Integer, desc: 'ID of the deploy key.'
       end
       route_setting :authorization, permissions: :delete_deploy_key, boundary_type: :project
       # rubocop: disable CodeReuse/ActiveRecord

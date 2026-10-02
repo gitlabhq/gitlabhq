@@ -15,6 +15,8 @@ time_frame:
 data_source: internal_events
 data_category: optional
 tiers:
+  - free
+  - premium
   - ultimate
 events:
   - name: click_view_report_on_merge_request_widget

@@ -1004,32 +1004,32 @@ module ProjectsHelper
 
   def gitlab_duo_settings_data(project)
     {
-      duo_availability_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+      duo_availability_cascading_settings: project_cascading_namespace_settings_popover_data(
         :duo_features_enabled,
         project,
         method(:edit_group_path)
       ),
-      duo_remote_flows_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+      duo_remote_flows_cascading_settings: project_cascading_namespace_settings_popover_data(
         :duo_remote_flows_enabled,
         project,
         method(:edit_group_path)
       ),
-      duo_foundational_flows_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+      duo_foundational_flows_cascading_settings: project_cascading_namespace_settings_popover_data(
         :duo_foundational_flows_enabled,
         project,
         method(:edit_group_path)
       ),
-      tool_approval_for_session_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+      tool_approval_for_session_cascading_settings: project_cascading_namespace_settings_popover_data(
         :tool_approval_for_session_enabled,
         project,
         method(:edit_group_path)
       ),
-      duo_auto_mode_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+      duo_auto_mode_cascading_settings: project_cascading_namespace_settings_popover_data(
         :duo_auto_mode_enabled,
         project,
         method(:edit_group_path)
       ),
-      ai_audit_events_storage_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+      ai_audit_events_storage_cascading_settings: project_cascading_namespace_settings_popover_data(
         :ai_audit_events_storage_enabled,
         project,
         method(:edit_group_path)

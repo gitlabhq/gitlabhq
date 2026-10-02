@@ -13,7 +13,7 @@ module API
     urgency :low
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
       optional :action, type: String, desc: 'Include only events of a particular action type'
       optional :target_type, type: String, desc: 'Include only events of a particular target type'
       optional :before, type: DateTime, desc: 'Include only events created before a particular date'

@@ -215,7 +215,10 @@ generated per-file rules in
 [`.gitlab/CODEOWNERS`](../../.gitlab/CODEOWNERS) (see [Manifest
 schema](#manifest-schema)). The separate tooling MR, which carries only
 the global routing tables (AGENTS.md, CLAUDE.md, SKILL.md), falls back
-to the broad `/.ai/` and `/.claude/` AI-harness owners.
+to the broad `/.ai/` and `/.claude/` AI-harness owners. The metadata MR
+updates only the frontmatter of principles whose re-distillation produced no
+meaningful changes. It still routes approval to each file's owning team, and
+requests one available member of each team as reviewer.
 
 When individual SSOT authors resolve, the distiller mentions and assigns up to
 three of them as reviewers. If no author resolves, it selects one available
@@ -323,7 +326,8 @@ Each entry under `principles:` in
   they are surfaced without `@`-mentioning (pinging) the secondary group;
   only the primary team is pinged.
 - `team_slug` (optional) — branch name and title prefix for the per-team
-  MR. Defaults to the last path segment of `owner_team` (e.g.
+  MR. It cannot resolve to `tooling` or `metadata`, which name the sync's
+  own MRs. Defaults to the last path segment of `owner_team` (e.g.
   `@gitlab-org/maintainers/database` → `database`). Set it explicitly
   when that segment is generic and would **collide** across teams — for
   example `.../authentication/approvers` and `.../authorization/approvers`

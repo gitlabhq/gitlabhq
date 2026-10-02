@@ -1,5 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import {
   convertObjectPropsToCamelCase,
   parseIntPagination,
@@ -78,16 +79,20 @@ export const baseQueries = (endpoint) => ({
 });
 
 export const baseMutations = {
-  stopEnvironmentREST(_, { environment }, { client, cache }) {
+  stopEnvironmentREST(_, { environment, force = false }, { client, cache }) {
     client.writeQuery({
       query: isEnvironmentStoppingQuery,
       variables: { environment },
       data: { isEnvironmentStopping: true },
     });
     return axios
-      .post(environment.stopPath)
+      .post(environment.stopPath, { force })
       .then(() => {
         cache.evict({ fieldName: 'folder' });
+        // The details page header is rendered from static data, so reload it.
+        if (environment.onSingleEnvironmentPage) {
+          refreshCurrentPage();
+        }
         return buildErrors();
       })
       .catch(() => {

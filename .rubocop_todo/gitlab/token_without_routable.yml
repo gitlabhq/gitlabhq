@@ -13,5 +13,4 @@ Gitlab/TokenWithoutRoutable:
     - 'ee/app/models/ee/group.rb'
     - 'ee/app/models/group_scim_auth_access_token.rb'
     - 'ee/app/models/scim_oauth_access_token.rb'
-    - 'lib/gitlab/background_migration/migrate_ci_triggers_token_to_token_encrypted.rb'
     - 'lib/tasks/tokens.rake'

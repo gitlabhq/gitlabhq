@@ -110,8 +110,6 @@ constants:
   - ADDITIONAL_IMPORT_ASSOCIATIONS
   ee/lib/ee.rb:
   - CUSTOMER_LICENSE_SUPPORT_URL
-  ee/lib/ee/gitlab/background_migration/backfill_security_inventory_filters.rb:
-  - STATUS_VALUES
   ee/lib/elastic/latest/project_instance_proxy.rb:
   - TRACKED_FEATURE_SETTINGS
   ee/lib/gitlab/duo/chat/default_questions.rb:
@@ -643,8 +641,6 @@ scopes:
   - including_dependency_links
   app/models/packages/package_file.rb:
   - with_format
-  app/models/pool_repository.rb:
-  - by_source_project
   app/models/project.rb:
   - with_storage_feature
   - without_storage_feature

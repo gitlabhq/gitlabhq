@@ -136,6 +136,31 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       field :id, GraphQL::Types::ID, null: true, description: 'ID.'
     end
 
+    # Members are declared out of alphabetical order to prove they are sorted.
+    spec_union = Class.new(::Types::BaseUnion) do
+      graphql_name 'Union'
+      description 'A union.'
+
+      possible_types spec_object_without_description, spec_object
+    end
+
+    spec_union_without_description = Class.new(::Types::BaseUnion) do
+      graphql_name 'UnionWithoutDescription'
+
+      possible_types spec_object
+    end
+
+    spec_union_without_members = Class.new(::Types::BaseUnion) do
+      graphql_name 'UnionWithoutMembers'
+      description 'A union without members.'
+    end
+
+    spec_object_with_union_field = Class.new(::Types::BaseObject) do
+      graphql_name 'ObjectWithUnionField'
+
+      field :union_field, spec_union, null: true, description: 'A union field.'
+    end
+
     # Add a connection field to the object so field descriptions render the
     # connection note. Defined after the connection type exists.
     spec_object.field :related, spec_object.connection_type, null: true, description: 'Related objects.' do
@@ -162,6 +187,10 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           description: 'A connection over an interface node.'
         field :interface_without_implementations, spec_interface_without_implementations, null: true,
           description: 'A field returning an interface with no implementations.'
+        field :object_with_union_field, spec_object_with_union_field, null: true
+        field :unions, spec_union.connection_type, null: true, description: 'A connection over a union node.'
+        field :union_without_description, spec_union_without_description, null: true
+        field :union_without_members, spec_union_without_members, null: true
         field :input_field, spec_scalar do
           argument :input, spec_input_object, required: false, description: 'An input.'
         end
@@ -267,6 +296,20 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       )
     end
 
+    it 'renders a connection over a union node linking to the unions page' do
+      expect(doc).to include(
+        <<~MD
+          ## `UnionConnection`
+
+          Paginated collection of [`Union`](unions.md#union). See [Standard connection fields](#standard-connection-fields) for the fields available on every connection.
+        MD
+      )
+    end
+
+    it 'links a union-typed field to the unions page' do
+      expect(doc).to include('| `unionField` | [`Union`](unions.md#union) | A union field. |')
+    end
+
     it 'does not include introspection types' do
       expect(doc).not_to include('__')
     end
@@ -354,6 +397,56 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
     it 'lists interfaces in alphabetical order' do
       expect(doc.scan(/^## `(\w+)`/).flatten).to eq(doc.scan(/^## `(\w+)`/).flatten.sort)
+    end
+
+    it 'does not include introspection types' do
+      expect(doc).not_to include('__')
+    end
+  end
+
+  describe 'the unions page' do
+    subject(:doc) { page('unions.md').doc }
+
+    it 'renders the union with its linked member types' do
+      expect(doc).to include(
+        <<~MD
+          ## `Union`
+
+          A union.
+
+          ### Member types {.no_toc}
+
+          - [`Object`](objects.md#object)
+          - [`ObjectWithoutDescription`](objects.md#objectwithoutdescription)
+        MD
+      )
+    end
+
+    it 'lists member types in alphabetical order' do
+      section = doc[/## `Union`\n.*?(?=\n## |\z)/m]
+
+      expect(section.scan(/^- \[`(\w+)`\]/).flatten).to eq(%w[Object ObjectWithoutDescription])
+    end
+
+    it 'renders a union without a description' do
+      expect(doc).to include(
+        <<~MD
+          ## `UnionWithoutDescription`
+
+          ### Member types {.no_toc}
+        MD
+      )
+    end
+
+    it 'omits the member types section for a union without members' do
+      section = doc[/## `UnionWithoutMembers`\n.*?(?=\n## |\z)/m]
+
+      expect(section).to include('A union without members.')
+      expect(section).not_to include('### Member types')
+    end
+
+    it 'lists unions in alphabetical order' do
+      expect(doc.scan(/^## `(\w+)`/).flatten).to eq(%w[Union UnionWithoutDescription UnionWithoutMembers])
     end
 
     it 'does not include introspection types' do

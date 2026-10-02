@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillNamespaceTraversalIdsOnIssues
-description: Backfills namespace_traversal_ids on issues table
-feature_category: portfolio_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215753
-milestone: '18.7'
-queued_migration_version: 20251209134522
-finalized_by: 20260114105932

@@ -297,6 +297,8 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs')).to route_to('projects/merge_requests#diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'diffs')
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/commits')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'commits')
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/pipelines')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'pipelines')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/reports')).to route_to('projects/merge_requests#reports', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'reports')
+      expect(get('/gitlab/gitlabhq/-/merge_requests/1/reports/code-quality')).to route_to('projects/merge_requests#reports', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'reports', vueroute: 'code-quality')
     end
 
     specify 'to #show from scoped route' do

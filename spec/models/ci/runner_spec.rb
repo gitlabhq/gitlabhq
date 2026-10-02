@@ -1797,6 +1797,38 @@ RSpec.describe Ci::Runner, factory_default: :keep, feature_category: :runner_cor
 
         expect(subject).to start_with(token_without_prefixes[0...described_class::RUNNER_SHORT_SHA_LENGTH])
       end
+
+      it 'keeps the short SHA after the feature flag is disabled' do
+        expect { stub_feature_flags(custom_prefix_for_all_token_types: false) }.not_to change { runner.short_sha }
+      end
+    end
+
+    context 'with a stored token and a changed instance prefix' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:runner) { build(:ci_runner, registration_type: :authenticated_user, token: token) }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      where(:instance_prefix, :token) do
+        'instanceprefix' | 'instanceprefix-glrt-t1_foobar'
+        'otherprefix'    | 'instanceprefix-glrt-t1_foobar'
+        ''               | 'instanceprefix-glrt-t1_foobar'
+        'instanceprefix' | 'glrt-t1_foobar'
+        'g'              | 'glrt-t1_foobar'
+      end
+
+      with_them do
+        it { is_expected.to eq('foobar') }
+      end
+    end
+
+    context 'without a token' do
+      let(:runner) { build(:ci_runner) }
+
+      it { is_expected.to be_nil }
     end
 
     context 'when legacy token' do

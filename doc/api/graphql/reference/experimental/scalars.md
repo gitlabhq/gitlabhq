@@ -120,6 +120,12 @@ A `AiFoundationalChatAgentID` is a global ID. It is encoded as a string.
 
 An example `AiFoundationalChatAgentID` is: `"gid://gitlab/Ai::FoundationalChatAgent/1"`.
 
+## `AiGovernanceSessionID`
+
+A `AiGovernanceSessionID` is a global ID. It is encoded as a string.
+
+An example `AiGovernanceSessionID` is: `"gid://gitlab/Ai::Governance::Session/1"`.
+
 ## `AiModelID`
 
 A `AiModelID` is a global ID. It is encoded as a string.

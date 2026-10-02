@@ -6,7 +6,7 @@ import { initCheckboxControlledInput } from '~/pages/admin/application_settings/
 import initTransferGroupForm from '~/groups/init_transfer_group_form';
 import { initGroupSelects } from '~/vue_shared/components/entity_select/init_group_selects';
 import { initProjectSelects } from '~/vue_shared/components/entity_select/init_project_selects';
-import { initCascadingSettingsLockTooltips } from '~/namespaces/cascading_settings';
+import { initCascadingSettingsLockPopovers } from '~/namespaces/cascading_settings';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
 import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
@@ -32,7 +32,7 @@ initGroupSelects();
 initProjectSelects();
 
 initSearchSettings();
-initCascadingSettingsLockTooltips();
+initCascadingSettingsLockPopovers();
 
 initCheckboxControlledInput(
   'group_enforce_granular_tokens',

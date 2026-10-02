@@ -427,6 +427,16 @@ Time window for AI governance dashboard metrics.
 | `LAST_30_DAYS` | Last 30 days, bucketed daily. |
 | `LAST_7_DAYS` | Last 7 days, bucketed daily. |
 
+## `AiGovernanceSessionSource`
+
+Source that recorded an AI governance session.
+
+| Value | Description |
+| ----- | ----------- |
+| `CLAUDE_CODE_COMPLIANCE_API` | Claude Code session ingested from the Claude Compliance API. |
+| `CLAUDE_CODE_GLAB` | Claude Code session reported through the GitLab CLI. |
+| `GITLAB_DUO` | Session run on the GitLab Duo Agent Platform. |
+
 ## `AiMessageRole`
 
 Possible message roles for AI features.
@@ -4307,6 +4317,29 @@ Enum defining the type of OpenTelemetry metric.
 | `HISTOGRAM_TYPE` | Histogram Type type. |
 | `SUM_TYPE` | Sum Type type. |
 
+## `OrbitIndexingPhase`
+
+Indexing phase of Orbit data.
+
+| Value | Description |
+| ----- | ----------- |
+| `ERROR` | Indexing failed. |
+| `NOT_STARTED` | Indexing has not started. |
+| `READY` | Indexing is complete. |
+| `SYNCING` | Indexing is in progress. |
+| `UNKNOWN` | Indexing phase is unknown. |
+
+## `OrbitTrialState`
+
+State of the Orbit trial for a top-level group.
+
+| Value | Description |
+| ----- | ----------- |
+| `ACTIVE` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Trial is active. |
+| `ELIGIBLE` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Group can start a trial. |
+| `ENDED` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Trial expired or used all its credits. |
+| `NOT_ELIGIBLE` | Status: Experiment. Introduced in GitLab 19.5.<br/><br/>Group cannot start a trial. |
+
 ## `OrganizationClusterAgentFilter`
 
 Possible filter types for remote development cluster agents in an organization.
@@ -5182,6 +5215,7 @@ Actions that can be performed on secrets.
 
 | Value | Description |
 | ----- | ----------- |
+| `CREATE` | Create secrets without updating existing ones. |
 | `DELETE` | Delete secrets. |
 | `READ` | Read secrets. |
 | `READ_VALUE` | Read secret values. |
@@ -5573,6 +5607,19 @@ Status of the subscription to an issuable.
 | `EXPLICITLY_SUBSCRIBED` | User is explicitly subscribed to the issuable. |
 | `EXPLICITLY_UNSUBSCRIBED` | User is explicitly unsubscribed from the issuable. |
 
+## `TagSort`
+
+Values for sorting repository tags.
+
+| Value | Description |
+| ----- | ----------- |
+| `NAME_ASC` | Name by ascending order. |
+| `NAME_DESC` | Name by descending order. |
+| `UPDATED_ASC` | Tag creation date by ascending order. |
+| `UPDATED_DESC` | Tag creation date by descending order. |
+| `VERSION_ASC` | Semantic version by ascending order. |
+| `VERSION_DESC` | Semantic version by descending order. |
+
 ## `TerraformStateProtectionRuleAccessLevel`
 
 Access level for Terraform state protection rule write operations.
@@ -5866,6 +5913,7 @@ Name of the feature that the callout is for.
 | `NAMESPACE_STORAGE_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_warning_threshold. |
 | `NAMESPACE_STORAGE_PRE_ENFORCEMENT_BANNER` | Callout feature name for namespace_storage_pre_enforcement_banner. |
 | `NAMESPACE_USER_CAP_REACHED_ALERT` | Callout feature name for namespace_user_cap_reached_alert. |
+| `ORGANIZATIONS_AVAILABLE_ALERT` | Callout feature name for organizations_available_alert. |
 | `OVERAGE_SEAT_COUNT_THRESHOLD` | Callout feature name for overage_seat_count_threshold. |
 | `PREVIEW_USAGE_QUOTA_FREE_PLAN_ALERT` | Callout feature name for preview_usage_quota_free_plan_alert. |
 | `PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |
@@ -6557,6 +6605,7 @@ Type of a work item widget.
 | `PARTICIPANTS` | Participants widget. |
 | `PROGRESS` | Progress widget. |
 | `REQUIREMENT_LEGACY` | Requirement Legacy widget. |
+| `SEVERITY` | Severity widget. |
 | `START_AND_DUE_DATE` | Start And Due Date widget. |
 | `STATUS` | Status widget. |
 | `TEST_REPORTS` | Test Reports widget. |

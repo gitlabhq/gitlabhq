@@ -243,6 +243,55 @@ The task:
 - Reports the status of each migration as it completes.
 - Continues processing remaining migrations even if some fail.
 
+### Wait for all migrations to finish
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258378) in GitLab 19.5.
+
+{{< /history >}}
+
+To block until all unfinished batched background migrations across all databases have finished:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:wait
+```
+
+Example output:
+
+```plaintext
+Waiting for batched background migrations to finish, checking every 30s...
+Still waiting on 1 batched background migration(s):
+Database: main
+  active | BackfillPipelineExecutionPoliciesMetadata,security_policies,id,[]
+All batched background migrations have finished.
+```
+
+This task is intended for automation, such as gating a zero-downtime upgrade until the current
+version's migrations finish before starting the next upgrade. Unlike
+[Execute all migrations](#execute-all-migrations), it does not run migrations itself. It only
+polls their status while the scheduler works through them.
+
+The task:
+
+- Checks every configured database (`main`, `ci`, and so on).
+- Polls until no migrations remain in a `paused`, `active`, or `finalizing` state, then exits `0`.
+- Exits with a non-zero status if any migration is in the `failed` state, because waiting cannot
+  clear it. Resolve these first with
+  [Resolve failed batched background migrations](#resolve-failed-batched-background-migrations).
+
+To control how often the task polls, set the `BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS`
+environment variable to a positive integer (default `30`):
+
+```shell
+sudo BATCHED_MIGRATIONS_WAIT_INTERVAL_SECONDS=60 gitlab-rake gitlab:background_migrations:wait
+```
+
+The task has no internal timeout. Bound the total wait from the caller, for example with `timeout`
+or a job deadline.
+
+The task does not catch transient database errors. If it fails with one, retry the entire task.
+
 ## Check for pending database background migrations
 
 {{< history >}}

@@ -49,7 +49,7 @@ flowchart TD
         Assemble[Assemble distilled file<br/>and absolutize links] --> Meaningful
 
         Meaningful{Content changed?}
-        Meaningful -->|No| Unchanged[Record 'unchanged']
+        Meaningful -->|No| Unchanged[Record 'unchanged'<br/>with new checksum checkpoint]
         Meaningful -->|Yes| Updated[Record 'updated'<br/>with new checksum front matter]
     end
 
@@ -60,12 +60,25 @@ flowchart TD
     Collect[Collect job: fan in every<br/>principle's artifact]
     Collect --> AnyUpdated
 
-    AnyUpdated{Any updated principles?}
+    AnyUpdated{Any updated principles<br/>or checkpoints?}
     AnyUpdated -->|No| Done([Exit: nothing to publish])
     AnyUpdated -->|Yes| MR
 
-    MR[Open merge request<br/>targeting the default branch] --> Review([Human approval and merge])
+    MR[Open merge requests<br/>targeting the default branch] --> Review([Human approval and merge])
 ```
+
+### Unchanged principles
+
+A source change does not always change the distilled rules. When the
+distillation produces no meaningful changes, the collect job opens a metadata
+merge request that updates only the `source_checksum` and `distilled_at_sha`
+front matter. After it merges, drift detection skips the principle until its
+sources change again. Without it, every scheduled run would distill the same
+inputs again.
+
+Each run reuses the open metadata merge request. If the distilled file on the
+default branch changed after the distill job read it, the collect job skips that
+principle, and the next scheduled run evaluates it again.
 
 ### Why the run is split
 

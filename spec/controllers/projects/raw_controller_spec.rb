@@ -19,7 +19,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
     subject { get_show }
 
-    shared_examples 'limited number of Gitaly request' do |request_count: 3|
+    shared_examples 'limited number of Gitaly request' do |request_count: 2|
       it 'makes a limited number of Gitaly request', :request_store, :clean_gitlab_redis_cache do
         # Warm up to populate repository cache
         get_show
@@ -78,7 +78,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       it_behaves_like 'a controller that can serve LFS files'
       it_behaves_like 'project cache control headers'
-      include_examples 'limited number of Gitaly request', request_count: 6
+      include_examples 'limited number of Gitaly request', request_count: 4
     end
 
     context 'when the endpoint receives requests above the limit' do

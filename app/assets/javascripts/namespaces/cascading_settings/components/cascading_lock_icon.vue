@@ -2,17 +2,17 @@
 import { GlIcon, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
-import LockTooltip from './lock_tooltip.vue';
+import LockPopover from './lock_popover.vue';
 
 export default {
   name: 'CascadingLockIcon',
   i18n: {
-    lockIconLabel: s__('CascadingSettings|Lock tooltip icon'),
+    lockIconLabel: s__('CascadingSettings|Lock popover icon'),
   },
   components: {
     GlIcon,
     GlButton,
-    LockTooltip,
+    LockPopover,
   },
   props: {
     ancestorNamespace: {
@@ -49,7 +49,7 @@ export default {
     <gl-button :ref="$options.refName" class="!gl-p-0 hover:!gl-bg-transparent" category="tertiary">
       <gl-icon name="lock" :aria-label="$options.i18n.lockIconLabel" variant="subtle" />
     </gl-button>
-    <lock-tooltip
+    <lock-popover
       v-if="targetElement"
       :ancestor-namespace="ancestorNamespace"
       :is-locked-by-admin="isLockedByApplicationSettings"

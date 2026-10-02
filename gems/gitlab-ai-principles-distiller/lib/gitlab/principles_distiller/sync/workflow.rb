@@ -27,7 +27,7 @@ module Gitlab
         # volume; timeout accounts for runner queue + cold image pull plus
         # the actual distillation time.
         POLL_INTERVAL_SECONDS = 10
-        POLL_TIMEOUT_SECONDS  = 1500
+        POLL_TIMEOUT_SECONDS  = 1800
         TERMINAL_STATES       = %w[FINISHED FAILED STOPPED].freeze
 
         # Tolerance for short-window read-after-write inconsistencies on the
@@ -352,6 +352,25 @@ module Gitlab
               "\n#{missing.map { |name| "export #{name}=<value>" }.join("\n")}\n\n" \
               "GITLAB_TOKEN requires a classic personal access token with api scope.#{consumer_id_guidance}"
           ).red
+        end
+
+        def checkpoint_sources_match?(config, target_sha:)
+          validate_commit_shas!([target_sha])
+          refs = [target_sha, "refs/remotes/origin/#{source_branch}"]
+          paths = [Manifest::MANIFEST_PATH, *manifest.config_source_paths(config)]
+
+          paths.all? do |path|
+            resolved_path = manifest.resolve_source_path(path)
+            next false unless resolved_path
+
+            content = manifest.read_repo_file(path)
+            refs.all? do |ref|
+              committed, _stderr, status = Open3.capture3(
+                'git', 'show', "#{ref}:#{resolved_path}", chdir: Workspace.path
+              )
+              status.success? && committed == content
+            end
+          end
         end
 
         def warn_if_sources_differ_from_pushed_branch(config, log_warn: method(:warn))

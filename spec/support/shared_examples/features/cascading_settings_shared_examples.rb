@@ -30,14 +30,14 @@ RSpec.shared_examples 'a cascading setting' do
       expect(page).not_to have_selector '[data-testid="enforce-for-all-subgroups-checkbox"]'
     end
 
-    it 'displays lock icon with tooltip', :js do
+    it 'displays lock icon with popover', :js do
       visit subgroup_path
 
       page.within form_group_selector do
         find('[data-testid="cascading-settings-lock-icon"]').click
       end
 
-      page.within '[data-testid="cascading-settings-lock-tooltip"]' do
+      page.within '[data-testid="cascading-settings-lock-popover"]' do
         expect(page).to have_text 'This setting has been enforced by an owner of Foo bar.'
         expect(page).to have_link 'Foo bar', href: setting_path
       end

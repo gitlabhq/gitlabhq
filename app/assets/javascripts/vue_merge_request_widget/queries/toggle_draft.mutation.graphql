@@ -4,6 +4,7 @@ mutation toggleDraftStatus($projectPath: ID!, $iid: String!, $draft: Boolean!) {
       id
       mergeableDiscussionsState
       title
+      titleHtml
       draft
     }
     errors

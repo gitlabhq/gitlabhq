@@ -26,6 +26,12 @@ RSpec.describe TodosFinder, feature_category: :notifications do
         end
       end
 
+      context 'when an invalid type is passed' do
+        it 'raises an argument error' do
+          expect { execute(type: %w[Issue MergeRequest NotAValidType]) }.to raise_error(ArgumentError)
+        end
+      end
+
       context 'with filtering' do
         let!(:todo1) { create(:todo, user: user, project: project, target: issue) }
         let!(:todo2) { create(:todo, user: user, group: group, target: merge_request) }
@@ -85,10 +91,6 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
           it 'returns todos of all types when only blanks are in a collection' do
             expect(execute(type: ['', ''])).to contain_exactly(todo1, todo2)
-          end
-
-          it 'raises an argument error when invalid type is passed' do
-            expect { execute(type: %w[Issue MergeRequest NotAValidType]) }.to raise_error(ArgumentError)
           end
         end
 

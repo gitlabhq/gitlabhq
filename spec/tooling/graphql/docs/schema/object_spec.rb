@@ -170,5 +170,22 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Object, feature_category: :api do
         expect(object.node_type).to be_a(Tooling::Graphql::Docs::Schema::Interface)
       end
     end
+
+    context 'with a connection over a union node' do
+      let(:union_type) do
+        member = node_type
+
+        Class.new(Types::BaseUnion) do
+          graphql_name 'UnionNode'
+          possible_types member
+        end
+      end
+
+      subject(:object) { described_class.new(union_type.connection_type) }
+
+      it 'wraps the node type as a Union' do
+        expect(object.node_type).to be_a(Tooling::Graphql::Docs::Schema::Union)
+      end
+    end
   end
 end

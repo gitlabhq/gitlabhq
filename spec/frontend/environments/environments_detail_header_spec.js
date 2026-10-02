@@ -23,6 +23,7 @@ describe('Environments detail header component', () => {
   const findExternalUrlButton = () => wrapper.findComponentByTestId('external-url-button');
   const findEditButton = () => wrapper.findByTestId('edit-button');
   const findStopButton = () => wrapper.findByTestId('stop-button');
+  const findForceStopButton = () => wrapper.findByTestId('force-stop-button');
   const findDestroyButton = () => wrapper.findByTestId('destroy-button');
   const findStopEnvironmentModal = () => wrapper.findComponent(StopEnvironmentModal);
   const findDeleteEnvironmentModal = () => wrapper.findComponent(DeleteEnvironmentModal);
@@ -197,6 +198,51 @@ describe('Environments detail header component', () => {
 
     it('displays stop environment modal', () => {
       expect(findStopEnvironmentModal().exists()).toBe(true);
+    });
+
+    it('does not display the force stop button', () => {
+      expect(findForceStopButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when the environment is stopping and user can stop it', () => {
+    beforeEach(() => {
+      createWrapper({
+        props: {
+          environment: createEnvironment({ isAvailable: false, state: 'stopping' }),
+          canStopEnvironment: true,
+        },
+      });
+    });
+
+    it('does not display the stop button', () => {
+      expect(findStopButton().exists()).toBe(false);
+    });
+
+    it('displays the force stop button', () => {
+      expect(findForceStopButton().text()).toBe('Force stop');
+      expect(findForceStopButton().attributes('icon')).toBe('stop');
+      expect(findForceStopButton().attributes('variant')).toBe('danger');
+    });
+
+    it('displays stop environment modal', () => {
+      expect(findStopEnvironmentModal().exists()).toBe(true);
+    });
+  });
+
+  describe('when the environment is stopping and user cannot stop it', () => {
+    beforeEach(() => {
+      createWrapper({
+        props: {
+          environment: createEnvironment({ isAvailable: false, state: 'stopping' }),
+          canStopEnvironment: false,
+        },
+      });
+    });
+
+    it('does not display the force stop button or the modal', () => {
+      expect(findForceStopButton().exists()).toBe(false);
+      expect(findStopEnvironmentModal().exists()).toBe(false);
     });
   });
 

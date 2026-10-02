@@ -8,7 +8,7 @@ require Rails.root.join('tooling/graphql/docs/schema/scalar')
 require Rails.root.join('tooling/graphql/docs/schema/field')
 require Rails.root.join('tooling/graphql/docs/schema/object')
 require Rails.root.join('tooling/graphql/docs/schema/interface')
-require Rails.root.join('tooling/graphql/docs/schema/temp_undocumented')
+require Rails.root.join('tooling/graphql/docs/schema/union')
 
 RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
   let(:helper) do
@@ -53,18 +53,11 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
     let(:fake_graphql_type) { Struct.new(:graphql_name, :description) }
     let(:item_struct) { Struct.new(:type, :type_signature) }
 
-    it 'returns a linked type signature for a known type' do
+    it 'returns a linked type signature' do
       scalar = Tooling::Graphql::Docs::Schema::Scalar.new(fake_graphql_type.new('String', nil))
       item = item_struct.new(scalar, 'String')
 
       expect(helper.type(item)).to eq('[`String`](scalars.md#string)')
-    end
-
-    it 'returns an unlinked type signature for a TempUndocumented type' do
-      temp = Tooling::Graphql::Docs::Schema::TempUndocumented.new(fake_graphql_type.new('SomeUnion', nil))
-      item = item_struct.new(temp, 'SomeUnion')
-
-      expect(helper.type(item)).to eq('`SomeUnion`')
     end
   end
 
@@ -160,7 +153,7 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
       end
     end
 
-    context 'when the node type has no docs page yet' do
+    context 'when the node type is a union' do
       let(:member_type) do
         Class.new(Types::BaseObject) do
           graphql_name 'UnionMember'
@@ -182,9 +175,9 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
         Tooling::Graphql::Docs::Schema::Object.new(union_type.connection_type)
       end
 
-      it 'renders the node type unlinked' do
+      it 'links to the node type on the unions page' do
         expect(helper.connection_summary(connection))
-          .to start_with('Paginated collection of `UnionNode`.')
+          .to start_with('Paginated collection of [`UnionNode`](unions.md#unionnode).')
       end
     end
   end

@@ -6,6 +6,7 @@ require_relative 'schema/input_object'
 require_relative 'schema/interface'
 require_relative 'schema/object'
 require_relative 'schema/scalar'
+require_relative 'schema/union'
 
 module Tooling
   module Graphql
@@ -16,7 +17,7 @@ module Tooling
         # fields section rather than repeated on the objects page.
         STANDARD_EDGE_FIELDS = %w[cursor node].freeze
 
-        attr_reader :directives, :enums, :input_objects, :interfaces, :objects, :scalars
+        attr_reader :directives, :enums, :input_objects, :interfaces, :objects, :scalars, :unions
 
         def initialize(schema)
           @schema = schema
@@ -26,6 +27,7 @@ module Tooling
           @interfaces = []
           @objects = []
           @scalars = []
+          @unions = []
         end
 
         def execute
@@ -55,6 +57,8 @@ module Tooling
             if type.kind.interface?
               @interfaces << Schema::Interface.new(type, implementations: schema.possible_types(type))
             end
+
+            @unions << Schema::Union.new(type, members: schema.possible_types(type)) if type.kind.union?
           end
         end
 

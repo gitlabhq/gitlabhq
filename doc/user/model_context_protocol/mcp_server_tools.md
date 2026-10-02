@@ -501,8 +501,8 @@ A group result also includes the owning project path of each merge request, for 
 
 To retrieve a single merge request in full detail, use `get_merge_request`. To get its commits, use
 `get_merge_request` with `include: ["commits"]`. For diffs or notes, use `include: ["diffs"]`
-or `include: ["notes"]`. To get patch text, also set `detail` to `full_patch`. To paginate notes
-backward, use `get_merge_request_notes`. For full-text search across resource types, use `search`.
+or `include: ["notes"]`. To get patch text, also set `detail` to `full_patch`. For full-text search
+across resource types, use `search`.
 
 Example:
 
@@ -666,8 +666,12 @@ Examples:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/597494) in GitLab 19.2.
+- [Unlisted](https://gitlab.com/gitlab-org/gitlab/-/work_items/622712) in GitLab 19.5. Superseded by the `notes` facet of [`get_merge_request`](#get_merge_request).
 
 {{< /history >}}
+
+Superseded by [`get_merge_request`](#get_merge_request) with `include: ["notes"]`. This tool no
+longer appears in `tools/list` but remains callable while callers migrate.
 
 Retrieves the notes (comments and system notes) for a specific GitLab merge request.
 

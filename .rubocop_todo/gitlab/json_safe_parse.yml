@@ -128,7 +128,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/lib/audit_events/streaming/destinations/google_cloud_logging_stream_destination_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/runner_controller_helpers_spec.rb'
     - 'ee/spec/lib/ee/api/helpers_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/backfill_workspace_agentk_states_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/common_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/group/tree_saver_spec.rb'

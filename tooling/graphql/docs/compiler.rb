@@ -25,6 +25,7 @@ module Tooling
             compile(:input_objects, parsed_schema.input_objects),
             compile(:scalars, parsed_schema.scalars),
             compile(:interfaces, parsed_schema.interfaces),
+            compile(:unions, parsed_schema.unions),
             compile(:directives, parsed_schema.directives)
           ]
         end

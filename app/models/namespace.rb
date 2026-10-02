@@ -688,10 +688,6 @@ class Namespace < ApplicationRecord
     false
   end
 
-  def all_project_ids_except(ids)
-    all_project_ids.where.not(id: ids)
-  end
-
   # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
   def feature_available?(feature, _user = nil)
     licensed_feature_available?(feature)

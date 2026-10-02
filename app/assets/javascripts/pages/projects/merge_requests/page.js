@@ -1,7 +1,7 @@
 import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
 import initMrNotes from 'ee_else_ce/mr_notes';
-import initReportsTabCount from 'ee_else_ce/merge_requests/reports/tab_count';
+import initReportsTabCount from '~/merge_requests/reports/tab_count';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
 import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_DIFF_GENERATED, EVT_MR_PREPARED } from '~/diffs/constants';

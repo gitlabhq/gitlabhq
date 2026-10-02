@@ -8,7 +8,7 @@ require Rails.root.join('tooling/graphql/docs/schema/input_object')
 require Rails.root.join('tooling/graphql/docs/schema/object')
 require Rails.root.join('tooling/graphql/docs/schema/scalar')
 require Rails.root.join('tooling/graphql/docs/schema/interface')
-require Rails.root.join('tooling/graphql/docs/schema/temp_undocumented')
+require Rails.root.join('tooling/graphql/docs/schema/union')
 require Rails.root.join('tooling/graphql/docs/schema/concerns/typeable')
 
 RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api do
@@ -118,7 +118,7 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api 
       end
     end
 
-    context 'with a type that has no docs page yet' do
+    context 'with a union type' do
       let(:member_type) do
         Class.new(Types::BaseObject) do
           graphql_name 'Member'
@@ -137,8 +137,8 @@ RSpec.describe Tooling::Graphql::Docs::Schema::Typeable, feature_category: :api 
 
       subject(:typeable) { typeable_for(union_type) }
 
-      it 'falls back to TempUndocumented', :aggregate_failures do
-        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::TempUndocumented)
+      it 'identifies a Union', :aggregate_failures do
+        expect(typeable.type).to be_a(Tooling::Graphql::Docs::Schema::Union)
         expect(typeable.type_signature).to eq('Union')
       end
     end

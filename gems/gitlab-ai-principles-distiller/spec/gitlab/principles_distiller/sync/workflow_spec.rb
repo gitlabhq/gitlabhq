@@ -838,6 +838,99 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
     end
   end
 
+  describe '#checkpoint_sources_match?' do
+    subject(:sources_match) { workflow.checkpoint_sources_match?(config, target_sha: target_sha) }
+
+    let(:target_sha) { '2' * 40 }
+    let(:config) do
+      { 'sources' => [{ 'path' => 'doc/source.md' }], 'baseline' => '.ai/principles/baselines/example.md' }
+    end
+
+    let(:contents) do
+      {
+        Gitlab::PrinciplesDistiller::Sync::Manifest::MANIFEST_PATH => 'manifest',
+        'doc/source.md' => 'evaluated source',
+        '.ai/principles/baselines/example.md' => 'evaluated baseline'
+      }
+    end
+
+    let(:changed_path) { 'doc/source.md' }
+    let(:changed_ref) { target_sha }
+    let(:committed_content) { contents.fetch(changed_path) }
+    let(:success) { true }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = mktmpdir
+      allow(workflow).to receive(:source_branch).and_return('feature-branch')
+      contents.each do |path, content|
+        allow(workflow.manifest).to receive(:resolve_source_path).with(path).and_return(path)
+        allow(workflow.manifest).to receive(:read_repo_file).with(path).and_return(content)
+        [target_sha, 'refs/remotes/origin/feature-branch'].each do |ref|
+          allow(Open3).to receive(:capture3)
+            .with('git', 'show', "#{ref}:#{path}", chdir: Gitlab::PrinciplesDistiller::Workspace.path)
+            .and_return([content, '', instance_double(Process::Status, success?: true)])
+        end
+      end
+
+      allow(Open3).to receive(:capture3)
+        .with('git', 'show', "#{changed_ref}:#{changed_path}", chdir: Gitlab::PrinciplesDistiller::Workspace.path)
+        .and_return([committed_content, '', instance_double(Process::Status, success?: success)])
+    end
+
+    it { is_expected.to be(true) }
+
+    context 'when the checksum inputs include an unevaluated local edit' do
+      let(:committed_content) { 'older committed content' }
+
+      it { is_expected.to be(false) }
+
+      context 'when the edit is in the baseline' do
+        let(:changed_path) { '.ai/principles/baselines/example.md' }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the edit is in the manifest' do
+        let(:changed_path) { Gitlab::PrinciplesDistiller::Sync::Manifest::MANIFEST_PATH }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the pushed branch differs from the target revision' do
+        let(:changed_ref) { 'refs/remotes/origin/feature-branch' }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when the committed source cannot be read' do
+      let(:success) { false }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when a source is missing locally' do
+      before do
+        allow(manifest).to receive(:resolve_source_path).with(changed_path).and_return(nil)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when a source resolves through an index fallback' do
+      before do
+        allow(manifest).to receive(:resolve_source_path).with(changed_path).and_return('doc/source/_index.md')
+        [target_sha, 'refs/remotes/origin/feature-branch'].each do |ref|
+          allow(Open3).to receive(:capture3)
+            .with('git', 'show', "#{ref}:doc/source/_index.md", chdir: Gitlab::PrinciplesDistiller::Workspace.path)
+            .and_return([contents.fetch(changed_path), '', instance_double(Process::Status, success?: true)])
+        end
+      end
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '.warn_if_sources_differ_from_pushed_branch' do
     subject(:warn_if_different) { workflow.warn_if_sources_differ_from_pushed_branch(config, **arguments) }
 

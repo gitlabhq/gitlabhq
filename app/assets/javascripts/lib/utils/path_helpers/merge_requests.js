@@ -821,6 +821,34 @@ export const pipelinesProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, 
 /**
  * Generates the Rails route:
  *
+ * - href: `/:project_full_path/-/merge_requests/:id/reports(.:format)`
+ * - Path helper: `reports_project_merge_request_path`
+ * - URL helper: `reports_project_merge_request_url`
+ * - controller#action: `projects/merge_requests#reports`
+ *
+ * @param {string} projectFullPath
+ * @param {any} id
+ * @param {object | undefined} options
+ * @param {string | null | undefined} options.organizationPath Path of organization to nest under. Pass `null` to remove path from URL params when outside of an organization data context.
+ * @returns {string} route path
+ */
+export const reportsProjectMergeRequestPath = /*#__PURE__*/ (projectFullPath, ...args) => {
+  const _reportsOrganizationNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]]]);
+  const _reportsNamespaceProjectMergeRequestPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"merge_requests"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"reports"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
+
+  const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+  const { organizationPath, routeArgs } = resolveOrganizationScope(args);
+
+  if (organizationPath) {
+    return _reportsOrganizationNamespaceProjectMergeRequestPath(organizationPath, namespacePath, projectPath, ...routeArgs);
+  }
+
+  return _reportsNamespaceProjectMergeRequestPath(namespacePath, projectPath, ...routeArgs);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/:project_full_path/-/merge_requests/:id/diff_for_path(.:format)`
  * - Path helper: `diff_for_path_project_merge_request_path`
  * - URL helper: `diff_for_path_project_merge_request_url`

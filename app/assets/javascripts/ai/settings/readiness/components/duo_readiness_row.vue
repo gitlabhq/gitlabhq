@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 import {
   STATUS_DONE,
@@ -24,6 +25,7 @@ const STATUS_ICONS = {
 export default {
   name: 'DuoReadinessRow',
   components: { GlIcon, GlLoadingIcon },
+  mixins: [glSlotsMixin],
   props: {
     title: {
       type: String,
@@ -36,8 +38,10 @@ export default {
     },
     status: {
       type: String,
-      required: true,
-      validator: (value) => [...Object.keys(STATUS_ICONS), STATUS_LOADING].includes(value),
+      required: false,
+      default: null,
+      validator: (value) =>
+        value === null || [...Object.keys(STATUS_ICONS), STATUS_LOADING].includes(value),
     },
     // Indents the row and tints it, for a setting that only qualifies the row above it.
     nested: {
@@ -45,9 +49,17 @@ export default {
       required: false,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     icon() {
+      if (this.status === null || this.isLoading) return null;
+      if (this.disabled) return { name: STATUS_ICONS[STATUS_TODO].name, variant: 'disabled' };
+
       return STATUS_ICONS[this.status];
     },
     isBlocked() {
@@ -55,6 +67,9 @@ export default {
     },
     isLoading() {
       return this.status === STATUS_LOADING;
+    },
+    isMuted() {
+      return this.disabled || this.isBlocked;
     },
   },
 };
@@ -67,21 +82,25 @@ export default {
     :class="nested ? 'gl-bg-subtle gl-pl-9' : 'gl-pl-4'"
     data-testid="readiness-row"
   >
-    <gl-loading-icon v-if="isLoading" size="sm" class="gl-shrink-0" />
-    <gl-icon
-      v-else
-      :name="icon.name"
-      :variant="icon.variant"
-      :size="16"
-      class="gl-shrink-0"
-      data-testid="readiness-row-icon"
-    />
+    <div
+      class="gl-flex gl-w-5 gl-shrink-0 gl-items-center gl-justify-center"
+      data-testid="readiness-row-status"
+    >
+      <gl-loading-icon v-if="isLoading" size="sm" />
+      <gl-icon
+        v-else-if="icon"
+        :name="icon.name"
+        :variant="icon.variant"
+        :size="16"
+        data-testid="readiness-row-icon"
+      />
+    </div>
 
     <div class="gl-min-w-0 gl-grow">
       <div class="gl-flex gl-items-center">
         <span
           class="gl-font-bold"
-          :class="{ 'gl-text-subtle': isBlocked }"
+          :class="{ 'gl-text-subtle': isMuted }"
           data-testid="readiness-row-title"
         >
           {{ title }}
@@ -91,10 +110,17 @@ export default {
       <div class="gl-text-sm gl-text-subtle" data-testid="readiness-row-description">
         <slot name="description">{{ description }}</slot>
       </div>
+      <div
+        v-if="glSlots().note"
+        class="gl-mt-2 gl-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+        data-testid="readiness-row-note"
+      >
+        <slot name="note"></slot>
+      </div>
     </div>
 
     <div class="gl-flex gl-shrink-0 gl-justify-end" data-testid="readiness-row-control">
-      <slot></slot>
+      <slot :disabled="disabled"></slot>
     </div>
   </div>
 </template>

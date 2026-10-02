@@ -679,7 +679,7 @@ class Repository
   end
 
   delegate :branch_names, to: :raw_repository
-  cache_method_as_redis_set :branch_names, fallback: [], avoid_cache: -> { Feature.enabled?(:avoid_branch_names_cache, project) }
+  cache_method_as_redis_set :branch_names, fallback: []
 
   delegate :tag_names, to: :raw_repository
   cache_method_as_redis_set :tag_names, fallback: [], avoid_cache: -> { Feature.enabled?(:avoid_tag_names_cache, project) }

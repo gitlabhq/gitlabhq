@@ -343,6 +343,11 @@ module MergeRequestsHelper
       )
     end
 
+    data[:tabs].insert(
+      data[:tabs].size - 1,
+      ['reports', _('Reports'), reports_project_merge_request_path(project, merge_request), '-']
+    )
+
     data
   end
 

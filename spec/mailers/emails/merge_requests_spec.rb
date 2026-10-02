@@ -27,6 +27,38 @@ RSpec.describe Emails::MergeRequests do
   let(:recipient) { assignee }
   let(:current_user_sanitized) { 'www_example_com' }
 
+  shared_examples 'a mailer layout notification footer' do |email_method|
+    describe 'notification footer', :freeze_time, feature_category: :notifications do
+      subject(:footer_marker) { marker_for(email) }
+
+      let(:email) { Notify.public_send(email_method, recipient.id, merge_request.id, current_user.id) }
+      let(:target_url) { project_merge_request_url(project, merge_request) }
+      let(:marker_selector) { '.footer span:contains("Notification message regarding")' }
+
+      def marker_for(mail)
+        Nokogiri::HTML(mail.html_part.body.decoded).at_css(marker_selector)&.text&.strip
+      end
+
+      it 'uses different markers for notifications rendered in the same second', :aggregate_failures do
+        other_email = Notify.public_send(email_method, reviewer.id, merge_request.id, current_user.id)
+
+        expect(footer_marker).to match(/\ANotification message regarding #{Regexp.escape(target_url)} at \h{32}\z/)
+        expect(footer_marker).not_to eq(marker_for(other_email))
+        expect(email.text_part.body.decoded).not_to include('Notification message regarding')
+      end
+
+      context 'when randomize_notification_email_marker is disabled' do
+        before do
+          stub_feature_flags(randomize_notification_email_marker: false)
+        end
+
+        it 'does not add a marker' do
+          expect(footer_marker).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#new_mention_in_merge_request_email' do
     subject { Notify.new_mention_in_merge_request_email(recipient.id, merge_request.id, current_user.id) }
 
@@ -263,6 +295,8 @@ RSpec.describe Emails::MergeRequests do
     it "uses the correct layout template" do
       is_expected.to have_html_part_content('determine_layout returned template mailer')
     end
+
+    it_behaves_like 'a mailer layout notification footer', :merge_when_pipeline_succeeds_email
   end
 
   describe '#approved_merge_request_email' do
@@ -282,6 +316,8 @@ RSpec.describe Emails::MergeRequests do
     it "uses the correct layout template" do
       is_expected.to have_html_part_content('determine_layout returned template mailer')
     end
+
+    it_behaves_like 'a mailer layout notification footer', :approved_merge_request_email
   end
 
   describe '#unapproved_merge_request_email' do
@@ -301,6 +337,8 @@ RSpec.describe Emails::MergeRequests do
     it "uses the correct layout template" do
       is_expected.to have_html_part_content('determine_layout returned template mailer')
     end
+
+    it_behaves_like 'a mailer layout notification footer', :unapproved_merge_request_email
   end
 
   describe "#resolved_all_discussions_email" do

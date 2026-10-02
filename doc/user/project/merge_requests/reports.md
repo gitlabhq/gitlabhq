@@ -8,7 +8,7 @@ title: Merge request reports
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -18,6 +18,7 @@ title: Merge request reports
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/20406) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `mr_reports_tab`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234820) in GitLab 19.1.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234782) in GitLab 19.1. Feature flag `mr_reports_tab` removed.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252613) to available on all tiers in GitLab 19.5.
 
 {{< /history >}}
 
@@ -27,6 +28,12 @@ license compliance results, and code quality reports in
 a dedicated full-page view.
 
 ## Security scan report
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The security scan report provides a summary of the changes that would occur in the findings if the source branch were merged.
 
@@ -65,6 +72,12 @@ To view security scan findings:
 1. Select **Security scan**.
 
 ## License compliance report
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The license compliance report shows licenses detected in your project's
 dependencies by comparing the source branch pipeline results with the target

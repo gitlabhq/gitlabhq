@@ -398,6 +398,8 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         next unless pipeline.bridge_waiting?
+        # A pipeline persisted as failed during creation is handled by CreateDownstreamPipelineService
+        next if pipeline.previously_new_record? && pipeline.failed?
 
         pipeline.run_after_commit do
           ::Ci::PipelineBridgeStatusWorker.perform_async(pipeline.id)

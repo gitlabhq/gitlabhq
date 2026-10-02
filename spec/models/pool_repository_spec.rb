@@ -115,8 +115,8 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
 
   describe 'scopes' do
     let_it_be_with_reload(:project1) { create(:project) }
-    let_it_be_with_reload(:project2) { create(:project) }
     let_it_be(:new_shard) { create(:shard, name: 'new') }
+
     let_it_be_with_reload(:pool_repository1) do
       create(:pool_repository, source_project: project1, disk_path: 'disk_path')
     end
@@ -125,21 +125,12 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
       create(:pool_repository, source_project: project1, disk_path: 'disk_path', shard: new_shard)
     end
 
-    let_it_be_with_reload(:another_pool_repository) { create(:pool_repository, source_project: project2) }
-
-    describe '.by_source_project' do
-      subject { described_class.by_source_project(project1) }
-
-      it 'returns pool repositories per source project from all shards' do
-        is_expected.to match_array([pool_repository1, pool_repository2])
-      end
-    end
-
     describe '.by_disk_path_and_shard_name' do
       subject { described_class.by_disk_path_and_shard_name('disk_path', new_shard.name) }
 
-      it 'returns only a requested pool repository' do
-        is_expected.to match_array([pool_repository2])
+      it 'filters by shard, excluding same-disk_path records on other shards' do
+        is_expected.to contain_exactly(pool_repository2)
+        is_expected.not_to include(pool_repository1)
       end
     end
   end

@@ -47133,6 +47133,53 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AscpSecurityBoundary",
+          "description": "Security boundaries an ASCP component sits on",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NETWORK_ACCESS",
+              "description": "Network Access.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "USER_INPUT",
+              "description": "User Input.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PARTNER_BOUNDARY",
+              "description": "Partner Boundary.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TRUSTED_SERVICE",
+              "description": "Trusted Service.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INTERNAL_ONLY",
+              "description": "Internal Only.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ISOLATED",
+              "description": "Isolated.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AscpSecurityContext",
           "description": "Security context for an ASCP component",
@@ -47200,6 +47247,30 @@
                   "kind": "OBJECT",
                   "name": "AscpScan",
                   "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "securityBoundary",
+              "description": "Security boundaries the component sits on.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "AscpSecurityBoundary",
+                      "ofType": null
+                    }
+                  }
                 }
               },
               "isDeprecated": false,
@@ -47397,6 +47468,26 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "securityBoundary",
+              "description": "Security boundaries the component sits on.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "AscpSecurityBoundary",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null,
               "isDeprecated": false,
@@ -65215,19 +65306,27 @@
           "inputFields": [
             {
               "name": "userId",
-              "description": "Global ID of the user.",
+              "description": "Global ID of the user. Exactly one of `userId` or `username` must be provided.",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "UserID",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "UserID",
+                "ofType": null
               },
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "username",
+              "description": "Username of the user. Exactly one of `userId` or `username` must be provided. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "cap",
@@ -258509,7 +258608,7 @@
             },
             {
               "name": "label",
-              "description": "Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from.",
+              "description": "Human-readable name of the signal or claim. Null when the key matches neither a registered signal nor a risk domain.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -258548,7 +258647,7 @@
           "fields": [
             {
               "name": "label",
-              "description": "Human-readable name of the signal. Null for a claim, which has no registered signal class to look one up from.",
+              "description": "Human-readable name of the signal or claim. Null when the key matches neither a registered signal nor a risk domain.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
