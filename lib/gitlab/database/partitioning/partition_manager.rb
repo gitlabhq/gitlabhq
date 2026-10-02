@@ -25,7 +25,10 @@ module Gitlab
           @connection.execute(sql)
         end
 
-        def sync_partitions(analyze: true)
+        # @param analyze_tables_with_default_interval [Boolean] whether tables relying on DEFAULT_ANALYZE_INTERVAL
+        #   get the whole-table ANALYZE. Only PartitionManagementWorker enables it, so the db:migrate
+        #   path does not ANALYZE every never-analyzed default table synchronously.
+        def sync_partitions(analyze: true, analyze_tables_with_default_interval: false)
           partitions_to_create = []
           partitions_to_detach = []
 
@@ -42,7 +45,7 @@ module Gitlab
             create(partitions_to_create) unless partitions_to_create.empty?
             detach(partitions_to_detach) unless partitions_to_detach.empty?
 
-            run_analyze(partitions_to_create) if analyze
+            run_analyze(partitions_to_create, analyze_tables_with_default_interval) if analyze
           end
         rescue ArgumentError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
@@ -240,9 +243,9 @@ module Gitlab
 
         # Rescued separately so an ANALYZE failure is not logged as a partition
         # create/detach failure: by this point those already committed.
-        def run_analyze(created_partitions)
+        def run_analyze(created_partitions, analyze_tables_with_default_interval)
           analyzed = with_analyze_error_handling('Failed to run ANALYZE on partitioned table') do
-            run_analyze_on_partitioned_table
+            run_analyze_on_partitioned_table(analyze_tables_with_default_interval)
           end
 
           # The whole-table ANALYZE recurses into every leaf, so the per-partition
@@ -268,7 +271,8 @@ module Gitlab
           false
         end
 
-        def run_analyze_on_partitioned_table
+        def run_analyze_on_partitioned_table(analyze_tables_with_default_interval)
+          return false if skip_default_interval_analyze?(analyze_tables_with_default_interval)
           return false if ineligible_for_analyzing?
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
@@ -277,6 +281,15 @@ module Gitlab
           end
 
           true
+        end
+
+        # Checked before ineligible_for_analyzing? to avoid its primary queries. Never applies to
+        # tables with an explicit analyze_interval.
+        def skip_default_interval_analyze?(analyze_tables_with_default_interval)
+          return false unless model.partitioning_strategy.default_analyze_interval?
+
+          !analyze_tables_with_default_interval ||
+            Feature.disabled?(:analyze_partitioned_tables_with_default_interval, type: :ops)
         end
 
         # A just-created partition has no planner statistics, which can produce

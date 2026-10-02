@@ -1,12 +1,6 @@
 ---
 API/DescriptionDetail:
   Exclude:
-    - 'ee/lib/api/admin/search/zoekt.rb'
-    - 'ee/lib/api/admin_member_roles.rb'
-    - 'ee/lib/api/ai/duo_workflows/workflows.rb'
-    - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
-    - 'ee/lib/api/analytics/code_review_analytics.rb'
-    - 'ee/lib/api/analytics/project_deployment_frequency.rb'
     - 'ee/lib/api/scim/instance_scim.rb'
     - 'ee/lib/ee/api/geo.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/subscriptions.rb'

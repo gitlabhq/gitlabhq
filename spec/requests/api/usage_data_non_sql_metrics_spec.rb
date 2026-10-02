@@ -17,7 +17,6 @@ RSpec.describe API::UsageDataNonSqlMetrics, :aggregate_failures, feature_categor
 
     context 'with authentication' do
       before do
-        stub_feature_flags(usage_data_non_sql_metrics: true)
         stub_database_flavor_check
       end
 
@@ -69,32 +68,10 @@ RSpec.describe API::UsageDataNonSqlMetrics, :aggregate_failures, feature_categor
     end
 
     context 'without authentication' do
-      before do
-        stub_feature_flags(usage_data_non_sql_metrics: true)
-      end
-
       it 'returns unauthorized' do
         get api(endpoint)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
-      end
-    end
-
-    context 'when feature_flag is disabled' do
-      before do
-        stub_feature_flags(usage_data_non_sql_metrics: false)
-      end
-
-      it 'returns not_found for admin' do
-        get api(endpoint, admin, admin_mode: true)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'returns forbidden for non-admin' do
-        get api(endpoint, user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

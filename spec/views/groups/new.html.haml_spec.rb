@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'groups/new.html.haml' do
-  let_it_be(:user) { create(:user) }
   let_it_be(:group) { build(:group, namespace_settings: build(:namespace_settings)) }
+
+  let(:user) { build_stubbed(:user) }
 
   before do
     assign(:group, group)

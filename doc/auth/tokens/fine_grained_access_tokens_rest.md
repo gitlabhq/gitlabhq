@@ -2212,8 +2212,10 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | Create | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/-/work_items` |
+| Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/discussions` |
 | Create | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/notes` |
 | Create | Project | `POST` | `/projects/:id/boards` |
 | Create | Project | `POST` | `/projects/:id/boards/:board_id/lists` |
@@ -2240,6 +2242,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Create | Group | `POST` | `/groups/:id/(-/)epics/:epic_iid/issues/:issue_id` |
 | Create | Group | `POST` | `/groups/:id/-/work_items` |
+| Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/discussions` |
 | Create | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/notes` |
 | Create | Group | `POST` | `/groups/:id/boards` |
 | Create | Group | `POST` | `/groups/:id/boards/:board_id/lists` |
@@ -2252,6 +2255,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Create | Group | `POST` | `/groups/:id/milestones` |
 | Create | Group | `POST` | `/groups/:id/wiki_pages/:noteable_id/notes` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items` |
+| Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/discussions` |
 | Create | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/notes` |
 | Delete | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Delete | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid` |

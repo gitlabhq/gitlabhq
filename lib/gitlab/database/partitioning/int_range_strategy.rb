@@ -18,7 +18,8 @@ module Gitlab
           @model = model
           @partitioning_key = partitioning_key
           @partition_size = partition_size
-          @analyze_interval = analyze_interval
+          @analyze_interval = analyze_interval || DEFAULT_ANALYZE_INTERVAL
+          @default_analyze_interval = analyze_interval.nil?
           @sequence_name = sequence_name
         end
 

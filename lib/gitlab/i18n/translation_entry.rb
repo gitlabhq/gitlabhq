@@ -83,6 +83,17 @@ module Gitlab
         string =~ NAMESPACE_REGEX
       end
 
+      def msgid_namespace_contains_whitespace?
+        [msgid, plural_id].any? { |string| string[NAMESPACE_REGEX]&.match?(SPACE_REGEX) }
+      end
+
+      def msgid_contains_multiple_namespace_pipes?
+        [msgid, plural_id].any? do |string|
+          namespace = string[NAMESPACE_REGEX]
+          namespace && string.delete_prefix(namespace).include?('|')
+        end
+      end
+
       def translations_contain_leading_space?
         all_translations.any? { |translation| contains_leading_space?(translation) }
       end

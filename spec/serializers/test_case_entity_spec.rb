@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe TestCaseEntity do
   include TestReportsHelper
 
-  let_it_be(:job) { create(:ci_build) }
-
+  let(:job) { build_stubbed(:ci_build) }
   let(:entity) { described_class.new(test_case) }
 
   describe '#as_json' do

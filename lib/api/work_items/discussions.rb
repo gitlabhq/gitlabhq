@@ -15,6 +15,7 @@ module API
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
       helpers ::API::Helpers::NotesHelpers
+      helpers ::API::Helpers::WorkItems::NoteCreation
 
       SORT_TO_DISCUSSIONS_SORT = {
         'asc' => :created_asc,
@@ -82,6 +83,12 @@ module API
 
           present discussion, with: ::API::Entities::Discussion, current_user: current_user
         end
+
+        def create_discussion_for(parent_work_item)
+          create_work_item_note(parent_work_item, type: 'DiscussionNote') do |note|
+            present note.discussion, with: ::API::Entities::Discussion, current_user: current_user
+          end
+        end
       end
 
       resource :namespaces do
@@ -134,6 +141,28 @@ module API
           get ':work_item_iid/discussions/:discussion_id' do
             render_discussion_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
           end
+
+          desc 'Create a discussion on a work item in a namespace.' do
+            detail 'Create a new discussion thread on a work item in a namespace. ' \
+              'Project and group namespaces are supported.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :note_create_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :create_note,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+
+          post ':work_item_iid/discussions' do
+            create_discussion_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
+          end
         end
       end
 
@@ -185,6 +214,27 @@ module API
           get ':work_item_iid/discussions/:discussion_id' do
             render_discussion_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
           end
+
+          desc 'Create a discussion on a work item in a project.' do
+            detail 'Create a new discussion thread on a work item in a project.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :note_create_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :create_note,
+            boundary_type: :project
+
+          post ':work_item_iid/discussions' do
+            create_discussion_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
+          end
         end
       end
 
@@ -235,6 +285,27 @@ module API
 
           get ':work_item_iid/discussions/:discussion_id' do
             render_discussion_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
+          end
+
+          desc 'Create a discussion on a work item in a group.' do
+            detail 'Create a new discussion thread on a work item in a group.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :note_create_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :create_note,
+            boundary_type: :group
+
+          post ':work_item_iid/discussions' do
+            create_discussion_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
           end
         end
       end

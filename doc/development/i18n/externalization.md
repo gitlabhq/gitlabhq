@@ -501,7 +501,17 @@ Some languages are more contextual than English.
 For example, `cancel` can be translated in different ways depending on how it's used.
 To define the context of use, always add a namespace to UI text in English.
 
-Namespaces should be PascalCase.
+Namespaces should be PascalCase. A linter does not enforce this yet.
+
+- A namespace must not contain spaces or other whitespace.
+- A namespaced string must contain only one pipe (`|`): the one that ends the namespace.
+  Do not use doubled pipes like `ApprovalRule||year(s)`, or multi-part namespaces like
+  `Pipeline|Source|Security Policy`.
+- Do not use a pipe in the visible text of a namespaced string. GitLab treats a pipe in text like
+  `Value Streams Dashboard | DORA` as the end of a namespace, and translators drop everything before it.
+
+The `rake gettext:lint` task checks the whitespace and single-pipe rules against `locale/gitlab.pot`.
+It runs in CI in the `static-analysis` job.
 
 When choosing namespaces, prefer granular subcategories over broad categories to provide
 better context.

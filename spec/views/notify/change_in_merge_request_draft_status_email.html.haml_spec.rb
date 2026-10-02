@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'notify/change_in_merge_request_draft_status_email.html.haml' do
-  let(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request) }
+  let(:user) { build_stubbed(:user) }
+  let(:merge_request) { build_stubbed(:merge_request) }
   let(:merge_request_link) { merge_request_url(merge_request) }
 
   before do
@@ -13,7 +13,7 @@ RSpec.describe 'notify/change_in_merge_request_draft_status_email.html.haml' do
   end
 
   it 'shows user added draft status on email' do
-    merge_request.update!(title: merge_request.draft_title)
+    merge_request.assign_attributes(title: merge_request.draft_title, draft: true)
 
     render
 

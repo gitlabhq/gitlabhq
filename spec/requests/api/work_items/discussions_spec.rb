@@ -102,4 +102,36 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
+
+  describe 'POST /projects/:id/-/work_items/:work_item_iid/discussions' do
+    include_context 'for creating a note on a project work item'
+
+    let(:path_for) { ->(item) { "/projects/#{item.project.id}/-/work_items/#{item.iid}/discussions" } }
+
+    it_behaves_like 'a work item endpoint creating a discussion'
+
+    it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+  end
+
+  describe 'POST /namespaces/:id/-/work_items/:work_item_iid/discussions' do
+    include_context 'for creating a note on a project work item'
+
+    let(:path_for) do
+      ->(item) { "/namespaces/#{CGI.escape(item.namespace.full_path)}/-/work_items/#{item.iid}/discussions" }
+    end
+
+    it_behaves_like 'a work item endpoint creating a discussion'
+
+    it_behaves_like 'authorizing granular token permissions', :create_note, expected_success_status: :created do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+  end
 end

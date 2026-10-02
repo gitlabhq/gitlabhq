@@ -17,7 +17,8 @@ module Gitlab
           @partitioning_key = partitioning_key
           @next_partition_if = next_partition_if
           @detach_partition_if = detach_partition_if
-          @analyze_interval = analyze_interval
+          @analyze_interval = analyze_interval || DEFAULT_ANALYZE_INTERVAL
+          @default_analyze_interval = analyze_interval.nil?
           @detach_concurrently = detach_concurrently
 
           ensure_partitioning_column_ignored_or_readonly!

@@ -32288,6 +32288,9 @@ msgstr ""
 msgid "DuoAgenticChat|Collaborate with AI agents to accomplish tasks and answer questions, or use a multi-agent flow to solve a complex problem."
 msgstr ""
 
+msgid "DuoAgenticChat|Collaborate with AI to accomplish tasks or answer questions."
+msgstr ""
+
 msgid "DuoAgenticChat|Compacting…"
 msgstr ""
 
@@ -32370,6 +32373,9 @@ msgid "DuoAgenticChat|Goal"
 msgstr ""
 
 msgid "DuoAgenticChat|Groups with GitLab Duo enabled"
+msgstr ""
+
+msgid "DuoAgenticChat|Hello from GitLab Duo"
 msgstr ""
 
 msgid "DuoAgenticChat|Hello, I am %{agentName}!"
@@ -34301,6 +34307,9 @@ msgstr ""
 msgid "DuoSlack|*Feedback submitted.* Thanks for helping us improve GitLab Duo."
 msgstr ""
 
+msgid "DuoSlack|Answer shortened to fit in Slack. The full answer is in the GitLab session."
+msgstr ""
+
 msgid "DuoSlack|Approve and continue"
 msgstr ""
 
@@ -34415,6 +34424,9 @@ msgid "DuoSlack|The session was stopped before it finished."
 msgstr ""
 
 msgid "DuoSlack|The task completed but the agent didn't produce a response. Check the session in GitLab for details."
+msgstr ""
+
+msgid "DuoSlack|The task completed, but I couldn't post the answer here. Check the session in GitLab for the full response."
 msgstr ""
 
 msgid "DuoSlack|This approval request has already been answered."
@@ -67610,9 +67622,6 @@ msgid "Rake Tasks Help"
 msgstr ""
 
 msgid "Random"
-msgstr ""
-
-msgid "Rapid Diffs encountered an error and has been temporarily disabled. The page has loaded using the standard diff view. %{feedback_link}"
 msgstr ""
 
 msgid "RapidDiffs|%{count} added line"

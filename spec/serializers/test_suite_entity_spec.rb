@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe TestSuiteEntity do
-  let(:pipeline) { create(:ci_pipeline, :with_test_reports) }
+  let_it_be(:pipeline) { create(:ci_pipeline, :with_test_reports) }
+
   let(:test_suite) { pipeline.test_reports.test_suites.each_value.first }
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:request) { double('request', current_user: user) }
 
   subject { described_class.new(test_suite, request: request).as_json }

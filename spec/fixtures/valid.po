@@ -445,7 +445,7 @@ msgstr "Más información."
 msgid "Learn more in the"
 msgstr "Más información en la"
 
-msgid "Learn more in the|pipeline schedules documentation"
+msgid "Learn more in the pipeline schedules documentation"
 msgstr "documentación sobre la programación de pipelines"
 
 msgid "Leave group"

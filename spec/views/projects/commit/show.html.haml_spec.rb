@@ -44,7 +44,7 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code_
   end
 
   context 'in the context of a merge request' do
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project, target_project: project) }
 
     before do
       assign(:merge_request, merge_request)

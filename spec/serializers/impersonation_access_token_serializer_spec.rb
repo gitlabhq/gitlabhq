@@ -7,13 +7,13 @@ RSpec.describe ImpersonationAccessTokenSerializer, feature_category: :user_manag
 
   describe '#represent' do
     it 'can render a single token' do
-      token = create(:personal_access_token)
+      token = build_stubbed(:personal_access_token)
 
       expect(serializer.represent(token)).to be_kind_of(Hash)
     end
 
     it 'can render a collection of tokens' do
-      tokens = create_list(:personal_access_token, 2)
+      tokens = build_stubbed_list(:personal_access_token, 2)
 
       expect(serializer.represent(tokens)).to be_kind_of(Array)
     end

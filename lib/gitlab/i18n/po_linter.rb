@@ -76,6 +76,7 @@ module Gitlab
         validate_html(errors, entry)
         validate_translation(errors, entry)
         validate_namespace(errors, entry)
+        validate_namespace_format(errors, entry)
         validate_spaces(errors, entry)
 
         errors
@@ -103,6 +104,21 @@ module Gitlab
         if entry.translations_contain_namespace?
           errors << 'contains a namespace. Remove it from the translation. For more information see ' \
                     'https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings'
+        end
+      end
+
+      def validate_namespace_format(errors, entry)
+        # Locale .po files keep stale msgids until the next Crowdin sync, so only lint the source .pot
+        return unless File.extname(po_path) == '.pot'
+
+        if entry.msgid_namespace_contains_whitespace?
+          errors << 'namespace contains whitespace. Use a PascalCase namespace without spaces. ' \
+                    'For more information see https://docs.gitlab.com/development/i18n/externalization/#namespaces'
+        end
+
+        if entry.msgid_contains_multiple_namespace_pipes?
+          errors << 'contains more than one pipe (|). A namespace is a single PascalCase prefix followed by one ' \
+                    'pipe. For more information see https://docs.gitlab.com/development/i18n/externalization/#namespaces'
         end
       end
 

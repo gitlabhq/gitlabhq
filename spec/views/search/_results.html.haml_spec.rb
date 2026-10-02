@@ -10,11 +10,13 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
   let(:term) { 'foo' }
   let(:search_results) { instance_double('Gitlab::SearchResults', { formatted_count: 10, current_user: user }) }
 
+  before_all do
+    create_list(:issue, 3)
+  end
+
   before do
     controller.params[:action] = 'show'
     controller.params[:search] = term
-
-    create_list(:issue, 3)
 
     allow(view).to receive(:current_user) { user }
 
@@ -51,8 +53,8 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
   end
 
   context 'when searching notes which contain quotes in markdown' do
-    let_it_be(:project, freeze: false) { create(:project) }
-    let_it_be(:issue, freeze: false) { create(:issue, project: project, title: '*') }
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:issue) { create(:issue, project: project, title: '*') }
     let_it_be(:note) do
       create(:discussion_note_on_issue, noteable: issue, project: issue.project, note: '```"helloworld"```')
     end
@@ -69,9 +71,9 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
   end
 
   context 'for rendering all types of search results' do
-    let_it_be(:project, freeze: false) { create(:project, :repository, :wiki_repo) }
-    let_it_be(:label, freeze: false) { create(:label, project: project, title: 'test label') }
-    let_it_be(:issue, freeze: false) { create(:issue, project: project, title: 'testing', labels: [label]) }
+    let_it_be_with_reload(:project) { create(:project, :repository, :wiki_repo) }
+    let_it_be_with_reload(:label) { create(:label, project: project, title: 'test label') }
+    let_it_be_with_reload(:issue) { create(:issue, project: project, title: 'testing', labels: [label]) }
     let_it_be(:merge_request) do
       create(:merge_request, title: 'testing', source_project: project, target_project: project)
     end
@@ -297,8 +299,8 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
   end
 
   context 'when scope is milestones and a result is a group milestone' do
-    let_it_be(:group, freeze: false) { create(:group) }
-    let_it_be(:group_milestone, freeze: false) { create(:milestone, group: group, title: 'testing') }
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:group_milestone) { create(:milestone, group: group, title: 'testing') }
 
     let(:scope) { 'milestones' }
     let(:term) { 'testing' }

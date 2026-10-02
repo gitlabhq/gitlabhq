@@ -5,17 +5,15 @@ require 'spec_helper'
 RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects do
   include Devise::Test::ControllerHelpers
 
+  let_it_be(:user) { create(:user) }
+
   before do
     stub_template 'groups/settings/_code_suggestions' => ''
   end
 
   describe '"Share with group lock" setting' do
-    let(:root_owner) { create(:user) }
-    let(:root_group) { create(:group) }
-
-    before do
-      root_group.add_owner(root_owner)
-    end
+    let_it_be(:root_owner) { create(:user) }
+    let_it_be_with_reload(:root_group) { create(:group, owners: root_owner) }
 
     shared_examples_for '"Share with group lock" setting' do |checkbox_options|
       it 'has the correct label, help text, and checkbox options' do
@@ -41,12 +39,14 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
     end
 
     context 'for a subgroup' do
-      let!(:subgroup) { create(:group, parent: root_group) }
-      let(:sub_owner) { create(:user) }
-      let(:test_group) { subgroup }
+      let_it_be(:subgroup_without_lock) { create(:group, parent: root_group) }
+      let_it_be(:subgroup_with_lock) { create(:group, parent: root_group, share_with_group_lock: true) }
+      let_it_be(:sub_owner) { create(:user) }
 
       context 'when the root_group has "Share with group lock" disabled' do
         context 'when the subgroup has "Share with group lock" disabled' do
+          let(:test_group) { subgroup_without_lock }
+
           context 'as the root_owner' do
             let(:test_user) { root_owner }
 
@@ -61,9 +61,7 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
         end
 
         context 'when the subgroup has "Share with group lock" enabled' do
-          before do
-            subgroup.update_column(:share_with_group_lock, true)
-          end
+          let(:test_group) { subgroup_with_lock }
 
           context 'as the root_owner' do
             let(:test_user) { root_owner }
@@ -80,11 +78,13 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
       end
 
       context 'when the root_group has "Share with group lock" enabled' do
-        before do
+        before_all do
           root_group.update_column(:share_with_group_lock, true)
         end
 
         context 'when the subgroup has "Share with group lock" disabled (parent overridden)' do
+          let(:test_group) { subgroup_without_lock }
+
           context 'as the root_owner' do
             let(:test_user) { root_owner }
 
@@ -99,9 +99,7 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
         end
 
         context 'when the subgroup has "Share with group lock" enabled (same as parent)' do
-          before do
-            subgroup.update_column(:share_with_group_lock, true)
-          end
+          let(:test_group) { subgroup_with_lock }
 
           context 'as the root_owner' do
             let(:test_user) { root_owner }
@@ -120,7 +118,6 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
   end
 
   context 'when restoring a group' do
-    let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:group) { create(:group, owners: user) }
 
     before do
@@ -157,12 +154,9 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
   end
 
   context 'ip_restriction' do
-    let(:group) { create(:group) }
-    let(:user) { create(:user) }
+    let_it_be(:group) { create(:group, owners: user) }
 
     before do
-      group.add_owner(user)
-
       assign(:group, group)
       allow(view).to receive(:current_user) { user }
     end

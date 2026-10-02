@@ -114,15 +114,32 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
       shared_examples_for 'not running analyze' do
         specify do
-          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(analyze: analyze) }
+          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(models, analyze: analyze) }
           expect(control.occurrences).not_to include(analyze_regex)
         end
       end
 
       context 'when analyze_interval is not set' do
-        it_behaves_like 'not running analyze'
+        let(:whole_table_analyze_regex) { /ANALYZE \(SKIP_LOCKED\) "_test_partitioning_test\d"/ }
+
+        it 'does not run the whole-table analyze by default' do
+          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(models, analyze: analyze) }
+          expect(control.occurrences).not_to include(whole_table_analyze_regex)
+        end
+
+        context 'when analyze_tables_with_default_interval is true' do
+          it 'runs the whole-table analyze using the default analyze_interval' do
+            control = ActiveRecord::QueryRecorder.new do
+              described_class.sync_partitions(models, analyze: analyze, analyze_tables_with_default_interval: true)
+            end
+
+            expect(control.occurrences).to include(whole_table_analyze_regex)
+          end
+        end
 
         context 'when analyze is set to false' do
+          let(:analyze) { false }
+
           it_behaves_like 'not running analyze'
         end
       end

@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'admin/application_settings/ci_cd.html.haml' do
   let_it_be(:app_settings) { build(:application_setting) }
-  let_it_be(:user) { create(:admin) }
-
   let_it_be(:default_plan_limits) { create(:plan_limits, :default_plan, :with_package_file_sizes) }
+
+  let(:user) { build_stubbed(:admin) }
 
   before do
     assign(:application_setting, app_settings)

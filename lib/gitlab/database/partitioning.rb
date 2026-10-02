@@ -40,6 +40,7 @@ module Gitlab
           models_to_sync = registered_for_sync,
           only_on: nil,
           analyze: true,
+          analyze_tables_with_default_interval: false,
           owner_db_only: Rails.env.production?
         )
           blocking_flag = blocking_feature_flag
@@ -54,7 +55,10 @@ module Gitlab
           Gitlab::AppLogger.info(message: 'Syncing dynamic postgres partitions')
 
           Gitlab::Database::EachDatabase.each_model_connection(models_to_sync, only_on: only_on) do |model|
-            PartitionManager.new(model).sync_partitions(analyze: analyze)
+            PartitionManager.new(model).sync_partitions(
+              analyze: analyze,
+              analyze_tables_with_default_interval: analyze_tables_with_default_interval
+            )
           end
 
           unless owner_db_only || only_on
@@ -64,9 +68,12 @@ module Gitlab
 
               model_connection_name = model.connection_db_config.name
               Gitlab::Database::EachDatabase.each_connection(include_shared: false) do |connection, connection_name|
-                if connection_name != model_connection_name
-                  PartitionManager.new(model, connection: connection).sync_partitions(analyze: analyze)
-                end
+                next if connection_name == model_connection_name
+
+                PartitionManager.new(model, connection: connection).sync_partitions(
+                  analyze: analyze,
+                  analyze_tables_with_default_interval: analyze_tables_with_default_interval
+                )
               end
             end
           end

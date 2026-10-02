@@ -52,5 +52,27 @@ RSpec.describe QA::Runtime::Namespace do
         expect(described_class.sandbox_name).to match(/e2e-sandbox-[a-f0-9]{12}/)
       end
     end
+
+    context "when GITLAB_SANDBOX_NAME is set" do
+      let(:dot_com) { true }
+
+      before do
+        stub_env('GITLAB_SANDBOX_NAME', 'cell-9-e2e-sandbox-group-1')
+      end
+
+      it "returns the configured sandbox name" do
+        expect(described_class.sandbox_name).to eq('cell-9-e2e-sandbox-group-1')
+      end
+    end
+
+    context "when GITLAB_SANDBOX_NAME is blank" do
+      let(:dot_com) { true }
+
+      before do
+        stub_env('GITLAB_SANDBOX_NAME', '')
+      end
+
+      it_behaves_like "sandbox naming for live environments"
+    end
   end
 end

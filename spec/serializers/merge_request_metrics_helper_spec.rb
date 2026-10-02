@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestMetricsHelper do
   let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:merge_request) { create(:merge_request) }
 
-  let(:merge_request) { create(:merge_request) }
   let(:helper) { Class.new.include(described_class).new }
 
   describe '#build_metrics' do

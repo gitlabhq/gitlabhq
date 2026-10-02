@@ -140,6 +140,8 @@ RSpec.shared_examples 'a work item discussions endpoint' do
   end
 
   it 'does not issue N+1 queries when more discussions are added', :aggregate_failures do
+    # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+    User.find(user.id).update_column(:last_activity_on, Date.current)
     other_author = create(:user, developer_of: container)
     create(:note, noteable: work_item, author: other_author, **note_params)
 
@@ -201,6 +203,8 @@ RSpec.shared_examples 'a work item single discussion endpoint' do
   end
 
   it 'does not issue N+1 queries when the discussion has more replies', :aggregate_failures do
+    # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+    User.find(user.id).update_column(:last_activity_on, Date.current)
     root = create(:discussion_note_on_work_item, noteable: work_item, author: user, **note_params)
     path = api_request_path.sub(comment.discussion_id, root.discussion_id)
     other_author = create(:user, developer_of: container)

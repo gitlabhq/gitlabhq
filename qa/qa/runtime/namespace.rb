@@ -22,6 +22,7 @@ module QA
         #
         # @return [String]
         def sandbox_name
+          return Env.sandbox_name if Env.sandbox_name.present?
           return "gitlab-e2e-sandbox-group-#{sandbox_number}" if live_env?
 
           "e2e-sandbox-#{SecureRandom.hex(6)}"

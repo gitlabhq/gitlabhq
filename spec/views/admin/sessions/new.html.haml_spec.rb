@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access do
   include RenderedHtml
 
-  let(:user) { create(:admin) }
+  let(:user) { build_stubbed(:admin) }
 
   before do
     disable_all_signin_methods
@@ -89,7 +89,7 @@ RSpec.describe 'admin/sessions/new.html.haml', feature_category: :system_access 
   end
 
   context 'with ldap authentication' do
-    let(:user) { create(:omniauth_user, :admin, extern_uid: 'my-uid', provider: 'ldapmain') }
+    let(:user) { build_stubbed(:omniauth_user, :admin, extern_uid: 'my-uid', provider: 'ldapmain') }
     let(:server) { { provider_name: 'ldapmain', label: 'LDAP' }.with_indifferent_access }
 
     before do

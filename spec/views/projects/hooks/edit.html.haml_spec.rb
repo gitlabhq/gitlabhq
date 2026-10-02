@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/hooks/edit' do
-  let(:hook) { create(:project_hook, project: project) }
-
-  let_it_be_with_refind(:project) { create(:project) }
+  let(:project) { build_stubbed(:project) }
+  let(:hook) { build_stubbed(:project_hook, project: project) }
 
   before do
     assign :project, project

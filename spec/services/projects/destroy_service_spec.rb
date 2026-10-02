@@ -1255,6 +1255,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     let(:service) { described_class.new(project, user) }
 
     context 'when there are no orphaned job artifacts' do
+      let(:project) { build_stubbed(:project) }
       let(:no_job_artifacts) { Ci::JobArtifact.none }
 
       before do

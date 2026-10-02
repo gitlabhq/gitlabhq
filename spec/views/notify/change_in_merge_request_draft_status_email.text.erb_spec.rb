@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe 'notify/change_in_merge_request_draft_status_email.text.erb' do
-  let(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request) }
+  let(:user) { build_stubbed(:user) }
+  let(:merge_request) { build_stubbed(:merge_request) }
 
   before do
     assign(:updated_by_user, user)
@@ -13,7 +13,7 @@ RSpec.describe 'notify/change_in_merge_request_draft_status_email.text.erb' do
   it_behaves_like 'renders plain text email correctly'
 
   it 'shows user added draft status on email' do
-    merge_request.update!(title: merge_request.draft_title)
+    merge_request.assign_attributes(title: merge_request.draft_title, draft: true)
 
     render
 

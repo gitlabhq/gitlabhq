@@ -1502,8 +1502,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         skip_if_multiple_databases_are_setup
       end
 
-      it 'delegates syncing of partitions without limiting databases' do
-        expect(Gitlab::Database::Partitioning).to receive(:sync_partitions)
+      it 'delegates syncing of partitions without limiting databases or analyzing default-interval tables' do
+        expect(Gitlab::Database::Partitioning).to receive(:sync_partitions).with(no_args)
 
         run_rake_task('gitlab:db:create_dynamic_partitions')
       end
@@ -1516,7 +1516,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       context 'when running the multi-database variant' do
         it 'delegates syncing of partitions without limiting databases' do
-          expect(Gitlab::Database::Partitioning).to receive(:sync_partitions)
+          expect(Gitlab::Database::Partitioning).to receive(:sync_partitions).with(no_args)
 
           run_rake_task('gitlab:db:create_dynamic_partitions')
         end

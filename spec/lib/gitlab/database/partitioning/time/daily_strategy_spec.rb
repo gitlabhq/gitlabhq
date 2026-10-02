@@ -362,6 +362,12 @@ RSpec.describe Gitlab::Database::Partitioning::Time::DailyStrategy, feature_cate
     end
   end
 
+  describe 'analyze_interval' do
+    it_behaves_like 'a partitioning strategy with a default analyze_interval' do
+      let(:strategy_args) { { retain_for: retention_period } }
+    end
+  end
+
   describe '#partition_name' do
     let(:from) { Date.parse('2020-05-01 00:00:00') }
     let(:to) { Date.parse('2020-05-02 00:00:00') }

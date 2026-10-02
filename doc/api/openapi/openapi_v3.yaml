@@ -3271,6 +3271,7 @@ paths:
     post:
       operationId: postApiV4AiDuoWorkflowsRevokeToken
       summary: Revoke ai_workflows token
+      description: Revokes an active Duo Workflows authentication token.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3295,6 +3296,8 @@ paths:
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsId
       summary: Get workflow details
+      description: Retrieves detailed information about a specific workflow by its
+        ID.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3316,6 +3319,7 @@ paths:
     patch:
       operationId: patchApiV4AiDuoWorkflowsWorkflowsId
       summary: Update the workflow status
+      description: Updates the execution status of a specified workflow.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3344,6 +3348,7 @@ paths:
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
       summary: Create workflow checkpoint
+      description: Creates a new checkpoint state for an active workflow execution.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3370,6 +3375,7 @@ paths:
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
       summary: List all workflow checkpoints
+      description: Lists all checkpoints associated with a specific workflow.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3421,6 +3427,8 @@ paths:
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpointsByThreadTs
       summary: Get a workflow checkpoint reconstructed from incremental blobs
+      description: Retrieves a full workflow checkpoint reconstructed from incremental
+        data blobs.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3456,6 +3464,7 @@ paths:
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpointsCheckpointId
       summary: Get details on a workflow checkpoint
+      description: Retrieves detailed information about a specific workflow checkpoint.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3491,6 +3500,7 @@ paths:
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdCheckpointWritesBatch
       summary: Create multiple workflow checkpoint writes
+      description: Writes multiple checkpoint entries for a workflow in a single request.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3518,6 +3528,7 @@ paths:
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdEvents
       summary: Create workflow event
+      description: Creates a new event for a specified workflow execution.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3544,6 +3555,7 @@ paths:
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdEvents
       summary: List all workflow events
+      description: Retrieves a list of all events associated with a specific workflow.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3565,6 +3577,7 @@ paths:
     put:
       operationId: putApiV4AiDuoWorkflowsWorkflowsIdEventsEventId
       summary: Update workflow event
+      description: Updates an existing event for a specified workflow.
       tags:
       - GitLab Duo workflows
       - Internal operations
@@ -3598,6 +3611,8 @@ paths:
     post:
       operationId: postApiV4AiDuoWorkflowsDirectAccess
       summary: Connection details for accessing Duo Agent Platform Service directly
+      description: Returns connection details for direct access to the Duo Agent Platform
+        Service.
       tags:
       - GitLab Duo workflows
       responses:
@@ -3624,6 +3639,7 @@ paths:
     get:
       operationId: getApiV4AiDuoWorkflowsListTools
       summary: List Duo Agent Platform tools
+      description: Returns a list of all available Duo Agent Platform tools.
       tags:
       - GitLab Duo workflows
       responses:
@@ -3653,6 +3669,8 @@ paths:
     get:
       operationId: getApiV4AiDuoWorkflowsWs
       summary: Get Duo Workflows WebSocket connection details
+      description: Retrieves WebSocket connection information to establish a session
+        with Duo Workflows.
       tags:
       - GitLab Duo workflows
       responses:
@@ -3806,6 +3824,7 @@ paths:
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsWorkflowIdResume
       summary: Resume a paused workflow
+      description: Resumes execution of a previously paused workflow.
       tags:
       - GitLab Duo workflows
       responses:
@@ -5649,6 +5668,7 @@ paths:
     get:
       operationId: getApiV4ProjectsIdAnalyticsDeploymentFrequency
       summary: List deployment frequencies for the project
+      description: Retrieves deployment frequency analytics data for a specific project.
       tags:
       - Analytics
       responses:
@@ -5785,6 +5805,7 @@ paths:
     get:
       operationId: getApiV4AnalyticsCodeReview
       summary: List code review information about project
+      description: Retrieves code review analytics data for a specific project.
       tags:
       - Code review analytics
       responses:
@@ -14593,6 +14614,8 @@ paths:
     put:
       operationId: putApiV4AdminZoektProjectsProjectIdIndex
       summary: Triggers indexing for the specified project
+      description: Triggers background indexing of the specified project using the
+        Zoekt search engine.
       tags:
       - Code search
       responses:
@@ -14621,6 +14644,8 @@ paths:
     patch:
       operationId: patchApiV4AdminZoektNamespacesId
       summary: Update the number of replicas override for an enabled namespace
+      description: Updates the replication factor override for a namespace enabled
+        in the Zoekt search engine.
       tags:
       - Code search
       responses:
@@ -14657,6 +14682,7 @@ paths:
     get:
       operationId: getApiV4AdminZoektShards
       summary: Get all the Zoekt nodes
+      description: Returns a list of all Zoekt search nodes available in the instance.
       tags:
       - Code search
       responses:
@@ -14676,6 +14702,8 @@ paths:
     get:
       operationId: getApiV4AdminZoektShardsNodeIdIndexedNamespaces
       summary: Get all the indexed namespaces for this node
+      description: Retrieves all root namespaces indexed by the specified Zoekt search
+        node.
       tags:
       - Code search
       responses:
@@ -14704,6 +14732,8 @@ paths:
     put:
       operationId: putApiV4AdminZoektShardsNodeIdIndexedNamespacesNamespaceId
       summary: Add a namespace to a node for Zoekt indexing
+      description: Enables and assigns a namespace to a specific Zoekt node for code
+        search indexing.
       tags:
       - Code search
       responses:
@@ -14743,6 +14773,8 @@ paths:
     delete:
       operationId: deleteApiV4AdminZoektShardsNodeIdIndexedNamespacesNamespaceId
       summary: Remove a namespace from a node for Zoekt indexing
+      description: Removes a namespace from a Zoekt node, deleting its indexed data
+        and disabling search.
       tags:
       - Code search
       responses:
@@ -14956,6 +14988,7 @@ paths:
     get:
       operationId: getApiV4AdminMemberRoles
       summary: Get Admin Roles for this GitLab instance
+      description: Retrieves all custom admin roles configured for the instance.
       tags:
       - Member roles
       responses:
@@ -14972,6 +15005,7 @@ paths:
     post:
       operationId: postApiV4AdminMemberRoles
       summary: Create Admin Role on the GitLab instance
+      description: Creates a new custom admin role with specified permissions.
       tags:
       - Member roles
       responses:
@@ -14995,6 +15029,7 @@ paths:
     delete:
       operationId: deleteApiV4AdminMemberRolesMemberRoleId
       summary: Delete Admin Role
+      description: Deletes a specific custom admin role by its ID.
       tags:
       - Member roles
       responses:
@@ -28532,8 +28567,8 @@ paths:
     get:
       operationId: getApiV4UsageDataNonSqlMetrics
       summary: List all non-SQL metrics
-      description: Lists all non-SQL metrics data used in the Service ping. This action
-        is behind the `usage_data_non_sql_metrics` feature flag. Administrators only.
+      description: Lists all non-SQL metrics data used in the Service ping. Administrators
+        only.
       tags:
       - Usage data
       responses:

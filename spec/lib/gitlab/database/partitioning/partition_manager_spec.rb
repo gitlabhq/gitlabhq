@@ -20,7 +20,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { partitioned_table_name }
     let(:partitioning_strategy) do
-      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil, analyze_interval: nil)
+      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil, analyze_interval: nil,
+        default_analyze_interval?: false)
     end
 
     let(:partitions) do
@@ -96,7 +97,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
               instance_double(Gitlab::Database::Partitioning::TimePartition, partition_name: 'foo0')
             ],
             after_adding_partitions: nil,
-            analyze_interval: nil
+            analyze_interval: nil,
+            default_analyze_interval?: false
           )
         end
 
@@ -334,7 +336,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:table) { :_test_foo }
     let(:partitioning_strategy) do
       double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
-        analyze_interval: nil, detach_concurrently?: false, detachable_since: nil)
+        analyze_interval: nil, default_analyze_interval?: false, detach_concurrently?: false, detachable_since: nil)
     end
 
     let(:extra_partitions) do
@@ -600,7 +602,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     context 'when the strategy detaches concurrently' do
       let(:partitioning_strategy) do
         double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil,
-          analyze_interval: nil, detach_concurrently?: true)
+          analyze_interval: nil, default_analyze_interval?: false, detach_concurrently?: true)
       end
 
       let(:extra_partitions) do
@@ -917,6 +919,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
   describe 'analyze partitioned table' do
     let(:analyze) { true }
+    let(:analyze_tables_with_default_interval) { false }
     let(:analyze_table) { partitioned_table_name }
     let(:analyze_partition) { "#{partitioned_table_name}_1" }
     let(:analyze_regex) { /ANALYZE \(SKIP_LOCKED\) "#{analyze_table}"/ }
@@ -936,6 +939,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
     end
 
+    def sync_with_analyze
+      described_class.new(my_model, connection: connection)
+        .sync_partitions(analyze: analyze, analyze_tables_with_default_interval: analyze_tables_with_default_interval)
+    end
+
     shared_examples_for 'run only once analyze within interval' do
       before do
         allow_next_instance_of(described_class) do |instance|
@@ -945,14 +953,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
 
       specify do
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).to include(analyze_regex)
 
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).not_to include(analyze_regex)
 
         travel_to((analyze_interval * 2).since) do
-          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+          control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
           expect(control.occurrences).to include(analyze_regex)
         end
       end
@@ -960,14 +968,14 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
     shared_examples_for 'not to run the analyze at all' do
       specify do
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).not_to include(analyze_regex)
 
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+        control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
         expect(control.occurrences).not_to include(analyze_regex)
 
         travel_to((analyze_interval * 2).since) do
-          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
+          control = ActiveRecord::QueryRecorder.new { sync_with_analyze }
           expect(control.occurrences).not_to include(analyze_regex)
         end
       end
@@ -1007,6 +1015,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
 
     context 'when model does not set analyze_interval' do
+      let(:analyze_interval) { Gitlab::Database::Partitioning::BaseStrategy::DEFAULT_ANALYZE_INTERVAL }
       let(:my_model) do
         Class.new(ApplicationRecord) do
           include PartitionedTable
@@ -1018,7 +1027,47 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         end
       end
 
-      it_behaves_like 'not to run the analyze at all'
+      it 'falls back to the conservative default analyze_interval' do
+        expect(my_model.partitioning_strategy.analyze_interval).to eq(analyze_interval)
+      end
+
+      context 'when not syncing from the partition management worker' do
+        it_behaves_like 'not to run the analyze at all'
+      end
+
+      context 'when syncing from the partition management worker' do
+        let(:analyze_tables_with_default_interval) { true }
+
+        it_behaves_like 'run only once analyze within interval'
+
+        context 'when the analyze_partitioned_tables_with_default_interval ops flag is disabled' do
+          before do
+            stub_feature_flags(analyze_partitioned_tables_with_default_interval: false)
+          end
+
+          it_behaves_like 'not to run the analyze at all'
+        end
+      end
+    end
+
+    context 'when the model sets an explicit analyze_interval' do
+      context 'when syncing from the partition management worker' do
+        let(:analyze_tables_with_default_interval) { true }
+
+        it_behaves_like 'run only once analyze within interval'
+
+        context 'when the analyze_partitioned_tables_with_default_interval ops flag is disabled' do
+          before do
+            stub_feature_flags(analyze_partitioned_tables_with_default_interval: false)
+          end
+
+          it 'keeps the explicit interval, which the flag does not gate' do
+            expect(my_model.partitioning_strategy.default_analyze_interval?).to be(false)
+          end
+
+          it_behaves_like 'run only once analyze within interval'
+        end
+      end
     end
 
     context 'when no partition is created' do
@@ -1084,13 +1133,42 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
           end
         end
 
-        it 'does not analyze the created partition' do
+        it 'analyzes the created partition using the default analyze_interval' do
           control = ActiveRecord::QueryRecorder.new do
             described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
           end
 
-          expect(control.occurrences).not_to include(created_partition_analyze_regex)
+          expect(control.occurrences).to include(created_partition_analyze_regex)
           expect(control.occurrences).not_to include(analyze_regex)
+        end
+
+        context 'when the table has never been analyzed' do
+          before do
+            allow(connection).to receive(:select_value)
+              .with(/pg_stat_get_last_analyze_time/)
+              .and_return(nil)
+          end
+
+          it 'skips the whole-table ANALYZE but still analyzes the created partition', :aggregate_failures do
+            control = ActiveRecord::QueryRecorder.new do
+              described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze)
+            end
+
+            expect(control.occurrences).not_to include(analyze_regex)
+            expect(control.occurrences).to include(created_partition_analyze_regex)
+          end
+
+          context 'when syncing from the partition management worker' do
+            it 'runs the whole-table ANALYZE instead', :aggregate_failures do
+              control = ActiveRecord::QueryRecorder.new do
+                described_class.new(my_model, connection: connection)
+                  .sync_partitions(analyze: analyze, analyze_tables_with_default_interval: true)
+              end
+
+              expect(control.occurrences).to include(analyze_regex)
+              expect(control.occurrences).not_to include(created_partition_analyze_regex)
+            end
+          end
         end
       end
 

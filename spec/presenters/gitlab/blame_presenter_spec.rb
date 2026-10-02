@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BlamePresenter do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:path) { 'files/ruby/popen.rb' }
   let(:commit) { project.commit('master') }
   let(:blob) { project.repository.blob_at(commit.id, path) }
