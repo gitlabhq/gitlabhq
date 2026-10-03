@@ -158,6 +158,7 @@ export const i18n = {
 export const SCAN_PROFILE_TYPE_SECRET_DETECTION = 'SECRET_DETECTION';
 export const SCAN_PROFILE_TYPE_SAST = 'SAST';
 export const SCAN_PROFILE_TYPE_DEPENDENCY_SCANNING = 'DEPENDENCY_SCANNING';
+export const SCAN_PROFILE_TYPE_BUSINESS_LOGIC = 'BUSINESS_LOGIC';
 
 export const SCAN_TRIGGER_DEFINITIONS = {
   GIT_PUSH_EVENT: {
@@ -198,6 +199,19 @@ export const SCAN_TRIGGER_DEFINITIONS = {
   },
 };
 
+// Per-scan-type trigger text, for scans whose trigger behaves unlike the generic definition.
+export const SCAN_TRIGGER_DEFINITION_OVERRIDES = {
+  [SCAN_PROFILE_TYPE_BUSINESS_LOGIC]: {
+    MERGE_REQUEST_PIPELINE: {
+      subtitle: s__('ScanProfiles|Scans merge request changes after the pipeline succeeds'),
+      description: s__(
+        "ScanProfiles|A scan runs after a merge request's head pipeline succeeds. Stale and merge train pipelines are skipped. Only the files the merge request adds or modifies are scanned, not the full repository.",
+      ),
+      scope: s__('ScanProfiles|Changed files in the merge request'),
+    },
+  },
+};
+
 export const SCAN_PROFILE_CATEGORIES = {
   [SCAN_PROFILE_TYPE_SECRET_DETECTION]: {
     name: s__('SecurityProfiles|Secret detection'),
@@ -230,6 +244,17 @@ export const SCAN_PROFILE_CATEGORIES = {
       "SecurityProfiles|Scans your project's dependencies for known vulnerabilities to identify security risks introduced by third-party packages. %{linkStart}Learn more%{linkEnd}.",
     ),
     helpLink: helpPagePath('/user/application_security/dependency_scanning/_index'),
+  },
+  // The Business Logic preset is hidden from the profile list while the bl_security_analyzer flag is off.
+  [SCAN_PROFILE_TYPE_BUSINESS_LOGIC]: {
+    name: s__('SecurityProfiles|Business logic'),
+    displayName: s__('SecurityProfiles|Business logic'),
+    label: 'BL',
+    helpTitle: s__('SecurityProfiles|What is business logic scanning?'),
+    helpDescription: s__(
+      'SecurityProfiles|Uses an AI agent to find business logic vulnerabilities in your source code, like missing authorization, broken object-level access, and mass assignment. %{linkStart}Learn more%{linkEnd}.',
+    ),
+    helpLink: helpPagePath('/user/application_security/business_logic_scanning/_index'),
   },
 };
 

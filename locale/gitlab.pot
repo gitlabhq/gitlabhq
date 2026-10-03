@@ -71987,6 +71987,9 @@ msgstr ""
 msgid "ScanProfiles|A scan is automatically run when changes are merged or pushed to the default branch. All vulnerabilities found are reported, providing a complete picture of your default branch's security posture."
 msgstr ""
 
+msgid "ScanProfiles|A scan runs after a merge request's head pipeline succeeds. Stale and merge train pipelines are skipped. Only the files the merge request adds or modifies are scanned, not the full repository."
+msgstr ""
+
 msgid "ScanProfiles|Add %{scanner} variable"
 msgstr ""
 
@@ -72033,6 +72036,9 @@ msgid "ScanProfiles|Block secrets such as keys and API tokens from being pushed 
 msgstr ""
 
 msgid "ScanProfiles|Branch pipelines (default only)"
+msgstr ""
+
+msgid "ScanProfiles|Changed files in the merge request"
 msgstr ""
 
 msgid "ScanProfiles|Changes to “%{profileName}” saved"
@@ -72177,6 +72183,9 @@ msgid "ScanProfiles|Scan triggers"
 msgstr ""
 
 msgid "ScanProfiles|Scans commits to the default branch"
+msgstr ""
+
+msgid "ScanProfiles|Scans merge request changes after the pipeline succeeds"
 msgstr ""
 
 msgid "ScanProfiles|Scans new commits to merge requests · All branches"
@@ -74994,10 +75003,16 @@ msgstr ""
 msgid "SecurityInventory|Any secret detection"
 msgstr ""
 
+msgid "SecurityInventory|BL"
+msgstr ""
+
 msgid "SecurityInventory|Basic SAST"
 msgstr ""
 
 msgid "SecurityInventory|Basic SAST (SAST)"
+msgstr ""
+
+msgid "SecurityInventory|Business logic scanning"
 msgstr ""
 
 msgid "SecurityInventory|CS"
@@ -77578,6 +77593,9 @@ msgstr ""
 msgid "SecurityProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret push protection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityProfiles|Business logic"
+msgstr ""
+
 msgid "SecurityProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -77702,6 +77720,9 @@ msgstr ""
 msgid "SecurityProfiles|Troubleshoot failure"
 msgstr ""
 
+msgid "SecurityProfiles|Uses an AI agent to find business logic vulnerabilities in your source code, like missing authorization, broken object-level access, and mass assignment. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "SecurityProfiles|View failed job #%{jobId}"
 msgstr ""
 
@@ -77715,6 +77736,9 @@ msgid "SecurityProfiles|What are configuration profiles?"
 msgstr ""
 
 msgid "SecurityProfiles|What is SAST?"
+msgstr ""
+
+msgid "SecurityProfiles|What is business logic scanning?"
 msgstr ""
 
 msgid "SecurityProfiles|What is dependency scanning?"
