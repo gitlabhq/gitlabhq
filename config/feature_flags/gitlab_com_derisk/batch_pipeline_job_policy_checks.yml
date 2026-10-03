@@ -1,0 +1,11 @@
+---
+name: batch_pipeline_job_policy_checks
+description: Batch the policy checks behind the detailedStatus, userPermissions, canPlayJob and
+  playable fields of CiJob through Ci::Preloaders::JobPolicyPreloader, once per page of pipeline jobs.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629310
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255978
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629928
+milestone: '19.5'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

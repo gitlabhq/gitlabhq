@@ -50486,6 +50486,7 @@ Fields:
 | <a id="groupsecretsmanager-readonly"></a>`readOnly` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether the instance is in strict read-only mode (Geo secondary or maintenance mode). No secrets or permissions can be created, updated, or deleted while it is true. |
 | <a id="groupsecretsmanager-status"></a>`status` | [`GroupSecretsManagerStatus`](#groupsecretsmanagerstatus) | Status of the group secrets manager. |
 | <a id="groupsecretsmanager-userpermissions"></a>`userPermissions` | [`GroupSecretsManagerPermissions!`](#groupsecretsmanagerpermissions) | Permissions for the current user on the resource. |
+| <a id="groupsecretsmanager-writedenialreason"></a>`writeDenialReason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. |
 
 ### `GroupSecretsManagerPermissions`
 
@@ -61800,6 +61801,7 @@ Fields:
 | <a id="projectsecretsmanager-readonly"></a>`readOnly` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Whether the instance is in strict read-only mode (Geo secondary or maintenance mode). No secrets or permissions can be created, updated, or deleted while it is true. |
 | <a id="projectsecretsmanager-status"></a>`status` | [`ProjectSecretsManagerStatus`](#projectsecretsmanagerstatus) | Status of the project secrets manager. |
 | <a id="projectsecretsmanager-userpermissions"></a>`userPermissions` | [`ProjectSecretsManagerPermissions!`](#projectsecretsmanagerpermissions) | Permissions for the current user on the resource. |
+| <a id="projectsecretsmanager-writedenialreason"></a>`writeDenialReason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.5. Status: Experiment. Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. |
 
 ### `ProjectSecretsManagerPermissions`
 

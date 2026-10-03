@@ -76,7 +76,6 @@ gitlab-advanced-sast:
     paths:
       - gl-sast-report.json
       - ts-cache.sqlite.gz
-    expire_in: 3 days
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never

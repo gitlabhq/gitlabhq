@@ -26,7 +26,7 @@ module Gitlab
             before_connection_authorization_block = @resolver&.before_connection_authorization_block
             return unless before_connection_authorization_block.respond_to?(:call)
 
-            before_connection_authorization_block.call(nodes, @context[:current_user])
+            before_connection_authorization_block.call(nodes, @context[:current_user], @context)
           end
 
           def remove_unauthorized(nodes)

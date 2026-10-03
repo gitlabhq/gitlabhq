@@ -202825,6 +202825,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "writeDenialReason",
+              "description": "Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecretsManagerWriteDenialReason",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,
@@ -353875,6 +353887,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "writeDenialReason",
+              "description": "Reason the Secrets Manager entitlement does not allow secrets or their permissions to be created or updated. Null when it allows them, or when the `secrets_manager_paid_experience` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecretsManagerWriteDenialReason",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,

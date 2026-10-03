@@ -4,12 +4,17 @@ require 'fast_spec_helper'
 require_relative '../../scripts/pipeline_test_report_builder'
 
 RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
+  using RSpec::Parameterized::TableSyntax
+
   let(:output_file_path) { 'tmp/previous_test_results/output_file.json' }
+  let(:api_endpoint) { described_class::DEFAULT_OPTIONS[:api_endpoint] }
+  let(:current_project) { '123' }
   let(:options) do
     described_class::DEFAULT_OPTIONS.merge(
-      target_project: 'gitlab-org/gitlab',
+      target_project: '123',
+      current_project: current_project,
       current_pipeline_id: '42',
-      mr_id: '999',
+      mr_iid: '999',
       instance_base_url: 'https://gitlab.com',
       output_file_path: output_file_path
     )
@@ -31,6 +36,7 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
     {
       'status' => 'running',
       'id' => 3,
+      'project_id' => current_project,
       'web_url' => latest_pipeline_url
     }
   end
@@ -118,6 +124,26 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
       it 'fetches builds from pipeline related to MR' do
         expected = { "suites" => [test_report_for_build.merge('job_url' => "/jobs/#{failed_build_id}")] }.to_json
         expect(subject.test_report_for_pipeline).to eq(expected)
+      end
+
+      context 'when the previous pipeline belongs to a fork' do
+        let(:previous_pipeline) { super().merge('project_id' => '456') }
+
+        before do
+          allow(subject).to receive(:pipelines_for_mr).and_call_original
+          allow(subject).to receive(:failed_builds_for_pipeline).and_call_original
+        end
+
+        it 'lists MR pipelines in the target project and fetches jobs from the fork' do
+          expect(subject).to receive(:fetch)
+            .with("#{api_endpoint}/projects/123/merge_requests/999/pipelines").and_return(mr_pipelines)
+          expect(subject).to receive(:fetch)
+            .with("#{api_endpoint}/projects/456/pipelines/1/jobs?scope=failed&per_page=100")
+            .and_return(failed_builds_for_pipeline)
+
+          expected = { 'suites' => [test_report_for_build.merge('job_url' => "/jobs/#{failed_build_id}")] }.to_json
+          expect(subject.test_report_for_pipeline).to eq(expected)
+        end
       end
 
       context 'canonical pipeline' do
@@ -385,16 +411,28 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
     context 'for latest pipeline' do
       let(:failed_build_uri) { "#{latest_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}" }
       let(:current_pipeline_uri) do
-        "#{options[:api_endpoint]}/projects/#{options[:target_project]}/pipelines/#{options[:current_pipeline_id]}"
+        "#{api_endpoint}/projects/#{current_project}/pipelines/42"
       end
 
       subject { described_class.new(options.merge(pipeline_index: :latest)) }
 
-      it 'fetches builds from pipeline related to MR' do
-        expect(subject).to receive(:fetch).with(current_pipeline_uri).and_return(mr_pipelines[0])
-        expect(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
+      where(:current_project) { %w[123 456] }
 
-        subject.test_report_for_pipeline
+      with_them do
+        before do
+          allow(subject).to receive(:failed_builds_for_pipeline).and_call_original
+        end
+
+        it 'fetches the current pipeline and its jobs from the owning project' do
+          expect(subject).to receive(:fetch).with(current_pipeline_uri).and_return(latest_pipeline)
+          expect(subject).to receive(:fetch)
+            .with("#{api_endpoint}/projects/#{current_project}/pipelines/3/jobs?scope=failed&per_page=100")
+            .and_return(failed_builds_for_pipeline)
+          expect(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)
+
+          expected = { 'suites' => [test_report_for_build.merge('job_url' => "/jobs/#{failed_build_id}")] }.to_json
+          expect(subject.test_report_for_pipeline).to eq(expected)
+        end
       end
     end
   end

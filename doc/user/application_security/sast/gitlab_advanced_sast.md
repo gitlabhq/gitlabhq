@@ -537,14 +537,17 @@ To turn on incremental scanning:
 
 ##### Configure cache retention
 
-The SAST CI/CD template stores the cache artifact with a default expiry of 3 days. The
-`GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD` variable controls how far back the analyzer searches for a
-cache artifact (default: `3 days`).
+The SAST CI/CD template does not set an expiry for the cache artifact, so it follows the
+[**Default artifacts expiration**](../../../administration/settings/continuous_integration.md#set-default-artifacts-expiration)
+setting for your instance. The `GITLAB_ADV_SAST_INCR_SCAN_SEARCH_PERIOD` variable controls how far
+back the analyzer searches for a cache artifact (default: `3 days`).
 
-These two values should be aligned. The search period should not exceed the artifact expiry, or the
-analyzer may search for artifacts that have already expired.
+The search period should not exceed the artifact expiry, or the analyzer searches for expired
+artifacts.
 
-To customize both values, override the `artifacts:expire_in` and set the search period variable:
+To set an explicit expiry for the cache and align the search period with it, override
+`artifacts:expire_in` and set the search period variable. `expire_in` applies to the whole
+`artifacts` block, so this also changes how long the security report is kept:
 
 ```yaml
 gitlab-advanced-sast:

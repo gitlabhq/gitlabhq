@@ -182,6 +182,7 @@ class GlobalPolicy < BasePolicy
     enable :read_admin_groups
     enable :read_admin_projects
     enable :read_application_statistics
+    enable :read_user_access_level
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

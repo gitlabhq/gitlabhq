@@ -6,24 +6,40 @@ module Ci
     # of mixed builds, bridges and generic statuses can be policy-checked without
     # per-job queries.
     class JobPolicyPreloader
-      def initialize(jobs, user)
+      # EE Ci::Bridge#playable? reads deployment approvals, so downstream
+      # projects imply deployments.
+      def initialize(jobs, user, deployments:, downstream_projects:)
         @jobs = jobs
         @user = user
+        @with_downstream_projects = downstream_projects
+        @with_deployments = deployments || downstream_projects
       end
 
       def execute
         preload_associations
-        assign_persisted_environments
-        preload_last_deployments
-        preload_protected_environments
-        preload_downstream_projects
 
-        environments
+        if with_deployments?
+          assign_persisted_environments
+          preload_last_deployments
+          preload_protected_environments
+        end
+
+        preload_downstream_projects if with_downstream_projects?
+
+        with_deployments? ? environments : []
       end
 
       private
 
       attr_reader :jobs, :user
+
+      def with_deployments?
+        @with_deployments
+      end
+
+      def with_downstream_projects?
+        @with_downstream_projects
+      end
 
       def processables
         @processables ||= jobs.select { |job| job.is_a?(::Ci::Processable) }
@@ -48,14 +64,14 @@ module Ci
 
         return if processables.empty?
 
+        associations = [:job_definition]
         # Rails batches both :environment branches into one query, so a job's
         # job_environment.environment and deployment.environment are one instance.
-        ActiveRecord::Associations::Preloader.new(
-          records: processables,
-          associations: [:job_definition, { job_environment: :environment }, { deployment: :environment }]
-        ).call
+        associations += [{ job_environment: :environment }, { deployment: :environment }] if with_deployments?
 
-        return if bridges.empty?
+        ActiveRecord::Associations::Preloader.new(records: processables, associations: associations).call
+
+        return if bridges.empty? || !with_downstream_projects?
 
         ActiveRecord::Associations::Preloader.new(
           records: bridges, associations: [:ci_stage, { downstream_pipeline: :project }]

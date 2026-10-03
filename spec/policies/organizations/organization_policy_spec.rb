@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationPolicy, feature_category: :organization do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be_with_refind(:private_organization) { create(:organization, :private) }
   let_it_be_with_refind(:organization) { private_organization }
   let_it_be(:public_organization) { create(:organization, :public) }
@@ -176,6 +178,40 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       end
 
       it { is_expected.to be_disallowed(:delete_organization) }
+    end
+  end
+
+  describe 'read_user_access_level' do
+    include AdminModeHelper
+
+    let(:organization) { private_organization }
+
+    let_it_be(:instance_admin) { create(:admin) }
+    let_it_be(:organization_admin) { create(:organization_owner, organization: private_organization).user }
+    let_it_be(:organization_user) { create(:organization_user, organization: private_organization).user }
+    let_it_be(:non_member) { create(:user) }
+
+    where(:user, :admin_mode, :allowed) do
+      ref(:instance_admin)     | true  | true
+      ref(:instance_admin)     | false | false
+      ref(:organization_admin) | false | true
+      ref(:organization_user)  | false | false
+      ref(:non_member)         | false | false
+      nil                      | false | false
+    end
+
+    with_them do
+      let(:current_user) { user }
+
+      before do
+        enable_admin_mode!(current_user) if admin_mode
+      end
+
+      if params[:allowed]
+        it { expect_allowed(:read_user_access_level) }
+      else
+        it { expect_disallowed(:read_user_access_level) }
+      end
     end
   end
 end

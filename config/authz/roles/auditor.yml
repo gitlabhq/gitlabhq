@@ -229,3 +229,7 @@ group:
   - view_group_devops_adoption
   - view_productivity_analytics
   - view_type_of_work_charts
+organization:
+  permissions: []
+  raw_permissions:
+  - read_user_access_level

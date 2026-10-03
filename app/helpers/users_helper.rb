@@ -151,16 +151,19 @@ module UsersHelper
   end
 
   def instance_user_badges(user)
-    return [] unless can?(current_user, :read_admin_users, :global)
-
     [].tap do |badges|
-      badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin -- This case requires a direct check
-      badges << { text: s_('AdminUsers|External'), variant: 'neutral' } if user.external?
+      if user.admin? && can?(current_user, :read_user_access_level, :global) # rubocop:disable Cop/UserAdmin -- shows whether the listed user is an instance admin, not whether they can act as one
+        badges << { text: s_('AdminUsers|Admin'), variant: 'success' }
+      end
+
+      if user.external? && can?(current_user, :read_admin_users, :global)
+        badges << { text: s_('AdminUsers|External'), variant: 'neutral' }
+      end
     end
   end
 
   def organization_user_badges(user, organization)
-    return [] unless can?(current_user, :read_admin_users, organization)
+    return [] unless can?(current_user, :read_user_access_level, organization)
     return [] unless organization.owner_user_ids.include?(user.id)
 
     [{ text: s_('AdminUsers|Organization admin'), variant: 'success' }]

@@ -154,6 +154,8 @@ module Resolvers
       end
     end
 
+    # Called with (nodes, current_user, context) once the connection's nodes load,
+    # before any of their fields resolve.
     def self.before_connection_authorization(&block)
       @before_connection_authorization_block = block
     end

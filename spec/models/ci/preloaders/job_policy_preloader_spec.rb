@@ -26,11 +26,13 @@ RSpec.describe Ci::Preloaders::JobPolicyPreloader, feature_category: :continuous
   let(:jobs) { pipeline.statuses.reload.to_a } # let_it_be shares the pipeline instance across examples
   let(:deploy_jobs) { jobs.select { |job| job.id.in?([deploy_build.id, deploy_bridge.id]) } }
 
+  let(:groups) { { deployments: true, downstream_projects: true } }
+
   def loaded(job)
     jobs.find { |loaded_job| loaded_job.id == job.id }
   end
 
-  subject(:execute) { described_class.new(jobs, user).execute }
+  subject(:execute) { described_class.new(jobs, user, **groups).execute }
 
   it 'loads the associations the deployable policy reads for builds and bridges' do
     execute
@@ -70,6 +72,31 @@ RSpec.describe Ci::Preloaders::JobPolicyPreloader, feature_category: :continuous
     expect(execute).to contain_exactly(environment)
   end
 
+  context 'with jobs deploying to more than one environment' do
+    let_it_be(:other_environment) { create(:environment, project: project, name: 'staging') }
+    let_it_be(:other_deploy_build) do
+      create(:ci_build, :running, :deploy_job, :with_deployment, pipeline: pipeline,
+        environment: other_environment.name)
+    end
+
+    it 'assigns each job the environment it deploys to' do
+      execute
+
+      expect(loaded(deploy_build).persisted_environment).to eq(environment)
+      expect(loaded(deploy_bridge).persisted_environment).to eq(environment)
+      expect(loaded(stop_build).persisted_environment).to eq(environment)
+      expect(loaded(other_deploy_build).persisted_environment).to eq(other_environment)
+    end
+
+    it 'shares one instance per environment rather than across environments' do
+      execute
+
+      expect(loaded(deploy_build).persisted_environment).to equal(loaded(deploy_bridge).persisted_environment)
+      expect(loaded(deploy_build).persisted_environment)
+        .not_to equal(loaded(other_deploy_build).persisted_environment)
+    end
+  end
+
   it 'assigns persisted_environment to environment jobs without a deployment' do
     execute
 
@@ -95,15 +122,15 @@ RSpec.describe Ci::Preloaders::JobPolicyPreloader, feature_category: :continuous
   end
 
   it 'tolerates jobs without environments' do
-    expect { described_class.new([plain_build, generic_status], user).execute }.not_to raise_error
+    expect { described_class.new([plain_build, generic_status], user, **groups).execute }.not_to raise_error
   end
 
   it 'tolerates pages without processables' do
-    expect(described_class.new([generic_status], user).execute).to eq([])
+    expect(described_class.new([generic_status], user, **groups).execute).to eq([])
   end
 
   it 'tolerates an empty page' do
-    expect { expect(described_class.new([], user).execute).to eq([]) }.not_to exceed_query_limit(0)
+    expect { expect(described_class.new([], user, **groups).execute).to eq([]) }.not_to exceed_query_limit(0)
   end
 
   context 'with a deployment that has no job_environment row' do
@@ -125,7 +152,7 @@ RSpec.describe Ci::Preloaders::JobPolicyPreloader, feature_category: :continuous
   it 'can run again on already preloaded jobs' do
     execute
 
-    expect(described_class.new(jobs, user).execute).to contain_exactly(environment)
+    expect(described_class.new(jobs, user, **groups).execute).to contain_exactly(environment)
     expect(loaded(deploy_build).persisted_environment).to equal(loaded(deploy_build).deployment.environment)
   end
 
@@ -184,6 +211,44 @@ RSpec.describe Ci::Preloaders::JobPolicyPreloader, feature_category: :continuous
       execute
 
       expect(loaded(bridge).association(:ci_stage)).to be_loaded
+    end
+
+    context 'when only deployments are requested' do
+      let(:groups) { { deployments: true, downstream_projects: false } }
+
+      it 'loads deployments but not downstream projects' do
+        expect(::Preloaders::ProjectPolicyPreloader).not_to receive(:new)
+
+        execute
+
+        expect(loaded(deploy_build).persisted_environment).to equal(loaded(deploy_build).deployment.environment)
+        expect(loaded(bridge).association(:downstream_pipeline)).not_to be_loaded
+        expect(loaded(manual_bridge).strong_memoized?(:downstream_project)).to be(false)
+      end
+    end
+
+    context 'when only downstream projects are requested' do
+      let(:groups) { { deployments: false, downstream_projects: true } }
+
+      it 'loads deployments too, because Bridge#playable? reads deployment approvals in EE' do
+        execute
+
+        expect(loaded(deploy_build).persisted_environment).to equal(loaded(deploy_build).deployment.environment)
+        expect(loaded(bridge).association(:downstream_pipeline)).to be_loaded
+      end
+    end
+
+    context 'when no groups are requested' do
+      let(:groups) { { deployments: false, downstream_projects: false } }
+
+      it 'loads neither deployments nor downstream projects' do
+        expect(::Preloaders::ProjectPolicyPreloader).not_to receive(:new)
+
+        expect(execute).to eq([])
+        expect(loaded(deploy_build).association(:deployment)).not_to be_loaded
+        expect(loaded(deploy_build).association(:job_environment)).not_to be_loaded
+        expect(loaded(bridge).association(:downstream_pipeline)).not_to be_loaded
+      end
     end
   end
 end

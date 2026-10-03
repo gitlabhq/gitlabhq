@@ -526,6 +526,457 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     end
   end
 
+  describe '.jobs policy checks for deployment jobs' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+    let_it_be(:environment) { create(:environment, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: maintainer, sha: project.commit.sha) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              jobs {
+                nodes {
+                  detailedStatus { action { path } }
+                  userPermissions { updateBuild cancelBuild }
+                  canPlayJob
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    def create_deploy_job(factory = :ci_build)
+      create(factory, :running, :deploy_job, :with_deployment, pipeline: pipeline, environment: environment.name)
+    end
+
+    it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+      create_deploy_job
+      post_graphql(query, current_user: maintainer)
+
+      control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: maintainer) }
+
+      3.times { create_deploy_job }
+
+      expect { post_graphql(query, current_user: maintainer) }.not_to exceed_query_limit(control)
+      expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).pluck('userPermissions').pluck('cancelBuild')).to eq([true] * 4)
+    end
+
+    context 'with the job mix of the pipeline jobs page' do
+      # The policy-backed fields of the page. The fields that only read
+      # CI-database associations are preloaded by the resolver and covered separately.
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              pipeline(iid: "#{pipeline.iid}") {
+                jobs {
+                  nodes {
+                    detailedStatus { id detailsPath label action { id path } }
+                    userPermissions { readBuild updateBuild cancelBuild }
+                    canPlayJob playable
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      # Bridges to other projects scale with the page, but the set of downstream
+      # projects stays fixed: policy checks cost queries per distinct project.
+      let_it_be(:downstream_project) { create(:project, :public, :repository) }
+      let_it_be(:manual_downstream_project) { create(:project, :public, :repository) }
+
+      def create_page_jobs
+        create(:ci_build, :success, :artifacts, pipeline: pipeline)
+        create(:ci_build, :manual, pipeline: pipeline, tag_list: %w[tag1 tag2])
+        create(:generic_commit_status, pipeline: pipeline, ref: pipeline.ref)
+        create_deploy_job
+        create_deploy_job(:ci_bridge)
+        create(:ci_build, :manual, :deploy_job, :with_deployment, pipeline: pipeline, environment: environment.name)
+        create(:ci_build, :with_deployment, pipeline: pipeline, environment: environment.name,
+          options: { environment: { name: environment.name, action: 'stop' } })
+
+        bridge = create(:ci_bridge, :success, pipeline: pipeline)
+        create(:ci_sources_pipeline, source_job: bridge, pipeline: create(:ci_pipeline, project: downstream_project))
+        create(:ci_bridge, :manual, pipeline: pipeline,
+          options: { trigger: { project: manual_downstream_project.full_path } })
+      end
+
+      # Cached queries are not counted: expanding a manual bridge's variables for
+      # play_job re-issues an identical before_stage lookup per bridge, which the
+      # query cache serves and which predates this change.
+      it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+        create_page_jobs
+        post_graphql(query, current_user: maintainer)
+
+        control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: maintainer) }
+
+        2.times { create_page_jobs }
+
+        expect { post_graphql(query, current_user: maintainer) }.not_to exceed_query_limit(control)
+        expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).size).to eq(pipeline.statuses.count)
+      end
+    end
+
+    # A bridge's detailed status resolves :play_job and :read_pipeline on the
+    # downstream pipeline, so it needs the downstream project group and not just
+    # deployments. All the bridges here trigger the same project: the policy cost
+    # is per distinct project, so only the path resolution scales with the page.
+    context 'with the detailed status of manual bridges' do
+      let_it_be(:trigger_downstream_project) { create(:project, :public, :repository) }
+
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              pipeline(iid: "#{pipeline.iid}") {
+                jobs { nodes { detailedStatus { detailsPath action { path } } } }
+              }
+            }
+          }
+        )
+      end
+
+      def create_manual_bridge
+        create(:ci_bridge, :manual, pipeline: pipeline,
+          options: { trigger: { project: trigger_downstream_project.full_path } })
+      end
+
+      it 'does not generate N+1 queries', :request_store, :use_sql_query_cache do
+        create_manual_bridge
+        post_graphql(query, current_user: maintainer)
+
+        control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: maintainer) }
+
+        3.times { create_manual_bridge }
+
+        expect { post_graphql(query, current_user: maintainer) }.not_to exceed_query_limit(control)
+        expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).size).to eq(pipeline.statuses.count)
+      end
+    end
+
+    context 'with the preload scope derived from the selection' do
+      let_it_be(:deploy_job) do
+        create(:ci_build, :running, :deploy_job, :with_deployment, pipeline: pipeline,
+          environment: environment.name)
+      end
+
+      let_it_be(:bridge_downstream_project) { create(:project, :public, :repository) }
+      let_it_be(:manual_bridge) do
+        create(:ci_bridge, :manual, pipeline: pipeline,
+          options: { trigger: { project: bridge_downstream_project.full_path } })
+      end
+
+      def query_for(fields)
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              pipeline(iid: "#{pipeline.iid}") {
+                jobs { nodes { #{fields} } }
+              }
+            }
+          }
+        )
+      end
+
+      def expect_preloaded_with(fields, groups)
+        if groups
+          expect(::Ci::Preloaders::JobPolicyPreloader).to receive(:new)
+            .with(anything, maintainer, **groups).once.and_call_original
+        else
+          expect(::Ci::Preloaders::JobPolicyPreloader).not_to receive(:new)
+        end
+
+        post_graphql(query_for(fields), current_user: maintainer)
+
+        expect(graphql_data_at(:project, :pipeline, :jobs, :nodes)).to be_present
+      end
+
+      it 'preloads nothing when no policy field is selected' do
+        expect_preloaded_with('id name status', nil)
+      end
+
+      it 'preloads nothing for read-only permissions' do
+        expect_preloaded_with('userPermissions { readBuild readJobArtifacts }', nil)
+      end
+
+      it 'preloads deployments for a write permission' do
+        expect_preloaded_with('userPermissions { cancelBuild }',
+          { deployments: true, downstream_projects: false })
+      end
+
+      it 'preloads downstream projects as well for detailedStatus' do
+        expect_preloaded_with('detailedStatus { label }',
+          { deployments: true, downstream_projects: true })
+      end
+
+      it 'preloads deployments for playable' do
+        expect_preloaded_with('playable', { deployments: true, downstream_projects: false })
+      end
+
+      # ProjectPolicyPreloader is only reached from the downstream project group.
+      it 'leaves downstream projects alone when the selection does not need them' do
+        expect(::Preloaders::ProjectPolicyPreloader).not_to receive(:new)
+
+        post_graphql(query_for('playable'), current_user: maintainer)
+
+        expect(graphql_data_at(:project, :pipeline, :jobs, :nodes)).to be_present
+      end
+
+      it 'preloads downstream projects as well for canPlayJob' do
+        expect_preloaded_with('canPlayJob', { deployments: true, downstream_projects: true })
+      end
+
+      it 'unions the groups across the selected fields' do
+        expect_preloaded_with('playable canPlayJob',
+          { deployments: true, downstream_projects: true })
+      end
+
+      context 'when batch_pipeline_job_policy_checks is disabled' do
+        before do
+          stub_feature_flags(batch_pipeline_job_policy_checks: false)
+        end
+
+        it 'preloads nothing' do
+          expect_preloaded_with('canPlayJob detailedStatus { label }', nil)
+        end
+      end
+
+      # The flag has a project actor but the groups are recorded on the query
+      # context, which spans every connection in the query.
+      context 'when a second project in the same query has the flag off' do
+        let_it_be(:other_project) { create(:project, :repository, maintainers: maintainer) }
+        let_it_be(:other_pipeline) do
+          create(:ci_pipeline, project: other_project, user: maintainer, sha: other_project.commit.sha)
+        end
+
+        let_it_be(:other_deploy_job) do
+          create(:ci_build, :running, :deploy_job, :with_deployment, pipeline: other_pipeline,
+            environment: create(:environment, project: other_project).name)
+        end
+
+        let(:multi_project_query) do
+          %(
+            query {
+              enabled: project(fullPath: "#{project.full_path}") {
+                pipeline(iid: "#{pipeline.iid}") { jobs { nodes { canPlayJob } } }
+              }
+              disabled: project(fullPath: "#{other_project.full_path}") {
+                pipeline(iid: "#{other_pipeline.iid}") { jobs { nodes { canPlayJob } } }
+              }
+            }
+          )
+        end
+
+        before do
+          stub_feature_flags(batch_pipeline_job_policy_checks: project)
+        end
+
+        it 'preloads only for the project the flag is enabled for' do
+          only_enabled_project = an_object_satisfying { |jobs| jobs.map(&:project_id).uniq == [project.id] }
+
+          expect(::Ci::Preloaders::JobPolicyPreloader).to receive(:new)
+            .with(only_enabled_project, maintainer, deployments: true, downstream_projects: true)
+            .once.and_call_original
+
+          post_graphql(multi_project_query, current_user: maintainer)
+
+          expect(graphql_data_at(:enabled, :pipeline, :jobs, :nodes)).to be_present
+          expect(graphql_data_at(:disabled, :pipeline, :jobs, :nodes)).to be_present
+        end
+      end
+    end
+
+    context 'with the policy-backed fields of the pipeline jobs page' do
+      let_it_be(:downstream_project) { create(:project, :public, :repository) }
+      # The maintainer can trigger this one, so canPlayJob is true only while the
+      # preloader resolves the bridge's downstream project correctly.
+      let_it_be(:manual_downstream_project) { create(:project, :public, :repository, maintainers: maintainer) }
+      let_it_be(:outdated_environment) { create(:environment, project: project, name: 'outdated-env') }
+
+      let_it_be(:successful_build) do
+        create(:ci_build, :success, :artifacts, name: 'successful-build', pipeline: pipeline)
+      end
+
+      let_it_be(:manual_build) { create(:ci_build, :manual, name: 'manual-build', pipeline: pipeline) }
+      let_it_be(:generic_status) { create(:generic_commit_status, name: 'generic-status', pipeline: pipeline) }
+
+      let_it_be(:running_deploy) do
+        create(:ci_build, :running, :deploy_job, :with_deployment,
+          name: 'running-deploy', pipeline: pipeline, environment: environment.name)
+      end
+
+      let_it_be(:manual_deploy) do
+        create(:ci_build, :manual, :deploy_job, :with_deployment,
+          name: 'manual-deploy', pipeline: pipeline, environment: environment.name)
+      end
+
+      # A newer successful deployment to the same environment makes this job's own
+      # deployment outdated, which is what prevents its write abilities. The sha must
+      # differ: older_than_last_successful_deployment? returns false on a sha match.
+      let_it_be(:outdated_deploy) do
+        job = create(:ci_build, :running, :deploy_job, :with_deployment,
+          name: 'outdated-deploy', pipeline: pipeline, environment: outdated_environment.name)
+
+        create(:deployment, :success, project: project, environment: outdated_environment,
+          sha: project.repository.commit('master~1').sha)
+
+        job
+      end
+
+      let_it_be(:successful_bridge) do
+        bridge = create(:ci_bridge, :success, name: 'successful-bridge', pipeline: pipeline)
+        create(:ci_sources_pipeline, source_job: bridge, pipeline: create(:ci_pipeline, project: downstream_project))
+        bridge
+      end
+
+      let_it_be(:manual_bridge) do
+        create(:ci_bridge, :manual, name: 'manual-bridge', pipeline: pipeline,
+          options: { trigger: { project: manual_downstream_project.full_path } })
+      end
+
+      let_it_be(:page_jobs) do
+        [successful_build, manual_build, generic_status, running_deploy,
+          manual_deploy, outdated_deploy, successful_bridge, manual_bridge]
+      end
+
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              pipeline(iid: "#{pipeline.iid}") {
+                jobs {
+                  nodes {
+                    name
+                    detailedStatus { label action { path } }
+                    userPermissions { readBuild updateBuild cancelBuild }
+                    canPlayJob
+                    playable
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      # Every policy-backed value the page renders, for one job of each kind the
+      # preloader handles. Both flag states are checked against this, so a preload
+      # that resolves the wrong environment or downstream project shows up here.
+      let(:expected_nodes) do
+        {
+          'successful-build' => {
+            'name' => 'successful-build',
+            'detailedStatus' => {
+              'label' => 'passed',
+              'action' => { 'path' => job_action_path(successful_build, 'retry') }
+            },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => true, 'cancelBuild' => true },
+            'canPlayJob' => false,
+            'playable' => false
+          },
+          'manual-build' => {
+            'name' => 'manual-build',
+            'detailedStatus' => {
+              'label' => 'manual play action',
+              'action' => { 'path' => job_action_path(manual_build, 'play') }
+            },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => true, 'cancelBuild' => true },
+            'canPlayJob' => true,
+            'playable' => true
+          },
+          'generic-status' => {
+            'name' => 'generic-status',
+            'detailedStatus' => { 'label' => 'external commit status', 'action' => nil },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => true, 'cancelBuild' => true },
+            'canPlayJob' => false,
+            'playable' => false
+          },
+          'running-deploy' => {
+            'name' => 'running-deploy',
+            'detailedStatus' => {
+              'label' => 'running',
+              'action' => { 'path' => job_action_path(running_deploy, 'cancel') }
+            },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => true, 'cancelBuild' => true },
+            'canPlayJob' => false,
+            'playable' => false
+          },
+          'manual-deploy' => {
+            'name' => 'manual-deploy',
+            'detailedStatus' => {
+              'label' => 'manual play action',
+              'action' => { 'path' => job_action_path(manual_deploy, 'play') }
+            },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => true, 'cancelBuild' => true },
+            'canPlayJob' => true,
+            'playable' => true
+          },
+          # has_outdated_deployment? is what withholds the write abilities here, and it
+          # reads the environment's last_deployment that the preloader loads.
+          'outdated-deploy' => {
+            'name' => 'outdated-deploy',
+            'detailedStatus' => { 'label' => 'running', 'action' => nil },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => false, 'cancelBuild' => false },
+            'canPlayJob' => false,
+            'playable' => false
+          },
+          'successful-bridge' => {
+            'name' => 'successful-bridge',
+            'detailedStatus' => {
+              'label' => 'passed',
+              'action' => { 'path' => job_action_path(successful_bridge, 'retry') }
+            },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => true, 'cancelBuild' => true },
+            'canPlayJob' => false,
+            'playable' => false
+          },
+          'manual-bridge' => {
+            'name' => 'manual-bridge',
+            'detailedStatus' => {
+              'label' => 'manual play action',
+              'action' => { 'path' => job_action_path(manual_bridge, 'play') }
+            },
+            'userPermissions' => { 'readBuild' => true, 'updateBuild' => true, 'cancelBuild' => true },
+            'canPlayJob' => true,
+            'playable' => true
+          }
+        }
+      end
+
+      def job_action_path(job, action)
+        "/#{project.full_path}/-/jobs/#{job.id}/#{action}"
+      end
+
+      shared_examples 'the policy-backed fields of the page' do
+        it 'returns the expected value for every job' do
+          page_jobs
+
+          post_graphql(query, current_user: maintainer)
+
+          expect(graphql_data_at(:project, :pipeline, :jobs, :nodes).index_by { |node| node['name'] })
+            .to eq(expected_nodes)
+        end
+      end
+
+      it_behaves_like 'the policy-backed fields of the page'
+
+      context 'when batch_pipeline_job_policy_checks is disabled' do
+        before do
+          stub_feature_flags(batch_pipeline_job_policy_checks: false)
+        end
+
+        it_behaves_like 'the policy-backed fields of the page'
+      end
+    end
+  end
+
   describe '.jobs.count' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:successful_job) { create(:ci_build, :success, pipeline: pipeline) }

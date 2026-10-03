@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GlobalPolicy, feature_category: :shared do
+  using RSpec::Parameterized::TableSyntax
+
   include TermsHelper
 
   HasUserType::BOT_USER_TYPES.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition -- False positive
@@ -833,6 +835,36 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       end
 
       it { expect_allowed(*permissions) }
+    end
+  end
+
+  describe 'read_user_access_level' do
+    include AdminModeHelper
+
+    let_it_be(:instance_admin) { create(:admin) }
+    let_it_be(:regular_user) { create(:user) }
+    let_it_be(:organization_admin) { create(:organization_owner).user }
+
+    where(:user, :admin_mode, :allowed) do
+      ref(:instance_admin)     | true  | true
+      ref(:instance_admin)     | false | false
+      ref(:organization_admin) | false | false
+      ref(:regular_user)       | false | false
+      nil                      | false | false
+    end
+
+    with_them do
+      let(:current_user) { user }
+
+      before do
+        enable_admin_mode!(current_user) if admin_mode
+      end
+
+      if params[:allowed]
+        it { expect_allowed(:read_user_access_level) }
+      else
+        it { expect_disallowed(:read_user_access_level) }
+      end
     end
   end
 end

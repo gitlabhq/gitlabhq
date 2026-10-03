@@ -12,6 +12,7 @@ organization:
   - delete_organization_user
   - read_admin_users
   - read_organization_user
+  - read_user_access_level
   - transfer_group
   - update_integration
   - update_organization
