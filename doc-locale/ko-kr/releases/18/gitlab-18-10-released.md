@@ -11,9 +11,9 @@ description: "GitLab Duo Agent Platform으로 SAST 오탐 탐지 기능이 포�
 
 2026년 3월 19일에 GitLab 18.10이 다음 기능과 함께 릴리스되었습니다.
 
-또한 이달의 주목할 만한 기여자를 포함한 모든 기여자에게 감사드립니다.
+또한 이번 달의 주목할 만한 기여자를 포함하여 모든 기여자에게 감사드립니다.
 
-## 이달의 주목할 만한 기여자: Harshith Sudar {#this-months-notable-contributor-harshith-sudar}
+## 이달의 우수 기여자: Harshith Sudar {#this-months-notable-contributor-harshith-sudar}
 
 Harshith는 현재 레벨 3 기여자이며, 트리어지 자동화 및 기여자 인식부터 [GitLab Duo](https://about.gitlab.com/gitlab-duo-agent-platform/) 사용 인사이트에 이르기까지 커뮤니티 도구 및 분석 개선에 영향력 있는 기여를 했습니다.
 
@@ -23,7 +23,7 @@ Harshith는 또한 분석 및 GitLab Duo 사용 인사이트에 기여했습니�
 
 본인의 말로:
 
-> "기여하면서 정말 즐거웠던 점은 커뮤니티 내에서 아이디어가 얼마나 신중하게 논의되는지입니다. [MR !1288](https://gitlab.com/gitlab-org/developer-relations/contributor-success/contributors-gitlab-com/-/merge_requests/1288)에 대한 논의와 같이 제안이 협력적으로 탐색되는 것을 보는 것이 권장되며, 이는 훌륭한 학습 경험이 되었습니다. 이 커뮤니티의 일부가 될 수 있어서 정말 행복하며 앞으로 더 많은 기여를 하기를 기대합니다."
+> "기여하면서 정말 즐거웠던 점은 커뮤니티 내에서 아이디어가 얼마나 신중하게 논의되는지입니다. [머지 리퀘스트 !1288](https://gitlab.com/gitlab-org/developer-relations/contributor-success/contributors-gitlab-com/-/merge_requests/1288)에 대한 논의와 같이 제안이 협력적으로 탐색되는 것을 보는 것이 권장되며, 이는 훌륭한 학습 경험이 되었습니다. 이 커뮤니티의 일부가 될 수 있어서 정말 행복하며 앞으로 더 많은 기여를 하기를 기대합니다."
 
 Harshith, GitLab 코드베이스와 기여자 경험을 개선하기 위한 지속적인 작업에 감사드립니다!
 
@@ -48,12 +48,12 @@ GitLab 18.7에서 처음 베타로 도입된 SAST 오탐 탐지는 이제 GitLab
 
 보안 스캔이 실행되면 GitLab Duo Agent Platform은 각 치명적 및 높은 심각도 SAST 취약성을 분석하고 오탐일 가능성을 결정합니다. 평가는 취약성 보고서에 직접 나타나므로 팀이 불확실함 없이 자신감을 가지고 분류할 수 있는 컨텍스트를 제공합니다.
 
-주요 기능은 다음을 포함합니다:
+주요 기능은 다음을 포함합니다.
 
 - 자동 분석: 오탐 탐지는 각 보안 스캔 후 자동으로 실행되며 수동 개입이 필요하지 않습니다.
 - 수동 옵션: 사용자는 취약성 세부 정보 페이지에서 개별 취약성에 대해 오탐 탐지를 수동으로 실행하여 온디맨드 분석을 수행할 수 있습니다.
 - 영향도가 높은 결과에 집중: 분석을 치명적 및 높은 심각도 SAST 취약성으로 제한하면 가장 중요한 곳에서 노이즈를 제거합니다.
-- 상황별 AI 추론: 각 평가는 코드 컨텍스트, 데이터 흐름 및 정적 분석에 특화된 취약성 특성을 고려하여 발견이 오탐일 수 있는지 여부를 설명합니다.
+- 상황별 AI 추론: 각 평가는 코드 컨텍스트, 데이터 플로우 및 정적 분석에 특화된 취약성 특성을 고려하여 발견이 오탐일 수 있는지 여부를 설명합니다.
 - 원활한 워크플로우 통합: 결과는 기존 심각도, 상태 및 수정 정보와 함께 취약성 보고서에 직접 나타나므로 기존 워크플로우를 변경할 필요가 없습니다.
 
 이 기능은 GitLab Duo Agent Platform이 있는 Ultimate 고객을 위해 제공됩니다. 기능을 그룹 또는 프로젝트 설정에서 활성화해야 합니다. [이슈 583697](https://gitlab.com/gitlab-org/gitlab/-/issues/583697)에서 피드백을 환영합니다.
@@ -75,10 +75,10 @@ GitLab.com의 Free 티어 그룹 소유자는 이제 GitLab Credits로 AI를 잠
 
 주요 내용:
 
-- **Usage-based pricing**: 기본 요금제 구독이 필요 없이 월간 크레딧 약정을 구매하세요.
-- **Self-service purchasing**: GitLab 구매 흐름을 통해 크레딧을 구매하세요.
-- **Seamless upgrade path**: 나중에 Premium 또는 Ultimate으로 업그레이드하면 크레딧 약정이 전환됩니다.
-- **Consumption tracking**: GitLab Credits 대시보드를 통해 크레딧 사용을 모니터링하세요.
+- **사용량 기반 가격 책정**: 기본 요금제 구독이 필요 없이 월간 크레딧 약정을 구매하세요.
+- **셀프 서비스 구매**: GitLab 구매 플로우를 통해 크레딧을 구매하세요.
+- **원활한 업그레이드 경로**: 나중에 Premium 또는 Ultimate으로 업그레이드하면 크레딧 약정이 전환됩니다.
+- **소비 추적**: GitLab Credits 대시보드를 통해 크레딧 사용을 모니터링하세요.
 
 이 [구매 옵션](../../subscriptions/gitlab_credits.md#buy-gitlab-credits)은 현재 무료 GitLab.com 최상위 그룹에서만 사용할 수 있습니다.
 
@@ -96,14 +96,14 @@ GitLab.com의 Free 티어 그룹 소유자는 이제 GitLab Credits로 AI를 잠
 
 GitLab은 이제 패스키를 지원하여 암호 없는 로그인 및 피싱에 저항하는 2단계 인증(2FA) 방법으로 제공합니다. 패스키는 공개 키 암호화 및 생체 인증(지문, 얼굴 인식) 또는 기기 PIN을 사용하여 계정에 안전하게 접근합니다.
 
-패스키는 다음과 같은 이점을 제공합니다:
+패스키는 다음과 같은 이점을 제공합니다.
 
-- **Passwordless convenience**: 암호를 기억하는 대신 기기의 생체 인증 또는 PIN으로 로그인하세요.
-- **Multi-device support**: 데스크톱 브라우저, 모바일 기기(iOS 16 이상, Android 9 이상) 및 FIDO2/WebAuthn 호환 하드웨어 보안 키에서 패스키를 사용하세요.
-- **Phishing-resistant security**: 개인 키는 기기를 떠나지 않습니다. GitLab은 공개 키만 저장하므로 GitLab 서버가 손상되어도 계정을 보호합니다.
-- **Automatic 2FA integration**: 2FA가 활성화된 계정의 경우 패스키는 기본 2FA 방법으로 사용할 수 있게 됩니다.
+- **암호 없는 편의성**: 암호를 기억하는 대신 기기의 생체 인증 또는 PIN으로 로그인하세요.
+- **다중 기기 지원**: 데스크톱 브라우저, 모바일 기기(iOS 16 이상, Android 9 이상) 및 FIDO2/WebAuthn 호환 하드웨어 보안 키에서 패스키를 사용하세요.
+- **피싱 방지 보안**: 개인 키는 기기를 떠나지 않습니다. GitLab은 공개 키만 저장하므로 GitLab 서버가 손상되어도 계정을 보호합니다.
+- **자동 2FA 통합**: 2FA가 활성화된 계정의 경우 패스키는 기본 2FA 방법으로 사용할 수 있게 됩니다.
 
-시작하려면 계정 설정에 패스키를 추가하세요. [366758](https://gitlab.com/gitlab-org/gitlab/-/work_items/[366758](https://gitlab.com/gitlab-org/gitlab/-/work_items/366758)) 이슈에서 질문과 피드백을 환영합니다.
+시작하려면 계정 설정에 패스키를 추가하세요. [이슈 366758](https://gitlab.com/gitlab-org/gitlab/-/work_items/[366758](https://gitlab.com/gitlab-org/gitlab/-/work_items/366758))에서 질문과 피드백을 환영합니다.
 
 ### 작업 항목 목록 및 저장된 보기 소개 {#introducing-the-work-items-list-and-saved-views}
 
@@ -117,7 +117,7 @@ GitLab은 이제 패스키를 지원하여 암호 없는 로그인 및 피싱에
 
 {{< /details >}}
 
-GitLab 계획 경험은 작업 항목 목록 및 저장된 보기로 상당히 업그레이드되고 있으며, 오래 요청된 두 가지 기능을 함께 제공합니다:
+GitLab 계획 경험은 작업 항목 목록 및 저장된 보기로 상당히 업그레이드되고 있으며, 오래 요청된 두 가지 기능을 함께 제공합니다.
 
 - 작업 항목 목록은 에픽, 이슈 및 기타 작업 항목을 단일 통합 목록으로 결합하므로 여러 작업 항목 유형에 대해 별도 페이지 간 전환할 필요가 없습니다. 이를 통해 계획 객체 간 관계를 이해하기가 더 쉬워집니다.
 - 저장된 보기를 사용하면 필터, 정렬 순서 및 표시 옵션을 포함한 사용자 지정 목록 구성을 만들고 저장할 수 있습니다. 이를 통해 정기적인 확인이 더 효율적이 되고 팀 전체에서 표준화된 작업 보기 방식을 지원합니다.
@@ -156,13 +156,13 @@ GitLab 계획 경험은 작업 항목 목록 및 저장된 보기로 상당히 �
 
 일관된 머지 리퀘스트 제목을 유지하는 것은 구조화된 명명 규칙에 의존하는 팀에게 중요합니다. Conventional Commits 형식을 따르거나 내부 추적 시스템에 연결하는 것이든 간에 말입니다. 팀은 이전에 이러한 규칙을 적용하기 위해 외부 도구 또는 사용자 지정 CI/CD 파이프라인 작업이 필요했지만 이 접근 방식에는 치명적인 간격이 있었습니다. 파이프라인이 실행된 후 누군가 머지 리퀘스트 제목을 변경한 경우 재검증이 없었으며 MR은 여전히 비호환 제목으로 병합될 수 있었습니다.
 
-이제 프로젝트 설정에서 머지 리퀘스트에 필요한 제목 정규식을 구성할 수 있습니다. 구성되면 GitLab은 머지 리퀘스트 제목을 병합 가능성 확인으로 패턴에 비해 평가합니다. 제목이 마지막으로 변경된 때와 관계없이 제목이 준수하도록 업데이트될 때까지 병합을 차단합니다.
+이제 프로젝트 설정에서 머지 리퀘스트에 필요한 제목 정규식을 구성할 수 있습니다. 구성되면 GitLab은 병합 가능성 확인의 일환으로 머지 리퀘스트 제목을 해당 패턴과 대조하여 평가하며, 제목이 마지막으로 변경된 시점과 관계없이 제목이 규칙을 준수하도록 업데이트될 때까지 병합을 차단합니다.
 
 이를 설정하려면 프로젝트의 **설정 > 머지 리퀘스트**로 이동하여 **Merge request title must match regex** 필드에 정규식 패턴을 입력하세요.
 
 기존 머지 리퀘스트 워크플로우는 이전과 같이 계속 작동합니다. 이 확인은 명시적으로 제목 정규식을 구성한 프로젝트에만 적용됩니다.
 
-### AI를 사용한 스크릿 오탐 탐지(베타) {#secret-false-positive-detection-with-ai-beta}
+### AI를 사용한 시크릿 오탐 탐지(베타) {#secret-false-positive-detection-with-ai-beta}
 
 <!-- categories: Vulnerability Management, Secret Detection -->
 
@@ -175,13 +175,13 @@ GitLab 계획 경험은 작업 항목 목록 및 저장된 보기로 상당히 �
 
 {{< /details >}}
 
-보안 팀은 오탐으로 판명되는 시크릿 탐지 결과를 조사하는 데 상당한 시간을 소비합니다. 예를 들어, 테스트 자격 증명, 예제 값 및 자리 표시자 토큰이 실제 시크릿으로 잘못 표시됩니다. 오탐은 경보 피로를 유발하고, 스캔 결과에 대한 신뢰를 훼손하며, 실제 보안 위험으로부터 주의를 돌립니다.
+보안 팀은 오탐으로 판명되는 시크릿 검색 결과를 조사하는 데 상당한 시간을 소비합니다. 예를 들어, 테스트 자격 증명, 예제 값 및 자리 표시자 토큰이 실제 시크릿으로 잘못 표시됩니다. 오탐은 경보 피로를 유발하고, 스캔 결과에 대한 신뢰를 훼손하며, 실제 보안 위험으로부터 주의를 돌립니다.
 
-GitLab 18.10은 실제 중요한 시크릿에 초점을 맞추기 위해 AI 기반 시크릿 오탐 탐지(베타)를 도입합니다. 보안 스캔이 실행되면 GitLab Duo는 각 **치명적** 및 **높음** 심각도 시크릿 탐지 취약성을 자동으로 분석하여 오탐인지 여부를 결정합니다.
+GitLab 18.10은 실제 중요한 시크릿에 초점을 맞추기 위해 AI 기반 시크릿 오탐 탐지(베타)를 도입합니다. 보안 스캔이 실행되면 GitLab Duo는 각 **치명적** 및 **높음** 심각도 시크릿 검색 취약성을 자동으로 분석하여 오탐인지 여부를 결정합니다.
 
 AI 평가는 취약성 보고서에 직접 나타나므로 보안 엔지니어가 더 빠르고 자신감 있는 분류 결정을 내릴 수 있는 즉각적인 컨텍스트를 제공합니다.
 
-주요 기능은 다음을 포함합니다:
+주요 기능은 다음을 포함합니다.
 
 - 자동 분석: 오탐 탐지는 각 보안 스캔 후 자동으로 실행되며 수동 트리거가 필요하지 않습니다.
 - 수동 트리거 옵션: 취약성 세부 정보 페이지에서 개별 취약성에 대해 오탐 탐지를 수동으로 트리거하여 온디맨드 분석을 수행할 수 있습니다.
@@ -206,7 +206,7 @@ AI 평가는 취약성 보고서에 직접 나타나므로 보안 엔지니어�
 
 동적 작업 구성에 CI/CD 변수를 사용하는 것은 어려울 수 있습니다. 변수는 복잡한 재정의 계층을 따르므로 관리하기 어렵고 다양한 사용 사례에 사용할 수 없습니다.
 
-이제 `inputs`을 사용하여 작업 수준에서 명시적인 유형화된 입력값을 정의할 수 있습니다. 작업 입력값을 사용하여 작업이 런타임에 수용하는 값을 정의하고 제어합니다. 작업 입력값을 사용하면 다음을 얻습니다:
+이제 `inputs`을 사용하여 작업 수준에서 명시적인 유형화된 입력값을 정의할 수 있습니다. 작업 입력값을 사용하여 작업이 런타임에 수용하는 값을 정의하고 제어합니다. 작업 입력값을 사용하면 다음을 얻습니다.
 
 - 유형 안전(문자열, 숫자, 부울, 배열).
 - 정적이거나 기존 변수를 참조할 수 있는 기본값.
@@ -229,7 +229,7 @@ AI 평가는 취약성 보고서에 직접 나타나므로 보안 엔지니어�
 
 {{< /details >}}
 
-[`[gitlab_blob_search](../../user/duo_agent_platform/agents/tools.md)`](../../user/duo_agent_platform/agents/tools.md) 도구는 이제 GitLab AI 에이전트가 코드를 검색할 수 있게 합니다:
+[`[gitlab_blob_search](../../user/duo_agent_platform/agents/tools.md)`](../../user/duo_agent_platform/agents/tools.md) 도구는 이제 GitLab AI 에이전트가 코드를 검색할 수 있게 합니다.
 
 - 그룹의 모든 프로젝트 전체.
 - 인스턴스의 모든 접근 가능한 프로젝트 전체.
@@ -244,7 +244,7 @@ AI 평가는 취약성 보고서에 직접 나타나므로 보안 엔지니어�
 
 - 티어: Premium, Ultimate
 - 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- 링크: [문서](../../user/gitlab_duo/model_context_protocol/mcp_server_tools.md#manage_pipeline) \| [관련 이슈](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826)
+- 링크: [문서](../../user/model_context_protocol/mcp_server_tools.md#manage_pipeline) \| [관련 이슈](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826)
 
 {{< /details >}}
 
@@ -284,7 +284,7 @@ AI 평가는 취약성 보고서에 직접 나타나므로 보안 엔지니어�
 
 이는 안전한 외부 통합을 제공하면서 네트워크 목적지에 대한 제어를 유지합니다. 또한 프로젝트 관리자에게 필요한 API 연결, MCP 서버 및 타사 서비스를 허용하는 유연성을 제공하면서 보안 경계를 적용합니다.
 
-[네트워크 접근 제어](../../user/duo_agent_platform/environment_sandbox.md)를 `network_policy` 섹션의 `agent-config.yml`에서 구성합니다. `agent-config.yml`는 브랜치 보호 규칙 및 MR 승인 워크플로우로 보호됩니다.
+[네트워크 접근 제어](../../user/duo_agent_platform/environment_sandbox.md)를 `network_policy` 섹션의 `agent-config.yml`에서 구성합니다. `agent-config.yml`는 브랜치 보호 규칙 및 머지 리퀘스트 승인 워크플로우로 보호됩니다.
 
 ### GitLab Duo Agent Platform을 위한 자체 호스팅 Vertex AI {#self-hosted-vertex-ai-for-gitlab-duo-agent-platform}
 
@@ -346,7 +346,7 @@ GitLab Duo Agent Platform은 이제 [Agent Skills 명세](https://agentskills.io
 
 - 티어: Premium, Ultimate
 - 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- 링크: [문서](../../subscriptions/gitlab_credits.md#export-usage-data) \| [관련 이슈](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504)
+- 링크: [문서](../../subscriptions/gitlab_credits_dashboard.md#export-usage-data) \| [관련 이슈](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504)
 
 {{< /details >}}
 
@@ -364,13 +364,13 @@ GitLab Duo Agent Platform은 이제 [Agent Skills 명세](https://agentskills.io
 
 - 티어: Premium, Ultimate
 - 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- 링크: [문서](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard) \| [관련 이슈](https://gitlab.com/gitlab-org/gitlab/-/work_items/579139)
+- 링크: [문서](../../subscriptions/gitlab_credits_dashboard.md) \| [관련 이슈](https://gitlab.com/gitlab-org/gitlab/-/work_items/579139)
 
 {{< /details >}}
 
 GitLab Credits 대시보드는 이제 크레딧 소비를 생성한 GitLab Duo Agent Platform 세션과 직접 연결합니다.
 
-사용자별 드릴다운 보기에서 **조치** 열(예: **에이전트 채팅** 또는 **Foundational Agents**)은 이제 해당 세션 세부 정보로 이동하는 클릭 가능한 하이퍼링크입니다.
+사용자별 드릴다운 보기에서 **조치** 열(예: **에이전트 채팅** 또는 **기본 에이전트**)은 이제 해당 세션 세부 정보로 이동하는 클릭 가능한 하이퍼링크입니다.
 
 이 링크는 청구에서 AI 세션 동작으로의 직접 감사 추적을 제공하므로 관리자는 별도 시스템에서 타임스탬프를 수동으로 상관시키지 않고 크레딧 사용, 지원 에스컬레이션 및 규정 준수 검토를 조사할 수 있습니다.
 
@@ -382,7 +382,7 @@ GitLab Credits 대시보드는 이제 크레딧 소비를 생성한 GitLab Duo A
 
 - 티어: Premium, Ultimate
 - 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
-- 링크: [문서](../../subscriptions/gitlab_credits.md#view-the-gitlab-credits-dashboard) \| [관련 이슈](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/15608)
+- 링크: [문서](../../subscriptions/gitlab_credits_dashboard.md#view-the-gitlab-credits-dashboard) \| [관련 이슈](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/15608)
 
 {{< /details >}}
 
@@ -404,16 +404,16 @@ GitLab Credits 대시보드는 이제 크레딧 소비를 생성한 GitLab Duo A
 
 {{< /details >}}
 
-**탐색**의 프로젝트 페이지를 간소화하여 불필요한 옵션을 제거했습니다. 간소화된 인터페이스는 이제 두 가지 핵심 보기에 중점을 둡니다:
+**탐색**의 프로젝트 페이지를 간소화하여 혼잡함을 줄이고 시간이 지나며 누적된 불필요한 옵션을 제거했습니다. 간소화된 인터페이스는 이제 두 가지 핵심 보기에 중점을 둡니다.
 
 - **활성** 탭: 최근 활동 및 진행 중인 개발이 있는 프로젝트를 발견하세요.
 - **비활성** 탭: 보관된 프로젝트 및 삭제 예정인 프로젝트에 접근하세요.
 
-제거된 중복 탭:
+다음과 같은 여러 중복 탭을 제거했습니다.
 
-- **Most starred** 프로젝트는 **활성** 또는 **비활성** 탭을 별 개수로 정렬하여 찾을 수 있습니다.
+- **즐겨찾기 많은** 프로젝트는 **활성** 또는 **비활성** 탭을 별 개수로 정렬하여 찾을 수 있습니다.
 - **전체** 프로젝트는 **활성** 및 **비활성** 탭을 모두 보면 볼 수 있습니다.
-- **Trending** 탭은 기능이 제한되고 사용량이 낮아 GitLab 19.0에서 완전히 제거될 예정입니다.
+- **인기** 탭은 기능이 제한되고 사용량이 낮아 GitLab 19.0에서 완전히 제거될 예정입니다.
 
 깔끔한 디자인은 시각적 일관성을 위해 다른 프로젝트 목록과 일치합니다. 더 논리적인 조직 및 유연한 정렬 옵션을 통해 모든 동일한 콘텐츠에 접근할 수 있습니다.
 
@@ -433,7 +433,7 @@ GitLab Credits 대시보드는 이제 크레딧 소비를 생성한 GitLab Duo A
 
 SBOM을 사용한 GitLab 종속성 검사는 이제 Java `build.gradle` 및 `build.gradle.kts` 빌드 파일 검사를 지원합니다.
 
-이전에는 Gradle을 사용하는 Java 프로젝트의 종속성 검사에 잠금 파일이 있어야 했습니다. 이제 잠금 파일을 사용할 수 없으면 분석기는 자동으로 `build.gradle` 및 `build.gradle.kts` 파일을 검사하여 직접 종속성만 추출 및 보고하므로 취약성 분석을 수행합니다. 이 개선 사항은 Gradle을 사용하는 Java 프로젝트가 잠금 파일을 요구하지 않고 종속성 검사를 활성화하기가 더 쉬워집니다.
+이전에는 Gradle을 사용하는 Java 프로젝트의 종속성 검사에 잠금 파일이 있어야 했습니다. 이제 잠금 파일을 사용할 수 없으면 분석기는 자동으로 `build.gradle` 및 `build.gradle.kts` 파일을 검사하여 직접 종속성만 추출 및 보고하므로 취약성 분석을 수행합니다. 이 개선 사항 덕분에 Gradle을 사용하는 Java 프로젝트가 잠금 파일 없이도 더 쉽게 종속성 검사를 활성화할 수 있습니다.
 
 매니페스트 대체를 활성화하려면 `DS_ENABLE_MANIFEST_FALLBACK` CI/CD 변수를 `"true"`로 설정합니다.
 
@@ -549,9 +549,9 @@ GA 경로에는 `index.yaml` 끝점이 1,000개 이상의 차트를 반환하지
 
 이전에는 이를 달성하려면 원시 HTML 및 Markdown의 조합이 필요했으므로 번거롭고 유지 관리하기 어려웠습니다.
 
-이 개선 사항은 이슈, 에픽 및 기타 콘텐츠의 구조화된 테이블 레이아웃 내에서 직접 작업 완료를 추적하기가 더 쉬워집니다.
+이 개선 사항 덕분에 이슈, 에픽 및 기타 콘텐츠의 구조화된 테이블 레이아웃 내에서 작업 완료를 직접 추적하기가 더 쉬워졌습니다.
 
-### 보안 구성 프로필의 파이프라인 시크릿 탐지 {#pipeline-secret-detection-in-security-configuration-profiles}
+### 보안 구성 프로필의 파이프라인 시크릿 검색 {#pipeline-secret-detection-in-security-configuration-profiles}
 
 <!-- categories: Vulnerability Management -->
 
@@ -563,15 +563,15 @@ GA 경로에는 `index.yaml` 끝점이 1,000개 이상의 차트를 반환하지
 
 {{< /details >}}
 
-GitLab 18.9에서 **Secret Detection - Default** 프로필과 함께 보안 구성 프로필을 도입했으며 푸시 보호로 시작했습니다. 이 프로필을 사용하여 단일 CI/CD 구성 파일을 건드리지 않고 수백 개의 프로젝트에 표준화된 시크릿 스캐닝을 적용합니다.
+GitLab 18.9에서 **시크릿 검색 - 기본값** 프로필과 함께 보안 구성 프로필을 도입했으며 푸시 보호로 시작했습니다. 이 프로필을 사용하여 단일 CI/CD 구성 파일을 건드리지 않고 수백 개의 프로젝트에 표준화된 시크릿 스캐닝을 적용합니다.
 
-**Secret Detection - Default** 프로필은 이제 파이프라인 기반 스캐닝도 포함하므로 전체 개발 워크플로우에서 시크릿 탐지에 대한 통합 제어 표면을 제공합니다.
+**시크릿 검색 - 기본값** 프로필은 이제 파이프라인 기반 스캐닝도 포함하므로 전체 개발 워크플로우에서 시크릿 검색에 대한 통합 제어 표면을 제공합니다.
 
-프로필은 세 가지 스캔 트리거를 활성화합니다:
+프로필은 세 가지 스캔 트리거를 활성화합니다.
 
-- **Push Protection**: 모든 Git 푸시 이벤트를 스캔하고 시크릿이 탐지된 푸시를 차단하여, 시크릿이 코드베이스에 유입되는 것을 원천적으로 방지합니다.
+- **푸시 보호**: 모든 Git 푸시 이벤트를 스캔하고 시크릿이 탐지된 푸시를 차단하여, 시크릿이 코드베이스에 유입되는 것을 원천적으로 방지합니다.
 - **머지 리퀘스트 파이프라인**: 열려 있는 머지 리퀘스트가 있는 브랜치에 새 커밋이 푸시될 때마다 스캔을 자동으로 실행합니다. 결과는 머지 리퀘스트에 의해 도입된 새로운 취약성만 포함합니다.
-- **브랜치 파이프라인(기본값만)**: 변경 사항이 기본 브랜치에 병합되거나 푸시될 때 자동으로 실행되므로 기본 브랜치의 시크릿 탐지 태세에 대한 완전한 보기를 제공합니다.
+- **브랜치 파이프라인(기본값만)**: 변경 사항이 기본 브랜치에 병합되거나 푸시될 때 자동으로 실행되므로 기본 브랜치의 시크릿 검색 태세에 대한 완전한 보기를 제공합니다.
 
 프로필을 적용하려면 YAML 구성이 필요하지 않습니다. 그룹에 적용하여 그룹의 모든 프로젝트에 걸쳐 적용 범위를 전파하거나 개별 프로젝트에 적용하여 더 세밀한 제어를 할 수 있습니다.
 
@@ -591,7 +591,7 @@ GitLab 18.9에서 **Secret Detection - Default** 프로필과 함께 보안 구�
 
 [macOS의 호스팅 러너](../../ci/runners/hosted_runners/macos.md)를 사용하면 개발 팀이 GitLab CI/CD와 통합된 안전한 온디맨드 빌드 환경에서 macOS 애플리케이션을 더 빠르게 구축하고 배포할 수 있습니다.
 
-`macos-26-xcode-26` 이미지를 `.gitlab-ci.yml` 파일에서 사용하여 오늘 시도해 보세요.
+`.gitlab-ci.yml` 파일에서 `macos-26-xcode-26` 이미지를 사용하여 오늘 바로 시도해 보세요.
 
 ### GitLab Runner 18.10 {#gitlab-runner-1810}
 
@@ -610,7 +610,7 @@ GitLab Runner 18.10도 오늘 릴리스합니다! GitLab Runner는 CI/CD 작업�
 #### 새로운 기능 {#whats-new}
 
 - [빌드 pod의 Pod 수준 리소스를 정의하기 위해 k8s 러너 허용](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39085)
-- [모든 Runner 프로젝트의 Go 버전 및 패키지를 업데이트하는 자동화 추가](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39192)
+- [모든 러너 프로젝트의 Go 버전 및 패키지를 업데이트하는 자동화 추가](https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/39192)
 
 #### 버그 수정 {#bug-fixes}
 
@@ -625,5 +625,5 @@ GitLab Runner 18.10도 오늘 릴리스합니다! GitLab Runner는 CI/CD 작업�
 - [버그 수정](https://gitlab.com/groups/gitlab-org/-/issues/?sort=updated_desc&state=closed&label_name%5B%5D=type%3A%3Abug&or%5Blabel_name%5D%5B%5D=workflow%3A%3Acomplete&or%5Blabel_name%5D%5B%5D=workflow%3A%3Averification&or%5Blabel_name%5D%5B%5D=workflow%3A%3Aproduction&milestone_title=18.10)
 - [성능 개선](https://gitlab.com/groups/gitlab-org/-/issues/?sort=updated_desc&state=closed&label_name%5B%5D=bug%3A%3Aperformance&or%5Blabel_name%5D%5B%5D=workflow%3A%3Acomplete&or%5Blabel_name%5D%5B%5D=workflow%3A%3Averification&or%5Blabel_name%5D%5B%5D=workflow%3A%3Aproduction&milestone_title=18.10)
 - [UI 개선](https://papercuts.gitlab.com/?milestone=18.10)
-- [더 이상 사용되지 않는 항목 및 제거](../../update/deprecations.md)
+- [지원 중단 및 제거](../../update/deprecations.md)
 - [업그레이드 정보](../../update/versions/_index.md)

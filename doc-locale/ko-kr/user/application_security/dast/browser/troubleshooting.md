@@ -15,10 +15,10 @@ DAST 스캔에 문제가 발생했을 때:
 - DAST를 처음 설정하는 경우 [DAST 설정](#setting-up-dast)을 확인합니다.
 - 특정 오류 메시지가 있는 경우 [알려진 문제](#known-problems)를 확인합니다.
 
-그렇지 않으면 다음 질문에 답변하여 문제를 발견해봅니다:
+그렇지 않으면 다음 질문에 답변하여 문제를 발견해봅니다.
 
 - [예상되는 결과는 무엇입니까?](#what-is-the-expected-outcome)
-- [그 결과가 사용자가 달성할 수 있습니까?](#is-the-outcome-achievable-by-a-human)
+- [그 결과를 사람이 직접 달성할 수 있습니까?](#is-the-outcome-achievable-by-a-human)
 - [DAST가 작동하지 않을 이유가 있습니까?](#any-reason-why-dast-would-not-work)
 - [애플리케이션은 어떻게 작동합니까?](#how-does-your-application-work)
 - [DAST는 무엇을 수행합니까?](#what-is-dast-doing)
@@ -29,15 +29,15 @@ DAST를 처음 설정할 때 다음의 문제가 발생할 수 있습니다.
 
 #### 구성 유효성 검사 실패: 필수 필드 URL이 설정되지 않음 {#configuration-validation-failed-required-field-url-was-not-set}
 
-대상 URL을 정의하지 않고 DAST 템플릿을 포함하면 파이프라인이 구성 유효성 검사 중에 다음 오류로 실패합니다:
+대상 URL을 정의하지 않고 DAST 템플릿을 포함하면 파이프라인이 구성 유효성 검사 중에 다음 오류로 실패합니다.
 
 ```plaintext
 ERR MAIN  configuration validation failed error="the required field URL was not set"
 ```
 
-이 오류는 DAST가 어느 URL을 스캔할지 모른다는 것을 나타냅니다. 이 문제를 해결하려면 다음의 방법 중 하나로 대상 URL을 정의합니다:
+이 오류는 DAST가 어느 URL을 스캔할지 모른다는 것을 나타냅니다. 이 문제를 해결하려면 다음의 방법 중 하나로 대상 URL을 정의합니다.
 
-- `DAST_TARGET_URL` CI/CD 변수를 `.gitlab-ci.yml` 파일에 설정합니다:
+- `DAST_TARGET_URL` CI/CD 변수를 `.gitlab-ci.yml` 파일에 설정합니다.
 
   ```yaml
   stages:
@@ -57,14 +57,14 @@ ERR MAIN  configuration validation failed error="the required field URL was not 
 
 러너가 대상 애플리케이션에 도달할 수 없으면 DAST 스캔이 연결 오류로 실패합니다. 이것은 일반적으로 네트워크 구성 또는 방화벽 문제로 인해 발생합니다.
 
-DAST는 지정한 URL을 사용하여 애플리케이션에 연결해야 합니다:
+DAST는 지정한 URL을 사용하여 애플리케이션에 연결해야 합니다.
 
 - `DAST_TARGET_URL` 또는 `DAST_AUTH_URL`에 포트 번호가 포함되어 있으면 러너가 해당 특정 포트에 액세스할 수 있는지 확인합니다.
-- URL에 포트가 지정되지 않으면 DAST는 표준 포트를 사용합니다:
+- URL에 포트가 지정되지 않으면 DAST는 표준 포트를 사용합니다.
   - HTTP URL의 경우 포트 `80` (예: `http://example.com`).
   - HTTPS URL의 경우 포트 `443` (예: `https://example.com`).
 
-연결 문제의 일반적인 원인은 다음을 포함합니다:
+연결 문제의 일반적인 원인은 다음을 포함합니다.
 
 - 혼합 HTTP 및 HTTPS 콘텐츠. 애플리케이션이 HTTP와 HTTPS를 모두 사용할 수 있습니다. 예를 들어 대상 URL이 `http://example.com`이지만 사이트가 `https://example.com`에서 리소스를 로드하는 경우 러너가 두 포트 모두에 액세스할 수 있는지 확인합니다.
 - 사용자 지정 포트. 애플리케이션이 비표준 포트에서 실행되는 경우 `DAST_TARGET_URL`에 포함시킵니다. 예를 들어, `https://example.com:8443`입니다.
@@ -96,7 +96,7 @@ DAST가 스캔을 시작하기 전에 대상 URL에 도달할 수 있는지 확�
    - 방화벽 규칙이 필요한 포트에서의 트래픽을 허용하는지 확인합니다.
    - 내부 애플리케이션의 경우 러너가 내부 DNS 서버에 액세스할 수 있는지 확인합니다.
 
-1. 애플리케이션이 시작되거나 정상이 되는 데 오래 걸리는 경우 타임아웃을 증가시킵니다:
+1. 애플리케이션이 시작되거나 정상이 되는 데 오래 걸리는 경우 타임아웃을 증가시킵니다.
 
    ```yaml
       variables:
@@ -113,7 +113,7 @@ DAST가 스캔을 시작하기 전에 대상 URL에 도달할 수 있는지 확�
 
 #### 연결 거부됨 {#connection-refused}
 
-`connection refused`이라고 말하는 오류가 표시될 수 있습니다. 이것은 일반적으로 서버는 존재하지만 다음과 같은 경우에 발생합니다:
+`connection refused`이라고 말하는 오류가 표시될 수 있습니다. 이것은 일반적으로 서버는 존재하지만 다음과 같은 경우에 발생합니다.
 
 - 애플리케이션이 아직 시작을 마치지 못했습니다.
 - 애플리케이션이 지정된 것과 다른 포트에서 실행 중입니다.
@@ -124,7 +124,7 @@ DAST가 스캔을 시작하기 전에 대상 URL에 도달할 수 있는지 확�
 
 대상 애플리케이션이 `HTTP 5xx` 오류로 응답할 수 있습니다. 이것은 애플리케이션에 도달할 수 있지만 `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable` 또는 `504 Gateway Timeout`와 같은 서버 오류로 응답하는 경우에 발생합니다.
 
-다음과 같은 경우에 서버 오류가 표시될 수 있습니다:
+다음과 같은 경우에 서버 오류가 표시될 수 있습니다.
 
 - 애플리케이션이 시작 중이고 완전히 준비되지 않았습니다.
 - 애플리케이션에 구성 오류가 있습니다.
@@ -136,9 +136,9 @@ DAST 스캔의 문제를 마주친 많은 사용자는 스캐너가 수행할 �
 
 가능한 한 문제를 격리하여 솔루션 검색을 좁히는 데 도움이 됩니다. 예를 들어 DAST가 특정 페이지를 스캔하지 않는 경우를 생각해봅니다. DAST는 어디서 페이지를 찾았어야 합니까? 거기에 도달하기 위해 어떤 경로를 취했습니까? DAST가 선택했어야 하지만 선택하지 않은 참조 페이지의 요소가 있었습니까?
 
-### 그 결과가 사용자가 달성할 수 있습니까? {#is-the-outcome-achievable-by-a-human}
+### 그 결과를 사람이 직접 달성할 수 있습니까? {#is-the-outcome-achievable-by-a-human}
 
-사용자가 애플리케이션을 수동으로 탐색할 수 없으면 DAST는 애플리케이션을 스캔할 수 없습니다.
+사람이 애플리케이션을 수동으로 탐색할 수 없으면 DAST는 애플리케이션을 스캔할 수 없습니다.
 
 예상되는 결과를 알고 있으면 컴퓨터의 브라우저를 사용하여 수동으로 복제해봅니다. 예를 들어:
 
@@ -156,9 +156,9 @@ DAST 스캔의 문제를 마주친 많은 사용자는 스캐너가 수행할 �
 
 ### DAST가 작동하지 않을 이유가 있습니까? {#any-reason-why-dast-would-not-work}
 
-다음과 같은 경우에 DAST는 올바르게 스캔할 수 없습니다:
+다음과 같은 경우에 DAST는 올바르게 스캔할 수 없습니다.
 
-- CAPTCHA가 있습니다. 스캔되는 애플리케이션의 테스트 환경에서 이들을 비활성화합니다.
+- CAPTCHA가 있습니다. 스캔 대상 애플리케이션의 테스트 환경에서 이를 비활성화합니다.
 - 대상 애플리케이션에 액세스할 수 없습니다. 러너가 DAST 구성에 사용되는 URL을 사용하여 애플리케이션에 액세스할 수 있는지 확인합니다.
 
 ### 애플리케이션은 어떻게 작동합니까? {#how-does-your-application-work}
@@ -187,7 +187,7 @@ DAST 스캔의 문제를 마주친 많은 사용자는 스캐너가 수행할 �
 
 작업 콘솔(CI/CD 작업 로그)은 DAST가 수행하는 작업의 간단한 요약을 제공합니다. 더 자세한 진단 정보를 얻으려면 로그 파일을 구성하여 세분화된 출력을 생성할 수 있습니다.
 
-다음의 로깅 옵션을 사용할 수 있습니다:
+다음의 로깅 옵션을 사용할 수 있습니다.
 
 - [진단 로그](#diagnostic-logs)는 분석기가 수행하는 작업을 이해하는 데 유용합니다.
 - [Chromium DevTools 로깅](#chromium-devtools-logging)은 DAST와 Chromium 간의 통신을 검사하는 데 유용합니다.
@@ -209,7 +209,7 @@ DAST 스캔의 문제를 마주친 많은 사용자는 스캐너가 수행할 �
 
 ### 로그 대상 {#log-destination}
 
-로그는 로그 파일 로 전송됩니다. 환경 변수 `DAST_LOG_FILE_CONFIG`을 사용하여 각 대상이 수락할 다른 로그를 구성할 수 있습니다. 예를 들어:
+로그는 로그 파일 아티팩트로 전송됩니다. 환경 변수 `DAST_LOG_FILE_CONFIG`을 사용하여 각 대상이 수락할 다른 로그를 구성할 수 있습니다. 예를 들어:
 
 ```yaml
 include:
@@ -225,13 +225,13 @@ dast:
 
 ### 로그 수준 {#log-levels}
 
-구성할 수 있는 로그 수준은 다음과 같습니다:
+구성할 수 있는 로그 수준은 다음과 같습니다.
 
 | 로그 모듈              | 구성 요소 개요                                                       | 추가                             |
 |-------------------------|--------------------------------------------------------------------------|----------------------------------|
 | `TRACE`                 | 기능의 특정하고 종종 잡음이 많은 내부 작동에 사용됩니다.              |                                  |
 | `DEBUG`                 | 기능의 내부 작동을 설명합니다. 진단 목적으로 사용됩니다. |                                  |
-| `INFO`                  | 스캔의 높은 수준의 흐름과 결과를 설명합니다.               | 지정되지 않은 경우 기본 수준. |
+| `INFO`                  | 스캔의 높은 수준의 플로우와 결과를 설명합니다.               | 지정되지 않은 경우 기본 수준. |
 | `WARN`                  | DAST가 복구하고 스캔을 계속하는 오류 상황을 설명합니다. |                                  |
 | `FATAL`/`ERROR`/`PANIC` | 종료 전의 복구 불가능한 오류를 설명합니다.                            |                                  |
 
@@ -239,7 +239,7 @@ dast:
 
 `LOGLEVEL`은 로그 대상의 기본 로그 수준을 구성합니다. 다음 모듈이 구성되면 DAST는 기본 로그 수준보다 해당 모듈의 로그 수준을 우선적으로 사용합니다.
 
-로깅을 위해 구성할 수 있는 모듈은 다음과 같습니다:
+로깅을 위해 구성할 수 있는 모듈은 다음과 같습니다.
 
 | 로그 모듈 | 구성 요소 개요                                                                                |
 |------------|---------------------------------------------------------------------------------------------------|
@@ -255,7 +255,7 @@ dast:
 | `CRWLG`    | 크롤 그래프 생성기에 사용됩니다.                                                               |
 | `DATAB`    | 내부 데이터베이스에 데이터를 유지하는 데 사용됩니다.                                                |
 | `LEASE`    | 브라우저를 생성하여 브라우저 풀에 추가하는 데 사용됩니다.                                          |
-| `MAIN`     | 크롤러의 주요 이벤트 루프의 흐름에 사용됩니다.                                          |
+| `MAIN`     | 크롤러의 주요 이벤트 루프의 플로우에 사용됩니다.                                          |
 | `NAVDB`    | 탐색 항목을 저장하는 지속성 메커니즘에 사용됩니다.                                      |
 | `REGEX`    | 정규식을 실행할 때 성능 통계를 기록하는 데 사용됩니다.                       |
 | `REPT`     | 보고서를 생성하는 데 사용됩니다.                                                                      |
@@ -272,7 +272,7 @@ dast:
 
 {{< /history >}}
 
-`DAST_LOG_FILE_CONFIG`로 로그 모듈을 구성하는 더 간단한 대안으로서 `SECURE_LOG_LEVEL`를 설정할 수 있습니다:
+`DAST_LOG_FILE_CONFIG`로 로그 모듈을 구성하는 더 간단한 대안으로서 `SECURE_LOG_LEVEL`를 설정할 수 있습니다.
 
 - [지원되는 로그 수준](#log-levels) 중 하나입니다. 이렇게 하면 지정된 수준이 모든 모듈의 로그 파일의 기본 로그 수준이 됩니다.
 - [인증 보고서](configuration/authentication.md#configure-the-authentication-report)를 활성화하려면 `debug` 또는 `trace`입니다.
@@ -325,9 +325,9 @@ dast:
 > [!warning]
 > DevTools 메시지 로깅은 보안 위험입니다. 출력에는 사용자 이름, 암호, 인증 토큰과 같은 비밀이 포함됩니다. 출력이 GitLab 서버에 업로드되며 작업 로그에 표시될 수 있습니다.
 
-DAST 브라우저 기반 스캐너는 [Chrome DevTools 프로토콜](https://chromedevtools.github.io/devtools-protocol/)을 사용하여 Chromium 브라우저를 제어합니다. DevTools 메시지 로깅은 브라우저가 수행하는 작업에 투명성을 제공합니다. 예를 들어 버튼을 선택하지 않으면 DevTools 메시지는 원인이 브라우저 콘솔 로그의 CORS 오류임을 표시할 수 있습니다. DevTools 메시지를 포함하는 로그가 크기가 매우 클 수 있습니다. 이러한 이유로 단기 작업에서만 활성화해야 합니다.
+DAST 브라우저 기반 스캐너는 [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/)을 사용하여 Chromium 브라우저를 조율합니다. DevTools 메시지 로깅은 브라우저가 수행하는 작업에 투명성을 제공합니다. 예를 들어 버튼을 선택하지 않으면 DevTools 메시지는 원인이 브라우저 콘솔 로그의 CORS 오류임을 표시할 수 있습니다. DevTools 메시지를 포함하는 로그가 크기가 매우 클 수 있습니다. 이러한 이유로 단기 작업에서만 활성화해야 합니다.
 
-모든 DevTools 메시지를 로깅하려면 `CHROM` 로그 모듈을 `trace`로 변환하고 로깅 수준을 구성합니다. 다음은 DevTools 로그의 예입니다:
+모든 DevTools 메시지를 로깅하려면 `CHROM` 로그 모듈을 `trace`로 변환하고 로깅 수준을 구성합니다. 다음은 DevTools 로그의 예입니다.
 
 ```plaintext
 2022-12-05T06:27:24.280 TRC CHROM event received    {"method":"Fetch.requestPaused","params":{"requestId":"interception-job-3.0","request":{"url":"http://auth-auto:8090/font-awesome.min.css","method":"GET","headers":{"Accept":"text/css,*/*;q=0.1","Referer":"http://auth-auto:8090/login.html","User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/105.0.5195.102 Safari/537.36"},"initialPriority":"VeryHigh","referrerPolicy":"strict-origin-when-cross-origin"},"frameId":"A706468B01C2FFAA2EB6ED365FF95889","resourceType":"Stylesheet","networkId":"39.3"}} method=Fetch.requestPaused
@@ -380,7 +380,7 @@ dast:
 
 ### 작업 콘솔 출력 재정의 {#override-the-job-console-output}
 
-기본적으로 작업 콘솔은 DAST 활동의 간단한 요약을 표시합니다. 전체 진단 로그를 작업 콘솔에 출력하려면 `DAST_FF_DIAGNOSTIC_JOB_OUTPUT` 및 `DAST_LOG_CONFIG` 변수를 모두 설정합니다:
+기본적으로 작업 콘솔은 DAST 활동의 간단한 요약을 표시합니다. 전체 진단 로그를 작업 콘솔에 출력하려면 `DAST_FF_DIAGNOSTIC_JOB_OUTPUT` 및 `DAST_LOG_CONFIG` 변수를 모두 설정합니다.
 
 ```yaml
 include:
@@ -417,7 +417,7 @@ dast:
 
 기본적으로 DAST는 HTTP 응답 본문이 10 MB 이하인 HTTP 요청을 처리합니다. 그렇지 않으면 DAST는 응답을 차단하여 스캔이 실패할 수 있습니다. 이 제약은 스캔 중에 메모리 소비를 줄이기 위한 것입니다.
 
-다음은 DAST가 `https://example.com/large.js`에서 발견된 JavaScript 파일을 차단한 예 로그입니다. 그 크기가 제한보다 큽니다:
+다음은 DAST가 `https://example.com/large.js`에 있는 JavaScript 파일을 크기가 제한값을 초과하여 차단한 예시입니다.
 
 ```plaintext
 2022-12-05T06:28:43.093 WRN BROWS response body exceeds allowed size allowed_size_bytes=1000000 browser_id=752944257619431212 nav_id=ae23afe2acbce2c537657a9112926f1a of=1 request_id=interception-job-2.0 response_size_bytes=9333408 step=1 url=https://example.com/large.js
@@ -436,13 +436,13 @@ dast:
 
 #### 캐시 비활성화 시도 {#try-disabling-the-cache}
 
-DAST가 애플리케이션 페이지를 잘못 캐시하면 DAST가 애플리케이션을 제대로 크롤링하지 못할 수 있습니다. 크롤러에서 일부 페이지를 찾지 못한 경우 `DAST_USE_CACHE: "false"` 변수를 설정하여 도움이 되는지 확인해봅니다. 이것은 스캔의 성능을 크게 감소시킬 수 있습니다. 절대적으로 필요한 경우에만 캐시를 비활성화합니다. 구독이 있는 경우 [지원 티켓을 생성](https://support.gitlab.com/)하여 캐시가 웹 사이트 크롤링을 방지하는 이유를 조사합니다.
+DAST가 애플리케이션 페이지를 잘못 캐시하면 DAST가 애플리케이션을 제대로 크롤링하지 못할 수 있습니다. 크롤러가 예상치 못하게 일부 페이지를 찾지 못하는 경우, `DAST_USE_CACHE: "false"` 변수를 설정하여 도움이 되는지 확인해 보세요. 이것은 스캔의 성능을 크게 감소시킬 수 있습니다. 절대적으로 필요한 경우에만 캐시를 비활성화합니다. 구독이 있는 경우 [지원 티켓을 생성](https://support.gitlab.com/)하여 캐시가 웹 사이트 크롤링을 방지하는 이유를 조사합니다.
 
 #### 직접 대상 경로 지정 {#specifying-target-paths-directly}
 
-크롤러는 일반적으로 정의된 대상 URL에서 시작하여 사이트와 상호 작용하여 추가 페이지를 찾으려고 시도합니다. 하지만 크롤러가 시작할 경로를 직접 지정하는 두 가지 방법이 있습니다:
+크롤러는 일반적으로 정의된 대상 URL에서 시작하여 사이트와 상호 작용하여 추가 페이지를 찾으려고 시도합니다. 하지만 크롤러가 시작할 경로를 직접 지정하는 두 가지 방법이 있습니다.
 
-- sitemap.xml 사용: [사이트맵](https://www.sitemaps.org/protocol.html)은 웹 사이트의 페이지를 지정하는 잘 정의된 프로토콜입니다. DAST의 크롤러는 `<target URL>/sitemap.xml`에서 sitemap.xml 파일을 찾고 지정된 모든 URL을 크롤러의 시작점으로 사용합니다. [사이트맵 인덱스](https://www.sitemaps.org/protocol.html#index) 파일은 지원되지 않습니다.
+- sitemap.xml 사용: [Sitemap](https://www.sitemaps.org/protocol.html)은 웹사이트의 페이지를 지정하기 위한 잘 정의된 프로토콜입니다. DAST의 크롤러는 `<target URL>/sitemap.xml`에서 sitemap.xml 파일을 찾고 지정된 모든 URL을 크롤러의 시작점으로 사용합니다. [사이트맵 인덱스](https://www.sitemaps.org/protocol.html#index) 파일은 지원되지 않습니다.
 - `DAST_TARGET_PATHS` 사용: 이 구성 변수를 사용하면 크롤러의 입력 경로를 지정할 수 있습니다. 예: `DAST_TARGET_PATHS: /,/page/1.html,/page/2.html`.
 
 #### 요청이 차단되지 않는지 확인 {#make-sure-requests-are-not-getting-blocked}
@@ -451,12 +451,12 @@ DAST가 애플리케이션 페이지를 잘못 캐시하면 DAST가 애플리케
 
 #### 최대 작업 및 크롤러 타임아웃 {#maximum-actions-and-crawler-timeout}
 
-크롤러는 활동 및 대상 사이트에서 보낸 시간에 기본 제한이 있습니다:
+크롤러는 활동 및 대상 사이트에서 보낸 시간에 기본 제한이 있습니다.
 
-1. 기본적으로 크롤러는 10,000개의 작업을 처리합니다. 작업은 링크를 선택하거나 양식을 작성할 수 있습니다. 크롤러가 이 제한을 위반하면 디버그 수준 로그 `not adding navigation as it exceeds max actions`이 표시됩니다.
-1. 기본적으로 크롤러는 최대 24시간 동안 실행됩니다. 이 시간 제한을 초과하면 추적 수준 로그 `crawl complete, timed out`이 표시됩니다.
+1. 기본적으로 크롤러는 10,000개의 작업을 처리합니다. 작업은 링크를 선택하거나 양식을 작성할 수 있습니다. 크롤러가 이 제한을 초과하면 `not adding navigation as it exceeds max actions` 디버그 수준 로그가 표시됩니다.
+1. 기본적으로 크롤러는 최대 24시간 동안 실행됩니다. 이 시간 제한을 초과하면 `crawl complete, timed out` 추적 수준 로그가 표시됩니다.
 
-크롤러가 이 제한 중 하나에 도달하면 스캐너가 중지되고 대상 웹 사이트를 완전히 포함할 수 없습니다. 따라서 이러한 제한 위반은 스캔 중의 문제 및 최적화의 잠재적 기회를 나타낼 수 있습니다.
+크롤러가 이러한 제한 중 하나에 도달하면 스캐너가 중지되고 대상 웹사이트를 완전히 커버할 수 없습니다. 따라서 이러한 제한 위반은 스캔 중의 문제 및 최적화의 잠재적 기회를 나타낼 수 있습니다.
 
 애플리케이션이 페이지 전체에서 유사한 구조이지만 다른 데이터를 가진 템플릿 기반 페이지가 있거나 URL 패턴(예: `/products/item-123`, `/products/item-456`, `/products/item-789`)을 발견한 경우 [그룹화된 URL](configuration/customize_settings.md#grouped-urls)을 구성하여 스캔 시간을 줄이면서 보안 범위를 유지합니다.
 

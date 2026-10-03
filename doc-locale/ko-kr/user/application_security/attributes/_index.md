@@ -8,22 +8,22 @@ description: 보안 속성을 사용하면 보안 팀이 프로젝트 및 그룹
 
 {{< details >}}
 
-- 티어:  Ultimate
+- 티어: Ultimate
 - 제공 서비스: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [도입됨](https://gitlab.com/groups/gitlab-org/-/epics/18010) GitLab 18.5에서 `security_context_labels`과 `security_categories_and_attributes` 플래그가 포함되었습니다. 기본적으로 비활성화되었습니다. 이 기능은 [베타](../../../policy/development_stages_support.md)에서 도입되었습니다.
-- [GitLab.com, GitLab Self-Managed 및 GitLab Dedicated에서 활성화됨](https://gitlab.com/gitlab-org/gitlab/-/issues/551226) GitLab 18.6에서.
+- `security_context_labels` 및 `security_categories_and_attributes`라는 이름의 플래그와 함께 GitLab 18.5에 [도입](https://gitlab.com/groups/gitlab-org/-/epics/18010)되었습니다. 기본적으로 비활성화되었습니다. 이 기능은 [베타](../../../policy/development_stages_support.md) 단계에서 도입되었습니다.
+- GitLab 18.6에서 [GitLab.com, GitLab Self-Managed 및 GitLab Dedicated에서 활성화](https://gitlab.com/gitlab-org/gitlab/-/issues/551226)되었습니다.
 - GitLab 18.9에서 [일반적으로 사용 가능](https://gitlab.com/gitlab-org/gitlab/-/work_items/588619)하게 되었습니다. `security_inventory_dashboard` 기능 플래그가 제거되었습니다.
 
 {{< /history >}}
 
 보안 팀은 이제 보안 속성을 사용하여 자체 조직 및 비즈니스 요구에 맞는 메타데이터를 프로젝트에 적용할 수 있습니다.
 
-보안 속성은 다음을 기반으로 카테고리별로 구성됩니다:
+보안 속성은 다음을 기반으로 카테고리별로 구성됩니다.
 
 - 비즈니스 영향
 - 애플리케이션
@@ -31,7 +31,7 @@ description: 보안 속성을 사용하면 보안 팀이 프로젝트 및 그룹
 - 인터넷 노출
 - 위치
 
-프로젝트 전체에 이 속성을 적용하면 조직의 위험 태세 및 비즈니스 요구에 따라 조치가 필요한 프로젝트를 훨씬 더 빠르게 식별할 수 있습니다. 보안 속성을 사용하면 다음을 수행할 수 있습니다:
+프로젝트 전반에 이러한 특성을 적용하면 조직의 위험 태세와 비즈니스 요구에 따라 조치가 필요한 프로젝트를 훨씬 더 빠르게 파악할 수 있습니다. 보안 속성을 사용하면 다음을 수행할 수 있습니다.
 
 - 미션 크리티컬이며 더 강력한 스캔 커버리지가 필요한 프로젝트를 식별합니다.
 - 각 애플리케이션 또는 비즈니스 단위의 스캔 커버리지를 검토합니다.
@@ -72,7 +72,7 @@ description: 보안 속성을 사용하면 보안 팀이 프로젝트 및 그룹
 
 보안 속성으로 작업할 때 다음 문제가 발생할 수 있습니다.
 
-### 메뉴 항목 누락 {#security-configuration-menu-item-missing}
+### 보안 구성 메뉴 항목 누락 {#security-configuration-menu-item-missing}
 
 사용자는 그룹의 보안 관리자, 유지보수자 또는 소유자인 경우에도 **보안 구성** 메뉴 항목에 액세스하는 데 필요한 권한이 없을 수 있습니다.
 
