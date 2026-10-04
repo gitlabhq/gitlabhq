@@ -77617,7 +77617,7 @@ msgstr ""
 msgid "SecurityProfiles|Disable"
 msgstr ""
 
-msgid "SecurityProfiles|Disable %{scannerName}"
+msgid "SecurityProfiles|Disable %{profileName}"
 msgstr ""
 
 msgid "SecurityProfiles|Error applying profile. Please try again."
@@ -77753,7 +77753,7 @@ msgstr ""
 msgid "SecurityProfiles|What is secret push protection?"
 msgstr ""
 
-msgid "SecurityProfiles|You are about to disable %{scannerName} for this project. Are you sure you want to proceed?"
+msgid "SecurityProfiles|You are about to disable the %{profileName} profile for this project. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "SecurityProfiles|failure"

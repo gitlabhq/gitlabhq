@@ -2,7 +2,11 @@ import { GlTable, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import ScanProfileTable from '~/security_configuration/components/scan_profiles/scan_profile_table.vue';
-import { SCAN_PROFILE_PROMO_ITEMS } from '~/security_configuration/constants';
+import ScanTypeCell from '~/security_configuration/components/scan_profiles/scan_type_cell.vue';
+import {
+  SCAN_PROFILE_PROMO_ITEMS,
+  SCAN_PROFILE_TYPE_SAST,
+} from '~/security_configuration/constants';
 
 describe('ScanProfileTable', () => {
   let wrapper;
@@ -26,6 +30,7 @@ describe('ScanProfileTable', () => {
   const findApplyButton = () => findAllButtons().at(0);
   const findPreviewButton = () => findAllButtons().at(1);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findAllScanTypeCells = () => wrapper.findAllComponents(ScanTypeCell);
 
   it('shows a skeleton loader when loading', () => {
     wrapper = mountExtended(ScanProfileTable, {
@@ -86,6 +91,37 @@ describe('ScanProfileTable', () => {
     it('renders disabled preview button', () => {
       expect(findPreviewButton().props('disabled')).toBe(true);
     });
+  });
+
+  it('hides the scanner on additional profile rows', () => {
+    createComponent({
+      props: {
+        tableItems: [
+          { scanType: SCAN_PROFILE_TYPE_SAST, isConfigured: true },
+          { scanType: SCAN_PROFILE_TYPE_SAST, isConfigured: true, isAdditionalProfile: true },
+        ],
+      },
+    });
+
+    expect(findAllScanTypeCells()).toHaveLength(1);
+  });
+
+  it('removes the borders between profiles of one type', () => {
+    createComponent({
+      props: {
+        tableItems: [
+          { scanType: SCAN_PROFILE_TYPE_SAST, isConfigured: true, hasAdditionalProfileBelow: true },
+          { scanType: SCAN_PROFILE_TYPE_SAST, isConfigured: true, isAdditionalProfile: true },
+        ],
+      },
+    });
+
+    const [firstRowCell, secondRowCell] = wrapper.findAll('tbody tr td:first-child').wrappers;
+
+    expect(firstRowCell.classes()).toContain('!gl-border-b-0');
+    expect(firstRowCell.classes()).not.toContain('!gl-border-t-0');
+    expect(secondRowCell.classes()).toContain('!gl-border-t-0');
+    expect(secondRowCell.classes()).not.toContain('!gl-border-b-0');
   });
 
   describe('tracking', () => {

@@ -47,11 +47,11 @@ export default {
   computed: {
     tableFields() {
       return [
-        { key: 'scanType', label: __('Scanner') },
-        { key: 'name', label: __('Profile'), tdClass: '!gl-align-middle' },
-        { key: 'status', label: __('Scanner health'), tdClass: '!gl-align-middle' },
-        { key: 'lastScan', label: __('Last scan'), tdClass: '!gl-align-middle' },
-        { key: 'actions', label: '' },
+        { key: 'scanType', label: __('Scanner'), tdClass: this.bodyCellClass },
+        { key: 'name', label: __('Profile'), tdClass: this.bodyCellClass },
+        { key: 'status', label: __('Scanner health'), tdClass: this.bodyCellClass },
+        { key: 'lastScan', label: __('Last scan'), tdClass: this.bodyCellClass },
+        { key: 'actions', label: '', tdClass: this.bodyCellClass },
       ];
     },
     scanProfileHelpPath() {
@@ -62,6 +62,15 @@ export default {
   },
   mounted() {
     this.trackEvent(EVENT_VIEW_SCAN_PROFILE_TABLE);
+  },
+  methods: {
+    bodyCellClass(value, key, item) {
+      return {
+        '!gl-align-middle': ['name', 'status', 'lastScan'].includes(key),
+        '!gl-border-t-0': item.isAdditionalProfile,
+        '!gl-border-b-0': item.hasAdditionalProfileBelow,
+      };
+    },
   },
   EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK,
   SCAN_PROFILE_I18N,
@@ -117,7 +126,11 @@ export default {
     </template>
 
     <template #cell(scanType)="{ item }">
-      <scan-type-cell :scan-type="item.scanType" :status="item.status" />
+      <scan-type-cell
+        v-if="!item.isAdditionalProfile"
+        :scan-type="item.scanType"
+        :status="item.status"
+      />
     </template>
 
     <template #cell(name)="{ item }">
