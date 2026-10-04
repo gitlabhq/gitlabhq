@@ -692,6 +692,7 @@ module ApplicationSettingsHelper
       :pipeline_retry_limit_per_user_project,
       :job_retry_limit_per_user_project,
       :job_play_limit_per_user_project,
+      :pipeline_delete_limit_per_user_project,
       :asciidoc_max_includes,
       :ai_action_api_rate_limit,
       :code_suggestions_api_rate_limit,

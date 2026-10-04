@@ -123,6 +123,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           pipeline_cancel_limit_per_user_project
           pipeline_retry_limit_per_user_project
           job_retry_limit_per_user_project job_play_limit_per_user_project
+          pipeline_delete_limit_per_user_project
           group_api_limit group_projects_api_limit groups_api_limit project_api_limit projects_api_limit
           user_contributed_projects_api_limit user_projects_api_limit user_starred_projects_api_limit
           users_api_limit_followers users_api_limit_following users_api_limit_status users_api_limit_ssh_keys

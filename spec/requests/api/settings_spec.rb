@@ -119,6 +119,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['pipeline_retry_limit_per_user_project']).to eq(200)
       expect(json_response['job_retry_limit_per_user_project']).to eq(320)
       expect(json_response['job_play_limit_per_user_project']).to eq(200)
+      expect(json_response['pipeline_delete_limit_per_user_project']).to eq(400)
       expect(json_response['concurrent_github_import_jobs_limit']).to eq(1000)
       expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
       expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
@@ -475,6 +476,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             pipeline_retry_limit_per_user_project: 100,
             job_retry_limit_per_user_project: 20,
             job_play_limit_per_user_project: 10,
+            pipeline_delete_limit_per_user_project: 500,
             concurrent_github_import_jobs_limit: 2,
             concurrent_bitbucket_import_jobs_limit: 2,
             concurrent_bitbucket_server_import_jobs_limit: 2,
@@ -587,6 +589,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['pipeline_retry_limit_per_user_project']).to be(100)
         expect(json_response['job_retry_limit_per_user_project']).to be(20)
         expect(json_response['job_play_limit_per_user_project']).to be(10)
+        expect(json_response['pipeline_delete_limit_per_user_project']).to be(500)
         expect(json_response['concurrent_github_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to be(2)

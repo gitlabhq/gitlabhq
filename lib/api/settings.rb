@@ -283,6 +283,7 @@ module API
       optional :pipeline_retry_limit_per_user_project, type: Integer, desc: 'Maximum number of pipeline retries allowed per minute for a given project.'
       optional :job_retry_limit_per_user_project, type: Integer, desc: 'Maximum number of job retries allowed per minute for a given project.'
       optional :job_play_limit_per_user_project, type: Integer, desc: 'Maximum number of manual job runs allowed per minute for a given project.'
+      optional :pipeline_delete_limit_per_user_project, type: Integer, desc: 'Maximum number of pipeline deletions allowed per minute for a given project.'
       optional :ai_action_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per 8 hours to aiAction endpoint'
       optional :code_suggestions_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to code suggestions endpoint'
       optional :resource_usage_limits, type: JSON, desc: 'Definition for resource usage limits enforced in Sidekiq workers'

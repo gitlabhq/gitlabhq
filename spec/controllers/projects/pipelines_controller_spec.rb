@@ -1399,6 +1399,25 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         expect(Ci::Pipeline.exists?(pipeline.id)).to be_falsy
       end
 
+      context 'when the rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+        before do
+          stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+
+          ::Ci::DestroyPipelineService.new(project, project.first_owner)
+            .execute(create(:ci_pipeline, project: project))
+        end
+
+        # Surfaced rather than silently redirecting, so the user is not told a delete
+        # succeeded when the pipeline is still there.
+        it 'keeps the pipeline and flashes the throttle', :aggregate_failures do
+          delete_pipeline
+
+          expect(response).to have_gitlab_http_status(:see_other)
+          expect(flash[:alert]).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+          expect(Ci::Pipeline.exists?(pipeline.id)).to be_truthy
+        end
+      end
+
       context 'and builds are disabled' do
         let(:feature) { ProjectFeature::DISABLED }
 

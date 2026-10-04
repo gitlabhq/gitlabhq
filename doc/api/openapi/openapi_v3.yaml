@@ -20174,7 +20174,7 @@ paths:
       operationId: putApiV4ApplicationSettings
       summary: Update application settings
       description: Updates the current application settings for this GitLab instance.
-        At least one of 679 related parameters must be provided.
+        At least one of 680 related parameters must be provided.
       tags:
       - Instance
       responses:
@@ -74077,6 +74077,8 @@ paths:
           description: Pipeline was deleted
         '403':
           description: Forbidden
+        '429':
+          description: Too Many Requests
         '404':
           description: Not Found
         '400':
@@ -92867,6 +92869,8 @@ components:
           type: string
         job_play_limit_per_user_project:
           type: string
+        pipeline_delete_limit_per_user_project:
+          type: string
         asciidoc_max_includes:
           type: string
         ai_action_api_rate_limit:
@@ -110119,6 +110123,11 @@ components:
           type: integer
           description: Maximum number of manual job runs allowed per minute for a
             given project.
+          nullable: true
+        pipeline_delete_limit_per_user_project:
+          type: integer
+          description: Maximum number of pipeline deletions allowed per minute for
+            a given project.
           nullable: true
         ai_action_api_rate_limit:
           type: integer

@@ -485,6 +485,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            pipeline_delete: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_deletes_by_user_pipeline',
+              characteristics: %i[user ci_pipeline],
+              limit: 5,
+              period: 1.minute,
+              action: :limit
+            ),
             pipeline_cancel_per_project: ::Labkit::RateLimit::Rule.new(
               name: 'limit_pipeline_cancels_by_user_project',
               characteristics: %i[user project],
@@ -540,6 +547,17 @@ module Gitlab
               characteristics: %i[user project],
               limit: -> {
                 Gitlab::CurrentSettings.current_application_settings.job_play_limit_per_user_project
+              },
+              period: 1.minute,
+              action: :limit
+            ),
+            # Every sampled actor but one stayed under this; see
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/627268.
+            pipeline_delete_per_project: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_pipeline_deletes_by_user_project',
+              characteristics: %i[user project],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.pipeline_delete_limit_per_user_project
               },
               period: 1.minute,
               action: :limit

@@ -338,7 +338,7 @@ module API
         desc 'Delete a pipeline' do
           detail 'Deletes a specified pipeline for a project.'
           success code: 204, message: 'Pipeline was deleted'
-          failure [[403, 'Forbidden']]
+          failure [[403, 'Forbidden'], [429, 'Too Many Requests']]
           tags ['pipelines']
         end
         params do
@@ -357,7 +357,13 @@ module API
           reject_if_build_artifacts_size_refreshing!(pipeline.project)
 
           destroy_conditionally!(pipeline) do
-            ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)
+            response = ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)
+
+            if response.reason == :rate_limited
+              too_many_requests!(
+                response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:pipeline_delete)
+              )
+            end
           end
         end
 

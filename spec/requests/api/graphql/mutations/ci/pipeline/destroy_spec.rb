@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'PipelineDestroy', feature_category: :pipeline_composition do
+RSpec.describe 'PipelineDestroy', :clean_gitlab_redis_rate_limiting, feature_category: :pipeline_composition do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
@@ -55,6 +55,22 @@ RSpec.describe 'PipelineDestroy', feature_category: :pipeline_composition do
       post_graphql_mutation(mutation, current_user: user)
 
       expect(graphql_mutation_response(:pipeline_destroy)['errors']).not_to be_empty
+      expect(pipeline.reload).to be_persisted
+    end
+  end
+
+  context 'when the rate limit is exceeded', :freeze_time do
+    before do
+      stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+
+      ::Ci::DestroyPipelineService.new(project, user).execute(create(:ci_pipeline, project: project))
+    end
+
+    it 'surfaces the throttle in errors and does not destroy the pipeline', :aggregate_failures do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(graphql_mutation_response(:pipeline_destroy)['errors'])
+        .to contain_exactly(::Gitlab::ApplicationRateLimiter.throttled_error_message)
       expect(pipeline.reload).to be_persisted
     end
   end

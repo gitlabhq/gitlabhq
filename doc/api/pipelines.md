@@ -710,6 +710,9 @@ Deleting a pipeline expires all pipeline caches, and deletes all immediately
 related objects, such as builds, logs, artifacts, and triggers.
 This action cannot be undone.
 
+This endpoint is [rate limited](../administration/cicd/limits.md#pipeline-deletion-rate-limits) and returns
+`429 Too Many Requests` with a `Retry-After` header when a limit is exceeded.
+
 Deleting a pipeline does not automatically delete its
 [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)

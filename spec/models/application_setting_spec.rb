@@ -118,6 +118,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         downstream_pipeline_trigger_limit_per_project_user_sha: 0,
         job_play_limit_per_user_project: 200,
         job_retry_limit_per_user_project: 320,
+        pipeline_delete_limit_per_user_project: 400,
         dsa_key_restriction: 0,
         ecdsa_key_restriction: 0,
         ecdsa_sk_key_restriction: 0,
@@ -692,6 +693,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           decompress_archive_file_timeout
           dependency_proxy_ttl_group_policy_worker_capacity
           downstream_pipeline_trigger_limit_per_project_user_sha
+          pipeline_delete_limit_per_user_project
           gitlab_shell_operation_limit
           group_api_limit
           group_projects_api_limit

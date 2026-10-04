@@ -6949,6 +6949,9 @@ msgstr ""
 msgid "AdminSettings|Maximum pipeline cancellations per project"
 msgstr ""
 
+msgid "AdminSettings|Maximum pipeline deletions per project"
+msgstr ""
+
 msgid "AdminSettings|Maximum pipeline retries per project"
 msgstr ""
 
@@ -7166,6 +7169,9 @@ msgid "AdminSettings|The maximum number of manual job runs allowed per minute fo
 msgstr ""
 
 msgid "AdminSettings|The maximum number of pipeline cancellations allowed per minute for a given project. Set to 0 to disable this limit."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of pipeline deletions allowed per minute for a given project. Set to 0 to disable this limit."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of pipeline retries allowed per minute for a given project. Set to 0 to disable this limit."

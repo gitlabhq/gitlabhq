@@ -124,9 +124,12 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def destroy
-    ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
+    service_response = ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
 
-    redirect_to project_pipelines_path(project), status: :see_other
+    # Surfaced rather than ignored: a throttled delete leaves the pipeline in place, so
+    # redirecting without a message would report success for work that never happened.
+    redirect_to project_pipelines_path(project), status: :see_other,
+      alert: (service_response.message if service_response.error?)
   end
 
   def builds

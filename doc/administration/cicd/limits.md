@@ -511,6 +511,44 @@ To configure the per user and project limits:
 1. Set values for **Maximum job retries per project** and **Maximum manual job runs per project**.
 1. Select **Save changes**.
 
+## Pipeline deletion rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627268) in GitLab 19.5 [with a feature flag](../feature_flags/_index.md) named `rate_limit_pipeline_delete`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Deleting a pipeline cancels every job in the pipeline tree before the records are removed, so the
+work involved scales with the size of the pipeline. You can limit how often a user can delete a
+pipeline to protect your instance from excessive load. Each limit resets after one minute.
+
+This rate limit applies when a user deletes a pipeline with the
+[delete pipeline REST API](../../api/pipelines.md#delete-a-pipeline), the
+[`pipelineDestroy`](../../api/graphql/reference/_index.md#mutationpipelinedestroy) GraphQL mutation,
+or the GitLab UI. It does not apply to pipelines removed by
+[automatic cleanup](../settings/continuous_integration.md), project deletion, or issue deletion,
+because those use a different code path.
+
+GitLab enforces the following limits:
+
+- Per user and pipeline: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `400` requests each minute.
+  Set the limit to `0` to remove this per-project limit. The per user and pipeline limit still applies.
+
+If either limit is exceeded, the delete request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum pipeline deletions per project**.
+1. Select **Save changes**.
+
 ## Maximum artifacts size
 
 Set size limits for job artifacts to control storage use.

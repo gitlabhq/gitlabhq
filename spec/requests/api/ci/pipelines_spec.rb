@@ -1355,7 +1355,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
   end
 
-  describe 'DELETE /projects/:id/pipelines/:pipeline_id' do
+  describe 'DELETE /projects/:id/pipelines/:pipeline_id', :clean_gitlab_redis_rate_limiting do
     describe 'mcp route setting' do
       subject { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", project.first_owner) }
 
@@ -1382,6 +1382,23 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
       it 'does not log an audit event' do
         expect { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }.not_to change { AuditEventReader.count }
+      end
+
+      context 'when the rate limit is exceeded', :freeze_time do
+        before do
+          stub_application_setting(pipeline_delete_limit_per_user_project: 1)
+
+          ::Ci::DestroyPipelineService.new(project, owner).execute(create(:ci_pipeline, project: project))
+        end
+
+        it 'returns 429 and leaves the pipeline in place', :aggregate_failures do
+          delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to be_present
+          expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+          expect(pipeline.reload).to be_persisted
+        end
       end
 
       context 'when the pipeline has jobs' do
