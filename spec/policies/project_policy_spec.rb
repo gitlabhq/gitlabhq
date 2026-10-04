@@ -2490,6 +2490,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
 
       context 'anonymous' do
+        let(:project) { build_stubbed(:project, :private, :analytics_enabled) }
         let(:current_user) { anonymous }
 
         it { is_expected.to be_disallowed(:read_ci_cd_analytics) }
@@ -3280,7 +3281,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           end
         end
 
-        let(:project) { create(:project, :internal, ci_inbound_job_token_scope_enabled: token_scope_enabled) }
+        let(:project) { build_stubbed(:project, :internal, ci_inbound_job_token_scope_enabled: token_scope_enabled) }
         let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
         let(:scope_project) { public_send("#{project_visibility}_project") }
 
