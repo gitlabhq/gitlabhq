@@ -290,7 +290,7 @@ Parameters:
 ```shell
 curl --request GET \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
+  --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/1"
 ```
 
 Example response:
@@ -359,8 +359,12 @@ PUT /projects/:id/deploy_keys/:key_id
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
 | `id`       | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `key_id`   | integer | yes | The ID of the deploy key |
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 | `title`    | string  | no | New deploy key's title |
+
+> [!note]
+> You must provide at least one of `can_push` or `title`.
 
 ```shell
 curl --request PUT \
