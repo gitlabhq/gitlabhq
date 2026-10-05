@@ -2,7 +2,7 @@
 stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: REST API to manage security policies stored in the policy store for an organization.
+description: REST API to manage security policies stored in the policy store for organizations and groups.
 title: Policy store API
 ---
 
@@ -16,21 +16,26 @@ title: Policy store API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606971) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_v2`. Disabled by default.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604367) to persist policies to the database instead of per-process memory in GitLab 19.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) to add the `policy_rego` response attribute in GitLab 19.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to reject rules that compile to a Rego module larger than 65536 bytes in GitLab 19.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/623359) to add the `scope_dimensions` response attribute in GitLab 19.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) to limit `rules` and `actions` to 5 entries each, and each entry to 4096 bytes, in GitLab 19.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252841) to add the `environment_advanced` and `deployment_promoted` triggers, and to rename the `deployment_requested` trigger's display name to `Deployment requested`, in GitLab 19.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/598030) the catalog endpoints to require an authenticated caller instead of anonymous access, in GitLab 19.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/618556) to reject a `custom` rule or an authored `scope_rego` that does not parse as Rego in GitLab 19.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606971) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_v2`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- Catalog endpoints:
+  - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/598030) to require authentication in GitLab 19.4.
+  - `environment_advanced` and `deployment_promoted` triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252841) in GitLab 19.4.
+- Policy endpoints:
+  - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604367) to persist policies to the database in GitLab 19.4.
+  - `policy_rego` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) in GitLab 19.4.
+  - `scope_dimensions` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623359) in GitLab 19.4.
+- `lifecycle_state` filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253089) in GitLab 19.4.
+- Create and update policy endpoints:
+  - Limits on `rules` and `actions` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/612905) in GitLab 19.4.
+  - Rego validation [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618556) in GitLab 19.5.
+- Group endpoints [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254842) in GitLab 19.5.
 
 {{< /history >}}
 
-> [!warning]
-> This feature is an [experiment](../policy/development_stages_support.md).
-> The endpoints can change without notice.
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Use this API to author [security policies](../user/application_security/policies/_index.md)
 in the policy store.
@@ -42,13 +47,13 @@ These endpoints are available only when all of the following are true:
 - The `security_policies_v2` feature flag is enabled.
 - An administrator has enabled the policy store experiment for the instance in
   **Admin** > **Settings** > **Security and compliance**.
-- The organization has opted in through its `policy_store_experiment_enabled`
-  organization setting, set through the `policyStoreExperimentEnabled`
-  argument of the `organizationUpdate` GraphQL mutation.
+- For the organization endpoints, the organization has opted in.
+- For the group endpoints, the top-level group has opted in.
 
-When any of these is not true, the endpoints return `404 Not Found`.
-When the instance is not licensed for security orchestration policies, they return
-`403 Forbidden`.
+When the feature flag, the instance setting, or the organization opt-in is not true,
+the endpoints return `404 Not Found`.
+When the instance is not licensed for security orchestration policies, or a group has not
+opted in, they return `403 Forbidden`.
 
 ## Catalogs
 
@@ -60,13 +65,13 @@ When this is not true, the endpoints return `404 Not Found`.
 
 ### List all triggers
 
-List all triggers a policy can respond to.
+Lists all triggers a policy can respond to.
 
 ```plaintext
 GET /security/policy_store/triggers
 ```
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute | Type   | Description |
@@ -77,7 +82,7 @@ response attributes:
 Example request:
 
 ```shell
-curl --request GET \
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/security/policy_store/triggers"
 ```
 
@@ -93,13 +98,13 @@ Example response:
 
 ### List all actions
 
-List all actions a policy can take.
+Lists all actions a policy can take.
 
 ```plaintext
 GET /security/policy_store/actions
 ```
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute | Type   | Description |
@@ -110,7 +115,7 @@ response attributes:
 Example request:
 
 ```shell
-curl --request GET \
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/security/policy_store/actions"
 ```
 
@@ -125,13 +130,13 @@ Example response:
 
 ### List all rule kinds
 
-List all rule kinds a policy can be built from.
+Lists all rule kinds a policy can be built from.
 
 ```plaintext
 GET /security/policy_store/rules
 ```
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
 
 | Attribute | Type   | Description |
@@ -142,7 +147,7 @@ response attributes:
 Example request:
 
 ```shell
-curl --request GET \
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/security/policy_store/rules"
 ```
 
@@ -156,48 +161,11 @@ Example response:
 ]
 ```
 
-## Policies
+## Policy attributes
 
-Every call to a policy endpoint must be [authenticated](rest/authentication.md), and the
-caller must be an owner of the organization or an instance administrator.
-A caller who cannot administer the organization receives `403 Forbidden`, and one who cannot
-see the organization at all receives `404 Not Found`.
+The organization and group policy endpoints use the same policy scope, rule, action, and response attributes.
 
-A policy that belongs to another organization is indistinguishable from one that does not
-exist.
-An ID cannot be used to read or change a policy across organizations.
-
-### Policy scope
-
-A policy applies everywhere unless it carries a scope.
-A scope is authored one of two ways, and a request may use one or the other but not both:
-
-- `policy_scope`: structured data that GitLab compiles into `scope_rego`.
-- `scope_rego`: a [Rego](https://www.openpolicyagent.org/docs/policy-language) program
-  supplied directly, stored as authored.
-
-A request that supplies both returns `400 Bad Request`.
-An empty `scope_rego` does not count as the second form, so either operation accepts it
-alongside `policy_scope`.
-On [Create a policy](#create-a-policy), an empty value has the same effect as omitting it.
-On [Update a policy](#update-a-policy), it retires an authored program and compiles a new one
-from `policy_scope`.
-A `scope_rego` that does not parse returns `400 Bad Request`.
-
-`scope_rego` is always present in a response, because a policy with no scope compiles to a
-program that applies to every project.
-`policy_scope` is `null` when the Rego was authored directly, because a hand-written program
-has no structured form.
-
-`scope_dimensions` lists the dotted context paths, such as `compliance_frameworks` or
-`project.id`, that `scope_rego` reads to decide whether the policy applies. GitLab derives
-this list, so it ignores any value you send for the attribute. This value is always an
-array, empty when the policy is unscoped, unless `scope_rego` was authored directly instead
-of compiled from `policy_scope`. In that case, GitLab cannot derive the paths from a
-hand-written program, so `scope_dimensions` is `null`, meaning the paths are not known
-rather than empty.
-
-#### Policy scope structure
+### Policy scope attributes
 
 `policy_scope` holds one or more criteria, and `match_mode` controls how they combine.
 A criterion names IDs, either as integers or as objects with an `id` key.
@@ -238,7 +206,7 @@ from what you might expect:
 - A criterion GitLab does not recognize has no effect. If it was the only criterion supplied,
   the policy applies to every project.
 
-### Rules and actions
+### Rule and action attributes
 
 `rules` and `actions` are arrays.
 Each entry has the following attributes:
@@ -248,25 +216,21 @@ Each entry has the following attributes:
 | `type`    | string         | Yes      | For a rule, one of the IDs returned by [List all rule kinds](#list-all-rule-kinds). For an action, one of the IDs returned by [List all actions](#list-all-actions). |
 | `value`   | string or hash | No       | What the entry acts on. A `custom` rule takes Rego source as a string. A `calendar` or `environment` rule takes a hash, as does every action. |
 
+Each array accepts at most 5 entries, and each entry must serialize to at most 4096 bytes.
+The error for an oversized entry names each position, for example
+`rules has an entry exceeding maximum size of 4096 bytes at 0`.
 An entry cannot be blank.
 A blank entry returns `400 Bad Request`, and the error names each blank position,
 for example `rules[0] is blank`.
-
-Each array accepts at most 5 entries, and each entry cannot serialize to more than 4096 bytes.
-Exceeding either limit returns `400 Bad Request`. An oversized entry names each offending
-position, for example `rules has an entry exceeding maximum size of 4096 bytes at 0`.
 
 A `custom` rule's Rego, and the `policy_rego` module all rules merge into, must parse.
 A `custom` rule that does not returns `400 Bad Request`. The error names the rule's position
 and includes the engine's message with a line and column in the Rego you sent in `value`,
 for example ``rules[0] is invalid: error: expecting `}` while parsing object (at line:column)``.
-The `policy_rego` module is parsed too, after all rules merge into it. Since every rule
+The `policy_rego` module is parsed too, after all rules merge into it. Because every rule
 already parsed on its own, a failure at this stage is treated as a fault in the
 Policy Engine: the request returns `500 Internal Server Error`,
 the policy is not stored, and the fault is reported to error tracking.
-
-A request replaces the whole array.
-You cannot add or remove a single entry.
 
 Send `rules` and `actions` as JSON with a `Content-Type: application/json` header.
 A form-encoded body can carry both arrays, but every value in one arrives as a string, so a
@@ -285,20 +249,40 @@ The policy endpoints return the following attributes:
 | `lifecycle_state` | string          | Either `active` or `disabled`. |
 | `mode`            | string          | One of `audit`, `warn`, or `enforce`. |
 | `name`            | string          | Name of the policy. |
-| `namespace_id`    | integer         | ID of the group that owns the policy. Always `null` today, because no endpoint accepts a `namespace_id` attribute, so every policy created through this API is owned by its organization. |
+| `namespace_id`    | integer         | ID of the group that owns the policy. `null` for a policy created through an organization endpoint, because the organization owns that policy. |
 | `organization_id` | integer         | ID of the organization the policy belongs to. |
 | `policy_rego`     | string          | The policy's rules, compiled to a single Rego module. `null` for a policy with no rules. |
 | `policy_scope`    | object          | Structured scope of the policy, or `null` when the Rego was authored directly. |
 | `rules`           | array           | Rules of the policy. |
 | `scope_dimensions`| array           | Dotted context paths `scope_rego` reads to decide whether the policy applies. GitLab derives this value, so it ignores any value you send for it. `null` when `scope_rego` was authored directly, otherwise an array, empty when the policy is unscoped. |
-| `scope_rego`      | string          | Compiled scope of the policy, as Rego. |
+| `scope_rego`      | string          | Scope of the policy, as a program in [Rego](https://www.openpolicyagent.org/docs/policy-language), the policy language of Open Policy Agent. Either written directly or compiled from `policy_scope`. Always present, because a policy with no scope compiles to a program that applies to every project. |
 | `trigger_type`    | string          | Trigger the policy responds to. |
 | `updated_at`      | string          | Date and time the policy was last changed. |
 | `version`         | integer         | Revision of the policy. An update that changes at least one value raises it by one. |
 
-### List all policies
+## Organization policies
 
-List all policies belonging to an organization.
+Use the organization endpoints to manage the policies of an organization.
+
+Prerequisites:
+
+- You must be an owner of the organization or an administrator of the instance.
+
+To opt in an organization, send the `organizationUpdate` GraphQL mutation with
+`policyStoreExperimentEnabled` set to `true`.
+The mutation returns an error if the experiment is not available to the organization.
+
+Every call to a policy endpoint must be [authenticated](rest/authentication.md).
+A caller who cannot administer the organization receives `403 Forbidden`, and one who cannot
+see the organization at all receives `404 Not Found`.
+
+A policy that belongs to another organization is indistinguishable from one that does not
+exist.
+An ID cannot be used to read or change a policy across organizations.
+
+### List all organization policies
+
+Lists all policies that belong to an organization.
 
 ```plaintext
 GET /organizations/:id/security/policy_store
@@ -306,19 +290,20 @@ GET /organizations/:id/security/policy_store
 
 Supported attributes:
 
-| Attribute      | Type    | Required | Description |
-| -------------- | ------- | -------- | ----------- |
-| `id`           | integer | Yes      | ID of the organization. |
-| `page`         | integer | No       | Page of results to return. Defaults to `1`. |
-| `per_page`     | integer | No       | Number of results per page. Defaults to `20`, and any value above `100` is capped at `100`. |
-| `trigger_type` | string  | No       | Return only the policies that respond to this trigger. One of the IDs returned by [List all triggers](#list-all-triggers). |
+| Attribute         | Type    | Required | Description |
+| ----------------- | ------- | -------- | ----------- |
+| `id`              | integer | Yes      | ID of the organization. |
+| `lifecycle_state` | string  | No       | Return only `active` policies, only `disabled` policies, or `all` policies. Defaults to `active`. |
+| `page`            | integer | No       | Page of results to return. Defaults to `1`. |
+| `per_page`        | integer | No       | Number of results per page. Defaults to `20`, and any value above `100` is capped at `100`. |
+| `trigger_type`    | string  | No       | Return only the policies that respond to this trigger. One of the IDs returned by [List all triggers](#list-all-triggers). |
 
 This endpoint returns [paginated](rest/_index.md#offset-based-pagination) results. For
 performance reasons, it never returns the `x-total` or `x-total-pages` headers or the
 `rel="last"` `link`, regardless of how many policies the organization has: check
 `x-next-page` to find out whether another page follows.
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and an array of
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of
 [policy attributes](#response-attributes).
 
 Example request:
@@ -354,9 +339,9 @@ Example response:
 ]
 ```
 
-### Retrieve a policy
+### Retrieve an organization policy
 
-Retrieve a single policy from an organization.
+Retrieves a single policy from an organization.
 
 ```plaintext
 GET /organizations/:id/security/policy_store/:policy_id
@@ -369,7 +354,7 @@ Supported attributes:
 | `id`        | integer | Yes      | ID of the organization. |
 | `policy_id` | integer | Yes      | ID of the policy. |
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 [policy attributes](#response-attributes).
 
 Example request:
@@ -403,9 +388,9 @@ Example response:
 }
 ```
 
-### Create a policy
+### Create an organization policy
 
-Create a policy in an organization.
+Creates a policy in an organization.
 
 ```plaintext
 POST /organizations/:id/security/policy_store
@@ -417,16 +402,16 @@ Supported attributes:
 | ----------------- | ------- | -------- | ----------- |
 | `id`              | integer | Yes      | ID of the organization. |
 | `name`            | string  | Yes      | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
-| `rules`           | array   | Yes      | Rules of the policy. At least one entry is required, up to 5. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
+| `rules`           | array   | Yes      | Rules of the policy. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). At least one entry is required, up to 5. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
 | `trigger_type`    | string  | Yes      | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
-| `actions`         | array   | No       | Actions the policy takes. Up to 5 entries. Each entry must serialize to at most 4096 bytes. |
+| `actions`         | array   | No       | Actions the policy takes. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). Up to 5 entries. Each entry must serialize to at most 4096 bytes. |
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
 | `lifecycle_state` | string  | No       | Either `active` or `disabled`. Defaults to `active`. |
 | `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. Defaults to `warn`. |
-| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
-| `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. A non-empty value cannot be combined with `policy_scope`. |
+| `policy_scope`    | object  | No       | Structured scope of the policy, which GitLab compiles into `scope_rego`. For its attributes, see [Policy scope attributes](#policy-scope-attributes). Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
+| `scope_rego`      | string  | No       | Scope of the policy, written directly as a Rego program. GitLab stores it as you wrote it. Maximum 4096 characters. A non-empty value cannot be combined with `policy_scope`. An empty value has the same effect as omitting it. A value that does not parse as Rego returns `400 Bad Request`. |
 
-If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the
 [policy attributes](#response-attributes).
 The following conditions return `400 Bad Request`:
 
@@ -470,16 +455,16 @@ Example response:
   "policy_scope": { "compliance_frameworks": [{ "id": 5 }] },
   "scope_dimensions": ["compliance_frameworks"],
   "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
-  "mode": "enforce",
+  "mode": "warn",
   "lifecycle_state": "active",
   "created_at": "2026-08-07T13:56:32.985Z",
   "updated_at": "2026-08-07T13:56:32.985Z"
 }
 ```
 
-### Update a policy
+### Update an organization policy
 
-Update a policy in an organization.
+Updates a policy in an organization.
 Every attribute other than the path parameters is optional, but a request must name at least one.
 Attributes that are not sent are left as they are, and an update that changes at least one
 value raises `version` by one.
@@ -495,21 +480,21 @@ Supported attributes:
 | ----------------- | ------- | -------- | ----------- |
 | `id`              | integer | Yes      | ID of the organization. |
 | `policy_id`       | integer | Yes      | ID of the policy. |
-| `actions`         | array   | No       | Actions the policy takes. Replaces the stored actions, up to 5 entries. Each entry must serialize to at most 4096 bytes. |
+| `actions`         | array   | No       | Actions the policy takes. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). Replaces the stored actions, up to 5 entries. Each entry must serialize to at most 4096 bytes. |
 | `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
 | `lifecycle_state` | string  | No       | Either `active` or `disabled`. |
 | `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. |
 | `name`            | string  | No       | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
-| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
-| `rules`           | array   | No       | Rules of the policy. Replaces the stored rules, up to 5 entries. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
-| `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. Send an empty value to retire an authored program and recompile from `policy_scope`. |
+| `policy_scope`    | object  | No       | Structured scope of the policy, which GitLab compiles into `scope_rego`. For its attributes, see [Policy scope attributes](#policy-scope-attributes). Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
+| `rules`           | array   | No       | Rules of the policy. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). Replaces the stored rules, up to 5 entries. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
+| `scope_rego`      | string  | No       | Scope of the policy, written directly as a Rego program. GitLab stores it as you wrote it. Maximum 4096 characters. Send an empty value to retire an authored program and recompile from `policy_scope`. A value that does not parse as Rego returns `400 Bad Request`. |
 | `trigger_type`    | string  | No       | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
 
 When you rename a policy, GitLab must recompile a generated `scope_rego`, because the policy
 name appears in the generated program.
 A `scope_rego` that was authored directly is left as it is.
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 [policy attributes](#response-attributes).
 The following conditions return `400 Bad Request`:
 
@@ -554,9 +539,9 @@ Example response:
 }
 ```
 
-### Delete a policy
+### Delete an organization policy
 
-Delete a policy from an organization.
+Deletes a policy from an organization.
 
 ```plaintext
 DELETE /organizations/:id/security/policy_store/:policy_id
@@ -569,12 +554,307 @@ Supported attributes:
 | `id`        | integer | Yes      | ID of the organization. |
 | `policy_id` | integer | Yes      | ID of the policy. |
 
-If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empty response
-body.
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 
 Example request:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store/1"
+```
+
+## Group policies
+
+Use the group endpoints to manage the policies of a group.
+In these endpoints, `id` is the ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.
+
+Prerequisites:
+
+- The group must be a top-level group that has opted in to the policy store experiment.
+- To list or retrieve policies, you must have the Owner role for the group, be an auditor, or be an administrator of the instance.
+- To create, update, or delete policies, you must have the Owner role for the group or be an administrator of the instance.
+
+A group opts in through its `policy_store_experiment_enabled` setting.
+A group that already has security policies configured through a security policy project cannot opt in.
+
+### List all group policies
+
+Lists all policies that belong to a group.
+
+```plaintext
+GET /groups/:id/security/policy_store
+```
+
+Supported attributes:
+
+| Attribute         | Type              | Required | Description |
+| ----------------- | ----------------- | -------- | ----------- |
+| `id`              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `lifecycle_state` | string            | No       | Return only `active` policies, only `disabled` policies, or `all` policies. Defaults to `active`. |
+| `page`            | integer           | No       | Page of results to return. Defaults to `1`. |
+| `per_page`        | integer           | No       | Number of results per page. Defaults to `20`, and any value above `100` is capped at `100`. |
+| `trigger_type`    | string            | No       | Return only the policies that respond to this trigger. One of the IDs returned by [List all triggers](#list-all-triggers). |
+
+This endpoint returns paginated results. For performance reasons, it never returns the
+`x-total` or `x-total-pages` headers or the `rel="last"` `link`, regardless of how many
+policies the group has: check `x-next-page` to find out whether another page follows.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of
+[policy attributes](#response-attributes).
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/security/policy_store?per_page=20"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "organization_id": 1,
+    "namespace_id": 5,
+    "name": "Block deployments on critical findings",
+    "description": null,
+    "version": 1,
+    "trigger_type": "deployment_requested",
+    "rules": [{ "type": "custom", "value": "package governance" }],
+    "policy_rego": "package governance\n",
+    "actions": [{ "type": "block" }],
+    "policy_scope": null,
+    "scope_dimensions": [],
+    "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+    "mode": "enforce",
+    "lifecycle_state": "active",
+    "created_at": "2026-08-07T13:56:32.985Z",
+    "updated_at": "2026-08-07T13:56:32.985Z"
+  }
+]
+```
+
+### Retrieve a group policy
+
+Retrieves a single policy from a group.
+
+```plaintext
+GET /groups/:id/security/policy_store/:policy_id
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+| ----------- | ----------------- | -------- | ----------- |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `policy_id` | integer           | Yes      | ID of the policy. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+[policy attributes](#response-attributes).
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/security/policy_store/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "organization_id": 1,
+  "namespace_id": 5,
+  "name": "Block deployments on critical findings",
+  "description": null,
+  "version": 1,
+  "trigger_type": "deployment_requested",
+  "rules": [{ "type": "custom", "value": "package governance" }],
+  "policy_rego": "package governance\n",
+  "actions": [{ "type": "block" }],
+  "policy_scope": null,
+  "scope_dimensions": [],
+  "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+  "mode": "enforce",
+  "lifecycle_state": "active",
+  "created_at": "2026-08-07T13:56:32.985Z",
+  "updated_at": "2026-08-07T13:56:32.985Z"
+}
+```
+
+### Create a group policy
+
+Creates a policy in a group.
+
+```plaintext
+POST /groups/:id/security/policy_store
+```
+
+Supported attributes:
+
+| Attribute         | Type              | Required | Description |
+| ----------------- | ----------------- | -------- | ----------- |
+| `id`              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `name`            | string            | Yes      | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
+| `rules`           | array             | Yes      | Rules of the policy. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). At least one entry is required, up to 5. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
+| `trigger_type`    | string            | Yes      | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
+| `actions`         | array             | No       | Actions the policy takes. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). Up to 5 entries. Each entry must serialize to at most 4096 bytes. |
+| `description`     | string            | No       | Description of the policy. Maximum 4096 characters. |
+| `lifecycle_state` | string            | No       | Either `active` or `disabled`. Defaults to `active`. |
+| `mode`            | string            | No       | One of `audit`, `warn`, or `enforce`. Defaults to `warn`. |
+| `policy_scope`    | object            | No       | Structured scope of the policy, which GitLab compiles into `scope_rego`. For its attributes, see [Policy scope attributes](#policy-scope-attributes). Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
+| `scope_rego`      | string            | No       | Scope of the policy, written directly as a Rego program. GitLab stores it as you wrote it. Maximum 4096 characters. A non-empty value cannot be combined with `policy_scope`. An empty value has the same effect as omitting it. A value that does not parse as Rego returns `400 Bad Request`. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the
+[policy attributes](#response-attributes).
+The following conditions return `400 Bad Request`:
+
+- An attribute is invalid.
+- Both scope forms are supplied.
+- The name is already taken in the organization.
+- A compiled `scope_rego` exceeds 4096 characters.
+- The `rules` compile to more than 65536 bytes of Rego.
+- `rules` or `actions` carries more than 5 entries.
+- An entry in `rules` or `actions` serializes to more than 4096 bytes.
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "Block deployments on critical findings",
+    "trigger_type": "deployment_requested",
+    "rules": [{ "type": "custom", "value": "package governance" }],
+    "actions": [{ "type": "block" }],
+    "policy_scope": { "compliance_frameworks": [{ "id": 5 }] }
+  }' \
+  --url "https://gitlab.example.com/api/v4/groups/5/security/policy_store"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "organization_id": 1,
+  "namespace_id": 5,
+  "name": "Block deployments on critical findings",
+  "description": null,
+  "version": 1,
+  "trigger_type": "deployment_requested",
+  "rules": [{ "type": "custom", "value": "package governance" }],
+  "policy_rego": "package governance\n",
+  "actions": [{ "type": "block" }],
+  "policy_scope": { "compliance_frameworks": [{ "id": 5 }] },
+  "scope_dimensions": ["compliance_frameworks"],
+  "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+  "mode": "warn",
+  "lifecycle_state": "active",
+  "created_at": "2026-08-07T13:56:32.985Z",
+  "updated_at": "2026-08-07T13:56:32.985Z"
+}
+```
+
+### Update a group policy
+
+Updates a policy in a group.
+Every attribute other than the path parameters is optional, but a request must name at least one.
+Attributes that are not sent are left as they are, and an update that changes at least one
+value raises `version` by one.
+A request that restates the stored values changes nothing, and leaves `version` as it is.
+
+```plaintext
+PATCH /groups/:id/security/policy_store/:policy_id
+```
+
+Supported attributes:
+
+| Attribute         | Type              | Required | Description |
+| ----------------- | ----------------- | -------- | ----------- |
+| `id`              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `policy_id`       | integer           | Yes      | ID of the policy. |
+| `actions`         | array             | No       | Actions the policy takes. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). Replaces the stored actions, up to 5 entries. Each entry must serialize to at most 4096 bytes. |
+| `description`     | string            | No       | Description of the policy. Maximum 4096 characters. |
+| `lifecycle_state` | string            | No       | Either `active` or `disabled`. |
+| `mode`            | string            | No       | One of `audit`, `warn`, or `enforce`. |
+| `name`            | string            | No       | Name of the policy. Maximum 255 characters. Must be unique in the organization. |
+| `policy_scope`    | object            | No       | Structured scope of the policy, which GitLab compiles into `scope_rego`. For its attributes, see [Policy scope attributes](#policy-scope-attributes). Cannot be combined with a non-empty `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
+| `rules`           | array             | No       | Rules of the policy. For the entry attributes, see [Rule and action attributes](#rule-and-action-attributes). Replaces the stored rules, up to 5 entries. Each entry must serialize to at most 4096 bytes. Rejected when the entries compile to a Rego module larger than 65536 bytes. That module is returned as `policy_rego`. |
+| `scope_rego`      | string            | No       | Scope of the policy, written directly as a Rego program. GitLab stores it as you wrote it. Maximum 4096 characters. Send an empty value to retire an authored program and recompile from `policy_scope`. A value that does not parse as Rego returns `400 Bad Request`. |
+| `trigger_type`    | string            | No       | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
+
+When you rename a policy, GitLab must recompile a generated `scope_rego`, because the policy
+name appears in the generated program.
+A `scope_rego` that was authored directly is left as it is.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+[policy attributes](#response-attributes).
+The following conditions return `400 Bad Request`:
+
+- No attribute to change is supplied.
+- An attribute is invalid.
+- Both scope forms are supplied.
+- The new name is already taken in the organization.
+- A recompiled `scope_rego` exceeds 4096 characters.
+- The replacement `rules` compile to more than 65536 bytes of Rego.
+- The replacement `rules` or `actions` carries more than 5 entries.
+- An entry in the replacement `rules` or `actions` serializes to more than 4096 bytes.
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "name=Renamed policy" \
+  --url "https://gitlab.example.com/api/v4/groups/5/security/policy_store/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "organization_id": 1,
+  "namespace_id": 5,
+  "name": "Renamed policy",
+  "description": null,
+  "version": 2,
+  "trigger_type": "deployment_requested",
+  "rules": [{ "type": "custom", "value": "package governance" }],
+  "policy_rego": "package governance\n",
+  "actions": [{ "type": "block" }],
+  "policy_scope": null,
+  "scope_dimensions": [],
+  "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+  "mode": "enforce",
+  "lifecycle_state": "active",
+  "created_at": "2026-08-07T13:56:32.985Z",
+  "updated_at": "2026-08-07T14:02:47.198Z"
+}
+```
+
+### Delete a group policy
+
+Deletes a policy from a group.
+
+```plaintext
+DELETE /groups/:id/security/policy_store/:policy_id
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+| ----------- | ----------------- | -------- | ----------- |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `policy_id` | integer           | Yes      | ID of the policy. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/security/policy_store/1"
 ```

@@ -1,10 +1,8 @@
 ---
-source_checksum: 7268d34960d06c75
-distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
+source_checksum: b31816134f219fc7
+distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
-
-> **Prerequisite:** If you haven't already, also read .ai/principles/distilled/import-fundamentals.md - it contains foundational rules that apply to all import work.
 
 # Webhooks Principles
 
