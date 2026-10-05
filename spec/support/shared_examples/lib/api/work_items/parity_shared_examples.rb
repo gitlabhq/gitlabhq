@@ -66,6 +66,7 @@ RSpec.shared_examples 'work item API field parity' do
         crm_contacts
         current_user_todos
         email_participants
+        escalation_status
         linked_resources
         notes
         participants

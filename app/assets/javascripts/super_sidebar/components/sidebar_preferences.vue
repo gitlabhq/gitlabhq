@@ -86,9 +86,10 @@ export default {
         v-gl-tooltip.hover
         :title="$options.i18n.customizeSidebar"
         :aria-label="$options.i18n.customizeSidebar"
-        icon="ellipsis_v"
+        icon="ellipsis_h"
         category="tertiary"
         size="small"
+        class="-gl-mr-2"
         v-bind="accessibilityAttributes"
       />
     </template>

@@ -47,6 +47,7 @@ module WorkItems
               development
               email_participants
               error_tracking
+              escalation_status
               hierarchy
               labels
               linked_items

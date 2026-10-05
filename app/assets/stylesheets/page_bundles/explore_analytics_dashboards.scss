@@ -1,5 +1,14 @@
 @import 'mixins_and_variables_and_functions';
 
+// Palette and brand tokens are constant across colour modes, so the glows sit
+// on the card's dark base colour in both light and dark mode.
+.gradient-hero {
+  background-image:
+    radial-gradient(1100px 420px at 12% -10%, color-mix(in srgb, var(--gl-color-blue-500) 50%, transparent), transparent 62%),
+    radial-gradient(900px 460px at 88% 8%, color-mix(in srgb, var(--gl-color-brand-purple-02p) 52%, transparent), transparent 64%),
+    radial-gradient(820px 420px at 62% 112%, color-mix(in srgb, var(--gl-color-brand-pink-01g) 40%, transparent), transparent 60%);
+}
+
 // Below md the filters stack vertically and would cover most of a small
 // viewport when stuck, so the bar only sticks once it lays out as a row.
 @include media-breakpoint-up(md) {

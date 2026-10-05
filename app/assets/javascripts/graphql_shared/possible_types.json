@@ -469,6 +469,7 @@
     "WorkItemWidgetDevelopment",
     "WorkItemWidgetEmailParticipants",
     "WorkItemWidgetErrorTracking",
+    "WorkItemWidgetEscalationStatus",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",

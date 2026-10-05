@@ -38,6 +38,7 @@ module Types
         ::WorkItems::Widgets::EmailParticipants => ::Types::WorkItems::Widgets::EmailParticipantsType,
         ::WorkItems::Widgets::LinkedResources => ::Types::WorkItems::Widgets::LinkedResourcesType,
         ::WorkItems::Widgets::ErrorTracking => ::Types::WorkItems::Widgets::ErrorTrackingType,
+        ::WorkItems::Widgets::EscalationStatus => ::Types::WorkItems::Widgets::EscalationStatusType,
         ::WorkItems::Widgets::Severity => ::Types::WorkItems::Widgets::SeverityType
       }.freeze
 

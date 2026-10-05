@@ -1081,8 +1081,7 @@ four spaces.
 This applies to lines in the same paragraph and to additional paragraphs or lists.
 
 The indent is required after a blank line.
-Without it, everything after the blank line falls out of the footnote and renders as ordinary
-page text.
+If you don't add the indent, all text after the blank line is not included in the footnote and renders as ordinary text.
 
 For example:
 

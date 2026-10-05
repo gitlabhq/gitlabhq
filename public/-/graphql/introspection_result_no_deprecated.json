@@ -237599,6 +237599,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "WorkItemWidgetEscalationStatus",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "WorkItemWidgetHealthStatus",
               "ofType": null
             },
@@ -239487,6 +239492,47 @@
         },
         {
           "kind": "OBJECT",
+          "name": "WorkItemWidgetEscalationStatus",
+          "description": "Represents the escalation status widget",
+          "fields": [
+            {
+              "name": "escalationStatus",
+              "description": "Escalation status of the work item.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "IssueEscalationStatus",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "type",
+              "description": "Widget type.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "WorkItemWidgetType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "WorkItemWidget",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "WorkItemWidgetHealthStatus",
           "description": "Represents a health status widget",
           "fields": [
@@ -241043,6 +241089,12 @@
             {
               "name": "STATUS",
               "description": "Status widget.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ESCALATION_STATUS",
+              "description": "Escalation Status widget.",
               "isDeprecated": false,
               "deprecationReason": null
             },

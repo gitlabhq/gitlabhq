@@ -37,6 +37,7 @@ module WorkItems
           merge_request_closing_issues: { merge_request: [:target_project, :author] }
         },
         [:widgets, :due_date] => :dates_source,
+        [:widgets, :escalation_status] => :incident_management_issuable_escalation_status,
         [:widgets, :has_parent] => :work_item_parent,
         [:widgets, :last_edited_by] => :last_edited_by,
         [:widgets, :milestone] => { milestone: [:project, :group] },
@@ -56,6 +57,7 @@ module WorkItems
         [:features, :development, :closing_merge_requests] => {
           merge_request_closing_issues: { merge_request: [:target_project, :author] }
         },
+        [:features, :escalation_status, :escalation_status] => :incident_management_issuable_escalation_status,
         [:features, :hierarchy, :children] => {
           work_item_children_by_relative_position: [:author, { project: :project_feature }]
         },

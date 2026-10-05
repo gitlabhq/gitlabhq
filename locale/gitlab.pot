@@ -11562,10 +11562,19 @@ msgstr ""
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
 msgstr ""
 
+msgid "Analytics|Activity across every group and project in one place, instead of one dashboard per scope."
+msgstr ""
+
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
 msgid "Analytics|Analytics settings for '%{group_name}' were successfully updated."
+msgstr ""
+
+msgid "Analytics|Ask what a trend means and get an answer grounded in the data on the page."
+msgstr ""
+
+msgid "Analytics|Build your own dashboards"
 msgstr ""
 
 msgid "Analytics|ClickHouse must be configured before this data is available."
@@ -11618,6 +11627,12 @@ msgstr ""
 msgid "Analytics|Go to Explore"
 msgstr ""
 
+msgid "Analytics|Insights with GitLab Duo"
+msgstr ""
+
+msgid "Analytics|Introducing GitLab Intelligence"
+msgstr ""
+
 msgid "Analytics|Invalid dashboard configuration"
 msgstr ""
 
@@ -11642,7 +11657,19 @@ msgstr ""
 msgid "Analytics|Nothing to show for this scope and period."
 msgstr ""
 
+msgid "Analytics|Open GitLab Intelligence"
+msgstr ""
+
+msgid "Analytics|Organization-wide view"
+msgstr ""
+
 msgid "Analytics|Refresh the page to try again."
+msgstr ""
+
+msgid "Analytics|See activity across your entire organization in one place, and ask GitLab Duo to explain what the numbers mean — without building a dashboard first."
+msgstr ""
+
+msgid "Analytics|See everything. Ask anything."
 msgstr ""
 
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
@@ -11655,6 +11682,9 @@ msgid "Analytics|Something went wrong while loading the dashboard. Refresh the p
 msgstr ""
 
 msgid "Analytics|Something went wrong."
+msgstr ""
+
+msgid "Analytics|Start from a template or compose panels yourself, and share them with your teams."
 msgstr ""
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
@@ -58774,6 +58804,9 @@ msgid "Orbit|Index"
 msgstr ""
 
 msgid "Orbit|Index root namespaces automatically"
+msgstr ""
+
+msgid "Orbit|Indexed"
 msgstr ""
 
 msgid "Orbit|Indexed content"
