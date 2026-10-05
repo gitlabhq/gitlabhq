@@ -303,6 +303,21 @@ RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
     end
   end
 
+  describe 'filter issues by type' do
+    it 'shows tickets in the list and filters by ticket type' do
+      support_bot = create(:support_bot)
+      ticket = create(:issue, :ticket, project: project, author: support_bot,
+        external_author: 'user@example.com', title: 'Ticket from customer')
+
+      select_tokens 'Type', '=', 'Ticket', submit: true
+
+      expect_type_token('Ticket')
+      expect(page).to have_work_item_count(1)
+      expect(page).to have_content(ticket.title)
+      expect_empty_search_term
+    end
+  end
+
   describe 'filter issues by milestone' do
     context 'only milestone' do
       it 'filters issues by searched milestone' do

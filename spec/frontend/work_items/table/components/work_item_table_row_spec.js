@@ -124,7 +124,7 @@ describe('WorkItemTableRow', () => {
 
       it('marks the row as the current one', () => {
         expect(findRow().attributes('aria-current')).toBe('true');
-        expect(findRow().classes()).toContain('!gl-bg-feedback-info');
+        expect(findRow().classes()).toContain('!gl-bg-strong');
       });
 
       it('closes the panel when the row is clicked again', async () => {

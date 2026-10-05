@@ -16,7 +16,7 @@ class TodoPolicy < BasePolicy
 
   desc "User can read the todo's internal note"
   condition(:can_read_todo_internal_note) do
-    @user && @user.can?(:read_internal_note, @subject.target)
+    @user && can_read_internal_note?
   end
 
   rule { own_todo & can_read_target }.enable :read_todo
@@ -26,4 +26,11 @@ class TodoPolicy < BasePolicy
     prevent :read_todo
     prevent :update_todo
   end
+
+  # Overridden in EE.
+  def can_read_internal_note?
+    can?(:read_internal_note, @subject.target)
+  end
 end
+
+TodoPolicy.prepend_mod

@@ -489,7 +489,9 @@ export default {
       suppressShortcutsUntilInputFocus();
 
       const discussionId = this.getDiscussionIdFromSelection();
-      const text = await CopyAsGFM.selectionToGfm();
+      // The split-view panel is portaled outside #content-body, which is selectionToGfm's default root.
+      const root = this.isDrawer ? this.$el.closest('.work-item-detail-panel') : undefined;
+      const text = await CopyAsGFM.selectionToGfm(root);
 
       // Prevent 'r' being written.
       if (e && typeof e.preventDefault === 'function') {

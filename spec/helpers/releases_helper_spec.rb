@@ -95,16 +95,16 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
     end
 
     describe '#data_for_show_page' do
-      let_it_be(:user) { create(:user) }
       let_it_be_with_reload(:project) { create(:project, :repository) }
-      let_it_be_with_reload(:release) do
-        create(:release, project: project, tag: 'v1.0.0', sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+
+      let(:release) do
+        build_stubbed(:release, project: project, tag: 'v1.0.0', sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
       end
 
-      let_it_be(:environment) { create(:environment, project: project) }
-      let_it_be(:deployable) { create(:ci_build, user: user, project: project) }
-      let_it_be(:deployment) do
-        create(:deployment,
+      let(:environment) { build_stubbed(:environment, project: project) }
+      let(:deployable) { build_stubbed(:ci_build, user: user, project: project) }
+      let(:deployment) do
+        build_stubbed(:deployment,
           project: project,
           environment: environment,
           deployable: deployable,
@@ -166,9 +166,9 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
         end
 
         context 'when deployable is nil' do
-          let_it_be(:deployment_with_user) do
-            create(:deployment, environment: environment, project: project, sha: project.repository.commit.id,
-              deployable: nil)
+          let(:deployment_with_user) do
+            build_stubbed(:deployment, environment: environment, project: project,
+              sha: project.repository.commit.id, deployable: nil)
           end
 
           before do

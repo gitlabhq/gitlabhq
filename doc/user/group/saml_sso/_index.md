@@ -695,7 +695,7 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
 - For items in the organization's group hierarchy, dashboard visibility is as
   follows:
   - SSO is enforced when viewing your [To-Do List](../../todos.md). Your
-    to-do items are hidden if your SSO session has expired, and an
+    to-do items are masked if your SSO session has expired, and an
     [alert is shown](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115254).
   - SSO is enforced when viewing your list of assigned issues. Your issues are
     hidden if your SSO session has expired.

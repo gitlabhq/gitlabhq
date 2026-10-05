@@ -727,6 +727,18 @@ describe('WorkItemNotes component', () => {
       });
     });
 
+    it('quotes selections inside the split-view panel, which is outside #content-body', async () => {
+      createComponent({ canCreateNote: true, isDrawer: true });
+      const panel = document.querySelector('.work-item-overview');
+      panel.classList.add('work-item-detail-panel');
+      jest.spyOn(CopyAsGFM, 'selectionToGfm').mockResolvedValueOnce('foo');
+      jest.spyOn(wrapper.vm, 'getDiscussionIdFromSelection').mockReturnValue('discussion-1');
+
+      await triggerReplyShortcut();
+
+      expect(CopyAsGFM.selectionToGfm).toHaveBeenCalledWith(panel);
+    });
+
     it.each`
       sortDirection | description
       ${ASC}        | ${'oldest-first'}

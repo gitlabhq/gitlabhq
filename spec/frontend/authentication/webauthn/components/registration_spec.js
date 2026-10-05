@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { GlAlert, GlButton, GlForm, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import Registration from '~/authentication/webauthn/components/registration.vue';
@@ -8,8 +8,10 @@ import {
   I18N_BUTTON_REGISTER,
   I18N_BUTTON_SETUP,
   I18N_BUTTON_TRY_AGAIN,
+  I18N_DEVICE_NAME_REQUIRED,
   I18N_ERROR_HTTP,
   I18N_ERROR_UNSUPPORTED_BROWSER,
+  I18N_PASSWORD_REQUIRED,
   I18N_STATUS_SUCCESS,
   I18N_STATUS_WAITING,
   STATE_ERROR,
@@ -25,7 +27,11 @@ import WebAuthnError from '~/authentication/webauthn/error';
 const csrfToken = 'mock-csrf-token';
 jest.useFakeTimers();
 jest.mock('~/lib/utils/csrf', () => ({ token: csrfToken }));
-jest.mock('~/authentication/webauthn/util');
+// Auto-mock util, but keep the pure requiredNonBlank validator real.
+jest.mock('~/authentication/webauthn/util', () => ({
+  ...jest.createMockFromModule('~/authentication/webauthn/util'),
+  requiredNonBlank: jest.requireActual('~/authentication/webauthn/util').requiredNonBlank,
+}));
 jest.mock('~/authentication/webauthn/error');
 
 describe('Registration', () => {
@@ -35,7 +41,8 @@ describe('Registration', () => {
   let wrapper;
 
   const createComponent = (provide = {}) => {
-    wrapper = shallowMountExtended(Registration, {
+    wrapper = mountExtended(Registration, {
+      attachTo: document.body,
       provide: { initialError, passwordRequired, targetPath, ...provide },
       stubs: {
         GlAlert: stubComponent(GlAlert, {
@@ -122,9 +129,13 @@ describe('Registration', () => {
     describe(`when ${STATE_SUCCESS} state`, () => {
       const credentials = 1;
 
-      const findCurrentPasswordInput = () =>
-        wrapper.findComponentByTestId('current-password-input');
-      const findDeviceNameInput = () => wrapper.findComponentByTestId('device-name-input');
+      const findCurrentPasswordInput = () => wrapper.findByTestId('current-password-input');
+      const findDeviceNameInput = () => wrapper.findByTestId('device-name-input');
+      const findSubmitButton = () => wrapper.find('button[type="submit"]');
+      const submitForm = async () => {
+        await wrapper.find('form').trigger('submit');
+        await waitForPromises();
+      };
 
       beforeEach(() => {
         mockCreate.mockResolvedValueOnce(true);
@@ -166,6 +177,8 @@ describe('Registration', () => {
             // Visible inputs
             expect(findCurrentPasswordInput().attributes('name')).toBe('current_password');
             expect(findDeviceNameInput().attributes('name')).toBe('device_registration[name]');
+            expect(findCurrentPasswordInput().attributes('required')).toBeDefined();
+            expect(findDeviceNameInput().attributes('required')).toBeDefined();
 
             // Hidden inputs
             expect(
@@ -177,23 +190,62 @@ describe('Registration', () => {
               csrfToken,
             );
 
-            expect(findPrimaryButton().text()).toBe(I18N_BUTTON_REGISTER);
+            expect(findSubmitButton().text()).toBe(I18N_BUTTON_REGISTER);
             expect(findCancelButton().exists()).toBe(true);
           });
 
-          it('enables the register device button when device name and password are filled', async () => {
+          it('blocks submission and shows validation errors when the fields are empty', async () => {
+            const submitSpy = jest
+              .spyOn(HTMLFormElement.prototype, 'submit')
+              .mockImplementation(() => {});
+            createComponent();
+
+            await setupDevice();
+            await submitForm();
+
+            expect(wrapper.text()).toContain(I18N_PASSWORD_REQUIRED);
+            expect(wrapper.text()).toContain(I18N_DEVICE_NAME_REQUIRED);
+            expect(submitSpy).not.toHaveBeenCalled();
+
+            submitSpy.mockRestore();
+          });
+
+          it('submits the form when device name and password are filled', async () => {
+            const submitSpy = jest
+              .spyOn(HTMLFormElement.prototype, 'submit')
+              .mockImplementation(() => {});
             createComponent();
 
             await setupDevice();
 
-            expect(findPrimaryButton().props('disabled')).toBe(true);
+            await findCurrentPasswordInput().setValue('my current password');
+            await findDeviceNameInput().setValue('my device name');
+            await submitForm();
 
-            // Visible inputs
-            findCurrentPasswordInput().vm.$emit('input', 'my current password');
-            findDeviceNameInput().vm.$emit('input', 'my device name');
-            await nextTick();
+            expect(wrapper.text()).not.toContain(I18N_PASSWORD_REQUIRED);
+            expect(wrapper.text()).not.toContain(I18N_DEVICE_NAME_REQUIRED);
+            expect(submitSpy).toHaveBeenCalled();
 
-            expect(findPrimaryButton().props('disabled')).toBe(false);
+            submitSpy.mockRestore();
+          });
+
+          it('blocks submission when the fields contain only whitespace', async () => {
+            const submitSpy = jest
+              .spyOn(HTMLFormElement.prototype, 'submit')
+              .mockImplementation(() => {});
+            createComponent();
+
+            await setupDevice();
+
+            await findCurrentPasswordInput().setValue('   ');
+            await findDeviceNameInput().setValue('   ');
+            await submitForm();
+
+            expect(wrapper.text()).toContain(I18N_PASSWORD_REQUIRED);
+            expect(wrapper.text()).toContain(I18N_DEVICE_NAME_REQUIRED);
+            expect(submitSpy).not.toHaveBeenCalled();
+
+            submitSpy.mockRestore();
           });
         });
 
@@ -208,6 +260,7 @@ describe('Registration', () => {
             // Visible inputs
             expect(findCurrentPasswordInput().exists()).toBe(false);
             expect(findDeviceNameInput().attributes('name')).toBe('device_registration[name]');
+            expect(findDeviceNameInput().attributes('required')).toBeDefined();
 
             // Hidden inputs
             expect(
@@ -219,20 +272,24 @@ describe('Registration', () => {
               csrfToken,
             );
 
-            expect(findPrimaryButton().text()).toBe(I18N_BUTTON_REGISTER);
+            expect(findSubmitButton().text()).toBe(I18N_BUTTON_REGISTER);
           });
 
-          it('enables the register device button when device name is filled', async () => {
+          it('does not require a password to submit the form', async () => {
+            const submitSpy = jest
+              .spyOn(HTMLFormElement.prototype, 'submit')
+              .mockImplementation(() => {});
             createComponent({ passwordRequired: false });
 
             await setupDevice();
 
-            expect(findPrimaryButton().props('disabled')).toBe(true);
+            await findDeviceNameInput().setValue('my device name');
+            await submitForm();
 
-            findDeviceNameInput().vm.$emit('input', 'my device name');
-            await nextTick();
+            expect(wrapper.text()).not.toContain(I18N_DEVICE_NAME_REQUIRED);
+            expect(submitSpy).toHaveBeenCalled();
 
-            expect(findPrimaryButton().props('disabled')).toBe(false);
+            submitSpy.mockRestore();
           });
         });
       });

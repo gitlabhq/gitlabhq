@@ -49,7 +49,6 @@ project:
   - read_badge
   - read_boundary
   - read_branch
-  - read_branch_rule
   - read_build
   - read_cluster
   - read_code

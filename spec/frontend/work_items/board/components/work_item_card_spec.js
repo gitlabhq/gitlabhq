@@ -130,7 +130,11 @@ describe('WorkItemCard', () => {
       createComponent({ item, activeItem: item });
 
       expect(findCard().classes()).toEqual(
-        expect.arrayContaining(['!gl-border-feedback-info', '!gl-bg-feedback-info']),
+        expect.arrayContaining([
+          '!gl-border-strong',
+          '!gl-bg-neutral-100',
+          'dark:!gl-bg-neutral-700',
+        ]),
       );
     });
 

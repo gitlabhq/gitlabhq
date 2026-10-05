@@ -22,6 +22,7 @@ title: GitLab MCP server
 - Support for the `2025-11-25` MCP protocol specification [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216219) in GitLab 18.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/590729) to a separate setting and [moved](https://gitlab.com/groups/gitlab-org/-/work_items/21183) from GitLab Premium to GitLab Free in GitLab 19.2.
 - Toolset selection [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/607755) in GitLab 19.5.
+- `duo_agent_platform` toolset [included by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/630992) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -131,7 +132,7 @@ Available toolsets:
 | `work_items` | Yes |
 | `repository` | Yes |
 | `ci` | Yes |
-| `duo_agent_platform` | No (opt-in) |
+| `duo_agent_platform` | Yes |
 | `wikis` | No (opt-in) |
 | `code_security` | No (opt-in) |
 

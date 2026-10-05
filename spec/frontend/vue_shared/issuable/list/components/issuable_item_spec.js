@@ -929,7 +929,7 @@ describe('IssuableItem', () => {
         preventRedirect: true,
       });
 
-      expect(findIssuableItemWrapper().classes('!gl-bg-feedback-info')).toBe(false);
+      expect(findIssuableItemWrapper().classes('!gl-bg-strong')).toBe(false);
     });
 
     it('applies highlghted class when item is active', () => {
@@ -938,7 +938,7 @@ describe('IssuableItem', () => {
         preventRedirect: true,
       });
 
-      expect(findIssuableItemWrapper().classes('!gl-bg-feedback-info')).toBe(true);
+      expect(findIssuableItemWrapper().classes('!gl-bg-strong')).toBe(true);
     });
 
     it('enables item prefetching', () => {

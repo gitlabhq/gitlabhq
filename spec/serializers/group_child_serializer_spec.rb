@@ -80,7 +80,7 @@ RSpec.describe GroupChildSerializer do
       end
 
       context 'with a hierarchy' do
-        let(:parent) { create(:group) }
+        let_it_be(:parent) { create(:group) }
 
         subject(:serializer) do
           described_class.new(current_user: user).expand_hierarchy(parent)

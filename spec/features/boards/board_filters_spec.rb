@@ -205,6 +205,30 @@ RSpec.describe 'Issue board filters', :js, feature_category: :planning_views do
         expect(find('.board-card')).to have_content(incident.title)
       end
     end
+
+    describe 'filters by ticket type' do
+      let_it_be(:support_bot) { create(:support_bot) }
+      let_it_be(:ticket) do
+        create(:issue, :ticket, project: project, author: support_bot, external_author: 'user@example.com')
+      end
+
+      before do
+        set_filter('type')
+      end
+
+      it 'shows tickets on the board and filters by ticket type', :aggregate_failures do
+        expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 3)
+
+        within_testid('filtered-search-input') do
+          click_button 'Ticket', match: :first
+        end
+
+        filter_submit.click
+
+        expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 1)
+        expect(find('.board-card')).to have_content(ticket.title)
+      end
+    end
   end
 
   context 'for a group board' do

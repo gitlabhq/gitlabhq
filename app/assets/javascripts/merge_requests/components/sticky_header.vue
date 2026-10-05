@@ -15,13 +15,10 @@ import { keyboardShortcutsDisabled } from '~/behaviors/shortcuts/shortcuts_disab
 import { sanitize, titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { isLoggedIn } from '~/lib/utils/common_utils';
 import StatusBadge from '~/issuable/components/status_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
-import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
-import SubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
 import RapidDiffsToggle from '~/rapid_diffs/app/rapid_diffs_toggle.vue';
@@ -68,8 +65,6 @@ export default {
     DiscussionCounter,
     StatusBadge,
     ImportedBadge,
-    TodoWidget,
-    SubscriptionsWidget,
     ClipboardButton,
     RapidDiffsToggle,
   },
@@ -126,12 +121,6 @@ export default {
     },
     issuableId() {
       return convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.getNoteableData.id);
-    },
-    issuableIid() {
-      return `${this.getNoteableData.iid}`;
-    },
-    isSignedIn() {
-      return isLoggedIn();
     },
     isForked() {
       return this.projectPath !== this.sourceProjectPath;
@@ -292,19 +281,6 @@ export default {
               :can-resolve-discussion="canResolveDiscussion"
               compact
             />
-            <template v-if="isSignedIn">
-              <todo-widget
-                :issuable-id="issuableId"
-                :issuable-iid="issuableIid"
-                :full-path="projectPath"
-                issuable-type="merge_request"
-              />
-              <subscriptions-widget
-                :iid="issuableIid"
-                :full-path="projectPath"
-                issuable-type="merge_request"
-              />
-            </template>
             <submit-review-button />
           </div>
         </div>

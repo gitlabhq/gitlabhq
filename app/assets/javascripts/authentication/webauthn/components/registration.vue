@@ -3,8 +3,7 @@ import {
   GlAlert,
   GlButton,
   GlForm,
-  GlFormInput,
-  GlFormGroup,
+  GlFormFields,
   GlFormPasswordInput,
   GlLink,
   GlLoadingIcon,
@@ -17,11 +16,13 @@ import {
   I18N_DEVICE_NAME,
   I18N_DEVICE_NAME_DESCRIPTION,
   I18N_DEVICE_NAME_PLACEHOLDER,
+  I18N_DEVICE_NAME_REQUIRED,
   I18N_ERROR_HTTP,
   I18N_ERROR_UNSUPPORTED_BROWSER,
   I18N_NOTICE,
   I18N_PASSWORD,
   I18N_PASSWORD_DESCRIPTION,
+  I18N_PASSWORD_REQUIRED,
   I18N_STATUS_SUCCESS,
   I18N_STATUS_WAITING,
   STATE_ERROR,
@@ -37,6 +38,7 @@ import {
   convertCreateParams,
   convertCreateResponse,
   isSecureContext,
+  requiredNonBlank,
   supported,
 } from '~/authentication/webauthn/util';
 import csrf from '~/lib/utils/csrf';
@@ -47,13 +49,13 @@ export default {
     GlAlert,
     GlButton,
     GlForm,
-    GlFormInput,
-    GlFormGroup,
+    GlFormFields,
     GlFormPasswordInput,
     GlLink,
     GlLoadingIcon,
     GlSprintf,
   },
+  formId: 'webauthn-registration-form',
   I18N_BUTTON_REGISTER,
   I18N_BUTTON_SETUP,
   I18N_BUTTON_TRY_AGAIN,
@@ -77,22 +79,40 @@ export default {
   data() {
     return {
       csrfToken: csrf.token,
-      form: { deviceName: '', password: '' },
+      formFieldsValues: { deviceName: '', password: '' },
       state: STATE_UNSUPPORTED,
       errorMessage: this.initialError,
       credentials: null,
     };
   },
   computed: {
-    disabled() {
-      const isEmptyDeviceName = this.form.deviceName.trim() === '';
-      const isEmptyPassword = this.form.password.trim() === '';
+    fields() {
+      const deviceNameField = {
+        deviceName: {
+          label: I18N_DEVICE_NAME,
+          groupAttrs: { description: I18N_DEVICE_NAME_DESCRIPTION },
+          validators: [requiredNonBlank(I18N_DEVICE_NAME_REQUIRED)],
+          inputAttrs: {
+            name: 'device_registration[name]',
+            required: true,
+            placeholder: I18N_DEVICE_NAME_PLACEHOLDER,
+            'data-testid': 'device-name-input',
+          },
+        },
+      };
 
-      if (this.passwordRequired === false) {
-        return isEmptyDeviceName;
+      if (this.passwordRequired) {
+        return {
+          password: {
+            label: I18N_PASSWORD,
+            groupAttrs: { description: I18N_PASSWORD_DESCRIPTION },
+            validators: [requiredNonBlank(I18N_PASSWORD_REQUIRED)],
+          },
+          ...deviceNameField,
+        };
       }
 
-      return isEmptyDeviceName || isEmptyPassword;
+      return deviceNameField;
     },
   },
   created() {
@@ -131,8 +151,11 @@ export default {
       // We need to run this in the next tick because otherwise the cancel button doesn't collapse the form section.
       setTimeout(() => {
         this.state = STATE_READY;
-        this.form = { deviceName: '', password: '' };
+        this.formFieldsValues = { deviceName: '', password: '' };
       });
+    },
+    onSubmit(event) {
+      event.target.submit();
     },
   },
 };
@@ -176,43 +199,39 @@ export default {
         </gl-sprintf>
       </gl-alert>
 
-      <gl-form method="post" :action="targetPath" data-testid="create-webauthn">
-        <gl-form-group
-          v-if="passwordRequired"
-          :description="$options.I18N_PASSWORD_DESCRIPTION"
-          :label="$options.I18N_PASSWORD"
-          label-for="webauthn-registration-current-password"
+      <gl-form
+        :id="$options.formId"
+        method="post"
+        :action="targetPath"
+        novalidate
+        data-testid="create-webauthn"
+      >
+        <gl-form-fields
+          v-model="formFieldsValues"
+          :form-id="$options.formId"
+          :fields="fields"
+          :validate-on-blur="false"
+          @submit="onSubmit"
         >
-          <gl-form-password-input
-            id="webauthn-registration-current-password"
-            v-model="form.password"
-            name="current_password"
-            autocomplete="current-password"
-            data-testid="current-password-input"
-          />
-        </gl-form-group>
-
-        <gl-form-group
-          :description="$options.I18N_DEVICE_NAME_DESCRIPTION"
-          :label="$options.I18N_DEVICE_NAME"
-          label-for="device-name"
-        >
-          <gl-form-input
-            id="device-name"
-            v-model="form.deviceName"
-            name="device_registration[name]"
-            :placeholder="$options.I18N_DEVICE_NAME_PLACEHOLDER"
-            data-testid="device-name-input"
-          />
-        </gl-form-group>
+          <template #input(password)="{ id, validation, value, input }">
+            <gl-form-password-input
+              :id="id"
+              :value="value"
+              :state="validation.state"
+              name="current_password"
+              required
+              autocomplete="current-password"
+              data-testid="current-password-input"
+              @input="input"
+            />
+          </template>
+        </gl-form-fields>
 
         <input type="hidden" name="device_registration[device_response]" :value="credentials" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />
 
         <div class="gl-flex gl-gap-3">
-          <gl-button type="submit" :disabled="disabled" variant="confirm">{{
-            $options.I18N_BUTTON_REGISTER
-          }}</gl-button>
+          <gl-button type="submit" variant="confirm">{{ $options.I18N_BUTTON_REGISTER }}</gl-button>
           <gl-button class="js-toggle-button" @click="reset">{{ __('Cancel') }}</gl-button>
         </div>
       </gl-form>

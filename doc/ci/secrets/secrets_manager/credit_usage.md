@@ -130,6 +130,8 @@ Prerequisites:
 1. In the left sidebar, select **Secure** > **Secrets Manager**.
 1. Select **Start 30-day trial**.
 
+If you disable GitLab Secrets Manager during your trial, you can re-enable it at any time before the end of your trial period.
+
 At the end of the trial:
 
 - If you have [GitLab Credits available](../../../subscriptions/gitlab_credits.md) in your subscription,

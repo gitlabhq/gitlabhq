@@ -3,7 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import SessionExpireModal from '~/authentication/sessions/components/session_expire_modal.vue';
-import { BROADCAST_CHANNEL, INTERVAL_SESSION_MODAL } from '~/authentication/sessions/constants';
+import {
+  BROADCAST_CHANNEL_SESSION_EXPIRE_MODAL_SHOWN,
+  BROADCAST_CHANNEL_SESSION_EXPIRY,
+  INTERVAL_SESSION_MODAL,
+} from '~/authentication/sessions/constants';
 import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 
 jest.useFakeTimers();
@@ -19,6 +23,7 @@ describe('SessionExpireModal', () => {
   const createComponent = (props = {}) => {
     wrapper = shallowMount(SessionExpireModal, {
       propsData: {
+        broadcastChannel: BROADCAST_CHANNEL_SESSION_EXPIRY,
         message,
         sessionTimeout,
         signInUrl,
@@ -92,7 +97,7 @@ describe('SessionExpireModal', () => {
       let broadcastChannel;
 
       beforeEach(() => {
-        broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL);
+        broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL_SESSION_EXPIRY);
         return waitForPromises();
       });
       afterEach(() => {
@@ -109,6 +114,20 @@ describe('SessionExpireModal', () => {
         await waitForPromises();
 
         expect(findModal().props('visible')).toBe(false);
+      });
+
+      it('ignores a non-numeric broadcast so future message types leave the countdown untouched', async () => {
+        createComponent();
+        jest.advanceTimersByTime(INTERVAL_SESSION_MODAL);
+        await nextTick();
+        expect(findModal().props('visible')).toBe(true);
+
+        // A future, non-deadline message shape must be ignored (unlike the numeric
+        // deadline above, which re-arms and hides the modal).
+        broadcastChannel.postMessage({ type: 'signed_out' });
+        await waitForPromises();
+
+        expect(findModal().props('visible')).toBe(true);
       });
     });
 
@@ -135,6 +154,58 @@ describe('SessionExpireModal', () => {
         findModal().vm.$emit('primary');
         expect(refreshCurrentPage).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('announceShown', () => {
+    let shownChannel;
+    let onShown;
+
+    beforeEach(() => {
+      onShown = jest.fn();
+      shownChannel = new BroadcastChannel(BROADCAST_CHANNEL_SESSION_EXPIRE_MODAL_SHOWN);
+      shownChannel.addEventListener('message', onShown);
+      return waitForPromises();
+    });
+    afterEach(() => {
+      shownChannel.removeEventListener('message', onShown);
+      shownChannel.close();
+    });
+
+    it('announces on the shown channel when the modal displays', async () => {
+      createComponent({ announceShown: true });
+      await waitForPromises();
+
+      expect(findModal().props('visible')).toBe(true);
+      expect(onShown).toHaveBeenCalledTimes(1);
+      expect(onShown.mock.calls[0][0].data).toBe(true);
+    });
+
+    it('announces false when a later deadline hides the modal, so subordinates can resume', async () => {
+      const broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL_SESSION_EXPIRY);
+      createComponent({ announceShown: true });
+      await waitForPromises();
+      expect(findModal().props('visible')).toBe(true);
+
+      broadcastChannel.postMessage(Date.now() + 100000);
+      // Two BroadcastChannel hops: the deadline reaches reset (hides the modal), which then
+      // posts on the shown channel; flush both before asserting the shown-channel receipt.
+      await waitForPromises();
+      await waitForPromises();
+
+      expect(findModal().props('visible')).toBe(false);
+      expect(onShown).toHaveBeenCalledTimes(2);
+      expect(onShown.mock.calls[1][0].data).toBe(false);
+
+      broadcastChannel.close();
+    });
+
+    it('does not announce when announceShown is not set', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findModal().props('visible')).toBe(true);
+      expect(onShown).not.toHaveBeenCalled();
     });
   });
 });

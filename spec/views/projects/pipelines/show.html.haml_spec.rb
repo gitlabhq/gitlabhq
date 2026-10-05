@@ -19,10 +19,13 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
 
   context 'when pipeline has errors' do
     context 'with composite_identity_forbidden error' do
+      before_all do
+        create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
+      end
+
       before do
         allow(pipeline).to receive_messages(composite_identity_forbidden?: true,
           failure_reason: 'Composite identity is forbidden')
-        create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
       end
 
       it 'shows warning alert with correct message' do
@@ -36,7 +39,7 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
       end
 
       context 'with merge request' do
-        let(:merge_request) { create(:merge_request, source_project: project) }
+        let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
 
         before do
           allow(pipeline).to receive_messages(merge_request: merge_request, commit: project.repository.commit)
@@ -73,9 +76,12 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
     end
 
     context 'with other errors' do
+      before_all do
+        create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
+      end
+
       before do
         allow(pipeline).to receive(:read_attribute).with(:failure_reason).and_return('some_other_reason')
-        create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
       end
 
       it 'shows danger alert with error messages' do

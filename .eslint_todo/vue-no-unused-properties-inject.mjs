@@ -13,7 +13,6 @@ export default {
     'app/assets/javascripts/repository/components/header_area.vue',
     'app/assets/javascripts/repository/components/header_area/breadcrumbs.vue',
     'app/assets/javascripts/security_configuration/components/app.vue',
-    'app/assets/javascripts/wikis/components/wiki_form.vue',
     'app/assets/javascripts/work_items/pages/planning_view.vue',
     'ee/app/assets/javascripts/admin/subscriptions/show/components/app.vue',
     'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_item_actions.vue',

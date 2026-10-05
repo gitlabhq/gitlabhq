@@ -7,9 +7,7 @@ module Import
         COMPRESSED_METADATA_FILENAME = 'metadata.json.gz'
         METADATA_FILENAME = 'metadata.json'
         TMPDIR_SEGMENT = 'offline_imports'
-        # TODO: set to the exact release version once the Offline Transfer feature ships.
-        # https://gitlab.com/gitlab-org/gitlab/-/work_items/598364
-        MIN_SUPPORTED_VERSION = Gitlab::VersionInfo.new(19, 0)
+        MIN_SUPPORTED_VERSION = Gitlab::VersionInfo.new(19, 4)
 
         MetadataError = Class.new(StandardError)
 

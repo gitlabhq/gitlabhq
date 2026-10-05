@@ -1460,6 +1460,12 @@ class Project < ApplicationRecord
       end
     end
 
+    def root_namespace_id_subquery(project_ids)
+      Namespace
+        .where(id: id_in(project_ids).select(:namespace_id))
+        .select(Arel.sql('namespaces.traversal_ids[1]'))
+    end
+
     def root_ids_for(project_ids)
       namespace_ids = id_in(project_ids)
         .limit(Project::MAX_PLUCK)

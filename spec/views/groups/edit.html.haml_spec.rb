@@ -41,7 +41,8 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
     context 'for a subgroup' do
       let_it_be(:subgroup_without_lock) { create(:group, parent: root_group) }
       let_it_be(:subgroup_with_lock) { create(:group, parent: root_group, share_with_group_lock: true) }
-      let_it_be(:sub_owner) { create(:user) }
+
+      let(:sub_owner) { build_stubbed(:user) }
 
       context 'when the root_group has "Share with group lock" disabled' do
         context 'when the subgroup has "Share with group lock" disabled' do

@@ -97,10 +97,9 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
         expect(transaction.labels).to eq({})
       end
 
-      it 'does not provide labels when the route has no path' do
-        # Grape 2.4 hands a Grape::Router::GreedyRoute to route_info for
-        # 405/OPTIONS responses; it responds to #path but returns nil.
-        route = double(:route, request_method: nil, path: nil, origin: nil)
+      it 'does not provide labels for the routes Grape generates for OPTIONS and 405 responses' do
+        declared_route = API::API.routes.find { |route| route.request_method == 'GET' }
+        route = Grape::Router::GreedyRoute.new(declared_route.pattern, endpoint: nil, allow_header: 'GET')
         endpoint = double(:endpoint, route: route,
           options: { for: API::Projects, path: [":id/archive"] },
           namespace: "/projects")

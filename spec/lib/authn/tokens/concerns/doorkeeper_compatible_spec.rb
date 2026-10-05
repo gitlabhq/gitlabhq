@@ -121,6 +121,14 @@ RSpec.describe Authn::Tokens::Concerns::DoorkeeperCompatible, feature_category: 
     end
   end
 
+  describe '#resource_owner' do
+    it 'returns user' do
+      instance.user = build(:user)
+
+      expect(instance.resource_owner).to eq(instance.user)
+    end
+  end
+
   describe '#application' do
     it 'returns nil' do
       expect(instance.application).to be_nil

@@ -39,7 +39,7 @@ export default {
   viewContext: VIEW_CONTEXT.drawerMergeRequest,
   i18n: {
     fromDescriptionTooltip: s__(
-      'WorkItem|This link comes from the merge request description. Edit the description to remove it.',
+      'WorkItem|This link comes from the merge request title, description, or a commit message. To remove the link, edit the text that references it.',
     ),
   },
   directives: {

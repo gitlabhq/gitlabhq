@@ -244,7 +244,7 @@ export default {
     :data-work-item-id="item.id"
     data-testid="work-item-board-card"
     :class="{
-      '!gl-border-feedback-info !gl-bg-feedback-info hover:!gl-bg-feedback-info': isActive,
+      '!gl-border-strong !gl-bg-neutral-100 hover:!gl-bg-strong dark:!gl-bg-neutral-700': isActive,
     }"
     class="js-board-card gl-group gl-border gl-relative gl-rounded-lg gl-border-section gl-bg-section hover:gl-bg-subtle"
   >

@@ -4,10 +4,11 @@ require 'spec_helper'
 RSpec.describe 'ci/status/_icon' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+  let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
   context 'when rendering status for build' do
-    let_it_be(:build) { create(:ci_build, :success, pipeline: pipeline) }
+    let(:build) { build_stubbed(:ci_build, :success, pipeline: pipeline) }
 
     context 'when user has ability to see details' do
       before_all do
@@ -45,11 +46,12 @@ RSpec.describe 'ci/status/_icon' do
       end
 
       context 'status has external target url' do
-        let_it_be(:external_job) do
-          create(
+        let(:external_job) do
+          build_stubbed(
             :generic_commit_status,
             status: :running,
             pipeline: pipeline,
+            project: project,
             target_url: 'http://gitlab.com'
           )
         end
@@ -68,7 +70,7 @@ RSpec.describe 'ci/status/_icon' do
       end
 
       context 'status do not have external target url' do
-        let_it_be(:external_job) { create(:generic_commit_status, status: :canceled) }
+        let(:external_job) { build_stubbed(:generic_commit_status, status: :canceled) }
 
         before do
           render_status(external_job)

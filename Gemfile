@@ -164,7 +164,7 @@ gem 'grape-entity', '~> 1.1.0', feature_category: :api
 gem 'grape-swagger', '~> 2.1.4', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.7.0', group: [:development, :test], feature_category: :api
 gem 'grape-path-helpers', '~> 2.1', feature_category: :api
-gem 'gitlab-grape-openapi', '~> 0.7.0', feature_category: :api
+gem 'gitlab-grape-openapi', '~> 0.8.0', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors', feature_category: :api
 
 # GraphQL API
@@ -763,7 +763,7 @@ gem 'zstd-ruby', '~> 2.0', require: 'zstd-ruby', feature_category: :software_com
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry
 
 # Remote Development
-gem 'devfile', '~> 0.5.4', feature_category: :workspaces
+gem 'devfile', '~> 0.5.5', feature_category: :workspaces
 gem 'hashdiff', '~> 1.2.0', feature_category: :workspaces
 
 # Apple plist parsing

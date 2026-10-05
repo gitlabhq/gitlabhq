@@ -53,6 +53,7 @@ each hour from an IP address:
 - Git over HTTPS requests
 - [Feature flag](../../operations/feature_flags.md) polling from Unleash clients
 - Requests from the [GitLab for Slack app](../project/integrations/gitlab_slack_application.md)
+- Requests that [trigger a pipeline with a pipeline trigger token](../../ci/triggers/_index.md)
 
 These requests stay subject to the [current limits](#current-rate-limits). The GitLab for Slack
 app also has its own limit for an IP address of 1,000 requests each hour and 100 requests each

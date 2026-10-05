@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe MemberEntity, feature_category: :groups_and_projects do
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { build_stubbed(:user) }
   let_it_be(:parent_group) { create(:group) }
+  let_it_be(:user) { create(:user, :blocked_pending_approval) }
 
   let(:shared_group) { build_stubbed(:group) }
   let(:entity) { described_class.new(member, { current_user: current_user, group: group, source: source }) }
@@ -166,7 +167,6 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
     end
 
     context 'new member user state is blocked_pending_approval' do
-      let_it_be(:user) { create(:user, :blocked_pending_approval) }
       let_it_be(:group_member) { create(:group_member, :invited, source: subgroup, invite_email: user.email) }
       let_it_be(:member) { GroupMemberPresenter.new(GroupMember.with_invited_user_state.find(group_member.id), current_user: current_user) }
 
@@ -238,7 +238,6 @@ RSpec.describe MemberEntity, feature_category: :groups_and_projects do
     end
 
     context 'new members user state is blocked_pending_approval' do
-      let_it_be(:user) { create(:user, :blocked_pending_approval) }
       let_it_be(:project_member) { create(:project_member, :invited, source: project, invite_email: user.email) }
       let_it_be(:member) { ProjectMemberPresenter.new(ProjectMember.with_invited_user_state.find(project_member.id), current_user: current_user) }
 

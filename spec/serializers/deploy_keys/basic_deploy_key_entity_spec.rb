@@ -35,7 +35,7 @@ RSpec.describe DeployKeys::BasicDeployKeyEntity, feature_category: :continuous_d
   end
 
   context 'user is an admin' do
-    let_it_be_with_refind(:user) { create(:user, :admin) }
+    let(:user) { build_stubbed(:user, :admin) }
 
     context 'when admin mode is enabled', :enable_admin_mode do
       it { expect(entity.as_json).to include(can_edit: true) }

@@ -3784,6 +3784,33 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.root_namespace_id_subquery' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
+
+    let_it_be(:other_group) { create(:group) }
+    let_it_be(:other_group_project) { create(:project, namespace: other_group) }
+
+    it 'selects the root namespace id of each given project' do
+      subquery = described_class.root_namespace_id_subquery([subgroup_project.id, other_group_project.id])
+
+      expect(Namespace.id_in(subquery)).to contain_exactly(group, other_group)
+    end
+
+    it 'selects the user namespace id for a personal project' do
+      user = create(:user, :with_namespace)
+      personal_project = create(:project, namespace: user.namespace)
+
+      expect(Namespace.id_in(described_class.root_namespace_id_subquery(personal_project.id)))
+        .to contain_exactly(user.namespace)
+    end
+
+    it 'selects nothing for a non-existent project id' do
+      expect(Namespace.id_in(described_class.root_namespace_id_subquery(non_existing_record_id))).to be_empty
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 

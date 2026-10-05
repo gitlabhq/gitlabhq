@@ -92,7 +92,7 @@ export default {
   <tr
     class="gl-border-b last:gl-border-b-0 hover:gl-bg-subtle"
     :class="{
-      '!gl-bg-feedback-info hover:!gl-bg-feedback-info': isActive,
+      '!gl-bg-strong hover:!gl-bg-strong': isActive,
       'gl-cursor-pointer': isRowClickable,
     }"
     :aria-current="isActive ? 'true' : undefined"

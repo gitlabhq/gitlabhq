@@ -5,8 +5,8 @@ module API
     module Validators
       class FilePath < Grape::Validations::Validators::Base
         def validate_param!(attr_name, params)
-          options = @option.is_a?(Hash) ? @option : {}
-          path_allowlist = options.fetch(:allowlist, [])
+          options = @options.is_a?(Hash) ? @options : {}
+          path_allowlist = options.fetch(:allowlist, []).dup
           allow_initial_path_separator = options.fetch(:allow_initial_path_separator, false)
           path = params[attr_name]
 

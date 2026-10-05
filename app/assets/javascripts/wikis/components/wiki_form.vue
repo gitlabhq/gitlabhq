@@ -178,7 +178,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
-  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'pageHeading', 'wikiUrl'],
+  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'wikiUrl'],
   emits: ['is-editing'],
   saveOptions: [
     {

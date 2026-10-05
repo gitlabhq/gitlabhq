@@ -5807,6 +5807,9 @@ msgstr ""
 msgid "AddPasskey|Passkey name"
 msgstr ""
 
+msgid "AddPasskey|Passkey name is required."
+msgstr ""
+
 msgid "AddPasskey|Passkeys only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
@@ -8599,6 +8602,12 @@ msgstr ""
 msgid "AiGovernance|Category"
 msgstr ""
 
+msgid "AiGovernance|Claude Code (Compliance API)"
+msgstr ""
+
+msgid "AiGovernance|Claude Code (glab)"
+msgstr ""
+
 msgid "AiGovernance|Cloud access"
 msgstr ""
 
@@ -8654,6 +8663,9 @@ msgid "AiGovernance|Failed to update the MCP server. Try again."
 msgstr ""
 
 msgid "AiGovernance|Failed to update tool rule. Please try again."
+msgstr ""
+
+msgid "AiGovernance|GitLab Duo"
 msgstr ""
 
 msgid "AiGovernance|Inherit"
@@ -27181,6 +27193,9 @@ msgstr ""
 msgid "Current password"
 msgstr ""
 
+msgid "Current password is required."
+msgstr ""
+
 msgid "Current project"
 msgstr ""
 
@@ -30972,6 +30987,9 @@ msgid "Device authorization grant"
 msgstr ""
 
 msgid "Device name"
+msgstr ""
+
+msgid "Device name is required."
 msgstr ""
 
 msgid "DeviceAuth|Authorize"
@@ -89234,7 +89252,7 @@ msgstr ""
 msgid "UsageBilling|Overrides"
 msgstr ""
 
-msgid "UsageBilling|Parsed overrides"
+msgid "UsageBilling|Overrides saved."
 msgstr ""
 
 msgid "UsageBilling|Peak day usage"
@@ -96335,7 +96353,7 @@ msgstr ""
 msgid "WorkItem|This item is hidden because its author has been banned."
 msgstr ""
 
-msgid "WorkItem|This link comes from the merge request description. Edit the description to remove it."
+msgid "WorkItem|This link comes from the merge request title, description, or a commit message. To remove the link, edit the text that references it."
 msgstr ""
 
 msgid "WorkItem|This status is set as the %{state} default. Select a new %{state} default to remove this status."

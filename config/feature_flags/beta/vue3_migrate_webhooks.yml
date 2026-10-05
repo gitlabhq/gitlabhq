@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_webhooks
+description: Enables Vue 3 in compatibility mode for the webhooks pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/613597
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259067
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631896
+milestone: '19.5'
+group: group::import
+type: beta
+default_enabled: false

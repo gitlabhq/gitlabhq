@@ -3,17 +3,22 @@ import {
   GlAlert,
   GlButton,
   GlForm,
-  GlFormInput,
-  GlFormGroup,
+  GlFormFields,
   GlFormPasswordInput,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import csrf from '~/lib/utils/csrf';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { WEBAUTHN_REGISTER } from '../constants';
 import WebAuthnError from '../error';
-import { convertCreateParams, convertCreateResponse, isSecureContext, supported } from '../util';
+import {
+  convertCreateParams,
+  convertCreateResponse,
+  isSecureContext,
+  requiredNonBlank,
+  supported,
+} from '../util';
 
 export default {
   name: 'PasskeyRegistration',
@@ -21,11 +26,11 @@ export default {
     GlAlert,
     GlButton,
     GlForm,
-    GlFormInput,
-    GlFormGroup,
+    GlFormFields,
     GlFormPasswordInput,
     GlLoadingIcon,
   },
+  formId: 'passkey-registration-form',
   inject: ['initialError', 'passwordRequired', 'path', 'twoFactorAuthPath'],
   data() {
     return {
@@ -33,19 +38,41 @@ export default {
       /** @type {'pending'|'success'|'error'} */
       state: 'error',
       credentials: null,
-      form: { deviceName: '', password: '' },
+      formFieldsValues: { deviceName: '', password: '' },
     };
   },
   computed: {
-    disabled() {
-      const isEmptyDeviceName = this.form.deviceName.trim() === '';
-      const isEmptyPassword = this.form.password.trim() === '';
+    fields() {
+      const deviceNameField = {
+        deviceName: {
+          label: s__('AddPasskey|Passkey name'),
+          groupAttrs: {
+            description: s__('AddPasskey|Add a name to help you identify the passkey later'),
+          },
+          validators: [requiredNonBlank(s__('AddPasskey|Passkey name is required.'))],
+          inputAttrs: {
+            name: 'device_registration[name]',
+            required: true,
+            placeholder: __('Macbook Touch ID on Edge'),
+            'data-testid': 'device-name-input',
+          },
+        },
+      };
 
-      if (this.passwordRequired === false) {
-        return isEmptyDeviceName;
+      if (this.passwordRequired) {
+        return {
+          password: {
+            label: __('Current password'),
+            groupAttrs: {
+              description: s__('AddPasskey|Verify your password to add the passkey'),
+            },
+            validators: [requiredNonBlank(__('Current password is required.'))],
+          },
+          ...deviceNameField,
+        };
       }
 
-      return isEmptyDeviceName || isEmptyPassword;
+      return deviceNameField;
     },
   },
   created() {
@@ -87,6 +114,9 @@ export default {
       this.alert = createAlert({ message, variant: 'danger' });
       this.state = 'error';
     },
+    onSubmit(event) {
+      event.target.submit();
+    },
   },
   csrfToken: csrf.token,
 };
@@ -108,44 +138,33 @@ export default {
     </gl-alert>
 
     <div v-else-if="isState('success')" class="row" data-testid="passkey-registration-success">
-      <gl-form method="post" :action="path" class="gl-col-5">
-        <gl-form-group
-          v-if="passwordRequired"
-          :description="s__('AddPasskey|Verify your password to add the passkey')"
-          :label="__('Current password')"
-          label-for="passkey-registration-current-password"
+      <gl-form :id="$options.formId" method="post" :action="path" novalidate class="gl-col-5">
+        <gl-form-fields
+          v-model="formFieldsValues"
+          :form-id="$options.formId"
+          :fields="fields"
+          :validate-on-blur="false"
+          @submit="onSubmit"
         >
-          <gl-form-password-input
-            id="passkey-registration-current-password"
-            v-model="form.password"
-            name="current_password"
-            autocomplete="current-password"
-            required
-            data-testid="current-password-input"
-          />
-        </gl-form-group>
-
-        <gl-form-group
-          :description="s__('AddPasskey|Add a name to help you identify the passkey later')"
-          :label="s__('AddPasskey|Passkey name')"
-          label-for="device-name"
-        >
-          <gl-form-input
-            id="device-name"
-            v-model="form.deviceName"
-            name="device_registration[name]"
-            :placeholder="__('Macbook Touch ID on Edge')"
-            data-testid="device-name-input"
-          />
-        </gl-form-group>
+          <template #input(password)="{ id, validation, value, input }">
+            <gl-form-password-input
+              :id="id"
+              :value="value"
+              :state="validation.state"
+              name="current_password"
+              required
+              autocomplete="current-password"
+              data-testid="current-password-input"
+              @input="input"
+            />
+          </template>
+        </gl-form-fields>
 
         <input type="hidden" name="device_registration[device_response]" :value="credentials" />
         <input type="hidden" name="authenticity_token" :value="$options.csrfToken" />
 
         <div class="gl-flex gl-gap-3">
-          <gl-button type="submit" :disabled="disabled" variant="confirm">{{
-            s__('AddPasskey|Add passkey')
-          }}</gl-button>
+          <gl-button type="submit" variant="confirm">{{ s__('AddPasskey|Add passkey') }}</gl-button>
           <gl-button data-testid="cancel-btn" :href="twoFactorAuthPath">{{
             __('Cancel')
           }}</gl-button>

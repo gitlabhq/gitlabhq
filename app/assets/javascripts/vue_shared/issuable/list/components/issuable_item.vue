@@ -385,7 +385,7 @@ export default {
     class="issue !gl-flex gl-flex-col gl-gap-y-3 !gl-px-5 @sm/panel:gl-flex-row"
     :class="{
       closed: issuable.closedAt,
-      '!gl-bg-feedback-info': isActive,
+      '!gl-bg-strong': isActive,
       'issue-clickable gl-relative gl-cursor-pointer': isClickableLink,
       'hover:gl-bg-subtle': isClickableLink && !isActive,
     }"
