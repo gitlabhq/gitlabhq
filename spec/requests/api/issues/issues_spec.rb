@@ -276,7 +276,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           it_behaves_like 'issues statistics'
         end
 
-        context 'sort does not affect statistics ' do
+        context 'sort does not affect statistics' do
           let(:params) { { state: :opened, order_by: 'updated_at' } }
           let(:counts) { { all: 2, closed: 1, opened: 1 } }
 
@@ -1022,7 +1022,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           it_behaves_like 'issues statistics'
         end
 
-        context 'sort does not affect statistics ' do
+        context 'sort does not affect statistics' do
           let(:params) { { state: :opened, order_by: 'updated_at' } }
           let(:counts) { { all: 2, closed: 1, opened: 1 } }
 

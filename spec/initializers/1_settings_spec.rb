@@ -482,6 +482,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         authn_data_retention_authentication_event_archive_worker
         authn_data_retention_oauth_access_grant_archive_worker
         authn_data_retention_oauth_access_token_archive_worker
+        authn_iam_replication_reconciliation_oauth_applications
         authorized_project_update_periodic_recalculate_worker
         authz_reverify_project_authorizations_cron_worker
         background_operations_worker_main_database

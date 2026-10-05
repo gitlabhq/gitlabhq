@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   describe 'url scheme' do
     let(:stub) { double(:spamcheck_stub, check_for_spam_issue: response) }
 
-    context 'is tls  ' do
+    context 'is tls' do
       let(:endpoint) { 'tls://spamcheck.example.com' }
 
       it 'uses secure connection' do

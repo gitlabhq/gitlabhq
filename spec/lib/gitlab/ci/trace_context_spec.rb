@@ -66,6 +66,16 @@ RSpec.describe Gitlab::Ci::TraceContext, feature_category: :fleet_visibility do
     end
   end
 
+  describe '.export_job_span_id' do
+    it 'uses the :export span kind' do
+      expect(described_class.export_job_span_id(100, 200)).to eq(described_class.span_id_for_job(100, 200, :export))
+    end
+
+    it 'differs from the default span kind' do
+      expect(described_class.export_job_span_id(100, 200)).not_to eq(described_class.span_id_for_job(100, 200))
+    end
+  end
+
   describe '.span_id_for_pipeline' do
     it 'returns 16 lowercase hex characters' do
       expect(described_class.span_id_for_pipeline(1, 2)).to match(/\A[0-9a-f]{16}\z/)

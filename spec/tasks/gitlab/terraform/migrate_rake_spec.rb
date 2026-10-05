@@ -13,6 +13,8 @@ RSpec.describe 'gitlab:terraform_states', :silence_stdout, feature_category: :in
   end
 
   before do
+    # Lazily building `version` can autoload classes that create their own loggers
+    allow(Logger).to receive(:new).and_call_original
     allow(Logger).to receive(:new).with($stdout).and_return(logger)
   end
 

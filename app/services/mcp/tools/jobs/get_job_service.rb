@@ -14,9 +14,7 @@ module Mcp
         NOT_FOUND = 'Job not found or inaccessible'
         LOG_FORBIDDEN = "Job log not accessible: you do not have permission to read this job's log."
 
-        def self.namespace_arguments
-          { project: :id }
-        end
+        container_arguments project: :id
 
         register_version '0.1.0', {
           toolset: :ci,

@@ -114,4 +114,38 @@ RSpec.describe Mcp::Tools::Commits::GetCommitService, feature_category: :mcp_ser
       end
     end
   end
+
+  describe '#governed_containers' do
+    it 'governs by the project a commit url names', :aggregate_failures do
+      url = "#{::Gitlab.config.gitlab.url}/#{project.full_path}/-/commit/#{commit.sha}"
+      resolved = service.governed_containers({ url: url }.with_indifferent_access)
+
+      expect(resolved.containers).to contain_exactly(project)
+      expect(resolved.named).to eq(1)
+    end
+
+    it 'governs by the project named directly', :aggregate_failures do
+      resolved = service.governed_containers({ project_id: project.id.to_s }.with_indifferent_access)
+
+      expect(resolved.containers).to contain_exactly(project)
+      expect(resolved.named).to eq(1)
+    end
+
+    it 'governs a decoy url by the project the commit is read from as well', :aggregate_failures do
+      decoy_project = create(:project)
+      url = "#{::Gitlab.config.gitlab.url}/#{decoy_project.full_path}/-/merge_requests/1 " \
+        "#{::Gitlab.config.gitlab.url}/#{project.full_path}/-/commit/#{commit.sha}"
+      resolved = service.governed_containers({ url: url }.with_indifferent_access)
+
+      expect(resolved.containers).to contain_exactly(decoy_project, project)
+      expect(resolved.named).to eq(2)
+    end
+
+    it 'keeps a url it cannot read named, so the call is refused', :aggregate_failures do
+      resolved = service.governed_containers({ url: 'https://example.com/nope' }.with_indifferent_access)
+
+      expect(resolved.containers).to be_empty
+      expect(resolved.named).to eq(1)
+    end
+  end
 end

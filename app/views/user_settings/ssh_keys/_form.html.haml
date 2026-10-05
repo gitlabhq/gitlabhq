@@ -29,7 +29,7 @@
         - c.with_body do
           = s_("Profiles|Publicly visible private SSH keys can compromise your system.")
         - c.with_actions do
-          = render Pajamas::ButtonComponent.new(variant: :confirm,
+          = render Pajamas::ButtonComponent.new(size: :small, variant: :confirm,
             button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
             = _("Yes, add it")
 

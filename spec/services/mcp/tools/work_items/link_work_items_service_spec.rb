@@ -23,6 +23,62 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsService, feature_category: :m
     service.set_cred(current_user: user)
   end
 
+  describe '#governed_containers' do
+    let_it_be(:other_project) { create(:project, :private) }
+    let_it_be(:other_work_item) { create(:work_item, :issue, project: other_project) }
+
+    subject(:resolved) { service.governed_containers(arguments) }
+
+    context 'when a target is named by iid' do
+      let(:arguments) { { project_id: project.id.to_s, work_item_iid: 1, work_items_ids: [2] } }
+
+      it 'governs the source container only' do
+        expect(resolved.containers).to contain_exactly(project)
+        expect(resolved.named).to eq(resolved.containers.size)
+      end
+
+      it 'does not reach the project holding that primary key' do
+        arguments[:work_items_ids] = [other_work_item.id]
+
+        expect(resolved.containers).not_to include(other_project)
+      end
+    end
+
+    context 'when a target is named by global ID' do
+      let(:arguments) do
+        { project_id: project.id.to_s, work_item_iid: 1,
+          work_items_ids: [other_work_item.to_global_id.to_s] }
+      end
+
+      it 'governs the container the global ID names as well as the source' do
+        expect(resolved.containers).to contain_exactly(project, other_project)
+        expect(resolved.named).to eq(resolved.containers.size)
+      end
+    end
+
+    context 'when the same target is named twice' do
+      let(:arguments) do
+        { project_id: project.id.to_s, work_item_iid: 1,
+          work_items_ids: [other_work_item.to_global_id.to_s, other_work_item.to_global_id.to_s] }
+      end
+
+      it 'counts the repeat once, so the call is not refused as unresolved', :aggregate_failures do
+        expect(resolved.containers).to contain_exactly(project, other_project)
+        expect(resolved.named).to eq(resolved.containers.size)
+      end
+    end
+
+    context 'when the argument names more identifiers than are allowed' do
+      let(:arguments) do
+        { project_id: project.id.to_s, work_items_ids: Array.new(101) { |i| i + 1 } }
+      end
+
+      it 'rejects the call rather than resolving them' do
+        expect { resolved }.to raise_error(ArgumentError, /cannot name more than 100/)
+      end
+    end
+  end
+
   describe 'class configuration' do
     it 'inherits from GraphqlService' do
       expect(described_class.superclass).to eq(Mcp::Tools::Base::GraphqlService)

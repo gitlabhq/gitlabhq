@@ -100,7 +100,7 @@ RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
         end
       end
 
-      context 'when passing invalid data ' do
+      context 'when passing invalid data' do
         let(:all_traversal_ids) do
           [
             ["; UPDATE"]

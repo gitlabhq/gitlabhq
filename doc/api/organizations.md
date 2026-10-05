@@ -49,12 +49,13 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
---form "name=New Organization" \
---form "path=new-org" \
---form "description=A new organization" \
---form "avatar=@/path/to/avatar.png" \
-"https://gitlab.example.com/api/v4/organizations"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "name=New Organization" \
+  --form "path=new-org" \
+  --form "description=A new organization" \
+  --form "avatar=@/path/to/avatar.png" \
+  --url "https://gitlab.example.com/api/v4/organizations"
 ```
 
 Example response:

@@ -80800,7 +80800,7 @@ definitions:
         type: string
         format: date-time
         description: The expiration time for the runner authentication token (ISO
-          8601 format). Must be between 5 minutes and 15 days in the future, and cannot
+          8601 format). Must be between 5 minutes and 21 days in the future, and cannot
           exceed instance/group/project limits.
       token_rotation_deadline:
         type: string

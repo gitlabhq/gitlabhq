@@ -14,12 +14,20 @@ import (
 	redsync "github.com/go-redsync/redsync/v4"
 	redis "github.com/redis/go-redis/v9"
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
+	"google.golang.org/protobuf/proto"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 var errFailedToAcquireLockError = errors.New("handleClientEvents: failed to acquire lock")
+
+// Stamped unconditionally: a client must not get to choose its own value here.
+func markClientInjected(tools []*pb.McpTool) {
+	for _, tool := range tools {
+		tool.ClientInjected = proto.Bool(true)
+	}
+}
 
 type workflowStream interface {
 	Send(*pb.ClientEvent) error
@@ -422,6 +430,7 @@ func (r *runner) handleClientEvent(response *pb.ClientEvent) error {
 		for _, tool := range startReq.McpTools {
 			tool.Trusted = nil
 		}
+		markClientInjected(startReq.McpTools)
 
 		startReq.McpTools = append(startReq.McpTools, r.mcpManager.Tools()...)
 		startReq.PreapprovedTools = append(startReq.PreapprovedTools, r.mcpManager.PreApprovedTools()...)

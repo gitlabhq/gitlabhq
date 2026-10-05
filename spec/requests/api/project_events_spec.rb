@@ -15,7 +15,7 @@ RSpec.describe API::ProjectEvents, feature_category: :user_profile do
       let(:request) { get api("/projects/#{private_project.id}/events", personal_access_token: pat) }
     end
 
-    context 'when unauthenticated ' do
+    context 'when unauthenticated' do
       it 'returns 404 for private project' do
         get api("/projects/#{private_project.id}/events")
 

@@ -4,9 +4,7 @@ module Mcp
   module Tools
     module Labels
       class SearchService < Base::GraphqlService
-        def self.namespace_arguments
-          { project_or_group: :full_path }
-        end
+        container_arguments project_or_group: :full_path
 
         register_version '0.1.0', {
           toolset: :core,

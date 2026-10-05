@@ -1,6 +1,6 @@
 ---
-source_checksum: 5af32b07ba97daf7
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: 16011c5a8ddff0f8
+distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -72,6 +72,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - DO NOT use `change_column` to add/remove constraints — it rewrites the entire column definition inefficiently
 - Remove a non-nullable column's default value in a post-deployment migration, not in the same migration that adds the column
 - Follow the `SafelyChangeColumnDefault` two-release process when changing a column default that application code may explicitly write
+- When a nullable column must never be written as `NULL` (for example, a `NULL` row would escape a partial unique index), assign the value in an unconditional `before_create` callback; DO NOT rely on a Rails `attribute` default, which does not override an explicit `nil`
 - When renaming or changing the type of a column referenced by a database view, recreate the view as part of the migration to point to the new column
 
 ### Dropping Tables
@@ -98,7 +99,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Use `add_timestamps_with_timezone`, `timestamps_with_timezone`, or `datetime_with_timezone` instead of `add_timestamps`, `timestamps`, or `:datetime`
 - Store `encrypts` attributes as `:jsonb`, not `:text`
 - Add a length validation (≤ 510) for encrypted attributes stored in JSONB columns
-- Use `JsonSchemaValidator` with a `size_limit` (recommended max 64 KB) for all JSONB columns
+- Use `JsonSchemaValidator` with a `size_limit` (recommended max 64 KB) for all JSONB columns (enforced by the `JsonbSizeLimit` cop)
 - DO NOT store unbounded JSONB data; use object storage and store references for large datasets
 - Follow the multi-step process when adding/removing properties in JSONB columns validated with `additionalProperties: false`: add the property to the schema first (without marking it `required`), then add code that uses it after full deployment; for removal, remove code first, then data, then the schema entry — each step in a separate release for self-managed, or after full deployment for GitLab.com-only properties
 

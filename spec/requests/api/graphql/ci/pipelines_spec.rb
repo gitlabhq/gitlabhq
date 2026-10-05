@@ -611,6 +611,43 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     end
   end
 
+  describe 'detailedStatus' do
+    let_it_be(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipelines {
+              nodes {
+                detailedStatus {
+                  group
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    def create_pipeline_with_warnings
+      create(:ci_pipeline, :success, project: project).tap do |pipeline|
+        create(:ci_build, :failed, :allowed_to_fail, pipeline: pipeline)
+      end
+    end
+
+    it 'batches the warning counts of the pipelines', :request_store, :use_sql_query_cache do
+      create_pipeline_with_warnings
+      post_graphql(query, current_user: user)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_graphql(query, current_user: user) }
+
+      2.times { create_pipeline_with_warnings }
+
+      expect { post_graphql(query, current_user: user) }.to issue_same_number_of_queries_as(control)
+      expect(graphql_data_at(:project, :pipelines, :nodes, :detailed_status, :group))
+        .to all(eq('success-with-warnings'))
+    end
+  end
+
   describe '.jobs(securityReportTypes)' do
     let_it_be(:query) do
       %(

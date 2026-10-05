@@ -4,7 +4,7 @@ module Mcp
   module Tools
     module Base
       class BaseService
-        include Mcp::Tools::Concerns::GovernanceNamespaceResolver
+        include Mcp::Tools::Concerns::GovernanceContainerResolver
 
         # override this method when renaming tools
         def self.tool_aliases

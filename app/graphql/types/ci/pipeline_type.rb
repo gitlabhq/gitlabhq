@@ -269,7 +269,11 @@ module Types
       end
 
       def detailed_status
-        object.detailed_status(current_user)
+        return object.detailed_status(current_user) unless object.success?
+
+        Gitlab::Graphql::Lazy.with_value(BatchLoader::GraphQL.wrap(object.number_of_warnings)) do
+          object.detailed_status(current_user)
+        end
       end
 
       def user

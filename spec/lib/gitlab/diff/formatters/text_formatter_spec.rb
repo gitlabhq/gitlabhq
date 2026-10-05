@@ -33,13 +33,13 @@ RSpec.describe Gitlab::Diff::Formatters::TextFormatter, feature_category: :code_
   describe '#line_age' do
     subject { formatter.line_age }
 
-    context ' when there is only new_line' do
+    context 'when there is only new_line' do
       let(:attrs) { base.merge(new_line: 1) }
 
       it { is_expected.to eq('new') }
     end
 
-    context ' when there is only old_line' do
+    context 'when there is only old_line' do
       let(:attrs) { base.merge(old_line: 1) }
 
       it { is_expected.to eq('old') }

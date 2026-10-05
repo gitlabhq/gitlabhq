@@ -198,6 +198,7 @@ This setting applies to all GitLab Duo Agent Platform features.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a feature flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_direct_access`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/598417) direct connections to use the AI Gateway `/v4/code/suggestions` endpoint in GitLab 19.5.
 
 {{< /history >}}
 
@@ -206,6 +207,18 @@ For this direct connection to work, the IDE must be able to connect to `https://
 possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
 code completion requests are sent indirectly through the GitLab Self-Managed instance, which in turn sends the requests
 to the AI Gateway. This might result in your requests having higher latency.
+
+Editor extensions use the GitLab Language Server to communicate with the AI Gateway for code suggestions.
+
+The Language Server sends direct connection requests to the AI Gateway `/v4/code/suggestions` endpoint.
+If the AI Gateway rejects a direct connection request, the Language Server automatically falls back
+to indirect connections, which have higher latency.
+
+> [!warning]
+> Older versions of the Language Server use the v2 endpoint, which was deprecated in GitLab 19.5
+> and is planned for removal in GitLab 21.0.
+> Update your editor extensions to the latest versions before GitLab 21.0.
+> For more information, see [issue 605661](https://gitlab.com/gitlab-org/gitlab/-/issues/605661).
 
 #### Configure direct or indirect connections
 

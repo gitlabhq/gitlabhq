@@ -81,6 +81,12 @@ RSpec.describe Gitlab::Observability::TracingHelpers, feature_category: :observa
         Gitlab::Ci::TraceContext.span_id_for_job(root_id, 300, :export)
       )
     end
+
+    it 'matches TraceContext.export_job_span_id' do
+      expect(instance.send(:job_span_id, { id: 300 })).to eq(
+        Gitlab::Ci::TraceContext.export_job_span_id(root_id, 300)
+      )
+    end
   end
 
   describe 'cross-signal consistency' do

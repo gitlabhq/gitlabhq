@@ -48,7 +48,7 @@ module Gitlab
           # namespace. This is intentionally distinct from the EE job telemetry
           # span kinds (:lifecycle, :pending, :running) so that export spans
           # and real-time telemetry spans coexist without ID collisions.
-          Gitlab::Ci::TraceContext.span_id_for_job(root_pipeline_id, build[:id], :export)
+          Gitlab::Ci::TraceContext.export_job_span_id(root_pipeline_id, build[:id])
         end
       end
     end

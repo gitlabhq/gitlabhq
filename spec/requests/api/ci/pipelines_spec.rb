@@ -26,7 +26,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     )
   end
 
-  describe 'GET /projects/:id/pipelines ' do
+  describe 'GET /projects/:id/pipelines' do
     describe 'mcp route setting' do
       subject { get api("/projects/#{project.id}/pipelines", user) }
 
@@ -823,7 +823,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     it_behaves_like 'listing trigger jobs by pipeline', 'bridges'
   end
 
-  describe 'POST /projects/:id/pipeline ' do
+  describe 'POST /projects/:id/pipeline' do
     def expect_variables(variables, expected_variables)
       variables.each_with_index do |variable, index|
         expected_variable = expected_variables[index]

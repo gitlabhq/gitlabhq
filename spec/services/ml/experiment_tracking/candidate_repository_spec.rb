@@ -81,7 +81,7 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
 
     it { is_expected.to be_truthy }
 
-    context 'when end_time is missing ' do
+    context 'when end_time is missing' do
       let(:end_time) { nil }
 
       it { is_expected.to be_truthy }

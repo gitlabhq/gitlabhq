@@ -80,7 +80,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
       end
     end
 
-    context 'with a skipped stage ' do
+    context 'with a skipped stage' do
       let(:stage) { create(:ci_stage, pipeline: pipeline, name: 'skipped', status: 'skipped') }
 
       it 'contains play_all_manual' do
@@ -88,7 +88,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
       end
     end
 
-    context 'with a scheduled stage ' do
+    context 'with a scheduled stage' do
       let(:stage) { create(:ci_stage, pipeline: pipeline, name: 'scheduled', status: 'scheduled') }
 
       it 'contains play_all_manual' do
@@ -96,7 +96,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
       end
     end
 
-    context 'with a manual stage ' do
+    context 'with a manual stage' do
       let(:stage) { create(:ci_stage, pipeline: pipeline, name: 'manual', status: 'manual') }
 
       it 'contains play_all_manual' do

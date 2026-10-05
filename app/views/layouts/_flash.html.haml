@@ -30,6 +30,6 @@
           = alert[:message]
         - if alert[:button_text] && alert[:button_path]
           = c.with_actions do
-            = render Pajamas::ButtonComponent.new(variant: :confirm, href: alert[:button_path]) do
+            = render Pajamas::ButtonComponent.new(size: :small, variant: :confirm, href: alert[:button_path]) do
               = alert[:button_text]
   #js-global-alerts

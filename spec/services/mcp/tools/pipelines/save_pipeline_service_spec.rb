@@ -254,4 +254,28 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
       end
     end
   end
+
+  describe '#governed_containers' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+    it 'governs a pipeline_id by the project that pipeline belongs to' do
+      arguments = { pipeline_id: pipeline.id, action: 'retry' }.with_indifferent_access
+
+      expect(service.governed_containers(arguments).containers).to eq([project])
+    end
+
+    it 'names the pipeline even when it resolves to nothing', :aggregate_failures do
+      arguments = { pipeline_id: non_existing_record_id, action: 'retry' }.with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.named).to eq(1)
+      expect(resolved.containers).to be_empty
+    end
+
+    it 'still governs the create form by its project' do
+      arguments = { project_id: project.full_path, ref: 'master' }.with_indifferent_access
+
+      expect(service.governed_containers(arguments).containers).to eq([project])
+    end
+  end
 end

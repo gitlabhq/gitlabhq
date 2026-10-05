@@ -422,32 +422,31 @@ names its project with `project_full_path` while `search_labels` names it with `
 A tool that declares nothing usable resolves no namespace. It is served ungoverned, and no
 tool rule ever applies to its calls.
 
-The contract lives in `Mcp::Tools::Concerns::GovernanceNamespaceResolver`, which every tool
-includes. It exposes a class-level `namespace_arguments` method and the `resolve_governance_containers`
+The contract lives in `Mcp::Tools::Concerns::GovernanceContainerResolver`, which every tool
+includes. It exposes a class-level `container_arguments` macro and the `governed_containers`
 method that reads it.
 
 **The default.** Every tool inherits:
 
 ```ruby
-{ project: :project_id, group: :group_id }
+{ project: :project_id, group: :group_id, project_or_group: :url }
 ```
 
 If your tool's input schema already names its arguments `project_id` or `group_id`, you don't
 need to change anything. The resolver accepts a numeric ID, a full path, or a Global ID for
 either argument.
 
-**Overriding.** When your tool names its arguments differently, override
-`self.namespace_arguments` on the service class and return a hash. For example,
-`list_vulnerabilities` identifies its project with `project_full_path` instead of `project_id`:
+**Overriding.** When your tool names its arguments differently, call the `container_arguments`
+macro on the service class. The kinds you pass replace the matching default keys, and the
+other defaults stay. For example, `list_vulnerabilities` identifies its project with
+`project_full_path` instead of `project_id`:
 
 ```ruby
 module Mcp
   module Tools
     module Security
       class ListVulnerabilitiesService < Base::GraphqlService
-        def self.namespace_arguments
-          { project: :project_full_path }
-        end
+        container_arguments project: :project_full_path
 
         # ...
       end
@@ -462,9 +461,7 @@ entry instead:
 
 ```ruby
 class SearchService < Base::GraphqlService
-  def self.namespace_arguments
-    { project_or_group: :full_path }
-  end
+  container_arguments project_or_group: :full_path
 end
 ```
 
@@ -482,10 +479,36 @@ A Global ID's own class must match the declared kind. A group's Global ID given 
 ID. For a `:project_or_group` argument, a full path can't collide between the two, so an
 identifier the project lookup doesn't claim is offered to the group lookup.
 
-**Route-backed tools.** A tool created from a REST route with `route_setting :mcp` needs no
-declaration. `ApiTool` reads `boundary_type` from the route's `route_setting :authorization`
+**Route-backed tools.** A tool created from a REST route with `route_setting :mcp` usually
+needs no declaration. `ApiTool` reads `boundary_type` from the route's `route_setting :authorization`
 and maps `:project` and `:group` onto the route's `:id` parameter. When the route sets no
-boundary type, `ApiTool` falls back to the default `{ project: :project_id, group: :group_id }`.
+boundary type, `ApiTool` falls back to the default declaration.
+
+When a route takes another argument that names a container, declare it on the route with
+`container_arguments:`. `ApiTool` merges it with the boundary-derived kind. `fork_repository`
+is governed by the source project from its boundary and by the namespace it forks into:
+
+```ruby
+route_setting :mcp, tool_name: :fork_repository, toolset: :repository,
+  params: [:id, :namespace_id, :namespace_path, :name, :path, :description, :visibility],
+  container_arguments: {
+    record: {
+      namespace_id: ->(id) { ::Namespace.without_project_namespaces.find_by_id(id) },
+      namespace_path: ->(path) { ::Namespace.without_project_namespaces.find_by_full_path(path) }
+    }
+  }
+```
+
+When only EE adds the argument, pass the declaration through a CE helper that EE overrides,
+the same way the route passes its parameters. `create_issue` uses
+`Helpers::IssuesHelpers.create_issue_mcp_container_arguments`, which EE extends with an
+`epic_id` resolver.
+
+**URL arguments.** Tools read a `url` with different parsers. A merge request tool matches
+`MergeRequest.link_reference_pattern`, a commit tool matches `Commit.link_reference_pattern`,
+and other tools take the path in front of `/-/`. One URL can contain text that each parser
+reads as a different project. The resolver applies all three and governs the call by every
+project or group they return, so the most restrictive rule wins.
 
 **List arguments.** An argument can hold a list of identifiers instead of a single one. The
 resolver looks up every entry in the list, not just the first, and skips any entry that
@@ -495,14 +518,14 @@ one call:
 
 ```ruby
 class AttachScanProfileService < Base::GraphqlService
-  def self.namespace_arguments
-    { project: :project_ids, group: :group_ids }
-  end
+  container_arguments project: :project_ids,
+    group: :group_ids,
+    record: { security_scan_profile_id: ->(id) { container_from_scan_profile(id) } }
 end
 ```
 
 **Tools that cannot be governed.** When no argument on a tool names a project or a group, mark
-the class `ungovernable!` instead of declaring `namespace_arguments`. `GetServerVersionService`
+the class `ungovernable!` instead of declaring `container_arguments`. `GetServerVersionService`
 is an example, since it takes no arguments at all:
 
 ```ruby
@@ -513,20 +536,36 @@ class GetServerVersionService < Base::CustomService
 end
 ```
 
-> [!note]
-> Tools that take only a record ID, such as `get_duo_session` and `get_vulnerability`, are
-> currently marked `ungovernable!` too. Resolving their owning project would mean loading the
-> record first, and the resolver doesn't do that today. This is tracked in [issue 628447](https://gitlab.com/gitlab-org/gitlab/-/issues/628447).
+**Tools reached through a record.** When an argument names a record rather than a project or
+group, declare it under the `record:` kind and attach the lookup. The resolver runs it and
+counts the argument for you, so no override is needed:
 
-**The guardrail.** `ee/spec/lib/ai/tool_rules/governable_tools_namespace_spec.rb` asserts, for
+```ruby
+class GetVulnerabilityService < Base::GraphqlService
+  container_arguments record: { vulnerability_id: ->(id) { ::Vulnerability.find_by_id(id)&.project } }
+
+  # ...
+end
+```
+
+The lookup can return a project, a group, or a namespace. The resolver turns a project
+namespace into its project. A personal namespace is not counted, because no tool rules apply
+to it. A lookup that returns `nil` still counts the argument, so a call that names a record
+that doesn't exist is refused instead of served ungoverned.
+
+**The guardrail.** `ee/spec/lib/ai/tool_rules/governable_tools_container_spec.rb` asserts, for
 every governed tool:
 
-- The tool declares a namespace argument or is marked `ungovernable!`.
+- The tool declares a container argument or is marked `ungovernable!`.
 - The declared argument is one the tool actually accepts.
 - The declaration is keyed on a recognized kind.
+- Every input property is either declared or listed for that tool as never naming a project
+  or group. The list is kept per tool, so an argument that is safe on one tool is not
+  exempted on another.
 
 If this spec fails on your tool, declare the argument that actually carries the project or
-group, or mark the tool `ungovernable!` if nothing on it names a container.
+group, add the argument to the tool's entry in the list if it never names one, or mark the
+tool `ungovernable!` if nothing on it names a container.
 
 ### Implement a custom tool
 

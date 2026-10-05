@@ -692,6 +692,89 @@ $diff-file-header-top: 11px;
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .mr-merge-button-shimmer {
+    --shimmer-thickness: #{$gl-border-size-1};
+    --shimmer-offset: #{$gl-border-size-1};
+    --shimmer-highlight-color: var(--gl-color-neutral-10);
+    --shimmer-color-1: light-dark(
+      var(--gl-color-brand-purple-02p),
+      var(--gl-color-brand-purple-01p)
+    );
+    --shimmer-color-2: var(--gl-color-brand-pink-01g);
+    --shimmer-color-3: light-dark(
+      var(--gl-color-brand-orange-02p),
+      var(--gl-color-brand-orange-01p)
+    );
+    --shimmer-gradient: linear-gradient(
+      160deg,
+      var(--gl-color-alpha-0) 0%,
+      var(--shimmer-highlight-color) 15%,
+      var(--shimmer-color-1) 20%,
+      var(--shimmer-color-2) 25%,
+      var(--shimmer-color-3) 30%,
+      var(--gl-color-alpha-0) 36%,
+      var(--gl-color-alpha-0) 40%,
+      var(--shimmer-highlight-color) 55%,
+      var(--shimmer-color-1) 60%,
+      var(--shimmer-color-2) 65%,
+      var(--shimmer-color-3) 70%,
+      var(--gl-color-alpha-0) 76%,
+      var(--gl-color-alpha-0) 80%,
+      var(--shimmer-highlight-color) 95%,
+      var(--shimmer-color-1) 100%
+    );
+    --shimmer-opacity: 0;
+    z-index: 1;
+    transform-style: preserve-3d;
+
+    &::before,
+    &::after {
+      content: '';
+      @apply gl-pointer-events-none;
+      @apply gl-absolute;
+      background: var(--shimmer-gradient) 15% 15% / 300% 300%;
+      opacity: var(--shimmer-opacity);
+      transition: opacity $gl-transition-duration-medium $gl-easing-out-cubic;
+      animation: mr-merge-button-shimmer 3s linear infinite;
+    }
+
+    // Bloom: a blurred copy pushed behind the buttons' own background.
+    &::before {
+      @apply gl-inset-0;
+      border-radius: var(--gl-action-border-radius);
+      filter: blur(12px);
+      transform: translateZ(-1px);
+      opacity: calc(var(--shimmer-opacity) * 0.9);
+    }
+
+    // Ring: masking out the content box paints only the outline.
+    &::after {
+      inset: calc(-1 * (var(--shimmer-offset) + var(--shimmer-thickness)) + #{$gl-border-size-1});
+      padding: var(--shimmer-thickness);
+      border-radius: calc(
+        var(--gl-action-border-radius) + var(--shimmer-offset) + var(--shimmer-thickness)
+      );
+      mask:
+        linear-gradient(currentColor 0 0) content-box,
+        linear-gradient(currentColor 0 0);
+      mask-composite: exclude;
+    }
+
+    // The ring sits where the focus ring draws, so it steps aside for it.
+    &:hover:not(:focus-within) {
+      --shimmer-opacity: 1;
+    }
+  }
+}
+
+// One loop moves the gradient one band cycle, so the restart is seamless.
+@keyframes mr-merge-button-shimmer {
+  to {
+    background-position: 75% 75%;
+  }
+}
+
 .mr-widget-border-top {
   border-top: 1px solid var(--gl-border-color-default);
 

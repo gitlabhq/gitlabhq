@@ -47,6 +47,7 @@ Requests at the burst limit reach the sustained limit in approximately 50 minute
 12 minutes in Premium, and 12.5 minutes in Ultimate.
 
 These limits apply to API requests, web requests, and authenticated Git over HTTPS requests.
+Each Git clone, fetch, or push counts as one request, and so does each Git LFS transfer.
 Some unauthenticated requests do not count against the unauthenticated limit of 60 requests
 each hour from an IP address:
 

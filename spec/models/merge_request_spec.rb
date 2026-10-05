@@ -6494,7 +6494,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe "#diff_head_pipeline_success? " do
+  describe "#diff_head_pipeline_success?" do
     context 'when project lacks an diff_head_pipeline relation' do
       before do
         allow(subject).to receive(:diff_head_pipeline) { nil }
@@ -10808,7 +10808,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       include_examples 'syncs attribute to merge_data', :squash, false
 
       # Inline for merge_user, and merge_user_id since it needs the user context
-      context 'merge_user and merge_user_id ' do
+      context 'merge_user and merge_user_id' do
         it 'syncs merge_user_id setter' do
           merge_request.merge_user_id = user.id
 

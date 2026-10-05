@@ -434,4 +434,32 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_categ
       end
     end
   end
+
+  describe '#governed_containers' do
+    let_it_be(:source_project) { create(:project) }
+    let_it_be(:target_project) { create(:project) }
+
+    it 'governs by the target project as well as the source' do
+      arguments = { project_id: source_project.full_path, target_project_id: target_project.id }
+        .with_indifferent_access
+
+      expect(service.governed_containers(arguments).containers)
+        .to contain_exactly(source_project, target_project)
+    end
+
+    it 'names the target even when it resolves to nothing', :aggregate_failures do
+      arguments = { project_id: source_project.full_path, target_project_id: non_existing_record_id }
+        .with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.named).to eq(2)
+      expect(resolved.containers).to eq([source_project])
+    end
+
+    it 'governs by the source project alone when no target is given' do
+      arguments = { project_id: source_project.full_path }.with_indifferent_access
+
+      expect(service.governed_containers(arguments).containers).to eq([source_project])
+    end
+  end
 end

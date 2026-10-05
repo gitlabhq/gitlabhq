@@ -46,7 +46,7 @@
                     - c.with_body do
                       = s_('GitLabPages|Domain ownership verification required. Add a TXT record to verify ownership at your domain provider.')
                     - c.with_actions do
-                      = render Pajamas::ButtonComponent.new(href: project_pages_domain_path(@project, domain)) do
+                      = render Pajamas::ButtonComponent.new(size: :small, href: project_pages_domain_path(@project, domain)) do
                         = s_("GitLabPages|Edit domain")
               - if domain.show_auto_ssl_failed_warning?
                 .gl-mt-3

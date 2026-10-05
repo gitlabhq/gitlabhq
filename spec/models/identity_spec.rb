@@ -140,7 +140,7 @@ RSpec.describe Identity do
       let(:other_provider_user_synced_attributes) { { provider: 'other', name_synced: true, email_synced: true } }
 
       describe 'if user synced attributes metadada provider' do
-        context 'matches the identity provider ' do
+        context 'matches the identity provider' do
           it 'removes the user synced attributes' do
             user.create_user_synced_attributes_metadata(ldap_user_synced_attributes)
 

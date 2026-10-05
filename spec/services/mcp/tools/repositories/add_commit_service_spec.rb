@@ -106,6 +106,18 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
     end
   end
 
+  describe '#governed_containers' do
+    let_it_be(:upstream) { create(:project) }
+
+    it 'governs the call by the project and the project it starts from', :aggregate_failures do
+      arguments = { project_id: project.full_path, start_project: upstream.full_path }.with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.containers).to contain_exactly(project, upstream)
+      expect(resolved.named).to eq(2)
+    end
+  end
+
   describe '#execute' do
     let(:params) do
       {

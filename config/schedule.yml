@@ -29,6 +29,12 @@ authn_data_retention_oauth_access_token_archive_worker:
   class: Authn::DataRetention::OauthAccessTokenArchiveWorker
   cron: "5 6 * * *"
 
+authn_iam_replication_reconciliation_oauth_applications:
+  class: Authn::IamReplication::ReconciliationWorker
+  cron: "*/5 * * * *"
+  args:
+    - oauth_application
+
 authorized_project_update_periodic_recalculate_worker:
   class: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   cron: "45 1 1,15 * *"

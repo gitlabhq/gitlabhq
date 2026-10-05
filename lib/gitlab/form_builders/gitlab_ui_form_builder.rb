@@ -8,8 +8,9 @@ module Gitlab
 
         @template.render Pajamas::ButtonComponent.new(
           variant: options.fetch(:variant, :confirm),
+          size: options.fetch(:size, :medium),
           type: :submit,
-          button_options: options.except(:pajamas_button, :variant)
+          button_options: options.except(:pajamas_button, :variant, :size)
         ) do
           value
         end

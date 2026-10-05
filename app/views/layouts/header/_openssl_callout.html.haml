@@ -14,5 +14,5 @@
   - c.with_body do
     = message
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-close' }) do
+    = render Pajamas::ButtonComponent.new(size: :small, variant: :confirm, button_options: { class: 'js-close' }) do
       = _('Acknowledge')

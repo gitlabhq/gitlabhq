@@ -215,7 +215,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'multiple unlabel command' do
-      it 'fetches label ids and populates remove_label_ids if content contains  mutiple /unlabel' do
+      it 'fetches label ids and populates remove_label_ids if content contains mutiple /unlabel' do
         issuable.update!(label_ids: [inprogress.id, bug.id]) # populate the label
         _, updates, _ = service.execute(content, issuable)
 
@@ -1173,7 +1173,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
       end
 
-      context 'non persisted merge request  cant be merged' do
+      context 'non persisted merge request cant be merged' do
         it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
           let(:issuable) { build(:merge_request) }
@@ -2439,7 +2439,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           end
         end
 
-        context 'ignores non-existing / invalid  emojis' do
+        context 'ignores non-existing / invalid emojis' do
           it_behaves_like 'failed command' do
             let(:content) { "#{command} noop" }
             let(:issuable) { issue }

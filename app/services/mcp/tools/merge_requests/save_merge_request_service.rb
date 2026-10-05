@@ -138,6 +138,8 @@ module Mcp
           'save_merge_request'
         end
 
+        container_arguments project: %i[project_id target_project_id]
+
         override :tool_aliases
         def self.tool_aliases
           %w[create_merge_request update_merge_request]

@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlFormTextarea, GlSprintf } from '@gitlab/ui';
+import { GlButtonGroup, GlFormTextarea, GlSprintf } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import produce from 'immer';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
@@ -96,7 +96,7 @@ const createReadyToMergeResponse = (customMr) => {
   });
 };
 
-const createComponent = (customConfig = {}, createState = true) => {
+const createComponent = (customConfig = {}, createState = true, provide = {}) => {
   mockedSubscription = createMockApolloSubscription();
   const apolloProvider = createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]);
   const subscriptionResponse = {
@@ -134,11 +134,13 @@ const createComponent = (customConfig = {}, createState = true) => {
       GlFormTextarea,
       GlSprintf,
     },
+    provide,
     apolloProvider,
   });
 };
 
 const findMergeButton = () => wrapper.findComponent('[data-testid="merge-button"]');
+const findMergeButtonGroup = () => wrapper.findComponent(GlButtonGroup);
 const findMergeImmediatelyDropdown = () =>
   wrapper.find('[data-testid="merge-immediately-dropdown"');
 const findSourceBranchDeletedText = () =>
@@ -278,6 +280,44 @@ describe('ReadyToMerge', () => {
       });
 
       expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('merge button shimmer', () => {
+    const shimmerClass = 'mr-merge-button-shimmer';
+    const withFlag = { glFeatures: { mergeButtonShimmer: true } };
+
+    it('is not applied when the feature flag is off', () => {
+      createComponent();
+
+      expect(findMergeButtonGroup().classes()).not.toContain(shimmerClass);
+    });
+
+    it('is applied to the merge button group when the feature flag is on', () => {
+      createComponent({}, true, withFlag);
+
+      expect(findMergeButtonGroup().classes()).toContain(shimmerClass);
+    });
+
+    it('is not applied when the merge button is disabled', () => {
+      createComponent({ mr: { commitMessage: '' } }, true, withFlag);
+
+      expect(findMergeButtonGroup().classes()).not.toContain(shimmerClass);
+    });
+
+    it('is not applied while auto-merge strategies are loading', () => {
+      createComponent({ mr: { availableAutoMergeStrategies: undefined } }, true, withFlag);
+
+      expect(findMergeButtonGroup().classes()).not.toContain(shimmerClass);
+    });
+
+    it('is removed while the merge request is being made', async () => {
+      createComponent({ mr: { isMergeAllowed: true } }, true, withFlag);
+
+      findMergeButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findMergeButtonGroup().classes()).not.toContain(shimmerClass);
     });
   });
 

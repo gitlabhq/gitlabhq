@@ -9,6 +9,8 @@ module Mcp
 
         PartialEditError = Class.new(StandardError)
 
+        container_arguments project: %i[project_id start_project]
+
         override :tool_aliases
         def self.tool_aliases
           ['create_commit']

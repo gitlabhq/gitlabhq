@@ -59568,6 +59568,9 @@ msgstr ""
 msgid "Organization|Manage organization"
 msgstr ""
 
+msgid "Organization|Move your groups, projects, and users to an organization and manage them from one location. With organizations, you can also access exclusive organization features."
+msgstr ""
+
 msgid "Organization|My organization"
 msgstr ""
 
@@ -59664,10 +59667,7 @@ msgstr ""
 msgid "Organization|Organizations"
 msgstr ""
 
-msgid "Organization|Organizations are now available"
-msgstr ""
-
-msgid "Organization|Organizations bring your top-level groups, projects, and users into one place so you can manage organization level settings and features together. Create yours to get started with features like Artifact Central."
+msgid "Organization|Organizations are available"
 msgstr ""
 
 msgid "Organization|Organizations is a new feature. Help us make it better by"
@@ -74369,6 +74369,11 @@ msgid_plural "SecurityConfiguration|%d scanners not enabled"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityConfiguration|%{count} of %{total} profile"
+msgid_plural "SecurityConfiguration|%{count} of %{total} profiles"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityConfiguration|%{count} project"
 msgid_plural "SecurityConfiguration|%{count} projects"
 msgstr[0] ""
@@ -74383,9 +74388,6 @@ msgid "SecurityConfiguration|%{enabledCount} of %{totalCount}"
 msgstr ""
 
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
-msgstr ""
-
-msgid "SecurityConfiguration|%{name} configuration profile"
 msgstr ""
 
 msgid "SecurityConfiguration|%{profileLabel}, last scan failed"
@@ -74890,8 +74892,10 @@ msgid_plural "SecurityConfiguration|You are about to disable profile-based scann
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "SecurityConfiguration|You are about to disable profile-based scanning for %{name}. Are you sure you want to proceed?"
-msgstr ""
+msgid "SecurityConfiguration|You are about to disable the %{profiles} profile for %{name}. Are you sure you want to proceed?"
+msgid_plural "SecurityConfiguration|You are about to disable the %{profiles} profiles for %{name}. Are you sure you want to proceed?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecurityConfiguration|Your configuration has been applied and is rolling out to projects in batches. Profiles will be applied to %{strongStart}%{itemCount}%{strongEnd} as each batch completes — this may take a few minutes."
 msgstr ""
@@ -77832,6 +77836,18 @@ msgid "SecurityProfiles|What is secret push protection?"
 msgstr ""
 
 msgid "SecurityProfiles|You are about to disable the %{profileName} profile for this project. Are you sure you want to proceed?"
+msgstr ""
+
+msgid "SecurityProfiles|You don't have permission to create scan profiles in this group."
+msgstr ""
+
+msgid "SecurityProfiles|You don't have permission to delete scan profiles in this group."
+msgstr ""
+
+msgid "SecurityProfiles|You don't have permission to edit or delete scan profiles in this group."
+msgstr ""
+
+msgid "SecurityProfiles|You don't have permission to edit scan profiles in this group."
 msgstr ""
 
 msgid "SecurityProfiles|failure"
@@ -83198,6 +83214,15 @@ msgid "Table|Column %{columnNumber}"
 msgstr ""
 
 msgid "Table|Original row order restored."
+msgstr ""
+
+msgid "Table|Reset sorting"
+msgstr ""
+
+msgid "Table|Sort ascending"
+msgstr ""
+
+msgid "Table|Sort descending"
 msgstr ""
 
 msgid "Tag"

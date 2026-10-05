@@ -303,7 +303,7 @@ RSpec.describe Environments::StopService, :with_current_organization, feature_ca
         end
       end
 
-      context 'with environment related jobs ' do
+      context 'with environment related jobs' do
         let!(:environment) { create(:environment, :available, name: 'staging', project: project) }
         let!(:prepare_staging_job) { create(:ci_build, :prepare_staging, pipeline: pipeline, project: project) }
         let!(:start_staging_job) { create(:ci_build, :start_staging, :with_deployment, :manual, pipeline: pipeline, project: project, user: user) }

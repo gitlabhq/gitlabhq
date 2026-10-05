@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltip } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import {
   STICKY_HEADER_CLASSES,
@@ -12,6 +12,12 @@ const ASCENDING = 'ascending';
 const DESCENDING = 'descending';
 // Performance limit: disable sorting for tables with more than 1000 rows.
 const MAX_SORTABLE_ROWS = 1000;
+
+const SORT_ACTIONS = {
+  ascending: { icon: 'sort-lowest', label: s__('Table|Sort ascending') },
+  descending: { icon: 'sort-highest', label: s__('Table|Sort descending') },
+  reset: { icon: 'redo', label: s__('Table|Reset sorting') },
+};
 
 function isEmpty(value) {
   return value === '';
@@ -34,6 +40,7 @@ export default {
   name: 'MarkdownTable',
   components: {
     GlIcon,
+    GlTooltip,
   },
   directives: {
     adoptCells: adoptDirective,
@@ -82,6 +89,7 @@ export default {
       hasSorted: false,
       sortKey: null,
       sortDirection: ASCENDING,
+      visibleTooltipKeys: [],
     };
   },
   computed: {
@@ -133,9 +141,15 @@ export default {
       if (this.sortKey !== key) return 'none';
       return this.sortDirection;
     },
-    sortIcon(key) {
-      if (this.sortKey !== key) return 'sort-lowest';
-      return this.sortDirection === ASCENDING ? 'sort-highest' : 'redo';
+    nextSortAction(key) {
+      if (this.sortKey !== key) return SORT_ACTIONS.ascending;
+      return this.sortDirection === ASCENDING ? SORT_ACTIONS.descending : SORT_ACTIONS.reset;
+    },
+    showTooltip(key) {
+      this.visibleTooltipKeys.push(key);
+    },
+    hideTooltip(key) {
+      this.visibleTooltipKeys = this.visibleTooltipKeys.filter((visibleKey) => visibleKey !== key);
     },
     handleSort(key) {
       if (!this.canSort) return;
@@ -195,6 +209,7 @@ export default {
                 ></span>
                 <button
                   v-if="canSort"
+                  :id="`${tableId}-${field.key}-sort`"
                   type="button"
                   class="gl-group gl-flex gl-cursor-pointer gl-items-center gl-gap-2 gl-border-0 gl-bg-transparent gl-p-0 gl-text-left gl-font-bold gl-text-inherit focus-visible:gl-outline-none"
                   :aria-labelledby="
@@ -212,11 +227,22 @@ export default {
                     v-adopt-content="field.cell"
                   ></span>
                   <gl-icon
-                    :name="sortIcon(field.key)"
-                    class="gl-shrink-0 gl-opacity-0 group-hover/markdown-table-header:gl-opacity-10 group-focus-visible:gl-opacity-10"
+                    :name="nextSortAction(field.key).icon"
+                    class="gl-shrink-0 group-hover/markdown-table-header:gl-opacity-10 group-focus-visible:gl-opacity-10"
+                    :class="
+                      visibleTooltipKeys.includes(field.key) ? 'gl-opacity-10' : 'gl-opacity-0'
+                    "
                     data-sort-icon
                   />
                 </button>
+                <gl-tooltip
+                  v-if="canSort"
+                  :target="`${tableId}-${field.key}-sort`"
+                  @show="showTooltip(field.key)"
+                  @hidden="hideTooltip(field.key)"
+                >
+                  {{ nextSortAction(field.key).label }}
+                </gl-tooltip>
               </div>
             </th>
           </tr>

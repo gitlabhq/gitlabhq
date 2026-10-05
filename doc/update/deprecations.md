@@ -45,6 +45,32 @@ For deprecation reviewers (Technical Writers only):
   <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 -->
 
+## GitLab 21.0
+
+### Code Suggestions v2 and v3 AI Gateway endpoints
+
+- Announced in GitLab 19.5
+- Removal in GitLab 21.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/605661).
+
+The AI Gateway endpoints `/v2/completions`, `/v2/code/completions`, `/v2/code/generations`, and
+`/v3/code/completions` are deprecated in GitLab 19.5 and will be removed in GitLab 21.0.
+Code Suggestions requests should use `/v4/code/suggestions` instead.
+
+GitLab.com has used `/v4/code/suggestions` since GitLab 19.1.
+No action is required for GitLab.com.
+
+GitLab Self-Managed, GitLab Dedicated, and GitLab editor extensions will switch to the v4 endpoint
+in upcoming releases. To track the versions that include this change, see
+[issue 605661](https://gitlab.com/gitlab-org/gitlab/-/issues/605661).
+If you run a self-hosted AI Gateway, the AI Gateway image for GitLab 21.0 also removes these endpoints.
+
+To avoid disruption, before GitLab 21.0 is released:
+
+- Upgrade your instance to the latest version of GitLab.
+- Update your editor extensions to the latest version.
+- Update any custom clients that call the AI Gateway directly to use `/v4/code/suggestions`.
+
 ## GitLab 20.0
 
 ### Compliance pipelines

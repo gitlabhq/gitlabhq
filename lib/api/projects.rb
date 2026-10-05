@@ -656,7 +656,13 @@ module API
       end
       route_setting :mcp, tool_name: :fork_repository, toolset: :repository,
         params: [:id, :namespace_id, :namespace_path, :name, :path, :description, :visibility],
-        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project"
+        annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project",
+        container_arguments: {
+          record: {
+            namespace_id: ->(id) { ::Namespace.without_project_namespaces.find_by_id(id) },
+            namespace_path: ->(path) { ::Namespace.without_project_namespaces.find_by_full_path(path) }
+          }
+        }
       route_setting :authorization, permissions: :create_fork, boundary_type: :project
       post ':id/fork', feature_category: :source_code_management do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20759')

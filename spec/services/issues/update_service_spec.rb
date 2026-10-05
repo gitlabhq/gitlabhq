@@ -1734,7 +1734,7 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
       end
     end
 
-    context 'when changing relative position of an issue ' do
+    context 'when changing relative position of an issue' do
       it 'raises an error for invalid move ids' do
         opts = { move_between_ids: [9000, non_existing_record_id] }
 

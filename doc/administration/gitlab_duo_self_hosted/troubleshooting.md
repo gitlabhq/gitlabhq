@@ -73,22 +73,25 @@ We provide two debugging scripts to help administrators verify their self-hosted
 
      The `troubleshoot` command supports the following options:
 
-     | Option               | Default          | Example                                                       | Description |
-     |----------------------|------------------|---------------------------------------------------------------|-------------|
-     | `--endpoint`         | `localhost:5052` | `--endpoint=localhost:5052`                                   | AI Gateway endpoint |
-     | `--model-family`     | -                | `--model-family=mistral`                                      | Model family to test. Possible values are `mistral`, `mixtral`, `gpt`, or `claude_3` |
-     | `--model-endpoint`   | -                | `--model-endpoint=http://localhost:4000/v1`                   | Model endpoint. For models hosted on vLLM, add the `/v1` suffix. |
-     | `--model-identifier` | -                | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` | Model identifier. |
-     | `--api-key`          | -                | `--api-key=your-api-key`                                      | Model API key. |
+     | Option                    | Default                 | Example                                                       | Description |
+     |---------------------------|-------------------------|---------------------------------------------------------------|-------------|
+     | `--endpoint`              | `localhost:5052`        | `--endpoint=localhost:5052`                                   | AI Gateway endpoint |
+     | `--duo-workflow-endpoint` | `localhost:50052`       | `--duo-workflow-endpoint=localhost:50052`                     | GitLab Duo Workflow Service (GitLab Duo Agent Platform) gRPC endpoint |
+     | `--model-family`          | -                       | `--model-family=mistral`                                      | Model family to test. Possible values are `mistral`, `mixtral`, `gpt`, or `llama3`. |
+     | `--model-endpoint`        | `http://localhost:4000` | `--model-endpoint=http://localhost:4000/v1`                   | Model endpoint. For models hosted on vLLM, add the `/v1` suffix. |
+     | `--model-identifier`      | -                       | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` | Model identifier. |
+     | `--api-key`               | -                       | `--api-key=your-api-key`                                      | Model API key. |
 
      Examples:
 
-     For a `claude_3` model running on AWS Bedrock:
+     For a `gpt` model running on Amazon Bedrock Mantle:
 
      ```shell
      poetry run troubleshoot \
-       --model-family=claude_3 \
-       --model-identifier=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
+       --model-family=gpt \
+       --model-identifier=bedrock_mantle/openai.gpt-oss-120b \
+       --model-endpoint=https://bedrock-mantle.<region>.api.aws/v1 \
+       --api-key=your-api-key
      ```
 
      For a `mixtral` model running on vLLM:
@@ -100,6 +103,8 @@ We provide two debugging scripts to help administrators verify their self-hosted
        --api-key=your-api-key \
        --model-endpoint=http://<your-model-endpoint>/v1
      ```
+
+     The model access check sends a code generation request to the AI Gateway `/v4/code/suggestions` endpoint with the model details you provide.
 
 After troubleshooting is complete, stop and restart the AI Gateway container without `AIGW_AUTH__BYPASS_EXTERNAL=true`.
 

@@ -1,17 +1,24 @@
 # frozen_string_literal: true
 
-# Delivers Authn::OauthApplication outbox rows to IAM. Shared by the immediate
-# write (Outboxable) and DrainWorker, so both send identical requests.
+# Sends Authn::OauthApplication rows to IAM, so every replication layer sends identical requests.
 
 module Authn
   module IamReplication
     class OauthApplicationReplicator
+      # IAM accepts only this format. Older applications can still store a PBKDF2 or
+      # plaintext secret.
+      SHA512_HEX_DIGEST = /\A[0-9a-f]{128}\z/
+
+      def self.reconciliation_scope
+        ::Authn::OauthApplication.preload(:organization, :owner) # rubocop:disable CodeReuse/ActiveRecord -- scope owned by the Layer 4 reconciliation
+      end
+
       def initialize(client: nil, timeout: nil)
         @client = client || ::Authn::IamService::GrpcClient.new(timeout: timeout)
       end
 
-      # Returns :delivered, or :skipped if the record is gone. Raises on transport
-      # failure; callers decide what to record.
+      # Returns :delivered, :skipped if the record is gone, or :unsupported_secret_digest.
+      # Raises on transport failure; callers decide what to record.
       def deliver(outbox_event)
         case outbox_event.event_type
         when 'upsert'
@@ -20,14 +27,20 @@ module Authn
           # Absent means the record was removed after this row was written
           return :skipped unless application
 
-          client.upsert_oauth_application(**upsert_attributes(application))
-          :delivered
+          upsert(application)
         when 'delete'
           delete_upstream(outbox_event.payload.symbolize_keys.fetch(:uid))
           :delivered
         else
           raise ArgumentError, "unhandled event_type: #{outbox_event.event_type}"
         end
+      end
+
+      def upsert(application)
+        return :unsupported_secret_digest unless SHA512_HEX_DIGEST.match?(application.secret)
+
+        client.upsert_oauth_application(**upsert_attributes(application))
+        :delivered
       end
 
       private
@@ -49,16 +62,17 @@ module Authn
           # Sha512Hash strategy), satisfying IAM's hashed_client_secret
           # contract as-is; IAM stores it verbatim and never sees plaintext.
           hashed_client_secret: application.secret,
-          client_name: application.name,
           redirect_uris: application.redirect_uri.split,
-          scopes: application.scopes.to_a,
-          public: !application.confidential?,
-          trusted: application.trusted?,
-          owner: owner_label(application),
           grant_types: grant_types(application),
           response_types: %w[code],
+          scopes: application.scopes.to_a,
+          public: !application.confidential?,
+          client_name: application.name,
+          owner: owner_label(application),
+          trusted: application.trusted?,
           created_at: timestamp(application.created_at),
           updated_at: timestamp(application.updated_at),
+          dynamic: application.dynamic?,
           organization_id: application.organization.uuid,
           owning_cell_id: Gitlab.config.cell.id.to_i
         }

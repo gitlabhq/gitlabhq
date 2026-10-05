@@ -16840,7 +16840,7 @@ Arguments:
 | <a id="mutation-runnercreate-rununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="mutation-runnercreate-runnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | Type of the runner to create. |
 | <a id="mutation-runnercreate-taglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
-| <a id="mutation-runnercreate-tokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Token expiration time (ISO 8601 format). Must be between 5 minutes and 15 days in the future, and cannot exceed instance/group/project limits. |
+| <a id="mutation-runnercreate-tokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Token expiration time (ISO 8601 format). Must be between 5 minutes and 21 days in the future, and cannot exceed instance/group/project limits. |
 | <a id="mutation-runnercreate-tokenrotationdeadline"></a>`tokenRotationDeadline` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 18.10. Status: Experiment. Deadline for token rotation (ISO 8601 format). Requires tokenExpiresAt. Must be <= tokenExpiresAt. Setting both to the same value disables token rotation. |
 
 Fields:
@@ -35138,7 +35138,8 @@ Fields:
 | <a id="aiauditevent-humanauthor"></a>`humanAuthor` | [`UserCore`](#usercore) | Human user on whose behalf the audit event was triggered, present only for composite-identity sessions where a service account acts on behalf of a human. |
 | <a id="aiauditevent-id"></a>`id` | [`ID!`](#id) | ID of the audit event. |
 | <a id="aiauditevent-ipaddress"></a>`ipAddress` | [`String`](#string) | IP address recorded for the audit event. |
-| <a id="aiauditevent-workflowid"></a>`workflowId` | [`ID!`](#id) | ID of the Duo Agent Platform session the event belongs to. |
+| <a id="aiauditevent-sessionid"></a>`sessionId` | [`AiGovernanceSessionID`](#aigovernancesessionid) | Global ID of the AI governance session the event belongs to. |
+| <a id="aiauditevent-workflowid"></a>`workflowId` | [`ID`](#id) | ID of the Duo Agent Platform session the event belongs to. Null for events from external agents. |
 
 ### `AiCatalogAgent`
 
@@ -35905,6 +35906,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aigovernancesession-agenttype"></a>`agentType` | [`String`](#string) | Type of the agent that ran the session, for example `claude-code`. Values differ between sources. |
+| <a id="aigovernancesession-auditevents"></a>`auditEvents` | [`AiAuditEventConnection`](#aiauditeventconnection) | Audit events recorded for the session. Returns no events for GitLab Duo sessions delivered through a private messaging integration. This field can only be resolved for one session in any single request. (see [Connections](#connections)) |
 | <a id="aigovernancesession-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo. |
 | <a id="aigovernancesession-flowtype"></a>`flowType` | [`String`](#string) | Flow type of the session, for example `chat`. Values differ between sources. |
 | <a id="aigovernancesession-id"></a>`id` | [`AiGovernanceSessionID!`](#aigovernancesessionid) | Global ID of the session. |
@@ -47902,6 +47904,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="group-aigovernancesessions-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Filter sessions by agent class. Defaults to all agent classes. |
 | <a id="group-aigovernancesessions-flowtype"></a>`flowType` | [`String`](#string) | Filter by flow type. |
+| <a id="group-aigovernancesessions-id"></a>`id` | [`AiGovernanceSessionID`](#aigovernancesessionid) | Global ID of the session. |
 | <a id="group-aigovernancesessions-not"></a>`not` | [`AiGovernanceSessionNegatedFilterInput`](#aigovernancesessionnegatedfilterinput) | Negated filter conditions. |
 | <a id="group-aigovernancesessions-projectpath"></a>`projectPath` | [`String`](#string) | Filter by project full path. |
 | <a id="group-aigovernancesessions-sessionstartedafter"></a>`sessionStartedAfter` | [`Time`](#time) | Return sessions started at or after the timestamp. |
@@ -58553,6 +58556,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="project-aigovernancesessions-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Filter sessions by agent class. Defaults to all agent classes. |
 | <a id="project-aigovernancesessions-flowtype"></a>`flowType` | [`String`](#string) | Filter by flow type. |
+| <a id="project-aigovernancesessions-id"></a>`id` | [`AiGovernanceSessionID`](#aigovernancesessionid) | Global ID of the session. |
 | <a id="project-aigovernancesessions-not"></a>`not` | [`AiGovernanceSessionNegatedFilterInput`](#aigovernancesessionnegatedfilterinput) | Negated filter conditions. |
 | <a id="project-aigovernancesessions-sessionstartedafter"></a>`sessionStartedAfter` | [`Time`](#time) | Return sessions started at or after the timestamp. |
 | <a id="project-aigovernancesessions-sessionstartedbefore"></a>`sessionStartedBefore` | [`Time`](#time) | Return sessions started at or before the timestamp. |

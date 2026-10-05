@@ -29,7 +29,7 @@ RSpec.describe Namespaces::RandomizedSuffixPath, feature_category: :shared do
       expect(suffixed_path.call(count)).to eq("backintime3845")
     end
 
-    it 'adds an offset to the  "randomized" suffix when MAX_TRIES is exhausted', time_travel_to: '1955-11-12 06:38' do
+    it 'adds an offset to the "randomized" suffix when MAX_TRIES is exhausted', time_travel_to: '1955-11-12 06:38' do
       count = described_class::MAX_TRIES + 2
       expect(suffixed_path.call(count)).to eq("backintime3846")
     end

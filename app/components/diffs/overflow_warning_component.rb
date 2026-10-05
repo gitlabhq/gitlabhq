@@ -27,9 +27,9 @@ module Diffs
       text = _("Plain diff")
 
       if commit?
-        link_button_to text, project_commit_path(@project, @commit, format: :diff), class: 'gl-mr-3'
+        link_button_to text, project_commit_path(@project, @commit, format: :diff), class: 'gl-mr-3', size: :small
       elsif merge_request?
-        link_button_to text, merge_request_path(@merge_request, format: :diff), class: 'gl-mr-3'
+        link_button_to text, merge_request_path(@merge_request, format: :diff), class: 'gl-mr-3', size: :small
       end
     end
 
@@ -37,9 +37,9 @@ module Diffs
       text = _("Email patch")
 
       if commit?
-        link_button_to text, project_commit_path(@project, @commit, format: :patch)
+        link_button_to text, project_commit_path(@project, @commit, format: :patch), size: :small
       elsif merge_request?
-        link_button_to text, merge_request_path(@merge_request, format: :patch)
+        link_button_to text, merge_request_path(@merge_request, format: :patch), size: :small
       end
     end
 

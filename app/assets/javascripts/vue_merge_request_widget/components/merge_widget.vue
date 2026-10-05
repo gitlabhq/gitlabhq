@@ -278,6 +278,9 @@ export default {
 
       return PIPELINE_SUCCESS_STATE;
     },
+    showMergeButtonShimmer() {
+      return this.glFeatures.mergeButtonShimmer && !this.isMergeButtonDisabled;
+    },
     mergeButtonText() {
       if (this.autoMergeStrategiesPending) {
         return s__('mrWidget|Checking if auto-merge is available…');
@@ -739,7 +742,10 @@ export default {
                   </li>
                 </template>
               </ul>
-              <gl-button-group class="gl-self-start">
+              <gl-button-group
+                class="gl-self-start"
+                :class="{ 'mr-merge-button-shimmer': showMergeButtonShimmer }"
+              >
                 <gl-button
                   size="medium"
                   category="primary"

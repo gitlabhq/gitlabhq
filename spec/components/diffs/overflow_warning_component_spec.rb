@@ -26,7 +26,7 @@ RSpec.describe Diffs::OverflowWarningComponent, feature_category: :source_code_m
   let(:merge_request) { build_stubbed(:merge_request, source_project: project) }
   let(:diff_files) { [diff_file] }
   let(:expected_button_classes) do
-    "gl-button btn btn-md btn-default"
+    "gl-button btn btn-sm btn-default"
   end
 
   def parse_link(html)

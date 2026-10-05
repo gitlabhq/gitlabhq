@@ -238,10 +238,20 @@ module Gitlab
             next if pipeline.id.blank? || job.id.blank?
 
             root_id = strong_memoize(:root_ancestor_id) { pipeline.root_ancestor&.id || pipeline.id }
-            traceparent = Gitlab::Ci::TraceContext.build_traceparent(root_id, job.id)
+            traceparent = Gitlab::Ci::TraceContext.build_traceparent(root_id, job.id, traceparent_span_kind)
 
             variables.append(key: 'CI_TRACEPARENT', value: traceparent)
             variables.append(key: 'CI_TRACESTATE', value: "gitlab=pipeline:#{pipeline.id};job:#{job.id}")
+          end
+        end
+
+        def traceparent_span_kind
+          strong_memoize(:traceparent_span_kind) do
+            if Feature.enabled?(:ci_traceparent_export_span_id, project)
+              Gitlab::Ci::TraceContext::EXPORT_JOB_SPAN_KIND
+            else
+              :default
+            end
           end
         end
 

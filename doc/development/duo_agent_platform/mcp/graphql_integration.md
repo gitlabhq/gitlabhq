@@ -136,8 +136,8 @@ Renaming a Ruby class does not rename its registered tool, so keep the keys unch
 ### Declare the tool's governance namespace
 
 A GraphQL-backed service must also declare which of its input arguments name the project or
-group it acts on, so administrators can enforce tool rules against it. Override
-`self.namespace_arguments` on the service class, the same way `ListVulnerabilitiesService` and
+group it acts on, so administrators can enforce tool rules against it. Call the
+`container_arguments` macro on the service class, the same way `ListVulnerabilitiesService` and
 `Labels::SearchService` do. For the full contract, including the default, the recognized
 container kinds, and the `ungovernable!` opt-out, see
 [Declare the namespace that governs the tool](_index.md#declare-the-namespace-that-governs-the-tool).

@@ -29,9 +29,8 @@ RSpec.describe 'groups/_organizations_available_alert', feature_category: :group
       render locals: { group: group }
 
       expect(rendered).to have_content(
-        s_("Organization|Organizations bring your top-level groups, projects, and users into one place so you can " \
-          "manage organization level settings and features together. Create yours to get started with features " \
-          "like Artifact Central.")
+        s_("Organization|Move your groups, projects, and users to an organization and manage them from one location. " \
+          "With organizations, you can also access exclusive organization features.")
       )
       expect(rendered).to have_link(
         s_('Organization|Create your organization'), href: edit_group_path(group, anchor: 'js-advanced-settings')

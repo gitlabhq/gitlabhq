@@ -11,6 +11,28 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
 
   subject(:replicator) { described_class.new(client: client) }
 
+  describe '#upsert' do
+    let_it_be(:application) { create(:oauth_application) }
+
+    it 'pushes the application to IAM and returns :delivered', :aggregate_failures do
+      expect(replicator.upsert(application)).to eq(:delivered)
+      expect(client).to have_received(:upsert_oauth_application).with(hash_including(client_id: application.uid))
+    end
+
+    context 'when the secret is not a SHA-512 digest' do
+      where(:secret) { ['$pbkdf2-sha512$20000$$legacy', 'f' * 64] }
+
+      with_them do
+        let(:legacy_application) { create(:oauth_application).tap { |app| app.update_column(:secret, secret) } }
+
+        it 'returns :unsupported_secret_digest without calling IAM', :aggregate_failures do
+          expect(replicator.upsert(legacy_application)).to eq(:unsupported_secret_digest)
+          expect(client).not_to have_received(:upsert_oauth_application)
+        end
+      end
+    end
+  end
+
   describe '#deliver' do
     context 'with an upsert event' do
       let_it_be(:application) { create(:oauth_application) }
@@ -22,16 +44,17 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
         expect(client).to have_received(:upsert_oauth_application).with(
           client_id: application.uid,
           hashed_client_secret: application.secret,
-          client_name: application.name,
           redirect_uris: application.redirect_uri.split,
-          scopes: application.scopes.to_a,
-          public: !application.confidential?,
-          trusted: application.trusted?,
-          owner: application.owner.name,
           grant_types: %w[authorization_code refresh_token client_credentials],
           response_types: %w[code],
+          scopes: application.scopes.to_a,
+          public: !application.confidential?,
+          client_name: application.name,
+          owner: application.owner.name,
+          trusted: application.trusted?,
           created_at: Google::Protobuf::Timestamp.new(seconds: application.created_at.to_i),
           updated_at: Google::Protobuf::Timestamp.new(seconds: application.updated_at.to_i),
+          dynamic: false,
           organization_id: application.organization.uuid,
           owning_cell_id: Gitlab.config.cell.id.to_i
         )
@@ -119,10 +142,10 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
       context 'when the application is dynamic' do
         let(:application) { create(:oauth_application, :dynamic) }
 
-        it 'sends no owner' do
+        it 'sends no owner and marks it as dynamic' do
           replicator.deliver(row)
 
-          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owner: nil))
+          expect(client).to have_received(:upsert_oauth_application).with(hash_including(owner: nil, dynamic: true))
         end
       end
 
@@ -155,6 +178,17 @@ RSpec.describe Authn::IamReplication::OauthApplicationReplicator, feature_catego
 
         it 'returns :skipped without calling IAM' do
           expect(replicator.deliver(row)).to eq(:skipped)
+          expect(client).not_to have_received(:upsert_oauth_application)
+        end
+      end
+
+      context 'when the secret is not a SHA-512 digest' do
+        let(:application) do
+          create(:oauth_application).tap { |app| app.update_column(:secret, '$pbkdf2-sha512$20000$$legacy') }
+        end
+
+        it 'returns :unsupported_secret_digest without calling IAM', :aggregate_failures do
+          expect(replicator.deliver(row)).to eq(:unsupported_secret_digest)
           expect(client).not_to have_received(:upsert_oauth_application)
         end
       end

@@ -4,7 +4,9 @@ module Mcp
   module Tools
     module Base
       class ApiTool
-        include Mcp::Tools::Concerns::GovernanceNamespaceResolver
+        extend ::Gitlab::Utils::Override
+
+        include Mcp::Tools::Concerns::GovernanceContainerResolver
         include Mcp::Tools::Base::RateLimitedResponse
 
         attr_reader :name, :route, :settings, :version
@@ -35,12 +37,22 @@ module Mcp
           @version = @settings[:version] || "0.1.0"
         end
 
-        def namespace_arguments
-          case route_boundary_type
-          when :project then { project: :id }
-          when :group then { group: :id }
-          else super
-          end
+        override :container_arguments
+        def container_arguments
+          base = case route_boundary_type
+                 when :project then { project: :id }
+                 when :group then { group: :id }
+                 else super
+                 end
+
+          base.merge(settings.fetch(:container_arguments, {}))
+        end
+
+        override :run_record_resolver
+        def run_record_resolver(resolver, value)
+          value = Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) if value.is_a?(String)
+
+          super
         end
 
         def description
@@ -79,7 +91,7 @@ module Mcp
 
         def execute(request: nil, params: nil)
           args = params[:arguments]&.slice(*settings[:params]) || {}
-          decode_namespace_arguments!(args)
+          decode_container_arguments!(args)
           request.env[Grape::Env::GRAPE_ROUTING_ARGS].merge!(args)
           request.env[Rack::REQUEST_METHOD] = route.request_method
 
@@ -117,10 +129,12 @@ module Mcp
         # Rack percent-decodes path segments before Grape sees them; this in-process call
         # skips Rack, so the URL-encoded path the route docs advertise is decoded here.
         # A '%' is data in any other argument.
-        def decode_namespace_arguments!(args)
-          namespace_arguments.each_value do |name|
-            value = args[name]
-            args[name] = Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) if value.is_a?(String)
+        def decode_container_arguments!(args)
+          declared_argument_names.each do |name|
+            key = args.key?(name) ? name : name.to_sym
+            value = args[key]
+
+            args[key] = Mcp::Tools::Concerns::UrlParser.unescape_and_scrub_uri(value) if value.is_a?(String)
           end
         end
 

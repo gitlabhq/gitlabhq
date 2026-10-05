@@ -200,7 +200,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           { key: 'CI_COMMIT_USER_LOGIN',
             value: pipeline.git_author_login.to_s },
           { key: 'CI_TRACEPARENT',
-            value: Gitlab::Ci::TraceContext.build_traceparent(pipeline.root_ancestor.id, job.id) },
+            value: Gitlab::Ci::TraceContext.build_traceparent(pipeline.root_ancestor.id, job.id, :export) },
           { key: 'CI_TRACESTATE',
             value: "gitlab=pipeline:#{pipeline.id};job:#{job.id}" },
           { key: 'YAML_VARIABLE',
@@ -1080,7 +1080,24 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       traceparent = scoped_vars.to_hash['CI_TRACEPARENT']
 
       expect(traceparent).to match(/^00-[0-9a-f]{32}-[0-9a-f]{16}-01$/)
-      expect(traceparent).to eq(Gitlab::Ci::TraceContext.build_traceparent(pipeline.root_ancestor.id, job.id))
+      expect(traceparent).to eq(Gitlab::Ci::TraceContext.build_traceparent(pipeline.root_ancestor.id, job.id, :export))
+    end
+
+    it 'uses the job span ID of the observability export' do
+      span_id = scoped_vars.to_hash['CI_TRACEPARENT'].split('-')[2]
+
+      expect(span_id).to eq(Gitlab::Ci::TraceContext.export_job_span_id(pipeline.root_ancestor.id, job.id))
+    end
+
+    context 'when ci_traceparent_export_span_id is disabled' do
+      before do
+        stub_feature_flags(ci_traceparent_export_span_id: false)
+      end
+
+      it 'uses the default span kind' do
+        expect(scoped_vars.to_hash['CI_TRACEPARENT'])
+          .to eq(Gitlab::Ci::TraceContext.build_traceparent(pipeline.root_ancestor.id, job.id, :default))
+      end
     end
 
     it 'includes CI_TRACESTATE with pipeline and job IDs' do

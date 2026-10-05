@@ -2,6 +2,7 @@ import { GlIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import MarkdownTable from '~/behaviors/components/markdown_table.vue';
 
@@ -42,12 +43,24 @@ describe('MarkdownTable', () => {
       return item;
     });
 
-  const createWrapper = (rows, { headers = ['Name', 'Age'], ...props } = {}) => {
+  const createWrapper = (
+    rows,
+    { headers = ['Name', 'Age'], stubTooltip = true, ...props } = {},
+  ) => {
     const fields = buildFields(headers);
     const items = buildItems(fields, rows);
 
     wrapper = mountExtended(MarkdownTable, {
       attachTo: document.body,
+      stubs: {
+        GlTooltip: stubTooltip
+          ? {
+              name: 'GlTooltip',
+              props: ['target'],
+              template: '<span hidden><slot /></span>',
+            }
+          : jest.requireActual('@gitlab/ui/src/components/base/tooltip/tooltip.vue').default,
+      },
       propsData: { fields, items, isSortable: true, ...props },
     });
   };
@@ -552,6 +565,101 @@ describe('MarkdownTable', () => {
       expect(findSortStatus().find('span').element).not.toBe(announcement);
       expect(findHeaders().at(1).attributes('aria-sort')).toBe('ascending');
     });
+  });
+
+  describe('sort tooltips', () => {
+    const findSortTooltip = (columnIndex) =>
+      wrapper.findAllComponents({ name: 'GlTooltip' }).at(columnIndex);
+    const getSortTooltip = (columnIndex) => findSortTooltip(columnIndex).text();
+
+    beforeEach(() => {
+      createWrapper([
+        ['Charlie', '30'],
+        ['Alice', '25'],
+        ['Bob', '35'],
+      ]);
+    });
+
+    it('describes the next action throughout the sort cycle', async () => {
+      expect(getSortTooltip(0)).toBe('Sort ascending');
+      await clickHeader(0);
+      expect(getSortTooltip(0)).toBe('Sort descending');
+      await clickHeader(0);
+      expect(getSortTooltip(0)).toBe('Reset sorting');
+      await clickHeader(0);
+      expect(getSortTooltip(0)).toBe('Sort ascending');
+    });
+
+    it('updates both tooltips when sorting a different column', async () => {
+      await clickHeader(0);
+      await clickHeader(1);
+
+      expect(getSortTooltip(0)).toBe('Sort ascending');
+      expect(getSortTooltip(1)).toBe('Sort descending');
+    });
+
+    it('targets the corresponding sort button', () => {
+      [0, 1].forEach((columnIndex) => {
+        expect(findSortTooltip(columnIndex).props('target')).toBe(
+          findSortButton(columnIndex).attributes('id'),
+        );
+      });
+    });
+
+    it('keeps the icon visible until its tooltip closes', async () => {
+      findSortTooltip(0).vm.$emit('show');
+      await nextTick();
+      await findSortButton(0).trigger('mouseleave');
+
+      expect(findSortIcon(0).classes()).toContain('gl-opacity-10');
+      expect(findSortIcon(1).classes()).toContain('gl-opacity-0');
+
+      findSortTooltip(1).vm.$emit('show');
+      findSortTooltip(0).vm.$emit('hidden');
+      await nextTick();
+
+      expect(findSortIcon(0).classes()).toContain('gl-opacity-0');
+      expect(findSortIcon(1).classes()).toContain('gl-opacity-10');
+
+      findSortTooltip(1).vm.$emit('hidden');
+      await nextTick();
+
+      expect(findSortIcon(1).classes()).toContain('gl-opacity-0');
+    });
+  });
+
+  it('renders the real tooltip text throughout the sort cycle', async () => {
+    createWrapper(
+      [
+        ['Bob', '35'],
+        ['Alice', '25'],
+      ],
+      { stubTooltip: false },
+    );
+    const button = findSortButton(0);
+    jest.spyOn(button.element, 'getBoundingClientRect').mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      right: 100,
+      bottom: 30,
+      width: 100,
+      height: 30,
+    });
+    await waitForPromises();
+    await button.trigger('mouseenter');
+    jest.runOnlyPendingTimers();
+
+    expect(document.querySelector('[role="tooltip"]').textContent.trim()).toBe('Sort ascending');
+
+    await clickHeader(0);
+    await waitForPromises();
+    expect(document.querySelector('[role="tooltip"]').textContent.trim()).toBe('Sort descending');
+
+    await clickHeader(0);
+    await waitForPromises();
+    expect(document.querySelector('[role="tooltip"]').textContent.trim()).toBe('Reset sorting');
   });
 
   describe('with duplicate values', () => {

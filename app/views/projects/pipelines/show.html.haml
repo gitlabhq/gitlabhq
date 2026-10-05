@@ -25,7 +25,7 @@
         %p= safe_format(s_('Pipelines|To enable automatic pipeline execution for composite identities, visit %{link_start}CI/CD Settings.%{link_end}'), tag_pair(settings_link, :link_start, :link_end))
       - c.with_actions do
         - path = @pipeline.merge_request.present? ? diffs_project_merge_request_path(@project, @pipeline.merge_request, commit_id: @pipeline.commit.id) : project_commit_path(@project, @pipeline.commit)
-        = render Pajamas::ButtonComponent.new(href: path, variant: :confirm) do
+        = render Pajamas::ButtonComponent.new(size: :small, href: path, variant: :confirm) do
           = s_("Pipelines|Verify changes")
   - elsif !has_identity_verification_error
     = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to run pipeline'),

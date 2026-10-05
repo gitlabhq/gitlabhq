@@ -293,6 +293,18 @@ export const SCAN_PROFILE_I18N = {
   accessLevelTooltipDescription: s__(
     'SecurityProfiles|Only a project maintainer or owner can apply or disable profiles.',
   ),
+  noCreatePermission: s__(
+    "SecurityProfiles|You don't have permission to create scan profiles in this group.",
+  ),
+  noUpdatePermission: s__(
+    "SecurityProfiles|You don't have permission to edit scan profiles in this group.",
+  ),
+  noDeletePermission: s__(
+    "SecurityProfiles|You don't have permission to delete scan profiles in this group.",
+  ),
+  noManagePermission: s__(
+    "SecurityProfiles|You don't have permission to edit or delete scan profiles in this group.",
+  ),
 };
 export const SCAN_PROFILE_STATUS_APPLIED = 'enabled';
 export const SCAN_PROFILE_STATUS_MIXED = 'mixed';

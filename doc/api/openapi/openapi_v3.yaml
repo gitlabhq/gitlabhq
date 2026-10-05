@@ -114227,7 +114227,7 @@ components:
           type: string
           format: date-time
           description: Expiration time for the runner authentication token in ISO
-            8601 format. Must be between 5 minutes and 15 days in the future and cannot
+            8601 format. Must be between 5 minutes and 21 days in the future and cannot
             exceed instance, group, or project-level limits. Only applies to the initial
             token. Rotated tokens use the computed expiry from settings. Premium and
             Ultimate only.

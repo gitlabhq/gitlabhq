@@ -1,0 +1,10 @@
+---
+name: ci_traceparent_export_span_id
+description: Set the CI_TRACEPARENT span ID to the job span ID used by the CI/CD observability export
+feature_issue_url: https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/177
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259435
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631980
+milestone: '19.5'
+group: group::embody
+type: gitlab_com_derisk
+default_enabled: false

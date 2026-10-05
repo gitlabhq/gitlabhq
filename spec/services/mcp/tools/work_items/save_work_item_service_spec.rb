@@ -555,4 +555,21 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
       end
     end
   end
+
+  describe '#governed_containers' do
+    it 'governs by the container holding the parent work item', :aggregate_failures do
+      arguments = { parent_id: work_item.to_global_id.to_s }.with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.containers).to contain_exactly(project)
+      expect(resolved.named).to eq(1)
+    end
+
+    it 'counts an unknown parent as named so the call is refused', :aggregate_failures do
+      resolved = service.governed_containers({ parent_id: non_existing_record_id.to_s }.with_indifferent_access)
+
+      expect(resolved.containers).to be_empty
+      expect(resolved.named).to eq(1)
+    end
+  end
 end

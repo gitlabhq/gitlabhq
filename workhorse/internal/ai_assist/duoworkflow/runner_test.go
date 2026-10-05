@@ -888,6 +888,10 @@ func TestRunner_handleClientEvent(t *testing.T) {
 					assert.Equal(t, "test_tool", startReq.McpTools[1].Name)
 					assert.Equal(t, "A test tool", startReq.McpTools[1].Description)
 					assert.Equal(t, tt.expectServerTrust, startReq.McpTools[1].GetTrusted())
+					assert.True(t, startReq.McpTools[0].GetClientInjected(),
+						"the client's own tool must be stamped")
+					assert.False(t, startReq.McpTools[1].GetClientInjected(),
+						"tools Workhorse fetched stay unstamped so DWS keeps governing them")
 				}
 
 				if tt.clientCapabilities != nil {
@@ -2813,4 +2817,18 @@ func (p *pingTrackingConn) WriteControl(msgType int, data []byte, deadline time.
 
 func (p *pingTrackingConn) SetPongHandler(h func(string) error) {
 	p.mockWebSocketConn.SetPongHandler(h)
+}
+
+func TestMarkClientInjected(t *testing.T) {
+	tools := []*pb.McpTool{
+		{Name: "claims_false", ClientInjected: proto.Bool(false)},
+		{Name: "claims_true", ClientInjected: proto.Bool(true)},
+		{Name: "unset"},
+	}
+
+	markClientInjected(tools)
+
+	for _, tool := range tools {
+		assert.True(t, tool.GetClientInjected(), tool.Name)
+	}
 }

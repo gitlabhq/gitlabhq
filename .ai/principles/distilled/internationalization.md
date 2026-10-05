@@ -1,6 +1,6 @@
 ---
-source_checksum: b51141fe9895d75e
-distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
+source_checksum: e1c27b0538b597c5
+distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -23,6 +23,8 @@ distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 - Add a namespace (PascalCase prefix followed by `|`) to all UI strings using `s__()`/`s_()` to provide translators with context.
 - Use granular, specific namespaces rather than broad category names (e.g., `WorkItemsStatusConfigure|Add to` instead of `WorkItems|Add to`).
 - DO NOT share the same English key across different UI contexts without namespacing; the same English string may require different translations in other languages.
+- DO NOT put whitespace in a namespace, and use exactly one pipe (`|`) per namespaced string, the one that ends the namespace; DO NOT use doubled pipes (`ApprovalRule||year(s)`) or multi-part namespaces (`Pipeline|Source|Security Policy`) (enforced by `rake gettext:lint` in the `static-analysis` CI job).
+- DO NOT use a pipe in the visible text of a namespaced string; GitLab treats it as the end of the namespace, and translators drop everything before it.
 
 ### Interpolation
 
@@ -39,6 +41,7 @@ distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 
 - Use `n_()` (Ruby/HAML) or `n__()` (JavaScript) when a noun or verb changes form based on a count; DO NOT use `__()` or `s__()` for strings where the noun must pluralize with the count.
 - Use `n_()` and `n__()` only to select between plural forms of the same concept; DO NOT use them to switch between structurally different strings — use `if`/`else` with separate strings instead.
+- DO NOT use `n__()` for strings that label a position, sequence, or identifier rather than a quantity (e.g., `Step %{currentStep}` never changes form regardless of the number); use `__()` instead.
 - DO NOT place a zero-state phrase in the `one` (singular) slot of a plural string; handle the zero state as a separate string outside the `n__()` call.
 - Pluralize whole sentences rather than extracting a single word and constructing the sentence around it, so translators have full context for all plural forms.
 - Prefer named `%{count}` interpolation over positional `%d` in plural strings; for strings with multiple variables, always use named `%{placeholder}` syntax.

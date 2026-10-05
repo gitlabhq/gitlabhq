@@ -343,6 +343,7 @@ module API
       # Unlisted pending removal: superseded by save_work_item (https://gitlab.com/gitlab-org/gitlab/-/work_items/625129).
       route_setting :mcp, tool_name: :create_issue, toolset: :work_items,
         params: Helpers::IssuesHelpers.create_issue_mcp_params,
+        container_arguments: Helpers::IssuesHelpers.create_issue_mcp_container_arguments,
         annotations: { readOnlyHint: false, destructiveHint: false }, resource_name: "project", unlisted: true
       route_setting :authorization, permissions: :create_issue, boundary_type: :project
       post ':id/issues' do

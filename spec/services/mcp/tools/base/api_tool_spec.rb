@@ -800,10 +800,10 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
     end
   end
 
-  describe '#namespace_arguments' do
-    subject(:declared) { described_class.new(name: 'test_tool', route: route).namespace_arguments }
+  describe '#container_arguments' do
+    subject(:declared) { described_class.new(name: 'test_tool', route: route).container_arguments }
 
-    let(:default) { Mcp::Tools::Concerns::GovernanceNamespaceResolver::DEFAULT_NAMESPACE_ARGUMENTS }
+    let(:default) { Mcp::Tools::Concerns::GovernanceContainerResolver::DEFAULT_CONTAINER_ARGUMENTS }
 
     before do
       allow(app).to receive(:route_setting).with(:authorization).and_return(authorization)
@@ -837,6 +837,98 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       let(:authorization) { nil }
 
       it { is_expected.to eq(default) }
+    end
+
+    context 'when the route declares container arguments of its own' do
+      let(:authorization) { { permissions: :create_fork, boundary_type: :project } }
+      let(:resolver) { ->(id) { id } }
+      let(:mcp_settings) do
+        {
+          params: [:id, :namespace_id],
+          tool_name: 'test_tool',
+          container_arguments: { record: { namespace_id: resolver } }
+        }
+      end
+
+      it { is_expected.to eq({ project: :id, record: { namespace_id: resolver } }) }
+    end
+  end
+
+  describe '#execute with a declared record argument' do
+    let(:request) { instance_double(Rack::Request, env: request_env) }
+    let(:request_env) { { 'grape.routing_args' => {} } }
+    let(:mcp_settings) do
+      {
+        params: [:id, :namespace_path],
+        tool_name: 'test_tool',
+        container_arguments: { record: { namespace_path: ->(path) { path } } }
+      }
+    end
+
+    before do
+      allow(app).to receive(:route_setting).with(:authorization).and_return({ boundary_type: :project })
+      allow(app).to receive(:call).with(request_env).and_return([200, {}, ['{"result": "success"}']])
+    end
+
+    it 'decodes a URL-encoded record argument before routing' do
+      api_tool.execute(request: request, params: { arguments: { id: '1', namespace_path: 'new_path%2Fgitlab' } })
+
+      expect(request_env['grape.routing_args']).to include(namespace_path: 'new_path/gitlab')
+    end
+  end
+
+  describe '#governed_containers' do
+    let_it_be(:source_group) { create(:group) }
+    let_it_be(:project) { create(:project, group: source_group) }
+    let_it_be(:target_group) { create(:group) }
+    let_it_be(:user) { create(:user, :with_namespace) }
+
+    let(:fork_tool) { Mcp::Tools::Manager.new.list_tools['fork_repository'] }
+
+    subject(:resolved) { fork_tool.governed_containers(arguments.with_indifferent_access) }
+
+    context 'when a fork names its target group by id' do
+      let(:arguments) { { id: project.id.to_s, namespace_id: target_group.id } }
+
+      it 'governs the call by the source project and the target group', :aggregate_failures do
+        expect(resolved.containers).to contain_exactly(project, target_group)
+        expect(resolved.named).to eq(2)
+      end
+    end
+
+    context 'when a fork names its target group by a URL-encoded path' do
+      let(:arguments) { { id: project.id.to_s, namespace_path: ERB::Util.url_encode(target_group.full_path) } }
+
+      it 'governs the call by the target group' do
+        expect(resolved.containers).to contain_exactly(project, target_group)
+      end
+    end
+
+    context 'when a fork names a target that does not exist' do
+      let(:arguments) { { id: project.id.to_s, namespace_id: non_existing_record_id } }
+
+      it 'counts the target so the call is refused rather than ungoverned', :aggregate_failures do
+        expect(resolved.containers).to eq([project])
+        expect(resolved.named).to eq(2)
+      end
+    end
+
+    context 'when a fork names a personal namespace' do
+      let(:arguments) { { id: project.id.to_s, namespace_path: user.namespace.full_path } }
+
+      it 'governs the call by the source project alone', :aggregate_failures do
+        expect(resolved.containers).to eq([project])
+        expect(resolved.named).to eq(1)
+      end
+    end
+
+    context 'when a fork names no target' do
+      let(:arguments) { { id: project.id.to_s } }
+
+      it 'governs the call by the source project alone', :aggregate_failures do
+        expect(resolved.containers).to eq([project])
+        expect(resolved.named).to eq(1)
+      end
     end
   end
 end

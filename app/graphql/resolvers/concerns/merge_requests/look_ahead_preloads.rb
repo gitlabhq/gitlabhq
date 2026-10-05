@@ -40,7 +40,7 @@ module MergeRequests
         ],
         milestone: [:milestone, { milestone: [:project, :group] }],
         security_auto_fix: [:author],
-        head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request, :project] }],
+        head_pipeline: [:latest_merge_request_diff, { head_pipeline: [:merge_request, :project] }],
         timelogs: [:timelogs],
         pipelines: [:merge_request_diffs], # used by `recent_diff_head_shas` to load pipelines
         committers: [merge_request_diff: [:merge_request_diff_commits]],
