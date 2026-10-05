@@ -169,32 +169,6 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     end
   end
 
-  describe '#resource_not_found?' do
-    context 'when there are no errors and operation data is nil' do
-      let(:result) { { 'data' => { 'testMutation' => nil } } }
-
-      it 'returns true' do
-        expect(tool.send(:resource_not_found?, result)).to be(true)
-      end
-    end
-
-    context 'when operation data is present' do
-      let(:result) { { 'data' => { 'testMutation' => { 'result' => { 'id' => '1' }, 'errors' => [] } } } }
-
-      it 'returns false' do
-        expect(tool.send(:resource_not_found?, result)).to be(false)
-      end
-    end
-
-    context 'when there are GraphQL errors' do
-      let(:result) { { 'errors' => ['Some error'], 'data' => { 'testMutation' => nil } } }
-
-      it 'returns false' do
-        expect(tool.send(:resource_not_found?, result)).to be(false)
-      end
-    end
-  end
-
   describe '#icons' do
     it 'returns icons array with dark and light themes' do
       icons = tool.icons

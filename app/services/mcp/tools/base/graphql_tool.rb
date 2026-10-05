@@ -68,10 +68,6 @@ module Mcp
           nil
         end
 
-        def resource_not_found?(result)
-          result['errors'].blank? && result.dig('data', operation_name).nil?
-        end
-
         def process_result(result)
           if result['errors']
             error_messages = extract_error_messages(result['errors'])
@@ -80,11 +76,7 @@ module Mcp
 
           operation_data = result.dig('data', operation_name)
 
-          if operation_data.nil?
-            return ::Mcp::Tools::Base::Response.error(
-              "Operation returned no data", reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
-            )
-          end
+          return resource_not_found_error if operation_data.nil?
 
           operation_errors = operation_data['errors']
           if operation_errors&.any?
@@ -96,6 +88,12 @@ module Mcp
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(operation_data) }]
           ::Mcp::Tools::Base::Response.success(formatted_content, operation_data)
+        end
+
+        def resource_not_found_error
+          ::Mcp::Tools::Base::Response.error(
+            "Operation returned no data", reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
+          )
         end
 
         def extract_error_messages(errors)

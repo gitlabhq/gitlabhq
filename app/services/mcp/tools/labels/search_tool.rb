@@ -29,8 +29,6 @@ module Mcp
         private
 
         def process_result(result)
-          return resource_not_found_error if resource_not_found?(result)
-
           processed_result = super
 
           return processed_result if processed_result[:isError]

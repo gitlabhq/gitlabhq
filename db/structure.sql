@@ -6281,6 +6281,29 @@ CREATE TABLE batched_background_migration_job_transition_logs (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE billable_usage_daily_namespace_aggregates (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    events_count bigint DEFAULT 0 NOT NULL,
+    root_namespace_id bigint,
+    usage_date date NOT NULL,
+    schema_version smallint DEFAULT 1 NOT NULL,
+    quantity numeric(14,4) NOT NULL,
+    event_type text NOT NULL,
+    unit_of_measure text NOT NULL,
+    feature_qualified_name text NOT NULL,
+    operation_type text,
+    CONSTRAINT check_03eb4b1779 CHECK ((char_length(unit_of_measure) <= 64)),
+    CONSTRAINT check_50c42afec3 CHECK ((char_length(event_type) <= 255)),
+    CONSTRAINT check_7e089db731 CHECK ((char_length(feature_qualified_name) <= 255)),
+    CONSTRAINT check_891608b0a7 CHECK ((char_length(operation_type) <= 64)),
+    CONSTRAINT check_billable_usage_daily_ns_aggs_events_count_non_negative CHECK ((events_count >= 0)),
+    CONSTRAINT check_billable_usage_daily_ns_aggs_quantity_non_negative CHECK ((quantity >= (0)::numeric)),
+    CONSTRAINT check_billable_usage_daily_ns_aggs_quantity_within_ceiling CHECK ((quantity <= (2147483647)::numeric))
+)
+PARTITION BY RANGE (usage_date);
+
 CREATE TABLE p_ci_build_names (
     build_id bigint NOT NULL,
     partition_id bigint NOT NULL,
@@ -15925,37 +15948,14 @@ CREATE SEQUENCE batched_background_migrations_id_seq
 
 ALTER SEQUENCE batched_background_migrations_id_seq OWNED BY batched_background_migrations.id;
 
-CREATE TABLE billable_usage_daily_aggregates (
-    id bigint NOT NULL,
-    event_aggregate_uuid uuid NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    events_count bigint DEFAULT 0 NOT NULL,
-    root_namespace_id bigint,
-    usage_date date NOT NULL,
-    schema_version smallint DEFAULT 1 NOT NULL,
-    quantity numeric(14,4) NOT NULL,
-    event_type text NOT NULL,
-    unit_of_measure text NOT NULL,
-    feature_qualified_name text NOT NULL,
-    operation_type text,
-    CONSTRAINT check_77c6c93c77 CHECK ((char_length(event_type) <= 255)),
-    CONSTRAINT check_90fae9b72d CHECK ((char_length(operation_type) <= 64)),
-    CONSTRAINT check_billable_usage_daily_aggs_events_count_non_negative CHECK ((events_count >= 0)),
-    CONSTRAINT check_billable_usage_daily_aggs_quantity_non_negative CHECK ((quantity >= (0)::numeric)),
-    CONSTRAINT check_billable_usage_daily_aggs_quantity_within_ceiling CHECK ((quantity <= (2147483647)::numeric)),
-    CONSTRAINT check_d85c952c42 CHECK ((char_length(unit_of_measure) <= 64)),
-    CONSTRAINT check_e4594e5241 CHECK ((char_length(feature_qualified_name) <= 255))
-);
-
-CREATE SEQUENCE billable_usage_daily_aggregates_id_seq
+CREATE SEQUENCE billable_usage_daily_namespace_aggregates_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
 
-ALTER SEQUENCE billable_usage_daily_aggregates_id_seq OWNED BY billable_usage_daily_aggregates.id;
+ALTER SEQUENCE billable_usage_daily_namespace_aggregates_id_seq OWNED BY billable_usage_daily_namespace_aggregates.id;
 
 CREATE TABLE board_assignees (
     id bigint NOT NULL,
@@ -37247,7 +37247,7 @@ ALTER TABLE ONLY batched_background_migration_jobs ALTER COLUMN id SET DEFAULT n
 
 ALTER TABLE ONLY batched_background_migrations ALTER COLUMN id SET DEFAULT nextval('batched_background_migrations_id_seq'::regclass);
 
-ALTER TABLE ONLY billable_usage_daily_aggregates ALTER COLUMN id SET DEFAULT nextval('billable_usage_daily_aggregates_id_seq'::regclass);
+ALTER TABLE ONLY billable_usage_daily_namespace_aggregates ALTER COLUMN id SET DEFAULT nextval('billable_usage_daily_namespace_aggregates_id_seq'::regclass);
 
 ALTER TABLE ONLY board_assignees ALTER COLUMN id SET DEFAULT nextval('board_assignees_id_seq'::regclass);
 
@@ -40325,8 +40325,8 @@ ALTER TABLE ONLY batched_background_migration_jobs
 ALTER TABLE ONLY batched_background_migrations
     ADD CONSTRAINT batched_background_migrations_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY billable_usage_daily_aggregates
-    ADD CONSTRAINT billable_usage_daily_aggregates_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY billable_usage_daily_namespace_aggregates
+    ADD CONSTRAINT billable_usage_daily_namespace_aggregates_pkey PRIMARY KEY (id, usage_date);
 
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT board_assignees_pkey PRIMARY KEY (id);
@@ -47619,9 +47619,7 @@ CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_ba
 
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
 
-CREATE UNIQUE INDEX index_billable_usage_daily_aggs_on_event_aggregate_uuid ON billable_usage_daily_aggregates USING btree (event_aggregate_uuid);
-
-CREATE UNIQUE INDEX index_billable_usage_daily_aggs_on_unique_tuple ON billable_usage_daily_aggregates USING btree (usage_date, event_type, feature_qualified_name, root_namespace_id, operation_type) NULLS NOT DISTINCT;
+CREATE UNIQUE INDEX index_billable_usage_daily_ns_aggs_on_unique_tuple ON ONLY billable_usage_daily_namespace_aggregates USING btree (usage_date, event_type, feature_qualified_name, operation_type, root_namespace_id) NULLS NOT DISTINCT;
 
 CREATE INDEX index_bj_cell_local_by_status ON ONLY background_operation_jobs_cell_local USING btree (status);
 

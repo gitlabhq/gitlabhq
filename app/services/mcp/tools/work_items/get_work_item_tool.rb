@@ -56,12 +56,6 @@ module Mcp
           end
         end
 
-        def process_result(result)
-          return resource_not_found_error if resource_not_found?(result)
-
-          super
-        end
-
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
             'Work item not found or inaccessible.'

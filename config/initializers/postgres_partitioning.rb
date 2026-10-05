@@ -71,6 +71,7 @@ Gitlab::Application.config.to_prepare do
         Ci::FinishedBuildChSyncEvent,
         Ci::TestBalancing::Assignment,
         Search::Zoekt::Task,
+        Utilization::BillableUsage::DailyNamespaceAggregate,
         Ai::UsageEvent,
         Geo::PipelineArtifactState,
         Vulnerabilities::Archive,

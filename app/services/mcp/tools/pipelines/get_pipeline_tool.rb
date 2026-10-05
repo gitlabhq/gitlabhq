@@ -21,7 +21,7 @@ module Mcp
         }
 
         def execute
-          return resource_not_found_error('Project') unless project
+          return missing_resource_error('Project') unless project
 
           super
         end
@@ -52,7 +52,7 @@ module Mcp
 
         def process_result(result)
           missing = missing_resource(result)
-          return resource_not_found_error(missing) if missing
+          return missing_resource_error(missing) if missing
 
           processed_result = super
           return processed_result if processed_result[:isError]
@@ -71,7 +71,7 @@ module Mcp
           'Pipeline' if project['pipeline'].nil?
         end
 
-        def resource_not_found_error(resource)
+        def missing_resource_error(resource)
           ::Mcp::Tools::Base::Response.error(
             "#{resource} not found or inaccessible"
           )

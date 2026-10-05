@@ -277,7 +277,8 @@ LIMIT 20;
 ```
 
 A rising `n_dead_tup` count, with `last_autovacuum` old or empty, means autovacuum cannot keep up
-with that table.
+with that table. See
+[Autovacuum cannot keep up with a table](#autovacuum-cannot-keep-up-with-a-table).
 
 To find the freeze age of each table:
 
@@ -294,4 +295,52 @@ LIMIT 20;
 `xid_age` counts the transactions that ran after PostgreSQL last froze the table. Compare it
 against `autovacuum_freeze_max_age`. The **Effective settings** panel reports this value. When a
 table passes this value, PostgreSQL starts an anti-wraparound autovacuum on it. A freeze age that
-keeps rising means autovacuum cannot freeze rows fast enough.
+keeps rising means autovacuum cannot freeze rows fast enough. See
+[Transaction ID wraparound is approaching](#transaction-id-wraparound-is-approaching).
+
+## Troubleshoot common issues
+
+### Autovacuum cannot keep up with a table
+
+A table accumulates dead tuples faster than autovacuum removes them. The dead-tuple count keeps
+rising, the table bloats, and queries against it slow down. This problem has two common causes:
+
+- A high rate of changes. A database migration, or an endpoint that updates rows often, creates
+  dead tuples faster than autovacuum clears them.
+- A busy table that uses the cluster-wide settings. Large, frequently updated tables often need
+  their own autovacuum settings.
+
+To find which tables fall behind, check the dead-tuple count and the time autovacuum last ran for
+each table. See [Monitor autovacuum](#monitor-autovacuum). To resolve the problem:
+
+- Set a lower per-table scale factor or threshold. For more information, see
+  [Tune large tables individually](#tune-large-tables-individually).
+- Raise `autovacuum_vacuum_cost_limit` and `autovacuum_max_workers`. For more information, see
+  [Recommended autovacuum settings](#recommended-autovacuum-settings).
+- If a migration or application change is the source of the churn, pause or revert it.
+
+### Transaction ID wraparound is approaching
+
+PostgreSQL assigns each transaction an ID (XID). As the oldest unfrozen XID ages, PostgreSQL runs
+anti-wraparound autovacuums to freeze old rows. If these vacuums cannot complete, the database
+eventually stops accepting writes to protect your data.
+
+To track this risk, monitor the freeze age of each database and table. See
+[Monitor autovacuum](#monitor-autovacuum). A rising freeze age means autovacuum is not freezing
+rows fast enough.
+
+To resolve it, make sure autovacuum runs and is not blocked. See
+[Autovacuum cannot keep up with a table](#autovacuum-cannot-keep-up-with-a-table). If the database
+has already stopped accepting writes, follow the recovery steps in
+[Database is not accepting commands to avoid wraparound data loss](../troubleshooting/postgresql.md#database-is-not-accepting-commands-to-avoid-wraparound-data-loss).
+
+### Autovacuum uses too many resources
+
+Autovacuum creates I/O traffic that can slow down other queries. PostgreSQL throttles this traffic
+with a cost-based delay. The delay is balanced across all running autovacuum workers. The total
+I/O impact then stays about the same no matter how many workers run.
+
+To reduce the effect on other queries, raise `autovacuum_vacuum_cost_delay` so workers pause more
+often. A higher delay slows down vacuuming. Balance it against the need to keep up with dead
+tuples. Never set the delay to `0`. This removes throttling entirely. For more information, see
+[Settings to avoid](#settings-to-avoid).

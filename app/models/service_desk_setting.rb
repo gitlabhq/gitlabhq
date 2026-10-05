@@ -32,7 +32,7 @@ class ServiceDeskSetting < ApplicationRecord
   validates :project_key,
     length: { maximum: 255 },
     allow_blank: true,
-    format: { with: /\A[a-z0-9_]+\z/, message: ->(setting, data) { _("can contain only lowercase letters, digits, and '_'.") } }
+    format: { with: /\A[a-z0-9_]+\z/, message: ->(_setting, _data) { _("can contain only lowercase letters, digits, and '_'.") } }
 
   # Don't use Devise.email_regexp or URI::MailTo::EMAIL_REGEXP to be a bit more restrictive
   # on the format of an email. For example because we don't want to allow `+` and other

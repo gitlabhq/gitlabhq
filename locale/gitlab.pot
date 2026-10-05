@@ -72020,6 +72020,9 @@ msgstr ""
 msgid "ScanProfiles|%{scanTypeName} profile"
 msgstr ""
 
+msgid "ScanProfiles|%{variable} for %{trigger}"
+msgstr ""
+
 msgid "ScanProfiles|A scan is automatically run each time new commits are pushed to a branch associated with an open merge request. The full repository is scanned, but only vulnerabilities introduced by the merge request are highlighted. This helps identify security issues early, before code is merged."
 msgstr ""
 
@@ -72045,6 +72048,9 @@ msgid "ScanProfiles|Advanced configuration"
 msgstr ""
 
 msgid "ScanProfiles|All"
+msgstr ""
+
+msgid "ScanProfiles|All available variables have already been added."
 msgstr ""
 
 msgid "ScanProfiles|All vulnerabilities"
@@ -72198,6 +72204,9 @@ msgid "ScanProfiles|Profile actions"
 msgstr ""
 
 msgid "ScanProfiles|Pull analyzer images from your own container registry instead of GitLab's public one."
+msgstr ""
+
+msgid "ScanProfiles|Remove %{variable} from %{trigger}"
 msgstr ""
 
 msgid "ScanProfiles|Results:"

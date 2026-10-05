@@ -162,7 +162,6 @@
 - batched_background_migration_job_transition_logs
 - batched_background_migration_jobs
 - batched_background_migrations
-- billable_usage_daily_aggregates
 - board_assignees
 - board_group_recent_visits
 - board_labels

@@ -1,0 +1,7 @@
+---
+retention_window: 1095
+enforcement_strategy: drop_partition
+enforcing: true
+pause_mechanism:
+  type: none
+work_item: https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/18552

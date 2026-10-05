@@ -41,8 +41,6 @@ module Mcp
         end
 
         def process_result(result)
-          return user_not_found_error if resource_not_found?(result)
-
           processed_result = super
           return processed_result if processed_result[:isError]
 
@@ -61,7 +59,7 @@ module Mcp
           }
         end
 
-        def user_not_found_error
+        def resource_not_found_error
           ::Mcp::Tools::Base::Response.error('User not found or inaccessible')
         end
       end

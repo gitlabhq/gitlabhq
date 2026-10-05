@@ -37,7 +37,6 @@ module Mcp
         end
 
         def process_result(result)
-          return resource_not_found_error if resource_not_found?(result)
           return members_forbidden_error if members_forbidden?(result)
 
           processed_result = super

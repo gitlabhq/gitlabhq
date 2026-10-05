@@ -61,7 +61,6 @@ class CommitCollection
       end
     end
   end
-  alias_method :add_committers_to_batch_loader, :committers_lazy
 
   def committer_user_ids
     committers.pluck(:id)
