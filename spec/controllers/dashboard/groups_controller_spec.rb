@@ -40,7 +40,7 @@ RSpec.describe Dashboard::GroupsController, feature_category: :groups_and_projec
 
         expect(response).to have_gitlab_http_status(:ok)
         all_groups = [top_level_result, top_level_a, sub_level_result_a]
-        expect(assigns(:groups)).to contain_exactly(*all_groups)
+        expect(assigns(:groups)).to match_array(all_groups)
       end
     end
 

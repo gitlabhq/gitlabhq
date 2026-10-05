@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threat do
   include Gitlab::Routing
 
-  let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:report) { create(:abuse_report) }
   let_it_be(:user) { report.user }
   let_it_be(:reporter) { report.reporter }
   let_it_be(:past_report) { create_default(:abuse_report, :closed, user: user) }
   let_it_be(:similar_open_report) { create_default(:abuse_report, user: user, category: report.category) }
 
+  let(:admin) { build_stubbed(:user, :admin) }
   let(:entity) do
     described_class.new(report, current_user: admin)
   end

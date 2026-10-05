@@ -197,6 +197,10 @@ export const buildWorkItemNode = (id, overrides = {}) => ({
     name: 'Issue',
     iconName: 'issue-type-issue',
   },
+  userPermissions: {
+    __typename: 'WorkItemPermissions',
+    updateWorkItem: true,
+  },
   ...overrides,
 });
 

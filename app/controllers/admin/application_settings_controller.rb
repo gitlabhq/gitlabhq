@@ -53,7 +53,7 @@ module Admin
 
       @hide_search_settings = true
       @integrations = Integration.find_or_initialize_all_non_project_specific(
-        Integration.for_instance, include_instance_specific: true
+        Integration.for_organization(admin_current_organization), include_instance_specific: true
       ).sort_by { |int| int.title.downcase }
     end
 

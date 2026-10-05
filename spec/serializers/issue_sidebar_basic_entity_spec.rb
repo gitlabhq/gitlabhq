@@ -101,7 +101,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
         end
 
         context 'without permissions' do
-          let(:serializer) { IssueSerializer.new(current_user: create(:user), project: project) }
+          let(:serializer) { IssueSerializer.new(current_user: build_stubbed(:user), project: project) }
 
           it 'is present and false' do
             expect(entity[:current_user]).to have_key(:can_update_escalation_status)

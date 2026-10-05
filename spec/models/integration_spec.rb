@@ -79,6 +79,23 @@ RSpec.describe Integration, feature_category: :integrations do
       end
     end
 
+    describe 'instance-level type uniqueness' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:jira_integration) { create(:jira_integration, :instance, organization: organization) }
+
+      it 'allows the same type in another organization' do
+        expect(build(:jira_integration, :instance, organization: other_organization)).to be_valid
+      end
+
+      it 'does not allow the same type twice in one organization', :aggregate_failures do
+        integration = build(:jira_integration, :instance, organization: organization)
+
+        expect(integration).not_to be_valid
+        expect(integration.errors[:type]).to include('has already been taken')
+      end
+    end
+
     context 'when encrypted_properties is changed' do
       before do
         allow(described_class).to receive(:encrypted_properties_max_size).and_return(10.bytes)
@@ -306,6 +323,32 @@ RSpec.describe Integration, feature_category: :integrations do
       end
     end
 
+    describe '.for_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:jira_instance_integration) { create(:jira_integration, :instance, organization: organization) }
+      let_it_be(:beyond_identity_instance_integration) do
+        create(:beyond_identity_integration, :instance, organization: organization)
+      end
+
+      let_it_be(:other_jira_instance_integration) do
+        create(:jira_integration, :instance, organization: other_organization)
+      end
+
+      let_it_be(:jira_group_integration) { create(:jira_integration, :group, group: group) }
+      let_it_be(:jira_project_integration) { create(:jira_integration, project: project) }
+
+      it 'returns only the instance-level integrations of the organization' do
+        expect(described_class.for_organization(organization))
+          .to contain_exactly(jira_instance_integration, beyond_identity_instance_integration)
+      end
+
+      it 'accepts an organization id' do
+        expect(described_class.for_organization(other_organization.id))
+          .to contain_exactly(other_jira_instance_integration)
+      end
+    end
+
     shared_examples 'hook scope' do |hook_type|
       describe ".#{hook_type}_hooks" do
         it "includes services where #{hook_type}_events is true" do
@@ -423,6 +466,20 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '#organization_level?' do
+    it 'is true for an instance-level integration' do
+      expect(build(:integration, :instance)).to be_organization_level
+    end
+
+    it 'is false for a project-level integration' do
+      expect(build(:integration, project: project)).not_to be_organization_level
+    end
+
+    it 'is false for a group-level integration' do
+      expect(build(:integration, :group, group: group)).not_to be_organization_level
+    end
+  end
+
   describe '#chat?' do
     it 'is true when integration is chat integration' do
       expect(build(:mattermost_integration).chat?).to be(true)
@@ -497,6 +554,36 @@ RSpec.describe Integration, feature_category: :integrations do
     it 'does not create a new integration' do
       expect { described_class.find_or_initialize_non_project_specific_integration('redmine', group_id: group) }
         .not_to change { described_class.count }
+    end
+
+    context 'with instance: true' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:jira_instance_integration) { create(:jira_integration, :instance, organization: organization) }
+      let_it_be(:other_redmine_instance_integration) do
+        create(:redmine_integration, :instance, organization: other_organization)
+      end
+
+      it 'returns the instance integration of the organization' do
+        expect(described_class.find_or_initialize_non_project_specific_integration(
+          'jira', instance: true, organization_id: organization.id
+        )).to eq(jira_instance_integration)
+      end
+
+      it 'builds a new integration for the organization', :aggregate_failures do
+        integration = described_class.find_or_initialize_non_project_specific_integration(
+          'redmine', instance: true, organization_id: organization.id
+        )
+
+        expect(integration).to be_new_record
+        expect(integration).to be_instance_level
+        expect(integration.organization_id).to eq(organization.id)
+      end
+
+      it 'raises an error without an organization id' do
+        expect { described_class.find_or_initialize_non_project_specific_integration('jira', instance: true) }
+          .to raise_error(ArgumentError, 'organization_id is required')
+      end
     end
   end
 
@@ -777,10 +864,34 @@ RSpec.describe Integration, feature_category: :integrations do
         end
       end
     end
+
+    context 'with an instance-level integration in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+
+      before_all do
+        create(:jira_integration, :instance, organization: other_organization)
+      end
+
+      it 'returns nil for a project' do
+        expect(described_class.default_integration('Integrations::Jira', project)).to be_nil
+      end
+
+      it 'returns nil for a group' do
+        expect(described_class.default_integration('Integrations::Jira', group)).to be_nil
+      end
+
+      context 'with a group integration' do
+        let_it_be(:group_integration) { create(:jira_integration, :group, group: group) }
+
+        it 'returns the group integration for a project' do
+          expect(described_class.default_integration('Integrations::Jira', project)).to eq(group_integration)
+        end
+      end
+    end
   end
 
   describe '.create_from_default_integrations' do
-    let_it_be(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://example.atlassian.net/wiki', organization: create(:organization)) }
+    let_it_be(:instance_integration) { create(:confluence_integration, :instance, confluence_url: 'https://example.atlassian.net/wiki', organization: project.organization) }
     let_it_be(:instance_level_instance_specific_integration) { create(:beyond_identity_integration, :instance) }
 
     it 'creates integrations from default integrations' do
@@ -800,6 +911,19 @@ RSpec.describe Integration, feature_category: :integrations do
           .with(group, :group_id).and_call_original
 
         expect(described_class.create_from_default_integrations(group, :group_id)).to eq(2)
+      end
+    end
+
+    context 'when the owner belongs to another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_group) { create(:group, organization: other_organization) }
+      let_it_be(:other_project) { create(:project, group: other_group, organization: other_organization) }
+
+      it 'does not create integrations from instance integrations of other organizations', :aggregate_failures do
+        expect(described_class.create_from_default_integrations(other_project, :project_id)).to eq(0)
+        expect(described_class.create_from_default_integrations(other_group, :group_id)).to eq(0)
+        expect(other_project.reload.integrations).to be_empty
+        expect(other_group.reload.integrations).to be_empty
       end
     end
   end
@@ -1038,6 +1162,17 @@ RSpec.describe Integration, feature_category: :integrations do
           expect(project.reload.integrations).to be_blank
         end
       end
+
+      context 'when the owner belongs to another organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:other_project) { create(:project, organization: other_organization) }
+
+        it 'does not create an integration from the instance-level integration' do
+          described_class.create_from_default_instance_specific_integrations(other_project, :project_id)
+
+          expect(other_project.reload.integrations).to be_blank
+        end
+      end
     end
   end
 
@@ -1065,6 +1200,28 @@ RSpec.describe Integration, feature_category: :integrations do
         .to eq([subgroup_integration_1, project_integration_1])
       expect(described_class.inherited_descendants_from_self_or_ancestors_from(subgroup_integration_2))
         .to eq([project_integration_2])
+    end
+
+    context 'with instance-level integrations' do
+      let_it_be(:project_3) { create(:project, group: subgroup_2) }
+      let_it_be(:project_4) { create(:project, group: subgroup_2) }
+      let_it_be(:instance_integration) { create(:confluence_integration, :instance, organization: group.organization) }
+      let_it_be(:other_instance_integration) do
+        create(:confluence_integration, :instance, organization: create(:organization))
+      end
+
+      let_it_be(:project_integration_3) do
+        create(:confluence_integration, project: project_3, inherit_from_id: instance_integration.id)
+      end
+
+      let_it_be(:project_integration_4) do
+        create(:confluence_integration, project: project_4, inherit_from_id: other_instance_integration.id)
+      end
+
+      it 'only includes descendants inheriting from the instance integration of the same organization' do
+        expect(described_class.inherited_descendants_from_self_or_ancestors_from(subgroup_integration_2))
+          .to contain_exactly(project_integration_2, project_integration_3)
+      end
     end
   end
 

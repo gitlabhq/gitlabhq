@@ -2290,6 +2290,8 @@ paths:
                 "$ref": "#/components/schemas/APIEntitiesOrbitSkillCollection"
         '401':
           description: Unauthorized
+        '404':
+          description: Skills are not available
       x-gitlab-lifecycle: beta
   "/api/v4/orbit/skills/{name}":
     get:
@@ -2309,7 +2311,7 @@ paths:
         '401':
           description: Unauthorized
         '404':
-          description: Skill not found
+          description: Skill not found or skills are not available
         '400':
           description: Bad Request
       parameters:
@@ -2341,7 +2343,7 @@ paths:
         '401':
           description: Unauthorized
         '404':
-          description: Skill file not found
+          description: Skill file not found or skills are not available
         '400':
           description: Bad Request
       parameters:
@@ -20175,7 +20177,7 @@ paths:
       operationId: putApiV4ApplicationSettings
       summary: Update application settings
       description: Updates the current application settings for this GitLab instance.
-        At least one of 680 related parameters must be provided.
+        At least one setting must be updated.
       tags:
       - Instance
       responses:
@@ -36511,7 +36513,7 @@ paths:
       description: Updates an existing project. If your HTTP repository is not publicly
         accessible, add authentication information to the URL `https://username:password@gitlab.company.com/group/project.git`,
         where `password` is a public access key with the `api` scope. At least one
-        of 121 related parameters must be provided.
+        project attribute must be updated.
       tags:
       - Projects
       responses:
@@ -103341,6 +103343,7 @@ components:
           - duo_cli_run
           - duo_cli_acp
           - ide_extension
+          - work_item_plan_to_merge_request
           description: Where the session was triggered from
           nullable: true
     postApiV4AiDuoWorkflowsWorkflowsWorkflowIdExecuteRequest:

@@ -71,6 +71,10 @@ module Gitlab
         include Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionForMultipleLocks
       end
 
+      class V2_4 < V2_3
+        include Gitlab::Database::MigrationHelpers::RequireForeignKeyIndexes
+      end
+
       def self.[](version)
         version = version.to_s
         name = "V#{version.tr('.', '_')}"
@@ -81,7 +85,7 @@ module Gitlab
 
       # The current version to be used in new migrations
       def self.current_version
-        2.3
+        2.4
       end
     end
   end

@@ -1,15 +1,16 @@
 ---
 name: ai-principles-review-feedback
-description: Act on automated review feedback left on the weekly AI principles distillation sync merge requests. Use when asked to address, respond to, or work through Duo review comments on `docs-sync/principles-*` branches, or on merge requests titled "Update AI development principles from SSOT". Classifies each finding, verifies it against the SSOT documentation, applies fixes on the sync branch, drafts replies, and escalates distiller defects.
-allowed-tools: Bash(git show:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(glab mr:*), Bash(jq:*), Bash(scripts/lint-ai-principles-manifest.sh), Bash(scripts/lint-duo-review-instructions.sh), Bash(python3:*), Read, Grep, Glob
+description: Act on automated review feedback left on the weekly AI principles distillation sync merge requests. Use when asked to address, respond to, or work through Duo review comments on `docs-sync/principles-*` branches, or on merge requests titled "Update AI development principles from SSOT". Classifies each finding, verifies it against the SSOT documentation, applies fixes on the sync branch, drafts replies, escalates distiller defects, and marks the Draft MR ready once Duo's review of the latest revision is clean.
+allowed-tools: Bash(git show:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(glab mr:*), Bash(glab api:*), Bash(jq:*), Bash(scripts/lint-ai-principles-manifest.sh), Bash(scripts/lint-duo-review-instructions.sh), Bash(python3:*), Read, Grep, Glob
 ---
 
 # Acting on review feedback on principles sync MRs
 
-The weekly distillation sync opens one merge request per SSOT-owning team. Duo
-reviews each of them. Because the diff is machine-generated from documentation
-prose, its findings are unusually high-signal: treat them as a review queue, not
-as bot noise.
+The weekly distillation sync opens one merge request per SSOT-owning team, as
+Draft. Automatic Duo review skips drafts, so the sync explicitly requests one.
+Because the diff is machine-generated from documentation prose, Duo's findings
+are unusually high-signal: treat them as a review queue, not as bot noise. This
+skill's job ends when the MR is marked ready for its human reviewers.
 
 The policy this skill implements lives in
 [`doc/development/ai_instruction_files_review.md`](../../../doc/development/ai_instruction_files_review.md#reviewing-auto-generated-sync-merge-requests).
@@ -17,9 +18,11 @@ Read it when a case is not covered here. This file carries only the mechanics.
 
 ## Hard rules
 
-- **Never post a comment or resolve a thread without explicit approval.** Draft
-  every reply, present all of them in chat, and wait for the user to say to post.
-  This applies to notes, discussion replies, resolutions, and issue creation.
+- **Never post a comment, resolve a thread, re-request a Duo review, or mark an
+  MR ready without explicit approval.** Draft every reply, present every action
+  in chat, and wait for the user to say to proceed. This applies to notes,
+  discussion replies, resolutions, issue creation, Duo re-review requests, and
+  ready-state changes.
 - **Never accept or reject a finding without reading the source.** Read the SSOT
   document (and the baseline, if the principle has one) before deciding.
 - **Never use the `edit` tool on a distilled `.md` file.** It normalizes trailing
@@ -83,7 +86,7 @@ Then classify the finding into exactly one of four outcomes:
 | ---------------- | --------------------------------------------------------------- | ----------------------------------------- |
 | Content defect   | The distilled text misstates, garbles, or contradicts the SSOT. | Fix on the sync branch.                   |
 | Content gap      | An SSOT-supported rule the distillation dropped.                | Restore on the sync branch.               |
-| Distiller defect | The root cause is the tooling, not this run's output.           | Fix the output **and** escalate (step 6). |
+| Distiller defect | The root cause is the tooling, not this run's output.           | Fix the output **and** escalate (step 7). |
 | Judgment call    | The output is correct but could be closer to the source.        | Record it. Do not necessarily act.        |
 
 ## 3. Fix discipline: two tiers
@@ -172,7 +175,84 @@ the finding was not actioned. Present them all in chat and wait for approval
 before posting. Leave a thread open when the finding is for a human reviewer to
 answer rather than something the fix resolved.
 
-## 6. Escalate distiller defects
+## 6. Re-request Duo review and mark ready
+
+Duo must review the current head SHA. Re-request its review after pushing
+fixes, or whenever the lookup below cannot verify the head: the sync's own
+review session belongs to the service account and is not visible to you.
+
+```bash
+iid=<mr-iid>
+bot=$(glab api 'users?username=GitLabDuo' | jq '.[0].id')
+```
+
+Re-request its review (write action; needs approval):
+
+```bash
+glab api graphql -f query='mutation($projectPath: ID!, $iid: String!, $userId: UserID!) { mergeRequestReviewerRereview(input: {projectPath: $projectPath, iid: $iid, userId: $userId}) { errors } }' -f projectPath=gitlab-org/gitlab -f iid="$iid" -f userId="gid://gitlab/User/$bot"
+```
+
+The mutation only works when Duo is already a reviewer. If it returns
+`Reviewer not found` (the sync can leave a Draft MR without Duo), add Duo as a
+reviewer instead, which starts the review:
+
+```bash
+glab mr update "$iid" --reviewer +GitLabDuo
+```
+
+Look up the newest review session. Commit timestamps are not push times, so
+`covers_head` compares the session's start with the server-side creation of
+the head's diff version. Rerun this lookup for every check below:
+
+```bash
+head=$(glab mr view "$iid" -F json | jq -r .sha)
+version_at=$(glab api "projects/:id/merge_requests/$iid/versions" |
+  jq -r --arg sha "$head" 'map(select(.head_commit_sha == $sha))[0].created_at')
+glab api graphql -f query='query { duoWorkflowWorkflows(projectPath: "gitlab-org/gitlab", type: "code_review/v1", first: 20, sort: CREATED_DESC) { nodes { createdAt status resourceIid lastExecutorLogsUrl webUrl } } }' |
+  jq --argjson iid "$iid" --arg since "$version_at" '
+    def ts: sub("\\.[0-9]+"; "") | fromdate;
+    [.data.duoWorkflowWorkflows.nodes[] | select(.resourceIid == $iid)][0] // empty
+    | {createdAt, status, webUrl, covers_head: ((.createdAt | ts) >= ($since | ts)),
+       job: (.lastExecutorLogsUrl // "" | split("/") | last)}'
+```
+
+**Confirm Duo is reviewing before you wait.** Within a few minutes of the
+request, the lookup must return a session created after it (empty output
+means none exists yet), and that session's CI job must be `pending` or
+`running`:
+
+```bash
+glab api "projects/:id/jobs/<job>" | jq -r .status
+```
+
+Check the job, not only the session: the session can stay `CREATED` while the
+job runs. If no new session appears, or its job is missing, failed, or
+canceled, Duo is not reviewing. Do not wait on it: report this to the user
+with the session URL, and re-request at most once more with approval.
+
+Then wait until the session status leaves `CREATED` and `RUNNING`.
+
+**Duo is happy** only when all three hold:
+
+- The session has `covers_head: true` and `status: "FINISHED"`. A successful
+  job does not imply this: a session can end `FAILED` after its job succeeds.
+- No failure note followed it. A `reviewed` reviewer state alone is not proof:
+  Duo sets it after a failed attempt too, and posts a note such as
+  "could not ..." with a code like `DCR4008` or `DCR5001`.
+- No unaddressed actionable findings remain. A judgment call left for a human
+  is fine, but call it out in the reply or handoff.
+
+When Duo is happy, re-read the head and confirm it still equals `$head`, then
+mark the MR ready (write action; needs approval):
+
+```bash
+glab mr update "$iid" --ready
+```
+
+Otherwise leave it Draft. A failed, still-running, or stale review is not
+grounds for marking ready.
+
+## 7. Escalate distiller defects
 
 A finding whose root cause is the tooling will recur every week until it is
 fixed. Close the loop:

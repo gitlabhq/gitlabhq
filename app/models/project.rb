@@ -3997,7 +3997,7 @@ class Project < ApplicationRecord
   end
 
   def integration_instances
-    @integration_instances ||= Integration.for_instance
+    @integration_instances ||= Integration.for_organization(organization_id)
   end
 
   def closest_namespace_setting(name)

@@ -20,13 +20,9 @@ title: Orbit API
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237959) from experiment to beta in GitLab 19.1.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245620) in GitLab 19.3.
 - [GQL mode introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256465) in GitLab 19.4 with a feature flag named `orbit_gql_queries`. Disabled by default.
+- Feature flag `knowledge_graph` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259054) in GitLab 19.5.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
 
 Use this API to run queries, retrieve schemas, and check cluster health for
 [Orbit](https://gitlab.com/gitlab-org/orbit/knowledge-graph).
@@ -39,6 +35,10 @@ The following sections cover query DSL behavior and worked examples that the
 generated reference doesn't show.
 
 ## Query mode
+
+> [!flag]
+> The availability of GQL query mode is controlled by a feature flag named `orbit_gql_queries`.
+> For more information, see the history.
 
 Queries require JSON DSL objects by default.
 Enabling `orbit_gql_queries` switches queries to read-only GQL strings and discovery to GQL guidance.
@@ -58,7 +58,9 @@ Skill endpoints require authentication with the `read_api` scope.
 They don't require Orbit entitlement, so you can retrieve setup and troubleshooting guidance before you
 configure Orbit access.
 An older knowledge graph service without skill RPCs returns `404 Not Found` with the message
-`Skills are not available`.
+`Skills are not available`. The endpoints return the same response when the knowledge graph service
+isn't configured on the instance. On GitLab Self-Managed, this is controlled by `orbit.enabled` in
+`gitlab.yml`, or the legacy `knowledge_graph.enabled` setting.
 
 ### List deployed skills
 

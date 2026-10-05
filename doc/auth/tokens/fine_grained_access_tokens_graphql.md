@@ -1985,7 +1985,7 @@ Grants the ability to create and delete target branch rules.
 
 #### Secrets Manager Add-on
 
-Grants the ability to enable the paid Secrets Manager add-on for a top-level group or for the whole instance.
+Grants the ability to enable the paid Secrets Manager add-on for a top-level group, which also provisions that group's secrets manager on GitLab.com, or for the whole instance.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -2006,7 +2006,7 @@ Grants the ability to read secrets manager enrollments.
 
 #### Secrets Manager Trial
 
-Grants the ability to start a Secrets Manager trial for a top-level group or for the whole instance.
+Grants the ability to start a Secrets Manager trial for a top-level group, which also provisions that group's secrets manager on GitLab.com, or for the whole instance.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |

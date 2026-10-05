@@ -148,7 +148,7 @@ describe('config/vue3migration/infection', () => {
     // Pick a path that matches INFECTABLE_RE (`.js`/`.mjs`/`.vue`) and is not
     // on the INFECTION_BLOCKLIST, so the predicate's "interesting" branches run.
     const INFECTABLE_PATH = '/repo/app/assets/javascripts/some_module.js';
-    const BLOCKED_PATH = 'app/assets/javascripts/super_sidebar/state.js';
+    const BLOCKED_PATH = 'app/assets/javascripts/behaviors/preview_markdown.js';
     const NON_INFECTABLE_PATH = '/repo/app/assets/javascripts/styles.css';
 
     it('returns false for files that do not match the infectable extensions', () => {

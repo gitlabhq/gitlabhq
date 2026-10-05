@@ -173,7 +173,9 @@ export default {
     </div>
 
     <div v-if="!isState('success')" class="gl-mt-5 gl-flex gl-gap-3">
-      <gl-button variant="confirm" @click="onRegister">{{ __('Try again') }}</gl-button>
+      <gl-button variant="confirm" :disabled="isState('pending')" @click="onRegister">{{
+        __('Try again')
+      }}</gl-button>
       <gl-button data-testid="cancel-btn" :href="twoFactorAuthPath">{{ __('Cancel') }}</gl-button>
     </div>
   </div>

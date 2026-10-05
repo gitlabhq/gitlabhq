@@ -6,6 +6,7 @@ class SwapColumnsForIssuesBigintConversionBatchOne < Gitlab::Database::Migration
   include Gitlab::Database::MigrationHelpers::Swapping
   include Gitlab::Database::MigrationHelpers::ConvertToBigint
   include Gitlab::Database::MigrationHelpers::WraparoundAutovacuum
+  include Gitlab::Database::SchemaHelpers
 
   disable_ddl_transaction!
   milestone '19.5'
@@ -36,6 +37,15 @@ class SwapColumnsForIssuesBigintConversionBatchOne < Gitlab::Database::Migration
     fk_df75a7c8b8
     fk_ffed080f01
   ].freeze
+
+  # This trigger fires on `UPDATE OF` specific columns. PostgreSQL stores that list as
+  # attribute numbers, so renaming the columns leaves it pointing at the old ones. It has
+  # to be recreated by name after the swap, in both directions, or updates to the swapped
+  # columns stop syncing to `work_item_transitions`.
+  TRANSITIONS_TRIGGER_NAME = 'trigger_sync_work_item_transitions_from_issues'
+  TRANSITIONS_TRIGGER_FUNCTION = 'sync_work_item_transitions_from_issues'
+  TRANSITIONS_TRIGGER_FIRES =
+    'AFTER INSERT OR UPDATE OF moved_to_id, duplicated_to_id, promoted_to_epic_id, namespace_id'
 
   # We intentionally do not call `ensure_backfill_conversion_of_integer_to_bigint_is_finished`.
   # The backfill for the issues bigint columns was performed by the custom
@@ -68,6 +78,7 @@ class SwapColumnsForIssuesBigintConversionBatchOne < Gitlab::Database::Migration
       end
 
       reset_all_trigger_functions(TABLE_NAME)
+      recreate_transitions_trigger
 
       INDEXES.each do |index|
         bigint_idx_name = bigint_index_name(index)
@@ -80,6 +91,17 @@ class SwapColumnsForIssuesBigintConversionBatchOne < Gitlab::Database::Migration
       end
     end
     # rubocop:enable Migration/WithLockRetriesDisallowedMethod
+  end
+
+  # Re-binds the trigger to the canonical column names. Correct in both directions, because
+  # the canonical names always refer to the live columns after the swap completes.
+  def recreate_transitions_trigger
+    return unless trigger_exists?(TABLE_NAME, TRANSITIONS_TRIGGER_NAME)
+
+    create_trigger(
+      TABLE_NAME, TRANSITIONS_TRIGGER_NAME, TRANSITIONS_TRIGGER_FUNCTION,
+      fires: TRANSITIONS_TRIGGER_FIRES, replace: true
+    )
   end
 
   def tmp_name(name)

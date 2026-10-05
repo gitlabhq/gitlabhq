@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe DiffViewerEntity, feature_category: :code_review_workflow do
   include RepoHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff_refs) { commit.diff_refs }

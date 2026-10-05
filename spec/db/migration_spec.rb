@@ -8,7 +8,8 @@ RSpec.describe 'Migrations Validation', feature_category: :database do
   # The range describes the timestamps that given migration helper can be used
   let(:all_migration_classes) do
     {
-      2025_04_18_17_31_00.. => Gitlab::Database::Migration[2.3],
+      2026_09_22_00_00_00.. => Gitlab::Database::Migration[2.4],
+      2025_04_18_17_31_00..2026_10_27_00_00_00 => Gitlab::Database::Migration[2.3],
       2023_10_10_02_15_00..2025_04_27_00_00_00 => Gitlab::Database::Migration[2.2],
       2022_12_01_02_15_00..2023_11_01_02_15_00 => Gitlab::Database::Migration[2.1],
       2022_01_26_21_06_58..2023_01_11_12_45_12 => Gitlab::Database::Migration[2.0],

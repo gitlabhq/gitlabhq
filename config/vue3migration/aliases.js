@@ -20,9 +20,6 @@ const CONTEXT_ALIASES = {
 
 const INFECTABLE_RE = /\.(js|mjs|vue)$/;
 const INFECTION_BLOCKLIST = [
-  // Global state vars should not be duplicated
-  'app/assets/javascripts/lib/utils/breadcrumbs_state.js',
-  'app/assets/javascripts/super_sidebar/state.js',
   // Memoises the one mounted invite modal. Two copies mount two apps on the same
   // element, because each copy sees its own memo as empty.
   'app/assets/javascripts/invite_members/init_invite_members_modal.js',

@@ -1,4 +1,4 @@
-import { GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemTableCell from '~/work_items/table/components/work_item_table_cell.vue';
 import WorkItemTableRow from '~/work_items/table/components/work_item_table_row.vue';
@@ -132,6 +132,28 @@ describe('WorkItemTableRow', () => {
 
         expect(wrapper.emitted('set-active-item')).toEqual([[null]]);
       });
+
+      it('does not close the panel when clicking inside the title input while editing', async () => {
+        createComponent({
+          mountFn: mountExtended,
+          props: { detailPanelEnabled: true, activeItem: item },
+        });
+
+        await wrapper.findByTestId('edit-title-button').trigger('click');
+        await wrapper.findComponent(GlFormInput).trigger('click');
+        expect(wrapper.emitted('set-active-item')).toBeUndefined();
+      });
+    });
+
+    it('does not open the panel when clicking inside the title input while editing', async () => {
+      createComponent({
+        mountFn: mountExtended,
+        props: { detailPanelEnabled: true },
+      });
+
+      await wrapper.findByTestId('edit-title-button').trigger('click');
+      await wrapper.findComponent(GlFormInput).trigger('click');
+      expect(wrapper.emitted('set-active-item')).toBeUndefined();
     });
   });
 

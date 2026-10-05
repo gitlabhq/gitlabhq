@@ -11499,6 +11499,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Failed to update dashboard. Please try again."
 msgstr ""
 
+msgid "AnalyticsDashboards|Groups and projects"
+msgstr ""
+
 msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most"
 msgstr ""
 
@@ -11553,7 +11556,13 @@ msgstr ""
 msgid "AnalyticsDashboards|Search groups and projects"
 msgstr ""
 
+msgid "AnalyticsDashboards|Searching"
+msgstr ""
+
 msgid "AnalyticsDashboards|Select a group or project"
+msgstr ""
+
+msgid "AnalyticsDashboards|Selected"
 msgstr ""
 
 msgid "AnalyticsDashboards|Settings"
@@ -42688,6 +42697,9 @@ msgstr ""
 msgid "GroupSettings|Enable sending email notifications for this group and all its subgroups and projects"
 msgstr ""
 
+msgid "GroupSettings|Enable the Policy Store experiment"
+msgstr ""
+
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr ""
 
@@ -42794,6 +42806,9 @@ msgid "GroupSettings|Organizations and contacts can be created and associated wi
 msgstr ""
 
 msgid "GroupSettings|Please choose a group URL with no special characters or spaces."
+msgstr ""
+
+msgid "GroupSettings|Policy Store experiment"
 msgstr ""
 
 msgid "GroupSettings|Prevent forking outside of the group"
@@ -42932,6 +42947,9 @@ msgid "GroupSettings|When disabled, members cannot use runner registration token
 msgstr ""
 
 msgid "GroupSettings|When enabled, enterprise users in this group can create personal snippets. When disabled, enterprise users will be restricted from creating snippets in their personal namespace."
+msgstr ""
+
+msgid "GroupSettings|When enabled, members can create and manage security policies in the Policy Store."
 msgstr ""
 
 msgid "GroupSettings|When selected, built-in templates appear in the template selector."
@@ -95520,6 +95538,9 @@ msgstr ""
 msgid "WorkItem|Edit statuses"
 msgstr ""
 
+msgid "WorkItem|Edit title"
+msgstr ""
+
 msgid "WorkItem|Edit type name and icon"
 msgstr ""
 
@@ -96069,6 +96090,9 @@ msgstr ""
 msgid "WorkItem|Save view"
 msgstr ""
 
+msgid "WorkItem|Saving title"
+msgstr ""
+
 msgid "WorkItem|Search by view name or description"
 msgstr ""
 
@@ -96295,6 +96319,9 @@ msgid "WorkItem|Something went wrong while updating mappings."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the %{workItemType}. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while updating the title."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the work item. Please try again."

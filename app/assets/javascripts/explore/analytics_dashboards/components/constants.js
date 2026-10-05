@@ -144,6 +144,9 @@ export const SCOPE_PICKER_ITEM_TYPE_GROUP = 'group';
 export const SCOPE_PICKER_ITEM_TYPE_PROJECT = 'project';
 export const SCOPE_PICKER_ITEM_TYPE_LOAD_MORE = 'load-more';
 
+// Selected namespaces are listed twice, pinned at the top and in place below.
+export const SCOPE_PICKER_SELECTED_ITEM_SUFFIX = '::selected';
+
 export const SCOPE_PICKER_ITEM_TYPES = [
   SCOPE_PICKER_ITEM_TYPE_GROUP,
   SCOPE_PICKER_ITEM_TYPE_PROJECT,

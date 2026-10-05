@@ -30,6 +30,36 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexDestructor, feature_category
       end
     end
 
+    context 'when the index is the last one supporting a foreign key' do
+      let(:async_index) do
+        model.connection.execute(<<~SQL)
+          CREATE TABLE _test_fk_async_parents (id bigserial PRIMARY KEY);
+          CREATE TABLE _test_fk_async_children (
+            id bigserial PRIMARY KEY,
+            parent_id bigint NOT NULL CONSTRAINT fk_test_async_parents REFERENCES _test_fk_async_parents(id)
+          );
+        SQL
+
+        create(:postgres_async_index, :with_drop, table_name: '_test_fk_async_children', name: 'idx_async_parent')
+      end
+
+      before do
+        # The describe-level hook created the index on :id; reshape it onto the FK column.
+        connection.execute(<<~SQL)
+          DROP INDEX idx_async_parent;
+          CREATE INDEX idx_async_parent ON _test_fk_async_children (parent_id);
+        SQL
+      end
+
+      it 'does not drop the index and records the error on the queuing entry' do
+        expect { subject.perform }
+          .to raise_error(ArgumentError, /only index supporting the foreign key fk_test_async_parents/)
+
+        expect(connection.indexes('_test_fk_async_children').map(&:name)).to include('idx_async_parent')
+        expect(async_index.reload.last_error).to match(/only index supporting the foreign key/)
+      end
+    end
+
     context 'when the table does not exist' do
       before do
         allow(connection).to receive(:table_exists?).and_call_original

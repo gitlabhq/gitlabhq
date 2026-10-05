@@ -8840,6 +8840,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it { is_expected.not_to include('slack') }
       end
 
+      context 'when an instance-level Slack notifications integration exists in another organization' do
+        before do
+          create(:integrations_slack, :instance, organization: create(:organization))
+        end
+
+        it { is_expected.to include('slack') }
+      end
+
       # Group-level integrations reach projects as real rows, created by
       # Projects::CreateService or PropagateIntegrationProjectWorker. Until that
       # propagation lands the project has no row of its own and is hidden. Pinned here
@@ -8910,12 +8918,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'with an instance-level integration' do
+      subject { build(:project) }
+
       before do
         create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki')
       end
 
       it 'builds the integration from the instance integration' do
         expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://instance.atlassian.net/wiki')
+      end
+    end
+
+    context 'with an instance-level integration in another organization' do
+      subject { build(:project) }
+
+      before do
+        create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki',
+          organization: create(:organization))
+      end
+
+      it 'builds a new integration', :aggregate_failures do
+        integration = subject.find_or_initialize_integration('confluence')
+
+        expect(integration).to be_a(::Integrations::Confluence)
+        expect(integration.confluence_url).to be_nil
+        expect(integration.inherit_from_id).to be_nil
       end
     end
 

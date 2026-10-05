@@ -346,7 +346,9 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   end
 
   context 'when an instance-level instance specific integration' do
-    let_it_be(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
+    let_it_be(:instance_specific_integration) do
+      create(:beyond_identity_integration, :instance, organization: organization)
+    end
 
     it 'creates integration inheriting from the instance level integration' do
       expect(created_group.integrations.count).to eq(1)
@@ -371,13 +373,27 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
 
   context 'with an active instance-level integration' do
     let_it_be(:instance_integration) do
-      create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki')
+      create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki',
+        organization: organization)
     end
 
     it 'creates a service from the instance-level integration' do
       expect(created_group.integrations.count).to eq(1)
       expect(created_group.integrations.first.confluence_url).to eq(instance_integration.confluence_url)
       expect(created_group.integrations.first.inherit_from_id).to eq(instance_integration.id)
+    end
+
+    context 'when the instance-level integration belongs to another organization' do
+      let(:group_params) do
+        { path: 'group_path', visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+          organization_id: other_organization.id }
+      end
+
+      let_it_be(:other_organization) { create(:organization, users: [user]) }
+
+      it 'does not create a service from it' do
+        expect(created_group.integrations).to be_empty
+      end
     end
 
     context 'with an active group-level integration' do

@@ -1283,6 +1283,10 @@ Tool calls are logged with a `tool_status` field that records how the call ended
 When a tool raises an unexpected exception, it is reported to the error tracking service.
 `error_type` is recorded only for unknown tool names, with `not_found`.
 
+When a GitLab Duo session is created through the MCP server, a line with `event_name` set to
+`duo_session_created` is logged. This line has `source_type` set to `mcp`.
+The `duo_workflow_id` field holds the session ID.
+
 The log file is located at:
 
 - In the `/var/log/gitlab/gitlab-rails/mcp.log` file on Linux package installations.

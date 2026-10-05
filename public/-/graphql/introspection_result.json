@@ -153566,6 +153566,12 @@
               "description": "Session initiated by a flow trigger.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "WORK_ITEM_PLAN_TO_MERGE_REQUEST",
+              "description": "Session initiated from implementing a work item plan.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -434901,6 +434907,18 @@
             {
               "name": "ORGANIZATIONS_AVAILABLE_ALERT",
               "description": "Callout feature name for organizations_available_alert.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DUO_PANEL_REQUEST_PAINTED_DOOR",
+              "description": "Callout feature name for duo_panel_request_painted_door.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLORE_PREMIUM_REQUEST_PAINTED_DOOR",
+              "description": "Callout feature name for explore_premium_request_painted_door.",
               "isDeprecated": false,
               "deprecationReason": null
             }

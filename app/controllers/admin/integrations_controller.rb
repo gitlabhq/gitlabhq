@@ -13,7 +13,8 @@ class Admin::IntegrationsController < Admin::ApplicationController
   def overrides
     respond_to do |format|
       format.json do
-        projects = Project.with_active_integration(integration.class)
+        projects = Project.in_organization(admin_current_organization)
+                          .with_active_integration(integration.class)
                           .merge(::Integration.overriding_instance_default(integration))
         serializer = ::Integrations::ProjectSerializer.new.with_pagination(request, response)
 
@@ -28,9 +29,8 @@ class Admin::IntegrationsController < Admin::ApplicationController
   def find_or_initialize_non_project_specific_integration(name)
     Integration.find_or_initialize_non_project_specific_integration(
       name,
-      instance: true
-    ).tap do |integration|
-      integration.organization_id = admin_current_organization.id if integration&.new_record?
-    end
+      instance: true,
+      organization_id: admin_current_organization.id
+    )
   end
 end

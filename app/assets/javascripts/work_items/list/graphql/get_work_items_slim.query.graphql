@@ -110,6 +110,9 @@ query getWorkItemsSlim(
         webUrl
         webPath
         state
+        userPermissions {
+          updateWorkItem
+        }
         widgets(onlyTypes: [LABELS]) @skip(if: $useWorkItemFeatures) {
           type
           ... on WorkItemWidgetLabels {

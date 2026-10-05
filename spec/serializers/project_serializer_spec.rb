@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ProjectSerializer do
-  let_it_be(:project) { create(:project) }
-
+  let(:project) { build_stubbed(:project) }
   let(:provider_url) { 'http://provider.com' }
 
   context 'when serializer option is :import' do

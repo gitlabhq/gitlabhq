@@ -343,7 +343,6 @@ methods:
   - supported_event_actions
   app/models/concerns/integrations/base/integration.rb:
   - event_description
-  - instance_exists_for?
   app/models/concerns/issuable.rb:
   - locking_enabled?
   - any_label
@@ -549,8 +548,6 @@ methods:
   - for_agent?
   ee/app/models/security/policy.rb:
   - self.delete_by_ids
-  ee/app/models/security/scan_profile.rb:
-  - remediation?
   ee/app/models/virtual_registries/cleanup/policy.rb:
   - self.declarative_policy_class
   ee/app/models/virtual_registries/container/cache/remote/entry.rb:

@@ -6,7 +6,6 @@
 export default {
   files: [
     'app/assets/javascripts/analytics/shared/components/analytics_dashboard_panel.vue',
-    'app/assets/javascripts/clusters_list/components/install_agent_modal.vue',
     'app/assets/javascripts/issues/dashboard/components/issues_dashboard_app.vue',
     'app/assets/javascripts/projects/settings/branch_rules/components/index.vue',
     'app/assets/javascripts/projects/settings/repository/branch_rules/app.vue',
@@ -26,9 +25,6 @@ export default {
     'ee/app/assets/javascripts/security_inventory/components/bulk_scanners_update_drawer.vue',
     'ee/app/assets/javascripts/security_inventory/components/inventory_dashboard.vue',
     'ee/app/assets/javascripts/security_orchestration/components/policies/app.vue',
-    'ee/app/assets/javascripts/test_case_show/components/test_case_show_root.vue',
-    'ee/app/assets/javascripts/test_case_show/components/test_case_sidebar.vue',
-    'ee/app/assets/javascripts/test_case_show/components/test_case_sidebar_todo.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/add_on_eligible_user_list.vue',
   ],
   rules: {

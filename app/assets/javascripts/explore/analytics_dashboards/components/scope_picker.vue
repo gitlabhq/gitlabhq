@@ -1,6 +1,6 @@
 <script>
-import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce, union, xor } from 'lodash-es';
+import { GlButton, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
+import { debounce, xor } from 'lodash-es';
 import { n__, s__, sprintf } from '~/locale';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -16,6 +16,7 @@ import {
   SCOPE_PICKER_ITEM_TYPE_GROUP,
   SCOPE_PICKER_ITEM_TYPE_PROJECT,
   SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+  SCOPE_PICKER_SELECTED_ITEM_SUFFIX,
 } from './constants';
 import ScopePickerItem from './scope_picker_item.vue';
 
@@ -28,6 +29,8 @@ const ITEM_TYPE_BY_TYPENAME = {
 // Keeps a placeholder row's value from colliding with a real namespace path.
 const EMPTY_ITEM_SUFFIX = '::empty';
 const LOAD_MORE_ITEM_SUFFIX = '::load-more';
+const SEARCHING_ITEM_VALUE = '::searching';
+const NO_RESULTS_ITEM_VALUE = '::no-results';
 
 const SCOPE_NAMESPACE_BATCH_KEY = 'analyticsDashboardScopeNamespace';
 
@@ -36,6 +39,7 @@ export default {
   components: {
     GlButton,
     GlCollapsibleListbox,
+    GlLoadingIcon,
     ScopePickerItem,
   },
   props: {
@@ -155,6 +159,21 @@ export default {
     isSearching() {
       return this.$apollo.queries.searchResults.loading;
     },
+    // Replaces the listbox's own count, which would include the pinned picks and status rows.
+    searchSummary() {
+      if (this.isLoading) return '';
+      if (this.isSearching) return s__('AnalyticsDashboards|Searching');
+
+      const listItems = this.hasSearch ? this.searchItems : this.groupItems;
+      const count = listItems.filter(
+        ({ itemType, placeholder }) =>
+          !placeholder && itemType !== SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+      ).length;
+
+      if (this.hasSearch && !count) return s__('AnalyticsDashboards|No groups or projects found');
+
+      return n__('%d result', '%d results', count);
+    },
     // Every namespace behind a row that can currently be clicked, which is what a click's path is
     // turned back into an object against. It only has to cover what is on screen, because the pick
     // is captured at click time and does not depend on this afterwards.
@@ -200,7 +219,54 @@ export default {
       );
     },
     items() {
-      return this.hasSearch ? this.searchItems : this.groupItems;
+      let listItems = this.hasSearch ? this.searchItems : this.groupItems;
+      if (this.isSearching) {
+        listItems = [
+          {
+            value: SEARCHING_ITEM_VALUE,
+            text: s__('AnalyticsDashboards|Searching'),
+            placeholder: true,
+            loading: true,
+            disabled: true,
+          },
+        ];
+      } else if (this.hasSearch && !listItems.length) {
+        listItems = [
+          {
+            value: NO_RESULTS_ITEM_VALUE,
+            text: s__('AnalyticsDashboards|No groups or projects found'),
+            placeholder: true,
+            disabled: true,
+          },
+        ];
+      }
+
+      // Just show the groups/projects list when nothing is selected.
+      if (!this.selectedItems.length) return listItems;
+
+      return [
+        {
+          text: s__('AnalyticsDashboards|Selected'),
+          options: this.selectedItems,
+        },
+        ...(listItems.length
+          ? [
+              {
+                text: s__('AnalyticsDashboards|Groups and projects'),
+                options: listItems,
+              },
+            ]
+          : []),
+      ];
+    },
+    selectedItems() {
+      return this.selectedNamespaces.map((namespace) => ({
+        ...this.asItem(namespace),
+        value: `${namespace.fullPath}${SCOPE_PICKER_SELECTED_ITEM_SUFFIX}`,
+        parentName: namespace.fullName?.split(' / ').at(-2) ?? null,
+        expanded: false,
+        expanding: false,
+      }));
     },
     // Search spans the whole hierarchy, so results are listed flat rather than placed back into
     // the tree they came from. Headers by kind would only assert an ordering the two queries
@@ -230,12 +296,12 @@ export default {
       return items;
     },
     // Rows locked by a selected ancestor render checked, so the options behind them must count as
-    // selected too or they lose aria-selected. A pick with no row on screen (unloaded page, or
-    // filtered out by a search) still has to be listed, or the toggle greys out as if empty.
+    // selected too or they lose aria-selected.
     listboxSelectedPaths() {
-      const visible = this.items.filter(({ selected }) => selected).map(({ value }) => value);
-
-      return union(this.selectedPaths, visible);
+      return this.items
+        .flatMap((item) => item.options ?? item)
+        .filter(({ selected }) => selected)
+        .map(({ value }) => value);
     },
   },
   beforeDestroy() {
@@ -475,8 +541,13 @@ export default {
 
       // The listbox reports the whole selection, but only one item can change per click.
       // Determine what changed and update its value.
-      const [fullPath] = xor(paths, this.listboxSelectedPaths);
-      if (!fullPath) return;
+      const [value] = xor(paths, this.listboxSelectedPaths);
+      if (!value) return;
+
+      // Remove the selected suffix if necessary
+      const fullPath = value.endsWith(SCOPE_PICKER_SELECTED_ITEM_SUFFIX)
+        ? value.slice(0, -SCOPE_PICKER_SELECTED_ITEM_SUFFIX.length)
+        : value;
 
       const selected = this.isSelected(fullPath)
         ? this.selectedNamespaces.filter((namespace) => namespace.fullPath !== fullPath)
@@ -587,7 +658,6 @@ export default {
     :header-text="s__('AnalyticsDashboards|Scope')"
     :loading="isLoading"
     searchable
-    :searching="isSearching"
     :search-placeholder="s__('AnalyticsDashboards|Search groups and projects')"
     :no-results-text="s__('AnalyticsDashboards|No groups or projects found')"
     @search="onSearch"
@@ -602,6 +672,7 @@ export default {
       >
         <!-- Reserve the chevron's width so the text lines up with the projects it stands in for. -->
         <span class="gl-w-6 gl-shrink-0"></span>
+        <gl-loading-icon v-if="item.loading" size="sm" />
         {{ item.text }}
       </span>
 
@@ -611,6 +682,10 @@ export default {
         @toggle-expanded="toggleExpanded(item.value)"
         @load-more="onLoadMore(item.value)"
       />
+    </template>
+
+    <template #search-summary-sr-only>
+      {{ searchSummary }}
     </template>
 
     <template #footer>

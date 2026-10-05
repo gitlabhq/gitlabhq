@@ -11,6 +11,18 @@ module Gitlab
           index_exists?
         end
 
+        # Coverage can change between scheduling and removal; a raise here lands
+        # in postgres_async_indexes.last_error and the entry is retried.
+        override :execute_action
+        def execute_action
+          index = connection.indexes(async_index.table_name).find { |i| i.name == async_index.name }
+
+          Gitlab::Database::ForeignKeyIndexSupport.new(connection)
+            .assert_index_not_last_supporting_foreign_key!(async_index.table_name, index)
+
+          super
+        end
+
         override :action_type
         def action_type
           'removal'

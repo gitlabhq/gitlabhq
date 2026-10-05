@@ -6651,6 +6651,10 @@ const subChildBaseNodes = [
       name: 'Issue',
       iconName: 'work-item-issue',
     },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
+    },
   },
   {
     id: 'gid://gitlab/WorkItem/102',
@@ -6717,6 +6721,10 @@ const subChildBaseNodes = [
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Issue',
       iconName: 'work-item-issue',
+    },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
     },
   },
 ];
@@ -7079,6 +7087,10 @@ export const combinedQueryResultExample = [
       name: 'Issue',
       iconName: 'work-item-issue',
     },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
+    },
     __typename: 'WorkItem',
   },
   {
@@ -7139,6 +7151,10 @@ export const combinedQueryResultExample = [
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Issue',
       iconName: 'work-item-issue',
+    },
+    userPermissions: {
+      __typename: 'WorkItemPermissions',
+      updateWorkItem: true,
     },
     __typename: 'WorkItem',
   },

@@ -132,6 +132,7 @@ project:
   - provision_ai_catalog
   - provision_cloud_runner
   - provision_gke_runner
+  - provision_secrets_manager
   - push_code_to_protected_branches
   - push_to_delete_protected_branch
   - read_ai_tool_rule

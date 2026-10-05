@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -331,6 +331,9 @@ describe('ScopePicker', () => {
         <div v-for="(item, index) in flatItems" :key="item.value || index">
           <slot name="list-item" :item="item"></slot>
         </div>
+        <div data-testid="listbox-search-summary">
+          <slot name="search-summary-sr-only"></slot>
+        </div>
         <slot name="footer"></slot>
       </div>`,
     computed: {
@@ -379,10 +382,23 @@ describe('ScopePicker', () => {
   const findDoneButton = () => wrapper.findComponent(GlButton);
   const findItems = () => wrapper.findAllComponents(ScopePickerItem);
   const findEmptyItem = () => wrapper.findByTestId('scope-picker-empty-item');
+  const findSearchSummary = () => wrapper.findByTestId('listbox-search-summary');
   const findItemFor = ({ fullPath }) =>
     findItems().wrappers.find((item) => item.props('value') === fullPath);
   const findItemTexts = () => findItems().wrappers.map((item) => item.props('text'));
   const findItemValues = () => findItems().wrappers.map((item) => item.props('value'));
+  const findSectionNames = () => findSections().map(({ text }) => text);
+  const findSectionOptions = (name) =>
+    findSections().find(({ text }) => text === name)?.options ?? [];
+  // Pinned rows are told apart by the section they sit in, so how their values are built stays
+  // the component's own business.
+  const findPinnedOptions = () => findSectionOptions('Selected');
+  const findPinnedValues = () => findPinnedOptions().map(({ value }) => value);
+  const findPinnedItems = () =>
+    findItems().wrappers.filter((item) => findPinnedValues().includes(item.props('value')));
+  const findListValues = () => findSectionOptions('Groups and projects').map(({ value }) => value);
+  const expectFlatList = () =>
+    expect(findSections().every(({ options }) => options === undefined)).toBe(true);
   const findLoadMoreItems = () =>
     findItems().wrappers.filter(
       (item) => item.props('itemType') === SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
@@ -417,7 +433,10 @@ describe('ScopePicker', () => {
       Promise.resolve(),
     );
 
-  const findSelectedPaths = () => findListbox().props('selected');
+  // Every pick is pinned above the list, loaded below or not, so that is where they are read.
+  const findSelectedNames = () => findPinnedOptions().map(({ text }) => text);
+  const untickPinned = (name) =>
+    toggleSelected({ fullPath: findPinnedOptions().find(({ text }) => text === name).value });
 
   // Multi-select picks only reach the consumer once the listbox closes.
   const hideListbox = () => findListbox().vm.$emit('hidden');
@@ -455,6 +474,10 @@ describe('ScopePicker', () => {
       it('sets the listbox to loading', () => {
         expect(findListbox().props('loading')).toBe(true);
       });
+
+      it('announces no count before the first page of groups arrives', () => {
+        expect(findSearchSummary().text()).toBe('');
+      });
     });
 
     describe('once loaded', () => {
@@ -473,6 +496,10 @@ describe('ScopePicker', () => {
           { value: mockCapsuleCorp.fullPath, text: mockCapsuleCorp.name },
           { value: mockAcme.fullPath, text: mockAcme.name },
         ]);
+      });
+
+      it('announces how many groups are listed while browsing', () => {
+        expect(findSearchSummary().text()).toBe('2 results');
       });
 
       it('nests nothing, since every row is a group until one is expanded', () => {
@@ -540,6 +567,7 @@ describe('ScopePicker', () => {
             await toggleSelected(mockCapsuleCorp);
 
             expect(findListbox().props('selected')).toEqual([
+              ...findPinnedValues(),
               mockCapsuleCorp.fullPath,
               ...mockCapsuleProjects.map(({ fullPath }) => fullPath),
             ]);
@@ -861,7 +889,7 @@ describe('ScopePicker', () => {
     });
 
     it('keeps every pick', () => {
-      expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath, mockAcme.fullPath]);
+      expect(findSelectedNames()).toEqual([mockCapsuleCorp.name, mockAcme.name]);
     });
 
     it('counts them on the toggle rather than naming one', () => {
@@ -884,7 +912,7 @@ describe('ScopePicker', () => {
       beforeEach(() => toggleSelected(mockCapsuleCorp));
 
       it('leaves the other selected', () => {
-        expect(findSelectedPaths()).toEqual([mockAcme.fullPath]);
+        expect(findSelectedNames()).toEqual([mockAcme.name]);
       });
 
       it('names the one that is left', () => {
@@ -920,6 +948,113 @@ describe('ScopePicker', () => {
     });
   });
 
+  describe('the selected section', () => {
+    beforeEach(async () => {
+      createWrapper();
+      await waitForPromises();
+    });
+
+    describe('once namespaces are picked', () => {
+      beforeEach(() => selectAll(mockAcme, mockCapsuleCorp));
+
+      it('shows separated sections for selected/unselected items', () => {
+        expect(findSectionNames()).toEqual(['Selected', 'Groups and projects']);
+      });
+
+      it('pins the picks above the list, in the order they were picked', () => {
+        expect(findItemTexts()).toEqual([
+          mockAcme.name,
+          mockCapsuleCorp.name,
+          mockCapsuleCorp.name,
+          mockAcme.name,
+        ]);
+        expect(findSelectedNames()).toEqual([mockAcme.name, mockCapsuleCorp.name]);
+      });
+
+      it('renders the pinned rows checked, under the names of the picks', () => {
+        expect(
+          findPinnedItems().map((item) => ({
+            text: item.props('text'),
+            selected: item.props('selected'),
+          })),
+        ).toEqual([
+          { text: 'Acme Inc', selected: true },
+          { text: 'Capsule Corp', selected: true },
+        ]);
+      });
+
+      it('leaves the picks checked in place in the list below', () => {
+        expect(findItemFor(mockAcme).props('selected')).toBe(true);
+        expect(findItemFor(mockCapsuleCorp).props('selected')).toBe(true);
+      });
+
+      it('counts the pinned rows as selected alongside the rows below', () => {
+        expect(findListbox().props('selected')).toEqual([
+          ...findPinnedValues(),
+          mockCapsuleCorp.fullPath,
+          mockAcme.fullPath,
+        ]);
+      });
+
+      describe('when a pick is unticked from its pinned row', () => {
+        beforeEach(() => untickPinned(mockAcme.name));
+
+        it('drops the pick', () => {
+          expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
+        });
+
+        it('leaves its row in the list below, unchecked', () => {
+          expect(findListValues()).toEqual([mockCapsuleCorp.fullPath, mockAcme.fullPath]);
+          expect(findItemFor(mockAcme).props('selected')).toBe(false);
+        });
+      });
+
+      it('goes back to a flat list once the last pick is unticked', async () => {
+        await selectAll(mockAcme, mockCapsuleCorp);
+
+        expectFlatList();
+      });
+    });
+
+    it('leaves a top-level pick without a parent, there being nothing above it', async () => {
+      await toggleSelected(mockCapsuleCorp);
+
+      const [pinned] = findPinnedItems();
+
+      expect(pinned.props('parentName')).toBeNull();
+    });
+
+    describe('when a nested project is picked', () => {
+      beforeEach(async () => {
+        await toggleExpanded(mockCapsuleCorp);
+        await waitForPromises();
+        await toggleSelected(mockCapsuleProjects[1]);
+      });
+
+      it('names the group it sits in, the same way a nested row does', () => {
+        const [pinned] = findPinnedItems();
+
+        expect(pinned.props('parentName')).toBe('Research');
+      });
+    });
+
+    // The pinned row only stands for the pick, so browsing what is under it stays in the list.
+    it('keeps a pinned group closed, even while its row below is expanded', async () => {
+      await toggleExpanded(mockCapsuleCorp);
+      await waitForPromises();
+      await toggleSelected(mockCapsuleCorp);
+
+      const [pinned] = findPinnedItems();
+
+      expect(pinned.props()).toMatchObject({
+        expandable: false,
+        expanded: false,
+        expanding: false,
+      });
+      expect(findItemFor(mockCapsuleCorp).props('expanded')).toBe(true);
+    });
+  });
+
   describe('while the listbox is open', () => {
     beforeEach(async () => {
       createWrapper();
@@ -929,7 +1064,7 @@ describe('ScopePicker', () => {
     it('holds picks back rather than emitting each one', async () => {
       await selectAll(mockCapsuleCorp, mockAcme);
 
-      expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath, mockAcme.fullPath]);
+      expect(findSelectedNames()).toEqual([mockCapsuleCorp.name, mockAcme.name]);
       expect(wrapper.emitted('change')).toBeUndefined();
     });
 
@@ -981,7 +1116,7 @@ describe('ScopePicker', () => {
     });
 
     it('holds the cap GLQL can compile', () => {
-      expect(findSelectedPaths()).toHaveLength(20);
+      expect(findSelectedNames()).toHaveLength(20);
       expect(findSlotsLeft().text()).toBe('0 of 20 slots left');
     });
 
@@ -992,8 +1127,8 @@ describe('ScopePicker', () => {
     it('refuses the pick even if the row is clicked anyway', async () => {
       await toggleSelected(spareGroup);
 
-      expect(findSelectedPaths()).toHaveLength(20);
-      expect(findSelectedPaths()).not.toContain(spareGroup.fullPath);
+      expect(findSelectedNames()).toHaveLength(20);
+      expect(findSelectedNames()).not.toContain(spareGroup.name);
     });
 
     it('keeps the picks themselves clickable, so the selection can be freed up', async () => {
@@ -1015,7 +1150,7 @@ describe('ScopePicker', () => {
     it('holds one pick at a time, a second replacing the first', async () => {
       await selectAll(mockCapsuleCorp, mockAcme);
 
-      expect(findSelectedPaths()).toEqual([mockAcme.fullPath]);
+      expect(findSelectedNames()).toEqual([mockAcme.name]);
       expect(wrapper.emitted('change').at(-1)).toEqual([[asNamespace(mockAcme)]]);
     });
 
@@ -1068,7 +1203,7 @@ describe('ScopePicker', () => {
       });
 
       it('restores that one alone', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
       });
     });
   });
@@ -1118,6 +1253,10 @@ describe('ScopePicker', () => {
           mockDeepSubgroup.fullPath,
           mockDeepProject.fullPath,
         ]);
+      });
+
+      it('announces how many results the search found', () => {
+        expect(findSearchSummary().text()).toBe('2 results');
       });
 
       it('reaches a subgroup too deep for browsing to reveal', () => {
@@ -1201,8 +1340,10 @@ describe('ScopePicker', () => {
       });
 
       // Otherwise the listbox takes the toggle for an empty picker and greys the name it shows.
-      it('holds the selection, none of the rows on screen carrying it', () => {
-        expect(findListbox().props('selected')).toEqual([mockDeepProject.fullPath]);
+      it('holds the selection pinned above the results, none of which carry it', () => {
+        expect(findSelectedNames()).toEqual([mockDeepProject.name]);
+        expect(findListValues()).toEqual([mockUnrelatedProject.fullPath]);
+        expect(findListbox().props('selected')).toEqual(findPinnedValues());
       });
 
       it('still names it once the search is cleared and browsing resumes', async () => {
@@ -1219,9 +1360,16 @@ describe('ScopePicker', () => {
         await search('design');
       });
 
-      it('marks the listbox as searching, leaving the whole-dropdown spinner alone', () => {
-        expect(findListbox().props('searching')).toBe(true);
+      // The listbox's own spinners would hide every row, pinned picks included.
+      it('reports it in a row of its own, leaving the listbox spinners alone', () => {
+        expect(findEmptyItem().text()).toBe('Searching');
+        expect(findEmptyItem().findComponent(GlLoadingIcon).exists()).toBe(true);
+        expect(findListbox().props('searching')).toBe(false);
         expect(findListbox().props('loading')).toBe(false);
+      });
+
+      it('announces it to screen readers while focus stays in the search box', () => {
+        expect(findSearchSummary().text()).toBe('Searching');
       });
     });
 
@@ -1234,9 +1382,49 @@ describe('ScopePicker', () => {
         await search('nothing');
       });
 
-      it('renders no items, leaving the listbox to say so', () => {
+      it('says so in a row of its own', () => {
         expect(findItems()).toHaveLength(0);
-        expect(findListbox().props('noResultsText')).toBe('No groups or projects found');
+        expect(findEmptyItem().text()).toBe('No groups or projects found');
+      });
+
+      // The listbox would count the status row and announce "1 result".
+      it('announces that nothing was found rather than counting the status row', () => {
+        expect(findSearchSummary().text()).toBe('No groups or projects found');
+      });
+    });
+
+    describe('with a pick pinned above the results', () => {
+      const pickThenSearch = async (globalSearchHandler) => {
+        createWrapper({ globalSearchHandler });
+        await waitForPromises();
+        await toggleSelected(mockAcme);
+        await search('design');
+      };
+
+      it('keeps the pick on screen above a searching row while the search is in flight', async () => {
+        await pickThenSearch(jest.fn().mockReturnValue(new Promise(() => {})));
+
+        expect(findSelectedNames()).toEqual([mockAcme.name]);
+        expect(findListValues()).toHaveLength(1);
+        expect(findEmptyItem().text()).toBe('Searching');
+      });
+
+      it('lists the results below the pick once they arrive', async () => {
+        await pickThenSearch(respondWithGlobalSearch());
+
+        expect(findSelectedNames()).toEqual([mockAcme.name]);
+        expect(findListValues()).toEqual([mockDeepSubgroup.fullPath, mockDeepProject.fullPath]);
+        expect(findEmptyItem().exists()).toBe(false);
+        expect(findSearchSummary().text()).toBe('2 results');
+      });
+
+      it('says there is nothing below the pick when the search returns nothing', async () => {
+        await pickThenSearch(respondWithGlobalSearch({ groups: [], projects: [] }));
+
+        expect(findSelectedNames()).toEqual([mockAcme.name]);
+        expect(findListValues()).toHaveLength(1);
+        expect(findEmptyItem().text()).toBe('No groups or projects found');
+        expect(findSearchSummary().text()).toBe('No groups or projects found');
       });
     });
 
@@ -1252,7 +1440,7 @@ describe('ScopePicker', () => {
       // Apollo never runs update on a rejection, so anything keying off "results have not
       // arrived yet" would stay true forever and leave the listbox spinning with no way out.
       it('stops searching, rather than spinning on a result that will never arrive', () => {
-        expect(findListbox().props('searching')).toBe(false);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       });
 
       it('emits error', () => {
@@ -1352,7 +1540,7 @@ describe('ScopePicker', () => {
       });
 
       it('marks its row selected', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
       });
 
       // Emitted like a click, so the page applies it as an ordinary filter change.
@@ -1378,9 +1566,10 @@ describe('ScopePicker', () => {
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockScopeProject)]]]);
       });
 
+      // Browsing has not reached it, so the pinned row is the only one standing for it.
       it('allows a non-loaded item to be selected by default', () => {
-        expect(findSelectedPaths()).toEqual([mockScopeProject.fullPath]);
-        expect(findItemValues()).not.toContain(mockScopeProject.fullPath);
+        expect(findSelectedNames()).toEqual([mockScopeProject.name]);
+        expect(findListValues()).not.toContain(mockScopeProject.fullPath);
       });
     });
 
@@ -1400,7 +1589,11 @@ describe('ScopePicker', () => {
       });
 
       it('selects every one of them', () => {
-        expect(findSelectedPaths()).toEqual(paths);
+        expect(findSelectedNames()).toEqual([
+          mockScopeProject.name,
+          mockCapsuleCorp.name,
+          mockAcme.name,
+        ]);
       });
 
       it('counts them on the toggle rather than naming one', () => {
@@ -1426,7 +1619,7 @@ describe('ScopePicker', () => {
       });
 
       it('drops it and keeps the rest', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
       });
 
       it('emits the selection it could resolve', () => {
@@ -1459,7 +1652,7 @@ describe('ScopePicker', () => {
       });
 
       it('restores the ones that resolved', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockCapsuleCorp)]]]);
       });
 
@@ -1488,7 +1681,7 @@ describe('ScopePicker', () => {
       });
 
       it('spends one slot on it, not two', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
         expect(findSlotsLeft().text()).toBe('19 of 20 slots left');
       });
     });
@@ -1516,7 +1709,7 @@ describe('ScopePicker', () => {
       });
 
       it('holds the covering group alone', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
         expect(findSlotsLeft().text()).toBe('19 of 20 slots left');
       });
     });
@@ -1581,7 +1774,7 @@ describe('ScopePicker', () => {
       });
 
       it('leaves the picker empty', () => {
-        expect(findSelectedPaths()).toEqual([]);
+        expect(findSelectedNames()).toEqual([]);
       });
 
       it('emits ready', () => {
@@ -1605,7 +1798,7 @@ describe('ScopePicker', () => {
       });
 
       it('keeps the pick', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
       });
     });
   });
@@ -1659,7 +1852,7 @@ describe('ScopePicker', () => {
       });
 
       it('ticks its row alone, the rest of the list being no more than visited', () => {
-        expect(findListbox().props('selected')).toEqual([mockAcme.fullPath]);
+        expect(findSelectedNames()).toEqual([mockAcme.name]);
       });
 
       it('emits it as a change', () => {
@@ -1695,7 +1888,7 @@ describe('ScopePicker', () => {
       });
 
       it('keeps what the param named', () => {
-        expect(findSelectedPaths()).toEqual([mockCapsuleCorp.fullPath]);
+        expect(findSelectedNames()).toEqual([mockCapsuleCorp.name]);
       });
     });
 
@@ -1973,7 +2166,7 @@ describe('ScopePicker', () => {
       });
 
       it('restores only the one that grants them', () => {
-        expect(findSelectedPaths()).toEqual([openProject.fullPath]);
+        expect(findSelectedNames()).toEqual([openProject.name]);
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(openProject)]]]);
       });
     });
@@ -1988,7 +2181,7 @@ describe('ScopePicker', () => {
       });
 
       it('restores it', () => {
-        expect(findSelectedPaths()).toEqual([unknownGroup.fullPath]);
+        expect(findSelectedNames()).toEqual([unknownGroup.name]);
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(unknownGroup)]]]);
       });
     });
@@ -2028,7 +2221,7 @@ describe('ScopePicker', () => {
       });
 
       it('derives the default from it', () => {
-        expect(findListbox().props('selected')).toEqual([mockAcme.fullPath]);
+        expect(findSelectedNames()).toEqual([mockAcme.name]);
         expect(wrapper.emitted('change')).toEqual([[[asNamespace(mockAcme)]]]);
       });
     });

@@ -6,7 +6,7 @@ RSpec.describe JiraConnect::AppDataSerializer do
   describe '#as_json' do
     subject(:app_data_json) { described_class.new(subscriptions).as_json }
 
-    let_it_be(:subscriptions) { create_list(:jira_connect_subscription, 2) }
+    let(:subscriptions) { build_stubbed_list(:jira_connect_subscription, 2) }
 
     it 'uses the subscription entity' do
       expect(JiraConnect::SubscriptionEntity).to receive(:represent).with(subscriptions)

@@ -15,6 +15,18 @@ module Gitlab
         TOOLING_SLUG = 'tooling'
         METADATA_SLUG = 'metadata'
 
+        # Team MRs open as Draft so humans wait until Duo's findings are addressed. Automatic Duo review skips drafts,
+        # so the sync requests it explicitly.
+        DRAFT_PREFIX = 'Draft: '
+        DUO_REVIEW_BOT_USERNAME = 'GitLabDuo'
+        DUO_REREVIEW_MUTATION = <<~GRAPHQL
+          mutation($projectPath: ID!, $iid: String!, $userId: UserID!) {
+            mergeRequestReviewerRereview(input: { projectPath: $projectPath, iid: $iid, userId: $userId }) {
+              errors
+            }
+          }
+        GRAPHQL
+
         # The run-invariant publish inputs: identical for every team branch and the tooling branch in a single
         # create_branch_and_mr call.
         PublishContext = Struct.new(
@@ -158,7 +170,8 @@ module Gitlab
         based on recent changes to development documentation.
           MSG
 
-          title = "#{slug}: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
+          # Every call follows a push of new content, so re-drafting an adopted MR here is deliberate.
+          title = "#{DRAFT_PREFIX}#{slug}: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
           create_mr(branch, contents, affected, ctx, team: team, title: title)
         end
 
@@ -920,7 +933,7 @@ module Gitlab
         development documentation (SSOT). It is one of several
         team-scoped MRs from this run; the global routing tables (AGENTS.md,
         SKILL.md) are updated in a separate tooling MR.
-
+        #{draft_review_section(project_url, default_branch)}
         #{ping_line}
         #{why_you_were_pinged_section(outcome)}
         #{review_request_section(changed_principles.keys, team)}
@@ -943,7 +956,18 @@ module Gitlab
 
           reviewer_ids = [fallback_reviewer[:id]] if reviewer_ids.empty? && fallback_reviewer
           submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids,
-            existing_mr: existing_mr)
+            existing_mr: existing_mr, request_duo_review: true)
+        end
+
+        def draft_review_section(project_url, default_branch)
+          skill_url = "#{project_url}/-/blob/#{default_branch}/.claude/skills/ai-principles-review-feedback/SKILL.md"
+
+          <<~SECTION
+
+            > **Draft until GitLab Duo's review is addressed.** GitLab Duo reviews this MR first, and its findings are
+            > worked through with the [`ai-principles-review-feedback` skill](#{skill_url}). Human reviewers: please
+            > start once this MR is marked ready.
+          SECTION
         end
 
         # Opens/updates the tooling MR carrying the regenerated global routing tables. Routed to the broad `/.ai/`
@@ -1193,7 +1217,10 @@ module Gitlab
         # idempotent.
         # Either way the MR is updated in place rather than failing on a 409.
         # Pass `existing_mr` when the caller already looked it up; nil means no open MR.
-        def submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: [], existing_mr: :lookup)
+        def submit_mr(
+          branch, default_branch, ctx, title, description,
+          reviewer_ids: [], existing_mr: :lookup, request_duo_review: false
+        )
           encoded_project = URI.encode_www_form_component(ctx.project_id)
           existing_mr = find_open_mr(encoded_project, branch, ctx.api_token) if existing_mr == :lookup
           body = mr_body(ctx, title, description)
@@ -1204,13 +1231,15 @@ module Gitlab
           body[:assignee_id] = assignee_id if assignee_id
           milestone_id = current_milestone_id(encoded_project, ctx.api_token)
           body[:milestone_id] = milestone_id if milestone_id
-          merged_reviewer_ids = (mr_reviewer_ids(existing_mr) + reviewer_ids).uniq
+          duo_bot_id = duo_review_bot_id(ctx.api_token) if request_duo_review
+          merged_reviewer_ids, rerequest_duo = plan_reviewers(existing_mr, reviewer_ids, duo_bot_id)
           body[:reviewer_ids] = merged_reviewer_ids if merged_reviewer_ids.any?
 
           response, action = submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
 
           if body[:reviewer_ids] && !response.is_a?(Net::HTTPSuccess)
-            warn Rainbow("WARNING: reviewer assignment failed (#{response.code}); retrying without reviewers").yellow
+            warn Rainbow("WARNING: reviewer assignment failed (#{response.code}); retrying without reviewers" \
+              "#{duo_bot_id && " (including @#{DUO_REVIEW_BOT_USERNAME}, so no Duo review starts)"}").yellow
             body.delete(:reviewer_ids)
             response, = submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
           end
@@ -1223,6 +1252,7 @@ module Gitlab
 
           response_body = JSON.parse(response.body)
           warn_if_reviewers_dropped(body[:reviewer_ids], response_body['reviewers'])
+          rerequest_duo_review(response_body, duo_bot_id) if rerequest_duo
           puts "\n#{Rainbow("MR #{action}: #{response_body['web_url']}").green}"
         end
 
@@ -1232,6 +1262,56 @@ module Gitlab
 
         def mr_reviewer_ids(merge_request)
           merge_request.to_h.fetch('reviewers', []).filter_map { |reviewer| reviewer['id']&.to_i }
+        end
+
+        # Returns [reviewer IDs to submit, whether Duo needs a re-request]. Adding Duo as a reviewer starts a review,
+        # but an MR that already has Duo as a reviewer needs an explicit re-request.
+        def plan_reviewers(existing_mr, reviewer_ids, duo_bot_id)
+          existing_reviewer_ids = mr_reviewer_ids(existing_mr)
+
+          [(existing_reviewer_ids + reviewer_ids + Array(duo_bot_id)).uniq, existing_reviewer_ids.include?(duo_bot_id)]
+        end
+
+        # Memoized with `defined?` so a failed lookup is not retried for every team. Nil skips the Duo request.
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped memo on the host Sync instance
+        def duo_review_bot_id(api_token)
+          return @duo_review_bot_id if defined?(@duo_review_bot_id)
+
+          @duo_review_bot_id = fetch_duo_review_bot_id(api_token)
+        end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+        def fetch_duo_review_bot_id(api_token)
+          uri = URI("#{workflow.gitlab_host}/api/v4/users")
+          uri.query = URI.encode_www_form(username: DUO_REVIEW_BOT_USERNAME)
+          response = authenticated_get(uri, api_token)
+          id = JSON.parse(response.body).first&.dig('id') if response.is_a?(Net::HTTPSuccess)
+          return id if id
+
+          warn Rainbow("WARNING: could not resolve @#{DUO_REVIEW_BOT_USERNAME}; not requesting a Duo review").yellow
+          nil
+        rescue StandardError => e
+          warn Rainbow("WARNING: could not resolve @#{DUO_REVIEW_BOT_USERNAME} (#{e.message}); " \
+            'not requesting a Duo review').yellow
+          nil
+        end
+
+        # query_graphql already warns on transport and top-level GraphQL errors and returns nil; this adds the MR iid.
+        def rerequest_duo_review(mr, duo_bot_id)
+          project_path = mr.dig('references', 'full').to_s.split('!').first
+          if project_path.to_s.empty?
+            return warn Rainbow("WARNING: could not re-request a Duo review on !#{mr['iid']}: " \
+              'MR response has no references.full').yellow
+          end
+
+          data = workflow.query_graphql(
+            DUO_REREVIEW_MUTATION,
+            projectPath: project_path, iid: mr.fetch('iid').to_s, userId: "gid://gitlab/User/#{duo_bot_id}"
+          )
+          errors = data ? Array(data.dig('mergeRequestReviewerRereview', 'errors')) : ['GraphQL request failed']
+          return if errors.empty?
+
+          warn Rainbow("WARNING: could not re-request a Duo review on !#{mr['iid']}: #{errors.join('; ')}").yellow
         end
 
         def mr_body(ctx, title, description)

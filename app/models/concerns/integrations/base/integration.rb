@@ -173,13 +173,19 @@ module Integrations
           IntegrationsHelper.integration_event_description(event)
         end
 
-        def find_or_initialize_non_project_specific_integration(name, instance: false, group_id: nil)
+        def find_or_initialize_non_project_specific_integration(
+          name, instance: false, group_id: nil, organization_id: nil)
+          raise ArgumentError, 'organization_id is required' if instance && organization_id.nil?
+
           return unless name.in?(available_integration_names(
             include_project_specific: false,
             include_group_specific: group_id.present?,
             include_instance_specific: instance))
 
-          integration_name_to_model(name).find_or_initialize_by(instance: instance, group_id: group_id)
+          attributes = { instance: instance, group_id: group_id }
+          attributes[:organization_id] = organization_id if instance
+
+          integration_name_to_model(name).find_or_initialize_by(**attributes)
         end
 
         def find_or_initialize_all_non_project_specific(scope, include_instance_specific: false)
@@ -318,10 +324,6 @@ module Integrations
           new_integration
         end
 
-        def instance_exists_for?(type)
-          exists?(instance: true, type: type)
-        end
-
         # Returns the names of all integrations, including:
         #
         # - All project, group and instance-level only integrations
@@ -332,7 +334,7 @@ module Integrations
         end
 
         def default_integration(type, scope)
-          closest_group_integration(type, scope) || instance_level_integration(type)
+          closest_group_integration(type, scope) || instance_level_integration(type, scope.organization_id)
         end
 
         def closest_group_integration(type, scope)
@@ -344,15 +346,18 @@ module Integrations
             .first
         end
 
-        def instance_level_integration(type)
-          find_by(type: type, instance: true)
+        def instance_level_integration(type, organization_id)
+          find_by(type: type, instance: true, organization_id: organization_id)
         end
 
         def default_integrations(owner, scope)
           group_ids = sorted_ancestors(owner).select(:id)
           array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
           order = Arel.sql("type_new ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")
-          from_union([scope.where(instance: true), scope.where(group_id: group_ids, inherit_from_id: nil)])
+          from_union([
+            scope.where(instance: true, organization_id: owner.organization_id),
+            scope.where(group_id: group_ids, inherit_from_id: nil)
+          ])
             .order(order)
             .group_by(&:type)
             .transform_values(&:first)
@@ -391,7 +396,8 @@ module Integrations
         def inherited_descendants_from_self_or_ancestors_from(integration)
           inherit_from_ids =
             where(type: integration.type, group: integration.group.self_and_ancestors)
-              .or(where(type: integration.type, instance: true)).select(:id)
+              .or(where(type: integration.type, instance: true, organization_id: integration.group.organization_id))
+              .select(:id)
 
           from_union([
             where(type: integration.type, inherit_from_id: inherit_from_ids, group: integration.group.descendants),
@@ -526,7 +532,7 @@ module Integrations
         validates :project_id, :group_id, absence: true, if: -> { instance_level? }
         validates :organization_id, presence: true, if: -> { instance_level? }
         validates :type, presence: true, exclusion: BASE_CLASSES
-        validates :type, uniqueness: { scope: :instance }, if: :instance_level?
+        validates :type, uniqueness: { scope: :organization_id }, if: :instance_level?
         validates :type, uniqueness: { scope: :project_id }, if: :project_level?
         validates :type, uniqueness: { scope: :group_id }, if: :group_level?
         validates :filter, json_schema: { filename: 'filter', size_limit: 8.kilobytes }
@@ -564,6 +570,11 @@ module Integrations
         scope :for_instance, -> {
           types = available_integration_types(include_project_specific: false, include_group_specific: false)
           where(instance: true, type: types)
+        }
+
+        scope :for_organization, ->(organization) {
+          types = available_integration_types(include_project_specific: false, include_group_specific: false)
+          where(instance: true, organization: organization, type: types)
         }
 
         scope :push_hooks, -> { where(push_events: true).active }
@@ -787,6 +798,10 @@ module Integrations
 
       def instance_level?
         instance?
+      end
+
+      def organization_level?
+        organization_id.present?
       end
 
       def parent

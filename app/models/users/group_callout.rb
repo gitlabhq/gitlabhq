@@ -51,7 +51,9 @@ module Users
       reached_seat_count_threshold: 40, # EE-only
       overage_seat_count_threshold: 41, # EE-only
       billing_retrial_card: 42, # EE-only
-      organizations_available_alert: 43
+      organizations_available_alert: 43,
+      duo_panel_request_painted_door: 44, # EE-only
+      explore_premium_request_painted_door: 45 # EE-only
     }
 
     validates :group, presence: true

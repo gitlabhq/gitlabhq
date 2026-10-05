@@ -837,6 +837,19 @@ tell them apart.
 Do not pass a reason for a response that merely failed to find an expected key in an
 otherwise successful payload. That is a malformed response, which is what `ERROR` means.
 
+### Filter Duo sessions by MCP origin
+
+A GitLab Duo session created through `/api/v4/mcp` has `source_type` set to `mcp`.
+You can find these sessions in the following places:
+
+| Where | How to filter |
+| --- | --- |
+| GitLab database | In the `duo_workflows_workflows` table, use `source_type = 2`, the value of `mcp`. In Rails, use `Ai::DuoWorkflows::Workflow.source_mcp`. |
+| Snowflake | Use the `agent_platform_session_created` event with `source` = `mcp`. The event `value` is the session ID. |
+| Kibana | Search `mcp.log` for `event_name` = `duo_session_created`. For example: `json.subcomponent: "mcp" and json.event_name: "duo_session_created"`. |
+
+The `correlation_id` links the `duo_session_created` line to the `tool_call` line of the tool that started the session.
+
 ### Gating a tool's availability
 
 Override `available?` to control whether a tool is offered to a given user. It defaults to `true`.

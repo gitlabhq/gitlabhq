@@ -33128,6 +33128,35 @@ CREATE SEQUENCE topics_id_seq
 
 ALTER SEQUENCE topics_id_seq OWNED BY topics.id;
 
+CREATE TABLE trial_usages (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    trial_starts_on date NOT NULL,
+    trial_ends_on date NOT NULL,
+    compute_minutes_month date NOT NULL,
+    max_seats_used integer DEFAULT 0 NOT NULL,
+    compute_minutes_used integer DEFAULT 0 NOT NULL,
+    credits_used numeric(14,4),
+    trial_type text,
+    CONSTRAINT check_d41680de84 CHECK ((char_length(trial_type) <= 255)),
+    CONSTRAINT check_trial_usages_compute_minutes_used_non_negative CHECK ((compute_minutes_used >= 0)),
+    CONSTRAINT check_trial_usages_credits_used_non_negative CHECK ((credits_used >= (0)::numeric)),
+    CONSTRAINT check_trial_usages_max_seats_used_non_negative CHECK ((max_seats_used >= 0)),
+    CONSTRAINT check_trial_usages_trial_ends_on_after_starts_on CHECK ((trial_ends_on > trial_starts_on))
+)
+PARTITION BY RANGE (trial_ends_on);
+
+CREATE SEQUENCE trial_usages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE trial_usages_id_seq OWNED BY trial_usages.id;
+
 CREATE TABLE upcoming_reconciliations (
     id bigint NOT NULL,
     namespace_id bigint,
@@ -38577,6 +38606,8 @@ ALTER TABLE ONLY todos ALTER COLUMN id SET DEFAULT nextval('todos_id_seq'::regcl
 
 ALTER TABLE ONLY topics ALTER COLUMN id SET DEFAULT nextval('topics_id_seq'::regclass);
 
+ALTER TABLE ONLY trial_usages ALTER COLUMN id SET DEFAULT nextval('trial_usages_id_seq'::regclass);
+
 ALTER TABLE ONLY upcoming_reconciliations ALTER COLUMN id SET DEFAULT nextval('upcoming_reconciliations_id_seq'::regclass);
 
 ALTER TABLE ONLY upload_states ALTER COLUMN upload_id SET DEFAULT nextval('upload_states_upload_id_seq'::regclass);
@@ -42910,6 +42941,9 @@ ALTER TABLE ONLY todos
 
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY trial_usages
+    ADD CONSTRAINT trial_usages_pkey PRIMARY KEY (id, trial_ends_on);
 
 ALTER TABLE ONLY upcoming_reconciliations
     ADD CONSTRAINT upcoming_reconciliations_pkey PRIMARY KEY (id);
@@ -51974,6 +52008,8 @@ CREATE INDEX index_topics_on_organization_id_and_non_private_projects_count ON t
 CREATE UNIQUE INDEX index_topics_on_organization_id_slug_and ON topics USING btree (organization_id, slug) WHERE (slug IS NOT NULL);
 
 CREATE INDEX index_topics_total_projects_count ON topics USING btree (total_projects_count DESC, id);
+
+CREATE UNIQUE INDEX index_trial_usages_on_namespace_id_and_trial_ends_on ON ONLY trial_usages USING btree (namespace_id, trial_ends_on);
 
 CREATE INDEX index_unarchived_occurrences_for_aggregations_component_name ON sbom_occurrences USING btree (traversal_ids, component_name, component_id, component_version_id) WHERE (archived = false);
 
@@ -62912,6 +62948,9 @@ ALTER TABLE ONLY ai_tool_rules
 
 ALTER TABLE p_ci_job_annotations
     ADD CONSTRAINT fk_rails_d4d0c0fa0f FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE trial_usages
+    ADD CONSTRAINT fk_rails_d516bed82b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_rpm_repository_files
     ADD CONSTRAINT fk_rails_d545cfaed2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

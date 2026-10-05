@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe InstanceClusterablePresenter, feature_category: :environment_management do
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
-
+  let(:cluster) { build_stubbed(:cluster, :provided_by_gcp, :instance) }
   let(:presenter) { described_class.new(instance) }
   let(:instance) { cluster.instance }
 

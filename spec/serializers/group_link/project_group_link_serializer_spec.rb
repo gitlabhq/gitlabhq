@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GroupLink::ProjectGroupLinkSerializer do
-  let_it_be(:project_group_links) { create_list(:project_group_link, 1) }
+  let(:project_group_links) { build_stubbed_list(:project_group_link, 1) }
 
   subject(:json) { described_class.new.represent(project_group_links).to_json }
 

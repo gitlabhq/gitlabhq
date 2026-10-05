@@ -613,6 +613,9 @@ namespaces:
 - timelog_categories.namespace_id
 - timelogs.namespace_id
 - todos.group_id
+# Cascade-only by design: trial usage snapshots are row-only children of the
+# namespace with nothing beyond the row to clean up.
+- trial_usages.namespace_id
 - upcoming_reconciliations.namespace_id
 - uploads.namespace_id
 - user_achievements.namespace_id

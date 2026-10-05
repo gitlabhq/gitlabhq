@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::ManifestProviderRepoEntity do
-  let(:current_user) { create(:user) }
+  let(:current_user) { build_stubbed(:user) }
   let(:request) { double(:request, current_user: current_user) }
   let(:repo_data) do
     {

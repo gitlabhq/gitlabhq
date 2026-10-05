@@ -53,6 +53,7 @@ each hour from an IP address:
 
 - Git over HTTPS requests
 - [Feature flag](../../operations/feature_flags.md) polling from Unleash clients
+- [SCIM](../group/saml_sso/scim_setup.md) provisioning requests from an identity provider
 - Requests from the [GitLab for Slack app](../project/integrations/gitlab_slack_application.md)
 - Requests that [trigger a pipeline with a pipeline trigger token](../../ci/triggers/_index.md)
 

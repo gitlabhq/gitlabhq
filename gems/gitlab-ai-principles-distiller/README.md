@@ -16,7 +16,8 @@ repository for the full operator-facing flow.
   GraphQL `commits` query, so private and secondary emails match too), assigns
   up to four of the most recent contributors as reviewers, and falls back to one available `owner_team`
   member when no author resolves. Approval still routes to `owner_team` via
-  CODEOWNERS.
+  CODEOWNERS. Each per-team MR opens as Draft and requests a GitLab Duo
+  review, since automatic review skips drafts.
 - `gitlab-ai-principles-distiller-provision-flow` — idempotent provisioner for
   the AI Catalog Flow that the orchestrator drives. Runs before `sync` so prompt
   edits in git automatically propagate to the catalog. The read-only

@@ -91,17 +91,23 @@ To set up multiple Sidekiq nodes:
 If you're using the container registry and it's running on a different
 node than Sidekiq, follow the steps below.
 
-1. Edit `/etc/gitlab/gitlab.rb`, and configure the registry URL:
+1. Enable the registry:
 
-   ```ruby
+```ruby
+   gitlab_rails['registry_enabled'] = true
+```
+
+1. Configure the registry URL:
+
+```ruby
    gitlab_rails['registry_api_url'] = "https://registry.example.com"
-   ```
+```
 
 1. Reconfigure GitLab:
 
-   ```shell
+```shell
    sudo gitlab-ctl reconfigure
-   ```
+```
 
 1. In the instance where the container registry is hosted, copy the `registry.key`
    file to the Sidekiq node.

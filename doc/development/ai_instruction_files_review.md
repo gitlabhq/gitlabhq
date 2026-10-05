@@ -188,6 +188,13 @@ The weekly distillation sync opens merge requests automatically, labeled
 must verify that the distilled changes faithfully reflect the source-doc
 updates before merging.
 
+Each per-team merge request opens as Draft, and stays Draft while GitLab Duo
+reviews it: automatic GitLab Duo review skips drafts, so the sync explicitly
+requests one. Human reviewers are still assigned at creation, but the Draft
+state is their signal to wait. A later sync run that publishes new distilled
+content to an adopted merge request re-drafts it, even if a human had already
+marked it ready, because the new content needs a fresh GitLab Duo review.
+
 Each per-team merge request's approval is routed to the SSOT-owning team
 through generated per-file CODEOWNERS rules. When reviewing one:
 
@@ -219,6 +226,12 @@ through, not as noise to dismiss.
 If a weekly sync merge request has automated review findings, use the
 [`ai-principles-review-feedback` skill](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.claude/skills/ai-principles-review-feedback/SKILL.md)
 to work through every finding before the merge request is merged.
+
+The maintainer running the skill marks the merge request ready only after a
+GitLab Duo review of the latest revision has succeeded with no outstanding
+actionable findings. Keep the merge request Draft when the review is still
+running, failed, or does not cover the latest revision. Human reviewers start
+after the merge request is ready.
 
 For example:
 

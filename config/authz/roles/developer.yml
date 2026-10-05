@@ -67,6 +67,7 @@ project:
   - keep_job_artifacts
   - play_job
   - provide_status_check_response
+  - provision_secrets_manager
   - publish_catalog_version
   - publish_status_page
   - push_code

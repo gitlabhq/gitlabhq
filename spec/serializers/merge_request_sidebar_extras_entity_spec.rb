@@ -6,8 +6,8 @@ RSpec.describe MergeRequestSidebarExtrasEntity, feature_category: :code_review_w
   let_it_be(:assignee) { build(:user) }
   let_it_be(:reviewer) { build(:user) }
   let_it_be(:user) { build(:user) }
-  let_it_be(:project) { create :project, :repository }
 
+  let(:project) { build_stubbed(:project) }
   let(:params) do
     {
       source_project: project,

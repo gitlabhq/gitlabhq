@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::ProjectEntity do
-  let_it_be(:project) { create(:project, :with_avatar) }
-
+  let(:project) { build_stubbed(:project, :with_avatar) }
   let(:entity) do
     described_class.new(project)
   end

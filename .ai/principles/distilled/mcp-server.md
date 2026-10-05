@@ -1,6 +1,6 @@
 ---
-source_checksum: 2c81f66673174f68
-distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
+source_checksum: 304498d53733683f
+distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -83,6 +83,11 @@ distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
 - Override `unlisted?` (or set `unlisted: true` in the route setting for API tools) to hide a tool from `tools/list` and the AI Catalog picker while keeping it callable via `tools/call`; use this to stage a tool before it is ready to be advertised.
 - Keep `unlisted?` static; DO NOT drive it from a per-user or credential-dependent check because the AI Catalog picker cannot evaluate one.
 
+### Categorizing Tool Errors
+
+- Pass a `reason:` symbol to `Response.error` whenever the tool knows why it failed; use `BAD_REQUEST` for missing or invalid arguments, `UNAUTHORIZED` for access denials (keep the message vague), `NOT_FOUND` for genuinely absent resources or null GraphQL data, and `ERROR` (the default) for backend failures. DO NOT pass a reason when a response merely failed to find an expected key in an otherwise successful payload.
+- Rely on `ResourceFinder#find_project!` and `#find_group!` to categorize project and group lookup failures (`ResourceNotFoundError` → `NOT_FOUND`, `ResourceForbiddenError` → `UNAUTHORIZED`); DO NOT add a separate `reason:` for those failures.
+
 ### Declaring a Toolset
 
 - Declare exactly one toolset from `Mcp::Tools::Toolsets::ALL` on every tool; add `toolset: :symbol` to the `register_version` metadata for custom, GraphQL, and aggregated tools, or to `route_setting :mcp` for API tools (enforced in CI by `spec/services/mcp/tools/toolset_coverage_spec.rb` — a missing or invalid declaration fails CI).
@@ -95,11 +100,6 @@ distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
 ### Custom Tool Implementation
 
 - For tools with distinct functionality that should remain separate from API exposure, define a standalone class inheriting from `Base::CustomService`.
-
-### Error Categorization
-
-- Pass a `reason:` symbol to `Response.error` whenever the tool knows why it failed; use `BAD_REQUEST` for missing or invalid arguments, `UNAUTHORIZED` for access failures (keep the message vague to avoid resource enumeration), `NOT_FOUND` for genuinely absent resources or null GraphQL data, and `ERROR` (the default) for backend failures. DO NOT pass a reason when a response merely failed to find an expected key in an otherwise successful payload.
-- Rely on `ResourceFinder#find_project!` and `#find_group!` to categorize project and group lookup failures (`ResourceNotFoundError` → `NOT_FOUND`, `ResourceForbiddenError` → `UNAUTHORIZED`); DO NOT add a separate `reason:` for those failures.
 
 ### Development Environment and Debugging
 

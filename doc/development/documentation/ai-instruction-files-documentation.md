@@ -105,3 +105,45 @@ open a merge request to add guidance. When you add guidance, follow these princi
   applied.
 - If you update an AI instruction file like `AGENTS.md`, conversations must be restarted
   for changes to take effect. Existing conversations do not pick up changes automatically.
+
+## Troubleshooting
+
+### Error: `Duo review instruction fences need attention`
+
+You might get an error in the `ai-duo-review-instructions` CI/CD job that lists a fence as `Stale`.
+This error occurs when the metadata in a generated group in `.gitlab/duo/mr-review-instructions.yaml`
+no longer matches its distilled principle file.
+The job fails on stale fences only in merge requests that change `.gitlab/duo/mr-review-instructions.yaml`,
+the `gitlab-ai-principles-distiller` gem, or `scripts/lint-duo-review-instructions.sh`.
+
+Retrying the failed job does not resolve the error, because the job checks the same commit.
+
+If your branch does not change the distilled principles, the fences are stale on the default branch.
+To resolve this error, reconcile the fences on the default branch:
+
+1. Wait for the daily `[Nightly] AI principles fence reconcile` pipeline schedule to run.
+   To run the schedule sooner, you must have merge permissions for the default branch.
+   If you do not have these permissions, ask a maintainer to run it.
+1. Wait for the reconcile merge request from the `docs-sync/principles-reconcile-fences` branch to merge.
+   If the pipeline does not open or update this merge request, the fences on the default branch are up to date.
+   In that case, the stale fence comes from your branch.
+1. Rebase your branch on the default branch.
+
+If the stale fence comes from changes on your branch, regenerate the fences on your branch:
+
+1. From the repository root, run:
+
+   ```shell
+   bundle exec ruby gems/gitlab-ai-principles-distiller/bin/gitlab-ai-principles-distiller-sync reconcile-fences --workspace .
+   ```
+
+1. Check that the fences are up to date:
+
+   ```shell
+   scripts/lint-duo-review-instructions.sh
+   ```
+
+1. Commit and push the updated `.gitlab/duo/mr-review-instructions.yaml` file.
+
+Do not pass `--push` to `reconcile-fences`.
+That option opens a separate reconcile merge request instead of updating your branch.

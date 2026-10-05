@@ -74,6 +74,7 @@ Gitlab::Application.config.to_prepare do
         Utilization::BillableUsage::DailyNamespaceAggregate,
         Ai::UsageEvent,
         Geo::PipelineArtifactState,
+        GitlabSubscriptions::TrialUsage,
         Vulnerabilities::Archive,
         Vulnerabilities::ArchivedRecord,
         Vulnerabilities::ArchiveExport,

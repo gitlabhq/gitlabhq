@@ -1575,10 +1575,16 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       context 'when a fence is stale' do
         let(:stale) { ['qa'] }
 
-        it 'fails the guard' do
+        it 'fails the guard and explains how to reconcile the fences' do
           expect(sync).to receive(:exit).with(1)
 
-          expect { sync.check_duo_instructions_fences }.to output(/Stale: qa/).to_stderr
+          expect { sync.check_duo_instructions_fences }.to output(
+            a_string_including(
+              'Stale: qa',
+              "'[Nightly] AI principles fence reconcile'",
+              'gitlab-ai-principles-distiller-sync reconcile-fences --workspace .'
+            )
+          ).to_stderr
         end
       end
     end

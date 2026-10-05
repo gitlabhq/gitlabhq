@@ -58,6 +58,12 @@ module Gitlab
       # Links the published docs page rather than a repo path, since it renders as a clickable URL in the CI log.
       DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
 
+      # Must match the description of the pipeline schedule that runs the `ai-principles-reconcile-fences` job.
+      FENCE_RECONCILE_SCHEDULE = '[Nightly] AI principles fence reconcile'
+      RECONCILE_FENCES_COMMAND =
+        'bundle exec ruby gems/gitlab-ai-principles-distiller/bin/gitlab-ai-principles-distiller-sync ' \
+          'reconcile-fences --workspace .'
+
       # Path of the per-run dotenv report consumed by the `ai-principles-report-failure` Slack job, so its message can
       # name the failed principles instead of a generic "the job failed".
       RUN_REPORT_PATH = 'tmp/ai-principles-run.env'
@@ -214,11 +220,15 @@ module Gitlab
 
         if result.stale.any? && !warn_stale
           warn Rainbow("  Stale: #{result.stale.join(', ')}").red
-          warn '    The distilled file changed after the fence was generated. Regenerate the'
-          warn '    fences by running the principles sync from the repo root:'
+          warn '    The generated fences are out of sync with the distilled principles.'
+          warn '    If your branch does not change the distilled principles, the fences are stale'
+          warn "    on master. Wait for the daily '#{FENCE_RECONCILE_SCHEDULE}'"
+          warn '    pipeline schedule, or ask a maintainer to run it now. After its reconcile MR'
+          warn '    merges, rebase your branch on master.'
+          warn '    If the stale fence comes from changes on your branch, run from the repo root:'
+          warn Rainbow("      #{RECONCILE_FENCES_COMMAND}").faint
           warn Rainbow('      scripts/lint-duo-review-instructions.sh   # to re-check').faint
-          warn '    then commit the updated file. If you did not mean to change these fences'
-          warn "    (for example, you only edited docs), revert your change to #{DuoInstructions::DUO_PATH}."
+          warn "    then commit and push the updated #{DuoInstructions::DUO_PATH}."
         end
 
         if result.malformed.any?

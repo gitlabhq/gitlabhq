@@ -5,6 +5,7 @@ import {
   SCOPE_PICKER_ITEM_TYPE_GROUP,
   SCOPE_PICKER_ITEM_TYPE_PROJECT,
   SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
+  SCOPE_PICKER_SELECTED_ITEM_SUFFIX,
 } from '~/explore/analytics_dashboards/components/constants';
 import ScopePickerItem from '~/explore/analytics_dashboards/components/scope_picker_item.vue';
 
@@ -237,6 +238,16 @@ describe('ScopePickerItem', () => {
 
     it('gives the full path in a tooltip, so the hierarchy is exact', () => {
       expect(findParentName().attributes('title')).toBe(defaultProps.value);
+    });
+
+    it('gives a pinned pick its real path in the tooltip, not its pinned value', () => {
+      createWrapper({
+        itemType: SCOPE_PICKER_ITEM_TYPE_PROJECT,
+        parentName: 'Tools',
+        value: `gitlab-org/tools/design${SCOPE_PICKER_SELECTED_ITEM_SUFFIX}`,
+      });
+
+      expect(findParentName().attributes('title')).toBe('gitlab-org/tools/design');
     });
   });
 

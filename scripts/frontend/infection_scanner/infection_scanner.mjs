@@ -135,7 +135,8 @@ function discoverVue3PageSeeds() {
   const dummyFromFile = path.join(JS_ROOT, '__entry__.js');
   const resolveSpecifier = (spec) => resolver.resolveModule(stripQuery(spec), dummyFromFile);
 
-  // Always Vue 2: these bundles have no `.vue3` variant.
+  // Seeded as Vue 2. A global bundle in rollout also appears as a page above,
+  // with its `.vue3` entry seeded infected, so both of its states are checked.
   const globalSeeds = ALWAYS_LOADED_ENTRY_POINTS.map((name) => {
     const file = resolveSpecifier(baseEntryPoints[name]);
     if (!file) throw new Error(`[vue3-infection-scanner] cannot resolve entry '${name}'`);

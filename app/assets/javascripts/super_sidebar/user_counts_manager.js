@@ -28,10 +28,13 @@ function updateCounts(payload = {}) {
   }
 }
 
-let broadcastChannel = null;
+// The hybrid Vue 2/Vue 3 build compiles this module once per lane, so listener
+// references are per-copy. The active registration lives in a cross-lane global
+// (like `~/lib/utils/observable`) so destroy can tear down the other copy's.
+const REGISTRATION_KEY = Symbol.for('__gitlab_user_counts_manager__');
 
 function broadcastUserCounts(data) {
-  broadcastChannel?.postMessage({ ...data });
+  globalThis[REGISTRATION_KEY]?.broadcastChannel?.postMessage({ ...data });
 }
 
 export function useCachedUserCounts() {
@@ -70,10 +73,16 @@ function updateTodos(e) {
 }
 
 export function destroyUserCountsManager() {
-  document.removeEventListener('userCounts:fetch', retrieveUserCountsFromApi);
-  document.removeEventListener('todo:toggle', updateTodos);
-  broadcastChannel?.close();
-  broadcastChannel = null;
+  // Fall back to this copy's own references so removal is attempted even
+  // when nothing registered, matching the previous behavior.
+  const registration = globalThis[REGISTRATION_KEY];
+  document.removeEventListener(
+    'userCounts:fetch',
+    registration?.retrieveUserCountsFromApi ?? retrieveUserCountsFromApi,
+  );
+  document.removeEventListener('todo:toggle', registration?.updateTodos ?? updateTodos);
+  registration?.broadcastChannel?.close();
+  delete globalThis[REGISTRATION_KEY];
 }
 
 /**
@@ -89,9 +98,12 @@ export function createUserCountsManager() {
   document.addEventListener('userCounts:fetch', retrieveUserCountsFromApi);
   document.addEventListener('todo:toggle', updateTodos);
 
+  const registration = { retrieveUserCountsFromApi, updateTodos, broadcastChannel: null };
+  globalThis[REGISTRATION_KEY] = registration;
+
   if (window.BroadcastChannel && gon?.current_user_id) {
-    broadcastChannel = new BroadcastChannel(`user_counts_${gon?.current_user_id}`);
-    broadcastChannel.onmessage = (ev) => {
+    registration.broadcastChannel = new BroadcastChannel(`user_counts_${gon?.current_user_id}`);
+    registration.broadcastChannel.onmessage = (ev) => {
       updateCounts(ev.data);
     };
     broadcastUserCounts(userCounts);

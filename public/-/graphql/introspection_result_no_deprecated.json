@@ -224951,6 +224951,18 @@
               "description": "Callout feature name for organizations_available_alert.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "DUO_PANEL_REQUEST_PAINTED_DOOR",
+              "description": "Callout feature name for duo_panel_request_painted_door.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLORE_PREMIUM_REQUEST_PAINTED_DOOR",
+              "description": "Callout feature name for explore_premium_request_painted_door.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

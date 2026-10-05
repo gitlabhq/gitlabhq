@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::HarborSerializers::ArtifactEntity, feature_category: :container_registry do
-  let_it_be(:harbor_integration) { create(:harbor_integration) }
-
   let(:artifact) do
     {
       digest: "sha256:14d4f50961544fdb669075c442509f194bdc4c0e344bde06e35dbd55af842a38",

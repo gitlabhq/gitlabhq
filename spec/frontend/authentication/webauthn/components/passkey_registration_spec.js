@@ -123,6 +123,12 @@ describe('Registration', () => {
         expect(wrapper.text()).toContain('Try again');
         expect(findCancelButton().exists()).toBe(true);
       });
+
+      it('disables the "Try again" button while the device request is pending', () => {
+        createComponent();
+
+        expect(findPrimaryButton().props('disabled')).toBe(true);
+      });
     });
 
     describe(`when 'success' state`, () => {

@@ -12,6 +12,7 @@ import {
   SCOPE_PICKER_ITEM_TYPE_GROUP,
   SCOPE_PICKER_ITEM_TYPE_LOAD_MORE,
   SCOPE_PICKER_ITEM_TYPES,
+  SCOPE_PICKER_SELECTED_ITEM_SUFFIX,
 } from './constants';
 
 export default {
@@ -102,6 +103,11 @@ export default {
     },
     icon() {
       return this.isGroup ? 'folder-o' : 'doc-text';
+    },
+    fullPath() {
+      return this.value.endsWith(SCOPE_PICKER_SELECTED_ITEM_SUFFIX)
+        ? this.value.slice(0, -SCOPE_PICKER_SELECTED_ITEM_SUFFIX.length)
+        : this.value;
     },
     parentLabel() {
       // Not escaped by sprintf: Vue escapes the interpolation, so escaping here as well would
@@ -211,7 +217,7 @@ export default {
       <span
         v-else-if="parentName"
         v-gl-tooltip
-        :title="value"
+        :title="fullPath"
         class="gl-ml-auto gl-min-w-0 gl-max-w-1/2 gl-truncate gl-pl-3 gl-text-sm gl-text-subtle"
         data-testid="scope-picker-item-parent"
       >

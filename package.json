@@ -66,7 +66,7 @@
     "@floating-ui/dom": "^1.8.0",
     "@gitlab/at.js": "1.5.9",
     "@gitlab/cluster-client": "^3.0.0",
-    "@gitlab/duo-ui": "^16.4.1",
+    "@gitlab/duo-ui": "^16.5.0",
     "@gitlab/favicon-overlay": "2.0.0",
     "@gitlab/fonts": "^1.3.1",
     "@gitlab/frontend-utils": "0.4.1",

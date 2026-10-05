@@ -187,4 +187,16 @@ Gitlab::GrapeOpenapi.configure do |config|
     'API::Scim::InstanceScim',
     'API::Scim::GroupScim'
   ]
+
+  # CONFIGURE CROSS-FIELD VALIDATION EXCEPTIONS
+  # API endpoints with groupings of cross-field validators that exceed
+  # cross_field_group_limit are not enumerated. These validators include:
+  # mutually_exclusive, exactly_one_of, all_or_none_of, at_least_one_of.
+  # This configuration generates a custom summary on the endpoint's description.
+  # Without an entry, the gem emits a generic counted sentence.
+  # eg. config.cross_field_messages = { `POST /api/v4/project` => 'At least one project attribute must be set.' }
+  config.cross_field_messages = {
+    'PUT /api/v4/application/settings' => 'At least one setting must be updated.',
+    'PUT /api/v4/projects/{id}' => 'At least one project attribute must be updated.'
+  }.freeze
 end

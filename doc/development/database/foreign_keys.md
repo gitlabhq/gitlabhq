@@ -544,6 +544,11 @@ timing out. Partial indexes like `BTREE (project_id) WHERE user_id IS NULL`
 can never be used for cascading deletes and are not OK for serving as an index
 for the foreign key.
 
+Migrations enforce the removal ordering: the `remove_concurrent_index`,
+`remove_concurrent_index_by_name`, and `remove_concurrent_partitioned_index_by_name`
+helpers raise an error when the index being removed is the last one supporting
+a foreign key.
+
 ## Naming foreign keys
 
 By default, Ruby on Rails uses the `_id` suffix for foreign keys. So we should

@@ -128,6 +128,7 @@ Prerequisites:
 - Back up [your container registry data](../backup_restore/backup_gitlab.md#container-registry)
   if possible.
 - Configure container registry [notifications](container_registry.md#configure-container-registry-notifications).
+- To display container registry usage statistics on the **Usage quotas** page, you must configure notifications.
 
 ### Enable the database for new installations
 

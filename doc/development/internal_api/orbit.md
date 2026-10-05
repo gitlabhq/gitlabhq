@@ -28,8 +28,6 @@ To authenticate using the JWT, clients:
 1. Use the signing key to generate a JSON Web Token (`JWT`) with the `gkg-indexer:` subject prefix.
 1. Pass the JWT in the `Gitlab-Orbit-Api-Request` header.
 
-All endpoints require the `knowledge_graph_infra` feature flag to be enabled.
-
 Project endpoints require both Workhorse internal API authentication and a valid knowledge graph JWT.
 The JWT identifies a service, not a GitLab user. Rails API request logs identify authenticated
 indexer traffic with `meta.client_service=orbit-indexer`, alongside the endpoint's `meta.caller_id`.

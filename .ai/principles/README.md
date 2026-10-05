@@ -210,6 +210,15 @@ Sync MRs are labeled `ai-agent` and `documentation`. They are not
 auto-merged — a human must verify that the distilled changes faithfully
 reflect the source-doc updates before merging.
 
+Each per-team MR opens as Draft, so human reviewers wait for GitLab Duo's
+review to be addressed. Automatic Duo review skips drafts, so the sync adds
+`@GitLabDuo` as a reviewer, or re-requests its review when it is already an
+adopted MR's reviewer. Human reviewers are still assigned at creation. A later
+sync run that publishes new content to an adopted MR re-drafts it. See
+[Reviewing auto-generated sync merge
+requests](https://docs.gitlab.com/development/ai_instruction_files_review/#reviewing-auto-generated-sync-merge-requests)
+for the review process, including when the MR is marked ready.
+
 Each per-team MR's approval is routed to the SSOT-owning team via the
 generated per-file rules in
 [`.gitlab/CODEOWNERS`](../../.gitlab/CODEOWNERS) (see [Manifest
