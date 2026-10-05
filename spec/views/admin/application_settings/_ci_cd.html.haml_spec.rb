@@ -126,11 +126,10 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
   end
 
   context 'with multiple plans' do
-    let_it_be(:plan) { create(:plan, name: 'ultimate') }
-    let_it_be(:ultimate_plan_limits) { create(:plan_limits, plan: plan, **limits_attributes) }
+    let(:plan) { build_stubbed(:plan, name: 'ultimate') }
 
     before do
-      assign(:plans, [default_plan_limits.plan, ultimate_plan_limits.plan])
+      assign(:plans, [default_plan_limits.plan, plan])
     end
 
     it 'displays the plan name when there is more than one plan' do

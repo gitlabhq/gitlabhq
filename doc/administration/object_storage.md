@@ -1621,10 +1621,10 @@ ENV['DEBUG'] = "1"
 
 Assume the following Geo scenario:
 
-- An environment consists of a Geo primary and secondary node.
-- You [migrated to object storage](#migrate-to-object-storage) on the primary.
-  - The secondary uses separate object storage buckets.
-  - The option "Allow this secondary site to replicate content on Object Storage" is activated.
+- An environment consists of Geo primary and secondary sites.
+- You [migrated to object storage](#migrate-to-object-storage) on the primary site.
+  - The secondary site uses separate object storage buckets.
+  - **Allow this secondary site to replicate content on Object Storage** is activated.
 
 Such migrations can cause objects to be marked as synced in the tracking database while being physically missing from object storage.
 In that case, [Reset your Geo secondary site replication](geo/replication/troubleshooting/synchronization_verification.md#resetting-geo-secondary-site-replication)

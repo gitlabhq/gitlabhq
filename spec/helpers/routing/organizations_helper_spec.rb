@@ -107,16 +107,6 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
         expect(helper_url).to eq(organization_helper_url)
       end
 
-      context 'when the extended_organization_url_scoping flag is disabled' do
-        before do
-          stub_feature_flags(extended_organization_url_scoping: false)
-        end
-
-        it 'still routes to the organization scoped path (instance dispatch is not gated)' do
-          expect(helper_path).to eq(organization_helper_path)
-        end
-      end
-
       context 'and called with organization_path: nil' do
         it 'routes to the global path despite the request URL' do
           expect(public_send(:"#{helper}_path", organization_path: nil)).to eq(expected_global_path)
@@ -176,16 +166,6 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
       context 'and called with organization_path: nil' do
         it 'routes to the global path despite the header' do
           expect(public_send(:"#{helper}_path", organization_path: nil)).to eq(expected_global_path)
-        end
-      end
-
-      context 'when the extended_organization_url_scoping flag is disabled' do
-        before do
-          stub_feature_flags(extended_organization_url_scoping: false)
-        end
-
-        it 'routes to the global path' do
-          expect(helper_path).to eq(expected_global_path)
         end
       end
 
@@ -276,26 +256,6 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
         expect(url_helpers.root_path).to eq(url_helpers.organization_root_path(organization_path: 'acme'))
       end
 
-      context 'when the extended_organization_url_scoping flag is disabled' do
-        before do
-          stub_feature_flags(extended_organization_url_scoping: false)
-        end
-
-        it 'routes to the global path' do
-          expect(url_helpers.projects_path).to eq('/projects')
-        end
-
-        it 'routes polymorphic_path to the global path' do
-          group = build_stubbed(:group)
-
-          expect(url_helpers.polymorphic_path(group)).to eq("/#{group.full_path}")
-        end
-
-        it 'ignores an explicit organization_path instead of leaking it as a query param' do
-          expect(url_helpers.projects_path(organization_path: 'some-org')).to eq('/projects')
-        end
-      end
-
       # url_for and polymorphic_url dispatch through Rails' internal proxy
       # object rather than the url_helpers module or its singleton.
       describe 'polymorphic routing (via Rails internal proxy)' do
@@ -327,6 +287,10 @@ RSpec.describe ::Routing::OrganizationsHelper, feature_category: :organization d
 
       it 'routes to the global path' do
         expect(url_helpers.projects_path).to eq('/projects')
+      end
+
+      it 'routes to the organization scoped path when organization_path is given' do
+        expect(url_helpers.projects_path(organization_path: 'some-org')).to eq('/o/some-org/projects')
       end
 
       it 'routes polymorphic_path to the global path' do

@@ -25,11 +25,11 @@ module API
             # The name param is actually required, however it is listed as optional here
             # we can send a custom error response required by MLFlow
             optional :name, type: String,
-              desc: 'Register model under this name This field is required.'
+              desc: 'Name of the registered model to create the version for. Required.'
             optional :description, type: String,
-              desc: 'Optional description for model version.'
+              desc: 'Description of the model version.'
             optional :tags, type: Array, desc: 'Additional metadata for a model version.'
-            optional :run_id, type: String, desc: 'Run ID of the candidate to be promoted to a model version'
+            optional :run_id, type: String, desc: 'Run ID of the candidate to be promoted to a model version.'
           end
           route_setting :authorization, permissions: :create_model_version, boundary_type: :project
           post 'create', urgency: :low do
@@ -56,8 +56,8 @@ module API
             tags ['mlops']
           end
           params do
-            requires :name, type: String, desc: 'Model version name'
-            requires :version, type: Integer, desc: 'Model version ID'
+            requires :name, type: String, desc: 'Name of the registered model.'
+            requires :version, type: Integer, desc: 'ID of the model version.'
           end
           route_setting :authorization, permissions: :read_model_version, boundary_type: :project
           get 'get-download-uri' do
@@ -70,8 +70,8 @@ module API
             tags ['mlops']
           end
           params do
-            requires :name, type: String, desc: 'Model version name'
-            requires :version, type: String, desc: 'Model version number'
+            requires :name, type: String, desc: 'Name of the registered model.'
+            requires :version, type: String, desc: 'Version of the model.'
           end
           route_setting :authorization, permissions: :read_model_version, boundary_type: :project
           get 'get', urgency: :low do
@@ -89,9 +89,9 @@ module API
           params do
             # These params are actually required, however it is listed as optional here
             # we can send a custom error response required by MLFlow
-            optional :name, type: String, desc: 'Model version name'
-            optional :version, type: String, desc: 'Model version number'
-            optional :description, type: String, desc: 'Model version description'
+            optional :name, type: String, desc: 'Name of the registered model.'
+            optional :version, type: String, desc: 'Version of the model.'
+            optional :description, type: String, desc: 'Description of the model version.'
           end
           route_setting :authorization, permissions: :update_model_version, boundary_type: :project
           patch 'update', urgency: :low do

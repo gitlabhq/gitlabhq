@@ -2,8 +2,8 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { parseDataAttributes } from '~/members/utils';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersTabs from './components/members_tabs.vue';

@@ -2484,7 +2484,9 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | `PATCH` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Update | Project | `PATCH` | `/projects/:id/-/work_items/:work_item_iid` |
 | Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Update | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
@@ -2507,6 +2509,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/epics/:child_epic_id` |
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
 | Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
@@ -2515,6 +2518,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
 | Update | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
 | Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
 | Update | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 

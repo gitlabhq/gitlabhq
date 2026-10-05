@@ -615,8 +615,8 @@ must disable the primary site:
    helm upgrade --install --version <current Chart version> gitlab-geo gitlab/gitlab --namespace gitlab -f gitlab.yaml
    ```
 
-1. Verify you can connect to the newly promoted primary using the URL used previously for the secondary.
-1. Success! The secondary has now been promoted to primary.
+1. Verify you can connect to the newly promoted primary cluster with the URL used previously for the secondary cluster.
+1. Success! The secondary cluster has now been promoted to primary.
 
 ### Step 4. (Optional) Promote the OpenBao HA cluster
 
@@ -640,8 +640,8 @@ support failover to a secondary site that uses a different domain. For more info
 
 #### Restore the unseal secret if needed
 
-The unseal key on the secondary cluster must be the same as the one on the primary key,
-otherwise OpenBao won't be able to unseal the vault on the secondary.
+The unseal key on the secondary cluster must be the same as the one on the primary cluster.
+Otherwise, OpenBao cannot unseal the vault on the secondary cluster.
 
 If there's a mismatch, restore the `gitlab-openbao-unseal` secret on the secondary cluster
 from your [secrets backup](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets),

@@ -120,7 +120,8 @@ class NotePolicy < BasePolicy
       next if @subject.is_a?(PersonalSnippet)
       next @subject.noteable.group if @subject.noteable.is_a?(Epic)
 
-      @subject.project
+      # Group-level work items have no project, so fall back to their namespace.
+      @subject.project || @subject.noteable.try(:namespace)
     end
   end
 end

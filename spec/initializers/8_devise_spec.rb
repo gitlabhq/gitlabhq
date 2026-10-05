@@ -19,11 +19,11 @@ RSpec.describe 'Devise initializer for GitLab', :delete, :reestablished_active_r
     end
 
     it "sets custom maximum attempts" do
-      expect(Devise.maximum_attempts).to be_eql(35)
+      expect(Devise.maximum_attempts).to be(35)
     end
 
     it "sets custom unlock_in" do
-      expect(Devise.unlock_in).to be_eql(15.minutes)
+      expect(Devise.unlock_in).to eql(15.minutes)
     end
   end
 end

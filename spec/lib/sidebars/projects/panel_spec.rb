@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Panel, feature_category: :navigation do
-  let_it_be(:project) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project) }
 
   let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project, show_get_started_menu: false) }
 
@@ -18,9 +18,7 @@ RSpec.describe Sidebars::Projects::Panel, feature_category: :navigation do
 
     context 'when integration is present and active' do
       context 'confluence only' do
-        let_it_be(:confluence) { create(:confluence_integration, active: true) }
-
-        let(:project) { confluence.project }
+        let_it_be(:confluence) { create(:confluence_integration, project: project, active: true) }
 
         it 'contains Confluence menu item' do
           expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ConfluenceMenu) }).not_to be_nil

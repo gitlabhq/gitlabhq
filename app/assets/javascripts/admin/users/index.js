@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import AdminUsersApp from './components/app.vue';
 import AdminUsersFilterApp from './components/admin_users_filter_app.vue';

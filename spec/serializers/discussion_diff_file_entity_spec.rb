@@ -21,9 +21,8 @@ RSpec.describe DiscussionDiffFileEntity do
   end
 
   context 'when there is a merge request' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-
+    let(:user) { build_stubbed(:user) }
+    let(:merge_request) { build_stubbed(:merge_request, source_project: project, target_project: project) }
     let(:request) { EntityRequest.new(project: project, current_user: user) }
     let(:entity) { described_class.new(diff_file, request: request, merge_request: merge_request) }
 

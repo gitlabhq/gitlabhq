@@ -274,3 +274,152 @@ RSpec.shared_examples 'a work item single discussion endpoint' do
     end
   end
 end
+
+# The including context must define the same interface as 'a work item single discussion endpoint', plus
+#   - `discussion_note`   a resolvable DiscussionNote authored by `user` on `work_item`
+#   - `api_request_path`  pointing at `discussion_note.discussion_id`
+RSpec.shared_examples 'a work item endpoint resolving a discussion' do
+  it 'resolves the discussion when resolved is true', :aggregate_failures do
+    put api(api_request_path, user), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => discussion_note.discussion_id, 'resolvable' => true, 'resolved' => true)
+    expect(json_response['notes'].pluck('id')).to contain_exactly(discussion_note.id)
+    expect(json_response['notes'][0]['resolved']).to be(true)
+    expect(Time.parse(json_response['notes'][0]['resolved_at'])).to be_like_time(discussion_note.reload.resolved_at)
+  end
+
+  it 'unresolves the discussion when resolved is false', :aggregate_failures do
+    discussion_note.resolve!(user)
+
+    put api(api_request_path, user), params: { resolved: false }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => discussion_note.discussion_id, 'resolvable' => true, 'resolved' => false)
+    expect(json_response['notes'][0]['resolved']).to be(false)
+    expect(json_response['notes'][0]['resolved_at']).to be_nil
+    expect(discussion_note.reload).not_to be_resolved
+  end
+
+  it 'resolves every note in a multi-note discussion thread', :aggregate_failures do
+    reply = create(:discussion_note_on_work_item, noteable: work_item, author: user, in_reply_to: discussion_note,
+      **note_params)
+
+    put api(api_request_path, user), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response['notes'].pluck('id')).to contain_exactly(discussion_note.id, reply.id)
+    expect(json_response['notes'].pluck('resolved')).to all(be(true))
+  end
+
+  it 'resolves the discussion for a member who did not author the note', :aggregate_failures do
+    developer = create(:user, developer_of: container)
+
+    put api(api_request_path, developer), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(discussion_note.reload).to be_resolved
+  end
+
+  it 'does not issue N+1 queries when the discussion has more replies', :aggregate_failures do
+    # Users::ActivityService's lease-gated write to last_activity_on would otherwise land on a random request.
+    User.find(user.id).update_column(:last_activity_on, Date.current)
+
+    add_reply = -> do
+      create(:discussion_note_on_work_item, noteable: work_item, in_reply_to: discussion_note,
+        author: create(:user, developer_of: container), **note_params)
+    end
+
+    reset_resolution = -> { work_item.notes.update_all(resolved_at: nil, resolved_by_id: nil) }
+
+    add_reply.call
+    put api(api_request_path, user), params: { resolved: true }
+    reset_resolution.call
+
+    baseline = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      put api(api_request_path, user), params: { resolved: true }
+    end
+
+    reset_resolution.call
+
+    3.times { add_reply.call }
+
+    expect { put api(api_request_path, user), params: { resolved: true } }.to issue_same_number_of_queries_as(baseline)
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response['notes'].size).to eq(5)
+  end
+
+  context 'when the work item discussion is locked' do
+    before do
+      work_item.class.where(id: work_item.id).update_all(discussion_locked: true)
+    end
+
+    it 'resolves the discussion for a member', :aggregate_failures do
+      developer = create(:user, developer_of: container)
+
+      put api(api_request_path, developer), params: { resolved: true }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(discussion_note.reload).to be_resolved
+    end
+  end
+
+  it 'returns 400 when the resolved parameter is missing' do
+    put api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+  end
+
+  it 'returns 403 when the user cannot resolve the discussion' do
+    guest = create(:user, guest_of: container)
+
+    put api(api_request_path, guest), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  it 'returns 403 when the discussion is not resolvable' do
+    put api(api_request_path.sub(discussion_note.discussion_id, comment.discussion_id), user),
+      params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  it 'returns 404 when the work item does not exist' do
+    put api(api_request_path.sub("/#{work_item.iid}/", "/#{non_existing_record_iid}/"), user),
+      params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the discussion does not exist' do
+    put api(api_request_path.sub(discussion_note.discussion_id, 'nonexistent'), user), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the discussion belongs to a different work item' do
+    other_work_item = create(:work_item, work_item.work_item_type.base_type, author: user, **note_params)
+    other_note = create(:discussion_note_on_work_item, noteable: other_work_item, author: user, **note_params)
+
+    put api(api_request_path.sub(discussion_note.discussion_id, other_note.discussion_id), user),
+      params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns not_found when the feature flag is disabled' do
+    stub_feature_flags(work_item_rest_api: false)
+
+    put api(api_request_path, user), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns unauthorized when no token is provided' do
+    put api(api_request_path), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+end

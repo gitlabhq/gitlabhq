@@ -29301,6 +29301,18 @@
               "deprecationReason": null
             },
             {
+              "name": "TOOL_SUCCEEDED_DUO_CHAT",
+              "description": "Duo Chat tool call succeeded.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TOOL_FAILED_DUO_CHAT",
+              "description": "Duo Chat tool call failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "TROUBLESHOOT_JOB",
               "description": "Troubleshoot job feature was used.",
               "isDeprecated": false,
@@ -30053,6 +30065,30 @@
             {
               "name": "REQUEST_DUO_CHAT_RESPONSE_ASC",
               "description": "Request Duo Chat Response event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TOOL_SUCCEEDED_DUO_CHAT_DESC",
+              "description": "Tool Succeeded Duo Chat event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TOOL_SUCCEEDED_DUO_CHAT_ASC",
+              "description": "Tool Succeeded Duo Chat event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TOOL_FAILED_DUO_CHAT_DESC",
+              "description": "Tool Failed Duo Chat event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TOOL_FAILED_DUO_CHAT_ASC",
+              "description": "Tool Failed Duo Chat event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -477449,6 +477485,30 @@
               "deprecationReason": null
             },
             {
+              "name": "toolFailedDuoChatEventCount",
+              "description": "Total count of `tool_failed_duo_chat` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toolSucceededDuoChatEventCount",
+              "description": "Total count of `tool_succeeded_duo_chat` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "totalEventCount",
               "description": "Total count of all Chat events for the user.",
               "args": [],
@@ -478104,6 +478164,30 @@
             {
               "name": "requestDuoChatResponseEventCount",
               "description": "Total count of `request_duo_chat_response` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toolFailedDuoChatEventCount",
+              "description": "Total count of `tool_failed_duo_chat` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toolSucceededDuoChatEventCount",
+              "description": "Total count of `tool_succeeded_duo_chat` event.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

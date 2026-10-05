@@ -6,8 +6,8 @@ RSpec.describe Emails::AutoDevops do
   include EmailSpec::Matchers
 
   describe '#auto_devops_disabled_email' do
-    let_it_be(:owner) { create(:user) }
-    let_it_be(:project) { create(:project, :auto_devops) }
+    let(:owner) { build_stubbed(:user) }
+    let(:project) { build_stubbed(:project, namespace: build_stubbed(:namespace, owner: owner)) }
     let(:pipeline) { build_stubbed(:ci_pipeline, :failed, project: project) }
 
     subject { Notify.autodevops_disabled_email(pipeline, owner.email) }

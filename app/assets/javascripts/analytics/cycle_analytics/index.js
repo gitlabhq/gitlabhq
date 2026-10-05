@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import {
   extractFilterQueryParameters,
@@ -7,7 +8,6 @@ import {
 } from '~/analytics/shared/utils';
 import Translate from '~/vue_shared/translate';
 import { defaultClient } from '~/analytics/shared/graphql/client';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import CycleAnalytics from './components/base.vue';
 import createStore from './store';
 import { buildCycleAnalyticsInitialData } from './utils';

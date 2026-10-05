@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseRailsFormFields } from '~/lib/utils/forms';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import GroupNameAndPath from './components/group_name_and_path.vue';
 
 Vue.use(VueApollo);

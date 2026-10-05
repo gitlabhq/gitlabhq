@@ -89,6 +89,34 @@ module API
             present note.discussion, with: ::API::Entities::Discussion, current_user: current_user
           end
         end
+
+        params :work_item_resolve_discussion_params do
+          use :work_item_single_discussion_params
+          requires :resolved, type: Boolean, desc: 'Mark discussion resolved/unresolved'
+        end
+
+        def resolve_discussion_for(parent_work_item)
+          authorize_work_item_feature!(parent_work_item)
+
+          discussion = parent_work_item.find_discussion(params[:discussion_id])
+          not_found!('Discussion') unless discussion
+          forbidden! unless discussion.can_resolve?(current_user)
+
+          if params[:resolved]
+            # Group-level work items have no project; the service only uses it for merge request side effects.
+            ::Discussions::ResolveService
+              .new(parent_work_item.project, current_user, one_or_more_discussions: discussion)
+              .execute
+          else
+            ::Discussions::UnresolveService.new(discussion, current_user).execute
+          end
+
+          # The services reload the discussion's notes without preloads, so rebuild it for rendering.
+          notes = readable_discussion_notes(parent_work_item, params[:discussion_id])
+          discussion = Discussion.build(notes, parent_work_item)
+
+          present discussion, with: ::API::Entities::Discussion, current_user: current_user
+        end
       end
 
       resource :namespaces do
@@ -163,6 +191,28 @@ module API
           post ':work_item_iid/discussions' do
             create_discussion_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
           end
+
+          desc 'Resolve or unresolve a discussion on a work item in a namespace.' do
+            detail 'Resolves or unresolves all resolvable notes in a discussion on a work item in a namespace. ' \
+              'Project and group namespaces are supported.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_resolve_discussion_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_issue_discussion,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+
+          put ':work_item_iid/discussions/:discussion_id' do
+            resolve_discussion_for(work_item_for_namespace!(params[:id], params[:work_item_iid]))
+          end
         end
       end
 
@@ -235,6 +285,27 @@ module API
           post ':work_item_iid/discussions' do
             create_discussion_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
           end
+
+          desc 'Resolve or unresolve a discussion on a work item in a project.' do
+            detail 'Resolves or unresolves all resolvable notes in a discussion on a work item in a project.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_resolve_discussion_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_issue_discussion,
+            boundary_type: :project
+
+          put ':work_item_iid/discussions/:discussion_id' do
+            resolve_discussion_for(work_item_for!(find_project!(params[:id]), params[:work_item_iid]))
+          end
         end
       end
 
@@ -306,6 +377,27 @@ module API
 
           post ':work_item_iid/discussions' do
             create_discussion_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
+          end
+
+          desc 'Resolve or unresolve a discussion on a work item in a group.' do
+            detail 'Resolves or unresolves all resolvable notes in a discussion on a work item in a group.'
+            hidden true
+            success ::API::Entities::Discussion
+            failure FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+
+          params do
+            use :work_item_resolve_discussion_params
+          end
+
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_issue_discussion,
+            boundary_type: :group
+
+          put ':work_item_iid/discussions/:discussion_id' do
+            resolve_discussion_for(work_item_for!(find_group!(params[:id]), params[:work_item_iid]))
           end
         end
       end

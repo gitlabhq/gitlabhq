@@ -44,20 +44,16 @@ module Routing
         route_pairs = find_route_pairs
         override_module = build_override_module(route_pairs)
         url_helpers.prepend(override_module)
-        # The dispatch paths below are new and roll out gradually behind the
-        # extended_organization_url_scoping derisk flag, checked per call (the
-        # prepends themselves can't be flag-gated: they happen once at boot).
-        gated_module = build_override_module(route_pairs, gated: true)
         # Module-level calls (Gitlab::Routing.url_helpers.foo_path) dispatch
         # through the singleton, where Rails `extend`s the raw helpers, so the
         # prepend above doesn't reach them - cover that path too.
-        url_helpers.singleton_class.prepend(gated_module)
+        url_helpers.singleton_class.prepend(override_module)
         # url_for and polymorphic_url delegate to Rails' internal proxy, which
         # includes only these inner modules (undocumented Rails internals; the
         # polymorphic examples in organizations_helper_spec.rb are the canary).
         named_routes = routes.named_routes
-        named_routes.url_helpers_module.prepend(gated_module)
-        named_routes.path_helpers_module.prepend(gated_module)
+        named_routes.url_helpers_module.prepend(override_module)
+        named_routes.path_helpers_module.prepend(override_module)
 
         self.already_installed = true
       end
@@ -124,25 +120,12 @@ module Routing
       # for Organizations that never use scoped paths (e.g. the default
       # Organization) - it must not force scoping for those.
       def self.header_organization(resolver)
-        return unless extended_scoping_enabled?
-
         organization = resolver.from_headers
         organization if organization&.scoped_paths?
       end
 
-      # Feature.current_request keeps the flag state stable for a whole
-      # request, so one response never mixes scoped and unscoped URLs.
-      def self.extended_scoping_enabled?
-        Feature.enabled?(:extended_organization_url_scoping, Feature.current_request)
-      end
-
-      # Build a module that overrides URL helpers with organization-aware
-      # versions. With gated: true the organization branch additionally
-      # requires the extended_organization_url_scoping flag - used for the
-      # dispatch paths this flag derisks (module singleton, Rails' proxy).
-      # The flag is only consulted after an organization context was found,
-      # so boot-time helper calls never trigger a Feature lookup.
-      def self.build_override_module(route_pairs, gated: false)
+      # Build a module that overrides URL helpers with organization-aware versions
+      def self.build_override_module(route_pairs)
         Module.new do
           route_pairs.each do |global_route, org_route|
             [PATH_SUFFIX, URL_SUFFIX].each do |suffix|
@@ -157,20 +140,13 @@ module Routing
                 scoped_path = Routing::OrganizationsHelper::MappedHelpers.scoped_path_for(kwargs)
 
                 if scoped_path.present?
-                  if !gated || Routing::OrganizationsHelper::MappedHelpers.extended_scoping_enabled?
-                    kwargs[:organization_path] = scoped_path
-                    # Call the Organization helper method
-                    return method(org_method_name).call(*args, **kwargs)
-                  end
-
-                  # Gate closed: drop an explicit organization_path, which the
-                  # global route would render as a stray query param. When the
-                  # path came from Current context only, `except` is a no-op.
-                  kwargs = kwargs.except(:organization_path)
+                  kwargs[:organization_path] = scoped_path
+                  # Call the Organization helper method
+                  method(org_method_name).call(*args, **kwargs)
+                else
+                  # Call the original helper method
+                  super(*args, **kwargs)
                 end
-
-                # Call the original helper method
-                super(*args, **kwargs)
               end
             end
           end

@@ -6,18 +6,19 @@ module API
       extend Grape::API::Helpers
 
       params :event_params do
-        requires :event, type: String, desc: 'The event name that should be tracked',
+        requires :event, type: String, desc: 'Name of the event to track.',
           documentation: { example: 'i_quickactions_page' }
-        optional :namespace_id, type: Integer, desc: 'Namespace ID',
+        optional :namespace_id, type: Integer, desc: 'ID of the namespace associated with the event.',
           documentation: { example: 1234 }
-        optional :project_id, type: Integer, desc: 'Project ID',
+        optional :project_id, type: Integer, desc: 'ID of the project.',
           documentation: { example: 1234 }
-        optional :project_path, type: String, desc: 'Project path (used to resolve project_id if not provided)',
+        optional :project_path, type: String, desc: 'Path of the project. Used to find `project_id` when it is not ' \
+                                                'provided.',
           documentation: { example: 'namespace/project' }
         mutually_exclusive :project_id, :project_path
-        optional :additional_properties, type: Hash, desc: 'Additional properties to be tracked',
+        optional :additional_properties, type: Hash, desc: 'Additional properties to be tracked.',
           documentation: { example: { label: 'login_button', value: 1 } }
-        optional :send_to_snowplow, type: Boolean, desc: 'Send the tracked event to Snowplow',
+        optional :send_to_snowplow, type: Boolean, desc: 'If `true`, sends the tracked event to Snowplow.',
           documentation: { example: true, default: false }
       end
 

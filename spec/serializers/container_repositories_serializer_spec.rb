@@ -62,8 +62,8 @@ RSpec.describe ContainerRepositoriesSerializer do
     end
 
     context 'when multiple ContainerRepository objects are serialized' do
-      before do
-        create_list(:container_repository, 5, project: project)
+      before_all do
+        create_list(:container_repository, 3, project: project)
       end
 
       it 'serializes appropriate number of objects' do
@@ -72,8 +72,8 @@ RSpec.describe ContainerRepositoriesSerializer do
 
       it 'appends relevant headers' do
         expect(response).to include_pagination_headers
-        expect(response).to receive(:[]=).with('X-Total', '5')
-        expect(response).to receive(:[]=).with('X-Total-Pages', '3')
+        expect(response).to receive(:[]=).with('X-Total', '3')
+        expect(response).to receive(:[]=).with('X-Total-Pages', '2')
         expect(response).to receive(:[]=).with('X-Per-Page', '2')
 
         subject

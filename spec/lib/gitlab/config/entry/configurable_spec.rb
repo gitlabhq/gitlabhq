@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Config::Entry::Configurable do
         first_factory = entry.nodes[:object]
         second_factory = entry.nodes[:object]
 
-        expect(first_factory).not_to be_equal(second_factory)
+        expect(first_factory).not_to equal(second_factory)
       end
     end
 

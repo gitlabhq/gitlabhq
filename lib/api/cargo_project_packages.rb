@@ -31,7 +31,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -129,7 +129,7 @@ module API
           tags %w[packages_cargo]
         end
         params do
-          requires :package_name, type: String, desc: 'The cargo package name'
+          requires :package_name, type: String, desc: 'Name of the Cargo package.'
         end
         route_setting :authentication, authenticate_non_public: true
         route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
@@ -152,7 +152,7 @@ module API
           tags %w[packages_cargo]
         end
         params do
-          requires :package_name, type: String, desc: 'The cargo package name'
+          requires :package_name, type: String, desc: 'Name of the Cargo package.'
         end
         route_setting :authentication, authenticate_non_public: true
         route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
@@ -175,8 +175,8 @@ module API
           tags %w[packages_cargo]
         end
         params do
-          requires :first_char, type: String, desc: 'First character of the cargo package name'
-          requires :package_name, type: String, desc: 'The cargo package name'
+          requires :first_char, type: String, desc: 'First character of the Cargo package name.'
+          requires :package_name, type: String, desc: 'Name of the Cargo package.'
         end
         route_setting :authentication, authenticate_non_public: true
         route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
@@ -199,9 +199,9 @@ module API
           tags %w[packages_cargo]
         end
         params do
-          requires :prefix_1, type: String, desc: 'First two characters of the cargo package name'
-          requires :prefix_2, type: String, desc: 'Next two characters of the cargo package name'
-          requires :package_name, type: String, desc: 'The cargo package name'
+          requires :prefix_1, type: String, desc: 'First two characters of the Cargo package name.'
+          requires :prefix_2, type: String, desc: 'Next two characters of the Cargo package name.'
+          requires :package_name, type: String, desc: 'Name of the Cargo package.'
         end
         route_setting :authentication, authenticate_non_public: true
         route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
@@ -222,8 +222,8 @@ module API
           tags %w[packages_cargo]
         end
         params do
-          requires :package_name, type: String, desc: 'The cargo package name'
-          requires :package_version, type: String, desc: 'The cargo package version'
+          requires :package_name, type: String, desc: 'Name of the Cargo package.'
+          requires :package_version, type: String, desc: 'Version of the Cargo package.'
         end
         route_setting :authentication, authenticate_non_public: true
         route_setting :authorization, permissions: :download_cargo_package, boundary_type: :project,

@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import AnalyticsDashboardsBreadcrumbs from '~/analytics/shared/components/analytics_dashboards_breadcrumbs.vue';
 import createDefaultClient from '~/lib/graphql';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { observable } from '~/lib/utils/observable';
 import App from './pages/app.vue';
 import createRouter from './router';

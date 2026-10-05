@@ -57,7 +57,7 @@ module API
     end
 
     params do
-      requires :id, types: [Integer, String], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [Integer, String], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/rubygems' do
@@ -75,7 +75,7 @@ module API
           tags %w[packages_rubygem]
         end
         params do
-          requires :file_name, type: String, values: SPEC_INDEX_FILE_NAMES, desc: 'Spec file name', documentation: { type: 'file' }
+          requires :file_name, type: String, values: SPEC_INDEX_FILE_NAMES, desc: 'Name of the spec file.', documentation: { type: 'file' }
         end
         route_setting :authorization, permissions: :read_ruby_gem, boundary_type: :project
         get ":file_name", requirements: FILE_NAME_REQUIREMENTS do
@@ -104,7 +104,7 @@ module API
           tags %w[packages_rubygem]
         end
         params do
-          requires :file_name, type: String, desc: 'Gemspec file name', documentation: { type: 'file' }
+          requires :file_name, type: String, desc: 'Name of the gemspec file, in the format `<gem_name>-<version>.gemspec.rz`.', documentation: { type: 'file' }
         end
         route_setting :authorization, permissions: :read_ruby_gem, boundary_type: :project
         get "quick/Marshal.#{MARSHAL_VERSION}/:file_name", requirements: GEMSPEC_FILE_NAME_REQUIREMENTS do
@@ -132,7 +132,7 @@ module API
           tags %w[packages_rubygem]
         end
         params do
-          requires :file_name, type: String, desc: 'Package file name', documentation: { type: 'file' }
+          requires :file_name, type: String, desc: 'Name of the `.gem` file.', documentation: { type: 'file' }
         end
         route_setting :authorization, permissions: :download_ruby_gem, boundary_type: :project
         get "gems/:file_name", requirements: FILE_NAME_REQUIREMENTS do
@@ -231,7 +231,7 @@ module API
             tags %w[packages_rubygem]
           end
           params do
-            optional :gems, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma delimited gem names'
+            optional :gems, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of gems to fetch dependencies for.'
           end
           route_setting :authorization, permissions: :read_ruby_gem, boundary_type: :project
           get 'dependencies' do

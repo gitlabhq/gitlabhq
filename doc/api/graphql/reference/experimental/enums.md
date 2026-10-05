@@ -583,6 +583,8 @@ Type of AI usage event.
 | `START_MCP_TOOL_CALL` | MCP tool call was started. |
 | `SUMMARIZE_NEW_MERGE_REQUEST` | Merge request summary was generated. |
 | `SUMMARIZE_REVIEW` | A merge request review summary was requested with GitLab Duo. |
+| `TOOL_FAILED_DUO_CHAT` | Duo Chat tool call failed. |
+| `TOOL_SUCCEEDED_DUO_CHAT` | Duo Chat tool call succeeded. |
 | `TRIGGER_SLACK_DUO` | Duo agent was triggered from a Slack mention. |
 | `TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 | `VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE` | Duo Agent Platform subscription expired empty state was viewed. |
@@ -710,6 +712,10 @@ Values for sorting AI user metrics.
 | `SUMMARIZE_REVIEW_DESC` | Summarize Review event count in descending order. |
 | `SUMMARIZE_REVIEW_TOTAL_COUNT_ASC` | Summarize Review total event count in ascending order. |
 | `SUMMARIZE_REVIEW_TOTAL_COUNT_DESC` | Summarize Review total event count in descending order. |
+| `TOOL_FAILED_DUO_CHAT_ASC` | Tool Failed Duo Chat event count in ascending order. |
+| `TOOL_FAILED_DUO_CHAT_DESC` | Tool Failed Duo Chat event count in descending order. |
+| `TOOL_SUCCEEDED_DUO_CHAT_ASC` | Tool Succeeded Duo Chat event count in ascending order. |
+| `TOOL_SUCCEEDED_DUO_CHAT_DESC` | Tool Succeeded Duo Chat event count in descending order. |
 | `TOTAL_EVENTS_COUNT_ASC` | Total count of all AI events in ascending order. |
 | `TOTAL_EVENTS_COUNT_DESC` | Total count of all AI events in descending order. |
 | `TRIGGER_SLACK_DUO_ASC` | Trigger Slack Duo event count in ascending order. |

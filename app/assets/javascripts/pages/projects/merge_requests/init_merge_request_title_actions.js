@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { pinia } from '~/pinia/instance';
 import { initReportAbuse } from '~/projects/report_abuse';

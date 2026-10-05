@@ -7,11 +7,10 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache, f
     include_context 'project issuable templates context'
 
     let_it_be(:inherited_from) { nil }
-    let_it_be_with_reload(:user) { create(:user) }
     let_it_be_with_reload(:parent_group) { create(:group) }
     let_it_be_with_reload(:project) { create(:project, :custom_repo, files: issuable_template_files) }
-    let_it_be_with_reload(:group_member) { create(:group_member, :developer, group: parent_group, user: user) }
-    let_it_be(:project_member) { create(:project_member, :developer, user: user, project: project) }
+
+    let(:user) { build_stubbed(:user) }
 
     it 'returns empty hash when template type does not exist' do
       expect(helper.issuable_templates(build(:project), 'non-existent-template-type')).to eq({})

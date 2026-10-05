@@ -1,6 +1,7 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportProjectMembersModal from '~/invite_members/components/import_project_members_modal.vue';
-import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 export default function initImportProjectMembersModal() {
   const el = document.querySelector('.js-import-project-members-modal');

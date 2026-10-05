@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_admin_group_project_pages
+description: Gate Vue 3 (@vue/compat) rollout for admin group, project, and topic page entrypoints
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608129
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258425
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608129
+milestone: '19.5'
+group: group::organizations
+type: beta
+default_enabled: false

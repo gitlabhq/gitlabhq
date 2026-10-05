@@ -73,12 +73,13 @@ module API
 
             # https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
             params do
-              optional :q, type: String, desc: 'The search term', documentation: { example: 'MyNuGet' }
-              optional :skip, type: Integer, desc: 'The number of results to skip', default: 0,
+              optional :q, type: String, desc: 'Search term.', documentation: { example: 'MyNuGet' }
+              optional :skip, type: Integer, desc: 'Number of results to skip.', default: 0,
                 regexp: NON_NEGATIVE_INTEGER_REGEX, documentation: { example: 1 }
-              optional :take, type: Integer, desc: 'The number of results to return',
+              optional :take, type: Integer, desc: 'Number of results to return.',
                 default: Kaminari.config.default_per_page, regexp: POSITIVE_INTEGER_REGEX, documentation: { example: 1 }
-              optional :prerelease, type: ::Grape::API::Boolean, desc: 'Include prerelease versions', default: true
+              optional :prerelease, type: ::Grape::API::Boolean, desc: 'If `true`, includes prerelease versions in ' \
+                                                                   'the results.', default: true
             end
             namespace '/query' do
               after_validation do

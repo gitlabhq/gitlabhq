@@ -1051,6 +1051,27 @@ For each node running a Patroni instance on the secondary site:
 
    - If you are configuring a Patroni standby cluster on a site that previously had a working Patroni cluster:
 
+     1. On the primary site, check that the replication slot named in
+        `patroni['standby_cluster']['primary_slot_name']` exists:
+
+        - For a primary site with a Patroni cluster, run the following command on any Patroni node
+          and check that the slot is listed under `slots`:
+
+          ```shell
+          sudo /opt/gitlab/embedded/bin/patronictl -c /var/opt/gitlab/patroni/patroni.yaml show-config
+          ```
+
+        - For a primary site with a single PostgreSQL instance, run the following command on that instance
+          and check that the slot is listed in the output:
+
+          ```shell
+          sudo gitlab-psql -c "SELECT slot_name FROM pg_replication_slots;"
+          ```
+
+        The standby cluster replicates through this slot but does not create it on the primary site.
+        If the slot is missing, [configure it](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site),
+        then run the check again to confirm the slot is listed before you continue.
+
      1. Stop Patroni on all nodes that are managed by Patroni, including cascade replicas:
 
         ```shell

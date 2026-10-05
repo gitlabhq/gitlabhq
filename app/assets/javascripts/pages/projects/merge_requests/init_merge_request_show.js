@@ -1,4 +1,5 @@
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { s__ } from '~/locale';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
@@ -7,7 +8,6 @@ import { initPipelineCountListener } from '~/commit/pipelines/utils';
 import { initIssuableSidebar } from '~/issuable';
 import MergeRequestHeader from '~/merge_requests/components/merge_request_header.vue';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';

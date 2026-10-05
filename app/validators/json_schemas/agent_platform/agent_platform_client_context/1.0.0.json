@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Instructions and context written by the client surface that started the session (for example Slack).",
+  "type": "object",
+  "required": [
+    "content"
+  ],
+  "properties": {
+    "content": {
+      "type": "string",
+      "description": "Client-written block, for example context on the environment the client operates in (e.g. Slack specific instructions)."
+    }
+  },
+  "additionalProperties": false
+}

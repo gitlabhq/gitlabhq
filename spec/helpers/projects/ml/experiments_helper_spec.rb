@@ -128,7 +128,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   describe '#experiment_as_data when experiment does not have a model' do
     subject { Gitlab::Json.parse(helper.experiment_as_data(project, experiment)) }
 
-    let(:experiment) { create(:ml_experiments, user: project.creator, project: project) }
+    let(:experiment) { build_stubbed(:ml_experiments, user: project.creator, project: project) }
 
     it do
       is_expected.to include({

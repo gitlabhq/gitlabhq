@@ -22,19 +22,26 @@ ignore_in_report: true
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/21731) from closed beta to public beta in GitLab 19.0.
 - [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10723) to limited availability on GitLab.com in GitLab 19.3.
 - Default read and write permissions for the Maintainer role in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623437) in GitLab 19.4.
+- Default read metadata and create permissions for the Developer role in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/623438) in GitLab 19.5.
 - Secrets permissions for groups [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/623457) in GitLab 19.4. Group permissions no longer grant access, and the `GROUP` principal type, the `groupPath` argument of `PrincipalInput`, and the `group` field of `Principal` were removed from the GraphQL API. Grant permissions to users or roles instead.
 
 {{< /history >}}
 
-Use GitLab Secrets Manager to securely store and manage secrets and credentials for your projects and groups.
+Use GitLab Secrets Manager to encrypt, store, and retrieve credentials securely
+for your projects and groups, powered by [OpenBao](https://openbao.org/).
+Instead of hardcoding credentials or relying on CI/CD variables,
+you can retrieve secrets with [full auditability](../../../user/compliance/audit_event_types.md#secrets-management) using the GitLab access model and audit system.
 
-Secrets represent sensitive information your CI/CD jobs need to function. Secrets could be access tokens,
-database credentials, private keys, or similar. Unlike CI/CD variables, which are always available to jobs by default,
+Secrets represent sensitive information your CI/CD jobs need to function,
+such as access tokens, database credentials, or private keys.
+Unlike CI/CD variables, which are always available to jobs by default,
 secrets must be explicitly requested by a job.
+
+You can [use secrets in CI/CD jobs](#use-secrets-in-job-scripts) or [outside of CI/CD for runtime workloads](non_cicd_access.md), such as Kubernetes, Terraform, or through the API.
 
 GitLab Secrets Manager [consumes GitLab Credits](credit_usage.md).
 
-Share your feedback during the public beta in [feedback issue 598100](https://gitlab.com/gitlab-org/gitlab/-/work_items/598100).
+Share your feedback in [issue 598100](https://gitlab.com/gitlab-org/gitlab/-/work_items/598100).
 
 ## Enable GitLab Secrets Manager
 
@@ -233,6 +240,15 @@ job:
 In this example, the secret is made available to the job as the `DEPLOY_SECRET` variable,
 which you can use like any other environment variable.
 
+## Secret rotation notifications
+
+Users with the Owner role in the project receive an email notification to rotate a secret on the day specified in a secret's configuration.
+
+## Access secrets from non-CI/CD workloads
+
+Workloads that do not run as GitLab CI/CD jobs can read secrets through the Secrets Manager API.
+For more information, see [Access secrets from non-CI/CD workloads](non_cicd_access.md).
+
 ## Manage secrets permissions
 
 ### For a project
@@ -253,7 +269,13 @@ To update the secrets permissions for a project:
    - You can set permission scopes to read metadata, read value, write (create & update), and delete secrets.
 
 For secrets managers enabled in GitLab 19.4 and later, users with the Maintainer role for the project have the
-read and write (create & update) permissions by default. Users with the Owner role can remove or change these default permissions.
+read and write (create & update) permissions by default.
+
+Users with the Developer role for the project have the read metadata and create permissions by default.
+The create permission does not include update, so these users can add secrets
+but cannot change secrets that already exist.
+
+Users with the Owner role can remove or change these default permissions.
 
 ### For a group
 
@@ -295,15 +317,6 @@ When you [transfer a project](../../../user/project/working_with_projects.md#tra
 - The secrets defined for the project or group are not transferred to the project or group in its new namespace.
 - The secrets manager for the project or group is disabled and removed from the secrets storage engine.
 - All the secrets are permanently deleted.
-
-## Secret rotation notifications
-
-Users with the Owner role in the project receive an email notification to rotate a secret on the day specified in a secret's configuration.
-
-## Access secrets from non-CI/CD workloads
-
-Workloads that do not run as GitLab CI/CD jobs can read secrets through the Secrets Manager API.
-For more information, see [Access secrets from non-CI/CD workloads](non_cicd_access.md).
 
 ## Related topics
 

@@ -1,5 +1,6 @@
 import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import initMrNotes from 'ee_else_ce/mr_notes';
 import initReportsTabCount from '~/merge_requests/reports/tab_count';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
@@ -7,7 +8,6 @@ import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_DIFF_GENERATED, EVT_MR_PREPARED } from '~/diffs/constants';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import ReviewDrawer from '~/batch_comments/components/review_drawer.vue';
 import { observable } from '~/lib/utils/observable';

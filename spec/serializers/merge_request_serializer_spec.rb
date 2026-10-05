@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestSerializer, feature_category: :code_review_workflow do
-  let_it_be(:user) { create(:user) }
   let_it_be(:resource) { create(:merge_request, description: "Description") }
+
+  let(:user) { build_stubbed(:user) }
 
   let(:json_entity) do
     described_class.new(current_user: user)

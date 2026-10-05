@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import ImportProjectsTable from './components/import_projects_table.vue';

@@ -3004,8 +3004,7 @@ paths:
       operationId: patchApiV4ProjectsIdAiAgentSessionsSessionId
       summary: Complete or fail an external agent session.
       description: Marks a session as completed or failed. The authenticated user
-        must be the creator of the session. Returns the existing record unchanged
-        if jsonl_sha256 matches the stored value.
+        must be the creator of the session.
       tags:
       - Projects
       - Ai agent sessions
@@ -4311,7 +4310,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -4333,7 +4332,7 @@ paths:
         example: 20
       - name: search
         required: false
-        description: Search for a protected branch by name
+        description: Name or part of the name of protected branches to search for.
         schema:
           type: string
           nullable: true
@@ -4366,7 +4365,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -4400,13 +4399,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: name
         required: true
-        description: The name of the branch or wildcard
+        description: Name of the branch or wildcard.
         schema:
           type: string
         in: path
@@ -4435,13 +4434,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: name
         required: true
-        description: The name of the branch
+        description: Name of the branch or wildcard.
         schema:
           type: string
         in: path
@@ -4471,13 +4470,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of a group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: name
         required: true
-        description: The name of the protected branch
+        description: Name of the branch or wildcard.
         schema:
           type: string
         in: path
@@ -4961,7 +4960,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -4989,7 +4988,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -5024,7 +5023,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -5032,14 +5031,15 @@ paths:
         in: path
       - name: saml_group_name
         required: true
-        description: Name of an SAML group
+        description: Name of the SAML group.
         schema:
           type: string
         in: path
       - name: provider
         required: false
-        description: Provider string to disambiguate when multiple links exist with
-          same name
+        description: Unique [provider name](https://docs.gitlab.com/integration/saml/#configure-saml-support-in-gitlab)
+          used to disambiguate when multiple links exist with the same name. Required
+          when multiple links exist with the same `saml_group_name`.
         schema:
           type: string
           nullable: true
@@ -5066,7 +5066,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -5074,14 +5074,15 @@ paths:
         in: path
       - name: saml_group_name
         required: true
-        description: Name of a SAML group
+        description: Name of the SAML group.
         schema:
           type: string
         in: path
       - name: provider
         required: false
-        description: Provider string to disambiguate when multiple links exist with
-          same name
+        description: Unique [provider name](https://docs.gitlab.com/integration/saml/#configure-saml-support-in-gitlab)
+          used to disambiguate when multiple links exist with the same name. Required
+          when multiple links exist with the same `saml_group_name`.
         schema:
           type: string
           nullable: true
@@ -5818,7 +5819,7 @@ paths:
       parameters:
       - name: project_id
         required: true
-        description: Project ID
+        description: ID of the project.
         schema:
           type: integer
           nullable: true
@@ -5863,7 +5864,7 @@ paths:
         example: 20
       - name: not
         required: false
-        description: Filters by the specified parameters
+        description: Return merge requests that do not match the specified parameters.
         schema:
           type: object
           nullable: true
@@ -6105,7 +6106,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6113,7 +6114,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -6155,7 +6156,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6163,7 +6164,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -6195,7 +6196,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6203,13 +6204,13 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
       - name: approval_rule_id
         required: true
-        description: The ID of a merge request approval rule
+        description: ID of the merge request approval rule.
         schema:
           type: integer
         in: path
@@ -6236,7 +6237,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6244,13 +6245,13 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
       - name: approval_rule_id
         required: true
-        description: The ID of a merge request approval rule
+        description: ID of the merge request approval rule.
         schema:
           type: integer
         in: path
@@ -6277,7 +6278,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6285,13 +6286,13 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
       - name: approval_rule_id
         required: true
-        description: The ID of a merge request approval rule
+        description: ID of the merge request approval rule.
         schema:
           type: integer
         in: path
@@ -6758,7 +6759,7 @@ paths:
       parameters:
       - name: vulnerability_id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: string
         in: path
@@ -12819,7 +12820,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12853,7 +12854,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12896,7 +12897,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12931,7 +12932,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12969,14 +12970,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: '1'
       - name: merge_request_iid
         required: true
-        description: IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -13011,7 +13012,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -13019,7 +13020,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -13042,14 +13043,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of a project
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
         example: '1'
       - name: merge_request_iid
         required: true
-        description: IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -16082,14 +16083,14 @@ paths:
       parameters:
       - name: name
         required: true
-        description: Model version name
+        description: Name of the registered model.
         schema:
           type: string
           nullable: true
         in: query
       - name: version
         required: true
-        description: Model version ID
+        description: ID of the model version.
         schema:
           type: integer
           nullable: true
@@ -16124,14 +16125,14 @@ paths:
       parameters:
       - name: name
         required: true
-        description: Model version name
+        description: Name of the registered model.
         schema:
           type: string
           nullable: true
         in: query
       - name: version
         required: true
-        description: Model version number
+        description: Version of the model.
         schema:
           type: string
           nullable: true
@@ -27255,7 +27256,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27297,7 +27298,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27330,7 +27331,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27338,7 +27339,7 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
@@ -27362,7 +27363,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27370,7 +27371,7 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
@@ -27400,7 +27401,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27408,7 +27409,7 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
@@ -27434,7 +27435,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27442,7 +27443,7 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
@@ -27482,7 +27483,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27490,7 +27491,7 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
@@ -27521,7 +27522,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27529,13 +27530,13 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
       - name: list_id
         required: true
-        description: The ID of a list
+        description: ID of the board's list.
         schema:
           type: integer
         in: path
@@ -27559,7 +27560,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27567,13 +27568,13 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
       - name: list_id
         required: true
-        description: The ID of a list
+        description: ID of the board's list.
         schema:
           type: integer
         in: path
@@ -27603,7 +27604,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -27611,13 +27612,13 @@ paths:
         in: path
       - name: board_id
         required: true
-        description: The ID of a board
+        description: ID of the board.
         schema:
           type: integer
         in: path
       - name: list_id
         required: true
-        description: The ID of a board list
+        description: ID of the board's list.
         schema:
           type: integer
         in: path
@@ -30975,14 +30976,14 @@ paths:
       parameters:
       - name: search
         required: true
-        description: The expression it should be searched for
+        description: Search query.
         schema:
           type: string
           nullable: true
         in: query
       - name: scope
         required: true
-        description: The scope of the search
+        description: Scope of the search.
         schema:
           type: string
           enum:
@@ -31002,7 +31003,8 @@ paths:
         in: query
       - name: state
         required: false
-        description: Filter results by state
+        description: Filter results by state. Applies only to the `issues`, `work_items`,
+          and `merge_requests` scopes.
         schema:
           type: string
           enum:
@@ -31014,7 +31016,9 @@ paths:
         in: query
       - name: confidential
         required: false
-        description: Filter results by confidentiality
+        description: If `true`, returns only confidential results. If `false`, returns
+          only non-confidential results. Applies only to the `issues` and `work_items`
+          scopes.
         schema:
           type: boolean
           nullable: true
@@ -31034,8 +31038,8 @@ paths:
         explode: false
       - name: include_archived
         required: false
-        description: Includes archived projects in the search. Introduced in GitLab
-          18.9.
+        description: If `true`, includes archived projects in the search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)
+          in GitLab 18.7.
         schema:
           type: boolean
           default: false
@@ -31185,7 +31189,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -31193,14 +31197,14 @@ paths:
         in: path
       - name: search
         required: true
-        description: The expression it should be searched for
+        description: Search query.
         schema:
           type: string
           nullable: true
         in: query
       - name: scope
         required: true
-        description: The scope of the search
+        description: Scope of the search.
         schema:
           type: string
           enum:
@@ -31219,7 +31223,8 @@ paths:
         in: query
       - name: state
         required: false
-        description: Filter results by state
+        description: Filter results by state. Applies only to the `issues`, `work_items`,
+          and `merge_requests` scopes.
         schema:
           type: string
           enum:
@@ -31231,7 +31236,9 @@ paths:
         in: query
       - name: confidential
         required: false
-        description: Filter results by confidentiality
+        description: If `true`, returns only confidential results. If `false`, returns
+          only non-confidential results. Applies only to the `issues` and `work_items`
+          scopes.
         schema:
           type: boolean
           nullable: true
@@ -31251,8 +31258,8 @@ paths:
         explode: false
       - name: include_archived
         required: false
-        description: Includes archived projects in the search. Introduced in GitLab
-          18.9.
+        description: If `true`, includes archived projects in the search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281)
+          in GitLab 18.7.
         schema:
           type: boolean
           default: false
@@ -31403,7 +31410,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -31411,14 +31418,14 @@ paths:
         in: path
       - name: search
         required: true
-        description: The expression it should be searched for
+        description: Search query.
         schema:
           type: string
           nullable: true
         in: query
       - name: scope
         required: true
-        description: The scope of the search
+        description: Scope of the search.
         schema:
           type: string
           enum:
@@ -31435,15 +31442,16 @@ paths:
         in: query
       - name: ref
         required: false
-        description: The name of a repository branch or tag. If not given, the default
-          branch is used
+        description: Name of the repository branch or tag. If omitted, uses the default
+          branch.
         schema:
           type: string
           nullable: true
         in: query
       - name: state
         required: false
-        description: Filter results by state
+        description: Filter results by state. Applies only to the `issues`, `work_items`,
+          and `merge_requests` scopes.
         schema:
           type: string
           enum:
@@ -31455,7 +31463,9 @@ paths:
         in: query
       - name: confidential
         required: false
-        description: Filter results by confidentiality
+        description: If `true`, returns only confidential results. If `false`, returns
+          only non-confidential results. Applies only to the `issues` and `work_items`
+          scopes.
         schema:
           type: boolean
           nullable: true
@@ -31619,7 +31629,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: integer
@@ -31627,7 +31637,7 @@ paths:
         in: path
       - name: file_name
         required: true
-        description: Spec file name
+        description: Name of the spec file.
         schema:
           type: string
           enum:
@@ -31663,7 +31673,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: integer
@@ -31671,7 +31681,7 @@ paths:
         in: path
       - name: file_name
         required: true
-        description: Gemspec file name
+        description: Name of the gemspec file, in the format `<gem_name>-<version>.gemspec.rz`.
         schema:
           type: string
         in: path
@@ -31701,7 +31711,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: integer
@@ -31709,7 +31719,7 @@ paths:
         in: path
       - name: file_name
         required: true
-        description: Package file name
+        description: Name of the `.gem` file.
         schema:
           type: string
         in: path
@@ -31734,7 +31744,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: integer
@@ -31761,7 +31771,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: integer
@@ -31801,7 +31811,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: integer
@@ -31809,7 +31819,7 @@ paths:
         in: path
       - name: gems
         required: false
-        description: Comma delimited gem names
+        description: Comma-separated list of gems to fetch dependencies for.
         schema:
           type: array
           items:
@@ -40830,7 +40840,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40863,7 +40873,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40903,7 +40913,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40911,7 +40921,7 @@ paths:
         in: path
       - name: protection_rule_id
         required: true
-        description: The ID of the container protection rule
+        description: ID of the container repository protection rule.
         schema:
           type: integer
         in: path
@@ -40941,7 +40951,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -40949,7 +40959,7 @@ paths:
         in: path
       - name: protection_rule_id
         required: true
-        description: The ID of the container protection rule
+        description: ID of the container repository protection rule.
         schema:
           type: integer
         in: path
@@ -42749,7 +42759,7 @@ paths:
         in: path
       - name: q
         required: false
-        description: The search term
+        description: Search term.
         schema:
           type: string
           nullable: true
@@ -42757,7 +42767,7 @@ paths:
         example: MyNuGet
       - name: skip
         required: false
-        description: The number of results to skip
+        description: Number of results to skip.
         schema:
           type: integer
           default: 0
@@ -42765,7 +42775,7 @@ paths:
         example: 1
       - name: take
         required: false
-        description: The number of results to return
+        description: Number of results to return.
         schema:
           type: integer
           default: 20
@@ -42773,7 +42783,7 @@ paths:
         example: 1
       - name: prerelease
         required: false
-        description: Include prerelease versions
+        description: If `true`, includes prerelease versions in the results.
         schema:
           type: boolean
           default: true
@@ -43397,7 +43407,7 @@ paths:
         in: path
       - name: q
         required: false
-        description: The search term
+        description: Search term.
         schema:
           type: string
           nullable: true
@@ -43405,7 +43415,7 @@ paths:
         example: MyNuGet
       - name: skip
         required: false
-        description: The number of results to skip
+        description: Number of results to skip.
         schema:
           type: integer
           default: 0
@@ -43413,7 +43423,7 @@ paths:
         example: 1
       - name: take
         required: false
-        description: The number of results to return
+        description: Number of results to return.
         schema:
           type: integer
           default: 20
@@ -43421,7 +43431,7 @@ paths:
         example: 1
       - name: prerelease
         required: false
-        description: Include prerelease versions
+        description: If `true`, includes prerelease versions in the results.
         schema:
           type: boolean
           default: true
@@ -47019,7 +47029,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47060,7 +47070,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47095,7 +47105,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47181,7 +47191,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47217,7 +47227,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47264,7 +47274,7 @@ paths:
         explode: false
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47305,7 +47315,7 @@ paths:
         in: query
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47397,7 +47407,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47468,7 +47478,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47516,7 +47526,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47554,7 +47564,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47592,7 +47602,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47631,7 +47641,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47665,7 +47675,7 @@ paths:
         in: path
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47724,7 +47734,7 @@ paths:
         example: 20
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -47771,7 +47781,7 @@ paths:
         example: 20
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -67229,7 +67239,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67254,7 +67264,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67277,7 +67287,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67321,7 +67331,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67382,7 +67392,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67390,28 +67400,29 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
@@ -67442,7 +67453,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67450,28 +67461,29 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
@@ -67499,7 +67511,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67507,35 +67519,36 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
@@ -67566,7 +67579,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67574,35 +67587,36 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
@@ -67629,7 +67643,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67637,42 +67651,43 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: file_name
         required: true
-        description: Package file name
+        description: Name of the package file.
         schema:
           type: string
           enum:
@@ -67706,7 +67721,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67714,42 +67729,43 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: file_name
         required: true
-        description: Package file name
+        description: Name of the package file.
         schema:
           type: string
           enum:
@@ -67790,7 +67806,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67798,42 +67814,43 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: file_name
         required: true
-        description: Package file name
+        description: Name of the package file.
         schema:
           type: string
           enum:
@@ -67868,7 +67885,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67876,35 +67893,36 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
@@ -67936,7 +67954,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -67944,42 +67962,43 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: conan_package_reference
         required: true
-        description: Package reference
+        description: Reference hash of the Conan package. Conan generates this value.
         schema:
           type: string
         in: path
@@ -68010,7 +68029,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68018,42 +68037,43 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: conan_package_reference
         required: true
-        description: Package reference
+        description: Reference hash of the Conan package. Conan generates this value.
         schema:
           type: string
         in: path
@@ -68081,7 +68101,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68089,49 +68109,50 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: conan_package_reference
         required: true
-        description: Package reference
+        description: Reference hash of the Conan package. Conan generates this value.
         schema:
           type: string
         in: path
         example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
       - name: package_revision
         required: true
-        description: Package revision
+        description: Revision of the package.
         schema:
           type: string
         in: path
@@ -68162,7 +68183,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68170,49 +68191,50 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: conan_package_reference
         required: true
-        description: Package reference
+        description: Reference hash of the Conan package. Conan generates this value.
         schema:
           type: string
         in: path
         example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
       - name: package_revision
         required: true
-        description: Package revision
+        description: Revision of the package.
         schema:
           type: string
         in: path
@@ -68239,7 +68261,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68247,56 +68269,57 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: conan_package_reference
         required: true
-        description: Package reference
+        description: Reference hash of the Conan package. Conan generates this value.
         schema:
           type: string
         in: path
         example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
       - name: package_revision
         required: true
-        description: Package revision
+        description: Revision of the package.
         schema:
           type: string
         in: path
         example: 3bdd2d8c8e76c876ebd1ac0469a4e72c
       - name: file_name
         required: true
-        description: Package file name
+        description: Name of the package file.
         schema:
           type: string
           enum:
@@ -68330,7 +68353,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68338,56 +68361,57 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: conan_package_reference
         required: true
-        description: Package reference
+        description: Reference hash of the Conan package. Conan generates this value.
         schema:
           type: string
         in: path
         example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
       - name: package_revision
         required: true
-        description: Package revision
+        description: Revision of the package.
         schema:
           type: string
         in: path
         example: 3bdd2d8c8e76c876ebd1ac0469a4e72c
       - name: file_name
         required: true
-        description: Package file name
+        description: Name of the package file.
         schema:
           type: string
           enum:
@@ -68428,7 +68452,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -68436,56 +68460,57 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: Package name
+        description: Name of the package.
         schema:
           type: string
         in: path
         example: my-package
       - name: package_version
         required: true
-        description: Package version
+        description: Version of the package.
         schema:
           type: string
         in: path
         example: '1.0'
       - name: package_username
         required: true
-        description: Package username
+        description: Conan username of the package. This is the `+`-separated full
+          path of the project.
         schema:
           type: string
         in: path
         example: my-group+my-project
       - name: package_channel
         required: true
-        description: Package channel
+        description: Channel of the package.
         schema:
           type: string
         in: path
         example: stable
       - name: recipe_revision
         required: true
-        description: Recipe revision
+        description: Revision of the recipe.
         schema:
           type: string
         in: path
         example: df28fd816be3a119de5ce4d374436b25
       - name: conan_package_reference
         required: true
-        description: Package reference
+        description: Reference hash of the Conan package. Conan generates this value.
         schema:
           type: string
         in: path
         example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
       - name: package_revision
         required: true
-        description: Package revision
+        description: Revision of the package.
         schema:
           type: string
         in: path
         example: 3bdd2d8c8e76c876ebd1ac0469a4e72c
       - name: file_name
         required: true
-        description: Package file name
+        description: Name of the package file.
         schema:
           type: string
           enum:
@@ -71892,7 +71917,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -71925,7 +71950,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -71933,7 +71958,7 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: The cargo package name
+        description: Name of the Cargo package.
         schema:
           type: string
         in: path
@@ -71964,7 +71989,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -71972,7 +71997,7 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: The cargo package name
+        description: Name of the Cargo package.
         schema:
           type: string
         in: path
@@ -72003,7 +72028,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -72011,13 +72036,13 @@ paths:
         in: path
       - name: first_char
         required: true
-        description: First character of the cargo package name
+        description: First character of the Cargo package name.
         schema:
           type: string
         in: path
       - name: package_name
         required: true
-        description: The cargo package name
+        description: Name of the Cargo package.
         schema:
           type: string
         in: path
@@ -72048,7 +72073,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -72056,19 +72081,19 @@ paths:
         in: path
       - name: prefix_1
         required: true
-        description: First two characters of the cargo package name
+        description: First two characters of the Cargo package name.
         schema:
           type: string
         in: path
       - name: prefix_2
         required: true
-        description: Next two characters of the cargo package name
+        description: Next two characters of the Cargo package name.
         schema:
           type: string
         in: path
       - name: package_name
         required: true
-        description: The cargo package name
+        description: Name of the Cargo package.
         schema:
           type: string
         in: path
@@ -72099,7 +72124,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -72107,13 +72132,13 @@ paths:
         in: path
       - name: package_name
         required: true
-        description: The cargo package name
+        description: Name of the Cargo package.
         schema:
           type: string
         in: path
       - name: package_version
         required: true
-        description: The cargo package version
+        description: Version of the Cargo package.
         schema:
           type: string
         in: path
@@ -72138,7 +72163,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -80850,7 +80875,7 @@ paths:
         example: 1
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -80898,7 +80923,7 @@ paths:
         example: 1
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -80936,7 +80961,7 @@ paths:
         example: 1
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -80996,7 +81021,7 @@ paths:
         example: 1
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -81029,7 +81054,7 @@ paths:
         example: 1
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -81083,7 +81108,7 @@ paths:
         example: 1
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -81127,7 +81152,7 @@ paths:
         example: 1
       - name: merge_request_iid
         required: true
-        description: The IID of a merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -83828,21 +83853,24 @@ components:
         agent_type:
           type: string
           example: claude-code
-        agent_identity_id:
-          type: integer
-          example: 1
         user_id:
           type: integer
           example: 1
-        sync_type:
-          type: string
-          example: hook
         status:
           type: string
           example: running
-        goal:
+        flow_type:
           type: string
-          example: Implement the login feature
+          example: external_agent
+        external_xid:
+          type: string
+          example: uuid
+        session_started_at:
+          type: string
+          example: '2026-06-17T00:00:00.000Z'
+        session_finished_at:
+          type: string
+          example: '2026-06-17T00:00:00.000Z'
         created_at:
           type: string
           example: '2026-06-17T00:00:00.000Z'
@@ -102531,21 +102559,21 @@ components:
       properties:
         current_file:
           type: object
-          description: Object that contains information about the current file
+          description: Attributes of the file that suggestions are generated for.
           properties:
             file_name:
               type: string
-              description: The name of the current file
+              description: Name of the current file.
               nullable: true
               maxLength: 255
             content_above_cursor:
               type: string
-              description: The content above cursor
+              description: Content above cursor.
               nullable: true
               maxLength: 400000
             content_below_cursor:
               type: string
-              description: The content below cursor
+              description: Content below cursor.
               nullable: true
               maxLength: 400000
           required:
@@ -102557,8 +102585,7 @@ components:
           enum:
           - completion
           - generation
-          description: The intent of the completion request, current options are "completion"
-            or "generation"
+          description: Intent of the completion request.
           nullable: true
         generation_type:
           type: string
@@ -102566,25 +102593,29 @@ components:
           - comment
           - empty_function
           - small_file
-          description: The type of generation request
+          description: Type of event for generation requests.
           nullable: true
         stream:
           type: boolean
-          description: The option to stream code completion response
+          description: If `true`, streams the response as smaller chunks as they are
+            ready, if applicable.
           default: false
         project_path:
           type: string
-          description: The path of the project
+          description: Path of the project.
           example: namespace/project
           nullable: true
         user_instruction:
           type: string
-          description: Additional instructions provided by a user
+          description: User's instructions for Code Suggestions. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/462750)
+            in GitLab 18.6. Feature flag `code_suggestions_context` removed.
           nullable: true
           maxLength: 600000
         context:
           type: array
-          description: List of related context parts
+          description: Additional context to use for Code Suggestions. [Generally
+            available](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab
+            18.6. Feature flag `code_suggestions_context` removed.
           items:
             type: object
             properties:
@@ -102593,16 +102624,16 @@ components:
                 enum:
                 - file
                 - snippet
-                description: The type of a related part of context
+                description: Type of the context part.
                 minLength: 1
               name:
                 type: string
-                description: The name of a related part of context
+                description: Name of the context part.
                 nullable: true
                 maxLength: 255
               content:
                 type: string
-                description: The content of a part of context
+                description: Content of the context part.
                 nullable: true
                 maxLength: 600000
             required:
@@ -102617,7 +102648,7 @@ components:
       properties:
         project_path:
           type: string
-          description: The path of the project
+          description: Path of the project.
           example: namespace/project
           nullable: true
     postApiV4CodeSuggestionsEnabledRequest:
@@ -102625,7 +102656,7 @@ components:
       properties:
         project_path:
           type: string
-          description: The path of the project
+          description: Path of the project.
           example: namespace/project
           nullable: true
       required:
@@ -103447,7 +103478,7 @@ components:
       properties:
         name:
           type: string
-          description: The name of the protected branch
+          description: Name of the branch or wildcard.
           example: main
           nullable: true
         push_access_level:
@@ -103457,8 +103488,9 @@ components:
           - 40
           - 60
           - 0
-          description: 'Access levels allowed to push (defaults: `40`, maintainer
-            access level)'
+          description: Access level allowed to push. Defaults to `40` (Maintainer
+            role). Does not support custom roles. Use `allowed_to_push` with `member_role_id`
+            instead.
           nullable: true
         merge_access_level:
           type: integer
@@ -103467,12 +103499,14 @@ components:
           - 40
           - 60
           - 0
-          description: 'Access levels allowed to merge (defaults: `40`, maintainer
-            access level)'
+          description: Access level allowed to merge. Defaults to `40` (Maintainer
+            role). Does not support custom roles. Use `allowed_to_merge` with `member_role_id`
+            instead.
           nullable: true
         allow_force_push:
           type: boolean
-          description: Allow force push for all users with push access.
+          description: If `true`, members who can push to this branch can also force
+            push.
           default: false
         unprotect_access_level:
           type: integer
@@ -103515,7 +103549,8 @@ components:
       properties:
         allow_force_push:
           type: boolean
-          description: Allow force push for all users with push access.
+          description: If `true`, members who can push to this branch can also force
+            push.
           nullable: true
         unprotect_access_level:
           type: integer
@@ -103578,7 +103613,7 @@ components:
       properties:
         saml_group_name:
           type: string
-          description: The name of a SAML group
+          description: Name of the SAML group.
           nullable: true
         access_level:
           type: integer
@@ -103591,14 +103626,15 @@ components:
           - 30
           - 40
           - 50
-          description: Level of permissions for the linked SA group
+          description: Default access level for members of the SAML group.
         member_role_id:
           type: integer
-          description: The ID of the Member Role for the linked SA group
+          description: ID of the member role for members of the SAML group.
           nullable: true
         provider:
           type: string
-          description: Provider string that must match for this group link to be applied
+          description: Unique [provider name](https://docs.gitlab.com/integration/saml/#configure-saml-support-in-gitlab)
+            that must match for this group link to be applied.
           nullable: true
       required:
       - saml_group_name
@@ -104026,33 +104062,35 @@ components:
       properties:
         name:
           type: string
-          description: The name of the approval rule
+          description: Name of the approval rule. Limited to 1024 characters.
           nullable: true
         approvals_required:
           type: integer
-          description: The number of required approvals for this rule
+          description: Number of required approvals for the rule.
           nullable: true
         approval_project_rule_id:
           type: integer
-          description: The ID of a project-level approval rule
+          description: ID of a project-level approval rule.
           nullable: true
         user_ids:
           type: array
           items:
             type: integer
-          description: The user ids for this rule
+          description: IDs of users to add as approvers. If used with `usernames`,
+            adds both lists of users.
           nullable: true
         group_ids:
           type: array
           items:
             type: integer
-          description: The group ids for this rule
+          description: IDs of groups to add as approvers.
           nullable: true
         usernames:
           type: array
           items:
             type: string
-          description: The usernames for this rule
+          description: Usernames of users to add as approvers. If used with `user_ids`,
+            adds both lists of users.
           nullable: true
       required:
       - name
@@ -104062,33 +104100,35 @@ components:
       properties:
         name:
           type: string
-          description: The name of the approval rule
+          description: Name of the approval rule. Limited to 1024 characters.
           nullable: true
         approvals_required:
           type: integer
-          description: The number of required approvals for this rule
+          description: Number of required approvals for the rule.
           nullable: true
         user_ids:
           type: array
           items:
             type: integer
-          description: The user ids for this rule
+          description: IDs of users to add as approvers. If used with `usernames`,
+            adds both lists of users.
           nullable: true
         group_ids:
           type: array
           items:
             type: integer
-          description: The group ids for this rule
+          description: IDs of groups to add as approvers.
           nullable: true
         usernames:
           type: array
           items:
             type: string
-          description: The group ids for this rule
+          description: Usernames of users to add as approvers. If used with `user_ids`,
+            adds both lists of users.
           nullable: true
         remove_hidden_groups:
           type: boolean
-          description: Whether hidden groups should be removed
+          description: If `true`, removes hidden groups.
           nullable: true
     postApiV4SecurityProjectsIdVulnerabilityExportsRequest:
       type: object
@@ -104578,14 +104618,14 @@ components:
           type: integer
           minimum: 0
           maximum: 100
-          description: Confidence score from 0-100
+          description: Confidence score for the AI-detected vulnerability flag.
         description:
           type: string
-          description: Explanation for the detection result
+          description: Explanation for the detection result.
           nullable: true
         origin:
           type: string
-          description: Origin of the AI detection
+          description: Origin of the AI detection.
           pattern: "^(?:[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[^\\n\\uD800-\\uDFFF]){1,255}$"
           nullable: true
       required:
@@ -107361,24 +107401,24 @@ components:
       properties:
         name:
           type: string
-          description: Display name of external status check
+          description: Display name of the external status check service.
           example: QA
           nullable: true
         shared_secret:
           type: string
-          description: HMAC shared secret
+          description: HMAC secret for the external status check.
           example: hmac-sha256
           nullable: true
         external_url:
           type: string
-          description: URL of external status check resource
+          description: URL of the external status check service.
           example: https://www.example.com
           nullable: true
         protected_branch_ids:
           type: array
           items:
             type: integer
-          description: IDs of protected branches to scope the rule by
+          description: IDs of protected branches to scope the rule by.
           nullable: true
       required:
       - name
@@ -107388,24 +107428,24 @@ components:
       properties:
         name:
           type: string
-          description: Display name of external status check
+          description: Display name of the external status check service.
           example: QA
           nullable: true
         shared_secret:
           type: string
-          description: HMAC shared secret
+          description: HMAC secret for the external status check.
           example: hmac-sha256
           nullable: true
         external_url:
           type: string
-          description: URL of external status check resource
+          description: URL of the external status check service.
           example: https://www.example.com
           nullable: true
         protected_branch_ids:
           type: array
           items:
             type: integer
-          description: IDs of protected branches to scope the rule by
+          description: IDs of protected branches to scope the rule by.
           nullable: true
     postApiV4ProjectsIdMergeRequestsMergeRequestIidStatusCheckResponsesRequest:
       type: object
@@ -107417,7 +107457,7 @@ components:
           nullable: true
         sha:
           type: string
-          description: SHA at HEAD of the source branch
+          description: SHA at `HEAD` of the source branch.
           example: 5957a570eee0ac4580ec027fb874ad7514d1e576
           nullable: true
         status:
@@ -107426,8 +107466,7 @@ components:
           - passed
           - failed
           - pending
-          description: Set to `pending` to mark the check as pending, `passed` to
-            pass the check, or `failed` to fail it
+          description: Status of the check.
           minLength: 1
       required:
       - external_status_check_id
@@ -108294,11 +108333,11 @@ components:
       properties:
         name:
           type: string
-          description: Register model under this name This field is required.
+          description: Name of the registered model to create the version for. Required.
           nullable: true
         description:
           type: string
-          description: Optional description for model version.
+          description: Description of the model version.
           nullable: true
         tags:
           type: array
@@ -108306,18 +108345,18 @@ components:
           nullable: true
         run_id:
           type: string
-          description: Run ID of the candidate to be promoted to a model version
+          description: Run ID of the candidate to be promoted to a model version.
           nullable: true
     patchApiV4ProjectsIdMlMlflowApi20MlflowModelVersionsUpdateRequest:
       type: object
       properties:
         name:
           type: string
-          description: Model version name
+          description: Name of the registered model.
           nullable: true
         description:
           type: string
-          description: Model version description
+          description: Description of the model version.
           nullable: true
     postApiV4ProjectsIdMlMlflowApi20MlflowExperimentsSearchRequest:
       type: object
@@ -113958,7 +113997,7 @@ components:
       properties:
         position:
           type: integer
-          description: The position of the list
+          description: Position of the list.
           nullable: true
       required:
       - position
@@ -120190,9 +120229,8 @@ components:
       properties:
         repository_path_pattern:
           type: string
-          description: |-
-            Container repository path pattern protected by the protection rule.
-                        For example `flight/flight-*`. Wildcard character `*` allowed.
+          description: Container repository path pattern protected by the protection
+            rule, for example `flight/flight-*`. Wildcard character `*` is allowed.
           nullable: true
         minimum_access_level_for_push:
           type: string
@@ -120200,9 +120238,10 @@ components:
           - maintainer
           - owner
           - admin
-          description: |-
-            Minimum GitLab access level to allow to push container images to the container registry.
-                        For example maintainer, owner or admin. At least one of `minimum_access_level_for_push`, `minimum_access_level_for_delete` must be provided.
+          description: Minimum GitLab access level required to push container images
+            to the container registry. Must be provided when `minimum_access_level_for_delete`
+            is not set. At least one of `minimum_access_level_for_push`, `minimum_access_level_for_delete`
+            must be provided.
           nullable: true
         minimum_access_level_for_delete:
           type: string
@@ -120210,9 +120249,10 @@ components:
           - maintainer
           - owner
           - admin
-          description: |-
-            Minimum GitLab access level to allow to delete container images in the container registry.
-                        For example maintainer, owner or admin. At least one of `minimum_access_level_for_push`, `minimum_access_level_for_delete` must be provided.
+          description: Minimum GitLab access level required to delete container images
+            in the container registry. Must be provided when `minimum_access_level_for_push`
+            is not set. At least one of `minimum_access_level_for_push`, `minimum_access_level_for_delete`
+            must be provided.
           nullable: true
       required:
       - repository_path_pattern
@@ -120221,9 +120261,8 @@ components:
       properties:
         repository_path_pattern:
           type: string
-          description: |-
-            Container repository path pattern protected by the protection rule.
-                          For example `flight/flight-*`. Wildcard character `*` allowed.
+          description: Container repository path pattern protected by the protection
+            rule, for example `flight/flight-*`. Wildcard character `*` is allowed.
           nullable: true
         minimum_access_level_for_push:
           type: string
@@ -120232,9 +120271,10 @@ components:
           - owner
           - admin
           - ''
-          description: |-
-            Minimum GitLab access level to allow to push container images to the container registry.
-                          For example maintainer, owner or admin. To unset the value, use an empty string `""`.
+          description: Minimum GitLab access level required to push container images
+            to the container registry. At least one of `minimum_access_level_for_push`
+            or `minimum_access_level_for_delete` must stay set. To unset the value,
+            use an empty string (`""`).
           nullable: true
         minimum_access_level_for_delete:
           type: string
@@ -120243,9 +120283,10 @@ components:
           - owner
           - admin
           - ''
-          description: |-
-            Minimum GitLab access level to allow to delete container images in the container registry.
-                          For example maintainer, owner or admin. To unset the value, use an empty string `""`.
+          description: Minimum GitLab access level required to delete container images
+            in the container registry. At least one of `minimum_access_level_for_push`
+            or `minimum_access_level_for_delete` must stay set. To unset the value,
+            use an empty string (`""`).
           nullable: true
     putApiV4ProjectsIdClustersClusterIdRequest:
       type: object
@@ -134831,35 +134872,35 @@ components:
       properties:
         event:
           type: string
-          description: The event name that should be tracked
+          description: Name of the event to track.
           example: i_quickactions_page
           nullable: true
         namespace_id:
           type: integer
-          description: Namespace ID
+          description: ID of the namespace associated with the event.
           example: 1234
           nullable: true
         project_id:
           type: integer
-          description: Project ID. Mutually exclusive with `project_path`.
+          description: ID of the project. Mutually exclusive with `project_path`.
           example: 1234
           nullable: true
         project_path:
           type: string
-          description: Project path (used to resolve project_id if not provided).
-            Mutually exclusive with `project_id`.
+          description: Path of the project. Used to find `project_id` when it is not
+            provided. Mutually exclusive with `project_id`.
           example: namespace/project
           nullable: true
         additional_properties:
           type: object
-          description: Additional properties to be tracked
+          description: Additional properties to be tracked.
           example:
             label: login_button
             value: 1
           nullable: true
         send_to_snowplow:
           type: boolean
-          description: Send the tracked event to Snowplow
+          description: If `true`, sends the tracked event to Snowplow.
           example: true
           nullable: true
       required:

@@ -206,15 +206,20 @@ module API
       end
 
       params :params_common do
-        optional :state, type: String, desc: 'Filter results by state', values: Helpers::SearchHelpers.search_states
-        optional :confidential, type: Boolean, desc: 'Filter results by confidentiality'
+        optional :state, type: String, desc: 'Filter results by state. Applies only to the ' \
+                                         '`issues`, `work_items`, and `merge_requests` ' \
+                                         'scopes.', values: Helpers::SearchHelpers.search_states
+        optional :confidential, type: Boolean, desc: 'If `true`, returns only confidential results. If `false`, ' \
+                                                 'returns only non-confidential results. Applies only to the ' \
+                                                 '`issues` and `work_items` scopes.'
         optional :type, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
           desc: Helpers::SearchHelpers.work_item_type_filter_desc
       end
 
       params :param_archived_filter do
         optional :include_archived, type: Boolean, default: false,
-          desc: 'Includes archived projects in the search. Introduced in GitLab 18.9.'
+          desc: 'If `true`, includes archived projects in the search. ' \
+            '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.'
       end
 
       params :ee_param_fields do
@@ -249,8 +254,8 @@ module API
       end
 
       params do
-        requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :search, type: String, desc: 'Search query.'
+        requires :scope, type: String, desc: 'Scope of the search.',
           values: Helpers::SearchHelpers.global_search_scopes
 
         use :params_common
@@ -284,9 +289,9 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
-        requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
+        requires :search, type: String, desc: 'Search query.'
+        requires :scope, type: String, desc: 'Scope of the search.',
           values: Helpers::SearchHelpers.group_search_scopes
 
         use :params_common
@@ -323,13 +328,13 @@ module API
       end
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-        requires :search, type: String, desc: 'The expression it should be searched for'
-        requires :scope, type: String, desc: 'The scope of the search',
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+        requires :search, type: String, desc: 'Search query.'
+        requires :scope, type: String, desc: 'Scope of the search.',
           values: Helpers::SearchHelpers.project_search_scopes
 
         optional :ref, type: String,
-          desc: 'The name of a repository branch or tag. If not given, the default branch is used'
+          desc: 'Name of the repository branch or tag. If omitted, uses the default branch.'
 
         use :params_common
         use :ee_param_fields

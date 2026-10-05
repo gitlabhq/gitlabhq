@@ -45,7 +45,7 @@ RSpec.describe ProjectAccessTokenEntity do
   end
 
   context 'when bot is unrelated to the project' do
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     it 'has the correct attributes' do
       expect(json).to(

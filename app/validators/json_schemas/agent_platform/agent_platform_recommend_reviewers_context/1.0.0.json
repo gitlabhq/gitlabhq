@@ -11,14 +11,10 @@
         "properties": {
           "id": {
             "type": "integer"
-          },
-          "username": {
-            "type": "string"
           }
         },
         "required": [
-          "id",
-          "username"
+          "id"
         ],
         "additionalProperties": false
       }
@@ -59,9 +55,6 @@
                 "id": {
                   "type": "integer"
                 },
-                "username": {
-                  "type": "string"
-                },
                 "busy": {
                   "type": "boolean"
                 },
@@ -95,7 +88,6 @@
               },
               "required": [
                 "id",
-                "username",
                 "busy",
                 "pending_reviews"
               ],

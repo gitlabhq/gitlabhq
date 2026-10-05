@@ -386,7 +386,7 @@ acquire the HA leader lock on a read-only database.
 Prerequisites:
 
 - Geo must be configured. For more information, see [Set up Geo](../geo/setup/_index.md).
-- OpenBao must be installed and working on the primary site before you deploy it on the secondary.
+- OpenBao must be installed and working on the primary site before you deploy it on the secondary site.
   For more information, see [Install OpenBao](#install-openbao).
 
 1. The secondary OpenBao must use the same unseal configuration as the primary to decrypt replicated data.

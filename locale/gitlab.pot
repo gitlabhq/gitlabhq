@@ -2955,10 +2955,16 @@ msgstr ""
 msgid "AICatalog|Edit flow"
 msgstr ""
 
+msgid "AICatalog|Enable %{itemType} in your group"
+msgstr ""
+
 msgid "AICatalog|Enable %{itemType} in your project"
 msgstr ""
 
 msgid "AICatalog|Enable experiment and beta features in admin settings to use this tool."
+msgstr ""
+
+msgid "AICatalog|Enabled in all projects."
 msgstr ""
 
 msgid "AICatalog|Enabled in selected project(s)."
@@ -3516,6 +3522,9 @@ msgstr ""
 msgid "AICatalog|This agent uses a service account with the %{linkStart}Developer role%{linkEnd} by default. Scheduled runs have no triggering user, so only the service account's role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
 msgstr ""
 
+msgid "AICatalog|This agent will be available in all current and future projects in this group."
+msgstr ""
+
 msgid "AICatalog|This catalog contains third-party content that may be subject to additional terms. GitLab does not control or assume liability for third-party content."
 msgstr ""
 
@@ -3535,6 +3544,9 @@ msgid "AICatalog|This flow uses a service account with the %{linkStart}Developer
 msgstr ""
 
 msgid "AICatalog|This flow uses a service account with the %{linkStart}Developer role%{linkEnd} by default. Scheduled runs have no triggering user, so only the service account's role applies. The service account can also access all other projects it is a member of. Change its role from the members page."
+msgstr ""
+
+msgid "AICatalog|This flow will be available in all current and future projects in this group."
 msgstr ""
 
 msgid "AICatalog|This key dashboard provides visibility into SDLC metrics in the context of AI adoption for projects and groups. %{linkStart}Learn more%{linkEnd}"
@@ -3688,6 +3700,9 @@ msgid "AICatalog|What is the AI Catalog"
 msgstr ""
 
 msgid "AICatalog|When this agent runs, it will have access to the projects the user who runs it has access to."
+msgstr ""
+
+msgid "AICatalog|When you enable this agent, all group members will be able to use it. When this agent runs, it will have access to the projects the user who runs it has access to."
 msgstr ""
 
 msgid "AICatalog|When you enable this agent, all project members will be able to use it."
@@ -35314,6 +35329,9 @@ msgid "Enable embedded content"
 msgstr ""
 
 msgid "Enable feature to choose access level"
+msgstr ""
+
+msgid "Enable for all projects"
 msgstr ""
 
 msgid "Enable header and footer in emails"

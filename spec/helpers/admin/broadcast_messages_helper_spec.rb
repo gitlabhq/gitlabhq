@@ -6,6 +6,8 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
   include Gitlab::Routing.url_helpers
 
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, developers: user) }
+  let_it_be(:group) { create(:group, developers: user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -17,8 +19,6 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
     end
 
     context 'when in a project page' do
-      let_it_be(:project) { create(:project, developers: user) }
-
       before do
         assign(:project, project)
         allow(helper).to receive(:controller) { ProjectsController.new }
@@ -28,8 +28,6 @@ RSpec.describe Admin::BroadcastMessagesHelper, feature_category: :notifications 
     end
 
     context 'when in a group page' do
-      let_it_be(:group) { create(:group, developers: user) }
-
       before do
         assign(:group, group)
         allow(helper).to receive(:controller) { GroupsController.new }

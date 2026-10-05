@@ -10,7 +10,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource ':id/registry/protection/repository/rules' do
@@ -46,16 +46,16 @@ module API
         end
         params do
           requires :repository_path_pattern, type: String,
-            desc: 'Container repository path pattern protected by the protection rule.
-            For example `flight/flight-*`. Wildcard character `*` allowed.'
+            desc: 'Container repository path pattern protected by the protection rule, for example ' \
+              '`flight/flight-*`. Wildcard character `*` is allowed.'
           optional :minimum_access_level_for_push, type: String,
             values: ContainerRegistry::Protection::Rule.minimum_access_level_for_pushes.keys,
-            desc: 'Minimum GitLab access level to allow to push container images to the container registry.
-            For example maintainer, owner or admin.'
+            desc: 'Minimum GitLab access level required to push container images to the container registry. Must be ' \
+              'provided when `minimum_access_level_for_delete` is not set.'
           optional :minimum_access_level_for_delete, type: String,
             values: ContainerRegistry::Protection::Rule.minimum_access_level_for_deletes.keys,
-            desc: 'Minimum GitLab access level to allow to delete container images in the container registry.
-            For example maintainer, owner or admin.'
+            desc: 'Minimum GitLab access level required to delete container images in the container registry. ' \
+              'Must be provided when `minimum_access_level_for_push` is not set.'
           at_least_one_of :minimum_access_level_for_push, :minimum_access_level_for_delete
         end
         route_setting :authorization, permissions: :create_container_repository_protection_rule, boundary_type: :project
@@ -73,7 +73,7 @@ module API
 
         params do
           requires :protection_rule_id, type: Integer,
-            desc: 'The ID of the container protection rule'
+            desc: 'ID of the container repository protection rule.'
         end
         resource ':protection_rule_id' do
           desc 'Update a container repository protection rule' do
@@ -90,16 +90,18 @@ module API
           end
           params do
             optional :repository_path_pattern, type: String,
-              desc: 'Container repository path pattern protected by the protection rule.
-              For example `flight/flight-*`. Wildcard character `*` allowed.'
+              desc: 'Container repository path pattern protected by the protection rule, for example ' \
+                '`flight/flight-*`. Wildcard character `*` is allowed.'
             optional :minimum_access_level_for_push, type: String,
               values: ContainerRegistry::Protection::Rule.minimum_access_level_for_pushes.keys << "",
-              desc: 'Minimum GitLab access level to allow to push container images to the container registry.
-              For example maintainer, owner or admin. To unset the value, use an empty string `""`.'
+              desc: 'Minimum GitLab access level required to push container images to the container registry. At ' \
+                'least one of `minimum_access_level_for_push` or `minimum_access_level_for_delete` must stay ' \
+                'set. To unset the value, use an empty string (`""`).'
             optional :minimum_access_level_for_delete, type: String,
               values: ContainerRegistry::Protection::Rule.minimum_access_level_for_deletes.keys << "",
-              desc: 'Minimum GitLab access level to allow to delete container images in the container registry.
-              For example maintainer, owner or admin. To unset the value, use an empty string `""`.'
+              desc: 'Minimum GitLab access level required to delete container images in the container registry. ' \
+                'At least one of `minimum_access_level_for_push` or `minimum_access_level_for_delete` must ' \
+                'stay set. To unset the value, use an empty string (`""`).'
           end
           route_setting :authorization, permissions: :update_container_repository_protection_rule,
             boundary_type: :project

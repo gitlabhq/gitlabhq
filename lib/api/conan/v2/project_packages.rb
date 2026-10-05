@@ -113,7 +113,7 @@ module API
         end
 
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
         end
 
         resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -121,13 +121,14 @@ module API
             include ::API::Concerns::Packages::Conan::SharedEndpoints
             params do
               requires :package_name, type: String, regexp: PACKAGE_COMPONENT_REGEX,
-                desc: 'Package name', documentation: { example: 'my-package' }
+                desc: 'Name of the package.', documentation: { example: 'my-package' }
               requires :package_version, type: String, regexp: PACKAGE_COMPONENT_REGEX,
-                desc: 'Package version', documentation: { example: '1.0' }
+                desc: 'Version of the package.', documentation: { example: '1.0' }
               requires :package_username, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX,
-                desc: 'Package username', documentation: { example: 'my-group+my-project' }
+                desc: 'Conan username of the package. This is the `+`-separated full path of the ' \
+                  'project.', documentation: { example: 'my-group+my-project' }
               requires :package_channel, type: String, regexp: CONAN_REVISION_USER_CHANNEL_REGEX,
-                desc: 'Package channel', documentation: { example: 'stable' }
+                desc: 'Channel of the package.', documentation: { example: 'stable' }
             end
             namespace 'conans/:package_name/:package_version/:package_username/:package_channel',
               requirements: PACKAGE_REQUIREMENTS do
@@ -184,7 +185,7 @@ module API
                 end
                 params do
                   requires :recipe_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_combined,
-                    desc: 'Recipe revision', documentation: { example: 'df28fd816be3a119de5ce4d374436b25' }
+                    desc: 'Revision of the recipe.', documentation: { example: 'df28fd816be3a119de5ce4d374436b25' }
                 end
                 namespace ':recipe_revision' do
                   desc 'Delete recipe revision' do
@@ -256,7 +257,7 @@ module API
                     end
 
                     params do
-                      requires :file_name, type: String, desc: 'Package file name', values: CONAN_FILES,
+                      requires :file_name, type: String, desc: 'Name of the package file.', values: CONAN_FILES,
                         documentation: { example: 'conanfile.py' }
                     end
                     namespace ':file_name', requirements: FILE_NAME_REQUIREMENTS do
@@ -363,7 +364,9 @@ module API
 
                   params do
                     requires :conan_package_reference, type: String,
-                      regexp: Gitlab::Regex.conan_package_reference_regex, desc: 'Package reference',
+                      regexp: Gitlab::Regex.conan_package_reference_regex, desc: 'Reference hash of the Conan ' \
+                                                                             'package. Conan generates this ' \
+                                                                             'value.',
                       documentation: { example: '5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9' }
                   end
                   namespace 'packages/:conan_package_reference' do
@@ -426,7 +429,8 @@ module API
 
                       params do
                         requires :package_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_combined,
-                          desc: 'Package revision', documentation: { example: '3bdd2d8c8e76c876ebd1ac0469a4e72c' }
+                          desc: 'Revision of the ' \
+                            'package.', documentation: { example: '3bdd2d8c8e76c876ebd1ac0469a4e72c' }
                       end
                       namespace ':package_revision' do
                         desc 'Delete a package revision' do
@@ -494,7 +498,7 @@ module API
                           end
 
                           params do
-                            requires :file_name, type: String, desc: 'Package file name', values: CONAN_FILES,
+                            requires :file_name, type: String, desc: 'Name of the package file.', values: CONAN_FILES,
                               documentation: { example: 'conaninfo.txt' }
                           end
                           namespace ':file_name', requirements: FILE_NAME_REQUIREMENTS do

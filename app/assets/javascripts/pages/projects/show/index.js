@@ -1,3 +1,4 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
@@ -10,7 +11,7 @@ import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
-import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { initHomePanel } from '~/projects/home_panel';

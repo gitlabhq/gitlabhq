@@ -1,10 +1,10 @@
 import { nextTick } from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GitlabDuoSettings from '~/ai/settings/pages/gitlab_duo_settings.vue';
 import ExclusionSettings from '~/ai/settings/components/exclusion_settings.vue';
 import DuoLocalSetupSection from '~/ai/settings/readiness/components/duo_local_setup_section.vue';
 import { ALL_SETTINGS } from '~/ai/constants';
-import { parseBoolean } from '~/lib/utils/common_utils';
 
 const defaultProps = {
   projectId: 123,

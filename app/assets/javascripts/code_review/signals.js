@@ -1,7 +1,7 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import diffGeneratedSubscription from '~/pages/projects/merge_requests/queries/diff_generated.subscription.graphql';
 
 import createApolloClient from '../lib/graphql';
-import { parseBoolean } from '../lib/utils/common_utils';
 
 import { getDerivedMergeRequestInformation } from '../diffs/utils/merge_request';
 import { EVT_MR_PREPARED, EVT_MR_DIFF_GENERATED } from '../diffs/constants';

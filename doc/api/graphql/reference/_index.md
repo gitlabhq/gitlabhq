@@ -68536,6 +68536,8 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="chatusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Chat activity for the user. |
 | <a id="chatusermetrics-requestduochatresponseeventcount"></a>`requestDuoChatResponseEventCount` | [`Int`](#int) | Total count of `request_duo_chat_response` event. |
+| <a id="chatusermetrics-toolfailedduochateventcount"></a>`toolFailedDuoChatEventCount` | [`Int`](#int) | Total count of `tool_failed_duo_chat` event. |
+| <a id="chatusermetrics-toolsucceededduochateventcount"></a>`toolSucceededDuoChatEventCount` | [`Int`](#int) | Total count of `tool_succeeded_duo_chat` event. |
 | <a id="chatusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Chat events for the user. |
 
 ### `codeReviewMetrics`
@@ -68619,6 +68621,8 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duochatmetrics-requestduochatresponseeventcount"></a>`requestDuoChatResponseEventCount` | [`Int`](#int) | Total count of `request_duo_chat_response` event. |
+| <a id="duochatmetrics-toolfailedduochateventcount"></a>`toolFailedDuoChatEventCount` | [`Int`](#int) | Total count of `tool_failed_duo_chat` event. |
+| <a id="duochatmetrics-toolsucceededduochateventcount"></a>`toolSucceededDuoChatEventCount` | [`Int`](#int) | Total count of `tool_succeeded_duo_chat` event. |
 
 ### `duoMessagingUserMetrics`
 
@@ -69391,6 +69395,8 @@ Type of AI usage event.
 | <a id="aiusageeventtype-start_mcp_tool_call"></a>`START_MCP_TOOL_CALL` | MCP tool call was started. |
 | <a id="aiusageeventtype-summarize_new_merge_request"></a>`SUMMARIZE_NEW_MERGE_REQUEST` | Merge request summary was generated. |
 | <a id="aiusageeventtype-summarize_review"></a>`SUMMARIZE_REVIEW` | A merge request review summary was requested with GitLab Duo. |
+| <a id="aiusageeventtype-tool_failed_duo_chat"></a>`TOOL_FAILED_DUO_CHAT` | Duo Chat tool call failed. |
+| <a id="aiusageeventtype-tool_succeeded_duo_chat"></a>`TOOL_SUCCEEDED_DUO_CHAT` | Duo Chat tool call succeeded. |
 | <a id="aiusageeventtype-trigger_slack_duo"></a>`TRIGGER_SLACK_DUO` | Duo agent was triggered from a Slack mention. |
 | <a id="aiusageeventtype-troubleshoot_job"></a>`TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 | <a id="aiusageeventtype-view_duo_agentic_subscription_expired_empty_state"></a>`VIEW_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_EMPTY_STATE` | Duo Agent Platform subscription expired empty state was viewed. |
@@ -69518,6 +69524,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-summarize_review_desc"></a>`SUMMARIZE_REVIEW_DESC` | Summarize Review event count in descending order. |
 | <a id="aiusermetricssort-summarize_review_total_count_asc"></a>`SUMMARIZE_REVIEW_TOTAL_COUNT_ASC` | Summarize Review total event count in ascending order. |
 | <a id="aiusermetricssort-summarize_review_total_count_desc"></a>`SUMMARIZE_REVIEW_TOTAL_COUNT_DESC` | Summarize Review total event count in descending order. |
+| <a id="aiusermetricssort-tool_failed_duo_chat_asc"></a>`TOOL_FAILED_DUO_CHAT_ASC` | Tool Failed Duo Chat event count in ascending order. |
+| <a id="aiusermetricssort-tool_failed_duo_chat_desc"></a>`TOOL_FAILED_DUO_CHAT_DESC` | Tool Failed Duo Chat event count in descending order. |
+| <a id="aiusermetricssort-tool_succeeded_duo_chat_asc"></a>`TOOL_SUCCEEDED_DUO_CHAT_ASC` | Tool Succeeded Duo Chat event count in ascending order. |
+| <a id="aiusermetricssort-tool_succeeded_duo_chat_desc"></a>`TOOL_SUCCEEDED_DUO_CHAT_DESC` | Tool Succeeded Duo Chat event count in descending order. |
 | <a id="aiusermetricssort-total_events_count_asc"></a>`TOTAL_EVENTS_COUNT_ASC` | Total count of all AI events in ascending order. |
 | <a id="aiusermetricssort-total_events_count_desc"></a>`TOTAL_EVENTS_COUNT_DESC` | Total count of all AI events in descending order. |
 | <a id="aiusermetricssort-trigger_slack_duo_asc"></a>`TRIGGER_SLACK_DUO_ASC` | Trigger Slack Duo event count in ascending order. |

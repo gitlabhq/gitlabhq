@@ -192,7 +192,7 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
   `compute` might eventually give `nil` and you don't want to compute again.
   Instead you could use `defined?` to check if the value is set or not.
   It's tedious to write such pattern, and `StrongMemoize` would
-  help you use such pattern.
+  help you do this more easily.
 
   Instead of writing patterns like this:
 

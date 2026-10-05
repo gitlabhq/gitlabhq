@@ -14,7 +14,7 @@ RSpec.describe AnalyticsIssueEntity, feature_category: :value_stream_management 
       end_event_timestamp: "2022-05-24 14:33:01.529701",
       author: user,
       project_path: project.path,
-      namespace_path: project.namespace.route.path
+      namespace_path: project.namespace.full_path
     }
   end
 
@@ -61,7 +61,7 @@ RSpec.describe AnalyticsIssueEntity, feature_category: :value_stream_management 
           end_event_timestamp: nil,
           author: user,
           project_path: project.path,
-          namespace_path: project.namespace.route.path
+          namespace_path: project.namespace.full_path
         }
       end
 
@@ -72,7 +72,7 @@ RSpec.describe AnalyticsIssueEntity, feature_category: :value_stream_management 
   end
 
   context 'without subgroup' do
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project, namespace: build_stubbed(:namespace, owner: user)) }
 
     subject { entity.as_json }
 
@@ -80,7 +80,7 @@ RSpec.describe AnalyticsIssueEntity, feature_category: :value_stream_management 
   end
 
   context 'with subgroup' do
-    let_it_be(:project) { create(:project, :in_subgroup) }
+    let(:project) { build_stubbed(:project, group: build_stubbed(:group, :nested)) }
 
     subject { entity.as_json }
 

@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe BoardsHelper, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
-  let_it_be(:base_group) { create(:group, path: 'base') }
-  let_it_be(:project) { create(:project, group: base_group) }
-  let_it_be(:project_board) { create(:board, project: project) }
-  let_it_be(:group_board) { create(:board, group: base_group) }
+
+  let(:base_group) { build_stubbed(:group, path: 'base') }
+  let(:project) { build_stubbed(:project, group: base_group) }
+  let(:project_board) { build_stubbed(:board, project: project) }
+  let(:group_board) { build_stubbed(:board, group: base_group) }
 
   describe '#board_base_url' do
     context 'when group board' do

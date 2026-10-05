@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlFilteredSearchToken, GlTab, GlTabs } from '@gitlab/ui';
 import { get, isEqual, pick } from 'lodash-es';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { __ } from '~/locale';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
@@ -23,7 +24,6 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import NamespaceToken from '~/vue_shared/components/filtered_search_bar/tokens/namespace_token.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
