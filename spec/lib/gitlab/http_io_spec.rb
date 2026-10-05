@@ -297,6 +297,27 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
         end
       end
 
+      context 'when the provider returns a Content-Range without the bytes unit' do
+        let(:length) { nil }
+
+        before do
+          set_smaller_buffer_size_than(size)
+
+          WebMock.stub_request(:get, url).to_return do |request|
+            from, to = request.headers['Range'].match(/bytes=(\d+)-(\d+)/).captures.map(&:to_i)
+            to = [to, size - 1].min
+
+            {
+              status: 206,
+              headers: { 'Content-Range' => "#{from}-#{to}/#{size}" },
+              body: file_body.byteslice(from..to)
+            }
+          end
+        end
+
+        it_behaves_like 'reads the body'
+      end
+
       context 'when read only first 100 bytes' do
         let(:length) { 100 }
         let(:expected_body) { file_body[0, length] }
