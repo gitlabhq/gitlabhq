@@ -174,6 +174,12 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect(project.deletion_error).to match(error_message)
     end
 
+    it 'increments deletion_attempt_count' do
+      destroy_project(project, user, {})
+
+      expect(project.reload.deletion_attempt_count).to eq(1)
+    end
+
     context 'when parent group visibility was made more restrictive while project was marked "pending deletion"' do
       let!(:group) { create(:group, :public) }
       let!(:project) { create(:project, :repository, :public, namespace: group) }
@@ -1342,6 +1348,120 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
           .not_to receive(:perform_async)
 
         service.send(:destroy_relation_export_uploads!)
+      end
+    end
+  end
+
+  describe '#track_destroy_failure' do
+    let(:service) { described_class.new(project, user) }
+
+    before do
+      stub_container_registry_config(enabled: false)
+      allow(project).to receive(:destroy!).and_raise(described_class::DestroyError, 'something broke')
+      allow(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+    end
+
+    context 'when the project was destroyed but a later step failed' do
+      before do
+        allow(project).to receive(:destroy!) do
+          allow(project).to receive(:destroyed?).and_return(true)
+          raise described_class::DestroyError, 'after_commit hook broke'
+        end
+      end
+
+      it 'still reports the failure to Sentry' do
+        service.execute
+
+        expect(Gitlab::ErrorTracking).to have_received(:track_exception).once.with(
+          an_object_having_attributes(message: a_string_including('after_commit hook broke')),
+          hash_including(project_id: project.id)
+        )
+      end
+    end
+
+    context 'when deletion_attempt_count is below MAX_DESTROY_ATTEMPTS' do
+      before do
+        ns_details = project.project_namespace.namespace_details
+        ns_details.update!(
+          state_metadata: ns_details.state_metadata.merge(
+            'deletion_attempt_count' => described_class::MAX_DESTROY_ATTEMPTS - 2
+          )
+        )
+      end
+
+      it 'reports the per-failure error to Sentry but does not escalate with DeletionStuckError' do
+        service.execute
+
+        expect(Gitlab::ErrorTracking).to have_received(:track_exception).once.with(
+          an_object_having_attributes(message: a_string_including('something broke')),
+          hash_including(project_id: project.id, deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS - 1)
+        )
+        expect(Gitlab::ErrorTracking).not_to have_received(:track_exception).with(
+          an_instance_of(described_class::DeletionStuckError), anything
+        )
+      end
+    end
+
+    context 'when deletion_attempt_count reaches MAX_DESTROY_ATTEMPTS' do
+      before do
+        ns_details = project.project_namespace.namespace_details
+        ns_details.update!(
+          state_metadata: ns_details.state_metadata.merge(
+            'deletion_attempt_count' => described_class::MAX_DESTROY_ATTEMPTS - 1
+          )
+        )
+      end
+
+      context 'when the previous failure is recent (inside STUCK_FAILURE_WINDOW)' do
+        before do
+          ns_details = project.project_namespace.namespace_details
+          ns_details.update!(
+            state_metadata: ns_details.state_metadata.merge(
+              'deletion_last_failed_at' => 1.hour.ago.iso8601
+            )
+          )
+        end
+
+        it 'reports the per-failure error but does not escalate with DeletionStuckError' do
+          service.execute
+
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).once.with(
+            an_object_having_attributes(message: a_string_including('something broke')),
+            hash_including(project_id: project.id, deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS)
+          )
+          expect(Gitlab::ErrorTracking).not_to have_received(:track_exception).with(
+            an_instance_of(described_class::DeletionStuckError), anything
+          )
+        end
+      end
+
+      context 'when the previous failure is older than STUCK_FAILURE_WINDOW' do
+        before do
+          ns_details = project.project_namespace.namespace_details
+          ns_details.update!(
+            state_metadata: ns_details.state_metadata.merge(
+              'deletion_last_failed_at' => 13.hours.ago.iso8601
+            )
+          )
+        end
+
+        it 'reports the per-failure error and escalates with DeletionStuckError' do
+          service.execute
+
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(
+            an_object_having_attributes(message: 'something broke'),
+            hash_including(project_id: project.id, deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS)
+          )
+          expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(
+            an_instance_of(described_class::DeletionStuckError).and(having_attributes(
+              message: 'Project stuck in deletion: something broke'
+            )),
+            hash_including(
+              project_id: project.id,
+              deletion_attempt_count: described_class::MAX_DESTROY_ATTEMPTS
+            )
+          )
+        end
       end
     end
   end

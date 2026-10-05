@@ -53,9 +53,12 @@ module Mcp
             finder_params
           ).execute.find_by_iid(iid)
 
-          raise ArgumentError, "Work item ##{iid} not found or inaccessible" unless work_item
+          return work_item if work_item
 
-          work_item
+          message = "Work item ##{iid} not found or inaccessible"
+          raise ResourceForbiddenError, message if parent.try(:work_items)&.exists?(iid: iid)
+
+          raise ResourceNotFoundError, message
         end
 
         def build_work_item_finder_params(parent)

@@ -254,11 +254,14 @@
 
 // Only display breadcrumb-free panel-header when it has action buttons or feedback badges
 // See `page_breadcrumbs_in_top_bar` feature flag
+// Match direct children (e.g. classification badge) and anything in the actions container
+// (including the portal target), but not buttons inside the breadcrumbs. GlBreadcrumb renders
+// an overflow toggle while measuring, which would otherwise toggle the header in a loop.
 .panel-header .panel-header-inner.without-breadcrumbs {
   display: none;
 
   /* stylelint-disable-next-line gitlab/no-gl-class, gitlab/no-has -- scoped to a specific panel-header-inner element */
-  &:has(.gl-badge, .gl-button) {
+  &:has(> :is(.gl-badge, .gl-button), .panel-header-inner-actions :is(.gl-badge, .gl-button)) {
     display: flex;
     justify-content: end;
   }

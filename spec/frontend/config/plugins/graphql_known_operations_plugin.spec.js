@@ -4,18 +4,13 @@ const getTappedCallback = (mockFn) => mockFn.mock.calls[0][1];
 
 describe('GraphqlKnownOperationsPlugin - Directive Extraction', () => {
   let mockCompilation;
-  let succeedModuleCallback;
   let emitCallback;
 
   beforeEach(() => {
     const plugin = new GraphqlKnownOperationsPlugin({ filename: 'test-operations.yml' });
 
     mockCompilation = {
-      hooks: {
-        succeedModule: {
-          tap: jest.fn(),
-        },
-      },
+      modules: new Set(),
       errors: [],
       getAsset: jest.fn(() => null),
       updateAsset: jest.fn(),
@@ -27,16 +22,11 @@ describe('GraphqlKnownOperationsPlugin - Directive Extraction', () => {
         emit: {
           tap: jest.fn(),
         },
-        compilation: {
-          tap: jest.fn(),
-        },
       },
     };
 
     plugin.apply(mockCompiler);
 
-    getTappedCallback(mockCompiler.hooks.compilation.tap)(mockCompilation);
-    succeedModuleCallback = getTappedCallback(mockCompilation.hooks.succeedModule.tap);
     emitCallback = getTappedCallback(mockCompiler.hooks.emit.tap);
   });
 
@@ -93,6 +83,11 @@ module.exports = doc;
     };
   };
 
+  const emitModule = (module) => {
+    mockCompilation.modules.add(module);
+    emitCallback(mockCompilation);
+  };
+
   const getEmittedYaml = () => {
     const emitAssetCall = mockCompilation.emitAsset.mock.calls[0];
     if (!emitAssetCall) return null;
@@ -107,8 +102,7 @@ module.exports = doc;
       const comments = '# @feature_category: code_review';
       const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetMergeRequest:');
@@ -119,8 +113,7 @@ module.exports = doc;
       const comments = '# @feature_category: source_code_management';
       const module = createModule({ comments, operationName: 'GetRepository' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetRepository:');
@@ -130,8 +123,7 @@ module.exports = doc;
     it('handles missing feature_category directive', () => {
       const module = createModule({ operationName: 'GetProject' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetProject:');
@@ -148,8 +140,7 @@ module.exports = doc;
         operationType: 'mutation',
       });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('UpdateIssue:');
@@ -160,8 +151,7 @@ module.exports = doc;
       const comments = '# @urgency: low';
       const module = createModule({ comments, operationName: 'GetStats' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetStats:');
@@ -171,8 +161,7 @@ module.exports = doc;
     it('handles missing urgency directive (defaults to "default")', () => {
       const module = createModule({ operationName: 'GetIssue' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetIssue:');
@@ -186,8 +175,7 @@ module.exports = doc;
 # @urgency: high`;
       const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetMergeRequest:');
@@ -200,8 +188,7 @@ module.exports = doc;
 #   @urgency:   high`;
       const module = createModule({ comments, operationName: 'GetPipeline' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetPipeline:');
@@ -217,8 +204,7 @@ module.exports = doc;
 # Note: This is used in the MR widget`;
       const module = createModule({ comments, operationName: 'GetMergeRequestDetails' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetMergeRequestDetails:');
@@ -232,8 +218,7 @@ module.exports = doc;
       const comments = '# @feature_category: continuous_integration';
       const module = createModule({ comments, operationName: 'GetPipeline' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('feature_category: continuous_integration');
@@ -244,8 +229,7 @@ module.exports = doc;
 # next line should not be included`;
       const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('feature_category: code_review');
@@ -257,8 +241,7 @@ module.exports = doc;
 # @urgency:    low   `;
       const module = createModule({ comments, operationName: 'GetProject' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('feature_category: code_review');
@@ -271,8 +254,7 @@ module.exports = doc;
 # @feature_category: issues`;
       const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('feature_category: code_review');
@@ -283,8 +265,7 @@ module.exports = doc;
       const comments = '# @feature_category: code_review:mr_widget';
       const module = createModule({ comments, operationName: 'GetMergeRequest' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain("feature_category: 'code_review:mr_widget'");
@@ -300,8 +281,7 @@ module.exports = doc;
         resource: '/path/to/some_plain_name.graphql',
       });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       const yaml = getEmittedYaml();
       expect(yaml).toContain('GetMergeRequest:');
@@ -315,8 +295,7 @@ module.exports = doc;
         definitions: [{ kind: 'FragmentDefinition' }],
       });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       expect(getPluginErrors()).toHaveLength(0);
       expect(getEmittedYaml()).toBe('{}\n');
@@ -328,8 +307,7 @@ module.exports = doc;
         definitions: [{ kind: 'ObjectTypeDefinition' }],
       });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       expect(getPluginErrors()).toHaveLength(0);
       expect(getEmittedYaml()).toBe('{}\n');
@@ -338,8 +316,7 @@ module.exports = doc;
     it('does not error on an anonymous operation', () => {
       const module = createModule({ resource: '/path/to/some_plain_name.graphql' });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       expect(getPluginErrors()).toHaveLength(0);
       expect(getEmittedYaml()).toBe('{}\n');
@@ -351,8 +328,7 @@ module.exports = doc;
         originalSource: null,
       });
 
-      succeedModuleCallback(module);
-      emitCallback(mockCompilation);
+      emitModule(module);
 
       expect(getPluginErrors()).toHaveLength(0);
       expect(getEmittedYaml()).toBe('{}\n');
@@ -361,8 +337,7 @@ module.exports = doc;
     it('errors when a .graphql file contains no GraphQL definitions at all', () => {
       const module = createModule({ resource: '/path/to/unexpected.graphql', definitions: [] });
 
-      expect(() => succeedModuleCallback(module)).not.toThrow();
-      emitCallback(mockCompilation);
+      expect(() => emitModule(module)).not.toThrow();
 
       expect(getPluginErrors()).toHaveLength(1);
       expect(getPluginErrors()[0].message).toContain('/path/to/unexpected.graphql');

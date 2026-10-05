@@ -655,12 +655,6 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         )
       end
 
-      it 'creates the import with user contribution mapping enabled' do
-        service.execute
-
-        expect(Import::BulkImports::EphemeralData.new(BulkImport.last.id).importer_user_mapping_enabled?).to be true
-      end
-
       it 'enqueues SourceUsersAttributesWorker' do
         expect(Import::BulkImports::SourceUsersAttributesWorker).to receive(:perform_async)
 

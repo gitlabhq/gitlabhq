@@ -2062,7 +2062,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
 
     context 'when the group has request_access_enabled disabled' do
-      subject { described_class.new(logged_in_user, create(:group, :public, request_access_enabled: false)) }
+      subject { described_class.new(logged_in_user, build_stubbed(:group, :public, request_access_enabled: false)) }
 
       it { expect_disallowed(:request_access) }
     end

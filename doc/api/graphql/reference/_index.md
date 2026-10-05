@@ -43520,6 +43520,39 @@ Fields:
 | <a id="dependencyproxysetting-enabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the dependency proxy is enabled for the group. |
 | <a id="dependencyproxysetting-identity"></a>`identity` | [`String`](#string) | Identity credential used to authenticate with Docker Hub when pulling images. Can be a username (for password or personal access token (PAT)) or organization name (for organization access token (OAT)). |
 
+### `DependencyScanningConfiguration`
+
+Configuration for a dependency scanning scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyscanningconfiguration-additionalcacertbundle"></a>`additionalCaCertBundle` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CA certificate bundle to trust. The bundle is added to the system's certificates and used by other tools during the scan. |
+| <a id="dependencyscanningconfiguration-apiscandownloaddelay"></a>`apiScanDownloadDelay` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Vulnerability scanning API initial delay in seconds before downloading scan results. |
+| <a id="dependencyscanningconfiguration-apitimeout"></a>`apiTimeout` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Vulnerability scanning API request timeout in seconds. |
+| <a id="dependencyscanningconfiguration-disabledresolutionjobs"></a>`disabledResolutionJobs` {{< icon name="warning-solid" >}} | [`[SecurityScanProfileDependencyResolutionJob!]`](#securityscanprofiledependencyresolutionjob) | Introduced in GitLab 19.5. Status: Experiment. Resolution jobs that are disabled. |
+| <a id="dependencyscanningconfiguration-enablemanifestfallback"></a>`enableManifestFallback` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether manifest fallback for dependency scanning is enabled. |
+| <a id="dependencyscanningconfiguration-enablevulnerabilityscan"></a>`enableVulnerabilityScan` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether the vulnerability analysis of generated SBOMs is enabled. |
+| <a id="dependencyscanningconfiguration-excludedpaths"></a>`excludedPaths` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.5. Status: Experiment. Glob paths excluded from the scan. |
+| <a id="dependencyscanningconfiguration-gradlecliopts"></a>`gradleCliOpts` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Additional command-line options passed to Gradle during dependency resolution. |
+| <a id="dependencyscanningconfiguration-gradleresolutionimage"></a>`gradleResolutionImage` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Image used by the Gradle dependency resolution job. |
+| <a id="dependencyscanningconfiguration-includedevdependencies"></a>`includeDevDependencies` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether development and test dependencies are included when scanning a supported file. |
+| <a id="dependencyscanningconfiguration-mavenargs"></a>`mavenArgs` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Additional arguments passed to Maven during dependency resolution. |
+| <a id="dependencyscanningconfiguration-mavendependencypluginversion"></a>`mavenDependencyPluginVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Version of maven-dependency-plugin used during resolution. |
+| <a id="dependencyscanningconfiguration-mavenresolutionimage"></a>`mavenResolutionImage` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Image used by the Maven dependency resolution job. |
+| <a id="dependencyscanningconfiguration-maxdepth"></a>`maxDepth` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Specifies the directory depth the analyzer should scan. A value of -1 scans all directories. |
+| <a id="dependencyscanningconfiguration-pipdependencypath"></a>`pipDependencyPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Path to install Python packages for analysis. |
+| <a id="dependencyscanningconfiguration-pipextraindexurl"></a>`pipExtraIndexUrl` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.5. Status: Experiment. Additional URLs of Python package indexes used in addition to pipIndexUrl. |
+| <a id="dependencyscanningconfiguration-pipindexurl"></a>`pipIndexUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Base URL of the Python Package Index. |
+| <a id="dependencyscanningconfiguration-pipmanifestfilenamepattern"></a>`pipManifestFileNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Custom pip manifest file name pattern to use for dependency resolution and manifest scanning. The pattern matches file names only, not directory paths. |
+| <a id="dependencyscanningconfiguration-pipcompilelockfilefilenamepattern"></a>`pipcompileLockfileFileNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Custom pipcompile lockfile file name pattern to use when analyzing. The pattern matches file names only, not directory paths. |
+| <a id="dependencyscanningconfiguration-pythonresolutionimage"></a>`pythonResolutionImage` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Image used by the Python dependency resolution job. |
+| <a id="dependencyscanningconfiguration-searchignorehiddendirs"></a>`searchIgnoreHiddenDirs` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether hidden directories are ignored when searching for supported files. |
+| <a id="dependencyscanningconfiguration-secureanalyzersprefix"></a>`secureAnalyzersPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Prefix for the container registry from which the analyzer image is pulled. |
+| <a id="dependencyscanningconfiguration-secureloglevel"></a>`secureLogLevel` {{< icon name="warning-solid" >}} | [`SecurityScanProfileSecureLogLevel`](#securityscanprofilesecureloglevel) | Introduced in GitLab 19.5. Status: Experiment. Logging level used by the analyzer. |
+| <a id="dependencyscanningconfiguration-staticreachabilityenabled"></a>`staticReachabilityEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether static reachability is enabled. |
+
 ### `DependencyTrackedRef`
 
 Ref (branch or tag) where a software dependency appears.
@@ -74075,6 +74108,16 @@ Controls GitLab Advanced SAST diff-based scanning.
 | <a id="securityscanprofileadvancedsastpartialscan-differential"></a>`DIFFERENTIAL` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Enable diff-based scanning. |
 | <a id="securityscanprofileadvancedsastpartialscan-disabled"></a>`DISABLED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Disable diff-based scanning. |
 
+### `SecurityScanProfileDependencyResolutionJob`
+
+Dependency resolution job that can be disabled.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofiledependencyresolutionjob-gradle"></a>`GRADLE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Gradle dependency resolution job. |
+| <a id="securityscanprofiledependencyresolutionjob-maven"></a>`MAVEN` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Maven dependency resolution job. |
+| <a id="securityscanprofiledependencyresolutionjob-python"></a>`PYTHON` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Python dependency resolution job. |
+
 ### `SecurityScanProfileFalsePositiveConfidence`
 
 False positive assessment a finding must carry to be acted on.
@@ -74101,6 +74144,18 @@ Whether a triage and remediation capability runs automatically or on demand.
 | ----- | ----------- |
 | <a id="securityscanprofilerunmode-auto"></a>`AUTO` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Run automatically as findings appear. |
 | <a id="securityscanprofilerunmode-manual"></a>`MANUAL` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Run only when triggered by a user. |
+
+### `SecurityScanProfileSecureLogLevel`
+
+Logging level used by the analyzer.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofilesecureloglevel-debug"></a>`DEBUG` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Debug messages and above. |
+| <a id="securityscanprofilesecureloglevel-error"></a>`ERROR` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Error messages and above. |
+| <a id="securityscanprofilesecureloglevel-fatal"></a>`FATAL` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Fatal messages only. |
+| <a id="securityscanprofilesecureloglevel-info"></a>`INFO` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Informational messages and above. |
+| <a id="securityscanprofilesecureloglevel-warn"></a>`WARN` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.5. Status: Experiment. Warning messages and above. |
 
 ### `SecurityScanProfileType`
 
@@ -77462,6 +77517,7 @@ Effective configuration for a scan profile trigger, resolved by scan type, and b
 One of:
 
 - [`AutoRemediationConfiguration`](#autoremediationconfiguration)
+- [`DependencyScanningConfiguration`](#dependencyscanningconfiguration)
 - [`SastConfiguration`](#sastconfiguration)
 - [`SastFalsePositiveConfiguration`](#sastfalsepositiveconfiguration)
 - [`SastVulnerabilityResolutionConfiguration`](#sastvulnerabilityresolutionconfiguration)
@@ -80621,10 +80677,44 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="securityscanprofileconfigurationinput-dependencyscanning"></a>`dependencyScanning` {{< icon name="warning-solid" >}} | [`SecurityScanProfileDependencyScanningConfigurationInput`](#securityscanprofiledependencyscanningconfigurationinput) | Introduced in GitLab 19.5. Status: Experiment. Configuration for a dependency scanning scan profile. |
 | <a id="securityscanprofileconfigurationinput-dependencyscanningpostprocessing"></a>`dependencyScanningPostProcessing` {{< icon name="warning-solid" >}} | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration for a dependency scanning post-processing scan profile. |
 | <a id="securityscanprofileconfigurationinput-sast"></a>`sast` {{< icon name="warning-solid" >}} | [`SecurityScanProfileSastConfigurationInput`](#securityscanprofilesastconfigurationinput) | Introduced in GitLab 19.4. Status: Experiment. Configuration for a SAST scan profile. |
 | <a id="securityscanprofileconfigurationinput-secretdetection"></a>`secretDetection` {{< icon name="warning-solid" >}} | [`SecurityScanProfileSecretDetectionConfigurationInput`](#securityscanprofilesecretdetectionconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration for a secret detection scan profile. |
 | <a id="securityscanprofileconfigurationinput-triageandremediation"></a>`triageAndRemediation` {{< icon name="warning-solid" >}} | [`SecurityScanProfileTriageAndRemediationConfigurationInput`](#securityscanprofiletriageandremediationconfigurationinput) | Introduced in GitLab 19.4. Status: Experiment. Configuration for a triage and remediation scan profile. |
+
+### `SecurityScanProfileDependencyScanningConfigurationInput`
+
+Configuration for a dependency scanning scan profile.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-additionalcacertbundle"></a>`additionalCaCertBundle` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. CA certificate bundle to trust. The bundle is added to the system's certificates and used by other tools during the scan. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-apiscandownloaddelay"></a>`apiScanDownloadDelay` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Vulnerability scanning API initial delay in seconds before downloading scan results, from 1 to 120. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-apitimeout"></a>`apiTimeout` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Vulnerability scanning API request timeout in seconds, from 5 to 300. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-disabledresolutionjobs"></a>`disabledResolutionJobs` {{< icon name="warning-solid" >}} | [`[SecurityScanProfileDependencyResolutionJob!]`](#securityscanprofiledependencyresolutionjob) | Introduced in GitLab 19.5. Status: Experiment. Resolution jobs to disable. By default, all available resolution jobs are enabled. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-enablemanifestfallback"></a>`enableManifestFallback` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Enable manifest fallback for dependency scanning. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-enablevulnerabilityscan"></a>`enableVulnerabilityScan` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Enable the vulnerability analysis of generated SBOMs. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-excludedpaths"></a>`excludedPaths` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.5. Status: Experiment. Glob paths excluded from the scan. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-gradlecliopts"></a>`gradleCliOpts` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Additional command-line options passed to Gradle during dependency resolution. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-gradleresolutionimage"></a>`gradleResolutionImage` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Image used by the Gradle dependency resolution job. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-includedevdependencies"></a>`includeDevDependencies` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Include development and test dependencies when scanning a supported file. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-mavenargs"></a>`mavenArgs` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Additional arguments passed to Maven during dependency resolution. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-mavendependencypluginversion"></a>`mavenDependencyPluginVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Version of maven-dependency-plugin used during resolution. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-mavenresolutionimage"></a>`mavenResolutionImage` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Image used by the Maven dependency resolution job. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-maxdepth"></a>`maxDepth` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Specifies the directory depth the analyzer should scan. A value of -1 scans all directories. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-pipdependencypath"></a>`pipDependencyPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Path to install Python packages for analysis. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-pipextraindexurl"></a>`pipExtraIndexUrl` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.5. Status: Experiment. Additional URLs of Python package indexes to use in addition to pipIndexUrl. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-pipindexurl"></a>`pipIndexUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Base URL of the Python Package Index. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-pipmanifestfilenamepattern"></a>`pipManifestFileNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Custom pip manifest file name pattern to use for dependency resolution and manifest scanning. The pattern matches file names only, not directory paths. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-pipcompilelockfilefilenamepattern"></a>`pipcompileLockfileFileNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Custom pipcompile lockfile file name pattern to use when analyzing. The pattern matches file names only, not directory paths. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-pythonresolutionimage"></a>`pythonResolutionImage` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Image used by the Python dependency resolution job. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-searchignorehiddendirs"></a>`searchIgnoreHiddenDirs` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Ignore hidden directories when searching for supported files. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-secureanalyzersprefix"></a>`secureAnalyzersPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.5. Status: Experiment. Prefix for the container registry from which the analyzer image is pulled. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-secureloglevel"></a>`secureLogLevel` {{< icon name="warning-solid" >}} | [`SecurityScanProfileSecureLogLevel`](#securityscanprofilesecureloglevel) | Introduced in GitLab 19.5. Status: Experiment. Logging level used by the analyzer. |
+| <a id="securityscanprofiledependencyscanningconfigurationinput-staticreachabilityenabled"></a>`staticReachabilityEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Enable static reachability. |
 
 ### `SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`
 

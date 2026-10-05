@@ -398,6 +398,7 @@ The following metrics can be controlled by feature flags:
 | `gitaly_circuit_breaker_requests_total`      | `add_circuit_breaker_to_gitaly`    |
 | `gitaly_circuit_breaker_transitions_total`   | `add_circuit_breaker_to_gitaly`    |
 | `ruby_gvl_wait_seconds_total`                | `enable_sidekiq_gvl_metrics`       |
+| `ruby_gvl_wait_seconds_total`                | `enable_puma_gvl_metrics`          |
 
 ## Praefect metrics
 

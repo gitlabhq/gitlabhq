@@ -90,10 +90,11 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewTool, feature_category: :mcp_s
         }
       end
 
-      it 'returns error response' do
+      it 'returns error response', :aggregate_failures do
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
         expect(result[:content].first[:text]).to include('Saved view not found or inaccessible')
       end
     end
@@ -105,10 +106,11 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewTool, feature_category: :mcp_s
         )
       end
 
-      it 'returns error response' do
+      it 'returns error response', :aggregate_failures do
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
         expect(result[:content].first[:text]).to include('Saved view not found or inaccessible')
       end
     end

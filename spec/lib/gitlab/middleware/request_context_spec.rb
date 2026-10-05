@@ -23,6 +23,46 @@ RSpec.describe Gitlab::Middleware::RequestContext, feature_category: :applicatio
 
     subject { described_class.new(app).call(env) }
 
+    context 'GVL instrumentation' do
+      let(:env) { Rack::MockRequest.env_for("/") }
+
+      it 'enables the GVL timers' do
+        expect(GVLTools::LocalTimer).to receive(:enable)
+        expect(GVLTools::GlobalTimer).to receive(:enable)
+
+        subject
+      end
+
+      context 'when the timers start disabled' do
+        before do
+          ::Gitlab::Instrumentation::Gvl.toggle(false)
+        end
+
+        after do
+          ::Gitlab::Instrumentation::Gvl.toggle(false)
+        end
+
+        it 'records the thread timer baseline after enabling the timers' do
+          allow(GVLTools::LocalTimer).to receive(:monotonic_time).and_return(42)
+
+          expect { subject }.to change { instance.gvl_local_timer_start }.from(nil).to(42)
+        end
+      end
+
+      context 'when enable_puma_gvl_metrics is disabled' do
+        before do
+          stub_feature_flags(enable_puma_gvl_metrics: false)
+        end
+
+        it 'disables the GVL timers' do
+          expect(GVLTools::LocalTimer).to receive(:disable)
+          expect(GVLTools::GlobalTimer).to receive(:disable)
+
+          subject
+        end
+      end
+    end
+
     context 'setting the client ip' do
       context 'with X-Forwarded-For headers' do
         let(:load_balancer_ip) { '1.2.3.4' }

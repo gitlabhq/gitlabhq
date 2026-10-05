@@ -906,6 +906,7 @@ export default [
         setInputValue: 'readonly',
         waitAndSetValue: 'readonly',
         waitAndClick: 'readonly',
+        waitForModalConfirm: 'readonly',
         waitForElementToBeNull: 'readonly',
         waitForAssertion: 'readonly',
         createPortalElement: 'readonly',

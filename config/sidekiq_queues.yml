@@ -119,6 +119,8 @@
   - 1
 - - analytics_knowledge_graph_code_indexing
   - 1
+- - analytics_orbit_disable_ended_trials
+  - 1
 - - analytics_usage_trends_counter_job
   - 1
 - - anti_abuse_ban_duplicate_users

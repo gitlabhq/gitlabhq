@@ -454,10 +454,11 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
         )
       end
 
-      it 'returns error response about inaccessible work items' do
+      it 'reports the failure without a category, matching the sibling no-data sites', :aggregate_failures do
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(Mcp::Tools::Base::Response.error_reason(result)).to eq(:error)
         expect(result[:content].first[:text]).to include('The work items are inaccessible')
       end
     end

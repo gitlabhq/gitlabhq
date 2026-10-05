@@ -34,11 +34,6 @@ module Gitlab
           state_metadata.except!('deletion_scheduled_by_user_id')
         end
 
-        def set_deletion_error_data(transition)
-          error = transition_args(transition)[:deletion_error]
-          self.deletion_error = error if error.present?
-        end
-
         def update_state_metadata_on_failure(transition)
           error_message = build_transition_error_message(transition)
           update_state_metadata(transition, error: error_message)

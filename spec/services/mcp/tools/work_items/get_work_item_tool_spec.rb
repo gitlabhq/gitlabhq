@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_server do
+  let(:not_found_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError }
+  let(:forbidden_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError }
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, group: group) }
@@ -166,7 +169,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
       let(:arguments) { { project_id: project.id.to_s, work_item_iid: non_existing_record_iid } }
 
       it 'raises the uniform not-found error' do
-        expect { result }.to raise_error(ArgumentError, /not found/)
+        expect { result }.to raise_error(not_found_error, /not found/)
       end
     end
 
@@ -177,8 +180,22 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
       let(:arguments) { { project_id: project.id.to_s, work_item_iid: confidential_work_item.iid } }
       let(:tool) { described_class.new(current_user: non_member, params: arguments, version: '0.1.0') }
 
-      it 'raises the same not-found error as a nonexistent work item' do
-        expect { result }.to raise_error(ArgumentError, /not found/)
+      it 'raises with the same message as a nonexistent work item' do
+        expect { result }.to raise_error(forbidden_error, /not found/)
+      end
+    end
+
+    context 'when the query resolves but returns no work item' do
+      let(:arguments) { { project_id: project.id.to_s, work_item_iid: work_item.iid } }
+
+      before do
+        allow(GitlabSchema).to receive(:execute).and_return({ 'data' => { 'workItem' => nil } })
+      end
+
+      it 'reports a not-found error without leaking whether the work item exists', :aggregate_failures do
+        expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
+        expect(result[:content].first[:text]).to eq('Work item not found or inaccessible.')
       end
     end
   end

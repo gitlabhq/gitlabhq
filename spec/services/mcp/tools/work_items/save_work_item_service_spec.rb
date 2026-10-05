@@ -527,8 +527,9 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
           .not_to change { WorkItem.count }
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
         expect(result[:content].first[:text])
-          .to eq('Validation error: Work item #42 not found or inaccessible')
+          .to eq('Tool execution failed: Work item #42 not found or inaccessible')
       end
     end
 

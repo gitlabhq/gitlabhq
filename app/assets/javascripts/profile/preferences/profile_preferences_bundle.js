@@ -1,6 +1,7 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { initListboxInputs } from '~/vue_shared/components/listbox_input/init_listbox_inputs';
 import ProfilePreferences from './components/profile_preferences.vue';
+import ProfilePreferencesIntegrations from './components/integrations.vue';
 import ColorModeSelector from './components/color_mode_selector.vue';
 
 function initColorModeSelector() {
@@ -76,27 +77,45 @@ function initOrbitSubsettings() {
   mainCheckbox.addEventListener('change', handleMainChange);
 }
 
+function initIntegrations() {
+  const el = document.querySelector('#js-profile-preferences-integrations');
+
+  if (!el) return null;
+
+  const { integrationViews, userFields, extensionsMarketplaceUrl } = el.dataset;
+
+  return initVueApp({
+    el,
+    name: 'ProfilePreferencesIntegrationsRoot',
+    component: ProfilePreferencesIntegrations,
+    provide: {
+      integrationViews: JSON.parse(integrationViews),
+      userFields: JSON.parse(userFields),
+      extensionsMarketplaceUrl,
+    },
+  });
+}
+
 export default () => {
   initListboxInputs();
   initTextEditorPreference();
   initOrbitSubsettings();
   initColorModeSelector();
+  initIntegrations();
 
   const el = document.querySelector('#js-profile-preferences-app');
   const formEl = document.querySelector('#profile-preferences-form');
-  const shouldParse = ['integrationViews', 'colorModes', 'themes', 'userFields'];
+  const { colorModes, themes, bodyClasses } = el.dataset;
 
-  const provide = Object.keys(el.dataset).reduce(
-    (memo, key) => {
-      let value = el.dataset[key];
-      if (shouldParse.includes(key)) {
-        value = JSON.parse(value);
-      }
-
-      return { ...memo, [key]: value };
+  return initVueApp({
+    el,
+    name: 'ProfilePreferencesApp',
+    component: ProfilePreferences,
+    provide: {
+      formEl,
+      colorModes: JSON.parse(colorModes),
+      themes: JSON.parse(themes),
+      bodyClasses,
     },
-    { formEl },
-  );
-
-  return initVueApp({ el, name: 'ProfilePreferencesApp', provide, component: ProfilePreferences });
+  });
 };

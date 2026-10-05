@@ -24,6 +24,19 @@
         "null"
       ]
     },
+    "deletion_attempt_count": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "deletion_last_failed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
     "correlation_id": {
       "type": [
         "string",

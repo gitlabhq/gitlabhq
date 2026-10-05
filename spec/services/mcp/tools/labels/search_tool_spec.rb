@@ -223,10 +223,11 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     context 'when project does not exist' do
       let(:params) { { full_path: 'non_existing_project', is_project: true, search: 'test' } }
 
-      it 'returns a project not found error with the path' do
+      it 'returns a project not found error with the path', :aggregate_failures do
         result = tool.execute
 
         expect(result[:isError]).to be(true)
+        expect(result[:reason]).to eq(:not_found)
         expect(result[:content].first[:text]).to include(
           "Project 'non_existing_project' not found or inaccessible"
         )

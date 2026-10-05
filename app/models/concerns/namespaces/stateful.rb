@@ -45,6 +45,7 @@ module Namespaces
         before_transition on: :schedule_deletion, do: :ensure_transition_user
         before_transition on: :schedule_deletion, do: :set_deletion_schedule_data
         before_transition on: :cancel_deletion, do: :clear_deletion_schedule_data
+        before_transition on: :cancel_deletion, do: :clear_deletion_data
         before_transition on: :schedule_transfer, do: :ensure_transition_user
         before_transition on: :schedule_transfer, do: :set_transfer_schedule_data
         before_transition on: :start_transfer, do: :ensure_transition_user
@@ -52,6 +53,7 @@ module Namespaces
         before_transition on: :complete_transfer, do: :clear_transfer_data
         before_transition on: :cancel_transfer, from: :transfer_scheduled, do: :clear_transfer_data
         before_transition on: :cancel_transfer, from: :transfer_in_progress, do: :clear_transfer_data_preserving_target
+        before_transition on: :schedule_deletion, do: :set_deletion_data
         before_transition on: :reschedule_deletion, do: :set_deletion_error_data
 
         event :archive do

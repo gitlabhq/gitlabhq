@@ -8310,12 +8310,6 @@ msgid_plural "AgentPlan|Awaiting input (%{count} questions)"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "AgentPlan|Confidence"
-msgstr ""
-
-msgid "AgentPlan|Confidence: %{level}"
-msgstr ""
-
 msgid "AgentPlan|Continue"
 msgstr ""
 
@@ -8370,6 +8364,12 @@ msgstr ""
 msgid "AgentPlan|Previous open question"
 msgstr ""
 
+msgid "AgentPlan|Readiness"
+msgstr ""
+
+msgid "AgentPlan|Readiness: %{level}"
+msgstr ""
+
 msgid "AgentPlan|Ready for review"
 msgstr ""
 
@@ -8397,7 +8397,7 @@ msgstr ""
 msgid "AgentPlan|What is a workplan?"
 msgstr ""
 
-msgid "AgentPlan|What is the confidence score?"
+msgid "AgentPlan|What is the readiness score?"
 msgstr ""
 
 msgid "AgentPlan|Workplan"
@@ -37025,6 +37025,33 @@ msgstr ""
 msgid "Explore topics"
 msgstr ""
 
+msgid "ExplorePremium|Explore Premium"
+msgstr ""
+
+msgid "ExplorePremium|Get more from GitLab"
+msgstr ""
+
+msgid "ExplorePremium|GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "ExplorePremium|Premium adds more control over reviews, planning, and delivery. Explore what it has to offer for your group."
+msgstr ""
+
+msgid "ExplorePremium|Premium adds more control over reviews, planning, and delivery. Request an upgrade to unlock it for your group."
+msgstr ""
+
+msgid "ExplorePremium|Request Premium features"
+msgstr ""
+
+msgid "ExplorePremium|Requested"
+msgstr ""
+
+msgid "ExplorePremium|Source Code Management & CI/CD"
+msgstr ""
+
+msgid "ExplorePremium|Thank you for your interest in this feature, we've recorded your request. If you need access to Premium features, ask your group Owner to upgrade."
+msgstr ""
+
 msgid "Export"
 msgstr ""
 
@@ -45524,6 +45551,9 @@ msgid "Include new features from all tiers."
 msgstr ""
 
 msgid "Include the name of the author of the issue, merge request or comment in the email body. By default, GitLab overrides the email sender's name. Some email servers don't support that option."
+msgstr ""
+
+msgid "Included"
 msgstr ""
 
 msgid "Includes LFS objects. It can be overridden per group, or per project. Set to 0 for no limit."
@@ -55441,6 +55471,9 @@ msgid "Not found."
 msgstr ""
 
 msgid "Not in use"
+msgstr ""
+
+msgid "Not included"
 msgstr ""
 
 msgid "Not permitted to create compliance control"

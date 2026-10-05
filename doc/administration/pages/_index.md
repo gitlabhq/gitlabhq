@@ -604,9 +604,7 @@ For more information, see
 [^external-node-setting]: When you use an external Sidekiq node, you must add `pages_external_url` to your
     configuration. Without this setting, the external Sidekiq node cannot process deploy jobs.
 
-## Advanced configuration
-
-### Access control
+## Access control
 
 GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.
@@ -635,7 +633,7 @@ Pages access control is turned off by default. To turn it on:
 > For this setting to be effective with multi-node setups, apply it to all App nodes and Sidekiq
 > nodes.
 
-#### Using Pages with reduced authentication scope
+### Using Pages with reduced authentication scope
 
 You can configure the scope the Pages daemon uses to authenticate. By default, it uses the `api`
 scope.
@@ -662,7 +660,7 @@ To change the scope Pages uses:
    `read_api`).
 1. Select **Save changes**.
 
-#### Disable public access to all Pages sites
+### Disable public access to all Pages sites
 
 You can enforce access control for all GitLab Pages websites hosted
 on your GitLab instance. When you turn on this setting, only authenticated users
@@ -686,7 +684,7 @@ To turn off public access to all Pages sites:
 1. Select the **Disable public access to Pages sites** checkbox.
 1. Select **Save changes**.
 
-#### Disable unique domains by default
+### Disable unique domains by default
 
 {{< history >}}
 
@@ -719,6 +717,11 @@ To turn off unique domains by default:
 
 This setting only affects new Pages sites.
 Existing sites maintain their current unique domain configuration.
+
+## Networking and certificates
+
+Configure how the GitLab Pages daemon handles network connections, certificates, and security
+headers.
 
 ### Running behind a proxy
 
@@ -807,6 +810,282 @@ To configure the certificates in your GitLab Pages server:
 1. Save a copy of the full certificate chain files in the `/etc/gitlab/trusted-certs` directory on
    all your GitLab nodes.
 
+### HTTP Strict Transport Security (HSTS) support
+
+HTTP Strict Transport Security (HSTS) can be turned on through the `gitlab_pages['headers']`
+configuration option. HSTS informs browsers that the website should always be accessed over HTTPS,
+preventing attackers from forcing unencrypted connections. It can also improve page loading speed by
+preventing browsers from attempting an unencrypted HTTP connection before being redirected to HTTPS.
+
+```ruby
+gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
+```
+
+### Configure listener for reverse proxy requests
+
+To configure the proxy listener of GitLab Pages:
+
+1. By default the listener is configured to listen for requests on `localhost:8090`.
+
+   To turn it off, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['listen_proxy'] = nil
+   ```
+
+   To change the port, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['listen_proxy'] = "localhost:10080"
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+## Limits
+
+Set limits on GitLab Pages sites, like site size and the number of custom domains, files, and
+redirect rules. You can also set when parallel deployments expire by default.
+
+### Set global maximum size of each GitLab Pages site
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To set the global maximum pages size for a project:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Preferences**.
+1. Expand **Pages**.
+1. In **Maximum size of pages**, enter a value. The default is `100`.
+1. Select **Save changes**.
+
+### Set maximum size of each GitLab Pages site in a group
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Pages**.
+1. Enter a value under **Maximum size** in MB.
+1. Select **Save changes**.
+
+### Set maximum size of GitLab Pages site in a project
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To set the maximum size of a GitLab Pages site in a project, overriding the inherited setting:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Deploy** > **Pages**.
+1. In **Maximum size of pages**, enter the size in MB.
+1. Select **Save changes**.
+
+### Set maximum number of GitLab Pages custom domains for a project
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To set the maximum number of GitLab Pages custom domains for a project:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Preferences**.
+1. Expand **Pages**.
+1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
+1. Select **Save changes**.
+
+### Set maximum number of files per GitLab Pages website
+
+The total number of file entries (including directories and symlinks) is limited to `200,000`
+for each GitLab Pages website.
+
+You can update the limit in your GitLab Self-Managed instance using the
+[GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session).
+
+For more information, see
+[GitLab application limits](../instance_limits.md#number-of-files-per-gitlab-pages-website).
+
+### Pages project redirect limits
+
+GitLab Pages has default limits for the
+[`_redirects` file](../../user/project/pages/redirects.md) to minimize performance impact.
+
+To adjust the limits:
+
+```ruby
+gitlab_pages['redirects_max_config_size'] = 131072
+gitlab_pages['redirects_max_path_segments'] = 50
+gitlab_pages['redirects_max_rule_count'] = 2000
+```
+
+### Configure the default expiry for parallel deployments
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456477) in GitLab 17.4.
+
+{{< /history >}}
+
+Prerequisites:
+
+- Administrator access to the instance.
+
+To configure the default duration after
+[parallel deployments](../../user/project/pages/_index.md#parallel-deployments) are deleted:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Preferences**.
+1. Expand **Pages**.
+1. Enter a value for **Default expiration for parallel deployments in seconds**.
+   Use `0` if parallel deployments should not expire by default.
+1. Select **Save changes**.
+
+## Storage
+
+Configure where GitLab Pages stores deployed sites, and how the Pages daemon caches content it
+serves from ZIP archives.
+
+### Change storage path
+
+To change the default path where GitLab Pages content is stored:
+
+1. Pages are stored by default in `/var/opt/gitlab/gitlab-rails/shared/pages`. To use a different
+   location, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['pages_path'] = "/mnt/storage/pages"
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+### Object storage settings
+
+The following [object storage](../object_storage.md) settings are:
+
+- Nested under `pages:` and then `object_store:` on self-compiled installations.
+- Prefixed by `pages_object_store_` on Linux package installations.
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `enabled` | Whether object storage is turned on. | `false` |
+| `remote_directory` | The name of the bucket where Pages site content is stored. | |
+| `connection` | Various connection options described below. | |
+
+> [!note]
+> If you want to stop using and disconnect the NFS server, you must
+> [explicitly turn off local storage](#disable-pages-local-storage).
+
+#### S3-compatible connection settings
+
+You should use the [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
+
+See [the available connection settings for different providers](../object_storage.md#configure-the-connection-settings).
+
+#### Migrate Pages deployments to object storage
+
+Existing Pages deployment objects (ZIP archives) can be stored in either local storage or object
+storage.
+
+To migrate your existing Pages deployments from local storage to object storage:
+
+```shell
+sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
+```
+
+You can track progress and verify that all Pages deployments migrated successfully using the
+[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database):
+
+- `sudo gitlab-rails dbconsole --database main` for Linux package installations.
+- `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
+
+Verify that `objectstg` (where `store=2`) has a count of all Pages deployments:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM pages_deployments;
+
+total | filesystem | objectstg
+------+------------+-----------
+   10 |          0 |        10
+```
+
+After verifying everything is working correctly,
+[turn off Pages local storage](#disable-pages-local-storage).
+
+#### Rolling Pages deployments back to local storage
+
+After migrating to object storage, you can move your Pages deployments back to local storage:
+
+```shell
+sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
+```
+
+#### Disable Pages local storage
+
+If you use object storage, you can turn off local storage to avoid unnecessary disk usage or writes:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['pages_local_store_enabled'] = false
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+### Enable Pages network storage in multi-node environments
+
+Object storage is the preferred configuration for most environments. However,
+if your requirements call for network storage and you want to configure Pages
+to run on a [separate server](#running-gitlab-pages-on-a-separate-server), you should:
+
+1. Ensure the shared storage volume is already mounted and available on both the primary server and
+   your intended Pages server.
+1. Update `/etc/gitlab/gitlab.rb` on each node to include:
+
+   ```ruby
+   gitlab_pages['enable_disk'] = true
+   gitlab_rails['pages_path'] = "/var/opt/gitlab/gitlab-rails/shared/pages" # Path to your network storage
+   ```
+
+1. Switch over Pages to your separate server.
+
+After you successfully configure Pages on your separate server, only that server needs access to the
+shared storage volume. Consider keeping the shared storage volume mounted on your primary server in
+case you need to migrate back to a single-node environment.
+
+### ZIP storage
+
+The underlying storage format of GitLab Pages is a single ZIP archive per project. These archives
+can be stored either locally or on [object storage](#object-storage-settings). A new archive is
+stored every time a Pages site is updated.
+
 ### ZIP serving and cache configuration
 
 > [!warning]
@@ -841,217 +1120,10 @@ After an archive reaches `zip_cache_expiration`, it's marked as expired and remo
 
 ![A timeline shows the ZIP cache refresh extends the ZIP cache expiration time.](img/zip_cache_configuration_v13_7.png)
 
-### HTTP Strict Transport Security (HSTS) support
+### Backup
 
-HTTP Strict Transport Security (HSTS) can be turned on through the `gitlab_pages['headers']`
-configuration option. HSTS informs browsers that the website should always be accessed over HTTPS,
-preventing attackers from forcing unencrypted connections. It can also improve page loading speed by
-preventing browsers from attempting an unencrypted HTTP connection before being redirected to HTTPS.
-
-```ruby
-gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
-```
-
-### Pages project redirect limits
-
-GitLab Pages has default limits for the
-[`_redirects` file](../../user/project/pages/redirects.md) to minimize performance impact.
-
-To adjust the limits:
-
-```ruby
-gitlab_pages['redirects_max_config_size'] = 131072
-gitlab_pages['redirects_max_path_segments'] = 50
-gitlab_pages['redirects_max_rule_count'] = 2000
-```
-
-## Use environment variables
-
-You can pass an environment variable to the Pages daemon to turn a feature flag on or off.
-
-To turn off the configurable directory feature:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['env'] = {
-     'FF_CONFIGURABLE_ROOT_DIR' => "false"
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-## Activate verbose logging for daemon
-
-To configure verbose logging of the GitLab Pages daemon:
-
-1. By default the daemon only logs with `INFO` level. To log events with level `DEBUG`, edit
-   `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['log_verbose'] = true
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-## Propagating the correlation ID
-
-Setting `propagate_correlation_id` to `true` allows installations behind a reverse proxy to generate
-and set a correlation ID on requests sent to GitLab Pages. When a reverse proxy sets the header
-value `X-Request-ID`, the value propagates in the request chain. Users can
-[find the correlation ID in the logs](../logs/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
-
-To turn on the propagation of the correlation ID:
-
-1. In `/etc/gitlab/gitlab.rb`, add:
-
-   ```ruby
-   gitlab_pages['propagate_correlation_id'] = true
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-## Change storage path
-
-To change the default path where GitLab Pages content is stored:
-
-1. Pages are stored by default in `/var/opt/gitlab/gitlab-rails/shared/pages`. To use a different
-   location, edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['pages_path'] = "/mnt/storage/pages"
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-## Configure listener for reverse proxy requests
-
-To configure the proxy listener of GitLab Pages:
-
-1. By default the listener is configured to listen for requests on `localhost:8090`.
-
-   To turn it off, edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['listen_proxy'] = nil
-   ```
-
-   To change the port, edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['listen_proxy'] = "localhost:10080"
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-## Set global maximum size of each GitLab Pages site
-
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-To set the global maximum pages size for a project:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Preferences**.
-1. Expand **Pages**.
-1. In **Maximum size of pages**, enter a value. The default is `100`.
-1. Select **Save changes**.
-
-## Set maximum size of each GitLab Pages site in a group
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
-
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Settings** > **General**.
-1. Expand **Pages**.
-1. Enter a value under **Maximum size** in MB.
-1. Select **Save changes**.
-
-## Set maximum size of GitLab Pages site in a project
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-To set the maximum size of a GitLab Pages site in a project, overriding the inherited setting:
-
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Deploy** > **Pages**.
-1. In **Maximum size of pages**, enter the size in MB.
-1. Select **Save changes**.
-
-## Set maximum number of GitLab Pages custom domains for a project
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-To set the maximum number of GitLab Pages custom domains for a project:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Preferences**.
-1. Expand **Pages**.
-1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
-1. Select **Save changes**.
-
-## Configure the default expiry for parallel deployments
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456477) in GitLab 17.4.
-
-{{< /history >}}
-
-Prerequisites:
-
-- Administrator access to the instance.
-
-To configure the default duration after
-[parallel deployments](../../user/project/pages/_index.md#parallel-deployments) are deleted:
-
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **Preferences**.
-1. Expand **Pages**.
-1. Enter a value for **Default expiration for parallel deployments in seconds**.
-   Use `0` if parallel deployments should not expire by default.
-1. Select **Save changes**.
-
-## Set maximum number of files per GitLab Pages website
-
-The total number of file entries (including directories and symlinks) is limited to `200,000`
-for each GitLab Pages website.
-
-You can update the limit in your GitLab Self-Managed instance using the
-[GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-
-For more information, see
-[GitLab application limits](../instance_limits.md#number-of-files-per-gitlab-pages-website).
+GitLab Pages is part of the [regular backup](../backup_restore/_index.md), so there is no
+separate backup to configure.
 
 ## Running GitLab Pages on a separate server
 
@@ -1215,110 +1287,55 @@ Examples:
 - Decreasing `gitlab_retrieval_retries` reduces the number of times a domain's configuration is
   retried before reporting an error.
 
-## Object storage settings
+## Logging and environment
 
-The following [object storage](../object_storage.md) settings are:
+Pass environment variables to the GitLab Pages daemon, and configure the details it adds to logs.
 
-- Nested under `pages:` and then `object_store:` on self-compiled installations.
-- Prefixed by `pages_object_store_` on Linux package installations.
+### Use environment variables
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `enabled` | Whether object storage is turned on. | `false` |
-| `remote_directory` | The name of the bucket where Pages site content is stored. | |
-| `connection` | Various connection options described below. | |
+You can pass an environment variable to the Pages daemon to turn a feature flag on or off.
 
-> [!note]
-> If you want to stop using and disconnect the NFS server, you must
-> [explicitly turn off local storage](#disable-pages-local-storage).
-
-### S3-compatible connection settings
-
-You should use the [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
-
-See [the available connection settings for different providers](../object_storage.md#configure-the-connection-settings).
-
-### Migrate Pages deployments to object storage
-
-Existing Pages deployment objects (ZIP archives) can be stored in either local storage or object
-storage.
-
-To migrate your existing Pages deployments from local storage to object storage:
-
-```shell
-sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
-```
-
-You can track progress and verify that all Pages deployments migrated successfully using the
-[PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database/#connecting-to-the-postgresql-database):
-
-- `sudo gitlab-rails dbconsole --database main` for Linux package installations.
-- `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
-
-Verify that `objectstg` (where `store=2`) has a count of all Pages deployments:
-
-```shell
-gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM pages_deployments;
-
-total | filesystem | objectstg
-------+------------+-----------
-   10 |          0 |        10
-```
-
-After verifying everything is working correctly,
-[turn off Pages local storage](#disable-pages-local-storage).
-
-### Rolling Pages deployments back to local storage
-
-After migrating to object storage, you can move your Pages deployments back to local storage:
-
-```shell
-sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
-```
-
-### Disable Pages local storage
-
-If you use object storage, you can turn off local storage to avoid unnecessary disk usage or writes:
+To turn off the configurable directory feature:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_rails['pages_local_store_enabled'] = false
+   gitlab_pages['env'] = {
+     'FF_CONFIGURABLE_ROOT_DIR' => "false"
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-## Enable Pages network storage in multi-node environments
+### Activate verbose logging for daemon
 
-Object storage is the preferred configuration for most environments. However,
-if your requirements call for network storage and you want to configure Pages
-to run on a [separate server](#running-gitlab-pages-on-a-separate-server), you should:
+To configure verbose logging of the GitLab Pages daemon:
 
-1. Ensure the shared storage volume is already mounted and available on both the primary server and
-   your intended Pages server.
-1. Update `/etc/gitlab/gitlab.rb` on each node to include:
+1. By default the daemon only logs with `INFO` level. To log events with level `DEBUG`, edit
+   `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['enable_disk'] = true
-   gitlab_rails['pages_path'] = "/var/opt/gitlab/gitlab-rails/shared/pages" # Path to your network storage
+   gitlab_pages['log_verbose'] = true
    ```
 
-1. Switch over Pages to your separate server.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-After you successfully configure Pages on your separate server, only that server needs access to the
-shared storage volume. Consider keeping the shared storage volume mounted on your primary server in
-case you need to migrate back to a single-node environment.
+### Propagating the correlation ID
 
-## ZIP storage
+Setting `propagate_correlation_id` to `true` allows installations behind a reverse proxy to generate
+and set a correlation ID on requests sent to GitLab Pages. When a reverse proxy sets the header
+value `X-Request-ID`, the value propagates in the request chain. Users can
+[find the correlation ID in the logs](../logs/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
 
-The underlying storage format of GitLab Pages is a single ZIP archive per project. These archives
-can be stored either locally or on [object storage](#object-storage-settings). A new archive is
-stored every time a Pages site is updated.
+To turn on the propagation of the correlation ID:
 
-## Backup
+1. In `/etc/gitlab/gitlab.rb`, add:
 
-GitLab Pages is part of the [regular backup](../backup_restore/_index.md), so there is no
-separate backup to configure.
+   ```ruby
+   gitlab_pages['propagate_correlation_id'] = true
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ## Related topics
 

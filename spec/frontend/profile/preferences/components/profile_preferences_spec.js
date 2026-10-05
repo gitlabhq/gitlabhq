@@ -4,18 +4,9 @@ import { nextTick } from 'vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
-import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
-import IntegrationView from '~/profile/preferences/components/integration_view.vue';
 import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
-import ExtensionsMarketplaceWarning from '~/profile/preferences/components/extensions_marketplace_warning.vue';
+import { i18n } from '~/profile/preferences/constants';
 import {
-  i18n,
-  INTEGRATION_EXTENSIONS_MARKETPLACE,
-  INTEGRATION_VIEW_CONFIGS,
-} from '~/profile/preferences/constants';
-import {
-  integrationViews,
-  userFields,
   bodyClasses,
   colorModes,
   lightColorModeId,
@@ -33,8 +24,6 @@ useMockLocationHelper();
 describe('ProfilePreferences component', () => {
   let wrapper;
   const defaultProvide = {
-    integrationViews: [],
-    userFields,
     bodyClasses,
     colorModes,
     themes,
@@ -57,46 +46,33 @@ describe('ProfilePreferences component', () => {
         },
         propsData: props,
         attachTo,
-        stubs: {
-          SettingsSection,
-        },
       }),
     );
-  }
-
-  function findIntegrationsHeading() {
-    return wrapper.findByTestId('settings-section-heading');
   }
 
   function findSubmitButton() {
     return wrapper.findComponent(GlButton);
   }
 
-  function createModeInput(modeId = lightColorModeId) {
+  function createRadioInput(name, value) {
     const input = document.createElement('input');
-    input.setAttribute('name', 'user[color_mode_id]');
+    input.setAttribute('name', name);
     input.setAttribute('type', 'radio');
-    input.setAttribute('value', modeId.toString());
+    input.setAttribute('value', value.toString());
     input.setAttribute('checked', 'checked');
     return input;
+  }
+
+  function createModeInput(modeId = lightColorModeId) {
+    return createRadioInput('user[color_mode_id]', modeId);
   }
 
   function createThemeInput(themeId = themeId1) {
-    const input = document.createElement('input');
-    input.setAttribute('name', 'user[theme_id]');
-    input.setAttribute('type', 'radio');
-    input.setAttribute('value', themeId.toString());
-    input.setAttribute('checked', 'checked');
-    return input;
+    return createRadioInput('user[theme_id]', themeId);
   }
 
   function createLayoutInput(layout = 'fixed') {
-    const input = document.createElement('input');
-    input.setAttribute('name', 'user[layout]');
-    input.setAttribute('type', 'radio');
-    input.setAttribute('value', layout);
-    input.setAttribute('checked', 'checked');
-    return input;
+    return createRadioInput('user[layout]', layout);
   }
 
   function createForm(inputs = [createModeInput(), createThemeInput()]) {
@@ -116,24 +92,19 @@ describe('ProfilePreferences component', () => {
     document.body.classList.add('content-wrapper');
   }
 
-  it('should not render Integrations section', () => {
-    wrapper = createComponent();
-    const views = wrapper.findAllComponents(IntegrationView);
-    const heading = findIntegrationsHeading();
-
-    expect(heading.exists()).toBe(false);
-    expect(views).toHaveLength(0);
-    expect(wrapper.classes('settings-section')).toBe(false);
+  afterEach(() => {
+    document.body.innerHTML = '';
+    document.body.className = '';
   });
 
-  it('should render Integration section', () => {
-    wrapper = createComponent({ provide: { integrationViews } });
-    const heading = findIntegrationsHeading();
-    const views = wrapper.findAllComponents(IntegrationView);
+  it('renders the sticky save button inside the settings footer', () => {
+    wrapper = createComponent();
 
-    expect(heading.exists()).toBe(true);
-    expect(views).toHaveLength(integrationViews.length);
-    expect(wrapper.classes('settings-section')).toBe(true);
+    expect(wrapper.classes()).toEqual(
+      expect.arrayContaining(['settings-sticky-footer', 'js-hide-when-nothing-matches-search']),
+    );
+    expect(findSubmitButton().attributes('type')).toBe('submit');
+    expect(findSubmitButton().text()).toBe(i18n.saveChanges);
   });
 
   describe('form submit', () => {
@@ -210,11 +181,6 @@ describe('ProfilePreferences component', () => {
 
     beforeEach(() => {
       setupBody();
-    });
-
-    afterEach(() => {
-      document.body.innerHTML = '';
-      document.body.className = '';
     });
 
     it.each`
@@ -302,49 +268,6 @@ describe('ProfilePreferences component', () => {
       await nextTick();
 
       expect(window.location.reload).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('with extensions marketplace integration view', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        provide: {
-          integrationViews: [
-            {
-              name: INTEGRATION_EXTENSIONS_MARKETPLACE,
-              help_link: 'http://foo.com/help-extensions-marketplace',
-              message: 'Click %{linkStart}Foo%{linkEnd}!',
-              message_url: 'http://foo.com',
-            },
-          ],
-        },
-      });
-    });
-
-    it('renders view with 2-way-bound value', async () => {
-      const integrationView = wrapper.findComponent(IntegrationView);
-
-      expect(integrationView.props()).toMatchObject({
-        value: false,
-        config: INTEGRATION_VIEW_CONFIGS[INTEGRATION_EXTENSIONS_MARKETPLACE],
-      });
-
-      await integrationView.vm.$emit('input', true);
-
-      expect(integrationView.props('value')).toBe(true);
-    });
-
-    it('renders extensions marketplace warning with 2-way-bound value', async () => {
-      const warning = wrapper.findComponent(ExtensionsMarketplaceWarning);
-
-      expect(warning.props()).toEqual({
-        helpUrl: 'http://foo.com/help-extensions-marketplace',
-        value: false,
-      });
-
-      await warning.vm.$emit('input', true);
-
-      expect(warning.props('value')).toBe(true);
     });
   });
 });

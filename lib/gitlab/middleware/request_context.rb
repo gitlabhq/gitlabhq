@@ -9,10 +9,19 @@ module Gitlab
 
       def call(env)
         request = ActionDispatch::Request.new(env)
+        ensure_gvl_instrumentation
         Gitlab::RequestContext.start_request_context(request: request)
         Gitlab::RequestContext.start_thread_context
 
         @app.call(env)
+      end
+
+      private
+
+      def ensure_gvl_instrumentation
+        ::Gitlab::Instrumentation::Gvl.toggle(
+          Feature.enabled?(:enable_puma_gvl_metrics, :current_pod, type: :ops)
+        )
       end
     end
   end

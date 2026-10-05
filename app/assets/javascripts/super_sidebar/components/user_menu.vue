@@ -12,6 +12,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import UserMenuUpgradeSubscription from 'ee_component/super_sidebar/components/user_menu_upgrade_subscription.vue';
+import UserMenuExplorePremium from 'ee_component/super_sidebar/components/user_menu_explore_premium.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
@@ -67,6 +68,7 @@ export default {
     UserCounts,
     UserMenuProfileItem,
     UserMenuUpgradeSubscription,
+    UserMenuExplorePremium,
     WhatsNewForYouMenuItem,
     SetStatusModal: defineAsyncComponent(
       () =>
@@ -266,6 +268,7 @@ export default {
     },
     onShow() {
       this.initBuyCIMinsCallout();
+      this.$refs.explorePremiumItem?.handleMenuShown?.();
     },
     openStatusModal() {
       this.setStatusModalReady = true;
@@ -442,6 +445,14 @@ export default {
         placement="profile_menu"
         :tracking-property="$options.WHATS_NEW_TRACKING_PROPERTY"
         icon="compass"
+        @action="$refs.userDropdown.close()"
+      />
+
+      <user-menu-explore-premium
+        v-if="data.explore_premium"
+        ref="explorePremiumItem"
+        :group-id="data.explore_premium.group_id"
+        :requested="data.explore_premium.requested"
         @action="$refs.userDropdown.close()"
       />
 

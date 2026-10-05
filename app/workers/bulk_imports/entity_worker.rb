@@ -97,12 +97,10 @@ module BulkImports
             entity.id
           )
 
-          if Import::BulkImports::EphemeralData.new(entity.bulk_import.id).importer_user_mapping_enabled?
-            Import::LoadPlaceholderReferencesWorker.perform_async(
-              entity.bulk_import.import_source,
-              entity.bulk_import.id
-            )
-          end
+          Import::LoadPlaceholderReferencesWorker.perform_async(
+            entity.bulk_import.import_source,
+            entity.bulk_import.id
+          )
         end
       end
     end

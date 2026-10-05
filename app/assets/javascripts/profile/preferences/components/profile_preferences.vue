@@ -2,10 +2,7 @@
 import { isEqual } from 'lodash-es';
 import { GlButton, GlToastMixin } from '@gitlab/ui';
 import { createAlert, VARIANT_DANGER } from '~/alert';
-import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
-import { INTEGRATION_VIEW_CONFIGS, i18n, INTEGRATION_EXTENSIONS_MARKETPLACE } from '../constants';
-import IntegrationView from './integration_view.vue';
-import ExtensionsMarketplaceWarning from './extensions_marketplace_warning.vue';
+import { i18n } from '../constants';
 
 function updateClasses(bodyClasses = '', applicationTheme, layout) {
   // Remove documentElement class for any previous theme, re-add current one
@@ -25,52 +22,27 @@ function updateClasses(bodyClasses = '', applicationTheme, layout) {
 export default {
   name: 'ProfilePreferences',
   components: {
-    IntegrationView,
     GlButton,
-    ExtensionsMarketplaceWarning,
-    SettingsSection,
   },
   mixins: [GlToastMixin],
   inject: {
-    integrationViews: {
-      default: [],
-    },
     colorModes: {
       default: [],
     },
     themes: {
       default: [],
     },
-    userFields: {
-      default: {},
-    },
     formEl: 'formEl',
     bodyClasses: 'bodyClasses',
   },
-  integrationViewConfigs: INTEGRATION_VIEW_CONFIGS,
   i18n,
-  INTEGRATION_EXTENSIONS_MARKETPLACE,
   data() {
-    const integrationValues = this.integrationViews.reduce((acc, { name }) => {
-      const { formName } = INTEGRATION_VIEW_CONFIGS[name];
-
-      acc[name] = Boolean(this.userFields[formName]);
-
-      return acc;
-    }, {});
-
     return {
       isSubmitEnabled: true,
       colorModeOnCreate: null,
       schemeOnCreate: null,
       darkSchemeOnCreate: null,
-      integrationValues,
     };
-  },
-  computed: {
-    extensionsMarketplaceView() {
-      return this.integrationViews.find(({ name }) => name === INTEGRATION_EXTENSIONS_MARKETPLACE);
-    },
   },
   created() {
     this.formEl.addEventListener('ajax:beforeSend', this.handleLoading);
@@ -135,47 +107,17 @@ export default {
 </script>
 
 <template>
-  <div :class="{ 'settings-section': integrationViews.length }">
-    <settings-section v-if="integrationViews.length" id="integrations" class="js-preferences-form">
-      <template #heading>
-        {{ $options.i18n.integrations }}
-      </template>
-
-      <template #description>
-        {{ $options.i18n.integrationsDescription }}
-      </template>
-
-      <div>
-        <integration-view
-          v-for="view in integrationViews"
-          :key="view.name"
-          v-model="integrationValues[view.name]"
-          :help-link="view.help_link"
-          :message="view.message"
-          :message-url="view.message_url"
-          :config="$options.integrationViewConfigs[view.name]"
-          :title="view.title"
-        />
-      </div>
-    </settings-section>
-
-    <div class="settings-sticky-footer js-hide-when-nothing-matches-search">
-      <gl-button
-        category="primary"
-        variant="confirm"
-        name="commit"
-        type="submit"
-        class="js-no-auto-disable"
-        :disabled="!isSubmitEnabled"
-        :value="$options.i18n.saveChanges"
-      >
-        {{ $options.i18n.saveChanges }}
-      </gl-button>
-    </div>
-    <extensions-marketplace-warning
-      v-if="extensionsMarketplaceView"
-      v-model="integrationValues[$options.INTEGRATION_EXTENSIONS_MARKETPLACE]"
-      :help-url="extensionsMarketplaceView.help_link"
-    />
+  <div class="settings-sticky-footer js-hide-when-nothing-matches-search">
+    <gl-button
+      category="primary"
+      variant="confirm"
+      name="commit"
+      type="submit"
+      class="js-no-auto-disable"
+      :disabled="!isSubmitEnabled"
+      :value="$options.i18n.saveChanges"
+    >
+      {{ $options.i18n.saveChanges }}
+    </gl-button>
   </div>
 </template>

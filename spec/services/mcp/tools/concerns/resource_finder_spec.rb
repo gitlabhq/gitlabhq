@@ -305,7 +305,9 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     let(:work_item_iid) { work_item.iid }
     let(:service) { test_class.new(user) }
 
-    subject(:find_work_item_in_parent) { service.test_find_work_item_in_parent(project, work_item_iid) }
+    let(:parent) { project }
+
+    subject(:find_work_item_in_parent) { service.test_find_work_item_in_parent(parent, work_item_iid) }
 
     context 'with project parent' do
       it 'finds work item by iid' do
@@ -317,7 +319,7 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
 
         it 'raises error when work item not found' do
           expect { find_work_item_in_parent }
-            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found or inaccessible")
+            .to raise_error(not_found_error, "Work item ##{work_item_iid} not found or inaccessible")
         end
       end
 
@@ -327,10 +329,20 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
         let(:work_item_iid) { confidential_item.iid }
         let(:user) { guest_user }
 
-        it 'restricts access' do
+        it 'restricts access, with the message a missing work item would give' do
           expect { find_work_item_in_parent }
-            .to raise_error(ArgumentError, "Work item ##{work_item_iid} not found or inaccessible")
+            .to raise_error(forbidden_error, "Work item ##{work_item_iid} not found or inaccessible")
         end
+      end
+    end
+
+    context 'when the parent has no work items association' do
+      let(:parent) { user }
+      let(:work_item_iid) { non_existing_record_iid }
+
+      it 'reports not found rather than raising on the existence probe' do
+        expect { find_work_item_in_parent }
+          .to raise_error(not_found_error, "Work item ##{work_item_iid} not found or inaccessible")
       end
     end
   end

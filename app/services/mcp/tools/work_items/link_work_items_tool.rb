@@ -45,8 +45,9 @@ module Mcp
           work_item =
             begin
               find_work_item_in_parent!(parent_info[:record], value)
-            rescue ArgumentError
-              raise ArgumentError,
+            rescue Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError,
+              Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError => e
+              raise e.class,
                 "Target work item with iid '#{value}' not found in #{parent_info[:full_path]}. " \
                   'Use a global ID (gid://gitlab/WorkItem/<id>) for work items in other projects or groups.'
             end

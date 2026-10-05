@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
+  let(:not_found_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError }
+
   let(:test_class) do
     Class.new do
       include Mcp::Tools::Concerns::Constants
@@ -526,7 +528,7 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
         url = "https://gitlab.com/#{project.full_path}/-/work_items/99999"
 
         expect { service.send(:resolve_work_item_from_url, url) }
-          .to raise_error(ArgumentError, /Work item #99999 not found/)
+          .to raise_error(not_found_error, /Work item #99999 not found/)
       end
     end
 

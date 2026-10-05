@@ -39,7 +39,6 @@ RSpec.describe Import::Offline::Common::Pipelines::MembersPipeline, feature_cate
   subject(:pipeline) { described_class.new(context) }
 
   before do
-    allow(context).to receive(:importer_user_mapping_enabled?).and_return(true)
     allow(pipeline).to receive(:set_source_objects_counter)
     allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
       allow(extractor).to receive(:extract).and_return(

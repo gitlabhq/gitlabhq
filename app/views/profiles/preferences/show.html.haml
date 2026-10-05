@@ -4,17 +4,12 @@
 - user_color_mode_id = Gitlab::ColorModes.for_user(@user).id
 - user_light_color_schema_id = Gitlab::ColorSchemes.light_for_user(@user).id
 - user_dark_color_scheme_id = Gitlab::ColorSchemes.dark_for_user(@user).id
-- marketplace_home_url = ::WebIde::ExtensionMarketplace.marketplace_home_url(user: @user)
-- extensions_marketplace_enabled = ::WebIde::ExtensionMarketplaceOptIn.enabled?(user: @user, marketplace_home_url: marketplace_home_url)
-- user_fields = { color_mode_id: user_color_mode_id, theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled, extensions_marketplace_enabled: extensions_marketplace_enabled }.to_json
 - fixed_help_text = s_('Preferences|Content will be a maximum of 1280 pixels wide.')
 - fluid_help_text = s_('Preferences|Content will span %{percentage} of the page width.').html_safe % { percentage: '100%' }
 - plain_text_editor_help_text = s_('Preferences|Type in plain text, using Markdown.')
 - rich_text_editor_help_text = s_('Preferences|Type in rich text, as you see it.')
-- @color_modes = Gitlab::ColorModes::available_modes.to_json
-- @themes = Gitlab::Themes::available_themes.to_json
-- extensions_marketplace_url = ::WebIde::ExtensionMarketplace.marketplace_home_url(user: current_user)
-- data_attributes = { color_modes: @color_modes, themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path, extensions_marketplace_url: extensions_marketplace_url }
+- color_modes = Gitlab::ColorModes.available_modes.to_json
+- data_attributes = { color_modes: color_modes, themes: Gitlab::Themes.available_themes.to_json, body_classes: Gitlab::Themes.body_classes }
 
 = gitlab_ui_form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Mode'),
@@ -23,7 +18,7 @@
     - c.with_description do
       = s_('Preferences|Choose a color mode.')
     - c.with_body do
-      #js-color-mode-selector{ data: { color_modes: @color_modes, initial_color_mode_id: user_color_mode_id } }
+      #js-color-mode-selector{ data: { color_modes: color_modes, initial_color_mode_id: user_color_mode_id } }
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Theme'),
     id: 'application-theme',
@@ -210,5 +205,8 @@
       .form-group
         = f.gitlab_ui_checkbox_component :enabled_following,
         s_('Preferences|Enable follow users')
+
+  - integrations = integration_views
+  = render 'profiles/preferences/integrations', integration_views: integrations if integrations.any?
 
   #js-profile-preferences-app{ data: data_attributes }

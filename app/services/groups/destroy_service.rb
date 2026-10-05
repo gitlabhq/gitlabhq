@@ -2,6 +2,8 @@
 
 module Groups
   class DestroyService < Groups::BaseService
+    include Namespaces::DeletionFailureTracking
+
     DestroyError = Class.new(StandardError)
 
     def async_execute
@@ -88,8 +90,14 @@ module Groups
       }
 
       begin
-        reschedule_deletion
-        Gitlab::AppLogger.error(log_payload.merge(message: "Rescheduling group deletion"))
+        # Capture before reschedule_deletion! overwrites it with the current time.
+        previous_failed_at = group.deletion_last_failed_at
+        reschedule_deletion(error_message: error.message)
+        track_destroy_failure(group, error, previous_failed_at, group_id: group.id)
+        Gitlab::AppLogger.error(log_payload.merge(
+          message: "Rescheduling group deletion",
+          deletion_attempt_count: group.deletion_attempt_count.to_i
+        ))
       rescue StandardError => reschedule_error
         Gitlab::AppLogger.error(log_payload.merge(
           message: "Rescheduling group deletion failed",
@@ -102,9 +110,9 @@ module Groups
       raise error
     end
 
-    def reschedule_deletion
+    def reschedule_deletion(error_message: nil)
       Group.transaction do
-        group.reschedule_deletion!(transition_user: current_user)
+        group.reschedule_deletion!(transition_user: current_user, deletion_error: error_message)
       end
     end
 

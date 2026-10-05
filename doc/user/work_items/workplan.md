@@ -85,7 +85,7 @@ You do not need a workplan for small or well-understood changes, where planning 
 
 {{< /history >}}
 
-By default, the **Workplan** widget and the confidence score are hidden on a work item.
+By default, the **Workplan** widget and the readiness score are hidden on a work item.
 To show them, turn on planning for that work item.
 
 Prerequisites:
@@ -193,11 +193,12 @@ To delete a workplan:
 
 This action cannot be undone.
 
-## Confidence score
+## Readiness score
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248374) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `workplan_score`. Disabled by default.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259555) from confidence score to readiness score in GitLab 19.5.
 
 {{< /history >}}
 
@@ -206,17 +207,17 @@ This action cannot be undone.
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-The confidence score shows how ready a work item is for an agent to run.
+The readiness score shows how ready a work item is for an agent to run.
 GitLab Duo scores the work item on how complete, clear, and well scoped it is, then
-maps the score to a confidence level.
+maps the score to a readiness level.
 
 Prerequisites:
 
 - Planning turned on for the work item.
 
-In the **Workplan** widget on the work item, the confidence level appears as
+In the **Workplan** widget on the work item, the readiness level appears as
 **Low**, **Medium**, or **High**.
-The confidence level appears only after GitLab Duo generates a workplan and
+The readiness level appears only after GitLab Duo generates a workplan and
 calculates a score.
 
 To raise the score, add more detail to the work item description and to the workplan

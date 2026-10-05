@@ -84,7 +84,8 @@ module Mcp
 
         def resource_not_found_error
           ::Mcp::Tools::Base::Response.error(
-            'Project or group not found: it does not exist or you do not have access to it.'
+            'Project or group not found: it does not exist or you do not have access to it.',
+            reason: ::Mcp::Tools::Base::Response::Reason::NOT_FOUND
           )
         end
       end

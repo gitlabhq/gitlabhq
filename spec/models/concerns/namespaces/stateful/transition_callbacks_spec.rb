@@ -65,7 +65,61 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
     end
   end
 
-  describe '#set_deletion_error_data' do
+  describe '#set_deletion_data' do
+    where(:initial_state) { %i[ancestor_inherited archived] }
+
+    with_them do
+      before do
+        namespace.update!(state: initial_state)
+      end
+
+      it 'seeds deletion_attempt_count to 0 and clears deletion_last_failed_at when deletion is scheduled' do
+        existing_metadata = namespace.state_metadata.merge(
+          'deletion_attempt_count' => 3,
+          'deletion_last_failed_at' => 1.day.ago.as_json
+        )
+        namespace.namespace_details.update!(state_metadata: existing_metadata)
+
+        namespace.schedule_deletion!(transition_user: user)
+
+        expect(namespace.reload.deletion_attempt_count).to eq(0)
+        expect(namespace.deletion_last_failed_at).to be_nil
+      end
+    end
+
+    it 'does not reset deletion_attempt_count when a retry starts deletion' do
+      namespace.update!(state: :deletion_scheduled)
+      existing_metadata = namespace.state_metadata.merge('deletion_attempt_count' => 3)
+      namespace.namespace_details.update!(state_metadata: existing_metadata)
+
+      namespace.start_deletion!(transition_user: user)
+
+      expect(namespace.reload.deletion_attempt_count).to eq(3)
+    end
+  end
+
+  describe '#clear_deletion_data' do
+    before do
+      namespace.update!(state: :deletion_scheduled)
+      existing_metadata = namespace.state_metadata.merge(
+        'deletion_attempt_count' => 2,
+        'deletion_last_failed_at' => 1.day.ago.as_json
+      )
+      namespace.namespace_details.update!(state_metadata: existing_metadata)
+    end
+
+    it 'clears deletion failure keys on cancel_deletion' do
+      namespace.cancel_deletion!(transition_user: user)
+
+      namespace.reload
+      metadata = namespace.state_metadata
+
+      expect(metadata['deletion_attempt_count']).to be_nil
+      expect(metadata['deletion_last_failed_at']).to be_nil
+    end
+  end
+
+  describe '#set_deletion_error_data', :freeze_time do
     before do
       namespace.update!(state: :deletion_in_progress)
     end
@@ -86,6 +140,46 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
       namespace.reschedule_deletion!(transition_user: user, deletion_error: '')
 
       expect(namespace.reload.deletion_error).to be_nil
+    end
+
+    context 'when a deletion_error is provided (actual destroy failure)' do
+      it 'increments deletion_attempt_count from nil to 1' do
+        namespace.reschedule_deletion!(transition_user: user, deletion_error: 'Something broke')
+
+        expect(namespace.reload.deletion_attempt_count).to eq(1)
+      end
+
+      it 'increments deletion_attempt_count on each subsequent failure' do
+        existing_metadata = namespace.state_metadata.merge('deletion_attempt_count' => 2)
+        namespace.namespace_details.update!(state_metadata: existing_metadata)
+
+        namespace.reschedule_deletion!(transition_user: user, deletion_error: 'Something broke again')
+
+        expect(namespace.reload.deletion_attempt_count).to eq(3)
+      end
+
+      it 'records deletion_last_failed_at as the current time' do
+        namespace.reschedule_deletion!(transition_user: user, deletion_error: 'Something broke')
+
+        expect(namespace.reload.deletion_last_failed_at).to be_within(1.second).of(Time.current)
+      end
+    end
+
+    context 'when no deletion_error is provided (non-failure reschedule)' do
+      it 'does not increment deletion_attempt_count' do
+        existing_metadata = namespace.state_metadata.merge('deletion_attempt_count' => 2)
+        namespace.namespace_details.update!(state_metadata: existing_metadata)
+
+        namespace.reschedule_deletion!(transition_user: user)
+
+        expect(namespace.reload.deletion_attempt_count).to eq(2)
+      end
+
+      it 'does not set deletion_last_failed_at' do
+        namespace.reschedule_deletion!(transition_user: user)
+
+        expect(namespace.reload.deletion_last_failed_at).to be_nil
+      end
     end
   end
 

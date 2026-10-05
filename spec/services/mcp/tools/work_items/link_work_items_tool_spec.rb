@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_server do
+  let(:not_found_error) { ::Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError }
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:source_work_item) { create(:work_item, :issue, project: project, iid: 1) }
@@ -194,8 +196,30 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
 
       it 'raises an error naming the iid, the parent, and the cross-parent escape hatch' do
         expect { tool.build_variables }.to raise_error(
-          ArgumentError,
+          not_found_error,
           /Target work item with iid '#{non_existing_record_iid}' not found in #{Regexp.escape(project.full_path)}/
+        )
+      end
+    end
+
+    context 'when a target iid names a confidential work item the caller cannot read' do
+      let_it_be(:confidential_target) { create(:work_item, :issue, :confidential, project: project, iid: 4) }
+      let_it_be(:guest) { create(:user, guest_of: project) }
+
+      let(:params) do
+        {
+          project_id: project.id.to_s,
+          work_item_iid: source_work_item.iid,
+          work_items_ids: [confidential_target.iid]
+        }
+      end
+
+      let(:tool) { described_class.new(current_user: guest, params: params) }
+
+      it 'still points at the cross-parent escape hatch, and keeps the forbidden category' do
+        expect { tool.build_variables }.to raise_error(
+          Mcp::Tools::Concerns::ResourceFinder::ResourceForbiddenError,
+          /Target work item with iid '4' not found in #{Regexp.escape(project.full_path)}.+global ID/m
         )
       end
     end
@@ -214,7 +238,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
 
       it 'does not resolve it, keeping iids scoped to the source parent' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, /Target work item with iid '77' not found in/)
+          .to raise_error(not_found_error, /Target work item with iid '77' not found in/)
       end
     end
 
@@ -245,7 +269,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
 
       it 'raises ArgumentError' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
+          .to raise_error(not_found_error, "Work item ##{non_existing_record_iid} not found or inaccessible")
       end
     end
 
@@ -307,7 +331,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
 
       it 'raises error before executing GraphQL' do
         expect { tool.execute }
-          .to raise_error(ArgumentError, "Work item ##{non_existing_record_iid} not found or inaccessible")
+          .to raise_error(not_found_error, "Work item ##{non_existing_record_iid} not found or inaccessible")
       end
     end
 

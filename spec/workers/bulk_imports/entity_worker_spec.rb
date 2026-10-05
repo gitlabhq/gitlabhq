@@ -108,13 +108,7 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
       worker.perform(entity.id)
     end
 
-    context 'when importer_user_mapping_enabled is enabled' do
-      before do
-        allow_next_instance_of(Import::BulkImports::EphemeralData) do |ephemeral_data|
-          allow(ephemeral_data).to receive(:importer_user_mapping_enabled?).and_return(true)
-        end
-      end
-
+    context 'when starting the next stage' do
       it 'enqueues Import::LoadPlaceholderReferencesWorker' do
         expect(Import::LoadPlaceholderReferencesWorker)
           .to receive(:perform_async)
