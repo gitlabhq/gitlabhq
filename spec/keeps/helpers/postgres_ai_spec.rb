@@ -40,7 +40,7 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
     let(:query) do
       <<~SQL
       SELECT id, created_at, updated_at, finished_at, started_at, status, job_class_name,
-      gitlab_schema, total_tuple_count
+      gitlab_schema, total_tuple_count, table_name, column_name, job_arguments
       FROM batched_background_migrations
       WHERE job_class_name = $1::text
       SQL

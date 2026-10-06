@@ -35865,6 +35865,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="aigovernancesession-agenttype"></a>`agentType` | [`String`](#string) | Type of the agent that ran the session, for example `claude-code`. Values differ between sources. |
 | <a id="aigovernancesession-auditevents"></a>`auditEvents` | [`AiAuditEventConnection`](#aiauditeventconnection) | Audit events recorded for the session. Returns no events for GitLab Duo sessions delivered through a private messaging integration. This field can only be resolved for one session in any single request. (see [Connections](#connections)) |
+| <a id="aigovernancesession-auditeventscount"></a>`auditEventsCount` | [`Int`](#int) | Number of audit events recorded for the session. |
 | <a id="aigovernancesession-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo. |
 | <a id="aigovernancesession-flowtype"></a>`flowType` | [`String`](#string) | Flow type of the session, for example `chat`. Values differ between sources. |
 | <a id="aigovernancesession-id"></a>`id` | [`AiGovernanceSessionID!`](#aigovernancesessionid) | Global ID of the session. |
@@ -63425,6 +63426,7 @@ Fields:
 | <a id="secretsmanagerentitlement-blockedreason"></a>`blockedReason` {{< icon name="warning-solid" >}} | [`SecretsManagerEntitlementBlockedReason`](#secretsmanagerentitlementblockedreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the entitlement is blocked; null when state is not BLOCKED. |
 | <a id="secretsmanagerentitlement-creditsremaining"></a>`creditsRemaining` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.2. Status: Experiment. Number of trial credits remaining. |
 | <a id="secretsmanagerentitlement-creditstotal"></a>`creditsTotal` {{< icon name="warning-solid" >}} | [`Float`](#float) | Introduced in GitLab 19.2. Status: Experiment. Initial trial credit allocation for the current trial period. |
+| <a id="secretsmanagerentitlement-graceperiodenddate"></a>`gracePeriodEndDate` | [`Date`](#date) | Last day of the read-only grace period, inclusive. Set only when blockedReason is GRACE; null otherwise. |
 | <a id="secretsmanagerentitlement-offlinelicense"></a>`offlineLicense` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. Indicates whether the instance license is not an online cloud license, so no Secrets Manager trial can be started. Null on GitLab.com. |
 | <a id="secretsmanagerentitlement-ondemandenabled"></a>`onDemandEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.2. Status: Experiment. Indicates whether on-demand purchasing is enabled for the namespace. |
 | <a id="secretsmanagerentitlement-state"></a>`state` {{< icon name="warning-solid" >}} | [`SecretsManagerEntitlementState!`](#secretsmanagerentitlementstate) | Introduced in GitLab 19.2. Status: Experiment. Resolved entitlement state. |
@@ -69319,6 +69321,7 @@ Source that recorded an AI governance session.
 | <a id="aigovernancesessionsource-claude_code_compliance_api"></a>`CLAUDE_CODE_COMPLIANCE_API` | Claude Code session ingested from the Claude Compliance API. |
 | <a id="aigovernancesessionsource-claude_code_glab"></a>`CLAUDE_CODE_GLAB` | Claude Code session reported through the GitLab CLI. |
 | <a id="aigovernancesessionsource-gitlab_duo"></a>`GITLAB_DUO` | Session run on the GitLab Duo Agent Platform. |
+| <a id="aigovernancesessionsource-mcp"></a>`MCP` | Session inferred from tool calls made through the GitLab MCP server. |
 
 ### `AiMessageRole`
 

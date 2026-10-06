@@ -143,11 +143,31 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
       end
 
       context 'with a subgroup with integration' do
-        let_it_be(:subgroup_integration) { create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id) }
+        let_it_be(:subgroup_integration) do
+          create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
+        end
 
         it 'calls to PropagateIntegrationInheritDescendantWorker' do
           expect(PropagateIntegrationInheritDescendantWorker).to receive(:perform_async)
             .with(group_integration.id, subgroup_integration.id, subgroup_integration.id)
+
+          described_class.new(group_integration).execute
+        end
+      end
+
+      context 'with a child inheriting from an instance integration in another organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:other_instance_integration) do
+          create(:jira_integration, :instance, organization: other_organization)
+        end
+
+        let_it_be(:child_integration) do
+          create(:jira_integration, project: create(:project, group: subgroup),
+            inherit_from_id: other_instance_integration.id)
+        end
+
+        it 'does not call PropagateIntegrationInheritDescendantWorker' do
+          expect(PropagateIntegrationInheritDescendantWorker).not_to receive(:perform_async)
 
           described_class.new(group_integration).execute
         end

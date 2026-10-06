@@ -413,4 +413,31 @@ describe('Diffs list store', () => {
       expect(store.isLoading).toBe(isLoading);
     });
   });
+
+  describe('renderDiffsStream', () => {
+    const render = () =>
+      store.renderDiffsStream(Promise.resolve(streamResponse), findStreamContainer());
+
+    it('shows alert without rethrowing when the stream fails mid-read', async () => {
+      renderHtmlStreams.mockRejectedValue(new TypeError('Error in input stream'));
+      await expect(render()).resolves.toBeUndefined();
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Could not fetch all changes. Try reloading the page.',
+        parent: document.querySelector('[data-rapid-diffs]'),
+        containerSelector: '[data-diffs-list-alert]',
+      });
+      expect(findLoadingIndicator().hidden).toBe(true);
+      expect(store.status).toBe('error');
+    });
+
+    it.each`
+      description            | error
+      ${'unexpected errors'} | ${new Error('unexpected')}
+      ${'abort errors'}      | ${new DOMException('Aborted', 'AbortError')}
+    `('rethrows $description without showing alert', async ({ error }) => {
+      renderHtmlStreams.mockRejectedValue(error);
+      await expect(render()).rejects.toBe(error);
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+  });
 });

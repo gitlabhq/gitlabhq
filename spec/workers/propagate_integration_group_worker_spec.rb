@@ -34,6 +34,19 @@ RSpec.describe PropagateIntegrationGroupWorker, feature_category: :integrations 
       end
     end
 
+    context 'with a group in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:group_in_other_org) { create(:group, organization: other_organization) }
+
+      it 'does not pass the group to Integrations::Propagation::BulkCreateService' do
+        expect(Integrations::Propagation::BulkCreateService).to receive(:new)
+          .with(integration, match_array([group, another_group, subgroup1, subgroup2]), 'group')
+          .and_return(instance_double(Integrations::Propagation::BulkCreateService, execute: nil))
+
+        described_class.new.perform(integration.id, group.id, group_in_other_org.id)
+      end
+    end
+
     context 'with an invalid integration id' do
       it 'returns without failure' do
         expect(Integrations::Propagation::BulkCreateService).not_to receive(:new)

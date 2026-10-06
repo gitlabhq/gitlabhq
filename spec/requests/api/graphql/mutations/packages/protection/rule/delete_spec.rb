@@ -37,7 +37,7 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
     )
   end
 
-  it { is_expected.tap { expect_graphql_errors_to_be_empty } }
+  it { subject.tap { expect_graphql_errors_to_be_empty } }
   it { expect { subject }.to change { ::Packages::Protection::Rule.count }.from(1).to(0) }
 
   it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_package_protection_rule do

@@ -75,7 +75,7 @@ RSpec.describe 'Adding a DiffNote', feature_category: :code_review_workflow do
 
     it_behaves_like 'a Note mutation when there are rate limit validation errors'
 
-    context do
+    context 'with fake diff refs' do
       let(:diff_refs) { build(:commit).diff_refs } # Allow fake diff refs so arguments are valid
 
       it_behaves_like 'a Note mutation when the given resource id is not for a Noteable'

@@ -15957,6 +15957,31 @@ CREATE SEQUENCE billable_usage_daily_namespace_aggregates_id_seq
 
 ALTER SEQUENCE billable_usage_daily_namespace_aggregates_id_seq OWNED BY billable_usage_daily_namespace_aggregates.id;
 
+CREATE TABLE billable_usage_export_logs (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    generated_at timestamp with time zone NOT NULL,
+    generated_by_id bigint,
+    period_start date NOT NULL,
+    period_end date NOT NULL,
+    record_count integer DEFAULT 0 NOT NULL,
+    payload_checksum text NOT NULL,
+    CONSTRAINT check_7214279a93 CHECK ((char_length(payload_checksum) <= 64)),
+    CONSTRAINT check_billable_usage_export_logs_payload_checksum_format CHECK ((payload_checksum ~ '^[0-9a-f]{64}$'::text)),
+    CONSTRAINT check_billable_usage_export_logs_period_end_after_start CHECK ((period_end >= period_start)),
+    CONSTRAINT check_billable_usage_export_logs_record_count_non_negative CHECK ((record_count >= 0))
+);
+
+CREATE SEQUENCE billable_usage_export_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE billable_usage_export_logs_id_seq OWNED BY billable_usage_export_logs.id;
+
 CREATE TABLE board_assignees (
     id bigint NOT NULL,
     board_id bigint NOT NULL,
@@ -30969,7 +30994,8 @@ CREATE TABLE sbom_occurrence_refs (
     sbom_occurrence_id bigint NOT NULL,
     security_project_tracked_context_id bigint NOT NULL,
     commit_sha bytea NOT NULL,
-    pipeline_id bigint
+    pipeline_id bigint,
+    reachability smallint
 );
 
 CREATE SEQUENCE sbom_occurrence_refs_id_seq
@@ -37278,6 +37304,8 @@ ALTER TABLE ONLY batched_background_migrations ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY billable_usage_daily_namespace_aggregates ALTER COLUMN id SET DEFAULT nextval('billable_usage_daily_namespace_aggregates_id_seq'::regclass);
 
+ALTER TABLE ONLY billable_usage_export_logs ALTER COLUMN id SET DEFAULT nextval('billable_usage_export_logs_id_seq'::regclass);
+
 ALTER TABLE ONLY board_assignees ALTER COLUMN id SET DEFAULT nextval('board_assignees_id_seq'::regclass);
 
 ALTER TABLE ONLY board_group_recent_visits ALTER COLUMN id SET DEFAULT nextval('board_group_recent_visits_id_seq'::regclass);
@@ -40358,6 +40386,9 @@ ALTER TABLE ONLY batched_background_migrations
 
 ALTER TABLE ONLY billable_usage_daily_namespace_aggregates
     ADD CONSTRAINT billable_usage_daily_namespace_aggregates_pkey PRIMARY KEY (id, usage_date);
+
+ALTER TABLE ONLY billable_usage_export_logs
+    ADD CONSTRAINT billable_usage_export_logs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT board_assignees_pkey PRIMARY KEY (id);
@@ -47654,6 +47685,12 @@ CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_ba
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
 
 CREATE UNIQUE INDEX index_billable_usage_daily_ns_aggs_on_unique_tuple ON ONLY billable_usage_daily_namespace_aggregates USING btree (usage_date, event_type, feature_qualified_name, operation_type, root_namespace_id) NULLS NOT DISTINCT;
+
+CREATE INDEX index_billable_usage_export_logs_on_generated_at ON billable_usage_export_logs USING btree (generated_at);
+
+CREATE INDEX index_billable_usage_export_logs_on_generated_by_id ON billable_usage_export_logs USING btree (generated_by_id);
+
+CREATE INDEX index_billable_usage_export_logs_on_payload_checksum ON billable_usage_export_logs USING btree (payload_checksum);
 
 CREATE INDEX index_bj_cell_local_by_status ON ONLY background_operation_jobs_cell_local USING btree (status);
 

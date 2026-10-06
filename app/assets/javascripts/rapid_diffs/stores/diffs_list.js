@@ -73,18 +73,30 @@ export const useDiffsList = defineStore('diffsList', {
       const loadingIndicator = document.querySelector('[data-rapid-diffs] [data-list-loading]');
       this.status = statuses.fetching;
       loadingIndicator.hidden = false;
-      const response = await requestPromise;
-      if (response.status >= HTTP_STATUS_INTERNAL_SERVER_ERROR) {
+      const showFetchError = () => {
         createAlert({
           message: __('Could not fetch all changes. Try reloading the page.'),
           parent: document.querySelector('[data-rapid-diffs]'),
           containerSelector: '[data-diffs-list-alert]',
         });
         this.status = statuses.error;
+      };
+      const response = await requestPromise;
+      if (response.status >= HTTP_STATUS_INTERNAL_SERVER_ERROR) {
+        showFetchError();
         return;
       }
       this.status = statuses.streaming;
-      await renderHtmlStreams([toPolyfillReadable(response.body)], container, { signal });
+      try {
+        await renderHtmlStreams([toPolyfillReadable(response.body)], container, { signal });
+      } catch (error) {
+        // Network failures while reading the body reject with a TypeError
+        // (e.g. Firefox "Error in input stream"). Aborts are DOMExceptions and are rethrown.
+        if (!(error instanceof TypeError)) throw error;
+        loadingIndicator.hidden = true;
+        showFetchError();
+        return;
+      }
       loadingIndicator.hidden = true;
       this.status = statuses.idle;
     },

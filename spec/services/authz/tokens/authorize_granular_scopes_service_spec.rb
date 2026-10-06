@@ -134,6 +134,18 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
           'Access denied: This operation requires a fine-grained personal access token ' \
             'with the following group permissions: [Member Role: Create].'
 
+        context 'when the token belongs to a bot user' do
+          using RSpec::Parameterized::TableSyntax
+
+          where(:user_type) { %i[project_bot service_account] }
+
+          with_them do
+            let(:token) { build(:personal_access_token, user: build(:user, user_type: user_type)) }
+
+            it_behaves_like 'successful response'
+          end
+        end
+
         # Both boundaries are projects in separate root namespaces, which is the shape
         # an endpoint can actually declare: nothing guarantees they share an ancestor.
         # Enforcing on both roots keeps the two runs on the same branch, so they differ

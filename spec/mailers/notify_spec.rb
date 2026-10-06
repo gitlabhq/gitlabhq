@@ -516,7 +516,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
     describe 'for design notes' do
       let_it_be(:design) { create(:design, :with_file) }
-      let_it_be(:recipient, freeze: false) { create(:user) }
+      let_it_be_with_reload(:recipient) { create(:user) }
       let_it_be(:note) do
         create(:diff_note_on_design, noteable: design, note: "Hello #{recipient.to_reference}")
       end
@@ -713,11 +713,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       describe 'on a commit' do
+        let_it_be_with_reload(:note) { create_note }
+
         let(:commit) { project.commit }
-        let(:note) { create_note }
 
         def create_note
-          create(:discussion_note_on_commit, commit_id: commit.id, project: project, author: note_author)
+          create(:discussion_note_on_commit, commit_id: project.commit.id, project: project, author: note_author)
         end
 
         before do
@@ -746,7 +747,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       describe 'on a merge request' do
-        let(:note) { create_note }
+        let_it_be_with_reload(:note) { create_note }
+
         let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
 
         def create_note
@@ -784,7 +786,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       describe 'on an issue' do
-        let(:note) { create_note }
+        let_it_be_with_reload(:note) { create_note }
+
         let(:note_on_issue_path) { "#{::Gitlab::UrlBuilder.instance.issue_path(issue)}#note_#{note.id}" }
 
         def create_note
@@ -936,8 +939,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
       context 'when the project does not show diffs in emails' do
         let_it_be(:embed_project) do
-          create(:project, :repository, :public,
-            project_setting: create(:project_setting, show_diff_preview_in_email: false))
+          create(:project, :repository, :public, show_diff_preview_in_email: false)
         end
 
         it 'leaves the permalink as a plain link', :aggregate_failures do
@@ -1148,9 +1150,9 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         context 'when custom email is enabled' do
           let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
-          let_it_be(:verification, freeze: false) { create(:service_desk_custom_email_verification, project: project) }
+          let_it_be_with_reload(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
-          let_it_be(:settings, freeze: false) do
+          let_it_be_with_reload(:settings) do
             create(
               :service_desk_setting,
               project: project,
@@ -1268,9 +1270,9 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         context 'when custom email is enabled' do
           let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
-          let_it_be(:verification, freeze: false) { create(:service_desk_custom_email_verification, project: project) }
+          let_it_be_with_reload(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
-          let_it_be(:settings, freeze: false) do
+          let_it_be_with_reload(:settings) do
             create(
               :service_desk_setting,
               project: project,
@@ -1372,9 +1374,9 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         context 'when custom email is enabled' do
           let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
-          let_it_be(:verification, freeze: false) { create(:service_desk_custom_email_verification, project: project) }
+          let_it_be_with_reload(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
-          let_it_be(:settings, freeze: false) do
+          let_it_be_with_reload(:settings) do
             create(
               :service_desk_setting,
               project: project,
@@ -1437,9 +1439,9 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         context 'when custom email is enabled' do
           let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
-          let_it_be(:verification, freeze: false) { create(:service_desk_custom_email_verification, project: project) }
+          let_it_be_with_reload(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
-          let_it_be(:settings, freeze: false) do
+          let_it_be_with_reload(:settings) do
             create(
               :service_desk_setting,
               project: project,
@@ -2388,7 +2390,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
   end
 
   describe 'merge request reviews' do
-    let!(:review) { create(:review, project: project, merge_request: merge_request) }
+    let_it_be_with_reload(:review) { create(:review, project: project, merge_request: merge_request) }
+
     let!(:notes) { create_list(:note, 3, review: review, project: project, author: review.author, noteable: merge_request) }
 
     subject { described_class.new_review_email(recipient.id, review.id) }
@@ -2522,7 +2525,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     context 'with internal notes' do
-      let!(:review) { create(:review, project: project, merge_request: merge_request) }
       let!(:notes) { nil } # This was done to avoid the creation of notes defined in the parent context
 
       before do

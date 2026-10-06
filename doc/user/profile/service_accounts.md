@@ -320,6 +320,9 @@ To view the personal access tokens page for a service account:
 
 To use a service account, you must create a personal access token to authenticate requests.
 
+[Fine-grained token enforcement](../../auth/tokens/fine_grained_access_tokens.md#enforce-fine-grained-personal-access-tokens)
+does not apply to service account tokens.
+
 To create a personal access token for a service account:
 
 1. Go to the [Service accounts](#view-and-manage-service-accounts) page.

@@ -123,7 +123,9 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
       end
 
       context 'for a legacy diff discussion' do
-        let(:discussion) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+        let_it_be(:legacy_diff_note) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project) }
+
+        let(:discussion) { legacy_diff_note.to_discussion }
 
         context 'when the discussion is active' do
           before do
@@ -165,10 +167,12 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
     end
 
     context 'for a commit discussion' do
+      let_it_be(:commit_diff_note) { create(:diff_note_on_commit, project: project) }
+
       let(:commit) { discussion.noteable }
 
       context 'for a diff discussion' do
-        let(:discussion) { create(:diff_note_on_commit, project: project).to_discussion }
+        let(:discussion) { commit_diff_note.to_discussion }
 
         it 'returns the commit path with the line code' do
           expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: anchor))
@@ -192,7 +196,7 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
       end
 
       context 'when the commit is no longer reachable in the repository' do
-        let(:discussion) { create(:diff_note_on_commit, project: project).to_discussion }
+        let(:discussion) { commit_diff_note.to_discussion }
 
         before do
           allow(discussion).to receive(:noteable).and_return(nil)

@@ -41461,7 +41461,25 @@ msgstr ""
 msgid "Go full screen"
 msgstr ""
 
+msgid "Go to %{pat_link} to check it in your personal access tokens settings."
+msgstr ""
+
+msgid "Go to %{pat_link} to check your personal access tokens or create a new one."
+msgstr ""
+
+msgid "Go to %{pat_link} to view it in your personal access tokens settings."
+msgstr ""
+
 msgid "Go to %{source_name}"
+msgstr ""
+
+msgid "Go to %{ssh_key_link} to check your SSH keys or create a new one."
+msgstr ""
+
+msgid "Go to %{target_url} to check your access tokens or create a new one."
+msgstr ""
+
+msgid "Go to %{target_url} to check your deploy tokens or create a new one."
 msgstr ""
 
 msgid "Go to %{url} to adjust rules on auto-banning."
@@ -97332,13 +97350,7 @@ msgstr ""
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
-msgid "You can check it in your personal access tokens settings: %{pat_link}"
-msgstr ""
-
 msgid "You can check your tokens or create a new one in your %{pat_link_start}personal access tokens settings%{pat_link_end}."
-msgstr ""
-
-msgid "You can check your tokens or create a new one in your personal access tokens settings: %{pat_link}"
 msgstr ""
 
 msgid "You can create a new %{link}."
@@ -97360,18 +97372,6 @@ msgid "You can create a new one or check them in your %{pat_link_start}personal 
 msgstr ""
 
 msgid "You can create a new one or check them in your %{ssh_key_link_start}SSH keys%{ssh_key_link_end} settings."
-msgstr ""
-
-msgid "You can create a new one or check them in your SSH keys settings: %{ssh_key_link}"
-msgstr ""
-
-msgid "You can create a new one or check them in your access token settings: %{target_url}"
-msgstr ""
-
-msgid "You can create a new one or check them in your deploy tokens settings: %{target_url}"
-msgstr ""
-
-msgid "You can create a new one or check them in your personal access tokens settings: %{pat_link}"
 msgstr ""
 
 msgid "You can create a new personal access token by visiting %{link}"
@@ -97456,9 +97456,6 @@ msgid "You can unsubscribe from further updates to this ticket. To receive updat
 msgstr ""
 
 msgid "You can view it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
-msgstr ""
-
-msgid "You can view it in your personal access tokens settings: %{pat_link}"
 msgstr ""
 
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"

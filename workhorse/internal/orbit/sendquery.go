@@ -27,6 +27,8 @@ const maxStreamingTimeout = 120 * time.Second
 const (
 	queryTypeRaw   = "raw"
 	queryTypeNamed = "named"
+	formatGQL      = "gql"
+	languageGQL    = "gql"
 )
 
 // SendQuery is a senddata.Injecter that handles GKG graph queries via gRPC.
@@ -122,8 +124,11 @@ func (sq *SendQuery) Inject(w http.ResponseWriter, r *http.Request, sendData str
 	defer func() { _ = stream.CloseSend() }()
 
 	format := orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW
-	if params.Format == "llm" {
+	switch params.Format {
+	case "llm":
 		format = orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM
+	case formatGQL:
+		format = orbitpb.ResponseFormat_RESPONSE_FORMAT_GQL
 	}
 
 	ok := sendInitialRequest(ctx, w, r, stream, params, format)
@@ -156,7 +161,7 @@ func sendInitialRequest(
 	switch params.Language {
 	case "", "json":
 		language = orbitpb.QueryLanguage_QUERY_LANGUAGE_JSON
-	case "gql":
+	case languageGQL:
 		language = orbitpb.QueryLanguage_QUERY_LANGUAGE_GQL
 	default:
 		writeQueryError(w, r, params.McpID, "validation_error", "Invalid query language", "")
@@ -300,7 +305,7 @@ func (sq *SendQuery) handleRedaction(
 }
 
 func writeResultResponse(w http.ResponseWriter, r *http.Request, result *orbitpb.ExecuteQueryResult, format orbitpb.ResponseFormat, mcpID any) {
-	if format == orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM {
+	if format == orbitpb.ResponseFormat_RESPONSE_FORMAT_LLM || format == orbitpb.ResponseFormat_RESPONSE_FORMAT_GQL {
 		writeLLMResultResponse(w, r, result, mcpID)
 		return
 	}

@@ -148,6 +148,10 @@ backup_vulnerability_user_mentions:
   - table: projects
     column: project_id
     on_delete: async_delete
+billable_usage_export_logs:
+  - table: users
+    column: generated_by_id
+    on_delete: async_nullify
 chat_names:
   - table: users
     column: user_id

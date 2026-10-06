@@ -2463,7 +2463,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         end
       end
 
-      context do
+      context 'with discussions on the merge request' do
         it_behaves_like 'discussions provider' do
           let!(:author) { create(:user) }
           let_it_be_with_refind(:project) { create(:project) }

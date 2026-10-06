@@ -277,7 +277,6 @@ delegations:
   - scanner_name
 methods:
   app/helpers/avatars_helper.rb:
-  - avatar_without_link
   - source_icon
   app/helpers/routing/groups/members_helper.rb:
   - group_members_url

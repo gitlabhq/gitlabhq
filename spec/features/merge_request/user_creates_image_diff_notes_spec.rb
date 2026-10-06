@@ -61,7 +61,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
 
       click_button 'Add image comment', match: :first
       find_by_testid('reply-field').set('image diff test comment')
-      click_button 'Comment'
+      click_button 'Add comment now'
 
       expect(page).to have_testid('image-comment-badge')
       expect(page).to have_content('image diff test comment')

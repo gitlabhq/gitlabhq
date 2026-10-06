@@ -304,4 +304,21 @@ RSpec.describe Gitlab::Metrics, :prometheus, feature_category: :scalability do
       end
     end
   end
+
+  describe '.preload_sli_modules!', feature_category: :error_budgets do
+    let(:loaded_files) { [] }
+
+    before do
+      allow(described_class).to receive(:require_dependency) { |file| loaded_files << file }
+    end
+
+    it 'does not load SLI modules from the ee directory when running as FOSS', :aggregate_failures do
+      allow(GitlabEdition).to receive(:extensions).and_return([])
+
+      described_class.preload_sli_modules!
+
+      expect(loaded_files).to include(Rails.root.join('lib/gitlab/metrics/loose_foreign_keys_slis.rb').to_s)
+      expect(loaded_files).to all(start_with(Rails.root.join('lib').to_s))
+    end
+  end
 end

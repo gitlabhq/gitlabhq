@@ -1,6 +1,6 @@
 ---
-source_checksum: 97a4ccc6746bd154
-distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
+source_checksum: 381723803682f0be
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -58,6 +58,7 @@ distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
 - If a required source cannot be retrieved, state the limitation in the review summary instead of raising a speculative inline defect.
 - Confirm the front matter checksums were updated by the tool, not by hand.
 - Keep the source-verification procedure inline in the generated review instructions through distillation and fence reconciliation, rather than relying only on a reference link.
+- Keep sync MRs in Draft state while GitLab Duo reviews them; mark ready only after a Duo review of the latest revision succeeds with no outstanding actionable findings. Re-draft the MR if a later sync run publishes new distilled content, even if a human had already marked it ready.
 - Use the `ai-principles-review-feedback` skill to work through every automated review finding before merging a weekly sync merge request.
 - Classify each Duo finding into exactly one of four outcomes before acting: Content defect (distilled text misstates the source — fix on the sync branch), Content gap (distillation dropped a supported rule — restore on the sync branch), Distiller defect (root cause is the tooling — fix the output and open an issue against the distiller), or Judgment call (output is correct but could be closer — record it, no required action).
 - When fixing a finding, restore a baseline-derived rule verbatim (the sync tooling mechanically rejects any alteration); make a source-derived fix faithful and traceable but DO NOT copy source prose verbatim (distilled files hold concrete checkable rules, and a verbatim copy is rephrased on the next run).

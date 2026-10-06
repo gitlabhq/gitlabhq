@@ -50,6 +50,7 @@ module PersonalAccessTokens
 
     def granular_tokens_enforced?
       return false unless Feature.enabled?(:granular_personal_access_tokens, token.user)
+      return false unless target_user.human?
 
       Gitlab::CurrentSettings.granular_tokens_enforced? && !token.granular?
     end

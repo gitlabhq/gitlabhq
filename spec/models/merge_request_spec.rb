@@ -1003,14 +1003,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     describe "#validate_reviewer_size_length" do
       let(:merge_request) { build(:merge_request, transitioning: transitioning) }
 
-      where(:transitioning, :to_or_not_to) do
-        false  | :to
-        true   | :not_to
+      where(:transitioning, :expected_calls) do
+        false | 1
+        true  | 0
       end
 
       with_them do
         it do
-          expect(merge_request).send(to_or_not_to, receive(:validate_reviewer_size_length))
+          expect(merge_request).to receive(:validate_reviewer_size_length).exactly(expected_calls).times
 
           merge_request.valid?
         end
@@ -1047,14 +1047,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       context "when transitioning between states" do
         let(:merge_request) { build(:merge_request, transitioning: transitioning) }
 
-        where(:transitioning, :to_or_not_to) do
-          false | :to
-          true  | :not_to
+        where(:transitioning, :expected_calls) do
+          false | 1
+          true  | 0
         end
 
         with_them do
           it do
-            expect(merge_request).send(to_or_not_to, receive(:validate_target_project))
+            expect(merge_request).to receive(:validate_target_project).exactly(expected_calls).times
 
             merge_request.valid?
           end

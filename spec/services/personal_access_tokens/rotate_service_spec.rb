@@ -305,6 +305,14 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
             it 'does not create PersonalAccessToken records' do
               expect { response }.not_to change { PersonalAccessToken.count }
             end
+
+            context 'when the token belongs to a bot' do
+              let_it_be_with_reload(:token) do
+                create(:personal_access_token, user: create(:user, :project_bot), expires_at: Time.zone.today + 30.days)
+              end
+
+              it_behaves_like 'rotates token successfully'
+            end
           end
 
           context 'when token is a granular token' do

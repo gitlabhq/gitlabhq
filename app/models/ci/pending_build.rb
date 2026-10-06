@@ -4,10 +4,13 @@ module Ci
   class PendingBuild < Ci::ApplicationRecord
     include EachBatch
     include Ci::Partitionable
+    include ActiveRecord::FixedItemsModel::HasOne
 
     MAX_TAGS_IDS = 50
 
     TooManyTagsError = Class.new(StandardError)
+
+    ignore_column :plan_id, remove_with: '19.7', remove_after: '2026-11-19'
 
     belongs_to :project
 
@@ -16,9 +19,9 @@ module Ci
       class_name: 'Ci::Build',
       partition_foreign_key: :partition_id
     belongs_to :namespace, inverse_of: :pending_builds, class_name: 'Namespace'
-    belongs_to :plan, # rubocop: disable Rails/InverseOf -- Plan does not declare has_many :pending_builds
-      foreign_key: :plan_name_uid,
-      primary_key: :plan_name_uid
+    belongs_to_fixed_items :plan,
+      fixed_items_class: ::GitlabSubscriptions::SystemDefined::Plan,
+      foreign_key: 'plan_name_uid'
 
     partitionable scope: :build
 

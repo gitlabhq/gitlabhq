@@ -35,6 +35,10 @@ Three questions the agent must answer **from the contract alone**:
      `:unauthorized`, `:not_found`; `:error` is the default). It is stripped before the
      agent sees the response and only sets `tool_status` in `mcp.log`. See
      [Categorizing tool errors](../../../../doc/development/duo_agent_platform/mcp/_index.md#categorizing-tool-errors).
+   - If your tool wraps or aggregates another tool, forward the inner result's reason
+     (`Response.error_reason`) rather than building an error without one. A route-backed inner
+     tool's reason comes from the HTTP status, so when you match a known refusal and replace its
+     message, give that table entry its own reason and read it with `fetch`.
    - It isn't needlessly verbose: every returned field costs the agent tokens, so drop
      what it won't use.
    - **Don't silently truncate or transform a returned value.** If you shorten a field (a

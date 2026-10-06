@@ -4,6 +4,7 @@ import { nextTick } from 'vue';
 import ImageDiffViewerWithDiscussions from '~/rapid_diffs/app/image_viewer/image_diff_viewer_with_discussions.vue';
 import ImageViewer from '~/rapid_diffs/app/image_viewer/image_viewer.vue';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
+import DraftNote from '~/rapid_diffs/app/discussions/draft_note.vue';
 import BaseImageDiffOverlay from '~/diffs/components/base_image_diff_overlay.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
@@ -83,6 +84,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
   const findImageViewer = () => wrapper.findComponent(ImageViewer);
   const findDiffDiscussions = () => wrapper.findComponent(DiffDiscussions);
   const findOverlay = () => wrapper.findComponent(BaseImageDiffOverlay);
+  const findDraftNotes = () => wrapper.findAllComponents(DraftNote);
   const findNoteForm = () => wrapper.findComponent(NoteForm);
 
   beforeEach(() => {
@@ -133,6 +135,25 @@ describe('ImageDiffViewerWithDiscussions', () => {
 
       expect(findDiffDiscussions().props('discussions')).toHaveLength(2);
       expect(findDiffDiscussions().props('counterBadgeVisible')).toBe(true);
+    });
+
+    it('renders drafts as draft notes and keeps their overlay badges', () => {
+      const draft = { id: 'draft-1', note: 'My draft' };
+      const discussions = [
+        createImageDiscussion('1', 'old.png', 'new.png'),
+        { ...createImageDiscussion('draft-1', 'old.png', 'new.png'), isDraft: true, draft },
+      ];
+      store.findAllImageDiscussionsForFile.mockReturnValue(discussions);
+      createComponent();
+
+      expect(
+        findDiffDiscussions()
+          .props('discussions')
+          .map(({ id }) => id),
+      ).toEqual(['1']);
+      expect(findDraftNotes()).toHaveLength(1);
+      expect(findDraftNotes().at(0).props('draft')).toBe(draft);
+      expect(findOverlay().props('discussions')).toHaveLength(2);
     });
 
     it('filters discussions by path', () => {
@@ -209,6 +230,66 @@ describe('ImageDiffViewerWithDiscussions', () => {
     it('does not render NoteForm when commentForm is null', () => {
       createComponent();
       expect(findNoteForm().exists()).toBe(false);
+    });
+
+    describe('draft notes', () => {
+      it('does not offer the draft action when the store has none (commit page)', async () => {
+        createComponent();
+        findOverlay().vm.$emit('image-click', formData);
+        await nextTick();
+
+        expect(findNoteForm().props('saveDraft')).toBe(null);
+      });
+
+      describe('when the store supports drafts', () => {
+        beforeEach(() => {
+          store.createDraftImageDiscussion = jest.fn().mockResolvedValue();
+        });
+
+        it('creates a draft with the image position', async () => {
+          createComponent();
+          findOverlay().vm.$emit('image-click', formData);
+          await nextTick();
+
+          await findNoteForm().props('saveDraft')('My draft');
+
+          expect(store.createDraftImageDiscussion).toHaveBeenCalledWith({
+            position: {
+              ...defaultProps.diffRefs,
+              old_path: 'old.png',
+              new_path: 'new.png',
+              position_type: 'image',
+              width: 100,
+              height: 200,
+              x: 10,
+              y: 20,
+            },
+            noteBody: 'My draft',
+          });
+        });
+
+        it('closes the form after saving a draft', async () => {
+          createComponent();
+          findOverlay().vm.$emit('image-click', formData);
+          await nextTick();
+
+          await findNoteForm().props('saveDraft')('My draft');
+          await nextTick();
+
+          expect(findNoteForm().exists()).toBe(false);
+        });
+
+        it('propagates draft save failure and keeps the form open', async () => {
+          store.createDraftImageDiscussion.mockRejectedValue(new Error('fail'));
+          createComponent();
+          findOverlay().vm.$emit('image-click', formData);
+          await nextTick();
+
+          await expect(findNoteForm().props('saveDraft')('My draft')).rejects.toThrow('fail');
+          expect(findNoteForm().exists()).toBe(true);
+          expect(clearDraft).not.toHaveBeenCalled();
+        });
+      });
     });
 
     describe('saving notes', () => {

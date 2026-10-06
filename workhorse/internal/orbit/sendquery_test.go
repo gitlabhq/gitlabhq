@@ -805,7 +805,9 @@ func TestInjectQueryTypeSelection(t *testing.T) {
 		language  string
 		query     string
 		want      orbitpb.QueryType
+		format    string
 	}{
+		{name: "gql response", address: "test-gql-response:50051", query: `{"nodes":["User"]}`, want: orbitpb.QueryType_QUERY_TYPE_JSON, format: "gql"},
 		{name: "defaults to json", address: "test-query-type-json:50051", query: `{"nodes":["User"]}`, want: orbitpb.QueryType_QUERY_TYPE_JSON},
 		{name: "explicit json", address: "test-query-type-explicit-json:50051", queryType: "raw", language: "json", query: `{"nodes":["User"]}`, want: orbitpb.QueryType_QUERY_TYPE_JSON},
 		{name: "named JSON", address: "test-query-type-named:50051", queryType: "named", language: "json", query: `{"name":"my_neighbors"}`, want: orbitpb.QueryType_QUERY_TYPE_NAMED},
@@ -826,7 +828,7 @@ func TestInjectQueryTypeSelection(t *testing.T) {
 				return stream.Send(&orbitpb.ExecuteQueryMessage{
 					Content: &orbitpb.ExecuteQueryMessage_Result{
 						Result: &orbitpb.ExecuteQueryResult{
-							Content:  &orbitpb.ExecuteQueryResult_ResultJson{ResultJson: `{}`},
+							Content:  &orbitpb.ExecuteQueryResult_FormattedText{FormattedText: "| u |\n"},
 							Metadata: &orbitpb.QueryMetadata{QueryType: "neighbors"},
 						},
 					},
@@ -840,7 +842,7 @@ func TestInjectQueryTypeSelection(t *testing.T) {
 				Query:     tc.query,
 				QueryType: tc.queryType,
 				Language:  tc.language,
-				Format:    "raw",
+				Format:    tc.format,
 			})
 
 			recorder := httptest.NewRecorder()
@@ -857,9 +859,18 @@ func TestInjectQueryTypeSelection(t *testing.T) {
 			}
 			require.Equal(t, language, request.GetLanguage())
 			require.Equal(t, tc.query, request.GetQuery())
-			require.Equal(t, orbitpb.ResponseFormat_RESPONSE_FORMAT_RAW, request.GetFormat())
+			require.Equal(t, tc.format == "gql", request.GetFormat() == orbitpb.ResponseFormat_RESPONSE_FORMAT_GQL)
 		})
 	}
+}
+
+func TestWriteGQLResultResponse(t *testing.T) {
+	result := &orbitpb.ExecuteQueryResult{Content: &orbitpb.ExecuteQueryResult_FormattedText{FormattedText: "| u |\n"}}
+	recorder := httptest.NewRecorder()
+	writeResultResponse(recorder, httptest.NewRequest(http.MethodPost, "/", nil), result, orbitpb.ResponseFormat_RESPONSE_FORMAT_GQL, nil)
+
+	require.Equal(t, "text/plain; charset=utf-8", recorder.Header().Get("Content-Type"))
+	require.Equal(t, "| u |\n", recorder.Body.String())
 }
 
 func TestSendInitialRequestRejectsUnknownQueryType(t *testing.T) {

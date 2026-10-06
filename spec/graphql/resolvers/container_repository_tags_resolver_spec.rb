@@ -125,9 +125,9 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
 
       it 'returns an ExternallyPaginatedArray' do
         expect(Gitlab::Graphql::ExternallyPaginatedArray)
-          .to receive(:new).with('prev-cursor', 'next-cursor')
+          .to receive(:new).with('prev-cursor', 'next-cursor').and_call_original
 
-        expect(resolver(args)).is_a? Gitlab::Graphql::ExternallyPaginatedArray
+        expect(resolver(args).items).to be_a(Gitlab::Graphql::ExternallyPaginatedArray)
       end
     end
 

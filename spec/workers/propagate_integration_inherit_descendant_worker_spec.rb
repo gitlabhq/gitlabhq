@@ -6,7 +6,9 @@ RSpec.describe PropagateIntegrationInheritDescendantWorker, feature_category: :i
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:group_integration) { create(:redmine_integration, :group, group: group) }
-  let_it_be(:subgroup_integration) { create(:redmine_integration, :group, group: subgroup, inherit_from_id: group_integration.id) }
+  let_it_be(:subgroup_integration) do
+    create(:redmine_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
+  end
 
   it_behaves_like 'an idempotent worker' do
     let(:job_args) { [group_integration.id, subgroup_integration.id, subgroup_integration.id] }
@@ -17,6 +19,26 @@ RSpec.describe PropagateIntegrationInheritDescendantWorker, feature_category: :i
         .and_return(double(execute: nil))
 
       perform_idempotent_work
+    end
+  end
+
+  context 'with a child inheriting from an instance integration in another organization' do
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:other_instance_integration) do
+      create(:redmine_integration, :instance, organization: other_organization)
+    end
+
+    let_it_be(:child_integration) do
+      create(:redmine_integration, project: create(:project, group: subgroup),
+        inherit_from_id: other_instance_integration.id)
+    end
+
+    it 'does not pass it to Integrations::Propagation::BulkUpdateService' do
+      expect(Integrations::Propagation::BulkUpdateService).to receive(:new)
+        .with(group_integration, match_array(subgroup_integration))
+        .and_return(instance_double(Integrations::Propagation::BulkUpdateService, execute: nil))
+
+      described_class.new.perform(group_integration.id, subgroup_integration.id, child_integration.id)
     end
   end
 

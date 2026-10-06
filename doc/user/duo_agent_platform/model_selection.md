@@ -26,6 +26,7 @@ For some features, you can select a different model, which persists until you ch
 - [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) for Code Review Flow introduced in GitLab 19.1.
 - Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5555) to Claude Sonnet 4.6 Vertex on May 20, 2026.
 - Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Vertex on August 6, 2026.
+- Default LLM for Business Logic Security Scan [set](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7077) to Claude Sonnet 5 Gemini Enterprise Agent Platform on October 2, 2026.
 - Default LLM for Code Review Flow [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7238) to Claude Sonnet 5.5 Gemini Enterprise Agent Platform on October 5, 2026.
 
 {{< /history >}}
@@ -37,10 +38,12 @@ This table lists the default model for each feature in the Agent Platform.
 | GitLab Duo Agentic Chat | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 | Code Review Flow[^earlier-code-review] | Claude Sonnet 5.5 Gemini Enterprise Agent Platform |
 | Security Review Flow | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
+| Business Logic Security Scan[^bl-security-experiment] | Claude Sonnet 5 Gemini Enterprise Agent Platform |
 | All other agents | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 
 [^earlier-code-review]: For GitLab 19.0 or earlier, Code Review Flow uses the [default LLM](../gitlab_duo/model_selection.md#default-models)
     set for GitLab Duo Code Review, the non-agentic version.
+[^bl-security-experiment]: [Business Logic Security Scan](../application_security/business_logic_scanning/_index.md) is an [experiment](../../policy/development_stages_support.md#experiment). It's available only when the `bl_security_analyzer` feature flag is enabled and [experiment and beta features](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) are turned on.
 
 ## Supported models
 
@@ -53,6 +56,7 @@ This table lists the default model for each feature in the Agent Platform.
 - GPT-6 Sol and GPT-6 Luna [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7062) as supported models for GitLab Duo Agentic Chat and all other agents on September 22, 2026.
 - Claude Sonnet 5.5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7129) as a supported model for GitLab Duo Agentic Chat and all other agents on September 28, 2026.
 - GPT-6.1 Sol [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7169) as a supported model for GitLab Duo Agentic Chat and all other agents on September 29, 2026.
+- Claude Sonnet 4.6 and Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7077) as supported models for Business Logic Security Scan on October 2, 2026.
 - Claude Sonnet 5.5 and Claude Sonnet 5.5 Gemini Enterprise Agent Platform [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7238) as supported models for Code Review Flow on October 5, 2026.
 
 {{< /history >}}
@@ -60,45 +64,45 @@ This table lists the default model for each feature in the Agent Platform.
 This table lists the models you can select for features
 in the Agent Platform.
 
-| Model                       | GitLab Duo<br> Agentic Chat | Code Review Flow[^supported-models-earlier-code-review] | Security Review Flow | All other agents |
-|-----------------------------|-------------------------|------------------|----------------------|------------------|
-| Claude Fable 5[^model-subject-limited] | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Fable 5.1[^model-subject-limited] | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Sonnet 4.5           | {{< yes >}}             | {{< no >}}      | {{< yes >}}          | {{< yes >}}      |
-| Claude Sonnet 4.6           | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
-| Claude Sonnet 5             | {{< yes >}}             | {{< yes >}}      | {{< no >}}           | {{< yes >}}      |
-| Claude Sonnet 5.5           | {{< yes >}}             | {{< yes >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Haiku 4.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Opus 4.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Opus 4.6             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Opus 4.7             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Opus 4.8             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Opus 5               | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Claude Opus 5.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Gemini 3.5 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Gemini 3.7 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Gemini 3.8 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GLM 5.3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5                       | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.1                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.2                     | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
-| GPT-5 Codex                 | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.2 Codex               | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.3 Codex               | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
-| GPT-5 Mini                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.4 Mini                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.4 Nano                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.5[^model-subject-limited]        | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Sol[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Terra[^model-subject-limited]  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-5.6 Luna[^model-subject-limited]   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-6 Astra[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-6 Sol[^model-subject-limited]      | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-6 Luna[^model-subject-limited]     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| GPT-6.1 Sol[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| Kimi K3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
-| MiniMax M3                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Model                       | GitLab Duo<br> Agentic Chat | Code Review Flow[^supported-models-earlier-code-review] | Security Review Flow | Business Logic Security Scan[^bl-security-experiment] | All other agents |
+|-----------------------------|-------------------------|------------------|----------------------|------------------------------|------------------|
+| Claude Fable 5[^model-subject-limited] | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Fable 5.1[^model-subject-limited] | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Sonnet 4.5           | {{< yes >}}             | {{< no >}}      | {{< yes >}}          | {{< no >}}                   | {{< yes >}}      |
+| Claude Sonnet 4.6           | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}                  | {{< yes >}}      |
+| Claude Sonnet 5             | {{< yes >}}             | {{< yes >}}      | {{< no >}}           | {{< yes >}}                  | {{< yes >}}      |
+| Claude Sonnet 5.5           | {{< yes >}}             | {{< yes >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Haiku 4.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Opus 4.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Opus 4.6             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Opus 4.7             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Opus 4.8             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Opus 5               | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Claude Opus 5.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Gemini 3.5 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Gemini 3.7 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Gemini 3.8 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GLM 5.3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5                       | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.1                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.2                     | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< no >}}                   | {{< yes >}}      |
+| GPT-5 Codex                 | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.2 Codex               | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.3 Codex               | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< no >}}                   | {{< yes >}}      |
+| GPT-5 Mini                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.4 Mini                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.4 Nano                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.5[^model-subject-limited]        | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.6 Sol[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.6 Terra[^model-subject-limited]  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-5.6 Luna[^model-subject-limited]   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-6 Astra[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-6 Sol[^model-subject-limited]      | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-6 Luna[^model-subject-limited]     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| GPT-6.1 Sol[^model-subject-limited]    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| Kimi K3                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
+| MiniMax M3                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< no >}}                   | {{< yes >}}      |
 
 [^supported-models-earlier-code-review]: For GitLab 19.0 or earlier, Code Review Flow can only use the [models available](../gitlab_duo/model_selection.md#gitlab-duo-for-merge-requests)
     for GitLab Duo Code Review, the non-agentic version.
@@ -125,6 +129,7 @@ in the Agent Platform.
 - [Separate model setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) for Code Review Flow introduced in GitLab 19.1, using the **Agentic Code Review** setting.
 - Ability to restrict GitLab Duo Agentic Chat to specific models [added](https://gitlab.com/groups/gitlab-org/-/work_items/22028) in GitLab 19.1.
 - Security Review Flow [added](https://gitlab.com/gitlab-org/gitlab/-/issues/603981) to model selection in GitLab 19.2.
+- Business Logic Security Scan [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257092) to model selection in GitLab 19.5 as an [experiment](../../policy/development_stages_support.md#experiment) with a [flag](../../administration/feature_flags/_index.md) named `bl_security_analyzer`. Disabled by default.
 
 {{< /history >}}
 

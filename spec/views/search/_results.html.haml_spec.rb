@@ -11,7 +11,7 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
   let(:search_results) { instance_double('Gitlab::SearchResults', { formatted_count: 10, current_user: user }) }
 
   before_all do
-    create_list(:issue, 3)
+    create_list(:issue, 3, project: create(:project))
   end
 
   before do
@@ -353,7 +353,8 @@ RSpec.describe 'search/_results', :with_current_organization, feature_category: 
   # scope, and under EE that partial's else branch render_ce's back to the CE one, so this
   # is the only view-spec cover for app/views/search/results/_work_item.html.haml.
   context 'when scope is work_items' do
-    let_it_be(:work_items) { create_list(:work_item, 2, title: 'testing work item') }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:work_items) { create_list(:work_item, 2, project: project, title: 'testing work item') }
 
     let(:scope) { 'work_items' }
     let(:term) { 'testing' }

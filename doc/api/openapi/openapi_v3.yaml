@@ -102369,7 +102369,8 @@ components:
           enum:
           - raw
           - llm
-          description: 'Response format: raw or llm'
+          - gql
+          description: 'Response format: raw, llm, or gql'
           default: raw
         source_type:
           type: string
@@ -102389,7 +102390,8 @@ components:
           enum:
           - raw
           - llm
-          description: 'Response format: raw or llm'
+          - gql
+          description: 'Response format: raw, llm, or gql'
           default: raw
         source_type:
           type: string

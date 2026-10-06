@@ -113,13 +113,10 @@ module Gitlab
     end
 
     def self.preload_sli_modules!
-      sli_paths = [
-        Rails.root.join('lib/gitlab/metrics/*_slis.rb'),
-        Rails.root.join('ee/lib/gitlab/metrics/*_slis.rb')
-      ]
-      Gitlab::AppLogger.info "#{self}: preloading path(s) #{sli_paths.join(', ')}"
+      sli_glob = GitlabEdition.path_glob('lib/gitlab/metrics/*_slis.rb')
+      Gitlab::AppLogger.info "#{self}: preloading path(s) #{sli_glob}"
 
-      sli_paths.flat_map { |path| Dir.glob(path) }.each do |file|
+      Dir.glob(sli_glob).each do |file|
         require_dependency file # rubocop:disable Rails/RequireDependency -- This is required to
         # load the SLI implementation modules, as they are not referred directly in code.
         # The alternative would be a more convoluted implementation where we camelize and

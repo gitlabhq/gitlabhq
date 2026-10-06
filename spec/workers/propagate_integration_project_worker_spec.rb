@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PropagateIntegrationProjectWorker do
+RSpec.describe PropagateIntegrationProjectWorker, feature_category: :integrations do
   describe '#perform' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project1) { create(:project) }
@@ -31,6 +31,19 @@ RSpec.describe PropagateIntegrationProjectWorker do
 
           subject
         end
+      end
+    end
+
+    context 'with a project in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:project_in_other_org) { create(:project, organization: other_organization) }
+
+      it 'does not pass the project to Integrations::Propagation::BulkCreateService' do
+        expect(Integrations::Propagation::BulkCreateService).to receive(:new)
+          .with(integration, match_array([project1, project2, project3]), 'project')
+          .and_return(instance_double(Integrations::Propagation::BulkCreateService, execute: nil))
+
+        described_class.new.perform(integration.id, project1.id, project_in_other_org.id)
       end
     end
 

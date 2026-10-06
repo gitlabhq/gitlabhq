@@ -185,7 +185,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
             next unless section.dig('object_store', 'enabled')
 
-            expect(section['object_store']['consolidated_settings']).to_be falsey
+            expect(section['object_store']['consolidated_settings']).to be_falsey
           end
         end
       end

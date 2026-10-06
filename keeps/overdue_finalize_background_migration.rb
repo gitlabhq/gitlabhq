@@ -39,8 +39,14 @@ module Keeps
         migration_record = fetch_migration_status(job_name)
         next unless migration_record
 
-        last_migration_file = last_migration_for_job(job_name)
-        next unless last_migration_file
+        migration_files = migration_files_for_job(job_name)
+        last_migration_file = last_queueing_migration(migration_files)
+
+        # No file mentions the job once a squash has deleted the queueing
+        # migration. The archived record carries the same arguments, so finalize
+        # from that instead of skipping. A file that exists but never calls
+        # queue_batched_background_migration is still skipped.
+        next if last_migration_file.nil? && migration_files.any?
 
         change = ::Gitlab::Housekeeper::Change.new
         change.identifiers = [self.class.name.demodulize, job_name]
@@ -64,7 +70,7 @@ module Keeps
 
       initialize_change_details(change, migration, migration_record, job_name, last_migration_file)
 
-      queue_method_node = migration_rewriter.find_queue_method_node(last_migration_file)
+      queue_method_node = last_migration_file && migration_rewriter.find_queue_method_node(last_migration_file)
 
       migration_name = unique_migration_name("FinalizeHK#{job_name}")
       PostDeploymentMigration::PostDeploymentMigrationGenerator
@@ -117,8 +123,7 @@ module Keeps
       /chatops gitlab run batched_background_migrations status #{migration_record.id} --database #{database_name(migration_record)}
       ```
 
-      The last time this background migration was triggered was in
-      [#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})
+      #{last_triggered_message(last_migration_file)}
 
       You can read more about the process for finalizing batched background migrations in
       https://docs.gitlab.com/ee/development/database/batched_background_migrations.html .
@@ -130,6 +135,16 @@ module Keeps
       last required stop.
       MARKDOWN
       # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
+    end
+
+    def last_triggered_message(last_migration_file)
+      if last_migration_file.nil?
+        return 'The migration that queued this has since been squashed, so the arguments below come from the ' \
+          'batched_background_migrations record rather than from the migration source.'
+      end
+
+      "The last time this background migration was triggered was in " \
+        "[#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})"
     end
 
     def unique_migration_name(migration_name)
@@ -160,23 +175,20 @@ module Keeps
       File.open(yaml_file, 'w') { |f| f.write(YAML.dump(content)) }
     end
 
-    def last_migration_for_job(job_name)
-      files = ::Gitlab::Housekeeper::Shell.execute(
+    def migration_files_for_job(job_name)
+      ::Gitlab::Housekeeper::Shell.execute(
         'git', 'grep', '--name-only', "MIGRATION = .#{job_name}.", '--', 'db/migrate/*.rb', 'db/post_migrate/*.rb'
       ).each_line.map(&:chomp)
+    rescue ::Gitlab::Housekeeper::Shell::Error
+      []
+    end
 
-      result = files.select do |file|
+    # Nil when none of the files queue the migration, which is the case for a
+    # no-op migration.
+    def last_queueing_migration(files)
+      files.select do |file|
         File.read(file).include?('queue_batched_background_migration')
       end.max
-
-      # Return nil for no-op migrations (those without queue_batched_background_migration)
-      # This will cause the housekeeper to skip processing this migration
-      return unless result.present?
-
-      result
-    rescue ::Gitlab::Housekeeper::Shell::Error
-      # `git grep` returns an error status code if it finds no results
-      nil
     end
 
     def fetch_migration_status(job_name)

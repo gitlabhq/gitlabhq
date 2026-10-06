@@ -36,7 +36,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
         batched_background_migrations: { yaml_file => migration_yaml },
         migration_finalized?: false,
         fetch_migration_status: migration_record,
-        last_migration_for_job: last_migration_file
+        last_queueing_migration: last_migration_file
       )
     end
 
@@ -84,13 +84,30 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       end
     end
 
-    context 'when last_migration_for_job returns nil' do
+    context 'when the migration file does not queue the migration' do
       before do
-        allow(keep).to receive(:last_migration_for_job).and_return(nil)
+        allow(keep).to receive_messages(
+          last_queueing_migration: nil,
+          migration_files_for_job: ['db/post_migrate/20230101000000_noop_migration.rb']
+        )
       end
 
       it 'does not yield' do
         expect { |b| keep.each_identified_change(&b) }.not_to yield_control
+      end
+    end
+
+    context 'when the queueing migration has been squashed' do
+      before do
+        allow(keep).to receive_messages(last_queueing_migration: nil, migration_files_for_job: [])
+      end
+
+      it 'still yields, so the migration can be finalized from the archived record' do
+        changes = []
+        keep.each_identified_change { |change| changes << change }
+
+        expect(changes.size).to eq(1)
+        expect(changes.first.context[:last_migration_file]).to be_nil
       end
     end
   end
@@ -198,13 +215,13 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     end
   end
 
-  describe '#last_migration_for_job' do
+  describe '#last_queueing_migration' do
     let(:job_name) { 'TestBackgroundMigration' }
     let(:grep_args) do
       ['git', 'grep', '--name-only', "MIGRATION = .#{job_name}.", '--', 'db/migrate/*.rb', 'db/post_migrate/*.rb']
     end
 
-    subject(:result) { keep.send(:last_migration_for_job, job_name) }
+    subject(:result) { keep.send(:last_queueing_migration, keep.send(:migration_files_for_job, job_name)) }
 
     context 'when matching files exist with queue_batched_background_migration' do
       before do
@@ -255,7 +272,9 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     context 'when a documentation file also mentions the job' do
       let(:tmp_dir) { Pathname(Dir.mktmpdir) }
 
-      subject(:result) { Dir.chdir(tmp_dir) { keep.send(:last_migration_for_job, job_name) } }
+      subject(:result) do
+        Dir.chdir(tmp_dir) { keep.send(:last_queueing_migration, keep.send(:migration_files_for_job, job_name)) }
+      end
 
       before do
         FileUtils.mkdir_p(tmp_dir.join('db', 'post_migrate'))
@@ -589,6 +608,19 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
       it 'falls back to updated_at in the description' do
         expect(description).to include('2023-06-15 10:00:00')
+      end
+    end
+
+    context 'when the queueing migration has been squashed' do
+      let(:last_migration_file) { nil }
+
+      before do
+        allow(keep).to receive(:migration_code_present?).and_return(true)
+      end
+
+      it 'says the arguments came from the archived record' do
+        expect(description).to include('has since been squashed')
+        expect(description).not_to include('/-/blob/master/')
       end
     end
   end

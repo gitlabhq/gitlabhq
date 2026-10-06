@@ -2642,7 +2642,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     describe '#removed_milestone on Issue' do
       let(:mailer_method) { :removed_milestone_issue_email }
 
-      context do
+      context 'when the issue is removed from a milestone' do
         let(:milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 
@@ -2699,7 +2699,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     describe '#changed_milestone on Issue' do
       let(:mailer_method) { :changed_milestone_issue_email }
 
-      context do
+      context 'when the issue is moved to a new milestone' do
         let(:new_milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 

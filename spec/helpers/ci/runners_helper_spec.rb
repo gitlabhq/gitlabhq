@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
-  let_it_be(:admin_user) { create(:user, :admin) }
   let_it_be(:non_admin_user) { create(:user) }
   let_it_be(:user) { non_admin_user }
+
+  let(:admin_user) { build_stubbed(:user, :admin) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -20,7 +21,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   end
 
   describe '#admin_runners_app_data', :enable_admin_mode do
-    let_it_be(:user) { admin_user }
+    let(:user) { admin_user }
 
     subject(:data) { helper.admin_runners_app_data }
 
@@ -51,7 +52,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   end
 
   describe '#admin_runners_fleet_dashboard_data', :enable_admin_mode do
-    let_it_be(:user) { admin_user }
+    let(:user) { admin_user }
 
     subject(:data) { helper.admin_runners_fleet_dashboard_data }
 

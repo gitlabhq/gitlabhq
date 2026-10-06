@@ -71,6 +71,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
 
       before do
         skip 'namespace has no top-level group' unless root_ancestor&.group_namespace?
+        skip 'enforcement does not apply to bot tokens' unless user.human?
 
         stub_feature_flags(granular_personal_access_tokens_enforcement_saas: root_ancestor)
 

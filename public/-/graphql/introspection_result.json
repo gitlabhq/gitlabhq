@@ -24535,6 +24535,18 @@
               "deprecationReason": null
             },
             {
+              "name": "auditEventsCount",
+              "description": "Number of audit events recorded for the session.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "downloadPath",
               "description": "Path to download the session artifact as a JSON file. Null for sessions from sources other than GitLab Duo.",
               "args": [],
@@ -24910,6 +24922,12 @@
             {
               "name": "CLAUDE_CODE_GLAB",
               "description": "Claude Code session reported through the GitLab CLI.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "MCP",
+              "description": "Session inferred from tool calls made through the GitLab MCP server.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -389905,6 +389923,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
+              "name": "gracePeriodEndDate",
+              "description": "Last day of the read-only grace period, inclusive. Set only when blockedReason is GRACE; null otherwise.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "offlineLicense",

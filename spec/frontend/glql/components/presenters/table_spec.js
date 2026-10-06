@@ -156,6 +156,33 @@ describe('TablePresenter', () => {
     expect(cells).toEqual(['Jun 2026', '1h 1m 1s']);
   });
 
+  describe('null values', () => {
+    const fields = [
+      { key: 'project', label: 'Project', name: 'project', type: 'dimension' },
+      { key: 'usersCount', label: 'Users', name: 'usersCount', type: 'metric' },
+      { key: 'creditsUsedSum', label: 'Credits', name: 'creditsUsedSum', type: 'metric' },
+    ];
+
+    beforeEach(async () => {
+      await createWrapper(
+        {
+          data: { nodes: [{ id: '1', project: null, usersCount: 864, creditsUsedSum: null }] },
+          fields,
+        },
+        mountExtended,
+      );
+    });
+
+    it('renders a dash, not "None", for a null metric', () => {
+      expect(getCells(wrapper.findByTestId('table-row-0'))).toEqual(['None', '864', '—']);
+      expect(wrapper.findByTestId('metric-no-value').exists()).toBe(true);
+    });
+
+    it('keeps the null presenter for a null dimension', () => {
+      expect(wrapper.findAllComponents(FieldPresenter)).toHaveLength(2);
+    });
+  });
+
   it('renders skeleton loader if loading is true', () => {
     createWrapper({ data: { nodes: [] }, fields: MOCK_FIELDS, loading: true }, mountExtended);
 

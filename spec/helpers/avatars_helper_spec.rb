@@ -401,49 +401,6 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#avatar_without_link' do
-    let(:options) { { size: 32 } }
-
-    subject { helper.avatar_without_link(resource, options) }
-
-    context 'with users' do
-      let_it_be(:user) { create(:user) }
-
-      let(:resource) { user.namespace }
-
-      it 'displays user avatar' do
-        is_expected.to eq tag.img(
-          alt: "#{user.name}'s avatar",
-          src: avatar_icon_for_user(user, 32),
-          data: { container: 'body' },
-          class: 'avatar s32 has-tooltip',
-          title: user.name
-        )
-      end
-    end
-
-    context 'with groups' do
-      let(:resource) { build_stubbed(:group, name: 'foo') }
-
-      it 'displays group avatar' do
-        expected_pattern = %r{
-          <div\s+
-          aria-hidden="true"\s+
-          class="gl-avatar\s+
-          gl-avatar-s32\s+
-          gl-avatar-circle\s+
-          gl-mr-3\s+
-          gl-avatar-identicon\s+
-          gl-avatar-identicon-bg\d+"\s*>
-          \s*F\s*
-          </div>
-        }x
-
-        is_expected.to match(expected_pattern)
-      end
-    end
-  end
-
   describe "#author_avatar", :clean_gitlab_redis_cache do
     let(:commit_or_event) do
       # This argument is an unverified type, so we need to match

@@ -1761,7 +1761,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         sign_in(user)
       end
 
-      context do
+      context 'with discussions on the issue' do
         it_behaves_like 'discussions provider' do
           let_it_be(:note_on_issue1) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
           let_it_be(:note_on_issue2) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }

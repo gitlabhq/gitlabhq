@@ -30,6 +30,8 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
 
     context "with a standard user" do
       let_it_be(:user) { create(:user) }
+      let_it_be(:user_group) { create(:group, owners: user) }
+      let_it_be(:project1) { create(:project, namespace: user.namespace) }
 
       before do
         allow(self).to receive(:current_user).and_return(user)
@@ -52,7 +54,6 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
 
       it "includes the user's groups" do
-        create(:group).add_owner(user)
         expect(search_autocomplete_opts("gro").size).to eq(1)
       end
 
@@ -62,8 +63,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
 
       it "includes the user's projects" do
-        project = create(:project, namespace: user.namespace)
-        expect(search_autocomplete_opts(project.name).size).to eq(1)
+        expect(search_autocomplete_opts(project1.name).size).to eq(1)
       end
 
       shared_examples 'for users' do
@@ -184,14 +184,12 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       include_examples 'for users'
 
       it "includes the required project attrs" do
-        project = create(:project, namespace: user.namespace)
-        result = search_autocomplete_opts(project.name).first
+        result = search_autocomplete_opts(project1.name).first
 
         expect(result.keys).to match_array(%i[category id value label url avatar_url])
       end
 
       it "includes the required group attrs" do
-        create(:group).add_owner(user)
         result = search_autocomplete_opts("gro").first
 
         expect(result.keys).to match_array(%i[category id value label url avatar_url])
@@ -202,7 +200,6 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
         let(:recent_merge_requests) { instance_double(::Gitlab::Search::RecentMergeRequests) }
         let(:recent_wiki_pages) { instance_double(::Gitlab::Search::RecentWikiPages) }
 
-        let_it_be(:project1) { create(:project, namespace: user.namespace) }
         let_it_be(:project2) { create(:project) }
 
         shared_examples 'recently viewed work items or issues' do
@@ -904,7 +901,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
   describe '#repository_ref' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
     let(:default_branch) { project.default_branch }
     let(:params) { { repository_ref: ref, project_id: project_id } }
 

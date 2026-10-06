@@ -215,7 +215,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
           end
 
           context 'when creating a legacy token' do
-            let(:params) { { name: 'Test token', scopes: [:api], expires_at: Date.today + 1.month } }
+            let(:params) { { name: 'Test token', impersonation: false, scopes: [:api], expires_at: Date.today + 1.month } }
 
             it 'returns an error' do
               expect(execute).to be_error
@@ -226,6 +226,12 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
 
             it 'does not create a token' do
               expect { execute }.not_to change { PersonalAccessToken.count }
+            end
+
+            context 'when the target user is a bot' do
+              let(:user) { create(:user, :project_bot) }
+
+              it_behaves_like 'a successfully created token'
             end
           end
 

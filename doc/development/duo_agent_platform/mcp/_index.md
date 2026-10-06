@@ -837,6 +837,46 @@ tell them apart.
 Do not pass a reason for a response that merely failed to find an expected key in an
 otherwise successful payload. That is a malformed response, which is what `ERROR` means.
 
+When a tool's error wraps a result from another tool, forward that result's reason with
+`Response.error_reason`. It returns the result's reason, or `ERROR` when it carries none. A
+wrapper that builds its own error without a reason logs `ERROR` for a condition the inner tool
+had already categorized. To keep your own default for inner failures that carry no reason, read
+`result[:reason]` instead.
+
+```ruby
+response = inner_tool.execute
+return response unless ::Mcp::Tools::Base::Response.error?(response)
+
+::Mcp::Tools::Base::Response.error(
+  'Actionable guidance for the agent',
+  reason: ::Mcp::Tools::Base::Response.error_reason(response)
+)
+```
+
+A route-backed inner tool takes its reason from the HTTP status, which is not always the real
+cause. For example, the workflows API refuses a caller who cannot run an AI Catalog flow with
+`400 Bad request`, which forwards as `BAD_REQUEST`. A wrapper that recognizes a specific refusal
+and replaces its message knows more than the status does. Give each entry in its table of
+refusal messages its own reason, and read it with `fetch`. An entry added without one then
+raises in its specs instead of silently logging the status.
+
+```ruby
+KNOWN_REFUSALS = {
+  ::Ai::Catalog::BaseService::INSUFFICIENT_PERMISSIONS_MESSAGE => {
+    guidance: 'You need at least the Developer role on the project to run this flow.',
+    reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+  }
+}.freeze
+
+def error_response(response)
+  message = ::Mcp::Tools::Base::Response.error_message(response).to_s
+  _, entry = KNOWN_REFUSALS.find { |fragment, _| message.include?(fragment) }
+  return response unless entry
+
+  ::Mcp::Tools::Base::Response.error(entry.fetch(:guidance), reason: entry.fetch(:reason))
+end
+```
+
 ### Filter Duo sessions by MCP origin
 
 A GitLab Duo session created through `/api/v4/mcp` has `source_type` set to `mcp`.

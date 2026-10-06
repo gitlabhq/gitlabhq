@@ -12,8 +12,8 @@ RSpec.describe IssuePresenter do
   let_it_be(:group) { create(:group, developers: [user, developer], reporters: reporter, guests: guest) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:task) { create(:issue, :task, project: project) }
 
+  let(:task) { build_stubbed(:issue, :task, project: project) }
   let(:non_member) { build_stubbed(:user) }
   let(:presented_issue) { issue }
   let(:presenter) { described_class.new(presented_issue, current_user: user) }

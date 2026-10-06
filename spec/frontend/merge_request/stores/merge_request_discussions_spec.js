@@ -120,6 +120,7 @@ describe('mergeRequestDiscussions store', () => {
     'expandLineDiscussions',
     'createDraftLineDiscussion',
     'createDraftFileDiscussion',
+    'createDraftImageDiscussion',
     'addDraftToDiscussion',
     'submitSuggestion',
     'submitSuggestionBatch',
@@ -865,6 +866,41 @@ describe('mergeRequestDiscussions store', () => {
         },
       });
       expect(useDiffDiscussions().discussionForms).not.toContainEqual(formDiscussion);
+    });
+  });
+
+  describe('createDraftImageDiscussion', () => {
+    const position = {
+      base_sha: 'base000',
+      start_sha: 'start111',
+      head_sha: 'head222',
+      old_path: 'files/images/logo.png',
+      new_path: 'files/images/logo.png',
+      position_type: 'image',
+      width: 100,
+      height: 200,
+      x: 10,
+      y: 20,
+    };
+
+    it('calls createNewDraft with the image position', async () => {
+      await store.createDraftImageDiscussion({ position, noteBody: 'draft image comment' });
+
+      expect(mockDraftNotes.createNewDraft).toHaveBeenCalledWith({
+        endpoint: '/drafts',
+        data: {
+          note: {
+            note: 'draft image comment',
+            position: JSON.stringify({
+              ...position,
+              ignore_whitespace_change: !useDiffsView().showWhitespace,
+            }),
+            type: 'DiffNote',
+            commit_id: null,
+            line_code: null,
+          },
+        },
+      });
     });
   });
 

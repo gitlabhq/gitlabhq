@@ -15,11 +15,11 @@ module GranularTokenAuthorization
   }.freeze
 
   def authorize_granular_token!(request_format, permission: nil)
-    token = sessionless_personal_access_token
-    return unless token
-
     permission ||= GRANULAR_FORMAT_PERMISSIONS[request_format]
     return unless permission
+
+    token = sessionless_access_token
+    return unless token
 
     deny_granular_token! unless granular_scopes_authorized?(token, permission, granular_token_boundary)
   end
@@ -28,11 +28,16 @@ module GranularTokenAuthorization
 
   # `Current.token_info` is set by the auth finders on success; nil for sessions,
   # feed tokens, and invalid tokens.
-  def sessionless_personal_access_token
+  def sessionless_access_token
     info = ::Current.token_info
-    return unless info && info[:token_type] == ::PersonalAccessToken.name
+    return unless info
 
-    ::PersonalAccessToken.find_by_id(info[:token_id])
+    case info[:token_type]
+    when ::PersonalAccessToken.name
+      ::PersonalAccessToken.find_by_id(info[:token_id])
+    when ::OauthAccessToken.name
+      ::OauthAccessToken.find_by_id(info[:token_id])
+    end
   end
 
   def granular_scopes_authorized?(token, permission, subject)

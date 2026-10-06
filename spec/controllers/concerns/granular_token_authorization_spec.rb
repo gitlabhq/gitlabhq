@@ -37,7 +37,7 @@ RSpec.describe GranularTokenAuthorization, feature_category: :permissions do
 
   # Mirror what the auth finders record on the request.
   before do
-    ::Current.token_info = token && { token_type: 'PersonalAccessToken', token_id: token.id }
+    ::Current.token_info = token && { token_type: token.class.name, token_id: token.id }
   end
 
   def granular_pat(permissions:, boundary: project)
@@ -173,6 +173,70 @@ RSpec.describe GranularTokenAuthorization, feature_category: :permissions do
 
         expect(harness.rendered_404).to be(true)
       end
+    end
+  end
+
+  context 'when authenticated with an OAuth access token' do
+    let_it_be(:application) { create(:oauth_application) }
+
+    context 'when the token is granular' do
+      let(:token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+
+      context 'when the consent grant carries the required permission for the request format' do
+        before do
+          create(:oauth_consent_grant, user: user, application: application,
+            boundary: ::Authz::Boundary.for(project), permissions: :download_code)
+        end
+
+        it 'does not deny the request' do
+          authorize
+
+          expect(harness.rendered_404).to be_nil
+        end
+      end
+
+      context 'when the consent grant is missing the required permission for the request format' do
+        before do
+          create(:oauth_consent_grant, user: user, application: application,
+            boundary: ::Authz::Boundary.for(project), permissions: :read_code)
+        end
+
+        it 'renders 404' do
+          authorize
+
+          expect(harness.rendered_404).to be(true)
+        end
+      end
+
+      context 'without a consent grant' do
+        it 'renders 404' do
+          authorize
+
+          expect(harness.rendered_404).to be(true)
+        end
+      end
+    end
+
+    context 'when the token is legacy' do
+      let(:token) { create(:oauth_access_token, resource_owner: user, application: application, scopes: ['api']) }
+
+      it 'does not deny the request' do
+        authorize
+
+        expect(harness.rendered_404).to be_nil
+      end
+    end
+  end
+
+  context 'when authenticated with another token type' do
+    let(:token) { create(:deploy_token, projects: [project]) }
+
+    it 'does not run the granular check' do
+      expect(::Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+      authorize
+
+      expect(harness.rendered_404).to be_nil
     end
   end
 

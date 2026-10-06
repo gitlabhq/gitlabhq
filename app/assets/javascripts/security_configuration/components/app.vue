@@ -101,7 +101,6 @@ export default {
     vulnerabilityArchivesAvailable: { default: false },
     refTrackingAvailable: { default: false },
     projectFullPath: { default: '' },
-    vulnerabilityTrainingDocsPath: { default: '' },
     canReadAttributes: { default: false },
     maxTrackedRefs: { default: 0 },
   },

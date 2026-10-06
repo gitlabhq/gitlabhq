@@ -174,6 +174,10 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
     await draftNotes.createNewDraft({ endpoint: draftsPath, data });
   }
 
+  async function createDraftImageDiscussion({ position, noteBody }) {
+    await createDraftNote({ discussion: { position }, noteBody });
+  }
+
   async function createDraftLineDiscussion({ discussion, noteBody, showWhitespace }) {
     await createDraftNote({ discussion, noteBody, showWhitespace });
     diffDiscussions.removeNewLineDiscussionForm(discussion);
@@ -399,6 +403,7 @@ export const useMergeRequestDiscussions = defineStore('mergeRequestDiscussions',
     createLineDiscussion,
     createFileDiscussion,
     createImageDiscussion,
+    createDraftImageDiscussion,
     replyToDiscussion,
     saveNote,
     destroyNote,

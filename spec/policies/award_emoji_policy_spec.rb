@@ -9,7 +9,7 @@ RSpec.describe AwardEmojiPolicy do
   subject { described_class.new(user, award_emoji) }
 
   shared_examples 'when the user can read the awardable' do
-    context do
+    context 'when the project is public' do
       let(:project) { create(:project, :public) }
 
       it { expect_allowed(:read_emoji) }
@@ -17,7 +17,7 @@ RSpec.describe AwardEmojiPolicy do
   end
 
   shared_examples 'when the user cannot read the awardable' do
-    context do
+    context 'when the project is private' do
       let(:project) { create(:project, :private) }
 
       it { expect_disallowed(:read_emoji) }

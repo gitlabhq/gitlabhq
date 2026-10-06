@@ -57,12 +57,10 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
     context 'for endpoint_diff_for_path' do
       context 'when sub-group project namespace' do
-        let_it_be_with_reload(:group) { create(:group, :public) }
-        let_it_be_with_reload(:subgroup) { create(:group, :private, parent: group) }
-        let_it_be_with_reload(:project) { create(:project, :private, group: subgroup) }
-        let_it_be_with_reload(:merge_request) do
-          create(:merge_request, source_project: project, target_project: project)
-        end
+        let(:group) { build_stubbed(:group, :public) }
+        let(:subgroup) { build_stubbed(:group, :private, parent: group) }
+        let(:project) { build_stubbed(:project, :private, group: subgroup) }
+        let(:merge_request) { build_stubbed(:merge_request, source_project: project, target_project: project) }
 
         it 'returns expected values' do
           expect(

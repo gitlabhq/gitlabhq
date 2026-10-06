@@ -4,10 +4,11 @@ require 'spec_helper'
 
 # Asserts each web access-token endpoint is wired with the right permission; the
 # GranularTokenAuthorization mechanism itself is unit tested separately.
-RSpec.describe 'Granular PAT authorization on the web access token path', feature_category: :permissions do
+RSpec.describe 'Granular token authorization on the web access token path', feature_category: :permissions do
   let_it_be(:user) { create(:user, :with_namespace) }
   let_it_be(:group) { create(:group, :private, developers: user) }
   let_it_be(:project) { create(:project, :repository, :private, group: group, developers: user) }
+  let_it_be(:application) { create(:oauth_application) }
 
   let(:headers) { { 'PRIVATE-TOKEN' => token.token } }
 
@@ -36,6 +37,43 @@ RSpec.describe 'Granular PAT authorization on the web access token path', featur
 
     context 'with a legacy token' do
       let(:token) { create(:personal_access_token, user: user, scopes: %w[api]) }
+
+      it 'allows access' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'with a granular OAuth access token' do
+      let(:headers) { { 'Authorization' => "Bearer #{token.plaintext_token}" } }
+      let(:token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+
+      context 'when the consent grant carries the permission on the boundary' do
+        before do
+          create(:oauth_consent_grant, user: user, application: application,
+            boundary: ::Authz::Boundary.for(boundary), permissions: permission)
+        end
+
+        it 'allows access' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'without a consent grant' do
+        it 'responds with not found' do
+          request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'with a legacy OAuth access token' do
+      let(:headers) { { 'Authorization' => "Bearer #{token.plaintext_token}" } }
+      let(:token) { create(:oauth_access_token, resource_owner: user, application: application, scopes: ['api']) }
 
       it 'allows access' do
         request

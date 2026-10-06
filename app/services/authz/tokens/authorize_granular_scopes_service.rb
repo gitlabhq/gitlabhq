@@ -67,6 +67,7 @@ module Authz
       def granular_token_required?
         return false unless token.subject_to_granular_enforcement?
         return false unless feature_enabled?
+        return false unless token.user.human?
 
         root_namespaces_enforce_granular_tokens?
       end

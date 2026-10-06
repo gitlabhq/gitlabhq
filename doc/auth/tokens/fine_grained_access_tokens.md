@@ -110,6 +110,11 @@ Enforcement works differently on GitLab.com and GitLab Self-Managed:
 - On GitLab.com, enforcement is applied to a top-level group and inherited by all subgroups and projects.
 - On GitLab Self-Managed, enforcement is applied to the entire instance.
 
+Enforcement does not apply to tokens for [service accounts](../../user/profile/service_accounts.md),
+[group access tokens](../../user/group/settings/group_access_tokens.md), or
+[project access tokens](../../user/project/settings/project_access_tokens.md).
+These tokens continue to work after the enforcement date, and you can still create and rotate them.
+
 ### Enforce fine-grained tokens for a top-level group
 
 Prerequisites:

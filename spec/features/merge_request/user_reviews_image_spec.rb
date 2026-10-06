@@ -24,15 +24,13 @@ RSpec.describe 'Merge request > image review', :js, feature_category: :code_revi
     click_button 'Add image comment', match: :first
 
     find_by_testid('reply-field').set('image diff test comment')
-    click_button 'Comment'
+    click_button 'Add comment now'
 
     expect(page).to have_testid('image-comment-badge')
     expect(page).to have_content('image diff test comment')
   end
 
-  it 'leaves review',
-    skip: 'Rapid Diffs image comments cannot join a batch review; ' \
-      'https://gitlab.com/gitlab-org/gitlab/-/issues/628510' do
+  it 'leaves review' do
     click_button 'Add image comment', match: :first
 
     find_by_testid('reply-field').set('image diff test comment')

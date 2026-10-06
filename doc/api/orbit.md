@@ -45,6 +45,7 @@ Enabling `orbit_gql_queries` switches queries to read-only GQL strings and disco
 GQL follows openCypher 9 syntax.
 The flag targets individual users.
 REST and MCP callers cannot override the mode through parameters or headers.
+With the flag enabled, `response_format: gql` returns query results as a plain-text table.
 
 ## Skills
 

@@ -64,7 +64,11 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
 
     it_behaves_like 'an erroneous response'
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
+    it 'returns a permission error' do
+      post_graphql_mutation_delete_container_registry_protection_rule
+
+      expect_graphql_errors_to_include(/you don't have permission to perform this action/)
+    end
   end
 
   context 'with deleted container registry protection rule' do
@@ -75,7 +79,11 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
 
     it_behaves_like 'an erroneous response'
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
+    it 'returns a permission error' do
+      post_graphql_mutation_delete_container_registry_protection_rule
+
+      expect_graphql_errors_to_include(/you don't have permission to perform this action/)
+    end
   end
 
   context 'when current_user does not have permission' do
@@ -91,7 +99,11 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
     with_them do
       it_behaves_like 'an erroneous response'
 
-      it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
+      it 'returns a permission error' do
+        post_graphql_mutation_delete_container_registry_protection_rule
+
+        expect_graphql_errors_to_include(/you don't have permission to perform this action/)
+      end
     end
   end
 end

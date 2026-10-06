@@ -13,7 +13,7 @@ import ThResizable from '../common/th_resizable.vue';
 import FieldPresenter from './field.vue';
 import { listDescriptionError, listDescriptionFor } from './utils/description';
 import { hiddenMetricsError, visibleFieldsOf } from './utils/hidden_metrics';
-import { trendPresentationFor } from './utils/stat';
+import { NO_VALUE, trendPresentationFor } from './utils/stat';
 import { formatChange } from './utils/trend';
 import {
   TREND_CHANGE_KEY,
@@ -182,6 +182,9 @@ export default {
     isTrendColumn(field) {
       return field.key === TREND_CHANGE_KEY;
     },
+    isMetricColumn(field) {
+      return field.type === FIELD_TYPES.METRIC;
+    },
     trendCellFor(row) {
       const trend = trendPresentationFor(this.source, this.trendField, {
         value: row[this.trendField.key],
@@ -208,6 +211,7 @@ export default {
     },
   },
   NO_TREND,
+  NO_VALUE,
 };
 </script>
 <template>
@@ -265,6 +269,14 @@ export default {
                   {{ $options.NO_TREND }}
                 </span>
               </template>
+              <!-- A metric the user may not read comes back null, not as an error; "None" would read as zero. -->
+              <span
+                v-else-if="isMetricColumn(field) && item[field.key] == null"
+                class="gl-text-subtle"
+                data-testid="metric-no-value"
+              >
+                {{ $options.NO_VALUE }}
+              </span>
               <field-presenter
                 v-else
                 :item="item"

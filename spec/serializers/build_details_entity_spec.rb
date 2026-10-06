@@ -14,7 +14,8 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
     let_it_be_with_reload(:project) { create(:project, :repository) }
     let_it_be(:user) { project.first_owner }
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+    let_it_be_with_reload(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+
     let(:request) { double('request', project: project) }
 
     let(:entity) do
@@ -35,7 +36,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
 
     context 'when the user has access to issues and merge requests' do
       context 'when merge request orginates from the same project' do
-        let(:merge_request) do
+        let_it_be_with_reload(:merge_request) do
           create(:merge_request, source_project: project, source_branch: build.ref)
         end
 
@@ -61,6 +62,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
         let(:forked_project) { fork_project(project, user) }
 
         let(:pipeline) { create(:ci_pipeline, project: forked_project) }
+        let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
         let(:merge_request) do
           create(:merge_request, source_project: forked_project, target_project: project, source_branch: build.ref)
@@ -113,7 +115,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
     end
 
     context 'when the build has failed' do
-      let(:build) { create(:ci_build, :created) }
+      let_it_be_with_reload(:build) { create(:ci_build, :created) }
 
       before do
         build.drop!(:unmet_prerequisites)
@@ -307,11 +309,12 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
     end
 
     context 'when triggered' do
-      let_it_be(:project, freeze: false) { create(:project, :repository) }
-      let_it_be(:user, freeze: false) { project.first_owner }
-      let_it_be(:trigger, freeze: false) { create(:ci_trigger, project: project) }
-      let_it_be(:pipeline, freeze: false) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
-      let_it_be(:build, freeze: false) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:user) { project.first_owner }
+      let_it_be_with_reload(:trigger) { create(:ci_trigger, project: project) }
+      let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
+
+      let(:build) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
 
       before do
         create_or_replace_pipeline_variables(pipeline, { key: 'TEST_VAR', value: 'test_value' })
