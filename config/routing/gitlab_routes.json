@@ -9656,6 +9656,11 @@
     "dottedExample": "/api/v4/integrations/jira_forge/subscriptions/john.doe"
   },
   {
+    "template": "/api/:version/integrations/jira_forge/user_delegation",
+    "example": "/api/v4/integrations/jira_forge/user_delegation",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/integrations/slack/events",
     "example": "/api/v4/integrations/slack/events",
     "acceptsFormat": true

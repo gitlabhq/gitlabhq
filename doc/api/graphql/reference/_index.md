@@ -17080,50 +17080,6 @@ Fields:
 | <a id="mutation-scanexecutionpolicycommit-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-scanexecutionpolicycommit-validationerrors"></a>`validationErrors` | [`[SecurityPolicyValidationError!]`](#securitypolicyvalidationerror) | Validation errors encountered during execution of the mutation. |
 
-### `Mutation.secretPermissionDelete`
-
-Input type: `SecretPermissionDeleteInput`
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutation-secretpermissiondelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-secretpermissiondelete-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | Whose permission to be deleted. |
-| <a id="mutation-secretpermissiondelete-projectpath"></a>`projectPath` | [`ID!`](#id) | Project permissions for the secret. |
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutation-secretpermissiondelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-secretpermissiondelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutation-secretpermissiondelete-reason"></a>`reason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the write was denied due to entitlement; null when not denied for that reason. |
-| <a id="mutation-secretpermissiondelete-secretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Deleted Secret Permission. |
-
-### `Mutation.secretPermissionUpdate`
-
-Input type: `SecretPermissionUpdateInput`
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutation-secretpermissionupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-secretpermissionupdate-expiredat"></a>`expiredAt` | [`ISO8601Date`](#iso8601date) | Expiration date for Secret Permission (optional). |
-| <a id="mutation-secretpermissionupdate-permissions"></a>`permissions` | [`[String!]!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
-| <a id="mutation-secretpermissionupdate-principal"></a>`principal` | [`PrincipalInput!`](#principalinput) | User/MemberRole/Role that is provided access. |
-| <a id="mutation-secretpermissionupdate-projectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the permissions are added. |
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutation-secretpermissionupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-secretpermissionupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutation-secretpermissionupdate-reason"></a>`reason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the write was denied due to entitlement; null when not denied for that reason. |
-| <a id="mutation-secretpermissionupdate-secretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Secret Permission that was created. |
-
 ### `Mutation.secretsManagerEnableAddOn`
 
 {{< details >}}
@@ -35848,6 +35804,7 @@ Fields:
 | <a id="aigovernancemetrics-agents"></a>`agents` | [`AiGovernanceKpi`](#aigovernancekpi) | Distinct AI agent instances with sessions in the timeframe. Chat conversations are not counted. |
 | <a id="aigovernancemetrics-sessiondistribution"></a>`sessionDistribution` {{< icon name="warning-solid" >}} | [`[AiGovernanceSessionDistribution!]`](#aigovernancesessiondistribution) | Introduced in GitLab 19.5. Status: Experiment. Sessions in the timeframe grouped by flow type for GitLab Duo sessions and by agent type for external sessions, ordered by session count. Returns the top 10. Missing names are reported as `unknown`. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. |
 | <a id="aigovernancemetrics-sessions"></a>`sessions` | [`AiGovernanceKpi`](#aigovernancekpi) | AI sessions in the timeframe, including Duo Chat conversations. |
+| <a id="aigovernancemetrics-toolcalls"></a>`toolCalls` {{< icon name="warning-solid" >}} | [`AiGovernanceKpi`](#aigovernancekpi) | Introduced in GitLab 19.5. Status: Experiment. Tools invoked by AI agents in the timeframe. Counts every invocation, not distinct tools. Returns null when the `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. |
 
 #### Fields with arguments
 
@@ -35928,6 +35885,28 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="aigovernancesessiondistribution-count"></a>`count` | [`Int!`](#int) | Number of sessions in the timeframe. |
 | <a id="aigovernancesessiondistribution-name"></a>`name` | [`String!`](#string) | Flow type for GitLab Duo sessions, agent type for external sessions. |
+
+### `AiGovernanceToolCall`
+
+AI agent tool usage aggregated for the AI governance dashboard.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancetoolcall-count"></a>`count` | [`Int!`](#int) | Number of tool invocations in the selected timeframe. |
+| <a id="aigovernancetoolcall-toolname"></a>`toolName` | [`String!`](#string) | Name of the tool. |
+
+### `AiGovernanceToolCallsReport`
+
+Top tools invoked by AI agents, with a flag marking approximate counts.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancetoolcallsreport-approximate"></a>`approximate` | [`Boolean!`](#boolean) | Indicates whether counts were capped and are approximate. |
+| <a id="aigovernancetoolcallsreport-nodes"></a>`nodes` | [`[AiGovernanceToolCall!]!`](#aigovernancetoolcall) | Tools invoked in the selected timeframe, ordered by invocation count. |
 
 ### `AiGovernanceUserActivity`
 
@@ -47948,6 +47927,26 @@ Arguments:
 | <a id="group-aigovernancesessions-sessionstartedbefore"></a>`sessionStartedBefore` | [`Time`](#time) | Return sessions started at or before the timestamp. |
 | <a id="group-aigovernancesessions-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
 
+##### `Group.aiGovernanceToolCalls`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Top tools invoked by AI agents, with invocation counts. Returns null when the `ai_governance_dashboard` or `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled.
+
+Returns [`AiGovernanceToolCallsReport`](#aigovernancetoolcallsreport).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="group-aigovernancetoolcalls-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Agent class to segment the tool calls by. Defaults to ALL. |
+| <a id="group-aigovernancetoolcalls-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the tool calls. Defaults to LAST_7_DAYS. |
+
 ##### `Group.aiMetrics`
 
 {{< details >}}
@@ -58618,6 +58617,26 @@ Arguments:
 | <a id="project-aigovernancesessions-sessionstartedafter"></a>`sessionStartedAfter` | [`Time`](#time) | Return sessions started at or after the timestamp. |
 | <a id="project-aigovernancesessions-sessionstartedbefore"></a>`sessionStartedBefore` | [`Time`](#time) | Return sessions started at or before the timestamp. |
 | <a id="project-aigovernancesessions-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
+
+##### `Project.aiGovernanceToolCalls`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Top tools invoked by AI agents, with invocation counts. Returns null when the `ai_governance_dashboard` or `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled.
+
+Returns [`AiGovernanceToolCallsReport`](#aigovernancetoolcallsreport).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="project-aigovernancetoolcalls-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Agent class to segment the tool calls by. Defaults to ALL. |
+| <a id="project-aigovernancetoolcalls-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the tool calls. Defaults to LAST_7_DAYS. |
 
 ##### `Project.aiMetrics`
 

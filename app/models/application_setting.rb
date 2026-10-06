@@ -1279,7 +1279,8 @@ class ApplicationSetting < ApplicationRecord
   validates :iframe_rendering_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates_each :iframe_rendering_allowlist, on: :update do |record, attr, value|
+  validates_each :iframe_rendering_allowlist,
+    on: :update, if: :iframe_rendering_allowlist_changed? do |record, attr, value|
     known_ids = Gitlab::Markdown::IframeProviders.known_providers.map(&:id)
 
     (value - known_ids).each do |entry|

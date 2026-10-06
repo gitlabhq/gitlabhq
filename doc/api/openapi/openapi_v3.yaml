@@ -805,6 +805,8 @@ tags:
     Use this API to list, create, and delete the namespace subscriptions of a GitLab for Jira (Forge)
     installation. For more information, see the [Jira integrations](https://docs.gitlab.com/integration/jira/).
   x-displayName: Jira Forge subscriptions
+- name: Jira forge user delegation
+  description: Operations related to jira forge user delegation.
 - name: Job artifacts
   description: Use this API to download, keep, and delete [job artifacts](https://docs.gitlab.com/ci/jobs/job_artifacts/).
   x-displayName: Job artifacts
@@ -53400,8 +53402,10 @@ paths:
       operationId: postApiV4IntegrationsJiraForgeSubscriptions
       summary: Create a GitLab for Jira (Forge) namespace subscription
       description: Subscribes a GitLab namespace to the Forge installation so its
-        development data syncs to Jira. Authenticated as the GitLab user (OAuth);
-        the Jira installation and user are resolved from the Forge invocation context.
+        development data syncs to Jira. Authenticated by the Forge Invocation Token
+        (app-context call); the GitLab user is bound via the signed delegation token
+        from the user_delegation endpoint, and the Jira site-admin check runs against
+        Jira with the app system token riding the call.
       tags:
       - Jira forge subscriptions
       responses:
@@ -53476,6 +53480,36 @@ paths:
           type: integer
         in: path
       x-gitlab-lifecycle: experiment
+  "/api/v4/integrations/jira_forge/user_delegation":
+    post:
+      operationId: postApiV4IntegrationsJiraForgeUserDelegation
+      summary: Create a GitLab for Jira (Forge) user delegation token
+      description: Mints a short-lived GitLab-signed token identifying the signed-in
+        GitLab user, scoped to the Jira account and site it is minted for. Accepts
+        only the OAuth token issued to the Forge app at sign-in. The Forge app stores
+        it at config-page sign-in and presents it on the FIT-authenticated subscribe
+        call, which cannot carry the user OAuth token (Forge attaches the FIT only
+        to app-context calls); the scope claims must match that call's FIT.
+      tags:
+      - Jira forge user delegation
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesBasicSuccess"
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/postApiV4IntegrationsJiraForgeUserDelegationRequest"
+      x-gitlab-lifecycle: experiment
   "/api/v4/integrations/jira_forge/installation":
     put:
       operationId: putApiV4IntegrationsJiraForgeInstallation
@@ -53505,6 +53539,29 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/putApiV4IntegrationsJiraForgeInstallationRequest"
+      x-gitlab-lifecycle: experiment
+    delete:
+      operationId: deleteApiV4IntegrationsJiraForgeInstallation
+      summary: Destroy the GitLab for Jira (Forge) installation on app uninstall
+      description: Called by the Forge app preUninstall hook. A pure-native install
+        fires no Connect uninstalled event, so this is what removes the installation,
+        its subscriptions, and deactivates the linked jira_cloud_app integrations.
+        FIT authentication carries the same trust as the signed Connect lifecycle
+        event, so no Jira admin check is needed. Succeeds with no change when the
+        installation is already gone.
+      tags:
+      - Jira forge installation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesBasicSuccess"
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable entity
       x-gitlab-lifecycle: experiment
   "/api/v4/integrations/jira_forge/installation/forge_token":
     post:
@@ -122271,6 +122328,22 @@ components:
           maxLength: 255
       required:
       - namespace_path
+    postApiV4IntegrationsJiraForgeUserDelegationRequest:
+      type: object
+      properties:
+        account_id:
+          type: string
+          description: Jira account id the delegation is scoped to
+          nullable: true
+          maxLength: 255
+        cloud_id:
+          type: string
+          description: Jira site (cloud) id the delegation is scoped to
+          nullable: true
+          maxLength: 255
+      required:
+      - account_id
+      - cloud_id
     putApiV4IntegrationsJiraForgeInstallationRequest:
       type: object
       properties:

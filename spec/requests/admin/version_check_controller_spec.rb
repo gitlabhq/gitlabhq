@@ -14,7 +14,8 @@ RSpec.describe Admin::VersionCheckController, :enable_admin_mode, feature_catego
 
     context 'when version check is successful' do
       before do
-        allow(Rails.cache).to receive(:fetch).with("version_check").and_return(version_check_response)
+        allow(Rails.cache).to receive(:fetch)
+          .with(Gitlab::Version::VersionCheckCronWorker.cache_key).and_return(version_check_response)
       end
 
       it 'returns version check data' do

@@ -53,7 +53,7 @@ RSpec.describe VersionCheckHelper do
 
       context 'when it has no cached version_check response' do
         before do
-          allow(Rails.cache).to receive(:fetch).with('version_check').and_return(nil)
+          allow(Rails.cache).to receive(:fetch).with("version_check:#{Gitlab::VERSION}").and_return(nil)
         end
 
         it 'schedules a version check worker' do
@@ -71,7 +71,7 @@ RSpec.describe VersionCheckHelper do
         let(:version_check) { { "severity" => "success" } }
 
         before do
-          allow(Rails.cache).to receive(:fetch).with('version_check').and_return(version_check)
+          allow(Rails.cache).to receive(:fetch).with("version_check:#{Gitlab::VERSION}").and_return(version_check)
         end
 
         it 'returns the cached version check response' do

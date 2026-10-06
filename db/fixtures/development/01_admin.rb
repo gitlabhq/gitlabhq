@@ -22,7 +22,8 @@ Gitlab::Seeder.quiet do
     password: password,
     admin: true,
     confirmed_at: DateTime.now,
-    password_expires_at: password_expires_at
+    password_expires_at: password_expires_at,
+    organization: organization
   ) do |user|
     user.assign_personal_namespace(organization)
   end

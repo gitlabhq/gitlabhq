@@ -1356,6 +1356,31 @@ describe('mapWorkItemWidgetsToIssuableFields', () => {
     expect(nodes[0].humanTimeEstimate).toBe('2h');
   });
 
+  it('copies the values from `features` when the work item provides them', () => {
+    const withFeatures = {
+      ...workItem,
+      widgets: undefined,
+      features: {
+        weight: { weight: 8 },
+        labels: { labels: { nodes: [{ id: 'gid://gitlab/Label/2' }] } },
+        timeTracking: { humanReadableAttributes: { timeEstimate: '3h' } },
+      },
+    };
+
+    const { nodes } = mapWorkItemWidgetsToIssuableFields({
+      list,
+      workItem: withFeatures,
+      type: 'issue',
+    }).project.issues;
+
+    expect(nodes[0]).toMatchObject({
+      weight: 8,
+      labels: { nodes: [{ __persist: true, id: 'gid://gitlab/Label/2' }] },
+      humanTimeEstimate: '3h',
+      assignees: issue.assignees,
+    });
+  });
+
   it('updates the item inside a board list', () => {
     const result = mapWorkItemWidgetsToIssuableFields({
       list: boardList,

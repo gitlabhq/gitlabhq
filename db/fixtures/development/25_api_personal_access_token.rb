@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# Create an api access token for root user with the value:
+# Create an api access token for the administrator user with the value:
 token = 'ypCa3Dzb23o5nvsixwPA'
 scopes = Gitlab::Auth.all_available_scopes
 
 Gitlab::Seeder.quiet do
-  User.find_by(username: 'root').tap do |user|
+  User.admins.first.tap do |user|
     user.personal_access_tokens.find_by(name: 'seeded-api-token')&.destroy
 
     params = {

@@ -161,10 +161,8 @@ Grants the ability to delete and update secrets permissions.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Delete | Project | Mutation | `ProjectSecretsPermissionDelete` |
-| Delete | Project | Mutation | `SecretPermissionDelete` |
 | Delete | Group | Mutation | `GroupSecretsPermissionDelete` |
 | Update | Project | Mutation | `ProjectSecretsPermissionUpdate` |
-| Update | Project | Mutation | `SecretPermissionUpdate` |
 | Update | Group | Mutation | `GroupSecretsPermissionUpdate` |
 
 #### Security Attribute

@@ -8573,6 +8573,11 @@ msgstr ""
 msgid "AiGovernance|%{count} %{verdict}"
 msgstr ""
 
+msgid "AiGovernance|%{count} call"
+msgid_plural "AiGovernance|%{count} calls"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "AiGovernance|%{count} flagged skill"
 msgid_plural "AiGovernance|%{count} flagged skills"
 msgstr[0] ""
@@ -8644,6 +8649,9 @@ msgstr ""
 msgid "AiGovernance|Could not load group-level rules. Restriction enforcement may be incomplete."
 msgstr ""
 
+msgid "AiGovernance|Counts are approximate on this instance."
+msgstr ""
+
 msgid "AiGovernance|DAP"
 msgstr ""
 
@@ -8678,6 +8686,9 @@ msgid "AiGovernance|Failed to load developer activity."
 msgstr ""
 
 msgid "AiGovernance|Failed to load project exposure."
+msgstr ""
+
+msgid "AiGovernance|Failed to load tool calls."
 msgstr ""
 
 msgid "AiGovernance|Failed to load tool rules."
@@ -8752,6 +8763,9 @@ msgstr ""
 msgid "AiGovernance|No skills have been flagged by SkillGuard."
 msgstr ""
 
+msgid "AiGovernance|No tool calls in this period."
+msgstr ""
+
 msgid "AiGovernance|No tool rules found."
 msgstr ""
 
@@ -8821,10 +8835,16 @@ msgstr ""
 msgid "AiGovernance|Tool name"
 msgstr ""
 
+msgid "AiGovernance|Top tools used by agents"
+msgstr ""
+
 msgid "AiGovernance|Total number of agent sessions"
 msgstr ""
 
 msgid "AiGovernance|Total number of agents"
+msgstr ""
+
+msgid "AiGovernance|Total number of tool calls"
 msgstr ""
 
 msgid "AiGovernance|Type"
@@ -8852,6 +8872,9 @@ msgid "AiGovernance|View all skills"
 msgstr ""
 
 msgid "AiGovernance|View all users"
+msgstr ""
+
+msgid "AiGovernance|View tool management"
 msgstr ""
 
 msgid "AiGovernance|Write"
@@ -10614,9 +10637,6 @@ msgid "Allow users with up to Guest role to create groups and personal projects"
 msgstr ""
 
 msgid "Allowed"
-msgstr ""
-
-msgid "Allowed domains"
 msgstr ""
 
 msgid "Allowed email domain restriction only permitted for top-level groups"
@@ -24856,6 +24876,9 @@ msgstr ""
 msgid "Content could not be displayed: %{reason}. Options to address this: %{options}."
 msgstr ""
 
+msgid "Content from enabled providers loads inside GitLab pages and can run scripts in the browsers of users who view it. Enable only providers you trust. GitLab defines the list of available providers. You cannot add providers here."
+msgstr ""
+
 msgid "Content parsed with %{link}."
 msgstr ""
 
@@ -35238,6 +35261,9 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
+msgid "Embed providers"
+msgstr ""
+
 msgid "Embedded content"
 msgstr ""
 
@@ -35671,9 +35697,6 @@ msgid "Enter the password for password-protected Elasticsearch or OpenSearch ser
 msgstr ""
 
 msgid "Enter the username for password-protected Elasticsearch or OpenSearch servers."
-msgstr ""
-
-msgid "Enter trusted domains that users can embed content from. One domain per line."
 msgstr ""
 
 msgid "Enter values to populate the .gitlab-ci.yml configuration file."
@@ -47466,6 +47489,9 @@ msgstr ""
 msgid "JiraConnect|The Jira user is not a site or organization administrator. Check the permissions in Jira and try again."
 msgstr ""
 
+msgid "JiraConnect|This group cannot be linked to this Jira site."
+msgstr ""
+
 msgid "JiraConnect|To complete the setup, you must follow a few steps in GitLab:"
 msgstr ""
 
@@ -50151,6 +50177,9 @@ msgid "Loading users"
 msgstr ""
 
 msgid "Loading…"
+msgstr ""
+
+msgid "Loads content from %{origin}"
 msgstr ""
 
 msgid "Local"
@@ -94182,7 +94211,7 @@ msgstr ""
 msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
 msgstr ""
 
-msgid "When enabled, users can embed YouTube videos, Figma designs, and other external content."
+msgid "When enabled, users can embed content from the selected providers in Markdown."
 msgstr ""
 
 msgid "When left blank, default value of %{max_lifetime_in_days} is applied. When set, value must be %{max_lifetime_in_days} or less. When changed, existing access tokens with an expiration date beyond the maximum allowable lifetime are revoked."

@@ -1,4 +1,5 @@
-import { setAttributes } from '~/lib/utils/dom_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import EmbeddedIframe from '../components/embedded_iframe.vue';
 
 export const iframeRenderingEnabled = () =>
   Boolean(window.gon?.iframe_rendering_providers && window.gon?.features?.allowIframesInMarkdown);
@@ -40,37 +41,21 @@ function renderIframeEl(el) {
     return;
   }
 
-  const width = el.getAttribute('width');
-  const height = el.getAttribute('height');
-  const hasExplicitDimensions = width || height;
+  const mountEl = document.createElement('div');
+  el.hidden = true;
+  el.closest('.media-container').replaceChildren(el, mountEl);
 
-  const iframeEl = document.createElement('iframe');
-  setAttributes(iframeEl, {
-    src,
-    class: 'gl-border-none',
-    sandbox: provider.sandbox,
-    allowfullscreen: 'true',
-    referrerpolicy: 'strict-origin-when-cross-origin',
+  initVueApp({
+    el: mountEl,
+    name: 'EmbeddedIframeRoot',
+    component: EmbeddedIframe,
+    props: {
+      provider,
+      src,
+      width: el.getAttribute('width'),
+      height: el.getAttribute('height'),
+    },
   });
-  iframeEl.style.maxHeight = '80vh';
-
-  if (hasExplicitDimensions) {
-    if (width) iframeEl.setAttribute('width', width);
-    if (height) iframeEl.setAttribute('height', height);
-    iframeEl.style.maxWidth = '100%';
-    if (width && height) {
-      iframeEl.style.aspectRatio = `${width} / ${height}`;
-      iframeEl.style.height = 'auto';
-    }
-  } else {
-    iframeEl.classList.add('gl-inset-0', 'gl-h-full', 'gl-w-full');
-  }
-
-  const wrapper = document.createElement('div');
-  wrapper.appendChild(iframeEl);
-
-  const container = el.closest('.media-container');
-  container.replaceChildren(wrapper);
 }
 
 export default function renderIframes(els) {

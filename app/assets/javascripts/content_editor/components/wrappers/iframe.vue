@@ -1,5 +1,11 @@
 <script>
 import { NodeViewWrapper } from '@tiptap/vue-2';
+import {
+  embedMinWidth,
+  embedStyle,
+  getIframeClasses,
+  getIframeStyle,
+} from '~/behaviors/markdown/external_content';
 import { iframeProviderFor } from '~/behaviors/markdown/render_iframe';
 import mediaResize from './media_resize';
 
@@ -8,28 +14,36 @@ export default {
   components: {
     NodeViewWrapper,
   },
-  mixins: [mediaResize('iframe')],
+  mixins: [
+    mediaResize('iframe', {
+      startSize: (vm) => {
+        const { width, height } = vm.$refs.iframe.getBoundingClientRect();
+
+        return { width: Math.round(width), height: Math.round(height) };
+      },
+      minWidth: (vm) => embedMinWidth(vm.$el.clientWidth),
+    }),
+  ],
   data() {
     return {
       interactiveMode: false,
     };
   },
   computed: {
-    hasExplicitDimensions() {
-      return this.resizeWidth !== 'auto' || this.resizeHeight !== 'auto';
+    explicitWidth() {
+      return this.resizeWidth === 'auto' ? null : this.resizeWidth;
+    },
+    explicitHeight() {
+      return this.resizeHeight === 'auto' ? null : this.resizeHeight;
+    },
+    iframeClasses() {
+      return getIframeClasses(this.explicitWidth, this.explicitHeight);
     },
     iframeProvider() {
       return iframeProviderFor(this.node.attrs.src, this.node.attrs.providerId);
     },
     iframeStyle() {
-      const style = { maxHeight: '80vh' };
-
-      if (this.resizeWidth !== 'auto' && this.resizeHeight !== 'auto') {
-        style.aspectRatio = `${this.resizeWidth} / ${this.resizeHeight}`;
-        style.height = 'auto';
-      }
-
-      return style;
+      return getIframeStyle(this.explicitWidth, this.explicitHeight);
     },
   },
   watch: {
@@ -85,43 +99,42 @@ export default {
       });
     },
   },
+  embedStyle,
 };
 </script>
 <template>
-  <node-view-wrapper as="span" class="gl-relative gl-inline-block">
-    <span
-      v-for="handle in $options.resizeHandles"
-      v-show="selected"
-      :key="handle"
-      class="image-resize"
-      :class="`image-resize-${handle}`"
-      :data-testid="`image-resize-${handle}`"
-      @mousedown="onDragStart(handle, $event)"
-    ></span>
-    <!-- Overlay intercepts clicks so the ProseMirror node can be selected;
-         the iframe itself would swallow pointer events otherwise. -->
-    <span
-      class="gl-absolute gl-inset-0 gl-z-1"
-      :class="interactiveMode ? 'gl-pointer-events-none' : 'gl-cursor-pointer'"
-      data-testid="iframe-overlay"
-      draggable="true"
-      data-drag-handle=""
-      @dragstart="onOverlayDragStart"
-    ></span>
-    <iframe
-      ref="iframe"
-      :src="node.attrs.src"
-      :sandbox="iframeProvider.sandbox"
-      allowfullscreen="true"
-      referrerpolicy="strict-origin-when-cross-origin"
-      :width="resizeWidth"
-      :height="resizeHeight"
-      :style="iframeStyle"
-      :class="[
-        'gl-border-none',
-        { 'gl-inset-0 gl-h-full gl-w-full': !hasExplicitDimensions },
-        { 'ProseMirror-selectednode': selected },
-      ]"
-    ></iframe>
+  <node-view-wrapper as="span" class="gl-flex gl-items-start">
+    <span class="gl-relative gl-block" :style="$options.embedStyle">
+      <span
+        v-for="handle in $options.resizeHandles"
+        v-show="selected"
+        :key="handle"
+        class="image-resize"
+        :class="`image-resize-${handle}`"
+        :data-testid="`image-resize-${handle}`"
+        @mousedown="onDragStart(handle, $event)"
+      ></span>
+      <!-- Overlay intercepts clicks so the ProseMirror node can be selected;
+           the iframe itself would swallow pointer events otherwise. -->
+      <span
+        class="gl-absolute gl-inset-0 gl-z-1"
+        :class="interactiveMode ? 'gl-pointer-events-none' : 'gl-cursor-pointer'"
+        data-testid="iframe-overlay"
+        draggable="true"
+        data-drag-handle=""
+        @dragstart="onOverlayDragStart"
+      ></span>
+      <iframe
+        ref="iframe"
+        :src="node.attrs.src"
+        :sandbox="iframeProvider.sandbox"
+        allowfullscreen="true"
+        referrerpolicy="strict-origin-when-cross-origin"
+        :width="resizeWidth"
+        :height="resizeHeight"
+        :style="iframeStyle"
+        :class="[iframeClasses, { 'ProseMirror-selectednode': selected }]"
+      ></iframe>
+    </span>
   </node-view-wrapper>
 </template>

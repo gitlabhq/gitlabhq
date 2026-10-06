@@ -52,6 +52,13 @@ RSpec.describe UserPolicy, feature_category: :permissions do
         it { is_expected.to be_allowed(:create_personal_access_token) }
       end
 
+      context 'when admin mode is enabled and the target user is blocked', :enable_admin_mode do
+        let(:user) { create(:user, :blocked) }
+
+        it { is_expected.not_to be_allowed(:create_personal_access_token) }
+        it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+      end
+
       context 'when admin mode is enabled and current_user is blocked', :enable_admin_mode do
         let(:current_user) { create(:admin, :blocked) }
 
@@ -424,6 +431,15 @@ RSpec.describe UserPolicy, feature_category: :permissions do
           it { is_expected.not_to be_allowed(:create_personal_access_token) }
           it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
         end
+
+        context 'when the service account is blocked' do
+          before do
+            user.block!
+          end
+
+          it { is_expected.not_to be_allowed(:create_personal_access_token) }
+          it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+        end
       end
 
       context 'when the actor is not a member of the provisioning scope' do
@@ -433,7 +449,7 @@ RSpec.describe UserPolicy, feature_category: :permissions do
     end
 
     context 'for a group-provisioned service account' do
-      let_it_be(:user) { create(:user, :service_account, provisioned_by_group: group) }
+      let_it_be_with_reload(:user) { create(:user, :service_account, provisioned_by_group: group) }
       let(:scope_owner) { group }
 
       it_behaves_like 'follows admin_service_accounts on the provisioning scope'
@@ -449,7 +465,7 @@ RSpec.describe UserPolicy, feature_category: :permissions do
     end
 
     context 'for a project-provisioned service account' do
-      let_it_be(:user) { create(:user, :service_account, provisioned_by_project: project) }
+      let_it_be_with_reload(:user) { create(:user, :service_account, provisioned_by_project: project) }
       let(:scope_owner) { project }
 
       it_behaves_like 'follows admin_service_accounts on the provisioning scope'
@@ -465,10 +481,26 @@ RSpec.describe UserPolicy, feature_category: :permissions do
     end
 
     context 'for a service account with no provisioning scope' do
-      let_it_be(:user) { create(:user, :service_account) }
+      let_it_be_with_reload(:user) { create(:user, :service_account) }
 
       it { is_expected.not_to be_allowed(:create_personal_access_token) }
       it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+
+      context 'when the actor is an admin', :enable_admin_mode do
+        let(:current_user) { admin }
+
+        it { is_expected.to be_allowed(:create_personal_access_token) }
+        it { is_expected.to be_allowed(:rotate_personal_access_token) }
+
+        context 'when the service account is blocked' do
+          before do
+            user.block!
+          end
+
+          it { is_expected.not_to be_allowed(:create_personal_access_token) }
+          it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
+        end
+      end
     end
 
     context 'when the target user is not a service account' do

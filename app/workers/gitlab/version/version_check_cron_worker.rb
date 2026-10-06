@@ -18,6 +18,12 @@ module Gitlab
       feature_category :service_ping
       urgency :low
 
+      # Keyed on the running version so an upgrade discards the previous
+      # version's cached response instead of showing a stale recommendation.
+      def self.cache_key
+        "version_check:#{Gitlab::VERSION}"
+      end
+
       def perform
         # A redirected destination is typically local, and .try_get would swallow the
         # resulting BlockedUrlError as a nil response. ServicePing::SubmitService
@@ -28,7 +34,7 @@ module Gitlab
           result = Gitlab::Json.parse(response.body)
           Gitlab::AppLogger.info(message: 'Version check succeeded', result: result)
 
-          Rails.cache.write("version_check", result)
+          Rails.cache.write(self.class.cache_key, result)
         else
           Gitlab::AppLogger.error(message: 'Version check failed',
             error: { code: response&.code, message: response&.body })

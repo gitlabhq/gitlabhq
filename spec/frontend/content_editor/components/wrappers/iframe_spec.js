@@ -84,7 +84,8 @@ describe('content/components/wrappers/iframe', () => {
     expect(wrapper.vm.iframeStyle).toEqual({
       aspectRatio: '560 / 315',
       height: 'auto',
-      maxHeight: '80vh',
+      maxHeight: 'min(80vh, 315px)',
+      maxWidth: '100%',
     });
   });
 
@@ -111,6 +112,99 @@ describe('content/components/wrappers/iframe', () => {
     });
 
     expect(findIframe().classes()).not.toContain('gl-inset-0');
+  });
+
+  describe('layout', () => {
+    beforeEach(() => {
+      createWrapper({ src: 'https://www.youtube.com/embed/abc123', width: '560', height: '315' });
+    });
+
+    it('lays the node out as a block, without stretching the embed', () => {
+      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-flex', 'gl-items-start']));
+    });
+
+    it('keeps the embed within its container, with a floor that yields to it', () => {
+      const { style } = findIframe().element.parentElement;
+      expect(style.maxWidth).toBe('100%');
+      expect(style.minWidth).toBe('min(17rem, 100%)');
+    });
+
+    it('fills the embed with the iframe', () => {
+      expect(findIframe().classes()).toContain('gl-min-w-full');
+    });
+  });
+
+  describe('resizing', () => {
+    const drag = (fromX, toX) => {
+      wrapper.findByTestId('image-resize-se').trigger('mousedown', { screenX: fromX });
+      document.dispatchEvent(new MouseEvent('mousemove', { screenX: toX }));
+      document.dispatchEvent(new MouseEvent('mouseup'));
+    };
+
+    const setUpLayout = ({ rendered, available }) => {
+      jest.spyOn(findIframe().element, 'getBoundingClientRect').mockReturnValue(rendered);
+      Object.defineProperty(wrapper.element, 'clientWidth', { value: available });
+    };
+
+    const savedSize = () => wrapper.props('updateAttributes').mock.calls.at(-1)[0];
+
+    beforeEach(() => {
+      document.documentElement.style.fontSize = '16px';
+    });
+
+    afterEach(() => {
+      document.documentElement.style.fontSize = '';
+    });
+
+    describe('when the requested size is below the floor', () => {
+      beforeEach(() => {
+        createWrapper(
+          { src: 'https://www.youtube.com/embed/abc123', width: '10', height: '10' },
+          { selected: true },
+        );
+        setUpLayout({ rendered: { width: 272, height: 10 }, available: 800 });
+      });
+
+      describe('when dragged wider', () => {
+        beforeEach(() => {
+          drag(200, 300);
+        });
+
+        it('resizes from the rendered size', () => {
+          expect(savedSize()).toEqual({ width: 372, height: 13 });
+        });
+      });
+
+      describe('when dragged narrower', () => {
+        beforeEach(() => {
+          drag(200, 100);
+        });
+
+        it('stops at the floor', () => {
+          expect(savedSize()).toEqual({ width: 272, height: 10 });
+        });
+      });
+    });
+
+    describe('when the container is narrower than the floor', () => {
+      beforeEach(() => {
+        createWrapper(
+          { src: 'https://www.youtube.com/embed/abc123', width: '560', height: '315' },
+          { selected: true },
+        );
+        setUpLayout({ rendered: { width: 200, height: 112.5 }, available: 200 });
+      });
+
+      describe('when dragged narrower', () => {
+        beforeEach(() => {
+          drag(200, 100);
+        });
+
+        it('stops at the container width', () => {
+          expect(savedSize()).toEqual({ width: 200, height: 113 });
+        });
+      });
+    });
   });
 
   describe('overlay for click selection and drag', () => {

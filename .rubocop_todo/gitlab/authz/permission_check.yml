@@ -459,8 +459,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/graphql/mutations/remote_development/namespace_cluster_agent_mapping_operations/delete.rb'
     - 'ee/app/graphql/mutations/remote_development/organization_cluster_agent_mapping_operations/create.rb'
     - 'ee/app/graphql/mutations/remote_development/organization_cluster_agent_mapping_operations/delete.rb'
-    - 'ee/app/graphql/mutations/secrets_management/permissions/delete.rb'
-    - 'ee/app/graphql/mutations/secrets_management/permissions/update.rb'
     - 'ee/app/graphql/mutations/secrets_management/project_secrets_managers/deprovision.rb'
     - 'ee/app/graphql/mutations/secrets_management/project_secrets_managers/initialize.rb'
     - 'ee/app/graphql/mutations/secrets_management/project_secrets_permissions/delete.rb'

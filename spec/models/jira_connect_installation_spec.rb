@@ -303,6 +303,12 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
 
       expect(installation).to be_valid
     end
+
+    it 'is valid without an apiBaseUrl or system token (set later via forge_token)' do
+      installation.assign_attributes(jira_api_base_url: nil, forge_system_token: nil)
+
+      expect(installation).to be_valid
+    end
   end
 
   describe '#client' do
@@ -323,6 +329,87 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
       installation = build(:jira_connect_installation, :forge, jira_api_base_url: nil, forge_system_token: nil)
 
       expect(installation).not_to be_client_configured
+    end
+  end
+
+  describe '.find_or_backfill_by_forge_token' do
+    let_it_be(:organization) { create(:organization) }
+
+    let(:installation_id) { 'ari:cloud:ecosystem::installation/0a3a7799-53ae-4a5b-9e7e-03338980abb5' }
+
+    let(:cloud_id) { 'cloud-1' }
+
+    subject(:resolved) do
+      described_class.find_or_backfill_by_forge_token(
+        installation_id: installation_id, cloud_id: cloud_id, organization_id: organization.id
+      )
+    end
+
+    it 'finds by installation id' do
+      installation = create(:jira_connect_installation, :forge,
+        organization: organization, forge_installation_xid: installation_id)
+
+      expect(resolved).to eq(installation)
+    end
+
+    it 'falls back to the site row without an installation id and backfills it' do
+      installation = create(:jira_connect_installation, organization: organization, cloud_id: 'cloud-1')
+
+      expect(resolved).to eq(installation)
+      expect(installation.reload.forge_installation_xid).to eq(installation_id)
+    end
+
+    it 'does not fall back to a row that carries another installation id' do
+      create(:jira_connect_installation, :forge,
+        organization: organization, cloud_id: 'cloud-1',
+        forge_installation_xid: 'ari:cloud:ecosystem::installation/8db33809-1f32-48bb-8c52-5877dab48107')
+
+      expect(resolved).to be_nil
+    end
+
+    it 'does not resolve rows in another organization' do
+      create(:jira_connect_installation, :forge, forge_installation_xid: installation_id)
+
+      expect(resolved).to be_nil
+    end
+
+    it 'prefers the newest site row when several lack an installation id' do
+      create(:jira_connect_installation, organization: organization, cloud_id: 'cloud-1')
+      newest = create(:jira_connect_installation, organization: organization, cloud_id: 'cloud-1')
+
+      expect(resolved).to eq(newest)
+    end
+
+    context 'when the site row cannot adopt the installation id' do
+      let(:installation_id) { 'not-an-installation-ari' }
+
+      it 'returns nil and logs the validation errors' do
+        installation = create(:jira_connect_installation, organization: organization, cloud_id: 'cloud-1')
+
+        expect(Gitlab::AppLogger).to receive(:warn).with(hash_including(
+          message: 'Failed to adopt the Forge installation id on a Connect installation',
+          jira_connect_installation_id: installation.id
+        ))
+
+        expect(resolved).to be_nil
+        expect(installation.reload.forge_installation_xid).to be_nil
+      end
+    end
+
+    context 'when cloud_id is blank' do
+      let(:cloud_id) { nil }
+
+      it 'does not fall back to a legacy row without a cloud id' do
+        create(:jira_connect_installation, organization: organization, cloud_id: nil)
+
+        expect(resolved).to be_nil
+      end
+    end
+
+    context 'when installation_id is blank' do
+      let(:installation_id) { nil }
+
+      it { is_expected.to be_nil }
     end
   end
 end

@@ -434,6 +434,7 @@ For more information, see [Amazon Bedrock Guardrails](https://docs.aws.amazon.co
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22787) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 19.3.
+- GPT-5 and later models [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6956) as supported models on September 16, 2026.
 
 {{< /history >}}
 
@@ -441,13 +442,34 @@ For more information, see [Amazon Bedrock Guardrails](https://docs.aws.amazon.co
 OpenAI API-compatible inference service from AWS.
 Configure Amazon Bedrock Mantle with the API platform like other OpenAI-compatible endpoints.
 
-Only GPT OSS 120B is validated and supported on Amazon Bedrock Mantle.
+The following models are validated and supported on Amazon Bedrock Mantle:
+
+| Model | Model identifier |
+|-------|------------------|
+| GPT-5.4 | `bedrock_mantle/openai.gpt-5.4` |
+| GPT-5.5 | `bedrock_mantle/openai.gpt-5.5` |
+| GPT-5.6 Luna | `bedrock_mantle/openai.gpt-5.6-luna` |
+| GPT-5.6 Sol | `bedrock_mantle/openai.gpt-5.6-sol` |
+| GPT-5.6 Terra | `bedrock_mantle/openai.gpt-5.6-terra` |
+| GPT-6 Astra | `bedrock_mantle/openai.gpt-6-astra` |
+| GPT-6 Luna | `bedrock_mantle/openai.gpt-6-luna` |
+| GPT-6 Sol | `bedrock_mantle/openai.gpt-6-sol` |
+| GPT-6.1 Sol | `bedrock_mantle/openai.gpt-6.1-sol` |
+| GPT OSS 120B | `bedrock_mantle/openai.gpt-oss-120b` |
+
+The AI Gateway sends requests for GPT-5 and later models to the Responses API of Amazon Bedrock Mantle.
+Use the same `bedrock_mantle/` prefix for all models.
+
+Anthropic models are not supported on Amazon Bedrock Mantle.
+Amazon Bedrock Mantle serves these models through the Anthropic Messages API only,
+and the AI Gateway does not use that API for this platform.
+To use Anthropic models on AWS, [add an Amazon Bedrock model](configure_duo_features.md#add-an-amazon-bedrock-model) instead.
 
 To configure an Amazon Bedrock Mantle model,
 [add a self-hosted model](configure_duo_features.md#add-a-self-hosted-model) with the following values:
 
 - For **Model family**, select the family that matches the model.
-  For GPT OSS 120B, select **GPT**.
+  For OpenAI models, select **GPT**.
 - For **Endpoint**, enter the regional endpoint in the form `https://bedrock-mantle.<region>.api.aws/v1`
   (for example, `https://bedrock-mantle.us-east-1.api.aws/v1`).
 - For **Model identifier**, use the `bedrock_mantle/` prefix

@@ -965,7 +965,8 @@ export function mapWorkItemWidgetsToIssuableFields({
     );
 
     Object.keys(WORK_ITEM_TO_ISSUABLE_MAP).forEach((widgetType) => {
-      const currentWidget = findWidget(widgetType, workItem);
+      const currentWidget =
+        workItem.features?.[camelCase(widgetType)] || findWidget(widgetType, workItem);
       if (!currentWidget) {
         return;
       }

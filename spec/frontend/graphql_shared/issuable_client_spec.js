@@ -60,4 +60,75 @@ describe('issuable_client cache config', () => {
       },
     );
   });
+
+  describe('WorkItem.widgets merge for LINKED_ITEMS', () => {
+    const widgetsQuery = (selection) => gql`
+      query {
+        workItem(id: "${WORK_ITEM_ID}") {
+          __typename
+          id
+          widgets {
+            __typename
+            type
+            ... on WorkItemWidgetLinkedItems {
+              ${selection}
+            }
+          }
+        }
+      }
+    `;
+    const typeOnlyQuery = widgetsQuery('type');
+    const countsQuery = widgetsQuery('blockedByCount blockingCount');
+    const linkedItemsQuery = widgetsQuery(
+      'linkedItems { __typename nodes { __typename linkId linkType } }',
+    );
+    const linkedItemsWidget = (fields) => ({
+      __typename: 'WorkItemWidgetLinkedItems',
+      type: 'LINKED_ITEMS',
+      ...fields,
+    });
+
+    let cache;
+
+    const write = (query, fields) =>
+      cache.writeQuery({
+        query,
+        data: {
+          workItem: {
+            __typename: 'WorkItem',
+            id: WORK_ITEM_ID,
+            widgets: [linkedItemsWidget(fields)],
+          },
+        },
+      });
+
+    beforeEach(() => {
+      cache = new InMemoryCache(config.cacheConfig);
+    });
+
+    it('keeps incoming counts when the widget arrives without linkedItems', () => {
+      write(typeOnlyQuery, {});
+      write(countsQuery, { blockedByCount: 1, blockingCount: 2 });
+
+      expect(cache.readQuery({ query: countsQuery }).workItem.widgets[0]).toMatchObject({
+        blockedByCount: 1,
+        blockingCount: 2,
+      });
+    });
+
+    it('keeps existing linkedItems when the widget arrives without them', () => {
+      write(linkedItemsQuery, {
+        linkedItems: {
+          __typename: 'LinkedWorkItemTypeConnection',
+          nodes: [{ __typename: 'LinkedWorkItemType', linkId: '1', linkType: 'relates_to' }],
+        },
+      });
+      write(countsQuery, { blockedByCount: 1, blockingCount: 0 });
+
+      expect(
+        cache.readQuery({ query: linkedItemsQuery }).workItem.widgets[0].linkedItems.nodes,
+      ).toHaveLength(1);
+      expect(cache.readQuery({ query: countsQuery })).not.toBeNull();
+    });
+  });
 });

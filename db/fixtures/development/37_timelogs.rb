@@ -70,7 +70,8 @@ class Gitlab::Seeder::Timelogs
         name: FFaker::Name.name,
         email: FFaker::Internet.email,
         confirmed_at: DateTime.now,
-        password: password
+        password: password,
+        organization: organization
       ) do |user|
         user.assign_personal_namespace(organization)
       end

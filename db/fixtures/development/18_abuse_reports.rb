@@ -14,7 +14,8 @@ module Db
                   name: FFaker::Name.name,
                   email: FFaker::Internet.email,
                   confirmed_at: DateTime.now,
-                  password: ::User.random_password
+                  password: ::User.random_password,
+                  organization: organization
                 ) do |user|
                   user.assign_personal_namespace(organization)
                 end

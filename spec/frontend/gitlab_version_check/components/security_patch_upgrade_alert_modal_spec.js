@@ -170,6 +170,32 @@ describe('SecurityPatchUpgradeAlertModal', () => {
     });
   });
 
+  describe('when the current version appears in latestStableVersions', () => {
+    it('drops the current version and renders the remaining suggestions', () => {
+      createComponent({ latestStableVersions: ['11.1.1', '11.2.1'] });
+
+      expect(findGlModalBody().text()).toBe(
+        `You are currently on version ${defaultProps.currentVersion}! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: 11.2.1.`,
+      );
+    });
+
+    it('renders the no-suggestions body when it is the only entry', () => {
+      createComponent({ latestStableVersions: ['11.1.1'] });
+
+      expect(findGlModalBody().text()).toBe(
+        `You are currently on version ${defaultProps.currentVersion}! We strongly recommend upgrading your GitLab installation immediately.`,
+      );
+    });
+
+    it('does not render the additional patch text when it equals the current version', () => {
+      createComponent({ latestStableVersionOfMinor: defaultProps.currentVersion });
+
+      expect(findGlModalBody().text()).not.toContain(
+        'Additionally, there is an available stable patch',
+      );
+    });
+  });
+
   describe('template with details', () => {
     const details = 'This is some details about the upgrade';
 

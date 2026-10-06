@@ -1132,15 +1132,6 @@ Watch the following video walkthrough of this feature:
   <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-> [!note]
-> Administrators can enable rendering of iframes in Markdown and configure which embed providers
-> are allowed for an instance.
-> You can manage these settings with the [application settings API](../api/settings.md#available-settings) using:
->
-> - `iframe_rendering_enabled`
-> - `iframe_rendering_allowlist`
-> - `iframe_rendering_allowlist_raw`.
-
 The `items` attribute is a list of objects representing the data points.
 
 ````markdown
@@ -1397,6 +1388,52 @@ Here's an example audio clip:
 This example only works when [rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#audio):
 
 > ![Sample Audio](img/markdown_audio.mp3)
+
+### Embedded content
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204952) in GitLab 18.5 [with a feature flag](../administration/feature_flags/_index.md) named `allow_iframes_in_markdown`. Disabled by default.
+- Embed providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599713) in GitLab 19.5. Embed providers replace the allowlist of domains.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Image tags that link to content from an allowed embed provider render as embedded content.
+The content loads in a sandboxed frame, with a label that shows where it loads from.
+For some providers, you must select **Load external content** before the content loads.
+If a URL doesn't match an allowed provider, it renders as a standard image.
+
+GitLab defines the available embed providers. Administrators choose which providers to allow:
+
+- In the **Admin** area, in **Settings** > **General**, in the **Embedded content** section.
+- With the [application settings API](../api/settings.md#available-settings), by using the
+  `iframe_rendering_enabled` and `iframe_rendering_allowlist` attributes.
+
+The following embed providers are available:
+
+| Provider | ID        | Accepted URLs |
+|----------|-----------|---------------|
+| YouTube  | `youtube` | `https://www.youtube.com/watch?v=<id>`, `https://youtu.be/<id>`, or `https://www.youtube.com/embed/<id>` |
+| Figma    | `figma`   | `https://www.figma.com/<type>/<id>` or `https://embed.figma.com/<type>/<id>`, where `<type>` is `proto`, `design`, `board`, `file`, or `slides` |
+
+You can also paste the `<iframe>` embed code from the provider.
+
+For example, if the YouTube provider is allowed:
+
+```markdown
+![Demo: JSON Tables in Markdown](https://www.youtube.com/watch?v=12yWKw1AdKY)
+```
 
 ## Blockquotes
 

@@ -24309,6 +24309,18 @@
               "deprecationReason": null
             },
             {
+              "name": "toolCalls",
+              "description": "Tools invoked by AI agents in the timeframe. Counts every invocation, not distinct tools. Returns null when the `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceKpi",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "topProjects",
               "description": "Projects with the most AI sessions in the timeframe, ordered by session count. Sessions attached to a namespace rather than a project are not counted.",
               "args": [
@@ -24902,6 +24914,100 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceToolCall",
+          "description": "AI agent tool usage aggregated for the AI governance dashboard.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of tool invocations in the selected timeframe.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "toolName",
+              "description": "Name of the tool.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceToolCallsReport",
+          "description": "Top tools invoked by AI agents, with a flag marking approximate counts.",
+          "fields": [
+            {
+              "name": "approximate",
+              "description": "Indicates whether counts were capped and are approximate.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "Tools invoked in the selected timeframe, ordered by invocation count.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "AiGovernanceToolCall",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -182528,6 +182634,43 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "aiGovernanceToolCalls",
+              "description": "Top tools invoked by AI agents, with invocation counts. Returns null when the `ai_governance_dashboard` or `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "timeframe",
+                  "description": "Time window for the tool calls. Defaults to LAST_7_DAYS.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceMetricsTimeframe",
+                    "ofType": null
+                  },
+                  "defaultValue": "LAST_7_DAYS",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "agentClass",
+                  "description": "Agent class to segment the tool calls by. Defaults to ALL.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": "ALL",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceToolCallsReport",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "aiMetrics",
               "description": "AI-related metrics. Introduced in GitLab 16.11: Status: Experiment.",
               "args": [
@@ -283420,64 +283563,6 @@
               "deprecationReason": null
             },
             {
-              "name": "secretPermissionDelete",
-              "description": null,
-              "args": [
-                {
-                  "name": "input",
-                  "description": "Parameters for SecretPermissionDelete",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "SecretPermissionDeleteInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "SecretPermissionDeletePayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "secretPermissionUpdate",
-              "description": null,
-              "args": [
-                {
-                  "name": "input",
-                  "description": "Parameters for SecretPermissionUpdate",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "SecretPermissionUpdateInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "SecretPermissionUpdatePayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "secretsManagerEnableAddOn",
               "description": null,
               "args": [
@@ -328260,6 +328345,43 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "AiGovernanceSessionConnection",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "aiGovernanceToolCalls",
+              "description": "Top tools invoked by AI agents, with invocation counts. Returns null when the `ai_governance_dashboard` or `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "timeframe",
+                  "description": "Time window for the tool calls. Defaults to LAST_7_DAYS.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceMetricsTimeframe",
+                    "ofType": null
+                  },
+                  "defaultValue": "LAST_7_DAYS",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "agentClass",
+                  "description": "Agent class to segment the tool calls by. Defaults to ALL.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": "ALL",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceToolCallsReport",
                 "ofType": null
               },
               "isDeprecated": true,
@@ -389326,132 +389448,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "INPUT_OBJECT",
-          "name": "SecretPermissionDeleteInput",
-          "description": "Autogenerated input type of SecretPermissionDelete",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "projectPath",
-              "description": "Project permissions for the secret.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "principal",
-              "description": "Whose permission to be deleted.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "PrincipalInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "SecretPermissionDeletePayload",
-          "description": "Autogenerated return type of SecretPermissionDelete.",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "errors",
-              "description": "Errors encountered during the mutation.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "reason",
-              "description": "Reason the write was denied due to entitlement; null when not denied for that reason. Introduced in GitLab 19.2: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "SecretsManagerWriteDenialReason",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
-            },
-            {
-              "name": "secretPermission",
-              "description": "Deleted Secret Permission.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "SecretPermission",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "OBJECT",
           "name": "SecretPermissionEdge",
           "description": "An edge in a connection.",
@@ -389475,168 +389471,6 @@
             {
               "name": "node",
               "description": "The item at the end of the edge.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "SecretPermission",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "SecretPermissionUpdateInput",
-          "description": "Autogenerated input type of SecretPermissionUpdate",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "projectPath",
-              "description": "Project to which the permissions are added.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "principal",
-              "description": "User/MemberRole/Role that is provided access.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "PrincipalInput",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "permissions",
-              "description": "Permissions to be provided. ['create', 'update', 'read', 'delete'].",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "expiredAt",
-              "description": "Expiration date for Secret Permission (optional).",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ISO8601Date",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "SecretPermissionUpdatePayload",
-          "description": "Autogenerated return type of SecretPermissionUpdate.",
-          "fields": [
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "errors",
-              "description": "Errors encountered during the mutation.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "reason",
-              "description": "Reason the write was denied due to entitlement; null when not denied for that reason. Introduced in GitLab 19.2: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "ENUM",
-                "name": "SecretsManagerWriteDenialReason",
-                "ofType": null
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
-            },
-            {
-              "name": "secretPermission",
-              "description": "Secret Permission that was created.",
               "args": [],
               "type": {
                 "kind": "OBJECT",

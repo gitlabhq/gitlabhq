@@ -1,6 +1,7 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { iframeProviders, YOUTUBE_SANDBOX, FIGMA_SANDBOX } from 'helpers/iframe_providers';
 import renderIframes from '~/behaviors/markdown/render_iframe';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import {
   YOUTUBE_EMBED_URL,
   fixtureDefault,
@@ -64,6 +65,44 @@ describe('Embedded iframe renderer', () => {
     expect(findEmbeddedIframes(figmaEmbedUrl)[0].getAttribute('sandbox')).toBe(FIGMA_SANDBOX);
   });
 
+  it('keeps the original image hidden alongside the embed', () => {
+    setHTMLFixture(fixtureDefault);
+    const img = document.querySelector('img');
+
+    renderAllIframes();
+
+    expect(img.hidden).toBe(true);
+    expect(img.parentElement.classList.contains('media-container')).toBe(true);
+  });
+
+  it('removes the link wrapping the original image', () => {
+    setHTMLFixture(fixtureDefault);
+    const link = document.querySelector('a');
+
+    renderAllIframes();
+
+    expect(link.isConnected).toBe(false);
+  });
+
+  describe('when the rendered embed is copied', () => {
+    const copySelection = () => {
+      const fragment = document.createDocumentFragment();
+      fragment.appendChild(document.querySelector('p').cloneNode(true));
+      return CopyAsGFM.transformGFMSelection(fragment);
+    };
+
+    beforeEach(() => {
+      setHTMLFixture(fixtureDefault);
+      renderAllIframes();
+    });
+
+    it('copies the embed as GFM', async () => {
+      expect(await CopyAsGFM.nodeToGFM(copySelection())).toBe(
+        `![YouTube embed](${YOUTUBE_EMBED_URL})`,
+      );
+    });
+  });
+
   describe('when the provider is no longer enabled', () => {
     beforeEach(() => {
       setHTMLFixture(fixtureDefault);
@@ -122,64 +161,82 @@ describe('Embedded iframe renderer', () => {
   });
 
   describe('dimensions', () => {
-    it('applies explicit width and height attributes when provided', () => {
-      setHTMLFixture(fixtureWithDimensions);
+    const findIframe = () => findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
 
-      renderAllIframes();
+    describe('for any embed', () => {
+      beforeEach(() => {
+        setHTMLFixture(fixtureDefault);
+        renderAllIframes();
+      });
 
-      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
-      expect(iframe).toBeDefined();
-      expect(iframe.getAttribute('width')).toBe('560');
-      expect(iframe.getAttribute('height')).toBe('315');
+      it('keeps the embed within its container, with a floor that yields to it', () => {
+        const { style } = findIframe().parentElement;
+        expect(style.maxWidth).toBe('100%');
+        expect(style.minWidth).toBe('min(17rem, 100%)');
+      });
+
+      it('fills the embed with the iframe', () => {
+        expect(findIframe().classList.contains('gl-min-w-full')).toBe(true);
+      });
     });
 
-    it('caps width to container with aspect-ratio when both dimensions are provided', () => {
-      setHTMLFixture(fixtureWithDimensions);
+    describe('when both width and height are provided', () => {
+      beforeEach(() => {
+        setHTMLFixture(fixtureWithDimensions);
+        renderAllIframes();
+      });
 
-      renderAllIframes();
+      it('applies explicit width and height attributes', () => {
+        const iframe = findIframe();
+        expect(iframe).toBeDefined();
+        expect(iframe.getAttribute('width')).toBe('560');
+        expect(iframe.getAttribute('height')).toBe('315');
+      });
 
-      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
-      expect(iframe.style.maxWidth).toBe('100%');
-      expect(iframe.style.maxHeight).toBe('80vh');
-      expect(iframe.style.aspectRatio).toBe('560 / 315');
-      expect(iframe.style.height).toBe('auto');
+      it('caps width to container and height to the requested height', () => {
+        const iframe = findIframe();
+        expect(iframe.style.maxWidth).toBe('100%');
+        expect(iframe.style.maxHeight).toBe('min(80vh, 315px)');
+        expect(iframe.style.height).toBe('auto');
+      });
+
+      it('does not add full-width/height styles', () => {
+        const iframe = findIframe();
+        expect(iframe.classList.contains('gl-w-full')).toBe(false);
+        expect(iframe.classList.contains('gl-h-full')).toBe(false);
+      });
     });
 
-    it('caps width to container without aspect-ratio when only width is provided', () => {
-      setHTMLFixture(fixtureWithWidthOnly);
+    describe('when only width is provided', () => {
+      beforeEach(() => {
+        setHTMLFixture(fixtureWithWidthOnly);
+        renderAllIframes();
+      });
 
-      renderAllIframes();
-
-      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
-      expect(iframe.getAttribute('width')).toBe('560');
-      expect(iframe.getAttribute('height')).toBeNull();
-      expect(iframe.style.maxWidth).toBe('100%');
-      expect(iframe.style.maxHeight).toBe('80vh');
-      expect(iframe.style.aspectRatio).toBeUndefined();
-      expect(iframe.style.height).toBe('');
+      it('caps width to container without aspect-ratio', () => {
+        const iframe = findIframe();
+        expect(iframe.getAttribute('width')).toBe('560');
+        expect(iframe.getAttribute('height')).toBeNull();
+        expect(iframe.style.maxWidth).toBe('100%');
+        expect(iframe.style.maxHeight).toBe('80vh');
+        expect(iframe.style.height).toBe('');
+      });
     });
 
-    it('does not add full-width/height styles when explicit dimensions are provided', () => {
-      setHTMLFixture(fixtureWithDimensions);
+    describe('when no dimensions are provided', () => {
+      beforeEach(() => {
+        setHTMLFixture(fixtureDefault);
+        renderAllIframes();
+      });
 
-      renderAllIframes();
-
-      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
-      expect(iframe.classList.contains('gl-w-full')).toBe(false);
-      expect(iframe.classList.contains('gl-h-full')).toBe(false);
-    });
-
-    it('uses full-width/height when no dimensions are provided', () => {
-      setHTMLFixture(fixtureDefault);
-
-      renderAllIframes();
-
-      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
-      expect(iframe.classList.contains('gl-w-full')).toBe(true);
-      expect(iframe.classList.contains('gl-h-full')).toBe(true);
-      expect(iframe.style.maxHeight).toBe('80vh');
-      expect(iframe.getAttribute('width')).toBeNull();
-      expect(iframe.getAttribute('height')).toBeNull();
+      it('uses full-width/height', () => {
+        const iframe = findIframe();
+        expect(iframe.classList.contains('gl-w-full')).toBe(true);
+        expect(iframe.classList.contains('gl-h-full')).toBe(true);
+        expect(iframe.style.maxHeight).toBe('80vh');
+        expect(iframe.getAttribute('width')).toBeNull();
+        expect(iframe.getAttribute('height')).toBeNull();
+      });
     });
   });
 });

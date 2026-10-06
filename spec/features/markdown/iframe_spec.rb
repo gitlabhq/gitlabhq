@@ -130,6 +130,80 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
     end
 
     it_behaves_like 'an iframe renderer'
+
+    context 'with explicit dimensions' do
+      let(:issue) { create(:issue, project: project, description: markdown) }
+
+      before do
+        stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: %w[example])
+      end
+
+      context 'when both are set' do
+        where(:dimensions) do
+          ['{width=560 height=315}', '{width=560px height=315px}']
+        end
+
+        with_them do
+          let(:markdown) { "![](https://iframe.example/some-video)#{dimensions}\n" }
+
+          it 'keeps the aspect ratio' do
+            visit project_issue_path(project, issue)
+
+            expect(page).to have_css(expected_selector)
+            aspect_ratio = "getComputedStyle(document.querySelector(#{expected_selector.to_json})).aspectRatio"
+            width, height = page.evaluate_script(
+              "(r => [r.width, r.height])(document.querySelector(#{expected_selector.to_json}).getBoundingClientRect())"
+            )
+
+            expect(page.evaluate_script(aspect_ratio)).to eq('560 / 315')
+            expect([width, height]).to eq([560, 315])
+          end
+        end
+      end
+
+      context 'when the requested width is below the minimum' do
+        let(:markdown) { "![](https://iframe.example/some-video){width=10 height=10}\n" }
+
+        it 'widens the frame without growing its height' do
+          visit project_issue_path(project, issue)
+
+          expect(page).to have_css(expected_selector)
+          width, height = page.evaluate_script(
+            "(r => [r.width, r.height])(document.querySelector(#{expected_selector.to_json}).getBoundingClientRect())"
+          )
+
+          expect(width).to eq(272)
+          expect(height).to eq(10)
+        end
+      end
+
+      context 'when the container is narrower than the minimum' do
+        where(:dimensions) do
+          ['{width=10 height=10}', '{width=560 height=315}']
+        end
+
+        with_them do
+          let(:markdown) { "![](https://iframe.example/some-video)#{dimensions}\n" }
+
+          it 'fits the frame to the container' do
+            visit project_issue_path(project, issue)
+
+            expect(page).to have_css(expected_selector)
+            frame, container = page.evaluate_script(<<~JS)
+              (iframe => {
+                iframe.closest('p').style.width = '200px';
+                return [iframe, iframe.closest('p')].map(el => {
+                  const r = el.getBoundingClientRect();
+                  return { left: r.left, right: r.right };
+                });
+              })(document.querySelector(#{expected_selector.to_json}))
+            JS
+
+            expect(frame).to eq(container)
+          end
+        end
+      end
+    end
   end
 
   context 'when feature is configured and enabled for the immediate group' do

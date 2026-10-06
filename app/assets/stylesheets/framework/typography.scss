@@ -41,6 +41,11 @@
       max-width: 100%;
       height: auto;
     }
+
+    &.img-container {
+      display: flex;
+      align-items: flex-start;
+    }
   }
 
   img {

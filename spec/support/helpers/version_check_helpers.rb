@@ -3,6 +3,7 @@
 module VersionCheckHelpers
   def stub_version_check(response)
     allow(Rails.cache).to receive(:fetch).and_call_original
-    allow(Rails.cache).to receive(:fetch).with('version_check').and_return(response)
+    allow(Rails.cache).to receive(:fetch)
+      .with(Gitlab::Version::VersionCheckCronWorker.cache_key).and_return(response)
   end
 end

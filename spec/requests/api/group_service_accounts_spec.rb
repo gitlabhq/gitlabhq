@@ -492,6 +492,24 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
+      context 'when the service account is scheduled for deletion' do
+        let(:pending_sa) { create(:user, :service_account, :blocked, provisioned_by_group: group) }
+
+        before do
+          create(:ghost_user_migration, user: pending_sa, initiator_user: admin)
+        end
+
+        it 'does not create a token' do
+          expect do
+            post api("/groups/#{group.id}/service_accounts/#{pending_sa.id}/personal_access_tokens", admin,
+              admin_mode: true), params: params
+          end.not_to change { pending_sa.personal_access_tokens.count }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Not permitted to create')
+        end
+      end
+
       it 'returns 401 without authentication' do
         post api(base_path), params: params
 

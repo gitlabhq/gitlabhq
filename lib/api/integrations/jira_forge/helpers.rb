@@ -3,31 +3,25 @@
 module API
   class Integrations
     module JiraForge
-      # Shared auth for the native Forge app's inbound calls. App-context calls
-      # (invokeRemote) authenticate with a verified Forge Invocation Token (FIT);
-      # the OAuth subscription-create call carries a GitLab user token and finds
-      # the installation by the X-Gitlab-Jira-Cloud-Id header (gated by user +
-      # Jira admin, so the header alone grants nothing).
+      # Shared auth for the native Forge app's inbound calls. Every app-context
+      # call (invokeRemote) authenticates with a verified Forge Invocation Token
+      # (FIT). The first-link call also carries the GitLab user as a signed
+      # delegation token (X-Gitlab-Jira-User-Delegation), minted by the
+      # user_delegation endpoint from the user's OAuth token; the FIT alone
+      # carries no GitLab user identity.
       module Helpers
         include Gitlab::Utils::StrongMemoize
 
         # Installation for an app-context request, authenticated by the FIT (the
         # cloud-id header is not accepted here).
         def forge_installation
-          return unless valid_forge_token&.cloud_id
+          fit = valid_forge_token
+          return unless fit&.installation_id
 
-          JiraConnectInstallation.find_by_cloud_id_and_organization_id(
-            valid_forge_token.cloud_id, Current.organization.id
+          JiraConnectInstallation.find_or_backfill_by_forge_token(
+            installation_id: fit.installation_id, cloud_id: fit.cloud_id,
+            organization_id: Current.organization.id
           )
-        end
-
-        # Installation for the OAuth subscription-create call (no FIT), by cloud-id
-        # header; gated by GitLab user + Jira admin.
-        def forge_oauth_installation
-          cloud_id = headers['X-Gitlab-Jira-Cloud-Id'].presence
-          return if cloud_id.blank?
-
-          JiraConnectInstallation.find_by_cloud_id_and_organization_id(cloud_id, Current.organization.id)
         end
 
         # Jira apiBaseUrl from the verified FIT. See Atlassian::Forge::SystemTokenClient.
@@ -35,7 +29,7 @@ module API
           valid_forge_token&.api_base_url
         end
 
-        # Jira user behind the call: the FIT principal, else the
+        # Jira user behind an app-context call: the FIT principal, else the
         # X-Gitlab-Jira-Account-Id header.
         def forge_jira_user(installation)
           return if installation.nil?
@@ -44,6 +38,34 @@ module API
           return if account_id.blank?
 
           installation.client.user_info(account_id)
+        end
+
+        # Jira user for a first-link call, resolved directly from the FIT +
+        # system token before any installation row exists. The caller has
+        # already rejected a blank apiBaseUrl, system token or principal.
+        def forge_native_jira_user(api_base_url, system_token, principal)
+          Atlassian::Forge::SystemTokenClient.new(api_base_url, system_token).user_info(principal)
+        end
+
+        # GitLab user bound to an app-context call via the signed delegation
+        # token minted by the user_delegation endpoint (the FIT bearer carries
+        # no GitLab user identity). The token must have been minted for the
+        # Jira account + site of this call's FIT, and the user must still be
+        # active. See Integrations::JiraForge::UserDelegationToken.
+        def forge_delegated_user(fit)
+          jwt = headers['X-Gitlab-Jira-User-Delegation'].presence
+          return if jwt.blank?
+
+          delegation = ::Integrations::JiraForge::UserDelegationToken.decode(jwt)
+          return unless delegation&.matches_fit?(fit)
+
+          user = User.find_by_id(delegation.user_id)
+          user if user && api_access_allowed?(user)
+        end
+
+        def jira_admin_error
+          s_('JiraConnect|The Jira user is not a site or organization administrator. ' \
+            'Check the permissions in Jira and try again.')
         end
 
         private

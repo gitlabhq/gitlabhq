@@ -163,6 +163,7 @@ module Admin
       params[:application_setting][:import_sources]&.delete("")
       params[:application_setting][:valid_runner_registrars]&.delete("")
       params[:application_setting][:restricted_visibility_levels]&.delete("")
+      params[:application_setting][:iframe_rendering_allowlist]&.delete("")
 
       params[:application_setting][:package_metadata_purl_types]&.delete("")
       params[:application_setting][:package_metadata_purl_types]&.map!(&:to_i)
@@ -222,6 +223,7 @@ module Admin
         :auto_approve_pending_users,
         :pipeline_variables_default_allowed,
         { disabled_oauth_sign_in_sources: [],
+          iframe_rendering_allowlist: [],
           import_sources: [],
           package_metadata_purl_types: [],
           restricted_visibility_levels: [],

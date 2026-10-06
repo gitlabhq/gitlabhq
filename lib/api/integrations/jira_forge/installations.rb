@@ -82,14 +82,43 @@ module API
                   render_api_error!(installation.errors.full_messages.to_sentence, 422)
                 end
               end
-            end
-          end
-        end
 
-        helpers do
-          def jira_admin_error
-            s_('JiraConnect|The Jira user is not a site or organization administrator. ' \
-              'Check the permissions in Jira and try again.')
+              desc 'Destroy the GitLab for Jira (Forge) installation on app uninstall' do
+                detail 'Called by the Forge app preUninstall hook. A pure-native ' \
+                  'install fires no Connect uninstalled event, so this is what removes the ' \
+                  'installation, its subscriptions, and deactivates the linked jira_cloud_app ' \
+                  'integrations. FIT authentication carries the same trust as the signed ' \
+                  'Connect lifecycle event, so no Jira admin check is needed. Succeeds with ' \
+                  'no change when the installation is already gone.'
+                success ::API::Entities::BasicSuccess
+                failure [
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 422, message: 'Unprocessable entity' }
+                ]
+                tags %w[jira_forge_installation]
+              end
+              route_setting :lifecycle, :experiment
+              route_setting :authorization, skip_granular_token_authorization: :jira_forge_app_auth
+              delete do
+                unauthorized!('Forge invocation token authentication failed') unless valid_forge_token
+
+                # The Connect uninstalled event may have removed the row first.
+                installation = forge_installation
+                break { success: true } unless installation
+
+                destroyed = ::JiraConnectInstallations::DestroyService.execute(
+                  installation,
+                  ::Gitlab::Routing.url_helpers.jira_connect_base_path,
+                  ::Gitlab::Routing.url_helpers.jira_connect_events_uninstalled_path
+                )
+
+                if destroyed
+                  { success: true }
+                else
+                  render_api_error!('Failed to destroy the installation', 422)
+                end
+              end
+            end
           end
         end
       end

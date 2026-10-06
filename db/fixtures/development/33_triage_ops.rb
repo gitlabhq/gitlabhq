@@ -167,7 +167,8 @@ class Gitlab::Seeder::TriageOps
       email: 'triagebot@example.com',
       confirmed_at: DateTime.now,
       password: SecureRandom.hex.slice(0, 16),
-      user_type: :project_bot
+      user_type: :project_bot,
+      organization: @organization
     ) do |user|
       user.assign_personal_namespace(@organization)
     end

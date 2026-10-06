@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Version::VersionCheckCronWorker, feature_category: :servi
       end
 
       it 'caches the version information' do
-        expect(Rails.cache).to receive(:write).with('version_check', version_info)
+        expect(Rails.cache).to receive(:write).with("version_check:#{Gitlab::VERSION}", version_info)
 
         worker.perform
       end

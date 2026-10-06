@@ -12,12 +12,14 @@
 
       %fieldset
         .form-group
-          = f.gitlab_ui_checkbox_component :iframe_rendering_enabled, _('Enable embedded content'), help_text: _('When enabled, users can embed YouTube videos, Figma designs, and other external content.')
+          = f.gitlab_ui_checkbox_component :iframe_rendering_enabled, _('Enable embedded content'), help_text: _('When enabled, users can embed content from the selected providers in Markdown.')
 
-        .form-group{ id: 'iframe-allowlist-group', style: @application_setting.iframe_rendering_enabled? ? '' : 'display: none;' }
-          = f.label :iframe_rendering_allowlist_raw, _('Allowed domains'), class: 'label-bold'
-          = f.text_area :iframe_rendering_allowlist_raw, class: 'form-control gl-form-input', rows: 8
-          .form-text.gl-text-subtle
-            = _('Enter trusted domains that users can embed content from. One domain per line.')
+        %fieldset.form-group
+          %legend.gl-text-base.gl-mb-3.gl-border-none.gl-font-bold= _('Embed providers')
+          .form-text.gl-text-subtle.gl-mb-3
+            = _('Content from enabled providers loads inside GitLab pages and can run scripts in the browsers of users who view it. Enable only providers you trust. GitLab defines the list of available providers. You cannot add providers here.')
+          = hidden_field_tag 'application_setting[iframe_rendering_allowlist][]'
+          - iframe_providers_checkboxes(f).each do |checkbox|
+            = checkbox
 
       = f.submit _('Save changes'), pajamas_button: true

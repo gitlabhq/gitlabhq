@@ -185,6 +185,21 @@ module ApplicationSettingsHelper
     end
   end
 
+  def iframe_providers_checkboxes(form)
+    Gitlab::Markdown::IframeProviders.known_providers.map do |provider|
+      checked = @application_setting.iframe_rendering_allowlist.include?(provider.id)
+
+      form.gitlab_ui_checkbox_component(
+        :iframe_rendering_allowlist,
+        provider.name,
+        help_text: format(_('Loads content from %{origin}'), origin: provider.src_origin),
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: provider.id,
+        unchecked_value: nil
+      )
+    end
+  end
+
   def oauth_providers_checkboxes(form)
     button_based_providers.map do |source|
       checked = @application_setting.disabled_oauth_sign_in_sources.exclude?(source.to_s)

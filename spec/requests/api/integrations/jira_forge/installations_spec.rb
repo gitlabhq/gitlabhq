@@ -20,6 +20,12 @@ RSpec.describe API::Integrations::JiraForge::Installations, :with_current_organi
   let(:account_id) { 'jira-account-1' }
   let(:jira_admin) { true }
   let(:cloud_id) { 'cloud-123' }
+  # Format-valid installation ARI, derived per cloud id so an unknown site also
+  # carries an installation id no row holds.
+  let(:installation_ari) do
+    "ari:cloud:ecosystem::installation/#{Digest::UUID.uuid_v5(Digest::UUID::OID_NAMESPACE, cloud_id)}"
+  end
+
   let(:api_base_url) { 'https://api.atlassian.com/ex/jira/cloud-123' }
 
   before do
@@ -32,7 +38,8 @@ RSpec.describe API::Integrations::JiraForge::Installations, :with_current_organi
     # App-context endpoints authenticate by the Forge Invocation Token.
     allow(Atlassian::Forge::InvocationToken).to receive(:new).and_return(
       instance_double(Atlassian::Forge::InvocationToken,
-        valid?: true, cloud_id: cloud_id, principal: account_id, api_base_url: api_base_url)
+        valid?: true, installation_id: installation_ari, cloud_id: cloud_id,
+        principal: account_id, api_base_url: api_base_url)
     )
   end
 
@@ -41,7 +48,8 @@ RSpec.describe API::Integrations::JiraForge::Installations, :with_current_organi
     let(:config_ari) { 'ari:cloud:ecosystem::app/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb' }
 
     let(:verified_token) do
-      instance_double(Atlassian::Forge::InvocationToken, valid?: true, cloud_id: cloud_id, principal: account_id)
+      instance_double(Atlassian::Forge::InvocationToken, valid?: true, installation_id: installation_ari,
+        cloud_id: cloud_id, principal: account_id)
     end
 
     it 'verifies against the jira_forge_app_id application setting when set' do
@@ -128,6 +136,19 @@ RSpec.describe API::Integrations::JiraForge::Installations, :with_current_organi
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'when the installation already carries the Forge installation id' do
+      before do
+        installation.update!(forge_installation_xid: installation_ari)
+      end
+
+      it 'resolves it by installation id' do
+        update_installation
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(installation.reload.instance_url).to eq('https://gitlab.example.com')
+      end
+    end
   end
 
   describe 'POST /integrations/jira_forge/installation/forge_token' do
@@ -151,11 +172,79 @@ RSpec.describe API::Integrations::JiraForge::Installations, :with_current_organi
       expect(response).to have_gitlab_http_status(:bad_request)
     end
 
+    it 'resolves an installation that already carries the Forge installation id' do
+      installation.update!(forge_installation_xid: installation_ari)
+
+      post api('/integrations/jira_forge/installation/forge_token'), headers: token_headers
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(installation.reload.forge_system_token).to eq(system_token)
+    end
+
     it 'rejects a request without a Forge invocation token' do
       post api('/integrations/jira_forge/installation/forge_token'),
         headers: { 'X-Forge-Oauth-System' => system_token, 'X-Gitlab-Jira-Cloud-Id' => 'cloud-123' }
 
       expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
+  describe 'DELETE /integrations/jira_forge/installation' do
+    let_it_be(:group) { create(:group) }
+
+    subject(:destroy_installation) do
+      delete api('/integrations/jira_forge/installation'), headers: fit_headers
+    end
+
+    before_all do
+      create(:jira_connect_subscription, installation: installation, namespace: group)
+    end
+
+    it 'destroys the installation, its subscriptions, and deactivates the integrations' do
+      expect(JiraConnect::JiraCloudAppDeactivationWorker).to receive(:perform_async).with(group.id)
+
+      expect { destroy_installation }
+        .to change { JiraConnectInstallation.count }.by(-1)
+        .and change { JiraConnectSubscription.count }.by(-1)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'rejects a request without a Forge invocation token' do
+      delete api('/integrations/jira_forge/installation'),
+        headers: { 'X-Gitlab-Jira-Cloud-Id' => 'cloud-123' }
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    it 'returns 422 when the installation cannot be destroyed' do
+      allow(::JiraConnectInstallations::DestroyService).to receive(:execute).and_return(false)
+
+      destroy_installation
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    context 'when the token matches no installation (already destroyed)' do
+      let(:cloud_id) { 'unknown-cloud' }
+
+      it 'succeeds without destroying anything' do
+        expect { destroy_installation }.not_to change { JiraConnectInstallation.count }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the installation already carries the Forge installation id' do
+      before do
+        installation.update!(forge_installation_xid: installation_ari)
+      end
+
+      it 'destroys it' do
+        expect { destroy_installation }.to change { JiraConnectInstallation.count }.by(-1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
   end
 end

@@ -423,7 +423,7 @@ export const config = {
                 // this ensures that we don’t override linkedItems.workItem when updating parent
                 if (incomingWidget?.type === WIDGET_TYPE_LINKED_ITEMS) {
                   if (!incomingWidget.linkedItems) {
-                    return existingWidget;
+                    return { ...existingWidget, ...incomingWidget };
                   }
 
                   const incomingNodes = incomingWidget.linkedItems?.nodes || [];

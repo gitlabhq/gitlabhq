@@ -1596,6 +1596,47 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
       end
     end
 
+    describe 'iframe_rendering_allowlist' do
+      it 'accepts known embed providers' do
+        setting.iframe_rendering_allowlist = %w[youtube figma]
+
+        expect(setting).to be_valid
+      end
+
+      it 'rejects unknown embed providers' do
+        setting.iframe_rendering_allowlist = %w[youtube unknown]
+
+        expect(setting).to be_invalid
+        expect(setting.errors[:iframe_rendering_allowlist])
+          .to contain_exactly("'unknown' is not a known embed provider")
+      end
+
+      context 'when the allowlist already contains an unknown embed provider' do
+        before do
+          setting.update_column(:iframe_rendering_allowlist, %w[youtube unknown])
+          setting.reload
+        end
+
+        it 'does not prevent saving other settings' do
+          setting.home_page_url = 'https://example.com'
+
+          expect(setting).to be_valid
+        end
+
+        it 'rejects keeping the unknown embed provider when the allowlist changes' do
+          setting.iframe_rendering_allowlist = %w[figma unknown]
+
+          expect(setting).to be_invalid
+        end
+
+        it 'accepts removing the unknown embed provider' do
+          setting.iframe_rendering_allowlist = %w[youtube]
+
+          expect(setting).to be_valid
+        end
+      end
+    end
+
     describe 'enforcing terms' do
       it 'requires the terms to present when enforcing users to accept' do
         setting.enforce_terms = true

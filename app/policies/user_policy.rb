@@ -65,6 +65,11 @@ class UserPolicy < BasePolicy
     enable :rotate_personal_access_token
   end
 
+  rule { blocked_user }.policy do
+    prevent :create_personal_access_token
+    prevent :rotate_personal_access_token
+  end
+
   rule { admin }.policy do
     enable :read_custom_attribute
     enable :update_custom_attribute

@@ -4,7 +4,10 @@ module Gitlab
   module ErrorTracking
     module Processor
       module SanitizerProcessor
-        SANITIZED_HTTP_HEADERS = %w[Authorization Private-Token Job-Token].freeze
+        SANITIZED_HTTP_HEADERS = %w[
+          Authorization Private-Token Job-Token
+          X-Forge-Oauth-System X-Gitlab-Jira-User-Delegation
+        ].freeze
         SANITIZED_ATTRIBUTES = %i[user contexts extra tags].freeze
 
         # This processor removes sensitive fields or headers from the event
