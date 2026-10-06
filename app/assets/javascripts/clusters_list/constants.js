@@ -68,30 +68,6 @@ export const STATUSES = {
   creating: { title: __('Creating') },
 };
 
-export const I18N_AGENT_TABLE = {
-  nameLabel: s__('ClusterAgents|Name'),
-  statusLabel: s__('ClusterAgents|Connection status'),
-  lastContactLabel: s__('ClusterAgents|Last contact'),
-  versionLabel: __('Version'),
-  configurationLabel: s__('ClusterAgents|Configuration'),
-  projectLabel: s__('ClusterAgents|Project'),
-  optionsLabel: __('Options'),
-  troubleshootingText: s__('ClusterAgents|Learn how to troubleshoot'),
-  neverConnectedText: s__('ClusterAgents|Never'),
-  versionMismatchTitle: s__('ClusterAgents|Agent version mismatch'),
-  versionMismatchText: s__(
-    "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods.",
-  ),
-  versionWarningsTitle: s__('ClusterAgents|Agent version update required'),
-  versionWarningsMismatchTitle: s__('ClusterAgents|Agent version mismatch and update'),
-  viewDocsText: s__('ClusterAgents|How do I update an agent?'),
-  defaultConfigText: s__('ClusterAgents|Default configuration'),
-  defaultConfigTooltip: s__('ClusterAgents|What is default configuration?'),
-  sharedBadgeText: s__('ClusterAgents|Shared'),
-  receptiveBadgeText: s__('ClusterAgents|Receptive'),
-  externalConfigText: s__('ClusterAgents|External project'),
-};
-
 export const I18N_AGENT_TOKEN = {
   copyToken: s__('ClusterAgents|Copy token'),
   copyCommand: s__('ClusterAgents|Copy command'),

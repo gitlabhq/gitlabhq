@@ -23,6 +23,8 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:description) { 'This is my issue' }
   let(:author) { Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice') }
+  let(:bob) { Gitlab::GithubImport::Representation::User.new(id: 5, login: 'bob') }
+  let(:assignees) { [author, bob] }
 
   let(:issue) do
     Gitlab::GithubImport::Representation::Issue.new(
@@ -31,10 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       description: description,
       milestone_number: 1,
       state: :opened,
-      assignees: [
-        author,
-        Gitlab::GithubImport::Representation::User.new(id: 5, login: 'bob')
-      ],
+      assignees: assignees,
       label_names: %w[bug],
       author: author,
       created_at: created_at,
@@ -143,6 +142,44 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
       end
     end
 
+    context 'when the issue has no author' do
+      let(:author) { nil }
+      let(:assignees) { [bob] }
+
+      it 'imports the issue as the ghost user and pushes only the assignee reference' do
+        importer.execute
+
+        created_issue = Issue.last
+
+        expect(created_issue.author_id).to eq(Users::Internal.in_organization(project.organization).ghost.id)
+        expect(cached_references).to contain_exactly(
+          [
+            'IssueAssignee', { 'user_id' => source_user_bob.mapped_user_id, 'issue_id' => created_issue.id },
+            'user_id', source_user_bob.id
+          ]
+        )
+      end
+    end
+
+    context 'when an assignee is the GitHub ghost user' do
+      let(:assignees) { [author, Gitlab::GithubImport::Representation::User.new(id: 6, login: 'ghost')] }
+
+      it 'skips the ghost assignee and pushes references only for mapped users' do
+        importer.execute
+
+        created_issue = Issue.last
+
+        expect(created_issue.assignee_ids).to contain_exactly(source_user_alice.mapped_user_id)
+        expect(cached_references).to contain_exactly(
+          ['Issue', created_issue.id, 'author_id', source_user_alice.id],
+          [
+            'IssueAssignee', { 'user_id' => source_user_alice.mapped_user_id, 'issue_id' => created_issue.id },
+            'user_id', source_user_alice.id
+          ]
+        )
+      end
+    end
+
     context 'when importing into a personal namespace' do
       let_it_be(:user_namespace) { create(:namespace) }
 
@@ -166,6 +203,39 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
           assignee_ids: contain_exactly(user_namespace.owner_id)
         )
       end
+    end
+  end
+
+  describe '#import_attributes' do
+    it 'resolves the author only once when called repeatedly' do
+      expect(importer.user_finder).to receive(:author_id_for).once.and_call_original
+
+      2.times { importer.import_attributes }
+    end
+
+    it 'returns the attributes used to create the issue' do
+      expect(importer.import_attributes).to include(
+        iid: 42,
+        title: 'My Issue',
+        author_id: source_user_alice.mapped_user_id,
+        assignee_ids: contain_exactly(source_user_alice.mapped_user_id, source_user_bob.mapped_user_id),
+        project_id: project.id,
+        milestone_id: milestone.id,
+        imported_from: ::Import::SOURCE_GITHUB
+      )
+    end
+  end
+
+  describe '#push_placeholder_references' do
+    it 'pushes the author and assignee references for an existing issue' do
+      created_issue = project.issues.create!(importer.import_attributes.merge(importing: true))
+
+      importer.push_placeholder_references(created_issue)
+
+      expect(cached_references).to include(
+        ['Issue', created_issue.id, 'author_id', source_user_alice.id]
+      )
+      expect(cached_references.size).to eq(3)
     end
   end
 end

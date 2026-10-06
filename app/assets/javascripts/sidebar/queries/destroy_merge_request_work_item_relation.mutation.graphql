@@ -2,7 +2,7 @@
 mutation destroyMergeRequestWorkItemRelation(
   $projectPath: ID!
   $iid: String!
-  $ids: [MergeRequestIssueID!]!
+  $ids: [MergeRequestsClosingIssuesID!]!
 ) {
   mergeRequestDestroyWorkItemRelations(input: { projectPath: $projectPath, iid: $iid, ids: $ids }) {
     errors

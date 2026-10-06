@@ -79,7 +79,7 @@ RSpec.describe PipelineSerializer, feature_category: :continuous_integration do
           end
 
           context 'when a multiple pipeline objects are being serialized' do
-            before do
+            before_all do
               create_list(:ci_empty_pipeline, 3, project: project)
             end
 

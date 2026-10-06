@@ -129,7 +129,6 @@ module Gitlab
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:hide_unpinned_sidebar_items, current_user)
-      push_frontend_feature_flag(:markdown_sortable_table_columns, current_user)
       # Needed for globally-rendered components such as work item reference popovers.
       push_frontend_feature_flag(:work_item_features_field, current_user)
       # eTag-cached GraphQL queries are polled from many pages, so the flag must be global.

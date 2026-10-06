@@ -10,7 +10,7 @@ module Gitlab
           :source_branch_sha, :target_branch, :target_branch_sha,
           :milestone_number, :author, :assignee, :created_at,
           :updated_at, :merged_at, :source_repository_id,
-          :target_repository_id, :source_repository_owner, :merged_by
+          :target_repository_id, :source_repository_owner, :merged_by, :provider_id
 
         # Builds a PR from a GitHub API response.
         #
@@ -21,6 +21,7 @@ module Gitlab
           merged_by = Representation::User.from_api_response(pr[:merged_by]) if pr[:merged_by]
 
           hash = {
+            provider_id: pr[:id],
             iid: pr[:number],
             title: pr[:title],
             description: pr[:body],

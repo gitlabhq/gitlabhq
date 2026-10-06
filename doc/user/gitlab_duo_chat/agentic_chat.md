@@ -130,7 +130,7 @@ Where appropriate, the following foundational flows can be triggered from an Age
 
 - [Developer Flow](../project/merge_requests/developer.md#use-the-flow-in-agentic-chat)
 - [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review/_index.md#use-the-flow)
-- [Fix CI/CD Pipeline Flow](../duo_agent_platform/flows/foundational_flows/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
+- [Fix CI/CD Pipeline Flow](../../ci/pipelines/fix_pipeline.md#fix-the-pipeline-in-a-merge-request)
 
 #### Trigger a flow with a slash command
 

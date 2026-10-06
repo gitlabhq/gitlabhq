@@ -6,6 +6,9 @@ module Integrations
   class SlackEventService
     URL_VERIFICATION_EVENT = 'url_verification'
 
+    MESSAGE_EVENT = 'message'
+    DM_CHANNEL_TYPES = %w[im mpim].freeze
+
     UnknownEventError = Class.new(StandardError)
 
     def initialize(params)
@@ -44,7 +47,13 @@ module Integrations
     end
 
     def route_to_event_worker?
+      return dm_message? if slack_event == MESSAGE_EVENT
+
       SlackEventWorker.event?(slack_event)
+    end
+
+    def dm_message?
+      DM_CHANNEL_TYPES.include?(params.dig(:event, :channel_type))
     end
 
     # Returns a payload for the service response.

@@ -1,0 +1,11 @@
+---
+name: blame_agent_sessions
+description: Show GitLab Duo Agent Platform session links and details in the blame
+  view
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629586
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256210
+rollout_issue_url:
+milestone: '19.5'
+group: group::source code
+type: wip
+default_enabled: false

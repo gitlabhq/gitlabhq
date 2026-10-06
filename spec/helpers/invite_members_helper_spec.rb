@@ -8,7 +8,6 @@ RSpec.describe InviteMembersHelper do
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:group) { create(:group, projects: [project]) }
   let_it_be(:developer) { create(:user, developer_of: project) }
-
   let_it_be(:owner) { create(:user, owner_of: project) }
 
   describe '#common_invite_group_modal_data' do

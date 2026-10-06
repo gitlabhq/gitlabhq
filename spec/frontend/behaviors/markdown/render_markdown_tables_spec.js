@@ -68,15 +68,11 @@ const buildTable = () =>
 describe('renderMarkdownTables', () => {
   beforeEach(() => {
     mockMarkdownTableDestroyed.mockClear();
-    window.gon = {
-      features: { markdownSortableTableColumns: true },
-    };
   });
 
   afterEach(async () => {
     document.body.innerHTML = '';
     await waitForPromises();
-    delete window.gon;
   });
 
   describe('sticky headers', () => {
@@ -92,18 +88,7 @@ describe('renderMarkdownTables', () => {
       // The component's <table> is a direct child of the wrapper so the
       // existing `[data-sticky-header] > table` CSS applies.
       expect(wrapper.querySelector('table').parentElement).toBe(wrapper);
-    });
-
-    it('renders plain (non-sortable) headers when sorting is disabled', async () => {
-      window.gon.features.markdownSortableTableColumns = false;
-      const table = buildTable();
-      const container = appendTable(table);
-
-      renderMarkdownTables([table]);
-      await waitForPromises();
-
-      expect(container.querySelector('[data-sticky-header]')).not.toBeNull();
-      expect(container.querySelector('[data-sort-icon]')).toBeNull();
+      expect(wrapper.querySelector('[data-sort-icon]')).not.toBeNull();
     });
   });
 

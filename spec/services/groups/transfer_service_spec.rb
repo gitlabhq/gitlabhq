@@ -75,7 +75,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
             transfer_service.execute(new_group)
 
             expect(transfer_service.error).to eq(
-              'Transfer failed: Group contains projects with NPM packages scoped to the current root level group.'
+              'Group contains projects with NPM packages scoped to the current root level group.'
             )
             expect(group.parent).not_to eq(new_group)
           end
@@ -213,7 +213,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it 'adds an error on group' do
           transfer_service.execute(nil)
-          expect(transfer_service.error).to eq('Transfer failed: Group is already a root group.')
+          expect(transfer_service.error).to eq('Group is already a root group.')
         end
 
         it 'records a failure transfer metric' do
@@ -234,7 +234,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it "adds an error on group" do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq("Transfer failed: You don't have enough permissions.")
+          expect(transfer_service.error).to eq("You don't have enough permissions.")
         end
       end
 
@@ -252,7 +252,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         it 'adds an error on group' do
           transfer_service.execute(nil)
           expect(transfer_service.error).to eq(
-            'Transfer failed: The parent group already has a subgroup or a project with the same path.'
+            'The parent group already has a subgroup or a project with the same path.'
           )
         end
       end
@@ -310,7 +310,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: Group is already associated to the parent group.')
+          expect(transfer_service.error).to eq('Group is already associated to the parent group.')
         end
       end
 
@@ -324,7 +324,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it "adds an error on group" do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq("Transfer failed: You don't have enough permissions.")
+          expect(transfer_service.error).to eq("You don't have enough permissions.")
         end
       end
 
@@ -335,7 +335,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
         it "adds an error on group" do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
-          expect(transfer_service.error).to eq("Transfer failed: You don't have enough permissions.")
+          expect(transfer_service.error).to eq("You don't have enough permissions.")
         end
       end
 
@@ -352,7 +352,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
           expect(transfer_service.error).to eq(
-            'Transfer failed: The parent group already has a subgroup or a project with the same path.'
+            'The parent group already has a subgroup or a project with the same path.'
           )
         end
       end
@@ -364,7 +364,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         it 'adds an error on group' do
           expect(transfer_service.execute(new_parent_group)).to be_falsy
           expect(transfer_service.error).to eq(
-            'Transfer failed: The parent group already has a subgroup or a project with the same path.'
+            'The parent group already has a subgroup or a project with the same path.'
           )
         end
       end
@@ -1169,7 +1169,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
             transfer_service.execute(subgroup_in_new_parent_group)
 
             expect(transfer_service.error).to eq(
-              "Transfer failed: Group contains contacts/organizations and you don't have enough " \
+              "Group contains contacts/organizations and you don't have enough " \
                 "permissions to move them to the new root group."
             )
           end
@@ -1286,7 +1286,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       )
 
       expect(schedule).to be_success
-      expect(schedule.message).to eq('Group transfer has been queued. You will be notified when it completes.')
+      expect(schedule.message).to eq('Group transfer is scheduled. If it fails, you get a to-do item with the reason.')
     end
 
     it 'transitions the group to transfer_scheduled' do
@@ -1319,7 +1319,8 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         )
 
         expect(schedule).to be_success
-        expect(schedule.message).to eq('Group transfer has been queued. You will be notified when it completes.')
+        expect(schedule.message)
+          .to eq('Group transfer is scheduled. If it fails, you get a to-do item with the reason.')
       end
 
       it 'stores nil transfer_target_parent_id' do

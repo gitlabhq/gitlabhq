@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::DownloadableArtifactSerializer do
   let(:pipeline) { create(:ci_pipeline, :with_codequality_reports) }
-  let(:user) { create(:user) }
+  let(:user) { build_stubbed(:user) }
   let(:serializer) { described_class.new(current_user: user).represent(pipeline) }
 
   describe '#as_json' do

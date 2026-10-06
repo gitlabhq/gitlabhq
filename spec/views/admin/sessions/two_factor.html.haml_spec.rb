@@ -8,7 +8,7 @@ RSpec.describe 'admin/sessions/two_factor.html.haml', feature_category: :system_
   end
 
   context 'when user has otp active' do
-    let(:user) { create(:admin, :two_factor) }
+    let(:user) { build_stubbed(:admin, otp_required_for_login: true) }
 
     it 'renders the Vue root element' do
       render
@@ -18,7 +18,7 @@ RSpec.describe 'admin/sessions/two_factor.html.haml', feature_category: :system_
   end
 
   context 'when user has WebAuthn active' do
-    let(:user) { create(:admin, :two_factor_via_webauthn) }
+    let(:user) { create(:admin, :two_factor_via_webauthn, registrations_count: 1) }
 
     it 'renders the 2FA Vue root element' do
       render

@@ -5480,6 +5480,9 @@ msgstr ""
 msgid "Add a collapsible section"
 msgstr ""
 
+msgid "Add a comment"
+msgstr ""
+
 msgid "Add a comment to this line"
 msgstr ""
 
@@ -16162,6 +16165,19 @@ msgstr ""
 msgid "Blame is now in page"
 msgstr ""
 
+msgid "Blame|+%{count} more"
+msgid_plural "Blame|+%{count} more"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Blame|+%{count} more linked item"
+msgid_plural "Blame|+%{count} more linked items"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Blame|Agent session %{id}"
+msgstr ""
+
 msgid "Blame|Blame preferences"
 msgstr ""
 
@@ -16187,6 +16203,45 @@ msgid "Blame|Show age indicator legend"
 msgstr ""
 
 msgid "Blame|Unable to load blame"
+msgstr ""
+
+msgid "Blame|View session"
+msgstr ""
+
+msgid "Blame|created %{reference}"
+msgstr ""
+
+msgid "Blame|created a note"
+msgstr ""
+
+msgid "Blame|created a note on %{reference}"
+msgstr ""
+
+msgid "Blame|created merge request %{reference}"
+msgstr ""
+
+msgid "Blame|created pipeline %{reference}"
+msgstr ""
+
+msgid "Blame|created work item %{reference}"
+msgstr ""
+
+msgid "Blame|from %{reference}"
+msgstr ""
+
+msgid "Blame|from a note"
+msgstr ""
+
+msgid "Blame|from a note on %{reference}"
+msgstr ""
+
+msgid "Blame|from merge request %{reference}"
+msgstr ""
+
+msgid "Blame|from pipeline %{reference}"
+msgstr ""
+
+msgid "Blame|from work item %{reference}"
 msgstr ""
 
 msgid "Blob"
@@ -20104,6 +20159,9 @@ msgid "ClusterAgents|Agent %{strongStart}connected%{strongEnd}"
 msgstr ""
 
 msgid "ClusterAgents|Agent %{strongStart}disconnected%{strongEnd}"
+msgstr ""
+
+msgid "ClusterAgents|Agent ID"
 msgstr ""
 
 msgid "ClusterAgents|Agent ID #%{agentId}"
@@ -26478,6 +26536,9 @@ msgstr ""
 msgid "Could not load usage counts. Please refresh the page to try again."
 msgstr ""
 
+msgid "Could not post your comment."
+msgstr ""
+
 msgid "Could not remove %{user} from %{group}. Cannot remove last group owner."
 msgstr ""
 
@@ -26503,6 +26564,9 @@ msgid "Could not save configuration. Please refresh the page, or try again later
 msgstr ""
 
 msgid "Could not start maintenance"
+msgstr ""
+
+msgid "Could not update the thread."
 msgstr ""
 
 msgid "Could not update wiki page"
@@ -32392,6 +32456,9 @@ msgstr ""
 msgid "DuoAgentPlatform|View session"
 msgstr ""
 
+msgid "DuoAgentPlatform|View session for this change"
+msgstr ""
+
 msgid "DuoAgentPlatform|You do not have access to this session."
 msgstr ""
 
@@ -33154,6 +33221,9 @@ msgid "DuoAgentsPlatform|Identity Verification required"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Identity verification is required to use GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Inactive sessions are archived after 30 days."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Learn more about GitLab Duo"
@@ -34024,6 +34094,9 @@ msgstr ""
 msgid "DuoCodeReview|GitLab Duo Code Review was not automatically added. Contact your administrator to verify your account has access to this feature."
 msgstr ""
 
+msgid "DuoCodeReview|GitLab Duo can approve and request changes"
+msgstr ""
+
 msgid "DuoCodeReview|I can't run a code review in this context. Please try again on a merge request."
 msgstr ""
 
@@ -34073,6 +34146,9 @@ msgid "DuoCodeReview|This flow could not start because the namespace has run out
 msgstr ""
 
 msgid "DuoCodeReview|This flow could not start because the project has no runner available. It needs an instance runner or a top-level group runner with the `%{tag}` tag and a Docker-compatible executor. See the %{link_start}troubleshooting guide%{link_end}."
+msgstr ""
+
+msgid "DuoCodeReview|When GitLab Duo finds nothing to comment on, it approves the merge request. Otherwise, it requests changes."
 msgstr ""
 
 msgid "DuoCodeReview|When enabled, GitLab Duo will automatically review new merge requests across all groups and projects. Draft merge requests and merge requests without changes are skipped."
@@ -59657,6 +59733,9 @@ msgstr ""
 msgid "Organization|Drop groups here"
 msgstr ""
 
+msgid "Organization|Edit organization name"
+msgstr ""
+
 msgid "Organization|Full access to all groups, projects, users, features, and the Organization admin area."
 msgstr ""
 
@@ -59836,6 +59915,9 @@ msgid "Organization|Public - The organization can be accessed without any authen
 msgstr ""
 
 msgid "Organization|Remove or add top-level groups. Contact support if you must make changes."
+msgstr ""
+
+msgid "Organization|Save organization name"
 msgstr ""
 
 msgid "Organization|Search for an organization"
@@ -79669,13 +79751,10 @@ msgstr ""
 msgid "SemanticSearch|Update batch size"
 msgstr ""
 
-msgid "SemanticSearch|Update batch size for current model"
+msgid "SemanticSearch|Update batch size for embedding requests on current model"
 msgstr ""
 
-msgid "SemanticSearch|Update batch size for embedding requests"
-msgstr ""
-
-msgid "SemanticSearch|Update batch size for next model"
+msgid "SemanticSearch|Update batch size for embedding requests on next model"
 msgstr ""
 
 msgid "SemanticSearch|Update embeddings and start backfill process"
@@ -81072,6 +81151,9 @@ msgid "SlackIntegration|Error exchanging OAuth token with Slack: %{error}"
 msgstr ""
 
 msgid "SlackIntegration|Generated for %{host} by GitLab %{version}."
+msgstr ""
+
+msgid "SlackIntegration|GitLab Duo — AI-powered assistance for your GitLab projects, right in Slack."
 msgstr ""
 
 msgid "SlackIntegration|GitLab for Slack"
@@ -86887,6 +86969,9 @@ msgstr ""
 msgid "Todos|Failed to transfer %{source} to %{target}. %{retryLinkStart}Try again.%{retryLinkEnd}"
 msgstr ""
 
+msgid "Todos|Failed to transfer %{source} to %{target}: %{reason}. %{retryLinkStart}Try again.%{retryLinkEnd}"
+msgstr ""
+
 msgid "Todos|Failed to un-snooze todo. Try again later."
 msgstr ""
 
@@ -87677,7 +87762,7 @@ msgstr ""
 msgid "TransferGroup|Database is not supported."
 msgstr ""
 
-msgid "TransferGroup|Group '%{group_name}' transfer has been scheduled. Users with the Maintainer or Owner role will be notified when it completes."
+msgid "TransferGroup|Group '%{group_name}' transfer is scheduled. If it fails, you get a to-do item with the reason."
 msgstr ""
 
 msgid "TransferGroup|Group contains contacts/organizations and you don't have enough permissions to move them to the new root group."
@@ -87692,7 +87777,7 @@ msgstr ""
 msgid "TransferGroup|Group is already associated to the parent group."
 msgstr ""
 
-msgid "TransferGroup|Group transfer has been queued. You will be notified when it completes."
+msgid "TransferGroup|Group transfer is scheduled. If it fails, you get a to-do item with the reason."
 msgstr ""
 
 msgid "TransferGroup|SAML Provider or SCIM Token is configured for this group."
@@ -87701,10 +87786,13 @@ msgstr ""
 msgid "TransferGroup|The parent group already has a subgroup or a project with the same path."
 msgstr ""
 
+msgid "TransferGroup|The transfer failed unexpectedly. Contact your administrator if it continues to fail."
+msgstr ""
+
 msgid "TransferGroup|This group is linked to a subscription"
 msgstr ""
 
-msgid "TransferGroup|This group is scheduled for transfer. Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails."
+msgid "TransferGroup|This group is scheduled for transfer. If the transfer fails, the user who started it receives a to-do item with the reason."
 msgstr ""
 
 msgid "TransferGroup|Transfer failed: %{error_message}"
@@ -87764,7 +87852,7 @@ msgstr ""
 msgid "TransferProject|Please select a new namespace for your project."
 msgstr ""
 
-msgid "TransferProject|Project '%{project_name}' transfer has been scheduled. Users with the Maintainer or Owner role will be notified when it completes."
+msgid "TransferProject|Project '%{project_name}' transfer is scheduled. If it fails, you get a to-do item with the reason."
 msgstr ""
 
 msgid "TransferProject|Project cannot be transferred because of a container registry error: %{error}"
@@ -87779,7 +87867,7 @@ msgstr ""
 msgid "TransferProject|Project is already in this namespace."
 msgstr ""
 
-msgid "TransferProject|Project transfer has been queued. You will be notified when it completes."
+msgid "TransferProject|Project transfer is scheduled. If it fails, you get a to-do item with the reason."
 msgstr ""
 
 msgid "TransferProject|Project with same name or path in target namespace already exists"
@@ -87788,7 +87876,10 @@ msgstr ""
 msgid "TransferProject|Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace."
 msgstr ""
 
-msgid "TransferProject|This project is scheduled for transfer. Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails."
+msgid "TransferProject|The transfer failed unexpectedly. Contact your administrator if it continues to fail."
+msgstr ""
+
+msgid "TransferProject|This project is scheduled for transfer. If the transfer fails, the user who started it receives a to-do item with the reason."
 msgstr ""
 
 msgid "TransferProject|Unable to initiate transfer. The project may already have a transfer in progress."

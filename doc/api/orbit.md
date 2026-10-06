@@ -56,12 +56,16 @@ With the flag enabled, `response_format: gql` returns query results as a plain-t
 {{< /history >}}
 
 Skill endpoints require authentication with the `read_api` scope.
-They don't require Orbit entitlement, so you can retrieve setup and troubleshooting guidance before you
-configure Orbit access.
-An older knowledge graph service without skill RPCs returns `404 Not Found` with the message
-`Skills are not available`. The endpoints return the same response when the knowledge graph service
-isn't configured on the instance. On GitLab Self-Managed, this is controlled by `orbit.enabled` in
-`gitlab.yml`, or the legacy `knowledge_graph.enabled` setting.
+They don't check the Orbit license, so unavailable skills return `404 Not Found` instead of `403 Forbidden`.
+The response is `404 Not Found` with the message `Skills are not available` when:
+
+- The knowledge graph service is an older version without skill RPCs.
+- The knowledge graph service isn't configured on the instance. On GitLab Self-Managed, this is
+  controlled by `orbit.enabled` in `gitlab.yml`, or the legacy `knowledge_graph.enabled` setting.
+- The current user doesn't have at least the Reporter role in a group whose top-level group has Orbit
+  turned on. Administrators in Admin Mode and auditors are exempt from this role requirement.
+
+In these cases, the Orbit CLI uses its embedded local skill.
 
 ### List deployed skills
 

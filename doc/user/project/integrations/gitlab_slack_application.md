@@ -182,15 +182,18 @@ This message is visible only to you.
 
 To leave feedback on this feature's performance, use the thumbs up or thumbs down on any response.
 
-GitLab Duo in Slack works in the following channels and threads:
+GitLab Duo in Slack works in the following places:
 
-- Public and private channels where the agent is a member of the channel.
-- In a group direct messages between more than two people. GitLab Duo only sees the message it was mentioned in, not the earlier conversation.
+- Public and private channels where the agent is a member of the channel. Mention `@GitLab` to start.
+- Group direct messages that include the agent. GitLab Duo responds to every message, with or without a mention.
+- One-to-one direct messages with the agent, including when you open the agent from the Slack top bar.
 
-GitLab Duo does not work in the following threads:
+In direct messages, GitLab Duo uses the earlier messages in the conversation as context.
 
-- One-to-one direct messages with the agent.
-- In the agent panel in the Slack top bar.
+Direct messages require the `assistant:write`, `im:history`, and
+`mpim:history` [permissions](#gitlab-for-slack-app-permissions). If the GitLab for Slack app
+was installed before these permissions were added, you must
+[reinstall the app](#reinstall-the-gitlab-for-slack-app) before GitLab Duo responds in these places.
 
 ### Workspace project
 
@@ -208,8 +211,11 @@ GitLab Duo requires the following additional GitLab for Slack app permissions:
 | Scope               | Purpose |
 |---------------------|---------|
 | `app_mentions:read` | Receives events when users mention the bot in a channel. |
+| `assistant:write`   | Marks the app as an agent that appears in the Slack top bar and shows a status while it works. |
 | `channels:history`  | Reads conversation history in public channels to provide thread and channel context to the agent. |
 | `groups:history`    | Reads conversation history in private channels to provide thread and channel context to the agent. |
+| `im:history`        | Reads conversation history in direct messages with the agent. |
+| `mpim:history`      | Reads conversation history in group direct messages that include the agent. |
 | `reactions:write`   | Adds emoji reactions to messages to indicate agent lifecycle status. |
 
 New installations receive these permissions automatically.

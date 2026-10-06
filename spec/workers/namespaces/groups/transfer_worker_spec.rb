@@ -119,6 +119,17 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
 
           expect(group.reload.state).to eq('ancestor_inherited')
         end
+
+        it 'records the service error so the to-do item can show it' do
+          expect_next_instance_of(::Groups::TransferService, group, user) do |service|
+            expect(service).to receive(:execute).with(new_parent_group).and_return(false)
+            allow(service).to receive(:error).and_return('Namespace already taken')
+          end
+
+          perform
+
+          expect(group.reload.transfer_last_error).to eq('Namespace already taken')
+        end
       end
 
       context 'when TransferService raises an error' do
@@ -143,6 +154,8 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           }.by(1)
 
           expect(group.reload.state).to eq('ancestor_inherited')
+          expect(group.transfer_last_error)
+            .to eq('The transfer failed unexpectedly. Contact your administrator if it continues to fail.')
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
             'message' => 'Namespaces::Groups::TransferWorker failed',
             'group_id' => group.id,

@@ -144,7 +144,6 @@ describe('WorkItemActions component', () => {
     isDiscussionLocked = false,
     isGroup = false,
     isParentConfidential = false,
-    okrsMvc = false,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     notificationsMutationHandler,
     lockDiscussionMutationHandler = lockDiscussionMutationResolver,
@@ -204,9 +203,6 @@ describe('WorkItemActions component', () => {
         $toast,
       },
       provide: {
-        glFeatures: {
-          okrsMvc,
-        },
         getWorkItemTypeConfiguration: jest.fn(),
         ...provide,
       },

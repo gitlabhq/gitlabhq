@@ -22,8 +22,8 @@ module Gitlab
       DEFAULT_PER_PAGE = 100
       CLIENT_CONNECTION_ERROR = ::Faraday::ConnectionFailed # used/set in sawyer agent which octokit uses
 
-      # A single page of data and the corresponding URL.
-      Page = Struct.new(:objects, :url)
+      # A single page of data, its URL, and the URL of the next page (nil on the last page).
+      Page = Struct.new(:objects, :url, :next_url)
 
       # The minimum number of requests we want to keep available.
       #
@@ -155,18 +155,18 @@ module Gitlab
           end
         end
 
-        yield Page.new(collection, resume_url)
-
         next_page = octokit.last_response.rels[:next]
+
+        yield Page.new(collection, resume_url, exposed_next_url(next_page))
 
         while next_page
           raise Exceptions::InvalidURLError, 'Invalid pagination URL' unless valid_next_url?(next_page.href)
 
           response = with_rate_limit { next_page.get }
-
-          yield Page.new(response.data, next_page.href)
-
+          page_url = next_page.href
           next_page = response.rels[:next]
+
+          yield Page.new(response.data, page_url, exposed_next_url(next_page))
         end
       end
 
@@ -374,10 +374,17 @@ module Gitlab
         end
       end
 
+      # Never hands an unvalidated URL to callers; an invalid one still raises when followed.
+      def exposed_next_url(next_page)
+        next_page.href if next_page && valid_next_url?(next_page.href)
+      end
+
       def valid_next_url?(next_url)
         next_url_host = URI.parse(next_url).host
 
         next_url_host == api_endpoint_host
+      rescue URI::InvalidURIError
+        false
       end
 
       def with_retry

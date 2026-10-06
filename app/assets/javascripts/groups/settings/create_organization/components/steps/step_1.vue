@@ -20,7 +20,12 @@ export default {
       type: Object,
       required: true,
     },
+    shouldCreateNewOrganization: {
+      type: Boolean,
+      required: true,
+    },
   },
+  emits: ['update-organization'],
   computed: {
     group() {
       return this.organization.groups.nodes[0];
@@ -51,7 +56,11 @@ export default {
     </template>
     <div class="gl-flex gl-w-full gl-justify-center">
       <div class="gl-w-1/2 @lg:gl-w-1/3">
-        <organization-card :organization="organization">
+        <organization-card
+          :organization="organization"
+          :allow-edit-mode="shouldCreateNewOrganization"
+          @update="$emit('update-organization', $event)"
+        >
           <div v-if="group" class="gl-rounded-xl gl-bg-default gl-p-4">
             <organization-group-stats :group="group" />
           </div>

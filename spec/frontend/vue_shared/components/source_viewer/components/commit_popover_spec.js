@@ -24,13 +24,14 @@ describe('CommitPopover component', () => {
     authorGravatar: 'https://gravatar.com/avatar/test',
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, slots = {}) => {
     wrapper = shallowMountExtended(CommitPopover, {
       propsData: {
         popoverTargetId: '123',
         commit: defaultCommit,
         ...props,
       },
+      slots,
     });
   };
 
@@ -73,6 +74,12 @@ describe('CommitPopover component', () => {
     it('renders authored date with timeago format', () => {
       expect(findAuthoredTime().text()).toBe('Authored 2 days ago');
     });
+  });
+
+  it('renders content passed in the default slot', () => {
+    createComponent({}, { default: '<p data-testid="slot-content">View session</p>' });
+
+    expect(wrapper.findByTestId('slot-content').text()).toBe('View session');
   });
 
   describe('authoredText', () => {

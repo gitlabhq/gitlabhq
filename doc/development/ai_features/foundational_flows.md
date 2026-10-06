@@ -150,10 +150,11 @@ When adding a flow to the `FoundationalFlow` model, you must provide the followi
 
 A flow that keeps a record outside its session, such as a placeholder row a widget
 reads, can react to the session's own lifecycle instead of polling or setting a
-timer. Declare this optional attribute:
+timer. Declare these optional attributes:
 
 | Attribute | Runs when | Event |
 |-----------|-----------|-------|
+| `on_session_finished` | The session completes successfully. | `Ai::DuoWorkflows::WorkflowFinishedCloudEvent` |
 | `on_session_failed` | The session is dropped, so it failed and never reports back. | `Ai::DuoWorkflows::WorkflowFailedEvent` |
 | `on_session_stopped` | A user cancels the session. | `Ai::DuoWorkflows::WorkflowStoppedEvent` |
 
@@ -204,9 +205,13 @@ Write hooks to this contract:
   non-terminal state, so give the hook's record its own cleanup.
 - Keep them cheap. To wait before acting, the hook must schedule its own worker.
 
-Only the two terminal points exist today. `WorkflowStartedEvent` and
-`WorkflowFinishedEvent` already exist with their own messaging-only publishing rules,
-so adding started and finished hooks means migrating those events first.
+The three terminal points exist today. An `on_session_started` hook does not exist, because
+`Ai::DuoWorkflows::WorkflowStartedEvent` still publishes only for messaging sessions. Adding
+one means migrating that event first.
+
+A session that finishes has not necessarily done what the flow asked of it. An agent can
+complete its run without writing the record the flow depends on. So `on_session_finished`
+must check for that record instead of assuming it exists.
 
 ### Agent privileges
 

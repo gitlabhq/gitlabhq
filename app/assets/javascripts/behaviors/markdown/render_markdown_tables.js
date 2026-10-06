@@ -56,7 +56,6 @@ function parseTable(table) {
   const fields = headerCells.map((cell, index) => ({
     key: `col_${index}`,
     cell,
-    isSortable: true,
   }));
 
   const items = bodyRows.map((row, rowIndex) => {
@@ -79,8 +78,6 @@ function parseTable(table) {
  *   there is nothing to render.
  */
 export default function renderMarkdownTables(els) {
-  const isSortable = window.gon?.features?.markdownSortableTableColumns;
-
   const claimed = [];
 
   els.forEach((table) => {
@@ -110,7 +107,7 @@ export default function renderMarkdownTables(els) {
       const app = new Vue({
         el: table,
         name: 'MarkdownTableRoot',
-        render: (h) => h(MarkdownTable, { props: { fields, items, isSortable } }),
+        render: (h) => h(MarkdownTable, { props: { fields, items } }),
       });
 
       observeRemoval(table, app);

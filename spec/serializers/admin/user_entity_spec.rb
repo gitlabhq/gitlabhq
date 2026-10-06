@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Admin::UserEntity do
+RSpec.describe Admin::UserEntity, feature_category: :user_management do
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:admin) { build_stubbed(:user, :admin) }
 
@@ -25,6 +25,63 @@ RSpec.describe Admin::UserEntity do
       current_user: current_user,
       authorization_context: authorization_context
     )
+  end
+
+  # This guardrail makes Admin::UserEntity fail-closed: every exposure must be a
+  # deliberate choice. Organization admins reach this entity through the
+  # organization admin area, so any new field is a potential instance-data leak.
+  #
+  # When you add an exposure, classify it in exactly one of the lists below:
+  #   - safe_fields  - not instance-sensitive; may be shown to organization admins.
+  #   - gated_fields - instance-sensitive; MUST carry an `if:` authorization
+  #                    condition. The spec asserts the condition exists.
+  #
+  # The spec fails if an exposure is unclassified, or if a gated field has no
+  # condition. Never move a field to safe_fields just to silence a failure.
+  describe 'exposure authorization guardrail #security' do
+    safe_fields = %i[
+      id
+      username
+      public_email
+      name
+      created_at
+      last_activity_on
+      avatar_url
+      badges
+      actions
+      organization_user_gid
+    ]
+
+    gated_fields = %i[email note]
+    gated_fields += %i[oncall_schedules escalation_policies] if Gitlab.ee?
+
+    classified_fields = safe_fields + gated_fields
+
+    it 'classifies every exposure as safe or gated' do
+      exposed = described_class.root_exposures.map(&:attribute)
+
+      unclassified = exposed - classified_fields
+
+      expect(unclassified).to be_empty, <<~MSG
+        Admin::UserEntity exposes fields not classified in the guardrail: #{unclassified.inspect}.
+        Add each to `safe_fields` (not instance-sensitive) or `gated_fields`
+        (instance-sensitive, requires an `if:` authorization condition) in this spec.
+      MSG
+    end
+
+    it 'requires every gated exposure to carry an authorization condition' do
+      exposed = described_class.root_exposures.index_by(&:attribute)
+
+      missing_conditions = gated_fields.select do |field|
+        exposure = exposed[field]
+        exposure.nil? || exposure.conditions.empty?
+      end
+
+      expect(missing_conditions).to be_empty, <<~MSG
+        These instance-sensitive Admin::UserEntity fields must be exposed with an
+        `if:` authorization condition but are not: #{missing_conditions.inspect}.
+      MSG
+    end
   end
 
   describe '#as_json' do

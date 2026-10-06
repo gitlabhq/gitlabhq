@@ -1693,17 +1693,26 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it 'fetches the URL without creating a remote' do
       expect(repository)
         .to receive(:fetch_remote)
-        .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "", resolved_address: '')
+        .with(url, forced: false, prune: true, refmap: :all_refs, no_tags: false, http_authorization_header: "", resolved_address: '')
         .and_return(nil)
 
       repository.fetch_as_mirror(url)
+    end
+
+    it 'passes no_tags through to fetch_remote' do
+      expect(repository)
+        .to receive(:fetch_remote)
+        .with(url, forced: false, prune: true, refmap: :all_refs, no_tags: true, http_authorization_header: "", resolved_address: '')
+        .and_return(nil)
+
+      repository.fetch_as_mirror(url, no_tags: true)
     end
 
     context 'with http_host provided' do
       it 'fetches the URL with resolved_address value' do
         expect(repository)
           .to receive(:fetch_remote)
-          .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "", resolved_address: '172.16.123.1')
+          .with(url, forced: false, prune: true, refmap: :all_refs, no_tags: false, http_authorization_header: "", resolved_address: '172.16.123.1')
           .and_return(nil)
 
         repository.fetch_as_mirror(url, resolved_address: '172.16.123.1')

@@ -61,6 +61,7 @@ export default {
     'app/assets/javascripts/vue_shared/components/projects_list/projects_list_item.vue',
     'app/assets/javascripts/vue_shared/components/registry/registry_search.vue',
     'app/assets/javascripts/vue_shared/components/source_editor.vue',
+    'app/assets/javascripts/vue_shared/components/source_viewer/components/blame_commit_info.vue',
     'app/assets/javascripts/vue_shared/components/source_viewer/components/chunk.vue',
     'app/assets/javascripts/vue_shared/components/source_viewer/constants.js',
     'app/assets/javascripts/vue_shared/components/source_viewer/source_viewer.vue',

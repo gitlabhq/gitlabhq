@@ -2,6 +2,7 @@
 import { GlAlert, GlLoadingIcon, GlBanner, GlTabs, GlTab } from '@gitlab/ui';
 import feedbackBannerIllustration from '@gitlab/svgs/dist/illustrations/chat-sm.svg?url';
 import { s__ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import getAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_agents.query.graphql';
@@ -145,13 +146,17 @@ export default {
         return !isDuplicate && !isSameProject;
       });
 
-      return filteredList
-        .map(({ agent }) => {
-          const lastContact = getAgentLastContact(agent?.tokens?.nodes);
-          const status = getAgentStatus(lastContact);
-          return { ...agent, lastContact, status, isShared: true };
-        })
-        .sort((a, b) => b.lastContact - a.lastContact);
+      return filteredList.map(({ agent }) => {
+        const lastContact = getAgentLastContact(agent?.tokens?.nodes);
+        const status = getAgentStatus(lastContact);
+        return {
+          ...agent,
+          lastContact,
+          status,
+          isShared: true,
+          agentId: getIdFromGraphQLId(agent.id),
+        };
+      });
     },
     agentListLoading() {
       return this.$apollo.queries.agents.loading;
@@ -233,16 +238,18 @@ export default {
     updateAgentsList({ project, group }) {
       const agentsData = project?.clusterAgents || group?.clusterAgents;
       const agents = agentsData?.nodes || [];
-      this.agentList = agents
-        .map((agent) => {
-          const lastContact = getAgentLastContact(agent?.tokens?.nodes);
-          const status = getAgentStatus(lastContact);
-          const configFolder = this.findConfigFolder(agent.name);
-          return { ...agent, lastContact, status, configFolder };
-        })
-        .sort((a, b) => {
-          return b.lastContact - a.lastContact;
-        });
+      this.agentList = agents.map((agent) => {
+        const lastContact = getAgentLastContact(agent?.tokens?.nodes);
+        const status = getAgentStatus(lastContact);
+        const configFolder = this.findConfigFolder(agent.name);
+        return {
+          ...agent,
+          lastContact,
+          status,
+          configFolder,
+          agentId: getIdFromGraphQLId(agent.id),
+        };
+      });
 
       this.updateConfigFolders();
       this.currentTab = 0;

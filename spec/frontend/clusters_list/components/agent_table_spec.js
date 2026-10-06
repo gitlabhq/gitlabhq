@@ -11,7 +11,7 @@ import {
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vue';
 import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
-import { I18N_AGENT_TABLE, CONNECT_MODAL_ID } from '~/clusters_list/constants';
+import { CONNECT_MODAL_ID, MAX_LIST_COUNT } from '~/clusters_list/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -20,6 +20,9 @@ import { clusterAgents, connectedTimeNow, connectedTimeInactive } from './mock_d
 
 const defaultConfigHelpUrl =
   '/help/user/clusters/agent/install/_index#create-an-agent-configuration-file';
+
+const versionMismatchText =
+  "The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods.";
 
 const defaultProps = {
   agents: clusterAgents,
@@ -42,7 +45,8 @@ describe('AgentTable', () => {
   const findProject = (at) => wrapper.findAllByTestId('cluster-agent-project-link').at(at);
   const findDeleteAgentButtons = () => wrapper.findAllComponents(DeleteAgentButton);
   const findTableRow = (at) => wrapper.findComponent(GlTable).find('tbody').findAll('tr').at(at);
-  const findTableHeaders = () => wrapper.findAll('thead th').wrappers.map((x) => x.text());
+  const findTableHeaders = () =>
+    wrapper.findAll('thead th').wrappers.map((x) => x.text().split('\n')[0].trim());
   const findSharedBadgeByRow = (at) => findTableRow(at).findComponent(GlBadge);
   const findDeleteAgentButtonByRow = (at) => findTableRow(at).findComponent(DeleteAgentButton);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
@@ -50,6 +54,20 @@ describe('AgentTable', () => {
   const findDisclosureDropdownItem = () =>
     wrapper.findAllComponents(GlDisclosureDropdownItem).at(0);
   const findConnectModal = () => wrapper.findComponent(ConnectToAgentModal);
+
+  const sortBy = async (key, desc) => {
+    wrapper.findComponent(GlTable).vm.$emit('sort-changed', { sortBy: key, sortDesc: desc });
+    await nextTick();
+  };
+
+  const findHeader = (label) =>
+    wrapper.findAll('thead th').wrappers.find((th) => th.text().split('\n')[0].trim() === label);
+
+  const clickHeader = async (label) => {
+    await findHeader(label).trigger('click');
+  };
+
+  const ariaSortOf = (label) => findHeader(label).attributes('aria-sort');
 
   const createWrapper = ({ propsData = defaultProps, isGroup = false } = {}) => {
     wrapper = mountExtended(AgentTable, {
@@ -62,8 +80,9 @@ describe('AgentTable', () => {
 
   describe('agent table', () => {
     describe('default', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createWrapper();
+        await sortBy('name', false);
       });
 
       it('displays correct columns on the project level', () => {
@@ -89,7 +108,7 @@ describe('AgentTable', () => {
       });
 
       it('displays "shared" badge if the agent is shared', () => {
-        expect(findSharedBadgeByRow(9).text()).toBe(I18N_AGENT_TABLE.sharedBadgeText);
+        expect(findSharedBadgeByRow(9).text()).toBe('Shared');
       });
 
       it.each`
@@ -202,12 +221,12 @@ describe('AgentTable', () => {
     });
 
     describe.each`
-      agentMockIdx | agentVersion | agentWarnings               | versionMismatch | text                                    | title
-      ${0}         | ${''}        | ${''}                       | ${false}        | ${''}                                   | ${''}
-      ${1}         | ${'14.8.0'}  | ${''}                       | ${false}        | ${''}                                   | ${''}
-      ${2}         | ${'14.6.0'}  | ${'This agent is outdated'} | ${false}        | ${''}                                   | ${I18N_AGENT_TABLE.versionWarningsTitle}
-      ${3}         | ${'14.7.0'}  | ${''}                       | ${true}         | ${I18N_AGENT_TABLE.versionMismatchText} | ${I18N_AGENT_TABLE.versionMismatchTitle}
-      ${4}         | ${'14.3.0'}  | ${'This agent is outdated'} | ${true}         | ${I18N_AGENT_TABLE.versionMismatchText} | ${I18N_AGENT_TABLE.versionWarningsMismatchTitle}
+      agentMockIdx | agentVersion | agentWarnings               | versionMismatch | text                   | title
+      ${0}         | ${''}        | ${''}                       | ${false}        | ${''}                  | ${''}
+      ${1}         | ${'14.8.0'}  | ${''}                       | ${false}        | ${''}                  | ${''}
+      ${2}         | ${'14.6.0'}  | ${'This agent is outdated'} | ${false}        | ${''}                  | ${'Agent version update required'}
+      ${3}         | ${'14.7.0'}  | ${''}                       | ${true}         | ${versionMismatchText} | ${'Agent version mismatch'}
+      ${4}         | ${'14.3.0'}  | ${'This agent is outdated'} | ${true}         | ${versionMismatchText} | ${'Agent version mismatch and update'}
     `(
       'when agent version is "$agentVersion" and agent warning is "$agentWarnings"',
       ({ agentMockIdx, agentVersion, agentWarnings, versionMismatch, text, title }) => {
@@ -243,6 +262,218 @@ describe('AgentTable', () => {
         }
       },
     );
+
+    describe('sorting', () => {
+      const sortableAgents = [
+        {
+          id: 'gid://gitlab/Clusters::Agent/2',
+          agentId: 2,
+          name: 'b-agent',
+          status: 'inactive',
+          lastContact: 200,
+          webPath: '/b',
+        },
+        {
+          id: 'gid://gitlab/Clusters::Agent/10',
+          agentId: 10,
+          name: 'c-agent',
+          status: 'unused',
+          lastContact: null,
+          webPath: '/c',
+        },
+        {
+          id: 'gid://gitlab/Clusters::Agent/1',
+          agentId: 1,
+          name: 'a-agent',
+          status: 'active',
+          lastContact: 100,
+          webPath: '/a',
+        },
+      ];
+
+      const findRowNames = () =>
+        wrapper
+          .findComponent(GlTable)
+          .find('tbody')
+          .findAll('tr')
+          .wrappers.map((row) => row.find('[data-testid="cluster-agent-name-link"]').text());
+
+      beforeEach(() => {
+        createWrapper({ propsData: { agents: sortableAgents } });
+      });
+
+      it('orders by most recent contact by default', () => {
+        expect(findRowNames()).toEqual(['b-agent', 'a-agent', 'c-agent']);
+      });
+
+      it('reverses the name order', async () => {
+        await sortBy('name', true);
+
+        expect(findRowNames()).toEqual(['c-agent', 'b-agent', 'a-agent']);
+      });
+
+      it('orders by connection status', async () => {
+        await sortBy('status', false);
+
+        expect(findRowNames()).toEqual(['a-agent', 'b-agent', 'c-agent']);
+      });
+
+      it('keeps agents that never connected last when ordering by last contact', async () => {
+        await sortBy('lastContact', false);
+
+        expect(findRowNames()).toEqual(['a-agent', 'b-agent', 'c-agent']);
+
+        await sortBy('lastContact', true);
+
+        expect(findRowNames()).toEqual(['b-agent', 'a-agent', 'c-agent']);
+      });
+
+      it('sorts when a column header is clicked', async () => {
+        await wrapper.findAll('thead th').at(0).trigger('click');
+
+        expect(findRowNames()).toEqual(['a-agent', 'b-agent', 'c-agent']);
+      });
+
+      it('does not offer sorting on columns without a comparator', () => {
+        const sortableByKey = Object.fromEntries(
+          wrapper
+            .findComponent(GlTable)
+            .props('fields')
+            .map(({ key, sortable }) => [key, sortable]),
+        );
+
+        expect(sortableByKey).toMatchObject({
+          name: true,
+          status: true,
+          lastContact: true,
+          version: false,
+          agentID: true,
+          options: false,
+        });
+      });
+
+      describe('with more agents than fit on one page', () => {
+        const manyAgents = Array.from({ length: MAX_LIST_COUNT + 5 }, (_, index) => ({
+          id: `gid://gitlab/Clusters::Agent/${index + 1}`,
+          agentId: index + 1,
+          name: `agent-${index + 1}`,
+          status: 'active',
+          lastContact: index,
+          webPath: `/agent-${index + 1}`,
+        }));
+
+        beforeEach(() => {
+          createWrapper({ propsData: { agents: manyAgents } });
+        });
+
+        it('orders across the whole list, not within the page', async () => {
+          await sortBy('name', true);
+
+          expect(findRowNames()[0]).toBe('agent-25');
+
+          findPagination().vm.$emit('next');
+          await nextTick();
+
+          expect(findRowNames()).toEqual(['agent-5', 'agent-4', 'agent-3', 'agent-2', 'agent-1']);
+        });
+      });
+
+      describe('when the parent caps the number of agents', () => {
+        beforeEach(() => {
+          createWrapper({ propsData: { agents: sortableAgents, maxAgents: 3 } });
+        });
+
+        it('does not offer sorting', () => {
+          const sortable = wrapper
+            .findComponent(GlTable)
+            .props('fields')
+            .map(({ sortable: isSortable }) => isSortable);
+
+          expect(sortable.every((isSortable) => isSortable === false)).toBe(true);
+        });
+
+        it('still orders by most recent contact', () => {
+          expect(findRowNames()).toEqual(['b-agent', 'a-agent', 'c-agent']);
+        });
+      });
+
+      it('orders by agent id numerically, not as a global id string', async () => {
+        await sortBy('agentID', false);
+
+        expect(findRowNames()).toEqual(['a-agent', 'b-agent', 'c-agent']);
+      });
+
+      describe('at group level', () => {
+        const groupAgents = [
+          { ...sortableAgents[0], project: { fullPath: 'group/zebra', webUrl: '/zebra' } },
+          { ...sortableAgents[1], project: null },
+          { ...sortableAgents[2], project: { fullPath: 'group/alpha', webUrl: '/alpha' } },
+        ];
+
+        beforeEach(() => {
+          createWrapper({ propsData: { agents: groupAgents }, isGroup: true });
+        });
+
+        it('orders by project path', async () => {
+          await sortBy('project', false);
+
+          expect(findRowNames()).toEqual(['a-agent', 'b-agent', 'c-agent']);
+        });
+
+        it('keeps agents without a project last in both directions', async () => {
+          await sortBy('project', false);
+
+          expect(findRowNames()[2]).toBe('c-agent');
+
+          await sortBy('project', true);
+
+          expect(findRowNames()[2]).toBe('c-agent');
+        });
+
+        it('offers sorting on the project column', () => {
+          const project = wrapper
+            .findComponent(GlTable)
+            .props('fields')
+            .find(({ key }) => key === 'project');
+
+          expect(project.sortable).toBe(true);
+        });
+      });
+
+      it('marks the default column as sorted on first render', () => {
+        expect(ariaSortOf('Last contact')).toBe('descending');
+        expect(ariaSortOf('Name')).toBe('none');
+      });
+
+      it('moves the sort indicator to the clicked column', async () => {
+        await clickHeader('Name');
+
+        expect(ariaSortOf('Name')).toBe('ascending');
+        expect(ariaSortOf('Last contact')).toBe('none');
+      });
+
+      it('toggles the sort indicator when the same column is clicked again', async () => {
+        await clickHeader('Name');
+        await clickHeader('Name');
+
+        expect(ariaSortOf('Name')).toBe('descending');
+        expect(findRowNames()).toEqual(['c-agent', 'b-agent', 'a-agent']);
+      });
+
+      it('returns to the first page when the order changes', async () => {
+        createWrapper({
+          propsData: { agents: [...clusterAgents, ...clusterAgents, ...clusterAgents] },
+        });
+
+        findPagination().vm.$emit('next');
+        await nextTick();
+        expect(findPagination().props('hasPreviousPage')).toBe(true);
+
+        await sortBy('name', true);
+
+        expect(findPagination().props('hasPreviousPage')).toBe(false);
+      });
+    });
 
     describe('pagination', () => {
       it('should not render pagination buttons when there are no additional pages', () => {

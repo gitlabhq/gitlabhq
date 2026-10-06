@@ -15,28 +15,40 @@ module Resolvers
             required: false,
             description: 'Search term to filter versions by name.'
 
+          extras [:lookahead]
+
           alias_method :catalog_resource, :object
 
-          def resolve(name: nil, search: nil)
+          def resolve(lookahead:, name: nil, search: nil)
             if name
               ::Ci::Catalog::Resources::Version.for_catalog_resources(catalog_resource).by_name(name)
             elsif search
               ::Ci::Catalog::Resources::Version.for_catalog_resources(catalog_resource).search_by_version(search)
             else
-              fetch_catalog_resources_versions
+              fetch_catalog_resources_versions(per_resource_limit(lookahead))
             end
           end
 
           private
 
-          def fetch_catalog_resources_versions
-            BatchLoader::GraphQL.for(catalog_resource).batch(default_value: []) do |catalog_resources, loader|
-              versions = ::Ci::Catalog::Resources::Version.versions_for_catalog_resources(catalog_resources)
+          def fetch_catalog_resources_versions(limit)
+            BatchLoader::GraphQL.for(catalog_resource).batch(key: limit, default_value: []) do |resources, loader|
+              versions = ::Ci::Catalog::Resources::Version.versions_for_catalog_resources(resources, limit: limit)
+              resources_by_id = resources.index_by(&:id)
 
-              versions.group_by(&:catalog_resource).each do |catalog_resource, resource_versions|
-                loader.call(catalog_resource, resource_versions)
+              versions.group_by(&:catalog_resource_id).each do |catalog_resource_id, resource_versions|
+                loader.call(resources_by_id[catalog_resource_id], resource_versions)
               end
             end
+          end
+
+          def per_resource_limit(lookahead)
+            arguments = lookahead.arguments
+            return unless arguments[:first]
+            return if arguments.values_at(:after, :before, :last).any?
+            return if lookahead.selects?(:count)
+
+            arguments[:first].clamp(0, context.schema.default_max_page_size) + 1
           end
         end
       end

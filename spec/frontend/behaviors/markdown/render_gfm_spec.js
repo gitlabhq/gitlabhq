@@ -151,8 +151,6 @@ describe('renderGFM', () => {
     let element;
 
     beforeEach(() => {
-      window.gon = { features: { markdownSortableTableColumns: true } };
-
       element = document.createElement('div');
       element.innerHTML = `
         <div class="md">

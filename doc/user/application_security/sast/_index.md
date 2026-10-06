@@ -1260,7 +1260,7 @@ When using the Semgrep-based analyzer, the following options are also available:
 > [!note]
 > The Semgrep analyzer does not respect `.gitignore` files. Files listed in `.gitignore` are analyzed unless explicitly excluded by using `.semgrepignore` or `SAST_EXCLUDED_PATHS`.
 
-For more details see [Semgrep documentation](https://semgrep.dev/docs/ignoring-files-folders-code).
+For more details see [Semgrep documentation](https://docs.semgrep.dev/ignoring-files-folders-code).
 
 ## Running SAST in an offline environment
 

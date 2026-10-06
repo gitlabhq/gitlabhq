@@ -9,6 +9,20 @@
     radial-gradient(820px 420px at 62% 112%, color-mix(in srgb, var(--gl-color-brand-pink-01g) 40%, transparent), transparent 60%);
 }
 
+// The neutral confirm button disappears on the dark card, so map it to the blue
+// strong-confirm action tokens. Each state is set because the button's focus and
+// active tokens resolve at :root and won't follow an overridden hover.
+.gradient-hero-cta {
+  --gl-button-confirm-primary-background-color-default: var(--gl-action-strong-confirm-background-color-default);
+  --gl-button-confirm-primary-background-color-hover: var(--gl-action-strong-confirm-background-color-hover);
+  --gl-button-confirm-primary-background-color-focus: var(--gl-action-strong-confirm-background-color-focus);
+  --gl-button-confirm-primary-background-color-active: var(--gl-action-strong-confirm-background-color-active);
+  --gl-button-confirm-primary-foreground-color-default: var(--gl-action-strong-confirm-foreground-color-default);
+  --gl-button-confirm-primary-foreground-color-hover: var(--gl-action-strong-confirm-foreground-color-hover);
+  --gl-button-confirm-primary-foreground-color-focus: var(--gl-action-strong-confirm-foreground-color-focus);
+  --gl-button-confirm-primary-foreground-color-active: var(--gl-action-strong-confirm-foreground-color-active);
+}
+
 // Below md the filters stack vertically and would cover most of a small
 // viewport when stuck, so the bar only sticks once it lays out as a row.
 @include media-breakpoint-up(md) {

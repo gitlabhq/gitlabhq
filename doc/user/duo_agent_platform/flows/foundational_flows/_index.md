@@ -30,7 +30,7 @@ The following foundational flows are available:
 | [Code Review](code_review/_index.md) | Automate code review with AI-native analysis and feedback. |
 | [Convert to GitLab CI/CD](../../../../ci/migration/convert_to_gitlab_ci.md) | Migrate Jenkins pipelines to CI/CD. |
 | [Developer](../../../project/merge_requests/developer.md) | Create actionable merge requests from issues, or complete different tasks in GitLab Duo Agentic Chat. |
-| [Fix CI/CD Pipeline](fix_pipeline.md) | Diagnose and repair failed jobs. |
+| [Fix CI/CD Pipeline](../../../../ci/pipelines/fix_pipeline.md) | Diagnose and repair failed jobs. |
 | [Recommend Reviewers](../../../project/merge_requests/reviews/automatic_reviewer_assignment.md#recommend-reviewers-with-the-recommend-reviewers-flow) | Recommend the reviewers best suited to review a merge request. |
 | [SAST False Positive Detection](../../../application_security/vulnerabilities/false_positive_detection.md) | Automatically identify and filter false positives in SAST findings. |
 | [SAST Vulnerability Resolution](../../../application_security/vulnerabilities/agentic_vulnerability_resolution.md) | Automatically generate merge requests to resolve SAST vulnerabilities. |

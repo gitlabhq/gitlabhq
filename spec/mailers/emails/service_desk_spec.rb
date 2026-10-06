@@ -100,10 +100,9 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   shared_examples 'read template from repository' do
     let_it_be(:template_content) { 'custom text' }
 
-    let(:item) { create(:issue, project: project) }
-
     context 'when a template is in the repository' do
       let_it_be(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/#{template_key}.md" => template_content }) }
+      let_it_be_with_reload(:item) { create(:issue, project: project) }
 
       it 'uses the text template from the template' do
         is_expected.to have_body_text(template_content)
@@ -140,6 +139,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     context 'when the service_desk_templates directory does not contain correct template' do
       let_it_be(:project) { create(:project, :custom_repo, files: { ".gitlab/service_desk_templates/another_file.md" => template_content }) }
+      let_it_be_with_reload(:item) { create(:issue, project: project) }
 
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)
@@ -155,6 +155,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     context 'when the service_desk_templates directory does not exist' do
       let_it_be(:project) { create(:project, :custom_repo, files: { "other_directory/another_file.md" => template_content }) }
+      let_it_be_with_reload(:item) { create(:issue, project: project) }
 
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)
@@ -164,6 +165,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     context 'when the project does not have a repo' do
       let_it_be(:project) { create(:project) }
+      let_it_be_with_reload(:item) { create(:issue, project: project) }
 
       it 'uses the default template' do
         expect(subject.text_part.to_s).to include(expected_text)

@@ -1,6 +1,6 @@
 ---
-source_checksum: 1856f98bf789aa7a
-distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
+source_checksum: 6286e83ce0104551
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -162,7 +162,7 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 
 ### Test structure
 
-Follow BDD (Behaviour-Driven Development) conventions: use `describe` blocks to define the context or state the system is in, `it` blocks to declare the specific behaviour being verified, and `beforeEach` to set up shared state. Group related tests together under a shared `describe` block.
+Follow BDD (Behavior-Driven Development) conventions: use `describe` blocks to define the context or state the system is in, `it` blocks to declare the specific behavior being verified, and `beforeEach` to set up shared state. Group related tests together under a shared `describe` block.
 
 ```js
 // Bad

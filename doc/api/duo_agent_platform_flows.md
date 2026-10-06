@@ -66,7 +66,7 @@ Supported attributes:
 | `pre_approved_agent_privileges` | integer array | No | Privilege IDs the agent can use without asking for user approval. Must be a subset of `agent_privileges`. |
 | `project_id` | string | No | ID or path of the project to associate the flow with. |
 | `source` | string | No | Where the session was triggered from. One of the GitLab feature entry points (for example, `merge_request_code_conflict`) or the client surface that created the session (`duo_cli_interactive`, `duo_cli_run`, `duo_cli_acp`, `ide_extension`). Persisted as the session's `source_type`. |
-| `source_branch` | string | No | Source branch for the flow. Defaults to the project's default branch. Applies only when the flow runs in a CI pipeline. |
+| `source_branch` | string | No | Source branch for the flow. Applies only when the flow runs in a CI pipeline. When not specified, a flow whose goal is a pipeline or merge request, such as `fix_pipeline/v1` or `code_review/v1`, runs on that pipeline's or merge request's branch. For `fix_pipeline/v1`, the `merge_request` and `pipeline` entries in `additional_context` are also filled in from the pipeline. Other flows run on the project's default branch. |
 | `start_workflow` | boolean | No | When `true`, starts the flow immediately after creation. |
 | `workflow_definition` | string | No | Flow type identifier. Example: `developer/v1`. Cannot be used with `ai_catalog_item_consumer_id`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. |
 

@@ -4,6 +4,7 @@ module Slack
   module Manifest
     BASE_BOT_EVENTS = %w[app_home_opened].freeze
     DUO_BOT_EVENTS = %w[app_mention].freeze
+    AGENT_APP_BOT_EVENTS = %w[message.im message.mpim].freeze
 
     class << self
       def share_url(duo_enabled: false)
@@ -15,11 +16,13 @@ module Slack
       end
 
       def to_h(duo_enabled: false)
+        agent_app = duo_enabled && SlackIntegration.agent_app_enabled?
+
         {
           display_information: display_information,
-          features: features,
+          features: features(agent_app: agent_app),
           oauth_config: oauth_config(duo_enabled: duo_enabled),
-          settings: settings(duo_enabled: duo_enabled)
+          settings: settings(duo_enabled: duo_enabled, agent_app: agent_app)
         }
       end
 
@@ -54,13 +57,9 @@ module Slack
         }
       end
 
-      def features
-        {
-          app_home: {
-            home_tab_enabled: true,
-            messages_tab_enabled: false,
-            messages_tab_read_only_enabled: true
-          },
+      def features(agent_app:)
+        features = {
+          app_home: app_home(agent_app: agent_app),
           bot_user: {
             display_name: 'GitLab',
             always_online: true
@@ -75,6 +74,25 @@ module Slack
             }
           ]
         }
+
+        if agent_app
+          features[:agent_view] = {
+            agent_description: s_(
+              'SlackIntegration|GitLab Duo — AI-powered assistance for your GitLab projects, right in Slack.'
+            ),
+            suggested_prompts: []
+          }
+        end
+
+        features
+      end
+
+      def app_home(agent_app:)
+        {
+          home_tab_enabled: true,
+          messages_tab_enabled: agent_app,
+          messages_tab_read_only_enabled: !agent_app
+        }
       end
 
       def oauth_config(duo_enabled:)
@@ -88,9 +106,10 @@ module Slack
         }
       end
 
-      def settings(duo_enabled:)
+      def settings(duo_enabled:, agent_app:)
         bot_events = BASE_BOT_EVENTS.dup
         bot_events += DUO_BOT_EVENTS if duo_enabled
+        bot_events += AGENT_APP_BOT_EVENTS if agent_app
 
         {
           event_subscriptions: {

@@ -1,0 +1,9 @@
+---
+name: external_diff_upload_before_save
+description: Upload external merge request diffs to object storage before the MergeRequestDiff save transaction instead of inside it
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259281
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631918
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

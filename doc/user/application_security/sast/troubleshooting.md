@@ -219,4 +219,4 @@ flawfinder-sast:
 
 ## Semgrep slowness, unexpected results, or other errors
 
-If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/semgrep-app#troubleshooting-gitlab-sast).
+If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://docs.semgrep.dev/troubleshooting/semgrep-app#troubleshooting-gitlab-sast).

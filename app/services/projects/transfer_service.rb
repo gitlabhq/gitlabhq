@@ -57,11 +57,12 @@ module Projects
       )
 
       ServiceResponse.success(
-        message: s_("TransferProject|Project transfer has been queued. You will be notified when it completes.")
+        message: s_("TransferProject|Project transfer is scheduled. If it fails, you get a to-do item with the reason.")
       )
     rescue Projects::TransferService::TransferError => ex
       project.reset
       project.errors.add(:new_namespace, ex.message)
+      @error = ex.message
 
       log_project_transfer_error(project, @new_namespace, ex)
 
@@ -86,6 +87,7 @@ module Projects
     rescue Projects::TransferService::TransferError => ex
       project.reset
       project.errors.add(:new_namespace, ex.message)
+      @error = ex.message
 
       log_project_transfer_error(project, @new_namespace, ex)
       ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'project', result: 'failure')
@@ -158,22 +160,27 @@ module Projects
         raise TransferError, s_("TransferProject|You don't have permission to transfer projects into that namespace.")
       end
 
+      if project_with_same_name_or_path_exists?(namespace)
+        raise TransferError, s_("TransferProject|Project with same name or path in target namespace already exists")
+      end
+
       nil
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
+    # rubocop: disable CodeReuse/ActiveRecord -- scoped conflict lookup, no model method exists
+    def project_with_same_name_or_path_exists?(namespace)
+      Project.in_namespace(namespace.id)
+             .where('path = ? or name = ?', project.path, project.name)
+             .exists?
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     def transfer(project)
       @visibility_before_transfer = project.visibility_level
       @old_path = project.full_path
       @old_group = project.group
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace
-
-      if Project.where(namespace_id: @new_namespace.try(:id))
-                .where('path = ? or name = ?', project.path, project.name)
-                .exists?
-        raise TransferError, s_("TransferProject|Project with same name or path in target namespace already exists")
-      end
 
       if conflicting_project_namespace_from_pending_deletion?
         raise TransferError,
@@ -190,7 +197,6 @@ module Projects
 
       proceed_to_transfer
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def verify_if_container_registry_tags_can_be_handled(project)
       return unless project.has_container_registry_tags?

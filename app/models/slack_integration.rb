@@ -13,6 +13,9 @@ class SlackIntegration < ApplicationRecord
   SCOPE_CHANNELS_HISTORY = 'channels:history'
   SCOPE_GROUPS_HISTORY = 'groups:history'
   SCOPE_REACTIONS_WRITE = 'reactions:write'
+  SCOPE_IM_HISTORY = 'im:history'
+  SCOPE_MPIM_HISTORY = 'mpim:history'
+  SCOPE_ASSISTANT_WRITE = 'assistant:write'
   ORGANIZATION_ALIAS = 'gitlab-organization'
 
   # These scopes are requested when installing the app, additional scopes
@@ -31,6 +34,11 @@ class SlackIntegration < ApplicationRecord
     SCOPE_GROUPS_HISTORY,
     SCOPE_REACTIONS_WRITE
   ].freeze
+
+  # Scopes for the Slack Agents feature (top bar, DMs). Only requested once the
+  # `slack_duo_agent_app` release flag is on, which must not happen before the
+  # updated marketplace app is published, or new installs fail with invalid_scope.
+  AGENT_APP_SCOPES = [SCOPE_IM_HISTORY, SCOPE_MPIM_HISTORY, SCOPE_ASSISTANT_WRITE].freeze
   DATABASE_ATTRIBUTES = %w[
     team_id team_name user_id bot_user_id encrypted_bot_access_token encrypted_bot_access_token_iv
   ].freeze
@@ -79,7 +87,14 @@ class SlackIntegration < ApplicationRecord
   end
 
   def self.scopes_for(duo_enabled:)
-    duo_enabled ? DUO_SCOPES : SCOPES
+    return SCOPES unless duo_enabled
+    return DUO_SCOPES unless agent_app_enabled?
+
+    DUO_SCOPES + AGENT_APP_SCOPES
+  end
+
+  def self.agent_app_enabled?
+    Feature.enabled?(:slack_duo_agent_app, :instance)
   end
 
   def feature_available?(feature_name)

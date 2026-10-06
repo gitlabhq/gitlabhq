@@ -5,13 +5,17 @@ require 'spec_helper'
 RSpec.describe DeployToken, feature_category: :continuous_delivery do
   subject(:deploy_token) { create(:deploy_token) }
 
-  it { is_expected.to have_many :project_deploy_tokens }
-  it { is_expected.to have_many(:projects).through(:project_deploy_tokens) }
-  it { is_expected.to have_many :group_deploy_tokens }
-  it { is_expected.to have_many(:groups).through(:group_deploy_tokens) }
-  it { is_expected.to belong_to(:user).with_foreign_key('creator_id') }
-  it { is_expected.to belong_to(:owner_project).class_name('Project').optional }
-  it { is_expected.to belong_to(:owner_group).class_name('Group').optional }
+  describe 'associations' do
+    subject(:deploy_token) { build_stubbed(:deploy_token) }
+
+    it { is_expected.to have_many :project_deploy_tokens }
+    it { is_expected.to have_many(:projects).through(:project_deploy_tokens) }
+    it { is_expected.to have_many :group_deploy_tokens }
+    it { is_expected.to have_many(:groups).through(:group_deploy_tokens) }
+    it { is_expected.to belong_to(:user).with_foreign_key('creator_id') }
+    it { is_expected.to belong_to(:owner_project).class_name('Project').optional }
+    it { is_expected.to belong_to(:owner_group).class_name('Group').optional }
+  end
 
   it_behaves_like 'having unique enum values'
 
@@ -168,7 +172,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
     context 'with only one scope' do
       it 'returns scopes assigned to DeployToken' do
-        deploy_token = create(:deploy_token, read_registry: false, write_registry: false)
+        deploy_token = build_stubbed(:deploy_token, read_registry: false, write_registry: false)
         expect(deploy_token.scopes).to eq([:read_repository])
       end
     end
@@ -190,6 +194,8 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     context "when it hasn't been revoked and is not expired" do
+      let(:deploy_token) { build_stubbed(:deploy_token) }
+
       it 'returns true' do
         expect(deploy_token.active?).to be_truthy
       end
@@ -203,7 +209,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     context "when it hasn't been revoked and has no expiry" do
-      let(:deploy_token) { create(:deploy_token, expires_at: nil) }
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: nil) }
 
       it 'returns true' do
         expect(deploy_token.active?).to be_truthy
@@ -222,6 +228,8 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     context "when it hasn't been revoked and is not expired" do
+      let(:deploy_token) { build_stubbed(:deploy_token) }
+
       it 'returns false' do
         expect(deploy_token.deactivated?).to be_falsy
       end
@@ -236,7 +244,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
 
     context "when it hasn't been revoked and has no expiry" do
-      let(:deploy_token) { create(:deploy_token, expires_at: nil) }
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: nil) }
 
       it 'returns false' do
         expect(deploy_token.deactivated?).to be_falsy
@@ -246,12 +254,14 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
   describe '#username' do
     context 'persisted records' do
+      let(:deploy_token) { build_stubbed(:deploy_token) }
+
       it 'returns a default username if none is set' do
         expect(deploy_token.username).to eq("gitlab+deploy-token-#{deploy_token.id}")
       end
 
       it 'returns the username provided if one is set' do
-        deploy_token = create(:deploy_token, username: 'deployer')
+        deploy_token = build_stubbed(:deploy_token, username: 'deployer')
 
         expect(deploy_token.username).to eq('deployer')
       end
@@ -347,7 +357,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
       end
 
       context 'when deploy token is revoked and not related to the project' do
-        let(:deploy_token) { create(:deploy_token, :revoked) }
+        let(:deploy_token) { build_stubbed(:deploy_token, :revoked) }
 
         it { is_expected.to be_falsy }
       end
@@ -433,7 +443,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
   describe '#expires_at' do
     context 'when using Forever.date' do
-      let(:deploy_token) { create(:deploy_token, expires_at: nil) }
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: nil) }
 
       it 'returns nil' do
         expect(deploy_token.expires_at).to be_nil
@@ -442,7 +452,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
     context 'when using a personalized date' do
       let(:expires_at) { Date.today + 5.months }
-      let(:deploy_token) { create(:deploy_token, expires_at: expires_at) }
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: expires_at) }
 
       it 'returns the personalized date' do
         expect(deploy_token.expires_at).to eq(expires_at)
@@ -452,7 +462,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
   describe '#expires_at=' do
     context 'when passing nil' do
-      let(:deploy_token) { create(:deploy_token, expires_at: nil) }
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: nil) }
 
       it 'assigns Forever.date' do
         expect(deploy_token.read_attribute(:expires_at)).to eq(Forever.date)
@@ -461,7 +471,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
     context 'when passing a value' do
       let(:expires_at) { Date.today + 5.months }
-      let(:deploy_token) { create(:deploy_token, expires_at: expires_at) }
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: expires_at) }
 
       it 'respects the value' do
         expect(deploy_token.read_attribute(:expires_at)).to eq(expires_at)
@@ -514,7 +524,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
   end
 
   describe '.impersonated?' do
-    let(:deploy_token) { build(:deploy_token) }
+    subject(:deploy_token) { build_stubbed(:deploy_token) }
 
     it 'returns false' do
       expect(subject.impersonated?).to be(false)

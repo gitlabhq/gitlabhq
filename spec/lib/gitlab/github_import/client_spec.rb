@@ -317,6 +317,18 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       end
     end
 
+    it 'exposes the next page URL on every page, nil on the last one' do
+      pages = []
+
+      client.each_page(:issues, resume_url, 'foo/bar') { |page| pages << page }
+
+      expect(pages.map(&:next_url)).to eq([
+        'https://api.github.com/repositories/1/issues?page=2&per_page=100',
+        'https://api.github.com/repositories/1/issues?page=3&per_page=100',
+        nil
+      ])
+    end
+
     context 'when a resume URL is passed' do
       let(:resume_url) { 'https://api.github.com/repositories/1/issues?page=2&per_page=100' }
 
@@ -350,6 +362,22 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
       end
     end
 
+    context 'when the next URL is malformed' do
+      it 'yields the page without a next_url and raises InvalidURLError when followed' do
+        stub_request(:get, 'https://api.github.com/repos/foo/bar/issues?per_page=100')
+          .to_return(
+            status: 200,
+            body: [{ title: 'Issue 1' }].to_json,
+            headers: { 'Content-Type' => 'application/json', link: '<https://api.github.com/a b>; rel="next"' }
+          )
+
+        enum = client.each_page(:issues, nil, 'foo/bar')
+
+        expect(enum.next.next_url).to be_nil
+        expect { enum.next }.to raise_error(Gitlab::GithubImport::Exceptions::InvalidURLError)
+      end
+    end
+
     context 'when next URL host does not match API URL host' do
       it 'raises InvalidURLError' do
         stub_request(:get, 'https://api.github.com/repos/foo/bar/issues?per_page=100')
@@ -364,7 +392,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
         enum = client.each_page(:issues, nil, 'foo/bar')
 
-        enum.next
+        expect(enum.next.next_url).to be_nil
 
         expect { enum.next }.to raise_error(Gitlab::GithubImport::Exceptions::InvalidURLError, 'Invalid pagination URL')
       end

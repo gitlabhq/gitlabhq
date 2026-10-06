@@ -1,4 +1,3 @@
-import { GlButton, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
 import CommitPopover from '~/vue_shared/components/source_viewer/components/commit_popover.vue';
@@ -25,21 +24,41 @@ describe('BlameCommitInfo component', () => {
     avatarUrl: 'https://example.com/avatar.png',
   };
 
-  const createComponent = (props = {}) => {
+  // Stubbed by name: the real component is EE-only and resolves to an empty
+  // component in FOSS.
+  const AgentSessionLinkStub = {
+    name: 'AgentSessionLink',
+    props: ['href'],
+    template: '<a :href="href"><slot></slot></a>',
+  };
+  const AgentSessionPopoverStub = {
+    name: 'AgentSessionPopover',
+    props: ['sessionUrls'],
+    template: '<div></div>',
+  };
+
+  const createComponent = (props = {}, { blameAgentSessions = true } = {}) => {
     wrapper = shallowMountExtended(BlameCommitInfo, {
       propsData: {
         commit: defaultCommit,
         ...props,
+      },
+      provide: { glFeatures: { blameAgentSessions } },
+      stubs: {
+        AgentSessionLink: AgentSessionLinkStub,
+        AgentSessionPopover: AgentSessionPopoverStub,
       },
     });
   };
 
   const findTimeagoTooltip = () => wrapper.findComponent(TimeagoTooltip);
   const findUserAvatar = () => wrapper.findComponent(UserAvatarImage);
-  const findCommitLink = () => wrapper.findComponent(GlLink);
-  const findPreviousBlameButton = () => wrapper.findComponent(GlButton);
+  const findCommitLink = () => wrapper.findByTestId('commit-message-link');
+  const findPreviousBlameButton = () => wrapper.findByTestId('view-previous-blame-button');
   const findAuthorLink = () => wrapper.findByTestId('commit-author-link');
   const findCommitPopover = () => wrapper.findComponent(CommitPopover);
+  const findAgentSessionLink = () => wrapper.findComponent(AgentSessionLinkStub);
+  const findAgentSessionPopover = () => wrapper.findComponent(AgentSessionPopoverStub);
 
   describe('commit information display', () => {
     beforeEach(() => createComponent());
@@ -97,6 +116,47 @@ describe('BlameCommitInfo component', () => {
 
     it('passes commit data to popover', () => {
       expect(findCommitPopover().props('commit')).toEqual(defaultCommit);
+    });
+  });
+
+  describe('agent session link', () => {
+    const sessionUrl = `${window.location.origin}/group/project/-/automate/agent-sessions/42`;
+
+    const agentCommit = {
+      ...defaultCommit,
+      hasAgentSession: true,
+      message: `Commit message\n\nDuo-Session: ${sessionUrl}`,
+    };
+
+    describe('when the commit was authored in an agent session', () => {
+      beforeEach(() => createComponent({ commit: agentCommit }));
+
+      it('renders the session icon with its details popover', () => {
+        expect(findAgentSessionPopover().props('sessionUrls')).toEqual([sessionUrl]);
+      });
+
+      it('links to the session from the commit popover', () => {
+        expect(findAgentSessionLink().props('href')).toBe(sessionUrl);
+        expect(findAgentSessionLink().text()).toBe('View session');
+      });
+    });
+
+    describe('when the commit was not authored in an agent session', () => {
+      beforeEach(() => createComponent());
+
+      it('does not render the link or the popover', () => {
+        expect(findAgentSessionLink().exists()).toBe(false);
+        expect(findAgentSessionPopover().exists()).toBe(false);
+      });
+    });
+
+    describe('when the blameAgentSessions feature flag is disabled', () => {
+      beforeEach(() => createComponent({ commit: agentCommit }, { blameAgentSessions: false }));
+
+      it('does not render the link or the popover', () => {
+        expect(findAgentSessionLink().exists()).toBe(false);
+        expect(findAgentSessionPopover().exists()).toBe(false);
+      });
     });
   });
 

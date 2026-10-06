@@ -141,7 +141,7 @@ License scanning is supported for the following languages and package managers:
     </tr>
     <tr>
       <td rowspan="4">Python</td>
-      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
+      <td><a href="https://setuptools.pypa.io/en/latest/">setuptools</a></td>
       <td>Yes</td>
       <td>No</td>
     </tr>
@@ -328,7 +328,7 @@ Validation failed: Found duplicates at the following index pairs: "(A, B), (C, D
 #/properties/components/uniqueItems
 ```
 
-This issue can be fixed by updating the CI template to use [jq](https://jqlang.github.io/jq/) to remove the duplicate components from the `gl-sbom-*.cdx.json` report by overriding the job definition that produces the duplicate components. For example, the following removes duplicate components from the `gl-sbom-gem-bundler.cdx.json` report file produced by the `gemnasium-dependency_scanning` job:
+This issue can be fixed by updating the CI template to use [jq](https://jqlang.org/) to remove the duplicate components from the `gl-sbom-*.cdx.json` report by overriding the job definition that produces the duplicate components. For example, the following removes duplicate components from the `gl-sbom-gem-bundler.cdx.json` report file produced by the `gemnasium-dependency_scanning` job:
 
 ```yaml
 include:

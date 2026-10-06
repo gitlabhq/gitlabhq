@@ -54,6 +54,9 @@ module Namespaces
         before_transition on: :cancel_transfer, from: :transfer_scheduled, do: :clear_transfer_data
         before_transition on: :cancel_transfer, from: :transfer_in_progress, do: :clear_transfer_data_preserving_target
         before_transition on: :schedule_deletion, do: :set_deletion_data
+        # Declared after the clear_transfer_data* callbacks: state_machine runs before_transition
+        # hooks in declaration order, and those two clear `transfer_last_error`.
+        before_transition on: :cancel_transfer, do: :set_transfer_error_data
         before_transition on: :reschedule_deletion, do: :set_deletion_error_data
 
         event :archive do

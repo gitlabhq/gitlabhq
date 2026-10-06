@@ -354,6 +354,7 @@ class MergeRequestDiff < ApplicationRecord
     compare_diffs_preloaded
 
     eager_load_diff_collection
+    store_external_diff_before_save
   end
 
   # Collect information about commits and diff from repository
@@ -898,7 +899,9 @@ class MergeRequestDiff < ApplicationRecord
   def build_external_merge_request_diff_files(rows)
     tempfile = build_external_diff_tempfile(rows)
 
-    self.external_diff = tempfile
+    # A new record has no id yet, so the object name can't depend on it.
+    # Reads resolve the object from the stored `external_diff` identifier.
+    self.external_diff = { tempfile: tempfile, filename: "diff-#{id || SecureRandom.uuid}" }
     self.stored_externally = true
 
     rows
@@ -906,11 +909,26 @@ class MergeRequestDiff < ApplicationRecord
     tempfile&.unlink
   end
 
-  def create_merge_request_diff_files(rows)
-    rows = build_external_merge_request_diff_files(rows) if use_external_diff?
+  def merge_request_diff_file_rows
+    strong_memoize(:merge_request_diff_file_rows) do
+      rows = build_merge_request_diff_files(compare_diffs_preloaded)
+      rows = build_external_merge_request_diff_files(rows) if use_external_diff?
+      rows
+    end
+  end
 
-    # Faster inserts
-    ApplicationRecord.legacy_bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+  # Uploads the external diff before the caller opens the save! transaction,
+  # so the object storage round trip doesn't hold a connection idle in
+  # transaction.
+  def store_external_diff_before_save
+    ensure_project_id
+    return unless Feature.enabled?(:external_diff_upload_before_save, Project.actor_from_id(project_id))
+    return unless new_record? && use_external_diff?
+    return if compare.commits.empty? || compare_diffs_preloaded.empty?
+
+    merge_request_diff_file_rows
+    external_diff.store!
+    self.external_diff_store = external_diff.object_store
   end
 
   def build_external_diff_tempfile(rows)
@@ -1000,7 +1018,7 @@ class MergeRequestDiff < ApplicationRecord
       .limit(1)
       .pick(:latest_merge_request_diff_id)
 
-    latest_id && self.id < latest_id
+    latest_id && id && id < latest_id
   end
 
   def load_diffs(options)
@@ -1052,8 +1070,10 @@ class MergeRequestDiff < ApplicationRecord
       if diff_collection.any?
         new_attributes[:state] = :collected
 
-        rows = build_merge_request_diff_files(diff_collection)
-        create_merge_request_diff_files(rows)
+        rows = merge_request_diff_file_rows.each { |row| row[:merge_request_diff_id] = id }
+        # Faster inserts
+        ApplicationRecord.legacy_bulk_insert('merge_request_diff_files', rows) # rubocop:disable Gitlab/BulkInsert
+        clear_memoization(:merge_request_diff_file_rows)
         new_attributes[:sorted] = true
         self.class.uncached { merge_request_diff_files.reset }
       end

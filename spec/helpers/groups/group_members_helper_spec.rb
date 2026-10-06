@@ -84,8 +84,7 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
       context 'with user status set' do
         let_it_be(:user) { create(:user) }
         let_it_be(:status) { create(:user_status, user: user) }
-
-        let(:members) { [create(:group_member, source: shared_group, user: user, created_by: current_user)] }
+        let_it_be(:members) { [create(:group_member, source: shared_group, user: user, created_by: current_user)] }
 
         it_behaves_like 'members.json', 'user'
       end

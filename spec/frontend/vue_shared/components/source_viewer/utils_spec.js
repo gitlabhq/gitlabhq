@@ -8,6 +8,8 @@ import {
   blameGroupsForChunk,
   findOverlayElementFromPoint,
   createBlameSliceBuilder,
+  getAgentSessionUrls,
+  parseAgentSessionUrl,
 } from '~/vue_shared/components/source_viewer/utils';
 import { SOURCE_CODE_CONTENT_MOCK, BLAME_DATA_MOCK } from './mock_data';
 
@@ -53,6 +55,74 @@ describe('SourceViewer utils', () => {
     it('removes classes', () => {
       toggleBlameLineBorders(BLAME_DATA_MOCK, false);
       expect(findContent()).toMatchSnapshot();
+    });
+  });
+
+  describe('agent session trailers', () => {
+    const sessionUrl = `${window.location.origin}/group/project/-/automate/agent-sessions/4310`;
+    const agentCommit = (sha, url = sessionUrl) => ({
+      sha,
+      hasAgentSession: true,
+      message: `Render blame groups as grid cells\n\nCo-authored-by: GitLab Duo <duo@gitlab.com>\nDuo-Session: ${url}`,
+    });
+    const humanCommit = {
+      sha: 'human',
+      hasAgentSession: false,
+      message: 'Duo-Session: not-flagged',
+    };
+
+    describe('getAgentSessionUrls', () => {
+      it('returns the Duo-Session trailer value of an agent commit', () => {
+        expect(getAgentSessionUrls(agentCommit('a'))).toEqual([sessionUrl]);
+      });
+
+      it('returns nothing when the commit is not flagged as an agent session', () => {
+        expect(getAgentSessionUrls(humanCommit)).toEqual([]);
+      });
+
+      it('returns nothing when a flagged commit has no trailer in its message', () => {
+        expect(getAgentSessionUrls({ hasAgentSession: true, message: 'No trailer' })).toEqual([]);
+      });
+
+      it.each([
+        ['another instance', 'https://gitlab.com/group/project/-/automate/agent-sessions/1'],
+        ['a javascript URL', ['javascript', 'alert(1)'].join(':')],
+        ['a same-origin page that is not a session', `${window.location.origin}/group/project`],
+      ])('refuses to link to %s', (_, value) => {
+        expect(getAgentSessionUrls(agentCommit('a', value))).toEqual([]);
+      });
+
+      it('returns every distinct valid session in a squashed commit message', () => {
+        const other = sessionUrl.replace('4310', '4402');
+        const message = `Squash\n\nDuo-Session: ${sessionUrl}\nDuo-Session: ${other}\n\nDuo-Session: ${sessionUrl}\nDuo-Session: https://gitlab.com/x/-/automate/agent-sessions/9`;
+
+        expect(getAgentSessionUrls({ hasAgentSession: true, message })).toEqual([
+          sessionUrl,
+          other,
+        ]);
+      });
+
+      it('lists a session once when its trailers differ only by query string', () => {
+        const message = `Squash\n\nDuo-Session: ${sessionUrl}\nDuo-Session: ${sessionUrl}?tab=logs`;
+
+        expect(getAgentSessionUrls({ hasAgentSession: true, message })).toEqual([sessionUrl]);
+      });
+    });
+
+    describe('parseAgentSessionUrl', () => {
+      it.each`
+        url                                                     | expected
+        ${sessionUrl}                                           | ${{ href: sessionUrl, id: '4310' }}
+        ${`${sessionUrl}/`}                                     | ${{ href: `${sessionUrl}/`, id: '4310' }}
+        ${`${sessionUrl}?tab=logs`}                             | ${{ href: `${sessionUrl}?tab=logs`, id: '4310' }}
+        ${`${sessionUrl}#top`}                                  | ${{ href: `${sessionUrl}#top`, id: '4310' }}
+        ${'/group/project/-/automate/agent-sessions/4310'}      | ${{ href: sessionUrl, id: '4310' }}
+        ${'https://gitlab.com/g/p/-/automate/agent-sessions/1'} | ${null}
+        ${`${window.location.origin}/group/project`}            | ${null}
+        ${null}                                                 | ${null}
+      `('returns $expected for $url', ({ url, expected }) => {
+        expect(parseAgentSessionUrl(url)).toEqual(expected);
+      });
     });
   });
 

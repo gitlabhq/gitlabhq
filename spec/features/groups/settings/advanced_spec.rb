@@ -110,7 +110,7 @@ RSpec.describe 'Group settings > Advanced', :with_current_organization, feature_
       it 'schedules an async transfer and shows the transfer banner' do
         expect(page).to have_content(s_(
           'TransferGroup|This group is scheduled for transfer. ' \
-            'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
+            'If the transfer fails, the user who started it receives a to-do item with the reason.'
         ))
         expect(selected_group.reload.state).to eq('transfer_scheduled')
       end

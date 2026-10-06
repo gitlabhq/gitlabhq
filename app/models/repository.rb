@@ -1151,8 +1151,8 @@ class Repository
     import_repository(url, http_authorization_header: http_authorization_header, mirror: true, resolved_address: resolved_address)
   end
 
-  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, http_authorization_header: "", resolved_address: "")
-    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, http_authorization_header: http_authorization_header, resolved_address: resolved_address)
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, no_tags: false, http_authorization_header: "", resolved_address: "")
+    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, no_tags: no_tags, http_authorization_header: http_authorization_header, resolved_address: resolved_address)
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)

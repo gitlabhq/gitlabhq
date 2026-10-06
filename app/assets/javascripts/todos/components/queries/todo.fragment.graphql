@@ -8,6 +8,7 @@ fragment Todo on Todo {
   targetType
   targetUrl
   transferFailedRetryUrl
+  transferFailureReason @gl_introduced(version: "19.5.0")
   memberAccessType
   author {
     id

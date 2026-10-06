@@ -10,17 +10,17 @@ module API
 
         params :optional_params do
           optional :description, type: String, desc: 'The description of the milestone'
-          optional :due_date, type: String, desc: 'The due date of the milestone. The ISO 8601 date format (%Y-%m-%d)'
-          optional :start_date, type: String, desc: 'The start date of the milestone. The ISO 8601 date format (%Y-%m-%d)'
+          optional :due_date, type: String, desc: 'Due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).'
+          optional :start_date, type: String, desc: 'Start date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).'
         end
 
         params :list_params do
           optional :state, type: String, values: %w[active closed all], default: 'all',
             desc: 'Return "active", "closed", or "all" milestones'
-          optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IIDs of the milestones'
+          optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Return only the milestones having the given `iid`. Ignored if `include_ancestors` is `true`.'
           optional :title, type: String, desc: 'The title of the milestones'
           optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
-          optional :include_parent_milestones, type: Grape::API::Boolean, desc: 'Deprecated: see `include_ancestors`'
+          optional :include_parent_milestones, type: Grape::API::Boolean, desc: 'If `true`, includes milestones from all parent groups. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298). Use `include_ancestors` instead.'
           optional :include_ancestors, type: Grape::API::Boolean, desc: 'Include milestones from all parent groups'
           optional :updated_before, type: DateTime, desc: 'Return milestones updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
           optional :updated_after, type: DateTime, desc: 'Return milestones updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
@@ -32,7 +32,7 @@ module API
           requires :milestone_id, type: Integer, desc: 'The milestone ID number'
           optional :title, type: String, desc: 'The title of the milestone'
           optional :state_event, type: String, values: %w[close activate],
-            desc: 'The state event of the milestone '
+            desc: 'State event of the milestone.'
           use :optional_params
           at_least_one_of :title, :description, :start_date, :due_date, :state_event
         end

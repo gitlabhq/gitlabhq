@@ -85,6 +85,16 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
       )
     end
 
+    it 'returns the merge request' do
+      expect(importer.execute).to eq(MergeRequest.last)
+    end
+
+    it 'returns nil when the merge request could not be created' do
+      allow(importer).to receive(:create_merge_request_without_hooks).and_return([])
+
+      expect(importer.execute).to be_nil
+    end
+
     it 'caches the created MR ID even if importer later fails' do
       mr = create(:merge_request, :merged, author: user)
       error = StandardError.new('mocked error')
@@ -179,6 +189,22 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         created_merge_request = MergeRequest.last
 
         expect(created_merge_request.assignees).to be_empty
+      end
+    end
+
+    context 'when the pull request has no author' do
+      let(:pull_request_attributes) { super().merge(author: nil) }
+
+      it 'imports the pull request as the ghost user and pushes only the assignee reference' do
+        importer.execute
+
+        created_merge_request = MergeRequest.last
+        created_mr_assignee = created_merge_request.merge_request_assignees.first
+
+        expect(created_merge_request.author_id).to eq(Users::Internal.in_organization(project.organization).ghost.id)
+        expect(user_references).to contain_exactly(
+          ['MergeRequestAssignee', created_mr_assignee.id, 'user_id', source_user_2.id]
+        )
       end
     end
 
@@ -311,6 +337,107 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
           importer.execute
 
           expect(mr.merge_request_diffs.exists?).to be(true)
+        end
+      end
+    end
+  end
+
+  describe '#import_attributes' do
+    it 'resolves the author only once when called repeatedly' do
+      expect(importer.user_finder).to receive(:author_id_for).once.and_call_original
+
+      2.times { importer.import_attributes }
+    end
+
+    it 'returns the attributes used to create the merge request' do
+      expect(importer.import_attributes).to include(
+        iid: pull_request.iid,
+        title: pull_request.truncated_title,
+        source_branch: pull_request.formatted_source_branch,
+        target_branch: pull_request.target_branch,
+        milestone_id: milestone.id,
+        author_id: source_user_1.mapped_user_id,
+        imported_from: Import::HasImportSource::IMPORT_SOURCES[:github]
+      )
+    end
+  end
+
+  describe 'reconciling an existing merge request' do
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    describe '#set_merge_request_assignees' do
+      it 'assigns the mapped user when called directly' do
+        importer.set_merge_request_assignees(merge_request)
+
+        expect(merge_request.assignees).to contain_exactly(source_user_2.mapped_user)
+      end
+    end
+
+    describe '#insert_git_data' do
+      it 'inserts the git data for an existing merge request' do
+        expect(importer).to receive(:insert_or_replace_git_data)
+          .with(merge_request, source_commit.id, target_commit.id, true)
+
+        importer.insert_git_data(merge_request, true)
+      end
+
+      it 'inserts the git data for a new merge request' do
+        expect(importer).to receive(:insert_or_replace_git_data)
+          .with(merge_request, source_commit.id, target_commit.id, false)
+
+        importer.insert_git_data(merge_request, false)
+      end
+
+      context 'when the source branch does not exist' do
+        before do
+          allow(importer).to receive(:insert_or_replace_git_data)
+          allow(project.repository).to receive(:branch_exists?)
+            .with(pull_request.formatted_source_branch).and_return(false)
+        end
+
+        it 'creates it when the merge request is open' do
+          expect(project.repository).to receive(:add_branch)
+            .with(project.creator, pull_request.formatted_source_branch, pull_request.source_branch_sha)
+
+          importer.insert_git_data(merge_request, false)
+        end
+
+        it 'does not create it when the merge request is closed' do
+          closed_merge_request = create(:merge_request, :closed, source_project: project, target_project: project)
+
+          expect(project.repository).not_to receive(:add_branch)
+
+          importer.insert_git_data(closed_merge_request, false)
+        end
+      end
+    end
+
+    describe '#push_placeholder_references' do
+      it 'pushes the author and assignee references' do
+        importer.set_merge_request_assignees(merge_request)
+        merge_request.update!(author_id: source_user_1.mapped_user_id)
+
+        importer.push_placeholder_references(merge_request)
+
+        assignee = merge_request.merge_request_assignees.first
+
+        expect(user_references).to match_array([
+          ['MergeRequest', merge_request.id, 'author_id', source_user_1.id],
+          ['MergeRequestAssignee', assignee.id, 'user_id', source_user_2.id]
+        ])
+      end
+
+      context 'when the pull request no longer has an assignee' do
+        let(:pull_request_attributes) { super().merge(assignee: nil) }
+
+        it 'pushes only the author reference' do
+          merge_request.update!(author_id: source_user_1.mapped_user_id, assignee_ids: [source_user_2.mapped_user_id])
+
+          importer.push_placeholder_references(merge_request)
+
+          expect(user_references).to contain_exactly(
+            ['MergeRequest', merge_request.id, 'author_id', source_user_1.id]
+          )
         end
       end
     end

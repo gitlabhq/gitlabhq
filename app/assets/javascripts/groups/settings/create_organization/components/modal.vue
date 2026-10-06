@@ -20,6 +20,7 @@ import Step2 from './steps/step_2.vue';
 import Step3 from './steps/step_3.vue';
 
 const trackingMixin = InternalEvents.mixin();
+const FIRST_ORGANIZATION_INDEX = 0;
 
 export default {
   name: 'OrganizationReconciliationModal',
@@ -129,7 +130,7 @@ export default {
       return isDefaultOrganization(this.computedGroupOrganization);
     },
     organization() {
-      return this.organizations[0];
+      return this.organizations[FIRST_ORGANIZATION_INDEX];
     },
     movedGroups() {
       return this.organization.groups.nodes.filter((group) => group.id !== this.groupGid);
@@ -178,6 +179,7 @@ export default {
       try {
         const { data: organization } = await axios.post(
           createOrganizationFromGroupPath(this.groupFullPath),
+          { name: this.organization.name },
         );
 
         const id = convertToGraphQLId(TYPE_ORGANIZATION, organization.id);
@@ -281,6 +283,9 @@ export default {
     onUpdate(updatedOrganizations) {
       this.organizations = updatedOrganizations;
     },
+    onUpdateOrganization(updatedOrganization) {
+      this.organizations.splice(FIRST_ORGANIZATION_INDEX, 1, updatedOrganization);
+    },
   },
 };
 </script>
@@ -307,7 +312,9 @@ export default {
         :organizations="organizations"
         :organization="organization"
         :initial-default-org-group-ids="initialDefaultOrgGroupIds"
+        :should-create-new-organization="shouldCreateNewOrganization"
         @update="onUpdate"
+        @update-organization="onUpdateOrganization"
       />
     </template>
     <template #modal-footer>

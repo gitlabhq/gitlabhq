@@ -28,7 +28,6 @@ describe('MarkdownTable', () => {
     headers.map((content, index) => ({
       key: `col_${index}`,
       cell: createCell('th', content),
-      isSortable: true,
     }));
 
   const buildItems = (fields, rows) =>
@@ -61,7 +60,7 @@ describe('MarkdownTable', () => {
             }
           : jest.requireActual('@gitlab/ui/src/components/base/tooltip/tooltip.vue').default,
       },
-      propsData: { fields, items, isSortable: true, ...props },
+      propsData: { fields, items, ...props },
     });
   };
 
@@ -109,7 +108,6 @@ describe('MarkdownTable', () => {
         propsData: {
           fields,
           items: buildItems(fields, [['Alice', '25', '160cm']]),
-          isSortable: true,
         },
       });
 
@@ -171,16 +169,6 @@ describe('MarkdownTable', () => {
     });
 
     describe('when canSort is false', () => {
-      it('does not fire sort_markdown_table_column when isSortable is false', async () => {
-        createWrapper([['Alice', '25']], { isSortable: false });
-
-        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-        await findHeaders().at(0).trigger('click');
-
-        expect(trackEventSpy).not.toHaveBeenCalled();
-      });
-
       it('does not fire sort_markdown_table_column when there is only one row', async () => {
         createWrapper([['Alice', '25']]);
 
@@ -474,34 +462,6 @@ describe('MarkdownTable', () => {
       await findHeaders().at(0).trigger('click');
 
       expect(getRowTexts(0)).toEqual(['Alice']);
-    });
-  });
-
-  describe('when not sortable (sticky only)', () => {
-    const createNonSortable = (rows) => createWrapper(rows, { isSortable: false });
-
-    it('renders plain headers without sort affordances', () => {
-      createNonSortable([['Alice', '25']]);
-
-      const header = findHeaders().at(0);
-      expect(header.attributes('tabindex')).toBeUndefined();
-      expect(header.attributes('aria-sort')).toBeUndefined();
-      expect(header.classes()).not.toContain('gl-cursor-pointer');
-      expect(wrapper.find('[data-sort-icon]').exists()).toBe(false);
-      expect(wrapper.find('.gl-sr-only').exists()).toBe(false);
-    });
-
-    it('does not sort when a header is clicked', async () => {
-      createNonSortable([
-        ['Charlie', '30'],
-        ['Alice', '25'],
-        ['Bob', '35'],
-      ]);
-
-      await findHeaders().at(0).trigger('click');
-
-      expect(getRowTexts(0)).toEqual(['Charlie', 'Alice', 'Bob']);
-      expect(findSortStatus().exists()).toBe(false);
     });
   });
 

@@ -1,0 +1,10 @@
+---
+name: slack_duo_agent_app
+description: Release flag for the Slack Agents feature of the Duo app. Keeps the new OAuth scopes, bot events and agent view out of the manifest and install flow until the updated marketplace app is published.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606312
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247668
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632074
+milestone: '19.5'
+group: group::ai catalog
+type: gitlab_com_derisk
+default_enabled: false

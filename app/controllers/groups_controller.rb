@@ -153,7 +153,11 @@ class GroupsController < Groups::ApplicationController
   def create_organization_from_group
     return render_404 unless Organizations::Release.enabled?(:create_org_from_group_settings, @group)
 
-    result = Organizations::CreateFromGroupService.new(group: @group, current_user: current_user).execute
+    result = Organizations::CreateFromGroupService.new(
+      group: @group,
+      current_user: current_user,
+      params: params.permit(:name)
+    ).execute
 
     if result.success?
       organization = result.payload[:organization]

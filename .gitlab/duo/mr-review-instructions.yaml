@@ -301,8 +301,8 @@ instructions:
   # <<< end generated: database-migrations
 
   # >>> generated: cells-fundamentals — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 586530a94f045df52e8ae3e37a72e449e7dd1e43
-  # source_checksum: e72383a0b25128dc
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 605835c78bb55d12
   - name: Cells Architecture
     fileFilters:
       - "db/docs/**/*.yml"
@@ -461,8 +461,8 @@ instructions:
       - Reference: https://docs.gitlab.com/development/feature_flags/
 
   # >>> generated: authentication — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 3378d9de7ce956458ecfbc5e1845591fa87448fc
-  # source_checksum: 5358c8252b33ecac
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 8d322b6c0380b1f4
   - name: Authentication & Authorization Security
     fileFilters:
       # Controllers / entry points
@@ -689,8 +689,8 @@ instructions:
            incident: #436084 — password-reset account takeover).
 
   # >>> generated: authentication-testing — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 98a4a3ab667724497f85efcd3a8545cfe1d1efd3
-  # source_checksum: 26333eb645fd302e
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 8c87bfd3ab60e89b
   - name: Authentication Test Quality
     fileFilters:
       - "spec/controllers/sessions_controller_spec.rb"
@@ -792,8 +792,8 @@ instructions:
   # <<< end generated: authentication-testing
 
   # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 0dc0fdab3bd0c089736bc1e289af48b4ba6f9c9c
-  # source_checksum: 516f24cac6abd57b
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 1d05b5c70ae44ff1
   - name: Documentation
     fileFilters:
       - "doc/**/*.md"
@@ -1043,8 +1043,8 @@ instructions:
   # <<< end generated: documentation
 
   # >>> generated: documentation-api — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: e2c2d99ca92022373f943f7b13d7697d7cffa9ce
-  # source_checksum: 68dd734ecfa7b3dd
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 1cb02a9b9820f086
   - name: API documentation
     fileFilters:
       - "doc/api/**/*.md"
@@ -1077,7 +1077,8 @@ instructions:
       - List path attributes first, then required attributes, then sort remaining attributes alphabetically in request attribute tables.
       - Place attribute names in backtick code blocks in all attribute tables.
       - Document tier and offering restrictions (e.g. `GitLab Self-Managed, Premium and Ultimate only.`) in the attribute description; combine tier and offering information when possible.
-      - For conditionally required attributes, use the format `Required if \`attribute1\` is \`true\`.` in the description and set the Required column to `Conditional`.
+      - For an attribute required by another attribute's value, use the format `Required if \`attribute1\` is \`true\`.` in the description and set the Required column to `Conditional`.
+      - When at least one attribute from a group is required but no particular member is mandatory, set the Required column to `Conditional` and describe each alternative with `Required if none of \`attribute1\`, \`attribute2\`, or \`attribute3\` are provided.`
 
       ### REST API — Response Attributes
 
@@ -1387,8 +1388,8 @@ instructions:
   # <<< end generated: testing-rspec
 
   # >>> generated: testing-e2e — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
-  # source_checksum: d7add367353684d2
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: 7deece33b53964d5
   - name: E2E Testing
     fileFilters:
       - "qa/**/*"
@@ -1603,8 +1604,8 @@ instructions:
   # <<< end generated: internationalization
 
   # >>> generated: cicd-internals — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
-  # source_checksum: aff32136b0f97801
+  # distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+  # source_checksum: fe021b3e87a0029b
   - name: CI/CD Internals
     fileFilters:
       - "lib/gitlab/ci/**/*.rb"

@@ -7,10 +7,10 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
 
   describe '#commit_email_select_options' do
     it 'returns an array with private commit email along with all the verified emails' do
-      user = create(:user)
-      create(:email, user: user)
-      confirmed_email1 = create(:email, :confirmed, user: user)
-      confirmed_email2 = create(:email, :confirmed, user: user)
+      unconfirmed_email = build_stubbed(:email, user: nil)
+      confirmed_email1 = build_stubbed(:email, :confirmed, user: nil)
+      confirmed_email2 = build_stubbed(:email, :confirmed, user: nil)
+      user = build_stubbed(:user, emails: [unconfirmed_email, confirmed_email1, confirmed_email2])
 
       private_email = user.private_commit_email
 

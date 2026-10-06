@@ -1,5 +1,33 @@
+import { uniqBy } from 'lodash-es';
+
 const BLAME_INFO_CLASSLIST = ['gl-border-t', 'gl-border-gray-500', '-gl-mt-px'];
 const VIEWER_SELECTOR = '.file-holder .blob-viewer';
+// Written by the agent sandbox's commit-msg hook, see
+// Ai::DuoWorkflows::StartWorkflowService and EE::Projects::Commit. A squashed
+// commit can carry one trailer per squashed commit.
+const DUO_AGENT_SESSION_TRAILER_REGEX = /^Duo-Session: (\S+)$/gm;
+const AGENT_SESSION_PATH_REGEX = /\/-\/automate\/agent-sessions\/(\d+)\/?$/;
+
+// The backend only checks that a trailer exists, so its value is untrusted:
+// only a session URL on this instance is linked to.
+export const parseAgentSessionUrl = (value) => {
+  try {
+    const url = new URL(value, window.location.origin);
+    if (url.origin !== window.location.origin) return null;
+    const id = url.pathname.match(AGENT_SESSION_PATH_REGEX)?.[1];
+    return id ? { href: url.href, id } : null;
+  } catch {
+    return null;
+  }
+};
+
+export const getAgentSessionUrls = (commit) => {
+  if (!commit?.hasAgentSession) return [];
+  const sessions = [...(commit.message || '').matchAll(DUO_AGENT_SESSION_TRAILER_REGEX)]
+    .map(([, value]) => parseAgentSessionUrl(value))
+    .filter(Boolean);
+  return uniqBy(sessions, 'id').map(({ href }) => href);
+};
 
 const findLineNumberElement = (lineNumber) => document.getElementById(`L${lineNumber}`);
 

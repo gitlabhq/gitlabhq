@@ -64792,6 +64792,7 @@ Fields:
 | <a id="todo-targettype"></a>`targetType` | [`TodoTargetEnum!`](#todotargetenum) | Target type of the to-do item. |
 | <a id="todo-targeturl"></a>`targetUrl` | [`String`](#string) | URL of the to-do item target. |
 | <a id="todo-transferfailedretryurl"></a>`transferFailedRetryUrl` | [`String`](#string) | URL that retries a transfer-failed to-do item. |
+| <a id="todo-transferfailurereason"></a>`transferFailureReason` | [`String`](#string) | Reason the transfer failed, for a transfer-failed to-do item. |
 
 ### `Topic`
 
@@ -69260,6 +69261,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | <a id="aifeatures-feature_discovery_search"></a>`FEATURE_DISCOVERY_SEARCH` | Feature discovery search feature setting. |
 | <a id="aifeatures-generate_commit_message"></a>`GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | <a id="aifeatures-glab_ask_git_command"></a>`GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
+| <a id="aifeatures-recommend_reviewers_assign"></a>`RECOMMEND_REVIEWERS_ASSIGN` | Recommend reviewers assign feature setting. |
 | <a id="aifeatures-resolve_dependency_bump"></a>`RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |
 | <a id="aifeatures-resolve_vulnerability"></a>`RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | <a id="aifeatures-review_merge_request"></a>`REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
@@ -69368,6 +69370,7 @@ AI features that can be configured through the Model Selection feature settings.
 | <a id="aimodelselectionfeatures-duo_developer"></a>`DUO_DEVELOPER` | Duo developer feature setting. |
 | <a id="aimodelselectionfeatures-generate_commit_message"></a>`GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
 | <a id="aimodelselectionfeatures-glab_ask_git_command"></a>`GLAB_ASK_GIT_COMMAND` | Glab ask git command feature setting. |
+| <a id="aimodelselectionfeatures-recommend_reviewers_assign"></a>`RECOMMEND_REVIEWERS_ASSIGN` | Recommend reviewers assign feature setting. |
 | <a id="aimodelselectionfeatures-resolve_dependency_bump"></a>`RESOLVE_DEPENDENCY_BUMP` | Resolve dependency bump feature setting. |
 | <a id="aimodelselectionfeatures-resolve_vulnerability"></a>`RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | <a id="aimodelselectionfeatures-review_merge_request"></a>`REVIEW_MERGE_REQUEST` | Review merge request feature setting. |

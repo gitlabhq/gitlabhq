@@ -124,8 +124,8 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     context 'group cluster' do
-      let_it_be(:group) { create(:group) }
-      let_it_be(:clusterable) { ClusterablePresenter.fabricate(group, current_user: current_user) }
+      let(:group) { build_stubbed(:group) }
+      let(:clusterable) { ClusterablePresenter.fabricate(group, current_user: current_user) }
 
       it 'displays empty state help text' do
         expect(subject[:empty_state_help_text]).to eq(s_('ClusterIntegration|Adding an integration to your group will share the cluster across all your projects.'))
@@ -279,7 +279,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     subject { helper.display_cluster_agents?(clusterable) }
 
     context 'when clusterable is a project' do
-      let(:clusterable) { build(:project) }
+      let(:clusterable) { build_stubbed(:project) }
 
       it 'allows agents to display' do
         expect(subject).to be_truthy
@@ -287,7 +287,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a group' do
-      let(:clusterable) { build(:group) }
+      let(:clusterable) { build_stubbed(:group) }
 
       it 'allows agents to display' do
         expect(subject).to be_truthy
@@ -316,7 +316,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     context 'when clusterable is a group' do
-      let(:clusterable) { build(:group) }
+      let(:clusterable) { build_stubbed(:group) }
 
       it 'does not allow default branch name to display' do
         expect(subject).to be_nil
@@ -336,7 +336,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     context 'when migration has in_progress status' do
-      let(:migration) { build(:cluster_agent_migration, agent_install_status: :in_progress) }
+      let(:migration) { build_stubbed(:cluster_agent_migration, agent_install_status: :in_progress) }
 
       it 'returns info alert config' do
         expect(subject).to match(
@@ -347,7 +347,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     context 'when migration has success status' do
-      let(:migration) { build(:cluster_agent_migration, agent_install_status: :success) }
+      let(:migration) { build_stubbed(:cluster_agent_migration, agent_install_status: :success) }
 
       it 'returns success alert config' do
         expect(subject).to match(
@@ -358,7 +358,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     context 'when migration has error status' do
-      let(:migration) { build(:cluster_agent_migration, agent_install_status: :error, agent_install_message: error_message) }
+      let(:migration) { build_stubbed(:cluster_agent_migration, agent_install_status: :error, agent_install_message: error_message) }
 
       it 'returns error alert config with details' do
         expect(subject).to match(
@@ -371,7 +371,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       end
 
       context 'when error message is nil' do
-        let(:migration) { build(:cluster_agent_migration, agent_install_status: :error, agent_install_message: nil) }
+        let(:migration) { build_stubbed(:cluster_agent_migration, agent_install_status: :error, agent_install_message: nil) }
 
         it 'returns error alert config without details' do
           expect(subject[:details]).to be_nil

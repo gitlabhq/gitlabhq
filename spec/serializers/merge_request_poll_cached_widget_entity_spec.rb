@@ -137,8 +137,8 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
       end
 
       context 'when events exists' do
-        let!(:closed_event) { create(:event, :closed, project: project, target: resource) }
-        let!(:merge_event) { create(:event, :merged, project: project, target: resource) }
+        let_it_be(:closed_event) { create(:event, :closed, project: project, target: resource) }
+        let_it_be(:merge_event) { create(:event, :merged, project: project, target: resource) }
 
         it 'matches merge request metrics schema' do
           expect(subject[:metrics].with_indifferent_access)

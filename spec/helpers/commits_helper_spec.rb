@@ -281,7 +281,7 @@ RSpec.describe CommitsHelper do
     end
 
     context 'when user lacks push permissions to both projects' do
-      let_it_be(:other_user) { create(:user) }
+      let(:other_user) { build_stubbed(:user) }
 
       before do
         allow(helper).to receive(:current_user).and_return(other_user)

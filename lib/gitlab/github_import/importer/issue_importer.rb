@@ -5,6 +5,7 @@ module Gitlab
     module Importer
       class IssueImporter
         include ::Import::PlaceholderReferences::Pusher
+        include Gitlab::Utils::StrongMemoize
 
         attr_reader :project, :issue, :client, :user_finder, :milestone_finder, :issuable_finder
 
@@ -29,9 +30,50 @@ module Gitlab
           new_issue = create_issue
           issuable_finder.cache_database_id(new_issue.id)
 
-          push_issue_placeholder_references(new_issue)
+          push_placeholder_references(new_issue)
 
           new_issue
+        end
+
+        # Returns the GitLab attributes for this representation, so a sync can reuse them.
+        def import_attributes
+          author_id, author_found = user_finder.author_id_for(issue)
+
+          description = MarkdownText.format(issue.description, issue.author, author_found, project: project,
+            client: client)
+
+          {
+            iid: issue.iid,
+            title: issue.truncated_title,
+            author_id: author_id,
+            assignee_ids: issue_assignee_map.keys,
+            project_id: project.id,
+            namespace_id: project.project_namespace_id,
+            description: description,
+            milestone_id: milestone_finder.id_for(issue),
+            state_id: ::Issue.available_states[issue.state],
+            created_at: issue.created_at,
+            updated_at: issue.updated_at,
+            work_item_type_id: issue.work_item_type_id,
+            imported_from: ::Import::SOURCE_GITHUB
+          }
+        end
+        strong_memoize_attr :import_attributes
+
+        def push_placeholder_references(imported_issue)
+          push_reference(project, imported_issue, :author_id, issue.author&.id)
+
+          imported_issue.issue_assignees.each do |issue_assignee|
+            github_user_id = issue_assignee_map[issue_assignee.user_id]
+
+            push_reference_with_composite_key(
+              project,
+              issue_assignee,
+              :user_id,
+              { 'user_id' => issue_assignee.user_id, 'issue_id' => issue_assignee.issue_id },
+              github_user_id
+            )
+          end
         end
 
         private
@@ -49,45 +91,7 @@ module Gitlab
 
         # Creates a new GitLab issue for the current GitHub issue.
         def create_issue
-          author_id, author_found = user_finder.author_id_for(issue)
-
-          description = MarkdownText.format(issue.description, issue.author, author_found, project: project,
-            client: client)
-          assignee_ids = issue_assignee_map.keys
-
-          attributes = {
-            iid: issue.iid,
-            title: issue.truncated_title,
-            author_id: author_id,
-            assignee_ids: assignee_ids,
-            project_id: project.id,
-            namespace_id: project.project_namespace_id,
-            description: description,
-            milestone_id: milestone_finder.id_for(issue),
-            state_id: ::Issue.available_states[issue.state],
-            created_at: issue.created_at,
-            updated_at: issue.updated_at,
-            work_item_type_id: issue.work_item_type_id,
-            imported_from: ::Import::SOURCE_GITHUB
-          }
-
-          project.issues.create!(attributes.merge(importing: true))
-        end
-
-        def push_issue_placeholder_references(new_issue)
-          push_reference(project, new_issue, :author_id, issue.author&.id)
-
-          new_issue.issue_assignees.each do |issue_assignee|
-            github_user_id = issue_assignee_map[issue_assignee.user_id]
-
-            push_reference_with_composite_key(
-              project,
-              issue_assignee,
-              :user_id,
-              { 'user_id' => issue_assignee.user_id, 'issue_id' => issue_assignee.issue_id },
-              github_user_id
-            )
-          end
+          project.issues.create!(import_attributes.merge(importing: true))
         end
       end
     end

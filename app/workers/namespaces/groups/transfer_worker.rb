@@ -54,7 +54,8 @@ module Namespaces
         group.start_transfer!(transition_user: user)
         transfer_started = true
 
-        transfer_successful = ::Groups::TransferService.new(group, user).execute(new_parent_group)
+        service = ::Groups::TransferService.new(group, user)
+        transfer_successful = service.execute(new_parent_group)
 
         if transfer_successful
           transfer_succeeded = true
@@ -68,7 +69,7 @@ module Namespaces
 
         else
           create_transfer_failure_todo(group, user, worker_name: self.class.name, group_id: group.id)
-          group.cancel_transfer!
+          group.cancel_transfer!(transfer_error: service.error)
         end
       rescue StandardError => e
 
@@ -77,7 +78,7 @@ module Namespaces
         end
 
         begin
-          cancel_transfer_if_in_progress(group)
+          cancel_transfer_if_in_progress(group, transfer_error: unexpected_error_message)
         rescue StandardError => cancel_error
           Gitlab::AppLogger.error(
             build_transfer_log_payload(
@@ -119,8 +120,8 @@ module Namespaces
         exclusive_lease.cancel
       end
 
-      def cancel_transfer_if_in_progress(group)
-        group.cancel_transfer! if group.transfer_in_progress?
+      def unexpected_error_message
+        s_('TransferGroup|The transfer failed unexpectedly. Contact your administrator if it continues to fail.')
       end
     end
   end

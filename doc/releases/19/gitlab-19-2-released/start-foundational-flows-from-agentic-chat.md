@@ -21,7 +21,7 @@ When your request matches a specialist workflow, Agentic Chat hands off to one o
   Implements changes or opens a merge request
 - [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md):
   Reviews a merge request
-- [Fix CI/CD Pipeline Flow](../../../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md):
+- [Fix CI/CD Pipeline Flow](../../../ci/pipelines/fix_pipeline.md):
   Diagnoses and repairs a failed pipeline
 
 You approve the handoff in chat, then follow progress in the conversation or

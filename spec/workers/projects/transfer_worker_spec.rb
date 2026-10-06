@@ -122,6 +122,17 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
 
           expect(project_namespace.reload).not_to be_transfer_in_progress
         end
+
+        it 'records the service error so the to-do item can show it' do
+          expect_next_instance_of(::Projects::TransferService) do |service|
+            expect(service).to receive(:execute).with(new_namespace).and_return(false)
+            allow(service).to receive(:error).and_return('Namespace already taken')
+          end
+
+          perform
+
+          expect(project_namespace.reload.transfer_last_error).to eq('Namespace already taken')
+        end
       end
 
       context 'when TransferService raises an error' do
@@ -145,6 +156,8 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
             ).count
           }.by(1)
           expect(project_namespace.reload).not_to be_transfer_in_progress
+          expect(project_namespace.transfer_last_error)
+            .to eq('The transfer failed unexpectedly. Contact your administrator if it continues to fail.')
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
             'message' => 'Projects::TransferWorker failed',
             'gl_project_id' => project.id,

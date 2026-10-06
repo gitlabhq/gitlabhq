@@ -47,6 +47,7 @@ Before upgrading to GitLab 19.5, review the following:
 
 - [19.5.0] - [Agent for Kubernetes address defaults to native gRPC](#agent-for-kubernetes-address-defaults-to-native-grpc) (Linux package, Helm chart)
 - [19.5.0] - [Duo Agent Platform checkpoint migration](#duo-agent-platform-checkpoint-migration)
+- [19.5.0] - [Geo upload checksumming by upload type enabled by default](#geo-upload-checksumming-by-upload-type-enabled-by-default) (Geo)
 
 ### Upgrade to 19.4
 
@@ -148,6 +149,34 @@ to check the status and how to finish the migration manually, see
 
 The time the migration takes depends on how many sessions the instance stored in the last 30
 days. Each processed checkpoint can be several megabytes.
+
+### Geo upload checksumming by upload type enabled by default
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: Geo
+- Affected versions: 19.5.0
+
+In GitLab 19.5, Geo adds 23 new data types for uploads, one for each kind of upload, for example project uploads and group uploads.
+Only the primary site uses the new data types, and it checksums the uploads for each one in the background. The secondary sites
+keep replicating and verifying uploads through the existing uploads data type.
+
+On the primary, most uploads reuse the checksum from the existing uploads data type, so GitLab reads only the files that
+do not have a successful checksum yet.
+Checksumming shares the **Verification concurrency limit** of the primary site with all other data types.
+On sites with millions of uploads, checksumming can take several days at a limit of `1`, which many sites upgraded from earlier versions use.
+You can raise the limit while checksumming runs, monitor database load, and restore the previous value afterward.
+In GitLab testing, raising the limit from `1` to `10` made upload checksumming about eight times faster, with little extra database load.
+For more information, see [tuning Geo](../../administration/geo/replication/tuning.md#changing-the-syncverification-concurrency-values).
+
+To stop checksumming for one data type, you must
+[disable both of its feature flags](../../administration/feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags):
+`geo_<name>_upload_replication` and `geo_<name>_upload_force_primary_checksumming`, where `<name>` is, for example, `project` or `group`.
+Disabling only the `_replication` flag does not stop checksumming.
 
 ### Geo SSH proxying enabled by default
 

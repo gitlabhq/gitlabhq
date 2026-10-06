@@ -3,7 +3,7 @@ title: Fix CI/CD Pipeline Flow suggests targeted fixes
 tier: [ Free, Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government ]
 stage: verify
-documentation_link: "../../../user/duo_agent_platform/flows/foundational_flows/fix_pipeline"
+documentation_link: "../../../ci/pipelines/fix_pipeline"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/21837
 categories: [ Continuous Integration (CI) ]
 level: secondary

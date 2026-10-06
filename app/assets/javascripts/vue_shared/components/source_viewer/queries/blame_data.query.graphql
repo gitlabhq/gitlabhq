@@ -33,6 +33,7 @@ query getBlameData(
                 }
                 sha
                 shortId
+                hasAgentSession @gl_introduced(version: "19.1.0")
               }
               commitData {
                 ageMapClass

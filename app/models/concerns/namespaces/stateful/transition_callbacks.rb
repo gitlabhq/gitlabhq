@@ -20,9 +20,12 @@ module Namespaces
         deletion_last_failed_at
       ].freeze
 
+      TRANSFER_ERROR_MAX_LENGTH = 500
+
       private
 
       def set_transfer_schedule_data(transition)
+        state_metadata.except!('transfer_last_error')
         state_metadata.merge!(
           transfer_scheduled_at: Time.current.as_json,
           transfer_scheduled_by_user_id: transition_user(transition).id
@@ -65,6 +68,15 @@ module Namespaces
 
         self.deletion_attempt_count = (deletion_attempt_count || 0) + 1
         state_metadata.merge!(deletion_last_failed_at: Time.current.as_json)
+      end
+
+      # Runs after the clear_transfer_data* callbacks on :cancel_transfer, which would otherwise
+      # wipe the message we are recording here.
+      def set_transfer_error_data(transition)
+        error = transition_args(transition)[:transfer_error]
+        return if error.blank?
+
+        self.transfer_last_error = error.to_s.truncate(TRANSFER_ERROR_MAX_LENGTH)
       end
     end
   end

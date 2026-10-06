@@ -28,6 +28,7 @@ import {
   TODO_ACTION_TYPE_TRANSFER_FAILED,
 } from '../constants';
 import {
+  getTransferFailedReason,
   getTransferFailedRetryUrl,
   getTransferFailedSource,
   getTransferFailedSourceUrl,
@@ -218,11 +219,18 @@ export default {
     transferFailedRetryUrl() {
       return getTransferFailedRetryUrl(this.todo);
     },
+    transferFailedReason() {
+      return getTransferFailedReason(this.todo);
+    },
+    transferFailedReasonText() {
+      // Reasons come from the transfer services. Most are already full sentences, a few are not,
+      // so strip any trailing punctuation and let the message supply it.
+      return this.transferFailedReason.replace(/[.!?]$/, '');
+    },
     transferFailedMessage() {
-      return sprintf(this.$options.i18n.transferFailedMessage, {
-        source: this.transferFailedSource,
-        target: this.transferFailedTarget,
-      });
+      return this.transferFailedReason
+        ? this.$options.i18n.transferFailedMessageWithReason
+        : this.$options.i18n.transferFailedMessage;
     },
   },
   i18n: {
@@ -230,6 +238,9 @@ export default {
     retryTransferError: s__('Todos|Failed to retry transfer. Please try again.'),
     transferFailedMessage: s__(
       'Todos|Failed to transfer %{source} to %{target}. %{retryLinkStart}Try again.%{retryLinkEnd}',
+    ),
+    transferFailedMessageWithReason: s__(
+      'Todos|Failed to transfer %{source} to %{target}: %{reason}. %{retryLinkStart}Try again.%{retryLinkEnd}',
     ),
   },
   methods: {
@@ -287,6 +298,9 @@ export default {
         </div>
         <template v-if="isTransferFailedAction">
           <gl-sprintf :message="transferFailedMessage">
+            <template #source>{{ transferFailedSource }}</template>
+            <template #target>{{ transferFailedTarget }}</template>
+            <template #reason>{{ transferFailedReasonText }}</template>
             <template #retryLink="{ content }">
               <gl-button
                 v-if="transferFailedRetryUrl"

@@ -35,6 +35,10 @@ offenses:
   deprecated_field: username
   standard_field: Labkit::Fields::GL_USER_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/controllers/concerns/project_stats_refresh_conflicts_guard.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/controllers/concerns/verifies_with_email.rb
   deprecated_field: ip
   standard_field: Labkit::Fields::REMOTE_IP
@@ -54,6 +58,10 @@ offenses:
   callsite: app/controllers/jwt_controller.rb
   deprecated_field: auth_service
   standard_field: Labkit::Fields::SERVICE_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/controllers/projects/attestations_controller.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/controllers/repositories/lfs_api_controller.rb
   deprecated_field: target_project_id
@@ -79,21 +87,49 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/ci/build.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/ci/build.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/models/ci/build_metadata.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/ci/job_artifact.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/models/ci/pipeline.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/ci/pipeline.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/ci/pipeline.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Labkit::Logging::JsonLogger
   callsite: app/models/ci/pipeline.rb
   deprecated_field: start_time
   standard_field: Labkit::Fields::TIMESTAMP
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/ci/unlock_pipeline_request.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
 - logger_class: Gitlab::Kubernetes::Logger
   callsite: app/models/clusters/platforms/kubernetes.rb
   deprecated_field: status_code
   standard_field: Labkit::Fields::HTTP_STATUS_CODE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/models/concerns/counter_attribute.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/models/concerns/gitlab/tenant_container_lifecycle/stateful/transition_logging.rb
   deprecated_field: error
@@ -110,6 +146,14 @@ offenses:
   callsite: app/models/concerns/integrations/loggable.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::IntegrationsLogger
+  callsite: app/models/concerns/integrations/loggable.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::IntegrationsLogger
+  callsite: app/models/concerns/integrations/loggable.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::IntegrationsLogger
   callsite: app/models/concerns/integrations/loggable.rb
   deprecated_field: project_path
@@ -207,21 +251,69 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/cancel_pipeline_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/cancel_pipeline_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/services/ci/create_commit_status_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/create_commit_status_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/create_commit_status_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/ci/create_pipeline_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/create_pipeline_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/job_artifacts/delete_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/job_artifacts/destroy_batch_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/pipeline_artifacts/coverage_report_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/pipeline_artifacts/coverage_report_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/services/ci/pipeline_creation/cancel_redundant_pipelines_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/pipeline_creation/cancel_redundant_pipelines_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/services/ci/pipeline_processing/atomic_processing_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/pipeline_processing/atomic_processing_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/pipeline_processing/atomic_processing_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/ci/pipeline_processing/atomic_processing_service.rb
   deprecated_field: user_id
@@ -235,9 +327,17 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/stuck_pipelines/process_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/services/ci/trigger_downstream_pipeline_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/ci/trigger_downstream_pipeline_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/cloud_seed/google_cloud/fetch_google_ip_list_service.rb
   deprecated_field: class
@@ -247,9 +347,17 @@ offenses:
   deprecated_field: service
   standard_field: Labkit::Fields::SERVICE_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/concerns/alert_management/alert_processing.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/services/concerns/base_service_utility.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/concerns/base_service_utility.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/concerns/base_service_utility.rb
   deprecated_field: username
@@ -266,6 +374,22 @@ offenses:
   callsite: app/services/concerns/ci/downstream_pipeline_helpers.rb
   deprecated_field: root_pipeline_project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/draft_notes/publish_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/draft_notes/trace_merge_head_position_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/environments/stop_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/environments/stop_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Import::Framework::Logger
   callsite: app/services/import/bitbucket_server_service.rb
   deprecated_field: error
@@ -274,6 +398,10 @@ offenses:
   callsite: app/services/import/bitbucket_service.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::Export::Logger
+  callsite: app/services/import/bulk_imports/commit_notes_export_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Import::Framework::Logger
   callsite: app/services/import/fogbugz_service.rb
   deprecated_field: error
@@ -296,8 +424,20 @@ offenses:
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::IntegrationsLogger
   callsite: app/services/jira_connect/sync_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::IntegrationsLogger
+  callsite: app/services/jira_connect/sync_service.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/merge_requests/keep_around_refs_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/merge_requests/post_merge_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::GitLogger
   callsite: app/services/merge_requests/rebase_service.rb
   deprecated_field: class
@@ -306,6 +446,10 @@ offenses:
   callsite: app/services/merge_requests/rebase_service.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/merge_requests/refresh_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::GitLogger
   callsite: app/services/merge_requests/squash_service.rb
   deprecated_field: class
@@ -328,8 +472,16 @@ offenses:
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/packages/maven/metadata/create_versions_xml_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/packages/maven/metadata/create_versions_xml_service.rb
   deprecated_field: reason
   standard_field: Labkit::Fields::LOG_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/pages/domains/obtain_lets_encrypt_certificate_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/personal_access_tokens/revoke_service.rb
   deprecated_field: class
@@ -342,10 +494,22 @@ offenses:
   callsite: app/services/projects/destroy_service.rb
   deprecated_field: full_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/projects/destroy_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Export::Logger
+  callsite: app/services/projects/import_export/export_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Export::Logger
   callsite: app/services/projects/import_export/export_service.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
+- logger_class: Gitlab::Export::Logger
+  callsite: app/services/projects/import_export/parallel_export_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Export::Logger
   callsite: app/services/projects/import_export/parallel_export_service.rb
   deprecated_field: project_path
@@ -354,6 +518,10 @@ offenses:
   callsite: app/services/projects/lfs_pointers/lfs_link_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Import::Framework::Logger
+  callsite: app/services/projects/lfs_pointers/lfs_link_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Import::Framework::Logger
   callsite: app/services/projects/lfs_pointers/lfs_link_service.rb
   deprecated_field: project_path
@@ -367,9 +535,17 @@ offenses:
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
 - logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/projects/overwrite_project_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: app/services/projects/transfer_service.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/projects/update_remote_mirror_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/projects/update_remote_mirror_service.rb
   deprecated_field: project_path
@@ -386,6 +562,10 @@ offenses:
   callsite: app/services/spam/spam_verdict_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/services/spam/spam_verdict_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/services/spam/spam_verdict_service.rb
   deprecated_field: user_id
@@ -532,16 +712,44 @@ offenses:
   standard_field: Labkit::Fields::ERROR_MESSAGE
 - logger_class: Gitlab::Export::Logger
   callsite: app/workers/bulk_imports/user_contributions_export_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Export::Logger
+  callsite: app/workers/bulk_imports/user_contributions_export_worker.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/workers/concerns/each_shard_worker.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::BitbucketImport::Logger
+  callsite: app/workers/concerns/gitlab/bitbucket_import/object_importer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::BitbucketImport::Logger
+  callsite: app/workers/concerns/gitlab/bitbucket_import/stage_methods.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::BitbucketServerImport::Logger
+  callsite: app/workers/concerns/gitlab/bitbucket_server_import/object_importer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::BitbucketServerImport::Logger
   callsite: app/workers/concerns/gitlab/bitbucket_server_import/stage_methods.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::BitbucketServerImport::Logger
+  callsite: app/workers/concerns/gitlab/bitbucket_server_import/stage_methods.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::GithubImport::Logger
+  callsite: app/workers/concerns/gitlab/github_import/object_importer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::GithubImport::Logger
+  callsite: app/workers/concerns/gitlab/github_import/stage_methods.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/workers/delete_user_worker.rb
   deprecated_field: reason
@@ -566,6 +774,14 @@ offenses:
   callsite: app/workers/gitlab/github_gists_import/import_gist_worker.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Import::Framework::Logger
+  callsite: app/workers/gitlab/import/advance_stage.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Import::Framework::Logger
+  callsite: app/workers/gitlab/jira_import/stage/start_import_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Import::Framework::Logger
   callsite: app/workers/gitlab/jira_import/stage/start_import_worker.rb
   deprecated_field: project_path
@@ -610,10 +826,18 @@ offenses:
   callsite: app/workers/personal_access_tokens/expiring_worker.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: app/workers/process_commit_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Import::Framework::Logger
   callsite: app/workers/projects/after_import_worker.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Import::Framework::Logger
+  callsite: app/workers/projects/after_import_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Export::Logger
   callsite: app/workers/projects/import_export/parallel_project_export_worker.rb
   deprecated_field: exception.class
@@ -622,6 +846,14 @@ offenses:
   callsite: app/workers/projects/import_export/parallel_project_export_worker.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::Export::Logger
+  callsite: app/workers/projects/import_export/parallel_project_export_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Export::Logger
+  callsite: app/workers/projects/import_export/wait_relation_exports_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: config/initializers/900_gem_gitlab-utils.rb
   deprecated_field: exception.class
@@ -695,13 +927,29 @@ offenses:
   deprecated_field: username
   standard_field: Labkit::Fields::GL_USER_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/models/ai/catalog/foundational_flow/bl_security/definition.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/models/approval_project_rule.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/models/ee/project.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/models/ee/vulnerability.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/app/models/elastic/migration_record.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/models/merge_requests/external_status_check.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/models/namespaces/free_user_cap/enforcement.rb
   deprecated_field: class
@@ -722,18 +970,46 @@ offenses:
   callsite: ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::ActiveContext::Logger
+  callsite: ee/app/services/ai/active_context/code/indexing_service_base.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Ai::Catalog::Logger
+  callsite: ee/app/services/ai/catalog/item_consumers/bulk_create_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/ai/catalog/mcp_servers/revoke_token_service.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/ai/duo_workflows/concerns/workload_metrics.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/ai/duo_workflows/concerns/workload_metrics.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/ai/duo_workflows/start_workflow_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Llm::Logger
   callsite: ee/app/services/ai/model_selection/fetch_model_definitions_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/ai/service_account_member_add_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/app_sec/container_scanning/scan_image_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/app_sec/container_scanning/scan_image_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/arkose/record_user_data_service.rb
   deprecated_field: user_id
@@ -775,9 +1051,17 @@ offenses:
   deprecated_field: username
   standard_field: Labkit::Fields::GL_USER_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/dependencies/export_serializers/sbom/pipeline_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/dependency_management/provision_service_account_service.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/dependency_management/provision_service_account_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/dependency_management/provision_service_account_service.rb
   deprecated_field: reason
@@ -786,6 +1070,18 @@ offenses:
   callsite: ee/app/services/dependency_management/provision_service_account_service.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/dependency_management/security_update/create_merge_request_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/dependency_management/security_update/scheduler_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/dependency_proxy/packages/verify_package_file_etag_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/ee/ci/runners/create_runner_service.rb
   deprecated_field: class
@@ -851,6 +1147,14 @@ offenses:
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/merge_requests/reviewer_assignment/assign_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/merge_trains/refresh_merge_request_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/namespaces/export/membership_collector.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
@@ -880,8 +1184,24 @@ offenses:
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::UpdateMirrorServiceJsonLogger
   callsite: ee/app/services/projects/update_mirror_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::UpdateMirrorServiceJsonLogger
+  callsite: ee/app/services/projects/update_mirror_service.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/sbom/build_dependency_graph.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/sbom/ingestion/ingest_report_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/sbom/ingestion/tasks/ingest_occurrences_vulnerabilities.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/app/services/search/elastic/cluster_reindexing_service.rb
   deprecated_field: class
@@ -895,9 +1215,17 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::Elasticsearch::Logger
+  callsite: ee/app/services/search/elastic/delete/base_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/app/services/search/index_repair_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::Elasticsearch::Logger
+  callsite: ee/app/services/search/index_repair_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Search::Zoekt::Logger
   callsite: ee/app/services/search/zoekt/indexing_task_service.rb
   deprecated_field: class
@@ -919,9 +1247,29 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/secrets_management/base_secret_rotation_batch_reminder_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/ascp/bulk_set_component_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/ingestion/ingest_reports_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/ingestion/ingest_reports_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/orchestration/create_bot_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/orchestration/create_bot_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/orchestration/create_bot_service.rb
   deprecated_field: project_path
@@ -936,8 +1284,16 @@ offenses:
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/pipeline_execution_policies/create_scheduled_pipeline_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/pipeline_execution_policies/create_scheduled_pipeline_service.rb
   deprecated_field: reason
   standard_field: Labkit::Fields::LOG_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/scan_profile_status/update_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/scan_result_policies/sync_any_merge_request_rules_service.rb
   deprecated_field: project_path
@@ -970,6 +1326,10 @@ offenses:
   callsite: ee/app/services/security/scan_result_policies/update_license_approvals_service.rb
   deprecated_field: reason
   standard_field: Labkit::Fields::LOG_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/security_orchestration_policies/link_policy_configuration_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/security_orchestration_policies/persist_policy_service.rb
   deprecated_field: class
@@ -979,6 +1339,10 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/security_orchestration_policies/pipeline_execution_policies/create_project_schedules_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/security_orchestration_policies/policy_commit_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
@@ -987,6 +1351,10 @@ offenses:
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/security_orchestration_policies/rule_schedule_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/security_orchestration_policies/scan_pipeline_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
@@ -995,6 +1363,10 @@ offenses:
   deprecated_field: duration
   standard_field: Labkit::Fields::DURATION_S
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/security_orchestration_policies/scan_pipeline_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/security_orchestration_policies/sync_merge_requests_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
@@ -1002,6 +1374,10 @@ offenses:
   callsite: ee/app/services/security/security_orchestration_policies/sync_merge_requests_service.rb
   deprecated_field: duration
   standard_field: Labkit::Fields::DURATION_S
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/security/security_orchestration_policies/sync_merge_requests_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/security/unenforceable_policy_rules_notification_service.rb
   deprecated_field: project_path
@@ -1019,9 +1395,25 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/vulnerabilities/auto_dismiss_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/vulnerabilities/auto_dismiss_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/vulnerabilities/auto_severity_override_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/vulnerabilities/auto_severity_override_service.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/vulnerabilities/auto_severity_override_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/vulnerabilities/detection_transitions/insert_service.rb
   deprecated_field: class
@@ -1039,6 +1431,10 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/services/vulnerabilities/reads/upsert_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/vulnerability_exports/export_service.rb
   deprecated_field: exception.class
   standard_field: Labkit::Fields::CLASS_NAME
@@ -1046,6 +1442,22 @@ offenses:
   callsite: ee/app/services/vulnerability_exports/export_service.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::ActiveContext::Logger
+  callsite: ee/app/workers/ai/active_context/code/repository_delete_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::ActiveContext::Logger
+  callsite: ee/app/workers/ai/active_context/code/repository_index_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AuditJsonLogger
+  callsite: ee/app/workers/ai/duo_workflows/process_audit_events_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/ai/risk_classification/timeout_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/app/workers/concerns/elastic/bulk_cron_worker.rb
   deprecated_field: class
@@ -1058,10 +1470,34 @@ offenses:
   callsite: ee/app/workers/concerns/security/scan_execution_policies/pipeline_creation.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/concerns/security/scan_execution_policies/pipeline_creation.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/concerns/vulnerabilities/workflow_triggerable.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/dependency_management/security_update/create_merge_request_worker.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/dependency_management/security_update/create_merge_request_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/dependency_management/security_update/trigger_resolve_dependency_bump_workflow_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/app/workers/elastic/migration_worker.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::Elasticsearch::Logger
+  callsite: ee/app/workers/elastic_wiki_indexer_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/workers/gitlab_subscriptions/add_on_purchases/cleanup_user_add_on_assignment_worker.rb
   deprecated_field: user_id
@@ -1075,6 +1511,10 @@ offenses:
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::Elasticsearch::Logger
+  callsite: ee/app/workers/search/elastic/commit_indexer_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/app/workers/search/namespace_index_integrity_worker.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
@@ -1082,6 +1522,10 @@ offenses:
   callsite: ee/app/workers/search/project_index_integrity_worker.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::Elasticsearch::Logger
+  callsite: ee/app/workers/search/project_index_integrity_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Search::Zoekt::Logger
   callsite: ee/app/workers/search/zoekt/node_with_negative_unclaimed_storage_event_worker.rb
   deprecated_field: class
@@ -1111,9 +1555,29 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/vulnerabilities/auto_dismiss_worker.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/vulnerabilities/auto_dismiss_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/vulnerabilities/auto_severity_override_worker.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/vulnerabilities/auto_severity_override_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/workers/vulnerabilities/trigger_false_positive_detection_workflow_worker.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/vulnerabilities/trigger_false_positive_detection_workflow_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/workers/vulnerabilities/trigger_false_positive_detection_workflow_worker.rb
   deprecated_field: reason
@@ -1122,6 +1586,10 @@ offenses:
   callsite: ee/app/workers/vulnerabilities/trigger_resolution_workflow_worker.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/vulnerabilities/trigger_resolution_workflow_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/workers/vulnerabilities/trigger_resolution_workflow_worker.rb
   deprecated_field: reason
@@ -1130,6 +1598,10 @@ offenses:
   callsite: ee/app/workers/vulnerabilities/trigger_secret_detection_false_positive_detection_workflow_worker.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/app/workers/vulnerabilities/trigger_secret_detection_false_positive_detection_workflow_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/workers/vulnerabilities/trigger_secret_detection_false_positive_detection_workflow_worker.rb
   deprecated_field: reason
@@ -1138,6 +1610,10 @@ offenses:
   callsite: ee/lib/ai/context/dependencies/config_files/base.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/ai/context/dependencies/config_files/base.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Llm::Logger
   callsite: ee/lib/ai/third_party_agents/token_service.rb
   deprecated_field: class
@@ -1178,6 +1654,10 @@ offenses:
   callsite: ee/lib/ee/api/internal/base.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/ee/gitlab/ci/jwt_v2.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Elasticsearch::Logger
   callsite: ee/lib/elastic/migration.rb
   deprecated_field: class
@@ -1212,6 +1692,10 @@ offenses:
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/lib/gitlab/ci/minutes/consumption.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/gitlab/ci/minutes/consumption.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
 - logger_class: Gitlab::AppJsonLogger
@@ -1220,8 +1704,16 @@ offenses:
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/lib/gitlab/ci/minutes/hosted_runners/consumption.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/gitlab/ci/minutes/hosted_runners/consumption.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/gitlab/code_owners/owner_validation/eligible_approver_groups_filter.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Llm::Logger
   callsite: ee/lib/gitlab/duo/chat/react_executor.rb
   deprecated_field: class
@@ -1246,6 +1738,10 @@ offenses:
   callsite: ee/lib/gitlab/geo/log_cursor/daemon.rb
   deprecated_field: gitlab_host
   standard_field: Labkit::Fields::HTTP_HOST
+- logger_class: Gitlab::Geo::Logger
+  callsite: ee/lib/gitlab/geo/log_cursor/daemon.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Geo::Logger
   callsite: ee/lib/gitlab/geo/log_cursor/events/base_event.rb
   deprecated_field: class
@@ -1292,6 +1788,10 @@ offenses:
   standard_field: Labkit::Fields::HTTP_HOST
 - logger_class: Gitlab::Geo::Logger
   callsite: ee/lib/gitlab/geo/log_helpers.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Geo::Logger
+  callsite: ee/lib/gitlab/geo/log_helpers.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
 - logger_class: Gitlab::Geo::Logger
@@ -1314,6 +1814,10 @@ offenses:
   callsite: ee/lib/gitlab/import_export/project/custom_template_restorer_helper.rb
   deprecated_field: username
   standard_field: Labkit::Fields::GL_USER_NAME
+- logger_class: Import::Framework::Logger
+  callsite: ee/lib/gitlab/import_export/project/repository_squash_restorer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Import::Framework::Logger
   callsite: ee/lib/gitlab/import_export/project/repository_squash_restorer.rb
   deprecated_field: project_path
@@ -1431,6 +1935,14 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/gitlab/security/parsers/sarif.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/gitlab/security/parsers/sarif.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: ee/lib/gitlab_subscriptions/member_management/seat_aware_provisioning.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
@@ -1458,6 +1970,14 @@ offenses:
   callsite: ee/lib/search/elastic/indexer.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::Elasticsearch::Logger
+  callsite: ee/lib/search/elastic/indexer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/security/security_orchestration_policies/cadence_checker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: ee/lib/telesign/transaction_callback.rb
   deprecated_field: class
@@ -1478,6 +1998,10 @@ offenses:
   callsite: ee/lib/users/identity_verification/authorize_ci.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: ee/lib/vulnerabilities/consistency_checks/base_check.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Geo::Logger
   callsite: ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb
   deprecated_field: class
@@ -1507,6 +2031,10 @@ offenses:
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
+  callsite: lib/api/helpers/project_stats_refresh_conflicts_helpers.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: lib/api/helpers/snippets/http_response_map.rb
   deprecated_field: reason
   standard_field: Labkit::Fields::LOG_MESSAGE
@@ -1530,6 +2058,14 @@ offenses:
   callsite: lib/gitlab/application_context.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/application_context.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/application_context.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AuthLogger
   callsite: lib/gitlab/application_rate_limiter.rb
   deprecated_field: user_id
@@ -1550,6 +2086,10 @@ offenses:
   callsite: lib/gitlab/audit/auditor.rb
   deprecated_field: ip_address
   standard_field: Labkit::Fields::REMOTE_IP
+- logger_class: Gitlab::AuditJsonLogger
+  callsite: lib/gitlab/audit/auditor.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AuditJsonLogger
   callsite: lib/gitlab/audit/auditor.rb
   deprecated_field: project_path
@@ -1592,12 +2132,20 @@ offenses:
   standard_field: Labkit::Fields::ERROR_MESSAGE
 - logger_class: Gitlab::BitbucketImport::Logger
   callsite: lib/gitlab/bitbucket_import/loggable.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::BitbucketImport::Logger
+  callsite: lib/gitlab/bitbucket_import/loggable.rb
   deprecated_field: project_path
   standard_field: Labkit::Fields::GL_PROJECT_PATH
 - logger_class: Gitlab::BitbucketServerImport::Logger
   callsite: lib/gitlab/bitbucket_server_import/loggable.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::BitbucketServerImport::Logger
+  callsite: lib/gitlab/bitbucket_server_import/loggable.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::BitbucketServerImport::Logger
   callsite: lib/gitlab/bitbucket_server_import/loggable.rb
   deprecated_field: project_path
@@ -1611,6 +2159,10 @@ offenses:
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
 - logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/checks/changes_access.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/ci/build/releaser.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
@@ -1619,17 +2171,37 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/build/rules/rule/clause/changes.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/ci/build/rules/rule/clause/exists.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/build/rules/rule/clause/exists.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/build/rules/rule/clause/regexp_matcher.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/ci/config/external/file/base.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/config/external/file/base.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/ci/config/external/file/local.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/config/external/file/local.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/ci/config/external/file/remote.rb
   deprecated_field: class
@@ -1639,9 +2211,17 @@ offenses:
   deprecated_field: duration_ms
   standard_field: Labkit::Fields::DURATION_S
 - logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/config/external/file/remote.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/ci/pipeline/chain/limit/active_jobs.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/pipeline/chain/limit/active_jobs.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/ci/pipeline/chain/limit/active_jobs.rb
   deprecated_field: project_path
@@ -1650,6 +2230,22 @@ offenses:
   callsite: lib/gitlab/ci/pipeline/chain/limit/rate_limit.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/pipeline/chain/limit/rate_limit.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/pipeline/chain/seed.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/pipeline/chain/validate/abilities.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/ci/pipeline/chain/validate/external.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/counters/flush_stale_counter_increments.rb
   deprecated_field: class
@@ -1727,9 +2323,21 @@ offenses:
   deprecated_field: tags.correlation_id
   standard_field: Labkit::Fields::CORRELATION_ID
 - logger_class: Gitlab::GithubImport::Logger
+  callsite: lib/gitlab/github_import/bulk_importing.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::GithubImport::Logger
   callsite: lib/gitlab/github_import/client.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::GithubImport::Logger
+  callsite: lib/gitlab/github_import/importer/diff_note_importer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::GithubImport::Logger
+  callsite: lib/gitlab/github_import/parallel_scheduling.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::GithubImport::Logger
   callsite: lib/gitlab/github_import/user_finder.rb
   deprecated_field: class
@@ -1758,6 +2366,14 @@ offenses:
   callsite: lib/gitlab/import/import_failure_service.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Import::Framework::Logger
+  callsite: lib/gitlab/import/import_failure_service.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Export::Logger
+  callsite: lib/gitlab/import_export/json/streaming_serializer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Export::Logger
   callsite: lib/gitlab/import_export/json/streaming_serializer.rb
   deprecated_field: project_path
@@ -1770,6 +2386,14 @@ offenses:
   callsite: lib/gitlab/import_export/project/relation_tree_restorer.rb
   deprecated_field: error
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Import::Framework::Logger
+  callsite: lib/gitlab/import_export/project/relation_tree_restorer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Import::Framework::Logger
+  callsite: lib/gitlab/import_export/snippet_repo_restorer.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::Kubernetes::Logger
   callsite: lib/gitlab/kubernetes/namespace.rb
   deprecated_field: status_code
@@ -1803,6 +2427,14 @@ offenses:
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
 - logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/seeders/ci/runner/runner_fleet_pipeline_seeder.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/seeders/ci/runner/runner_fleet_pipeline_seeder.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
   callsite: lib/gitlab/seeders/ci/runner/runner_fleet_seeder.rb
   deprecated_field: organization_id
   standard_field: Labkit::Fields::GL_ORGANIZATION_ID
@@ -1822,6 +2454,14 @@ offenses:
   callsite: lib/import/after_export_strategies/base_after_export_strategy.rb
   deprecated_field: exception.message
   standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::Export::Logger
+  callsite: lib/import/after_export_strategies/base_after_export_strategy.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::Export::Logger
+  callsite: lib/import/export/project/commit_notes_saver.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: lib/observability/o11y_provisioning_client.rb
   deprecated_field: error
@@ -1838,6 +2478,10 @@ offenses:
   callsite: spec/lib/gitlab/ci/pipeline/command_logger_spec.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: spec/lib/gitlab/ci/pipeline/command_logger_spec.rb
+  deprecated_field: pipeline_id
+  standard_field: Labkit::Fields::GL_PIPELINE_ID
 - logger_class: Gitlab::Export::Logger
   callsite: spec/lib/gitlab/loggable_spec.rb
   deprecated_field: class
@@ -1846,6 +2490,14 @@ offenses:
   callsite: spec/services/ci/register_job_service/logger_spec.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::AppJsonLogger
+  callsite: spec/spec_helper.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: spec/workers/process_commit_worker_spec.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AppJsonLogger
   callsite: spec/workers/process_commit_worker_spec.rb
   deprecated_field: user_id

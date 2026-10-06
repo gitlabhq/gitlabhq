@@ -30,7 +30,7 @@ module API
 
     %w[group project].each do |source_type|
       params do
-        requires :id, type: String, desc: "The #{source_type} ID"
+        requires :id, type: String, desc: "ID or URL-encoded path of the #{source_type}."
       end
       resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Add a member to a #{source_type}" do
@@ -39,11 +39,11 @@ module API
           tags %w[invitations]
         end
         params do
-          requires :access_level, type: Integer, values: ::API::Helpers::MembersHelpers.member_access_levels, desc: 'A valid access level (defaults: `30`, developer access level)' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+          requires :access_level, type: Integer, values: ::API::Helpers::MembersHelpers.member_access_levels, desc: 'Access level to grant to the invited user. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
           optional :email, type: Array[String], email_or_email_list: true, coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The email address to invite, or multiple emails separated by comma'
-          optional :user_id, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The user ID of the new member or multiple IDs separated by commas.'
-          optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
-          optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'invitations-api'
+          optional :user_id, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'ID of the user to invite, or multiple IDs separated by commas. Required if `email` is not provided.'
+          optional :expires_at, type: DateTime, desc: 'Date when the invitation expires.'
+          optional :invite_source, type: String, desc: 'Source of the invitation that starts the member creation process.', default: 'invitations-api'
 
           use :invitation_params_ee
         end
@@ -73,7 +73,7 @@ module API
         params do
           optional :page, type: Integer, desc: 'Page to retrieve'
           optional :per_page, type: Integer, desc: 'Number of member invitations to return per page'
-          optional :query, type: String, desc: 'A query string to search for members'
+          optional :query, type: String, desc: 'Return only invitations sent to this email address. Must match exactly. If omitted, returns all invitations.'
           use :pagination
         end
         route_setting :authorization, permissions: :read_invitation, boundary_type: source_type.to_sym
@@ -95,8 +95,8 @@ module API
         end
         params do
           requires :email, type: String, desc: 'The email address of the invitation'
-          optional :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'A valid access level (defaults: `30`, developer access level)' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
-          optional :expires_at, type: DateTime, desc: 'Date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)'
+          optional :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Access level to grant to the invited user. For a list of values, see [roles](https://docs.gitlab.com/user/permissions/#default-roles).' # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
+          optional :expires_at, type: DateTime, desc: 'Date when the invitation expires.'
 
           use :invitation_params_ee
         end

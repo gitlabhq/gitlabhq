@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe OperationsHelper do
   include Gitlab::Routing
 
-  let_it_be_with_reload(:project) { create(:project) }
-
+  let(:project) { build_stubbed(:project) }
   let(:user) { build_stubbed(:user) }
 
   before do
@@ -42,13 +41,15 @@ RSpec.describe OperationsHelper do
   end
 
   describe '#operations_settings_data' do
-    let_it_be(:operations_settings) do
-      create(
+    let(:operations_settings) do
+      build_stubbed(
         :project_incident_management_setting,
-        project: project,
-        pagerduty_active: true
+        pagerduty_active: true,
+        pagerduty_token: 'pagerduty_token'
       )
     end
+
+    let(:project) { build_stubbed(:project, incident_management_setting: operations_settings) }
 
     subject { helper.operations_settings_data }
 

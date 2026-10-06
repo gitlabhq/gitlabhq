@@ -146,8 +146,8 @@ RSpec.describe Ci::PipelinePresenter do
     subject { presenter.ref_text }
 
     context 'when pipeline is detached merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-      let(:pipeline) { merge_request.all_pipelines.last }
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+      let(:pipeline) { merge_request.all_pipelines.take }
 
       it 'returns a correct ref text' do
         is_expected.to eq("Related merge request <a class=\"mr-iid ref-container\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
@@ -156,8 +156,8 @@ RSpec.describe Ci::PipelinePresenter do
     end
 
     context 'when pipeline is merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
-      let(:pipeline) { merge_request.all_pipelines.last }
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline, source_project: project) }
+      let(:pipeline) { merge_request.all_pipelines.take }
 
       it 'returns a correct ref text' do
         is_expected.to eq("Related merge request <a class=\"mr-iid ref-container\" href=\"#{project_merge_request_path(merge_request.project, merge_request)}\">#{merge_request.to_reference}</a> " \
@@ -167,8 +167,8 @@ RSpec.describe Ci::PipelinePresenter do
     end
 
     context 'with multiple related merge requests' do
-      let(:mr_1) { create(:merge_request) }
-      let(:mr_2) { create(:merge_request) }
+      let(:mr_1) { create(:merge_request, source_project: project) }
+      let(:mr_2) { create(:merge_request, source_project: project, source_branch: 'fix') }
 
       before do
         allow(pipeline).to receive(:all_merge_requests).and_return(MergeRequest.where(id: [mr_1.id, mr_2.id]))
@@ -181,7 +181,7 @@ RSpec.describe Ci::PipelinePresenter do
     end
 
     context 'with just one merge request' do
-      let(:mr_1) { create(:merge_request) }
+      let(:mr_1) { create(:merge_request, source_project: project) }
 
       before do
         allow(pipeline).to receive(:all_merge_requests).and_return(MergeRequest.where(id: mr_1.id))
@@ -203,7 +203,7 @@ RSpec.describe Ci::PipelinePresenter do
         end
 
         context 'when ref contains malicious script' do
-          let(:pipeline) { create(:ci_pipeline, ref: "<script>alter('1')</script>", project: project) }
+          let(:pipeline) { build_stubbed(:ci_pipeline, ref: "<script>alter('1')</script>", project: project) }
 
           it 'does not include the malicious script' do
             is_expected.not_to include("<script>alter('1')</script>")
@@ -221,7 +221,7 @@ RSpec.describe Ci::PipelinePresenter do
         end
 
         context 'when ref contains malicious script' do
-          let(:pipeline) { create(:ci_pipeline, ref: "<script>alter('1')</script>", project: project) }
+          let(:pipeline) { build_stubbed(:ci_pipeline, ref: "<script>alter('1')</script>", project: project) }
 
           it 'does not include the malicious script' do
             is_expected.not_to include("<script>alter('1')</script>")
@@ -286,8 +286,8 @@ RSpec.describe Ci::PipelinePresenter do
     subject { presenter.triggered_by_path }
 
     context 'when the pipeline is a child' do
-      let(:upstream_pipeline) { create(:ci_pipeline) }
-      let(:pipeline) { create(:ci_pipeline, child_of: upstream_pipeline) }
+      let(:upstream_pipeline) { create(:ci_pipeline, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project, child_of: upstream_pipeline) }
       let(:expected_path) { project_pipeline_path(upstream_pipeline.project, upstream_pipeline) }
 
       it 'returns the pipeline path' do

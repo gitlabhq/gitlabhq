@@ -7,8 +7,10 @@ class ExternalDiffUploader < GitlabUploader
 
   alias_method :upload, :model
 
+  # The stored identifier for existing files, the name given at upload time
+  # for new ones, otherwise `diff-<id>`.
   def filename
-    "diff-#{model.id}"
+    super || "diff-#{model.id}"
   end
 
   def store_dir

@@ -136,6 +136,7 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                       author: {},
                       sha: '13b0aca4142d1d55931577f69289a792f216f805',
                       shortId: '13b0aca4',
+                      hasAgentSession: false,
                     },
                     commitData: COMMIT_DATA_MOCK,
                   },

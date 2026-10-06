@@ -64,11 +64,6 @@ export default {
       required: false,
       default: () => [],
     },
-    isSortable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -94,7 +89,7 @@ export default {
   },
   computed: {
     canSort() {
-      return this.isSortable && this.items.length <= MAX_SORTABLE_ROWS && this.items.length > 1;
+      return this.items.length <= MAX_SORTABLE_ROWS && this.items.length > 1;
     },
     sortAnnouncement() {
       if (!this.hasSorted) return '';

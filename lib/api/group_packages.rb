@@ -26,8 +26,9 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group'
-      optional :exclude_subgroups, type: Boolean, default: false, desc: 'Determines if subgroups should be excluded'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
+      optional :exclude_subgroups, type: Boolean, default: false, desc: 'If `true`, excludes packages from subgroup ' \
+                                                                    'projects.'
     end
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all packages for a group' do
@@ -48,29 +49,30 @@ module API
           type: String,
           values: %w[created_at name version type project_path],
           default: 'created_at',
-          desc: 'Return packages ordered by `created_at`, `name`, `version` or `type` fields.'
+          desc: 'Sort results by the specified field.'
         optional :sort,
           type: String,
           values: %w[asc desc],
           default: 'asc',
-          desc: 'Return packages sorted in `asc` or `desc` order.'
+          desc: 'Sort results in ascending or descending order.'
         optional :package_type,
           type: String,
           values: Packages::Package.package_types.keys,
-          desc: 'Return packages of a certain type'
+          desc: 'Filter packages by type.'
         optional :package_name,
           type: String,
-          desc: 'Return packages with this name'
+          desc: 'Filter packages by name, using a fuzzy search.'
         optional :package_version,
           type: String,
-          desc: 'Return packages with this version'
+          desc: 'Filter packages by version. When used together with `include_versionless`, versionless packages are ' \
+            'not returned.'
         optional :include_versionless,
           type: Boolean,
-          desc: 'Returns packages without a version'
+          desc: 'If `true`, includes versionless packages in the response.'
         optional :status,
           type: String,
           values: Packages::Package.statuses.keys,
-          desc: 'Return packages with specified status'
+          desc: 'Filter packages by status.'
       end
       route_setting :authorization, permissions: :read_package, boundary_type: :group
       get ':id/packages' do

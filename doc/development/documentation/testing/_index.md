@@ -63,7 +63,7 @@ all merge requests that contain changes to Markdown files. The script returns an
 error if any Markdown files return a Mermaid syntax error.
 
 To help debug your Mermaid charts, use the
-[Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/edit).
+[Mermaid Live Editor](https://mermaid.live/edit).
 
 ## Tests in `docs-lint links` and other jobs
 

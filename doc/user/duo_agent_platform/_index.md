@@ -80,7 +80,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [Developer Flow](../project/merge_requests/developer.md) <br /> Convert issues into merge requests. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Code Review Flow](flows/foundational_flows/code_review/_index.md) <br /> Automate code review tasks and enforce coding standards across your team. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Convert to GitLab CI/CD Flow](flows/foundational_flows/convert_to_gitlab_ci.md) <br /> Convert legacy CI/CD pipelines to the GitLab CI/CD format. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
-| [Fix CI/CD Pipeline Flow](flows/foundational_flows/fix_pipeline.md) <br /> Diagnose and automatically fix failing CI/CD pipelines. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
+| [Fix CI/CD Pipeline Flow](../../ci/pipelines/fix_pipeline.md) <br /> Diagnose and automatically fix failing CI/CD pipelines. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [Software Development Flow](flows/foundational_flows/software_development.md) <br /> Create a full, multi-step plan before executing it. | {{< yes >}} | {{< yes >}}  | {{< yes >}} |
 | [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension.[^mcp-clients-consume] | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |

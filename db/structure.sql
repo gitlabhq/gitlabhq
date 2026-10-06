@@ -15957,6 +15957,36 @@ CREATE SEQUENCE billable_usage_daily_namespace_aggregates_id_seq
 
 ALTER SEQUENCE billable_usage_daily_namespace_aggregates_id_seq OWNED BY billable_usage_daily_namespace_aggregates.id;
 
+CREATE TABLE billable_usage_daily_totals (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    source_updated_at timestamp with time zone NOT NULL,
+    events_count bigint DEFAULT 0 NOT NULL,
+    usage_date date NOT NULL,
+    schema_version smallint DEFAULT 1 NOT NULL,
+    quantity numeric(20,4) NOT NULL,
+    event_type text NOT NULL,
+    unit_of_measure text NOT NULL,
+    feature_qualified_name text NOT NULL,
+    operation_type text,
+    CONSTRAINT check_286cfe22d4 CHECK ((char_length(feature_qualified_name) <= 255)),
+    CONSTRAINT check_3c8af706a2 CHECK ((char_length(unit_of_measure) <= 64)),
+    CONSTRAINT check_54332a476e CHECK ((char_length(operation_type) <= 64)),
+    CONSTRAINT check_a29e5a60b3 CHECK ((char_length(event_type) <= 255)),
+    CONSTRAINT check_billable_usage_daily_totals_events_count_non_negative CHECK ((events_count >= 0)),
+    CONSTRAINT check_billable_usage_daily_totals_quantity_non_negative CHECK ((quantity >= (0)::numeric))
+);
+
+CREATE SEQUENCE billable_usage_daily_totals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE billable_usage_daily_totals_id_seq OWNED BY billable_usage_daily_totals.id;
+
 CREATE TABLE billable_usage_export_logs (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -37304,6 +37334,8 @@ ALTER TABLE ONLY batched_background_migrations ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY billable_usage_daily_namespace_aggregates ALTER COLUMN id SET DEFAULT nextval('billable_usage_daily_namespace_aggregates_id_seq'::regclass);
 
+ALTER TABLE ONLY billable_usage_daily_totals ALTER COLUMN id SET DEFAULT nextval('billable_usage_daily_totals_id_seq'::regclass);
+
 ALTER TABLE ONLY billable_usage_export_logs ALTER COLUMN id SET DEFAULT nextval('billable_usage_export_logs_id_seq'::regclass);
 
 ALTER TABLE ONLY board_assignees ALTER COLUMN id SET DEFAULT nextval('board_assignees_id_seq'::regclass);
@@ -40386,6 +40418,9 @@ ALTER TABLE ONLY batched_background_migrations
 
 ALTER TABLE ONLY billable_usage_daily_namespace_aggregates
     ADD CONSTRAINT billable_usage_daily_namespace_aggregates_pkey PRIMARY KEY (id, usage_date);
+
+ALTER TABLE ONLY billable_usage_daily_totals
+    ADD CONSTRAINT billable_usage_daily_totals_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY billable_usage_export_logs
     ADD CONSTRAINT billable_usage_export_logs_pkey PRIMARY KEY (id);
@@ -47685,6 +47720,10 @@ CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_ba
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
 
 CREATE UNIQUE INDEX index_billable_usage_daily_ns_aggs_on_unique_tuple ON ONLY billable_usage_daily_namespace_aggregates USING btree (usage_date, event_type, feature_qualified_name, operation_type, root_namespace_id) NULLS NOT DISTINCT;
+
+CREATE INDEX index_billable_usage_daily_ns_aggs_on_updated_at ON ONLY billable_usage_daily_namespace_aggregates USING btree (updated_at);
+
+CREATE UNIQUE INDEX index_billable_usage_daily_totals_on_unique_tuple ON billable_usage_daily_totals USING btree (usage_date, event_type, feature_qualified_name, operation_type) NULLS NOT DISTINCT;
 
 CREATE INDEX index_billable_usage_export_logs_on_generated_at ON billable_usage_export_logs USING btree (generated_at);
 

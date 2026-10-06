@@ -161,7 +161,6 @@ const mountComponent = ({
     apolloProvider,
     provide: {
       glFeatures: {
-        okrsMvc: true,
         workItemFeaturesField,
         workItemRestApiFrontendUsers,
       },

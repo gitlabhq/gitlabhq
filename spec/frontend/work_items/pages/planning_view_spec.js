@@ -317,10 +317,6 @@ const getCache = () => apolloProvider.defaultClient.cache;
 
 const RELEASES_ENDPOINT = '/test/project/-/releases.json';
 
-const defaultFeatureFlags = {
-  okrsMvc: true,
-};
-
 const mountComponent = async ({
   hasWorkItemsHandler = defaultHasWorkItemsHandler,
   countsOnlyHandler = defaultCountsOnlyHandler,
@@ -365,7 +361,6 @@ const mountComponent = async ({
     router,
     provide: {
       glFeatures: {
-        ...defaultFeatureFlags,
         ...provideGlFeatures,
       },
       metadataLoading: false,

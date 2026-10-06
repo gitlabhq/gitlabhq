@@ -1633,6 +1633,128 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect(diff.state).to eq('collected')
         expect(diff.external_diff_store).to eq(remote_store)
       end
+
+      context 'when the gitaly data is preloaded' do
+        subject(:diff) { merge_request.merge_request_diffs.build }
+
+        it 'uploads the external diff outside of the save transaction' do
+          merge_request # created inside its own transaction, before the upload tracking starts
+          upload_transaction_depths = []
+          baseline = described_class.connection.open_transactions
+
+          allow_next_instance_of(CarrierWave::Storage::Fog) do |storage|
+            allow(storage).to receive(:store!).and_wrap_original do |original, *args|
+              upload_transaction_depths << (described_class.connection.open_transactions - baseline)
+              original.call(*args)
+            end
+          end
+
+          diff.preload_gitaly_data
+
+          expect(upload_transaction_depths).to eq([0])
+          expect(diff).to be_new_record
+          expect(diff).to be_stored_externally
+          expect(diff.external_diff.exists?).to be(true)
+
+          diff.save!
+
+          expect(upload_transaction_depths).to eq([0])
+          expect(diff.reload).to be_stored_externally
+          expect(diff.state).to eq('collected')
+          expect(diff.external_diff_store).to eq(remote_store)
+          expect(diff.external_diff_identifier).to match(/\Adiff-\h{8}-/)
+          expect(diff.external_diff.path).to end_with("/mr-#{merge_request.id}/#{diff.external_diff_identifier}")
+          expect(diff.merge_request_diff_files.size).to eq(20)
+          expect(diff.merge_request_diff_files.pluck(:external_diff_size).sum).to be > 0
+        end
+
+        context 'when the external_diff_upload_before_save flag is disabled' do
+          before do
+            stub_feature_flags(external_diff_upload_before_save: false)
+          end
+
+          it 'uploads the external diff inside the save transaction, named after the id' do
+            merge_request
+            upload_transaction_depths = []
+            baseline = described_class.connection.open_transactions
+
+            allow_next_instance_of(CarrierWave::Storage::Fog) do |storage|
+              allow(storage).to receive(:store!).and_wrap_original do |original, *args|
+                upload_transaction_depths << (described_class.connection.open_transactions - baseline)
+                original.call(*args)
+              end
+            end
+
+            diff.preload_gitaly_data
+
+            expect(upload_transaction_depths).to be_empty
+            expect(diff).not_to be_stored_externally
+
+            diff.save!
+
+            expect(upload_transaction_depths.size).to eq(1)
+            expect(upload_transaction_depths.first).to be >= 1
+            expect(diff.reload).to be_stored_externally
+            expect(diff.state).to eq('collected')
+            expect(diff.external_diff_store).to eq(remote_store)
+            expect(diff.external_diff.path).to end_with("/mr-#{merge_request.id}/diff-#{diff.id}")
+            expect(diff.merge_request_diff_files.size).to eq(20)
+          end
+        end
+      end
+
+      context 'when the gitaly data is not preloaded' do
+        subject(:diff) { merge_request.merge_request_diffs.create! }
+
+        it 'creates a diff in object storage named after the id' do
+          expect(diff).to be_stored_externally
+          expect(diff.state).to eq('collected')
+          expect(diff.external_diff_store).to eq(remote_store)
+          expect(diff.external_diff.path).to end_with("/mr-#{merge_request.id}/diff-#{diff.id}")
+          expect(diff.merge_request_diff_files.size).to eq(20)
+        end
+      end
+    end
+
+    context 'diff with commits but no changed files' do
+      let(:project) { create(:project, :test_repo) }
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_project: project,
+          target_project: project,
+          source_branch: 'no-net-change',
+          target_branch: 'master'
+        )
+      end
+
+      subject(:diff) { merge_request.merge_request_diffs.build }
+
+      before do
+        create_file_in_repo(project, 'master', 'no-net-change', 'temporary-file', 'content')
+        project.repository.delete_file(
+          project.creator, 'temporary-file', message: 'Remove temporary file', branch_name: 'no-net-change')
+      end
+
+      it 'does not upload an external diff' do
+        merge_request
+
+        allow_next_instance_of(CarrierWave::Storage::Fog) do |storage|
+          expect(storage).not_to receive(:store!)
+        end
+
+        diff.preload_gitaly_data
+
+        expect(diff).not_to be_stored_externally
+        expect(diff.external_diff_identifier).to be_nil
+
+        diff.save!
+
+        expect(diff.reload).not_to be_stored_externally
+        expect(diff.state).to eq('empty')
+        expect(diff.commits_count).to eq(2)
+        expect(diff.merge_request_diff_files).to be_empty
+      end
     end
 
     context 'diff adding an empty file' do

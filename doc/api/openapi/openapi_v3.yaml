@@ -1916,7 +1916,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a namespace
+        description: ID of the namespace.
         schema:
           type: string
         in: path
@@ -1946,13 +1946,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the namespace to transfer from
+        description: ID of the namespace to transfer from.
         schema:
           type: string
         in: path
       - name: target_id
         required: true
-        description: The ID of the namespace for the packs to transfer to
+        description: ID of the namespace for the packs to transfer to.
         schema:
           type: string
         in: path
@@ -2582,7 +2582,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -2590,7 +2590,7 @@ paths:
         in: path
       - name: sast_endpoint
         required: true
-        description: The name of the SAST scanner service endpoint to call
+        description: Name of the SAST scanner service endpoint to call.
         schema:
           type: string
         in: path
@@ -6796,7 +6796,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: string
         in: path
@@ -6824,7 +6824,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: string
         in: path
@@ -6857,7 +6857,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: string
         in: path
@@ -6885,7 +6885,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: string
         in: path
@@ -6919,7 +6919,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of a vulnerability
+        description: ID of the vulnerability.
         schema:
           type: string
         in: path
@@ -6950,7 +6950,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -6992,7 +6992,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7171,7 +7171,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7217,7 +7217,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7254,7 +7254,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7262,7 +7262,7 @@ paths:
         in: path
       - name: managed_license_id
         required: true
-        description: The ID of a managed license
+        description: ID of the managed license.
         schema:
           type: string
         in: path
@@ -7290,7 +7290,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7298,7 +7298,7 @@ paths:
         in: path
       - name: managed_license_id
         required: true
-        description: The ID of a managed license
+        description: ID of the managed license.
         schema:
           type: string
         in: path
@@ -7328,7 +7328,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -7336,7 +7336,7 @@ paths:
         in: path
       - name: managed_license_id
         required: true
-        description: The ID of a managed license
+        description: ID of the managed license.
         schema:
           type: string
         in: path
@@ -9175,7 +9175,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -9184,7 +9184,7 @@ paths:
         example: 11
       - name: scope
         required: false
-        description: The scope of merge trains
+        description: Filter merge trains by scope.
         schema:
           type: string
           enum:
@@ -9195,7 +9195,8 @@ paths:
         example: active
       - name: sort
         required: false
-        description: Sort by asc (ascending) or desc (descending)
+        description: Sort results in ascending or descending order by `id`. A lower
+          `id` value means the merge request was added to the train earlier.
         schema:
           type: string
           enum:
@@ -9246,7 +9247,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -9255,14 +9256,14 @@ paths:
         example: 11
       - name: target_branch
         required: true
-        description: The target branch of the merge request
+        description: Target branch of the merge train.
         schema:
           type: string
         in: path
         example: main
       - name: scope
         required: false
-        description: The scope of merge trains
+        description: Filter merge trains by scope.
         schema:
           type: string
           enum:
@@ -9273,7 +9274,8 @@ paths:
         example: active
       - name: sort
         required: false
-        description: Sort by asc (ascending) or desc (descending)
+        description: Sort results in ascending or descending order by `id`. A lower
+          `id` value means the merge request was added to the train earlier.
         schema:
           type: string
           enum:
@@ -9322,7 +9324,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -9331,7 +9333,7 @@ paths:
         example: 11
       - name: merge_request_iid
         required: true
-        description: The IID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -9371,7 +9373,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -9380,7 +9382,7 @@ paths:
         example: 11
       - name: merge_request_iid
         required: true
-        description: The IID of the merge request
+        description: Internal ID of the merge request.
         schema:
           type: integer
         in: path
@@ -9937,7 +9939,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -9966,7 +9968,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -9995,7 +9997,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -10003,23 +10005,22 @@ paths:
         in: path
       - name: cn
         required: false
-        description: The CN of a LDAP group. Exactly one of `cn`, `filter` must be
-          provided.
+        description: CN of an LDAP group. Exactly one of `cn`, `filter` must be provided.
         schema:
           type: string
           nullable: true
         in: query
       - name: filter
         required: false
-        description: The LDAP filter for the group. Exactly one of `cn`, `filter`
-          must be provided.
+        description: LDAP filter for the group. Exactly one of `cn`, `filter` must
+          be provided.
         schema:
           type: string
           nullable: true
         in: query
       - name: provider
         required: true
-        description: LDAP provider for the LDAP group link
+        description: Name of the provider for the LDAP group link.
         schema:
           type: string
           nullable: true
@@ -10042,7 +10043,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -10050,7 +10051,7 @@ paths:
         in: path
       - name: cn
         required: true
-        description: The CN of a LDAP group
+        description: CN of an LDAP group.
         schema:
           type: string
         in: path
@@ -10072,7 +10073,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -10080,13 +10081,13 @@ paths:
         in: path
       - name: cn
         required: true
-        description: The CN of a LDAP group
+        description: CN of an LDAP group.
         schema:
           type: string
         in: path
       - name: provider
         required: true
-        description: LDAP provider for the LDAP group link
+        description: Name of the provider for the LDAP group link.
         schema:
           type: string
         in: path
@@ -12528,8 +12529,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project can be accessed by
-          the authenticated user
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -12549,8 +12549,7 @@ paths:
         in: query
       - name: start_date
         required: false
-        description: Date range to start from. ISO 8601 Date format, for example `2021-03-01`.
-          Default is 3 months ago
+        description: Start date of the date range. Defaults to 3 months ago.
         schema:
           type: string
           format: date
@@ -12558,8 +12557,7 @@ paths:
         in: query
       - name: end_date
         required: false
-        description: Date range to end at. ISO 8601 Date format, for example `2021-03-01`.
-          Default is the current date
+        description: End date of the date range. Defaults to the current date.
         schema:
           type: string
           format: date
@@ -12611,7 +12609,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID of the group
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -12629,8 +12627,7 @@ paths:
         in: query
       - name: start_date
         required: false
-        description: Date range to start from. ISO 8601 Date format, for example `2021-03-01`.
-          Default is 3 months ago
+        description: Start date of the date range. Defaults to 3 months ago.
         schema:
           type: string
           format: date
@@ -12638,8 +12635,7 @@ paths:
         in: query
       - name: end_date
         required: false
-        description: Date range to end at. ISO 8601 Date format, for example `2021-03-01`.
-          Default is the current date
+        description: End date of the date range. Defaults to the current date.
         schema:
           type: string
           format: date
@@ -16264,7 +16260,7 @@ paths:
       parameters:
       - name: experiment_id
         required: false
-        description: Experiment ID, in reference to the project
+        description: ID of the experiment, relative to the project.
         schema:
           type: string
           default: ''
@@ -16299,7 +16295,7 @@ paths:
       parameters:
       - name: experiment_name
         required: false
-        description: Experiment name
+        description: Name of the experiment.
         schema:
           type: string
           default: ''
@@ -21566,7 +21562,8 @@ paths:
         in: query
       - name: iids
         required: false
-        description: The IIDs of the milestones
+        description: Return only the milestones having the given `iid`. Ignored if
+          `include_ancestors` is `true`.
         schema:
           type: array
           items:
@@ -21591,8 +21588,8 @@ paths:
         in: query
       - name: include_parent_milestones
         required: false
-        description: 'Deprecated: see `include_ancestors`. Mutually exclusive with
-          `include_ancestors`.'
+        description: If `true`, includes milestones from all parent groups. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298).
+          Use `include_ancestors` instead. Mutually exclusive with `include_ancestors`.
         schema:
           type: boolean
           nullable: true
@@ -24264,7 +24261,8 @@ paths:
         in: query
       - name: iids
         required: false
-        description: The IIDs of the milestones
+        description: Return only the milestones having the given `iid`. Ignored if
+          `include_ancestors` is `true`.
         schema:
           type: array
           items:
@@ -24289,8 +24287,8 @@ paths:
         in: query
       - name: include_parent_milestones
         required: false
-        description: 'Deprecated: see `include_ancestors`. Mutually exclusive with
-          `include_ancestors`.'
+        description: If `true`, includes milestones from all parent groups. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298).
+          Use `include_ancestors` instead. Mutually exclusive with `include_ancestors`.
         schema:
           type: boolean
           nullable: true
@@ -28085,7 +28083,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28093,7 +28091,7 @@ paths:
         in: path
       - name: with_content
         required: false
-        description: Include pages' content
+        description: If `true`, includes the content of each wiki page.
         schema:
           type: boolean
           default: false
@@ -28121,7 +28119,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28154,7 +28152,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28162,20 +28160,20 @@ paths:
         in: path
       - name: slug
         required: true
-        description: The slug of a wiki page
+        description: URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.
         schema:
           type: string
         in: path
       - name: version
         required: false
-        description: The version hash of a wiki page
+        description: Version SHA of the wiki page.
         schema:
           type: string
           nullable: true
         in: query
       - name: render_html
         required: false
-        description: Render content to HTML
+        description: If `true`, returns the rendered HTML of the wiki page.
         schema:
           type: boolean
           default: false
@@ -28202,7 +28200,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28210,7 +28208,7 @@ paths:
         in: path
       - name: slug
         required: true
-        description: The slug of a wiki page
+        description: URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.
         schema:
           type: string
         in: path
@@ -28236,7 +28234,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28244,7 +28242,7 @@ paths:
         in: path
       - name: slug
         required: true
-        description: The slug of a wiki page
+        description: URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.
         schema:
           type: string
         in: path
@@ -28270,7 +28268,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28305,7 +28303,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28313,7 +28311,7 @@ paths:
         in: path
       - name: with_content
         required: false
-        description: Include pages' content
+        description: If `true`, includes the content of each wiki page.
         schema:
           type: boolean
           default: false
@@ -28341,7 +28339,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28374,7 +28372,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28382,20 +28380,20 @@ paths:
         in: path
       - name: slug
         required: true
-        description: The slug of a wiki page
+        description: URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.
         schema:
           type: string
         in: path
       - name: version
         required: false
-        description: The version hash of a wiki page
+        description: Version SHA of the wiki page.
         schema:
           type: string
           nullable: true
         in: query
       - name: render_html
         required: false
-        description: Render content to HTML
+        description: If `true`, returns the rendered HTML of the wiki page.
         schema:
           type: boolean
           default: false
@@ -28422,7 +28420,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28430,7 +28428,7 @@ paths:
         in: path
       - name: slug
         required: true
-        description: The slug of a wiki page
+        description: URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.
         schema:
           type: string
         in: path
@@ -28456,7 +28454,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -28464,7 +28462,7 @@ paths:
         in: path
       - name: slug
         required: true
-        description: The slug of a wiki page
+        description: URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.
         schema:
           type: string
         in: path
@@ -28490,7 +28488,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group or project
+        description: ID or URL-encoded path of the group or project.
         schema:
           oneOf:
           - type: string
@@ -38621,7 +38619,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38645,8 +38643,7 @@ paths:
         example: 20
       - name: order_by
         required: false
-        description: Return packages ordered by `created_at`, `name`, `version` or
-          `type` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -38658,7 +38655,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return packages sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -38668,7 +38665,7 @@ paths:
         in: query
       - name: package_type
         required: false
-        description: Return packages of a certain type
+        description: Filter packages by type.
         schema:
           type: string
           enum:
@@ -38691,28 +38688,29 @@ paths:
         in: query
       - name: package_name
         required: false
-        description: Return packages with this name
+        description: Filter packages by name, using a fuzzy search.
         schema:
           type: string
           nullable: true
         in: query
       - name: package_version
         required: false
-        description: Return packages with this version
+        description: Filter packages by version. When used together with `include_versionless`,
+          versionless packages are not returned.
         schema:
           type: string
           nullable: true
         in: query
       - name: include_versionless
         required: false
-        description: Returns packages without a version
+        description: If `true`, includes versionless packages in the response.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: status
         required: false
-        description: Return packages with specified status
+        description: Filter packages by status.
         schema:
           type: string
           enum:
@@ -38748,7 +38746,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38756,7 +38754,7 @@ paths:
         in: path
       - name: package_id
         required: true
-        description: The ID of a package
+        description: ID of the package.
         schema:
           type: integer
         in: path
@@ -38778,7 +38776,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38786,7 +38784,7 @@ paths:
         in: path
       - name: package_id
         required: true
-        description: The ID of a package
+        description: ID of the package.
         schema:
           type: integer
         in: path
@@ -38817,7 +38815,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38843,13 +38841,13 @@ paths:
         example: 20
       - name: package_id
         required: true
-        description: The ID of a package
+        description: ID of the package.
         schema:
           type: integer
         in: path
       - name: cursor
         required: false
-        description: Cursor for obtaining the next set of records
+        description: Cursor for obtaining the next set of records.
         schema:
           type: string
           nullable: true
@@ -38880,7 +38878,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38907,7 +38905,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38945,7 +38943,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -38994,7 +38992,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of user project
+        description: ID of the project.
         schema:
           type: integer
         in: path
@@ -39031,7 +39029,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -39079,7 +39077,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of user project
+        description: ID of the project.
         schema:
           type: integer
         in: path
@@ -39112,14 +39110,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of user project
+        description: ID of the project.
         schema:
           type: integer
         in: path
         example: 1
       - name: target_group_id
         required: true
-        description: ID of the group to be removed from the allowlist
+        description: ID of the group to remove from the CI/CD job token groups allowlist.
         schema:
           type: integer
         in: path
@@ -39146,14 +39144,15 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID of user project
+        description: ID of the project.
         schema:
           type: integer
         in: path
         example: 1
       - name: target_project_id
         required: true
-        description: ID of the project to be removed from the allowlist
+        description: ID of the project to remove from the CI/CD job token inbound
+          allowlist.
         schema:
           type: integer
         in: path
@@ -53222,7 +53221,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The group ID
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -53257,7 +53256,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The group ID
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -53279,7 +53278,8 @@ paths:
         example: 20
       - name: query
         required: false
-        description: A query string to search for members
+        description: Return only invitations sent to this email address. Must match
+          exactly. If omitted, returns all invitations.
         schema:
           type: string
           nullable: true
@@ -53305,7 +53305,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The group ID
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -53342,7 +53342,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The group ID
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -53374,7 +53374,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -53409,7 +53409,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -53431,7 +53431,8 @@ paths:
         example: 20
       - name: query
         required: false
-        description: A query string to search for members
+        description: Return only invitations sent to this email address. Must match
+          exactly. If omitted, returns all invitations.
         schema:
           type: string
           nullable: true
@@ -53457,7 +53458,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -53494,7 +53495,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The project ID
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -60627,9 +60628,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID of a group or URL-encoded path of the group owned by the authenticated
-                user
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -60669,9 +60668,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID of a group or URL-encoded path of the group owned by the authenticated
-                user
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -60703,15 +60700,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID of a group or URL-encoded path of the group owned by the authenticated
-                user
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: key
         required: true
-        description: The key of the variable
+        description: Key of the group variable. Must be 255 characters or fewer and
+          contain only `A-Z`, `a-z`, `0-9`, and `_`.
         schema:
           type: string
         in: path
@@ -60736,15 +60732,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID of a group or URL-encoded path of the group owned by the authenticated
-                user
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: key
         required: true
-        description: The key of a variable
+        description: Key of the group variable. Must be 255 characters or fewer and
+          contain only `A-Z`, `a-z`, `0-9`, and `_`.
         schema:
           type: string
         in: path
@@ -60775,15 +60770,14 @@ paths:
       parameters:
       - name: id
         required: true
-        description: |-
-          The ID of a group or URL-encoded path of the group owned by the authenticated
-                user
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: key
         required: true
-        description: The key of a variable
+        description: Key of the group variable. Must be 255 characters or fewer and
+          contain only `A-Z`, `a-z`, `0-9`, and `_`.
         schema:
           type: string
         in: path
@@ -60890,7 +60884,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: ID or URL-encoded path of the group
+        description: ID or URL-encoded path of the group.
         schema:
           oneOf:
           - type: string
@@ -60898,7 +60892,7 @@ paths:
         in: path
       - name: exclude_subgroups
         required: false
-        description: Determines if subgroups should be excluded
+        description: If `true`, excludes packages from subgroup projects.
         schema:
           type: boolean
           default: false
@@ -60921,8 +60915,7 @@ paths:
         example: 20
       - name: order_by
         required: false
-        description: Return packages ordered by `created_at`, `name`, `version` or
-          `type` fields.
+        description: Sort results by the specified field.
         schema:
           type: string
           enum:
@@ -60935,7 +60928,7 @@ paths:
         in: query
       - name: sort
         required: false
-        description: Return packages sorted in `asc` or `desc` order.
+        description: Sort results in ascending or descending order.
         schema:
           type: string
           enum:
@@ -60945,7 +60938,7 @@ paths:
         in: query
       - name: package_type
         required: false
-        description: Return packages of a certain type
+        description: Filter packages by type.
         schema:
           type: string
           enum:
@@ -60968,28 +60961,29 @@ paths:
         in: query
       - name: package_name
         required: false
-        description: Return packages with this name
+        description: Filter packages by name, using a fuzzy search.
         schema:
           type: string
           nullable: true
         in: query
       - name: package_version
         required: false
-        description: Return packages with this version
+        description: Filter packages by version. When used together with `include_versionless`,
+          versionless packages are not returned.
         schema:
           type: string
           nullable: true
         in: query
       - name: include_versionless
         required: false
-        description: Returns packages without a version
+        description: If `true`, includes versionless packages in the response.
         schema:
           type: boolean
           nullable: true
         in: query
       - name: status
         required: false
-        description: Return packages with specified status
+        description: Filter packages by status.
         schema:
           type: string
           enum:
@@ -72943,7 +72937,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -72985,7 +72979,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -72994,7 +72988,7 @@ paths:
         example: 18
       - name: ref
         required: true
-        description: The commit sha or name of a branch or tag
+        description: Name of the branch or tag to run the pipeline on.
         schema:
           type: string
         in: path
@@ -73032,7 +73026,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73079,7 +73073,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73117,7 +73111,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73126,7 +73120,7 @@ paths:
         example: 18
       - name: trigger_id
         required: true
-        description: The trigger token ID
+        description: ID of the trigger token.
         schema:
           type: integer
         in: path
@@ -73155,7 +73149,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73164,7 +73158,7 @@ paths:
         example: 18
       - name: trigger_id
         required: true
-        description: The trigger token ID
+        description: ID of the trigger token.
         schema:
           type: integer
         in: path
@@ -73196,7 +73190,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project
+        description: ID or URL-encoded path of the project.
         schema:
           oneOf:
           - type: string
@@ -73205,7 +73199,7 @@ paths:
         example: 18
       - name: trigger_id
         required: true
-        description: The trigger token ID
+        description: ID of the trigger token.
         schema:
           type: integer
         in: path
@@ -80198,8 +80192,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -80221,7 +80214,7 @@ paths:
         example: 20
       - name: name
         required: false
-        description: Name for the badge
+        description: Name of the badge.
         schema:
           type: string
           nullable: true
@@ -80246,8 +80239,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
@@ -80279,21 +80271,20 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: link_url
         required: true
-        description: URL of the badge link
+        description: URL of the badge link.
         schema:
           type: string
           nullable: true
         in: query
       - name: image_url
         required: true
-        description: URL of the badge image
+        description: URL of the badge image.
         schema:
           type: string
           nullable: true
@@ -80319,14 +80310,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: badge_id
         required: true
-        description: The badge ID
+        description: ID of the badge.
         schema:
           type: integer
         in: path
@@ -80350,14 +80340,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: badge_id
         required: true
-        description: The badge ID
+        description: ID of the badge.
         schema:
           type: integer
         in: path
@@ -80383,14 +80372,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the group owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the group.
         schema:
           type: string
         in: path
       - name: badge_id
         required: true
-        description: The badge ID
+        description: ID of the badge.
         schema:
           type: integer
         in: path
@@ -80417,8 +80405,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -80440,7 +80427,7 @@ paths:
         example: 20
       - name: name
         required: false
-        description: Name for the badge
+        description: Name of the badge.
         schema:
           type: string
           nullable: true
@@ -80465,8 +80452,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
@@ -80498,21 +80484,20 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: link_url
         required: true
-        description: URL of the badge link
+        description: URL of the badge link.
         schema:
           type: string
           nullable: true
         in: query
       - name: image_url
         required: true
-        description: URL of the badge image
+        description: URL of the badge image.
         schema:
           type: string
           nullable: true
@@ -80538,14 +80523,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: badge_id
         required: true
-        description: The badge ID
+        description: ID of the badge.
         schema:
           type: integer
         in: path
@@ -80569,14 +80553,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: badge_id
         required: true
-        description: The badge ID
+        description: ID of the badge.
         schema:
           type: integer
         in: path
@@ -80602,14 +80585,13 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The ID or URL-encoded path of the project owned by the authenticated
-          user.
+        description: ID or URL-encoded path of the project.
         schema:
           type: string
         in: path
       - name: badge_id
         required: true
-        description: The badge ID
+        description: ID of the badge.
         schema:
           type: integer
         in: path
@@ -82857,7 +82839,8 @@ paths:
       parameters:
       - name: key
         required: true
-        description: The key of a variable
+        description: Key of the instance variable. Must be 255 characters or fewer
+          and contain only `A-Z`, `a-z`, `0-9`, and `_`.
         schema:
           type: string
         in: path
@@ -82881,7 +82864,8 @@ paths:
       parameters:
       - name: key
         required: true
-        description: The key of a variable
+        description: Key of the instance variable. Must be 255 characters or fewer
+          and contain only `A-Z`, `a-z`, `0-9`, and `_`.
         schema:
           type: string
         in: path
@@ -82911,7 +82895,8 @@ paths:
       parameters:
       - name: key
         required: true
-        description: The key of a variable
+        description: Key of the instance variable. Must be 255 characters or fewer
+          and contain only `A-Z`, `a-z`, `0-9`, and `_`.
         schema:
           type: string
         in: path
@@ -82990,7 +82975,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: Broadcast message ID
+        description: ID of the broadcast message.
         schema:
           type: integer
         in: path
@@ -83014,7 +82999,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: Broadcast message ID
+        description: ID of the broadcast message.
         schema:
           type: integer
         in: path
@@ -83044,7 +83029,7 @@ paths:
       parameters:
       - name: id
         required: true
-        description: Broadcast message ID
+        description: ID of the broadcast message.
         schema:
           type: integer
         in: path
@@ -102303,22 +102288,22 @@ components:
       properties:
         packs:
           type: array
-          description: An array of additional purchased minutes packs
+          description: Array of additional purchased minute packs.
           items:
             type: object
             properties:
               number_of_minutes:
                 type: integer
-                description: Number of additional minutes purchased
+                description: Number of additional minutes purchased.
                 nullable: true
               expires_at:
                 type: string
                 format: date
-                description: The expiry date for the purchase
+                description: Date when the purchase expires.
                 nullable: true
               purchase_xid:
                 type: string
-                description: Purchase ID for the additional minutes
+                description: Purchase ID for the additional minutes.
                 nullable: true
             required:
             - number_of_minutes
@@ -102565,11 +102550,11 @@ components:
       properties:
         file_path:
           type: string
-          description: The project relative path of the file to scan
+          description: Path of the file to scan, relative to the project.
           nullable: true
         content:
           type: string
-          description: The content of the file to scan
+          description: Content of the file to scan.
           nullable: true
       required:
       - file_path
@@ -103458,8 +103443,10 @@ components:
           nullable: true
         source_branch:
           type: string
-          description: Source branch for the flow. Uses the default branch when not
-            specified. Applies only when the flow runs in a CI pipeline.
+          description: Source branch for the flow. When not specified, a flow whose
+            goal names a pipeline or merge request, such as fix_pipeline/v1, uses
+            its branch, and other flows use the default branch. Applies only when
+            the flow runs in a CI pipeline.
           example: main
           nullable: true
         environment:
@@ -104827,21 +104814,22 @@ components:
       properties:
         comment:
           type: string
-          description: Comment related to the vulnerability
+          description: Comment related to the vulnerability.
           nullable: true
     postApiV4VulnerabilitiesIdRevertRequest:
       type: object
       properties:
         comment:
           type: string
-          description: Comment related to the vulnerability
+          description: Comment related to the vulnerability.
           nullable: true
     postApiV4ProjectsIdVulnerabilitiesRequest:
       type: object
       properties:
         finding_id:
           type: integer
-          description: The id of confirmed vulnerability finding
+          description: ID of the vulnerability finding to create the vulnerability
+            from.
           nullable: true
       required:
       - finding_id
@@ -104923,7 +104911,7 @@ components:
       properties:
         name:
           type: string
-          description: The name of the license
+          description: Name of the license.
           example: MIT
           nullable: true
         approval_status:
@@ -104931,7 +104919,7 @@ components:
           enum:
           - allowed
           - denied
-          description: The approval status of the license.
+          description: Approval status of the license.
           minLength: 1
       required:
       - name
@@ -104941,7 +104929,7 @@ components:
       properties:
         name:
           type: string
-          description: The name of the license
+          description: Name of the license.
           example: MIT
           nullable: true
         approval_status:
@@ -104949,7 +104937,7 @@ components:
           enum:
           - allowed
           - denied
-          description: The approval status of the license.
+          description: Approval status of the license.
           nullable: true
     postApiV4GroupsIdManagePersonalAccessTokensPatIdRotateRequest:
       type: object
@@ -105983,21 +105971,24 @@ components:
       properties:
         sha:
           type: string
-          description: If present, then the SHA must match the HEAD of the source
-            branch, otherwise the merge fails.
+          description: SHA that must match the `HEAD` of the source branch, otherwise
+            the merge fails.
           nullable: true
         squash:
           type: boolean
-          description: When true, the commits will be squashed into a single commit
-            on merge
+          description: If `true`, the commits are squashed into a single commit on
+            merge.
           nullable: true
         when_pipeline_succeeds:
           type: boolean
-          description: Deprecated. Use the auto_merge parameter instead.
+          description: "[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521290)
+            in GitLab 17.11. Use `auto_merge` instead."
           nullable: true
         auto_merge:
           type: boolean
-          description: When true, this merge request will be set to auto merge
+          description: If `true`, the merge request is added to the merge train when
+            checks pass. If `false` or unspecified, it is added to the merge train
+            immediately.
           nullable: true
     postApiV4GroupsIdPushRuleRequest:
       type: object
@@ -106605,13 +106596,13 @@ components:
       properties:
         cn:
           type: string
-          description: The CN of a LDAP group. Exactly one of `cn`, `filter` must
-            be provided.
+          description: CN of an LDAP group. Exactly one of `cn`, `filter` must be
+            provided.
           nullable: true
         filter:
           type: string
-          description: The LDAP filter for the group. Exactly one of `cn`, `filter`
-            must be provided.
+          description: LDAP filter for the group. Exactly one of `cn`, `filter` must
+            be provided.
           nullable: true
         group_access:
           type: integer
@@ -106624,14 +106615,15 @@ components:
           - 30
           - 40
           - 50
-          description: Access level for members of the LDAP group
+          description: Default access level for members of the LDAP group.
         provider:
           type: string
-          description: LDAP provider for the LDAP group link
+          description: Name of the provider for the LDAP group link.
           nullable: true
         member_role_id:
           type: integer
-          description: The ID of the Member Role for members of the LDAP group
+          description: ID of the member role for members of the LDAP group. Ultimate
+            only.
           nullable: true
       required:
       - group_access
@@ -108548,8 +108540,8 @@ components:
       properties:
         max_results:
           type: integer
-          description: Maximum number of experiments to fetch in a page. Default is
-            200, maximum is 1000.
+          description: Maximum number of experiments to fetch in a page. The maximum
+            is 1000.
           default: 200
         order_by:
           type: string
@@ -108558,26 +108550,26 @@ components:
           default: created_at DESC
         page_token:
           type: string
-          description: Token for pagination
+          description: Token for pagination.
           nullable: true
         filter:
           type: string
-          description: This parameter is ignored
+          description: Ignored. Accepted for MLflow API compatibility.
           nullable: true
     postApiV4ProjectsIdMlMlflowApi20MlflowExperimentsCreateRequest:
       type: object
       properties:
         name:
           type: string
-          description: Experiment name
+          description: Name of the experiment.
           nullable: true
         tags:
           type: array
-          description: Tags with information about the experiment
+          description: Tags containing metadata about the experiment.
           nullable: true
         artifact_location:
           type: string
-          description: This will be ignored
+          description: Ignored. Accepted for MLflow API compatibility.
           nullable: true
       required:
       - name
@@ -112756,11 +112748,11 @@ components:
           nullable: true
         due_date:
           type: string
-          description: The due date of the milestone. The ISO 8601 date format (%Y-%m-%d)
+          description: Due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
           nullable: true
         start_date:
           type: string
-          description: The start date of the milestone. The ISO 8601 date format (%Y-%m-%d)
+          description: Start date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
           nullable: true
       required:
       - title
@@ -112777,8 +112769,8 @@ components:
           enum:
           - close
           - activate
-          description: The state event of the milestone. At least one of `title`,
-            `description`, `start_date`, `due_date`, `state_event` must be provided.
+          description: State event of the milestone. At least one of `title`, `description`,
+            `start_date`, `due_date`, `state_event` must be provided.
           nullable: true
         description:
           type: string
@@ -112787,13 +112779,13 @@ components:
           nullable: true
         due_date:
           type: string
-          description: The due date of the milestone. The ISO 8601 date format (%Y-%m-%d).
+          description: Due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
             At least one of `title`, `description`, `start_date`, `due_date`, `state_event`
             must be provided.
           nullable: true
         start_date:
           type: string
-          description: The start date of the milestone. The ISO 8601 date format (%Y-%m-%d).
+          description: Start date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
             At least one of `title`, `description`, `start_date`, `due_date`, `state_event`
             must be provided.
           nullable: true
@@ -113537,11 +113529,11 @@ components:
           nullable: true
         due_date:
           type: string
-          description: The due date of the milestone. The ISO 8601 date format (%Y-%m-%d)
+          description: Due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
           nullable: true
         start_date:
           type: string
-          description: The start date of the milestone. The ISO 8601 date format (%Y-%m-%d)
+          description: Start date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
           nullable: true
       required:
       - title
@@ -113558,8 +113550,8 @@ components:
           enum:
           - close
           - activate
-          description: The state event of the milestone. At least one of `title`,
-            `description`, `start_date`, `due_date`, `state_event` must be provided.
+          description: State event of the milestone. At least one of `title`, `description`,
+            `start_date`, `due_date`, `state_event` must be provided.
           nullable: true
         description:
           type: string
@@ -113568,13 +113560,13 @@ components:
           nullable: true
         due_date:
           type: string
-          description: The due date of the milestone. The ISO 8601 date format (%Y-%m-%d).
+          description: Due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
             At least one of `title`, `description`, `start_date`, `due_date`, `state_event`
             must be provided.
           nullable: true
         start_date:
           type: string
-          description: The start date of the milestone. The ISO 8601 date format (%Y-%m-%d).
+          description: Start date of the milestone, in ISO 8601 format (`YYYY-MM-DD`).
             At least one of `title`, `description`, `start_date`, `due_date`, `state_event`
             must be provided.
           nullable: true
@@ -114297,20 +114289,20 @@ components:
       properties:
         title:
           type: string
-          description: Title of a wiki page
+          description: Title of the wiki page.
           nullable: true
         front_matter:
           type: object
-          description: Object that contains YAML frontmatter
+          description: YAML front matter of the wiki page.
           properties:
             title:
               type: string
-              description: Frontmatter title of a wiki page
+              description: Title in the front matter of the wiki page.
               nullable: true
           nullable: true
         content:
           type: string
-          description: Content of a wiki page
+          description: Content of the wiki page.
           nullable: true
         format:
           type: string
@@ -114319,8 +114311,7 @@ components:
           - rdoc
           - asciidoc
           - org
-          description: Format of a wiki page. Available formats are markdown, rdoc,
-            asciidoc and org
+          description: Format of the wiki page.
           default: markdown
       required:
       - title
@@ -114330,21 +114321,21 @@ components:
       properties:
         title:
           type: string
-          description: Title of a wiki page. At least one of `content`, `title`, `format`
-            must be provided.
+          description: Title of the wiki page. At least one of `content`, `title`,
+            `format` must be provided.
           nullable: true
         front_matter:
           type: object
-          description: Object that contains YAML frontmatter
+          description: YAML front matter of the wiki page.
           properties:
             title:
               type: string
-              description: Frontmatter title of a wiki page
+              description: Title in the front matter of the wiki page.
               nullable: true
           nullable: true
         content:
           type: string
-          description: Content of a wiki page. At least one of `content`, `title`,
+          description: Content of the wiki page. At least one of `content`, `title`,
             `format` must be provided.
           nullable: true
         format:
@@ -114354,9 +114345,8 @@ components:
           - rdoc
           - asciidoc
           - org
-          description: Format of a wiki page. Available formats are markdown, rdoc,
-            asciidoc and org. At least one of `content`, `title`, `format` must be
-            provided.
+          description: Format of the wiki page. At least one of `content`, `title`,
+            `format` must be provided.
           default: markdown
     postApiV4GroupsIdWikisAttachmentsRequest:
       type: object
@@ -114377,20 +114367,20 @@ components:
       properties:
         title:
           type: string
-          description: Title of a wiki page
+          description: Title of the wiki page.
           nullable: true
         front_matter:
           type: object
-          description: Object that contains YAML frontmatter
+          description: YAML front matter of the wiki page.
           properties:
             title:
               type: string
-              description: Frontmatter title of a wiki page
+              description: Title in the front matter of the wiki page.
               nullable: true
           nullable: true
         content:
           type: string
-          description: Content of a wiki page
+          description: Content of the wiki page.
           nullable: true
         format:
           type: string
@@ -114399,8 +114389,7 @@ components:
           - rdoc
           - asciidoc
           - org
-          description: Format of a wiki page. Available formats are markdown, rdoc,
-            asciidoc and org
+          description: Format of the wiki page.
           default: markdown
       required:
       - title
@@ -114410,21 +114399,21 @@ components:
       properties:
         title:
           type: string
-          description: Title of a wiki page. At least one of `content`, `title`, `format`
-            must be provided.
+          description: Title of the wiki page. At least one of `content`, `title`,
+            `format` must be provided.
           nullable: true
         front_matter:
           type: object
-          description: Object that contains YAML frontmatter
+          description: YAML front matter of the wiki page.
           properties:
             title:
               type: string
-              description: Frontmatter title of a wiki page
+              description: Title in the front matter of the wiki page.
               nullable: true
           nullable: true
         content:
           type: string
-          description: Content of a wiki page. At least one of `content`, `title`,
+          description: Content of the wiki page. At least one of `content`, `title`,
             `format` must be provided.
           nullable: true
         format:
@@ -114434,9 +114423,8 @@ components:
           - rdoc
           - asciidoc
           - org
-          description: Format of a wiki page. Available formats are markdown, rdoc,
-            asciidoc and org. At least one of `content`, `title`, `format` must be
-            provided.
+          description: Format of the wiki page. At least one of `content`, `title`,
+            `format` must be provided.
           default: markdown
     postApiV4ProjectsIdWikisAttachmentsRequest:
       type: object
@@ -118100,7 +118088,7 @@ components:
       properties:
         target_project_id:
           type: integer
-          description: ID of target project
+          description: ID of the project to add to the CI/CD job token inbound allowlist.
           example: 2
           nullable: true
       required:
@@ -118110,7 +118098,7 @@ components:
       properties:
         target_group_id:
           type: integer
-          description: ID of target group
+          description: ID of the group to add to the CI/CD job token groups allowlist.
           example: 2
           nullable: true
       required:
@@ -122439,7 +122427,8 @@ components:
           - 40
           - 50
           - 5
-          description: 'A valid access level (defaults: `30`, developer access level)'
+          description: Access level to grant to the invited user. For a list of values,
+            see [roles](https://docs.gitlab.com/user/permissions/#default-roles).
         email:
           type: array
           items:
@@ -122451,17 +122440,17 @@ components:
           type: array
           items:
             type: string
-          description: The user ID of the new member or multiple IDs separated by
-            commas.
+          description: ID of the user to invite, or multiple IDs separated by commas.
+            Required if `email` is not provided.
           nullable: true
         expires_at:
           type: string
           format: date-time
-          description: Date string in the format YEAR-MONTH-DAY
+          description: Date when the invitation expires.
           nullable: true
         invite_source:
           type: string
-          description: Source that triggered the member creation process
+          description: Source of the invitation that starts the member creation process.
           default: invitations-api
         member_role_id:
           type: integer
@@ -122483,12 +122472,13 @@ components:
           - 30
           - 40
           - 50
-          description: 'A valid access level (defaults: `30`, developer access level)'
+          description: Access level to grant to the invited user. For a list of values,
+            see [roles](https://docs.gitlab.com/user/permissions/#default-roles).
           nullable: true
         expires_at:
           type: string
           format: date-time
-          description: Date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
+          description: Date when the invitation expires.
           nullable: true
         member_role_id:
           type: integer
@@ -122509,7 +122499,8 @@ components:
           - 40
           - 50
           - 5
-          description: 'A valid access level (defaults: `30`, developer access level)'
+          description: Access level to grant to the invited user. For a list of values,
+            see [roles](https://docs.gitlab.com/user/permissions/#default-roles).
         email:
           type: array
           items:
@@ -122521,17 +122512,17 @@ components:
           type: array
           items:
             type: string
-          description: The user ID of the new member or multiple IDs separated by
-            commas.
+          description: ID of the user to invite, or multiple IDs separated by commas.
+            Required if `email` is not provided.
           nullable: true
         expires_at:
           type: string
           format: date-time
-          description: Date string in the format YEAR-MONTH-DAY
+          description: Date when the invitation expires.
           nullable: true
         invite_source:
           type: string
-          description: Source that triggered the member creation process
+          description: Source of the invitation that starts the member creation process.
           default: invitations-api
         member_role_id:
           type: integer
@@ -122553,12 +122544,13 @@ components:
           - 30
           - 40
           - 50
-          description: 'A valid access level (defaults: `30`, developer access level)'
+          description: Access level to grant to the invited user. For a list of values,
+            see [roles](https://docs.gitlab.com/user/permissions/#default-roles).
           nullable: true
         expires_at:
           type: string
           format: date-time
-          description: Date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
+          description: Date when the invitation expires.
           nullable: true
         member_role_id:
           type: integer
@@ -130001,29 +129993,29 @@ components:
       properties:
         key:
           type: string
-          description: |-
-            The ID of a group or URL-encoded path of the group owned by the
-                    authenticated user
+          description: Key of the group variable. Must be 255 characters or fewer
+            and contain only `A-Z`, `a-z`, `0-9`, and `_`.
           nullable: true
         value:
           type: string
-          description: The value of a variable
+          description: Value of the variable.
           nullable: true
         protected:
           type: boolean
-          description: Whether the variable is protected
+          description: If `true`, the variable is protected.
           nullable: true
         masked_and_hidden:
           type: boolean
-          description: Whether the variable is masked and hidden
+          description: If `true`, the variable is masked and hidden.
           nullable: true
         masked:
           type: boolean
-          description: Whether the variable is masked
+          description: If `true`, the variable is masked.
           nullable: true
         raw:
           type: boolean
-          description: Whether the variable will be expanded
+          description: If `true`, the variable is treated as a raw string. If `false`,
+            the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).
           nullable: true
         variable_type:
           type: string
@@ -130038,7 +130030,7 @@ components:
           nullable: true
         description:
           type: string
-          description: The description of the variable
+          description: Description of the variable. Limited to 255 characters.
           nullable: true
       required:
       - key
@@ -130048,19 +130040,20 @@ components:
       properties:
         value:
           type: string
-          description: The value of a variable
+          description: Value of the variable.
           nullable: true
         protected:
           type: boolean
-          description: Whether the variable is protected
+          description: If `true`, the variable is protected.
           nullable: true
         masked:
           type: boolean
-          description: Whether the variable is masked
+          description: If `true`, the variable is masked.
           nullable: true
         raw:
           type: boolean
-          description: Whether the variable will be expanded
+          description: If `true`, the variable is treated as a raw string. If `false`,
+            the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).
           nullable: true
         variable_type:
           type: string
@@ -130075,7 +130068,7 @@ components:
           nullable: true
         description:
           type: string
-          description: The description of the variable
+          description: Description of the variable. Limited to 255 characters.
           nullable: true
     postApiV4GroupsIdPlaceholderReassignmentsRequest:
       type: object
@@ -132465,19 +132458,22 @@ components:
       properties:
         token:
           type: string
-          description: The unique token of trigger or job token
+          description: Trigger token or CI/CD job token.
           example: 6d056f63e50fe6f8c5f8f4aa10edb7
           nullable: true
         variables:
           type: object
-          description: The list of variables to be injected into build
+          description: 'Map of pipeline variables, as key-value pairs, for example
+            `{ VAR1: "value1", VAR2: "value2" }`.'
           example:
             VAR1: value1
             VAR2: value2
           nullable: true
         inputs:
           type: object
-          description: The list of inputs to be used to create the pipeline.
+          description: Map of inputs, as key-value pairs, to use when creating the
+            pipeline. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548)
+            in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
           nullable: true
       required:
       - token
@@ -132486,19 +132482,22 @@ components:
       properties:
         token:
           type: string
-          description: The unique token of trigger or job token
+          description: Trigger token or CI/CD job token.
           example: 6d056f63e50fe6f8c5f8f4aa10edb7
           nullable: true
         variables:
           type: object
-          description: The list of variables to be injected into build
+          description: 'Map of pipeline variables, as key-value pairs, for example
+            `{ VAR1: "value1", VAR2: "value2" }`.'
           example:
             VAR1: value1
             VAR2: value2
           nullable: true
         inputs:
           type: object
-          description: The list of inputs to be used to create the pipeline.
+          description: Map of inputs, as key-value pairs, to use when creating the
+            pipeline. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548)
+            in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
           nullable: true
       required:
       - token
@@ -132507,7 +132506,7 @@ components:
       properties:
         description:
           type: string
-          description: The trigger token description
+          description: Description of the trigger token.
           example: my trigger token description
           nullable: true
         expires_at:
@@ -132523,7 +132522,7 @@ components:
       properties:
         description:
           type: string
-          description: The trigger token description
+          description: Description of the trigger token.
           nullable: true
     postApiV4ProjectsIdPipelineSchedulesRequest:
       type: object
@@ -134383,15 +134382,15 @@ components:
       properties:
         link_url:
           type: string
-          description: URL of the badge link
+          description: URL of the badge link.
           nullable: true
         image_url:
           type: string
-          description: URL of the badge image
+          description: URL of the badge image.
           nullable: true
         name:
           type: string
-          description: Name for the badge
+          description: Name of the badge.
           nullable: true
       required:
       - link_url
@@ -134401,30 +134400,30 @@ components:
       properties:
         link_url:
           type: string
-          description: URL of the badge link
+          description: URL of the badge link.
           nullable: true
         image_url:
           type: string
-          description: URL of the badge image
+          description: URL of the badge image.
           nullable: true
         name:
           type: string
-          description: Name for the badge
+          description: Name of the badge.
           nullable: true
     postApiV4ProjectsIdBadgesRequest:
       type: object
       properties:
         link_url:
           type: string
-          description: URL of the badge link
+          description: URL of the badge link.
           nullable: true
         image_url:
           type: string
-          description: URL of the badge image
+          description: URL of the badge image.
           nullable: true
         name:
           type: string
-          description: Name for the badge
+          description: Name of the badge.
           nullable: true
       required:
       - link_url
@@ -134434,15 +134433,15 @@ components:
       properties:
         link_url:
           type: string
-          description: URL of the badge link
+          description: URL of the badge link.
           nullable: true
         image_url:
           type: string
-          description: URL of the badge image
+          description: URL of the badge image.
           nullable: true
         name:
           type: string
-          description: Name for the badge
+          description: Name of the badge.
           nullable: true
     postApiV4ProjectsIdIssuesIssueIidAwardEmojiRequest:
       type: object
@@ -134955,27 +134954,30 @@ components:
       properties:
         key:
           type: string
-          description: The key of the variable. Max 255 characters
+          description: Key of the instance variable. Must be 255 characters or fewer
+            and contain only `A-Z`, `a-z`, `0-9`, and `_`.
           nullable: true
         description:
           type: string
-          description: The description of the variable
+          description: Description of the variable. Limited to 255 characters.
           nullable: true
         value:
           type: string
-          description: The value of a variable
+          description: Value of the variable. Limited to 10,000 characters, or 50,000
+            characters for `file` variables.
           nullable: true
         protected:
           type: boolean
-          description: Whether the variable is protected
+          description: If `true`, the variable is protected.
           nullable: true
         masked:
           type: boolean
-          description: Whether the variable is masked
+          description: If `true`, the variable is masked.
           nullable: true
         raw:
           type: boolean
-          description: Whether the variable will be expanded
+          description: If `true`, the variable is treated as a raw string. If `false`,
+            the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).
           nullable: true
         variable_type:
           type: string
@@ -134992,23 +134994,25 @@ components:
       properties:
         description:
           type: string
-          description: The description of the variable
+          description: Description of the variable. Limited to 255 characters.
           nullable: true
         value:
           type: string
-          description: The value of a variable
+          description: Value of the variable. Limited to 10,000 characters, or 50,000
+            characters for `file` variables.
           nullable: true
         protected:
           type: boolean
-          description: Whether the variable is protected
+          description: If `true`, the variable is protected.
           nullable: true
         masked:
           type: boolean
-          description: Whether the variable is masked
+          description: If `true`, the variable is masked.
           nullable: true
         raw:
           type: boolean
-          description: Whether the variable will be expanded
+          description: If `true`, the variable is treated as a raw string. If `false`,
+            the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).
           nullable: true
         variable_type:
           type: string
@@ -135023,23 +135027,25 @@ components:
       properties:
         message:
           type: string
-          description: Message to display
+          description: Message to display.
           nullable: true
         starts_at:
           type: string
           format: date-time
-          description: Starting time
+          description: Starting time, in UTC. When creating a message, defaults to
+            the current time.
         ends_at:
           type: string
           format: date-time
-          description: Ending time
+          description: Ending time, in UTC. When creating a message, defaults to one
+            hour after the current time.
         color:
           type: string
-          description: Background color (Deprecated. Use "theme" instead.)
+          description: Background color hex code. Deprecated. Use `theme` instead.
           nullable: true
         font:
           type: string
-          description: Foreground color (Deprecated. Use "theme" instead.)
+          description: Foreground color hex code. Deprecated. Use `theme` instead.
           nullable: true
         target_access_levels:
           type: array
@@ -135052,22 +135058,22 @@ components:
             - 30
             - 40
             - 50
-          description: Target user roles
+          description: Target access levels (roles) of the broadcast message.
           nullable: true
         target_path:
           type: string
-          description: Target path
+          description: Target path of the broadcast message.
           nullable: true
         broadcast_type:
           type: string
           enum:
           - banner
           - notification
-          description: Broadcast type. Defaults to banner
+          description: Appearance type of the broadcast message.
           default: banner
         dismissable:
           type: boolean
-          description: Is dismissable
+          description: If `true`, the user can dismiss the message.
           nullable: true
         theme:
           type: string
@@ -135082,7 +135088,7 @@ components:
           - light-red
           - dark
           - light
-          description: The theme for the message
+          description: Color theme for the broadcast message. Applies only to banners.
           nullable: true
       required:
       - message
@@ -135091,25 +135097,27 @@ components:
       properties:
         message:
           type: string
-          description: Message to display
+          description: Message to display.
           nullable: true
         starts_at:
           type: string
           format: date-time
-          description: Starting time
+          description: Starting time, in UTC. When creating a message, defaults to
+            the current time.
           nullable: true
         ends_at:
           type: string
           format: date-time
-          description: Ending time
+          description: Ending time, in UTC. When creating a message, defaults to one
+            hour after the current time.
           nullable: true
         color:
           type: string
-          description: Background color (Deprecated. Use "theme" instead.)
+          description: Background color hex code. Deprecated. Use `theme` instead.
           nullable: true
         font:
           type: string
-          description: Foreground color (Deprecated. Use "theme" instead.)
+          description: Foreground color hex code. Deprecated. Use `theme` instead.
           nullable: true
         target_access_levels:
           type: array
@@ -135122,22 +135130,22 @@ components:
             - 30
             - 40
             - 50
-          description: Target user roles
+          description: Target access levels (roles) of the broadcast message.
           nullable: true
         target_path:
           type: string
-          description: Target path
+          description: Target path of the broadcast message.
           nullable: true
         broadcast_type:
           type: string
           enum:
           - banner
           - notification
-          description: Broadcast Type
+          description: Appearance type of the broadcast message.
           nullable: true
         dismissable:
           type: boolean
-          description: Is dismissable
+          description: If `true`, the user can dismiss the message.
           nullable: true
         theme:
           type: string
@@ -135152,7 +135160,7 @@ components:
           - light-red
           - dark
           - light
-          description: The theme for the message
+          description: Color theme for the broadcast message. Applies only to banners.
           nullable: true
     putApiV4AdminBatchedBackgroundOperationsIdStopRequest:
       type: object

@@ -270,8 +270,11 @@ curl --request POST \
 Create a new Pages domain with an [automatic certificate](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md#enabling-lets-encrypt-integration-for-your-custom-domain):
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" \
-     --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "domain=ssl.domain.example" \
+  --form "auto_ssl_enabled=true" \
+  --url "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
 Example response:

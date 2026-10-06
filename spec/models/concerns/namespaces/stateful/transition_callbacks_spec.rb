@@ -222,6 +222,58 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
         expect(metadata['transfer_scheduled_at']).to eq(Time.current.as_json)
         expect(metadata['transfer_scheduled_by_user_id']).to eq(user.id)
       end
+
+      it 'clears the error recorded by a previous transfer' do
+        namespace.state_metadata[:transfer_last_error] = 'some error'
+        namespace.namespace_details.save!
+
+        namespace.schedule_transfer!(transition_user: user)
+
+        expect(namespace.reload.state_metadata['transfer_last_error']).to be_nil
+      end
+    end
+  end
+
+  describe '#set_transfer_error_data' do
+    before do
+      namespace.update!(state: initial_state)
+    end
+
+    context 'when cancelling from transfer_in_progress' do
+      let(:initial_state) { :transfer_in_progress }
+
+      it 'records the error, overriding the callback that clears transfer data' do
+        namespace.cancel_transfer!(transition_user: user, transfer_error: 'Namespace already taken')
+
+        expect(namespace.reload.transfer_last_error).to eq('Namespace already taken')
+      end
+
+      it 'truncates an over-long error' do
+        namespace.cancel_transfer!(transition_user: user, transfer_error: 'a' * 600)
+
+        expect(namespace.reload.transfer_last_error.length)
+          .to eq(described_class::TRANSFER_ERROR_MAX_LENGTH)
+      end
+    end
+
+    context 'when cancelling from transfer_scheduled' do
+      let(:initial_state) { :transfer_scheduled }
+
+      it 'records the error' do
+        namespace.cancel_transfer!(transition_user: user, transfer_error: 'Namespace already taken')
+
+        expect(namespace.reload.transfer_last_error).to eq('Namespace already taken')
+      end
+    end
+
+    context 'when no error is given' do
+      let(:initial_state) { :transfer_in_progress }
+
+      it 'leaves transfer_last_error unset' do
+        namespace.cancel_transfer!(transition_user: user)
+
+        expect(namespace.reload.transfer_last_error).to be_nil
+      end
     end
   end
 

@@ -53,7 +53,7 @@ To deploy the Agent Platform in an offline environment, complete the following s
 - GitLab 18.9 or later with an [offline cloud license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing).
 - A machine with internet connection to download artifacts.
 - [skopeo](https://github.com/containers/skopeo) and
-  [jq](https://jqlang.github.io/jq/) installed on
+  [jq](https://jqlang.org/) installed on
   the connected machine and the offline host
   (`dnf install --assumeyes skopeo jq` on Red Hat systems).
 - A method to transfer files to the offline environment

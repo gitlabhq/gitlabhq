@@ -7,6 +7,7 @@ module Gitlab
         include Gitlab::Import::MergeRequestHelpers
         include Gitlab::Import::UsernameMentionRewriter
         include ::Import::PlaceholderReferences::Pusher
+        include Gitlab::Utils::StrongMemoize
 
         attr_reader :pull_request, :project, :client, :user_finder,
           :milestone_finder, :issuable_finder
@@ -33,30 +34,19 @@ module Gitlab
             set_merge_request_assignees(mr)
             insert_git_data(mr, already_exists)
 
-            push_reference(project, mr, :author_id, pull_request.author&.id)
+            push_placeholder_references(mr)
 
-            # we only import one PR assignee
-            assignee = mr.merge_request_assignees.first
-            push_reference(project, assignee, :user_id, pull_request.assignee&.id) if assignee
+            mr
           end
         end
 
-        private
-
-        # Creates the merge request and returns its ID.
-        #
-        # This method will return `nil` if the merge request could not be
-        # created, otherwise it will return an Array containing the following
-        # values:
-        #
-        # 1. A MergeRequest instance.
-        # 2. A boolean indicating if the MR already exists.
-        def create_merge_request
+        # Returns the GitLab attributes for this representation, so a sync can reuse them.
+        def import_attributes
           author_id, author_found = user_finder.author_id_for(pull_request)
 
           description = MarkdownText.format(pull_request.description, pull_request.author, author_found, project: project, client: client)
 
-          attributes = {
+          {
             iid: pull_request.iid,
             title: pull_request.truncated_title,
             description: description,
@@ -71,12 +61,8 @@ module Gitlab
             updated_at: pull_request.updated_at,
             imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:github]
           }
-
-          mr = project.merge_requests.new(attributes.merge(importing: true))
-          mr.validate!
-
-          create_merge_request_without_hooks(project, attributes, pull_request.iid)
         end
+        strong_memoize_attr :import_attributes
 
         def set_merge_request_assignees(merge_request)
           assignee_id = user_finder.user_id_for(pull_request[:assignee], ghost: false)
@@ -90,6 +76,33 @@ module Gitlab
           # populated to ensure the merge request is in the right state
           # when the branch is created.
           create_source_branch_if_not_exists(merge_request)
+        end
+
+        def push_placeholder_references(merge_request)
+          push_reference(project, merge_request, :author_id, pull_request.author&.id)
+
+          # we only import one PR assignee
+          assignee = merge_request.merge_request_assignees.first
+          push_reference(project, assignee, :user_id, pull_request.assignee&.id) if assignee
+        end
+
+        private
+
+        # Creates the merge request and returns its ID.
+        #
+        # This method will return `nil` if the merge request could not be
+        # created, otherwise it will return an Array containing the following
+        # values:
+        #
+        # 1. A MergeRequest instance.
+        # 2. A boolean indicating if the MR already exists.
+        def create_merge_request
+          attributes = import_attributes
+
+          mr = project.merge_requests.new(attributes.merge(importing: true))
+          mr.validate!
+
+          create_merge_request_without_hooks(project, attributes, pull_request.iid)
         end
 
         # An imported merge request will not be mergeable unless the

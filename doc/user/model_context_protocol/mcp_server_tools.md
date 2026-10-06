@@ -343,7 +343,7 @@ Provide exactly one of `url` or `project_id`. Provide at most one of `flow`, `fl
 |-------------------------------|---------|----------|-------------|
 | `url`                         | string  | No       | Full GitLab URL of the project (for example, `https://gitlab.com/group/project`). Do not use with `project_id`. |
 | `project_id`                  | string  | No       | Numeric ID or full path of the project (for example, `gitlab-org/gitlab`). Do not use with `url`. |
-| `goal`                        | string  | Yes      | Natural-language goal for the session (for example, `Fix the flaky spec in issue #1234 and open a merge request`). |
+| `goal`                        | string  | Yes      | Natural-language goal for the session (for example, `Fix the flaky spec in issue #1234 and open a merge request`). Some flows take a URL instead, for example the failed pipeline's URL for `fix_pipeline/v1`. |
 | `flow`                        | string  | No       | Foundational flow reference (for example, `developer/v1`, `fix_pipeline/v1`). Defaults to `developer/v1` when no flow or agent is supplied. Do not use with `flow_item_id`, `ai_catalog_item_consumer_id`, or `agent`. |
 | `flow_item_id`                | integer | No       | AI Catalog item ID of a custom flow enabled in the project. The latest released version is run. Do not use with `flow`, `ai_catalog_item_consumer_id`, or `agent`. |
 | `ai_catalog_item_consumer_id` | integer | No       | ID of the AI Catalog item consumer that configures which flow to run. Use `list_duo_agents_and_flows` to find it. Do not use with `flow`, `flow_item_id`, or `agent`. |
@@ -356,8 +356,17 @@ A flow in beta runs only when beta and experimental features are turned on. For 
 A flow behind a feature flag runs only when that flag is enabled. If a flow doesn't meet these
 conditions, the tool returns an error.
 
-Some flows expect the goal in a specific format. For example, `code_review/v1` expects the goal
-to identify a merge request. The tool checks the goal before it starts the session.
+Some flows expect the goal in a specific format, and the tool checks it before it starts the session:
+
+- `fix_pipeline/v1` expects the URL of the failed pipeline, in the same project. The session runs
+  on the pipeline's branch. If the pipeline belongs to an open merge request, the flow posts its
+  suggested fix on that merge request. Otherwise, it opens a new merge request with the fix. If the
+  goal is not a pipeline in the project, the tool returns an error and does not start a session.
+- `code_review/v1` expects the URL or IID of a merge request. The session runs on the merge
+  request's source branch.
+
+These are the same branch and merge request that the flow uses when you start it from the
+pipeline or merge request in the GitLab UI.
 
 To start a foundational flow, use `flow`. If you pass a foundational flow's AI Catalog item ID to
 `flow_item_id`, the tool returns an error that names the `flow` value to use instead.

@@ -23,7 +23,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
   end
 
   describe '#js_pipeline_editor_data' do
-    let(:project) { create(:project, :small_repo) }
     let(:default_helper_data) do
       {
         "ci-config-path": project.ci_config_path_or_default,
@@ -59,6 +58,8 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
     subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }
 
     context 'with a project with commits' do
+      let(:project) { create(:project, :small_repo) }
+
       it 'returns pipeline editor data' do
         expect(pipeline_editor_data).to include(default_helper_data.merge({
           "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
@@ -79,8 +80,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
     end
 
     context 'with a project with no repository' do
-      let(:project) { create(:project) }
-
       it 'returns pipeline editor data' do
         expect(pipeline_editor_data).to include({
           "pipeline_etag" => '',
@@ -91,7 +90,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     context 'with a remote CI config' do
       before do
-        build(:commit, project: project)
         project.ci_config_path = 'http://example.com/path/to/ci/config.yml'
       end
 
@@ -102,7 +100,6 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
 
     context 'with a CI config from an external project' do
       before do
-        build(:commit, project: project)
         project.ci_config_path = '.gitlab-ci.yml@group/project'
       end
 
@@ -112,6 +109,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
     end
 
     context 'with a non-default branch name' do
+      let(:project) { create(:project, :small_repo) }
       let(:user) { create(:user) }
 
       before do

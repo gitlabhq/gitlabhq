@@ -19,6 +19,7 @@ describe('ReconciliationStep2', () => {
       propsData: {
         organizations: mockOrganizations,
         initialDefaultOrgGroupIds: [],
+        shouldCreateNewOrganization: true,
         ...props,
       },
       stubs: {
@@ -74,7 +75,21 @@ describe('ReconciliationStep2', () => {
   it('passes organization prop to organization card', () => {
     createComponent();
 
-    expect(findAllOrganizationCards().at(0).props('organization')).toEqual(mockOrganizations[0]);
+    expect(findAllOrganizationCards().at(0).props()).toEqual({
+      organization: mockOrganizations[0],
+      allowEditMode: true,
+    });
+  });
+
+  describe('when organization card emits update event', () => {
+    beforeEach(() => {
+      createComponent();
+      findAllOrganizationCards().at(0).vm.$emit('update', mockNewOrganization);
+    });
+
+    it('emits update-organization event', () => {
+      expect(wrapper.emitted('update-organization')).toEqual([[mockNewOrganization]]);
+    });
   });
 
   describe('when organization has groups', () => {

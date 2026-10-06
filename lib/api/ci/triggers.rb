@@ -11,7 +11,7 @@ module API
       urgency :low
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
+        requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.',
           documentation: { example: 18 }
       end
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -30,13 +30,17 @@ module API
           ]
         end
         params do
-          requires :ref, type: String, desc: 'The commit sha or name of a branch or tag', allow_blank: false,
+          requires :ref, type: String, desc: 'Name of the branch or tag to run the pipeline on.', allow_blank: false,
             documentation: { example: 'develop' }
-          requires :token, type: String, desc: 'The unique token of trigger or job token',
+          requires :token, type: String, desc: 'Trigger token or CI/CD job token.',
             documentation: { example: '6d056f63e50fe6f8c5f8f4aa10edb7' }
-          optional :variables, type: Hash, desc: 'The list of variables to be injected into build',
+          optional :variables, type: Hash, desc: 'Map of pipeline variables, as key-value pairs, for example `{ ' \
+                                             'VAR1: "value1", VAR2: "value2" }`.',
             documentation: { example: { VAR1: "value1", VAR2: "value2" } }
-          optional :inputs, type: Hash, desc: 'The list of inputs to be used to create the pipeline.'
+          optional :inputs, type: Hash, desc: 'Map of inputs, as key-value pairs, to use when creating the pipeline. ' \
+                                          '[Generally ' \
+                                          'available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in ' \
+                                          'GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.'
         end
         route_setting :authorization, skip_granular_token_authorization: :trigger_token_auth
         route_setting :log_safety, { unsafe: %w[inputs] }
@@ -98,7 +102,7 @@ module API
           ]
         end
         params do
-          requires :trigger_id, type: Integer, desc: 'The trigger token ID', documentation: { example: 10 }
+          requires :trigger_id, type: Integer, desc: 'ID of the trigger token.', documentation: { example: 10 }
         end
         route_setting :authorization, permissions: :read_trigger, boundary_type: :project
         get ':id/triggers/:trigger_id' do
@@ -123,7 +127,7 @@ module API
           ]
         end
         params do
-          requires :description, type: String, desc: 'The trigger token description',
+          requires :description, type: String, desc: 'Description of the trigger token.',
             documentation: { example: 'my trigger token description' }
           optional :expires_at, type: DateTime, desc: 'Timestamp of when the pipeline trigger token expires.',
             documentation: { example: '2024-07-01T00:00:00.000Z' }
@@ -162,8 +166,8 @@ module API
           ]
         end
         params do
-          requires :trigger_id, type: Integer,  desc: 'The trigger token ID'
-          optional :description, type: String,  desc: 'The trigger token description'
+          requires :trigger_id, type: Integer,  desc: 'ID of the trigger token.'
+          optional :description, type: String,  desc: 'Description of the trigger token.'
         end
         route_setting :authorization, permissions: :update_trigger, boundary_type: :project
         put ':id/triggers/:trigger_id' do
@@ -200,7 +204,7 @@ module API
           ]
         end
         params do
-          requires :trigger_id, type: Integer, desc: 'The trigger token ID', documentation: { example: 10 }
+          requires :trigger_id, type: Integer, desc: 'ID of the trigger token.', documentation: { example: 10 }
         end
         route_setting :authorization, permissions: :delete_trigger, boundary_type: :project
         delete ':id/triggers/:trigger_id' do

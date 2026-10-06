@@ -11,8 +11,7 @@ module API
     helpers ::API::Helpers::VariablesHelpers
 
     params do
-      requires :id, type: String, desc: 'The ID of a group or URL-encoded path of the group owned by the authenticated
-      user'
+      requires :id, type: String, desc: 'ID or URL-encoded path of the group.'
     end
 
     resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -42,7 +41,7 @@ module API
         tags %w[ci_variables]
       end
       params do
-        requires :key, type: String, desc: 'The key of the variable'
+        requires :key, type: String, desc: 'Key of the group variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
       end
       route_setting :authorization, permissions: :read_variable, boundary_type: :group
       get ':id/variables/:key', urgency: :low do
@@ -64,17 +63,16 @@ module API
       route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
       route_setting :authorization, permissions: :create_variable, boundary_type: :group
       params do
-        requires :key, type: String, desc: 'The ID of a group or URL-encoded path of the group owned by the
-        authenticated user'
-        requires :value, type: String, desc: 'The value of a variable'
-        optional :protected, type: Boolean, desc: 'Whether the variable is protected'
-        optional :masked_and_hidden, type: Boolean, desc: 'Whether the variable is masked and hidden'
-        optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-        optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
+        requires :key, type: String, desc: 'Key of the group variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
+        requires :value, type: String, desc: 'Value of the variable.'
+        optional :protected, type: Boolean, desc: 'If `true`, the variable is protected.'
+        optional :masked_and_hidden, type: Boolean, desc: 'If `true`, the variable is masked and hidden.'
+        optional :masked, type: Boolean, desc: 'If `true`, the variable is masked.'
+        optional :raw, type: Boolean, desc: 'If `true`, the variable is treated as a raw string. If `false`, the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, default: 'env_var',
           desc: 'The type of the variable.'
         optional :environment_scope, type: String, desc: 'The environment scope of a variable'
-        optional :description, type: String, desc: 'The description of the variable'
+        optional :description, type: String, desc: 'Description of the variable. Limited to 255 characters.'
 
         use :optional_group_variable_params_ee
       end
@@ -107,14 +105,14 @@ module API
       route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
       route_setting :authorization, permissions: :update_variable, boundary_type: :group
       params do
-        optional :key, type: String, desc: 'The key of a variable'
-        optional :value, type: String, desc: 'The value of a variable'
-        optional :protected, type: Boolean, desc: 'Whether the variable is protected'
-        optional :masked, type: Boolean, desc: 'Whether the variable is masked'
-        optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
+        optional :key, type: String, desc: 'Key of the group variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
+        optional :value, type: String, desc: 'Value of the variable.'
+        optional :protected, type: Boolean, desc: 'If `true`, the variable is protected.'
+        optional :masked, type: Boolean, desc: 'If `true`, the variable is masked.'
+        optional :raw, type: Boolean, desc: 'If `true`, the variable is treated as a raw string. If `false`, the value is [expanded](https://docs.gitlab.com/ci/variables/#allow-cicd-variable-expansion).'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
         optional :environment_scope, type: String, desc: 'The environment scope of a variable'
-        optional :description, type: String, desc: 'The description of the variable'
+        optional :description, type: String, desc: 'Description of the variable. Limited to 255 characters.'
 
         use :optional_group_variable_params_ee
       end
@@ -167,7 +165,7 @@ module API
         tags %w[ci_variables]
       end
       params do
-        requires :key, type: String, desc: 'The key of a variable'
+        requires :key, type: String, desc: 'Key of the group variable. Must be 255 characters or fewer and contain only `A-Z`, `a-z`, `0-9`, and `_`.'
       end
       route_setting :authorization, permissions: :delete_variable, boundary_type: :group
       delete ':id/variables/:key' do

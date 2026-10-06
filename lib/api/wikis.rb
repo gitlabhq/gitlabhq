@@ -20,7 +20,7 @@ module API
           type: String,
           values: Wiki::VALID_USER_MARKUPS.keys.map(&:to_s),
           default: 'markdown',
-          desc: 'Format of a wiki page. Available formats are markdown, rdoc, asciidoc and org'
+          desc: 'Format of the wiki page.'
       end
     end
 
@@ -46,8 +46,8 @@ module API
           is_array true
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
-          optional :with_content, type: Boolean, default: false, desc: "Include pages' content"
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group or project.'
+          optional :with_content, type: Boolean, default: false, desc: 'If `true`, includes the content of each wiki page.'
         end
         route_setting :authorization, permissions: :read_wiki, boundary_type: boundary_type
         get ':id/wikis', urgency: :low do
@@ -82,10 +82,10 @@ module API
           tags %w[wikis]
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
-          requires :slug, type: String, desc: 'The slug of a wiki page'
-          optional :version, type: String, desc: 'The version hash of a wiki page'
-          optional :render_html, type: Boolean, default: false, desc: 'Render content to HTML'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group or project.'
+          requires :slug, type: String, desc: 'URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.'
+          optional :version, type: String, desc: 'Version SHA of the wiki page.'
+          optional :render_html, type: Boolean, default: false, desc: 'If `true`, returns the rendered HTML of the wiki page.'
         end
 
         route_setting :authorization, permissions: :read_wiki, boundary_type: boundary_type
@@ -112,12 +112,12 @@ module API
           tags %w[wikis]
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
-          requires :title, type: String, desc: 'Title of a wiki page'
-          optional :front_matter, type: Hash,  desc: 'Object that contains YAML frontmatter' do
-            optional :title, type: String, desc: 'Frontmatter title of a wiki page'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group or project.'
+          requires :title, type: String, desc: 'Title of the wiki page.'
+          optional :front_matter, type: Hash,  desc: 'YAML front matter of the wiki page.' do
+            optional :title, type: String, desc: 'Title in the front matter of the wiki page.'
           end
-          requires :content, type: String, desc: 'Content of a wiki page'
+          requires :content, type: String, desc: 'Content of the wiki page.'
           use :common_wiki_page_params
         end
 
@@ -146,12 +146,12 @@ module API
           tags %w[wikis]
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
-          optional :title, type: String, desc: 'Title of a wiki page'
-          optional :front_matter, type: Hash,  desc: 'Object that contains YAML frontmatter' do
-            optional :title, type: String, desc: 'Frontmatter title of a wiki page'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group or project.'
+          optional :title, type: String, desc: 'Title of the wiki page.'
+          optional :front_matter, type: Hash,  desc: 'YAML front matter of the wiki page.' do
+            optional :title, type: String, desc: 'Title in the front matter of the wiki page.'
           end
-          optional :content, type: String, desc: 'Content of a wiki page'
+          optional :content, type: String, desc: 'Content of the wiki page.'
           use :common_wiki_page_params
           at_least_one_of :content, :title, :format
         end
@@ -182,8 +182,8 @@ module API
           tags %w[wikis]
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
-          requires :slug, type: String, desc: 'The slug of a wiki page'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group or project.'
+          requires :slug, type: String, desc: 'URL-encoded slug of the wiki page, a unique string such as `dir%2Fpage_name`.'
         end
 
         route_setting :authorization, permissions: :delete_wiki, boundary_type: boundary_type
@@ -210,7 +210,7 @@ module API
           tags %w[wikis]
         end
         params do
-          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group or project'
+          requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group or project.'
           requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
           optional :branch, type: String, desc: 'The name of the branch'
         end

@@ -370,7 +370,7 @@ The following languages and dependency managers are supported by dependency scan
     <tr>
       <td rowspan="5">Python</td>
       <td rowspan="5">3.11<sup>7</sup></td>
-      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a><sup>8</sup></td>
+      <td><a href="https://setuptools.pypa.io/en/latest/">setuptools</a><sup>8</sup></td>
       <td><code>setup.py</code></td>
       <td>N</td>
     </tr>

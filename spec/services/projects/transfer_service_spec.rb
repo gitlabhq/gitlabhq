@@ -1127,7 +1127,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       result = service.schedule_async_transfer(new_namespace)
 
       expect(result).to be_success
-      expect(result.message).to eq('Project transfer has been queued. You will be notified when it completes.')
+      expect(result.message).to eq('Project transfer is scheduled. If it fails, you get a to-do item with the reason.')
 
       project_namespace = project.project_namespace.reload
       expect(project_namespace.state).to eq('transfer_scheduled')
@@ -1146,6 +1146,23 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
         expect(result).to be_error
         expect(result.message).to eq('Unable to initiate transfer. The project may already have a transfer in progress.')
+      end
+    end
+
+    context 'when the target namespace already holds a project with the same name or path' do
+      before do
+        create(:project, namespace: new_namespace, name: project.name, path: project.path)
+      end
+
+      it 'fails immediately instead of enqueuing a doomed job', :aggregate_failures do
+        expect(Projects::TransferWorker).not_to receive(:perform_async)
+
+        result = service.schedule_async_transfer(new_namespace)
+
+        expect(result).to be_error
+        expect(result.message).to eq('Project with same name or path in target namespace already exists')
+        expect(service.error).to eq('Project with same name or path in target namespace already exists')
+        expect(project.project_namespace.reload.state).not_to eq('transfer_scheduled')
       end
     end
 

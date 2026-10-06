@@ -201,4 +201,37 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue, feature_category: :i
       expect(issue.github_identifiers).to eq(github_identifiers)
     end
   end
+
+  describe '#provider_id' do
+    let(:response) do
+      {
+        id: 1234,
+        number: 42,
+        title: 'My Issue',
+        body: 'This is my issue',
+        state: 'open',
+        assignees: [],
+        labels: [],
+        created_at: created_at,
+        updated_at: updated_at
+      }
+    end
+
+    it 'is the GitHub issue id from the API response' do
+      expect(described_class.from_api_response(response).provider_id).to eq(1234)
+    end
+
+    it 'survives the to_hash and from_json_hash round trip' do
+      issue = described_class.from_api_response(response)
+      round_tripped = described_class.from_json_hash(issue.to_hash.deep_stringify_keys)
+
+      expect(round_tripped.provider_id).to eq(1234)
+    end
+
+    it 'is nil for a payload serialized before provider_id existed' do
+      hash = described_class.from_api_response(response).to_hash.except(:provider_id)
+
+      expect(described_class.from_json_hash(hash.deep_stringify_keys).provider_id).to be_nil
+    end
+  end
 end

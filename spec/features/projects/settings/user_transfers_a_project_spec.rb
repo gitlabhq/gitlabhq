@@ -10,7 +10,7 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
   let(:transfer_scheduled_message) do
     s_(
       'TransferProject|This project is scheduled for transfer. ' \
-        'Users with the Maintainer or Owner role will be notified when the transfer succeeds or fails.'
+        'If the transfer fails, the user who started it receives a to-do item with the reason.'
     )
   end
 
@@ -69,6 +69,20 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
       # so have_current_path alone does not wait for the redirect.
       expect(page).to have_content(transfer_scheduled_message)
       expect(project.project_namespace.reload.state).to eq('transfer_scheduled')
+    end
+  end
+
+  context 'when the target namespace already holds a project with the same name' do
+    before do
+      create(:project, namespace: group, name: project.name, path: project.path)
+    end
+
+    it 'reports the conflict instead of reporting the transfer as scheduled' do
+      transfer_project(project, group)
+
+      expect(page).to have_content('Project with same name or path in target namespace already exists')
+      expect(page).to have_no_content('scheduled for transfer')
+      expect(project.reload.namespace).to eq(user.namespace)
     end
   end
 end

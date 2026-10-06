@@ -93,6 +93,8 @@ export default {
           </gl-link>
         </div>
       </div>
+
+      <slot></slot>
     </div>
   </gl-popover>
 </template>

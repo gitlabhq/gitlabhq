@@ -111,7 +111,7 @@ export const renderTransferSuccessToast = (group) => {
   toast(
     sprintf(
       s__(
-        "TransferGroup|Group '%{group_name}' transfer has been scheduled. Users with the Maintainer or Owner role will be notified when it completes.",
+        "TransferGroup|Group '%{group_name}' transfer is scheduled. If it fails, you get a to-do item with the reason.",
       ),
       {
         group_name: group.fullName,

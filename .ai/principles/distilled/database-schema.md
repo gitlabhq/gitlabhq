@@ -1,6 +1,6 @@
 ---
-source_checksum: 2d2b9d36c77ddb9f
-distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
+source_checksum: 46f963493823910b
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -47,7 +47,8 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 ### Foreign Keys
 
 - Add a foreign key whenever adding an association to a model or creating a table that references another table
-- Add a concurrent index on the foreign key column before adding the foreign key constraint
+- Add a concurrent index on the foreign key column before adding the foreign key constraint.
+- Remove the foreign key before removing its last supporting index; `remove_concurrent_index`, `remove_concurrent_index_by_name`, and `remove_concurrent_partitioned_index_by_name` raise an error when that index still supports a foreign key.
 - Define every foreign key as `bigint`, even if the referenced table has an `integer` primary key
 - Define an `ON DELETE` clause on every foreign key (use `CASCADE` in 99% of cases)
 - Use `add_concurrent_foreign_key` with `validate: false` when adding a FK to an existing column, then validate in a separate migration
@@ -59,7 +60,7 @@ distilled_at_sha: eca2a8965486ff4e057e946be5b7c02f8b067138
 - DO NOT use `dependent: :destroy` or `dependent: :delete` on associations; let the database handle cascading deletes via FK constraints
 - DO NOT define `before_destroy` or `after_destroy` callbacks unless approved by database specialists; use service classes for non-database cleanup
 - Use `_id` suffix only for columns referencing another table; use `_xid` for third-party platform IDs
-- Add columns with `_id` suffix to `ignored_fk_columns_map` in `spec/db/schema_spec.rb` only when they meet the documented criteria (cross-schema, loose FK, polymorphic, or non-reference)
+- Add `_id` columns to `ignored_fk_columns_map` in `spec/db/schema_spec.rb` only for documented cross-schema, polymorphic, or non-reference exceptions; DO NOT add columns covered by `config/gitlab_loose_foreign_keys.yml`, which the spec recognizes automatically.
 - For FK validation on very large tables, use `prepare_async_foreign_key_validation` / `prepare_partitioned_async_foreign_key_validation` to schedule validation during low-traffic windows
 - When adding two foreign keys to a new table, split them into different migrations to avoid locking more than one table at a time
 - When using a FK as a primary key (for `has_one` associations), consider using a regular `id` column if the table is relevant for Service Ping, as FK-as-primary-key can make batch counting less efficient

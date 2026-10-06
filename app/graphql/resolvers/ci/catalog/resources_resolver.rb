@@ -64,8 +64,7 @@ module Resolvers
             web_path: { project: { namespace: :route } },
             readme_html: { project: :route },
             archived: { project: { namespace: [:namespace_settings,
-              :namespace_settings_with_ancestors_inherited_settings] } },
-            versions: { versions: :components }
+              :namespace_settings_with_ancestors_inherited_settings] } }
           }
         end
       end

@@ -1,6 +1,6 @@
 ---
-source_checksum: a1c66a83bfd388a8
-distilled_at_sha: 1952db3e816e6562c3e8f7246a7bbb1b53041ba2
+source_checksum: 776499c268c36544
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -54,10 +54,10 @@ distilled_at_sha: 1952db3e816e6562c3e8f7246a7bbb1b53041ba2
 
 ### Log Field Standards
 
-- Log fields should be defined within the LabKit Ruby Fields module.
-- Common logging fields imported from `labkit-ruby` `lib/labkit/fields.rb`.
-- New fields added to log messages must not be dynamically generated.
-- Follow Field Standardisation Guidelines for observability.
+- Log fields should be defined within the LabKit Ruby Fields module
+- Common logging fields imported from `labkit-ruby` `lib/labkit/fields.rb`
+- New fields added to log messages must not be dynamically generated
+- Follow Field Standardization Guidelines for observability
 
 ### Redis
 

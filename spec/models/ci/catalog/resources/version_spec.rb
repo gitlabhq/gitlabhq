@@ -135,6 +135,23 @@ RSpec.describe Ci::Catalog::Resources::Version, feature_category: :pipeline_comp
         expect(new_components.flatten).to all(be_a(Ci::Catalog::Resources::Component))
         expect(new_components.flatten.size).to eq(3) # All 3 components loaded
       end
+
+      context 'with a limit' do
+        subject { described_class.versions_for_catalog_resources([resource, resource2], limit: 2) }
+
+        it 'returns only the highest versions of each catalog resource' do
+          is_expected.to eq([v3_0_0, v2_0_0, v1_1_3])
+        end
+
+        it 'orders prereleases the same way as without a limit' do
+          rc = create(:ci_catalog_resource_version, semver: '2.0.0-rc1', catalog_resource: resource)
+
+          unlimited = described_class.versions_for_catalog_resources([resource])
+
+          expect(described_class.versions_for_catalog_resources([resource], limit: 3)).to eq(unlimited.first(3))
+          expect(unlimited.first(3)).to include(rc)
+        end
+      end
     end
   end
 

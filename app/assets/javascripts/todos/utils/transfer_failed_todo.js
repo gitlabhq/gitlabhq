@@ -27,3 +27,7 @@ export const getTransferFailedSourceUrl = (todo = {}) => {
 export const getTransferFailedRetryUrl = (todo = {}) => {
   return todo.transferFailedRetryUrl || '';
 };
+
+export const getTransferFailedReason = (todo = {}) => {
+  return todo.transferFailureReason || '';
+};

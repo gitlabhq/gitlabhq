@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_composition do
   include GraphqlHelpers
 
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:group, developers: user) }
   let_it_be(:project) { create(:project, namespace: namespace) }
@@ -319,6 +321,112 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         expect do
           run_with_clean_state(query, context: ctx)
         end.not_to exceed_query_limit(control).allow_skip_cache_inconsistency
+      end
+    end
+  end
+
+  describe 'the catalog list page query' do
+    let(:query) { get_graphql_query_as_string('ci/catalog/graphql/queries/get_ci_catalog_resources.query.graphql') }
+
+    def create_resource_with_versions(version_count)
+      group = create(:group, developers: user)
+      project = create(:project, :public, namespace: group)
+      resource = create(:ci_catalog_resource, :published, project: project)
+
+      version_count.times do |i|
+        version = create(:ci_catalog_resource_version, catalog_resource: resource, semver: "1.#{i}.0")
+        create(:ci_catalog_resource_component, version: version)
+      end
+    end
+
+    it 'avoids N+1 queries as resources and versions are added' do
+      create_resource_with_versions(1)
+
+      ctx = { current_user: user }
+
+      run_with_clean_state(query, context: ctx)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        run_with_clean_state(query, context: ctx)
+      end
+
+      2.times { create_resource_with_versions(3) }
+
+      expect do
+        run_with_clean_state(query, context: ctx)
+      end.to issue_same_number_of_queries_as(control)
+    end
+
+    it 'loads only the versions the page shows' do
+      2.times { create_resource_with_versions(3) }
+
+      loaded = 0
+      callback = ->(*, payload) do
+        loaded += payload[:record_count] if payload[:class_name] == Ci::Catalog::Resources::Version.name
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, 'instantiation.active_record') do
+        run_with_clean_state(query, context: { current_user: user })
+      end
+
+      expect(loaded).to eq(4)
+    end
+  end
+
+  describe 'versions pagination' do
+    let_it_be(:paginated_resource, freeze: false) do
+      create(:ci_catalog_resource, :published, project: create(:project, :public, namespace: namespace))
+    end
+
+    let_it_be(:paginated_versions) do
+      %w[1.0.0 2.0.0 3.0.0].map do |semver|
+        create(:ci_catalog_resource_version, catalog_resource: paginated_resource, semver: semver)
+      end
+    end
+
+    def versions_for(versions_args, selection)
+      query = graphql_query_for(:ciCatalogResources, {}, <<~GQL)
+        nodes { id versions(#{versions_args}) { #{selection} } }
+      GQL
+
+      result = run_with_clean_state(query, context: { current_user: user }).to_h
+      node = result.dig('data', 'ciCatalogResources', 'nodes').find do |resource|
+        resource['id'] == paginated_resource.to_global_id.to_s
+      end
+
+      node['versions']
+    end
+
+    it 'returns the highest version and reports the next page' do
+      versions = versions_for('first: 1', 'pageInfo { hasNextPage endCursor } nodes { name }')
+
+      expect(versions['nodes']).to eq([{ 'name' => '3.0.0' }])
+      expect(versions.dig('pageInfo', 'hasNextPage')).to be(true)
+    end
+
+    it 'counts every version' do
+      expect(versions_for('first: 1', 'count')).to eq({ 'count' => 3 })
+    end
+
+    it 'returns the next page after a cursor' do
+      cursor = versions_for('first: 2', 'pageInfo { endCursor }').dig('pageInfo', 'endCursor')
+
+      versions = versions_for("first: 1, after: \"#{cursor}\"", 'nodes { name }')
+
+      expect(versions['nodes']).to eq([{ 'name' => '1.0.0' }])
+    end
+
+    where(:first, :limit) do
+      5000 | 101
+      -5   | 1
+    end
+
+    with_them do
+      it 'keeps the per-resource limit within the page size' do
+        expect(Ci::Catalog::Resources::Version).to receive(:versions_for_catalog_resources)
+          .with(anything, limit: limit).and_call_original
+
+        versions_for("first: #{first}", 'nodes { name }')
       end
     end
   end

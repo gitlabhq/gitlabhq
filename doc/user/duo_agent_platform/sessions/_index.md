@@ -17,7 +17,7 @@ Sessions show the status and execution data for the agents and flows you've run.
 
 Sessions are created by GitLab Duo Agentic Chat and foundational flows in the IDE or UI. Examples include:
 
-- Flows that are executed on a runner, like the [Fix CI/CD Pipeline Flow](../flows/foundational_flows/fix_pipeline.md).
+- Flows that are executed on a runner, like the [Fix CI/CD Pipeline Flow](../../../ci/pipelines/fix_pipeline.md).
   These sessions are visible in the UI under **AI** > **Sessions**.
 - Flows that run in the IDE, like the [Software Development Flow](../flows/foundational_flows/software_development.md).
   These sessions are visible in the IDE, on the **Flows** tab, under **Sessions**.

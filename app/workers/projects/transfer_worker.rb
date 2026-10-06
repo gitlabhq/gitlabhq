@@ -56,7 +56,8 @@ module Projects
       project_namespace.start_transfer!(transition_user: user)
       transfer_started = true
 
-      result = ::Projects::TransferService.new(project, user).execute(new_namespace)
+      service = ::Projects::TransferService.new(project, user)
+      result = service.execute(new_namespace)
 
       if result
         transfer_succeeded = true
@@ -70,7 +71,7 @@ module Projects
 
       else
         create_transfer_failure_todo(project, user, worker_name: self.class.name, gl_project_id: project.id)
-        project_namespace.cancel_transfer!
+        project_namespace.cancel_transfer!(transfer_error: service.error)
       end
     rescue StandardError => e
       if transfer_started && !transfer_succeeded
@@ -78,7 +79,7 @@ module Projects
       end
 
       begin
-        cancel_transfer_if_in_progress(project_namespace)
+        cancel_transfer_if_in_progress(project_namespace, transfer_error: unexpected_error_message)
       rescue StandardError => cancel_error
         Gitlab::AppLogger.error(
           build_transfer_log_payload(
@@ -120,8 +121,8 @@ module Projects
       exclusive_lease.cancel
     end
 
-    def cancel_transfer_if_in_progress(project_namespace)
-      project_namespace.cancel_transfer! if project_namespace.transfer_in_progress?
+    def unexpected_error_message
+      s_('TransferProject|The transfer failed unexpectedly. Contact your administrator if it continues to fail.')
     end
   end
 end

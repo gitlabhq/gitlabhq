@@ -68,6 +68,11 @@ module Types
       null: true,
       scopes: [:api, :read_api, :ai_workflows]
 
+    field :transfer_failure_reason, GraphQL::Types::String, # rubocop:disable GraphQL/ExtractType -- sits alongside the existing transfer_failed_retry_url field
+      description: 'Reason the transfer failed, for a transfer-failed to-do item.',
+      null: true,
+      scopes: [:api, :read_api, :ai_workflows]
+
     field :body, GraphQL::Types::String,
       description: 'Body of the to-do item.',
       null: false,

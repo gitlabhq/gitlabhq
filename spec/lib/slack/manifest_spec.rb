@@ -73,15 +73,21 @@ RSpec.describe Slack::Manifest, feature_category: :integrations do
       expect(described_class.to_h(duo_enabled: false)).to eq(base_manifest)
     end
 
+    it 'does not include the agent_view feature when duo_enabled is false' do
+      expect(described_class.to_h(duo_enabled: false).dig(:features, :agent_view)).to be_nil
+    end
+
     context 'when duo_enabled is true' do
       subject(:manifest) { described_class.to_h(duo_enabled: true) }
 
-      it 'adds the Duo bot scopes' do
-        expect(manifest.dig(:oauth_config, :scopes, :bot)).to eq(SlackIntegration::DUO_SCOPES)
+      it 'adds the Duo and agent app bot scopes' do
+        expect(manifest.dig(:oauth_config, :scopes, :bot))
+          .to eq(SlackIntegration::DUO_SCOPES + SlackIntegration::AGENT_APP_SCOPES)
       end
 
-      it 'adds the Duo bot events' do
-        expect(manifest.dig(:settings, :event_subscriptions, :bot_events)).to include(*described_class::DUO_BOT_EVENTS)
+      it 'adds the Duo and agent app bot events' do
+        expect(manifest.dig(:settings, :event_subscriptions, :bot_events))
+          .to include(*described_class::DUO_BOT_EVENTS, *described_class::AGENT_APP_BOT_EVENTS)
       end
 
       it 'retains the base bot events' do
@@ -92,12 +98,46 @@ RSpec.describe Slack::Manifest, feature_category: :integrations do
         expect(manifest[:display_information]).to eq(base_manifest[:display_information])
       end
 
-      it 'does not change features' do
-        expect(manifest[:features]).to eq(base_manifest[:features])
+      it 'enables the agent feature', :aggregate_failures do
+        expect(manifest.dig(:features, :agent_view)).to include(
+          agent_description: a_string_including('GitLab Duo')
+        )
+        expect(manifest.dig(:features, :app_home)).to eq(
+          home_tab_enabled: true,
+          messages_tab_enabled: true,
+          messages_tab_read_only_enabled: false
+        )
+      end
+
+      it 'does not change bot_user or slash_commands features', :aggregate_failures do
+        expect(manifest.dig(:features, :bot_user)).to eq(base_manifest.dig(:features, :bot_user))
+        expect(manifest.dig(:features, :slash_commands)).to eq(base_manifest.dig(:features, :slash_commands))
       end
 
       it 'does not change interactivity settings' do
         expect(manifest.dig(:settings, :interactivity)).to eq(base_manifest.dig(:settings, :interactivity))
+      end
+
+      context 'when the slack_duo_agent_app release flag is disabled' do
+        before do
+          stub_feature_flags(slack_duo_agent_app: false)
+        end
+
+        it 'adds only the Duo bot scopes' do
+          expect(manifest.dig(:oauth_config, :scopes, :bot)).to eq(SlackIntegration::DUO_SCOPES)
+        end
+
+        it 'adds only the Duo bot events', :aggregate_failures do
+          bot_events = manifest.dig(:settings, :event_subscriptions, :bot_events)
+
+          expect(bot_events).to include(*described_class::DUO_BOT_EVENTS)
+          expect(bot_events).not_to include(*described_class::AGENT_APP_BOT_EVENTS)
+        end
+
+        it 'does not enable the agent feature', :aggregate_failures do
+          expect(manifest.dig(:features, :agent_view)).to be_nil
+          expect(manifest.dig(:features, :app_home)).to eq(base_manifest.dig(:features, :app_home))
+        end
       end
     end
   end

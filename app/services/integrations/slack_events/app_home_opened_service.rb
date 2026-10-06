@@ -11,12 +11,18 @@ module Integrations
     class AppHomeOpenedService
       include Gitlab::Utils::StrongMemoize
 
+      MESSAGES_TAB = 'messages'
+
       def initialize(params)
         @slack_user_id = params.dig(:event, :user)
         @slack_workspace_id = params[:team_id]
+        @tab = params.dig(:event, :tab)
       end
 
       def execute
+        # With `agent_view`, this event also fires when a user opens a DM with the agent.
+        return ServiceResponse.success if tab == MESSAGES_TAB
+
         # Legacy Slack App integrations will not yet have a token we can use
         # to call the Slack API. Do nothing, and consider the service successful.
         unless slack_installation
@@ -86,7 +92,7 @@ module Integrations
         Gitlab::IntegrationsLogger
       end
 
-      attr_reader :slack_user_id, :slack_workspace_id
+      attr_reader :slack_user_id, :slack_workspace_id, :tab
     end
   end
 end

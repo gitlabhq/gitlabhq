@@ -20,8 +20,9 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
       expect(described_class.scopes_for(duo_enabled: false)).to eq(described_class::SCOPES)
     end
 
-    it 'returns DUO_SCOPES when duo_enabled is true' do
-      expect(described_class.scopes_for(duo_enabled: true)).to eq(described_class::DUO_SCOPES)
+    it 'returns DUO_SCOPES and AGENT_APP_SCOPES when duo_enabled is true' do
+      expect(described_class.scopes_for(duo_enabled: true))
+        .to eq(described_class::DUO_SCOPES + described_class::AGENT_APP_SCOPES)
     end
 
     it 'includes the base scopes in DUO_SCOPES' do
@@ -35,6 +36,40 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
         described_class::SCOPE_GROUPS_HISTORY,
         described_class::SCOPE_REACTIONS_WRITE
       )
+    end
+
+    it 'includes the agent app scopes in AGENT_APP_SCOPES' do
+      expect(described_class::AGENT_APP_SCOPES).to contain_exactly(
+        described_class::SCOPE_IM_HISTORY,
+        described_class::SCOPE_MPIM_HISTORY,
+        described_class::SCOPE_ASSISTANT_WRITE
+      )
+    end
+
+    context 'when the slack_duo_agent_app release flag is disabled' do
+      before do
+        stub_feature_flags(slack_duo_agent_app: false)
+      end
+
+      it 'returns SCOPES when duo_enabled is false' do
+        expect(described_class.scopes_for(duo_enabled: false)).to eq(described_class::SCOPES)
+      end
+
+      it 'returns only DUO_SCOPES when duo_enabled is true' do
+        expect(described_class.scopes_for(duo_enabled: true)).to eq(described_class::DUO_SCOPES)
+      end
+    end
+  end
+
+  describe '.agent_app_enabled?' do
+    it 'is true when the slack_duo_agent_app release flag is enabled' do
+      expect(described_class.agent_app_enabled?).to be(true)
+    end
+
+    it 'is false when the slack_duo_agent_app release flag is disabled' do
+      stub_feature_flags(slack_duo_agent_app: false)
+
+      expect(described_class.agent_app_enabled?).to be(false)
     end
   end
 

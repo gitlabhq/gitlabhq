@@ -207,6 +207,8 @@ class Namespace < ApplicationRecord
     :last_error=,
     :state_metadata,
     :state_metadata=,
+    :transfer_last_error,
+    :transfer_last_error=,
     :deletion_scheduled_at,
     :deletion_scheduled_at=,
     to: :namespace_details, allow_nil: true
