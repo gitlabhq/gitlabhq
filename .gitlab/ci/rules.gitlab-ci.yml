@@ -27,7 +27,6 @@
         $CI_PIPELINE_SOURCE != "merge_request_event"
         && $SCHEDULE_TYPE != "weekly"
         && $SCHEDULE_TYPE != "ai-principles-distillation"
-        && $SCHEDULE_TYPE != "ai-principles-fence-reconcile"
         && $SCHEDULE_TYPE != "whats-new"
         && $SCHEDULE_TYPE != "housekeeping"
         && $TRIGGERED_BY_AI_GATEWAY_PROJECT != "true"
@@ -52,7 +51,7 @@
 
 # weekly, ai-principles-*, whats-new and housekeeping pipelines are opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
 
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
@@ -245,9 +244,6 @@
 .if-default-branch-schedule-ai-principles: &if-default-branch-schedule-ai-principles
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "ai-principles-distillation"'
 
-.if-default-branch-schedule-ai-principles-fence-reconcile: &if-default-branch-schedule-ai-principles-fence-reconcile
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "ai-principles-fence-reconcile"'
-
 .if-default-branch-schedule-whats-new: &if-default-branch-schedule-whats-new
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "whats-new"'
 
@@ -276,7 +272,7 @@
   if: '($CI_SERVER_HOST != "gitlab.com" || $CI_PROJECT_NAMESPACE != "gitlab-org") && ($CI_SERVER_HOST != "jihulab.com" || $CI_PROJECT_NAMESPACE != "gitlab-cn")'
 
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "ai-principles-fence-reconcile" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE != "ai-principles-distillation" && $SCHEDULE_TYPE != "whats-new" && $SCHEDULE_TYPE != "housekeeping"'
 
 .if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
@@ -1290,17 +1286,15 @@
     - <<: *if-jh
       when: never
 
-# Single source of truth for excluding a job from the dedicated ai-principles-*
-# schedules (distillation and fence-reconcile). Those schedules should run only
-# their own ai-principles jobs; because rules:changes is always-true on
+# Single source of truth for excluding a job from the dedicated ai-principles
+# distillation schedule. That schedule should run only its own ai-principles
+# jobs; because rules:changes is always-true on
 # scheduled pipelines, default-branch jobs would otherwise be pulled in.
 # `!reference` this from any job (including those in other CI files) whose rules
 # would otherwise match a schedule, so the guard has one canonical phrasing.
 .ai-principles-schedule:rules:skip:
   rules:
     - <<: *if-default-branch-schedule-ai-principles
-      when: never
-    - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
       when: never
     - <<: *if-default-branch-schedule-whats-new
       when: never
@@ -4083,7 +4077,6 @@
       when: never
     - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
       when: never
-    - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
     - <<: *if-default-branch-push
       changes: *ai-principles-fence-input-patterns
       allow_failure: true

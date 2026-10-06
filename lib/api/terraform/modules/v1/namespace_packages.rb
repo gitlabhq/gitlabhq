@@ -90,8 +90,9 @@ module API
           end
           params do
             requires :module_name, type: String, desc: 'Name of the module.'
-            requires :module_system, type: String, desc: 'Name of the module system, or ' \
-                                                     '[provider](https://www.terraform.io/registry/providers).'
+            requires :module_system, type: String,
+              desc: 'Name of the module system, or ' \
+                '[provider](https://developer.hashicorp.com/terraform/registry/providers).'
           end
 
           namespace 'packages/terraform/modules/v1/:module_namespace/:module_name/:module_system',

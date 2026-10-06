@@ -38,7 +38,7 @@ job:
   is added to the merge request pipeline with attributes of:
   - `when: manual` (manual job)
   - `allow_failure: true` (the pipeline continues running even if the manual job is not run)
-- If the pipeline is not for a merge request, the first rule doesn't match, and the
+- If the pipeline is not for a merge request, the first rule does not match, and the
   second rule is evaluated.
 - If the pipeline is a scheduled pipeline, the second rule matches, and the job
   is added to the scheduled pipeline. No attributes were defined, so it is added
@@ -99,7 +99,7 @@ Use [`rules:changes:compare_to`](../yaml/_index.md#ruleschangescompare_to) to
 skip a job when the branch is empty, which saves CI/CD resources. The configuration compares the
 branch to the default branch, and if the branch:
 
-- Doesn't have changed files, the job doesn't run.
+- Has no changed files, the job does not run.
 - Has changed files, the job runs.
 
 For example, in a project with `main` as the default branch:
@@ -282,7 +282,7 @@ job1:
 ## Avoid duplicate pipelines
 
 If a job uses `rules`, a single action, like pushing a commit to a branch, can trigger
-multiple pipelines. You don't have to explicitly configure rules for multiple types
+multiple pipelines. You do not have to explicitly configure rules for multiple types
 of pipeline to trigger them accidentally.
 
 For example:
@@ -447,7 +447,7 @@ Additionally:
   pattern case-insensitive. For example: `/pattern/i`.
 - Only the tag or branch name can be matched by a regular expression.
   The repository path, if given, is always matched literally.
-- The entire pattern must be surrounded by `/`. For example, you can't use `issue-/.*/`
+- The entire pattern must be surrounded by `/`. For example, you cannot use `issue-/.*/`
   to match all tag names or branch names that begin with `issue-`, but you can use `/issue-.*/`.
 - The `@` symbol denotes the beginning of a ref's repository path.
   To match a ref name that contains the `@` character in a regular expression,
@@ -534,9 +534,9 @@ For example:
 
 - `if: "!$VAR1"`: True when the variable is empty or undefined.
 - `if: !($VAR1 == "my variable")`: True when the variable value does not match `my variable`.
-- `if: $VAR1 && !$VAR2`: True when `VAR1` exists and isn't empty, and `VAR2` doesn't exist or is empty.
-- `if: !($VAR1 || $VAR2)`: True only when both variables don't exist or are empty.
-- `if: !($VAR1 && $VAR2)`: True when either variable doesn't exist or is empty.
+- `if: $VAR1 && !$VAR2`: True when `VAR1` exists and is not empty, and `VAR2` does not exist or is empty.
+- `if: !($VAR1 || $VAR2)`: True only when both variables do not exist or are empty.
+- `if: !($VAR1 && $VAR2)`: True when either variable does not exist or is empty.
 
 > [!warning]
 > The `!` operator checks if a variable is empty or undefined, not whether its value is `false` or `0`. For example:

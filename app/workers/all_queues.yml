@@ -846,6 +846,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:database_finalize_pending_detach_partitions
+  :worker_name: Database::FinalizePendingDetachPartitionsWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_monitor_locked_tables
   :worker_name: Database::MonitorLockedTablesWorker
   :feature_category: :cell

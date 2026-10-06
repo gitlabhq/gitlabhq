@@ -112475,6 +112475,18 @@
               "deprecationReason": null
             },
             {
+              "name": "validityDisplayState",
+              "description": "Validity state derived from the token status and current vendor support. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilityValidityDisplayState",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "vulnerabilityPath",
               "description": "Path to the vulnerability's details page.",
               "args": [],
@@ -306118,13 +306130,9 @@
               "description": "Access level of the user in the organization. Introduced in GitLab 16.11: Status: Experiment.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "OrganizationUserAccess",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "OrganizationUserAccess",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 16.11."
@@ -306170,13 +306178,9 @@
               "description": "Whether the user is the last owner of the organization. Introduced in GitLab 16.11: Status: Experiment.",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 16.11."
@@ -323385,6 +323389,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "validityDisplayState",
+              "description": "Validity state derived from the token status and current vendor support. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilityValidityDisplayState",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "vulnerability",
@@ -444654,6 +444670,18 @@
               "deprecationReason": null
             },
             {
+              "name": "validityDisplayState",
+              "description": "Validity state derived from the token status and current vendor support. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilityValidityDisplayState",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "vulnerabilityPath",
               "description": "Path to the vulnerability's details page.",
               "args": [],
@@ -454036,6 +454064,53 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "VulnerabilityValidityDisplayState",
+          "description": "Validity state of a secret finding, derived from the token status and the current vendor support for the detecting analyzer.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ACTIVE",
+              "description": "Token was verified and is active.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INACTIVE",
+              "description": "Token was verified and is inactive.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UNKNOWN",
+              "description": "Token was checked but the vendor gave no verdict.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PENDING_VERIFICATION",
+              "description": "Token type is supported but no check has completed yet.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NOT_CHECKED_BY_ANALYZER",
+              "description": "Token type is only verified for findings from a different analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NO_VENDOR_SUPPORT",
+              "description": "No verifier exists for the token type.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

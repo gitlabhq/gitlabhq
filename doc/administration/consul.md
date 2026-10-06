@@ -18,7 +18,7 @@ A Consul cluster consists of both
 The servers run on their own nodes and the clients run on other nodes that in
 turn communicate with the servers.
 
-GitLab Premium includes a bundled version of [Consul](https://www.consul.io/),
+GitLab Premium includes a bundled version of [Consul](https://developer.hashicorp.com/consul),
 a service networking solution that you can manage by using `/etc/gitlab/gitlab.rb`.
 
 ## Prerequisites

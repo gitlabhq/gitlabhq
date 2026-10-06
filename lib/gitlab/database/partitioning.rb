@@ -108,6 +108,21 @@ module Gitlab
           Gitlab::AppLogger.info(message: 'Finished dropping detached postgres partitions')
         end
 
+        def finalize_pending_detach_partitions
+          blocking_flag = blocking_feature_flag
+
+          if blocking_flag
+            Gitlab::AppLogger.warn(
+              message: 'Skipping finalizing pending detach postgres partitions', feature_flag: blocking_flag
+            )
+            return blocking_flag
+          end
+
+          Gitlab::Database::EachDatabase.each_connection do
+            PendingDetachPartitionFinalizer.new.perform
+          end
+        end
+
         def registered_models
           @registered_models ||= Set.new
         end

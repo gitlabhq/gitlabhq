@@ -41876,6 +41876,7 @@ Fields:
 | <a id="countablevulnerability-usernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
 | <a id="countablevulnerability-userpermissions"></a>`userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource. |
 | <a id="countablevulnerability-uuid"></a>`uuid` | [`String!`](#string) | UUID of the vulnerability finding. Can be used to look up the associated security report finding. |
+| <a id="countablevulnerability-validitydisplaystate"></a>`validityDisplayState` {{< icon name="warning-solid" >}} | [`VulnerabilityValidityDisplayState`](#vulnerabilityvaliditydisplaystate) | Introduced in GitLab 19.5. Status: Experiment. Validity state derived from the token status and current vendor support. |
 | <a id="countablevulnerability-vulnerabilitypath"></a>`vulnerabilityPath` | [`String`](#string) | Path to the vulnerability's details page. |
 | <a id="countablevulnerability-weburl"></a>`webUrl` | [`String`](#string) | URL to the vulnerability's details page. |
 
@@ -56637,10 +56638,10 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationuser-accesslevel"></a>`accessLevel` {{< icon name="warning-solid" >}} | [`OrganizationUserAccess!`](#organizationuseraccess) | Introduced in GitLab 16.11. Status: Experiment. Access level of the user in the organization. |
+| <a id="organizationuser-accesslevel"></a>`accessLevel` {{< icon name="warning-solid" >}} | [`OrganizationUserAccess`](#organizationuseraccess) | Introduced in GitLab 16.11. Status: Experiment. Access level of the user in the organization. |
 | <a id="organizationuser-badges"></a>`badges` {{< icon name="warning-solid" >}} | [`[OrganizationUserBadge!]`](#organizationuserbadge) | Introduced in GitLab 16.4. Status: Experiment. Badges describing the user within the organization. |
 | <a id="organizationuser-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 16.4. Status: Experiment. ID of the organization user. |
-| <a id="organizationuser-islastowner"></a>`isLastOwner` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 16.11. Status: Experiment. Whether the user is the last owner of the organization. |
+| <a id="organizationuser-islastowner"></a>`isLastOwner` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 16.11. Status: Experiment. Whether the user is the last owner of the organization. |
 | <a id="organizationuser-user"></a>`user` {{< icon name="warning-solid" >}} | [`UserCore!`](#usercore) | Introduced in GitLab 16.4. Status: Experiment. User that is associated with the organization. |
 | <a id="organizationuser-userpermissions"></a>`userPermissions` | [`OrganizationUserPermissions!`](#organizationuserpermissions) | Permissions for the current user on the resource. |
 
@@ -57857,6 +57858,7 @@ Fields:
 | <a id="pipelinesecurityreportfinding-unverified"></a>`unverified` | [`Boolean!`](#boolean) | Indicates whether the finding was detected without an identified source (untrusted input). |
 | <a id="pipelinesecurityreportfinding-userpermissions"></a>`userPermissions` | [`PipelineSecurityReportFindingPermissions!`](#pipelinesecurityreportfindingpermissions) | Permissions for the current user on the resource. |
 | <a id="pipelinesecurityreportfinding-uuid"></a>`uuid` | [`String`](#string) | UUIDv5 digest based on the vulnerability's report type, primary identifier, location, fingerprint, project identifier. |
+| <a id="pipelinesecurityreportfinding-validitydisplaystate"></a>`validityDisplayState` {{< icon name="warning-solid" >}} | [`VulnerabilityValidityDisplayState`](#vulnerabilityvaliditydisplaystate) | Introduced in GitLab 19.5. Status: Experiment. Validity state derived from the token status and current vendor support. |
 | <a id="pipelinesecurityreportfinding-vulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability related to the security report finding. |
 
 ### `PipelineSecurityReportFindingPermissions`
@@ -66189,6 +66191,7 @@ Fields:
 | <a id="vulnerability-usernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
 | <a id="vulnerability-userpermissions"></a>`userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource. |
 | <a id="vulnerability-uuid"></a>`uuid` | [`String!`](#string) | UUID of the vulnerability finding. Can be used to look up the associated security report finding. |
+| <a id="vulnerability-validitydisplaystate"></a>`validityDisplayState` {{< icon name="warning-solid" >}} | [`VulnerabilityValidityDisplayState`](#vulnerabilityvaliditydisplaystate) | Introduced in GitLab 19.5. Status: Experiment. Validity state derived from the token status and current vendor support. |
 | <a id="vulnerability-vulnerabilitypath"></a>`vulnerabilityPath` | [`String`](#string) | Path to the vulnerability's details page. |
 | <a id="vulnerability-weburl"></a>`webUrl` | [`String`](#string) | URL to the vulnerability's details page. |
 
@@ -75277,6 +75280,19 @@ The state of the vulnerability.
 | <a id="vulnerabilitystate-detected"></a>`DETECTED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 | <a id="vulnerabilitystate-dismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 | <a id="vulnerabilitystate-resolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
+
+### `VulnerabilityValidityDisplayState`
+
+Validity state of a secret finding, derived from the token status and the current vendor support for the detecting analyzer.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityvaliditydisplaystate-active"></a>`ACTIVE` | Token was verified and is active. |
+| <a id="vulnerabilityvaliditydisplaystate-inactive"></a>`INACTIVE` | Token was verified and is inactive. |
+| <a id="vulnerabilityvaliditydisplaystate-not_checked_by_analyzer"></a>`NOT_CHECKED_BY_ANALYZER` | Token type is only verified for findings from a different analyzer. |
+| <a id="vulnerabilityvaliditydisplaystate-no_vendor_support"></a>`NO_VENDOR_SUPPORT` | No verifier exists for the token type. |
+| <a id="vulnerabilityvaliditydisplaystate-pending_verification"></a>`PENDING_VERIFICATION` | Token type is supported but no check has completed yet. |
+| <a id="vulnerabilityvaliditydisplaystate-unknown"></a>`UNKNOWN` | Token was checked but the vendor gave no verdict. |
 
 ### `VulnerabilityWorkflowErrorReason`
 

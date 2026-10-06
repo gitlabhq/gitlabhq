@@ -1,0 +1,10 @@
+---
+name: ci_finalize_pending_detach_partitions_daily
+description: Finalize pending detach partitions daily, locking the referenced tables before FINALIZE
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/617932
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258843
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631599
+milestone: '19.5'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

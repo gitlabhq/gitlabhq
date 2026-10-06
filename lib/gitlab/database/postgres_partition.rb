@@ -48,6 +48,8 @@ module Gitlab
       # every value the explicit partitions do not claim.
       scope :default_partition, -> { where(condition: DEFAULT_CONDITION) }
 
+      scope :pending_detach, -> { where(pending_detach: true) }
+
       scope :above_threshold, ->(threshold) do
         where('pg_total_relation_size(identifier) > ?', threshold)
       end

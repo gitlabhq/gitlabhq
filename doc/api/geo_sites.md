@@ -34,11 +34,10 @@ POST /geo_sites
 
 ```shell
 curl --request POST \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites" \
-     --request POST \
-     -d "name=himynameissomething" \
-     -d "url=https://another-node.example.com/"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites" \
+  --data "name=himynameissomething" \
+  --data-urlencode "url=https://another-node.example.com/"
 ```
 
 | Attribute                             | Type    | Required | Description                                                                                                                                            |
@@ -100,8 +99,8 @@ GET /geo_sites
 
 ```shell
 curl --request GET \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites"
 ```
 
 Example response:
@@ -171,8 +170,8 @@ GET /geo_sites/:id
 
 ```shell
 curl --request GET \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites/1"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites/1"
 ```
 
 Example response:
@@ -326,8 +325,8 @@ GET /geo_sites/status
 
 ```shell
 curl --request GET \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites/status"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites/status"
 ```
 
 Example response:
@@ -1429,8 +1428,8 @@ GET /geo_sites/:id/status
 
 ```shell
 curl --request GET \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://primary.example.com/api/v4/geo_sites/2/status"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/geo_sites/2/status"
 ```
 
 Example response:

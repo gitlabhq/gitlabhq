@@ -568,6 +568,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         pg_ash_rollup_minute_worker
         pg_ash_rotate_worker
         pipeline_schedule_worker
+        postgres_dynamic_partitions_detach_finalizer
         postgres_dynamic_partitions_dropper
         postgres_dynamic_partitions_manager
         projects_schedule_refresh_build_artifacts_size_statistics_worker

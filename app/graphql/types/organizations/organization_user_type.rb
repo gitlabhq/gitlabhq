@@ -18,8 +18,9 @@ module Types
 
       field :access_level,
         ::Types::Organizations::OrganizationUserAccessLevelType,
-        null: false,
+        null: true,
         description: 'Access level of the user in the organization.',
+        authorize: :read_user_access_level,
         experiment: { milestone: '16.11' },
         method: :access_level_before_type_cast
       field :badges,
@@ -34,8 +35,9 @@ module Types
         experiment: { milestone: '16.4' }
       field :is_last_owner,
         GraphQL::Types::Boolean,
-        null: false,
+        null: true,
         description: 'Whether the user is the last owner of the organization.',
+        authorize: :read_user_access_level,
         experiment: { milestone: '16.11' },
         method: :last_owner?
       field :user,

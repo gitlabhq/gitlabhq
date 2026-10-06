@@ -83,14 +83,14 @@ export default class ActionCableProvider {
   }
 
   destroy() {
+    this.awareness.destroy();
+
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
     }
 
     this.doc.off('update', this.#docUpdateHandler);
-    this.awareness.off('update', this.#awarenessUpdateHandler);
-    this.awareness.destroy();
     this.doc.destroy();
     this.identities.clear();
     this.connected = false;

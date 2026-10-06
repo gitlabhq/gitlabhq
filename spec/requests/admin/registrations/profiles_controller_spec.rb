@@ -87,6 +87,19 @@ RSpec.describe Admin::Registrations::ProfilesController, feature_category: :onbo
       patch admin_registrations_profile_path, params: { user: user_params }
     end
 
+    context 'when on a Dedicated instance' do
+      before do
+        stub_application_setting(gitlab_dedicated_instance: true)
+        sign_in(admin)
+      end
+
+      it 'returns not found', :enable_admin_mode do
+        patch_update
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'with an unauthenticated user' do
       it 'redirects to sign in' do
         patch_update

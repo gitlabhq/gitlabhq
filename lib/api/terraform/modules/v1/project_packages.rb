@@ -68,7 +68,8 @@ module API
               desc: 'Module name.', documentation: { example: 'infra-registry' }
             requires :module_system, type: String, allow_blank: false, regexp: ::API::NO_SLASH_URL_PART_REGEX,
               desc: 'Name of the module system, or ' \
-                '[provider](https://www.terraform.io/registry/providers).', documentation: { example: 'aws' }
+                '[provider](https://developer.hashicorp.com/terraform/registry/providers).',
+              documentation: { example: 'aws' }
           end
 
           resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

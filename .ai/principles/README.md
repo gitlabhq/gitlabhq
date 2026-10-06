@@ -75,9 +75,7 @@ Fence reconciliation runs in `master` push pipelines. The
 `ai-principles-reconcile-fences` job starts automatically when a push changes
 a fence input (distilled files, the manifest, the Duo instructions file, or the
 distiller's `lib/`), and is available as a manual job in every other `master`
-push pipeline. The "[Nightly] AI principles fence reconcile" schedule
-(`SCHEDULE_TYPE=ai-principles-fence-reconcile`) also still runs it, until the
-schedule is retired.
+push pipeline.
 
 ### Run the distillation manually
 

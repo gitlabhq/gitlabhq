@@ -240,7 +240,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -727,7 +727,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -1102,7 +1102,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -1575,7 +1575,7 @@ following response attributes:
 | `monitor_access_level` | string | Access level for the monitor feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level` | string | Access level for the model experiments feature. Possible values: `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level` | string | Access level for the model registry feature. Possible values: `disabled`, `private`, or `enabled`. |
-| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, or `enabled`. |
+| `package_registry_access_level` | string | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `emails_disabled` | boolean | Indicates if emails are disabled for the project. |
 | `emails_enabled` | boolean | Indicates if emails are enabled for the project. |
 | `show_diff_preview_in_email` | boolean | Indicates if diff previews are shown in email notifications. |
@@ -2249,7 +2249,7 @@ Supported general project attributes:
 | `only_allow_merge_if_all_status_checks_passed`     | boolean | No                             | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No                             | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) in the project settings. |
 | `packages_enabled`                                 | boolean | No                             | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
-| `package_registry_access_level`                    | string  | No                             | Enable or disable packages repository feature. |
+| `package_registry_access_level`                    | string  | No                             | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `printing_merge_request_link_enabled`              | boolean | No                             | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No                             | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean | No                             | If `true`, jobs can be viewed by non-project members. |
@@ -2353,7 +2353,7 @@ Supported general project attributes:
 | `only_allow_merge_if_all_status_checks_passed`     | boolean | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No       | Set whether merge requests can only be merged with successful jobs. |
 | `packages_enabled`                                 | boolean | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
-| `package_registry_access_level`                    | string  | No       | Enable or disable packages repository feature. |
+| `package_registry_access_level`                    | string  | No       | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                             | string  | No       | Custom repository name for new project. By default generated based on name. |
 | `printing_merge_request_link_enabled`              | boolean | No       | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
@@ -2482,7 +2482,7 @@ Supported general project attributes:
 | `only_allow_merge_if_pipeline_succeeds`            | boolean           | No       | Set whether merge requests can only be merged with successful jobs. |
 | `only_mirror_protected_branches`                   | boolean           | No       | Only mirror protected branches. Premium and Ultimate only. |
 | `packages_enabled`                                 | boolean           | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
-| `package_registry_access_level`                    | string  | No                 | Enable or disable packages repository feature. |
+| `package_registry_access_level`                    | string  | No                 | Access level for the package registry feature. Possible values: `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                             | string            | No       | Custom repository name for the project. By default generated based on name. |
 | `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Ultimate only. |
 | `printing_merge_request_link_enabled`              | boolean           | No       | Show link to create/view merge request when pushing from the command line. |

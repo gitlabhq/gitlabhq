@@ -94,6 +94,37 @@ full rate limit period rather than the time remaining in the current window.
 > them. Always handle a response where these fields are absent. Administrators can change rate limits
 > for individual endpoints, so actual values vary by instance.
 
+## Error: `403 Forbidden` tool result from `start_duo_session`
+
+You might get an error that states `403 Forbidden` when you call the `start_duo_session` tool.
+The MCP server returns `200 OK`, and the tool result has `isError: true` with the following
+message in the `content` field:
+
+```plaintext
+403 Forbidden
+```
+
+This issue occurs when you cannot run the flow in the project. `start_duo_session` always
+starts the flow as a session that runs in a CI job, and you must have permission to run
+that flow in the project.
+
+To resolve this issue, do one of the following:
+
+- If you do not have access to GitLab Duo Agent Platform, meet the
+  [prerequisites for GitLab Duo Agent Platform](../duo_agent_platform/_index.md#prerequisites).
+- If you have the Reporter role or lower in the project, ask a project Owner or Maintainer
+  for at least the Developer role.
+- If foundational flows are turned off, ask a project Maintainer or Owner, or a top-level
+  group Owner, to
+  [turn on foundational flows](../duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- If the flow is in beta, ask a top-level group Owner to
+  [turn on beta and experimental features](../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features).
+
+If you do not use GitLab Duo Agent Platform, you can hide its tools from your MCP client.
+If your client supports custom headers, send the `X-Gitlab-Enabled-Mcp-Server-Toolsets` header
+with a list that does not include `duo_agent_platform`. For more information, see
+[select tool groups (toolsets)](mcp_server.md#select-tool-groups-toolsets).
+
 ## Troubleshoot the GitLab MCP Server in Cursor
 
 1. In Cursor, to open the Output view, do one of the following:

@@ -490,4 +490,36 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
       table_oid(table_name).present?
     end
   end
+
+  describe '.finalize_pending_detach_partitions' do
+    it 'finalizes pending detach partitions for each database' do
+      expect(Gitlab::Database::EachDatabase).to receive(:each_connection).and_yield
+      expect_next_instance_of(Gitlab::Database::Partitioning::PendingDetachPartitionFinalizer) do |finalizer|
+        expect(finalizer).to receive(:perform)
+      end
+
+      described_class.finalize_pending_detach_partitions
+    end
+
+    context 'when the feature disallow DDL feature flags is enabled' do
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+      end
+
+      it 'does not call the PendingDetachPartitionFinalizer' do
+        expect(Gitlab::Database::Partitioning::PendingDetachPartitionFinalizer).not_to receive(:new)
+
+        described_class.finalize_pending_detach_partitions
+      end
+
+      it 'logs a warning and returns the blocking flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Skipping finalizing pending detach postgres partitions',
+          feature_flag: :disallow_database_ddl_feature_flags
+        )
+
+        expect(described_class.finalize_pending_detach_partitions).to eq(:disallow_database_ddl_feature_flags)
+      end
+    end
+  end
 end

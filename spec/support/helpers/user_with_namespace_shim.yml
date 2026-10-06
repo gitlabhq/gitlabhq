@@ -501,7 +501,6 @@
 - spec/features/projects/settings/visibility_settings_spec.rb
 - spec/features/projects/show/access_spec.rb
 - spec/features/projects/show/content_display_spec.rb
-- spec/features/projects/show/download_buttons_spec.rb
 - spec/features/projects/show/repository_actions_spec.rb
 - spec/features/projects/show/user_interactions_spec.rb
 - spec/features/projects/show/user_interacts_with_auto_devops_banner_spec.rb

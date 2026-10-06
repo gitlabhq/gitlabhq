@@ -122,6 +122,15 @@ RSpec.describe Gitaly::Server do
       '594c3ea3e0e5540e5915bd1c49713a0381459dd6' | '1.55.6-45-g594c3ea3' | true
       '594c3ea3e0e5540e5915bd1c49713a0381459dd6' | '1.55.6-46-gabc123ff' | false
       '594c3ea3e0e5540e5915bd1c49713a0381459dd6' | '1.55.6'              | false
+      # Linux package builds from a shallow clone append `-g<revision>` to the
+      # version (gitlab-org/gitaly!9173). Tagged release:
+      '19.4.1'                                   | '19.4.1-g7985a4e'     | true
+      '19.4.2'                                   | '19.4.1-g7985a4e'     | false
+      '19.4.1'                                   | '19.4.1-rc1-g7985a4e' | false
+      # Auto-deploy with a pre-release version:
+      '5a2cb573a3ab204375ee8dc0b660116c9bf2c651' | '19.5.0-rc2-g5a2cb57' | true
+      '5a2cb573a3ab204375ee8dc0b660116c9bf2c651' | '19.5.0-rc2-gabc1234' | false
+      '19.4.1'                                   | '19.4.1-gnothex'      | false
     end
 
     with_them do

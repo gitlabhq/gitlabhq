@@ -413,6 +413,18 @@ describe('collaborative_editing/action_cable_provider', () => {
   });
 
   describe('destroy', () => {
+    it('announces departure before unsubscribing', () => {
+      connectAndInit();
+      subscription.send.mockClear();
+
+      provider.destroy();
+
+      expect(sentMessages('awareness')).toHaveLength(1);
+      expect(subscription.send.mock.invocationCallOrder[0]).toBeLessThan(
+        subscription.unsubscribe.mock.invocationCallOrder[0],
+      );
+    });
+
     it('unsubscribes so the WebSocket does not stay open', () => {
       connectAndInit();
 

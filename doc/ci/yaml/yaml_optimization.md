@@ -49,7 +49,7 @@ job1:
     - ./job-script.sh
 ```
 
-You can't use YAML anchors across multiple files when using the [`include`](_index.md#include)
+You cannot use YAML anchors across multiple files when using the [`include`](_index.md#include)
 keyword. Anchors are only valid in the file they were defined in. To reuse configuration
 from different YAML files, use [`!reference` tags](#reference-tags) or the
 [`extends` keyword](#use-extends-to-reuse-configuration-sections).

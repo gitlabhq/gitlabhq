@@ -1672,7 +1672,7 @@ tags:
     Use this API to interact with the [Terraform CLI](https://docs.gitlab.com/user/packages/terraform_module_registry/).
 
     > [!warning]
-    > This API is used by the [Terraform CLI](https://www.terraform.io/)
+    > This API is used by the [Terraform CLI](https://developer.hashicorp.com/terraform)
     > and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
   x-displayName: Terraform
   externalDocs:
@@ -3698,6 +3698,18 @@ paths:
           nullable: true
         in: query
         example: '1'
+      - name: environment
+        required: false
+        description: Environment the session runs in. Used to resolve tool governance
+          when the client connects before sending workflow_id. Only `ide`, `chat`,
+          and `chat_partial` affect tool governance. Any other value falls back to
+          `web`.
+        schema:
+          type: string
+          nullable: true
+          maxLength: 255
+        in: query
+        example: ide
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/{workflow_id}/trace.jsonl":
     get:
@@ -29325,7 +29337,7 @@ paths:
         example: infra-registry
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29375,7 +29387,7 @@ paths:
         example: infra-registry
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29429,7 +29441,7 @@ paths:
         example: infra-registry
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29476,7 +29488,7 @@ paths:
         example: infra-registry
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29530,7 +29542,7 @@ paths:
         in: path
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29565,7 +29577,7 @@ paths:
         in: path
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29604,7 +29616,7 @@ paths:
         in: path
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29639,7 +29651,7 @@ paths:
         in: path
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29685,7 +29697,7 @@ paths:
         in: path
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path
@@ -29730,7 +29742,7 @@ paths:
         in: path
       - name: module_system
         required: true
-        description: Name of the module system, or [provider](https://www.terraform.io/registry/providers).
+        description: Name of the module system, or [provider](https://developer.hashicorp.com/terraform/registry/providers).
         schema:
           type: string
         in: path

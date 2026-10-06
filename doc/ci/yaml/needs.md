@@ -484,12 +484,12 @@ In this example:
   - `test`, which always exists in the pipeline.
   - `test_optional`, which only exists in the pipeline when `RUN_OPTIONAL_TESTS` is `true`.
 - When `RUN_OPTIONAL_TESTS` is:
-  - `false`, then `test_optional` doesn't exist in the pipeline and `deploy` runs after `test` finishes.
+  - `false`, then `test_optional` does not exist in the pipeline and `deploy` runs after `test` finishes.
   - `true`, then `test_optional` exists in the pipeline and `deploy` waits for both `test`
     and `test_optional` to finish.
 
 Without `optional: true`, pipeline creation fails because the `deploy` job
-expects `test_optional`, but it doesn't exist in the pipeline.
+expects `test_optional`, but it does not exist in the pipeline.
 
 ## Combine `needs` with `parallel:matrix`
 
@@ -512,7 +512,7 @@ This error is caused by one job with `needs` set to another job that does not ex
 To fix this issue, you must either:
 
 - Add [`optional: true`](#optional-dependencies) to the job dependency so that the
-  needed job is ignored when it doesn't exist in the pipeline.
+  needed job is ignored when it does not exist in the pipeline.
 - Update the `rules` configuration of the needed job to ensure it always runs when needed.
 
 For example:

@@ -432,7 +432,10 @@ Checks the status of a GitLab Duo Agent Platform session. Running sessions inclu
 polling delay, which is longer while the session waits for its CI job to start. Finished sessions
 and completed chat turns include the latest agent answer. Any merge request, work item or comment
 the session created is included once it exists, as `created_merge_requests`, `created_work_items`
-and `created_notes`. Each is an array, empty when the session created nothing of that kind.
+and `created_notes`. Each is an array, empty when the session created nothing of that kind, and
+holds at most the 20 most recent items. When a list is cut off, `artifacts_truncated` names the
+lists that were cut and `artifact_limit` gives the cap. Use `get_merge_request` with
+`include: ["notes"]` to page through every comment on a merge request.
 Sessions waiting for approval include instructions for continuing the session with
 `send_duo_session_input`.
 

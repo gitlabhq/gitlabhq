@@ -116,8 +116,7 @@ ai-principles-distill:
 #
 # Trigger: automatically on master pushes that change a fence input (see
 # `.ai-principles-fence-input-patterns`), and as a manual job on every other
-# master push for recovery. The SCHEDULE_TYPE=ai-principles-fence-reconcile
-# schedule still triggers it until that schedule is retired.
+# master push for recovery.
 #
 # Runs share one resource group because they all force-push the same reconcile
 # branch. Each run fetches master after it acquires the group, so a run that

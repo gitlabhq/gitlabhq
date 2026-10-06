@@ -134,17 +134,7 @@ module Gitlab
         # dropping it from here would take ACCESS EXCLUSIVE on the parent. FINALIZE unlinks it
         # under SHARE UPDATE EXCLUSIVE instead, after which the drop takes no lock on the parent.
         def finalize_detach(pg_partition)
-          with_lock_retries(partition_name: pg_partition.name) do
-            connection.transaction(requires_new: false) do
-              connection.execute(<<~SQL)
-                ALTER TABLE #{connection.quote_table_name(pg_partition.parent_identifier)}
-                DETACH PARTITION #{connection.quote_table_name(pg_partition.identifier)} FINALIZE
-              SQL
-            end
-          end
-
-          Gitlab::AppLogger.info(message: 'Finalized a pending partition detach',
-            partition_name: pg_partition.name)
+          PendingDetachPartitionFinalizer.new.finalize(pg_partition)
         end
 
         def find_pg_partition(partition_identifier)

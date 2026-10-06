@@ -15,7 +15,7 @@ title: Terraform Module Registry API
 Use this API to interact with the [Terraform CLI](../../user/packages/terraform_module_registry/_index.md).
 
 > [!warning]
-> This API is used by the [Terraform CLI](https://www.terraform.io/)
+> This API is used by the [Terraform CLI](https://developer.hashicorp.com/terraform)
 > and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
 
 ## List available versions for a specific module
@@ -30,7 +30,7 @@ GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/
 | --------- | ---- | -------- | ----------- |
 | `module_namespace` | string | yes | The top-level group (namespace) to which Terraform module's project or subgroup belongs.|
 | `module_name` | string | yes | The module name. |
-| `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module_system` | string | yes | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
@@ -89,7 +89,7 @@ GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system
 | --------- | ---- | -------- | ----------- |
 | `module_namespace` | string | yes | The group to which Terraform module's project belongs. |
 | `module_name` | string | yes | The module name. |
-| `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module_system` | string | yes | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
@@ -129,7 +129,7 @@ GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/
 | --------- | ---- | -------- | ----------- |
 | `module_namespace` | string | yes | The group to which Terraform module's project belongs. |
 | `module_name` | string | yes | The module name. |
-| `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module_system` | string | yes | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
@@ -169,7 +169,7 @@ GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/
 | --------- | ---- | -------- | ----------- |
 | `module_namespace` | string | yes | The group to which Terraform module's project belongs. |
 | `module_name` | string | yes | The module name. |
-| `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module_system` | string | yes | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 
 ```shell
 curl --header "Authorization: Bearer <personal_access_token>" \
@@ -198,7 +198,7 @@ GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/
 | --------- | ---- | -------- | ----------- |
 | `module_namespace` | string | yes | The group to which Terraform module's project belongs. |
 | `module_name` | string | yes | The module name. |
-| `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module_system` | string | yes | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 | `module_version` | string | yes | Specific module version to download. |
 
 ```shell
@@ -226,7 +226,7 @@ GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/
 | --------- | ---- | -------- | ----------- |
 | `module_namespace` | string | yes | The group to which Terraform module's project belongs. |
 | `module_name` | string | yes | The module name. |
-| `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module_system` | string | yes | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 | `module_version` | string | yes | Specific module version to download. |
 
 ```shell
@@ -252,7 +252,7 @@ GET /projects/:id/packages/terraform/modules/:module_name/:module_system/:module
 | --------- | ---- | -------- | ----------- |
 | `id` | integer or string | yes | The ID or URL-encoded path of the project. |
 | `module_name` | string | yes | The module name. |
-| `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module_system` | string | yes | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 | `module_version` | string | no | Specific module version to download. If omitted, the latest version is downloaded. |
 
 ```shell
@@ -280,7 +280,7 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 |------------------|-------------------|----------|-------------|
 | `id`             | integer or string | yes      | The ID or URL-encoded path of the project. |
 | `module-name`    | string            | yes      | The module name. |
-| `module-system`  | string            | yes      | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
+| `module-system`  | string            | yes      | The name of the module system or [provider](https://developer.hashicorp.com/terraform/registry/providers). |
 | `module-version` | string            | yes      | Specific module version to upload. |
 
 ```shell

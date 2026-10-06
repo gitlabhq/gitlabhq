@@ -12,14 +12,8 @@ title: Package registry
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
-
-{{< /history >}}
-
 With the GitLab package registry, you can use GitLab as a private or public registry for a variety
-of [supported package managers](supported_functionality.md).
+of supported package managers.
 You can publish and share packages, which can be consumed as a dependency in downstream projects.
 
 ## Package workflows
@@ -28,28 +22,24 @@ Learn how to use the GitLab package registry to build your own custom package wo
 
 - [Use a project as a package registry](../workflows/project_registry.md)
   to publish all of your packages to one project.
-
 - Publish multiple different packages from one [monorepo project](../workflows/working_with_monorepos.md).
 
 ## View packages
 
 You can view packages for your project or group:
 
-1. Go to the project or group.
-1. Go to **Deploy** > **Package registry**.
-
-You can search, sort, and filter packages on this page. You can share your search results by copying
-and pasting the URL from your browser.
-
-You can also find helpful code snippets for configuring your package manager or installing a given package.
+1. In the top bar, select **Search or go to** and find your project or group.
+1. Select **Deploy** > **Package registry**.
 
 When you view packages in a group:
 
-- All packages published to the group and its projects are displayed.
-- Only the projects you can access are displayed.
-- If a project is private, or you are not a member of the project, the packages from that project are not displayed.
+- The page shows all packages published to the group and its projects.
+- The page shows only the projects you can access.
+- The page does not show packages from a project that is private, or that you are not a member of.
 
 To learn how to create and upload a package, follow the instructions for your [package type](supported_functionality.md).
+
+To list packages, you can also [use the API](../../../api/packages.md#list-packages).
 
 ## Use GitLab CI/CD
 
@@ -76,14 +66,13 @@ when you view the package details:
 
 ![Package CI/CD activity](img/package_activity_v12_10.png)
 
-You can view which pipeline published the package, and the commit and user who triggered it. However, the history is limited to five updates of a given package.
+You can view which pipeline published the package, and the commit and user who triggered it.
+Activity history is limited to five updates of a given package.
 
 ### To import packages
 
 If you already have packages built in a different registry, you can import them
 into your GitLab package registry with the [package importer](https://gitlab.com/gitlab-org/ci-cd/package-stage/pkgs_importer).
-
-For a list of supported packages, see [Importing packages from other repositories](supported_functionality.md#importing-packages-from-other-repositories).
 
 ## Reduce storage usage
 
@@ -92,7 +81,7 @@ For information on reducing your storage use for the package registry, see
 
 ## Turn off the package registry
 
-The package registry is automatically turned on.
+The package registry is turned on by default.
 
 On a GitLab Self-Managed instance, your administrator can remove
 the **Packages and registries** menu item from the GitLab sidebar.
@@ -101,40 +90,42 @@ see [GitLab package registry administration](../../../administration/packages/_i
 
 You can also remove the package registry for your project specifically:
 
-1. In your project, go to **Settings** > **General**.
-1. Expand the **Visibility, project features, permissions** section and disable the
-   **Packages** feature.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **General**.
+1. Expand the **Visibility, project features, permissions** section and turn off the
+   **Package registry** toggle.
 1. Select **Save changes**.
 
-The **Deploy** > **Package registry** entry is removed from the sidebar.
+GitLab removes the **Deploy** > **Package registry** entry from the sidebar.
+
+To turn off the package registry for a project, you can also [use the API](../../../api/projects.md#update-a-project).
 
 ## Package registry visibility permissions
 
 [Project permissions](../../permissions.md)
 determine which members and users can download, push, or delete packages.
 
-The visibility of the package registry is independent of the repository and can be controlled from
+The visibility of the package registry is independent of the repository, and you can control it from
 your project's settings. For example, if you have a public project and set the repository visibility
 to **Only Project Members**, the package registry is then public. Turning off the
 **Package registry** toggle turns off all package registry operations.
 
-| Project visibility | Action                | Minimum [role](../../permissions.md#roles) required     |
+| Project visibility | Action                | Minimum role required     |
 |--------------------|-----------------------|---------------------------------------------------------|
-| Public             | View package registry | N/A. Anyone on the internet can perform this action.    |
+| Public             | View package registry | None. Anyone on the internet can perform this action.   |
 | Public             | Publish a package     | Developer                                               |
-| Public             | Pull a package        | N/A. Anyone on the internet can perform this action.    |
+| Public             | Pull a package        | None. Anyone on the internet can perform this action.   |
 | Internal           | View package registry | Guest                                                   |
 | Internal           | Publish a package     | Developer                                               |
-| Internal           | Pull a package        | Guest (1)                                               |
+| Internal           | Pull a package        | Guest                                                   |
 | Private            | View package registry | Reporter                                                |
 | Private            | Publish a package     | Developer                                               |
-| Private            | Pull a package        | Reporter (1)                                            |
+| Private            | Pull a package        | Reporter                                                |
 
 ### Allow anyone to pull from package registry
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385994) in GitLab 15.7.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468058) in GitLab 17.4 to support NuGet group endpoints.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468059) in GitLab 17.5 to support Maven group endpoint.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468062) in GitLab 17.5 to support Terraform module namespace endpoints.
@@ -151,27 +142,35 @@ To allow anyone to pull from the package registry, regardless of project visibil
 
 Anyone on the internet can access the package registry for the project.
 
+To allow anyone to pull, you can also [use the API](../../../api/projects.md#update-a-project).
+
+When you allow anyone to pull from the package registry, these endpoints are supported:
+
+- Project endpoints
+- NuGet registry group endpoints
+- Maven registry group endpoints
+- Terraform module registry namespace endpoints
+
+This setting has the following known issues:
+
+- NuGet group endpoints do not allow anonymous downloads, because of how NuGet clients send authentication credentials.
+  Only GitLab users can pull from the package registry, even if this setting is turned on.
+- Other group and instance endpoints are not fully supported.
+  Support for group endpoints is proposed in [epic 14234](https://gitlab.com/groups/gitlab-org/-/epics/14234).
+- Anonymous pulls do not work with the [Composer registry](../composer_repository/_index.md#install-a-composer-package), because Composer only has a group endpoint.
+- Anonymous pulls work with Conan, but [`conan search`](../conan_1_repository/_index.md#search-for-conan-packages-in-the-package-registry) does not work.
+
 #### Disable allowing anyone to pull
 
 Prerequisites:
 
-- You must be an administrator.
+- Administrator access.
 
 To hide the **Allow anyone to pull from package registry** toggle globally:
 
 - [Update the application setting](../../../api/settings.md#update-application-settings) `package_registry_allow_anyone_to_pull_option` to `false`.
 
-Anonymous downloads are turned off, even for projects that turned on the **Allow anyone to pull from Package Registry** toggle.
-
-Several known issues exist when you allow anyone to pull from the package registry:
-
-- Endpoints for projects are supported.
-- NuGet registry endpoints for groups are supported. However, because of how NuGet clients send the authentication credentials, anonymous downloads are not allowed. Only GitLab users can pull from the package registry, even if this setting is turned on.
-- Maven registry endpoints for groups are supported.
-- Terraform module registry endpoints for namespaces are supported.
-- Other group and instance endpoints are not fully supported. Support for group endpoints is proposed in [epic 14234](https://gitlab.com/groups/gitlab-org/-/epics/14234).
-- It does not work with the [Composer](../composer_repository/_index.md#install-a-composer-package), because Composer only has a group endpoint.
-- It works with Conan, but using [`conan search`](../conan_1_repository/_index.md#search-for-conan-packages-in-the-package-registry) does not work.
+Anonymous downloads are turned off, even for projects that turned on the **Allow anyone to pull from package registry** toggle.
 
 ## Audit events
 
@@ -189,12 +188,30 @@ Several known issues exist when you allow anyone to pull from the package regist
 
 {{< /history >}}
 
-Create audit events when a package is published or deleted. Namespace Owners can turn on the `audit_events_enabled` setting through the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
+Create audit events when a package is published or deleted.
 
-You can view audit events:
+### Turn on audit events
 
-- On the [**Group audit events**](../../compliance/audit_events.md#group-audit-events) page if the package's project is in a group.
-- On the [**Project audit events**](../../compliance/audit_events.md#project-audit-events) page if the package's project is in a user namespace.
+Audit events are turned off by default.
+
+Prerequisites:
+
+- The Owner role for the group that contains the project, or ownership of the personal namespace that contains the project.
+
+To turn on audit events:
+
+- Set `auditEventsEnabled` to `true` for the namespace with the
+  [GraphQL API](../../../api/graphql/reference/_index.md#mutationupdatenamespacepackagesettings).
+
+The setting applies only to projects directly in that namespace.
+For a project in a subgroup, turn on the setting for the subgroup.
+
+Where package audit events appear depends on the project's namespace:
+
+- If the project is in a group, events appear in that group's audit events, not the project's.
+- If the project is in a personal namespace, events appear in the project's audit events.
+
+For more information, see [view audit events](../../compliance/audit_events.md#viewing-audit-events).
 
 ## Accepting contributions
 
@@ -205,9 +222,9 @@ Consider contributing to GitLab to add support for these formats.
 
 | Format    | Status                                                        |
 | --------- | ------------------------------------------------------------- |
-| Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
-| CRAN      | [#36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
-| RPM       | [#5932](https://gitlab.com/groups/gitlab-org/-/epics/5128)    |
-| Swift     | [#12233](https://gitlab.com/gitlab-org/gitlab/-/issues/12233) |
+| Conda     | [Issue 36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
+| CRAN      | [Issue 36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
+| RPM       | [Epic 5128](https://gitlab.com/groups/gitlab-org/-/epics/5128)     |
+| Swift     | [Issue 12233](https://gitlab.com/gitlab-org/gitlab/-/issues/12233) |
 
 <!-- vale gitlab_base.Spelling = YES -->

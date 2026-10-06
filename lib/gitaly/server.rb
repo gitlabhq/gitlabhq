@@ -2,7 +2,11 @@
 
 module Gitaly
   class Server
-    SHA_VERSION_REGEX = /\A\d+\.\d+\.\d+-\d+-g([a-f0-9]{8})\z/
+    # Matches a version string carrying a Git revision suffix, as produced by
+    # `git describe` on a full clone (`1.55.6-45-g594c3ea3`) or by the Gitaly
+    # Makefile fallback on a shallow clone (`19.4.1-g7985a4e`,
+    # `19.5.0-rc2-g5a2cb57`). See https://gitlab.com/gitlab-org/gitaly/-/merge_requests/9173.
+    VERSION_WITH_REVISION_REGEX = /\A(?<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)*?)-g(?<revision>[a-f0-9]{5,40})\z/
     DEFAULT_REPLICATION_FACTOR = 1
 
     ServerSignature = Struct.new(:public_key, :error, keyword_init: true)
@@ -40,7 +44,7 @@ module Gitaly
     end
 
     def expected_version?
-      server_version == Gitlab::GitalyClient.expected_server_version || matches_sha?
+      server_version == Gitlab::GitalyClient.expected_server_version || matches_version_with_revision?
     end
     alias_method :up_to_date?, :expected_version?
 
@@ -102,11 +106,18 @@ module Gitaly
       @disk_statistics_storage_status ||= disk_statistics.storage_statuses.find { |s| s.storage_name == storage }
     end
 
-    def matches_sha?
-      match = server_version.match(SHA_VERSION_REGEX)
+    # A server version with a revision suffix is up to date when either:
+    # - its semantic version equals the expected version (tagged releases,
+    #   where GITALY_SERVER_VERSION is e.g. `19.4.1`), or
+    # - the expected version is a commit SHA that starts with the revision
+    #   (auto-deploy, where GITALY_SERVER_VERSION is a full SHA).
+    def matches_version_with_revision?
+      match = server_version.match(VERSION_WITH_REVISION_REGEX)
       return false unless match
 
-      Gitlab::GitalyClient.expected_server_version.start_with?(match[1])
+      expected = Gitlab::GitalyClient.expected_server_version
+
+      match[:version] == expected || expected.start_with?(match[:revision])
     end
 
     def server_signature
