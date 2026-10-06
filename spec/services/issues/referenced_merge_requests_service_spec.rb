@@ -11,7 +11,7 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
 
   def create_closing_mr(attributes = {})
     create_referencing_mr(attributes).tap do |merge_request|
-      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
+      create(:merge_request_issue, issue: issue, merge_request: merge_request)
     end
   end
 
@@ -113,7 +113,7 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
   describe '#related_merge_requests' do
     let_it_be(:explicitly_related_mr, freeze: false) do
       create(:merge_request, source_project: project, source_branch: 'improve/awesome').tap do |merge_request|
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
       end
     end
@@ -130,14 +130,14 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
 
     it 'includes an explicitly related merge request from another project the user can read' do
       other_project_mr = create(:merge_request, source_project: other_project, source_branch: 'improve/awesome')
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue, merge_request: other_project_mr, link_type: :related, from_mr_description: false)
 
       expect(service.related_merge_requests(issue)).to include(other_project_mr)
     end
 
     it 'returns a merge request that is both referenced and explicitly related only once' do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue, merge_request: referencing_mr, link_type: :related, from_mr_description: false)
 
       expect(service.related_merge_requests(issue).count(referencing_mr)).to eq(1)
@@ -167,7 +167,7 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
         control = ActiveRecord::QueryRecorder.new { service.related_merge_requests(issue) }
 
         create(:merge_request, source_project: project, source_branch: 'signed-commits').tap do |merge_request|
-          create(:merge_requests_closing_issues,
+          create(:merge_request_issue,
             issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
         end
         service.related_merge_requests(issue) # warm cache
@@ -198,7 +198,7 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
   describe '#related_merge_request_ids' do
     let_it_be(:explicitly_related_mr, freeze: false) do
       create(:merge_request, source_project: project, source_branch: 'improve/awesome').tap do |merge_request|
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
       end
     end

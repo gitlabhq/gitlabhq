@@ -20,7 +20,7 @@ RSpec.describe Gitlab::IssuableMetadata do
     let!(:downvote) { create(:award_emoji, :downvote, user: user, awardable: closed_issue) }
     let!(:upvote) { create(:award_emoji, :upvote, user: user, awardable: issue) }
     let!(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, title: "Test") }
-    let!(:closing_issues) { create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request) }
+    let!(:closing_issues) { create(:merge_request_issue, issue: issue, merge_request: merge_request) }
 
     it 'aggregates stats on issues' do
       data = described_class.new(user, Issue.all.limit(10)).data

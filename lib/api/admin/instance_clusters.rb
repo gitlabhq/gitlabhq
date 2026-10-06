@@ -39,7 +39,7 @@ module API
           tags %w[clusters]
         end
         params do
-          requires :cluster_id, type: Integer, desc: "The cluster ID"
+          requires :cluster_id, type: Integer, desc: 'ID of the cluster.'
         end
         route_setting :authorization, permissions: :read_cluster, boundary_type: :instance, assignable_when: [:admin]
         get '/clusters/:cluster_id' do
@@ -59,19 +59,19 @@ module API
           tags %w[clusters]
         end
         params do
-          requires :name, type: String, desc: 'Cluster name'
-          optional :enabled, type: Boolean, default: true, desc: 'Determines if cluster is active or not, defaults to true'
-          optional :environment_scope, default: '*', type: String, desc: 'The associated environment to the cluster'
-          optional :namespace_per_environment, default: true, type: Boolean, desc: 'Deploy each environment to a separate Kubernetes namespace'
-          optional :domain, type: String, desc: 'Cluster base domain'
-          optional :management_project_id, type: Integer, desc: 'The ID of the management project'
-          optional :managed, type: Boolean, default: true, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster, defaults to true'
-          requires :platform_kubernetes_attributes, type: Hash, desc: 'Platform Kubernetes data' do
-            requires :api_url, type: String, allow_blank: false, desc: 'URL to access the Kubernetes API'
-            requires :token, type: String, desc: 'Token to authenticate against Kubernetes'
-            optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'
-            optional :namespace, type: String, desc: 'Unique namespace related to Project'
-            optional :authorization_type, type: String, values: ::Clusters::Platforms::Kubernetes.authorization_types.keys, default: 'rbac', desc: 'Cluster authorization type, defaults to RBAC'
+          requires :name, type: String, desc: 'Name of the cluster.'
+          optional :enabled, type: Boolean, default: true, desc: "If `true`, the cluster is active and GitLab's connection to the Kubernetes cluster is enabled."
+          optional :environment_scope, default: '*', type: String, desc: 'Associated environment to the cluster.'
+          optional :namespace_per_environment, default: true, type: Boolean, desc: 'If `true`, deploys each environment to a separate Kubernetes namespace.'
+          optional :domain, type: String, desc: '[Base domain](https://docs.gitlab.com/user/project/clusters/gitlab_managed_clusters/#base-domain) of the cluster.'
+          optional :management_project_id, type: Integer, desc: 'ID of the [management project](https://docs.gitlab.com/user/clusters/management_project/) for the cluster.'
+          optional :managed, type: Boolean, default: true, desc: 'If `true`, GitLab manages namespaces and service accounts for this cluster.'
+          requires :platform_kubernetes_attributes, type: Hash, desc: 'Platform Kubernetes data.' do
+            requires :api_url, type: String, allow_blank: false, desc: 'URL to access the Kubernetes API.'
+            requires :token, type: String, desc: 'Token to authenticate against Kubernetes.'
+            optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate).'
+            optional :namespace, type: String, desc: 'Kubernetes namespace that environments deploy to. Allowed only when `managed` is `false`.'
+            optional :authorization_type, type: String, values: ::Clusters::Platforms::Kubernetes.authorization_types.keys, default: 'rbac', desc: 'Cluster authorization type.'
           end
         end
         route_setting :authorization, permissions: :create_cluster, boundary_type: :instance, assignable_when: [:admin]
@@ -100,19 +100,19 @@ module API
           tags %w[clusters]
         end
         params do
-          requires :cluster_id, type: Integer, desc: 'The cluster ID'
-          optional :name, type: String, desc: 'Cluster name'
-          optional :enabled, type: Boolean, desc: 'Enable or disable Gitlab\'s connection to your Kubernetes cluster'
-          optional :environment_scope, type: String, desc: 'The associated environment to the cluster'
-          optional :namespace_per_environment, default: true, type: Boolean, desc: 'Deploy each environment to a separate Kubernetes namespace'
-          optional :domain, type: String, desc: 'Cluster base domain'
-          optional :management_project_id, type: Integer, desc: 'The ID of the management project'
-          optional :managed, type: Boolean, desc: 'Determines if GitLab will manage namespaces and service accounts for this cluster'
-          optional :platform_kubernetes_attributes, type: Hash, desc: 'Platform Kubernetes data' do
-            optional :api_url, type: String, desc: 'URL to access the Kubernetes API'
-            optional :token, type: String, desc: 'Token to authenticate against Kubernetes'
-            optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate)'
-            optional :namespace, type: String, desc: 'Unique namespace related to Project'
+          requires :cluster_id, type: Integer, desc: 'ID of the cluster.'
+          optional :name, type: String, desc: 'Name of the cluster.'
+          optional :enabled, type: Boolean, desc: "If `true`, the cluster is active and GitLab's connection to the Kubernetes cluster is enabled."
+          optional :environment_scope, type: String, desc: 'Associated environment to the cluster.'
+          optional :namespace_per_environment, default: true, type: Boolean, desc: 'If `true`, deploys each environment to a separate Kubernetes namespace.'
+          optional :domain, type: String, desc: '[Base domain](https://docs.gitlab.com/user/project/clusters/gitlab_managed_clusters/#base-domain) of the cluster.'
+          optional :management_project_id, type: Integer, desc: 'ID of the [management project](https://docs.gitlab.com/user/clusters/management_project/) for the cluster.'
+          optional :managed, type: Boolean, desc: 'If `true`, GitLab manages namespaces and service accounts for this cluster.'
+          optional :platform_kubernetes_attributes, type: Hash, desc: 'Platform Kubernetes data.' do
+            optional :api_url, type: String, desc: 'URL to access the Kubernetes API.'
+            optional :token, type: String, desc: 'Token to authenticate against Kubernetes.'
+            optional :ca_cert, type: String, desc: 'TLS certificate (needed if API is using a self-signed TLS certificate).'
+            optional :namespace, type: String, desc: 'Kubernetes namespace that environments deploy to. Allowed only when `managed` is `false`.'
           end
         end
         route_setting :authorization, permissions: :update_cluster, boundary_type: :instance, assignable_when: [:admin]
@@ -139,7 +139,7 @@ module API
           tags %w[clusters]
         end
         params do
-          requires :cluster_id, type: Integer, desc: "The cluster ID"
+          requires :cluster_id, type: Integer, desc: 'ID of the cluster.'
         end
         route_setting :authorization, permissions: :delete_cluster, boundary_type: :instance, assignable_when: [:admin]
         delete '/clusters/:cluster_id' do

@@ -415,6 +415,7 @@ List my active Duo Agent Platform sessions in gitlab-org/gitlab
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607634) in GitLab 19.4. `get_duo_workflow_status` is also accepted as an alias.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/627561) to return the merge requests, work items and comments the session created, to vary the polling delay by status, and to report `status` with underscores (`input_required` rather than `input required`) to match `list_duo_sessions`, in GitLab 19.5.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/631690) to return why a failed session failed and a link to its CI job, in GitLab 19.5.
 
 {{< /history >}}
 
@@ -425,6 +426,15 @@ the session created is included once it exists, as `created_merge_requests`, `cr
 and `created_notes`. Each is an array, empty when the session created nothing of that kind.
 Sessions waiting for approval include instructions for continuing the session with
 `send_duo_session_input`.
+
+Failed sessions also include:
+
+- `failure_reason`: the reason recorded for the failure, or `null` if no reason was recorded.
+- `job_url`: the CI job that ran the session, or `null` if no CI job ran or you cannot read its log.
+
+When a session failed before its agent started, the response says it made no changes and can be
+started again. Sessions older than 30 days do not include this message. Checkpoints older than 30
+days are not retained, so the tool cannot identify if the agent ran the session.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|

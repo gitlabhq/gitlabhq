@@ -12,7 +12,7 @@ set -eo pipefail
 # orphaned fences always fail, while STALE fences are blocking only on refs that
 # own the fences (the reconcile MR and MRs touching the fence file, the gem, or
 # this script). On ordinary MRs and on master, staleness is expected transient
-# state (a distilled MR merges independently and the daily fence-reconcile job
+# state (a distilled MR merges independently and the fence-reconcile job
 # catches the fences up from master afterwards), so the caller sets
 # WARN_STALE=1 to downgrade staleness to a non-blocking warning. See
 # gitlab-org/gitlab#604738 and gitlab-org/gitlab#604890.

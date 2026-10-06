@@ -402,7 +402,7 @@ module MergeRequests
     end
 
     # If the merge requests closes any issues, save this information in the
-    # `MergeRequestsClosingIssues` model (as a performance optimization).
+    # `MergeRequestIssue` model (as a performance optimization).
     #
     # Only open merge requests are considered: `persist_merge_request_issues!`
     # is a no-op for closed and merged merge requests, so loading them here is

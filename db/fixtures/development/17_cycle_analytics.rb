@@ -149,7 +149,7 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
 
       @merge_requests << merge_request
 
-      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
+      MergeRequestIssue.create!(issue: issue, merge_request: merge_request)
     end
   end
 

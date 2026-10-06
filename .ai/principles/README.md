@@ -71,10 +71,13 @@ as the "[Weekly] AI principles distillation" schedule, with cron
 `0 2 * * 2` (Tuesday 02:00 UTC) and the
 `SCHEDULE_TYPE=ai-principles-distillation` variable.
 
-Fence reconciliation runs from its own schedule, "[Nightly] AI
-principles fence reconcile", with cron `0 5 * * *` (daily 05:00 UTC) and
-the `SCHEDULE_TYPE=ai-principles-fence-reconcile` variable. Both
-schedules run against `refs/heads/master`.
+Fence reconciliation runs in `master` push pipelines. The
+`ai-principles-reconcile-fences` job starts automatically when a push changes
+a fence input (distilled files, the manifest, the Duo instructions file, or the
+distiller's `lib/`), and is available as a manual job in every other `master`
+push pipeline. The "[Nightly] AI principles fence reconcile" schedule
+(`SCHEDULE_TYPE=ai-principles-fence-reconcile`) also still runs it, until the
+schedule is retired.
 
 ### Run the distillation manually
 
@@ -399,7 +402,7 @@ Required fields: `description`, `sources`, `owner_team`. See
 
 Skip this step if you only need agent coverage (Claude Code, OpenCode).
 
-The daily reconciliation job **refreshes** existing fences but **cannot
+The reconciliation job **refreshes** existing fences but **cannot
 create** new ones. To get Duo Code Review coverage, manually seed an
 empty fence in
 [`.gitlab/duo/mr-review-instructions.yaml`](../../.gitlab/duo/mr-review-instructions.yaml)
@@ -435,7 +438,7 @@ happens until your changes land on the default branch.
 
 ### 5. Wait for the generated MRs
 
-Nothing is generated in a single step. Two schedules are involved, and
+Nothing is generated in a single step. Two jobs are involved, and
 each opens a merge request that has to be merged in turn:
 
 1. The weekly distillation run (Tuesday 02:00 UTC) distills the SSOT
@@ -445,8 +448,8 @@ each opens a merge request that has to be merged in turn:
    routing tables (AGENTS.md, CLAUDE.md, SKILL.md).
 1. Once the distilled-content and tooling MRs merge, agents (Claude Code,
    OpenCode) can discover and load the principle.
-1. The daily fence-reconcile run (05:00 UTC) then regenerates the fences by
-   projection from merged `master` and opens a third MR of its own (for
+1. The distilled-content merge then triggers the fence-reconcile job, which
+   regenerates the fences by projection from merged `master` and opens a third MR of its own (for
    example
    [!254678](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254678)).
    Duo Code Review only picks up the principle after that MR merges.

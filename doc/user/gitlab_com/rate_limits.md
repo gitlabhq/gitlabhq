@@ -52,8 +52,17 @@ Some unauthenticated requests do not count against the unauthenticated limit of 
 each hour from an IP address:
 
 - Git over HTTPS requests
+- Sign-in requests, including [SAML SSO](../group/saml_sso/_index.md) and sign-in with a
+  third-party provider such as Google or GitHub
+- [OAuth 2.0](../../api/oauth2.md) authorization, access token, and device authorization requests
+- [OpenID Connect](../../integration/openid_connect_provider.md) discovery requests, such as the ones
+  cloud providers make to verify [CI/CD ID tokens](../../ci/secrets/id_token_authentication.md)
+- Terraform service discovery requests, made before installing modules from the
+  [Terraform module registry](../packages/terraform_module_registry/_index.md)
 - [Feature flag](../../operations/feature_flags.md) polling from Unleash clients
 - [SCIM](../group/saml_sso/scim_setup.md) provisioning requests from an identity provider
+- Requests that Jira Cloud sends to the [GitLab for Jira Cloud app](../../integration/jira/connect-app.md),
+  such as searching for and linking repositories
 - Requests from the [GitLab for Slack app](../project/integrations/gitlab_slack_application.md)
 - Requests that [trigger a pipeline with a pipeline trigger token](../../ci/triggers/_index.md)
 

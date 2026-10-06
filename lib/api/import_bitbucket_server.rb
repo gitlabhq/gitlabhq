@@ -40,15 +40,23 @@ module API
     end
 
     params do
-      requires :bitbucket_server_url, type: String, desc: 'Bitbucket Server URL'
-      requires :bitbucket_server_username, type: String, desc: 'BitBucket Server Username'
-      requires :personal_access_token, type: String, desc: 'BitBucket Server personal access token/password'
-      requires :bitbucket_server_project, type: String, desc: 'BitBucket Server Project Key'
-      requires :bitbucket_server_repo, type: String, desc: 'BitBucket Server Repository Name'
-      optional :new_name, type: String, desc: 'New repo name'
-      optional :new_namespace, type: String, desc: 'Namespace to import repo into'
+      requires :bitbucket_server_url, type: String, desc: 'URL of the Bitbucket Server instance.'
+      requires :bitbucket_server_username, type: String, desc: 'Bitbucket Server username.'
+      requires :personal_access_token, type: String, desc: 'Bitbucket Server personal access token or password.'
+      requires :bitbucket_server_project, type: String, desc: 'Key of the Bitbucket Server project. Must contain ' \
+                                                          'only letters, numbers, hyphens, underscores, ' \
+                                                          'periods, or whitespace characters. Personal ' \
+                                                          'project keys start with `~`.'
+      requires :bitbucket_server_repo, type: String, desc: 'Name of the Bitbucket Server repository. Must contain ' \
+                                                       'only letters, numbers, hyphens, underscores, periods, or ' \
+                                                       'whitespace characters.'
+      optional :new_name, type: String, desc: 'Name of the new project. Also used as the new path, so it must not ' \
+                                          'start or end with a special character and must not contain ' \
+                                          'consecutive special characters.'
+      optional :new_namespace, type: String, desc: 'Namespace to import the repository into.'
       optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
-        desc: 'Strategy for behavior on timeouts'
+        desc: 'Strategy for handling import timeouts. `optimistic` continues to the next stage of the import. ' \
+          '`pessimistic` fails the import immediately. Defaults to `pessimistic`.'
     end
 
     route_setting :authorization, permissions: :create_bitbucket_server_import, boundary_type: :instance

@@ -2173,13 +2173,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     before do
       subject.target_branch = subject.project.default_branch
       create(
-        :merge_requests_closing_issues,
+        :merge_request_issue,
         issue: issue1,
         merge_request: subject,
         from_mr_description: true
       )
       create(
-        :merge_requests_closing_issues,
+        :merge_request_issue,
         issue: issue2,
         merge_request: subject,
         from_mr_description: false
@@ -2294,7 +2294,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     it 'updates existing records if they were not created from MR description' do
       existing_association = create(
-        :merge_requests_closing_issues,
+        :merge_request_issue,
         issue: issue,
         merge_request: subject,
         from_mr_description: false
@@ -2387,7 +2387,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     context 'with a pre-existing mentioned-link-type row (audit coverage)' do
       let!(:mentioned_row) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue, merge_request: subject,
           link_type: :mentioned, from_mr_description: false)
       end
@@ -2401,7 +2401,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'excludes mentioned rows from cached_closes_issues' do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: create(:issue, project: project), merge_request: subject,
           from_mr_description: true)
 
@@ -2457,7 +2457,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'with a user-created row for the mentioned issue' do
         let!(:user_created) do
-          create(:merge_requests_closing_issues,
+          create(:merge_request_issue,
             issue: mentioned_issue, merge_request: subject,
             link_type: link_type, from_mr_description: false)
         end
@@ -6134,8 +6134,27 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when auto_merge_strategy is STRATEGY_MERGE_WHEN_CHECKS_PASS' do
       let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
 
-      it 'skips all the checks except skip_rebase_check' do
-        expect(subject.except(:skip_rebase_check).values).to all(be_truthy)
+      it 'skips all the checks except skip_rebase_check and skip_commits_check' do
+        expect(subject.except(:skip_rebase_check, :skip_commits_check).values).to all(be_truthy)
+        expect(subject[:skip_commits_check]).to be_falsey
+      end
+
+      context 'when the merge request is preparing' do
+        let(:merge_request) { build_stubbed(:merge_request, merge_status: :preparing) }
+
+        it 'skips the commits check' do
+          expect(subject[:skip_commits_check]).to be_truthy
+        end
+
+        context 'when the auto_merge_skip_commits_check_while_preparing feature flag is disabled' do
+          before do
+            stub_feature_flags(auto_merge_skip_commits_check_while_preparing: false)
+          end
+
+          it 'does not skip the commits check' do
+            expect(subject[:skip_commits_check]).to be_falsey
+          end
+        end
       end
     end
 

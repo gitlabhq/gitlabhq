@@ -1,0 +1,10 @@
+---
+name: attr_encrypted_multi_key_decrypt
+description: Decrypt attr_encrypted attributes with every db_key_base key
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/631455
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258705
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632071
+milestone: '19.5'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

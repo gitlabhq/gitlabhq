@@ -14,11 +14,11 @@ RSpec.describe 'Query.mergeRequest.linkedWorkItems', feature_category: :code_rev
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let_it_be(:closing_link1) do
-    create(:merge_requests_closing_issues, issue: closing_issue, merge_request: merge_request)
+    create(:merge_request_issue, issue: closing_issue, merge_request: merge_request)
   end
 
   let_it_be(:closing_link2) do
-    create(:merge_requests_closing_issues, issue: confidential_issue, merge_request: merge_request)
+    create(:merge_request_issue, issue: confidential_issue, merge_request: merge_request)
   end
 
   let(:current_user) { developer }
@@ -186,7 +186,7 @@ RSpec.describe 'Query.mergeRequest.linkedWorkItems', feature_category: :code_rev
     end
 
     before_all do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue_mentioned_and_closing,
         merge_request: merge_request_with_mixed_links
       )

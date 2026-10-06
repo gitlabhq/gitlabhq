@@ -142,6 +142,9 @@ To change a setting:
 1. To close the panel, press <kbd>Escape</kbd>.
 
 Changes persist across sessions.
+If your organization enforces a setting, the panel shows **Set by your organization** and you can't
+change it.
+For more information, see [managed settings file](_index.md#managed-settings-file).
 
 The following settings are available:
 

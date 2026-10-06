@@ -194,4 +194,15 @@ RSpec.describe Gitlab::ApplicationSettingFetcher, feature_category: :cell do
       it { is_expected.to be(false) }
     end
   end
+
+  describe '.needs_migration?' do
+    subject(:needs_migration?) { described_class.needs_migration? }
+
+    it 'delegates to the application settings migration context' do
+      migration_context = instance_double(ActiveRecord::MigrationContext, needs_migration?: true)
+      allow(::ApplicationSetting.connection_pool).to receive(:migration_context).and_return(migration_context)
+
+      expect(needs_migration?).to be(true)
+    end
+  end
 end

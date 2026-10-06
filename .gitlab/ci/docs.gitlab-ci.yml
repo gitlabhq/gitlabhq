@@ -231,7 +231,7 @@ ai-principles-manifest:
 # regenerate stale fences, or correct/remove malformed or orphaned markers.
 #
 # Fence regeneration is decoupled from distillation (gitlab-org/gitlab#604890):
-# a team's distilled MR merges independently and the daily fence-reconcile job
+# a team's distilled MR merges independently and the fence-reconcile job
 # catches the fences up from merged master afterwards. So fence STALENESS is
 # expected transient state on ordinary MRs and on master, not something those
 # refs can fix. The guard therefore runs as two jobs:

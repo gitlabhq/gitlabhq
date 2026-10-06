@@ -190,7 +190,7 @@ module API
         def authorized_cert_payload
           group_response = group_ssh_certificate_response
 
-          if group_response&.success?
+          if group_response.success?
             group, user = group_response.payload.values_at(:group, :user)
 
             return { instance: false, namespace: group.full_path, username: user.username }
@@ -209,14 +209,7 @@ module API
           render_api_error!(matched.message, ssh_certificate_error_status(matched.reason))
         end
 
-        # Overridden in EE
-        def group_ssh_certificate_response
-          nil
-        end
-
         def group_claimed_fingerprint?(group_response)
-          return false unless group_response
-
           group_response.reason != ::Gitlab::SshCertificates::Reason::CERTIFICATE_NOT_FOUND
         end
 

@@ -270,7 +270,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
         allow(merge_request).to receive(:commits).and_return(commit_list)
         create(
-          :merge_requests_closing_issues,
+          :merge_request_issue,
           issue: issue2,
           merge_request: merge_request,
           from_mr_description: false
@@ -295,13 +295,13 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         context 'when the closing work item was created in the merge request description' do
           before do
             create(
-              :merge_requests_closing_issues,
+              :merge_request_issue,
               issue: other_issue,
               merge_request: merge_request,
               from_mr_description: true
             )
             create(
-              :merge_requests_closing_issues,
+              :merge_request_issue,
               issue: group_issue,
               merge_request: merge_request,
               from_mr_description: true
@@ -322,13 +322,13 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         context 'when the closing work item was not created in the merge request description' do
           before do
             create(
-              :merge_requests_closing_issues,
+              :merge_request_issue,
               issue: other_issue,
               merge_request: merge_request,
               from_mr_description: false
             )
             create(
-              :merge_requests_closing_issues,
+              :merge_request_issue,
               issue: group_issue,
               merge_request: merge_request,
               from_mr_description: false
@@ -357,13 +357,13 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
         before do
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             issue: other_issue,
             merge_request: merge_request,
             from_mr_description: false
           )
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             issue: group_issue,
             merge_request: merge_request,
             from_mr_description: false

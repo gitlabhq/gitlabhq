@@ -10,7 +10,7 @@ RSpec.describe 'Destroying merge request work item relations', feature_category:
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let_it_be_with_refind(:relation) do
-    create(:merge_requests_closing_issues,
+    create(:merge_request_issue,
       merge_request: merge_request, issue: create(:issue, project: project),
       link_type: :mentioned, from_mr_description: false)
   end
@@ -41,6 +41,18 @@ RSpec.describe 'Destroying merge request work item relations', feature_category:
 
     expect(response).to have_gitlab_http_status(:success)
     expect(mutation_response['removedRelationIds']).to contain_exactly(global_id_of(relation).to_s)
+  end
+
+  context 'with the deprecated pre-rename global ID format' do
+    let(:ids) { ["gid://gitlab/MergeRequestsClosingIssues/#{relation.id}"] }
+
+    it 'still resolves and removes the relation', :aggregate_failures do
+      expect { post_graphql_mutation(mutation, current_user: current_user) }
+        .to change { merge_request.merge_request_issues.count }.by(-1)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['errors']).to be_empty
+    end
   end
 
   it 'returns an error when the user cannot admin the merge request' do

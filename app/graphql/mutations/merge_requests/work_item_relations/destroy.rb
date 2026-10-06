@@ -10,11 +10,11 @@ module Mutations
         authorize_granular_token permissions: :update_merge_request,
           boundary_argument: :project_path, boundary_type: :project
 
-        argument :ids, [::Types::GlobalIDType[::MergeRequestsClosingIssues]],
+        argument :ids, [::Types::GlobalIDType[::MergeRequestIssue]],
           required: true,
           description: 'Global IDs of the relations to remove.'
 
-        field :removed_relation_ids, [::Types::GlobalIDType[::MergeRequestsClosingIssues]],
+        field :removed_relation_ids, [::Types::GlobalIDType[::MergeRequestIssue]],
           null: true,
           description: 'Global IDs of the removed relations.'
 

@@ -74,6 +74,13 @@ module Gitlab
         )/protected_tags(?:/[^/]+)?\z
       }xi
 
+      GITHUB_OAUTH_WEBHOOK_PATH = %r{
+        \A/api/v4/projects/
+        (?<id>
+        [a-zA-Z0-9%-._]{1,255}
+        )/github/webhooks\z
+      }xi
+
       DEFAULT_LIMITS = {
         # Rack::Utils uses a depth of 32 by default
         max_depth: ENV.fetch('GITLAB_JSON_MAX_DEPTH', 32).to_i,
@@ -230,6 +237,16 @@ module Gitlab
             max_json_size_bytes: 1.megabyte,
             mode: :enforced
           }
+        },
+        # GitHub OAuth webhook receiver - GitHub caps delivery payloads at 25MB.
+        # This bound must run here, before the request reaches the project
+        # lookup, so an oversize body gets the same 400 regardless of project.
+        {
+          regex: GITHUB_OAUTH_WEBHOOK_PATH,
+          methods: %i[post],
+          limits: DEFAULT_LIMITS.merge({
+            max_json_size_bytes: 25.megabytes
+          })
         }
       ].freeze
 

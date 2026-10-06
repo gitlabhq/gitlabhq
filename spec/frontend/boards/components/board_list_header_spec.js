@@ -13,6 +13,7 @@ import {
 } from 'jest/boards/mock_data';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
+import ItemCount from '~/boards/components/item_count.vue';
 import MilestonePopover from '~/issuable/popover/components/milestone_popover.vue';
 import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import { ListType } from '~/boards/constants';
@@ -121,6 +122,40 @@ describe('Board List Header Component', () => {
   const findBoardListHeader = () => wrapper.findByTestId('board-list-header');
   const findMilestoneTrigger = () => wrapper.findByTestId('milestone-trigger');
   const findMilestonePopover = () => wrapper.findComponent(MilestonePopover);
+
+  describe('item count', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    describe('while the list query is loading', () => {
+      it('renders the count icon without a number', () => {
+        expect(wrapper.findByTestId('item-count').exists()).toBe(true);
+        expect(wrapper.findComponent(ItemCount).exists()).toBe(false);
+      });
+    });
+
+    describe('when the list query returns a count', () => {
+      beforeEach(async () => {
+        await mockApollo.resolveQuery(listQuery, boardListQueryResponse({ issuesCount: 5 }));
+      });
+
+      it('renders the item count', () => {
+        expect(wrapper.findComponent(ItemCount).props('currentCount')).toBe(5);
+      });
+    });
+
+    describe('when the list query returns no list', () => {
+      beforeEach(async () => {
+        await mockApollo.resolveQuery(listQuery, { data: { boardList: null } });
+      });
+
+      it('does not render the item count', () => {
+        expect(wrapper.findByTestId('item-count').exists()).toBe(false);
+        expect(wrapper.findComponent(ItemCount).exists()).toBe(false);
+      });
+    });
+  });
 
   it('renders border when label color is present', async () => {
     const expected = [

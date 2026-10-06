@@ -95,6 +95,7 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
             integration_id: integration.id,
             project_id: integration.project_id,
             project_path: kind_of(String),
+            Labkit::Fields::GL_ORGANIZATION_ID => integration.project.organization_id,
             message: 'Slack API error when notifying',
             api_response: { 'ok' => false }
           }

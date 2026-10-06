@@ -437,12 +437,14 @@ RSpec.configure do |config|
   # previous test runs may have left some resources throttled
   config.before do
     ::Gitlab::ExclusiveLease.reset_all!("el:throttle:*")
-    # data_isolation is checked on every organizations query, causing it to appear in exception
-    # payloads via feature_flag_states. Suppress it to avoid polluting exception log assertions.
+    # data_isolation is checked on every organizations query, and attr_encrypted_multi_key_decrypt
+    # on every attr_encrypted read, causing them to appear in exception payloads via
+    # feature_flag_states. Suppress them to avoid polluting exception log assertions.
     # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226037
     RequestStore.delete(:feature_flag_events)
     allow(Feature).to receive(:log_feature_flag_states?).and_call_original
     allow(Feature).to receive(:log_feature_flag_states?).with(:data_isolation).and_return(false)
+    allow(Feature).to receive(:log_feature_flag_states?).with(:attr_encrypted_multi_key_decrypt).and_return(false)
   end
 
   config.before(:example, :assume_throttled) do |example|

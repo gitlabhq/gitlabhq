@@ -22,7 +22,7 @@ module WorkItems
         merge_request = merge_request_from_reference
         raise ResourceNotAvailable, 'Merge request not available' if merge_request.blank?
 
-        mr_closing_issue = MergeRequestsClosingIssues.new(
+        mr_closing_issue = MergeRequestIssue.new(
           merge_request: merge_request,
           issue_id: @work_item.id,
           from_mr_description: false,

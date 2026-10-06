@@ -316,6 +316,7 @@ module API
         mount ::API::ImportBitbucket
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
+        mount ::API::ImportGithubOauthWebhooks
         mount ::API::Integrations
         mount ::API::Integrations::Slack::Events
         mount ::API::Integrations::Slack::Interactions

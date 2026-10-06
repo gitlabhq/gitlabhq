@@ -869,7 +869,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     def create_explicitly_related_mr(project, issue, overrides = {})
       create(:merge_request, { source_project: project, target_project: project }.merge(overrides)).tap do |merge_request|
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue, merge_request: merge_request, link_type: :related, from_mr_description: false)
       end
     end
@@ -950,7 +950,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'returns a merge request that is both referenced and explicitly related only once' do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue, merge_request: related_mr, link_type: :related, from_mr_description: false)
 
       get_related_merge_requests(project.id, issue.iid, user)

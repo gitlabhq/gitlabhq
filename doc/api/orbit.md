@@ -268,13 +268,18 @@ query editor or explorer with the text of a preset.
 ## Query examples
 
 The following examples show the Orbit query DSL for each query type. All
-examples use `POST /api/v4/orbit/query`.
+examples use `POST /api/v4/orbit/query`. For the complete query language, see
+[Orbit query language](https://docs.gitlab.com/orbit/remote/queries/query-language/).
 
 In GQL mode, pass a GQL string as the `query` value to `POST /api/v4/orbit/query`:
 
 ```json
 {"query": "MATCH (u:User {id: 1}) RETURN u LIMIT 1"}
 ```
+
+The examples use the default `raw` response format. In each response, the `result`
+object lists the matched `nodes` and the `edges` between them. Node IDs are strings.
+Aggregation queries also return `columns`, `group_columns`, and `rows`.
 
 Retrieve a user by username:
 
@@ -284,8 +289,10 @@ curl --request POST \
   --header "Content-Type: application/json" \
   --data '{
     "query": {
-      "query_type": "search",
-      "node": {"id": "u", "entity": "User", "filters": {"username": "john_smith"}}
+      "query_type": "traversal",
+      "nodes": [
+        {"id": "u", "entity": "User", "filters": {"username": "john_smith"}}
+      ]
     }
   }' \
   --url "https://gitlab.example.com/api/v4/orbit/query"
@@ -295,16 +302,16 @@ Example response:
 
 ```json
 {
-  "result": [
-    {
-      "u_id": 1,
-      "u_username": "john_smith",
-      "u_name": "John Smith",
-      "u_state": "active",
-      "u_type": "User"
-    }
-  ],
-  "query_type": "search",
+  "result": {
+    "format_version": "5.0.3",
+    "query_type": "traversal",
+    "nodes": [
+      {"type": "User", "id": "1", "username": "john_smith", "name": "John Smith", "state": "active"}
+    ],
+    "edges": [],
+    "pagination": {"has_more": false, "truncated": false}
+  },
+  "query_type": "traversal",
   "row_count": 1
 }
 ```
@@ -332,28 +339,27 @@ Example response:
 
 ```json
 {
-  "result": [
-    {
-      "p_name": "Diaspora Client",
-      "p_full_path": "diaspora/diaspora-client",
-      "mr_id": 43,
-      "mr_iid": 1,
-      "mr_title": "Resolve connection timeout on large payloads",
-      "mr_state": "merged"
-    },
-    {
-      "mr_id": 44,
-      "mr_iid": 2,
-      "mr_title": "Replace deprecated API calls in federation module",
-      "mr_state": "merged"
-    }
-  ],
+  "result": {
+    "format_version": "5.0.3",
+    "query_type": "traversal",
+    "nodes": [
+      {"type": "Project", "id": "8", "name": "Diaspora Client", "full_path": "diaspora/diaspora-client", "visibility_level": "public"},
+      {"type": "MergeRequest", "id": "43", "iid": 1, "title": "Resolve connection timeout on large payloads", "state": "merged", "source_branch": "fix-timeout", "target_branch": "main"},
+      {"type": "MergeRequest", "id": "44", "iid": 2, "title": "Replace deprecated API calls in federation module", "state": "merged", "source_branch": "update-federation-api", "target_branch": "main"}
+    ],
+    "edges": [
+      {"from": "MergeRequest", "from_id": "43", "to": "Project", "to_id": "8", "type": "IN_PROJECT"},
+      {"from": "MergeRequest", "from_id": "44", "to": "Project", "to_id": "8", "type": "IN_PROJECT"}
+    ],
+    "pagination": {"has_more": false, "truncated": false}
+  },
   "query_type": "traversal",
   "row_count": 2
 }
 ```
 
-Count merge requests per project:
+Count merge requests per project. Traversal and aggregation queries must bound
+at least one node with `node_ids` or filters:
 
 ```shell
 curl --request POST \
@@ -363,11 +369,12 @@ curl --request POST \
     "query": {
       "query_type": "aggregation",
       "nodes": [
-        {"id": "p", "entity": "Project"},
+        {"id": "p", "entity": "Project", "node_ids": [5, 8]},
         {"id": "mr", "entity": "MergeRequest"}
       ],
       "relationships": [{"type": "IN_PROJECT", "from": "mr", "to": "p"}],
-      "aggregations": [{"function": "count", "target": "mr", "group_by": "p", "alias": "mr_count"}]
+      "aggregations": [{"count": "mr", "as": "mr_count"}],
+      "group_by": ["p"]
     }
   }' \
   --url "https://gitlab.example.com/api/v4/orbit/query"
@@ -377,16 +384,26 @@ Example response:
 
 ```json
 {
-  "result": [
-    {"p_name": "Diaspora Client", "p_full_path": "diaspora/diaspora-client", "mr_count": 8},
-    {"p_name": "Puppet", "p_full_path": "brightbox/puppet", "mr_count": 6}
-  ],
+  "result": {
+    "format_version": "5.0.3",
+    "query_type": "aggregation",
+    "nodes": [],
+    "edges": [],
+    "columns": [{"name": "mr_count", "function": "count", "target": "mr"}],
+    "group_columns": [{"name": "p", "kind": "node", "node": "p", "entity": "Project"}],
+    "rows": [
+      {"p": {"type": "Project", "id": "8", "properties": {"name": "Diaspora Client", "full_path": "diaspora/diaspora-client", "visibility_level": "public"}}, "mr_count": 8},
+      {"p": {"type": "Project", "id": "5", "properties": {"name": "Puppet", "full_path": "brightbox/puppet", "visibility_level": "public"}}, "mr_count": 6}
+    ],
+    "pagination": {"has_more": false, "truncated": false}
+  },
   "query_type": "aggregation",
   "row_count": 2
 }
 ```
 
-Find outgoing neighbors of a user:
+Find outgoing neighbors of a user. The `direction` attribute accepts `outgoing`,
+`incoming`, or `both`, and defaults to `outgoing`:
 
 ```shell
 curl --request POST \
@@ -395,8 +412,8 @@ curl --request POST \
   --data '{
     "query": {
       "query_type": "neighbors",
-      "node": {"id": "u", "entity": "User", "node_ids": [43]},
-      "neighbors": {"node": "u"}
+      "nodes": [{"id": "u", "entity": "User", "node_ids": [1]}],
+      "neighbors": {"direction": "outgoing"}
     }
   }' \
   --url "https://gitlab.example.com/api/v4/orbit/query"
@@ -406,32 +423,30 @@ Example response:
 
 ```json
 {
-  "result": [
-    {
-      "_gkg_relationship_type": "MEMBER_OF",
-      "_gkg_neighbor_type": "Project",
-      "id": 5,
-      "name": "Diaspora Client"
-    },
-    {
-      "_gkg_relationship_type": "MEMBER_OF",
-      "_gkg_neighbor_type": "Group",
-      "id": 29,
-      "name": "diaspora"
-    },
-    {
-      "_gkg_relationship_type": "AUTHORED",
-      "_gkg_neighbor_type": "MergeRequest",
-      "id": 43,
-      "title": "Resolve connection timeout on large payloads"
-    }
-  ],
+  "result": {
+    "format_version": "5.0.3",
+    "query_type": "neighbors",
+    "nodes": [
+      {"type": "User", "id": "1", "username": "john_smith", "name": "John Smith", "state": "active"},
+      {"type": "Group", "id": "29", "name": "diaspora", "full_path": "diaspora", "visibility_level": "public"},
+      {"type": "MergeRequest", "id": "43", "iid": "1", "title": "Resolve connection timeout on large payloads", "state": "merged", "source_branch": "fix-timeout", "target_branch": "main"},
+      {"type": "MergeRequest", "id": "44", "iid": "2", "title": "Replace deprecated API calls in federation module", "state": "merged", "source_branch": "update-federation-api", "target_branch": "main"}
+    ],
+    "edges": [
+      {"from": "User", "from_id": "1", "to": "Group", "to_id": "29", "type": "MEMBER_OF"},
+      {"from": "User", "from_id": "1", "to": "MergeRequest", "to_id": "43", "type": "AUTHORED"},
+      {"from": "User", "from_id": "1", "to": "MergeRequest", "to_id": "44", "type": "AUTHORED"}
+    ],
+    "pagination": {"has_more": false, "truncated": false}
+  },
   "query_type": "neighbors",
   "row_count": 3
 }
 ```
 
-Find the shortest path between two projects:
+Find the shortest path from a user to a project. Path finding queries require
+`rel_types`, and follow each relationship type only in its defined direction,
+from the `from` node toward the `to` node:
 
 ```shell
 curl --request POST \
@@ -441,10 +456,16 @@ curl --request POST \
     "query": {
       "query_type": "path_finding",
       "nodes": [
-        {"id": "p1", "entity": "Project", "node_ids": [8]},
-        {"id": "p2", "entity": "Project", "node_ids": [5]}
+        {"id": "u", "entity": "User", "node_ids": [1]},
+        {"id": "p", "entity": "Project", "node_ids": [8]}
       ],
-      "path": {"type": "shortest", "from": "p1", "to": "p2", "max_depth": 3}
+      "path": {
+        "type": "shortest",
+        "from": "u",
+        "to": "p",
+        "max_depth": 3,
+        "rel_types": ["MEMBER_OF", "CONTAINS"]
+      }
     }
   }' \
   --url "https://gitlab.example.com/api/v4/orbit/query"
@@ -454,17 +475,20 @@ Example response:
 
 ```json
 {
-  "result": [
-    {
-      "depth": 2,
-      "path": [
-        {"id": 8, "entity_type": "Project", "name": "Diaspora Client", "full_path": "diaspora/diaspora-client"},
-        {"id": 43, "entity_type": "User", "name": "John Smith", "username": "john_smith"},
-        {"id": 5, "entity_type": "Project", "name": "Puppet", "full_path": "brightbox/puppet"}
-      ],
-      "edges": ["MEMBER_OF", "MEMBER_OF"]
-    }
-  ],
+  "result": {
+    "format_version": "5.0.3",
+    "query_type": "path_finding",
+    "nodes": [
+      {"type": "User", "id": "1", "username": "john_smith", "name": "John Smith", "state": "active"},
+      {"type": "Group", "id": "29", "name": "diaspora", "full_path": "diaspora", "visibility_level": "public"},
+      {"type": "Project", "id": "8", "name": "Diaspora Client", "full_path": "diaspora/diaspora-client", "visibility_level": "public"}
+    ],
+    "edges": [
+      {"from": "User", "from_id": "1", "to": "Group", "to_id": "29", "type": "MEMBER_OF", "path_id": 0, "step": 0},
+      {"from": "Group", "from_id": "29", "to": "Project", "to_id": "8", "type": "CONTAINS", "path_id": 0, "step": 1}
+    ],
+    "pagination": {"has_more": false, "truncated": false}
+  },
   "query_type": "path_finding",
   "row_count": 1
 }

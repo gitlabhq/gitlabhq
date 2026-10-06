@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workflow do
+RSpec.describe MergeRequestIssue, feature_category: :code_review_workflow do
   let_it_be(:namespace) { create_default(:namespace).freeze }
   let_it_be(:project) { create_default(:project).freeze }
   let_it_be(:merge_request) { create_default(:merge_request, source_project: project).freeze }
   let_it_be(:issue1) { create(:issue, project: project) }
   let_it_be(:issue2) { create(:issue, project: project) }
-  let_it_be(:closes_issue1) { create(:merge_requests_closing_issues, issue: issue1, merge_request: merge_request) }
+  let_it_be(:closes_issue1) { create(:merge_request_issue, issue: issue1, merge_request: merge_request) }
+
+  it 'stays pinned to the pre-rename table' do
+    expect(described_class.table_name).to eq('merge_requests_closing_issues')
+  end
 
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request) }
@@ -28,7 +32,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
 
   describe 'validations' do
     it 'requires merge_request_id to be unique per (issue_id, link_type)', :aggregate_failures do
-      duplicate = build(:merge_requests_closing_issues,
+      duplicate = build(:merge_request_issue,
         issue: issue1, merge_request: merge_request, link_type: closes_issue1.link_type)
 
       expect(duplicate).not_to be_valid
@@ -36,7 +40,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
     end
 
     it 'allows a mentioned row alongside an existing closes row for the same (mr, issue)' do
-      mentioned = build(:merge_requests_closing_issues,
+      mentioned = build(:merge_request_issue,
         issue: issue1, merge_request: merge_request,
         link_type: :mentioned, from_mr_description: false)
 
@@ -57,7 +61,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
 
       with_them do
         let(:record) do
-          build(:merge_requests_closing_issues,
+          build(:merge_request_issue,
             issue: issue2, merge_request: merge_request,
             link_type: link_type, from_mr_description: from_mr_description)
         end
@@ -75,10 +79,10 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
     # index (on (merge_request_id, issue_id, link_type) WHERE link_type <> 0)
     # added for every link type except closes (which has legacy duplicates).
     def insert_duplicate(link_type)
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue2, merge_request: merge_request, link_type: link_type, from_mr_description: false)
 
-      build(:merge_requests_closing_issues,
+      build(:merge_request_issue,
         issue: issue2, merge_request: merge_request, link_type: link_type, from_mr_description: false)
         .save!(validate: false)
     end
@@ -96,10 +100,10 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
     end
 
     it 'allows a mentioned and a related row for the same (merge_request_id, issue_id)' do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue2, merge_request: merge_request, link_type: :mentioned, from_mr_description: false)
 
-      related = build(:merge_requests_closing_issues,
+      related = build(:merge_request_issue,
         issue: issue2, merge_request: merge_request, link_type: :related, from_mr_description: false)
 
       expect { related.save!(validate: false) }.not_to raise_error
@@ -115,7 +119,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
       subject { described_class.with_opened_merge_request }
 
       before do
-        create(:merge_requests_closing_issues, issue: issue2, merge_request: closed_merge_request)
+        create(:merge_request_issue, issue: issue2, merge_request: closed_merge_request)
       end
 
       it { is_expected.to contain_exactly(closes_issue1) }
@@ -123,7 +127,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
 
     describe '.from_mr_description' do
       before do
-        create(:merge_requests_closing_issues, issue: issue2, merge_request: merge_request, from_mr_description: false)
+        create(:merge_request_issue, issue: issue2, merge_request: merge_request, from_mr_description: false)
       end
 
       subject { described_class.from_mr_description }
@@ -133,7 +137,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
 
     describe '.link_type_closes (enum-generated)' do
       let_it_be(:mentioned_row) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue2, merge_request: merge_request,
           link_type: :mentioned, from_mr_description: false)
       end
@@ -147,13 +151,13 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
       using RSpec::Parameterized::TableSyntax
 
       let_it_be(:mentioned_row) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue2, merge_request: merge_request,
           link_type: :mentioned, from_mr_description: false)
       end
 
       let_it_be(:related_row) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           issue: issue1, merge_request: merge_request,
           link_type: :related, from_mr_description: false)
       end
@@ -177,7 +181,7 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
   describe '.count_for_issue / .count_for_collection (audit coverage)' do
     let_it_be(:admin) { create(:admin) }
     let_it_be(:mentioned_row) do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue1, merge_request: merge_request,
         link_type: :mentioned, from_mr_description: false)
     end
@@ -201,11 +205,11 @@ RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workfl
     let_it_be(:issue_with_mentioned_mr) { create(:issue, project: project) }
 
     let_it_be(:closes_closed_mr) do
-      create(:merge_requests_closing_issues, issue: issue_with_closed_mr, merge_request: closed_mr)
+      create(:merge_request_issue, issue: issue_with_closed_mr, merge_request: closed_mr)
     end
 
     let_it_be(:mentioned_only_row) do
-      create(:merge_requests_closing_issues,
+      create(:merge_request_issue,
         issue: issue_with_mentioned_mr, merge_request: merge_request,
         link_type: :mentioned, from_mr_description: false)
     end

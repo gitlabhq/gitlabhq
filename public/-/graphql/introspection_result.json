@@ -13168,6 +13168,22 @@
           "description": "An AI catalog flow",
           "fields": [
             {
+              "name": "acceptsTriggerGoal",
+              "description": "Whether a flow trigger for the flow can carry a configured goal. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "configurationForGroup",
               "description": "Item configuration for the given group. Introduced in GitLab 18.7: Status: Experiment.",
               "args": [
@@ -18170,6 +18186,22 @@
           "description": "An AI catalog third party flow",
           "fields": [
             {
+              "name": "acceptsTriggerGoal",
+              "description": "Whether a flow trigger for the flow can carry a configured goal. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "configurationForGroup",
               "description": "Item configuration for the given group. Introduced in GitLab 18.7: Status: Experiment.",
               "args": [
@@ -22627,6 +22659,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
             },
             {
+              "name": "goals",
+              "description": "Goals for the AI flow trigger, keyed by event type. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "JSON",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "configPath",
               "description": "Path to the configuration file for the AI flow trigger.",
               "type": {
@@ -23080,6 +23124,22 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "goals",
+              "description": "Goals for the AI flow trigger, keyed by event type. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "JSON",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "id",
               "description": "ID of the flow trigger.",
               "args": [],
@@ -23397,6 +23457,18 @@
               "defaultValue": null,
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
+            },
+            {
+              "name": "goals",
+              "description": "Goals for the AI flow trigger, keyed by event type. Introduced in GitLab 19.5: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "JSON",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "active",
@@ -248437,7 +248509,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "MergeRequestsClosingIssuesID",
+                      "name": "MergeRequestIssueID",
                       "ofType": null
                     }
                   }
@@ -248517,7 +248589,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "MergeRequestsClosingIssuesID",
+                    "name": "MergeRequestIssueID",
                     "ofType": null
                   }
                 }
@@ -249164,6 +249236,16 @@
           "kind": "SCALAR",
           "name": "MergeRequestID",
           "description": "A `MergeRequestID` is a global ID. It is encoded as a string.\n\nAn example `MergeRequestID` is: `\"gid://gitlab/MergeRequest/1\"`.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "MergeRequestIssueID",
+          "description": "A `MergeRequestIssueID` is a global ID. It is encoded as a string.\n\nAn example `MergeRequestIssueID` is: `\"gid://gitlab/MergeRequestIssue/1\"`.\nThe older format `\"gid://gitlab/MergeRequestsClosingIssues/1\"` was deprecated in 19.5.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -262247,7 +262329,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "MergeRequestsClosingIssuesID",
+                  "name": "MergeRequestIssueID",
                   "ofType": null
                 }
               },
@@ -262902,16 +262984,6 @@
           ],
           "inputFields": null,
           "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "MergeRequestsClosingIssuesID",
-          "description": "A `MergeRequestsClosingIssuesID` is a global ID. It is encoded as a string.\n\nAn example `MergeRequestsClosingIssuesID` is: `\"gid://gitlab/MergeRequestsClosingIssues/1\"`.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -457114,7 +457186,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "MergeRequestsClosingIssuesID",
+                  "name": "MergeRequestIssueID",
                   "ofType": null
                 }
               },

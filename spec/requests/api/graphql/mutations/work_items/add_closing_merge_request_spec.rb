@@ -56,7 +56,7 @@ RSpec.describe 'Add a closing merge request to a work item', feature_category: :
       it 'adds the closing merge request by falling back to the work item parent' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
-        end.to change { MergeRequestsClosingIssues.count }.by(1)
+        end.to change { MergeRequestIssue.count }.by(1)
       end
     end
 

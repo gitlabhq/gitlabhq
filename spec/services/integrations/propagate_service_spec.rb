@@ -235,5 +235,83 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
         end
       end
     end
+
+    describe 'logging' do
+      let(:expected_payload) do
+        {
+          'class_name' => described_class.name,
+          'integration_id' => integration.id,
+          'integration_class' => integration.class.name,
+          Labkit::Fields::GL_ORGANIZATION_ID => integration.organization_id_for_logging
+        }
+      end
+
+      before do
+        allow(Gitlab::IntegrationsLogger).to receive(:info)
+      end
+
+      shared_examples 'logs the start and end of the propagation' do |level|
+        it 'logs the organization id', :aggregate_failures do
+          described_class.new(integration).execute
+
+          expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+            hash_including(expected_payload.merge('message' => 'Integration propagation started',
+              'integration_level' => level))
+          ).ordered
+          expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+            hash_including(expected_payload.merge('message' => 'Integration propagation finished',
+              'integration_level' => level))
+          ).ordered
+        end
+      end
+
+      context 'with an instance-level integration' do
+        let(:integration) { instance_integration }
+
+        it_behaves_like 'logs the start and end of the propagation', 'instance'
+
+        it 'logs the organization of the integration' do
+          described_class.new(integration).execute
+
+          expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+            hash_including(Labkit::Fields::GL_ORGANIZATION_ID => instance_integration.organization_id)
+          ).twice
+        end
+      end
+
+      context 'with a group-level integration' do
+        let_it_be(:integration) { create(:jira_integration, :group, group: group) }
+
+        it_behaves_like 'logs the start and end of the propagation', 'group'
+
+        context 'when the propagation raises' do
+          before do
+            allow(Integration).to receive(:inherited_descendants_from_self_or_ancestors_from)
+              .and_raise(StandardError, 'boom')
+          end
+
+          it 'logs the failure and re-raises the error', :aggregate_failures do
+            expect { described_class.new(integration).execute }.to raise_error(StandardError, 'boom')
+
+            expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+              hash_including(expected_payload.merge('message' => 'Integration propagation failed',
+                'integration_level' => 'group', 'exception.class' => 'StandardError',
+                'exception.message' => 'boom'))
+            )
+            expect(Gitlab::IntegrationsLogger).not_to have_received(:info).with(
+              hash_including('message' => 'Integration propagation finished')
+            )
+          end
+        end
+
+        it 'logs the organization of the group' do
+          described_class.new(integration).execute
+
+          expect(Gitlab::IntegrationsLogger).to have_received(:info).with(
+            hash_including(Labkit::Fields::GL_ORGANIZATION_ID => group.organization_id)
+          ).twice
+        end
+      end
+    end
   end
 end

@@ -480,6 +480,26 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '#organization_id_for_logging' do
+    it 'returns the organization id of an instance-level integration' do
+      integration = build(:integration, :instance)
+
+      expect(integration.organization_id_for_logging).to eq(integration.organization_id)
+    end
+
+    it 'returns the organization id of the group for a group-level integration' do
+      expect(build(:integration, :group, group: group).organization_id_for_logging).to eq(group.organization_id)
+    end
+
+    it 'returns the organization id of the project for a project-level integration' do
+      expect(build(:integration, project: project).organization_id_for_logging).to eq(project.organization_id)
+    end
+
+    it 'returns nil without an organization or parent' do
+      expect(build(:integration, project: nil, group: nil).organization_id_for_logging).to be_nil
+    end
+  end
+
   describe '#chat?' do
     it 'is true when integration is chat integration' do
       expect(build(:mattermost_integration).chat?).to be(true)
@@ -1543,6 +1563,7 @@ RSpec.describe Integration, feature_category: :integrations do
         integration_id: integration.id,
         project_path: project.full_path,
         project_id: project.id,
+        Labkit::Fields::GL_ORGANIZATION_ID => project.organization_id,
         message: test_message,
         additional_argument: 'some argument'
       }
@@ -1568,6 +1589,7 @@ RSpec.describe Integration, feature_category: :integrations do
           integration_id: integration.id,
           project_path: nil,
           project_id: nil,
+          Labkit::Fields::GL_ORGANIZATION_ID => nil,
           message: test_message,
           additional_argument: 'some argument'
         }

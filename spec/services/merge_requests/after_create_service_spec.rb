@@ -297,7 +297,7 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       let_it_be(:first_issue) { create(:issue, project: merge_request.target_project) }
       let_it_be(:second_issue) { create(:issue, project: merge_request.target_project) }
 
-      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
+      it 'creates a `MergeRequestIssue` record for each issue' do
         merge_request.description = "Closes #{first_issue.to_reference} and #{second_issue.to_reference}"
         merge_request.source_branch = "feature"
         merge_request.target_branch = merge_request.target_project.default_branch
@@ -305,9 +305,9 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
 
         expect do
           execute_service
-        end.to change { MergeRequestsClosingIssues.count }.by(2)
+        end.to change { MergeRequestIssue.count }.by(2)
 
-        expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+        expect(MergeRequestIssue.where(merge_request: merge_request)).to contain_exactly(
           have_attributes(issue_id: first_issue.id, from_mr_description: true),
           have_attributes(issue_id: second_issue.id, from_mr_description: true)
         )

@@ -1935,6 +1935,61 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(sync.workflow).not_to have_received(:post_json)
       end
     end
+
+    context 'when a reconcile MR is already open' do
+      let(:open_mr) { { 'iid' => 42, 'reviewers' => [] } }
+      let(:branch_file) do
+        instance_double(Net::HTTPResponse, body: branch_content).tap do |response|
+          allow(response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)
+        end
+      end
+
+      before do
+        allow(sync).to receive_messages(find_open_mr: open_mr, authenticated_get: branch_file, commit_and_push: nil)
+        allow(sync.workflow).to receive(:put_json).and_return(mock_response)
+      end
+
+      context 'when its branch already carries the regenerated fences' do
+        let(:branch_content) { "instructions:\n" }
+
+        it 'skips the push and leaves the MR untouched', :aggregate_failures do
+          reconcile
+
+          expect(sync).not_to have_received(:commit_and_push)
+          expect(sync.workflow).not_to have_received(:put_json)
+          expect(sync).to have_received(:authenticated_get)
+            .with(having_attributes(
+              path: a_string_ending_with('/repository/files/.gitlab%2Fduo%2Fmr-review-instructions.yaml/raw'),
+              query: 'ref=docs-sync%2Fprinciples-reconcile-fences'
+            ), 'token')
+        end
+      end
+
+      context 'when fetching its branch content fails' do
+        let(:branch_content) { "instructions:\n" }
+
+        before do
+          allow(sync).to receive(:authenticated_get).and_raise(Net::ReadTimeout)
+        end
+
+        it 'warns and pushes anyway', :aggregate_failures do
+          expect { reconcile }.to output(/could not compare with the open reconcile MR/).to_stderr
+
+          expect(sync).to have_received(:commit_and_push)
+        end
+      end
+
+      context 'when its branch carries different fences' do
+        let(:branch_content) { "instructions: stale\n" }
+
+        it 'pushes and updates the open MR', :aggregate_failures do
+          reconcile
+
+          expect(sync).to have_received(:commit_and_push)
+          expect(sync.workflow).to have_received(:put_json).with(a_string_ending_with('/merge_requests/42'), anything)
+        end
+      end
+    end
   end
 
   describe '#reconcile_branch_name' do
@@ -1942,7 +1997,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
     let(:auto_mr_cfg) { { 'branch_prefix' => 'docs-sync/principles' } }
 
-    it 'is date-free so the daily job reuses one MR across runs' do
+    it 'is date-free so every reconcile run reuses one MR' do
       expect(branch_name).to eq('docs-sync/principles-reconcile-fences')
     end
   end

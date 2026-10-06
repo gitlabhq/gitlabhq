@@ -4,6 +4,7 @@ module Integrations
   class UpdateService
     include ::Services::ReturnServiceResponses
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::Loggable
 
     def initialize(current_user:, integration:, attributes:)
       @current_user = current_user
@@ -20,6 +21,8 @@ module Integrations
                    handle_default_settings
                  end
 
+      log_result(response)
+
       PropagateIntegrationWorker.perform_async(integration.id) unless response.error? || integration.project_level?
 
       response
@@ -28,6 +31,17 @@ module Integrations
     private
 
     attr_reader :current_user, :integration, :attributes
+
+    def log_result(response)
+      Gitlab::IntegrationsLogger.info(
+        build_structured_payload_labkit(
+          message: response.error? ? 'Integration update failed' : 'Integration updated',
+          integration_id: integration.id,
+          integration_class: integration.class.name,
+          Labkit::Fields::GL_ORGANIZATION_ID => integration.organization_id_for_logging
+        )
+      )
+    end
 
     def handle_inherited_settings?
       if attributes.key?(:use_inherited_settings)

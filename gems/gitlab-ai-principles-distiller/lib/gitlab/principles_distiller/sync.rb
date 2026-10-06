@@ -58,8 +58,8 @@ module Gitlab
       # Links the published docs page rather than a repo path, since it renders as a clickable URL in the CI log.
       DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
 
-      # Must match the description of the pipeline schedule that runs the `ai-principles-reconcile-fences` job.
-      FENCE_RECONCILE_SCHEDULE = '[Nightly] AI principles fence reconcile'
+      # Must match the CI job name in .gitlab/ci/sync-principles.gitlab-ci.yml.
+      FENCE_RECONCILE_JOB = 'ai-principles-reconcile-fences'
       RECONCILE_FENCES_COMMAND =
         'bundle exec ruby gems/gitlab-ai-principles-distiller/bin/gitlab-ai-principles-distiller-sync ' \
           'reconcile-fences --workspace .'
@@ -171,7 +171,7 @@ module Gitlab
       #
       # `warn_stale` downgrades STALE drift to a non-blocking warning (exit 0).
       # Since fence regeneration is decoupled from distillation (a team's distilled MR merges independently and the
-      # daily fence-reconcile job catches the fence up from merged master afterwards), fence staleness is expected
+      # fence-reconcile job catches the fence up from merged master afterwards), fence staleness is expected
       # transient state on ordinary MRs and on master, not something those refs can fix.
       # On the owned-path/reconcile refs the flag is left off, so staleness there still blocks.
       # Malformed and orphaned fences fail regardless of the flag.
@@ -200,11 +200,11 @@ module Gitlab
 
       # Prints the stale fences as a non-blocking warning (used under --warn-stale, where staleness does not fail the
       # guard).
-      # The daily fence-reconcile job projects these onto master; nothing on the current ref needs to act.
+      # The fence-reconcile job projects these onto master; nothing on the current ref needs to act.
       def warn_stale_fences(stale)
         warn Rainbow("Duo review instruction fences are stale on this ref: #{stale.join(', ')}.").yellow
-        warn '  This is expected between a distilled MR merging and the daily fence-reconcile'
-        warn '  job catching the fences up from master. No action needed on this ref.'
+        warn '  This is expected between a distilled MR merging and the fence-reconcile'
+        warn '  MR catching the fences up from master. No action needed on this ref.'
       end
 
       # Prints per-category guidance for the fences that fail the guard, so the author knows exactly what to do rather
@@ -222,9 +222,10 @@ module Gitlab
           warn Rainbow("  Stale: #{result.stale.join(', ')}").red
           warn '    The generated fences are out of sync with the distilled principles.'
           warn '    If your branch does not change the distilled principles, the fences are stale'
-          warn "    on master. Wait for the daily '#{FENCE_RECONCILE_SCHEDULE}'"
-          warn '    pipeline schedule, or ask a maintainer to run it now. After its reconcile MR'
-          warn '    merges, rebase your branch on master.'
+          warn "    on master. The '#{FENCE_RECONCILE_JOB}' job opens a reconcile MR after"
+          warn '    the stale change merges. After the reconcile MR merges, rebase your branch on'
+          warn '    master. If no reconcile MR is open, ask a maintainer to run the manual'
+          warn "    '#{FENCE_RECONCILE_JOB}' job in the latest master pipeline."
           warn '    If the stale fence comes from changes on your branch, run from the repo root:'
           warn Rainbow("      #{RECONCILE_FENCES_COMMAND}").faint
           warn Rainbow('      scripts/lint-duo-review-instructions.sh   # to re-check').faint

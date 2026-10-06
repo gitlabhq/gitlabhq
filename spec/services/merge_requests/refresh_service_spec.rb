@@ -882,7 +882,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
 
       context 'when the merge request is sourced from the same project' do
-        it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
+        it 'creates a `MergeRequestIssue` record for each issue closed by a commit' do
           allow_any_instance_of(MergeRequest).to receive(:commits).and_return(
             CommitCollection.new(project, [commit], 'close-by-commit')
           )
@@ -897,14 +897,14 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           refresh_service = service.new(project: project, current_user: user)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+          expect(MergeRequestIssue.where(merge_request: merge_request)).to contain_exactly(
             have_attributes(issue_id: issue.id, from_mr_description: true)
           )
         end
       end
 
       context 'when the merge request is sourced from a different project' do
-        it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
+        it 'creates a `MergeRequestIssue` record for each issue closed by a commit' do
           forked_project = fork_project(project, user, repository: true)
 
           allow_any_instance_of(MergeRequest).to receive(:commits).and_return(
@@ -922,7 +922,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           refresh_service = service.new(project: forked_project, current_user: user)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+          expect(MergeRequestIssue.where(merge_request: merge_request)).to contain_exactly(
             have_attributes(issue_id: issue.id, from_mr_description: true)
           )
         end

@@ -879,34 +879,31 @@ lib/gitlab/checks/
 /data/deprecations/
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
 # Begin rake-managed-docs-block
-/doc/administration/_index.md @axil @eread
+/doc/administration/_index.md @eread
 /doc/administration/administer_users.md @idurham
 /doc/administration/analytics.md @lciutacu
 /doc/administration/analytics/ @lciutacu
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
 /doc/administration/auth/ldap/ldap_synchronization.md @lciutacu
-/doc/administration/backup_restore/ @axil
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/clusters/ @rsarangadharan
-/doc/administration/configure.md @axil @eread
-/doc/administration/consul.md @axil @eread
+/doc/administration/configure.md @eread
+/doc/administration/consul.md @eread
 /doc/administration/credentials_inventory.md @idurham
 /doc/administration/dedicated/ @lyspin
 /doc/administration/dedicated/configure_instance/dedicated_self_hosted_models.md @ashrafkhamis
 /doc/administration/diff_limits.md @uchandran
-/doc/administration/docs_self_host.md @axil @eread
+/doc/administration/docs_self_host.md @eread
 /doc/administration/dormant_project_deletion.md @z_painter
 /doc/administration/duo_add_on_seat_management_with_ldap.md @lciutacu
-/doc/administration/encrypted_configuration.md @axil @eread
-/doc/administration/environment_variables.md @axil @eread
+/doc/administration/encrypted_configuration.md @eread
+/doc/administration/environment_variables.md @eread
 /doc/administration/external_users.md @idurham
-/doc/administration/feature_flags/ @axil @eread
+/doc/administration/feature_flags/ @eread
 /doc/administration/file_hooks.md @eread
-/doc/administration/geo/ @axil
-/doc/administration/geo_sites.md @axil
-/doc/administration/get_started.md @axil @eread
+/doc/administration/get_started.md @eread
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
 /doc/administration/gitlab_duo/ @ashrafkhamis
@@ -914,59 +911,54 @@ lib/gitlab/checks/
 /doc/administration/guest_users.md @idurham
 /doc/administration/housekeeping.md @eread
 /doc/administration/incoming_email.md @brendan777
-/doc/administration/instance_limits.md @axil @eread
+/doc/administration/instance_limits.md @eread
 /doc/administration/integration/ @brendan777
 /doc/administration/integration/terminal.md @rsarangadharan
 /doc/administration/invalidate_markdown_cache.md @brendan777
 /doc/administration/issue_closing_pattern.md @uchandran
 /doc/administration/labels.md @brendan777
 /doc/administration/lfs/ @brendan777
-/doc/administration/libravatar.md @axil @eread
+/doc/administration/libravatar.md @eread
 /doc/administration/license.md @lciutacu
 /doc/administration/license_file.md @lciutacu
 /doc/administration/license_usage.md @lciutacu
-/doc/administration/load_balancer.md @axil @eread
-/doc/administration/logs/ @axil @eread
-/doc/administration/maintenance_mode/ @axil
+/doc/administration/load_balancer.md @eread
+/doc/administration/logs/ @eread
 /doc/administration/merge_request_diffs.md @uchandran
 /doc/administration/merge_requests_approvals.md @brendan777
 /doc/administration/moderate_users.md @lciutacu
 /doc/administration/monitoring/ @eread
-/doc/administration/monitoring/prometheus/_index.md @axil @eread
+/doc/administration/monitoring/prometheus/_index.md @eread
 /doc/administration/monitoring/prometheus/registry_exporter.md @z_painter
-/doc/administration/nfs.md @axil @eread
-/doc/administration/object_storage.md @axil @eread
-/doc/administration/operations/ @axil @eread
+/doc/administration/nfs.md @eread
+/doc/administration/object_storage.md @eread
+/doc/administration/operations/ @eread
 /doc/administration/operations/fast_ssh_key_lookup.md @brendan777
 /doc/administration/operations/gitlab_sshd.md @brendan777
 /doc/administration/operations/gitlab_sshd_ssh_certificates.md @brendan777
-/doc/administration/operations/moving_repositories.md @eread
-/doc/administration/package_information/ @axil @eread
+/doc/administration/package_information/ @eread
 /doc/administration/packages/ @z_painter
 /doc/administration/pages/ @brendan777
-/doc/administration/polling.md @axil @eread
+/doc/administration/polling.md @eread
 /doc/administration/project_templates.md @brendan777
-/doc/administration/raketasks/ @axil @eread
-/doc/administration/raketasks/import_export_rake_tasks_troubleshooting.md @eread
-/doc/administration/raketasks/keep_around.md @eread
+/doc/administration/raketasks/ @eread
 /doc/administration/raketasks/ldap.md @idurham
-/doc/administration/raketasks/praefect.md @eread
 /doc/administration/raketasks/tokens/ @idurham
 /doc/administration/raketasks/x509_signatures.md @brendan777
-/doc/administration/read_only_gitlab.md @axil @eread
-/doc/administration/redis/ @axil
-/doc/administration/reference_architectures/ @axil @eread
-/doc/administration/reply_by_email_postfix_setup.md @axil @eread
+/doc/administration/read_only_gitlab.md @eread
+/doc/administration/reference_architectures/ @eread
+/doc/administration/reply_by_email_postfix_setup.md @eread
 /doc/administration/reporting/ @idurham
-/doc/administration/reporting/spamcheck.md @axil @eread
+/doc/administration/reporting/spamcheck.md @eread
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
-/doc/administration/restart_gitlab.md @axil @eread
+/doc/administration/restart_gitlab.md @eread
 /doc/administration/review_abuse_reports.md @idurham
 /doc/administration/review_spam_logs.md @idurham
 /doc/administration/semantic_code_search.md @ashrafkhamis
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @brendan777
+/doc/administration/settings/code-dropdown-custom-clients.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
 /doc/administration/settings/email.md @brendan777
 /doc/administration/settings/external_authorization.md @idurham
@@ -979,30 +971,26 @@ lib/gitlab/checks/
 /doc/administration/settings/push_event_activities_limit.md @brendan777
 /doc/administration/settings/rate-limit-on-webhook-operations.md @eread
 /doc/administration/settings/scim_setup.md @lciutacu
-/doc/administration/settings/sidekiq.md @axil
 /doc/administration/settings/sign_in_restrictions.md @idurham
 /doc/administration/settings/sign_up_restrictions.md @idurham
 /doc/administration/settings/slack_app.md @brendan777
 /doc/administration/settings/terraform_state_settings.md @rsarangadharan
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
-/doc/administration/sidekiq/ @axil
-/doc/administration/sidekiq/configuration_for_imports.md @eread
-/doc/administration/silent_mode/ @axil
-/doc/administration/smime_signing_email.md @axil @eread
+/doc/administration/sidekiq/ @eread
+/doc/administration/smime_signing_email.md @eread
 /doc/administration/snippets/ @brendan777
 /doc/administration/system_hooks.md @eread
 /doc/administration/terraform_state.md @rsarangadharan
-/doc/administration/timezone.md @axil @eread
-/doc/administration/troubleshooting/ @axil @eread
-/doc/administration/uploads.md @axil @eread
+/doc/administration/timezone.md @eread
+/doc/administration/troubleshooting/ @eread
+/doc/administration/uploads.md @eread
 /doc/administration/user_settings.md @idurham
 /doc/administration/wikis/ @brendan777
 /doc/api/access_requests.md @idurham
 /doc/api/admin/ai_catalog.md @fneill
-/doc/api/admin/data_management.md @axil
 /doc/api/admin/token.md @idurham
-/doc/api/admin_sidekiq_queues.md @axil @eread
+/doc/api/admin_sidekiq_queues.md @eread
 /doc/api/appearance.md @idurham
 /doc/api/applications.md @idurham
 /doc/api/attestations.md @marcel.amirault
@@ -1037,8 +1025,6 @@ lib/gitlab/checks/
 /doc/api/feature_flags.md @rsarangadharan
 /doc/api/features.md @rsarangadharan
 /doc/api/freeze_periods.md @rsarangadharan
-/doc/api/geo_nodes.md @axil
-/doc/api/geo_sites.md @axil
 /doc/api/glql.md @brendan777
 /doc/api/google_cloud_integration.md @idurham
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
@@ -1160,7 +1146,7 @@ lib/gitlab/checks/
 /doc/api/secure_files.md @marcel.amirault
 /doc/api/service_accounts.md @idurham
 /doc/api/settings.md @idurham
-/doc/api/sidekiq_metrics.md @axil @eread
+/doc/api/sidekiq_metrics.md @eread
 /doc/api/snippet_repository_storage_moves.md @brendan777
 /doc/api/snippets.md @brendan777
 /doc/api/statistics.md @idurham
@@ -1278,7 +1264,7 @@ lib/gitlab/checks/
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/testing_guide/ @abdwdd @alexpooley
-/doc/install/ @axil @eread
+/doc/install/ @eread
 /doc/install/install_ai_gateway.md @ashrafkhamis
 /doc/integration/ @idurham
 /doc/integration/datadog.md @rsarangadharan
@@ -1287,12 +1273,12 @@ lib/gitlab/checks/
 /doc/integration/gmail_action_buttons_for_gitlab.md @brendan777
 /doc/integration/jenkins.md @lyspin
 /doc/integration/jira/ @brendan777
-/doc/integration/mattermost/ @axil @eread
+/doc/integration/mattermost/ @eread
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @brendan777
 /doc/integration/vault.md @rsarangadharan
 /doc/operations/ @rsarangadharan
-/doc/policy/ @axil @eread
+/doc/policy/ @eread
 /doc/rate_limits/ @brendan777
 /doc/rate_limits/api/ @z_painter
 /doc/rate_limits/api/deprecated.md @brendan777
@@ -1316,7 +1302,7 @@ lib/gitlab/checks/
 /doc/topics/git/ @brendan777
 /doc/topics/git/project.md @z_painter
 /doc/topics/manage_code.md @brendan777
-/doc/topics/offline/ @axil @eread
+/doc/topics/offline/ @eread
 /doc/topics/plan_and_track.md @brendan777
 /doc/topics/runner_fleet_design_guides/ @rsarangadharan
 /doc/topics/set_up_organization.md @z_painter
@@ -1333,7 +1319,7 @@ lib/gitlab/checks/
 /doc/tutorials/fuzz_testing/ @rsarangadharan
 /doc/tutorials/hugo/ @brendan777
 /doc/tutorials/idea_management/ @brendan777
-/doc/tutorials/install_gitlab_single_node/ @axil @eread
+/doc/tutorials/install_gitlab_single_node/ @eread
 /doc/tutorials/issue_triage/ @brendan777
 /doc/tutorials/issue_triage_complex_group/ @brendan777
 /doc/tutorials/issue_triage_group/ @brendan777
@@ -1346,7 +1332,7 @@ lib/gitlab/checks/
 /doc/tutorials/scrum_events/ @brendan777
 /doc/tutorials/update_commit_messages/ @brendan777
 /doc/tutorials/update_git_remote_url/ @brendan777
-/doc/update/ @axil @eread
+/doc/update/ @eread
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @rsarangadharan
 /doc/user/analytics/dora_metrics_charts.md @rsarangadharan
@@ -1444,6 +1430,7 @@ lib/gitlab/checks/
 /doc/user/project/merge_requests/ @uchandran
 /doc/user/project/merge_requests/approvals/ @brendan777
 /doc/user/project/merge_requests/cherry_pick_changes.md @brendan777
+/doc/user/project/merge_requests/developer.md @fneill
 /doc/user/project/merge_requests/methods/ @brendan777
 /doc/user/project/merge_requests/squash_and_merge.md @brendan777
 /doc/user/project/organize_work_with_projects.md @z_painter

@@ -23,8 +23,8 @@ to a distilled principle also changes the automated review feedback Duo posts
 on every merge request that matches the principle's file filters.
 
 Fence regeneration is decoupled from distillation. A distilled principle's
-merge request updates only the `.ai/principles/distilled/*.md` file. A separate
-daily scheduled job reconciles the fences from the merged `master` distilled
+merge request updates only the `.ai/principles/distilled/*.md` file. After it
+merges, a separate CI/CD job reconciles the fences from the merged `master` distilled
 files by pure projection (it copies each file's `distilled_at_sha` and
 `source_checksum` front matter and never re-runs distillation) and opens its
 own merge request. This keeps a team's distilled merge request and the fence
@@ -279,7 +279,7 @@ otherwise recurs every week:
   tracks distillation content loss, so the failure rate is measurable rather
   than anecdotal.
 
-The daily fence-reconcile job opens a separate merge request that changes only
+The fence-reconcile job opens a separate merge request that changes only
 `.gitlab/duo/mr-review-instructions.yaml`. When reviewing one, confirm the
 fence directives match the front matter of the distilled files on `master`. The
 job runs no distillation, so the fence body should never diverge from the
@@ -294,8 +294,8 @@ regardless of the reconcile. Fence _staleness_ is treated by severity:
   guard script), where a stale fence is real drift the author can fix.
 - A non-blocking warning on `master` and on other merge requests caught by the
   broad manifest trigger (including a team's distilled merge request), where
-  staleness is expected transient state until the daily reconcile job catches
-  the fences up. So neither a team's distilled merge request nor an unrelated
+  staleness is expected transient state until the reconcile merge request
+  catches the fences up. So neither a team's distilled merge request nor an unrelated
   `doc/**/*.md` edit inherits a fence-stale failure it cannot fix on its own
   ref.
 

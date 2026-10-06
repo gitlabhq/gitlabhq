@@ -124,7 +124,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
       let(:link_type) { :closes }
 
       let_it_be(:auto_closes_relation) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: merge_request, issue_id: work_item.id, link_type: :closes, from_mr_description: true)
       end
 
@@ -140,7 +140,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
 
     context 'when the relation already exists' do
       before do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: merge_request, issue: work_item, link_type: :related, from_mr_description: false)
       end
 
@@ -194,7 +194,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
 
     context 'when every work item fails to link' do
       before do
-        allow_next_instance_of(MergeRequestsClosingIssues) do |relation|
+        allow_next_instance_of(MergeRequestIssue) do |relation|
           allow(relation).to receive(:save) do
             relation.errors.add(:base, 'boom')
             false
@@ -217,7 +217,7 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
 
       before do
         # Fail only work_item's relation; other_work_item saves for real.
-        allow_next_instance_of(MergeRequestsClosingIssues) do |relation|
+        allow_next_instance_of(MergeRequestIssue) do |relation|
           allow(relation).to receive(:save).and_wrap_original do |original|
             next original.call unless relation.issue_id == work_item.id
 
@@ -251,12 +251,12 @@ RSpec.describe MergeRequests::WorkItemRelations::CreateService, feature_category
       let(:link_type) { :closes }
 
       let_it_be(:concurrent_relation) do
-        create(:merge_requests_closing_issues,
+        create(:merge_request_issue,
           merge_request: merge_request, issue: work_item, link_type: :closes, from_mr_description: true)
       end
 
       before do
-        allow_next_instance_of(MergeRequestsClosingIssues) do |relation|
+        allow_next_instance_of(MergeRequestIssue) do |relation|
           allow(relation).to receive(:save).and_raise(ActiveRecord::RecordNotUnique)
         end
       end

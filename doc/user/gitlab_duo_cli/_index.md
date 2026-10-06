@@ -92,6 +92,60 @@ Prerequisites:
 1. Under **GitLab Duo CLI**, select or clear the **Turn on GitLab Duo CLI access** checkbox.
 1. Select **Save changes**.
 
+## Managed settings file
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.27.0) in GitLab Duo CLI 9.27.0, during the GitLab 19.5 release.
+
+{{< /history >}}
+
+To enforce settings, system administrators deploy a managed settings file to each machine.
+For example, they can use a mobile device management tool or group policy.
+
+Settings in the managed settings file take precedence over command-line options, environment variables,
+and settings that users change in the [`/settings` panel](use.md#settings).
+
+Enforced settings cannot be changed by users. Settings not in the file remain under user control.
+
+### File location
+
+The GitLab Duo CLI reads the file from a fixed location that can't be changed:
+
+| Operating system                  | Path                                                            |
+|-----------------------------------|-----------------------------------------------------------------|
+| Linux and other operating systems | `/etc/gitlab/duo/settings.managed.json`                         |
+| macOS                             | `/Library/Application Support/GitLab/duo/settings.managed.json` |
+| Windows                           | `C:\Program Files\GitLab\duo\settings.managed.json`             |
+
+Restrict write access to system administrators and grant read-only access
+to all other users.
+
+The GitLab Duo CLI reads the file when it starts.
+Changes to the file apply the next time users start the GitLab Duo CLI.
+
+In Windows Subsystem for Linux (WSL), the GitLab Duo CLI reads the Linux path inside the
+distribution, and Windows group policy does not apply.
+
+### File format
+
+The file must contain a JSON object, and can include comments (`//` and `/* */`) and trailing commas.
+
+The following example sets every setting you can enforce:
+
+```json
+{
+  "telemetry": {
+    "enabled": false
+  },
+  "showWorkItemsInNewSessions": true,
+  "goalFlowInWelcomePrompts": true,
+  "notifications": {
+    "channel": "auto" // or "disabled"
+  },
+}
+```
+
 ## Update the GitLab Duo CLI
 
 To install the GitLab Duo CLI for the first time, see [set up](set_up.md).

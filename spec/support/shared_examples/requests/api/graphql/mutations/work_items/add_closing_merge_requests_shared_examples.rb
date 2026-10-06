@@ -12,7 +12,7 @@ RSpec.shared_examples 'a mutation that does not add closing merge request' do
   it 'does not add the closing merge request' do
     expect do
       post_graphql_mutation(mutation, current_user: current_user)
-    end.to not_change { MergeRequestsClosingIssues.count }
+    end.to not_change { MergeRequestIssue.count }
 
     expect(error_array).to contain_exactly(
       expected_errors
@@ -31,7 +31,7 @@ RSpec.shared_examples 'a mutation that adds closing merge request' do
     it 'adds the closing merge request' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
-      end.to change { MergeRequestsClosingIssues.count }.by(1)
+      end.to change { MergeRequestIssue.count }.by(1)
 
       expect(mutation_response).to include(
         'closingMergeRequest' => hash_including(
@@ -84,7 +84,7 @@ RSpec.shared_examples 'a mutation that adds closing merge request' do
         it 'adds the closing merge request' do
           expect do
             post_graphql_mutation(mutation, current_user: current_user)
-          end.to change { MergeRequestsClosingIssues.count }.by(1)
+          end.to change { MergeRequestIssue.count }.by(1)
         end
       end
     end
@@ -100,7 +100,7 @@ RSpec.shared_examples 'a mutation that adds closing merge request' do
         it 'adds the closing merge request' do
           expect do
             post_graphql_mutation(mutation, current_user: current_user)
-          end.to change { MergeRequestsClosingIssues.count }.by(1)
+          end.to change { MergeRequestIssue.count }.by(1)
         end
       end
     end

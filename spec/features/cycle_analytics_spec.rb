@@ -20,7 +20,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:mr, freeze: false) { create(:merge_request, source_project: project) }
   let_it_be(:commit) { create_commit("References #{issue.to_reference}", project, user, mr.source_branch, commit_time: mr.created_at - 1.day, skip_push_handler: true) }
-  let_it_be(:closed_issues) { create(:merge_requests_closing_issues, merge_request: mr, issue_id: issue.id) }
+  let_it_be(:closed_issues) { create(:merge_request_issue, merge_request: mr, issue_id: issue.id) }
   let_it_be(:pipeline, freeze: false) do
     create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr)
   end

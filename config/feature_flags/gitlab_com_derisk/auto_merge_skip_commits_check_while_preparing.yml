@@ -1,0 +1,11 @@
+---
+name: auto_merge_skip_commits_check_while_preparing
+description: Skip the commits check for the when-checks-pass auto-merge strategies
+  while a merge request is preparing, so auto-merge can be enabled before
+  NewMergeRequestWorker has written the diff
+feature_issue_url: https://gitlab.com/gitlab-org/cli/-/work_items/8140
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259312
+milestone: '19.5'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

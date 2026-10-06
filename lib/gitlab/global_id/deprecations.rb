@@ -16,6 +16,9 @@ module Gitlab
         ),
         Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(
           old_name: 'PrometheusService', new_name: 'Integrations::Prometheus', milestone: '14.1'
+        ),
+        Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(
+          old_name: 'MergeRequestsClosingIssues', new_name: 'MergeRequestIssue', milestone: '19.5'
         )
       ].freeze
 

@@ -804,7 +804,10 @@ RSpec.describe Projects::NotesController, feature_category: :team_planning do
           merge_request_diff_head_sha: 'sha'
         }).permit!
 
-        expect(Notes::CreateService).to receive(:new).with(project, user, service_params).and_return(double(execute: true))
+        expect(Notes::CreateService).to receive(:new).with(project, user, service_params) do
+          created_note = instance_double(Note, persisted?: true)
+          instance_double(Notes::CreateService, execute: created_note)
+        end
       end
 
       it "returns status 302 for html" do
@@ -898,6 +901,75 @@ RSpec.describe Projects::NotesController, feature_category: :team_planning do
 
         it 'creates the note' do
           expect { create! }.to change { forked_project.notes.count }.by(1)
+        end
+      end
+    end
+
+    context 'when the resolve_discussion param is set' do
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be_with_reload(:discussion_note) do
+        create(:discussion_note_on_merge_request, noteable: merge_request, project: project)
+      end
+
+      let(:resolve_discussion) { 'true' }
+      let(:extra_request_params) do
+        {
+          format: :json,
+          in_reply_to_discussion_id: discussion_note.discussion_id,
+          resolve_discussion: resolve_discussion
+        }
+      end
+
+      it 'creates the note without resolving the discussion' do
+        expect { create! }.to change { merge_request.notes.count }.by(1)
+        expect(discussion_note.reload.resolved?).to be(false)
+      end
+
+      context 'when the user can resolve the discussion' do
+        before_all do
+          project.add_developer(user)
+        end
+
+        it 'resolves the discussion and returns the resolved note' do
+          expect { create! }.to change { discussion_note.reload.resolved? }.from(false).to(true)
+          expect(discussion_note.resolved_by).to eq(user)
+          expect(json_response['resolved']).to be(true)
+        end
+
+        context 'when the return_discussion param is set' do
+          let(:extra_request_params) { super().merge(return_discussion: 'true') }
+
+          it 'returns the resolved discussion' do
+            create!
+
+            expect(json_response.dig('discussion', 'resolved')).to be(true)
+          end
+        end
+
+        context 'when the note is not valid' do
+          let(:note_text) { '' }
+
+          it 'does not resolve the discussion' do
+            create!
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            expect(discussion_note.reload.resolved?).to be(false)
+          end
+        end
+
+        context 'when resolve_discussion is false' do
+          let(:resolve_discussion) { 'false' }
+
+          before_all do
+            discussion_note.resolve!(user)
+          end
+
+          it 'unresolves the discussion and returns the unresolved note' do
+            expect { create! }.to change { discussion_note.reload.resolved? }.from(true).to(false)
+            expect(json_response['resolved']).to be(false)
+          end
         end
       end
     end

@@ -36,7 +36,7 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/models/members/last_group_owner_assigner.rb'
     - 'app/models/merge_request.rb'
     - 'app/models/merge_request_diff.rb'
-    - 'app/models/merge_requests_closing_issues.rb'
+    - 'app/models/merge_request_issue.rb'
     - 'app/models/namespaces/traversal/linear.rb'
     - 'app/models/namespaces/traversal/recursive.rb'
     - 'app/models/note.rb'

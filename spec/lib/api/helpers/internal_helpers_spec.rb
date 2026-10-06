@@ -120,4 +120,21 @@ RSpec.describe API::Helpers::InternalHelpers, feature_category: :api do
       end
     end
   end
+
+  describe '#group_ssh_certificate_response', feature_category: :source_code_management do
+    let(:internal_helper) do
+      Class.new { include API::Helpers::InternalHelpers }.new
+    end
+
+    # EE overrides this with Groups::SshCertificates::FindService. FOSS answers the same
+    # shape so that /internal/authorized_certs can treat both without a nil check. The
+    # endpoint calls it on itself, so it stays private and the spec reaches it with send.
+    it 'reports that no certificate was found', :aggregate_failures do
+      response = internal_helper.send(:group_ssh_certificate_response)
+
+      expect(response).to be_error
+      expect(response.message).to eq('Certificate Not Found')
+      expect(response.reason).to eq(::Gitlab::SshCertificates::Reason::CERTIFICATE_NOT_FOUND)
+    end
+  end
 end

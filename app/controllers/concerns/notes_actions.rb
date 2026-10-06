@@ -42,6 +42,8 @@ module NotesActions
   def create
     @note = Notes::CreateService.new(note_project, current_user, create_note_params).execute
 
+    update_discussion_resolved_state(@note) if @note.persisted?
+
     respond_to do |format|
       format.json do
         json = {
@@ -265,6 +267,23 @@ module NotesActions
 
   def note_context_params
     params.permit(:merge_request_diff_head_sha, :in_reply_to_discussion_id)
+  end
+
+  def update_discussion_resolved_state(note)
+    resolve = Gitlab::Utils.to_boolean(params.permit(:resolve_discussion)[:resolve_discussion])
+    return if resolve.nil?
+
+    note.discussion.tap do |discussion|
+      break unless discussion.can_resolve?(current_user)
+
+      if resolve
+        Discussions::ResolveService.new(note.project, current_user, one_or_more_discussions: discussion).execute
+      else
+        Discussions::UnresolveService.new(discussion, current_user).execute
+      end
+
+      note.reset
+    end
   end
 
   def note_commit_id_param

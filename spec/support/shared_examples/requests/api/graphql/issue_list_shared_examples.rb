@@ -496,8 +496,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       let(:requested_fields) { 'mergeRequestsCount' }
 
       before do
-        create_list(:merge_requests_closing_issues, 2, issue: issue_a)
-        create_list(:merge_requests_closing_issues, 3, issue: issue_b)
+        create_list(:merge_request_issue, 2, issue: issue_a)
+        create_list(:merge_request_issue, 3, issue: issue_b)
         # Warm up sign-in side effects so they don't pollute control vs. test runs
         post_graphql(query, current_user: current_user)
       end

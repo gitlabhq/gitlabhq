@@ -13,7 +13,7 @@ module API
     %w[group project].each do |source_type|
       params do
         requires :id, type: String,
-          desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user"
+          desc: "ID or URL-encoded path of the #{source_type}."
       end
       resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all access requests for a #{source_type}" do
@@ -72,9 +72,11 @@ module API
           tags %w[access_requests]
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the access requester'
+          requires :user_id, type: Integer, desc: 'ID of the user requesting access.'
           # rubocop:disable API/AccessLevelStringType -- Introduced before the cop
-          optional :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, the Developer role)',
+          optional :access_level, type: Integer,
+            desc: 'Access level to grant to the approved user. For a list of values, see ' \
+              '[roles](https://docs.gitlab.com/user/permissions/#default-roles).',
             default: 30
           # rubocop:enable API/AccessLevelStringType
         end
@@ -99,7 +101,7 @@ module API
           tags %w[access_requests]
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the access requester'
+          requires :user_id, type: Integer, desc: 'ID of the user requesting access.'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         route_setting :authorization, permissions: :delete_access_request,

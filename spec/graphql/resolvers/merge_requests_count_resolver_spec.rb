@@ -10,10 +10,10 @@ RSpec.describe Resolvers::MergeRequestsCountResolver do
     let_it_be(:project1) { create(:project, :public) }
     let_it_be(:project2) { create(:project, repository_access_level: ProjectFeature::PRIVATE) }
     let_it_be(:issue) { create(:issue, project: project1) }
-    let_it_be(:merge_request_closing_issue1) { create(:merge_requests_closing_issues, issue: issue) }
+    let_it_be(:merge_request_closing_issue1) { create(:merge_request_issue, issue: issue) }
     let_it_be(:merge_request_closing_issue2) do
       merge_request = create(:merge_request, source_project: project2)
-      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
+      create(:merge_request_issue, issue: issue, merge_request: merge_request)
     end
 
     specify do

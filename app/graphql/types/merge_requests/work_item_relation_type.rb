@@ -9,7 +9,7 @@ module Types
       authorize :read_merge_request_closing_issue
       authorize_granular_token permissions: :read_merge_request, boundary: :project, boundary_type: :project
 
-      field :id, ::Types::GlobalIDType[::MergeRequestsClosingIssues],
+      field :id, ::Types::GlobalIDType[::MergeRequestIssue],
         null: false,
         description: 'Global ID of the merge request to work item relation.'
 

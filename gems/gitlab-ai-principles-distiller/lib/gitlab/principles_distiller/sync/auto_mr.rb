@@ -357,6 +357,13 @@ module Gitlab
             return
           end
 
+          if open_reconcile_mr_matches?(branch, duo_path, ctx)
+            puts Rainbow('  Open reconcile MR already carries these fences; skipping push.').faint
+            system('git', '-C', Workspace.path, 'restore', '--staged', '--worktree', '--', duo_path, exception: true)
+            cleanup_branch(ctx.base_branch, branch)
+            return
+          end
+
           commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
         Reconcile Duo review-instruction fences from master
 
@@ -369,6 +376,24 @@ module Gitlab
 
           title = "reconcile fences: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
           create_reconcile_mr(branch, ctx, title)
+        end
+
+        # Reconciles run after every relevant merge, so most find the open reconcile MR already correct.
+        # Skipping that identical push keeps the MR's pipeline and approvals.
+        def open_reconcile_mr_matches?(branch, duo_path, ctx)
+          return false unless open_mr_for(branch, ctx)
+
+          encoded_project = URI.encode_www_form_component(ctx.project_id)
+          encoded_path = URI.encode_www_form_component(duo_path)
+          uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/repository/files/#{encoded_path}/raw")
+          uri.query = URI.encode_www_form(ref: branch)
+          response = authenticated_get(uri, ctx.api_token)
+          return false unless response.is_a?(Net::HTTPSuccess)
+
+          response.body.b == File.binread(Workspace.safe_join(duo_path))
+        rescue StandardError => e
+          warn Rainbow("WARNING: could not compare with the open reconcile MR (#{e.message}); pushing anyway").yellow
+          false
         end
 
         def reconcile_branch_name(auto_mr_cfg)
@@ -990,7 +1015,7 @@ module Gitlab
         #{job_line}
         No distilled principle content changes here — only the generated
         routing tables. The Duo review-instruction fences are reconciled
-        separately by the scheduled fence-reconcile job.
+        separately by the fence-reconcile job.
           DESC
 
           submit_mr(branch, default_branch, ctx, title, description)

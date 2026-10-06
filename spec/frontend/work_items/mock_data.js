@@ -1578,7 +1578,7 @@ export const workItemNoBlockedByLinkedItemsResponseWithFeatures = {
 
 export const workItemDevelopmentMRNodes = [
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/61',
+    id: 'gid://gitlab/MergeRequestIssue/61',
     fromMrDescription: true,
     mergeRequest: {
       iid: '13',
@@ -1619,7 +1619,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/62',
+    id: 'gid://gitlab/MergeRequestIssue/62',
     fromMrDescription: true,
     mergeRequest: {
       iid: '15',
@@ -1649,7 +1649,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/63',
+    id: 'gid://gitlab/MergeRequestIssue/63',
     fromMrDescription: true,
     mergeRequest: {
       iid: '14',
@@ -1679,7 +1679,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/64',
+    id: 'gid://gitlab/MergeRequestIssue/64',
     fromMrDescription: true,
     mergeRequest: {
       iid: '12',
@@ -1720,7 +1720,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
-    id: 'gid://gitlab/MergeRequestsClosingIssues/65',
+    id: 'gid://gitlab/MergeRequestIssue/65',
     fromMrDescription: true,
     mergeRequest: {
       iid: '11',

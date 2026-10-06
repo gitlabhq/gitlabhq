@@ -110,13 +110,13 @@ class MergeRequest < ApplicationRecord
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_request_issues,
-    class_name: 'MergeRequestsClosingIssues',
+    class_name: 'MergeRequestIssue',
     inverse_of: :merge_request,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_request_closing_issues,
     -> { link_type_closes },
-    class_name: 'MergeRequestsClosingIssues',
+    class_name: 'MergeRequestIssue',
     inverse_of: :merge_request
 
   has_one :approval_metrics,
@@ -1649,6 +1649,11 @@ class MergeRequest < ApplicationRecord
       ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
     ])
 
+    # Right after creation the diff is written by NewMergeRequestWorker, so the
+    # commits check fails until then; #process re-runs it unskipped before merging.
+    skip_commits_check = merge_when_checks_pass_strat && preparing? &&
+      Feature.enabled?(:auto_merge_skip_commits_check_while_preparing, project)
+
     {
       skip_ci_check: merge_when_checks_pass_strat,
       skip_approved_check: merge_when_checks_pass_strat,
@@ -1664,7 +1669,8 @@ class MergeRequest < ApplicationRecord
       skip_security_policy_check: merge_when_checks_pass_strat,
       skip_security_policy_pipeline_check: merge_when_checks_pass_strat,
       skip_merge_time_check: merge_when_checks_pass_strat,
-      skip_merge_request_title_check: merge_when_checks_pass_strat
+      skip_merge_request_title_check: merge_when_checks_pass_strat,
+      skip_commits_check: skip_commits_check
     }
   end
 
@@ -3310,7 +3316,7 @@ class MergeRequest < ApplicationRecord
   def bulk_insert_relations(issue_ids_to_create, link_type)
     now = Time.zone.now
     new_associations = issue_ids_to_create.map do |issue_id|
-      MergeRequestsClosingIssues.new(
+      MergeRequestIssue.new(
         issue_id: issue_id,
         merge_request_id: id,
         from_mr_description: true,
@@ -3323,7 +3329,7 @@ class MergeRequest < ApplicationRecord
     # We can't skip validations here in bulk insert as we don't have a unique constraint on the DB.
     # We can skip validations once we have validated the unique constraint
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456965
-    MergeRequestsClosingIssues.bulk_insert!(new_associations, batch_size: 100)
+    MergeRequestIssue.bulk_insert!(new_associations, batch_size: 100)
   end
 
   def merge_data_attributes

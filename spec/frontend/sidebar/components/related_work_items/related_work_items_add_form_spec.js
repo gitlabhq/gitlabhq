@@ -74,7 +74,7 @@ const workItemToLink = {
 };
 
 const createdRelation = {
-  id: 'gid://gitlab/MergeRequestsClosingIssues/1',
+  id: 'gid://gitlab/MergeRequestIssue/1',
   linkType: 'CLOSES',
   fromMrDescription: false,
   workItem: workItemToLink,

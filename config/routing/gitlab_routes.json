@@ -11557,6 +11557,12 @@
     "dottedExample": "/api/v4/projects/john.doe/freeze_periods/john.doe"
   },
   {
+    "template": "/api/:version/projects/:id/github/webhooks",
+    "example": "/api/v4/projects/foo/github/webhooks",
+    "acceptsFormat": true,
+    "dottedExample": "/api/v4/projects/john.doe/github/webhooks"
+  },
+  {
     "template": "/api/:version/projects/:id/google_cloud/setup/integrations.sh",
     "example": "/api/v4/projects/foo/google_cloud/setup/integrations.sh",
     "acceptsFormat": true,

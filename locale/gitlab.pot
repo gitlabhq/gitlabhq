@@ -26136,6 +26136,12 @@ msgstr ""
 msgid "Copied labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
+msgid "Copied labels from %{source_issuable_reference}."
+msgstr ""
+
+msgid "Copied milestone from %{source_issuable_reference}."
+msgstr ""
+
 msgid "Copied reference."
 msgstr ""
 
@@ -31992,10 +31998,7 @@ msgstr ""
 msgid "DuoAgentPlatform|Activity deleted after 30 days of inactivity. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
-msgid "DuoAgentPlatform|Add a config file to customize how flows run in CI/CD."
-msgstr ""
-
-msgid "DuoAgentPlatform|Add a config file to customize how flows run in CI/CD. File not found."
+msgid "DuoAgentPlatform|Add a config file so flows run with this project's toolchain."
 msgstr ""
 
 msgid "DuoAgentPlatform|Add a session URL to commits authored by GitLab Duo Agent Platform, so reviewers can trace AI-assisted changes back to the originating session."
@@ -32140,13 +32143,13 @@ msgstr ""
 msgid "DuoAgentPlatform|Failed to load agent sessions for this work item."
 msgstr ""
 
-msgid "DuoAgentPlatform|Features that give your agent more context to work with."
-msgstr ""
-
 msgid "DuoAgentPlatform|Flow"
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow execution"
+msgstr ""
+
+msgid "DuoAgentPlatform|Flows run without these. Set them up for the best results."
 msgstr ""
 
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
@@ -32236,9 +32239,6 @@ msgstr ""
 msgid "DuoAgentPlatform|On for this instance by default. Administrators control availability."
 msgstr ""
 
-msgid "DuoAgentPlatform|Optional"
-msgstr ""
-
 msgid "DuoAgentPlatform|Other GitLab Duo settings"
 msgstr ""
 
@@ -32255,6 +32255,9 @@ msgid "DuoAgentPlatform|Read-only on the web"
 msgstr ""
 
 msgid "DuoAgentPlatform|Ready. Flows can run in this project."
+msgstr ""
+
+msgid "DuoAgentPlatform|Recommended"
 msgstr ""
 
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
@@ -32503,6 +32506,9 @@ msgstr ""
 msgid "DuoAgenticChat|Drop images to attach them"
 msgstr ""
 
+msgid "DuoAgenticChat|File limit: %{limit}"
+msgstr ""
+
 msgid "DuoAgenticChat|Get GitLab Duo turned on"
 msgstr ""
 
@@ -32729,6 +32735,9 @@ msgid "DuoAgenticChat|Suggestions for %{category}"
 msgstr ""
 
 msgid "DuoAgenticChat|Summarize and compact this conversation"
+msgstr ""
+
+msgid "DuoAgenticChat|Supported formats: .png, .jpg, .jpeg, .webp"
 msgstr ""
 
 msgid "DuoAgenticChat|Talk to sales"
@@ -55215,6 +55224,9 @@ msgid "No label"
 msgstr ""
 
 msgid "No labels"
+msgstr ""
+
+msgid "No labels or milestone to copy from %{source_issuable_reference}."
 msgstr ""
 
 msgid "No labels with such name or description"

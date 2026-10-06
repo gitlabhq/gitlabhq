@@ -1275,27 +1275,27 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         end
       end
 
-      it 'creates a `MergeRequestsClosingIssues` record marked as from_mr_description for each issue' do
+      it 'creates a `MergeRequestIssue` record marked as from_mr_description for each issue' do
         issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
         service = described_class.new(project: project, current_user: user, params: issue_closing_opts)
         allow(service).to receive(:execute_hooks)
 
         expect do
           service.execute(merge_request)
-        end.to change { MergeRequestsClosingIssues.count }.by(2)
+        end.to change { MergeRequestIssue.count }.by(2)
 
-        expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+        expect(MergeRequestIssue.where(merge_request: merge_request)).to contain_exactly(
           have_attributes(issue_id: first_issue.id, from_mr_description: true),
           have_attributes(issue_id: second_issue.id, from_mr_description: true)
         )
       end
 
-      it 'removes `MergeRequestsClosingIssues` records marked as from_mr_description' do
+      it 'removes `MergeRequestIssue` records marked as from_mr_description' do
         third_issue = create(:issue, project: project)
-        create(:merge_requests_closing_issues, issue: first_issue, merge_request: merge_request)
-        create(:merge_requests_closing_issues, issue: second_issue, merge_request: merge_request)
+        create(:merge_request_issue, issue: first_issue, merge_request: merge_request)
+        create(:merge_request_issue, issue: second_issue, merge_request: merge_request)
         create(
-          :merge_requests_closing_issues,
+          :merge_request_issue,
           issue: third_issue,
           merge_request: merge_request,
           from_mr_description: false
@@ -1307,12 +1307,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         # Does not delete the one marked as from_mr_description: false
         expect do
           service.execute(merge_request.reload)
-        end.to change { MergeRequestsClosingIssues.count }.from(3).to(1)
+        end.to change { MergeRequestIssue.count }.from(3).to(1)
       end
 
       it 'retypes a from_mr_description row from closes to mentioned when the reference is downgraded' do
         types_for = ->(issue) do
-          MergeRequestsClosingIssues.where(merge_request: merge_request, issue_id: issue.id).pluck(:link_type)
+          MergeRequestIssue.where(merge_request: merge_request, issue_id: issue.id).pluck(:link_type)
         end
 
         closing = described_class.new(project: project, current_user: user,
@@ -1333,14 +1333,14 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
           merge_request.update!(auto_merge_enabled: true, merge_user: user)
         end
 
-        it 'does not create `MergeRequestsClosingIssues` records' do
+        it 'does not create `MergeRequestIssue` records' do
           issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
           service = described_class.new(project: project, current_user: user, params: issue_closing_opts)
           allow(service).to receive(:execute_hooks)
 
           expect do
             service.execute(merge_request)
-          end.to not_change { MergeRequestsClosingIssues.count }.from(0)
+          end.to not_change { MergeRequestIssue.count }.from(0)
         end
       end
 
@@ -1349,7 +1349,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         let(:issues_to_notify) { [first_issue] }
       end
 
-      context 'when MergeRequestsClosingIssues already exist' do
+      context 'when MergeRequestIssue already exist' do
         let_it_be(:third_issue) { create(:issue, project: project) }
 
         before do
@@ -1357,7 +1357,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
           merge_request.persist_merge_request_issues!(user)
         end
 
-        context 'when description updates MergeRequestsClosingIssues records' do
+        context 'when description updates MergeRequestIssue records' do
           it_behaves_like 'merge request update that triggers work item updated subscription' do
             let(:update_params) { { description: "Closes #{third_issue.to_reference} and #{second_issue.to_reference}" } }
             let(:issues_to_notify) { [first_issue, second_issue, third_issue] }

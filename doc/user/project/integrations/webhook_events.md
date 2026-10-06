@@ -251,6 +251,11 @@ Payload example:
 {{< /history >}}
 
 Work item events are triggered when a work item is created, edited, closed, or reopened.
+To receive these events, when you [create a webhook](webhooks.md#create-a-webhook),
+in the **Trigger** section, select **Work item events**.
+For confidential work items, select **Confidential work items events**.
+Webhooks with only **Work item events** selected do not receive events for confidential work items.
+
 The supported work item types are:
 
 - [Epics](../../group/epics/_index.md)

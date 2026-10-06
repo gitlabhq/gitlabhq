@@ -118236,7 +118236,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "MergeRequestsClosingIssuesID",
+                      "name": "MergeRequestIssueID",
                       "ofType": null
                     }
                   }
@@ -118314,7 +118314,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "MergeRequestsClosingIssuesID",
+                    "name": "MergeRequestIssueID",
                     "ofType": null
                   }
                 }
@@ -118755,6 +118755,16 @@
           "kind": "SCALAR",
           "name": "MergeRequestID",
           "description": "A `MergeRequestID` is a global ID. It is encoded as a string.\n\nAn example `MergeRequestID` is: `\"gid://gitlab/MergeRequest/1\"`.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "MergeRequestIssueID",
+          "description": "A `MergeRequestIssueID` is a global ID. It is encoded as a string.\n\nAn example `MergeRequestIssueID` is: `\"gid://gitlab/MergeRequestIssue/1\"`.\nThe older format `\"gid://gitlab/MergeRequestsClosingIssues/1\"` was deprecated in 19.5.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -128260,7 +128270,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "MergeRequestsClosingIssuesID",
+                  "name": "MergeRequestIssueID",
                   "ofType": null
                 }
               },
@@ -128396,16 +128406,6 @@
           ],
           "inputFields": null,
           "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "MergeRequestsClosingIssuesID",
-          "description": "A `MergeRequestsClosingIssuesID` is a global ID. It is encoded as a string.\n\nAn example `MergeRequestsClosingIssuesID` is: `\"gid://gitlab/MergeRequestsClosingIssues/1\"`.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },
@@ -235782,7 +235782,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "MergeRequestsClosingIssuesID",
+                  "name": "MergeRequestIssueID",
                   "ofType": null
                 }
               },

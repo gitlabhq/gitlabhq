@@ -12,7 +12,7 @@ import { STATUS_DONE, STATUS_TODO, STATUS_BLOCKED, STATUS_LOADING } from '../con
 import DuoReadinessRow from './duo_readiness_row.vue';
 import DuoLocalSetupSection from './duo_local_setup_section.vue';
 
-const REQUIRED_STEP_COUNT = 5;
+const REQUIRED_STEP_COUNT = 4;
 
 export default {
   name: 'DuoReadinessCard',
@@ -146,8 +146,8 @@ export default {
     showMcpRow() {
       return Boolean(this.duoMcp.serversPath);
     },
-    showOptionalGroup() {
-      return this.platformEnabled && (this.showOrbitRow || this.showMcpRow);
+    showRecommendedGroup() {
+      return this.platformEnabled;
     },
     doneCount() {
       return [
@@ -155,7 +155,6 @@ export default {
         this.duoRowStatus === STATUS_DONE,
         this.flowExecutionRowStatus === STATUS_DONE,
         this.runnerStatus === STATUS_DONE,
-        Boolean(this.duoReadiness.agentConfigPresent),
       ].filter(Boolean).length;
     },
     stepsLeft() {
@@ -205,9 +204,9 @@ export default {
     requiredSubtitle: s__(
       'DuoAgentPlatform|All %{count} are required for full agent and flow support.',
     ),
-    optionalHeading: s__('DuoAgentPlatform|Optional'),
-    optionalSubtitle: s__(
-      'DuoAgentPlatform|Features that give your agent more context to work with.',
+    recommendedHeading: s__('DuoAgentPlatform|Recommended'),
+    recommendedSubtitle: s__(
+      'DuoAgentPlatform|Flows run without these. Set them up for the best results.',
     ),
     allStepsComplete: s__('DuoAgentPlatform|All steps complete'),
     progressBarLabel: s__(
@@ -377,20 +376,19 @@ export default {
         :project-full-path="projectFullPath"
         @status-changed="runnerStatus = $event"
       />
-
-      <duo-readiness-agent-config-row
-        :readiness="duoReadiness"
-        :flow-execution-enabled="effectiveFlowExecutionEnabled"
-        :project-full-path="projectFullPath"
-      />
     </div>
 
-    <div v-if="showOptionalGroup" class="gl-mt-5" data-testid="duo-optional-group">
+    <div v-if="showRecommendedGroup" class="gl-mt-5" data-testid="duo-recommended-group">
       <div class="gl-mb-3 gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
-        <span class="gl-font-bold">{{ $options.i18n.optionalHeading }}</span>
-        <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.optionalSubtitle }}</span>
+        <span class="gl-font-bold">{{ $options.i18n.recommendedHeading }}</span>
+        <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.recommendedSubtitle }}</span>
       </div>
       <div class="gl-border gl-overflow-hidden gl-rounded-lg">
+        <duo-readiness-agent-config-row
+          :readiness="duoReadiness"
+          :flow-execution-enabled="effectiveFlowExecutionEnabled"
+          :project-full-path="projectFullPath"
+        />
         <duo-readiness-orbit-row
           v-if="showOrbitRow"
           :orbit="duoOrbit"

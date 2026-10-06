@@ -47,6 +47,16 @@ RSpec.describe MergeRequests::Mergeability::CheckCommitsStatusService, feature_c
     it 'returns false' do
       expect(check_commits_status.skip?).to be false
     end
+
+    context 'when the skip_commits_check param is present' do
+      subject(:check_commits_status) do
+        described_class.new(merge_request: merge_request, params: { skip_commits_check: true })
+      end
+
+      it 'returns true' do
+        expect(check_commits_status.skip?).to be true
+      end
+    end
   end
 
   describe '#cacheable?' do

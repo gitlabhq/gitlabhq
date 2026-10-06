@@ -45,7 +45,7 @@ const mockLinkedItem = ({ title, linkType }) => {
 const mockRelationItem = ({ title, linkType, fromMrDescription = true }) => {
   const { workItem } = mockLinkedItem({ title, linkType });
   return {
-    id: `gid://gitlab/MergeRequestsClosingIssues/${workItemCounter}`,
+    id: `gid://gitlab/MergeRequestIssue/${workItemCounter}`,
     linkType,
     fromMrDescription,
     workItem,

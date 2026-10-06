@@ -648,7 +648,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         inreview_label # populate this label
         _, updates, _ = service.execute(content, issuable)
 
-        expect(updates[:add_label_ids]).to match_array([inreview_label.id, todo_label.id])
+        expect(updates[:add_label_ids]).to match_array(expected_label_ids)
 
         if source_issuable.milestone
           expect(updates[:milestone_id]).to eq(source_issuable.milestone.id)
@@ -658,11 +658,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
 
       it 'returns the copy metadata message' do
-        _, _, message = service.execute("/copy_metadata #{source_issuable.to_reference}", issuable)
-        translated_string = _("Copied labels and milestone from %{source_issuable_to_reference}.")
-        formatted_message = format(translated_string, source_issuable_to_reference: source_issuable.to_reference.to_s)
+        _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq(formatted_message)
+        expect(message).to eq(expected_message)
       end
     end
 
@@ -2132,6 +2130,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
         let(:issuable) { build(:issue, project: project) }
+        let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+        let(:expected_message) { "Copied labels from #{source_issuable.to_reference}." }
       end
 
       it_behaves_like 'copy_metadata command' do
@@ -2139,6 +2139,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
         let(:issuable) { issue }
+        let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+        let(:expected_message) { "Copied labels from #{source_issuable.to_reference}." }
       end
 
       context "when a work item type issue is passed" do
@@ -2151,6 +2153,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               wi.labels << [todo_label, inreview_label]
             end
           end
+
+          let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+          let(:expected_message) { "Copied labels and milestone from #{source_issuable.to_reference}." }
         end
 
         it_behaves_like 'failed command' do
@@ -2169,6 +2174,30 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
           let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
           let(:issuable) { issue }
+          let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+          let(:expected_message) { "Copied labels and milestone from #{source_issuable.to_reference}." }
+        end
+      end
+
+      context 'when source issuable has milestone only (no labels)' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:issue, project: project, milestone: milestone) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
+          let(:issuable) { issue }
+          let(:expected_label_ids) { [] }
+          let(:expected_message) { "Copied milestone from #{source_issuable.to_reference}." }
+        end
+      end
+
+      context 'when source issuable has neither labels nor milestone' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:issue, project: project) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
+          let(:issuable) { issue }
+          let(:expected_label_ids) { [] }
+          let(:expected_message) { "No labels or milestone to copy from #{source_issuable.to_reference}." }
         end
       end
 
@@ -2180,6 +2209,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
           let(:content) { "/copy_metadata #{source_issuable.to_reference} #{other_source_issuable.to_reference}" }
           let(:issuable) { issue }
+          let(:expected_label_ids) { [inreview_label.id, todo_label.id] }
+          let(:expected_message) { "Copied labels from #{source_issuable.to_reference}." }
         end
       end
 

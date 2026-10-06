@@ -61,8 +61,8 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
       middleware = described_class.new(app, custom_options)
 
       route_config_map = middleware.instance_variable_get(:@route_config_map)
-      # Should include default route configs (10) plus custom route limits (2)
-      expect(route_config_map.size).to eq(13)
+      # Should include default route configs (12) plus custom route limits (2)
+      expect(route_config_map.size).to eq(14)
       expect(route_config_map.first).to be_a(Hash)
       expect(route_config_map.first).to have_key(:regex)
       expect(route_config_map.first).to have_key(:methods)
@@ -777,6 +777,36 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
             it 'rejects the large payload' do
               result = middleware.call(env)
               expect(result).to eq([400, { "Content-Type" => "application/json" }, ['{"error":"JSON body too large"}']])
+            end
+          end
+        end
+      end
+
+      context 'for github oauth webhooks endpoint' do
+        where(:description, :path_info) do
+          [
+            ['POST to github/webhooks', '/api/v4/projects/123/github/webhooks'],
+            ['POST with URL-encoded project ID', '/api/v4/projects/group%2Fproject/github/webhooks']
+          ]
+        end
+
+        with_them do
+          it 'validates payloads' do
+            expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
+            expect(app).to receive(:call).with(env)
+
+            result = middleware.call(env)
+            expect(result).to match_array([200, {}, ['OK']])
+          end
+
+          context 'for a body exceeding 25 megabytes' do
+            let(:body) { "{\"json\" : \"#{'a' * 27_000_000}\"}" }
+
+            it 'rejects the large payload before the project is looked up' do
+              result = middleware.call(env)
+              expect(result).to match_array(
+                [400, { "Content-Type" => "application/json" }, ['{"error":"JSON body too large"}']]
+              )
             end
           end
         end

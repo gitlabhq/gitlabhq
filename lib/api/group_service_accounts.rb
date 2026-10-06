@@ -24,7 +24,7 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group.'
     end
 
     resource 'groups/:id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -42,9 +42,18 @@ module API
         end
 
         params do
-          optional :name, type: String, desc: 'Name of the user'
-          optional :username, type: String, desc: 'Username of the user'
-          optional :email, type: String, desc: 'Custom email address for the user'
+          optional :name, type: String, desc: 'Name of the user. If omitted when creating a new service account, ' \
+                                          'uses `Service account user`.'
+          optional :username, type: String, desc: 'Username of the user account. If omitted when creating a new ' \
+                                              'service account, generates a username prefixed with ' \
+                                              '`service_account_group_`.'
+          optional :email, type: String,
+            desc: 'Email address of the user account. If omitted when creating a new service account, generates an ' \
+              'email address prefixed with `service_account_group_`. Custom email addresses require confirmation, ' \
+              'unless the group has a matching [verified ' \
+              'domain](https://docs.gitlab.com/user/enterprise_user/#manage-group-domains) or email confirmation ' \
+              'settings are [turned ' \
+              'off](https://docs.gitlab.com/administration/settings/sign_up_restrictions/#confirm-user-email).'
         end
 
         route_setting :authorization, permissions: :create_service_account, boundary_type: :group
@@ -81,8 +90,9 @@ module API
         params do
           use :pagination
           optional :order_by, type: String, values: %w[id username], default: 'id',
-            desc: 'Attribute to sort by'
-          optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Order of sorting'
+            desc: 'Sort results by the specified field.'
+          optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Sort results in ascending or ' \
+                                                                                 'descending order.'
         end
 
         # rubocop: disable CodeReuse/ActiveRecord -- for the user or reorder
@@ -109,7 +119,7 @@ module API
         end
 
         params do
-          requires :user_id, type: Integer, desc: 'The ID of the service account'
+          requires :user_id, type: Integer, desc: 'ID of the service account.'
         end
 
         route_setting :authorization, permissions: :read_service_account, boundary_type: :group
@@ -132,8 +142,11 @@ module API
         end
 
         params do
-          requires :user_id, type: Integer, desc: 'The ID of the service account'
-          optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
+          requires :user_id, type: Integer, desc: 'ID of the service account.'
+          optional :hard_delete, type: Boolean,
+            desc: 'If `true`, contributions that would usually be [moved to a ghost ' \
+              'user](https://docs.gitlab.com/user/profile/account/delete_account/#associated-records) are deleted ' \
+              'instead, along with groups owned solely by this service account.'
         end
 
         route_setting :authorization, permissions: :delete_service_account, boundary_type: :group
@@ -166,10 +179,19 @@ module API
         end
 
         params do
-          requires :user_id, type: Integer, desc: 'The ID of the service account'
-          optional :name, type: String, desc: 'Name of the user'
-          optional :username, type: String, desc: 'Username of the user'
-          optional :email, type: String, desc: 'Custom email address for the user'
+          requires :user_id, type: Integer, desc: 'ID of the service account.'
+          optional :name, type: String, desc: 'Name of the user. If omitted when creating a new service account, ' \
+                                          'uses `Service account user`.'
+          optional :username, type: String, desc: 'Username of the user account. If omitted when creating a new ' \
+                                              'service account, generates a username prefixed with ' \
+                                              '`service_account_group_`.'
+          optional :email, type: String,
+            desc: 'Email address of the user account. If omitted when creating a new service account, generates an ' \
+              'email address prefixed with `service_account_group_`. Custom email addresses require confirmation, ' \
+              'unless the group has a matching [verified ' \
+              'domain](https://docs.gitlab.com/user/enterprise_user/#manage-group-domains) or email confirmation ' \
+              'settings are [turned ' \
+              'off](https://docs.gitlab.com/administration/settings/sign_up_restrictions/#confirm-user-email).'
         end
 
         route_setting :authorization, permissions: :update_service_account, boundary_type: :group
@@ -230,7 +252,8 @@ module API
             use :create_personal_access_token_params
             requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
               values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
-              desc: 'The array of scopes of the personal access token'
+              desc: 'Array of approved scopes. For a list of possible values, see [access token ' \
+                'scopes](https://docs.gitlab.com/security/tokens/access_token_scopes/).'
           end
 
           route_setting :authorization, permissions: :create_service_account_personal_access_token,
@@ -265,7 +288,7 @@ module API
             tags %w[access_tokens service_accounts]
           end
           params do
-            requires :token_id, type: Integer, desc: 'The ID of the personal access token'
+            requires :token_id, type: Integer, desc: 'ID of the personal access token.'
           end
           route_setting :authorization, permissions: :revoke_service_account_personal_access_token,
             boundary_type: :group
@@ -289,10 +312,14 @@ module API
             tags %w[access_tokens service_accounts]
           end
           params do
-            requires :token_id, type: Integer, desc: 'The ID of the personal access token'
+            requires :token_id, type: Integer, desc: 'ID of the personal access token.'
             optional :expires_at,
               type: Date,
-              desc: "The expiration date of the token",
+              desc: 'Date when the access token expires. ' \
+                '[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If omitted, the ' \
+                'new token expires one week after rotation when [token expiry is ' \
+                'enforced](https://docs.gitlab.com/user/profile/personal_access_tokens/#access-token-expiration), ' \
+                'and does not expire otherwise.',
               documentation: { example: '2021-01-31' }
           end
           route_setting :authorization, permissions: :rotate_service_account_personal_access_token,

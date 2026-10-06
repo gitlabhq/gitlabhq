@@ -208,10 +208,20 @@ Do not add an entry to the GitLab Credits history, because the functionality of 
 
 #### Changed feature status
 
+For a feature introduced as an experiment or beta, add the status to the `Introduced` item:
+
+```markdown
+- [Introduced](https://work-item-link) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 15.7.
+```
+
+```markdown
+- [Introduced](https://work-item-link) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.7.
+```
+
 For a feature status change from experiment to beta, use `changed`:
 
 ```markdown
-- [Introduced](https://work-item-link) as an [experiment](../../policy/development_stages_support.md) in GitLab 15.7.
+- [Introduced](https://work-item-link) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 15.7.
 - [Changed](https://work-item-link) from experiment to beta in GitLab 16.0.
 ```
 

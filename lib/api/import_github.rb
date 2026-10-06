@@ -27,17 +27,26 @@ module API
       tags ['project_import']
     end
     params do
-      requires :personal_access_token, type: String, desc: 'GitHub personal access token'
-      requires :repo_id, type: Integer, desc: 'GitHub repository ID'
-      optional :new_name, type: String, desc: 'New repo name'
-      requires :target_namespace, type: String, allow_blank: false, desc: 'Namespace or group to import repository into'
-      optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname. ' \
-                                                 'For example: https://github.example.com. From GitLab 16.5 to ' \
-                                                 'GitLab 17.1, you must include the path `/api/v3`.'
-      optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
+      requires :personal_access_token, type: String, desc: 'GitHub personal access token.'
+      requires :repo_id, type: Integer, desc: 'GitHub repository ID.'
+      optional :new_name, type: String, desc: 'Name of the new project. Also used as the new path, so it must not ' \
+                                          'start or end with a special character and must not contain ' \
+                                          'consecutive special characters.'
+      requires :target_namespace, type: String, allow_blank: false, desc: 'Namespace to import the repository into. ' \
+                                                                      'Supports subgroups, for example ' \
+                                                                      '`/namespace/subgroup`. Must not be blank.'
+      optional :github_hostname, type: String, desc: 'Custom GitHub Enterprise hostname. Do not set for GitHub.com. ' \
+                                                 'From GitLab 16.5 to GitLab 17.1, you must include the path ' \
+                                                 '`/api/v3`.'
+      optional :optional_stages, type: Hash,
+        desc: 'Additional items to import. For a list of items, see [select additional items to import](https://docs.gitlab.com/user/project/import/github/#select-additional-items-to-import).'
       optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
-        desc: 'Strategy for behavior on timeouts'
-      optional :pagination_limit, type: Integer, desc: 'Pagination limit', values: 1..100
+        desc: 'Strategy for handling import timeouts. `optimistic` continues to the next stage of the import. ' \
+          '`pessimistic` fails the import immediately. Defaults to `pessimistic`.'
+      optional :pagination_limit, type: Integer, desc: 'Number of items retrieved per API request to GitHub. If ' \
+                                                   'omitted, defaults to `100`. Use a lower number for large ' \
+                                                   'repositories to reduce the risk of GitHub API errors, though ' \
+                                                   'this increases migration time.', values: 1..100
     end
     route_setting :authorization, permissions: :create_github_import,
       boundaries: [{ boundary_type: :group, boundary_param: :target_namespace }, { boundary_type: :user }]
@@ -72,7 +81,7 @@ module API
       tags ['project_import']
     end
     params do
-      requires :project_id, type: Integer, desc: 'ID of importing project to be canceled'
+      requires :project_id, type: Integer, desc: 'ID of the project whose import to cancel.'
     end
     route_setting :authorization, permissions: :cancel_github_import, boundary_type: :user
     post 'import/github/cancel' do
@@ -100,7 +109,7 @@ module API
       tags ['imports']
     end
     params do
-      requires :personal_access_token, type: String, desc: 'GitHub personal access token'
+      requires :personal_access_token, type: String, desc: 'GitHub personal access token.'
     end
     route_setting :authorization, permissions: :create_github_gist_import, boundary_type: :user
     post 'import/github/gists' do

@@ -1997,6 +1997,38 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
     end
 
+    # No group certificate is registered here, so the group response cannot claim the
+    # fingerprint and the instance response has to explain the denial. The stub gives it a
+    # message of its own, since both responses otherwise say 'Certificate Not Found'.
+    context 'when the instance certificate lookup fails' do
+      let(:reason) { ::Gitlab::SshCertificates::Reason::USER_NOT_FOUND }
+
+      before do
+        allow_next_instance_of(::InstanceSshCertificates::FindService) do |service|
+          allow(service).to receive(:execute)
+            .and_return(ServiceResponse.error(message: 'Instance denial', reason: reason))
+        end
+      end
+
+      it 'answers with the instance response', :aggregate_failures do
+        get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('Instance denial')
+      end
+
+      context 'when the instance reason is not a missing certificate' do
+        let(:reason) { ::Gitlab::SshCertificates::Reason::FEATURE_NOT_AVAILABLE }
+
+        it 'takes the status from that reason', :aggregate_failures do
+          get(api('/internal/authorized_certs'), params: params, headers: gitlab_shell_internal_api_request_header)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('Instance denial')
+        end
+      end
+    end
+
     context 'when the feature flag is disabled' do
       before do
         stub_feature_flags(instance_ssh_certificates: false)

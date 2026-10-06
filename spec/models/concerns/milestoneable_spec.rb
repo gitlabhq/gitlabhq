@@ -139,8 +139,8 @@ RSpec.describe Milestoneable do
         let_it_be(:merge_request_1, freeze: false) { create(:merge_request, source_project: project, source_branch: 'feature-1') }
         let_it_be(:merge_request_2, freeze: false) { create(:merge_request, source_project: project, source_branch: 'feature-2') }
 
-        let_it_be(:mrc_issue_1, freeze: false) { create(:merge_requests_closing_issues, issue: issue_1, merge_request: merge_request_1) }
-        let_it_be(:mrc_issue_2, freeze: false) { create(:merge_requests_closing_issues, issue: issue_2, merge_request: merge_request_2) }
+        let_it_be(:mrc_issue_1, freeze: false) { create(:merge_request_issue, issue: issue_1, merge_request: merge_request_1) }
+        let_it_be(:mrc_issue_2, freeze: false) { create(:merge_request_issue, issue: issue_2, merge_request: merge_request_2) }
 
         it 'returns merge request closing issues of any milestone' do
           relation = items.joins(merge_request_closing_issues: :issue).any_milestone

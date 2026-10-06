@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestsClosingIssuesPolicy, feature_category: :team_planning do
+RSpec.describe MergeRequestIssuePolicy, feature_category: :team_planning do
   let_it_be(:user) { build_stubbed(:user) }
-  let_it_be(:merge_requests_closing_issue) { build_stubbed(:merge_requests_closing_issues) }
+  let_it_be(:merge_requests_closing_issue) { build_stubbed(:merge_request_issue) }
 
   describe 'read_merge_request_closing_issue' do
     using RSpec::Parameterized::TableSyntax

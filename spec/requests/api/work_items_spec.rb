@@ -179,8 +179,8 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
         let(:request_params) { { features: 'development' } }
 
         before do
-          create(:merge_requests_closing_issues, issue: closing_work_item, merge_request: merge_request)
-          create(:merge_requests_closing_issues, issue: other_closing_work_item, merge_request: other_merge_request)
+          create(:merge_request_issue, issue: closing_work_item, merge_request: merge_request)
+          create(:merge_request_issue, issue: other_closing_work_item, merge_request: other_merge_request)
         end
 
         it 'loads the development feature data for the whole page without N+1 queries', :aggregate_failures do
@@ -196,7 +196,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
 
           extra_work_item = create(:work_item, project: project)
           extra_merge_request = create(:merge_request, source_project: project, source_branch: 'extra')
-          create(:merge_requests_closing_issues, issue: extra_work_item, merge_request: extra_merge_request)
+          create(:merge_request_issue, issue: extra_work_item, merge_request: extra_merge_request)
 
           expect { get api(api_path, user), params: request_params }.not_to exceed_query_limit(control)
 
@@ -218,7 +218,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
         let(:api_path) { "/namespaces/#{CGI.escape(namespace_record.full_path)}/-/work_items" }
 
         before do
-          create(:merge_requests_closing_issues, issue: closing_work_item, merge_request: merge_request)
+          create(:merge_request_issue, issue: closing_work_item, merge_request: merge_request)
         end
 
         it 'exposes the visibility-aware closing merge requests count and auto-close flag', :aggregate_failures do
@@ -237,7 +237,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
           inaccessible_project = create(:project, :private)
           inaccessible_project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
           inaccessible_mr = create(:merge_request, source_project: inaccessible_project)
-          create(:merge_requests_closing_issues, issue: closing_work_item, merge_request: inaccessible_mr)
+          create(:merge_request_issue, issue: closing_work_item, merge_request: inaccessible_mr)
 
           get api(api_path, user), params: request_params
 
@@ -250,7 +250,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
         it 'returns will_auto_close_by_merge_request false for a closed work item', :aggregate_failures do
           closed_work_item = create(:work_item, :closed, project: project)
           closed_work_item_mr = create(:merge_request, source_project: project, source_branch: 'closed-guard')
-          create(:merge_requests_closing_issues, issue: closed_work_item, merge_request: closed_work_item_mr)
+          create(:merge_request_issue, issue: closed_work_item, merge_request: closed_work_item_mr)
 
           get api(api_path, user), params: request_params
 

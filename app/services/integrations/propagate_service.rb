@@ -2,6 +2,8 @@
 
 module Integrations
   class PropagateService
+    include Gitlab::Loggable
+
     BATCH_SIZE = 10_000
 
     def initialize(integration)
@@ -9,6 +11,22 @@ module Integrations
     end
 
     def execute
+      log_info('Integration propagation started')
+
+      propagate
+
+      log_info('Integration propagation finished')
+    rescue StandardError => e
+      log_info('Integration propagation failed', error: e)
+
+      raise
+    end
+
+    private
+
+    attr_reader :integration
+
+    def propagate
       return propagate_instance_level_integration if integration.instance_level?
 
       if integration.class.instance_specific?
@@ -21,9 +39,18 @@ module Integrations
       propagate_integration_to_descendant_projects
     end
 
-    private
+    def log_info(message, error: nil)
+      payload = build_structured_payload_labkit(
+        message: message,
+        integration_id: integration.id,
+        integration_class: integration.class.name,
+        integration_level: integration.instance_level? ? 'instance' : 'group',
+        Labkit::Fields::GL_ORGANIZATION_ID => integration.organization_id_for_logging
+      )
+      Gitlab::ExceptionLogFormatter.format!(error, payload)
 
-    attr_reader :integration
+      Gitlab::IntegrationsLogger.info(payload)
+    end
 
     def propagate_instance_level_integration
       update_inherited_integrations

@@ -85,7 +85,7 @@ class Issue < ApplicationRecord
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :merge_request_issues,
-    class_name: 'MergeRequestsClosingIssues',
+    class_name: 'MergeRequestIssue',
     inverse_of: :issue,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -96,7 +96,7 @@ class Issue < ApplicationRecord
   # an N+1 per work item.
   has_many :merge_request_closing_issues,
     -> { link_type_closes },
-    class_name: 'MergeRequestsClosingIssues',
+    class_name: 'MergeRequestIssue',
     inverse_of: :issue
 
   has_many :issue_assignees
@@ -878,7 +878,7 @@ class Issue < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def merge_requests_count(user = nil)
-    ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
+    ::MergeRequestIssue.count_for_issue(self.id, user)
   end
 
   def banzai_render_context(field)
@@ -1070,7 +1070,7 @@ class Issue < ApplicationRecord
   end
 
   def require_legacy_views?
-    work_item_type&.use_legacy_view? || false
+    work_item_type&.use_legacy_view?(resource_parent) || false
   end
 
   def ==(other)

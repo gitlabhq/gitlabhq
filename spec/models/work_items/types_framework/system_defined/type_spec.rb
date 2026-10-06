@@ -810,11 +810,13 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
     end
 
     describe '#use_legacy_view?' do
+      let(:resource_parent) { build(:project) }
+
       context 'when configuration_class uses legacy view' do
         it 'returns true' do
           allow(configuration_class).to receive(:use_legacy_view?).and_return(true)
 
-          expect(type.use_legacy_view?).to be true
+          expect(type.use_legacy_view?(resource_parent)).to be true
         end
       end
 
@@ -822,7 +824,7 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
         it 'returns false' do
           allow(configuration_class).to receive(:use_legacy_view?).and_return(false)
 
-          expect(type.use_legacy_view?).to be false
+          expect(type.use_legacy_view?(resource_parent)).to be false
         end
       end
 
@@ -830,7 +832,7 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
         it 'returns false as default' do
           allow(configuration_class).to receive(:use_legacy_view?).and_return(nil)
 
-          expect(type.use_legacy_view?).to be false
+          expect(type.use_legacy_view?(resource_parent)).to be false
         end
       end
     end
@@ -1149,8 +1151,20 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       issue: false,
       task: false,
       incident: true,
-      ticket: true
-    }
+      ticket: false
+    }, nil
+
+    context 'when work_item_ticket_migration feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_ticket_migration: false)
+      end
+
+      it_behaves_like 'work item type configuration', :use_legacy_view?, {
+        issue: false,
+        incident: true,
+        ticket: true
+      }, nil
+    end
 
     it_behaves_like 'work item type configuration', :supports_move_action?, {
       issue: true,

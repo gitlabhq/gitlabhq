@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Types::WorkItems::TypeType, feature_category: :team_planning do
+  include GraphqlHelpers
+
   let(:fields) do
     fields = %i[id icon_name name widget_definitions supported_conversion_types unavailable_widgets_on_conversion
       supports_roadmap_view use_issue_view can_promote_to_objective show_project_selector supports_move_action
@@ -30,6 +32,27 @@ RSpec.describe Types::WorkItems::TypeType, feature_category: :team_planning do
       target_arg = field.arguments['target']
 
       expect(target_arg.type.to_type_signature).to eq('WorkItemsTypeID!')
+    end
+  end
+
+  describe 'use_issue_view field' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    let(:ticket_type) { build(:work_item_system_defined_type, :ticket) }
+
+    subject(:use_issue_view) do
+      resolve_field(:use_issue_view, ticket_type, current_user: nil, ctx: { resource_parent: project })
+    end
+
+    it { is_expected.to be false }
+
+    context 'when work_item_ticket_migration feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_ticket_migration: false)
+      end
+
+      it { is_expected.to be true }
     end
   end
 

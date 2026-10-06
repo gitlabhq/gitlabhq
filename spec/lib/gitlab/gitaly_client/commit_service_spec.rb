@@ -705,15 +705,8 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           .and_return(instance_double(GRPC::ActiveCall::Operation, execute: [], trailing_metadata: {}))
       end
 
-      it 'uses TREES_FIRST_FILESYSTEM by default' do
+      it 'uses TREES_FIRST_FILESYSTEM' do
         expect_sort(:TREES_FIRST_FILESYSTEM)
-
-        is_expected.to eq([[], nil])
-      end
-
-      it 'falls back to TREES_FIRST when the flag is disabled' do
-        stub_feature_flags(tree_entries_filesystem_sort: false)
-        expect_sort(:TREES_FIRST)
 
         is_expected.to eq([[], nil])
       end

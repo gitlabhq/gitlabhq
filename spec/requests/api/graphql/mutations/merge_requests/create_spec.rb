@@ -57,7 +57,7 @@ RSpec.describe 'Creation of a new merge request', feature_category: :code_review
       it 'creates a merge request closing issue record' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
-        end.to change { MergeRequestsClosingIssues.count }.by(1)
+        end.to change { MergeRequestIssue.count }.by(1)
       end
     end
 

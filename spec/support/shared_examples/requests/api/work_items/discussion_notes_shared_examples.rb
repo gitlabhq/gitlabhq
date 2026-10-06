@@ -262,3 +262,174 @@ RSpec.shared_examples 'a work item discussion note endpoint' do
     end
   end
 end
+
+# Shared behaviour for the PUT single note in a work item discussion endpoint. The including
+# context must define the same lets as above, plus:
+#   - `discussion_note`      a resolvable DiscussionNote authored by `user` on `work_item`
+#   - `discussion_note_path` a lambda `->(discussion_id, note_id, work_item_iid: work_item.iid)`
+#                            building the endpoint path
+#   - `api_request_path`     pointing at `discussion_note`
+RSpec.shared_examples 'a work item endpoint updating a discussion note' do
+  it 'updates the note body', :aggregate_failures do
+    put api(api_request_path, user), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => discussion_note.id, 'body' => 'Hello!')
+    expect(discussion_note.reload.note).to eq('Hello!')
+  end
+
+  it 'updates the body of a reply in a multi-note discussion thread', :aggregate_failures do
+    reply = create(:discussion_note_on_work_item, noteable: work_item, author: user, in_reply_to: discussion_note,
+      **note_params)
+
+    put api(discussion_note_path.call(discussion_note.discussion_id, reply.id), user), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => reply.id, 'body' => 'Hello!')
+  end
+
+  it 'resolves the note when resolved is true', :aggregate_failures do
+    put api(api_request_path, user), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => discussion_note.id, 'resolvable' => true, 'resolved' => true)
+    expect(json_response['resolved_by']).to include('id' => user.id)
+    expect(Time.parse(json_response['resolved_at'])).to be_like_time(discussion_note.reload.resolved_at)
+  end
+
+  it 'unresolves the note when resolved is false', :aggregate_failures do
+    discussion_note.resolve!(user)
+
+    put api(api_request_path, user), params: { resolved: false }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('id' => discussion_note.id, 'resolvable' => true, 'resolved' => false)
+    expect(json_response['resolved_at']).to be_nil
+    expect(discussion_note.reload).not_to be_resolved
+  end
+
+  it 'resolves only the targeted note in a multi-note discussion thread', :aggregate_failures do
+    reply = create(:discussion_note_on_work_item, noteable: work_item, author: user, in_reply_to: discussion_note,
+      **note_params)
+
+    put api(api_request_path, user), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(discussion_note.reload).to be_resolved
+    expect(reply.reload).not_to be_resolved
+  end
+
+  it 'resolves the note for a member who did not author it', :aggregate_failures do
+    developer = create(:user, developer_of: container)
+
+    put api(api_request_path, developer), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(discussion_note.reload).to be_resolved
+  end
+
+  it 'returns 400 when neither body nor resolved is given' do
+    put api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+  end
+
+  it 'returns 400 when both body and resolved are given' do
+    put api(api_request_path, user), params: { body: 'Hello!', resolved: true }
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+  end
+
+  it 'returns 400 when the note is not resolvable' do
+    put api(discussion_note_path.call(comment.discussion_id, comment.id), user), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+  end
+
+  it 'returns 400 when resolved is blank', :aggregate_failures do
+    put api(api_request_path, user), params: { resolved: nil }
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+    expect(json_response['error']).to eq('resolved is empty')
+  end
+
+  it 'returns 403 when the user cannot edit the note' do
+    developer = create(:user, developer_of: container)
+
+    put api(api_request_path, developer), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  it 'returns 403 when the user cannot resolve the note' do
+    guest = create(:user, guest_of: container)
+
+    put api(api_request_path, guest), params: { resolved: true }
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  it 'returns 404 when the work item does not exist' do
+    put api(discussion_note_path.call(discussion_note.discussion_id, discussion_note.id,
+      work_item_iid: non_existing_record_iid), user), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the discussion does not exist' do
+    put api(discussion_note_path.call('nonexistent', discussion_note.id), user), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the note does not exist' do
+    put api(discussion_note_path.call(discussion_note.discussion_id, non_existing_record_id), user),
+      params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the note belongs to a different discussion on the same work item' do
+    put api(discussion_note_path.call(discussion_note.discussion_id, comment.id), user), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+    expect(comment.reload.note).not_to eq('Hello!')
+  end
+
+  it 'returns 404 when the note belongs to a different work item' do
+    other_work_item = create(:work_item, work_item.work_item_type.base_type, author: user, **note_params)
+    other_note = create(:discussion_note_on_work_item, noteable: other_work_item, author: user, **note_params)
+
+    put api(discussion_note_path.call(other_note.discussion_id, other_note.id), user), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns not_found when the feature flag is disabled' do
+    stub_feature_flags(work_item_rest_api: false)
+
+    put api(api_request_path, user), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns unauthorized when no token is provided' do
+    put api(api_request_path), params: { body: 'Hello!' }
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+
+  context 'when the note is not readable by the current user' do
+    let(:guest) { create(:user, guest_of: container) }
+    let(:internal_note) do
+      create(:discussion_note_on_work_item, :confidential, noteable: work_item, author: user, **note_params)
+    end
+
+    it 'returns 404' do
+      put api(discussion_note_path.call(internal_note.discussion_id, internal_note.id), guest),
+        params: { resolved: true }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+end

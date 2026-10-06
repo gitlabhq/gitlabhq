@@ -26,6 +26,8 @@ methods:
     - x509_commit: Accessed from lib/tasks/gitlab/x509/update.rake
   app/models/concerns/forced_email_confirmation.rb:
     - confirmation_period_expired?: Override of Devise::Models::Confirmable method; called internally by Devise during confirmation
+  app/models/concerns/gitlab/encrypted_attribute.rb:
+    - attr_encrypted_encrypted_with: Will be used by the db_key_base re-encryption rake task (https://gitlab.com/gitlab-org/gitlab/-/issues/631458)
   app/models/concerns/integrations/base/integration.rb:
     - "#{arg}?": A metaprogramming method
   app/models/concerns/organizations/isolatable.rb:

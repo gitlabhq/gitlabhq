@@ -100,14 +100,18 @@ module Gitlab
 
       # Persists the managed values onto the application settings record so the enforced values
       # are stored in the database. Validates first, so an invalid value prevents boot. No-op
-      # when disabled or when the database is not ready (unreachable, table missing, or a
-      # managed column not yet migrated).
+      # when disabled or when the database is not ready (unreachable, table missing, a managed
+      # column not yet migrated, or migrations pending).
       #
       # @raise [InvalidConfigurationError] when a recognized column has an invalid value
       # @return [void]
       def apply!
         return unless enabled?
-        return unless database_ready?
+
+        unless database_ready?
+          Gitlab::AppLogger.info(message: 'Skipping managed settings, database not ready or migrations pending')
+          return
+        end
 
         validate!
 
@@ -170,8 +174,11 @@ module Gitlab
       end
 
       def database_ready?
-        ::ApplicationSetting.database.cached_table_exists? &&
-          keys.all? { |attr| ::ApplicationSetting.database.cached_column_exists?(attr) }
+        return false unless ::ApplicationSetting.database.cached_table_exists?
+        return false unless keys.all? { |attr| ::ApplicationSetting.database.cached_column_exists?(attr) }
+
+        # Validating the model touches every column it knows about, so pending migrations break boot.
+        !::Gitlab::ApplicationSettingFetcher.needs_migration?
       rescue ActiveRecord::ActiveRecordError, PG::Error
         false
       end

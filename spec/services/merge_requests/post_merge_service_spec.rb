@@ -159,7 +159,7 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         end
 
         it 'performs MergeRequests::CloseIssueWorker asynchronously' do
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue)
 
           expect(MergeRequests::CloseIssueWorker)
             .to receive(:perform_in)
@@ -184,11 +184,11 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         end
 
         it 'performs MergeRequests::CloseIssueWorker asynchronously' do
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue2)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue3)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue4)
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue5)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue2)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue3)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue4)
+          create(:merge_request_issue, merge_request: merge_request, issue: issue5)
 
           expect(MergeRequests::CloseIssueWorker)
             .to receive(:perform_in)

@@ -11,8 +11,10 @@ RSpec.describe Authz::Organizations::Roles, feature_category: :system_access do
     context 'when the catalogue includes the role' do
       let(:roles) do
         [
-          { id: '019ed9d4-7d53-7b5c-8653-1ceac0c48b14', name: 'Artifact Viewer', permissions: [] },
-          { id: '019ed9d7-920d-72eb-a0ff-117122219c2a', name: 'Organization Administrator', permissions: [] }
+          { id: '019ed9d4-7d53-7b5c-8653-1ceac0c48b14', key: 'artifact_viewer', name: 'Artifact Viewer',
+            permissions: [] },
+          { id: '019ed9d7-920d-72eb-a0ff-117122219c2a', key: 'organization_admin',
+            name: 'Organization Administrator', permissions: [] }
         ]
       end
 

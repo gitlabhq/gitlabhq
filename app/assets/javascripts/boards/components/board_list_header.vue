@@ -120,6 +120,9 @@ export default {
     itemsCount() {
       return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
+    hasItemsCount() {
+      return typeof this.itemsCount === 'number';
+    },
     boardItemsSizeExceedsMax() {
       return this.list.maxIssueCount > 0 && this.itemsCount > this.list.maxIssueCount;
     },
@@ -163,7 +166,7 @@ export default {
       return 'issues';
     },
     itemsTooltipLabel() {
-      return n__(`%d issue`, `%d issues`, this.boardList?.issuesCount);
+      return n__(`%d issue`, `%d issues`, this.itemsCount);
     },
     chevronTooltip() {
       return this.list.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
@@ -484,14 +487,14 @@ export default {
       </span>
       <gl-tooltip v-if="isSwimlanesHeader && list.collapsed" :target="() => $refs.collapsedInfo">
         <div class="gl-pb-2 gl-font-bold">{{ collapsedTooltipTitle }}</div>
-        <div v-if="list.maxIssueCount !== 0">
+        <div v-if="hasItemsCount && list.maxIssueCount !== 0">
           •
           <gl-sprintf :message="__('%{issuesSize} with a limit of %{maxIssueCount}')">
             <template #issuesSize>{{ itemsCount }}</template>
             <template #maxIssueCount>{{ list.maxIssueCount }}</template>
           </gl-sprintf>
         </div>
-        <div v-else>• {{ itemsTooltipLabel }}</div>
+        <div v-else-if="hasItemsCount">• {{ itemsTooltipLabel }}</div>
         <div v-if="weightFeatureAvailable && !isLoading">
           •
           <gl-sprintf :message="__('%{totalIssueWeight} total weight')">
@@ -511,6 +514,7 @@ export default {
       >
         <span class="gl-inline-flex gl-items-center" :class="{ 'gl-rotate-90': list.collapsed }">
           <gl-button
+            v-if="isLoading || hasItemsCount"
             ref="itemCount"
             v-gl-tooltip
             :title="itemsTooltipLabel"

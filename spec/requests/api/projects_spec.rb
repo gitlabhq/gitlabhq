@@ -7294,31 +7294,32 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         properties: {
           'id' => {
             type: 'string',
-            description: 'The ID or URL-encoded path of the project'
+            description: 'ID or URL-encoded path of the project.'
           },
           'namespace_id' => {
             type: 'integer',
-            description: 'The ID of the namespace that the project will be forked into'
+            description: 'ID of the namespace to fork the new project into.'
           },
           'namespace_path' => {
             type: 'string',
-            description: 'The path of the namespace that the project will be forked into'
+            description: 'Path of the namespace to fork the new project into.'
           },
           'name' => {
             type: 'string',
-            description: 'The name that will be assigned to the fork'
+            description: 'Name assigned to the new project after forking.'
           },
           'path' => {
             type: 'string',
-            description: 'The path that will be assigned to the fork'
+            description: 'Path assigned to the new project after forking.'
           },
           'description' => {
             type: 'string',
-            description: 'The description that will be assigned to the fork'
+            description: 'Description assigned to the new project after forking.'
           },
           'visibility' => {
             type: 'string',
-            description: 'The visibility of the fork',
+            description: '[Visibility level](https://docs.gitlab.com/api/projects/#project-visibility-level) ' \
+              'assigned to the new project after forking.',
             enum: %w[private internal public]
           }
         },

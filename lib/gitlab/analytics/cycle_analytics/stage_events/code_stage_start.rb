@@ -46,7 +46,7 @@ module Gitlab
               .join(mr_closing_issues_table, Arel::Nodes::OuterJoin)
               .on(
                 mr_table[:id].eq(mr_closing_issues_table[:merge_request_id])
-                  .and(mr_closing_issues_table[:link_type].eq(MergeRequestsClosingIssues.link_types[:closes]))
+                  .and(mr_closing_issues_table[:link_type].eq(MergeRequestIssue.link_types[:closes]))
               )
               .join_sources
           end

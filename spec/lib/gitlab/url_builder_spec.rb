@@ -114,11 +114,29 @@ RSpec.describe Gitlab::UrlBuilder do
     end
 
     context 'when passing a Service Desk ticket', feature_category: :service_desk do
-      let(:ticket) { create(:work_item, :ticket) }
+      context 'when work_item_ticket_migration feature flag is enabled' do
+        let(:ticket) { create(:work_item, :ticket) }
 
-      subject { described_class.build(ticket, only_path: true) }
+        before do
+          stub_feature_flags(work_item_ticket_migration: true)
+        end
 
-      it { is_expected.to eq("/#{ticket.project.full_path}/-/issues/#{ticket.iid}") }
+        subject { described_class.build(ticket, only_path: true) }
+
+        it { is_expected.to eq("/#{ticket.project.full_path}/-/work_items/#{ticket.iid}") }
+      end
+
+      context 'when work_item_ticket_migration feature flag is disabled' do
+        let(:ticket) { create(:work_item, :ticket) }
+
+        before do
+          stub_feature_flags(work_item_ticket_migration: false)
+        end
+
+        subject { described_class.build(ticket, only_path: true) }
+
+        it { is_expected.to eq("/#{ticket.project.full_path}/-/issues/#{ticket.iid}") }
+      end
     end
 
     context 'when passing a wiki note' do

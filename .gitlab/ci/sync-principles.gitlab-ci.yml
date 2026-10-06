@@ -103,7 +103,7 @@ ai-principles-distill:
   rules:
     - !reference ['.ai-principles-sync:rules:scheduled', rules]
 
-# Daily job that reconciles the Duo Code Review instruction fences in
+# Job that reconciles the Duo Code Review instruction fences in
 # .gitlab/duo/mr-review-instructions.yaml with the committed distilled
 # principles on master, decoupled from distillation.
 #
@@ -114,8 +114,14 @@ ai-principles-distill:
 # team's distilled MR opens between merging and the fence catching up.
 # See gitlab-org/gitlab#604890 for the design.
 #
-# Trigger: dedicated pipeline schedule on master with
-# SCHEDULE_TYPE=ai-principles-fence-reconcile (daily).
+# Trigger: automatically on master pushes that change a fence input (see
+# `.ai-principles-fence-input-patterns`), and as a manual job on every other
+# master push for recovery. The SCHEDULE_TYPE=ai-principles-fence-reconcile
+# schedule still triggers it until that schedule is retired.
+#
+# Runs share one resource group because they all force-push the same reconcile
+# branch. Each run fetches master after it acquires the group, so a run that
+# waited reconciles the latest master, not its own pipeline's commit.
 #
 # Token: GITLAB_API_TOKEN (auto-MR REST) sourced from the same
 # AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN service-account PAT as the weekly
@@ -126,6 +132,7 @@ ai-principles-reconcile-fences:
   needs: []
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
   timeout: 15m
+  resource_group: ai-principles-reconcile-fences
   variables:
     # Used by the sync bin to create the reconcile MR via the REST API.
     GITLAB_API_TOKEN: $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN
@@ -166,4 +173,4 @@ ai-principles-reconcile-fences:
     # reconcile MR. Never re-distills.
     - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" reconcile-fences --push
   rules:
-    - !reference ['.ai-principles-reconcile:rules:scheduled', rules]
+    - !reference ['.ai-principles-reconcile:rules', rules]

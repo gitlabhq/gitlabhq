@@ -4495,6 +4495,7 @@ Arguments:
 | <a id="mutation-aiflowtriggercreate-description"></a>`description` | [`String!`](#string) | Description of the AI flow trigger. |
 | <a id="mutation-aiflowtriggercreate-eventtypes"></a>`eventTypes` | [`[Int!]`](#int) | Event types that triggers the AI flow. |
 | <a id="mutation-aiflowtriggercreate-filter"></a>`filter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.0. Status: Experiment. Filter conditions for the AI flow trigger. |
+| <a id="mutation-aiflowtriggercreate-goals"></a>`goals` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.5. Status: Experiment. Goals for the AI flow trigger, keyed by event type. |
 | <a id="mutation-aiflowtriggercreate-projectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the AI flow trigger is associated with. |
 | <a id="mutation-aiflowtriggercreate-userid"></a>`userId` | [`UserID`](#userid) | Service account for the AI flow trigger. |
 
@@ -4553,6 +4554,7 @@ Arguments:
 | <a id="mutation-aiflowtriggerupdate-description"></a>`description` | [`String`](#string) | Description of the AI flow trigger. |
 | <a id="mutation-aiflowtriggerupdate-eventtypes"></a>`eventTypes` | [`[Int!]`](#int) | Event types that triggers the AI flow. |
 | <a id="mutation-aiflowtriggerupdate-filter"></a>`filter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Filter conditions for the AI flow trigger. |
+| <a id="mutation-aiflowtriggerupdate-goals"></a>`goals` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.5. Status: Experiment. Goals for the AI flow trigger, keyed by event type. |
 | <a id="mutation-aiflowtriggerupdate-id"></a>`id` | [`AiFlowTriggerID!`](#aiflowtriggerid) | ID of the flow trigger to update. |
 | <a id="mutation-aiflowtriggerupdate-userid"></a>`userId` | [`UserID`](#userid) | Service account for the AI flow trigger. |
 
@@ -13889,7 +13891,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-mergerequestdestroyworkitemrelations-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-mergerequestdestroyworkitemrelations-ids"></a>`ids` | [`[MergeRequestsClosingIssuesID!]!`](#mergerequestsclosingissuesid) | Global IDs of the relations to remove. |
+| <a id="mutation-mergerequestdestroyworkitemrelations-ids"></a>`ids` | [`[MergeRequestIssueID!]!`](#mergerequestissueid) | Global IDs of the relations to remove. |
 | <a id="mutation-mergerequestdestroyworkitemrelations-iid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutation-mergerequestdestroyworkitemrelations-projectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 
@@ -13900,7 +13902,7 @@ Fields:
 | <a id="mutation-mergerequestdestroyworkitemrelations-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-mergerequestdestroyworkitemrelations-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-mergerequestdestroyworkitemrelations-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
-| <a id="mutation-mergerequestdestroyworkitemrelations-removedrelationids"></a>`removedRelationIds` | [`[MergeRequestsClosingIssuesID!]`](#mergerequestsclosingissuesid) | Global IDs of the removed relations. |
+| <a id="mutation-mergerequestdestroyworkitemrelations-removedrelationids"></a>`removedRelationIds` | [`[MergeRequestIssueID!]`](#mergerequestissueid) | Global IDs of the removed relations. |
 
 ### `Mutation.mergeRequestRequestChanges`
 
@@ -35247,6 +35249,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aicatalogflow-acceptstriggergoal"></a>`acceptsTriggerGoal` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether a flow trigger for the flow can carry a configured goal. |
 | <a id="aicatalogflow-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogflow-description"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogflow-descriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
@@ -35480,6 +35483,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aicatalogthirdpartyflow-acceptstriggergoal"></a>`acceptsTriggerGoal` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Whether a flow trigger for the flow can carry a configured goal. |
 | <a id="aicatalogthirdpartyflow-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogthirdpartyflow-description"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogthirdpartyflow-descriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
@@ -35704,6 +35708,7 @@ Fields:
 | <a id="aiflowtriggertype-eventtypes"></a>`eventTypes` | [`[Int!]!`](#int) | List of events that triggers the flow. |
 | <a id="aiflowtriggertype-filter"></a>`filter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Filter conditions for the AI flow trigger. |
 | <a id="aiflowtriggertype-flowschedules"></a>`flowSchedules` {{< icon name="warning-solid" >}} | [`AiFlowScheduleTypeConnection`](#aiflowscheduletypeconnection) | Introduced in GitLab 19.4. Status: Experiment. Cron-based schedules associated with the flow trigger. |
+| <a id="aiflowtriggertype-goals"></a>`goals` {{< icon name="warning-solid" >}} | [`JSON!`](#json) | Introduced in GitLab 19.5. Status: Experiment. Goals for the AI flow trigger, keyed by event type. |
 | <a id="aiflowtriggertype-id"></a>`id` | [`ID!`](#id) | ID of the flow trigger. |
 | <a id="aiflowtriggertype-precondition"></a>`precondition` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Enforced filter conditions from the foundational flow definition. |
 | <a id="aiflowtriggertype-project"></a>`project` | [`Project!`](#project) | Project of the flow trigger. |
@@ -54514,7 +54519,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestworkitemrelation-frommrdescription"></a>`fromMrDescription` | [`Boolean!`](#boolean) | Whether the relation was derived from a closing pattern in the merge request description. |
-| <a id="mergerequestworkitemrelation-id"></a>`id` | [`MergeRequestsClosingIssuesID!`](#mergerequestsclosingissuesid) | Global ID of the merge request to work item relation. |
+| <a id="mergerequestworkitemrelation-id"></a>`id` | [`MergeRequestIssueID!`](#mergerequestissueid) | Global ID of the merge request to work item relation. |
 | <a id="mergerequestworkitemrelation-linktype"></a>`linkType` | [`MergeRequestWorkItemLinkType!`](#mergerequestworkitemlinktype) | Type of relationship between the merge request and the work item. |
 | <a id="mergerequestworkitemrelation-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Related work item. |
 
@@ -67311,7 +67316,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemclosingmergerequest-frommrdescription"></a>`fromMrDescription` | [`Boolean!`](#boolean) | Whether this merge request link was created by referencing the work item on the merge request description, using the closing pattern. |
-| <a id="workitemclosingmergerequest-id"></a>`id` | [`MergeRequestsClosingIssuesID!`](#mergerequestsclosingissuesid) | Global ID of the closing merge request association. |
+| <a id="workitemclosingmergerequest-id"></a>`id` | [`MergeRequestIssueID!`](#mergerequestissueid) | Global ID of the closing merge request association. |
 | <a id="workitemclosingmergerequest-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
 
 ### `WorkItemDateFieldValue`
@@ -76662,11 +76667,12 @@ A `MergeRequestID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestID` is: `"gid://gitlab/MergeRequest/1"`.
 
-### `MergeRequestsClosingIssuesID`
+### `MergeRequestIssueID`
 
-A `MergeRequestsClosingIssuesID` is a global ID. It is encoded as a string.
+A `MergeRequestIssueID` is a global ID. It is encoded as a string.
 
-An example `MergeRequestsClosingIssuesID` is: `"gid://gitlab/MergeRequestsClosingIssues/1"`.
+An example `MergeRequestIssueID` is: `"gid://gitlab/MergeRequestIssue/1"`.
+The older format `"gid://gitlab/MergeRequestsClosingIssues/1"` was deprecated in 19.5.
 
 ### `MergeRequestsExternalStatusCheckID`
 

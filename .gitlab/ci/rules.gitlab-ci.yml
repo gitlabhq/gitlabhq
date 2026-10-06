@@ -415,13 +415,21 @@
 # owns — a change to any of these can break the fences on its own ref, so the
 # STRICT `ai-duo-review-instructions` job (where staleness blocks) triggers on
 # these. Distilled files are deliberately NOT here: a team's distilled MR
-# cannot fix a fence on its own ref (the fence catches up via the daily
-# reconcile job), so those MRs fall through to the warn-stale job.
+# cannot fix a fence on its own ref (the fence catches up via the reconcile
+# job after it merges), so those MRs fall through to the warn-stale job.
 # gitlab-org/gitlab#604890
 .ai-duo-review-instructions-owned-patterns: &ai-duo-review-instructions-owned-patterns
   - ".gitlab/duo/mr-review-instructions.yaml"
   - "gems/gitlab-ai-principles-distiller/**/*"
   - "scripts/lint-duo-review-instructions.sh"
+
+# Files the fence projection reads. A default-branch push that changes any of
+# them can leave the fences stale, so it triggers `ai-principles-reconcile-fences`.
+.ai-principles-fence-input-patterns: &ai-principles-fence-input-patterns
+  - ".ai/principles/distilled/*.md"
+  - ".ai/principles/manifest.yml"
+  - ".gitlab/duo/mr-review-instructions.yaml"
+  - "gems/gitlab-ai-principles-distiller/lib/**/*"
 
 .docs-i18n-patterns: &docs-i18n-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
@@ -1685,8 +1693,8 @@
 # Warn-stale Duo-fence guard: fires on the default branch and on ordinary MRs
 # caught by the broad manifest trigger (including team distilled MRs), but NOT
 # on the owned-path MRs already covered by the strict job. It runs with
-# WARN_STALE=1, so fence staleness — expected transient state until the daily
-# reconcile job catches master up — only warns, while malformed and orphaned
+# WARN_STALE=1, so fence staleness — expected transient state until the
+# reconcile MR catches master up — only warns, while malformed and orphaned
 # fences still fail (hence this job is not allow_failure). The owned-path
 # `when: never` prevents a duplicate run alongside the strict job.
 # gitlab-org/gitlab#604890
@@ -4066,13 +4074,22 @@
       when: never
     - <<: *if-default-branch-schedule-ai-principles
 
-.ai-principles-reconcile:rules:scheduled:
+# Reconciles automatically when a push to the default branch changes a fence input.
+# Every other default-branch push gets a manual job, for recovery after a failed run or a push that skipped CI.
+# Failures are allowed on push pipelines so a reconcile error never marks master as broken.
+.ai-principles-reconcile:rules:
   rules:
     - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
       when: never
     - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
       when: never
     - <<: *if-default-branch-schedule-ai-principles-fence-reconcile
+    - <<: *if-default-branch-push
+      changes: *ai-principles-fence-input-patterns
+      allow_failure: true
+    - <<: *if-default-branch-push
+      when: manual
+      allow_failure: true
 
 ###################
 # What's New rules #

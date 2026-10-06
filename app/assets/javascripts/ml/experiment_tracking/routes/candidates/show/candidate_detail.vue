@@ -13,6 +13,7 @@ import { isEmpty, maxBy, range } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
 export default {
   name: 'CandidateDetail',
@@ -101,8 +102,7 @@ export default {
   },
   methods: {
     copyMlflowId() {
-      // eslint-disable-next-line no-restricted-properties
-      navigator.clipboard.writeText(this.info.eid);
+      copyToClipboard(this.info.eid);
     },
   },
   i18n: {

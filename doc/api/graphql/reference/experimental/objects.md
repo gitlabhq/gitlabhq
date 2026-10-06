@@ -12805,7 +12805,7 @@ A relation between a merge request and a work item.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `fromMrDescription` | [`Boolean!`](scalars.md#boolean) | Whether the relation was derived from a closing pattern in the merge request description. |
-| `id` | [`MergeRequestsClosingIssuesID!`](scalars.md#mergerequestsclosingissuesid) | Global ID of the merge request to work item relation. |
+| `id` | [`MergeRequestIssueID!`](scalars.md#mergerequestissueid) | Global ID of the merge request to work item relation. |
 | `linkType` | [`MergeRequestWorkItemLinkType!`](enums.md#mergerequestworkitemlinktype) | Type of relationship between the merge request and the work item. |
 | `workItem` | [`WorkItem`](#workitem) | Related work item. |
 
@@ -21338,7 +21338,7 @@ Paginated collection of [`WorkItemAgentPlanQuestion`](#workitemagentplanquestion
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `fromMrDescription` | [`Boolean!`](scalars.md#boolean) | Whether this merge request link was created by referencing the work item on the merge request description, using the closing pattern. |
-| `id` | [`MergeRequestsClosingIssuesID!`](scalars.md#mergerequestsclosingissuesid) | Global ID of the closing merge request association. |
+| `id` | [`MergeRequestIssueID!`](scalars.md#mergerequestissueid) | Global ID of the closing merge request association. |
 | `mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
 
 ## `WorkItemClosingMergeRequestConnection`

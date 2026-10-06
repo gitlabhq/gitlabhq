@@ -1600,7 +1600,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       context 'when fetching persisted related merge request links' do
         let_it_be(:related_mr) { create(:merge_request, source_project: project, target_branch: 'related-link') }
         let_it_be(:related_link) do
-          create(:merge_requests_closing_issues,
+          create(:merge_request_issue,
             issue: work_item, merge_request: related_mr, link_type: :related, from_mr_description: false)
         end
 
@@ -1661,7 +1661,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
         let_it_be(:mr_closing_issue1) do
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             merge_request: merge_request1,
             issue: work_item,
             from_mr_description: false
@@ -1670,7 +1670,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
         let_it_be(:mr_closing_issue2) do
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             merge_request: merge_request2,
             issue: work_item,
             from_mr_description: true
@@ -1719,7 +1719,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
             expect(graphql_errors).to be_blank
 
             create(
-              :merge_requests_closing_issues,
+              :merge_request_issue,
               merge_request: create(:merge_request, source_project: project, target_branch: 'feature3'),
               issue: work_item
             )

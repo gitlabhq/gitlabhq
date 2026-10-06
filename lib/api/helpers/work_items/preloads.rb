@@ -228,7 +228,7 @@ module API
         def preload_closing_merge_requests_counts(work_items)
           return {} if work_items.empty?
 
-          ::MergeRequestsClosingIssues.count_for_collection(work_items.map(&:id), current_user).to_h
+          ::MergeRequestIssue.count_for_collection(work_items.map(&:id), current_user).to_h
         end
 
         # Bulk-resolves will_auto_close_by_merge_request for the whole page (open + project auto-closes +
@@ -237,7 +237,7 @@ module API
           eligible = work_items.select(&:eligible_for_autoclose_by_merge_request?)
           return Set.new if eligible.empty?
 
-          ::MergeRequestsClosingIssues.auto_close_issue_ids(eligible.map(&:id))
+          ::MergeRequestIssue.auto_close_issue_ids(eligible.map(&:id))
         end
 
         def preload_award_emoji_counts(work_items)

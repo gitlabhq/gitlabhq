@@ -1581,7 +1581,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           expect { sync.check_duo_instructions_fences }.to output(
             a_string_including(
               'Stale: qa',
-              "'[Nightly] AI principles fence reconcile'",
+              "'ai-principles-reconcile-fences' job in the latest master pipeline",
               'gitlab-ai-principles-distiller-sync reconcile-fences --workspace .'
             )
           ).to_stderr

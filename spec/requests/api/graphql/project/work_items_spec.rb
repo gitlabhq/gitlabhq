@@ -628,7 +628,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
       before do
         work_items.each do |item|
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             issue: item,
             merge_request: create(:merge_request, source_project: project, target_branch: "feature#{item.id}")
           )
@@ -646,7 +646,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
         2.times do
           new_work_item = create(:work_item, project: project)
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             issue: new_work_item,
             merge_request: create(:merge_request, source_project: project, target_branch: "feature#{new_work_item.id}")
           )
@@ -675,7 +675,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
       before do
         work_items.each do |item|
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             issue: item,
             merge_request: create(:merge_request, source_project: project, target_branch: "feature#{item.id}")
           )
@@ -704,7 +704,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
         2.times do
           new_work_item = create(:work_item, project: project)
           create(
-            :merge_requests_closing_issues,
+            :merge_request_issue,
             issue: new_work_item,
             merge_request: create(:merge_request, source_project: project, target_branch: "feature#{new_work_item.id}")
           )

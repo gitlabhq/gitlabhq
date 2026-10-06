@@ -218,7 +218,9 @@ module WorkItems
           configuration_class.try(:supports_roadmap_view?) || false
         end
 
-        def use_legacy_view?
+        def use_legacy_view?(resource_parent)
+          return false if ticket? && Feature.enabled?(:work_item_ticket_migration, resource_parent&.root_ancestor)
+
           configuration_class.try(:use_legacy_view?) || false
         end
 

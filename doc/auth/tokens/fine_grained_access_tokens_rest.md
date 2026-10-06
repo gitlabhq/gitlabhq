@@ -2485,8 +2485,10 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Project | `PATCH` | `/projects/:id/-/work_items/:work_item_iid` |
 | Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Project | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Project | `PUT` | `/projects/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id` |
 | Update | Project | `PUT` | `/projects/:id/boards/:board_id/lists/:list_id` |
 | Update | Project | `PUT` | `/projects/:id/issues/:issue_iid` |
@@ -2510,6 +2512,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid/issues/:epic_issue_id` |
 | Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Group | `PUT` | `/groups/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id` |
 | Update | Group | `PUT` | `/groups/:id/boards/:board_id/lists/:list_id` |
 | Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
@@ -2519,6 +2522,7 @@ Grants the ability to create, delete, read, subscribe, and update work items suc
 | Update | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
 | Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id` |
+| Update | Group | `PUT` | `/namespaces/:id/-/work_items/:work_item_iid/discussions/:discussion_id/notes/:note_id` |
 | Update | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 
@@ -4200,6 +4204,7 @@ incompatible with personal access tokens.
 | `POST` | `/projects/:id/(ref/:ref/)trigger/pipeline` | CI trigger token |
 | `POST` | `/projects/:id/alert_management_alerts/:alert_iid/metric_images/authorize` | Workhorse pre-authorization |
 | `PATCH` | `/projects/:id/compliance_external_controls/:control_id/status` | Compliance external control token |
+| `POST` | `/projects/:id/github/webhooks` | GitHub OAuth webhook signature |
 | `POST` | `/projects/:id/integrations/mattermost_slash_commands/trigger` | Project integration token |
 | `POST` | `/projects/:id/issues/:issue_iid/metric_images/authorize` | Workhorse pre-authorization |
 | `GET` | `/projects/:id/managed_licenses` | Deprecated endpoint |

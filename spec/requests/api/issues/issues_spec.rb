@@ -956,7 +956,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       it 'returns a related merge request count > 0 if there are related merge requests', :aggregate_failures do
-        create(:merge_requests_closing_issues, issue: issue)
+        create(:merge_request_issue, issue: issue)
 
         get api('/issues', user)
 

@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
-class MergeRequestsClosingIssues < ApplicationRecord
+class MergeRequestIssue < ApplicationRecord
   include BulkInsertSafe
+
+  # The table rename to `merge_request_issues` is handled separately (#456869);
+  # until then the model points at the existing table.
+  self.table_name = 'merge_requests_closing_issues'
 
   enum :link_type, { closes: 0, mentioned: 1, related: 2 }, prefix: true
 

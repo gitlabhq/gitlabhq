@@ -2582,13 +2582,23 @@ RSpec.describe Issue, feature_category: :team_planning do
       [:issue, :task]         | true
       [:issue, :group_level]  | true
       [:issue, :incident]     | false
-      [:issue, :ticket]       | false
+      [:issue, :ticket]       | true
     end
 
     with_them do
       let(:issue) { build_stubbed(*Array(factory)) }
 
       it { is_expected.to be result }
+    end
+
+    context 'when work_item_ticket_migration feature flag is disabled' do
+      let(:issue) { build_stubbed(:issue, :ticket) }
+
+      before do
+        stub_feature_flags(work_item_ticket_migration: false)
+      end
+
+      it { is_expected.to be false }
     end
 
     context 'when work_item_type is nil' do
@@ -2607,13 +2617,23 @@ RSpec.describe Issue, feature_category: :team_planning do
       :issue                  | true
       [:issue, :task]         | true
       [:issue, :incident]     | false
-      [:issue, :ticket]       | false
+      [:issue, :ticket]       | true
     end
 
     with_them do
       let(:issue) { build_stubbed(*Array(factory)) }
 
       it { is_expected.to be result }
+    end
+
+    context 'when work_item_ticket_migration feature flag is disabled' do
+      let(:issue) { build_stubbed(:issue, :ticket) }
+
+      before do
+        stub_feature_flags(work_item_ticket_migration: false)
+      end
+
+      it { is_expected.to be false }
     end
 
     context 'when work_item_type is nil' do
@@ -2633,13 +2653,23 @@ RSpec.describe Issue, feature_category: :team_planning do
       [:issue, :task]         | false
       [:issue, :group_level]  | false
       [:issue, :incident]     | true
-      [:issue, :ticket]       | true
+      [:issue, :ticket]       | false
     end
 
     with_them do
       let(:issue) { build_stubbed(*Array(factory)) }
 
       it { is_expected.to be result }
+    end
+
+    context 'when work_item_ticket_migration feature flag is disabled' do
+      let(:issue) { build_stubbed(:issue, :ticket) }
+
+      before do
+        stub_feature_flags(work_item_ticket_migration: false)
+      end
+
+      it { is_expected.to be true }
     end
 
     context 'when work_item_type is nil' do

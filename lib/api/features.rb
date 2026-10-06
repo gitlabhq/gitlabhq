@@ -55,42 +55,44 @@ module API
         tags features_tags
       end
       params do
-        requires :name, type: String, desc: 'The name of the feature flag'
+        requires :name, type: String, desc: 'Name of the feature flag.'
         requires :value,
           types: [String, Integer],
-          desc: '`true` or `false` to enable/disable, or an integer for percentage of time'
+          desc: 'Value to set for the feature flag. Use `true` or `false` to enable or disable it, or an integer for ' \
+            'the percentage of time it should be enabled.'
         optional :key,
           type: String,
           values: %w[percentage_of_actors percentage_of_time],
           desc: 'Rollout strategy for a percentage `value`. Omit it to apply the percentage to time'
-        optional :feature_group, type: String, desc: 'A Feature group name'
-        optional :user, type: String, desc: 'A GitLab username or comma-separated multiple usernames'
+        optional :feature_group, type: String, desc: 'Name of the feature group.'
+        optional :user, type: String, desc: 'GitLab username or a comma-separated list of usernames.'
         optional :group,
           type: String,
-          desc: "A GitLab group's path, for example `gitlab-org`, or comma-separated multiple group paths"
+          desc: 'GitLab group path, for example `gitlab-org`, or a comma-separated list of group paths.'
         optional :namespace,
           type: String,
-          desc: "A GitLab group or user namespace's path, for example `john-doe`, or comma-separated " \
-            "multiple namespace paths. Introduced in GitLab 15.0."
+          desc: 'GitLab group or user namespace path, for example `john-doe`, or a comma-separated list of namespace ' \
+            'paths. Introduced in GitLab 15.0.'
         optional :project,
           type: String,
-          desc: "A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths"
+          desc: 'Project path, for example `gitlab-org/gitlab-foss`, or a comma-separated list of project paths.'
         optional :organization,
           type: String,
-          desc: "An organization ID or path, for example `1` or `default`, or comma-separated multiple " \
-            "organization IDs or paths"
+          desc: 'Organization ID or path, for example `1` or `default`, or a comma-separated list of organization ' \
+            'IDs or paths.'
         optional :repository,
           type: String,
-          desc: "A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, " \
-            "`snippets/21.git`, to name a few. Use comma to separate multiple repository paths"
+          desc: 'Repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, or ' \
+            '`snippets/21.git`. Use commas to separate multiple repository paths.'
         optional :runner,
           type: String,
-          desc: "A runner ID, or comma-separated list of runner IDs"
+          desc: 'Runner ID or a comma-separated list of runner IDs.'
         optional :endpoint,
           type: String,
-          desc: "A caller_id identifying a code path, for example `GET /api/v4/projects/:id` or " \
-            "`ProjectsController#show`. Use comma to separate multiple endpoint paths"
-        optional :force, type: Boolean, desc: 'Skip feature flag validation checks, such as a YAML definition'
+          desc: 'Caller ID identifying a code path, for example `GET /api/v4/projects/:id` or ' \
+            '`ProjectsController#show`. Use a comma to separate multiple endpoint paths.'
+        optional :force, type: Boolean, desc: 'If `true`, skips feature flag validation checks, such as a YAML ' \
+                                          'definition.'
 
         mutually_exclusive :key, :feature_group
         mutually_exclusive :key, :user
@@ -123,7 +125,7 @@ module API
         tags features_tags
       end
       params do
-        requires :name, type: String, desc: 'The name of the feature flag'
+        requires :name, type: String, desc: 'Name of the feature flag.'
       end
       route_setting :authorization, permissions: :delete_feature, boundary_type: :instance, assignable_when: [:admin]
       delete ':name' do

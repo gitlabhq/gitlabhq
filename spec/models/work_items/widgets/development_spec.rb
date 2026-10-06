@@ -52,7 +52,7 @@ RSpec.describe WorkItems::Widgets::Development, feature_category: :team_planning
         context 'when closed merge request closing issue exists' do
           before_all do
             create(
-              :merge_requests_closing_issues,
+              :merge_request_issue,
               issue_id: work_item.id,
               merge_request_id: closed_merge_request.id
             )
@@ -63,7 +63,7 @@ RSpec.describe WorkItems::Widgets::Development, feature_category: :team_planning
           context 'when associated merge request is open' do
             before_all do
               create(
-                :merge_requests_closing_issues,
+                :merge_request_issue,
                 issue_id: work_item.id,
                 merge_request_id: open_merge_request.id
               )

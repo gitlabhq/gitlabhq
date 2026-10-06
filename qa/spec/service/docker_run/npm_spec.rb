@@ -34,14 +34,16 @@ module QA
         service.publish_and_install!
 
         expect(service).to have_received(:shell).with(
-          a_string_matching(%r{docker run -d --rm.*--network #{network}.*sleep 300})
+          a_string_matching(
+            %r{docker run -d --rm.*--network #{network}.*sleep #{described_class::CONTAINER_LIFETIME_SECONDS}}
+          )
         )
         expect(service).to have_received(:shell).with(
           a_string_matching(%r{docker cp #{Regexp.escape(volume_host_path)}/\..*:/home/node})
         )
         expect(service).to have_received(:shell).with(a_string_matching(/npm publish/), any_args)
         expect(service).to have_received(:shell).with(
-          a_string_matching(/npm install #{Regexp.escape(package_name)}/)
+          a_string_matching(/npm install .*#{Regexp.escape(package_name)}/)
         )
         expect(service).to have_received(:shell).with(a_string_matching(/docker stop/))
       end
@@ -66,6 +68,8 @@ module QA
           .and_return('')
         allow(Support::Retrier).to receive(:retry_until)
           .and_raise(StandardError, 'install failed')
+        allow(service).to receive(:shell).with(a_string_matching(/docker ps/))
+          .and_raise(Errno::ENOENT, 'docker')
         allow(service).to receive(:shell).with(a_string_matching(/docker stop/)).and_return('')
 
         expect { service.publish_and_install! }.to raise_error(StandardError, 'install failed')
@@ -79,11 +83,19 @@ module QA
       end
 
       it 'starts a sleep container on the correct network' do
+        docker_run = %r{docker run -d --rm.*--network #{network}.*--hostname #{host_name}}
+
         expect(service).to have_received(:shell).with(
           a_string_matching(
-            %r{docker run -d --rm.*--network #{network}.*--hostname #{host_name}.*node:lts-alpine sh -c "sleep 300"}
+            %r{#{docker_run}.*node:lts-alpine sh -c "sleep #{described_class::CONTAINER_LIFETIME_SECONDS}"}
           )
         )
+      end
+
+      it 'outlives the retry window plus one late attempt' do
+        # a late attempt can start just before the deadline and run a full install
+        expect(described_class::CONTAINER_LIFETIME_SECONDS)
+          .to be >= described_class::INSTALL_MAX_DURATION_SECONDS * 2
       end
 
       it 'copies fixture files into the container' do
@@ -159,13 +171,19 @@ module QA
 
       it 'installs the package with retry logic' do
         expect(Support::Retrier).to have_received(:retry_until).with(
-          hash_including(max_duration: 180, retry_on_exception: true, sleep_interval: 2)
+          hash_including(
+            max_duration: described_class::INSTALL_MAX_DURATION_SECONDS,
+            retry_on_exception: true,
+            sleep_interval: 2
+          )
         )
       end
 
       it 'runs npm install with the package name' do
         expect(service).to have_received(:shell).with(
-          a_string_matching(/npm install #{Regexp.escape(package_name)}/)
+          a_string_matching(
+            /npm install --no-audit --no-fund --no-progress #{Regexp.escape(package_name)}/
+          )
         )
       end
     end

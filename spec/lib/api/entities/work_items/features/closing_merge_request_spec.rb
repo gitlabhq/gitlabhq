@@ -7,7 +7,7 @@ RSpec.describe API::Entities::WorkItems::Features::ClosingMergeRequest, feature_
     let(:user) { build_stubbed(:user) }
     let(:merge_request) { build_stubbed(:merge_request) }
     let(:closing_row) do
-      build_stubbed(:merge_requests_closing_issues, merge_request: merge_request, from_mr_description: true)
+      build_stubbed(:merge_request_issue, merge_request: merge_request, from_mr_description: true)
     end
 
     let(:closing_rows_by_mr_id) { { merge_request.id => closing_row } }
@@ -35,7 +35,7 @@ RSpec.describe API::Entities::WorkItems::Features::ClosingMergeRequest, feature_
 
     context 'when the row is from_mr_description: false' do
       let(:closing_row) do
-        build_stubbed(:merge_requests_closing_issues, merge_request: merge_request, from_mr_description: false)
+        build_stubbed(:merge_request_issue, merge_request: merge_request, from_mr_description: false)
       end
 
       it 'exposes false' do

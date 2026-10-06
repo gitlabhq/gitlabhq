@@ -23,8 +23,8 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-      requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests) of the template'
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project.'
+      requires :type, type: String, values: TEMPLATE_TYPES, desc: 'Type of the template.'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all templates of a particular type' do
@@ -60,15 +60,15 @@ module API
       end
       params do
         requires :name, type: String,
-          desc: 'The key of the template, as obtained from the collection endpoint.', documentation: { example: 'MIT' }
+          desc: 'Key of the template, as obtained from the collection endpoint.', documentation: { example: 'MIT' }
         optional :source_template_project_id, type: Integer,
-          desc: 'The project id where a given template is being stored. This is useful when multiple templates from different projects have the same name',
+          desc: 'ID of the project where the template is stored. Useful when multiple templates from different projects have the same name. If omitted, the match from the closest ancestor is returned.',
           documentation: { example: 1 }
         optional :project, type: String,
-          desc: 'The project name to use when expanding placeholders in the template. Only affects licenses',
+          desc: 'Project name to use when expanding placeholders in the template. Affects only licenses.',
           documentation: { example: 'GitLab' }
         optional :fullname, type: String,
-          desc: 'The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses',
+          desc: 'Full name of the copyright holder to use when expanding placeholders in the template. Affects only licenses.',
           documentation: { example: 'GitLab B.V.' }
       end
 

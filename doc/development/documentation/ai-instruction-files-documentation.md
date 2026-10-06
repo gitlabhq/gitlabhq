@@ -57,7 +57,7 @@ The instructions that apply to documentation check for:
 Instruction groups between `# >>> generated:` and `# <<< end generated:`
 comments are generated. The `gitlab-ai-principles-distiller` copies their
 content from the matching distilled principle, so the automated review applies
-the same standards as the authoring and editing files. A daily scheduled job
+the same standards as the authoring and editing files. A CI/CD job
 regenerates these groups after a distilled principle changes on the default
 branch, so do not edit them by hand. Groups outside those comments are
 maintained by hand. For more information, see
@@ -111,21 +111,26 @@ open a merge request to add guidance. When you add guidance, follow these princi
 ### Error: `Duo review instruction fences need attention`
 
 You might get an error in the `ai-duo-review-instructions` CI/CD job that lists a fence as `Stale`.
-This error occurs when the metadata in a generated group in `.gitlab/duo/mr-review-instructions.yaml`
-no longer matches its distilled principle file.
-The job fails on stale fences only in merge requests that change `.gitlab/duo/mr-review-instructions.yaml`,
-the `gitlab-ai-principles-distiller` gem, or `scripts/lint-duo-review-instructions.sh`.
+This error occurs when the metadata in a generated group in
+`.gitlab/duo/mr-review-instructions.yaml` no longer matches its distilled principle file.
+The job fails on stale fences only in merge requests that change
+`.gitlab/duo/mr-review-instructions.yaml`, the `gitlab-ai-principles-distiller` gem,
+or `scripts/lint-duo-review-instructions.sh`.
 
 Retrying the failed job does not resolve the error, because the job checks the same commit.
 
 If your branch does not change the distilled principles, the fences are stale on the default branch.
 To resolve this error, reconcile the fences on the default branch:
 
-1. Wait for the daily `[Nightly] AI principles fence reconcile` pipeline schedule to run.
-   To run the schedule sooner, you must have merge permissions for the default branch.
+1. Wait for the reconcile merge request from the `docs-sync/principles-reconcile-fences` branch
+   to merge.
+   The `ai-principles-reconcile-fences` job opens or updates this merge request
+   after a distilled principle changes on the default branch.
+1. If no reconcile merge request is open, run the manual `ai-principles-reconcile-fences` job
+   in the latest default branch pipeline.
+   To run the job, you must have merge permissions for the default branch.
    If you do not have these permissions, ask a maintainer to run it.
-1. Wait for the reconcile merge request from the `docs-sync/principles-reconcile-fences` branch to merge.
-   If the pipeline does not open or update this merge request, the fences on the default branch are up to date.
+   If the job does not open a merge request, the fences on the default branch are up to date.
    In that case, the stale fence comes from your branch.
 1. Rebase your branch on the default branch.
 
