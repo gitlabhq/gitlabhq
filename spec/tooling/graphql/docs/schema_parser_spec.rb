@@ -82,6 +82,20 @@ RSpec.describe Tooling::Graphql::Docs::SchemaParser, feature_category: :api do
   describe '#execute' do
     subject(:result) { described_class.new(schema).execute }
 
+    describe '@queries' do
+      subject(:queries) { result.queries }
+
+      it 'contains an array of query types' do
+        expect(queries).to all(be_a(Tooling::Graphql::Docs::Schema::Query))
+      end
+
+      it 'contains the root query fields' do
+        expect(queries.map(&:name)).to contain_exactly(
+          'enumField', 'scalarField', 'objectField', 'objects', 'interfaceField', 'unionField', 'inputField'
+        )
+      end
+    end
+
     describe '@directives' do
       subject(:directives) { result.directives }
 

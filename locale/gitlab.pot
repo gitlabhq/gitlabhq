@@ -8557,6 +8557,9 @@ msgid_plural "AiGovernance|%{count} flagged skills"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AiGovernance|%{label}: %{value} (%{percentage})"
+msgstr ""
+
 msgid "AiGovernance|%{value}, set as an override"
 msgstr ""
 
@@ -72940,7 +72943,7 @@ msgstr ""
 msgid "ScanResultPolicy|When a security policy fails for an unspecified reason."
 msgstr ""
 
-msgid "ScanResultPolicy|When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners."
+msgid "ScanResultPolicy|When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the source branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners."
 msgstr ""
 
 msgid "ScanResultPolicy|When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required."
@@ -73694,6 +73697,9 @@ msgstr ""
 msgid "SecretsManagerPermissions|There was a problem enabling GitLab Secrets Manager. Please try again."
 msgstr ""
 
+msgid "SecretsManagerPermissions|To use GitLab Secrets Manager, %{linkStart}start a trial or enable it with GitLab Credits%{linkEnd}."
+msgstr ""
+
 msgid "SecretsManagerPermissions|User permissions"
 msgstr ""
 
@@ -73732,6 +73738,9 @@ msgid "SecretsManagerTrial|Less than 10%% of GitLab Secrets Manager trial credit
 msgstr ""
 
 msgid "SecretsManagerTrial|On-demand billing is disabled"
+msgstr ""
+
+msgid "SecretsManagerTrial|Secrets are read-only until GitLab Secrets Manager is enabled. Contact your group owner or instance administrator to start a trial or enable with GitLab Credits."
 msgstr ""
 
 msgid "SecretsManagerTrial|When all trial credits are used up, GitLab Secrets Manager starts using GitLab Credits. %{linkStart}How does GitLab Secrets Manager use GitLab Credits?%{linkEnd}"
@@ -73801,6 +73810,9 @@ msgid "SecretsManager|Contact your GitLab administrator for a trial."
 msgstr ""
 
 msgid "SecretsManager|Contact your group owner or instance administrator to enable GitLab Secrets Manager."
+msgstr ""
+
+msgid "SecretsManager|Contact your group owner or instance administrator to start a trial or enable with GitLab Credits."
 msgstr ""
 
 msgid "SecretsManager|Contact your subscription owner or visit the %{linkStart}Customer Portal%{linkEnd} to purchase a Monthly Commitment of GitLab Credits or accept on-demand billing. After your subscription owner has completed this task, you can enable GitLab Secrets Manager with GitLab Credits."

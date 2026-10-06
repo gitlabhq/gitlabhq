@@ -33,6 +33,7 @@ interactively using the [GraphiQL explorer](../../getting_started.md#graphiql).
 
 {{< cards >}}
 
+- [Queries](queries.md)
 - [Objects](objects.md)
 - [Enums](enums.md)
 - [Scalars](scalars.md)

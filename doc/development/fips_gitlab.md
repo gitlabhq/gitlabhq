@@ -491,19 +491,101 @@ irb(main):001:0> require 'openssl'; OpenSSL.fips_mode
 
 ### Go
 
-Google maintains a [`dev.boringcrypto` branch](https://github.com/golang/go/tree/dev.boringcrypto) in the Go compiler
-that makes it possible to statically link BoringSSL, a FIPS-validated module forked from OpenSSL. However,
-[BoringCrypto is not officially supported](https://go.dev/src/crypto/internal/boring/README), although it is used by other companies.
+Go 1.24 and later includes the [Go Cryptographic Module](https://go.dev/doc/security/fips140),
+a native FIPS 140-3 module validated under
+[CMVP certificate 5247](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/5247).
 
-GitLab uses [`golang-fips`](https://github.com/golang-fips/go), [a fork of the `dev.boringcrypto` branch](https://github.com/golang/go/blob/2fb6bf8a4a51f92f98c2ae127eff2b7ac392c08f/README.boringcrypto.md) to build Go programs that
-[dynamically link OpenSSL via `dlopen`](https://github.com/golang-fips/go?tab=readme-ov-file#openssl-support). This has several advantages:
+GitLab FIPS builds that use an upstream Go toolchain select the module at
+build time with the `GOFIPS140` environment variable. `GOFIPS140=v1.0.0`
+compiles the binary against the validated, frozen snapshot of the module
+instead of the latest `crypto` code. Unlike the legacy `golang-fips`
+toolchain, the native module is pure Go. It does not require cgo,
+`CGO_ENABLED=1`, or a system OpenSSL library.
 
-- Using a FIPS-validated, system OpenSSL (RHEL/UBI) is straightforward.
-- This is the source code used by the [Red Hat go-toolset package](https://gitlab.com/redhat/centos-stream/rpms/golang#sources).
-- Unlike [go-toolset](https://developers.redhat.com/blog/2019/06/24/go-and-fips-140-2-on-red-hat-enterprise-linux#), this fork appears to keep up with the latest Go releases.
+Go publishes more than one snapshot. Version `v1.26.0` is frozen from
+Go 1.26, but it is still Pending Review on the CMVP Modules In Process
+list. GitLab pins `v1.0.0`, which holds the certificate.
 
-However, [cgo](https://pkg.go.dev/cmd/cgo) must be enabled via `CGO_ENABLED=1` for this to work. There
-is a performance hit when calling into C code.
+At runtime, the `GODEBUG=fips140` setting controls whether the module
+operates in FIPS 140-3 mode. Toolchains configured with `GOFIPS140` bake
+`fips140=on` into the binary as the default, so FIPS mode is enabled
+without any runtime configuration.
+
+To verify that a binary uses the native module, inspect its build
+settings with `go version -m`:
+
+```console
+$ go version -m gitlab-workhorse | grep -E 'GOFIPS140|DefaultGODEBUG'
+        build   DefaultGODEBUG=fips140=on
+        build   GOFIPS140=v1.0.0-c2097c7c
+```
+
+> [!warning]
+> Never set `GODEBUG=fips140=<value>` in deployment-level configuration.
+> Linux packages from GitLab 19.4 and earlier, and CNG images from
+> GitLab 19.3 and earlier, contain `golang-fips` binaries. Those binaries
+> do not recognize the `fips140` setting, so any value is fatal at
+> process startup for them.
+> Also, per the Go documentation, `fips140=only` is a best-effort mode
+> meant for testing and is "not intended to be used in production". By
+> design, this mode crashes the process when a program uses a
+> non-approved algorithm such as `crypto/md5`. Escalation from `on` to
+> `only` must be a deliberate, QA-backed change.
+
+In addition, LabKit contains routines to [check whether FIPS is enabled](https://gitlab.com/gitlab-org/labkit/-/tree/master/fips).
+As of LabKit v1.64.9 (and `v2/fips` since v2.33.0), `fips.Enabled()`
+reports `true` on both toolchains: it checks `crypto/boring.Enabled()`
+in `golang-fips` binaries and `crypto/fips140.Enabled()` in
+native-module binaries.
+
+LabKit v1.64.12 (v2: `v2/fips/sshalgo`, v2.35.0) also provides the SSH
+algorithm policy used by GitLab Shell
+([merge request 608](https://gitlab.com/gitlab-org/labkit/-/merge_requests/608)).
+The policy is a floor. A backend can narrow the result, but it cannot
+widen it. Algorithms fall into these groups:
+
+- Not approved on any backend, and always excluded. Examples are
+  standalone X25519, ChaCha20-Poly1305, and the security-key public key
+  types, which sign on a detached key outside the validated boundary.
+- Approved on both backends. This group is the baseline.
+- Approved only on the native module. The ML-KEM768/X25519 hybrid key
+  exchange is the only member. ML-KEM-768 supplies an approved shared
+  secret, so the X25519 contribution is permitted additional keying
+  material. The policy excludes it on `golang-fips`, where the patched
+  `crypto/ecdh` refuses the X25519 half and the handshake always fails.
+- Approved but deprecated, and offered by default for client
+  compatibility. This group holds the SHA-1 constructions (`hmac-sha1`,
+  `hmac-sha1-96`, and `diffie-hellman-group14-sha1`) and the
+  finite-field Diffie-Hellman exchanges
+  (`diffie-hellman-group14-sha256`, `diffie-hellman-group16-sha512`, and
+  `diffie-hellman-group-exchange-sha256`). Callers remove all six with
+  `WithoutDeprecated()`. Removal is a compatibility break, not a
+  compliance requirement: it stops clients too old to offer HMAC-SHA-2
+  or ECDH.
+
+The package also provides `HostKeySigner`. A caller adopts it so that RSA
+host keys negotiate SHA-2 signature algorithms instead of SHA-1. GitLab
+Shell calls `DefaultAlgorithms()` with no options, so it does not use
+`WithoutDeprecated()` or `HostKeySigner` yet.
+
+#### Legacy `golang-fips` binaries
+
+Before the native module was available, GitLab used
+[`golang-fips`](https://github.com/golang-fips/go), [a fork of the `dev.boringcrypto` branch](https://github.com/golang/go/blob/2fb6bf8a4a51f92f98c2ae127eff2b7ac392c08f/README.boringcrypto.md), to build Go programs that
+[dynamically link OpenSSL via `dlopen`](https://github.com/golang-fips/go?tab=readme-ov-file#openssl-support). This approach uses a
+FIPS-validated, system OpenSSL (RHEL/UBI), and matches the source code
+used by the [Red Hat go-toolset package](https://gitlab.com/redhat/centos-stream/rpms/golang#sources). However,
+[cgo](https://pkg.go.dev/cmd/cgo) must be enabled via `CGO_ENABLED=1` for
+this to work, and there is a performance hit when calling into C code.
+
+No GitLab distribution builds with this toolchain now. The CNG images
+moved to the native module in
+[merge request 3010](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/3010),
+and the Linux packages moved in
+[merge request 9785](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/9785).
+Use the method in this section for binaries from earlier releases, or for
+a local build on a `golang-fips` toolchain. The component Makefiles keep
+the `golang-fips` branch for that case.
 
 Projects that are compiled with `golang-fips` on Linux x86 automatically
 get built the crypto routines that use OpenSSL. While the `boringcrypto`
@@ -534,12 +616,16 @@ $ go tool nm tenctl | grep '_Cfunc__goboringcrypto_|\bcrypto/internal/boring/sig
   4cb840 t crypto/internal/boring/sig.BoringCrypto.abi0
 ```
 
-In addition, LabKit contains routines to [check whether FIPS is enabled](https://gitlab.com/gitlab-org/labkit/-/tree/master/fips).
-
 ## How FIPS builds are created
 
 Many GitLab projects (for example: Gitaly, GitLab Pages) have
 standardized on using `FIPS_MODE=1 make` to build FIPS binaries locally.
+For Go projects, the installed toolchain selects the crypto backend. The
+Makefiles read `go env GOFIPS140`. A toolchain that reports a module
+version uses the native Go Cryptographic Module. A toolchain that reports
+`off`, or reports nothing, falls back to `GOEXPERIMENT=boringcrypto` and
+builds against `golang-fips`. All GitLab build images supply the native
+module, so the fallback applies only to local builds.
 
 ### Omnibus
 
@@ -552,10 +638,20 @@ The Omnibus FIPS builds are compiled to use the following:
   Omnibus dependencies such as NGINX and `libgit2` link against the system OpenSSL.
   OpenSSL is not included in the Omnibus build.
 
-The Omnibus builds are created using container images [that use the `golang-fips` compiler](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/blob/master/docker/snippets/go_fips). For
-example, [this job](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/jobs/2363742108) created
-the `registry.gitlab.com/gitlab-org/gitlab-omnibus-builder/centos_8_fips:3.3.1` image used to
-build packages for RHEL 8.
+The Omnibus builds use container images from
+[Omnibus Builder images](https://gitlab.com/gitlab-org/gitlab-omnibus-builder).
+These images install an [upstream Go toolchain](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/blob/master/docker/snippets/go).
+The FIPS images keep the `_fips` suffix because they carry the FIPS
+builds of OpenSSL and Curl, not because of the Go toolchain. For example,
+`registry.gitlab.com/gitlab-org/gitlab-omnibus-builder/almalinux_8_fips`
+builds the packages for RHEL 8. `BUILDER_IMAGE_REVISION` in
+[`gitlab-ci-config/variables.yml`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/variables.yml)
+selects the image version.
+
+Omnibus exports `GOFIPS140` once into the build process environment so
+every Go component inherits it. A component can only opt out, and only
+with a justification. For the rules, see
+[Go components and FIPS](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/doc/development/new-software-definition.md#go-components-and-fips).
 
 #### Add a new FIPS build for another Linux distribution
 
@@ -579,12 +675,17 @@ The Cloud Native GitLab CI pipeline generates images using several base images:
 - The [Red Hat Universal Base Image (UBI)](https://developers.redhat.com/products/rhel/ubi)
 
 UBI images ship with the same OpenSSL package as those used by
-RHEL. This makes it possible to build FIPS-compliant binaries without
-needing RHEL. RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/compliance/fips), but 8.5 is in
-review for FIPS validation.
+RHEL. This makes it possible for non-Go components to use a
+[FIPS-validated OpenSSL](https://access.redhat.com/compliance/fips)
+without needing RHEL.
 
-[This merge request](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/981)
-introduces a FIPS pipeline for CNG images. Images tagged for FIPS have the `-fips` suffix. For example,
+Go binaries in CNG images are built with an upstream Go toolchain
+configured with `GOFIPS140=v1.0.0`, so they use the native Go
+Cryptographic Module instead of the UBI OpenSSL. This change was
+introduced by [merge request 3010](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/3010).
+
+[Merge request 981](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/981)
+introduced the original FIPS pipeline for CNG images. Images tagged for FIPS have the `-fips` suffix. For example,
 the `webservice` container has the following tags:
 
 - `master`

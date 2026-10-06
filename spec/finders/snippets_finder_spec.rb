@@ -452,7 +452,7 @@ RSpec.describe SnippetsFinder do
     context 'when the user cannot read cross project' do
       before do
         allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+        allow(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
       end
 
       it 'returns only personal snippets when the user cannot read cross project' do

@@ -44,6 +44,9 @@ flags:
   - name: org_creation
     description: Create an organization from global pages or public APIs.
     stage: experimental
+  - name: can_create_org_instance_admin_setting
+    description: The instance admin setting that allows disabling the ability to create an organization.
+    stage: experimental
   - name: create_org_from_group_settings
     description: Create an organization for a top-level group from the group settings.
     stage: beta

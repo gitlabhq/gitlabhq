@@ -9,7 +9,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :deployment_management do
   let(:user) { create(:user) }
 
   before do
-    allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
+    allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL).and_return(100)
     allow_next_instance_of(Clusters::Kubernetes::CreateOrUpdateNamespaceService) do |instance|
       allow(instance).to receive(:execute)
     end

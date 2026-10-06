@@ -33,7 +33,7 @@ RSpec.describe Projects::GroupsFinder do
 
       context 'when the project does not belong to any group' do
         before do
-          allow(project).to receive(:group) { nil }
+          allow(project).to receive(:group).and_return(nil)
         end
 
         it { is_expected.to eq([]) }

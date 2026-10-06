@@ -61,10 +61,18 @@
   // Sign in/up pages
   &.html-devise-layout body {
     @apply gl-bg-application-chrome;
-    background-image: url('blooms/bloom-grand-ambient.png');
-    background-position: bottom center;
-    background-size: 1440px 525px;
-    background-repeat: no-repeat;
+
+    &::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: url('blooms/bloom-grand-ambient.png');
+      background-position: bottom center;
+      background-size: 1440px 525px;
+      background-repeat: no-repeat;
+    }
   }
 
   &.html-devise-layout .footer-container hr {

@@ -145,7 +145,7 @@ module TreeHelper
     project_compare_index_path(project, from: repository.root_ref, to: ref)
   end
 
-  def vue_tree_header_app_data(project, repository, ref, pipeline, ref_type)
+  def vue_tree_header_app_data(project, repository, ref, ref_type)
     archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
 
     {
@@ -157,14 +157,11 @@ module TreeHelper
       project_root_path: project_path(project),
       project_path: project.full_path,
       compare_path: compare_path(project, repository, ref),
-      web_ide_button_options: web_ide_button_data({ blob: nil }).merge(fork_modal_options(project, nil)).to_json,
-      web_ide_button_default_branch: project.default_branch_or_main,
+      web_ide_button_options: repository_header_web_ide_button_options(nil),
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
       download_links: download_links(project, ref, archive_prefix, ref_type).to_json,
-      download_artifacts: pipeline &&
-        (previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []),
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
       user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : '',

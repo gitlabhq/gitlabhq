@@ -2152,8 +2152,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   it 'updates Service Desk attributes' do
     project.add_maintainer(user)
     sign_in(user)
-    allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-    allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+    allow(Gitlab::Email::IncomingEmail).to receive_messages(enabled?: true, supports_wildcard?: true)
     params = {
       service_desk_enabled: true
     }

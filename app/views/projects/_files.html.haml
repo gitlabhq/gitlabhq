@@ -1,6 +1,5 @@
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
-- pipeline = local_assigns.fetch(:pipeline, nil)
 - unless @skip_logs_tree_loading
   - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type&.upcase)
 - if readme_path = @project.repository.readme_path
@@ -13,4 +12,4 @@
   #js-file-browser{ style: 'width:320px' }
   .gl-w-full.gl-min-w-0
     #tree-holder.tree-holder.gl-clearfix.gl-mt-4
-      = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type
+      = render 'projects/tree_content', project: project, ref: ref, tree: @tree, ref_type: @ref_type

@@ -35,6 +35,16 @@ RSpec.describe Gitlab::Graphql::Authz::GranularScopeAuthorization, feature_categ
       end
     end
 
+    context 'with a legacy OAuth token' do
+      let(:access_token) { create(:oauth_access_token, resource_owner: user) }
+
+      it 'does not call the authorization service' do
+        expect(::Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+        expect(ok).to be(true)
+      end
+    end
+
     context 'with a granular token' do
       let(:access_token) do
         create(:granular_pat, user: user, boundary: Authz::Boundary.for(project), permissions: [:read_wiki])

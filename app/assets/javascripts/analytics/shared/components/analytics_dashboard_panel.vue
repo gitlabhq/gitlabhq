@@ -36,7 +36,6 @@ export default {
   mixins: [glAbilitiesMixin(), glLicensedFeaturesMixin()],
   inject: {
     namespaceFullPath: {},
-    namespaceName: {},
     dataSourceClickhouse: {},
     overviewCountsAggregationEnabled: {},
     // Defaulted because the dashboard edit and data explorer routes mount panels outside the

@@ -3,6 +3,7 @@ import { defineAsyncComponent } from 'vue';
 import { reportToSentry } from '~/ci/utils';
 import { sanitize } from '~/lib/dompurify';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { setFaviconOverlay } from '~/lib/utils/favicon';
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import MrPipelineUpdated from '../subscriptions/mr_pipeline_updated.subscription.graphql';
 import ArtifactsApp from './artifacts_list_app.vue';
@@ -60,6 +61,9 @@ export default {
           if (!data.ciPipelineStatusUpdated) return;
 
           this.mr.setPipelineStatusData(data.ciPipelineStatusUpdated, this.isPostMerge);
+
+          const favicon = data.ciPipelineStatusUpdated.detailedStatus?.favicon;
+          if (favicon && !this.isPostMerge && !this.mr.isMergedState) setFaviconOverlay(favicon);
         },
         error(err) {
           reportToSentry(this.$options.name, err);

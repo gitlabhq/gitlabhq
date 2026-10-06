@@ -5,7 +5,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/analytics/shared/components/analytics_dashboard_panel.vue',
     'app/assets/javascripts/issues/dashboard/components/issues_dashboard_app.vue',
     'app/assets/javascripts/projects/settings/branch_rules/components/index.vue',
     'app/assets/javascripts/projects/settings/repository/branch_rules/app.vue',

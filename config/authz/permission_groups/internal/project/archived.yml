@@ -71,6 +71,7 @@ permissions:
   - create_vulnerability
   - create_vulnerability_feedback
   - create_wiki
+  - delete_issuable_metric_image
   - delete_label
   - delete_note
   - delete_timelog
@@ -119,6 +120,7 @@ permissions:
   - update_environment
   - update_feature_flag
   - update_feature_flags_client
+  - update_issuable_metric_image
   - update_issue
   - update_issue_board
   - update_issue_board_list
@@ -140,3 +142,4 @@ permissions:
   - update_vulnerability_feedback
   - update_wiki
   - upload_file
+  - upload_issuable_metric_image

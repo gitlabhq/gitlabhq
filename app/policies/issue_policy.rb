@@ -119,6 +119,9 @@ class IssuePolicy < IssuablePolicy
     prevent :destroy_design
     prevent :move_design
     prevent :read_issuable_metric_image
+    prevent :upload_issuable_metric_image
+    prevent :update_issuable_metric_image
+    prevent :delete_issuable_metric_image
   end
 
   rule { locked }.policy do

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe OauthAccessToken, feature_category: :system_access, factory_default: :keep do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:default_user) { create_default(:user) }
   let_it_be(:app_one) { create(:oauth_application) }
   let_it_be(:app_two) { create(:oauth_application) }
@@ -215,6 +217,202 @@ RSpec.describe OauthAccessToken, feature_category: :system_access, factory_defau
         it 'returns false' do
           expect(oauth_access_token.scope_user).to be_nil
         end
+      end
+    end
+  end
+
+  describe 'granular token interface', feature_category: :permissions do
+    let_it_be(:project) { create(:project, developers: default_user) }
+    let_it_be(:project_boundary) { Authz::Boundary.for(project) }
+    let_it_be(:other_project_boundary) { Authz::Boundary.for(create(:project)) }
+
+    let(:token) { create(:oauth_access_token, :granular, resource_owner: default_user, application: app_one) }
+
+    def create_consent_grant(permissions)
+      create(:oauth_consent_grant, user: default_user, application: app_one, boundary: project_boundary,
+        permissions: permissions)
+    end
+
+    describe '#granular?' do
+      where(:scopes, :granular) do
+        ['granular']     | true
+        %w[api granular] | true
+        ['api']          | false
+        []               | false
+      end
+
+      with_them do
+        let(:oauth_access_token) { build_stubbed(:oauth_access_token, scopes: scopes) }
+
+        it 'is derived from the granular scope', :aggregate_failures do
+          expect(oauth_access_token.granular?).to be(granular)
+          expect(oauth_access_token.legacy?).to be(!granular)
+        end
+      end
+    end
+
+    describe '#subject_to_granular_enforcement?' do
+      it 'is false for a legacy token' do
+        expect(build_stubbed(:oauth_access_token, scopes: ['api'])).not_to be_subject_to_granular_enforcement
+      end
+
+      it 'is false for a granular token' do
+        expect(build_stubbed(:oauth_access_token, :granular)).not_to be_subject_to_granular_enforcement
+      end
+    end
+
+    describe '#consent_grant' do
+      subject(:consent_grant) { token.consent_grant }
+
+      context 'when the user has an authorized grant for the application' do
+        let_it_be(:grant) { create(:oauth_consent_grant, user: default_user, application: app_one) }
+
+        it { is_expected.to eq(grant) }
+
+        it 'is resolved once per token instance' do
+          granular_token = token
+
+          recorder = ActiveRecord::QueryRecorder.new { 2.times { granular_token.consent_grant } }
+
+          expect(recorder.count).to eq(1)
+        end
+      end
+
+      context 'when the grant is revoked' do
+        before do
+          create(:oauth_consent_grant, user: default_user, application: app_one, status: :revoked)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when the grant is a Duo session grant' do
+        before do
+          create(:oauth_consent_grant, user: default_user, application: app_one, source: :duo_session)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when the grant is for another application' do
+        before do
+          create(:oauth_consent_grant, user: default_user, application: app_two)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when the grant belongs to another user' do
+        before do
+          create(:oauth_consent_grant, user: create(:user), application: app_one)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when there is no grant' do
+        it { is_expected.to be_nil }
+      end
+    end
+
+    describe '#granular_scopes' do
+      subject(:granular_scopes) { token.granular_scopes }
+
+      context 'when the user has an authorized grant for the application' do
+        let_it_be(:grant) { create_consent_grant(:create_work_item) }
+
+        it 'returns the granular scopes of the grant' do
+          expect(granular_scopes).to match_array(grant.granular_scopes)
+        end
+      end
+
+      context 'when there is no authorized grant' do
+        it { is_expected.to be_empty }
+      end
+    end
+
+    describe '#permitted_for_boundary?' do
+      subject(:permitted) { token.permitted_for_boundary?(boundary, permissions) }
+
+      let_it_be_with_reload(:grant) { create_consent_grant(:create_work_item) }
+
+      let(:boundary) { project_boundary }
+      let(:permissions) { :create_issue }
+
+      it { is_expected.to be(true) }
+
+      context 'when the permission is not granted' do
+        let(:permissions) { :update_wiki }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the boundary is outside the grant' do
+        let(:boundary) { other_project_boundary }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the token is a legacy token' do
+        it 'is false without resolving the consent grant' do
+          legacy_token = create(:oauth_access_token, resource_owner: default_user, application: app_one,
+            scopes: ['api'])
+
+          recorder = ActiveRecord::QueryRecorder.new do
+            expect(legacy_token.permitted_for_boundary?(boundary, permissions)).to be(false)
+          end
+
+          expect(recorder.count).to eq(0)
+        end
+      end
+
+      context 'when the consent grant is revoked' do
+        before do
+          grant.revoked!
+        end
+
+        it 'fails closed while the token itself stays accessible', :aggregate_failures do
+          expect(token).to be_accessible
+          expect(permitted).to be(false)
+        end
+      end
+
+      context 'when consent is granted again with broader permissions' do
+        let(:permissions) { :update_wiki }
+
+        before do
+          grant.revoked!
+          create_consent_grant([:create_work_item, :update_wiki])
+        end
+
+        it 'applies to outstanding tokens' do
+          expect(permitted).to be(true)
+        end
+      end
+
+      it 'resolves the consent grant and its scopes once per token instance', :aggregate_failures do
+        granular_token = token
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          granular_token.permitted_for_boundary?(project_boundary, :create_issue)
+          granular_token.permitted_for_boundary?(other_project_boundary, :create_issue)
+          granular_token.permitted_for_boundary?(project_boundary, :update_wiki)
+        end
+
+        expect(recorder.log.count { |sql| sql.include?('FROM "oauth_consent_grants"') }).to eq(1)
+        expect(recorder.log.count { |sql| sql.include?('FROM "granular_scopes"') }).to eq(1)
+      end
+    end
+
+    describe '#can?' do
+      let_it_be(:grant) { create_consent_grant(:create_work_item) }
+
+      it 'grants permissions included in the consent grant' do
+        expect(token.can?(:create_issue, project_boundary)).to be(true)
+      end
+
+      it 'denies permissions the consent grant does not include' do
+        expect(token.can?(:update_wiki, project_boundary)).to be(false)
       end
     end
   end

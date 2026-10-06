@@ -5,6 +5,7 @@ require_relative 'schema/enum'
 require_relative 'schema/input_object'
 require_relative 'schema/interface'
 require_relative 'schema/object'
+require_relative 'schema/query'
 require_relative 'schema/scalar'
 require_relative 'schema/union'
 
@@ -17,7 +18,7 @@ module Tooling
         # fields section rather than repeated on the objects page.
         STANDARD_EDGE_FIELDS = %w[cursor node].freeze
 
-        attr_reader :directives, :enums, :input_objects, :interfaces, :objects, :scalars, :unions
+        attr_reader :directives, :enums, :input_objects, :interfaces, :objects, :queries, :scalars, :unions
 
         def initialize(schema)
           @schema = schema
@@ -26,11 +27,13 @@ module Tooling
           @input_objects = []
           @interfaces = []
           @objects = []
+          @queries = []
           @scalars = []
           @unions = []
         end
 
         def execute
+          parse_queries
           parse_types
           parse_directives
 
@@ -40,6 +43,12 @@ module Tooling
         private
 
         attr_reader :schema
+
+        def parse_queries
+          @queries = root_query.fields.values.map do |query|
+            Schema::Query.new(query)
+          end
+        end
 
         def parse_types
           schema.types.each_value do |type|

@@ -102,8 +102,6 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
   end
 
   describe '#vue_tree_header_app_data' do
-    let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
-
     before do
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, sha)
@@ -118,7 +116,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       )
     end
 
-    subject { helper.vue_tree_header_app_data(project, repository, sha, pipeline, 'heads') }
+    subject { helper.vue_tree_header_app_data(project, repository, sha, 'heads') }
 
     it 'returns a list of attributes related to the project' do
       is_expected.to include(
@@ -130,13 +128,11 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         project_root_path: project_path(project),
         project_path: project.full_path,
         compare_path: project_compare_index_path(project, from: repository&.root_ref, to: sha),
-        web_ide_button_options: Gitlab::Json.parse(subject[:web_ide_button_options]).to_json,
-        web_ide_button_default_branch: project.default_branch_or_main,
+        web_ide_button_options: helper.repository_header_web_ide_button_options(nil),
         ssh_url: ssh_clone_url_to_repo(project),
         http_url: http_clone_url_to_repo(project),
         xcode_url: '',
         download_links: helper.download_links(project, sha, "#{project.path}-#{sha.tr('/', '-')}", 'heads').to_json,
-        download_artifacts: '[]',
         escaped_ref: sha
       )
     end
@@ -168,14 +164,6 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
 
       it 'returns an empty JSON array for download_links' do
         expect(subject[:download_links]).to eq('[]')
-      end
-    end
-
-    context 'when pipeline is not present' do
-      let(:pipeline) { nil }
-
-      it 'does not include download_artifacts' do
-        expect(subject[:download_artifacts]).to be_nil
       end
     end
   end

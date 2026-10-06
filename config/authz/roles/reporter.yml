@@ -43,6 +43,7 @@ project:
   - create_timelog
   - create_work_item_saved_view
   - daily_statistics
+  - delete_issuable_metric_image
   - delete_label
   - delete_project_secrets
   - destroy_design
@@ -102,10 +103,12 @@ project:
   - read_timelog_category
   - reopen_issue
   - update_design
+  - update_issuable_metric_image
   - update_issue
   - update_label
   - update_project_secrets
   - update_requirement
+  - upload_issuable_metric_image
 group:
   permissions: []
   raw_permissions:

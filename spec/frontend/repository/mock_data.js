@@ -279,9 +279,6 @@ export const headerAppInjected = {
       path: 'https://gitlab.com/example-group/example-project/-/releases',
     },
   ],
-  downloadArtifacts: [
-    'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',
-  ],
   isBinary: false,
   rootRef: 'main',
   showNoSshKeyMessage: false,

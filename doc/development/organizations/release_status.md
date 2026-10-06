@@ -25,6 +25,7 @@ The stage determines who can use a flag and whether it can be disabled.
 
 | Flag | Stage | Description |
 |------|-------|-------------|
+| `can_create_org_instance_admin_setting` | Experimental | The instance admin setting that allows disabling the ability to create an organization. |
 | `org_creation` | Experimental | Create an organization from global pages or public APIs. |
 | `org_reference_in_member_access_granted_emails` | Experimental | Reference to the owning organization in the email sent when a member is granted access to a group or project. |
 | `org_switcher` | Experimental | The organization switcher dropdown component. |

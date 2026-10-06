@@ -238,8 +238,12 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
     end
 
     it 'fetches the commit if a user has access' do
-      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
-      expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { true }.at_least(:once)
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+      expect(Ability).to receive(:allowed?).with(
+        user,
+        :create_merge_request_in,
+        project
+      ).and_return(true).at_least(:once)
 
       get :branch_to, params: base_params.merge(target_project_id: project.id, ref: 'master')
 
@@ -248,8 +252,12 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
     end
 
     it 'does not load the commit when the user cannot create_merge_request_in' do
-      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
-      expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { false }.at_least(:once)
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+      expect(Ability).to receive(:allowed?).with(
+        user,
+        :create_merge_request_in,
+        project
+      ).and_return(false).at_least(:once)
 
       get :branch_to, params: base_params.merge(target_project_id: project.id, ref: 'master')
 
@@ -258,8 +266,12 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
     end
 
     it 'does not load the commit when the user cannot read the project' do
-      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
-      expect(Ability).to receive(:allowed?).with(user, :create_merge_request_in, project) { true }.at_least(:once)
+      expect(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(false)
+      expect(Ability).to receive(:allowed?).with(
+        user,
+        :create_merge_request_in,
+        project
+      ).and_return(true).at_least(:once)
 
       get :branch_to, params: base_params.merge(target_project_id: project.id, ref: 'master')
 

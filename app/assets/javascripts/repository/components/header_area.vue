@@ -98,7 +98,6 @@ export default {
     'sshUrl',
     'kerberosUrl',
     'downloadLinks',
-    'downloadArtifacts',
     'isBinary',
     'rootRef',
     'showNoSshKeyMessage',

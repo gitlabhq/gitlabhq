@@ -1,6 +1,25 @@
 # frozen_string_literal: true
 
 module WebIdeButtonHelper
+  # Keys of #web_ide_button_data read by the repository header app
+  # (app/assets/javascripts/repository/init_header_app.js).
+  REPOSITORY_HEADER_WEB_IDE_BUTTON_KEYS = %i[
+    is_fork
+    needs_to_fork
+    gitpod_enabled
+    is_blob
+    show_edit_button
+    show_web_ide_button
+    show_gitpod_button
+    show_pipeline_editor_button
+    web_ide_url
+    edit_url
+    pipeline_editor_url
+    gitpod_url
+    user_preferences_gitpod_path
+    user_profile_enable_gitpod_path
+  ].freeze
+
   def project_fork
     current_user&.fork_of(@project)
   end
@@ -82,6 +101,10 @@ module WebIdeButtonHelper
       user_preferences_gitpod_path: profile_preferences_path(anchor: 'user_gitpod_enabled'),
       user_profile_enable_gitpod_path: user_settings_profile_path(user: { gitpod_enabled: true })
     }
+  end
+
+  def repository_header_web_ide_button_options(blob)
+    web_ide_button_data({ blob: blob }).slice(*REPOSITORY_HEADER_WEB_IDE_BUTTON_KEYS).to_json
   end
 
   def fork_modal_options(project, blob)

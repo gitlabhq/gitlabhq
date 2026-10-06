@@ -80,6 +80,7 @@ project:
   - read_incident_management_escalation_policy
   - read_incident_management_oncall_schedule
   - read_insights
+  - read_issuable_metric_image
   - read_issuable_resource_link
   - read_issue
   - read_issue_board

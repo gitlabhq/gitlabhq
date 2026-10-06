@@ -15,6 +15,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { FIX_PIPELINE_AGENT_PRIVILEGES } from '~/duo_agent_platform/constants';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
+import { InternalEvents } from '~/tracking';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
@@ -68,6 +69,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [InternalEvents.mixin()],
   inject: {
     graphqlResourceEtag: {
       default: '',
@@ -348,6 +350,9 @@ export default {
         this.favicon = newFavicon;
       }
     },
+    trackHeaderAction(event) {
+      this.trackEvent(event, { label: this.pipeline?.source });
+    },
     reportFailure(errorType, errorMessages = []) {
       this.failureType = errorType;
       this.failureMessages = errorMessages;
@@ -382,10 +387,12 @@ export default {
       this.postPipelineAction(pipelineCancel, cancelPipelineMutation, id);
     },
     retryPipeline(id) {
+      this.trackHeaderAction('click_retry_pipeline_in_pipeline_header');
       this.isRetrying = true;
       this.postPipelineAction(pipelineRetry, retryPipelineMutation, id);
     },
     async deletePipeline(id) {
+      this.trackHeaderAction('click_delete_pipeline_in_pipeline_header');
       this.isDeleting = true;
 
       try {
@@ -548,6 +555,7 @@ export default {
             :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
             :additional-context="getAdditionalContext"
             :source="$options.SOURCE"
+            @triggering="trackHeaderAction('click_fix_pipeline_in_pipeline_header')"
           >
             {{ __('Fix pipeline with Duo') }}
           </duo-workflow-action>

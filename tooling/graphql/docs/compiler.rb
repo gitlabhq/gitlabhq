@@ -20,6 +20,7 @@ module Tooling
 
           [
             compile(:index, filename: '_index.md'),
+            compile(:queries, parsed_schema.queries),
             compile(:objects, parsed_schema.objects),
             compile(:enums, parsed_schema.enums),
             compile(:input_objects, parsed_schema.input_objects),

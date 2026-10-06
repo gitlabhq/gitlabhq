@@ -1337,7 +1337,9 @@ module API
     end
 
     def authorize_granular_token?(token)
-      token.respond_to?(:granular?) && !authorization_settings[:skip_granular_token_authorization]
+      token.respond_to?(:granular?) &&
+        (token.granular? || token.subject_to_granular_enforcement?) &&
+        !authorization_settings[:skip_granular_token_authorization]
     end
 
     def authorize_granular_token_scopes!(token)

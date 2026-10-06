@@ -811,8 +811,10 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
     before do
-      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?) { true }
-      allow(::Gitlab::Email::ServiceDeskEmail).to receive(:address_for_key) { 'address-suffix@example.com' }
+      allow(::Gitlab::Email::ServiceDeskEmail).to receive_messages(
+        enabled?: true,
+        address_for_key: 'address-suffix@example.com'
+      )
     end
 
     context 'when a user can admin issues' do

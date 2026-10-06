@@ -168,6 +168,18 @@ RSpec.describe Gitlab::Graphql::Authz::BoundaryExtractors::Preloader, :request_s
         preload
       end
     end
+
+    context 'with a legacy OAuth access token' do
+      let(:access_token) { create(:oauth_access_token) }
+
+      it_behaves_like 'skips preloading'
+
+      it 'does not preload root namespace enforcement' do
+        expect(::Authz::Tokens::EnforcementCache).not_to receive(:new)
+
+        preload
+      end
+    end
   end
 
   describe '.granular_directives' do

@@ -39,6 +39,7 @@ module Gitlab
         def authorized?(object, context, arguments)
           token = context[:access_token]
           return success unless token && token.respond_to?(:granular?)
+          return success unless token.granular? || token.subject_to_granular_enforcement?
 
           # If both object and arguments are nil,
           # there is no source a boundary can be extracted from.

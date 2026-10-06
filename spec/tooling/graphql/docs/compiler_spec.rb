@@ -194,6 +194,19 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
         field :input_field, spec_scalar do
           argument :input, spec_input_object, required: false, description: 'An input.'
         end
+        field :find_object, spec_object, null: true, description: 'Find an object.' do
+          argument :name, GraphQL::Types::String, required: true, description: 'Name of the object.'
+        end
+        field :searchable_objects, spec_object.connection_type, null: true, description: 'A searchable connection.' do
+          argument :search, GraphQL::Types::String, required: false, description: 'A search argument.'
+        end
+        field :deprecated_query, GraphQL::Types::String, null: true,
+          description: 'A deprecated query.',
+          deprecated: { milestone: '1.0', reason: 'Use findObject instead' }
+        field :experimental_query, GraphQL::Types::String, null: true,
+          description: 'An experimental query.',
+          experiment: { milestone: '2.0' }
+        field :list_query, [GraphQL::Types::String], null: false, description: 'A list query.'
       end)
     end
   end
@@ -202,6 +215,75 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
   def page(filename)
     pages.find { |compiled_doc| compiled_doc.filename.to_s.end_with?(filename) }
+  end
+
+  describe 'the queries page' do
+    subject(:doc) { page('queries.md').doc }
+
+    def section(name)
+      doc[/^## `#{name}`\n.*?(?=\n## |\z)/m]
+    end
+
+    it 'renders a query with its description, return type, and arguments' do
+      expect(doc).to include(
+        <<~MD
+          ## `findObject`
+
+          Find an object.
+
+          **Returns:** [`Object`](objects.md#object)
+
+          ### Arguments {.no_toc}
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | `name` | [`String!`](scalars.md#string) | Name of the object. |
+        MD
+      )
+    end
+
+    it 'renders a query without a description' do
+      expect(section('scalarField')).to eq(
+        <<~MD
+          ## `scalarField`
+
+          **Returns:** [`Scalar`](scalars.md#scalar)
+        MD
+      )
+    end
+
+    it 'links the connection note of a connection query across to the objects page' do
+      expect(section('objects')).to include(
+        'A connection. This field is a [connection](objects.md#connections-and-pagination) and accepts the ' \
+          'four standard pagination arguments: `before`, `after`, `first`, `last`.'
+      )
+    end
+
+    it 'omits the arguments section for a connection query with only pagination arguments' do
+      expect(section('objects')).not_to include('### Arguments')
+    end
+
+    it 'lists only the non-pagination arguments of a connection query' do
+      expect(section('searchableObjects').scan(/^\| `(\w+)` \|/).flatten).to eq(%w[search])
+    end
+
+    it 'renders the deprecation and experiment status of a query', :aggregate_failures do
+      expect(section('deprecatedQuery')).to include('Deprecated in GitLab 1.0. Use findObject instead.')
+      expect(section('experimentalQuery'))
+        .to include('Status: Experiment. Introduced in GitLab 2.0.<br/><br/>An experimental query.')
+    end
+
+    it 'renders the full type signature of the return type' do
+      expect(section('listQuery')).to include('**Returns:** [`[String!]!`](scalars.md#string)')
+    end
+
+    it 'lists queries in alphabetical order' do
+      expect(doc.scan(/^## `(\w+)`/).flatten).to eq(doc.scan(/^## `(\w+)`/).flatten.sort)
+    end
+
+    it 'does not include introspection types' do
+      expect(doc).not_to include('__')
+    end
   end
 
   describe 'the objects page' do

@@ -75,6 +75,32 @@ RSpec.describe 'admin/application_settings/_account_and_limit.html.haml', :with_
     end
   end
 
+  describe ':can_create_organization' do
+    context 'when can_create_org_instance_admin_setting release flag is enabled' do
+      before do
+        stub_organization_release(can_create_org_instance_admin_setting: true)
+      end
+
+      it 'renders the can_create_organization checkbox' do
+        render
+
+        expect(rendered).to have_field('Allow users to create organizations', type: 'checkbox')
+      end
+    end
+
+    context 'when can_create_org_instance_admin_setting release flag is disabled' do
+      before do
+        stub_organization_release(can_create_org_instance_admin_setting: false)
+      end
+
+      it 'does not render the can_create_organization checkbox' do
+        render
+
+        expect(rendered).not_to have_field('Allow users to create organizations')
+      end
+    end
+  end
+
   describe ':oauth_access_token_expires_in' do
     it 'renders the oauth_access_token_expires_in attributes and text' do
       render

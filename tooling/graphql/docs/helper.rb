@@ -70,6 +70,11 @@ module Tooling
           "#{union_body_parts(union).join("\n\n")}\n"
         end
 
+        # Renders the full body for a query section (below the ## heading).
+        def render_query_body(query)
+          "#{query_body_parts(query).join("\n\n")}\n"
+        end
+
         # Summary for a connection object, linking to the node type and the
         # standard connection fields section. A node without a resolvable type
         # (such as a subclassed connection) is rendered unlinked.
@@ -168,6 +173,20 @@ module Tooling
           if members.present?
             links = members.map { |member| "- #{item_link(member)}" }
             parts << "### Member types {.no_toc}\n\n#{links.join("\n")}"
+          end
+
+          parts
+        end
+
+        def query_body_parts(query)
+          parts = []
+          desc = field_description(query)
+          parts << desc if desc.present?
+          parts << "**Returns:** #{type(query)}"
+
+          if documented_arguments?(query)
+            parts << "### Arguments {.no_toc}\n\n" \
+              "#{docs_render('arguments_table', arguments: query.arguments_without_pagination)}"
           end
 
           parts

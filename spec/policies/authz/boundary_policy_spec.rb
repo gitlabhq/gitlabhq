@@ -17,10 +17,30 @@ RSpec.describe Authz::BoundaryPolicy, feature_category: :permissions do
 
   subject(:policy) { described_class.new(token, boundary) }
 
-  context 'when the policy actor is not a PAT' do
-    let(:token) { create(:oauth_access_token) }
+  context 'when the token is an OAuth access token' do
+    let_it_be(:application) { create(:oauth_application) }
+    let_it_be_with_reload(:consent_grant) do
+      create(:oauth_consent_grant, user: user, application: application, boundary: Authz::Boundary.for(project),
+        permissions: permissions)
+    end
 
-    it { expect_disallowed(*permissions) }
+    let(:token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+
+    it { expect_allowed(*permissions) }
+
+    context 'when the token does not carry the granular scope' do
+      let(:token) { create(:oauth_access_token, resource_owner: user, application: application) }
+
+      it { expect_disallowed(*permissions) }
+    end
+
+    context 'when the consent grant is revoked' do
+      before do
+        consent_grant.revoked!
+      end
+
+      it { expect_disallowed(*permissions) }
+    end
   end
 
   context 'when the token is a non-PAT class that includes Authz::GranularTokenInterface' do

@@ -8,5 +8,9 @@ FactoryBot.define do
     token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
     refresh_token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
     scopes { application.scopes }
+
+    trait :granular do
+      scopes { ['granular'] }
+    end
   end
 end

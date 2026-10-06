@@ -9,6 +9,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
+import { setFaviconOverlay } from '~/lib/utils/favicon';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 import ArtifactsApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
@@ -23,6 +24,7 @@ import { mockStore, mockMergePipelineQueryResponse, mockPipelineSubscription } f
 Vue.use(VueApollo);
 Vue.use(PiniaVuePlugin);
 jest.mock('~/alert');
+jest.mock('~/lib/utils/favicon');
 
 describe('MrWidgetPipelineContainer', () => {
   let wrapper;
@@ -200,33 +202,46 @@ describe('MrWidgetPipelineContainer', () => {
   describe('subscription', () => {
     const mockSetPipelineStatusData = jest.fn();
 
-    beforeEach(async () => {
-      await createComponent({
+    const createSubscriptionComponent = ({ isPostMerge = false, mr = {} } = {}) =>
+      createComponent({
         props: {
+          isPostMerge,
           mr: {
             ...mockStore,
-            pipeline: {
-              ...mockStore.pipeline,
-              id: 1,
-            },
+            pipeline: { ...mockStore.pipeline, id: 1 },
+            mergePipeline: { id: 1 },
             setPipelineStatusData: mockSetPipelineStatusData,
+            ...mr,
           },
         },
       });
-    });
 
-    it('when subscription data is received the data is stored in the store', async () => {
-      mockSubscription.next({
-        data: {
-          ciPipelineStatusUpdated: {
-            ...mockPipelineSubscription,
-          },
-        },
-      });
+    const sendSubscriptionData = async (data = mockPipelineSubscription) => {
+      mockSubscription.next({ data: { ciPipelineStatusUpdated: data } });
 
       await waitForPromises();
+    };
+
+    it('when subscription data is received the data is stored in the store', async () => {
+      await createSubscriptionComponent();
+      await sendSubscriptionData();
 
       expect(mockSetPipelineStatusData).toHaveBeenCalledWith(mockPipelineSubscription, false);
+      expect(setFaviconOverlay).toHaveBeenCalledWith(
+        mockPipelineSubscription.detailedStatus.favicon,
+      );
+    });
+
+    it.each`
+      description                           | options                            | data
+      ${'for the post merge pipeline'}      | ${{ isPostMerge: true }}           | ${mockPipelineSubscription}
+      ${'when the merge request is merged'} | ${{ mr: { isMergedState: true } }} | ${mockPipelineSubscription}
+      ${'without a favicon'}                | ${{}}                              | ${{ ...mockPipelineSubscription, detailedStatus: { ...mockPipelineSubscription.detailedStatus, favicon: null } }}
+    `('does not set the favicon $description', async ({ options, data }) => {
+      await createSubscriptionComponent(options);
+      await sendSubscriptionData(data);
+
+      expect(setFaviconOverlay).not.toHaveBeenCalled();
     });
   });
 });

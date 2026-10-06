@@ -106,7 +106,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     end
 
     context 'when the token does not support fine-grained permissions' do
-      let(:token) { build(:oauth_access_token) }
+      let(:token) { build(:deploy_token) }
 
       it_behaves_like 'successful response'
     end
@@ -205,6 +205,71 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
 
           it_behaves_like 'successful response'
         end
+      end
+    end
+
+    context 'when the token is a legacy OAuth access token' do
+      let_it_be(:token, freeze: false) { create(:oauth_access_token) }
+
+      it_behaves_like 'successful response'
+
+      context 'when the namespace requires granular tokens' do
+        let_it_be(:group, freeze: false) { create(:group) }
+        let_it_be(:boundary, freeze: false) { Authz::Boundary.for(group) }
+
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement_saas: group)
+
+          group.namespace_settings.update!(
+            enforce_granular_tokens: true,
+            granular_tokens_enforced_after: Date.current
+          )
+        end
+
+        it_behaves_like 'successful response'
+
+        it 'does not evaluate namespace enforcement' do
+          expect(Authz::Tokens::EnforcementCache).not_to receive(:new)
+
+          service.execute
+        end
+      end
+    end
+
+    context 'when the token is a granular OAuth access token' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:application) { create(:oauth_application) }
+      let_it_be_with_reload(:consent_grant) do
+        create(:oauth_consent_grant, user: user, application: application, boundary: boundary,
+          permissions: :create_member_role)
+      end
+
+      let(:token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+
+      it_behaves_like 'successful response'
+
+      context 'when the `granular_personal_access_tokens` feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens: false)
+        end
+
+        it_behaves_like 'error response', 'Access denied: Fine-grained oauth access tokens are not yet supported.'
+      end
+
+      context 'when the consent grant does not include the required permission' do
+        let(:permissions) { :read_member_role }
+
+        it_behaves_like 'error response', 'Access denied: This operation requires a fine-grained oauth access token ' \
+          'with the following instance permissions: [Member Role: Read].'
+      end
+
+      context 'when the consent grant is revoked' do
+        before do
+          consent_grant.revoked!
+        end
+
+        it_behaves_like 'error response', 'Access denied: This operation requires a fine-grained oauth access token ' \
+          'with the following instance permissions: [Member Role: Create].'
       end
     end
 

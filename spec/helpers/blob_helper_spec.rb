@@ -958,8 +958,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         http_url: http_clone_url_to_repo(project),
         xcode_url: 'xcode://example.com/project.git',
         download_links: helper.send(:archive_download_links, project, ref, "#{project.path}-#{ref.tr('/', '-')}", ref_type).to_json,
-        web_ide_button_options: helper.web_ide_button_data({ blob: blob }).merge(helper.fork_modal_options(project, blob)).to_json,
-        web_ide_button_default_branch: project.default_branch_or_main,
+        web_ide_button_options: helper.repository_header_web_ide_button_options(blob),
         show_no_ssh_key_message: '',
         user_settings_ssh_keys_path: user_settings_ssh_keys_path
       })
