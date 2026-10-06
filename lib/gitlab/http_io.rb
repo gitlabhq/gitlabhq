@@ -209,7 +209,7 @@ module Gitlab
         raise FailedToGetChunkError, "Unexpected response code: #{response.code}" unless response.code == '200' || response.code == '206'
 
         @chunk = response.body.force_encoding(Encoding::BINARY)
-        @chunk_range = response.content_range
+        @chunk_range = chunk_range_from(response)
 
         ##
         # Note: If provider does not return content_range, then we set it as we requested
@@ -226,6 +226,15 @@ module Gitlab
       end
 
       @chunk[chunk_offset..BUFFER_SIZE]
+    end
+
+    # Some S3-compatible providers (for example, Hammerspace) omit the `bytes` unit in Content-Range,
+    # which makes Net::HTTP raise. We treat the header as missing so the caller uses the requested
+    # range. RFC 9110 section 2.3 allows recipients to recover a usable value from an invalid header.
+    def chunk_range_from(response)
+      response.content_range
+    rescue Net::HTTPHeaderSyntaxError
+      nil
     end
 
     # Net::HTTP's own retry happens inside #transport_request, after the TLS
