@@ -11,6 +11,7 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useConfigurePathHelpers } from 'helpers/configure_path_helpers';
 import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
@@ -446,6 +447,23 @@ describe('FileTreeSearch', () => {
 
       expect(findLoadErrorMessage().text()).toBe('Something went wrong while loading the files');
       expect(findResultsList().exists()).toBe(false);
+    });
+
+    describe('with a relative URL root', () => {
+      useConfigurePathHelpers('/gitlab');
+
+      beforeEach(() => {
+        axiosMock = new AxiosMockAdapter(axios);
+        axiosMock.onGet(`/gitlab/namespace/project/-/files/master`).reply(200, defaultMockFiles);
+      });
+
+      it('requests the file list under the relative URL root', async () => {
+        findSearchInput().trigger('focus');
+        await waitForPromises();
+
+        expect(axiosMock.history.get).toHaveLength(1);
+        expect(axiosMock.history.get[0].url).toBe('/gitlab/namespace/project/-/files/master');
+      });
     });
   });
 });

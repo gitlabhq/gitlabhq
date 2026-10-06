@@ -6,6 +6,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { s__ } from '~/locale';
 import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 import { joinPaths, buildURLwithRefType } from '~/lib/utils/url_utility';
+import { projectPath as projectBasePath } from '~/lib/utils/path_helpers/project';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import axios from '~/lib/utils/axios_utils';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY, ESC_KEY } from '~/lib/utils/keys';
@@ -98,7 +99,7 @@ export default {
       this.isLoading = true;
 
       try {
-        const url = joinPaths('/', this.projectPath, '-', 'files', this.escapedRef);
+        const url = joinPaths(projectBasePath(this.projectPath), '-', 'files', this.escapedRef);
         const { data } = await axios.get(url);
 
         this.allFiles = data.map((filePath) => {
