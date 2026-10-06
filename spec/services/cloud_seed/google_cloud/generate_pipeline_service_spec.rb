@@ -75,7 +75,7 @@ RSpec.describe CloudSeed::GoogleCloud::GeneratePipelineService, feature_category
         project.add_maintainer(maintainer)
 
         file_name = '.gitlab-ci.yml'
-        file_content = <<EOF
+        file_content = <<YAML
 stages:
   - build
   - test
@@ -87,7 +87,7 @@ build-java:
 test-java:
   stage: test
   script: mvn clean test
-EOF
+YAML
         project.repository.create_file(
           maintainer,
           file_name,
@@ -133,7 +133,7 @@ EOF
         project.add_maintainer(maintainer)
 
         file_name = '.gitlab-ci.yml'
-        file_content = <<EOF
+        file_content = <<YAML
 stages:
   - build
   - test
@@ -146,7 +146,7 @@ build-java:
 test-java:
   stage: test
   script: mvn clean test
-EOF
+YAML
         project.repository.create_file(
           maintainer,
           file_name,
@@ -183,7 +183,7 @@ EOF
         project.add_maintainer(maintainer)
 
         file_name = '.gitlab-ci.yml'
-        file_content = <<EOF
+        file_content = <<YAML
 stages:
   - build
   - test
@@ -191,7 +191,7 @@ stages:
 
 include:
   local: 'some-pipeline.yml'
-EOF
+YAML
         project.repository.create_file(
           maintainer,
           file_name,
@@ -309,7 +309,7 @@ EOF
     describe 'when there is an existing pipeline with `includes`' do
       before do
         file_name = '.gitlab-ci.yml'
-        file_content = <<EOF
+        file_content = <<YAML
 stages:
   - validate
   - detect
@@ -317,7 +317,7 @@ stages:
 
 include:
   local: 'some-pipeline.yml'
-EOF
+YAML
         project.repository.create_file(
           maintainer,
           file_name,

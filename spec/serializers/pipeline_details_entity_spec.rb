@@ -23,11 +23,11 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
   end
 
   describe '#as_json' do
+    let_it_be_with_refind(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
     subject { entity.as_json }
 
     context 'when pipeline is empty' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
       it 'contains details' do
         expect(subject).to include :details
         expect(subject[:details])
@@ -40,6 +40,14 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
       it 'contains flags' do
         expect(subject).to include(:flags)
         expect(subject[:flags]).to include(:latest, :stuck, :yaml_errors, :retryable, :cancelable)
+      end
+
+      it 'does not contain field that normally holds an error' do
+        expect(subject).not_to have_key(:yaml_errors)
+      end
+
+      it 'contains flag that indicates there are no errors' do
+        expect(subject[:flags][:yaml_errors]).to be false
       end
     end
 
@@ -120,8 +128,6 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
     end
 
     context 'when pipeline has commit statuses' do
-      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
       before do
         create(:ci_build, pipeline: pipeline)
       end
@@ -147,21 +153,7 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
       end
     end
 
-    context 'when pipeline does not have YAML errors' do
-      let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
-      it 'does not contain field that normally holds an error' do
-        expect(subject).not_to have_key(:yaml_errors)
-      end
-
-      it 'contains flag that indicates there are no errors' do
-        expect(subject[:flags][:yaml_errors]).to be false
-      end
-    end
-
     context 'when pipeline is triggered by other pipeline' do
-      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
       before do
         create(:ci_sources_pipeline, pipeline: pipeline)
       end
@@ -176,7 +168,6 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
     end
 
     context 'when pipeline triggered other pipeline' do
-      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
       let(:build) { create(:ci_build, name: 'child', stage: 'test', pipeline: pipeline) }
       let(:bridge) { create(:ci_bridge, name: 'cross-project', stage: 'build', pipeline: pipeline) }
       let(:child_pipeline) { create(:ci_pipeline, project: pipeline.project) }

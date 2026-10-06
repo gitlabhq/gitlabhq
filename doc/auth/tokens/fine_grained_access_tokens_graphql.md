@@ -218,12 +218,14 @@ Grants the ability to create security project tracked refs.
 
 #### Security Scan Profiles
 
-Grants the ability to create, delete, and update security scan profiles.
+Grants the ability to create, delete, read, and update security scan profiles.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Group | Mutation | `SecurityScanProfileCreate` |
 | Delete | Group | Mutation | `SecurityScanProfileDelete` |
+| Read | Project | Type | `TriageAndRemediationCoverage` |
+| Read | Group | Type | `TriageAndRemediationCoverageCounters` |
 | Update | Group | Mutation | `SecurityScanProfileUpdate` |
 
 #### Security Setting

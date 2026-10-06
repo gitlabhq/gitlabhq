@@ -56,6 +56,25 @@ describe('axios_utils', () => {
         expect(mock.history.get[0].headers['X-GitLab-Organization-ID']).toBe(undefined);
       });
     });
+
+    describe('client identity', () => {
+      beforeEach(async () => {
+        await setup();
+        mock.onAny('https://other.example.com/ok').reply(HTTP_STATUS_OK);
+      });
+
+      it('adds the client type header to same-origin requests', async () => {
+        await axios.get('/ok');
+
+        expect(mock.history.get[0].headers['X-GitLab-Client-Type']).toBe('browser');
+      });
+
+      it('does not add the client type header to cross-origin requests', async () => {
+        await axios.get('https://other.example.com/ok');
+
+        expect(mock.history.get[0].headers['X-GitLab-Client-Type']).toBe(undefined);
+      });
+    });
   });
 
   describe('waitForAll', () => {

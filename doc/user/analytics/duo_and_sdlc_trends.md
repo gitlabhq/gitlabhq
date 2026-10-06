@@ -271,8 +271,8 @@ Prerequisites:
 - GitLab Duo Code Suggestions must be enabled.
 - For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 
-1. In the top bar, select **Search or go to** and find your project or group.
-1. In the left sidebar, select **Analyze** > **Analytics dashboards**.
+1. In the top bar, select **Search or go to** > **Explore**.
+1. In the left sidebar, select **Analytics dashboards**.
 1. Select **GitLab Duo and SDLC trends**.
 
 To retrieve GitLab Duo and SDLC metrics, you can also use the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` [GraphQL APIs](../../api/graphql/duo_and_sdlc_trends.md).

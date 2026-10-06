@@ -180,7 +180,6 @@ import WorkItemDisplaySettingsButton from '../components/work_item_display_setti
 
 import {
   WORK_ITEM_TYPE_NAME_TICKET,
-  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   ROUTES,
   WORK_ITEM_CREATE_SOURCES,
@@ -283,7 +282,6 @@ export default {
     'autocompleteAwardEmojisPath',
     'metadataLoading',
     'canAdminIssue',
-    'canBulkAdminEpic',
     'isGroup',
     'isGroupIssuesList',
     'isServiceDeskSupported',
@@ -681,9 +679,6 @@ export default {
     isBulkEditDisabled() {
       return this.showBulkEditSidebar || this.currentWorkItemsCount === 0;
     },
-    initialLoadWasFiltered() {
-      return this.filterTokens.length > 0;
-    },
     hasActiveFilters() {
       return !isEmpty(this.apiFilterParams);
     },
@@ -696,9 +691,6 @@ export default {
     allowBulkEditing() {
       if (this.isBoardView) {
         return false;
-      }
-      if (this.isEpicsList) {
-        return this.canBulkAdminEpic;
       }
       if (!this.isGroup) {
         return this.canAdminIssue;
@@ -728,7 +720,7 @@ export default {
         ...this.pageParams,
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         search: isIidSearch ? undefined : this.searchQuery,
-        excludeProjects: hasGroupFilter || this.isEpicsList,
+        excludeProjects: hasGroupFilter,
         includeDescendants: !hasGroupFilter,
         isGroup: this.isGroup,
         excludeGroupWorkItems: this.isGroupIssuesList,
@@ -737,9 +729,6 @@ export default {
     },
     isSavedView() {
       return this.$route.name === ROUTES.savedView;
-    },
-    isEpicsList() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     urlParams() {
       return {
@@ -1128,17 +1117,12 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
-        hasManualSort: !this.isEpicsList,
-        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList && !this.isServiceDeskList,
+        hasStatusFeature: this.hasStatusFeature && !this.isServiceDeskList,
         hasStartDate: true,
-        hasPriority: !this.isEpicsList,
-        hasMilestoneDueDate: true,
-        hasLabelPriority: !this.isEpicsList,
-        hasWeight: !this.isEpicsList,
       });
     },
     preselectedWorkItemType() {
-      return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
+      return WORK_ITEM_TYPE_NAME_ISSUE;
     },
     canExport() {
       return !this.isGroup && this.isLoggedIn && this.currentWorkItemsCount > 0;
@@ -2105,9 +2089,6 @@ export default {
       if (savedViewName) {
         return `${savedViewName} · ${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
       }
-      if (this.isGroup && this.isEpicsList) {
-        return `${__('Epics')} · ${middleCrumb} · GitLab`;
-      }
       return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
     },
     handleRefetch(scope) {
@@ -2335,12 +2316,11 @@ export default {
               </gl-button>
               <create-work-item-modal
                 v-if="showProjectNewWorkItem"
-                :always-show-work-item-type-select="!isEpicsList"
+                always-show-work-item-type-select
                 :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                 :full-path="rootPageFullPath"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
-                :is-epics-list="isEpicsList"
                 :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                 @work-item-created="handleWorkItemCreated"
               />
@@ -2358,7 +2338,6 @@ export default {
                 :query-variables="csvExportQueryVariables"
                 :full-path="rootPageFullPath"
                 :url-params="urlParams"
-                :is-epics-list="isEpicsList"
                 :is-group-issues-list="isGroupIssuesList"
               />
             </div>
@@ -2385,17 +2364,15 @@ export default {
               :query-variables="csvExportQueryVariables"
               :full-path="rootPageFullPath"
               :url-params="urlParams"
-              :is-epics-list="isEpicsList"
               :is-group-issues-list="isGroupIssuesList"
             />
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :always-show-work-item-type-select="!isEpicsList"
+              always-show-work-item-type-select
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              :is-epics-list="isEpicsList"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2585,9 +2562,7 @@ export default {
       :query-variables="queryVariables"
       :skip-query="shouldSkipDueToSavedViewState || metadataLoading"
       :work-items-count="workItemsCount"
-      :has-work-items="hasWorkItems"
       :error="error"
-      :initial-load-was-filtered="initialLoadWasFiltered"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :checked-issuable-ids="checkedIssuableIds"
       :display-settings="displaySettingsSoT"
@@ -2625,18 +2600,16 @@ export default {
         <empty-state-with-any-issues
           v-else-if="hasWorkItems"
           :has-search="hasSearch"
-          :is-epic="isEpicsList"
           :with-tabs="false"
         >
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :always-show-work-item-type-select="!isEpicsList"
+              always-show-work-item-type-select
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
-              :is-epics-list="isEpicsList"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
             />
@@ -2657,7 +2630,7 @@ export default {
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :always-show-work-item-type-select="!isEpicsList"
+              always-show-work-item-type-select
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"
@@ -2714,7 +2687,7 @@ export default {
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
-              :always-show-work-item-type-select="!isEpicsList"
+              always-show-work-item-type-select
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"

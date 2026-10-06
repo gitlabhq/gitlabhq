@@ -4,11 +4,14 @@ import {
   GlIcon,
   GlLoadingIcon,
   GlSearchBoxByType,
+  GlToastMixin,
   GlToggle,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
+import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
+import { DRAG_DELAY, defaultSortableOptions } from '~/sortable/constants';
 import {
   DEFAULT_GROUP_BY,
   groupingStrategyFor,
@@ -27,19 +30,23 @@ import {
   GROUP_SORT,
   effectiveGroupSort,
   applyGroupSort,
+  reorderGroupIds,
 } from '~/work_items/board/grouping/ordering';
+import { getGroupId } from '~/work_items/board/grouping/identity';
+import { I18N_GROUP_MOVED } from '~/work_items/board/constants';
 import { persistMetadataPreference, alertPreferenceError } from '../display_settings_preferences';
 
 export default {
   name: 'WorkItemDisplaySettingsGroupBy',
   components: {
+    DraggableCompat,
     GlCollapsibleListbox,
     GlIcon,
     GlLoadingIcon,
     GlSearchBoxByType,
     GlToggle,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   i18n: {
     groupBy: s__('WorkItems|Group by'),
     sort: s__('WorkItems|Sort'),
@@ -81,6 +88,11 @@ export default {
   emits: ['update-settings'],
   GROUP_BY_LABEL_ID: 'work-item-display-settings-group-by-label',
   SORT_LABEL_ID: 'work-item-display-settings-sort-label',
+  groupSortableOptions: {
+    ...defaultSortableOptions,
+    delay: DRAG_DELAY,
+    delayOnTouchOnly: true,
+  },
   data() {
     return {
       searchQuery: '',
@@ -128,17 +140,15 @@ export default {
         groupOrder: this.namespacePreferences.groupOrder,
       });
     },
+    isManualSort() {
+      return this.groupSort === GROUP_SORT.MANUAL;
+    },
     sortByOptions() {
-      const options = [
+      return [
         { text: this.$options.i18n.ascending, value: GROUP_SORT.ASC },
         { text: this.$options.i18n.descending, value: GROUP_SORT.DESC },
+        { text: this.$options.i18n.manual, value: GROUP_SORT.MANUAL },
       ];
-      // Offered only while it's the current sort (a pre-existing dragged order reads as
-      // manual, see effectiveGroupSort) — picking it isn't a real option yet.
-      if (this.groupSort === GROUP_SORT.MANUAL) {
-        options.push({ text: this.$options.i18n.manual, value: GROUP_SORT.MANUAL });
-      }
-      return options;
     },
     sortToggleText() {
       return this.sortByOptions.find((option) => option.value === this.groupSort).text;
@@ -153,6 +163,9 @@ export default {
         groupOrder: this.namespacePreferences.groupOrder,
         groupBy: this.groupBy,
       });
+    },
+    currentGroupOrder() {
+      return this.sortedGroupByValues.map((value) => getGroupId({ groupBy: this.groupBy, value }));
     },
     filteredGroupByValues() {
       const query = this.searchQuery.trim().toLowerCase();
@@ -222,8 +235,11 @@ export default {
       this.trackEvent('configure_columns_on_work_item_board', { label: 'hide_all_groups' });
       this.persist({ visibleGroups: [] });
     },
-    // Manual only means anything for a groupOrder the user built by dragging, so any other
-    // sort choice starts that over rather than keeping a stale order around unused.
+    groupRowKey(row) {
+      return row.value.id;
+    },
+    // Manual starts from the order on screen so the list doesn't jump. Any other sort
+    // clears groupOrder rather than keeping a stale order around unused.
     handleSortSelect(groupSort) {
       if (groupSort === this.groupSort) {
         return;
@@ -231,14 +247,40 @@ export default {
       this.trackEvent('configure_columns_on_work_item_board', {
         label: `sort_groups_${groupSort}`,
       });
-      this.persist({ groupSort, groupOrder: [] });
+      this.persist({
+        groupSort,
+        groupOrder: groupSort === GROUP_SORT.MANUAL ? this.currentGroupOrder : [],
+      });
+    },
+    async onGroupMove({ oldIndex, newIndex }) {
+      if (oldIndex == null || newIndex == null || oldIndex === newIndex) {
+        return;
+      }
+
+      const visibleValues = this.shownGroups.map((row) => row.value);
+      const [moved] = visibleValues.splice(oldIndex, 1);
+      visibleValues.splice(newIndex, 0, moved);
+
+      this.trackEvent('configure_columns_on_work_item_board', { label: 'reorder_drawer' });
+      const saved = await this.persist({
+        groupSort: GROUP_SORT.MANUAL,
+        groupOrder: reorderGroupIds({
+          visibleValues,
+          groupBy: this.groupBy,
+          currentOrder: this.currentGroupOrder,
+        }),
+      });
+
+      if (saved) {
+        this.$toast.show(sprintf(I18N_GROUP_MOVED, { groupName: moved.name }, false));
+      }
     },
     async persist(partialSettings) {
       const input = { ...this.namespacePreferences, ...partialSettings };
 
       if (this.isSavedView) {
         this.$emit('update-settings', input);
-        return;
+        return true;
       }
 
       try {
@@ -250,8 +292,10 @@ export default {
           displaySettings: input,
           sort: this.sortKey,
         });
+        return true;
       } catch (error) {
         alertPreferenceError(error);
+        return false;
       }
     },
   },
@@ -324,12 +368,22 @@ export default {
               {{ $options.i18n.hideAll }}
             </button>
           </div>
-          <ul class="gl-m-0 gl-mt-2 gl-list-none gl-p-0">
+          <draggable-compat
+            :value="shownGroups"
+            :item-key="groupRowKey"
+            tag="ul"
+            class="gl-m-0 gl-mt-2 gl-list-none gl-p-0"
+            v-bind="$options.groupSortableOptions"
+            :disabled="!isManualSort"
+            @end="onGroupMove"
+          >
             <li
               v-for="row in shownGroups"
               :key="row.value.id"
+              :class="{ 'gl-cursor-grab': isManualSort }"
               class="gl-flex gl-items-center gl-gap-3 gl-py-2"
             >
+              <gl-icon v-if="isManualSort" name="grip" data-testid="group-grip" />
               <gl-icon v-if="row.showIcon" :name="row.iconName" :style="row.iconStyle" />
               <gl-toggle
                 :value="true"
@@ -339,7 +393,7 @@ export default {
                 @change="toggleGroupVisibility(row.value)"
               />
             </li>
-          </ul>
+          </draggable-compat>
         </div>
         <div v-if="hiddenGroups.length" class="gl-mt-4" data-testid="hidden-groups">
           <span class="gl-text-sm gl-font-bold">{{ $options.i18n.hidden }}</span>

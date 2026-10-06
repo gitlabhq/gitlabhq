@@ -12,6 +12,10 @@ module API
 
         feature_category :integrations
 
+        before do
+          Gitlab::ApplicationContext.push(client_type: 'integration', client_name: 'slack')
+        end
+
         namespace 'integrations/slack' do
           desc 'Receive Slack events' do
             success [

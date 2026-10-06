@@ -332,10 +332,6 @@ RSpec.configure do |config|
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/584318
       stub_feature_flags(two_step_sign_in: false)
 
-      # Disable work_item_features_field while we work on it. Enabled in 18.10.
-      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220909
-      stub_feature_flags(work_item_features_field: false)
-
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
 

@@ -5548,6 +5548,26 @@
               "defaultValue": null
             },
             {
+              "name": "clientType",
+              "description": "Delete jobs matching client_type in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientName",
+              "description": "Delete jobs matching client_name in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "subscriptionPlan",
               "description": "Delete jobs matching subscription_plan in the context metadata.",
               "type": {

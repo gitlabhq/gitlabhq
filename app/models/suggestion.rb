@@ -24,8 +24,6 @@ class Suggestion < ApplicationRecord
   # enough to pick a lexer. Replies share the first note position but never
   # get a row of their own, so they borrow it from the discussion.
   def diff_file_for_highlight
-    return diff_file unless Feature.enabled?(:suggestion_highlight_uses_note_diff_file, note.project)
-
     note.discussion.diff_file
   end
 

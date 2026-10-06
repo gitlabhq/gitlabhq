@@ -1068,6 +1068,23 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     end
 
     it_behaves_like 'avoids N+1 queries for merge_request-dependent fields'
+
+    it 'does not run more queries for merge requests by other authors', :request_store, :use_sql_query_cache do
+      post_graphql(query, current_user: user)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_graphql(query, current_user: user) }
+
+      other_merge_requests = %w[markdown improve/awesome].map do |branch|
+        create(:merge_request, source_project: project, source_branch: branch, target_branch: 'master',
+          author: create(:user)).tap do |other_merge_request|
+          create(:ci_pipeline, :detached_merge_request_pipeline, user: user, merge_request: other_merge_request)
+        end
+      end
+
+      expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control)
+      expect(graphql_data_at(:project, :pipelines, :nodes, :merge_request, :iid))
+        .to match_array([merge_request, merge_request, *other_merge_requests].map { |mr| mr.iid.to_s })
+    end
   end
 
   describe 'hasManualActions and hasScheduledActions' do

@@ -187,6 +187,55 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     end
   end
 
+  describe '#mark_obsolete_if_empty' do
+    subject(:mark_obsolete_if_empty) { pool.mark_obsolete_if_empty }
+
+    let(:organization) { create(:organization) }
+    let(:pool) { create(:pool_repository, :without_project, state: :ready, organization: organization) }
+
+    before do
+      allow(ObjectPool::DestroyWorker).to receive(:perform_async)
+    end
+
+    it 'marks an empty pool obsolete and schedules destruction', :aggregate_failures do
+      mark_obsolete_if_empty
+
+      expect(pool.reload).to be_obsolete
+      expect(ObjectPool::DestroyWorker).to have_received(:perform_async).with(pool.id).once
+    end
+
+    context 'when a member remains' do
+      let!(:member) { create(:project, pool_repository: pool) }
+
+      it 'keeps the pool ready without scheduling destruction', :aggregate_failures do
+        mark_obsolete_if_empty
+
+        expect(pool.reload).to be_ready
+        expect(pool.member_projects).to contain_exactly(member)
+        expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context 'when the pool is already obsolete' do
+      before do
+        pool.update!(state: :obsolete)
+      end
+
+      it 'does not schedule destruction again', :aggregate_failures do
+        mark_obsolete_if_empty
+
+        expect(pool.reload).to be_obsolete
+        expect(ObjectPool::DestroyWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    it 'checks the pool without an explicit row lock' do
+      expect(pool).not_to receive(:with_lock)
+
+      mark_obsolete_if_empty
+    end
+  end
+
   describe '#remove_member' do
     let(:pool) { create(:pool_repository) }
     let(:member) { create(:project, pool_repository: pool) }

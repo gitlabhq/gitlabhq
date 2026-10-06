@@ -48,6 +48,9 @@ module API
       urgency :low
 
       before do
+        # MCP clients' User-Agents vary too much for ClientIdentity to recognise.
+        Gitlab::ApplicationContext.push(client_type: 'integration', client_name: 'mcp')
+
         authenticate!
 
         unless feature_available?

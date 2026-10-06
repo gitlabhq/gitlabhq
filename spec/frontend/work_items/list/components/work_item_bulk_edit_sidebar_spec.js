@@ -118,7 +118,7 @@ describe('WorkItemBulkEditSidebar component', () => {
         provide: {
           hasIssuableHealthStatusFeature: true,
         },
-        props: { isEpicsList: false, fullPath: 'group/project' },
+        props: { fullPath: 'group/project' },
       });
       await waitForPromises();
 
@@ -167,7 +167,7 @@ describe('WorkItemBulkEditSidebar component', () => {
         provide: {
           hasIssuableHealthStatusFeature: true,
         },
-        props: { isEpicsList: false, fullPath: 'group/project' },
+        props: { fullPath: 'group/project' },
       });
       await waitForPromises();
 
@@ -199,7 +199,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('calls mutation with namespace fullPath', async () => {
       createComponent({
-        props: { isEpicsList: false, fullPath: 'group/subgroup/project' },
+        props: { fullPath: 'group/subgroup/project' },
       });
       await waitForPromises();
 
@@ -215,7 +215,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('renders error when there is a mutation error', async () => {
       createComponent({
-        props: { isEpicsList: true },
         mutationHandler: jest.fn().mockRejectedValue(new Error('oh no')),
       });
 
@@ -278,10 +277,10 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"State" component', () => {
-    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
-      createComponent({ props: { isEpicsList } });
+    it('renders', () => {
+      createComponent();
 
-      expect(findStateComponent().exists()).toBe(!isEpicsList);
+      expect(findStateComponent().exists()).toBe(true);
     });
 
     it('updates state when "State" component emits "input" event', async () => {
@@ -305,9 +304,7 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
 
     it('enables "Assignee" component when "Assignees" widget is available', async () => {
-      createComponent({
-        props: { isEpicsList: false },
-      });
+      createComponent();
 
       await nextTick();
       await waitForPromises();
@@ -317,7 +314,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Assignee" component when "Assignees" widget is unavailable', async () => {
       createComponent({
-        props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
           .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_ASSIGNEES)),
@@ -349,9 +345,7 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
 
     it('enables "Add labels" component when "Labels" widget is available', async () => {
-      createComponent({
-        props: { isEpicsList: false },
-      });
+      createComponent();
 
       await nextTick();
       await waitForPromises();
@@ -361,7 +355,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Add labels" component when "Labels" widget is unavailable', async () => {
       createComponent({
-        props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
           .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_LABELS)),
@@ -393,9 +386,7 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
 
     it('enables "Remove labels" component when "Labels" widget is available', async () => {
-      createComponent({
-        props: { isEpicsList: false },
-      });
+      createComponent();
 
       await nextTick();
       await waitForPromises();
@@ -405,7 +396,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Remove labels" component when "Labels" widget is unavailable', async () => {
       createComponent({
-        props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
           .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_LABELS)),
@@ -446,7 +436,6 @@ describe('WorkItemBulkEditSidebar component', () => {
         provide: {
           hasIssuableHealthStatusFeature: true,
         },
-        props: { isEpicsList: false },
       });
 
       await nextTick();
@@ -460,7 +449,6 @@ describe('WorkItemBulkEditSidebar component', () => {
         provide: {
           hasIssuableHealthStatusFeature: true,
         },
-        props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
           .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_HEALTH_STATUS)),
@@ -497,9 +485,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
   describe('"Milestone" component', () => {
     it('updates milestone when "Milestone" component emits "input" event', async () => {
-      createComponent({
-        props: { isEpicsList: false },
-      });
+      createComponent();
 
       findMilestoneComponent().vm.$emit('input', 'gid://gitlab/Milestone/30');
       await nextTick();
@@ -508,9 +494,7 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
 
     it('enables "Milestone" component when "Milestone" widget is available', async () => {
-      createComponent({
-        props: { isEpicsList: false },
-      });
+      createComponent();
 
       await nextTick();
       await waitForPromises();
@@ -520,7 +504,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Milestone" component when "Milestone" widget is unavailable', async () => {
       createComponent({
-        props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
           .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_MILESTONE)),
@@ -535,9 +518,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
   describe('"Parent" component', () => {
     it('updates parent when "Parent" component emits "input" event', async () => {
-      createComponent({
-        props: { isEpicsList: false },
-      });
+      createComponent();
 
       findParentComponent().vm.$emit('input', 'gid://gitlab/WorkItem/30');
       await nextTick();
@@ -546,9 +527,7 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
 
     it('enables "Parent" component when "Hierarchy" widget is available', async () => {
-      createComponent({
-        props: { isEpicsList: false },
-      });
+      createComponent();
 
       await nextTick();
       await waitForPromises();
@@ -558,7 +537,6 @@ describe('WorkItemBulkEditSidebar component', () => {
 
     it('disables "Parent" component when "Hierarchy" widget is unavailable', async () => {
       createComponent({
-        props: { isEpicsList: false },
         availableWidgetsHandler: jest
           .fn()
           .mockResolvedValue(availableWidgetsWithout(WIDGET_TYPE_HIERARCHY)),
@@ -575,7 +553,6 @@ describe('WorkItemBulkEditSidebar component', () => {
     const mountForBulkMove = (items = checkedItems) => {
       createComponent({
         items,
-        props: { isEpicsList: false },
       });
     };
 
@@ -654,7 +631,7 @@ describe('WorkItemBulkEditSidebar component', () => {
       createComponent({
         items: manyItems,
         mutationHandler: chunkHandler,
-        props: { isEpicsList: false, fullPath: 'group/project' },
+        props: { fullPath: 'group/project' },
       });
       await waitForPromises();
 
@@ -713,7 +690,7 @@ describe('WorkItemBulkEditSidebar component', () => {
       createComponent({
         items: manyItems,
         mutationHandler: failingHandler,
-        props: { isEpicsList: false, fullPath: 'group/project' },
+        props: { fullPath: 'group/project' },
       });
       await waitForPromises();
 
@@ -744,7 +721,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
       createComponent({
         mutationHandler: timeoutHandler,
-        props: { isEpicsList: false, fullPath: 'group/project' },
+        props: { fullPath: 'group/project' },
       });
       await waitForPromises();
 
@@ -768,7 +745,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
       createComponent({
         mutationHandler: timeoutHandler,
-        props: { isEpicsList: false, fullPath: 'group/project' },
+        props: { fullPath: 'group/project' },
       });
       await waitForPromises();
 

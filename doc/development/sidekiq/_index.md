@@ -275,6 +275,26 @@ Sidekiq workers are deferred in two ways:
     end
    ```
 
+   By default, the middleware evaluates the indicators in
+   `Gitlab::Database::HealthStatus::DEFAULT_INDICATORS`:
+   `AutovacuumActiveOnTable`, `WriteAheadLog`, `PatroniApdex`, and `WalRate`.
+   To evaluate only some indicators, pass an array of indicator classes
+   with the `indicators:` argument.
+   `Gitlab::Database::HealthStatus::GLOBAL_INDICATORS` contains only the database-wide indicators:
+   `WriteAheadLog`, `PatroniApdex`, and `WalRate`.
+   Use it for workers that should not pause while autovacuum runs on their tables.
+   For example, `Projects::TransferWorker` uses it so that autovacuum on the `projects` table
+   does not defer transfers.
+   Only the autovacuum indicator uses `tables`, so `tables` has no effect when that
+   indicator is excluded.
+
+   **Example**:
+
+   ```ruby
+    defer_on_database_health_signal :gitlab_main, [:projects], 1.minute,
+      indicators: Gitlab::Database::HealthStatus::GLOBAL_INDICATORS
+   ```
+
    To control when deferral applies, for example to gate deferral behind a feature flag,
    the worker can override `defer_on_database_health_signal?`:
 

@@ -2613,6 +2613,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_background
+- :name: pipeline_background:ci_redundant_pipelines_protect_pipeline
+  :worker_name: Ci::RedundantPipelines::ProtectPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_ref_delete_unlock_artifacts
   :worker_name: Ci::RefDeleteUnlockArtifactsWorker
   :feature_category: :continuous_integration

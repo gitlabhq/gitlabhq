@@ -8173,7 +8173,7 @@ msgstr ""
 msgid "AgentArtifacts|%{author} on behalf of %{humanAuthor}"
 msgstr ""
 
-msgid "AgentArtifacts|%{workflowDefinition} session %{workflowId}"
+msgid "AgentArtifacts|%{flowName} session %{sessionId}"
 msgstr ""
 
 msgid "AgentArtifacts|AI Item"
@@ -8634,6 +8634,9 @@ msgstr ""
 msgid "AiGovernance|Category"
 msgstr ""
 
+msgid "AiGovernance|Claude Code"
+msgstr ""
+
 msgid "AiGovernance|Claude Code (Compliance API)"
 msgstr ""
 
@@ -8655,6 +8658,9 @@ msgstr ""
 msgid "AiGovernance|Counts are approximate on this instance."
 msgstr ""
 
+msgid "AiGovernance|Cursor"
+msgstr ""
+
 msgid "AiGovernance|DAP"
 msgstr ""
 
@@ -8668,6 +8674,9 @@ msgid "AiGovernance|Default"
 msgstr ""
 
 msgid "AiGovernance|Destroy"
+msgstr ""
+
+msgid "AiGovernance|Developers by AI agent"
 msgstr ""
 
 msgid "AiGovernance|External"
@@ -8689,6 +8698,9 @@ msgid "AiGovernance|Failed to load developer activity."
 msgstr ""
 
 msgid "AiGovernance|Failed to load project exposure."
+msgstr ""
+
+msgid "AiGovernance|Failed to load session distribution."
 msgstr ""
 
 msgid "AiGovernance|Failed to load tool calls."
@@ -8763,6 +8775,9 @@ msgstr ""
 msgid "AiGovernance|No rule"
 msgstr ""
 
+msgid "AiGovernance|No sessions in this period."
+msgstr ""
+
 msgid "AiGovernance|No skills have been flagged by SkillGuard."
 msgstr ""
 
@@ -8773,6 +8788,9 @@ msgid "AiGovernance|No tool rules found."
 msgstr ""
 
 msgid "AiGovernance|None"
+msgstr ""
+
+msgid "AiGovernance|OpenCode"
 msgstr ""
 
 msgid "AiGovernance|Override"
@@ -8880,8 +8898,16 @@ msgstr ""
 msgid "AiGovernance|View tool management"
 msgstr ""
 
+msgid "AiGovernance|Which AI agents developers are using"
+msgstr ""
+
 msgid "AiGovernance|Write"
 msgstr ""
+
+msgid "AiGovernance|developer"
+msgid_plural "AiGovernance|developers"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "AiGovernance|malicious"
 msgstr ""
@@ -36283,9 +36309,6 @@ msgid "Epics"
 msgstr ""
 
 msgid "Epics Roadmap"
-msgstr ""
-
-msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
 msgid "Epics, issues, and merge requests"
@@ -85041,9 +85064,6 @@ msgstr ""
 msgid "There are no charts configured for this page"
 msgstr ""
 
-msgid "There are no closed epics"
-msgstr ""
-
 msgid "There are no closed issues"
 msgstr ""
 
@@ -85066,9 +85086,6 @@ msgid "There are no issues with the selected labels"
 msgstr ""
 
 msgid "There are no matching files"
-msgstr ""
-
-msgid "There are no open epics"
 msgstr ""
 
 msgid "There are no open issues"
@@ -87706,9 +87723,6 @@ msgid "Track bugs, features, and tasks in one place"
 msgstr ""
 
 msgid "Track compliance across your projects. Upgrade to GitLab Ultimate to access the Compliance center."
-msgstr ""
-
-msgid "Track groups of issues that share a theme, across projects and milestones"
 msgstr ""
 
 msgid "Track important events in your GitLab instance."

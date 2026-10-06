@@ -7,6 +7,7 @@ import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { timestampType } from '~/organizations/shared/utils';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
+import { editGroupPath } from '~/lib/utils/path_helpers/group';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import NewGroupButton from './new_group_button.vue';
@@ -102,7 +103,9 @@ export default {
         },
       }) {
         return {
-          nodes: formatGraphQLGroups(nodes),
+          nodes: formatGraphQLGroups(nodes, (group) => ({
+            editPath: editGroupPath(group.fullPath, { organizationPath: null }),
+          })),
           pageInfo,
         };
       },

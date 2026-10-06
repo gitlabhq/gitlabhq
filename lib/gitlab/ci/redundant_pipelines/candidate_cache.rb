@@ -12,9 +12,9 @@ module Gitlab
 
         # The ref is hashed because it is user supplied and unbounded in length.
         def self.for(project_id:, ref:, ttl: TTL)
-          redis_key = "ci:redundant_pipelines:#{project_id}:#{Digest::SHA256.hexdigest(ref.to_s)}:candidates"
+          prefix = "ci:redundant_pipelines:#{project_id}:#{Digest::SHA256.hexdigest(ref.to_s)}"
 
-          new(Store.new(redis_key: redis_key, ttl: ttl))
+          new(Store.new(prefix: prefix, ttl: ttl, max_size: MAX_SIZE))
         end
 
         def initialize(store)
@@ -22,9 +22,20 @@ module Gitlab
         end
 
         def register(key)
-          store.register(key, max_size: MAX_SIZE)
+          store.register(key)
 
           self
+        end
+
+        # Yields only to the call that protects the pipeline.
+        def protect(key, &on_protected)
+          store.protect(key, &on_protected)
+
+          self
+        end
+
+        def protected?(key)
+          store.protected?(key)
         end
 
         def claim_before(key, limit: MAX_CLAIMED_PER_CALL)

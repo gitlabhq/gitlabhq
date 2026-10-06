@@ -163,17 +163,13 @@ export const getSortOptions = ({
   hasIssuableHealthStatusFeature,
   hasIssueWeightsFeature,
   hasStatusFeature,
-  hasPriority = true,
-  hasMilestoneDueDate = true,
   hasDueDate = true,
-  hasLabelPriority = true,
   hasManualSort = true,
   hasStartDate = false,
   hasMergedDate = false,
-  hasWeight = true,
 } = {}) => {
   const sortOptions = [
-    hasPriority && {
+    {
       id: 1,
       title: __('Priority'),
       sortDirection: {
@@ -205,7 +201,7 @@ export const getSortOptions = ({
         descending: CLOSED_AT_DESC,
       },
     },
-    hasMilestoneDueDate && {
+    {
       id: 5,
       title: __('Milestone due date'),
       sortDirection: {
@@ -229,7 +225,7 @@ export const getSortOptions = ({
         descending: POPULARITY_DESC,
       },
     },
-    hasLabelPriority && {
+    {
       id: 8,
       title: __('Label priority'),
       sortDirection: {
@@ -296,7 +292,7 @@ export const getSortOptions = ({
     });
   }
 
-  if (hasIssueWeightsFeature && hasWeight) {
+  if (hasIssueWeightsFeature) {
     sortOptions.push({
       id: sortOptions.length + 1,
       title: __('Weight'),

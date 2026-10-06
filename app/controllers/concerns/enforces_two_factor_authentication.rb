@@ -48,8 +48,10 @@ module EnforcesTwoFactorAuthentication
   # rubocop: disable CodeReuse/ActiveRecord
   def execute_action_for_2fa_reason(actions)
     reason = two_factor_verifier.two_factor_authentication_reason
-    groups_enforcing_two_factor = current_user.source_groups_of_two_factor_authentication_requirement
-                                              .reorder(name: :asc)
+    groups_enforcing_two_factor = Authn::Users::TwoFactorGroupsFinder
+                                    .new(current_user, source_only: true)
+                                    .execute
+                                    .reorder(name: :asc)
     actions[reason].call(groups_enforcing_two_factor)
   end
   # rubocop: enable CodeReuse/ActiveRecord

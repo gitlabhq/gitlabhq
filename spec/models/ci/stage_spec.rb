@@ -54,7 +54,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
 
   describe '#status' do
     context 'when stage is pending' do
-      let(:stage) { create(:ci_stage, status: 'pending') }
+      let(:stage) { build_stubbed(:ci_stage, status: 'pending') }
 
       it 'has a correct status value' do
         expect(stage.status).to eq 'pending'
@@ -62,7 +62,7 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
     end
 
     context 'when stage is success' do
-      let(:stage) { create(:ci_stage, status: 'success') }
+      let(:stage) { build_stubbed(:ci_stage, status: 'success') }
 
       it 'has a correct status value' do
         expect(stage.status).to eq 'success'
@@ -539,8 +539,8 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
   end
 
   describe 'play_manual' do
-    let(:current_user) { create(:user) }
-    let(:stage) { create(:ci_stage, pipeline: pipeline) }
+    let(:current_user) { build_stubbed(:user) }
+    let(:stage) { build_stubbed(:ci_stage, pipeline: pipeline) }
 
     subject { stage.play_manual(current_user) }
 

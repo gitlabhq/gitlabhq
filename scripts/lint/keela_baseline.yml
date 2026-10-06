@@ -130,8 +130,6 @@ constants:
   - DEFAULT_FETCH_TIMEOUT
   ee/lib/gitlab/scim/base_provisioning_service.rb:
   - SKIP_EMAIL_CONFIRMATION
-  ee/lib/gitlab/spdx/catalogue_gateway.rb:
-  - ONLINE_CATALOGUE_URL
   ee/lib/search/cluster_health_check/elastic.rb:
   - DEFAULT_UTILIZATION
   ee/lib/secrets_management/acl_policy_path.rb:
@@ -173,7 +171,6 @@ constants:
   lib/gitlab/ci/build/step.rb:
   - WHEN_ON_FAILURE
   lib/gitlab/database.rb:
-  - PRIMARY_DATABASE_NAME
   - MAX_INDEXES_ALLOWED_PER_TABLE
   lib/gitlab/database/load_balancing.rb:
   - DB_ROLES
@@ -181,8 +178,6 @@ constants:
   - TABLE_INT_IDS_YAML_FILE_COMMENT
   - PENDING_INT_IDS_ERROR_MSG
   - ENFORCE_INITIALIZE_ALL_INT_IDS_FROM_MILESTONE
-  lib/gitlab/database/partitioning.rb:
-  - PARTITION_EXCLUDED_DATABASES
   lib/gitlab/database/partitioning_migration_helpers/table_management_helpers.rb:
   - MIGRATION_CLASS_NAME
   lib/gitlab/database/postgres_hll/batch_distinct_counter.rb:
@@ -220,8 +215,6 @@ constants:
   - TIME_REGEX
   lib/gitlab/redis/queues.rb:
   - MAILROOM_NAMESPACE
-  lib/gitlab/sidekiq_config.rb:
-  - JH_SIDEKIQ_QUEUES_PATH
   lib/gitlab/utils/usage_data.rb:
   - DISTRIBUTED_HLL_FALLBACK
   lib/gitlab/vue3_migration.rb:
@@ -387,7 +380,6 @@ methods:
   - self.find_by_public_key
   app/models/group.rb:
   - get_ids_by_ids_or_paths
-  - hierarchy_members_with_inactive
   app/models/group_custom_attribute.rb:
   - self.declarative_policy_class
   app/models/hooks/web_hook_log.rb:
@@ -434,8 +426,6 @@ methods:
   - guest?
   - reporter?
   - member_user_ids
-  app/models/projects/build_artifacts_size_refresh.rb:
-  - self.enqueue_refresh
   app/models/protected_branch.rb:
   - self.get_ids_by_name
   app/models/user_custom_attribute.rb:

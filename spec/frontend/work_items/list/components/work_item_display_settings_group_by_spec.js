@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { createAlert } from '~/alert';
+import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 import WorkItemDisplaySettingsGroupBy from '~/work_items/list/components/work_item_display_settings_group_by.vue';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
 import {
@@ -46,6 +47,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   let wrapper;
   let groupByValuesHandler;
   let apolloProvider;
+  let toast;
 
   const statuses = [buildStatus(1, 'Triage'), buildStatus(2, 'To do')];
   // getGroupId scopes the id to the status grouping: `status:<gid>`.
@@ -65,6 +67,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   const findGroupLimitHint = () => wrapper.findByTestId('group-limit-hint');
 
   beforeEach(() => {
+    toast = { show: jest.fn() };
     groupByValuesHandler = jest.fn().mockResolvedValue({ data: { statuses } });
     groupingStrategyFor.mockReturnValue({
       property: 'status',
@@ -80,6 +83,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
 
     wrapper = shallowMountExtended(WorkItemDisplaySettingsGroupBy, {
       apolloProvider,
+      mocks: { $toast: toast },
       propsData: {
         fullPath: 'group/full/path',
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
@@ -111,6 +115,7 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
         items: [
           { text: 'Ascending', value: 'asc' },
           { text: 'Descending', value: 'desc' },
+          { text: 'Manual', value: 'manual' },
         ],
       });
     });
@@ -236,21 +241,11 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       ]);
     });
 
-    it('includes Manual as an option only while it is the current sort (a pre-existing drag)', async () => {
+    it('selects Manual when a pre-existing groupOrder has no groupSort', async () => {
       createComponent({ props: { namespacePreferences: { groupOrder: [groupId(statuses[1])] } } });
       await waitForPromises();
 
       expect(findSortListbox().props()).toMatchObject({ toggleText: 'Manual', selected: 'manual' });
-      expect(findSortListbox().props('items')).toContainEqual({ text: 'Manual', value: 'manual' });
-    });
-
-    it('omits Manual when Ascending or Descending is the current sort', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findSortListbox().props('items')).not.toContainEqual(
-        expect.objectContaining({ value: 'manual' }),
-      );
     });
 
     it('does nothing when the already-active sort is re-selected', async () => {
@@ -283,8 +278,49 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
       });
     });
 
+    describe('selecting Manual', () => {
+      it.each`
+        current   | expectedOrder
+        ${'asc'}  | ${[groupId(statuses[0]), groupId(statuses[1])]}
+        ${'desc'} | ${[groupId(statuses[1]), groupId(statuses[0])]}
+      `(
+        'saves the order shown under $current so the list does not jump',
+        async ({ current, expectedOrder }) => {
+          createComponent({ props: { namespacePreferences: { groupSort: current } } });
+          await waitForPromises();
+
+          findSortListbox().vm.$emit('select', 'manual');
+          await waitForPromises();
+
+          expect(persistMetadataPreference).toHaveBeenCalledWith(
+            expect.objectContaining({
+              displaySettings: expect.objectContaining({
+                groupSort: 'manual',
+                groupOrder: expectedOrder,
+              }),
+            }),
+          );
+        },
+      );
+    });
+
     describe('tracking', () => {
       const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+      it('tracks Manual being chosen', async () => {
+        createComponent();
+        await waitForPromises();
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findSortListbox().vm.$emit('select', 'manual');
+        await waitForPromises();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'configure_columns_on_work_item_board',
+          { label: 'sort_groups_manual' },
+          undefined,
+        );
+      });
 
       it('tracks the sort direction chosen', async () => {
         createComponent();
@@ -330,6 +366,173 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
           [{ hiddenMetadataKeys: ['labels'], groupSort: 'desc', groupOrder: [] }],
         ]);
         expect(persistMetadataPreference).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('reordering groups', () => {
+    const threeStatuses = [...statuses, buildStatus(3, 'Done')];
+    const [first, second, third] = threeStatuses.map(groupId);
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    const findShownList = () => wrapper.findComponent(DraggableCompat);
+    const findGrips = () => wrapper.findAllByTestId('group-grip');
+    const drag = (oldIndex, newIndex) => findShownList().vm.$emit('end', { oldIndex, newIndex });
+
+    beforeEach(() => {
+      groupByValuesHandler.mockResolvedValue({ data: { statuses: threeStatuses } });
+    });
+
+    describe('when the sort is Manual', () => {
+      beforeEach(async () => {
+        createComponent({ props: { namespacePreferences: { groupSort: 'manual' } } });
+        await waitForPromises();
+      });
+
+      it('enables dragging the Shown list', () => {
+        expect(findShownList().attributes('disabled')).toBeUndefined();
+      });
+
+      it('shows a grip on every row', () => {
+        expect(findGrips()).toHaveLength(3);
+      });
+
+      it('saves the new order and keeps the sort on Manual', async () => {
+        drag(0, 2);
+        await waitForPromises();
+
+        expect(persistMetadataPreference).toHaveBeenCalledWith(
+          expect.objectContaining({
+            displaySettings: expect.objectContaining({
+              groupSort: 'manual',
+              groupOrder: [second, third, first],
+            }),
+          }),
+        );
+      });
+
+      it('shows a toast naming the moved group once the order is saved', async () => {
+        drag(0, 1);
+        expect(toast.show).not.toHaveBeenCalled();
+
+        await waitForPromises();
+
+        expect(toast.show).toHaveBeenCalledWith('Moved Triage');
+      });
+
+      it('does not show the toast when saving fails', async () => {
+        persistMetadataPreference.mockRejectedValueOnce(new Error('boom'));
+
+        drag(0, 1);
+        await waitForPromises();
+
+        expect(alertPreferenceError).toHaveBeenCalled();
+        expect(toast.show).not.toHaveBeenCalled();
+      });
+
+      it('tracks the drag', () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        drag(0, 1);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'configure_columns_on_work_item_board',
+          { label: 'reorder_drawer' },
+          undefined,
+        );
+      });
+
+      it('does nothing when a row is dropped where it started', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        drag(1, 1);
+        await waitForPromises();
+
+        expect(persistMetadataPreference).not.toHaveBeenCalled();
+        expect(trackEventSpy).not.toHaveBeenCalled();
+        expect(toast.show).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when a group in the middle is hidden', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: {
+            namespacePreferences: {
+              groupSort: 'manual',
+              groupOrder: [first, second, third],
+              visibleGroups: [first, third],
+            },
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('does not make the Hidden list draggable', () => {
+        expect(findHiddenSection().findComponent(DraggableCompat).exists()).toBe(false);
+      });
+
+      it('leaves the hidden group in its slot', async () => {
+        drag(0, 1);
+        await waitForPromises();
+
+        expect(persistMetadataPreference).toHaveBeenCalledWith(
+          expect.objectContaining({
+            displaySettings: expect.objectContaining({ groupOrder: [third, second, first] }),
+          }),
+        );
+      });
+    });
+
+    describe('when the search hides some rows', () => {
+      it('keeps the filtered-out groups in their slots', async () => {
+        createComponent({ props: { namespacePreferences: { groupSort: 'manual' } } });
+        await waitForPromises();
+        findSearchBox().vm.$emit('input', 'o');
+        await waitForPromises();
+
+        // "To do" and "Done" match, so the list shows [To do, Done].
+        drag(0, 1);
+        await waitForPromises();
+
+        expect(persistMetadataPreference).toHaveBeenCalledWith(
+          expect.objectContaining({
+            displaySettings: expect.objectContaining({ groupOrder: [first, third, second] }),
+          }),
+        );
+      });
+    });
+
+    describe.each(['asc', 'desc'])('when the sort is %s', (groupSort) => {
+      beforeEach(async () => {
+        createComponent({ props: { namespacePreferences: { groupSort } } });
+        await waitForPromises();
+      });
+
+      it('disables dragging', () => {
+        expect(findShownList().attributes('disabled')).toBeDefined();
+      });
+
+      it('shows no grips', () => {
+        expect(findGrips()).toHaveLength(0);
+      });
+    });
+
+    describe('on a saved view', () => {
+      it('emits update-settings instead of saving', async () => {
+        createComponent({
+          props: { isSavedView: true, namespacePreferences: { groupSort: 'manual' } },
+        });
+        await waitForPromises();
+
+        drag(0, 1);
+        await waitForPromises();
+
+        expect(wrapper.emitted('update-settings')).toEqual([
+          [expect.objectContaining({ groupSort: 'manual', groupOrder: [second, first, third] })],
+        ]);
+        expect(persistMetadataPreference).not.toHaveBeenCalled();
+        expect(toast.show).toHaveBeenCalledWith('Moved Triage');
       });
     });
   });

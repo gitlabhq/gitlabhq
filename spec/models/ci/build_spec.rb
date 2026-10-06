@@ -4481,6 +4481,59 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe 'state transition: pending => :running', :clean_gitlab_redis_shared_state do
+    let(:build) { create(:ci_build, :pending, pipeline: pipeline) }
+
+    def candidate_cache
+      Gitlab::Ci::RedundantPipelines::CandidateCache.for(project_id: project.id, ref: pipeline.ref)
+    end
+
+    def pipeline_key
+      Gitlab::Ci::RedundantPipelines::PipelineKey.of(pipeline)
+    end
+
+    it 'protects the pipeline in the cache' do
+      build.run!
+
+      expect(candidate_cache).to be_protected(pipeline_key)
+    end
+
+    it 'queues the durable write for the pipeline' do
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker)
+        .to receive(:perform_async).with(pipeline.id, pipeline.partition_id)
+
+      build.run!
+    end
+
+    it 'does not queue the durable write when the cache already protects the pipeline' do
+      candidate_cache.protect(pipeline_key)
+
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker).not_to receive(:perform_async)
+
+      build.run!
+    end
+
+    it 'does not protect it while the candidates are not cached' do
+      stub_feature_flags(ci_redundant_pipeline_candidates_cache: false)
+
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker).not_to receive(:perform_async)
+
+      build.run!
+
+      expect(candidate_cache).not_to be_protected(pipeline_key)
+    end
+
+    it 'does not protect it for an interruptible build' do
+      interruptible = create(:ci_build, :pending, :interruptible, pipeline: pipeline)
+
+      expect(Ci::RedundantPipelines::ProtectPipelineWorker).not_to receive(:perform_async)
+
+      interruptible.run!
+
+      expect(candidate_cache).not_to be_protected(pipeline_key)
+    end
+  end
+
   describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 

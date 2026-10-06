@@ -6,6 +6,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   include Ci::PipelineVariableHelpers
 
   let(:presenter) { described_class.new(build) }
+  let(:build) { build_stubbed(:ci_build) }
   let(:archive) { { paths: ['sample.txt'] } }
 
   let(:archive_expectation) do
@@ -18,7 +19,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   end
 
   describe '#set_queue_metrics' do
-    let(:build) { build_stubbed(:ci_build) }
     let(:size) { 10 }
     let(:depth) { 2 }
 
@@ -230,7 +230,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   end
 
   describe '#git_depth' do
-    let(:build) { create(:ci_build) }
+    let_it_be_with_refind(:build) { create(:ci_build) }
 
     subject(:git_depth) { presenter.git_depth }
 
@@ -262,8 +262,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
   end
 
   describe '#repo_object_format' do
-    let(:build) { build_stubbed(:ci_build) }
-
     subject { presenter.repo_object_format }
 
     it 'delegates the call to #repository_object_format' do
@@ -287,7 +285,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when ref is tag' do
-      let(:build) { create(:ci_build, :tag) }
+      let_it_be_with_refind(:build) { create(:ci_build, :tag) }
 
       it 'returns the correct refspecs' do
         is_expected.to contain_exactly(
@@ -548,10 +546,9 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     subject(:runner_variables) { presenter.runner_variables }
 
     let_it_be(:project) { create(:project, :repository) }
-
-    let(:sha) { project.repository.commit.sha }
-    let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
-    let(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:sha) { project.repository.commit.sha }
+    let_it_be(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+    let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
 
     it 'returns an array' do
       is_expected.to be_an_instance_of(Array)
@@ -638,14 +635,10 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     subject(:suspend_options) { presenter.suspend_options }
 
     context 'when the build has no job_runtime_environment' do
-      let(:build) { build_stubbed(:ci_build) }
-
       it { is_expected.to be_nil }
     end
 
     context 'when ci_suspendable_environment_runner_routing is disabled for the project' do
-      let(:build) { build_stubbed(:ci_build) }
-
       before do
         stub_feature_flags(ci_suspendable_environment_runner_routing: false)
         allow(build).to receive(:job_runtime_environment).and_return(
@@ -658,8 +651,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when suspend_on_success is set' do
-      let(:build) { build_stubbed(:ci_build) }
-
       before do
         allow(build).to receive(:job_runtime_environment).and_return(
           build_stubbed(:ci_job_runtime_environment, build: build, suspend_on_success: true,
@@ -676,8 +667,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when suspend_on_failure is set' do
-      let(:build) { build_stubbed(:ci_build) }
-
       before do
         allow(build).to receive(:job_runtime_environment).and_return(
           build_stubbed(:ci_job_runtime_environment, build: build, suspend_on_success: false,
@@ -694,7 +683,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when runtime_environment_key is set via the linked runtime environment' do
-      let(:build) { build_stubbed(:ci_build) }
       let(:runtime_environment) do
         build_stubbed(:ci_runtime_environment, environment_key: 'runner-1/executor-specific-data')
       end
@@ -716,7 +704,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     end
 
     context 'when all options are set' do
-      let(:build) { build_stubbed(:ci_build) }
       let(:runtime_environment) do
         build_stubbed(:ci_runtime_environment, environment_key: 'runner-1/executor-specific-data')
       end

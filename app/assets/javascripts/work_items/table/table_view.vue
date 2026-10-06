@@ -15,7 +15,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { DEFAULT_PAGE_SIZE, DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { DETAIL_VIEW_QUERY_PARAM_NAME, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME } from '../constants';
 import {
   combineWorkItemLists,
   findDetailPanelWorkItem,
@@ -78,18 +78,10 @@ export default {
       required: false,
       default: false,
     },
-    hasWorkItems: {
-      type: Boolean,
-      required: true,
-    },
     error: {
       type: String,
       required: false,
       default: undefined,
-    },
-    initialLoadWasFiltered: {
-      type: Boolean,
-      required: true,
     },
     displaySettings: {
       type: Object,
@@ -230,18 +222,6 @@ export default {
     },
     shouldLoad() {
       return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
-    },
-    isEpicsList() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
-    },
-    showPageEmptyState() {
-      return (
-        this.isEpicsList &&
-        !this.hasWorkItems &&
-        !this.error &&
-        !this.initialLoadWasFiltered &&
-        this.workItems.length === 0
-      );
     },
     // The table keeps its header on screen while a page loads, so rows are swapped for
     // skeletons rather than hiding the whole table.
@@ -469,10 +449,6 @@ export default {
 <template>
   <gl-loading-icon v-if="shouldLoad" class="gl-mt-5" size="lg" />
 
-  <div v-else-if="showPageEmptyState">
-    <slot name="page-empty-state"></slot>
-  </div>
-
   <div v-else class="issuable-list-container" data-testid="table-view">
     <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
       <template #bulk-edit-actions>
@@ -495,7 +471,6 @@ export default {
             v-if="showBulkEditSidebar"
             :checked-items="checkedIssuables"
             :full-path="rootPageFullPath"
-            :is-epics-list="isEpicsList"
             :is-group="isGroup"
             @finish="bulkEditInProgress = false"
             @start="bulkEditInProgress = true"

@@ -104,6 +104,10 @@ class PoolRepository < ApplicationRecord
     member_projects.id_not_in(repository.project.id).exists? || mark_obsolete
   end
 
+  def mark_obsolete_if_empty
+    mark_obsolete unless obsolete? || member_projects.exists?
+  end
+
   # Clear membership before checking for remaining members, under a pool
   # row lock, so concurrent leavers cannot both observe each other and
   # skip mark_obsolete (https://gitlab.com/gitlab-org/gitlab/-/work_items/628444).

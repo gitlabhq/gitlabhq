@@ -351,6 +351,7 @@ module Gitlab
 
         self.current_token = parsed_oauth_token
         return unless current_token
+        return unless ::Authn::Tokens::CiJobToken.prefix?(current_token)
 
         job = ::Ci::AuthJobFinder.new(token: current_token).execute
         return unless job

@@ -108,7 +108,7 @@ module Gitlab
           tables
         )
 
-        indicators = health_check_attrs[:indicators] || Gitlab::Database::HealthStatus::DEFAULT_INIDICATORS
+        indicators = health_check_attrs[:indicators] || Gitlab::Database::HealthStatus::DEFAULT_INDICATORS
 
         Gitlab::Database::HealthStatus.evaluate(health_context, indicators).any?(&:stop?)
       end

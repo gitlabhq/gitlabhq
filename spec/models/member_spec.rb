@@ -2125,20 +2125,24 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   context 'when after_create :update_two_factor_requirement' do
-    it 'calls update_two_factor_requirement after creation' do
+    it 'recalculates the 2FA requirement after creation' do
       user = create(:user)
 
-      expect(user).to receive(:update_two_factor_requirement)
+      expect_next_instance_of(Authn::Users::UpdateTwoFactorRequirementService, user) do |service|
+        expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { user: user }))
+      end
 
       create(:group_member, user: user)
     end
   end
 
   context 'when after_destroy :update_two_factor_requirement' do
-    it 'calls update_two_factor_requirement after deletion' do
+    it 'recalculates the 2FA requirement after deletion' do
       group_member = create(:group_member)
 
-      expect(group_member.user).to receive(:update_two_factor_requirement)
+      expect_next_instance_of(Authn::Users::UpdateTwoFactorRequirementService, group_member.user) do |service|
+        expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { user: group_member.user }))
+      end
 
       group_member.destroy!
     end

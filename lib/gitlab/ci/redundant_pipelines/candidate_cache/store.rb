@@ -5,7 +5,7 @@ module Gitlab
     module RedundantPipelines
       class CandidateCache
         # Redis access for CandidateCache. Speaks pipeline keys, so its owner never
-        # handles Redis members or failures.
+        # handles Redis members.
         class Store
           # Removing the entries in the call that returns them is what gives one
           # caller sole ownership. The newest are claimed first, because they are the
@@ -26,49 +26,79 @@ module Gitlab
             return claimed
           LUA
 
+          # Scored by pipeline id, so the trim drops the oldest pipelines first.
           #   ARGV[1] pipeline_id, ARGV[2] member, ARGV[3] ttl, ARGV[4] max_size
-          REGISTER = ::Labkit::Redis::Script.new(<<~LUA)
-            local candidates = KEYS[1]
+          ADD = ::Labkit::Redis::Script.new(<<~LUA)
+            local set = KEYS[1]
             local pipeline_id, member = tonumber(ARGV[1]), ARGV[2]
             local ttl, max_size = tonumber(ARGV[3]), tonumber(ARGV[4])
 
-            redis.call('zadd', candidates, 'NX', pipeline_id, member)
-            redis.call('zremrangebyrank', candidates, 0, -max_size - 1)
-            redis.call('expire', candidates, ttl)
+            local added = redis.call('zadd', set, 'NX', pipeline_id, member)
+            redis.call('zremrangebyrank', set, 0, -max_size - 1)
+            redis.call('expire', set, ttl)
+
+            return added
           LUA
 
-          def initialize(redis_key:, ttl:, redis: Gitlab::Redis::SharedState)
-            @redis_key = redis_key
+          def initialize(prefix:, ttl:, max_size:, redis: Gitlab::Redis::SharedState)
+            @prefix = prefix
             @ttl = ttl
+            @max_size = max_size
             @redis = redis
           end
 
-          def register(key, max_size:)
-            eval_script(REGISTER, [key.pipeline_id, key.to_s, ttl, max_size])
+          def register(key)
+            add_to(candidates_key, key)
+          end
+
+          def protect(key)
+            added = add_to(protected_key, key) == 1
+
+            yield if added && block_given?
           end
 
           def claim_before(key, limit:)
-            pipeline_keys(eval_script(CLAIM, [key.pipeline_id, limit]))
+            pipeline_keys(eval_script(CLAIM, candidates_key, [key.pipeline_id, limit]))
           end
 
           def delete(key)
-            with_redis { |redis| redis.zrem(redis_key, key.to_s) }
+            with_redis { |redis| redis.zrem(candidates_key, key.to_s) }
           end
 
           def registered?(key)
-            with_redis { |redis| redis.zscore(redis_key, key.to_s) }.present?
+            scored?(candidates_key, key)
+          end
+
+          def protected?(key)
+            scored?(protected_key, key)
           end
 
           def count
-            with_redis { |redis| redis.zcard(redis_key) }.to_i
+            with_redis { |redis| redis.zcard(candidates_key) }.to_i
           end
 
           private
 
-          attr_reader :redis_key, :ttl, :redis
+          attr_reader :prefix, :ttl, :max_size, :redis
 
-          def eval_script(script, argv)
-            with_redis { |connection| script.eval(connection, keys: [redis_key], argv: argv) }
+          def candidates_key
+            "#{prefix}:candidates"
+          end
+
+          def protected_key
+            "#{prefix}:protected"
+          end
+
+          def add_to(set, key)
+            eval_script(ADD, set, [key.pipeline_id, key.to_s, ttl, max_size])
+          end
+
+          def scored?(set, key)
+            with_redis { |redis| redis.zscore(set, key.to_s) }.present?
+          end
+
+          def eval_script(script, set, argv)
+            with_redis { |connection| script.eval(connection, keys: [set], argv: argv) }
           end
 
           def pipeline_keys(members)

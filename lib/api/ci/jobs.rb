@@ -123,16 +123,17 @@ module API
           authorize_read_build_trace!(build) if build
 
           range_requested = params[:byte_offset] || params[:byte_limit]
+          byte_offset = params[:byte_offset] || 0
+          byte_limit = params[:byte_limit]
 
           if !range_requested && send_archived_trace_via_workhorse?(build)
             send_archived_trace_via_workhorse!(build)
+          elsif range_requested && send_archived_trace_range_via_workhorse?(build)
+            send_archived_trace_range_via_workhorse!(build, byte_offset: byte_offset, byte_limit: byte_limit)
           else
             set_trace_response_headers!(build)
 
             trace = if range_requested
-                      byte_offset = params[:byte_offset] || 0
-                      byte_limit = params[:byte_limit]
-
                       build.trace.raw_range(byte_offset: byte_offset, byte_limit: byte_limit)
                     else
                       build.trace.raw
@@ -409,11 +410,46 @@ module API
           elsif file.file_storage?
             sendfile file.path
           else
-            response_headers = { 'Content-Type' => 'text/plain', 'Content-Disposition' => trace_content_disposition(build) }
-            header(*Gitlab::Workhorse.send_url(file.url, response_headers: response_headers))
+            header(*Gitlab::Workhorse.send_url(file.url, response_headers: trace_send_url_response_headers(build)))
             status :ok
             body ''
           end
+        end
+
+        # Local disk keeps Stream#raw_range: a seek and read from disk is cheap.
+        def send_archived_trace_range_via_workhorse?(build)
+          Feature.enabled?(:ci_job_trace_api_range_via_workhorse, build.project, type: :beta) &&
+            build.trace.archived? && !build.job_artifacts_trace.file.file_storage?
+        end
+
+        # Workhorse fetches exactly this span and answers 200, so the client sees
+        # the same response as the Rails read. Rails clamps to the artifact size
+        # itself, as Stream#raw_range does, instead of letting storage answer 416.
+        def send_archived_trace_range_via_workhorse!(build, byte_offset:, byte_limit:)
+          trace_artifact = build.job_artifacts_trace
+
+          verify_workhorse_api!
+
+          set_trace_response_headers!(build)
+          apply_etag_or_suppress_rack_etag!(nil)
+
+          size = trace_artifact.size
+          first_byte = [byte_offset, size].min
+          last_byte = [byte_limit ? first_byte + byte_limit : size, size].min - 1
+
+          if request.head? || last_byte < first_byte
+            header 'Content-Length', (last_byte - first_byte + 1).to_s
+          else
+            header(*Gitlab::Workhorse.send_url(trace_artifact.file.url,
+              response_headers: trace_send_url_response_headers(build), upstream_range: "bytes=#{first_byte}-#{last_byte}"))
+            status :ok
+          end
+
+          body ''
+        end
+
+        def trace_send_url_response_headers(build)
+          { 'Content-Type' => 'text/plain', 'Content-Disposition' => trace_content_disposition(build) }
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

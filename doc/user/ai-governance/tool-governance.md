@@ -298,10 +298,21 @@ ancestor.
 - [Background access](#access-types) supports only **Always Allow** and **Always Deny**.
   **Always Ask** does not apply, because no user is present to respond to an approval prompt
   in a background flow. A tool with no configured background access rule defaults to **Always Allow**.
-- The `search` tool served by the GitLab MCP server aggregates what the
-  GitLab Duo Agent Platform exposes as separate, narrower search tools.
-  Rules configured on those narrower tools do not extend to `search`. To
-  restrict MCP search, configure a rule on `search` directly.
+- The `search` tool served by the GitLab MCP server aggregates what the GitLab Duo Agent Platform
+  exposes as separate, narrower search tools, and replaces those tools in the toolset.
+  Rules configured on the narrower tools have no effect while `search` is available, including
+  **Always Allow**, which the **Tool management** tab still shows as allowed.
+  Setting `search` to **Always Deny** removes the aggregated tool and returns the narrower ones,
+  which are allowed by default, so search remains available.
+  To remove the search tools that `search` replaces, also set `gitlab_issue_search`,
+  `gitlab_blob_search`, and `gitlab_merge_request_search` to **Always Deny**. Other search tools,
+  such as `gitlab_commit_search` and `gitlab_documentation_search`, have their own rules and stay
+  allowed by default. Denying `gitlab_merge_request_search` also denies the `list_merge_requests` tool,
+  because governance treats the two names as one tool.
+- In GitLab 19.4, setting `search` to **Always Deny** removed `search` without restoring the narrower
+  tools, which left the agent with no issue search and no code search.
+  This issue is resolved in GitLab 19.5, where denying `search` restores `gitlab_issue_search`,
+  `gitlab_blob_search`, and `gitlab_merge_request_search`.
 
 ## Related topics
 

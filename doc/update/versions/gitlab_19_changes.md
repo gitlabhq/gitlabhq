@@ -62,6 +62,7 @@ Before upgrading to GitLab 19.4, review the following:
 Before upgrading to GitLab 19.3, review the following:
 
 - [19.3.0 - 19.3.1] - [New groups require SHA parameter for merge requests API calls](#new-groups-require-sha-parameter-for-merge-requests-api-calls)
+- [19.3.0] - [Geo verification concurrency limit applied as a global total](#geo-verification-concurrency-limit-applied-as-a-global-total)
 
 ### Upgrade to 19.2
 

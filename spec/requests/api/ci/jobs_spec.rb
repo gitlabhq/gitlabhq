@@ -858,12 +858,108 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         end
 
         context 'when a byte range is requested' do
-          it 'reads the range in Rails' do
-            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 0, byte_limit: 5 }
+          let(:trace_size) { File.size(file_path) }
+
+          def get_trace_range(byte_params)
+            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: byte_params
+          end
+
+          def expect_send_url_for(upstream_range)
+            type, params = workhorse_send_data
+            expect(type).to eq('send-url')
+            expect(params['URL']).to eq(url)
+            expect(params['UpstreamRange']).to eq(upstream_range)
+            expect(params['ResponseHeaders']).to eq(
+              'Content-Type' => ['text/plain'],
+              'Content-Disposition' => [content_disposition]
+            )
+          end
+
+          it 'lets Workhorse fetch exactly the requested span as a full response' do
+            get_trace_range(byte_offset: 10, byte_limit: 5)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.body).to be_empty
+            expect(response.headers['Content-Disposition']).to eq(content_disposition)
+            expect_send_url_for('bytes=10-14')
+            expect(a_request(:get, url)).not_to have_been_made
+          end
+
+          it 'starts at the beginning when byte_offset is omitted' do
+            get_trace_range(byte_limit: 5)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect_send_url_for('bytes=0-4')
+          end
+
+          it 'clamps the span to the end of the log' do
+            get_trace_range(byte_offset: trace_size - 3, byte_limit: 10)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect_send_url_for("bytes=#{trace_size - 3}-#{trace_size - 1}")
+          end
+
+          it 'answers an empty 200 itself when byte_offset is at the end of the log' do
+            get_trace_range(byte_offset: trace_size, byte_limit: 10)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
-            expect(response.body).to eq(job.trace.raw.byteslice(0, 5))
+            expect(response.headers['Content-Disposition']).to eq(content_disposition)
+            expect(response.body).to eq('')
+            expect(a_request(:get, url)).not_to have_been_made
+          end
+
+          it 'answers HEAD with the span length without fetching the object' do
+            head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 10, byte_limit: 5 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.headers['Content-Length']).to eq('5')
+            expect(a_request(:get, url)).not_to have_been_made
+          end
+
+          it 'answers HEAD with a zero length when byte_offset is at the end of the log' do
+            head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: trace_size }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.headers['Content-Length']).to eq('0')
+          end
+
+          it 'fetches from byte_offset to the end of the log when byte_limit is omitted' do
+            get_trace_range(byte_offset: 2)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect_send_url_for("bytes=2-#{trace_size - 1}")
+          end
+
+          it 'answers HEAD with the remaining length when byte_limit is omitted' do
+            head api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 2 }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+            expect(response.headers['Content-Length']).to eq((trace_size - 2).to_s)
+          end
+
+          it 'rejects requests that did not come through Workhorse before setting log headers', :verify_workhorse_jwt do
+            get_trace_range(byte_offset: 0, byte_limit: 5)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response.headers).not_to include('Content-Disposition')
+          end
+
+          context 'when the ci_job_trace_api_range_via_workhorse feature flag is disabled' do
+            before do
+              stub_feature_flags(ci_job_trace_api_range_via_workhorse: false)
+            end
+
+            it 'reads the range in Rails' do
+              get_trace_range(byte_offset: 0, byte_limit: 5)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+              expect(response.body).to eq(job.trace.raw.byteslice(0, 5))
+            end
           end
         end
 
@@ -892,6 +988,14 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           expect(response.body).to be_empty
           expect(response.headers['X-Sendfile']).to eq(job.job_artifacts_trace.file.path)
           expect(response.headers['Content-Disposition']).to eq("infile; filename=\"#{job.id}.log\"")
+        end
+
+        it 'reads a byte range from disk in Rails' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user), params: { byte_offset: 0, byte_limit: 5 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
+          expect(response.body).to eq(job.trace.raw.byteslice(0, 5))
         end
 
         context 'when the ci_job_trace_api_archived_log_via_workhorse feature flag is disabled' do

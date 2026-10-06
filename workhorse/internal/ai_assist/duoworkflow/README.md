@@ -447,7 +447,7 @@ MCP servers are configured in GitLab Rails and passed to Workhorse:
   gitlab: {
     # URL is automatically resolved in Workhorse
     Headers: { "Authorization" => "Bearer token" },
-    Tools: ["tool1", "tool2"], # Empty means all tools
+    Tools: ["tool1", "tool2"], # Omit the key for all tools; an empty list serves none
     PreApprovedTools: ["tool1"]
   },
   external_server: {

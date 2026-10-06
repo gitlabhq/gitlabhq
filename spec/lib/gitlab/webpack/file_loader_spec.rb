@@ -9,11 +9,11 @@ RSpec.describe Gitlab::Webpack::FileLoader do
   let(:error_file_path) { "error.yml" }
   let(:file_path) { "my_test_file.yml" }
   let(:file_contents) do
-    <<-EOF
+    <<-YAML
     - hello
     - world
     - test
-    EOF
+    YAML
   end
 
   before do

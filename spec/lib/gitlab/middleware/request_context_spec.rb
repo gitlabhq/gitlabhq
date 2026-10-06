@@ -111,5 +111,28 @@ RSpec.describe Gitlab::Middleware::RequestContext, feature_category: :applicatio
         expect { subject }.to change { instance.user_agent }.from(nil).to(user_agent)
       end
     end
+
+    context 'setting the client identity' do
+      let(:env) do
+        Rack::MockRequest.env_for("/").merge(
+          'HTTP_X_GITLAB_CLIENT_TYPE' => 'mobile',
+          'HTTP_X_GITLAB_CLIENT_NAME' => 'gitlab-mobile-ios'
+        )
+      end
+
+      let(:seen_context) { {} }
+      let(:app) do
+        ->(_env) do
+          seen_context.merge!(Gitlab::ApplicationContext.current)
+          [200, {}, ['OK']]
+        end
+      end
+
+      it 'exposes it to the app through the application context' do
+        subject
+
+        expect(seen_context).to include('meta.client_type' => 'mobile', 'meta.client_name' => 'gitlab-mobile-ios')
+      end
+    end
   end
 end

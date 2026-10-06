@@ -209,8 +209,6 @@ const mountComponent = ({
     propsData: {
       rootPageFullPath: 'full/path',
       queryVariables: defaultQueryVariables,
-      hasWorkItems: true,
-      initialLoadWasFiltered: false,
       withTabs,
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,

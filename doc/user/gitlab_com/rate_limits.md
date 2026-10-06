@@ -65,6 +65,8 @@ each hour from an IP address:
   such as searching for and linking repositories
 - Requests from the [GitLab for Slack app](../project/integrations/gitlab_slack_application.md)
 - Requests that [trigger a pipeline with a pipeline trigger token](../../ci/triggers/_index.md)
+- [Alerts](../../operations/incident_management/integrations.md) that monitoring tools send to an
+  alert integration endpoint
 
 These requests stay subject to the [current limits](#current-rate-limits). The GitLab for Slack
 app also has its own limit for an IP address of 1,000 requests each hour and 100 requests each

@@ -8,6 +8,10 @@ module Projects
 
     private
 
+    def pool_for_cleanup
+      project.pool_repository
+    end
+
     def track_repository(destination_storage_name)
       project.update_column(:repository_storage, destination_storage_name)
 

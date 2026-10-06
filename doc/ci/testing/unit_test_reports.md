@@ -95,7 +95,8 @@ This XML displays in GitLab as:
 
 ## Test result types
 
-Test results are compared between the merge request's source and target branches to show what changed:
+GitLab compares the test results from the merge request's source branch with a
+[baseline pipeline](_index.md#baseline-pipeline-selection) on the target branch to show what changed:
 
 - Newly failed tests: Tests that passed on the target branch but failed on your branch.
 - Newly encountered errors: Tests that passed on the target branch but had errors on your branch.

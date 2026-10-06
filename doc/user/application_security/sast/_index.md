@@ -1297,6 +1297,7 @@ images from `registry.gitlab.com` into your
 [local Docker container registry](../../packages/container_registry/_index.md):
 
 ```plaintext
+registry.gitlab.com/security-products/clangsa:1
 registry.gitlab.com/security-products/gitlab-advanced-sast:2
 registry.gitlab.com/security-products/gitlab-advanced-sast-ext:0
 registry.gitlab.com/security-products/kubesec:6

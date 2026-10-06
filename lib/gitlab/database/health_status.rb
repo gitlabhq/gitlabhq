@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module HealthStatus
-      DEFAULT_INIDICATORS = [
+      DEFAULT_INDICATORS = [
         Indicators::AutovacuumActiveOnTable,
         Indicators::WriteAheadLog,
         Indicators::PatroniApdex,
@@ -18,7 +18,7 @@ module Gitlab
       ].freeze
 
       class << self
-        def evaluate(context, indicators = DEFAULT_INIDICATORS)
+        def evaluate(context, indicators = DEFAULT_INDICATORS)
           indicators.map do |indicator|
             signal = begin
               indicator.new(context).evaluate

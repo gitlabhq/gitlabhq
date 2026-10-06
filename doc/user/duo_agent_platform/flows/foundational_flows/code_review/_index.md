@@ -137,6 +137,85 @@ Interactions are a separate feature from Code Review Flow.
 
 For more information, see [interact with GitLab Duo](../../../../project/merge_requests/duo_in_merge_requests.md#interact-with-gitlab-duo).
 
+## Approve and request changes
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254981) in GitLab 19.5 [with a feature flag](../../../../../administration/feature_flags/_index.md) named `duo_code_review_decisions`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+GitLab Duo can approve or request changes on a merge request based on its review findings.
+
+When GitLab Duo finds nothing to comment on, it approves the merge request. Otherwise, it requests changes.
+
+GitLab Duo's approval does not count toward required approvals.
+
+A request for changes stays on the merge request until a later review finds nothing to comment on
+and approves it, or a user [bypasses the request for changes](../../../../project/merge_requests/reviews/_index.md#bypass-a-request-for-changes).
+On instances where a request for changes blocks a merge request from merging, a request for changes
+from GitLab Duo has the same effect.
+
+You can turn on this setting for a project, a group, or an instance.
+
+{{< tabs >}}
+
+{{< tab title="Project" >}}
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
+To turn on GitLab Duo approvals and requests for changes for a project:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Settings** > **Merge requests**.
+1. In the **GitLab Duo Code Review** section, select **GitLab Duo can approve and request changes**.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="Group" >}}
+
+Prerequisites:
+
+- The Owner role for the group.
+
+To turn on GitLab Duo approvals and requests for changes for a group:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Merge requests** section.
+1. In the **GitLab Duo Code Review** section, select **GitLab Duo can approve and request changes**.
+1. Select **Save changes**.
+
+Settings cascade from group to project. More specific settings override broader ones.
+
+{{< /tab >}}
+
+{{< tab title="Instance" >}}
+
+Prerequisites:
+
+- Administrator access
+
+To turn on GitLab Duo approvals and requests for changes for an instance:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. In the **GitLab Duo Code Review** section, select **GitLab Duo can approve and request changes**.
+1. Select **Save changes**.
+
+Settings cascade from instance to group to project. More specific settings override broader ones.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Contextual awareness
 
 Code Review Flow runs in two stages:

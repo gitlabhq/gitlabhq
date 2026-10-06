@@ -79,6 +79,101 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::CandidateCache, :clean_gitlab_red
     end
   end
 
+  describe '#protect' do
+    it 'records the pipeline as protected' do
+      cache.protect(key(10))
+
+      expect(cache).to be_protected(key(10))
+    end
+
+    it 'is idempotent' do
+      cache.protect(key(10))
+      cache.protect(key(10))
+
+      expect(cache).to be_protected(key(10))
+    end
+
+    it 'returns the cache' do
+      expect(cache.protect(key(10))).to be(cache)
+    end
+
+    it 'yields only to the call that protects the pipeline' do
+      expect { |block| cache.protect(key(10), &block) }.to yield_control
+      expect { |block| cache.protect(key(10), &block) }.not_to yield_control
+    end
+
+    it 'leaves the pipeline available to claim' do
+      cache.register(key(10))
+      cache.protect(key(10))
+
+      expect(cache.claim_before(key(20))).to contain_exactly(key(10))
+    end
+
+    it 'outlives the claim that takes the pipeline out of the candidates' do
+      cache.register(key(10))
+      cache.protect(key(10))
+      cache.claim_before(key(20))
+
+      expect(cache).to be_protected(key(10))
+    end
+
+    it 'expires the pipelines it stores' do
+      cache.protect(key(10))
+
+      redis_key = "ci:redundant_pipelines:1:#{Digest::SHA256.hexdigest('main')}:protected"
+      ttl = Gitlab::Redis::SharedState.with { |redis| redis.ttl(redis_key) }
+
+      expect(ttl).to be_between(1, described_class::TTL)
+    end
+
+    it 'uses a single redis call' do
+      cache.protect(key(5)) # warmup cache
+
+      recorder = RedisCommands::Recorder.new { cache.protect(key(10)) }
+
+      expect(recorder.count).to eq(1)
+    end
+
+    it 'leaves the candidates alone' do
+      cache.protect(key(10))
+
+      expect(cache.size).to eq(0)
+      expect(cache).not_to be_registered(key(10))
+    end
+
+    context 'when a ref piles up more pipelines than the cache holds' do
+      before do
+        stub_const("#{described_class}::MAX_SIZE", 3)
+      end
+
+      it 'drops the oldest pipelines and keeps the newest' do
+        1.upto(5) { |id| cache.protect(key(id)) }
+
+        expect(cache).to be_protected(key(5))
+        expect(cache).not_to be_protected(key(1))
+      end
+    end
+  end
+
+  describe '#protected?' do
+    it 'is false for a pipeline no one protected' do
+      expect(cache).not_to be_protected(key(10))
+    end
+
+    it 'is false for a pipeline that is only registered' do
+      cache.register(key(10))
+
+      expect(cache).not_to be_protected(key(10))
+    end
+
+    it 'tells the partitions of one pipeline id apart' do
+      cache.protect(key(10, partition_id: 101))
+
+      expect(cache).to be_protected(key(10, partition_id: 101))
+      expect(cache).not_to be_protected(key(10, partition_id: 102))
+    end
+  end
+
   describe '#claim_before' do
     it 'returns nothing for the first pipeline on a ref' do
       expect(cache.claim_before(key(10))).to be_empty
@@ -207,6 +302,14 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::CandidateCache, :clean_gitlab_red
       other_project = described_class.for(project_id: 2, ref: 'main')
 
       expect(other_project.claim_before(key(20))).to be_empty
+    end
+
+    it 'keeps the protected pipelines of one ref apart' do
+      cache.protect(key(10))
+
+      other_ref = described_class.for(project_id: 1, ref: 'feature/a')
+
+      expect(other_ref).not_to be_protected(key(10))
     end
   end
 

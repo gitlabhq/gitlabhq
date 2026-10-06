@@ -13,7 +13,13 @@ module Gitlab
         Gitlab::RequestContext.start_request_context(request: request)
         Gitlab::RequestContext.start_thread_context
 
-        @app.call(env)
+        # On ApplicationContext rather than RequestContext so jobs enqueued by
+        # this request inherit it through Labkit.
+        client = Gitlab::Tracking::ClientIdentity.from_request(request)
+
+        Gitlab::ApplicationContext.with_context({ client_type: client.type, client_name: client.name }.compact) do
+          @app.call(env)
+        end
       end
 
       private

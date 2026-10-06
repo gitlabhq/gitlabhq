@@ -9082,6 +9082,30 @@
               "deprecationReason": null
             },
             {
+              "name": "clientType",
+              "description": "Delete jobs matching client_type in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "clientName",
+              "description": "Delete jobs matching client_name in the context metadata.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "subscriptionPlan",
               "description": "Delete jobs matching subscription_plan in the context metadata.",
               "type": {
@@ -24356,20 +24380,12 @@
             },
             {
               "name": "sessionDistribution",
-              "description": "Sessions in the timeframe grouped by flow type for GitLab Duo sessions and by agent type for external sessions, ordered by session count. Returns the top 10. Missing names are reported as `unknown`. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Sessions and distinct developers in the timeframe, split by agent or flow type. Empty when ClickHouse is not enabled for analytics. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AiGovernanceSessionDistribution",
-                    "ofType": null
-                  }
-                }
+                "kind": "OBJECT",
+                "name": "AiGovernanceSessionDistribution",
+                "ofType": null
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
@@ -24841,11 +24857,78 @@
         {
           "kind": "OBJECT",
           "name": "AiGovernanceSessionDistribution",
-          "description": "Number of AI sessions for one flow type or agent type.",
+          "description": "AI sessions and developers in the timeframe, split by agent or flow type.",
           "fields": [
             {
-              "name": "count",
-              "description": "Number of sessions in the timeframe.",
+              "name": "slices",
+              "description": "Slices ordered by developers, then sessions, then name. Returns the top 10. Missing names are reported as `unknown`.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "AiGovernanceSessionDistributionSlice",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalDevelopers",
+              "description": "Number of distinct developers with sessions in the timeframe, across all slices.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalSessions",
+              "description": "Number of sessions in the timeframe, across all slices.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceSessionDistributionSlice",
+          "description": "AI sessions and developers for one agent or flow type.",
+          "fields": [
+            {
+              "name": "developers",
+              "description": "Number of distinct developers with sessions in the slice.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -24861,7 +24944,7 @@
             },
             {
               "name": "name",
-              "description": "Flow type for GitLab Duo sessions, agent type for external sessions.",
+              "description": "Name of the slice. Version-less flow type for `INTERNAL_DAP`, agent type for `EXTERNAL`. For `ALL`, `gitlab_duo` for GitLab Duo sessions and agent type for external sessions.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -24869,6 +24952,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sessions",
+              "description": "Number of sessions in the slice.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
                   "ofType": null
                 }
               },
@@ -194243,6 +194342,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "triageAndRemediationCoverageCounters",
+              "description": "Triage and remediation coverage counters for the group, for a given trigger type. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "triggerType",
+                  "description": "Trigger type to count coverage for.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "ScanProfileTriggerType",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TriageAndRemediationCoverageCounters",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "twoFactorGracePeriod",
               "description": "Time before two-factor authentication is enforced.",
               "args": [],
@@ -268287,6 +268415,283 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MttrOverTimeBucket",
+          "description": "Mean time to remediation for a single weekly (Monday to Sunday) bucket, with optional breakdowns by severity and report type",
+          "fields": [
+            {
+              "name": "byReportType",
+              "description": "Remediation metrics for the bucket broken down by report type.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "MttrOverTimeByReportType",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "bySeverity",
+              "description": "Remediation metrics for the bucket broken down by severity.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "MttrOverTimeBySeverity",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "count",
+              "description": "Number of vulnerabilities remediated in the bucket. Denominator of the MTTR average.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "endDate",
+              "description": "End of the weekly bucket (Sunday). Capped at the current date, so the most recent bucket may be partial.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ISO8601Date",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mttr",
+              "description": "Mean time to remediation, in days (sumDays / count). Null when no vulnerabilities were remediated in the bucket.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startDate",
+              "description": "Start of the weekly bucket (Monday).",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ISO8601Date",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sumDays",
+              "description": "Sum of remediation time, in days, across vulnerabilities remediated in the bucket. Numerator of the MTTR average.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MttrOverTimeByReportType",
+          "description": "Mean time to remediation for a single report type within a weekly bucket",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of vulnerabilities of the report type remediated in the bucket.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mttr",
+              "description": "Mean time to remediation for the report type, in days (sumDays / count). Null when the count is 0.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "reportType",
+              "description": "Report type the breakdown applies to.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "VulnerabilityReportType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sumDays",
+              "description": "Sum of remediation time, in days, across vulnerabilities of the report type remediated in the bucket.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MttrOverTimeBySeverity",
+          "description": "Mean time to remediation for a single severity within a weekly bucket",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Number of vulnerabilities of the severity remediated in the bucket.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mttr",
+              "description": "Mean time to remediation for the severity, in days (sumDays / count). Null when the count is 0.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "severity",
+              "description": "Severity the breakdown applies to.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "VulnerabilitySeverity",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sumDays",
+              "description": "Sum of remediation time, in days, across vulnerabilities of the severity remediated in the bucket.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -343921,6 +344326,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "triageAndRemediationCoverage",
+              "description": "Triage and remediation capability coverage for the project. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "TriageAndRemediationCoverage",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "unprotectedBranches",
               "description": "Paginated list of unprotected branches, ignoring any wildcard branch rules. Supports forward-only pagination with `first` and `after`. This field can only be resolved for one project in any single request. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
@@ -371316,6 +371733,18 @@
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
                 },
                 {
+                  "name": "triggerType",
+                  "description": "Filter projects by attached triage and remediation trigger type. Introduced in GitLab 19.5: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ScanProfileTriggerType",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -393820,6 +394249,79 @@
           "description": "Represents security metrics",
           "fields": [
             {
+              "name": "mttrOverTime",
+              "description": "Weekly mean time to remediation (MTTR) of vulnerabilities. Each week only counts vulnerabilities detected no earlier than 90 days before the week starts, so a week's MTTR is at most about 97 days. Returns `null` unless the `security_dashboard_mttr_chart` feature flag is enabled.\nThis feature is currently under development and not yet available for general use. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [
+                {
+                  "name": "startDate",
+                  "description": "Start date of the time range. Snapped back to the start of its week (Monday) so results align to full Monday to Sunday buckets.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ISO8601Date",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "endDate",
+                  "description": "End date of the time range. Snapped forward to the end of its week (Sunday), capped at the current date. The most recent week may be partial. The range can span at most 12 weeks.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ISO8601Date",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "severity",
+                  "description": "Filter vulnerabilities by severity.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "VulnerabilitySeverity",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MttrOverTimeBucket",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "riskScore",
               "description": "Total risk score information.\nThis feature is currently under development and not yet available for general use Introduced in GitLab 18.4: Status: Experiment.",
               "args": [],
@@ -395164,6 +395666,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
+            },
+            {
+              "name": "withTriageCoverage",
+              "description": "Count of unarchived projects in the group with at least one triage and remediation trigger enabled. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,
@@ -416978,6 +417492,139 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TriageAndRemediationCapability",
+          "description": "A triage and remediation capability and its coverage state for a project.",
+          "fields": [
+            {
+              "name": "enabled",
+              "description": "Indicates the capability is attached to the project. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "runMode",
+              "description": "Run mode for the capability. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileRunMode",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "triggerType",
+              "description": "Trigger type the capability applies to. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "ScanProfileTriggerType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TriageAndRemediationCoverage",
+          "description": "Triage and remediation capability coverage for a project.",
+          "fields": [
+            {
+              "name": "capabilities",
+              "description": "Triage and remediation capabilities and their coverage state, one entry per trigger type. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "TriageAndRemediationCapability",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "TriageAndRemediationCoverageCounters",
+          "description": "Triage and remediation coverage counters for a namespace, for a given trigger type.",
+          "fields": [
+            {
+              "name": "autoCount",
+              "description": "Count of unarchived projects in the group where the trigger type is attached and set to automatic. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "enabledCount",
+              "description": "Count of unarchived projects in the group where the trigger type is attached. Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             }
           ],
           "inputFields": null,

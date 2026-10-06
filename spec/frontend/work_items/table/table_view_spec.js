@@ -10,11 +10,7 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
 import { CREATED_DESC } from '~/work_items/list/constants';
 import { STATUS_OPEN } from '~/issues/constants';
-import {
-  DETAIL_VIEW_QUERY_PARAM_NAME,
-  METADATA_KEYS,
-  WORK_ITEM_TYPE_NAME_EPIC,
-} from '~/work_items/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME, METADATA_KEYS } from '~/work_items/constants';
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { DEFAULT_PAGE_SIZE, DEFAULT_SKELETON_COUNT } from '~/vue_shared/issuable/list/constants';
@@ -101,8 +97,6 @@ describe('TableView', () => {
       propsData: {
         rootPageFullPath: 'group',
         queryVariables: defaultQueryVariables,
-        hasWorkItems: true,
-        initialLoadWasFiltered: false,
         isSortKeyInitialized: true,
         state: STATUS_OPEN,
         ...props,
@@ -602,25 +596,6 @@ describe('TableView', () => {
         );
         expect(findRows()).toHaveLength(4);
       });
-    });
-  });
-
-  describe('when an epics list has no work items at all', () => {
-    beforeEach(async () => {
-      createComponent({
-        props: { hasWorkItems: false },
-        provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC },
-        slots: { 'page-empty-state': '<div data-testid="page-empty" />' },
-      });
-      slimQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse([]));
-      fullQueryHandler.mockResolvedValue(buildBoardWorkItemsResponse([]));
-      refetchWith({ search: 'nothing' });
-      await waitForPromises();
-    });
-
-    it('renders the page empty state instead of the table', () => {
-      expect(findTable().exists()).toBe(false);
-      expect(wrapper.findByTestId('page-empty').exists()).toBe(true);
     });
   });
 

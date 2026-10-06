@@ -259,7 +259,7 @@ following response attributes:
 | `ci_forward_deployment_rollback_allowed` | boolean | Whether rollback is allowed for forward deployments. |
 | `ci_job_token_scope_enabled` | boolean | Indicates if CI/CD job token scope is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Requires administrator access or at least the Maintainer role for the project to view or update. Can be configured only through the API, not the UI. |
 | `ci_id_token_sub_claim_components` | array of strings | Components included in the CI/CD ID token subject claim. |
 | `ci_skip_branch_pipelines_for_mrs` | boolean | Whether [branch pipelines are skipped for merge requests](../ci/pipelines/settings.md#skip-branch-pipelines-for-merge-requests) when the branch has an open merge request. Only visible if you have administrator access or the Owner role for the project. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
@@ -1117,7 +1117,7 @@ following response attributes:
 | `ci_forward_deployment_enabled` | boolean | Whether forward deployment is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_job_token_scope_enabled` | boolean | Indicates if CI/CD job token scope is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Requires administrator access or at least the Maintainer role for the project to view or update. Can be configured only through the API, not the UI. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
 | `keep_latest_artifact` | boolean | Indicates if the latest artifact is kept when a new one is created. Only visible if you have administrator access or the Owner role for the project. |
 | `restrict_user_defined_variables` | boolean | Whether user-defined variables are restricted. Only visible if you have administrator access or the Owner role for the project. |
@@ -1590,7 +1590,7 @@ following response attributes:
 | `ci_forward_deployment_enabled` | boolean | Whether forward deployment is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_job_token_scope_enabled` | boolean | Indicates if CI/CD job token scope is enabled. Only visible if you have administrator access or the Owner role for the project. |
 | `ci_separated_caches` | boolean | Whether CI/CD caches are separated by branch. Only visible if you have administrator access or the Owner role for the project. |
-| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Only visible if you have administrator access or the Owner role for the project. |
+| `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean | Whether fork pipelines can run in the parent project. Requires administrator access or at least the Maintainer role for the project to view or update. Can be configured only through the API, not the UI. |
 | `build_git_strategy` | string | Git strategy used for CI/CD builds (fetch or clone). Only visible if you have administrator access or the Owner role for the project. |
 | `keep_latest_artifact` | boolean | Indicates if the latest artifact is kept when a new one is created. Only visible if you have administrator access or the Owner role for the project. |
 | `restrict_user_defined_variables` | boolean | Whether user-defined variables are restricted. Only visible if you have administrator access or the Owner role for the project. |

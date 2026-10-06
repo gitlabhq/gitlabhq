@@ -199,6 +199,8 @@ function createApolloClient(resolvers = {}, config = {}) {
     httpHeaders['x-gitlab-version'] = gon.version;
   }
 
+  httpHeaders['X-GitLab-Client-Type'] = 'browser';
+
   if (gon.current_organization?.id) {
     httpHeaders['X-GitLab-Organization-ID'] = gon.current_organization.id;
   }

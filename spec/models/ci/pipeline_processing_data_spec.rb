@@ -35,6 +35,46 @@ RSpec.describe Ci::PipelineProcessingData, feature_category: :continuous_integra
     expect(processing_data.interruptible_protected).to be(false)
   end
 
+  describe '.protect' do
+    it 'protects a pipeline that has no row yet' do
+      described_class.protect(pipeline)
+
+      expect(pipeline.reload).to be_interruptible_protected
+    end
+
+    it 'writes the project and partition of the pipeline' do
+      described_class.protect(pipeline)
+
+      processing_data = pipeline.reload.pipeline_processing_data
+
+      expect(processing_data.project_id).to eq(pipeline.project_id)
+      expect(processing_data.partition_id).to eq(pipeline.partition_id)
+    end
+
+    it 'protects a pipeline that already has a row' do
+      create(:ci_pipeline_processing_data, pipeline: pipeline)
+
+      described_class.protect(pipeline)
+
+      expect(pipeline.reload).to be_interruptible_protected
+    end
+
+    it 'leaves a protected pipeline as it is' do
+      described_class.protect(pipeline)
+
+      expect { described_class.protect(pipeline) }.not_to change { described_class.count }
+      expect(pipeline.reload).to be_interruptible_protected
+    end
+
+    it 'protects one pipeline without touching another' do
+      other_pipeline = create(:ci_pipeline)
+
+      described_class.protect(pipeline)
+
+      expect(other_pipeline.reload).not_to be_interruptible_protected
+    end
+  end
+
   describe 'partitioning' do
     it_behaves_like 'a CI model that detaches archived partitions'
   end

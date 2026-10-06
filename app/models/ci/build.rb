@@ -394,6 +394,8 @@ module Ci
           build.ensure_persistent_ref
 
           build.execute_hooks
+
+          build.protect_pipeline_from_auto_cancellation
         end
       end
 
@@ -631,6 +633,19 @@ module Ci
 
     def degenerated?
       super && run_steps.blank?
+    end
+
+    # The cache answers now and the column outlives it, so both must miss this
+    # before a pipeline loses its protection.
+    def protect_pipeline_from_auto_cancellation
+      return unless Feature.enabled?(:ci_redundant_pipeline_candidates_cache, Project.actor_from_id(project_id))
+      return if interruptible
+
+      Gitlab::Ci::RedundantPipelines::CandidateCache
+        .for(project_id: project_id, ref: ref)
+        .protect(Gitlab::Ci::RedundantPipelines::PipelineKey.new(pipeline_id, partition_id)) do
+          Ci::RedundantPipelines::ProtectPipelineWorker.perform_async(pipeline_id, partition_id)
+        end
     end
 
     def playable?

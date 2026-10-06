@@ -88,7 +88,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
 
   context 'with deployment platform' do
     let(:project) { create(:project) }
-    let(:environment) { create(:environment, project: project) }
+    let(:environment) { build_stubbed(:environment, project: project) }
 
     context 'when deployment platform is a cluster' do
       before do
@@ -144,7 +144,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
     end
 
     context 'when the environment is stopping' do
-      let(:environment) { create(:environment, :stopping, project: project) }
+      let(:environment) { build_stubbed(:environment, :stopping, project: project) }
 
       it 'allows only a forced stop' do
         expect(subject).to include(can_stop: false, can_force_stop: true)
@@ -152,7 +152,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
     end
 
     context 'when the environment is stopped' do
-      let(:environment) { create(:environment, :stopped, project: project) }
+      let(:environment) { build_stubbed(:environment, :stopped, project: project) }
 
       it 'allows neither' do
         expect(subject).to include(can_stop: false, can_force_stop: false)
@@ -160,7 +160,7 @@ RSpec.describe EnvironmentEntity, feature_category: :continuous_delivery do
     end
 
     context 'when the user cannot stop the environment' do
-      let(:environment) { create(:environment, :stopping, project: project) }
+      let(:environment) { build_stubbed(:environment, :stopping, project: project) }
       let(:user) { create(:user, reporter_of: project) }
 
       it 'allows neither' do

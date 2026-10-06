@@ -2183,6 +2183,7 @@ Arguments:
 | <a id="query-namespacesecurityprojects-search"></a>`search` | [`String`](#string) | Search projects by name. |
 | <a id="query-namespacesecurityprojects-securityanalyzerfilters"></a>`securityAnalyzerFilters` | [`[AnalyzerFilterInput!]`](#analyzerfilterinput) | Filter projects by analyzer type and status. |
 | <a id="query-namespacesecurityprojects-sortby"></a>`sortBy` {{< icon name="warning-solid" >}} | [`SortableAnalyzerType`](#sortableanalyzertype) | Introduced in GitLab 19.2. Status: Experiment. Sort projects by analyzer status. |
+| <a id="query-namespacesecurityprojects-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`ScanProfileTriggerType`](#scanprofiletriggertype) | Introduced in GitLab 19.5. Status: Experiment. Filter projects by attached triage and remediation trigger type. |
 | <a id="query-namespacesecurityprojects-vulnerabilitycountfilters"></a>`vulnerabilityCountFilters` | [`[VulnerabilityCountFilterInput!]`](#vulnerabilitycountfilterinput) | Filter projects by vulnerability counts using comparison operators. |
 
 ### `Query.note`
@@ -3570,6 +3571,8 @@ Arguments:
 | <a id="mutation-adminsidekiqqueuesdeletejobs-callerid"></a>`callerId` | [`String`](#string) | Delete jobs matching caller_id in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-clientid"></a>`clientId` | [`String`](#string) | Delete jobs matching client_id in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-adminsidekiqqueuesdeletejobs-clientname"></a>`clientName` | [`String`](#string) | Delete jobs matching client_name in the context metadata. |
+| <a id="mutation-adminsidekiqqueuesdeletejobs-clienttype"></a>`clientType` | [`String`](#string) | Delete jobs matching client_type in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-featurecategory"></a>`featureCategory` | [`String`](#string) | Delete jobs matching feature_category in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-glrootnamespaceid"></a>`glRootNamespaceId` | [`String`](#string) | Delete jobs matching gl_root_namespace_id in the context metadata. |
 | <a id="mutation-adminsidekiqqueuesdeletejobs-gluserid"></a>`glUserId` | [`String`](#string) | Delete jobs matching gl_user_id in the context metadata. |
@@ -35807,7 +35810,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aigovernancemetrics-agents"></a>`agents` | [`AiGovernanceKpi`](#aigovernancekpi) | Distinct AI agent instances with sessions in the timeframe. Chat conversations are not counted. |
-| <a id="aigovernancemetrics-sessiondistribution"></a>`sessionDistribution` {{< icon name="warning-solid" >}} | [`[AiGovernanceSessionDistribution!]`](#aigovernancesessiondistribution) | Introduced in GitLab 19.5. Status: Experiment. Sessions in the timeframe grouped by flow type for GitLab Duo sessions and by agent type for external sessions, ordered by session count. Returns the top 10. Missing names are reported as `unknown`. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. |
+| <a id="aigovernancemetrics-sessiondistribution"></a>`sessionDistribution` {{< icon name="warning-solid" >}} | [`AiGovernanceSessionDistribution`](#aigovernancesessiondistribution) | Introduced in GitLab 19.5. Status: Experiment. Sessions and distinct developers in the timeframe, split by agent or flow type. Empty when ClickHouse is not enabled for analytics. Returns null when the `ai_governance_dashboard_charts` feature flag is disabled. |
 | <a id="aigovernancemetrics-sessions"></a>`sessions` | [`AiGovernanceKpi`](#aigovernancekpi) | AI sessions in the timeframe, including Duo Chat conversations. |
 | <a id="aigovernancemetrics-toolcalls"></a>`toolCalls` {{< icon name="warning-solid" >}} | [`AiGovernanceKpi`](#aigovernancekpi) | Introduced in GitLab 19.5. Status: Experiment. Tools invoked by AI agents in the timeframe. Counts every invocation, not distinct tools. Returns null when the `ai_governance_tool_calls` feature flag is disabled or when ClickHouse is not enabled. |
 
@@ -35883,14 +35886,27 @@ Fields:
 
 ### `AiGovernanceSessionDistribution`
 
-Number of AI sessions for one flow type or agent type.
+AI sessions and developers in the timeframe, split by agent or flow type.
 
 Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aigovernancesessiondistribution-count"></a>`count` | [`Int!`](#int) | Number of sessions in the timeframe. |
-| <a id="aigovernancesessiondistribution-name"></a>`name` | [`String!`](#string) | Flow type for GitLab Duo sessions, agent type for external sessions. |
+| <a id="aigovernancesessiondistribution-slices"></a>`slices` | [`[AiGovernanceSessionDistributionSlice!]!`](#aigovernancesessiondistributionslice) | Slices ordered by developers, then sessions, then name. Returns the top 10. Missing names are reported as `unknown`. |
+| <a id="aigovernancesessiondistribution-totaldevelopers"></a>`totalDevelopers` | [`Int!`](#int) | Number of distinct developers with sessions in the timeframe, across all slices. |
+| <a id="aigovernancesessiondistribution-totalsessions"></a>`totalSessions` | [`Int!`](#int) | Number of sessions in the timeframe, across all slices. |
+
+### `AiGovernanceSessionDistributionSlice`
+
+AI sessions and developers for one agent or flow type.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancesessiondistributionslice-developers"></a>`developers` | [`Int!`](#int) | Number of distinct developers with sessions in the slice. |
+| <a id="aigovernancesessiondistributionslice-name"></a>`name` | [`String!`](#string) | Name of the slice. Version-less flow type for `INTERNAL_DAP`, agent type for `EXTERNAL`. For `ALL`, `gitlab_duo` for GitLab Duo sessions and agent type for external sessions. |
+| <a id="aigovernancesessiondistributionslice-sessions"></a>`sessions` | [`Int!`](#int) | Number of sessions in the slice. |
 
 ### `AiGovernanceToolCall`
 
@@ -49646,6 +49662,25 @@ Arguments:
 | <a id="group-timelogs-starttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
 | <a id="group-timelogs-username"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
+##### `Group.triageAndRemediationCoverageCounters`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Triage and remediation coverage counters for the group, for a given trigger type.
+
+Returns [`TriageAndRemediationCoverageCounters`](#triageandremediationcoveragecounters).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="group-triageandremediationcoveragecounters-triggertype"></a>`triggerType` | [`ScanProfileTriggerType!`](#scanprofiletriggertype) | Trigger type to count coverage for. |
+
 ##### `Group.valueStreamDashboardUsageOverview`
 
 {{< details >}}
@@ -54957,6 +54992,48 @@ Fields:
 | <a id="mlmodelversion-packageid"></a>`packageId` | [`PackagesPackageID!`](#packagespackageid) | Package for model version artifacts. |
 | <a id="mlmodelversion-version"></a>`version` | [`String!`](#string) | Name of the version. |
 
+### `MttrOverTimeBucket`
+
+Mean time to remediation for a single weekly (Monday to Sunday) bucket, with optional breakdowns by severity and report type.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mttrovertimebucket-byreporttype"></a>`byReportType` | [`[MttrOverTimeByReportType!]!`](#mttrovertimebyreporttype) | Remediation metrics for the bucket broken down by report type. |
+| <a id="mttrovertimebucket-byseverity"></a>`bySeverity` | [`[MttrOverTimeBySeverity!]!`](#mttrovertimebyseverity) | Remediation metrics for the bucket broken down by severity. |
+| <a id="mttrovertimebucket-count"></a>`count` | [`Int!`](#int) | Number of vulnerabilities remediated in the bucket. Denominator of the MTTR average. |
+| <a id="mttrovertimebucket-enddate"></a>`endDate` | [`ISO8601Date!`](#iso8601date) | End of the weekly bucket (Sunday). Capped at the current date, so the most recent bucket may be partial. |
+| <a id="mttrovertimebucket-mttr"></a>`mttr` | [`Float`](#float) | Mean time to remediation, in days (sumDays / count). Null when no vulnerabilities were remediated in the bucket. |
+| <a id="mttrovertimebucket-startdate"></a>`startDate` | [`ISO8601Date!`](#iso8601date) | Start of the weekly bucket (Monday). |
+| <a id="mttrovertimebucket-sumdays"></a>`sumDays` | [`Float!`](#float) | Sum of remediation time, in days, across vulnerabilities remediated in the bucket. Numerator of the MTTR average. |
+
+### `MttrOverTimeByReportType`
+
+Mean time to remediation for a single report type within a weekly bucket.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mttrovertimebyreporttype-count"></a>`count` | [`Int!`](#int) | Number of vulnerabilities of the report type remediated in the bucket. |
+| <a id="mttrovertimebyreporttype-mttr"></a>`mttr` | [`Float`](#float) | Mean time to remediation for the report type, in days (sumDays / count). Null when the count is 0. |
+| <a id="mttrovertimebyreporttype-reporttype"></a>`reportType` | [`VulnerabilityReportType!`](#vulnerabilityreporttype) | Report type the breakdown applies to. |
+| <a id="mttrovertimebyreporttype-sumdays"></a>`sumDays` | [`Float!`](#float) | Sum of remediation time, in days, across vulnerabilities of the report type remediated in the bucket. |
+
+### `MttrOverTimeBySeverity`
+
+Mean time to remediation for a single severity within a weekly bucket.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mttrovertimebyseverity-count"></a>`count` | [`Int!`](#int) | Number of vulnerabilities of the severity remediated in the bucket. |
+| <a id="mttrovertimebyseverity-mttr"></a>`mttr` | [`Float`](#float) | Mean time to remediation for the severity, in days (sumDays / count). Null when the count is 0. |
+| <a id="mttrovertimebyseverity-severity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | Severity the breakdown applies to. |
+| <a id="mttrovertimebyseverity-sumdays"></a>`sumDays` | [`Float!`](#float) | Sum of remediation time, in days, across vulnerabilities of the severity remediated in the bucket. |
+
 ### `Namespace`
 
 Fields:
@@ -58469,6 +58546,7 @@ Fields:
 | <a id="project-topics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
 | <a id="project-trackingkey"></a>`trackingKey` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 16.0. Status: Experiment. Tracking key assigned to the project. |
 | <a id="project-transferinprogress"></a>`transferInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates if the project is currently being transferred. |
+| <a id="project-triageandremediationcoverage"></a>`triageAndRemediationCoverage` {{< icon name="warning-solid" >}} | [`TriageAndRemediationCoverage`](#triageandremediationcoverage) | Introduced in GitLab 19.5. Status: Experiment. Triage and remediation capability coverage for the project. |
 | <a id="project-updatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the project was last updated. |
 | <a id="project-useraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="project-userpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
@@ -63565,6 +63643,28 @@ Fields:
 
 #### Fields with arguments
 
+##### `SecurityMetrics.mttrOverTime`
+
+{{< details >}}
+
+- Introduced in GitLab 19.5.
+- Status: Experiment.
+
+{{< /details >}}
+
+Weekly mean time to remediation (MTTR) of vulnerabilities. Each week only counts vulnerabilities detected no earlier than 90 days before the week starts, so a week's MTTR is at most about 97 days. Returns `null` unless the `security_dashboard_mttr_chart` feature flag is enabled.
+This feature is currently under development and not yet available for general use.
+
+Returns [`[MttrOverTimeBucket!]`](#mttrovertimebucket).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitymetrics-mttrovertime-enddate"></a>`endDate` | [`ISO8601Date!`](#iso8601date) | End date of the time range. Snapped forward to the end of its week (Sunday), capped at the current date. The most recent week may be partial. The range can span at most 12 weeks. |
+| <a id="securitymetrics-mttrovertime-severity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
+| <a id="securitymetrics-mttrovertime-startdate"></a>`startDate` | [`ISO8601Date!`](#iso8601date) | Start date of the time range. Snapped back to the start of its week (Monday) so results align to full Monday to Sunday buckets. |
+
 ##### `SecurityMetrics.vulnerabilitiesByAge`
 
 {{< details >}}
@@ -63720,6 +63820,7 @@ Fields:
 | <a id="securityposturecounters-withfailures"></a>`withFailures` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.0. Status: Experiment. Number of unarchived projects with at least one failed scan. |
 | <a id="securityposturecounters-withscanners"></a>`withScanners` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.0. Status: Experiment. Number of unarchived projects with at least one security scanner configured. |
 | <a id="securityposturecounters-withstale"></a>`withStale` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.0. Status: Experiment. Number of unarchived projects with at least one stale scan. |
+| <a id="securityposturecounters-withtriagecoverage"></a>`withTriageCoverage` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Count of unarchived projects in the group with at least one triage and remediation trigger enabled. |
 
 ### `SecurityReportSummary`
 
@@ -64850,6 +64951,39 @@ Fields:
 | <a id="treeentry-type"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="treeentry-webpath"></a>`webPath` | [`String`](#string) | Web path for the tree entry (directory). |
 | <a id="treeentry-weburl"></a>`webUrl` | [`String`](#string) | Web URL for the tree entry (directory). |
+
+### `TriageAndRemediationCapability`
+
+A triage and remediation capability and its coverage state for a project.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="triageandremediationcapability-enabled"></a>`enabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. Indicates the capability is attached to the project. |
+| <a id="triageandremediationcapability-runmode"></a>`runMode` {{< icon name="warning-solid" >}} | [`SecurityScanProfileRunMode`](#securityscanprofilerunmode) | Introduced in GitLab 19.5. Status: Experiment. Run mode for the capability. |
+| <a id="triageandremediationcapability-triggertype"></a>`triggerType` {{< icon name="warning-solid" >}} | [`ScanProfileTriggerType!`](#scanprofiletriggertype) | Introduced in GitLab 19.5. Status: Experiment. Trigger type the capability applies to. |
+
+### `TriageAndRemediationCoverage`
+
+Triage and remediation capability coverage for a project.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="triageandremediationcoverage-capabilities"></a>`capabilities` {{< icon name="warning-solid" >}} | [`[TriageAndRemediationCapability!]!`](#triageandremediationcapability) | Introduced in GitLab 19.5. Status: Experiment. Triage and remediation capabilities and their coverage state, one entry per trigger type. |
+
+### `TriageAndRemediationCoverageCounters`
+
+Triage and remediation coverage counters for a namespace, for a given trigger type.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="triageandremediationcoveragecounters-autocount"></a>`autoCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.5. Status: Experiment. Count of unarchived projects in the group where the trigger type is attached and set to automatic. |
+| <a id="triageandremediationcoveragecounters-enabledcount"></a>`enabledCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.5. Status: Experiment. Count of unarchived projects in the group where the trigger type is attached. |
 
 ### `TrialUsage`
 

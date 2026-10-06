@@ -7,6 +7,7 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import { timestampType } from '~/organizations/shared/utils';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
+import { editProjectPath } from '~/lib/utils/path_helpers/project';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
 import NewProjectButton from './new_project_button.vue';
@@ -104,7 +105,9 @@ export default {
         },
       }) {
         return {
-          nodes: formatGraphQLProjects(nodes),
+          nodes: formatGraphQLProjects(nodes, (project) => ({
+            editPath: editProjectPath(project.fullPath, { organizationPath: null }),
+          })),
           pageInfo,
         };
       },

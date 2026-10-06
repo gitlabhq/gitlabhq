@@ -1,6 +1,6 @@
 ---
-source_checksum: 304498d53733683f
-distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
+source_checksum: f0bf7eeb17980969
+distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -13,11 +13,14 @@ distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 - Submit a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal) and follow the template before implementing any new tool; the `mcp-tool-review-board` committee evaluates proposals before implementation.
 - Implement tools that interact with GitLab resources in the MCP Server (or Agent Platform for short-term needs); implement tools that do not interact with GitLab resources in the Agent Platform.
 - DO NOT add a new tool when an existing tool can handle the capability with parameter adjustments; prefer consolidation via an enum or parameter over proliferation.
-- Declare which input argument names the project or group for custom, GraphQL, and aggregated tools through `self.namespace_arguments`; mark tools that accept no project or group argument as `ungovernable!` instead. Exception: route-backed `ApiTool` tools derive the namespace from the route's authorization `boundary_type` (`:project` or `:group`) and its `:id` argument, with no custom declaration; when no boundary type is set, they use the default namespace declaration.
-- Use the default `{ project: :project_id, group: :group_id }` namespace declaration when the tool's input schema already uses those argument names; override only when the tool uses different argument names (e.g., `project_full_path`, `full_path`).
+- Declare container arguments on custom, GraphQL, and aggregated service classes with `container_arguments`, including lookups under `record:` for arguments that identify an owning container indirectly; use `ungovernable!` only when no argument identifies a project or group.
+- For route-backed `ApiTool` tools, `:project` and `:group` authorization boundary types resolve the route's `:id`; with no boundary type, use the default declaration. Declare extra container arguments with route-level `container_arguments:`, using `record:` lookups for record or namespace arguments; the declaration merges with the boundary-derived kind. Pass EE-only declarations through a CE helper overridden in EE.
+- Use the default `{ project: :project_id, group: :group_id, project_or_group: :url }` container declaration when those argument names fit the input schema; customize differing names with `container_arguments`, which replaces matching kinds while preserving other defaults.
 - Use `:project_or_group` as the container kind when a single argument may name either a project or a group.
+- Govern URL arguments by every project or group resolved by the supported URL parsers, so the most restrictive tool rule applies. Resolve every identifier in list arguments rather than only the first; skip identifiers that resolve to no project or group.
+- When an argument names a record rather than a project or group directly, declare it under the `record:` kind with a lookup lambda (e.g., `container_arguments record: { vulnerability_id: ->(id) { ::Vulnerability.find_by_id(id)&.project } }`); a lookup returning `nil` still counts the argument, so a call naming a nonexistent record is refused rather than served ungoverned.
 - DO NOT add a separate authorization check after calling `ResourceFinder#find_project!` or `#find_group!`; both finders fold authorization into the DB lookup and raise `"'<id>' not found or inaccessible"` on failure to prevent resource enumeration.
-- Ensure `ee/spec/lib/ai/tool_rules/governable_tools_namespace_spec.rb` passes: every governed tool must declare a namespace argument or be marked `ungovernable!`, the declared argument must exist in the tool's input schema, and the declaration must use a recognized container kind (`:project`, `:group`, or `:project_or_group`).
+- Ensure `ee/spec/lib/ai/tool_rules/governable_tools_container_spec.rb` passes: every governed tool must declare a container argument or be marked `ungovernable!`, the declared argument must exist in the tool's input schema, the declaration must use a recognized container kind (`:project`, `:group`, `:project_or_group`, or `record:`), and every input property must be either declared or listed for that tool as never naming a project or group.
 
 ### Tool Naming and Consolidation
 
@@ -59,7 +62,7 @@ distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 - Register GraphQL tools in `Mcp::Tools::Manager` under `GRAPHQL_TOOLS` with the tool name as key and the service class as value.
 - Override `graphql_tool_class` in the service wrapper to return the corresponding `GraphqlTool` subclass; call `execute_graphql_tool(arguments)` in version-specific `perform_v<X>_<Y>_<Z>` methods.
 - DO NOT add `additionalProperties: false` to `input_schema`; the shared tool abstraction rejects unrecognized arguments by default. Set `additionalProperties: true` only to accept arbitrary arguments. Schemas using `oneOf`, `anyOf`, `allOf`, or `$ref` keep their own behavior.
-- Override `self.namespace_arguments` on GraphQL service classes to declare which input argument names the project or group (see Tool Proposal and Governance).
+- Call the `container_arguments` macro on GraphQL service classes to declare which input argument names the project or group (see Tool Proposal and Governance).
 - Add unit tests for the GraphQL tool, integration tests for the service, and update `ee/spec/services/ee/mcp/tools/manager_spec.rb`, `spec/requests/api/mcp/handlers/list_tools_spec.rb`, and `ee/spec/requests/api/mcp/handlers/list_tools_spec.rb`.
 
 ### Tool Versioning

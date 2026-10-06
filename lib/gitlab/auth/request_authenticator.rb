@@ -116,6 +116,7 @@ module Gitlab
 
       def find_user_from_any_authentication_method(request_format)
         find_user_from_dependency_proxy_token ||
+          find_user_from_job_bearer_token ||
           find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
           find_user_from_feed_token(request_format) ||
           find_user_from_static_object_token(request_format) ||
@@ -141,7 +142,7 @@ module Gitlab
 
       def route_authentication_setting
         @route_authentication_setting ||= {
-          job_token_allowed: api_request?,
+          job_token_allowed: api_request? ? %i[request basic_auth] : false,
           basic_auth_personal_access_token: api_request? || git_request?,
           deploy_token_allowed: api_request? || git_request?
         }

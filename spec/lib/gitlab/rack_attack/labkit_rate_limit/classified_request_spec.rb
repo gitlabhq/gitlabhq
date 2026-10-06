@@ -198,6 +198,30 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
       end
     end
 
+    describe 'a CI job token the endpoint accepts' do
+      let_it_be(:user) { build_stubbed(:user) }
+
+      let(:job) { build(:ci_build, user: user, status: :running) }
+
+      before do
+        allow(::Ci::Build).to receive(:find_by_token).with('glcbt-token_value').and_return(job)
+      end
+
+      it 'counts a job token sent as basic auth against the job user' do
+        credentials = ActionController::HttpAuthentication::Basic.encode_credentials(
+          Gitlab::Auth::CI_JOB_USER, 'glcbt-token_value'
+        )
+
+        expect(facts_for('/api/v4/projects/1/terraform/state/production', 'HTTP_AUTHORIZATION' => credentials))
+          .to include(requester_id: user.id.to_s, requester_type: 'user')
+      end
+
+      it 'counts a job token sent as a bearer token against the job user' do
+        expect(facts_for('/api/v4/job', 'HTTP_AUTHORIZATION' => 'Bearer glcbt-token_value'))
+          .to include(requester_id: user.id.to_s, requester_type: 'user')
+      end
+    end
+
     describe 'authenticated request' do
       let(:request) { described_class.new(Rack::MockRequest.env_for('/api/v4/projects')) }
 

@@ -11,7 +11,6 @@ describe('EmptyStateWithAnyIssues component', () => {
     wrapper = shallowMount(EmptyStateWithAnyIssues, {
       propsData: {
         hasSearch: true,
-        isEpic: false,
         isOpenTab: true,
         ...props,
       },
@@ -59,24 +58,6 @@ describe('EmptyStateWithAnyIssues component', () => {
       expect(findGlEmptyState().props()).toMatchObject({
         description: 'To widen your search, change or remove filters above.',
         title: 'No results found',
-      });
-    });
-  });
-
-  describe('when epic', () => {
-    describe('when "Open" tab is active', () => {
-      it('shows empty state', () => {
-        mountComponent({ hasSearch: false, isEpic: true, isOpenTab: true });
-
-        expect(findGlEmptyState().props('title')).toBe('There are no open epics');
-      });
-    });
-
-    describe('when "Closed" tab is active', () => {
-      it('shows empty state', () => {
-        mountComponent({ hasSearch: false, isEpic: true, isOpenTab: false });
-
-        expect(findGlEmptyState().props('title')).toBe('There are no closed epics');
       });
     });
   });

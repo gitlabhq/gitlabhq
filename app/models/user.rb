@@ -1693,25 +1693,6 @@ class User < ApplicationRecord
     groups.self_and_descendants
   end
 
-  # Returns a relation of groups the user has access to, including their parent
-  # and child groups (recursively).
-  def all_expanded_groups
-    groups = groups_with_at_least_minimal_access
-    return groups if groups.empty?
-
-    Gitlab::ObjectHierarchy.new(groups).all_objects
-  end
-
-  def expanded_groups_requiring_two_factor_authentication
-    all_expanded_groups.where(require_two_factor_authentication: true)
-  end
-
-  def source_groups_of_two_factor_authentication_requirement
-    Gitlab::ObjectHierarchy.new(expanded_groups_requiring_two_factor_authentication)
-      .all_objects
-      .where(id: groups_with_at_least_minimal_access)
-  end
-
   def direct_groups_with_route
     groups.with_route.order_id_asc
   end
@@ -2710,19 +2691,6 @@ class User < ApplicationRecord
     can?(:update_organization, organization)
   end
 
-  def update_two_factor_requirement
-    # No-op on frozen records: production records are never frozen,
-    # so this only guards frozen shared test fixtures from a lazy write.
-    return if frozen?
-
-    periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
-
-    self.require_two_factor_authentication_from_group = periods.any?
-    self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
-
-    save
-  end
-
   # each existing user needs to have a `feed_token`.
   # we do this on read since migrating all existing users is not a feasible
   # solution.
@@ -3123,11 +3091,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  # method overridden in EE
-  def groups_with_at_least_minimal_access
-    groups
-  end
 
   def self_managed_admin?
     can_admin_all_resources?

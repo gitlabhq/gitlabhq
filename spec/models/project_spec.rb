@@ -9162,6 +9162,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect { swap_pool_repository! }.to change { project.reload.pool_repository }.from(pool1).to(pool2)
     end
 
+    context 'when the project is pending delete' do
+      before do
+        project.pending_delete = true
+      end
+
+      it 'swaps membership and schedules old pool destruction without disconnecting', :aggregate_failures do
+        expect(project.repository).not_to receive(:disconnect_alternates)
+        expect(ObjectPool::DestroyWorker).to receive(:perform_async).with(pool1.id)
+
+        swap_pool_repository!
+
+        expect(project.reload.pool_repository).to eq(pool2)
+        expect(pool1.reload).to be_obsolete
+      end
+    end
+
     context 'when repository does not exist' do
       let(:project) { build(:project) }
 

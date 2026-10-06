@@ -121,9 +121,10 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'delete path' do
+      let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
+
       context 'user has ability to delete pipeline' do
         let(:project) { create(:project, namespace: user.namespace) }
-        let(:pipeline) { create(:ci_pipeline, project: project) }
 
         it 'contains delete path' do
           expect(subject[:delete_path]).to be_present
@@ -131,8 +132,6 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
       end
 
       context 'user does not have ability to delete pipeline' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-
         it 'does not contain delete path' do
           expect(subject).not_to have_key(:delete_path)
         end
@@ -140,7 +139,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline ref is empty' do
-      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+      let(:pipeline) { build_stubbed(:ci_empty_pipeline, project: project) }
 
       before do
         allow(pipeline).to receive(:ref).and_return(nil)
@@ -152,10 +151,8 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline has a failure reason set' do
-      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
-      before do
-        pipeline.drop!(:config_error)
+      let(:pipeline) do
+        build_stubbed(:ci_empty_pipeline, project: project, status: :failed, failure_reason: :config_error)
       end
 
       it 'has a correct failure reason' do
@@ -165,15 +162,15 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when request has a project' do
+      let(:project) { merge_request.target_project }
+      let(:pipeline) { merge_request.pipelines_for_merge_request.first }
+
       before do
         allow(request).to receive(:project).and_return(project)
       end
 
       context 'when pipeline is detached merge request pipeline' do
         let_it_be(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
-
-        let(:project) { merge_request.target_project }
-        let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 
         it 'makes detached flag true' do
           expect(subject[:flags][:detached_merge_request_pipeline]).to be_truthy
@@ -220,9 +217,6 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
 
       context 'when pipeline is merge request pipeline' do
         let_it_be(:merge_request) { create(:merge_request, :with_merge_request_pipeline, merge_sha: 'abc') }
-
-        let(:project) { merge_request.target_project }
-        let(:pipeline) { merge_request.pipelines_for_merge_request.first }
 
         it 'makes detached flag false' do
           expect(subject[:flags][:detached_merge_request_pipeline]).to be_falsy
@@ -313,7 +307,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline has coverage' do
-      let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+      let(:pipeline) { build_stubbed(:ci_pipeline, project: project, user: user) }
 
       before do
         allow(pipeline).to receive(:coverage).and_return(35.0)
@@ -325,8 +319,8 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline has a schedule' do
-      let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
-      let_it_be(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule, project: project) }
+      let(:pipeline_schedule) { build_stubbed(:ci_pipeline_schedule, :nightly, project: project) }
+      let(:pipeline) { build_stubbed(:ci_pipeline, pipeline_schedule: pipeline_schedule, project: project) }
 
       it 'exposes the schedule' do
         expect(subject[:pipeline_schedule]).to eq({
@@ -338,7 +332,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
     end
 
     context 'when pipeline has no schedule' do
-      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
       it 'is nil' do
         expect(subject[:pipeline_schedule]).to be_nil

@@ -112,6 +112,8 @@ Code Quality results are shown in the:
 
 Code quality analysis results display in the merge request **Reports** tab.
 Multiple code quality findings with identical fingerprints display as a single entry.
+To determine which findings are new or resolved, GitLab compares them with the findings from a
+[baseline pipeline](_index.md#baseline-pipeline-selection) on the target branch.
 
 For more information, see [merge request reports](../../user/project/merge_requests/reports.md).
 

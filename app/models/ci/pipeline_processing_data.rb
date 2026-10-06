@@ -21,5 +21,17 @@ module Ci
 
     validates :pipeline, presence: true
     validates :project_id, presence: true
+
+    def self.protect(pipeline)
+      upsert(
+        { pipeline_id: pipeline.id, partition_id: pipeline.partition_id,
+          project_id: pipeline.project_id, interruptible_protected: true },
+        unique_by: [:pipeline_id, :partition_id],
+        on_duplicate: Arel.sql(<<~SQL.squish)
+          interruptible_protected = true
+          WHERE NOT p_ci_pipeline_processing_data.interruptible_protected
+        SQL
+      )
+    end
   end
 end

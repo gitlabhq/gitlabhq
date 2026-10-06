@@ -42,7 +42,6 @@ export default normalizeRender({
       quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
       canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
       canCreateProjects: computed(() => Boolean(this.metadata?.createProjects)),
-      canBulkAdminEpic: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
       calendarPath: computed(() => this.metadata.calendarPath),
       rssPath: computed(() => this.metadata.rssPath),

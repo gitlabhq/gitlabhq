@@ -841,7 +841,7 @@ To configure the proxy listener of GitLab Pages:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-## Limits
+## Configurable limits
 
 Set limits on GitLab Pages sites, like site size and the number of custom domains, files, and
 redirect rules. You can also set when parallel deployments expire by default.
@@ -1125,6 +1125,56 @@ After an archive reaches `zip_cache_expiration`, it's marked as expired and remo
 GitLab Pages is part of the [regular backup](../backup_restore/_index.md), so there is no
 separate backup to configure.
 
+## Logging and environment
+
+Pass environment variables to the GitLab Pages daemon, and configure the details it adds to logs.
+
+### Use environment variables
+
+You can pass an environment variable to the Pages daemon to turn a feature flag on or off.
+
+To turn off the configurable directory feature:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['env'] = {
+     'FF_CONFIGURABLE_ROOT_DIR' => "false"
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+### Activate verbose logging for daemon
+
+To configure verbose logging of the GitLab Pages daemon:
+
+1. By default the daemon only logs with `INFO` level. To log events with level `DEBUG`, edit
+   `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['log_verbose'] = true
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+### Propagating the correlation ID
+
+Setting `propagate_correlation_id` to `true` allows installations behind a reverse proxy to generate
+and set a correlation ID on requests sent to GitLab Pages. When a reverse proxy sets the header
+value `X-Request-ID`, the value propagates in the request chain. Users can
+[find the correlation ID in the logs](../logs/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
+
+To turn on the propagation of the correlation ID:
+
+1. In `/etc/gitlab/gitlab.rb`, add:
+
+   ```ruby
+   gitlab_pages['propagate_correlation_id'] = true
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
 ## Running GitLab Pages on a separate server
 
 You can run the GitLab Pages daemon on a separate server to decrease the load on
@@ -1286,56 +1336,6 @@ Examples:
   is an error response from the API, such as a connection timeout.
 - Decreasing `gitlab_retrieval_retries` reduces the number of times a domain's configuration is
   retried before reporting an error.
-
-## Logging and environment
-
-Pass environment variables to the GitLab Pages daemon, and configure the details it adds to logs.
-
-### Use environment variables
-
-You can pass an environment variable to the Pages daemon to turn a feature flag on or off.
-
-To turn off the configurable directory feature:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['env'] = {
-     'FF_CONFIGURABLE_ROOT_DIR' => "false"
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-### Activate verbose logging for daemon
-
-To configure verbose logging of the GitLab Pages daemon:
-
-1. By default the daemon only logs with `INFO` level. To log events with level `DEBUG`, edit
-   `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['log_verbose'] = true
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-### Propagating the correlation ID
-
-Setting `propagate_correlation_id` to `true` allows installations behind a reverse proxy to generate
-and set a correlation ID on requests sent to GitLab Pages. When a reverse proxy sets the header
-value `X-Request-ID`, the value propagates in the request chain. Users can
-[find the correlation ID in the logs](../logs/tracing_correlation_id.md#identify-the-correlation-id-for-a-request).
-
-To turn on the propagation of the correlation ID:
-
-1. In `/etc/gitlab/gitlab.rb`, add:
-
-   ```ruby
-   gitlab_pages['propagate_correlation_id'] = true
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 ## Related topics
 

@@ -27638,6 +27638,7 @@ paths:
       operationId: deleteApiV4AdminSidekiqQueuesQueueName
       summary: Delete jobs from a Sidekiq queue
       description: Deletes jobs from a Sidekiq queue that match the specified metadata.
+        At least one of 31 related parameters must be provided.
       tags:
       - Sidekiq
       responses:
@@ -27656,406 +27657,217 @@ paths:
         in: path
       - name: organization_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: user
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: user_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: gl_user_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: scoped_user
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: scoped_user_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: project
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: root_namespace
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: gl_root_namespace_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: client_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: caller_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: remote_ip
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: job_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: pipeline_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: related_class
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: feature_category
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: artifact_size
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: artifact_used_cdn
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: artifacts_dependencies_size
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: artifacts_dependencies_count
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: root_caller_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: merge_action_status
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: bulk_import_entity_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: sidekiq_destination_shard_redis
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: kubernetes_agent_id
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: mvcc_manifest
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: client_type
+        required: false
+        description: Metadata key to match
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: client_name
+        required: false
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: subscription_plan
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: ai_resource
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true
         in: query
       - name: worker_class
         required: false
-        description: Metadata key to match. At least one of `organization_id`, `user`,
-          `user_id`, `gl_user_id`, `scoped_user`, `scoped_user_id`, `project`, `root_namespace`,
-          `gl_root_namespace_id`, `client_id`, `caller_id`, `remote_ip`, `job_id`,
-          `pipeline_id`, `related_class`, `feature_category`, `artifact_size`, `artifact_used_cdn`,
-          `artifacts_dependencies_size`, `artifacts_dependencies_count`, `root_caller_id`,
-          `merge_action_status`, `bulk_import_entity_id`, `sidekiq_destination_shard_redis`,
-          `kubernetes_agent_id`, `mvcc_manifest`, `subscription_plan`, `ai_resource`,
-          `worker_class` must be provided.
+        description: Metadata key to match
         schema:
           type: string
           nullable: true

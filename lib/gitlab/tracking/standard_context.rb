@@ -49,6 +49,7 @@ module Gitlab
         {
           environment: environment,
           source: source,
+          **client_attributes,
           correlation_id: Labkit::Correlation::CorrelationId.current_or_new_id,
           plan: plan_name,
           extra: extra,
@@ -77,6 +78,13 @@ module Gitlab
 
       def get_plan_name(_namespace)
         'free' # GitLab CE edition is always free
+      end
+
+      # No request lineage (cron, console) means GitLab itself is the client.
+      def client_attributes
+        client = ClientIdentity.current || ClientIdentity::SYSTEM
+
+        { client_type: client.type, client_name: client.name }.compact
       end
 
       def tracked_user_id

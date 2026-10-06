@@ -268,7 +268,8 @@ module Gitlab
         response_headers: {},
         allowed_endpoints: [],
         restrict_forwarded_response_headers: {},
-        transform_config: {}
+        transform_config: {},
+        upstream_range: nil
       )
         params = {
           'URL' => url,
@@ -279,7 +280,8 @@ module Gitlab
           'Body' => body.to_s,
           'Header' => headers.transform_values { |v| Array.wrap(v) },
           'ResponseHeaders' => response_headers.transform_values { |v| Array.wrap(v) },
-          'Method' => method
+          'Method' => method,
+          'UpstreamRange' => upstream_range
         }.merge(restrict_forwarded_response_headers_params(restrict_forwarded_response_headers)).compact
 
         if timeouts.present?

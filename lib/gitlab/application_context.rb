@@ -45,7 +45,9 @@ module Gitlab
       :mvcc_manifest,
       :duo_workflow_id,
       :organization_source,
-      :client_service
+      :client_service,
+      :client_type,
+      :client_name
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -90,7 +92,9 @@ module Gitlab
       Attribute.new(:mvcc_manifest, String),
       Attribute.new(:duo_workflow_id, String),
       Attribute.new(:organization_source, String),
-      Attribute.new(:client_service, String)
+      Attribute.new(:client_service, String),
+      Attribute.new(:client_type, String),
+      Attribute.new(:client_name, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -170,6 +174,8 @@ module Gitlab
         assign_hash_if_value(hash, :duo_workflow_id)
         assign_hash_if_value(hash, :organization_source)
         assign_hash_if_value(hash, :client_service)
+        assign_hash_if_value(hash, :client_type)
+        assign_hash_if_value(hash, :client_name)
 
         hash[:user] = -> { username } if include_user?
         hash[Labkit::Fields::GL_USER_ID] = -> { user_id } if include_user?

@@ -76,19 +76,6 @@ RSpec.describe Suggestion, feature_category: :code_review_workflow do
         expect(suggestion.diff_file_for_highlight.unique_identifier).to eq(first_note.note_diff_file.id)
       end
     end
-
-    context 'when suggestion_highlight_uses_note_diff_file is disabled' do
-      before do
-        stub_feature_flags(suggestion_highlight_uses_note_diff_file: false)
-      end
-
-      it 'falls back to the latest diff file' do
-        latest_diff_file = instance_double(Gitlab::Diff::File)
-        allow(suggestion.note).to receive(:latest_diff_file).and_return(latest_diff_file)
-
-        expect(suggestion.diff_file_for_highlight).to eq(latest_diff_file)
-      end
-    end
   end
 
   describe '#appliable?' do

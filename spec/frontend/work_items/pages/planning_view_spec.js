@@ -66,13 +66,11 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_TICKET,
   STATE_CLOSED,
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
   VIEW_MODE_TABLE,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '~/work_items/constants';
 
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -388,7 +386,6 @@ const mountComponent = async ({
       canCreateWorkItem: false,
       autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
       canAdminIssue: true,
-      canBulkAdminEpic: true,
       canCreateProjects: true,
       hasIterationsFeature: false,
       hasProjects: true,
@@ -561,20 +558,6 @@ describe('planning-view', () => {
       });
     });
 
-    describe('when rendering epics list', () => {
-      beforeEach(async () => {
-        await mountComponent({
-          provide: {
-            workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          },
-        });
-      });
-
-      it('uses work item drawer', () => {
-        expect(findDetailPanel().exists()).toBe(true);
-      });
-    });
-
     it('closes the drawer when set-active-item emits null', async () => {
       const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
       await mountComponent();
@@ -647,7 +630,7 @@ describe('planning-view', () => {
 
     describe('when workItemType is defined', () => {
       it('renders all tokens except "Type"', async () => {
-        await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
+        await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_TICKET } });
         const tokens = findFilteredSearchBar()
           .props('tokens')
           .map((token) => token.type);
@@ -1135,33 +1118,6 @@ describe('planning-view', () => {
       });
     });
 
-    describe('when epics list', () => {
-      it('does not render "Priority", "Label priority", "Manual", "Status", and "Weight" sort options', async () => {
-        await mountComponent({
-          provide: {
-            hasBlockedIssuesFeature: true,
-            hasIssuableHealthStatusFeature: true,
-            hasIssueWeightsFeature: true,
-            hasStatusFeature: true,
-            workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          },
-        });
-
-        expect(findDisplaySettingsDrawer().props('sortOptions')).toEqual([
-          expect.objectContaining({ title: 'Created date' }),
-          expect.objectContaining({ title: 'Updated date' }),
-          expect.objectContaining({ title: 'Closed date' }),
-          expect.objectContaining({ title: 'Milestone due date' }),
-          expect.objectContaining({ title: 'Due date' }),
-          expect.objectContaining({ title: 'Popularity' }),
-          expect.objectContaining({ title: 'Title' }),
-          expect.objectContaining({ title: 'Start date' }),
-          expect.objectContaining({ title: 'Health' }),
-          expect.objectContaining({ title: 'Blocking' }),
-        ]);
-      });
-    });
-
     describe('when service desk list', () => {
       it('does not render "Status" sort options', async () => {
         await mountComponent({
@@ -1236,22 +1192,12 @@ describe('planning-view', () => {
 
   describe('when workItemType is provided', () => {
     it('passes "workItemTypeIds" property to list-view queryVariables', async () => {
-      mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
+      mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_TICKET } });
 
       await waitForPromises();
 
       expect(findListView().props('queryVariables')).toMatchObject({
         workItemTypeIds: 'gid://gitlab/WorkItems::Type/1',
-      });
-    });
-  });
-
-  describe('when workItemType Epic is provided', () => {
-    it('passes "excludeProjects" property to list-view queryVariables', async () => {
-      await mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-
-      expect(findListView().props('queryVariables')).toMatchObject({
-        excludeProjects: true,
       });
     });
   });
@@ -2527,16 +2473,6 @@ describe('planning-view', () => {
 
   describe('when bulk editing', () => {
     describe('user permissions', () => {
-      describe('when workItemType=Epic', () => {
-        it.each([true, false])('renders=$s when canBulkAdminEpic=%s', async (canBulkAdminEpic) => {
-          await mountComponent({
-            provide: { canBulkAdminEpic, workItemType: WORK_ITEM_TYPE_NAME_EPIC },
-          });
-
-          expect(findBulkEditStartButton().exists()).toBe(canBulkAdminEpic);
-        });
-      });
-
       describe('when group', () => {
         it.each`
           canAdminIssue | hasProjects | renders
@@ -2764,30 +2700,6 @@ describe('planning-view', () => {
       await mountComponent();
 
       expect(findCreateWorkItemModal().props('creationContext')).toBe(CREATION_CONTEXT_LIST_ROUTE);
-    });
-
-    describe('alwaysShowWorkItemTypeSelect', () => {
-      it.each`
-        workItemType                 | value
-        ${WORK_ITEM_TYPE_NAME_ISSUE} | ${true}
-        ${WORK_ITEM_TYPE_NAME_EPIC}  | ${false}
-      `('renders=$value when workItemType=$workItemType', async ({ workItemType, value }) => {
-        await mountComponent({ provide: { workItemType } });
-
-        expect(findCreateWorkItemModal().props('alwaysShowWorkItemTypeSelect')).toBe(value);
-      });
-    });
-
-    describe('preselectedWorkItemType', () => {
-      it.each`
-        workItemType                 | value
-        ${WORK_ITEM_TYPE_NAME_ISSUE} | ${WORK_ITEM_TYPE_NAME_ISSUE}
-        ${WORK_ITEM_TYPE_NAME_EPIC}  | ${WORK_ITEM_TYPE_NAME_EPIC}
-      `('renders=$value when workItemType=$workItemType', async ({ workItemType, value }) => {
-        await mountComponent({ provide: { workItemType } });
-
-        expect(findCreateWorkItemModal().props('preselectedWorkItemType')).toBe(value);
-      });
     });
   });
 
@@ -3612,7 +3524,6 @@ describe('planning-view', () => {
           expect(findTableView().props()).toMatchObject({
             rootPageFullPath: 'full/path',
             queryVariables: expect.objectContaining({ fullPath: 'full/path' }),
-            hasWorkItems: true,
           });
         });
 

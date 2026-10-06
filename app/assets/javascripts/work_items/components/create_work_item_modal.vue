@@ -136,11 +136,6 @@ export default {
       required: false,
       default: '',
     },
-    isEpicsList: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     allowAnyNamespace: {
       type: Boolean,
       required: false,
@@ -446,7 +441,6 @@ export default {
         :should-discard-draft="shouldDiscardDraft"
         :namespace-full-name="namespaceFullName"
         :is-modal="true"
-        :is-epics-list="isEpicsList"
         :allow-any-namespace="allowAnyNamespace"
         :allow-projects-only="allowProjectsOnly"
         :create-source="createSource"

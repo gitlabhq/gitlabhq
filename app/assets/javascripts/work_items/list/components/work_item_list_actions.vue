@@ -9,7 +9,7 @@ import {
 import { isEmpty } from 'lodash-es';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
-import { RSS_FILTER_EXCLUDE_EPIC, RSS_FILTER_EPIC_ONLY } from '~/work_items/constants';
+import { RSS_FILTER_EXCLUDE_EPIC } from '~/work_items/constants';
 import WorkItemByEmail from './work_item_by_email.vue';
 import WorkItemCsvExportModal from './work_items_csv_export_modal.vue';
 import WorkItemsCsvImportModal from './work_items_csv_import_modal.vue';
@@ -85,11 +85,6 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
-    },
-    isEpicsList: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     isGroupIssuesList: {
       type: Boolean,
@@ -186,12 +181,6 @@ export default {
       if (this.isGroupIssuesList) {
         return RSS_FILTER_EXCLUDE_EPIC;
       }
-
-      // For group epics page, add 'epic' as default type filter
-      if (this.isEpicsList) {
-        return RSS_FILTER_EPIC_ONLY;
-      }
-
       return {};
     },
   },

@@ -75,11 +75,6 @@ export default {
       type: String,
       required: true,
     },
-    isEpicsList: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isGroup: {
       type: Boolean,
       required: true,
@@ -136,7 +131,7 @@ export default {
       ].includes(true);
     },
     showStatusDropdown() {
-      return this.hasStatusFeature && !this.isEpicsList;
+      return this.hasStatusFeature;
     },
     workItemTypeIds() {
       return [...new Set(this.checkedItems.map((item) => item.workItemType.id))];
@@ -293,7 +288,6 @@ export default {
     @submit.prevent="handleFormSubmitted"
   >
     <work-item-bulk-edit-dropdown
-      v-if="!isEpicsList"
       v-model="state"
       :header-text="__('Select state')"
       :items="$options.stateItems"
@@ -360,7 +354,7 @@ export default {
       data-testid="bulk-edit-confidentiality"
     />
     <work-item-bulk-edit-iteration
-      v-if="!isEpicsList && hasIterationsFeature"
+      v-if="hasIterationsFeature"
       v-model="iterationId"
       :full-path="fullPath"
       :is-group="isGroup"
@@ -380,16 +374,14 @@ export default {
       :selected-work-item-types-ids="workItemTypeIds"
       data-testid="bulk-edit-parent"
     />
-    <template v-if="!isEpicsList">
-      <hr />
-      <work-item-bulk-move
-        :checked-items="checkedItems"
-        :full-path="fullPath"
-        :disabled="shouldDisableMove"
-        @move-start="$emit('start')"
-        @move-success="handleMoveSuccess"
-        @move-finish="$emit('finish')"
-      />
-    </template>
+    <hr />
+    <work-item-bulk-move
+      :checked-items="checkedItems"
+      :full-path="fullPath"
+      :disabled="shouldDisableMove"
+      @move-start="$emit('start')"
+      @move-success="handleMoveSuccess"
+      @move-finish="$emit('finish')"
+    />
   </gl-form>
 </template>

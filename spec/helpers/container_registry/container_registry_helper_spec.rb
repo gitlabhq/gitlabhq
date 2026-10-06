@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::ContainerRegistryHelper, feature_category: :container_registry, type: :helper do
+RSpec.describe ContainerRegistry::ContainerRegistryHelper, feature_category: :container_registry do
   include Devise::Test::ControllerHelpers
 
   let_it_be(:project) { build_stubbed(:project) }

@@ -6,8 +6,6 @@
 export default {
   files: [
     'app/assets/javascripts/issues/dashboard/components/issues_dashboard_app.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/index.vue',
-    'app/assets/javascripts/projects/settings/repository/branch_rules/app.vue',
     'app/assets/javascripts/repository/components/header_area.vue',
     'app/assets/javascripts/repository/components/header_area/breadcrumbs.vue',
     'app/assets/javascripts/work_items/pages/planning_view.vue',
@@ -18,7 +16,6 @@ export default {
     'ee/app/assets/javascripts/packages_and_registries/virtual_registries/pages/maven/registries_and_upstreams/index.vue',
     'ee/app/assets/javascripts/pages/projects/get_started/components/add_code_action_item.vue',
     'ee/app/assets/javascripts/pages/projects/get_started/components/command_line_modal.vue',
-    'ee/app/assets/javascripts/projects/settings/repository/branch_rules/components/branch_rule.vue',
     'ee/app/assets/javascripts/roadmap/components/epic_item.vue',
     'ee/app/assets/javascripts/security_inventory/components/bulk_scanners_update_drawer.vue',
     'ee/app/assets/javascripts/security_inventory/components/inventory_dashboard.vue',

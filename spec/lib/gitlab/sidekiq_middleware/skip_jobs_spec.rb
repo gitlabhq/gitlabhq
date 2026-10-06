@@ -199,7 +199,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
         it 'evaluates the default indicators' do
           expect(Gitlab::Database::HealthStatus).to receive(:evaluate)
-            .with(anything, Gitlab::Database::HealthStatus::DEFAULT_INIDICATORS).and_call_original
+            .with(anything, Gitlab::Database::HealthStatus::DEFAULT_INDICATORS).and_call_original
 
           subject.call(TestWorker.new, job, queue) { nil }
         end

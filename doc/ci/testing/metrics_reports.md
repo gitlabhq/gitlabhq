@@ -28,54 +28,19 @@ Use metrics reports to:
 When a pipeline runs, GitLab reads metrics from the report artifact and stores them as string values
 for comparison. The default filename is `metrics.txt`.
 
-For a merge request, GitLab compares the metrics from the feature branch to the values from the target
-branch and displays them in the merge request widget in this order:
+For a merge request, GitLab compares the metrics from the source branch to the values from a
+[baseline pipeline](_index.md#baseline-pipeline-selection) on the target branch.
+The merge request widget displays the metrics in this order:
 
 - Existing metrics with changed values.
 - Metrics added by the merge request (marked with a **New** badge).
 - Metrics removed by the merge request (marked with a **Removed** badge).
 - Existing metrics with unchanged values.
 
-### Baseline pipeline selection
-
-To compare metrics between branches, GitLab identifies a baseline pipeline on the target branch using this process:
-
-1. Checks for a pipeline on the target branch that matches these commit SHAs, in order:
-   1. The target branch tip at the time the
-      [merge request pipeline](../pipelines/merge_request_pipelines.md)
-      was created.
-      This SHA is only available for merge request pipelines.
-   1. The merge-base commit (the common ancestor of the source and target branches).
-   1. The start commit of the merge request diff.
-1. Selects the most recently created pipeline (by pipeline ID) for the first SHA
-   that has a matching pipeline.
-
-The baseline pipeline selection:
-
-- Does not filter by pipeline status.
-  A pipeline in any state (`success`, `failed`, `canceled`, or `skipped`)
-  can be selected as the baseline.
-- Does not check whether the baseline pipeline has metrics report artifacts.
-  If the baseline pipeline exists but has no metrics artifacts, all metrics
-  from the feature branch are displayed as new.
-
-The metrics comparison widget appears only when the feature branch pipeline is in a
+If the baseline pipeline has no metrics report artifacts, all metrics from the source branch
+display as new.
+The metrics comparison widget appears only when the source branch pipeline is in a
 completed state and has metrics report artifacts.
-
-The type of pipeline affects which commit SHA is matched first:
-
-- Merge request pipelines: The target branch tip SHA is usually available,
-  so the baseline is typically the latest pipeline at the target branch tip
-  when the merge request pipeline was created.
-- Branch pipelines: The target branch tip SHA is not available,
-  so the merge-base commit is used instead. The baseline is the latest pipeline on
-  the target branch at the common ancestor commit.
-
-To ensure a baseline is always available for comparison:
-
-- Run pipelines on your target branch that produce metrics report artifacts.
-- If you use branch pipelines,
-  ensure the merge-base commit has a pipeline on the target branch.
 
 ## Configure metrics reports
 

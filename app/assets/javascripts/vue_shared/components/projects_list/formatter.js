@@ -27,7 +27,7 @@ export const formatGraphQLProject = (
     accessLevel,
     availableActions: availableGraphQLProjectActions(project),
     fullPath,
-    relativeWebUrl: projectPath(fullPath),
+    relativeWebUrl: projectPath(fullPath, { organizationPath: null }),
   };
 
   return {

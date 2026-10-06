@@ -97,11 +97,9 @@ export default {
     groupSettingsRepositoryPath: { default: '' },
     canReadSquashOption: { default: false },
     canUpdateSquashOption: { default: false },
-    projectId: { default: null },
     projectPath: { default: '' },
     protectedBranchesPath: { default: '' },
     showApprovers: { default: false },
-    showStatusChecks: { default: false },
     squashOptionsFeatureAvailable: { default: false },
   },
   apollo: {

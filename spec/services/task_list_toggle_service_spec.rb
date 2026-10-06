@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe TaskListToggleService, feature_category: :markdown do
   let(:markdown) do
-    <<~EOT
+    <<~MARKDOWN
       * [ ] Task 1
       * [x] Task 2
 
@@ -20,7 +20,7 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
       + [ ] No-break space (U+00A0)
 
       2) [ ] Another item
-    EOT
+    MARKDOWN
   end
 
   let(:markdown_html) do
@@ -288,10 +288,10 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
   it 'properly handles tasks in a blockquote' do
     markdown =
-      <<~EOT
+      <<~MARKDOWN
         > > * [ ] Task 1
         > * [x] Task 2
-      EOT
+      MARKDOWN
 
     markdown_html = parse_markdown(markdown)
     toggler = described_class.new(
@@ -313,14 +313,14 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
   it 'properly handles a GitLab blockquote' do
     markdown =
-      <<~EOT
+      <<~MARKDOWN
         >>>
         gitlab blockquote
         >>>
 
         * [ ] Task 1
         * [x] Task 2
-      EOT
+      MARKDOWN
 
     markdown_html = parse_markdown(markdown)
     toggler = described_class.new(
@@ -343,10 +343,10 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
   context 'when clicking an embedded subtask' do
     it 'properly handles it inside an unordered list' do
       markdown =
-        <<~EOT
+        <<~MARKDOWN
           - - [ ] Task 1
             - [x] Task 2
-        EOT
+        MARKDOWN
 
       markdown_html = parse_markdown(markdown)
       toggler = described_class.new(
@@ -368,10 +368,10 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
     it 'properly handles it inside an ordered list' do
       markdown =
-        <<~EOT
+        <<~MARKDOWN
           1. - [ ] Task 1
              - [x] Task 2
-        EOT
+        MARKDOWN
 
       markdown_html = parse_markdown(markdown)
       toggler = described_class.new(
@@ -394,7 +394,7 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
   context 'with tables' do
     let(:markdown) do
-      <<~EOT
+      <<~MARKDOWN
         A delicious table awaits:
 
         | omg | no way | for me?? |
@@ -414,7 +414,7 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
         >    | [x] | [ ]  | [ ]  |   [ ] |
 
         Shrimple.
-      EOT
+      MARKDOWN
     end
 
     it 'toggles precisely what is asked for' do
@@ -475,10 +475,10 @@ RSpec.describe TaskListToggleService, feature_category: :markdown do
 
     context 'when a multi-byte character precedes the checkbox on the same line' do
       let(:markdown) do
-        <<~EOT
+        <<~MARKDOWN
           | 🐰 | [ ] | [ ] |
           | -- | --- | --- |
-        EOT
+        MARKDOWN
       end
 
       it 'correctly locates and modifies the target checkbox' do

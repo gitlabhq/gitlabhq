@@ -280,7 +280,7 @@ RSpec.describe Ci::JobEntity, feature_category: :continuous_integration do
   end
 
   context 'when job is a bridge' do
-    let(:job) { create(:ci_bridge, pipeline: pipeline) }
+    let_it_be(:job) { create(:ci_bridge, pipeline: pipeline) }
 
     it 'does not include build path' do
       expect(subject).not_to include(:build_path)
