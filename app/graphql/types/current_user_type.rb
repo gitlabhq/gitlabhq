@@ -44,6 +44,14 @@ module Types
       experiment: { milestone: '17.10' },
       description: 'User preferences for the given work item type and namespace.'
 
+    field :import_source_users,
+      Types::Import::SourceUserType.connection_type,
+      null: true,
+      resolver: Resolvers::Import::ReassignedSourceUsersResolver,
+      experiment: { milestone: '19.5' },
+      description: 'Completed mappings of source users whose contributions were reassigned to the current user. ' \
+        'Returns an empty result if the `revoke_import_source_user_reassignment` feature flag is disabled.'
+
     field :runners,
       Types::Ci::RunnerType.connection_type,
       null: true,

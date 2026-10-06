@@ -406,6 +406,15 @@ The next time the pipeline runs, the cache is stored in a different location.
 
 ### Clear the cache manually
 
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+> [!note]
+> Clearing the cache forces the next pipeline, including a pipeline on a protected branch, to fetch dependencies again.
+> If a job does not pin its dependency versions, that fetch can resolve to a newer upstream release that no one has reviewed.
+> Pin your dependency versions so that the contents of a pipeline do not change when the cache is cleared.
+
 You can clear the cache in the GitLab UI:
 
 1. In the top bar, select **Search or go to** and find your project.

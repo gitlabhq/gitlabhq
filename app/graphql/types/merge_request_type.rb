@@ -343,9 +343,10 @@ module Types
       null: true,
       description: 'List of emoji reactions associated with the merge request.'
 
-    field :resource_label_events, Types::MergeRequests::ResourceLabelEventType.connection_type,
+    field :resource_label_events,
       null: true,
-      description: 'Label events of the merge request.'
+      description: 'Label events of the merge request.',
+      resolver: Resolvers::MergeRequests::ResourceLabelEventsResolver
 
     field :codequality_reports_comparer,
       type: ::Types::Security::CodequalityReportsComparerType,
@@ -495,10 +496,6 @@ module Types
 
     def pipeline_creation_requests
       ::Ci::PipelineCreation::Requests.for_merge_request(object)
-    end
-
-    def resource_label_events
-      object.resource_label_events.inc_relations.with_merge_request_project_ordered
     end
   end
 end

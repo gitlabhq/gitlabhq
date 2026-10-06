@@ -34624,6 +34624,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="addonuser-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="addonuser-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="addonuser-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="addonuser-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `AddOnUser.organizations`
@@ -37979,6 +37980,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="autocompleteduser-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="autocompleteduser-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="autocompleteduser-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="autocompleteduser-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `AutocompletedUser.mergeRequestInteraction`
@@ -42018,6 +42020,7 @@ Fields:
 | <a id="currentuser-human"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="currentuser-id"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="currentuser-ide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
+| <a id="currentuser-importsourceusers"></a>`importSourceUsers` {{< icon name="warning-solid" >}} | [`ImportSourceUserConnection`](#importsourceuserconnection) | Introduced in GitLab 19.5. Status: Experiment. Completed mappings of source users whose contributions were reassigned to the current user. Returns an empty result if the `revoke_import_source_user_reassignment` feature flag is disabled. |
 | <a id="currentuser-jobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="currentuser-lastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
 | <a id="currentuser-linkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
@@ -42300,6 +42303,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="currentuser-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="currentuser-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="currentuser-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="currentuser-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `CurrentUser.organizations`
@@ -50846,6 +50850,7 @@ Fields:
 | <a id="importsourceuser-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the source user was created. |
 | <a id="importsourceuser-id"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
 | <a id="importsourceuser-importtype"></a>`importType` | [`ImportSource!`](#importsource) | Name of the importer. |
+| <a id="importsourceuser-namespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace the contributions were imported to. |
 | <a id="importsourceuser-placeholderuser"></a>`placeholderUser` | [`UserCore`](#usercore) | Placeholder user associated with the import source user. |
 | <a id="importsourceuser-reassigntouser"></a>`reassignToUser` | [`UserCore`](#usercore) | User that contributions are reassigned to. |
 | <a id="importsourceuser-reassignedbyuser"></a>`reassignedByUser` | [`UserCore`](#usercore) | User that did the reassignment. |
@@ -52113,7 +52118,6 @@ Fields:
 | <a id="mergerequest-rebaseinprogress"></a>`rebaseInProgress` | [`Boolean!`](#boolean) | Indicates if there is a rebase currently in progress for the merge request. |
 | <a id="mergerequest-resolvablediscussionscount"></a>`resolvableDiscussionsCount` | [`Int`](#int) | Number of user discussions that are resolvable in the merge request. |
 | <a id="mergerequest-resolveddiscussionscount"></a>`resolvedDiscussionsCount` | [`Int`](#int) | Number of user discussions that are resolved in the merge request. |
-| <a id="mergerequest-resourcelabelevents"></a>`resourceLabelEvents` | [`MergeRequestResourceLabelEventConnection`](#mergerequestresourcelabeleventconnection) | Label events of the merge request. (see [Connections](#connections)) |
 | <a id="mergerequest-retargeted"></a>`retargeted` | [`Boolean`](#boolean) | Indicates if merge request was retargeted. |
 | <a id="mergerequest-reviewers"></a>`reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. (see [Connections](#connections)) |
 | <a id="mergerequest-riskassessment"></a>`riskAssessment` {{< icon name="warning-solid" >}} | [`MergeRequestRiskAssessment`](#mergerequestriskassessment) | Introduced in GitLab 19.4. Status: Experiment. Risk assessment for the merge request. Ultimate only. |
@@ -52337,6 +52341,22 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequest-reference-full"></a>`full` | [`Boolean`](#boolean) | Boolean option specifying whether the reference should be returned in full. |
+
+##### `MergeRequest.resourceLabelEvents`
+
+Label events of the merge request.
+
+Returns [`MergeRequestResourceLabelEventConnection`](#mergerequestresourcelabeleventconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequest-resourcelabelevents-labelid"></a>`labelId` | [`LabelID`](#labelid) | Global ID of the label to filter the label events. |
 
 ##### `MergeRequest.workItemRelations`
 
@@ -52596,6 +52616,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mergerequestassignee-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestassignee-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestassignee-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="mergerequestassignee-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestAssignee.organizations`
@@ -53077,6 +53098,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthor-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestauthor-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestauthor-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="mergerequestauthor-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestAuthor.organizations`
@@ -53646,6 +53668,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipant-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestparticipant-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestparticipant-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="mergerequestparticipant-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestParticipant.organizations`
@@ -54160,6 +54183,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewer-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="mergerequestreviewer-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="mergerequestreviewer-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="mergerequestreviewer-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `MergeRequestReviewer.organizations`
@@ -65151,6 +65175,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="usercore-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="usercore-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="usercore-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="usercore-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ##### `UserCore.organizations`
@@ -74595,7 +74620,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-duo_panel_empty_state_auto_expanded"></a>`DUO_PANEL_EMPTY_STATE_AUTO_EXPANDED` | Callout feature name for duo_panel_empty_state_auto_expanded. |
 | <a id="usercalloutfeaturenameenum-email_otp_enrollment_callout"></a>`EMAIL_OTP_ENROLLMENT_CALLOUT` | Callout feature name for email_otp_enrollment_callout. |
 | <a id="usercalloutfeaturenameenum-expired_trial_status_widget"></a>`EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
-| <a id="usercalloutfeaturenameenum-explore_analytics_dashboards_promo"></a>`EXPLORE_ANALYTICS_DASHBOARDS_PROMO` | Callout feature name for explore_analytics_dashboards_promo. |
 | <a id="usercalloutfeaturenameenum-feature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenum-feature_library_shimmer_seen"></a>`FEATURE_LIBRARY_SHIMMER_SEEN` | Callout feature name for feature_library_shimmer_seen. |
 | <a id="usercalloutfeaturenameenum-file_tree_browser_popover"></a>`FILE_TREE_BROWSER_POPOVER` | Callout feature name for file_tree_browser_popover. |
@@ -76584,9 +76608,9 @@ Represents untyped JSON.
 
 ### `JobID`
 
-A `CommitStatusID` is a global ID. It is encoded as a string.
+A `JobID` is a global ID. It is encoded as a string.
 
-An example `CommitStatusID` is: `"gid://gitlab/CommitStatus/1"`.
+An example `JobID` is: `"gid://gitlab/CommitStatus/1"`.
 
 ### `JsonString`
 
@@ -78940,6 +78964,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="user-groups-permissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
 | <a id="user-groups-search"></a>`search` | [`String`](#string) | Search by group name or path. |
+| <a id="user-groups-soloowned"></a>`soloOwned` | [`Boolean`](#boolean) | When true, returns only groups in the current organization where the user is the sole owner. |
 | <a id="user-groups-sort"></a>`sort` | [`GroupSort`](#groupsort) | Sort groups by given criteria. |
 
 ###### `User.organizations`

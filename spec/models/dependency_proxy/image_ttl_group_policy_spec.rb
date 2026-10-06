@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::ImageTtlGroupPolicy, type: :model do
+RSpec.describe DependencyProxy::ImageTtlGroupPolicy do
   describe 'relationships' do
     it { is_expected.to belong_to(:group) }
   end

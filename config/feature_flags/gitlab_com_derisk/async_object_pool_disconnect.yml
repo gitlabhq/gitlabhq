@@ -1,0 +1,10 @@
+---
+name: async_object_pool_disconnect
+description: Moves object pool alternates disconnects into a retrying Sidekiq worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595796
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230239
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/595804
+milestone: '19.5'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

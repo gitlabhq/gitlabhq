@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::GroupSetting, type: :model, feature_category: :virtual_registry do
+RSpec.describe DependencyProxy::GroupSetting, feature_category: :virtual_registry do
   subject(:setting) { build(:dependency_proxy_group_setting) }
 
   describe 'relationships' do

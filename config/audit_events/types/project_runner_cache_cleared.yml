@@ -1,0 +1,10 @@
+---
+name: project_runner_cache_cleared
+description: A user clears the runner cache of a project
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/221634
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254891
+feature_category: runner_core
+milestone: '19.5'
+saved_to_database: true
+streamed: true
+scope: [Project]

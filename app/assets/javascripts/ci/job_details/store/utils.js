@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash-es';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 
 /**
  * Filters out lines that have an offset lower than the offset provided.

@@ -16,8 +16,11 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     let(:current_user) { user }
     let(:target_user) { user }
     let(:search_arguments) { {} }
+    let(:organization_arguments) { { organization: organization } }
 
-    subject(:result) { described_class.new(current_user, target_user, arguments.merge(search_arguments)).execute }
+    subject(:result) do
+      described_class.new(current_user, target_user, organization_arguments.merge(arguments, search_arguments)).execute
+    end
 
     before_all do
       guest_group.add_guest(user)
@@ -211,6 +214,63 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
       it { is_expected.to be_empty }
     end
 
+    context 'when current_user is an owner of the scoped organization' do
+      let_it_be(:scoped_organization) { create(:organization) }
+      let_it_be(:owner) { create(:user) }
+      let_it_be(:scoped_group) { create(:group, organization: scoped_organization) }
+
+      let(:current_user) { owner }
+      let(:arguments) { { organization: scoped_organization } }
+
+      before_all do
+        create(:organization_user, :owner, organization: scoped_organization, user: owner)
+        create(:organization_user, organization: scoped_organization, user: user)
+        scoped_group.add_maintainer(user)
+      end
+
+      it 'returns the target user groups within the organization' do
+        is_expected.to contain_exactly(scoped_group)
+      end
+
+      context 'when the target user is not a member of the organization' do
+        let_it_be(:other_organization) { create(:organization) }
+        let_it_be(:outside_user) { create(:user, organizations: [other_organization]) }
+        let_it_be(:outside_group) { create(:group, organization: other_organization, maintainers: outside_user) }
+
+        let(:target_user) { outside_user }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'when current_user is only a member of the organization' do
+        let(:current_user) { create(:user) }
+
+        before do
+          create(:organization_user, organization: scoped_organization, user: current_user)
+        end
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    context 'when current_user is an owner of a different organization than the scoped one' do
+      let_it_be(:org_a) { create(:organization) }
+      let_it_be(:org_b) { create(:organization) }
+      let_it_be(:owner_a) { create(:user) }
+      let_it_be(:group_in_b) { create(:group, organization: org_b) }
+
+      let(:current_user) { owner_a }
+      let(:arguments) { { organization: org_b } }
+
+      before_all do
+        create(:organization_user, :owner, organization: org_a, user: owner_a)
+        create(:organization_user, organization: org_b, user: user)
+        group_in_b.add_maintainer(user)
+      end
+
+      it { is_expected.to be_empty }
+    end
+
     context 'when permission is :create_projects' do
       let(:arguments) { { permission_scope: :create_projects } }
 
@@ -279,6 +339,43 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
 
       it 'only returns scoped results' do
         is_expected.to contain_exactly(different_group)
+      end
+    end
+
+    context 'when solo_owned is true' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:co_owned_group) { create(:group, organization: organization, owners: user) }
+      let_it_be(:solo_owned_group) { create(:group, organization: organization, owners: user) }
+      let_it_be(:other_organization_group) { create(:group, owners: user) }
+      let(:arguments) { { solo_owned: true, organization: organization } }
+
+      before_all do
+        co_owned_group.add_owner(create(:user))
+      end
+
+      it 'returns only groups solely owned by the user within the organization' do
+        is_expected.to contain_exactly(solo_owned_group)
+      end
+
+      context 'with a subgroup where the user is the only owner of both parent and subgroup' do
+        let_it_be(:parent_group) { create(:group, organization: organization, owners: user) }
+        let_it_be(:subgroup) { create(:group, parent: parent_group, organization: organization, owners: user) }
+
+        it 'includes the parent but not the subgroup' do
+          is_expected.to include(parent_group)
+          is_expected.not_to include(subgroup)
+        end
+      end
+
+      context 'with an inherited co-owned subgroup (parent has another owner)' do
+        let_it_be(:other_owner) { create(:user) }
+        let_it_be(:parent_group) { create(:group, organization: organization, owners: [user, other_owner]) }
+        let_it_be(:subgroup) { create(:group, parent: parent_group, organization: organization, owners: user) }
+
+        it 'excludes both the co-owned parent and the subgroup (inherited co-ownership disqualifies it)' do
+          is_expected.not_to include(parent_group)
+          is_expected.not_to include(subgroup)
+        end
       end
     end
   end

@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Translate from '~/vue_shared/translate';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/packages_and_registries/package_registry/graphql/index';
 import PackageRegistry from '~/packages_and_registries/package_registry/pages/index.vue';
 import RegistryBreadcrumb from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';

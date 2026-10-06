@@ -110,6 +110,10 @@ module Gitlab
       @tell = new_pos
     end
 
+    def rewind
+      seek(0)
+    end
+
     def eof?
       tell == size
     end

@@ -681,6 +681,12 @@ Audit event types belong to the following product categories.
 | [`runner_registration_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Runner registration is updated | {{< yes >}} | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Associated projects are successfully assigned to a CI/CD runner | {{< yes >}} | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Project |
 
+### Runner core
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`project_runner_cache_cleared`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254891) | A user clears the runner cache of a project | {{< yes >}} | GitLab [19.5](https://gitlab.com/gitlab-org/gitlab/-/work_items/221634) | Project |
+
 ### Seat cost management
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

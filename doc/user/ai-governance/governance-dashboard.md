@@ -17,6 +17,7 @@ title: AI Governance Dashboard
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603776) in GitLab 19.4 in [beta](../../policy/development_stages_support.md) with a [feature flag](../../administration/feature_flags/_index.md) named `ai_governance_dashboard`. Enabled by default.
+- Date range filter with 7-day and 30-day windows [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/610984) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -33,7 +34,8 @@ visibility on:
 - Which developers are most active.
 - Which projects have the most exposure.
 
-The dashboard shows data for GitLab Duo Agent Platform (DAP) agents only, scoped to the last 7 days.
+The dashboard shows data for GitLab Duo Agent Platform (DAP) agents. By default, it covers the last
+7 days. You can change the date range to the last 30 days.
 
 ## Prerequisites
 
@@ -47,50 +49,62 @@ The dashboard shows data for GitLab Duo Agent Platform (DAP) agents only, scoped
 1. In the left sidebar, select **AI** > **Governance**.
 1. Select the **Dashboard** tab.
 
+## Filter the dashboard
+
+Two controls at the top of the dashboard filter the tiles and most cards:
+
+- **Show**: The agent class. **DAP** shows GitLab Duo Agent Platform agents.
+- **Date range**: **Last 7 days** (default) or **Last 30 days**.
+
+Each card that ignores the date range says so below its list.
+
 ## Key performance indicator (KPI) tiles
 
 The dashboard header shows two KPI tiles. Each tile displays a count for the
-last 7 days and a sparkline showing the daily trend over that period.
+selected date range and a sparkline showing the daily trend. The tile also shows
+the change compared to the previous period of the same length.
 
-### AI agents
+### Total number of agents
 
-The **AI agents** tile shows the number of distinct active agent instances in
-the last 7 days. An agent instance is unique per user, project, namespace, agent
-type, and environment. Duo Chat conversations are excluded from this count.
+The **Total number of agents** tile shows the number of distinct active agent
+instances in the selected date range. An agent instance is unique per user,
+project, namespace, agent type, and environment. Duo Chat conversations are
+excluded from this count.
 
-### AI sessions
+### Total number of agent sessions
 
-The **AI sessions** tile shows the total number of agent workflow sessions in
-the last 7 days. This includes all DAP workflow types: IDE, web, chat, and
-ambient sessions. Duo Chat is included.
+The **Total number of agent sessions** tile shows the total number of agent
+workflow sessions in the selected date range. This includes all DAP workflow
+types: IDE, web, chat, and ambient sessions. Duo Chat is included.
 
 ## Data cards
 
 Below the KPI tiles, data cards provide breakdowns of agent activity.
 
-### Audit logs
+### Most recent sessions
 
-The **Audit logs** card links to the [AI audit event report](ai-audit-events.md),
-where you can browse, filter, and download a full record of agent session events.
-Filters applied on the dashboard are passed through to the audit events tab.
+The **Most recent sessions** card lists the latest agent sessions, newest first.
+It ignores the date range. Select a session to open it in the
+[AI audit event report](ai-audit-events.md), or select **View all audit logs**
+to see the full report.
 
-### AI agent inventory
+### Most used agents
 
-The **AI agent inventory** card lists the DAP agents active in your group,
-broken down by project. You can sort agents by usage to identify the most
-frequently invoked agents.
+The **Most used agents** card lists the agents used most in your group over the
+last 30 days, with the project each agent belongs to. The ranking always covers
+30 days, whatever date range you select.
 
-### Developer activity
+### Most active developers using agents
 
-The **Developer activity** card shows the top users by agent session count
-over the last 7 days. Use this to understand which developers are most actively
-using AI agents.
+The **Most active developers using agents** card shows the top users by agent session count
+over the selected date range. Use this to understand which developers are most
+actively using AI agents.
 
-### Project exposure
+### Projects with the most active agent sessions
 
-The **Project exposure** card shows the top projects by agent session count
-over the last 7 days. Use this to identify which projects have the highest
-volume of AI agent activity.
+The **Projects with the most active agent sessions** card shows the top projects
+by agent session count over the selected date range. Use this to identify which
+projects have the highest volume of AI agent activity.
 
 ### MCP servers
 

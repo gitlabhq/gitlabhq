@@ -501,7 +501,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Manage project [Secure Files](../api/secure_files.md)                                                       |            |       |         |          |                  |           |     ✓      |
 | Manage [Terraform](infrastructure/_index.md) state                                                          |            |       |         |          |                  |           |     ✓      |
 | Add project runners to project[^project-ci-maintainers-must-maintainer-2]                                                                |            |       |         |          |                  |           |     ✓      |
-| Clear runner caches manually                                                                                |            |       |         |          |                  |           |     ✓      |
+| Clear runner caches manually                                                                                |            |       |         |          |                  |     ✓     |     ✓      |
 | Enable instance runners in project                                                                          |            |       |         |          |                  |           |     ✓      |
 | Create pipeline schedules[^developers-branches-where]                                                                     |            |       |         |          |                  |     ✓     |     ✓      |
 | Edit own pipeline schedules[^developers-branches-where]                                                                   |            |       |         |          |                  |     ✓     |     ✓      |

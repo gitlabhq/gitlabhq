@@ -210,6 +210,16 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
     end
 
+    describe '.for_reassign_to_user' do
+      it 'only returns source users for the given reassign to user' do
+        reassign_to_user = create(:user)
+        source_user = create(:import_source_user, :completed, reassign_to_user: reassign_to_user)
+        create(:import_source_user, :completed)
+
+        expect(described_class.for_reassign_to_user(reassign_to_user)).to match_array([source_user])
+      end
+    end
+
     describe '.awaiting_reassignment' do
       it 'only returns source users that await reassignment' do
         namespace = create(:namespace)

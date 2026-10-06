@@ -9255,6 +9255,47 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#schedule_leave_pool_repository' do
+    let(:pool) { create(:pool_repository) }
+    let(:project) { create(:project, :repository, pool_repository: pool) }
+
+    subject(:schedule_leave_pool_repository) { project.schedule_leave_pool_repository }
+
+    context 'when the project has no pool' do
+      let(:pool) { nil }
+
+      it 'does not schedule a disconnect' do
+        expect(ObjectPool::DisconnectWorker).not_to receive(:perform_async)
+
+        schedule_leave_pool_repository
+      end
+    end
+
+    context 'when the project is pending delete' do
+      it 'clears membership synchronously without scheduling a disconnect', :aggregate_failures do
+        project.pending_delete = true
+
+        expect(ObjectPool::DisconnectWorker).not_to receive(:perform_async)
+        expect(project.repository).not_to receive(:disconnect_alternates)
+
+        schedule_leave_pool_repository
+
+        expect(project.reload.pool_repository).to be_nil
+      end
+    end
+
+    context 'when the project is not pending delete' do
+      it 'keeps membership and schedules the disconnect after commit', :aggregate_failures do
+        expect(project.repository).not_to receive(:disconnect_alternates)
+        expect(ObjectPool::DisconnectWorker).to receive(:perform_async).with(project.id, pool.disk_path)
+
+        Project.transaction { schedule_leave_pool_repository }
+
+        expect(project.reload.pool_repository).to eq(pool)
+      end
+    end
+  end
+
   describe '#link_pool_repository' do
     let(:pool) { create(:pool_repository) }
     let(:project) { build(:project, :empty_repo, pool_repository: pool) }
@@ -11601,6 +11642,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.ensure_pool_repository.organization)
           .to eq(project.organization)
       end
+    end
+  end
+
+  describe '#pool_repository_reusable?' do
+    let(:project) { create(:project) }
+
+    subject(:pool_repository_reusable) { project.pool_repository_reusable? }
+
+    context 'when there is no pool' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the project owns the pool' do
+      before do
+        create(:pool_repository, source_project: project)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when another project owns the pool' do
+      before do
+        project.update!(pool_repository: create(:pool_repository))
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 

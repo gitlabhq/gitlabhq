@@ -9,6 +9,7 @@ class ResourceLabelEvent < ResourceEvent
   belongs_to :namespace
 
   scope :inc_relations, -> { includes(:label, :user) }
+  scope :with_label_id, ->(label_id) { where(label_id: label_id) }
 
   validates :label, presence: { unless: :importing? }, on: :create
   validates_with ExactlyOnePresentValidator, fields: :issuable_id_attrs, unless: :importing?

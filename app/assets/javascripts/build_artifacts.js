@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { hide, initTooltips, show } from '~/tooltips';
-import { parseBoolean } from './lib/utils/common_utils';
 import { visitUrl } from './lib/utils/url_utility';
 
 export default class BuildArtifacts {

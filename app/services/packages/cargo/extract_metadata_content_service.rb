@@ -5,6 +5,8 @@ module Packages
     class ExtractMetadataContentService
       LENGTH_BYTE_SIZE = 4
       MAX_CRATE_BYTE_SIZE = 10.megabytes
+      # Client sets this length; cap it to avoid a huge read.
+      MAX_INDEX_BYTE_SIZE = 10.megabytes
 
       def initialize(cargo_file_content)
         # IO-like object (File, Tempfile, StringIO, etc.)
@@ -64,7 +66,10 @@ module Packages
       end
 
       def read_index_content
-        read_json(length: read_length('JSON'))
+        json_length = read_length('JSON')
+        raise ArgumentError, "Metadata size exceeds maximum allowed" if json_length > MAX_INDEX_BYTE_SIZE
+
+        read_json(length: json_length)
       end
 
       def read_json(length:)

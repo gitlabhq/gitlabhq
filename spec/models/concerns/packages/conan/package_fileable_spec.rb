@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Conan::PackageFileable, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Conan::PackageFileable, feature_category: :package_registry do
   # `freeze: false` is required in this spec: one or more `let_it_be` subjects
   # cannot be frozen by default (deep_freeze traversal failure, a non-AR
   # subject, or an in-memory mutation that survives reload/refind). Do not

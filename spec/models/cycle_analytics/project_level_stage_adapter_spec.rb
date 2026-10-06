@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CycleAnalytics::ProjectLevelStageAdapter, type: :model do
+RSpec.describe CycleAnalytics::ProjectLevelStageAdapter do
   let_it_be(:stage_name) { :review } # pre-defined, default stage
   let_it_be(:merge_request) do
     create(:merge_request, created_at: 5.hours.ago).tap do |mr|

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: :pipeline_composition do
+RSpec.describe Ci::Catalog::Resources::Version, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:current_user, freeze: false) { create(:user) }

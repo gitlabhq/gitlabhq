@@ -196,6 +196,28 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         it 'runs the job normally' do
           expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
         end
+
+        it 'evaluates the default indicators' do
+          expect(Gitlab::Database::HealthStatus).to receive(:evaluate)
+            .with(anything, Gitlab::Database::HealthStatus::DEFAULT_INIDICATORS).and_call_original
+
+          subject.call(TestWorker.new, job, queue) { nil }
+        end
+      end
+
+      context 'when indicators are provided' do
+        before do
+          TestWorker.defer_on_database_health_signal(
+            *health_signal_attrs.values, indicators: Gitlab::Database::HealthStatus::GLOBAL_INDICATORS
+          )
+        end
+
+        it 'evaluates only the given indicators' do
+          expect(Gitlab::Database::HealthStatus).to receive(:evaluate)
+            .with(anything, Gitlab::Database::HealthStatus::GLOBAL_INDICATORS).and_call_original
+
+          expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
+        end
       end
 
       context 'with stop signal from database health check' do

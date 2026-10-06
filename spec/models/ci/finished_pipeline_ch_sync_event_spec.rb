@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::FinishedPipelineChSyncEvent, type: :model, feature_category: :fleet_visibility do
+RSpec.describe Ci::FinishedPipelineChSyncEvent, feature_category: :fleet_visibility do
   describe 'validations' do
     subject(:event) do
       described_class.create!(pipeline_id: 1, pipeline_finished_at: 2.hours.ago, project_namespace_id: 1)

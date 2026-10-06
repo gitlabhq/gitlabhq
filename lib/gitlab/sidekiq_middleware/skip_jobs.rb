@@ -108,7 +108,9 @@ module Gitlab
           tables
         )
 
-        Gitlab::Database::HealthStatus.evaluate(health_context).any?(&:stop?)
+        indicators = health_check_attrs[:indicators] || Gitlab::Database::HealthStatus::DEFAULT_INIDICATORS
+
+        Gitlab::Database::HealthStatus.evaluate(health_context, indicators).any?(&:stop?)
       end
 
       def drop_job?(worker_class)

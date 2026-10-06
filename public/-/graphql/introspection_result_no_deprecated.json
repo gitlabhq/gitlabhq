@@ -3210,6 +3210,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort groups by given criteria.",
                   "type": {
@@ -12610,6 +12620,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -48492,6 +48512,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -103583,7 +103613,7 @@
         {
           "kind": "SCALAR",
           "name": "JobID",
-          "description": "A `CommitStatusID` is a global ID. It is encoded as a string.\n\nAn example `CommitStatusID` is: `\"gid://gitlab/CommitStatus/1\"`.",
+          "description": "A `JobID` is a global ID. It is encoded as a string.\n\nAn example `JobID` is: `\"gid://gitlab/CommitStatus/1\"`.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -109456,6 +109486,16 @@
               "description": "Label events of the merge request.",
               "args": [
                 {
+                  "name": "labelId",
+                  "description": "Global ID of the label to filter the label events.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "LabelID",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -112148,6 +112188,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -115743,6 +115793,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -120374,6 +120434,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort groups by given criteria.",
                   "type": {
@@ -124471,6 +124541,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -217219,6 +217299,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "sort",
                   "description": "Sort groups by given criteria.",
                   "type": {
@@ -220792,12 +220882,6 @@
               "description": "Callout feature name for work_item_decision_log_popover.",
               "isDeprecated": false,
               "deprecationReason": null
-            },
-            {
-              "name": "EXPLORE_ANALYTICS_DASHBOARDS_PROMO",
-              "description": "Callout feature name for explore_analytics_dashboards_promo.",
-              "isDeprecated": false,
-              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -222447,6 +222531,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "soloOwned",
+                  "description": "When true, returns only groups in the current organization where the user is the sole owner.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -243514,7 +243608,7 @@
         },
         {
           "name": "granularScope",
-          "description": null,
+          "description": "Declares the granular personal access token permissions required to access a field or type, along with the authorization boundary (project, group, user, or instance) those permissions apply to. A field or type can also opt out of granular token authorization by giving a skip reason.",
           "locations": [
             "FIELD_DEFINITION",
             "OBJECT"

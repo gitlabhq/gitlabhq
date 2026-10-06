@@ -1,6 +1,6 @@
 import Vue from 'vue';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { observable } from '~/lib/utils/observable';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
 import RegistryBreadcrumb from '~/packages_and_registries/harbor_registry/components/harbor_registry_breadcrumb.vue';

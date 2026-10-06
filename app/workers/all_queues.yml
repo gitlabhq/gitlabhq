@@ -2238,6 +2238,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :object_pool
+- :name: object_pool:object_pool_disconnect
+  :worker_name: ObjectPool::DisconnectWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :object_pool
 - :name: object_pool:object_pool_join
   :worker_name: ObjectPool::JoinWorker
   :feature_category: :gitaly

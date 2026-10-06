@@ -25,6 +25,24 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning do
     it { is_expected.to belong_to(:namespace) }
   end
 
+  describe '.with_label_id' do
+    let_it_be(:other_label) { create(:label, project: project) }
+    let_it_be(:event1) { create(:resource_label_event, merge_request: merge_request, label: label) }
+    let_it_be(:event2) { create(:resource_label_event, merge_request: merge_request, label: other_label) }
+
+    it 'returns the expected records for a label with events' do
+      events = described_class.with_label_id(label.id)
+
+      expect(events).to contain_exactly(event1)
+    end
+
+    it 'returns the expected records for a label with no events' do
+      events = described_class.with_label_id(non_existing_record_id)
+
+      expect(events).to be_empty
+    end
+  end
+
   describe 'validations' do
     it { is_expected.to be_valid }
 

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { apolloProvider } from '~/packages_and_registries/dependency_proxy/graphql';
 import Translate from '~/vue_shared/translate';
 import createRouter from './router';

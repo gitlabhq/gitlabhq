@@ -109,6 +109,18 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
     end
   end
 
+  context 'when both permission_scope and solo_owned are provided' do
+    let(:group_arguments) { { permission_scope: :CREATE_PROJECTS, solo_owned: true } }
+
+    it 'returns a mutually exclusive arguments error' do
+      expect(graphql_errors).to include(
+        a_hash_including(
+          'message' => 'Only one of [permissionScope, soloOwned] arguments is allowed at the same time.'
+        )
+      )
+    end
+  end
+
   context 'when search is provided' do
     let(:group_arguments) { { search: 'maintainer' } }
 

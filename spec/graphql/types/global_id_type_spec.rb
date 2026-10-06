@@ -255,6 +255,16 @@ RSpec.describe Types::GlobalIDType do
     end
   end
 
+  describe 'a renamed parameterized type' do
+    it 'uses the new name in the description' do
+      expect(GitlabSchema.types['JobID'].description).to eq(<<~MD.strip)
+        A `JobID` is a global ID. It is encoded as a string.
+
+        An example `JobID` is: `"gid://gitlab/CommitStatus/1"`.
+      MD
+    end
+  end
+
   describe '.model_name_to_graphql_name' do
     it 'returns a graphql name for the given model name' do
       expect(described_class.model_name_to_graphql_name('DesignManagement::Design')).to eq('DesignManagementDesignID')

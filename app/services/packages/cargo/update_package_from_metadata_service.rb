@@ -36,6 +36,9 @@ module Packages
 
       rescue ActiveRecord::RecordInvalid => e
         raise InvalidMetadataError, e.message
+      # Two simultaneous publishes can both pass existing_package?; the database rejects the second.
+      rescue ActiveRecord::RecordNotUnique
+        raise DuplicatePackageError, DUPLICATE_PACKAGE_ERROR_MESSAGE
       end
 
       private

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create', feature_category: :code_review_workflow do
-    describe 'new merge request from the event notification' do
+    describe 'new merge request for a pushed branch' do
       let(:branch_name) { "merge-request-test-#{SecureRandom.hex(8)}" }
       let(:title) { "Merge from push event notification test #{SecureRandom.hex(8)}" }
       let(:project) { create(:project, :with_readme) }
@@ -11,37 +11,30 @@ module QA
         Flow::Login.sign_in
       end
 
-      it(
-        'after a push via the git CLI creates a merge request',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18790',
-          type: :flaky
-        }
-      ) do
+      # Opens the new MR page directly; the push banner depends on a cached push event.
+      def create_merge_request_for_branch
+        page.visit("#{project.web_url}/-/merge_requests/new?merge_request[source_branch]=#{branch_name}")
+
+        Page::MergeRequest::New.perform do |merge_request|
+          merge_request.fill_title(title)
+          merge_request.create_merge_request
+        end
+      end
+
+      it 'after a push via the git CLI creates a merge request' do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.branch_name = branch_name
         end
 
-        project.visit!
-        Page::Project::Show.perform(&:new_merge_request)
-        Page::MergeRequest::New.perform do |merge_request|
-          merge_request.fill_title(title)
-          merge_request.create_merge_request
-        end
+        create_merge_request_for_branch
 
         Page::MergeRequest::Show.perform do |merge_request|
           expect(merge_request).to have_title(title)
         end
       end
 
-      it(
-        'after a push via the API creates a merge request',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9497',
-          type: :flaky
-        }
-      ) do
+      it 'after a push via the API creates a merge request' do
         commit = create(:commit,
           project: project,
           branch: branch_name,
@@ -52,12 +45,7 @@ module QA
 
         project.wait_for_push(commit.commit_message)
 
-        project.visit!
-        Page::Project::Show.perform(&:new_merge_request)
-        Page::MergeRequest::New.perform do |merge_request|
-          merge_request.fill_title(title)
-          merge_request.create_merge_request
-        end
+        create_merge_request_for_branch
 
         Page::MergeRequest::Show.perform do |merge_request|
           expect(merge_request).to have_title(title)

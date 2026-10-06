@@ -9,6 +9,11 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
 
   let(:worker) { described_class.new }
 
+  it 'defers only on database-wide health signals, not per-table autovacuum' do
+    expect(described_class.database_health_check_attrs)
+      .to include(indicators: Gitlab::Database::HealthStatus::GLOBAL_INDICATORS)
+  end
+
   describe '#perform', :clean_gitlab_redis_shared_state do
     subject(:perform) { worker.perform(group.id, new_parent_group.id, user.id) }
 

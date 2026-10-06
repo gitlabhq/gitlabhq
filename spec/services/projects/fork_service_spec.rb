@@ -464,6 +464,33 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
             expect(fork_of_project.pool_repository).to eq(pool_repository)
           end
         end
+
+        context 'when a non-root project is pending pool disconnection' do
+          let!(:pool_repository) { create(:pool_repository, source_project: root_project) }
+          let!(:root_project) { create(:project, :public, :repository, organization: project.organization) }
+          let!(:fork_network) { create(:fork_network, root_project: root_project) }
+
+          before do
+            create(:fork_network_member, project: project, fork_network: fork_network)
+            project.update_column(:pool_repository_id, pool_repository.id)
+            project.fork_network_member.destroy!
+            project.reload
+          end
+
+          it 'does not join the stale object pool', :aggregate_failures do
+            is_expected.to be_success
+            expect(fork_of_project.pool_repository).to be_nil
+          end
+
+          it 'does not reuse the former upstream pool for later forks', :aggregate_failures do
+            described_class.new(project, user, params.merge(path: 'first-unlinked-fork', name: 'First Unlinked Fork')).execute
+            project.reload
+            second_response = described_class.new(project, user, params.merge(path: 'second-unlinked-fork', name: 'Second Unlinked Fork')).execute
+
+            expect(second_response).to be_success
+            expect(second_response[:project].pool_repository).to be_nil
+          end
+        end
       end
 
       context 'when linking fork to an existing project' do

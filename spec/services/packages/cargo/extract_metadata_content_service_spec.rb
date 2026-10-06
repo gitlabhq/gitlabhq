@@ -48,6 +48,17 @@ RSpec.describe Packages::Cargo::ExtractMetadataContentService, feature_category:
         expect(result).to be_error
       end
     end
+
+    context 'when the metadata length prefix exceeds the maximum' do
+      let(:cargo_file_content) do
+        StringIO.new([described_class::MAX_INDEX_BYTE_SIZE + 1].pack('L<') + Gitlab::Json.dump({ name: 'test-crate' }))
+      end
+
+      it 'refuses before reading the metadata', :aggregate_failures do
+        expect(result).to be_error
+        expect(result.message).to eq('Failed to extract metadata: Metadata size exceeds maximum allowed')
+      end
+    end
   end
 
   describe '#execute' do

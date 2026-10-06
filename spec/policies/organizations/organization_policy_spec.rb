@@ -41,6 +41,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { is_expected.to be_allowed(:restore_organization) }
       it { is_expected.to be_allowed(:read_organization) }
       it { is_expected.to be_allowed(:read_organization_user) }
+      it { is_expected.to be_allowed(:read_user_groups) }
       it { is_expected.to be_allowed(:read_artifact_registry) }
       it { expect_allowed(:transfer_group) }
       it { expect_allowed(:access_organization_admin_area) }
@@ -51,6 +52,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { is_expected.to be_disallowed(:update_organization) }
       it { is_expected.to be_disallowed(:restore_organization) }
       it { is_expected.to be_disallowed(:access_organization_admin_area) }
+      it { is_expected.to be_disallowed(:read_user_groups) }
       it { expect_disallowed(:transfer_group) }
       it { expect_disallowed(:update_integration) }
       it { is_expected.to be_disallowed(:read_artifact_registry) }
@@ -80,6 +82,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_allowed(:read_artifact_registry) }
     it { is_expected.to be_disallowed(:read_organization_user) }
+    it { is_expected.to be_disallowed(:read_user_groups) }
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }
     it { expect_disallowed(:update_integration) }
@@ -97,6 +100,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:restore_organization) }
     it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_allowed(:read_organization_user) }
+    it { is_expected.to be_allowed(:read_user_groups) }
     it { is_expected.to be_allowed(:read_artifact_registry) }
     it { expect_allowed(:transfer_group) }
     it { expect_allowed(:access_organization_admin_area) }
@@ -109,6 +113,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { is_expected.to be_disallowed(:delete_organization) }
     it { is_expected.to be_disallowed(:restore_organization) }
     it { is_expected.to be_disallowed(:read_organization_user) }
+    it { is_expected.to be_disallowed(:read_user_groups) }
     it { is_expected.to be_disallowed(:read_artifact_registry) }
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }

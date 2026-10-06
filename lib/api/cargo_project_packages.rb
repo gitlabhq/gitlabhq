@@ -21,6 +21,10 @@ module API
       package_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
+    PUBLISH_ERROR_REASON_TO_HTTP_STATUS = {
+      package_protected: 403
+    }.freeze
+
     feature_category :package_registry
     urgency :low
     default_format :json
@@ -302,7 +306,14 @@ module API
             project, current_user, declared_params.merge(build: current_authenticated_job)
           ).execute
 
-          bad_request!(response.message) if response.error?
+          if response.error?
+            # The cargo client prints each `detail`; any other body is dumped raw.
+            # https://doc.rust-lang.org/cargo/reference/registry-web-api.html#web-api
+            render_structured_api_error!(
+              { errors: [{ detail: response.message }] },
+              PUBLISH_ERROR_REASON_TO_HTTP_STATUS.fetch(response.reason, 400)
+            )
+          end
 
           track_package_event('push_package', :cargo, project: project, namespace: project.namespace)
 

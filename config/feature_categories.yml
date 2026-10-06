@@ -11,11 +11,15 @@
 - activation
 - add-on_provisioning
 - advisory_database
+- agent_observability
+- agent_tools
 - ai_abstraction_layer
 - ai_agents
+- ai_catalog_creation
 - ai_catalog_curation
 - ai_evaluation
-- ai_research
+- ai_gateway_services
+- ai_governance
 - api
 - api_security
 - application_instrumentation
@@ -46,6 +50,10 @@
 - continuous_integration
 - custom_dashboards_foundation
 - customersdot_and_quote_to_cash_integrations
+- dap_code_review
+- dap_event_platform
+- dap_repository_flows
+- dap_triggers
 - database
 - dataops
 - dedicated
@@ -60,7 +68,10 @@
 - dora_metrics
 - duo_agent_platform
 - duo_chat
+- duo_cli
+- duo_client_sdk
 - duo_code_review
+- duo_developer
 - duo_service_infra
 - duo_setting
 - durability_metrics
@@ -68,8 +79,10 @@
 - editor_extensions
 - environment_management
 - error_budgets
+- external_agents
 - feature_flags
 - fleet_visibility
+- flow_components
 - fulfillment_infradev
 - fuzz_testing
 - geo_replication
@@ -79,6 +92,7 @@
 - gitlab_docs
 - global_search
 - groups_and_projects
+- health_and_connectivity
 - helm_chart_registry
 - hosted_runners
 - importers
@@ -88,6 +102,7 @@
 - instance_resiliency
 - integrations
 - internationalization
+- jetbrains
 - job_artifacts
 - knowledge_graph
 - markdown
@@ -95,7 +110,8 @@
 - merge_trains
 - mlops
 - mobile_devops
-- model_personalization
+- model_evaluation_infra
+- model_selection
 - navigation
 - notifications
 - observability
@@ -103,6 +119,7 @@
 - omnibus_package
 - on_call_schedule_management
 - onboarding
+- orbit
 - organization
 - package_registry
 - pages
@@ -115,6 +132,7 @@
 - portfolio_management
 - product_analytics
 - pubsec_services
+- purchase
 - quality_management
 - rate_limiting
 - redis
@@ -123,6 +141,7 @@
 - requirements_management
 - review_apps
 - runner_core
+- runner_execution
 - runway
 - scalability
 - seat_cost_management
@@ -133,6 +152,7 @@
 - security_testing_configuration
 - security_testing_integrations
 - self-hosted_models
+- semantic_code_search
 - service_desk
 - service_ping
 - settings
@@ -150,7 +170,9 @@
 - user_profile
 - value_stream_management
 - virtual_registry
+- vs_code
 - vulnerability_management
+- web_chat
 - web_ide
 - webhooks
 - wiki

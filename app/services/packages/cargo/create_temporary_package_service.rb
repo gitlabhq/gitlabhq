@@ -9,12 +9,17 @@ module Packages
       PACKAGE_FILE_NAME = 'package.crate'
 
       ERRORS = {
-        unauthorized: ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized)
+        unauthorized: ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized),
+        package_already_exists: ServiceResponse.error(
+          message: 'Package already exists', reason: :package_already_exists
+        )
       }.freeze
 
       def execute
         return ERRORS[:unauthorized] unless can_create_package?
-        return ERROR_RESPONSE_PACKAGE_PROTECTED if crate_name_protected?
+
+        publish_error = check_publish_metadata
+        return publish_error if publish_error
 
         package, package_file = ApplicationRecord.transaction do
           package = super(::Packages::Cargo::Package, name: ::Packages::Cargo::TEMPORARY_PACKAGE_NAME)
@@ -32,18 +37,37 @@ module Packages
 
       private
 
-      # npm refuses a protected name before creating anything, and cargo can
-      # too: the name sits in the metadata at the front of the publish body.
-      # A body this cannot read falls through to the worker, which already
-      # raises on invalid metadata and on a protected name.
-      def crate_name_protected?
-        response = ::Packages::Cargo::ExtractMetadataContentService.new(params[:file]).execute_index_only
-        return false if response.error?
+      # Unreadable uploads skip these checks; the worker runs them later.
+      def check_publish_metadata
+        index_content = read_index_content
+        return unless index_content
 
-        crate_name = response.payload.dig(:index_content, :name)
-        return false if crate_name.blank?
+        name, version = index_content.values_at(:name, :vers)
+        return if name.blank?
+        # Malformed values (e.g. `"vers": 1`) would raise here; leave them to the worker.
+        return unless [name, version].compact.all?(String)
 
-        package_protected?(package_name: crate_name, package_type: :cargo)
+        return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?(package_name: name, package_type: :cargo)
+
+        ERRORS[:package_already_exists] if version.present? &&
+          ::Packages::Cargo::Package.cargo_package_already_taken?(project.id, name, version)
+      end
+
+      def read_index_content
+        with_publish_body do |body|
+          response = ::Packages::Cargo::ExtractMetadataContentService.new(body).execute_index_only
+          response.payload[:index_content] if response.success?
+        end
+      end
+
+      # Body is already in storage; read only its start, not the crate.
+      def with_publish_body(&block)
+        file = params[:file]
+        return yield(file) if file.remote_id.blank?
+
+        uploader = ::Packages::PackageFileUploader.new(::Packages::PackageFile.new, :file)
+        uploader.cache!(file)
+        uploader.open(&block)
       end
 
       # No status: the worker looks the file up with `not_processing`.

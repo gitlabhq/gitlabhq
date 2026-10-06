@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::KubernetesNamespace, type: :model do
+RSpec.describe Clusters::KubernetesNamespace do
   it { is_expected.to belong_to(:cluster_project) }
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:cluster) }

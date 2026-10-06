@@ -10,6 +10,11 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
   let(:worker) { described_class.new }
   let(:project_namespace) { project.project_namespace }
 
+  it 'defers only on database-wide health signals, not per-table autovacuum' do
+    expect(described_class.database_health_check_attrs)
+      .to include(indicators: Gitlab::Database::HealthStatus::GLOBAL_INDICATORS)
+  end
+
   describe '#perform', :clean_gitlab_redis_shared_state do
     subject(:perform) { worker.perform(project.id, new_namespace.id, user.id) }
 

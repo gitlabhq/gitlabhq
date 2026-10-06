@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_category: :container_registry do
+RSpec.describe ContainerRegistry::Protection::TagRule, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   shared_examples 'returning same result for different access levels' do |expected_result|

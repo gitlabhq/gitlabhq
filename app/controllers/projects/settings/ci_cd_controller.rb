@@ -128,10 +128,7 @@ module Projects
       end
 
       def authorize_reset_cache!
-        return if can_any?(current_user, [
-          :admin_pipeline,
-          :admin_runners
-        ], project)
+        return if can?(current_user, :clear_runner_cache, project)
 
         access_denied!
       end

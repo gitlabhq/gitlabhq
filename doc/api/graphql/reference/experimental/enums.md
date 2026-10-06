@@ -5847,7 +5847,6 @@ Name of the feature that the callout is for.
 | `DUO_PANEL_EMPTY_STATE_AUTO_EXPANDED` | Callout feature name for duo_panel_empty_state_auto_expanded. |
 | `EMAIL_OTP_ENROLLMENT_CALLOUT` | Callout feature name for email_otp_enrollment_callout. |
 | `EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
-| `EXPLORE_ANALYTICS_DASHBOARDS_PROMO` | Callout feature name for explore_analytics_dashboards_promo. |
 | `FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | `FEATURE_LIBRARY_SHIMMER_SEEN` | Callout feature name for feature_library_shimmer_seen. |
 | `FILE_TREE_BROWSER_POPOVER` | Callout feature name for file_tree_browser_popover. |

@@ -1165,6 +1165,38 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'clear_runner_cache' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_role, :admin_mode, :allowed) do
+      :guest       | false | false
+      :planner     | false | false
+      :reporter    | false | false
+      :developer   | false | true
+      :maintainer  | false | true
+      :owner       | false | true
+      :anonymous   | false | false
+      :admin       | false | false
+      :admin       | true  | true
+    end
+
+    with_them do
+      let(:current_user) { public_send(user_role) }
+
+      before do
+        enable_admin_mode!(current_user) if admin_mode
+      end
+
+      it 'allows only developers and above to clear the runner cache' do
+        if allowed
+          is_expected.to be_allowed(:clear_runner_cache)
+        else
+          is_expected.to be_disallowed(:clear_runner_cache)
+        end
+      end
+    end
+  end
+
   describe 'set_pipeline_variables' do
     context 'when `pipeline_variables_minimum_override_role` is defined' do
       using RSpec::Parameterized::TableSyntax

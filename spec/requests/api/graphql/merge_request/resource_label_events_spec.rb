@@ -87,6 +87,51 @@ RSpec.describe 'Query.mergeRequest.resourceLabelEvents', feature_category: :code
     end
   end
 
+  context 'with the labelId argument' do
+    let_it_be(:other_label) { create(:label, project: project) }
+    let_it_be(:other_label_event) do
+      create(:resource_label_event, merge_request: merge_request, label: other_label, action: :add)
+    end
+
+    let(:events_fields) do
+      query_graphql_field('resourceLabelEvents', { label_id: global_id_of(label) }, <<~GRAPHQL)
+        nodes {
+          id
+          action
+          createdAt
+          label { id }
+          user { id }
+        }
+      GRAPHQL
+    end
+
+    it 'returns only the label events for the given label', :aggregate_failures do
+      post_graphql(query, current_user: current_user)
+
+      expect(events_data.pluck('id')).to eq(
+        [global_id_of(add_event).to_s, global_id_of(remove_event).to_s]
+      )
+      expect(events_data.pluck('label')).to all(eq({ 'id' => global_id_of(label).to_s }))
+    end
+
+    it 'does not add queries compared to the unfiltered request' do
+      unfiltered_query = graphql_query_for('mergeRequest', merge_request_params, <<~GRAPHQL)
+        resourceLabelEvents {
+          nodes { id action createdAt label { id } user { id } }
+        }
+      GRAPHQL
+
+      warmup_user = create(:user)
+      control_user = create(:user)
+      filtered_user = create(:user)
+
+      post_graphql(unfiltered_query, current_user: warmup_user)
+      control = ActiveRecord::QueryRecorder.new { post_graphql(unfiltered_query, current_user: control_user) }
+
+      expect { post_graphql(query, current_user: filtered_user) }.not_to exceed_query_limit(control)
+    end
+  end
+
   describe 'avoiding N+1 queries' do
     def add_events(count)
       Array.new(count) { create(:resource_label_event, merge_request: merge_request, label: label) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineChatData, type: :model, feature_category: :continuous_integration do
+RSpec.describe Ci::PipelineChatData, feature_category: :continuous_integration do
   it { is_expected.to belong_to(:chat_name) }
   it { is_expected.to belong_to(:pipeline) }
 

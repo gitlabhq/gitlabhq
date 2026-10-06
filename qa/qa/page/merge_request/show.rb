@@ -334,6 +334,7 @@ module QA
         end
 
         def click_diffs_tab
+          wait_for_merge_request_preparation
           click_element('diffs-tab')
 
           # We check for the file tree toggle as sometimes the MR takes some time to be built.
@@ -356,13 +357,17 @@ module QA
         end
 
         def has_file?(file_name)
-          open_file_tree
+          # The reload leaves stale element references. The reloaded page shows the same diff,
+          # so retrying the lookup is safe.
+          retry_on_exception(sleep_interval: 1, message: 'Retry file lookup in the diffs file tree') do
+            open_file_tree
 
-          return true if has_element?('file-row-name-container', file_name: file_name)
+            next true if has_element?('file-row-name-container', file_name: file_name)
 
-          # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
-          search_file_tree(file_name)
-          has_element?('file-row-name-container', file_name: file_name)
+            # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
+            search_file_tree(file_name)
+            has_element?('file-row-name-container', file_name: file_name)
+          end
         end
 
         def has_no_file?(file_name)
@@ -378,6 +383,15 @@ module QA
 
         def open_file_tree
           click_element(file_tree_toggle) if has_no_element?('file-tree-container', wait: 1)
+        end
+
+        # A new merge request is still "preparing" while Sidekiq builds its diff, and the Changes
+        # badge shows "-". Rapid Diffs then reloads the whole page when it is ready, which breaks
+        # lookups made during the reload. https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/44973
+        def wait_for_merge_request_preparation
+          wait_until(sleep_interval: 1, message: 'Wait for merge request to be prepared') do
+            has_element?('diffs-tab', text: /\d/, wait: 1)
+          end
         end
 
         def has_file_tree_toggle?

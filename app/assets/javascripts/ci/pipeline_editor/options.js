@@ -1,8 +1,8 @@
 import Vue from 'vue';
 
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import PipelineEditorApp from 'jh_else_ce/ci/pipeline_editor/pipeline_editor_app.vue';
 import { EDITOR_APP_STATUS_LOADING } from './constants';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';

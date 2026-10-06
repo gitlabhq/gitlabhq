@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CustomerRelations::Contact, type: :model, feature_category: :team_planning do
+RSpec.describe CustomerRelations::Contact, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
 
   describe 'associations' do

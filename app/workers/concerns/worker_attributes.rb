@@ -307,10 +307,11 @@ module WorkerAttributes
       !!get_class_attribute(:skip_composite_identity_passthrough)
     end
 
-    def defer_on_database_health_signal(gitlab_schema, tables = [], delay_by = DEFAULT_DEFER_DELAY, &block)
+    def defer_on_database_health_signal(
+      gitlab_schema, tables = [], delay_by = DEFAULT_DEFER_DELAY, indicators: nil, &block)
       set_class_attribute(
         :database_health_check_attrs,
-        { gitlab_schema: gitlab_schema, tables: tables, delay_by: delay_by, block: block }
+        { gitlab_schema: gitlab_schema, tables: tables, delay_by: delay_by, indicators: indicators, block: block }
       )
     end
 

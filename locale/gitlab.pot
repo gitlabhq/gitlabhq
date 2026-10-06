@@ -2607,6 +2607,15 @@ msgstr ""
 msgid "AICatalog|Additional information"
 msgstr ""
 
+msgid "AICatalog|Agent '%{id}' (version %{version}) was not found or you do not have access to it"
+msgstr ""
+
+msgid "AICatalog|Agent '%{name}' has no version %{version}"
+msgstr ""
+
+msgid "AICatalog|Agent '%{name}' is not visible to flows in this project"
+msgstr ""
+
 msgid "AICatalog|Agent configuration"
 msgstr ""
 
@@ -3084,6 +3093,12 @@ msgstr ""
 msgid "AICatalog|Flow or external agent"
 msgstr ""
 
+msgid "AICatalog|Flow references %{count} agents, which exceeds the limit of %{limit}"
+msgstr ""
+
+msgid "AICatalog|Flow references the same agent more than once: %{ids}"
+msgstr ""
+
 msgid "AICatalog|Flow updated."
 msgstr ""
 
@@ -3370,6 +3385,12 @@ msgid "AICatalog|Ready to enable"
 msgstr ""
 
 msgid "AICatalog|Reason for reporting"
+msgstr ""
+
+msgid "AICatalog|Referenced agents changed while the flow was saved. Try again."
+msgstr ""
+
+msgid "AICatalog|Referenced agents exceed the maximum payload size for a run"
 msgstr ""
 
 msgid "AICatalog|Referencing AI Catalog items with include is not available"
@@ -11663,9 +11684,6 @@ msgstr ""
 msgid "Analytics|Failed to load dashboard"
 msgstr ""
 
-msgid "Analytics|Go to Explore"
-msgstr ""
-
 msgid "Analytics|Insights with GitLab Duo"
 msgstr ""
 
@@ -11732,16 +11750,10 @@ msgstr ""
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly. Last updated: %{recordedAt}"
 msgstr ""
 
-msgid "Analytics|The analytics dashboards page is being rebuilt and moved to the %{boldStart}Explore%{boldEnd} page to give you visibility across your entire organization."
-msgstr ""
-
 msgid "Analytics|The query timed out. Select a shorter date range and try again."
 msgstr ""
 
 msgid "Analytics|This data isn't being collected for this scope yet."
-msgstr ""
-
-msgid "Analytics|Try analytics dashboards in Explore"
 msgstr ""
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
@@ -13452,6 +13464,9 @@ msgid "ArtifactRegistry|Nothing refers to this manifest."
 msgstr ""
 
 msgid "ArtifactRegistry|OCI"
+msgstr ""
+
+msgid "ArtifactRegistry|ORAS"
 msgstr ""
 
 msgid "ArtifactRegistry|Only Docker and OCI repositories have manifests and container tags."
@@ -32289,6 +32304,9 @@ msgid "DuoAgentPlatform|The repository is empty. Push a first commit, then retur
 msgstr ""
 
 msgid "DuoAgentPlatform|These features are not available because the GitLab Duo Agent Platform is not turned on."
+msgstr ""
+
+msgid "DuoAgentPlatform|This project doesn't have a repository yet. %{linkStart}Add a repository%{linkEnd} to get started with flows."
 msgstr ""
 
 msgid "DuoAgentPlatform|This session encountered an error before any messages were recorded. Start a new session to try again."

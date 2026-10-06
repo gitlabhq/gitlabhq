@@ -10,6 +10,13 @@ module Gitlab
         Indicators::WalRate
       ].freeze
 
+      # Database-wide indicators only, for workers that shouldn't pause on per-table autovacuum.
+      GLOBAL_INDICATORS = [
+        Indicators::WriteAheadLog,
+        Indicators::PatroniApdex,
+        Indicators::WalRate
+      ].freeze
+
       class << self
         def evaluate(context, indicators = DEFAULT_INIDICATORS)
           indicators.map do |indicator|

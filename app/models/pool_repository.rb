@@ -109,7 +109,14 @@ class PoolRepository < ApplicationRecord
   # skip mark_obsolete (https://gitlab.com/gitlab-org/gitlab/-/work_items/628444).
   def remove_member(project)
     with_lock do
-      project.update_column(:pool_repository_id, nil)
+      # This compare-and-set protects a newer re-link to a different pool.
+      updated = Project.where(id: project.id, pool_repository_id: id).update_all(pool_repository_id: nil)
+
+      if updated > 0
+        project.pool_repository_id = nil
+        project.clear_attribute_changes([:pool_repository_id])
+      end
+
       mark_obsolete unless member_projects.exists?
     end
   end

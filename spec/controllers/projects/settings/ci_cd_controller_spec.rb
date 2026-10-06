@@ -7,6 +7,29 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
   let_it_be_with_reload(:project) { create(:project, :allow_runner_registration_token, organization: current_organization) }
   let_it_be_with_reload(:project_auto_devops) { create(:project_auto_devops, project: project) }
 
+  context 'as a developer' do
+    before_all do
+      project.add_developer(user)
+    end
+
+    describe 'POST reset_cache' do
+      subject(:request) do
+        post :reset_cache, params: { namespace_id: project.namespace, project_id: project }, format: :json
+      end
+
+      before do
+        sign_in(user)
+        allow(ResetProjectCacheService).to receive_message_chain(:new, :execute).and_return(true)
+      end
+
+      it 'returns a success header' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
   context 'as a maintainer' do
     before do
       project.add_maintainer(user)

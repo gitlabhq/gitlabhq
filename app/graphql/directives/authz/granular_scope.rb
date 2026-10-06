@@ -3,6 +3,12 @@
 module Directives
   module Authz
     class GranularScope < GraphQL::Schema::Directive
+      description <<~DESC.squish
+        Declares the granular personal access token permissions required to access a field or type,
+        along with the authorization boundary (project, group, user, or instance) those permissions apply to.
+        A field or type can also opt out of granular token authorization by giving a skip reason.
+      DESC
+
       repeatable true
 
       argument :permissions, [GraphQL::Types::String],

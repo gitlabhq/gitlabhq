@@ -889,6 +889,19 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
       let(:headers) { build_token_auth_header(target_job.token).merge(workhorse_headers) }
     end
 
+    # The cargo client prints each `detail` from this shape.
+    shared_examples 'refusing the publish' do |status:, detail:|
+      it 'refuses in the cargo error format and creates nothing', :aggregate_failures do
+        expect { request }
+          .to not_change { ::Packages::Cargo::Package.for_projects(project).count }
+          .and not_change { ::Packages::PackageFile.count }
+          .and not_change { ::Packages::Cargo::ExtractionWorker.jobs.size }
+
+        expect(response).to have_gitlab_http_status(status)
+        expect(json_response).to eq('errors' => [{ 'detail' => detail }])
+      end
+    end
+
     context 'with a developer' do
       before_all do
         project.add_developer(user)
@@ -953,15 +966,17 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
             package_name_pattern: 'test-crate', minimum_access_level_for_push: :owner)
         end
 
-        it 'refuses with a 400 and creates nothing', :aggregate_failures do
-          expect { request }
-            .to not_change { ::Packages::Cargo::Package.for_projects(project).count }
-            .and not_change { ::Packages::PackageFile.count }
-            .and not_change { ::Packages::Cargo::ExtractionWorker.jobs.size }
+        it_behaves_like 'refusing the publish', status: :forbidden, detail: 'Package protected.'
+      end
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq('message' => '400 Bad request - Package protected.')
+      context 'when the crate version already exists' do
+        let_it_be(:existing_package) do
+          create(:cargo_package, project: project, name: 'test-crate', version: '1.0.0')
         end
+
+        let_it_be(:existing_metadatum) { create(:cargo_metadatum, package: existing_package) }
+
+        it_behaves_like 'refusing the publish', status: :bad_request, detail: 'Package already exists'
       end
 
       context 'when ObjectStorage::RemoteStoreError is raised' do

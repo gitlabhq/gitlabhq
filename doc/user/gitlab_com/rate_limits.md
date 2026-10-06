@@ -81,8 +81,10 @@ before you attempt the request again.
 
 Responses to throttled requests include a `Retry-After` header that tells you how many seconds
 remain until your quota resets, and a `RateLimit-ResetTime` header with the same information as a
-date and time. All responses, throttled or not, include `RateLimit-Limit`, `RateLimit-Remaining`,
-and related headers that you can use to track your usage before you reach a limit. For the full
+date and time. For project and group creation limits, the window is 24 hours, so `Retry-After`
+can be up to 86,400 seconds. All responses, throttled or not, include `RateLimit-Limit`,
+`RateLimit-Remaining`, and related headers that you can use to track your usage before you reach
+a limit. For the full
 list, see
 [response headers](../../administration/settings/user_and_ip_rate_limits.md#response-headers).
 
@@ -136,6 +138,8 @@ the burst limit is also 2,000 requests each minute, so the two limits are the sa
 | Git SSH operations for a user, project, and Git command                                                       | 600 operations each minute      |
 | All traffic from an IP address                                                                                | 2,000 requests each minute      |
 | Issue creation                                                                                                | 200 requests each minute        |
+| Project creation (`POST /api/v4/projects` and UI) for a user                                                  | 200 requests each day           |
+| Group creation (`POST /api/v4/groups` and UI) for a user                                                      | 200 requests each day           |
 | Note creation on issues and merge requests                                                                    | 60 requests each minute         |
 | Advanced, project, or group search API for an IP address                                                      | 100 requests each minute        |
 | Advanced, project, or group search API for a user                                                             | 100 requests each minute        |

@@ -7,7 +7,7 @@ module Mutations
         class Clear < BaseMutation
           graphql_name 'RunnerCacheClear'
 
-          authorize :admin_runners
+          authorize :clear_runner_cache
           authorize_granular_token permissions: :clear_runner_cache, boundary_argument: :project_id,
             boundary_type: :project
 

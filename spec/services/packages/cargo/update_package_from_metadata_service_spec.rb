@@ -189,6 +189,17 @@ RSpec.describe Packages::Cargo::UpdatePackageFromMetadataService, :clean_gitlab_
         with_message: described_class::DUPLICATE_PACKAGE_ERROR_MESSAGE
     end
 
+    # Stubbed because a real race needs two processes at once.
+    context 'when a concurrent publish of the same version wins the race' do
+      before do
+        allow(service).to receive(:create_metadatum).and_raise(ActiveRecord::RecordNotUnique)
+      end
+
+      it_behaves_like 'raising an error',
+        described_class::DuplicatePackageError,
+        with_message: described_class::DUPLICATE_PACKAGE_ERROR_MESSAGE
+    end
+
     context 'when package is protected' do
       before do
         allow(service).to receive(:package_protected?).and_return(true)

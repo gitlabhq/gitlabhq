@@ -3404,6 +3404,15 @@ class Project < ApplicationRecord
     pool.remove_member(self)
   end
 
+  def schedule_leave_pool_repository
+    pool = pool_repository
+    return if pool.blank?
+    return leave_pool_repository if pending_delete?
+
+    disk_path = pool.disk_path
+    ActiveRecord.after_all_transactions_commit { ObjectPool::DisconnectWorker.perform_async(id, disk_path) }
+  end
+
   # After repository is moved from shard to shard, disconnect it from the previous object pool and connect to the new pool
   def swap_pool_repository!
     return unless repository_exists?
@@ -3911,6 +3920,13 @@ class Project < ApplicationRecord
   # Ensures project has a pool repository without exposing private creation logic
   def ensure_pool_repository
     pool_repository || create_new_pool_repository
+  end
+
+  # A non-forked project may still belong to its former upstream's pool until its async disconnect runs.
+  # New forks should not join a pool their parent is leaving.
+  def pool_repository_reusable?
+    pool = pool_repository
+    pool.nil? || pool.source_project_id == id
   end
 
   private

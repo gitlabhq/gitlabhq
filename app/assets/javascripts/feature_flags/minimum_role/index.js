@@ -1,5 +1,5 @@
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import FeatureFlagsMinimumRole from '~/feature_flags/minimum_role/feature_flags_minimum_role.vue';
 
 export default (containerId = 'js-feature-flags-minimum-role-app') => {

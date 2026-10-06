@@ -5,12 +5,13 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['ImportSourceUser'], feature_category: :importers do
   specify { expect(described_class.graphql_name).to eq('ImportSourceUser') }
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_import_source_user) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_import_source_user) }
 
   it 'exposes the expected fields' do
     expected_fields = %i[
       id
       importType
+      namespace
       placeholderUser
       reassignedByUser
       reassignToUser

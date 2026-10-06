@@ -47,16 +47,19 @@ module Types
         model_name = model_class.name
 
         graphql_name model_name_to_graphql_name(model_name)
-        description <<~MD.strip
-          A `#{graphql_name}` is a global ID. It is encoded as a string.
+        build_description = -> do
+          <<~MD.strip
+            A `#{graphql_name}` is a global ID. It is encoded as a string.
 
-          An example `#{graphql_name}` is: `"#{::Gitlab::GlobalId.build(model_name: model_name, id: 1)}"`.
-          #{
-            if deprecation = Gitlab::GlobalId::Deprecations.deprecation_by(model_name)
-              "The older format `\"#{::Gitlab::GlobalId.build(model_name: deprecation.old_name, id: 1)}\"` was deprecated in #{deprecation.milestone}."
-            end}
+            An example `#{graphql_name}` is: `"#{::Gitlab::GlobalId.build(model_name: model_name, id: 1)}"`.
+            #{
+              if deprecation = Gitlab::GlobalId::Deprecations.deprecation_by(model_name)
+                "The older format `\"#{::Gitlab::GlobalId.build(model_name: deprecation.old_name, id: 1)}\"` was deprecated in #{deprecation.milestone}."
+              end}
 
-        MD
+          MD
+        end
+        description build_description.call
 
         define_singleton_method(:to_s) do
           graphql_name
@@ -74,6 +77,7 @@ module Types
 
           @renamed = true
           graphql_name(new_name)
+          description build_description.call
           self
         end
 

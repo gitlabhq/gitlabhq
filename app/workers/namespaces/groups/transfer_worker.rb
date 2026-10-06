@@ -13,7 +13,8 @@ module Namespaces
       feature_category :groups_and_projects
       urgency :low
 
-      defer_on_database_health_signal :gitlab_main, [:groups], 1.minute
+      defer_on_database_health_signal :gitlab_main, [:namespaces], 1.minute,
+        indicators: Gitlab::Database::HealthStatus::GLOBAL_INDICATORS
 
       LEASE_TIMEOUT = 30.minutes.to_i
 

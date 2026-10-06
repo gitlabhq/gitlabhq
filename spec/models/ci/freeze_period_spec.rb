@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::FreezePeriod, feature_category: :release_orchestration, type: :model do
+RSpec.describe Ci::FreezePeriod, feature_category: :release_orchestration do
   let_it_be(:project) { create(:project) }
 
   # Freeze period factory is on a weekend, so we travel in time, in and around that.

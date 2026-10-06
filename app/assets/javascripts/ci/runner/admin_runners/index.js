@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { runnersAppProvide } from 'ee_else_ce/ci/runner/provide';
@@ -7,7 +8,6 @@ import { runnersAppProvide } from 'ee_else_ce/ci/runner/provide';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { updateOutdatedUrl } from '~/ci/runner/runner_search_utils';
 import createDefaultClient from '~/lib/graphql';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import { createLocalState } from '../graphql/list/local_state';
 import AdminRunnersApp from './admin_runners_app.vue';
