@@ -4,9 +4,10 @@ description: Separate table for Design Management Action Upload verification sta
 introduced_by_url:
 milestone: '18.11'
 feature_categories:
-  - geo_replication
+- geo_replication
 classes:
-  - Geo::DesignManagementActionUploadState
+- Geo::DesignManagementActionUploadState
 gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
+table_size: small

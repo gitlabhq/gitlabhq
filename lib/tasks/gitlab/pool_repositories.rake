@@ -33,13 +33,15 @@ namespace :gitlab do
 
       shard_names = ENV['SHARD_NAMES'].to_s.split(',')
       output_file = ENV['OUTPUT_FILE']
+      deleted_output_file = ENV['DELETED_IDS_FILE']
       dry_run = ENV['DRY_RUN'] != 'false'
       logger = Gitlab::PoolRepositories::RakeTask.logger
 
       if shard_names.empty? || output_file.blank?
         logger.error Rainbow('ERROR: SHARD_NAMES and OUTPUT_FILE environment variables are required').red
         logger.info 'Usage: bin/rake gitlab:pool_repositories:cleanup_orphaned_on_missing_shards ' \
-          'SHARD_NAMES=shard1,shard2 OUTPUT_FILE=/path/to/output.csv [DRY_RUN=false]'
+          'SHARD_NAMES=shard1,shard2 OUTPUT_FILE=/path/to/output.csv ' \
+          '[DRY_RUN=false DELETED_IDS_FILE=/path/to/deleted_ids.csv]'
         exit 1
       end
 
@@ -47,6 +49,7 @@ namespace :gitlab do
         cleaner = Gitlab::PoolRepositories::MissingShardCleaner.new(
           shard_names: shard_names,
           output_file: output_file,
+          deleted_output_file: deleted_output_file,
           logger: logger,
           dry_run: dry_run
         )
@@ -57,9 +60,9 @@ namespace :gitlab do
         exit 1
       end
 
-      logger.info Rainbow("Results saved to #{output_file}").green
-
-      logger.info Rainbow('To delete these records run this command with DRY_RUN=false').yellow if dry_run
+      if dry_run
+        logger.info Rainbow('To delete these records run this command with DRY_RUN=false and DELETED_IDS_FILE').yellow
+      end
     end
 
     desc 'GitLab | Pool Repositories | Classify member projects of sourceless pools on decommissioned shards'

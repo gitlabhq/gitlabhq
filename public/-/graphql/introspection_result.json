@@ -202140,6 +202140,38 @@
               "deprecationReason": null
             },
             {
+              "name": "readCycleAnalytics",
+              "description": "If `true`, the user can perform `read_cycle_analytics` on this resource Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "readDora4Analytics",
+              "description": "If `true`, the user can perform `read_dora4_analytics` on this resource Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "readGroup",
               "description": "If `true`, the user can perform `read_group` on this resource",
               "args": [],
@@ -202202,6 +202234,22 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.8."
+            },
+            {
+              "name": "readSecurityResource",
+              "description": "If `true`, the user can perform `read_security_resource` on this resource Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "readSecurityScanProfiles",
@@ -353031,6 +353079,22 @@
               "deprecationReason": null
             },
             {
+              "name": "readDora4Analytics",
+              "description": "If `true`, the user can perform `read_dora4_analytics` on this resource Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
               "name": "readEnvironment",
               "description": "If `true`, the user can perform `read_environment` on this resource",
               "args": [],
@@ -353173,6 +353237,22 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.8."
+            },
+            {
+              "name": "readSecurityResource",
+              "description": "If `true`, the user can perform `read_security_resource` on this resource Introduced in GitLab 19.5: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
               "name": "readWiki",

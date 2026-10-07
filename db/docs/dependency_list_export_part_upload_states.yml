@@ -4,9 +4,10 @@ description: Separate table for Dependency List Export Part Upload verification 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240274
 milestone: '19.2'
 feature_categories:
-  - geo_replication
+- geo_replication
 classes:
-  - Geo::DependencyListExportPartUploadState
+- Geo::DependencyListExportPartUploadState
 gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
+table_size: small

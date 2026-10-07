@@ -1,7 +1,7 @@
 ---
 title: Advanced SAST includes Kotlin, Dart, and Scala language support
 tier: [ Ultimate ]
-offering: [ gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government ]
+offering: [ gitlab_com, self_managed, gitlab_dedicated ]
 stage: application_security_testing
 documentation_link: ../../../user/application_security/sast/gitlab_advanced_sast/#supported-languages
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/23383

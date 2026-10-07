@@ -153,7 +153,9 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
       it 'pushes the flag as false when both flags are disabled' do
         get project_work_items_url(nested_project)
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: false, planningViewBoardsGroup: false
+        )
       end
 
       it 'pushes the flag as true when enabled for the user' do
@@ -161,7 +163,9 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
 
         get project_work_items_url(nested_project)
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: true, planningViewBoardsGroup: false
+        )
       end
 
       it 'pushes the flag as true when enabled for the root group' do
@@ -169,7 +173,9 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
 
         get project_work_items_url(nested_project)
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: true, planningViewBoardsGroup: true
+        )
       end
 
       it 'pushes the flag as false when enabled for a different root group' do
@@ -177,7 +183,9 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
 
         get project_work_items_url(nested_project)
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: false, planningViewBoardsGroup: false
+        )
       end
     end
 

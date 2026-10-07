@@ -4,9 +4,10 @@ description: Separate table for Personal Snippet Upload verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236302
 milestone: '19.1'
 feature_categories:
-  - geo_replication
+- geo_replication
 classes:
-  - Geo::PersonalSnippetUploadState
+- Geo::PersonalSnippetUploadState
 gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
+table_size: small

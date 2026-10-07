@@ -233,7 +233,8 @@ export default {
   i18n: {
     boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
   },
-  BOARD_FEEDBACK_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
+  BOARD_FEEDBACK_INTERNAL_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
+  BOARD_FEEDBACK_PUBLIC_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/632391',
   name: 'PlanningView',
   components: {
     GlButton,
@@ -549,6 +550,11 @@ export default {
     },
     isPlanningViewTableEnabled() {
       return Boolean(this.glFeatures.planningViewTable);
+    },
+    boardFeedbackIssueUrl() {
+      return this.glFeatures.planningViewBoardsGroup
+        ? this.$options.BOARD_FEEDBACK_PUBLIC_ISSUE_URL
+        : this.$options.BOARD_FEEDBACK_INTERNAL_ISSUE_URL;
     },
     isBoardView() {
       return this.viewMode === VIEW_MODE_BOARD && this.isPlanningViewBoardEnabled;
@@ -2490,7 +2496,7 @@ export default {
             size="small"
             variant="link"
             class="!gl-text-sm"
-            :href="$options.BOARD_FEEDBACK_ISSUE_URL"
+            :href="boardFeedbackIssueUrl"
             target="_blank"
             rel="noopener noreferrer"
             data-testid="board-feedback-link"

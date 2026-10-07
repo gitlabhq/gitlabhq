@@ -9470,7 +9470,7 @@ msgstr ""
 msgid "AiPowered|Connection method"
 msgstr ""
 
-msgid "AiPowered|Container registry for the foundational flow image. Enter either a registry hostname to use the default image from that registry or a full image reference to override the image entirely (for example, \"registry.example.com/group/project/image:tag\"). Leave blank to use \"registry.gitlab.com\"."
+msgid "AiPowered|Container registry for the foundational flow image. Enter a registry hostname (for example, \"registry.example.com\"). To use the default image from the registry, enter a path prefix that ends in \"/\" (for example, \"harbor.example.com/proxy/\"). To use the full image reference, add the path (for example, \"registry.example.com/group/project/image:tag\"). To use \"registry.gitlab.com\", leave blank."
 msgstr ""
 
 msgid "AiPowered|Control AI access to your data or external networks."

@@ -282,17 +282,33 @@ sudo gitlab-rake gitlab:pool_repositories:cleanup_orphaned_on_missing_shards \
   SHARD_NAMES=old-storage-1,old-storage-2 OUTPUT_FILE=/tmp/orphaned_pools.csv
 ```
 
-To delete the records, run the command again with `DRY_RUN=false`:
+To delete the records, run the command again with `DRY_RUN=false`.
+Set the required `DELETED_IDS_FILE` to a path different from `OUTPUT_FILE`:
 
 ```shell
 sudo gitlab-rake gitlab:pool_repositories:cleanup_orphaned_on_missing_shards \
-  SHARD_NAMES=old-storage-1,old-storage-2 OUTPUT_FILE=/tmp/deleted_pools.csv DRY_RUN=false
+  SHARD_NAMES=old-storage-1,old-storage-2 OUTPUT_FILE=/tmp/deleted_pools.csv \
+  DELETED_IDS_FILE=/tmp/deleted_pool_ids.csv DRY_RUN=false
 ```
 
-The CSV file contains all columns of the deleted records. Keep it in a safe
-place: it is the only way to restore the records if you delete something by
-mistake. To protect previous audit files, the task refuses to run if the
-`OUTPUT_FILE` path already exists. Pass a new file path for each run.
+`OUTPUT_FILE` is a recovery CSV with all database columns and the shard name.
+Keep this file safe for recovery.
+The task writes and flushes each batch to the CSV before deletion, then deletes only backed-up IDs
+that still meet the original conditions.
+Backed-up records can survive if they gain a source or member project.
+Newly eligible records without a backup wait for the next run.
+
+Real runs also create the file specified by `DELETED_IDS_FILE`, an audit CSV with a single `Pool ID` column
+from the actual `DELETE RETURNING` results.
+This file identifies deleted records, while the recovery CSV can include records that survived.
+A crash after deletion but before the audit write can leave the audit incomplete.
+The recovery data has already been written.
+Dry runs require only `OUTPUT_FILE` and create only the recovery CSV.
+
+Completion logs report the total records in the recovery CSV and the total deleted IDs.
+The CSV files contain headers and data only, with no total row.
+The task refuses to run if any file it would write already exists.
+Use a new output path for each run.
 
 ## Remove expired ActiveSession lookup keys
 

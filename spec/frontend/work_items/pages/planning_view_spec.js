@@ -3601,6 +3601,23 @@ describe('planning-view', () => {
         });
       });
 
+      describe('when planningViewBoardsGroup is also enabled and board view is active', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true, planningViewBoardsGroup: true } },
+            stubs: { BoardView: boardViewStub },
+          });
+          findViewModeToggle().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('links to the public feedback work item', () => {
+          expect(findBoardFeedbackLink().attributes('href')).toBe(
+            'https://gitlab.com/gitlab-org/gitlab/-/work_items/632391',
+          );
+        });
+      });
+
       describe('when planningViewBoards is enabled but list view is active', () => {
         beforeEach(async () => {
           await mountComponent({

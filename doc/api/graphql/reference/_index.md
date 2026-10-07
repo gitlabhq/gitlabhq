@@ -50506,10 +50506,13 @@ Fields:
 | <a id="grouppermissions-generatedescription"></a>`generateDescription` | [`Boolean!`](#boolean) | If `true`, the user can perform `generate_description` on this resource. |
 | <a id="grouppermissions-readcrmcontact"></a>`readCrmContact` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_contact` on this resource. |
 | <a id="grouppermissions-readcrmorganization"></a>`readCrmOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_organization` on this resource. |
+| <a id="grouppermissions-readcycleanalytics"></a>`readCycleAnalytics` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_cycle_analytics` on this resource. |
+| <a id="grouppermissions-readdora4analytics"></a>`readDora4Analytics` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_dora4_analytics` on this resource. |
 | <a id="grouppermissions-readgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
 | <a id="grouppermissions-readorbittrial"></a>`readOrbitTrial` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_orbit_trial` on this resource. |
 | <a id="grouppermissions-readproaianalytics"></a>`readProAiAnalytics` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_pro_ai_analytics` on this resource. |
 | <a id="grouppermissions-readrunnercloudprovisioninginfo"></a>`readRunnerCloudProvisioningInfo` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. If `true`, the user can perform `read_runner_cloud_provisioning_info` on this resource. |
+| <a id="grouppermissions-readsecurityresource"></a>`readSecurityResource` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_security_resource` on this resource. |
 | <a id="grouppermissions-readsecurityscanprofiles"></a>`readSecurityScanProfiles` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.4. Status: Experiment. If `true`, the user can perform `read_security_scan_profiles` on the top-level namespace of this resource. Security scan profiles belong to the top-level namespace, so this ability is evaluated on the root ancestor rather than on this resource. |
 | <a id="grouppermissions-removegroup"></a>`removeGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_group` on this resource. |
 | <a id="grouppermissions-startorbittrial"></a>`startOrbitTrial` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `start_orbit_trial` on this resource. |
@@ -61866,6 +61869,7 @@ Fields:
 | <a id="projectpermissions-readcrmorganization"></a>`readCrmOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_organization` on this resource. |
 | <a id="projectpermissions-readcycleanalytics"></a>`readCycleAnalytics` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_cycle_analytics` on this resource. |
 | <a id="projectpermissions-readdesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
+| <a id="projectpermissions-readdora4analytics"></a>`readDora4Analytics` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_dora4_analytics` on this resource. |
 | <a id="projectpermissions-readenvironment"></a>`readEnvironment` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_environment` on this resource. |
 | <a id="projectpermissions-readmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_merge_request` on this resource. |
 | <a id="projectpermissions-readpagescontent"></a>`readPagesContent` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_pages_content` on this resource. |
@@ -61875,6 +61879,7 @@ Fields:
 | <a id="projectpermissions-readprojectcomponentusages"></a>`readProjectComponentUsages` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.0. Status: Experiment. If `true`, the user can perform `read_project_component_usages` on this resource. |
 | <a id="projectpermissions-readprojectmember"></a>`readProjectMember` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_project_member` on this resource. |
 | <a id="projectpermissions-readrunnercloudprovisioninginfo"></a>`readRunnerCloudProvisioningInfo` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 18.8. Status: Experiment. If `true`, the user can perform `read_runner_cloud_provisioning_info` on this resource. |
+| <a id="projectpermissions-readsecurityresource"></a>`readSecurityResource` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.5. Status: Experiment. If `true`, the user can perform `read_security_resource` on this resource. |
 | <a id="projectpermissions-readwiki"></a>`readWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_wiki` on this resource. |
 | <a id="projectpermissions-removeforkproject"></a>`removeForkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_fork_project` on this resource. |
 | <a id="projectpermissions-removepages"></a>`removePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_pages` on this resource. |

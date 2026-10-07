@@ -19,6 +19,8 @@ module Groups
       push_force_frontend_feature_flag(:planning_view_boards,
         Feature.enabled?(:planning_view_boards, current_user) ||
           Feature.enabled?(:planning_view_boards_group, group&.root_ancestor))
+      push_force_frontend_feature_flag(:planning_view_boards_group,
+        Feature.enabled?(:planning_view_boards_group, group&.root_ancestor))
       push_frontend_feature_flag(:planning_view_table, current_user)
       push_frontend_feature_flag(:work_items_realtime, current_user)
     end

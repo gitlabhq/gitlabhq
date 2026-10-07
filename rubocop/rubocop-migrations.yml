@@ -18,6 +18,7 @@ Migration/UpdateLargeTable:
   - :lfs_objects_projects
   - :merge_request_diff_commits
   - :merge_request_diff_files
+  - :merge_request_diff_files_archived
   - :merge_request_diffs
   - :merge_request_metrics
   - :merge_requests
@@ -58,6 +59,7 @@ Migration/UpdateLargeTable:
   - :lfs_objects
   - :lfs_objects_projects
   - :merge_request_cleanup_schedules
+  - :merge_request_user_mentions
   - :namespaces
   - :packages_package_files
   - :personal_access_tokens

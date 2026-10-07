@@ -50,7 +50,9 @@ RSpec.describe 'Groups::SavedViews', feature_category: :planning_views do
       it 'pushes the flag as false when both flags are disabled' do
         show_saved_view
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: false, planningViewBoardsGroup: false
+        )
       end
 
       it 'pushes the flag as true when enabled for the user' do
@@ -58,7 +60,9 @@ RSpec.describe 'Groups::SavedViews', feature_category: :planning_views do
 
         show_saved_view
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: true, planningViewBoardsGroup: false
+        )
       end
 
       it 'pushes the flag as true when enabled for the root group' do
@@ -66,7 +70,9 @@ RSpec.describe 'Groups::SavedViews', feature_category: :planning_views do
 
         show_saved_view
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: true)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: true, planningViewBoardsGroup: true
+        )
       end
 
       it 'pushes the flag as false when enabled for a different root group' do
@@ -74,7 +80,9 @@ RSpec.describe 'Groups::SavedViews', feature_category: :planning_views do
 
         show_saved_view
 
-        expect(response.body).to have_pushed_frontend_feature_flags(planningViewBoards: false)
+        expect(response.body).to have_pushed_frontend_feature_flags(
+          planningViewBoards: false, planningViewBoardsGroup: false
+        )
       end
     end
 

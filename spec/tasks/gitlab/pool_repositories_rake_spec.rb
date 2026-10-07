@@ -265,6 +265,7 @@ RSpec.describe 'gitlab:pool_repositories namespace rake task', :silence_stdout, 
       before do
         stub_env('SHARD_NAMES', 'shard1,shard2')
         stub_env('OUTPUT_FILE', '/tmp/output.csv')
+        stub_env('DELETED_IDS_FILE', nil)
       end
 
       it 'runs the cleaner in dry-run mode by default and hints at DRY_RUN=false' do
@@ -273,6 +274,7 @@ RSpec.describe 'gitlab:pool_repositories namespace rake task', :silence_stdout, 
         expect(Gitlab::PoolRepositories::MissingShardCleaner).to have_received(:new).with(
           shard_names: %w[shard1 shard2],
           output_file: '/tmp/output.csv',
+          deleted_output_file: nil,
           logger: logger,
           dry_run: true
         )
@@ -283,13 +285,14 @@ RSpec.describe 'gitlab:pool_repositories namespace rake task', :silence_stdout, 
       context 'when DRY_RUN=false' do
         before do
           stub_env('DRY_RUN', 'false')
+          stub_env('DELETED_IDS_FILE', '/tmp/deleted_ids.csv')
         end
 
         it 'runs the cleaner with dry_run: false' do
           run_task
 
           expect(Gitlab::PoolRepositories::MissingShardCleaner).to have_received(:new).with(
-            hash_including(dry_run: false)
+            hash_including(dry_run: false, deleted_output_file: '/tmp/deleted_ids.csv')
           )
         end
       end
